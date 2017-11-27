@@ -438,6 +438,10 @@ GenCommand-Native {
     (e.Indent)
     (e.Indent 'refalrts::push_stack( ' <ContextItem s.ElemNumber> ' );');
 
+  (e.Indent) (#CmdWrapClosure s.Offset)
+    = (e.Indent)
+      (e.Indent 'refalrts::wrap_closure( ' <ContextItem s.Offset> ' );');
+
   (e.Indent) (#CmdInsertElem s.ElemNumber) =
     (e.Indent)
     (e.Indent
@@ -780,6 +784,9 @@ AllocatorFuncName {
 
   #ElOpenCall = 'open_call';
   #ElCloseCall = 'close_call';
+
+  #ElClosureHead = 'closure_head';
+  #ElUnwrappedClosure = 'unwrapped_closure';
 }
 
 AllocatorFuncArgument {
@@ -791,6 +798,8 @@ AllocatorFuncArgument {
 
   #ElIdent e.Name = ', ident_' <CName e.Name>;
 
-  // Остальное -- скобки
+  #ElUnwrappedClosure s.HeadOffset = ', ' <ContextItem s.HeadOffset>;
+
+  // Остальное — без аргументов (скобки и #ElClosureHead)
   s.Other = ;
 }

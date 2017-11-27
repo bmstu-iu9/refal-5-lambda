@@ -1277,6 +1277,28 @@ bool refalrts::alloc_close_call(refalrts::Iter& res) {
   return alloc_some_bracket(res, cDataCloseCall);
 }
 
+bool refalrts::alloc_closure_head(refalrts::Iter& res) {
+  if (allocator::alloc_node(res)) {
+    res->tag = cDataClosureHead;
+    res->number_info = 1;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool refalrts::alloc_unwrapped_closure(
+  refalrts::Iter& res, refalrts::Iter head
+) {
+  if (allocator::alloc_node(res)) {
+    res->tag = cDataUnwrappedClosure;
+    res->link_info = head;
+    return true;
+  } else {
+    return false;
+  }
+}
+
 bool refalrts::alloc_chars(
   refalrts::Iter& res_b, refalrts::Iter& res_e,
   const char buffer[], unsigned buflen
@@ -1490,6 +1512,18 @@ void refalrts::reinit_close_call(refalrts::Iter res) {
   res->tag = cDataCloseCall;
 }
 
+void refalrts::reinit_closure_head(refalrts::Iter res) {
+  res->tag = cDataClosureHead;
+  res->number_info = 1;
+}
+
+void refalrts::reinit_unwrapped_closure(
+  refalrts::Iter res, refalrts::Iter head
+) {
+  res->tag = cDataUnwrappedClosure;
+  res->link_info = head;
+}
+
 refalrts::Iter refalrts::splice_elem(refalrts::Iter res, refalrts::Iter elem) {
   return list_splice(res, elem, elem);
 }
@@ -1538,7 +1572,7 @@ const refalrts::RASLCommand rasl_create_closure[] = {
   { refalrts::icResetAllocator, 0, 0, 0 },
 #endif // ifdef ENABLE_DEBUGGER
   { refalrts::icReinitClosureHead, 0, 0, 4 },
-  { refalrts::icReinitUnwrappedClosure, 4, 0, 1 },
+  { refalrts::icReinitUnwrappedClosure, 0, 4, 1 },
   { refalrts::icWrapClosure, 0, 0, 1 },
   { refalrts::icSetRes, 0, 0, 1 },
   { refalrts::icTrashLeftEdge, 0, 0, 0 },
@@ -5494,6 +5528,18 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
+      case icAllocateClosureHead:
+        if (! alloc_closure_head(elem)) {
+          return cNoMemory;
+        }
+        break;
+
+      case icAllocateUnwrappedClosure:
+        if (! alloc_unwrapped_closure(elem, context[rasl->val2])) {
+          return cNoMemory;
+        }
+        break;
+
       case icReinitChar:
         reinit_char(elem, static_cast<char>(rasl->val2));
         break;
@@ -5530,13 +5576,11 @@ refalrts::FnResult refalrts::vm::main_loop() {
         break;
 
       case icReinitClosureHead:
-        elem->tag = refalrts::cDataClosureHead;
-        elem->number_info = 1;
+        reinit_closure_head(elem);
         break;
 
       case icReinitUnwrappedClosure:
-        elem->tag = cDataUnwrappedClosure;
-        elem->link_info = context[rasl->val1];
+        reinit_unwrapped_closure(elem, context[rasl->val2]);
         break;
 
       case icUpdateChar:

@@ -131,6 +131,15 @@ DoGenResult {
       (#TkName e.Name) e.InBrackets (#TkCloseADT s.Counter) e.Result
     >;
 
+  (e.Vars) (e.AllocCommands) (e.Commands)
+  s.Counter (#ClosureBrackets e.InBrackets) e.Result
+    = <DoGenResult
+        (e.Vars)
+        (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElClosureHead))
+        ((#CmdInsertElem s.Counter) e.Commands)
+        <Inc s.Counter> e.InBrackets (#TkUnwrappedClosure s.Counter) e.Result
+      >;
+
   /*
     Закрывающие скобки надо обрабатывать особым образом.
     Круглые скобки и АТД -- слинковать, угловые -- добавить в стек.
@@ -174,6 +183,22 @@ DoGenResult {
       )
       <Inc s.Counter> e.Result
     >;
+
+  (e.Vars) (e.AllocCommands) (e.Commands)
+  s.Counter (#TkUnwrappedClosure s.HeadCounter) e.Result
+    = <DoGenResult
+        (e.Vars)
+        (
+          e.AllocCommands
+          (#CmdCreateElem #Allocate s.Counter #ElUnwrappedClosure s.HeadCounter)
+        )
+        (
+          (#CmdInsertElem s.Counter)
+          e.Commands
+          (#CmdWrapClosure s.Counter)
+        )
+        <Inc s.Counter> e.Result
+      >;
 
   // Обработка переменных
   (

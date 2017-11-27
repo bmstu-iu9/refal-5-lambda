@@ -719,9 +719,7 @@ ExtractNested-Result-Term {
                 (CheckBorrowed (e.ScopeVars))
                 (e.BorrowedVars) e.NestedBorrowedVars
               >
-              (#CallBrackets
-                (#TkName #CreateClosure) (#TkName e.ClosureName) e.Context
-              );
+              (#ClosureBrackets (#TkName e.ClosureName) e.Context);
         }
       >
     : t.Function (e.BorrowedVars^) t.ClosureTerm

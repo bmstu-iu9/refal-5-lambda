@@ -66,6 +66,11 @@ $ENTRY TextFromExpr {
         (#TkCloseADT s.ContextOffset) =
           ' ]' <Offset s.ContextOffset>;
 
+        (#TkClosureHead s.ContextOffset)
+          = ' [*]' <Offset s.ContextOffset>;
+        (#TkUnwrappedClosure s.ContextOffset)
+          = ' {*}' <Offset s.ContextOffset>;
+
         (#TkChar s.Char s.Offset) =
           ' ''' <EscapeChar s.Char> '' <Offset s.Offset>;
 

@@ -84,14 +84,16 @@ $ENTRY NumberFromOpcode{
   #Allocate #ElIdent = 78;
   #Allocate #ElBracket = 79;
   #Allocate #ElString = 80;
+  #Allocate #ElClosureHead = 113;
+  #Allocate #ElUnwrappedClosure = 114;
   #Reinit #ElChar = 81;
   #Reinit #ElName = 82;
   #Reinit #ElNumber = 83;
   #Reinit #ElHugeNumber = 84;
   #Reinit #ElIdent = 85;
   #Reinit #ElBracket = 86;
-  #Reinit #CmdClosureHead = 87;
-  #Reinit #CmdUnwrappedClosure = 88;
+  #Reinit #ElClosureHead = 87;
+  #Reinit #ElUnwrappedClosure = 88;
   #Update #ElChar = 89;
   #Update #ElName = 90;
   #Update #ElNumber = 91;
@@ -99,6 +101,7 @@ $ENTRY NumberFromOpcode{
   #Update #ElIdent = 93;
   #CmdLinkBrackets = 94;
   #CmdPushStack = 95;
+  #CmdWrapClosure = 110;
   #CmdSpliceElem = 96;
   #CmdSpliceEVar = 97;
   #CmdSpliceSTVar = 98;
@@ -113,7 +116,6 @@ $ENTRY NumberFromOpcode{
   #CmdFetchSwapInfoBounds = 107;
   #CmdSwapSave = 108;
   #CmdPerformNative = 109;
-  #CmdWrapClosure = 110;
   #CmdEnd = 111;
   #CmdVariableDebugOffset = 112;
 }

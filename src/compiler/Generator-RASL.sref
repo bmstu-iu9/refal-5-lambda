@@ -314,6 +314,9 @@ GenCommand-RASL {
   (#CmdPushStack s.ElemNumber) =
     <PutCommand #CmdPushStack 0 0 s.ElemNumber>;
 
+  (#CmdWrapClosure s.Offset)
+    = <PutCommand #CmdWrapClosure 0 0 s.Offset>;
+
   (#CmdInsertElem s.ElemNumber) =
     <PutCommand #CmdSpliceElem 0 0 s.ElemNumber>;
 
@@ -382,6 +385,9 @@ CreateCommandInfo {
   #ElIdent s.NameId = s.NameId;
 
   #ElString s.StringId = s.StringId;
+
+  #ElClosureHead = 0;
+  #ElUnwrappedClosure s.HeadCounter = s.HeadCounter;
 
   s.Bracket = <NumberFromBracket s.Bracket>;
 }

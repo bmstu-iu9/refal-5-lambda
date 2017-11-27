@@ -236,6 +236,7 @@ enum iCmd { /*NumberFromOpcode:Cmd+ic;Alg+Left,Alg+Right,Alg+Term*/
   icReinitSVar = 73,
   /*+WORDS:Allocate,Reinit,Update*/
   /*+WORDS:El+Char,El+Name,El+Number,El+HugeNumber,El+Ident,El+Bracket,El+String*/
+  /*+WORDS:El+ClosureHead,El+UnwrappedClosure*/
   icAllocateChar = 74,
   icAllocateName = 75,
   icAllocateNumber = 76,
@@ -243,6 +244,8 @@ enum iCmd { /*NumberFromOpcode:Cmd+ic;Alg+Left,Alg+Right,Alg+Term*/
   icAllocateIdent = 78,
   icAllocateBracket = 79,
   icAllocateString = 80,
+  icAllocateClosureHead = 113,
+  icAllocateUnwrappedClosure = 114,
   icReinitChar = 81,
   icReinitName = 82,
   icReinitNumber = 83,
@@ -258,6 +261,7 @@ enum iCmd { /*NumberFromOpcode:Cmd+ic;Alg+Left,Alg+Right,Alg+Term*/
   icUpdateIdent = 93,
   icLinkBrackets = 94,
   icPushStack = 95,
+  icWrapClosure = 110,
   icSpliceElem = 96,
   icSpliceEVar = 97,
   icSpliceSTVar = 98,
@@ -272,7 +276,6 @@ enum iCmd { /*NumberFromOpcode:Cmd+ic;Alg+Left,Alg+Right,Alg+Term*/
   icFetchSwapInfoBounds = 107,
   icSwapSave = 108,
   icPerformNative = 109,
-  icWrapClosure = 110,
   icEnd = 111,
   icVariableDebugOffset = 112,
 };
@@ -357,6 +360,9 @@ extern void reinit_close_adt(Iter res);
 
 extern void reinit_open_call(Iter res);
 extern void reinit_close_call(Iter res);
+
+extern void reinit_closure_head(Iter res);
+extern void reinit_unwrapped_closure(Iter res, Iter head);
 
 
 // Операции распознавания образца
@@ -471,6 +477,8 @@ extern bool alloc_open_bracket(Iter& res);
 extern bool alloc_close_bracket(Iter& res);
 extern bool alloc_open_call(Iter& res);
 extern bool alloc_close_call(Iter& res);
+extern bool alloc_closure_head(Iter& res);
+extern bool alloc_unwrapped_closure(Iter& res, Iter head);
 
 #ifndef alloc_copy_svar
 #define alloc_copy_svar alloc_copy_svar_
