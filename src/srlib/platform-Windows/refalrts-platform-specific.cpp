@@ -1,4 +1,6 @@
+#include <stdlib.h>
 #include <windows.h>
+
 #include "refalrts-platform-specific.h"
 
 bool refalrts::api::get_main_module_name(
@@ -18,4 +20,8 @@ bool refalrts::api::get_main_module_name(
         && module_name[cModuleNameBufferLen - 1] == '\0'
       )
     );
+}
+
+int refalrts::api::system(const char *command) {
+  return ::system(command);
 }

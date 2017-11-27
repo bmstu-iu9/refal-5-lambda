@@ -102,6 +102,7 @@ run_test_result_OK() {
     (
       export Foo=Bar
       unset NoEnv
+      PATH=".:$PATH"
       execute_OK_$c "$1"
     ) || exit 1
     for o in $OUTPUT_FILES; do

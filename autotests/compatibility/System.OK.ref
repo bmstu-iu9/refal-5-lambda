@@ -1,0 +1,12 @@
+$ENTRY Go {
+  = <Eq (3) <System 'retcode 3'>>
+    <Retcode_-3 <System 'retcode -3'>>
+    <Eq (0) <System 'retcode 0'>>;
+}
+
+Eq { (e.X) e.X = <Prout e.X>; }
+
+Retcode_-3 {
+  '-' 3 = ;
+  253 = ;
+}

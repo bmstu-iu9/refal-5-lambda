@@ -255,6 +255,12 @@ Residue {
 $EXTERN GetEnv;
 
 
+// 52. System
+
+//FROM Library
+$EXTERN System;
+
+
 // 54. Close
 
 //FROM Library
@@ -376,7 +382,6 @@ $ENUM Freezer;
 $ENUM Dn;
 $ENUM Up;
 $ENUM Ev-met;
-$ENUM System;
 $ENUM Exit;
 $ENUM GetCurrentDirectory;
 $ENUM RemoveFile;

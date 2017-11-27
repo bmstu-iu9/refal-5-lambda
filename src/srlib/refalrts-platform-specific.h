@@ -11,6 +11,8 @@ enum { cModuleNameBufferLen = FILENAME_MAX + 1 };
 
 bool get_main_module_name(char (&module_name)[cModuleNameBufferLen]);
 
+int system(const char *command);
+
 } // namespace api
 
 } // namespace refalrts

@@ -8,6 +8,8 @@
 #include <time.h>
 #include <vector>
 
+#include "refalrts-platform-specific.h"
+
 //FROM refalrts
 
 %%
@@ -60,6 +62,10 @@ extern refalrts::FnResult fwrite_line(
 );
 
 extern refalrts::FnResult refal_getenv(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+);
+
+extern refalrts::FnResult refal_system(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
 
@@ -1586,6 +1592,17 @@ $ENTRY GetEnv {
 
 
 /**
+  52. <System e.Command> == '-'? s.NUMBER
+  e.Command ::= s.CHAR
+*/
+$ENTRY System {
+%%
+  return refal_system(arg_begin, arg_end);
+%%
+}
+
+
+/**
   54. <Close s.FileNo> == []
   If file not opened function never does.
 */
@@ -2376,11 +2393,16 @@ $ENTRY Exit {
 %%
 }
 
-$ENTRY System {
 %%
+namespace {
+
+extern refalrts::FnResult refal_system(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+) {
   refalrts::Iter command_b = 0;
   refalrts::Iter command_e = 0;
-  refalrts::call_left(command_b, command_e, arg_begin, arg_end);
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(command_b, command_e, arg_begin, arg_end);
 
   std::vector<char> command;
   refalrts::FnResult command_res =
@@ -2393,15 +2415,28 @@ $ENTRY System {
   fflush(stdout);
   fflush(stderr);
 
-  // Skip return value
-  int ret = system(&command[0]);
-  (void) ret;
+  int ret = refalrts::api::system(&command[0]);
 
   refalrts::reset_allocator();
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  if (ret < 0) {
+    refalrts::Iter minus = 0;
+    if (! refalrts::alloc_char(minus, '-')) {
+      return refalrts::cNoMemory;
+    }
+
+    refalrts::splice_elem(arg_begin, minus);
+
+    ret = -ret;
+  }
+
+  refalrts::reinit_number(arg_begin, ret);
+
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
   return refalrts::cSuccess;
-%%
 }
+
+}  // unnamed namespace
+%%
 
 // Работа с типами символов
 
