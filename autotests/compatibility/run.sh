@@ -1,6 +1,14 @@
 #!/bin/bash
 
 main() {
+  UNAME=$(uname | sed 's/_.*$//')
+  CMP=cmp
+  DIFF=diff
+  if [ "$UNAME" == "MINGW32" -o "$UNAME" == "CYGWIN" ]; then
+    CMP="diff --strip-trailing-cr"
+    DIFF="diff --strip-trailing-cr"
+  fi
+
   OUTPUT_FILES="stdout.txt stderr.txt written_file.txt REFAL15.DAT"
   lookup_compilers || return 1
   if [ -z "$REFC_EXIST$SREFC_EXIST$CREFAL_EXIST" ]; then
@@ -62,7 +70,7 @@ valid_rsl_detected() {
     refgo detect.rsl > detect.out
     echo detected > detect.expected
 
-    if cmp detect.out detect.expected; then
+    if $CMP detect.out detect.expected; then
       RETCODE=0
     fi
 
@@ -103,10 +111,10 @@ run_test_result_OK() {
           echo ERROR: File $o must be created but is absent
           exit 1
         fi
-        cmp $o "$SAMPLE" > /dev/null || {
+        $CMP $o "$SAMPLE" > /dev/null || {
           echo ERROR: Invalid output to $o. See $SAMPLE and $o
           echo ERROR: Difference between $SAMPLE and $o:
-          diff -u $o "$SAMPLE"
+          $DIFF -u $o "$SAMPLE"
           exit 1
         }
       fi
@@ -117,9 +125,9 @@ run_test_result_OK() {
   done
 
   for c in $REFAL_COMPILERS; do
-    cmp stdout.txt.$LAST stdout.txt.$c > /dev/null || {
+    $CMP stdout.txt.$LAST stdout.txt.$c > /dev/null || {
       echo ERROR: Outputs of $c and $LAST is different:
-      diff -u stdout.txt.$LAST stdout.txt.$c
+      $DIFF -u stdout.txt.$LAST stdout.txt.$c
       exit 1
     }
   done
@@ -197,7 +205,8 @@ compile_srefc() {
 execute_OK_srefc() {
   SRC=$1
   EXE=${SRC%%.ref}$(platform_exe_suffix)
-  echo Y | ./$EXE Hello "Hello, World" "" / > stdout.txt 2>stderr.txt || {
+  SEP=$(platform_file_separator)
+  echo Y | ./$EXE Hello "Hello, World" "" $SEP > stdout.txt 2>stderr.txt || {
     echo TEST FAILED, SEE __dump.txt:
     cat __dump.txt
     exit 1
@@ -226,7 +235,7 @@ cleanup_srefc() {
   EXE=${SRC%%.ref}$(platform_exe_suffix)
   CPP=${SRC%%.ref}.cpp
   rm -f "$RASL" "$EXE" "$CPP"
-  rm -f Library.* external.rsl
+  rm -f Library.* external.rasl
 }
 
 compile_crefal() {
@@ -245,7 +254,8 @@ compile_crefal() {
 execute_OK_crefal() {
   SRC=$1
   RSL=${SRC%%.ref}-crefal.rsl
-  echo Y | refgo "$RSL"+external-crefal Hello "Hello, World" "" / \
+  SEP=$(platform_file_separator)
+  echo Y | refgo "$RSL"+external-crefal Hello "Hello, World" "" $SEP \
     >stdout.txt 2>__dump.txt || \
   {
     echo TEST FAILED, SEE __dump.txt:
@@ -281,7 +291,7 @@ compile_refc() {
   if [ ! -e "$RSL" ]; then
     return 1
   fi
-  refc external.ref external.rsl
+  refc external.ref
   if [ ! -e external.rsl ]; then
     return 1
   fi
@@ -290,7 +300,8 @@ compile_refc() {
 execute_OK_refc() {
   SRC=$1
   RSL=${SRC%%.ref}.rsl
-  echo Y | refgo "$RSL"+external Hello "Hello, World" "" / \
+  SEP=$(platform_file_separator)
+  echo Y | refgo "$RSL"+external Hello "Hello, World" "" $SEP \
     >stdout.txt 2>__dump.txt || \
   {
     echo TEST FAILED, SEE __dump.txt:
