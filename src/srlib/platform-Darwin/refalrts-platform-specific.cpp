@@ -3,6 +3,8 @@
 
 #include "refalrts-platform-specific.h"
 
+//FROM refalrts-platform-POSIX
+
 bool refalrts::api::get_main_module_name(
   char (&module_name)[refalrts::api::cModuleNameBufferLen]
 ) {

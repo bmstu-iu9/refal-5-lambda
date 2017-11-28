@@ -68,8 +68,8 @@ setlocal
     -c "%CPPLINEE%" ^
     --exesuffix=.exe ^
     --prelude=test-prelude.srefi ^
-    -D../src/srlib ^
     -D../src/srlib/platform-Windows ^
+    -D../src/srlib ^
     -f-DSTEP_LIMIT=1500 ^
     -f-DMEMORY_LIMIT=1000 ^
     -f-DIDENTS_LIMIT=200 ^

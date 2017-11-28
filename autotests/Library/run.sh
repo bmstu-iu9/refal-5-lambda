@@ -8,8 +8,8 @@ run_all_tests() {
   COMMON_SRFLAGS=(
     "-c $CPPLINEE"
     --exesuffix=$(platform_exe_suffix)
-    -D$LIBDIR
     -D$(platform_subdir_lookup $LIBDIR)
+    -D$LIBDIR
     -f-DSTEP_LIMIT=1500
     -f-DMEMORY_LIMIT=1000
     -f-DIDENTS_LIMIT=25
@@ -17,6 +17,7 @@ run_all_tests() {
     -f-DDONT_PRINT_STATISTICS
     -f-g
     refalrts
+    refalrts-platform-POSIX
     refalrts-platform-specific
     --chmod-x-command="chmod +x"
   )

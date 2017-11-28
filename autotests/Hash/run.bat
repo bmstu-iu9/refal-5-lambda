@@ -18,8 +18,8 @@ setlocal
   set COMMON_SRFLAGS= ^
     -c "%CPPLINEE%" ^
     --exesuffix=.exe ^
-    -D../../src/srlib ^
     -D../../src/srlib/platform-Windows ^
+    -D../../src/srlib ^
     -f-DSTEP_LIMIT=1000 ^
     -f-DMEMORY_LIMIT=1000 ^
     -f-DDUMP_FILE=%DEF_DUMP_FILE_NAME_HACK% ^

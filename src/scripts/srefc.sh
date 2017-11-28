@@ -21,7 +21,7 @@ set_slim_flags() {
 }
 
 set_scratch_flags() {
-  D=(-D "$LIBDIR/scratch" -D "$(platform_subdir_lookup "$LIBDIR/scratch")")
+  D=(-D "$(platform_subdir_lookup "$LIBDIR/scratch")" -D "$LIBDIR/scratch")
   PREFIX=
 }
 

@@ -6,7 +6,7 @@ if not exist ..\..\srlib\src\nul (
 
 setlocal
   set SOURCES=Library LibraryEx GetOpt Hash
-  set RT=refalrts refalrts-platform-specific
+  set RT=refalrts refalrts-platform-specific refalrts-platform-POSIX
 
   copy LICENSE ..\..\srlib
   for %%s in (%SOURCES%) do copy %%s.sref ..\..\srlib\src

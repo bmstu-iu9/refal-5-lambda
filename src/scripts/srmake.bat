@@ -35,7 +35,7 @@ setlocal
 :MODE_SCRATCH
   set ARGS=%ARGS:* =%
 :MODE_DEFAULT
-  set D=-D "%LIBDIR%\scratch" -D "%LIBDIR%\scratch\platform-Windows"
+  set D=-D "%LIBDIR%\scratch\platform-Windows" -D "%LIBDIR%\scratch"
   goto END_SWITCH
 
 :END_SWITCH

@@ -194,9 +194,9 @@ setlocal
   set COMMON_SRFLAGS= ^
     -c "%CPPLINEE%" ^
     --exesuffix=.exe ^
-    -D../../src/srlib ^
     -D../../src/srlib/platform-Windows ^
     -D../../src/srlib/common ^
+    -D../../src/srlib ^
     --prelude=refal5-builtins.srefi ^
     -f-DSTEP_LIMIT=6000 ^
     -f-DMEMORY_LIMIT=1000 ^

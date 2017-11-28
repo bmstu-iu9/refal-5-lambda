@@ -163,9 +163,9 @@ compile_srefc() {
   COMMON_SRFLAGS=(
     "-c $CPPLINEE"
     --exesuffix=$(platform_exe_suffix)
-    -D$LIBDIR
     -D$(platform_subdir_lookup $LIBDIR)
     -D$LIBDIR/common
+    -D$LIBDIR
     --prelude=refal5-builtins.srefi
     -f-DSTEP_LIMIT=6000
     -f-DMEMORY_LIMIT=1000
@@ -173,6 +173,7 @@ compile_srefc() {
     -f-DDONT_PRINT_STATISTICS
     -f-g
     refalrts
+    refalrts-platform-POSIX
     refalrts-platform-specific
     --chmod-x-command="chmod +x"
   )

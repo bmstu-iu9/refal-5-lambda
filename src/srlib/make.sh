@@ -44,7 +44,7 @@ prepare_common() {
 
 (
   SOURCES="Library LibraryEx GetOpt Hash"
-  RT="refalrts refalrts-platform-specific"
+  RT="refalrts refalrts-platform-specific refalrts-platform-POSIX"
 
   mkdir -p ../../srlib/src
   cp LICENSE ../../srlib
