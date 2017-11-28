@@ -3075,9 +3075,9 @@ refalrts::dynamic::ConstTable::make_name(const char *name) const {
 }
 
 void refalrts::dynamic::enumerate_blocks() {
-  char module_name[platform_specific::cModuleNameBufferLen];
+  char module_name[api::cModuleNameBufferLen];
 
-  bool successed = platform_specific::get_main_module_name(module_name);
+  bool successed = api::get_main_module_name(module_name);
   if (! successed) {
     fprintf(stderr, "INTERNAL ERROR: can't obtain name of main executable\n");
     exit(155);

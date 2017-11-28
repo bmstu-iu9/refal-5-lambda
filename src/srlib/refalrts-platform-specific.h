@@ -5,13 +5,13 @@
 
 namespace refalrts {
 
-namespace platform_specific {
+namespace api {
 
 enum { cModuleNameBufferLen = FILENAME_MAX + 1 };
 
 bool get_main_module_name(char (&module_name)[cModuleNameBufferLen]);
 
-} // namespace platform_specific
+} // namespace api
 
 } // namespace refalrts
 
