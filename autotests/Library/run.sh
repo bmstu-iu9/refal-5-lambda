@@ -108,13 +108,6 @@ run_all_tests() {
     cleanup Library-Exit
   fi
 
-  if [ -e Library-System ]; then
-    echo Pass Library-System test...
-    run_exe Library-System
-    compare __out.txt 2lines.txt
-    cleanup Library-System
-  fi
-
   if [ -e Library-FOpen-Append ]; then
     echo Pass Library-FOpen-Append test...
     run_exe Library-FOpen-Append

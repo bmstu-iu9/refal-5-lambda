@@ -117,13 +117,6 @@ setlocal
     call :CLEANUP Library-Exit
   )
 
-  if exist Library-System.exe (
-    echo Pass Library-System test...
-    call :RUN_EXE Library-System || exit /b 1
-    call :COMPARE __out.txt 2lines.txt || exit /b 1
-    call :CLEANUP Library-System
-  )
-
   if exist Library-FOpen-Append.exe (
     echo Pass Library-FOpen-Append test...
     call :RUN_EXE Library-FOpen-Append || exit /b 1

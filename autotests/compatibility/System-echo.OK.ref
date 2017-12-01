@@ -1,6 +1,3 @@
-//FROM Library
-$EXTERN System;
-
 $ENTRY Go {
   =
     <System 'echo Hello'>
