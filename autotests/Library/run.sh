@@ -127,17 +127,6 @@ run_all_tests() {
     cleanup Library-RenameFile
   fi
 
-  if [ -e Library-RemoveFile ]; then
-    echo Pass Library-RemoveFile test...
-    cp 2lines.txt for_remove.txt
-    run_exe Library-RemoveFile
-    if [ -e for_remove.txt ]; then
-      echo FILE for_remove.txt must be removed
-      exit 1
-    fi
-    cleanup Library-RemoveFile
-  fi
-
   if [ -e Library-symbolic-file-handles ]; then
     echo Pass Library-symbolic-file-handles test...
     ./Library-symbolic-file-handles < 2lines.txt > __out.txt 2>__err.txt

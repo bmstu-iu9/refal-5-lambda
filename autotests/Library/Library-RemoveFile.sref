@@ -1,8 +1,0 @@
-//FROM Library
-$EXTERN RemoveFile;
-
-$ENTRY Go {
-  =
-    <{ #True = ; } <RemoveFile 'for_remove.txt'>>
-    <{ #False = ; } <RemoveFile 'notexist.txt'>>;
-}

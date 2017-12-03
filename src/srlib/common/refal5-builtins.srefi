@@ -285,6 +285,12 @@ $EXTERN ExistFile;
 $EXTERN GetCurrentDirectory;
 
 
+// 57. RemoveFile
+
+//FROM Library
+$EXTERN RemoveFile;
+
+
 // 58. Implode_Ext
 
 //FROM Library
@@ -394,7 +400,6 @@ $ENUM Freezer;
 $ENUM Dn;
 $ENUM Up;
 $ENUM Ev-met;
-$ENUM RemoveFile;
 $ENUM TimeElapsed;
 $ENUM DeSysfun;
 $ENUM XMLParse;
