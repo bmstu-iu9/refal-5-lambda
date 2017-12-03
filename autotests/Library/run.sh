@@ -12,7 +12,7 @@ run_all_tests() {
     -D$LIBDIR
     -f-DSTEP_LIMIT=1500
     -f-DMEMORY_LIMIT=1000
-    -f-DIDENTS_LIMIT=25
+    -f-DIDENTS_LIMIT=100
     -f-DDUMP_FILE=\\\"__dump.txt\\\"
     -f-DDONT_PRINT_STATISTICS
     -f-g
