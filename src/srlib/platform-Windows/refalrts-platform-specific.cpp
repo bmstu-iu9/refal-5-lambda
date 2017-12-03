@@ -25,3 +25,9 @@ bool refalrts::api::get_main_module_name(
 int refalrts::api::system(const char *command) {
   return ::system(command);
 }
+
+bool refalrts::api::get_current_directory(char buffer[], size_t size) {
+  DWORD result = GetCurrentDirectory(size, buffer);
+
+  return (0 != result && result < size);
+}

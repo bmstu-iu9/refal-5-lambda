@@ -1642,6 +1642,37 @@ $ENTRY ExistFile {
 
 
 /**
+  56. <GetCurrentDirectory> == s.CHAR*
+*/
+$ENTRY GetCurrentDirectory {
+%%
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  if (! refalrts::empty_seq(content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  char directory[FILENAME_MAX + 1] = { '\0' };
+
+  if (! refalrts::api::get_current_directory(directory, sizeof(directory))) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::Iter directory_b = 0, directory_e = 0;
+  if (! refalrts::alloc_string(directory_b, directory_e, directory)) {
+    return refalrts::cNoMemory;
+  }
+
+  refalrts::splice_evar(arg_begin, directory_b, directory_e);
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
   58. <Implode_Ext e.CHARS*> == s.COMPOUND
 */
 $ENTRY Implode_Ext {

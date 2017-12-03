@@ -1,0 +1,12 @@
+$ENTRY Go {
+  = <CheckCurrentDirectory <GetCurrentDirectory>>;
+}
+
+* TODO: change this function if directory was moved!!!
+CheckCurrentDirectory {
+  e.Prefix s.Sep 'autotests' s.Sep 'compatibility' s.Sep
+    = /* Ok, separator at end */;
+
+  e.Prefix s.Sep 'autotests' s.Sep 'compatibility'
+    = /* Ok, no separator at end */;
+}

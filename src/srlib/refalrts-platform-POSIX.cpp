@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 #include "refalrts-platform-specific.h"
 
@@ -15,4 +16,8 @@ int refalrts::api::system(const char *command) {
   }
 
   return retcode;
+}
+
+bool refalrts::api::get_current_directory(char buffer[], size_t size) {
+  return getcwd(buffer, size) != 0;
 }
