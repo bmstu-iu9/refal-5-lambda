@@ -333,6 +333,18 @@ $EXTERN ListOfBuiltin;
 $EXTERN SizeOf;
 
 
+// 69. GetPID
+
+//FROM Library
+$EXTERN GetPID;
+
+
+// 71. GetPPID
+
+//FROM Library
+$EXTERN GetPPID;
+
+
 /******************************* NOT REFACTORED *******************************/
 
 // Не реализованные пока функции
@@ -346,6 +358,4 @@ $ENUM DeSysfun;
 $ENUM XMLParse;
 $ENUM Random;
 $ENUM RandomDigit;
-$ENUM GetPID;
 $ENUM int4fab_1;
-$ENUM GetPPID;

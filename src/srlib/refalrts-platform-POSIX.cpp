@@ -21,3 +21,11 @@ int refalrts::api::system(const char *command) {
 bool refalrts::api::get_current_directory(char buffer[], size_t size) {
   return getcwd(buffer, size) != 0;
 }
+
+refalrts::RefalNumber refalrts::api::get_pid() {
+  return static_cast<refalrts::RefalNumber>(::getpid());
+}
+
+refalrts::RefalNumber refalrts::api::get_ppid() {
+  return static_cast<refalrts::RefalNumber>(::getppid());
+}

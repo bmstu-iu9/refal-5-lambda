@@ -1,0 +1,8 @@
+$ENTRY Go {
+  = <IsNumber GetPID <Type <GetPID>>>
+    <IsNumber GetPPID <Type <GetPPID>>>;
+}
+
+IsNumber {
+  s.Func 'N' s.0 s.PID = <Putout 7 s.Func ":" s.PID>;
+}

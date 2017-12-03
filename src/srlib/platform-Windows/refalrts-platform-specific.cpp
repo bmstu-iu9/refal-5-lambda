@@ -31,3 +31,11 @@ bool refalrts::api::get_current_directory(char buffer[], size_t size) {
 
   return (0 != result && result < size);
 }
+
+refalrts::RefalNumber refalrts::api::get_pid() {
+  return static_cast<refalrts::RefalNumber>(GetCurrentProcessId());
+}
+
+refalrts::RefalNumber refalrts::api::get_ppid() {
+  return static_cast<refalrts::RefalNumber>(GetCurrentProcessId());
+}

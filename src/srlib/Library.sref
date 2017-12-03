@@ -1965,6 +1965,59 @@ $ENTRY SizeOf {
 }
 
 
+/**
+  69. <GetPID> == s.NUMBER
+*/
+%%
+namespace {
+
+refalrts::FnResult return_pid(
+  refalrts::RefalNumber pid, refalrts::Iter arg_begin, refalrts::Iter arg_end
+);
+
+}  // unnamed namespace
+%%
+
+$ENTRY GetPID {
+%%
+  return return_pid(refalrts::api::get_pid(), arg_begin, arg_end);
+%%
+}
+
+%%
+namespace {
+
+refalrts::FnResult return_pid(
+  refalrts::RefalNumber pid, refalrts::Iter arg_begin, refalrts::Iter arg_end
+) {
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  if (! refalrts::empty_seq(content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::reinit_number(arg_begin, pid);
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  return refalrts::cSuccess;
+}
+
+}  // unnamed namespace
+%%
+
+
+/**
+  71. <GetPPID> == s.NUMBER
+*/
+$ENTRY GetPPID {
+%%
+  return return_pid(refalrts::api::get_ppid(), arg_begin, arg_end);
+%%
+}
+
+
+
 //------------------------------------------------------------------------------
 // Стандартные функции Простого Рефала
 //------------------------------------------------------------------------------
