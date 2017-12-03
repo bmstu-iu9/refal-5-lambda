@@ -216,11 +216,11 @@ setlocal
     echo COMPILER FAILS ON %SRC%, SEE __error.txt
     exit /b 1
   )
-  erase __error.txt
   if not exist %TARGET% (
     endlocal
     exit /b 1
   )
+  erase __error.txt
 
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds

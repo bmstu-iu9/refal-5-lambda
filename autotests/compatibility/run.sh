@@ -202,10 +202,10 @@ compile_srefc() {
     echo COMPILER FAILS ON $SRC, SEE __error.txt
     exit 1
   fi
-  rm __error.txt
   if [ ! -e $TARGET ]; then
     return 1
   fi
+  rm __error.txt
 }
 
 execute_OK_srefc() {
