@@ -131,6 +131,11 @@ setlocal
         )
       )
     )
+    if exist REFAL7.DAT (
+      echo REFAL7.DAT:
+      type REFAL7.DAT
+      erase REFAL7.DAT
+    )
     move stdout.txt stdout.txt.%%c >NUL
     echo %%c>__last.txt
     echo.
@@ -256,6 +261,7 @@ exit /b 0
 :CLEANUP_COMMON
 setlocal
   if exist __dump.txt erase __dump.txt
+  if exist REFAL7.DAT erase REFAL7.DAT
   for %%o in (%OUTPUT_FILES%) do if exist %%o erase %%o
 endlocal
 goto :EOF

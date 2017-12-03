@@ -125,6 +125,11 @@ run_test_result_OK() {
         }
       fi
     done
+    if [ -e REFAL7.DAT ]; then
+      echo REFAL7.DAT:
+      cat REFAL7.DAT
+      rm REFAL7.DAT
+    fi
     mv stdout.txt stdout.txt.$c
     LAST=$c
     echo
@@ -230,7 +235,7 @@ execute_FAIL_srefc() {
 }
 
 cleanup_common() {
-  rm -f __dump.txt $OUTPUT_FILES
+  rm -f __dump.txt $OUTPUT_FILES REFAL7.DAT
 }
 
 cleanup_srefc() {
