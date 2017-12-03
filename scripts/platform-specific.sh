@@ -31,11 +31,3 @@ platform_lib_suffix() {
     echo ".so"
   fi
 }
-
-platform_file_separator() {
-  if [ "$(platform_uname)" == "MINGW32" ]; then
-    echo '\'
-  else
-    echo '/'
-  fi
-}

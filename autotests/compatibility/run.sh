@@ -4,9 +4,14 @@ main() {
   UNAME=$(uname | sed 's/_.*$//')
   CMP=cmp
   DIFF=diff
+  SEP=/
   if [ "$UNAME" == "MINGW32" -o "$UNAME" == "CYGWIN" ]; then
     CMP="diff --strip-trailing-cr"
     DIFF="diff --strip-trailing-cr"
+  fi
+
+  if [ "$UNAME" == "MINGW32" ]; then
+    SEP=\\
   fi
 
   OUTPUT_FILES="stdout.txt stderr.txt written_file.txt REFAL15.DAT"
@@ -206,7 +211,6 @@ compile_srefc() {
 execute_OK_srefc() {
   SRC=$1
   EXE=${SRC%%.ref}$(platform_exe_suffix)
-  SEP=$(platform_file_separator)
   echo Y | ./$EXE Hello "Hello, World" "" $SEP > stdout.txt 2>stderr.txt || {
     echo TEST FAILED, SEE __dump.txt:
     cat __dump.txt
@@ -255,7 +259,6 @@ compile_crefal() {
 execute_OK_crefal() {
   SRC=$1
   RSL=${SRC%%.ref}-crefal.rsl
-  SEP=$(platform_file_separator)
   echo Y | refgo "$RSL"+external-crefal Hello "Hello, World" "" $SEP \
     >stdout.txt 2>__dump.txt || \
   {
@@ -301,7 +304,6 @@ compile_refc() {
 execute_OK_refc() {
   SRC=$1
   RSL=${SRC%%.ref}.rsl
-  SEP=$(platform_file_separator)
   echo Y | refgo "$RSL"+external Hello "Hello, World" "" $SEP \
     >stdout.txt 2>__dump.txt || \
   {
