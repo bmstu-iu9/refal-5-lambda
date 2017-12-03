@@ -1727,7 +1727,7 @@ $ENTRY TimeElapsed {
   refalrts::Iter content_b = 0, content_e = 0;
   refalrts::call_left(content_b, content_e, arg_begin, arg_end);
 
-  bool make_edge = refalrts::number_left(0, content_b, content_e);
+  bool make_edge = refalrts::number_left(0, content_b, content_e) != 0;
 
   if (! refalrts::empty_seq(content_b, content_e)) {
     return refalrts::cRecognitionImpossible;
