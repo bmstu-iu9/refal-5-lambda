@@ -321,6 +321,12 @@ $EXTERN Compare;
 $EXTERN Write;
 
 
+// 67. ListOfBuiltin
+
+//FROM Library
+$EXTERN ListOfBuiltin;
+
+
 /******************************* NOT REFACTORED *******************************/
 
 // Функция слишком длинная для одного предложения
