@@ -1898,8 +1898,6 @@ $ENTRY WriteLine {
 #define USE_IDENT(ident_name) (ident_ ## ident_name)
 %%
 
-$LABEL Success;
-$LABEL Fails;
 $LABEL True;
 $LABEL False;
 $LABEL CURRENT;
