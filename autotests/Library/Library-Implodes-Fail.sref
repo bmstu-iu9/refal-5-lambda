@@ -6,5 +6,7 @@ $ENTRY Go {
 }
 
 Loop {
+  50 = /* stop */;
+
   s.Next = <Implode 'X-' <StrFromInt s.Next>> <Loop <Add s.Next 1>>;
 }
