@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
+#include <float.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1706,6 +1707,57 @@ $ENTRY Implode_Ext {
 $ENTRY Explode_Ext {
 %%
   return explode(arg_begin, arg_end);
+%%
+}
+
+
+/**
+  60. <TimeElapsed e.Init> == s.CHAR-DIGIT* '.' s.CHAR-DIGIT*
+*/
+%%
+namespace {
+
+clock_t g_time_elapsed_edge = clock();
+
+}  // unnamed namespace
+%%
+
+$ENTRY TimeElapsed {
+%%
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  bool make_edge = refalrts::number_left(0, content_b, content_e);
+
+  if (! refalrts::empty_seq(content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  const double fClocksPerSec = CLOCKS_PER_SEC;
+  clock_t now = clock();
+  double time_elapsed = (now - g_time_elapsed_edge) / fClocksPerSec;
+
+  char str_time_elapsed[
+    DBL_MAX_10_EXP + 1 /* maximum digits before point */
+    + 1 /* point */
+    + 6 /* default digits after point for sprintf */
+    + 1 /* last '\0' */
+    + 10 /* just in case */
+  ] = { '\0' };
+
+  sprintf(str_time_elapsed, "%f", time_elapsed);
+
+  if (! refalrts::alloc_string(content_b, content_e, str_time_elapsed)) {
+    return refalrts::cNoMemory;
+  }
+
+  if (make_edge) {
+    g_time_elapsed_edge = now;
+  }
+
+  refalrts::splice_evar(arg_begin, content_b, content_e);
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
 %%
 }
 

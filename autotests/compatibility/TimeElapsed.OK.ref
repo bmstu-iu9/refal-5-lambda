@@ -1,0 +1,50 @@
+$ENTRY Go {
+  = <Check <TimeElapsed>>
+    <Calculations>
+    <Check <TimeElapsed>>
+    <Calculations>
+    <Check <TimeElapsed 0>>
+    <Calculations>
+    <Check <TimeElapsed>>
+    <Calculations>
+    <Check <TimeElapsed>>;
+}
+
+Calculations {
+  , <Calculations-Aux
+      ('aaaaaaaaaaaaaaaz')
+      ('aaaaaaaaaaaaaaaz')
+      ('aaaaaaaaaaaaaaaz')
+      ('aaaaaaaaaaaaaaaz')
+      ('aaaaaaaaaaaaaaaz')
+      ('fffffffffffffffz')
+    >
+  : 'z'
+  = ;
+}
+
+Calculations-Aux {
+  (e.A-b s.Z e.A-e) (e.B-b s.Z e.B-e) (e.C-b s.Z e.C-e)
+  (e.D-b s.Z e.D-e) (e.E-b s.Z e.E-e) (e.F-b s.Z e.F-e)
+    = s.Z;
+}
+
+Check {
+  /* empty for refgo and Linux */
+    = <Putout 7 'Empty output with refgo and Linux'>;
+
+  e.Digits1 '.' e.Digits2
+    , <IsDigits e.Digits1> : True
+    , <IsDigits e.Digits2> : True
+    = <Putout 7 'Time elapsed ' e.Digits1 '.' e.Digits2>;
+}
+
+IsDigits {
+  e.Digits
+    , <Type e.Digits>
+    : {
+        'D' s.0 s.Digit e.Tail = <IsDigits e.Tail>;
+        '*' s.0 /* empty */ = True;
+        s.Type s.SubType e.Digits1 = False;
+      };
+}

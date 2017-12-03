@@ -303,6 +303,12 @@ $EXTERN Implode_Ext;
 $EXTERN Explode_Ext;
 
 
+// 60. TimeElapsed
+
+//FROM Library
+$EXTERN TimeElapsed;
+
+
 // 61. Compare
 
 //FROM Library
@@ -400,7 +406,6 @@ $ENUM Freezer;
 $ENUM Dn;
 $ENUM Up;
 $ENUM Ev-met;
-$ENUM TimeElapsed;
 $ENUM DeSysfun;
 $ENUM XMLParse;
 $ENUM Random;
