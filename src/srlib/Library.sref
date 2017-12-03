@@ -702,7 +702,7 @@ Divmod-GuessDigit {
   UInt32 denom = pD->number_info;
 
   if (num_hi >= denom) {
-    refalrts::reinit_number(arg_begin, 4294967295);
+    refalrts::reinit_number(arg_begin, 4294967295U);
     refalrts::reinit_char(pfunc, '*');
     refalrts::splice_to_freelist(pN1, arg_end);
     return refalrts::cSuccess;
