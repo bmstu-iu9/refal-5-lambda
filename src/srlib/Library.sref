@@ -1920,6 +1920,51 @@ ListOfBuiltin_2 {
 }
 
 
+/**
+  68. <SizeOf s.C-Type> == s.Size-of-C-Type
+     s.C-Type ::=
+         'c' -- char
+       | 's' -- short
+       | 'i' -- int
+       | 'l' -- long
+       | 'p' -- char *
+     s.Size-of-C-Type ::= s.NUMBER -- sizeof(type)
+*/
+$ENTRY SizeOf {
+%%
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter ptype = 0;
+  if (
+    ! refalrts::svar_left(ptype, content_b, content_e)
+    || refalrts::cDataChar != ptype->tag
+    || ! refalrts::empty_seq(content_b, content_e)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::RefalNumber result;
+
+  switch (ptype->char_info) {
+    case 'c': result = sizeof(char); break;
+    case 's': result = sizeof(short); break;
+    case 'i': result = sizeof(int); break;
+    case 'l': result = sizeof(long); break;
+    case 'p': result = sizeof(char *); break;
+
+    default:
+      return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::reinit_number(arg_begin, result);
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+
 //------------------------------------------------------------------------------
 // Стандартные функции Простого Рефала
 //------------------------------------------------------------------------------

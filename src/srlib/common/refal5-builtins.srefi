@@ -327,6 +327,12 @@ $EXTERN Write;
 $EXTERN ListOfBuiltin;
 
 
+// 68. SizeOf
+
+//FROM Library
+$EXTERN SizeOf;
+
+
 /******************************* NOT REFACTORED *******************************/
 
 // Не реализованные пока функции
@@ -340,7 +346,6 @@ $ENUM DeSysfun;
 $ENUM XMLParse;
 $ENUM Random;
 $ENUM RandomDigit;
-$ENUM SizeOf;
 $ENUM GetPID;
 $ENUM int4fab_1;
 $ENUM GetPPID;
