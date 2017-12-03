@@ -69,6 +69,10 @@ extern refalrts::FnResult refal_system(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
 
+extern refalrts::FnResult refal_exit(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+);
+
 enum CloseMode { cCloseMode_Silent, cCloseMode_Fail };
 
 extern refalrts::FnResult close(
@@ -1603,6 +1607,19 @@ $ENTRY System {
 
 
 /**
+  53. <Exit s.Sign? s.RetCode>
+  no return
+  s.Sign ::= '+' | '-'
+  s.RetCode ::= s.MACRODIGIT
+*/
+$ENTRY Exit {
+%%
+  return refal_exit(arg_begin, arg_end);
+%%
+}
+
+
+/**
   54. <Close s.FileNo> == []
   If file not opened function never does.
 */
@@ -2369,14 +2386,21 @@ refalrts::FnResult refal_getenv(
   return refalrts::cSuccess;
 }
 
-}  // unnamed namespace
-%%
 
-$ENTRY Exit {
-%%
+extern refalrts::FnResult refal_exit(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+) {
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
   refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  int sign = +1;
+
+  if (refalrts::char_left('+', content_b, content_e)) {
+    sign = +1;
+  } else if (refalrts::char_left('-', content_b, content_e)) {
+    sign = -1;
+  }
 
   refalrts::Iter pretcode = 0;
   if (
@@ -2387,14 +2411,11 @@ $ENTRY Exit {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::set_return_code(pretcode->number_info);
+  refalrts::set_return_code(sign * static_cast<int>(pretcode->number_info));
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cExit;
-%%
 }
 
-%%
-namespace {
 
 extern refalrts::FnResult refal_system(
   refalrts::Iter arg_begin, refalrts::Iter arg_end

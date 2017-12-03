@@ -261,6 +261,12 @@ $EXTERN GetEnv;
 $EXTERN System;
 
 
+// 53. Exit
+
+//FROM Library
+$EXTERN Exit;
+
+
 // 54. Close
 
 //FROM Library
@@ -382,7 +388,6 @@ $ENUM Freezer;
 $ENUM Dn;
 $ENUM Up;
 $ENUM Ev-met;
-$ENUM Exit;
 $ENUM GetCurrentDirectory;
 $ENUM RemoveFile;
 $ENUM TimeElapsed;

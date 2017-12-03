@@ -99,15 +99,6 @@ run_all_tests() {
     cleanup Library-ReadLine-2lines-no-eol
   fi
 
-  if [ -e Library-Exit ]; then
-    echo Pass Library-Exit test...
-    ./Library-Exit
-    if [ $? -ne 42 ]; then
-      echo "TEST FAILED, ERROR CODE NOT EQUAL 42 ($? != 42)"
-    fi
-    cleanup Library-Exit
-  fi
-
   if [ -e Library-FOpen-Append ]; then
     echo Pass Library-FOpen-Append test...
     run_exe Library-FOpen-Append

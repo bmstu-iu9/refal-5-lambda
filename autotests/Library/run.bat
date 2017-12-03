@@ -104,19 +104,6 @@ setlocal
     call :CLEANUP Library-ReadLine-2lines-no-eol
   )
 
-  if exist Library-Exit.exe (
-    echo Pass Library-Exit test...
-    Library-Exit.exe
-    if errorlevel 43 (
-      echo TEST FAILED, ERRCODE GREATER THAN 42
-      exit /b 1
-    ) else if not errorlevel 42 (
-      echo TEST FAILED, ERRCODE LESS THAN 42
-      exit /b 1
-    )
-    call :CLEANUP Library-Exit
-  )
-
   if exist Library-FOpen-Append.exe (
     echo Pass Library-FOpen-Append test...
     call :RUN_EXE Library-FOpen-Append || exit /b 1
