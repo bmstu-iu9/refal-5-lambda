@@ -61,10 +61,6 @@ extern refalrts::FnResult fwrite_line(
   refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
 );
 
-extern refalrts::FnResult refal_system(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-);
-
 extern refalrts::FnResult refal_exit(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
@@ -1691,7 +1687,40 @@ $ENTRY GetEnv {
 */
 $ENTRY System {
 %%
-  return refal_system(arg_begin, arg_end);
+  refalrts::Iter command_b = 0;
+  refalrts::Iter command_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(command_b, command_e, arg_begin, arg_end);
+
+  std::vector<char> command;
+  refalrts::FnResult command_res =
+    string_from_seq(command, command_b, command_e);
+
+  if (command_res != refalrts::cSuccess) {
+    return command_res;
+  }
+
+  fflush(stdout);
+  fflush(stderr);
+
+  int ret = refalrts::api::system(&command[0]);
+
+  refalrts::reset_allocator();
+  if (ret < 0) {
+    refalrts::Iter minus = 0;
+    if (! refalrts::alloc_char(minus, '-')) {
+      return refalrts::cNoMemory;
+    }
+
+    refalrts::splice_elem(arg_begin, minus);
+
+    ret = -ret;
+  }
+
+  refalrts::reinit_number(arg_begin, ret);
+
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  return refalrts::cSuccess;
 %%
 }
 
@@ -2681,45 +2710,6 @@ extern refalrts::FnResult refal_exit(
   return refalrts::cExit;
 }
 
-
-extern refalrts::FnResult refal_system(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-) {
-  refalrts::Iter command_b = 0;
-  refalrts::Iter command_e = 0;
-  refalrts::Iter pfunc_name =
-    refalrts::call_left(command_b, command_e, arg_begin, arg_end);
-
-  std::vector<char> command;
-  refalrts::FnResult command_res =
-    string_from_seq(command, command_b, command_e);
-
-  if (command_res != refalrts::cSuccess) {
-    return command_res;
-  }
-
-  fflush(stdout);
-  fflush(stderr);
-
-  int ret = refalrts::api::system(&command[0]);
-
-  refalrts::reset_allocator();
-  if (ret < 0) {
-    refalrts::Iter minus = 0;
-    if (! refalrts::alloc_char(minus, '-')) {
-      return refalrts::cNoMemory;
-    }
-
-    refalrts::splice_elem(arg_begin, minus);
-
-    ret = -ret;
-  }
-
-  refalrts::reinit_number(arg_begin, ret);
-
-  refalrts::splice_to_freelist(pfunc_name, arg_end);
-  return refalrts::cSuccess;
-}
 
 }  // unnamed namespace
 %%
