@@ -67,10 +67,6 @@ extern refalrts::FnResult close(
   refalrts::Iter arg_begin, refalrts::Iter arg_end, CloseMode mode
 );
 
-extern refalrts::FnResult explode(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-);
-
 }  // unnamed namespace
 %%
 
@@ -775,7 +771,29 @@ Divmod-GuessDigit {
 */
 $ENTRY Explode {
 %%
-  return explode(arg_begin, arg_end);
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter pident = 0;
+  if (
+    ! refalrts::svar_right(pident, content_b, content_e)
+    || refalrts::cDataIdentifier != pident->tag
+    || ! refalrts::empty_seq(content_b, content_e)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::reset_allocator();
+  if (
+    ! refalrts::alloc_string(content_b, content_e, pident->ident_info->name())
+  ) {
+    return refalrts::cNoMemory;
+  }
+
+  refalrts::splice_evar(arg_begin, content_b, content_e);
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
 %%
 }
 
@@ -1916,9 +1934,7 @@ $ENTRY Implode_Ext {
   59. <Explode_Ext s.COMPOUND> == s.CHAR*
 */
 $ENTRY Explode_Ext {
-%%
-  return explode(arg_begin, arg_end);
-%%
+  s.Compound = <__Step-Start> <Explode s.Compound> <__Step-End>;
 }
 
 
@@ -3035,39 +3051,6 @@ $ENTRY SymbCompare {
 %%
 }
 
-%%
-namespace {
-
-refalrts::FnResult explode(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-) {
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  refalrts::Iter pident = 0;
-  if (
-    ! refalrts::svar_right(pident, content_b, content_e)
-    || refalrts::cDataIdentifier != pident->tag
-    || ! refalrts::empty_seq(content_b, content_e)
-  ) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  refalrts::reset_allocator();
-  if (
-    ! refalrts::alloc_string(content_b, content_e, pident->ident_info->name())
-  ) {
-    return refalrts::cNoMemory;
-  }
-
-  refalrts::splice_evar(arg_begin, content_b, content_e);
-  refalrts::splice_to_freelist(arg_begin, arg_end);
-  return refalrts::cSuccess;
-}
-
-}  // unnamed namespace
-%%
 
 $ENTRY FWriteBytes {
 %%
