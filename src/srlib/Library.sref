@@ -67,10 +67,6 @@ extern refalrts::FnResult close(
   refalrts::Iter arg_begin, refalrts::Iter arg_end, CloseMode mode
 );
 
-extern refalrts::FnResult implode_ext(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-);
-
 extern refalrts::FnResult explode(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
@@ -1890,7 +1886,28 @@ $ENTRY RemoveFile {
 */
 $ENTRY Implode_Ext {
 %%
-  return implode_ext(arg_begin, arg_end);
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  std::vector<char> ident_str;
+  refalrts::FnResult res = string_from_seq(ident_str, content_b, content_e);
+
+  if (res != refalrts::cSuccess) {
+    return res;
+  }
+
+  refalrts::RefalIdentifier ident = refalrts::ident_implode(&ident_str[0]);
+
+  if (! ident) {
+    return refalrts::cIdentTableLimit;
+  }
+
+  refalrts::reinit_ident(arg_begin, ident);
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+
+  return refalrts::cSuccess;
 %%
 }
 
@@ -3020,34 +3037,6 @@ $ENTRY SymbCompare {
 
 %%
 namespace {
-
-refalrts::FnResult implode_ext(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-) {
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::Iter pfunc_name =
-    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  std::vector<char> ident_str;
-  refalrts::FnResult res = string_from_seq(ident_str, content_b, content_e);
-
-  if (res != refalrts::cSuccess) {
-    return res;
-  }
-
-  refalrts::RefalIdentifier ident = refalrts::ident_implode(&ident_str[0]);
-
-  if (! ident) {
-    return refalrts::cIdentTableLimit;
-  }
-
-  refalrts::reinit_ident(arg_begin, ident);
-  refalrts::splice_to_freelist(pfunc_name, arg_end);
-
-  return refalrts::cSuccess;
-}
-
 
 refalrts::FnResult explode(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
