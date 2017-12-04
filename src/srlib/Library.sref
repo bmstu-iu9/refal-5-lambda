@@ -67,10 +67,6 @@ extern refalrts::FnResult close(
   refalrts::Iter arg_begin, refalrts::Iter arg_end, CloseMode mode
 );
 
-extern refalrts::FnResult exist_file(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-);
-
 extern refalrts::FnResult remove_file(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
@@ -1772,9 +1768,40 @@ $ENTRY Close {
   55. <ExistFile e.FileName> == True | False
   e.FileName ::= s.CHAR*
 */
+$LABEL True, False;
+
+%%
+#define USE_IDENT(ident_name) (ident_ ## ident_name)
+%%
+
 $ENTRY ExistFile {
 %%
-  return exist_file(arg_begin, arg_end);
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  char filename[FILENAME_MAX + 1] = { '\0' };
+  unsigned len =
+    refalrts::read_chars(filename, FILENAME_MAX, content_b, content_e);
+
+  if (! refalrts::empty_seq(content_b, content_e) || len == 0) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::Iter ans = arg_begin;
+  if (FILE *f = fopen(filename, "r")) {
+    // Файл существует
+    fclose(f);
+
+    refalrts::reinit_ident(ans, USE_IDENT(True));
+  } else {
+    // Файл по-видимому не существует
+    refalrts::reinit_ident(ans, USE_IDENT(False));
+  }
+
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  return refalrts::cSuccess;
 %%
 }
 
@@ -2253,12 +2280,6 @@ $ENTRY WriteLine {
 
 // Основные перечисления
 
-%%
-#define USE_IDENT(ident_name) (ident_ ## ident_name)
-%%
-
-$LABEL True;
-$LABEL False;
 $LABEL CURRENT;
 $LABEL BEGIN;
 $LABEL END;
@@ -2658,38 +2679,6 @@ refalrts::FnResult close(
   }
 
   refalrts::splice_to_freelist(arg_begin, arg_end);
-  return refalrts::cSuccess;
-}
-
-
-refalrts::FnResult exist_file(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-) {
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::Iter pfunc_name =
-    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  char filename[FILENAME_MAX + 1] = { '\0' };
-  unsigned len =
-    refalrts::read_chars(filename, FILENAME_MAX, content_b, content_e);
-
-  if (! refalrts::empty_seq(content_b, content_e) || len == 0) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  refalrts::Iter ans = arg_begin;
-  if (FILE *f = fopen(filename, "r")) {
-    // Файл существует
-    fclose(f);
-
-    refalrts::reinit_ident(ans, USE_IDENT(True));
-  } else {
-    // Файл по-видимому не существует
-    refalrts::reinit_ident(ans, USE_IDENT(False));
-  }
-
-  refalrts::splice_to_freelist(pfunc_name, arg_end);
   return refalrts::cSuccess;
 }
 
