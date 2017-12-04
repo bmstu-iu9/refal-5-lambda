@@ -67,10 +67,6 @@ extern refalrts::FnResult close(
   refalrts::Iter arg_begin, refalrts::Iter arg_end, CloseMode mode
 );
 
-extern refalrts::FnResult remove_file(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-);
-
 extern refalrts::FnResult implode_ext(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
@@ -1845,7 +1841,46 @@ $ENTRY GetCurrentDirectory {
 */
 $ENTRY RemoveFile {
 %%
-  return remove_file(arg_begin, arg_end);
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter filename_b = content_b;
+  refalrts::Iter filename_e = content_e;
+
+  char filename[FILENAME_MAX + 1] = { '\0' };
+  // возвращаемое значение не проверяем для совместимости с РЕФАЛом-5
+  read_chars(filename, FILENAME_MAX, filename_b, filename_e);
+
+  const char *error_message = "";
+  refalrts::RefalIdentifier i_result = USE_IDENT(False);
+
+  if (! refalrts::empty_seq(filename_b, filename_e)) {
+    error_message = "File name is too long.";
+  } else {
+    errno = 0;
+    int result = remove(filename);
+
+    if (result == 0) {
+      i_result = USE_IDENT(True);
+    } else {
+      error_message = strerror(errno);
+    }
+  }
+
+  refalrts::Iter error_b = 0, error_e = 0;
+  if (! refalrts::alloc_string(error_b, error_e, error_message)) {
+    return refalrts::cNoMemory;
+  }
+
+  refalrts::reinit_ident(arg_begin, i_result);
+  refalrts::reinit_open_bracket(pfunc_name);
+  refalrts::reinit_close_bracket(arg_end);
+  refalrts::splice_evar(arg_end, error_b, error_e);
+  refalrts::splice_to_freelist(content_b, content_e);
+  refalrts::link_brackets(pfunc_name, arg_end);
+  return refalrts::cSuccess;
 %%
 }
 
@@ -3288,54 +3323,3 @@ $ENTRY RenameFile {
   return refalrts::cSuccess;
 %%
 }
-
-%%
-namespace {
-
-extern refalrts::FnResult remove_file(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-) {
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::Iter pfunc_name =
-    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  refalrts::Iter filename_b = content_b;
-  refalrts::Iter filename_e = content_e;
-
-  char filename[FILENAME_MAX + 1] = { '\0' };
-  // возвращаемое значение не проверяем для совместимости с РЕФАЛом-5
-  read_chars(filename, FILENAME_MAX, filename_b, filename_e);
-
-  const char *error_message = "";
-  refalrts::RefalIdentifier i_result = USE_IDENT(False);
-
-  if (! refalrts::empty_seq(filename_b, filename_e)) {
-    error_message = "File name is too long.";
-  } else {
-    errno = 0;
-    int result = remove(filename);
-
-    if (result == 0) {
-      i_result = USE_IDENT(True);
-    } else {
-      error_message = strerror(errno);
-    }
-  }
-
-  refalrts::Iter error_b = 0, error_e = 0;
-  if (! refalrts::alloc_string(error_b, error_e, error_message)) {
-    return refalrts::cNoMemory;
-  }
-
-  refalrts::reinit_ident(arg_begin, i_result);
-  refalrts::reinit_open_bracket(pfunc_name);
-  refalrts::reinit_close_bracket(arg_end);
-  refalrts::splice_evar(arg_end, error_b, error_e);
-  refalrts::splice_to_freelist(content_b, content_e);
-  refalrts::link_brackets(pfunc_name, arg_end);
-  return refalrts::cSuccess;
-}
-
-}  // unnamed namespace
-%%
