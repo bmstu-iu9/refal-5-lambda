@@ -31,8 +31,6 @@
 %%
 namespace {
 
-extern refalrts::FnResult arg(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 enum {
   cFlags_Autoopen       = 1 << 0,
   cFlags_Read           = 1 << 1,
@@ -337,7 +335,32 @@ Add-Digits {
 */
 $ENTRY Arg {
 %%
-  return arg(arg_begin, arg_end);
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter pparam_no = 0;
+  if (
+    ! refalrts::svar_left(pparam_no, content_b, content_e)
+    || ! refalrts::empty_seq(content_b, content_e)
+    || refalrts::cDataNumber != pparam_no->tag
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  unsigned int param_no = static_cast<unsigned int>(pparam_no->number_info);
+
+  refalrts::Iter param_begin = 0;
+  refalrts::Iter param_end = 0;
+  const char *param = refalrts::arg(param_no);
+
+  if (! refalrts::alloc_string(param_begin, param_end, param)) {
+    return refalrts::cNoMemory;
+  }
+
+  refalrts::splice_evar(arg_begin, param_begin, param_end);
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
 %%
 }
 
@@ -2556,35 +2579,6 @@ refalrts::FnResult close(
     refalrts_switch_default_violation(mode);
   }
 
-  refalrts::splice_to_freelist(arg_begin, arg_end);
-  return refalrts::cSuccess;
-}
-
-refalrts::FnResult arg(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  refalrts::Iter pparam_no = 0;
-  if (
-    ! refalrts::svar_left(pparam_no, content_b, content_e)
-    || ! refalrts::empty_seq(content_b, content_e)
-    || refalrts::cDataNumber != pparam_no->tag
-  ) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  unsigned int param_no = static_cast<unsigned int>(pparam_no->number_info);
-
-  refalrts::Iter param_begin = 0;
-  refalrts::Iter param_end = 0;
-  const char *param = refalrts::arg(param_no);
-
-  if (! refalrts::alloc_string(param_begin, param_end, param)) {
-    return refalrts::cNoMemory;
-  }
-
-  refalrts::splice_evar(arg_begin, param_begin, param_end);
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
 }
