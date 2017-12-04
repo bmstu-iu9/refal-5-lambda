@@ -23,7 +23,7 @@ goto :EOF
 
 :PREPARE_PREFIX
   if not exist _test_prefix.exe-prefix (
-     echo Prepare common prefix...
+    echo Prepare common prefix...
     ..\bin\srefc-core -o _test_prefix.exe-prefix ^
       %COMMON_SRFLAGS% %SRFLAGS_NAT% 2>__error.txt
     if not exist _test_prefix.exe-prefix (

@@ -22,7 +22,16 @@ run_all_tests() {
     --chmod-x-command="chmod +x"
   )
 
+  echo Precompile Library.sref
   cp $LIBDIR/Library.sref .
+  ../../bin/srefc-core "${COMMON_SRFLAGS[@]}" -C Library 2>__error.txt
+  if [ $? -ge 100 ] || [ ! -e Library.rasl ]; then
+    echo COMPILER FAILS ON Library.sref, SEE __error.txt
+    exit 1
+  fi
+  rm __error.txt Library.sref
+  echo
+
   for s in $*; do
     compile $s
   done
@@ -139,7 +148,7 @@ run_all_tests() {
     cleanup Library-symbolic-file-handles
   fi
 
-  rm Library.rasl Library.cpp Library.sref
+  rm Library.rasl Library.cpp
 }
 
 compile() {
@@ -147,17 +156,13 @@ compile() {
   SRC=$1
   TARGET=${SRC%%.sref}$(platform_exe_suffix)
 
-  if [ "$SRC" != "Library.sref" ]; then
-    ../../bin/srefc-core $SRC -o $TARGET "${COMMON_SRFLAGS[@]}" \
-      Library 2>__error.txt
-    if [ $? -ge 100 ] || [ ! -e $TARGET ]; then
-      echo COMPILER FAILS ON $SRC, SEE __error.txt
-      exit 1
-    fi
-    rm __error.txt
-  else
-    echo ...skips
+  ../../bin/srefc-core $SRC -o $TARGET "${COMMON_SRFLAGS[@]}" \
+    Library 2>__error.txt
+  if [ $? -ge 100 ] || [ ! -e $TARGET ]; then
+    echo COMPILER FAILS ON $SRC, SEE __error.txt
+    exit 1
   fi
+  rm __error.txt
 }
 
 simple_tests() {

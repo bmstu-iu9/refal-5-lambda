@@ -28,7 +28,22 @@ setlocal
     refalrts ^
     refalrts-platform-specific
 
+  echo Precompile Library.sref
   copy ..\..\src\srlib\Library.sref .
+  ..\..\bin\srefc-core %COMMON_SRFLAGS% -C Library 2>__error.txt
+  if errorlevel 100 (
+    echo COMPILER FAILS ON Library.sref, SEE __error.txt
+    exit /b 1
+  )
+  rem Some C++ compilers write syntax error messages to stderr,
+  rem don't erase __error.txt
+  if not exist Library.sref (
+    echo COMPILATION FAILED, MAYBE SEE __error.txt
+    exit /b 1
+  )
+  erase __error.txt Library.sref
+  echo.
+
   for %%s in (%*) do call :COMPILE %%s || exit /b 1
 
   call :SIMPLE_TESTS OK ^
@@ -155,22 +170,18 @@ setlocal
   set SRC=%1
   set TARGET=%~n1.exe
 
-  if %SRC%==Library.sref (
-    echo ...skips
-    endlocal
-    goto :EOF
-  )
-
   ..\..\bin\srefc-core %SRC% -o %TARGET% %COMMON_SRFLAGS% Library 2>__error.txt
   if errorlevel 100 (
     echo COMPILER FAILS ON %SRC%, SEE __error.txt
     exit /b 1
   )
-  erase __error.txt
+  rem Some C++ compilers write syntax error messages to stderr,
+  rem don't erase __error.txt
   if not exist %TARGET% (
     echo COMPILATION FAILED
     exit /b 1
   )
+  erase __error.txt
 
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds

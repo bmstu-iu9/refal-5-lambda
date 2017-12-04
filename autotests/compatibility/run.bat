@@ -11,11 +11,16 @@ setlocal
     exit /b 1
   )
 
+  if {%SREFC_EXIST%}=={1} (
+    call :PREPARE_PREFIX || exit /b 1
+  )
+
   if {%1}=={} (
     call :RUN_ALL_TESTS *.ref || exit /b 1
   ) else (
     call :RUN_ALL_TESTS %* || exit /b 1
   )
+  if exist _test_prefix.exe-prefix erase _test_prefix.exe-prefix
 endlocal
 goto :EOF
 
@@ -62,6 +67,37 @@ goto :EOF
     echo ... found srefc
     call ..\..\scripts\load-config.bat || exit /b 1
   )
+  echo.
+goto :EOF
+
+:PREPARE_PREFIX
+  rem Without setlocal because set COMMON_SRFLAGS
+
+  set COMMON_SRFLAGS= ^
+    -c "%CPPLINEE%" ^
+    --exesuffix=.exe ^
+    -D../../src/srlib/platform-Windows ^
+    -D../../src/srlib/common ^
+    -D../../src/srlib ^
+    --prelude=refal5-builtins.srefi ^
+    -f-DSTEP_LIMIT=6000 ^
+    -f-DMEMORY_LIMIT=1000 ^
+    -f-DDUMP_FILE=%DEF_DUMP_FILE_NAME_HACK% ^
+    -f-DDONT_PRINT_STATISTICS
+
+  echo Prepare common prefix...
+  if exist _test_prefix.exe-prefix erase _test_prefix.exe-prefix
+  copy ..\..\src\srlib\Library.sref .
+  ..\..\bin\srefc-core -o _test_prefix.exe-prefix %COMMON_SRFLAGS% ^
+    Library refalrts refalrts-platform-specific 2>__error.txt
+  if not exist _test_prefix.exe-prefix (
+    echo CAN'T CREATE COMMON PREFIX, SEE __error.txt
+    exit /b 1
+  )
+  erase __error.txt
+  if exist *.obj erase *.obj
+  if exist *.tds erase *.tds
+  erase Library.*
   echo.
 goto :EOF
 
@@ -196,27 +232,11 @@ goto :EOF
 
 :COMPILE.srefc
 setlocal
-  set COMMON_SRFLAGS= ^
-    -c "%CPPLINEE%" ^
-    --exesuffix=.exe ^
-    -D../../src/srlib/platform-Windows ^
-    -D../../src/srlib/common ^
-    -D../../src/srlib ^
-    --prelude=refal5-builtins.srefi ^
-    -f-DSTEP_LIMIT=6000 ^
-    -f-DMEMORY_LIMIT=1000 ^
-    -f-DDUMP_FILE=%DEF_DUMP_FILE_NAME_HACK% ^
-    -f-DDONT_PRINT_STATISTICS ^
-    refalrts ^
-    refalrts-platform-specific
-
-  copy ..\..\src\srlib\Library.sref .
-
   set SRC=%1
   set TARGET=%~n1.exe
 
-  ..\..\bin\srefc-core %SRC% -o %TARGET% %COMMON_SRFLAGS% Library external ^
-    2>__error.txt
+  ..\..\bin\srefc-core %SRC% -o %TARGET% %COMMON_SRFLAGS% ^
+    --prefix=_test_prefix external 2>__error.txt
   if errorlevel 100 (
     echo COMPILER FAILS ON %SRC%, SEE __error.txt
     exit /b 1
@@ -273,7 +293,6 @@ setlocal
   if exist "%~1.exe" erase "%~1.exe"
   if exist "%~1.cpp" erase "%~1.cpp"
   if exist external.rasl erase external.rasl
-  erase Library.*
 endlocal
 goto :EOF
 

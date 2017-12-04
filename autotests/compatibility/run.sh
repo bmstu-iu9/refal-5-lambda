@@ -19,11 +19,18 @@ main() {
   if [ -z "$REFC_EXIST$SREFC_EXIST$CREFAL_EXIST" ]; then
     echo NO REFAL COMPILERS FOUND, EXITING
   else
+
+    if [ "$SREFC_EXIST" == "1" ]; then
+      prepare_prefix || exit 1
+    fi
+
     if [ -z "$1" ]; then
       run_all_tests *.ref
     else
       run_all_tests "$@"
     fi
+
+    rm -f _test_prefix.exe-prefix
   fi
 }
 
@@ -65,8 +72,38 @@ lookup_compilers() {
     echo ... found srefc
     source ../../scripts/load-config.sh ../.. || return 1
     source ../../scripts/platform-specific.sh
+
+    LIBDIR=../../src/srlib
+    COMMON_SRFLAGS=(
+      "-c $CPPLINEE"
+      --exesuffix=$(platform_exe_suffix)
+      -D$(platform_subdir_lookup $LIBDIR)
+      -D$LIBDIR/common
+      -D$LIBDIR
+      --prelude=refal5-builtins.srefi
+      -f-DSTEP_LIMIT=6000
+      -f-DMEMORY_LIMIT=1000
+      -f-DDUMP_FILE=\\\"__dump.txt\\\"
+      -f-DDONT_PRINT_STATISTICS
+      -f-g
+      --chmod-x-command="chmod +x"
+    )
   fi
   echo
+}
+
+prepare_prefix() {
+  echo Prepare common prefix...
+  rm -f _test_prefix.exe-prefix
+  cp $LIBDIR/Library.sref .
+  ../../bin/srefc-core -o _test_prefix.exe-prefix "${COMMON_SRFLAGS[@]}" \
+    Library refalrts refalrts-platform-POSIX refalrts-platform-specific \
+    2>__error.txt
+  if [ $? -ge 100 ] || [ ! -e _test_prefix.exe-prefix ]; then
+    echo COMPILER FAILS ON $SRC, SEE __error.txt
+    exit 1
+  fi
+  rm __error.txt Library.*
 }
 
 valid_rsl_detected() {
@@ -177,32 +214,11 @@ run_test_result_SYNTAX-ERROR() {
 }
 
 compile_srefc() {
-  LIBDIR=../../src/srlib
-
-  COMMON_SRFLAGS=(
-    "-c $CPPLINEE"
-    --exesuffix=$(platform_exe_suffix)
-    -D$(platform_subdir_lookup $LIBDIR)
-    -D$LIBDIR/common
-    -D$LIBDIR
-    --prelude=refal5-builtins.srefi
-    -f-DSTEP_LIMIT=6000
-    -f-DMEMORY_LIMIT=1000
-    -f-DDUMP_FILE=\\\"__dump.txt\\\"
-    -f-DDONT_PRINT_STATISTICS
-    -f-g
-    refalrts
-    refalrts-platform-POSIX
-    refalrts-platform-specific
-    --chmod-x-command="chmod +x"
-  )
-
-  cp $LIBDIR/Library.sref .
   SRC=$1
   TARGET=${SRC%%.ref}$(platform_exe_suffix)
 
   ../../bin/srefc-core $SRC -o $TARGET "${COMMON_SRFLAGS[@]}" \
-    Library external 2>__error.txt
+    --prefix=_test_prefix external 2>__error.txt
   if [ $? -ge 100 ]; then
     echo COMPILER FAILS ON $SRC, SEE __error.txt
     exit 1
@@ -245,7 +261,7 @@ cleanup_srefc() {
   EXE=${SRC%%.ref}$(platform_exe_suffix)
   CPP=${SRC%%.ref}.cpp
   rm -f "$RASL" "$EXE" "$CPP"
-  rm -f Library.* external.rasl
+  rm -f external.rasl
 }
 
 compile_crefal() {
