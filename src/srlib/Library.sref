@@ -61,10 +61,6 @@ extern refalrts::FnResult fwrite_line(
   refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
 );
 
-extern refalrts::FnResult refal_getenv(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-);
-
 extern refalrts::FnResult refal_system(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
@@ -1617,9 +1613,74 @@ $ENTRY Upper {
   51. <GetEnv e.EnvVar> == e.EnvValue
   e.EnvVar, e.EnvValue ::= s.CHAR*
 */
+%%
+namespace {
+
+refalrts::FnResult string_from_seq(
+  std::vector<char>& string, refalrts::Iter begin, refalrts::Iter end
+) {
+  std::vector<char> result;
+
+  enum { cBufLen = 100 };
+  char buffer[cBufLen + 1] = { 0 };
+
+  unsigned read;
+  while ((read = refalrts::read_chars(buffer, cBufLen, begin, end)) != 0) {
+    // В текущей версии Open Watcom (и форка Open Watcom V2) есть ошибка
+    // в функции vector::insert, которая возникает в случае,
+    // если во время вставки вектор увеличивает свою ёмкость (capacity).
+    // Для обхода этой ошибки предварительно резервируем место.
+    result.reserve(result.size() + read + 1);
+    result.insert(result.end(), buffer, buffer + read);
+  }
+
+  /*
+    Здесь refalrts::empty_seq(begin, end) || (begin->tag != cDataChar).
+  */
+
+  if (refalrts::empty_seq(begin, end)) {
+    result.push_back('\0');
+    string.swap(result);
+    return refalrts::cSuccess;
+  } else {
+    // здесь begin->tag != cDataChar
+    return refalrts::cRecognitionImpossible;
+  }
+}
+
+}  // unnamed namespace
+%%
+
 $ENTRY GetEnv {
 %%
-  return refal_getenv(arg_begin, arg_end);
+  refalrts::Iter envname_b = 0;
+  refalrts::Iter envname_e = 0;
+  refalrts::call_left(envname_b, envname_e, arg_begin, arg_end);
+
+  std::vector<char> envname;
+  refalrts::FnResult envname_res =
+    string_from_seq(envname, envname_b, envname_e);
+
+  if (envname_res != refalrts::cSuccess) {
+    return envname_res;
+  }
+
+  refalrts::reset_allocator();
+  const char *envres = getenv(& envname[0]);
+
+  if (envres != 0) {
+    refalrts::Iter env_begin;
+    refalrts::Iter env_end;
+
+    if (! refalrts::alloc_string(env_begin, env_end, envres)) {
+      return refalrts::cNoMemory;
+    }
+
+    refalrts::splice_evar(arg_begin, env_begin, env_end);
+  }
+
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
 %%
 }
 
@@ -2449,37 +2510,6 @@ refalrts::FnResult fread_line(
   return refalrts::cSuccess;
 }
 
-refalrts::FnResult string_from_seq(
-  std::vector<char>& string, refalrts::Iter begin, refalrts::Iter end
-) {
-  std::vector<char> result;
-
-  enum { cBufLen = 100 };
-  char buffer[cBufLen + 1] = { 0 };
-
-  unsigned read;
-  while ((read = refalrts::read_chars(buffer, cBufLen, begin, end)) != 0) {
-    // В текущей версии Open Watcom (и форка Open Watcom V2) есть ошибка
-    // в функции vector::insert, которая возникает в случае,
-    // если во время вставки вектор увеличивает свою ёмкость (capacity).
-    // Для обхода этой ошибки предварительно резервируем место.
-    result.reserve(result.size() + read + 1);
-    result.insert(result.end(), buffer, buffer + read);
-  }
-
-  /*
-    Здесь refalrts::empty_seq(begin, end) || (begin->tag != cDataChar).
-  */
-
-  if (refalrts::empty_seq(begin, end)) {
-    result.push_back('\0');
-    string.swap(result);
-    return refalrts::cSuccess;
-  } else {
-    // здесь begin->tag != cDataChar
-    return refalrts::cRecognitionImpossible;
-  }
-}
 
 refalrts::FnResult refal_open(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
@@ -2620,39 +2650,6 @@ refalrts::FnResult exist_file(
 
 %%
 namespace {
-
-refalrts::FnResult refal_getenv(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-) {
-  refalrts::Iter envname_b = 0;
-  refalrts::Iter envname_e = 0;
-  refalrts::call_left(envname_b, envname_e, arg_begin, arg_end);
-
-  std::vector<char> envname;
-  refalrts::FnResult envname_res =
-    string_from_seq(envname, envname_b, envname_e);
-
-  if (envname_res != refalrts::cSuccess) {
-    return envname_res;
-  }
-
-  refalrts::reset_allocator();
-  const char *envres = getenv(& envname[0]);
-
-  if (envres != 0) {
-    refalrts::Iter env_begin;
-    refalrts::Iter env_end;
-
-    if (! refalrts::alloc_string(env_begin, env_end, envres)) {
-      return refalrts::cNoMemory;
-    }
-
-    refalrts::splice_evar(arg_begin, env_begin, env_end);
-  }
-
-  refalrts::splice_to_freelist(arg_begin, arg_end);
-  return refalrts::cSuccess;
-}
 
 
 extern refalrts::FnResult refal_exit(
