@@ -61,10 +61,6 @@ extern refalrts::FnResult fwrite_line(
   refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
 );
 
-extern refalrts::FnResult refal_exit(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-);
-
 enum CloseMode { cCloseMode_Silent, cCloseMode_Fail };
 
 extern refalrts::FnResult close(
@@ -1733,7 +1729,30 @@ $ENTRY System {
 */
 $ENTRY Exit {
 %%
-  return refal_exit(arg_begin, arg_end);
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  int sign = +1;
+
+  if (refalrts::char_left('+', content_b, content_e)) {
+    sign = +1;
+  } else if (refalrts::char_left('-', content_b, content_e)) {
+    sign = -1;
+  }
+
+  refalrts::Iter pretcode = 0;
+  if (
+    ! refalrts::svar_left(pretcode, content_b, content_e)
+    || ! refalrts::empty_seq(content_b, content_e)
+    || refalrts::cDataNumber != pretcode->tag
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::set_return_code(sign * static_cast<int>(pretcode->number_info));
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cExit;
 %%
 }
 
@@ -2677,42 +2696,6 @@ refalrts::FnResult exist_file(
 }  // unnamed namespace
 %%
 
-%%
-namespace {
-
-
-extern refalrts::FnResult refal_exit(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-) {
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  int sign = +1;
-
-  if (refalrts::char_left('+', content_b, content_e)) {
-    sign = +1;
-  } else if (refalrts::char_left('-', content_b, content_e)) {
-    sign = -1;
-  }
-
-  refalrts::Iter pretcode = 0;
-  if (
-    ! refalrts::svar_left(pretcode, content_b, content_e)
-    || ! refalrts::empty_seq(content_b, content_e)
-    || refalrts::cDataNumber != pretcode->tag
-  ) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  refalrts::set_return_code(sign * static_cast<int>(pretcode->number_info));
-  refalrts::splice_to_freelist(arg_begin, arg_end);
-  return refalrts::cExit;
-}
-
-
-}  // unnamed namespace
-%%
 
 // Работа с типами символов
 
