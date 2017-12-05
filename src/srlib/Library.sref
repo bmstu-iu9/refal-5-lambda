@@ -36,7 +36,6 @@ enum {
   cFlags_Read           = 1 << 1,
   cFlags_Write          = 1 << 2,
   cFlags_ReturnHandle   = 1 << 3,
-  cFlags_NoHandle       = 1 << 4,
   cFlags_Transparent    = 1 << 5,
 
   cFlags_StreamMask     = 3 << 6,
@@ -352,9 +351,7 @@ $SWAP Buried;
   5. <Card> == s.CHAR* 0?
 */
 $ENTRY Card {
-%%
-  return fread_line(arg_begin, arg_end, cFlags_NoHandle | cFlags_StdIn);
-%%
+  = <__Step-Start> <Get #stdin> <__Step-End>;
 }
 
 
@@ -1147,11 +1144,8 @@ $ENTRY Ord {
   24. <Print e.AnyExpression> == e.AnyExpression
 */
 $ENTRY Print {
-%%
-  return fwrite_line(
-    arg_begin, arg_end, cFlags_NoHandle | cFlags_StdOut | cFlags_Transparent
-  );
-%%
+  e.AnyExpression
+    = <__Step-Start> <Put #stdout e.AnyExpression> <__Step-End>;
 }
 
 
@@ -1159,9 +1153,8 @@ $ENTRY Print {
   25. <Prout e.AnyExpression> == []
 */
 $ENTRY Prout {
-%%
-  return fwrite_line(arg_begin, arg_end, cFlags_NoHandle | cFlags_StdOut);
-%%
+  e.AnyExpression
+    = <__Step-Start> <Putout #stdout e.AnyExpression> <__Step-End>;
 }
 
 /**
@@ -2326,9 +2319,7 @@ GetFreeHandle {
   <ReadLine> == s.CHAR* 0?
 */
 $ENTRY ReadLine {
-%%
-  return fread_line(arg_begin, arg_end, cFlags_NoHandle | cFlags_StdIn);
-%%
+  = <Get #stdin>;
 }
 
 
@@ -2338,9 +2329,7 @@ $ENTRY ReadLine {
   Synonym for Prout
 */
 $ENTRY WriteLine {
-%%
-  return fwrite_line(arg_begin, arg_end, cFlags_NoHandle | cFlags_StdOut);
-%%
+  e.AnyExpression = <Putout #stdout e.AnyExpression>;
 }
 
 
@@ -2397,45 +2386,40 @@ FILE *extract_file_handle(refalrts::Iter pfile_handle, unsigned flags = 0) {
   FILE *default_handle =
     is_stdin ? stdin : is_stdout ? stdout : is_stderr ? stderr : 0;
 
-  if (flags & cFlags_NoHandle) {
-    assert(is_stdin + is_stdout + is_stderr == 1);
-    return default_handle;
-  } else {
-    assert(
-      refalrts::cDataNumber == pfile_handle->tag
-      || refalrts::cDataIdentifier == pfile_handle->tag
-    );
+  assert(
+    refalrts::cDataNumber == pfile_handle->tag
+    || refalrts::cDataIdentifier == pfile_handle->tag
+  );
 
-    if (refalrts::cDataNumber == pfile_handle->tag) {
-      bool autoopen = flags & cFlags_Autoopen;
-      refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
+  if (refalrts::cDataNumber == pfile_handle->tag) {
+    bool autoopen = flags & cFlags_Autoopen;
+    refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
 
-      if (file_no == 0) {
-        assert(is_stdin + is_stdout + is_stderr <= 1);
-        return default_handle;
-      } else if (g_file_handles[file_no] == 0 && autoopen) {
-        refalrts::at_exit(close_all_files_at_exit, 0);
+    if (file_no == 0) {
+      assert(is_stdin + is_stdout + is_stderr <= 1);
+      return default_handle;
+    } else if (g_file_handles[file_no] == 0 && autoopen) {
+      refalrts::at_exit(close_all_files_at_exit, 0);
 
-        char default_name[sizeof("REFAL4294967296.DAT")];
-        sprintf(default_name, "REFAL%d.DAT", file_no);
+      char default_name[sizeof("REFAL4294967296.DAT")];
+      sprintf(default_name, "REFAL%d.DAT", file_no);
 
-        bool default_read = (flags & cFlags_Read) != 0;
-        bool default_write = (flags & cFlags_Write) != 0;
-        assert(default_read + default_write == 1);
+      bool default_read = (flags & cFlags_Read) != 0;
+      bool default_write = (flags & cFlags_Write) != 0;
+      assert(default_read + default_write == 1);
 
-        const char *default_mode = default_read ? "r" : default_write ? "w" : 0;
-        g_file_handles[file_no] = fopen(default_name, default_mode);
-      }
-
-      return g_file_handles[file_no];
-    } else if (refalrts::cDataIdentifier == pfile_handle->tag) {
-      return
-        USE_IDENT(stdin) == pfile_handle->ident_info ? stdin :
-        USE_IDENT(stdout) == pfile_handle->ident_info ? stdout :
-        USE_IDENT(stderr) == pfile_handle->ident_info ? stderr : stdout;
-    } else {
-      refalrts_switch_default_violation(pfile_handle->tag);
+      const char *default_mode = default_read ? "r" : default_write ? "w" : 0;
+      g_file_handles[file_no] = fopen(default_name, default_mode);
     }
+
+    return g_file_handles[file_no];
+  } else if (refalrts::cDataIdentifier == pfile_handle->tag) {
+    return
+      USE_IDENT(stdin) == pfile_handle->ident_info ? stdin :
+      USE_IDENT(stdout) == pfile_handle->ident_info ? stdout :
+      USE_IDENT(stderr) == pfile_handle->ident_info ? stderr : stdout;
+  } else {
+    refalrts_switch_default_violation(pfile_handle->tag);
   }
 }
 
@@ -2497,10 +2481,9 @@ refalrts::FnResult fwrite_line(
   refalrts::Iter content_e = 0;
   refalrts::call_left(content_b, content_e, arg_begin, arg_end);
 
-  bool handle_in_arg = (flags & cFlags_NoHandle) == 0;
   refalrts::Iter pfile_handle = 0;
 
-  if (handle_in_arg && ! file_handle_left(pfile_handle, content_b, content_e)) {
+  if (! file_handle_left(pfile_handle, content_b, content_e)) {
     return refalrts::cRecognitionImpossible;
   }
 
@@ -2604,11 +2587,10 @@ refalrts::FnResult fread_line(
   refalrts::Iter content_e = 0;
   refalrts::call_left(content_b, content_e, arg_begin, arg_end);
 
-  bool handle_in_arg = (flags & cFlags_NoHandle) == 0;
   refalrts::Iter pfile_handle = 0;
 
   if (
-    (handle_in_arg && ! file_handle_left(pfile_handle, content_b, content_e))
+    ! file_handle_left(pfile_handle, content_b, content_e)
     || ! refalrts::empty_seq(content_b, content_e)
   ) {
     return refalrts::cRecognitionImpossible;
