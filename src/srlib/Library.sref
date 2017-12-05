@@ -2274,7 +2274,7 @@ $ENTRY FOpen {
 
 
 /**
-  <FReadLine s.FileNo> == s.CHAR* 0?
+  <FReadLine s.FileNo> == s.FileNo s.CHAR* 0?
 */
 $ENTRY FReadLine {
 %%
