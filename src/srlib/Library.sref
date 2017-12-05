@@ -2311,7 +2311,7 @@ $ENTRY FOpen {
 */
 $ENTRY FReadLine {
 %%
-  return fread_line(arg_begin, arg_end, cFlags_ReturnHandle | cFlags_StdIn);
+  return fread_line(arg_begin, arg_end, cFlags_ReturnHandle);
 %%
 }
 
@@ -2321,9 +2321,7 @@ $ENTRY FReadLine {
 */
 $ENTRY FWriteLine {
 %%
-  return fwrite_line(
-    arg_begin, arg_end, cFlags_Write | cFlags_StdErr | cFlags_ReturnHandle
-  );
+  return fwrite_line(arg_begin, arg_end, cFlags_ReturnHandle);
 %%
 }
 

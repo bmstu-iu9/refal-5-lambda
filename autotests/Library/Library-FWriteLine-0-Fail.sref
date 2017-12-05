@@ -1,0 +1,6 @@
+//FROM Library
+$EXTERN FWriteLine;
+
+$ENTRY Go {
+  = <FWriteLine 0 'Hello'>;
+}

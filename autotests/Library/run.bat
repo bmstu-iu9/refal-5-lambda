@@ -74,6 +74,8 @@ setlocal
     Library-FClose-0-Fail ^
     Library-FClose-unopened-Fail ^
     Library-FWrite-unopened-file-Fail ^
+    Library-FReadLine-0-Fail ^
+    Library-FWriteLine-0-Fail ^
     Library-SymbCompare-Fail ^
     Library-Implodes-Fail ^
     Library-PtrFromName-Fail ^
