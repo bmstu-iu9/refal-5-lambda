@@ -170,8 +170,10 @@
 
 ## Редуктор до подмножества (обессахариватель) (проход 6)
 
-    <Desugar e.AST>
+    <Desugar s.MarkupContext e.AST>
       == e.ReducedAST
+
+    s.MarkupContext ::= #MarkupContext | #NoMarkupContext
 
     e.ReducedAST ::= t.ReducedProgramElement*
 
@@ -200,6 +202,13 @@
       | (#ADT-Brackets (e.Name) e.Expression)
       | (#CallBrackets e.Expression)
       | (#TkVariable s.Mode e.Index s.Depth)
+      | (#ClosureBrackets e.ClosureContent)
+    e.ClosureContent ::= (#TkName e.Name) t.ContextVariable*
+    t.ContextVariable ::=
+        (#TkVariable s.ModeTS e.Index s.Depth)
+      | (#Brackets (#TkVariable 'e' e.Index s.Depth))
+      | (#TkIdentifier e.Name)
+    s.ModeTS ::= 't' | 's'
 
 Нужно отметить, что в `#ADT-Brackets` на входе не может быть имени как `#UnnamedADT`,
 поскольку этот проход и последующие вызываются только при отсутствии ошибок.
@@ -222,7 +231,12 @@
   `s.Depth` равен нулю. Таким образом, `#TkNewVariable` превращается
   в `#TkVariable` с индексом глубины, равным глубине самой функции.
   Вложенные функции из `#Closure` превращаются в глобальные функции
-  в `t.ReducedProgramElement`.
+  в `t.ReducedProgramElement`,
+* `#ClosureBrackets` сворачиваются в объекты замыкания,
+* `e.ClosureContent` — содержимое замыкания состоит из имени соответствующей
+  глобальной функции и захваченных переменных контекста, последние могут
+  предваряться (опция `s.MarkupContext`) идентификатором с именем
+  переменной для удобства отладки.
 
 ## Генерация высокоуровневого RASL’а (проход 7)
     <HighLevelRASL s.Joint s.OptResult e.AST>
@@ -268,6 +282,7 @@
       | (#CmdInsertRange s.Offset)
       | (#CmdInsertVar s.Mode s.Offset)
       | (#CmdLinkBrackets s.LeftOffset s.RightOffset)
+      | (#CmdWrapClosure s.Offset)
       | (#CmdPushStack s.Offset)
       | (#CmdFail)
       | (s.MatchSave s.Direction s.Offset e.MatchSaveInfo)
@@ -312,6 +327,8 @@
       | #ElOpenADT | #ElCloseADT
       | #ElOpenBracket | #ElCloseBracket
       | #ElOpenCall | #ElCloseCall
+      | #ElClosureHead
+      | #ElUnwrappedClosure s.HeadOffset
 
     s.VarOffset, s.SampleOffset ::= s.Offset
     s.OldOffset, s.NewOffset ::= s.Offset
@@ -405,7 +422,10 @@
     имеющегося (переиспользуется элемент по указателю `s.Offset`).
     Поля `s.AllocType e.AllocInfo` определяют тип и аргументы команды
     распределения. Их смысл очевиден, за исключением `#ElString e.String` — она
-    создаёт непрерывную последовательность литер.
+    создаёт непрерывную последовательность литер. Замыкания обслуживают
+    `#ElClosureHead` и `#ElUnwrappedClosure` — первый создаёт счётчик ссылок
+    для замыкания (и устанавливает в 1), второй — узел развёрнутого замыкания
+    (ссылается на смещение уже созданного счётчика ссылок).
   * `(#CmdCopyVar s.Mode s.VarOffset s.SampleOffset)` — копирование переменной
     вида `s.Mode` в смещение `s.VarOffset`, используя как оригинал переменную
     по смещению `s.SampleOffset`.
@@ -417,6 +437,8 @@
     и смещением `s.Offset` к построенной части результатного выражения.
   * `(#CmdLinkBrackets s.LeftOffset s.RightOffset)` — связывание круглых или
     квадратных скобок с заданными смещениями.
+  * `(#CmdWrapClosure s.Offset)` — сворачивает ссылку на замыкание в кольцевой
+    список.
   * `(#CmdPushStack s.Offset)` — помещение угловой скобки на стек.
   * `(#CmdFail)` — возврат из функции значения «сопоставление невозможно».
   * `(s.MatchSave s.Direction s.Offset e.MatchInfo)` — смысл этих
@@ -547,6 +569,7 @@ e-переменные, распределяемые последователь�
       | (#CmdInsertRange s.Offset)
       | (#CmdInsertVar s.Mode s.VarOffset)
       | (#CmdLinkBrackets s.LeftOffset s.RightOffset)
+      | (#CmdWrapClosure s.ClosureOffset)
       | (#CmdPushStack s.Offset)
       | (#CmdFail)
       | (#CmdOnFailGoTo s.Delta)
@@ -590,6 +613,8 @@ e-переменные, распределяемые последователь�
       | #ElOpenADT | #ElCloseADT
       | #ElOpenBracket | #ElCloseBracket
       | #ElOpenCall | #ElCloseCall
+      | #ElClosureHead
+      | #ElUnwrappedClosure s.HeadOffset
 
 * `e.RASL` — последовательность элементарных команд. Каждая из них отображается
   в шаблон кода на C++.
