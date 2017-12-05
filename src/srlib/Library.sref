@@ -1118,7 +1118,10 @@ DoNumb-Wrap {
 
 /**
   22. <Open s.Mode s.FileNo e.FileName> == []
-  s.Mode ::= 'r' | 'w' | 'a' | s.COMPOUND | (s.CHAR*)
+  s.Mode ::=
+      'r' | 'w' | 'a'
+    | 'R' | 'W' | 'A'
+    | s.COMPOUND | (s.CHAR*)
 */
 $ENTRY Open {
 %%
@@ -2290,7 +2293,10 @@ $ENTRY FClose {
 
 /**
   <FOpen t.Mode e.FileName> == s.FileNo
-  t.Mode ::= 'r' | 'w' | 'a' | s.COMPOUND | (s.CHAR*)
+  t.Mode ::=
+      'r' | 'w' | 'a'
+    | 'R' | 'W' | 'A'
+    | s.COMPOUND | (s.CHAR*)
 */
 $ENTRY FOpen {
   t.Mode s.FileNameChar e.FileName
@@ -2712,11 +2718,15 @@ refalrts::FnResult refal_open(
     return refalrts::cRecognitionImpossible;
   }
 
-  if (refalrts::char_term('r', pmode)) {
+  if (refalrts::char_term('r', pmode) || refalrts::char_term('R', pmode)) {
     mode = "r";
-  } else if (refalrts::char_term('w', pmode)) {
+  } else if (
+    refalrts::char_term('w', pmode) || refalrts::char_term('W', pmode)
+  ) {
     mode = "w";
-  } else if (refalrts::char_term('a', pmode)) {
+  } else if (
+    refalrts::char_term('a', pmode) || refalrts::char_term('A', pmode)
+  ) {
     mode = "a";
   } else if (refalrts::brackets_term(mode_b, mode_e, pmode)) {
     char mode_str[100] = { '\0' };  // должно хватить
