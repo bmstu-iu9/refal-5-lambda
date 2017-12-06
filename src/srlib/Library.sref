@@ -1201,7 +1201,7 @@ Mul-Nat-Line {
 
 
 /**
-  21. <Numb {'+'|'-'}? e.DIGIT-CHAR* e.NotDigitChars> == '-'? s.MACRODIGIT+
+  21. <Numb {'+'|'-'}? s.DIGIT-CHAR* e.NotDigitChars> == '-'? s.MACRODIGIT+
 */
 $ENTRY Numb {
   '-' e.String
@@ -2756,6 +2756,12 @@ $ENTRY WriteLine {
 
 // Работа с типами символов
 
+/**
+  <IntFromStr s.DIGIT-CHAR* e.NotDigitExpr>
+    == #Success s.MACRODIGIT e.NotDigitExpr
+  <IntFromStr e.NotDigitExpr>
+    == #Fails e.NotDigitExpr
+*/
 $ENTRY IntFromStr {
   e.String
     = <DoNumb
@@ -2770,6 +2776,9 @@ $ENTRY IntFromStr {
 }
 
 
+/**
+  <StrFromInt s.MACRODIGIT> == s.DIGIT-CHAR+
+*/
 $ENTRY StrFromInt {
 %%
   refalrts::Iter content_b = 0;
@@ -2953,7 +2962,12 @@ bool compare(refalrts::Iter left, refalrts::Iter right) {
 %%
 
 
+// Двоичный ввод-вывод
 
+/**
+  <FWriteBytes s.FileNo s.Byte*> == []
+  s.Byte ::= s.MACRODIGIT | s.CHAR
+*/
 $ENTRY FWriteBytes {
 %%
   refalrts::Iter content_b = 0;
@@ -2999,6 +3013,15 @@ $ENTRY FWriteBytes {
 %%
 }
 
+
+/**
+  <FReadBytes s.FileNo s.CountBytes> == e.ReadBytes
+
+  s.CountBytes ::= s.MACRODIGIT
+  e.ReadBytes ::= s.MACRODIGIT*
+
+  |e.ReadBytes| <= s.CountBytes
+*/
 $ENTRY FReadBytes {
 %%
   refalrts::Iter content_b = 0;
@@ -3060,6 +3083,10 @@ $ENTRY FReadBytes {
 %%
 }
 
+
+/**
+  <FTell s.FileNo> == s.MACRODIGIT
+*/
 $ENTRY FTell {
 %%
   refalrts::Iter content_b = 0;
@@ -3094,6 +3121,13 @@ $ENTRY FTell {
 }
 
 
+/**
+  <FSeek s.FileNo s.Origin s.Sign s.Offset> == []
+
+  s.Origin ::= #CURRENT | #BEGIN | #END
+  s.Sign ::= '+' | '-'
+  s.Offset ::= s.MACRODIGIT
+*/
 $LABEL CURRENT, BEGIN, END;
 
 $ENTRY FSeek {
@@ -3156,6 +3190,10 @@ $ENTRY FSeek {
 %%
 }
 
+
+/**
+  <RenameFile (e.Source) (e.Destination)> == True | False
+*/
 $ENTRY RenameFile {
 %%
   refalrts::Iter content_b = 0;
