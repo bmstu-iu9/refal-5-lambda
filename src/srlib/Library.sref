@@ -2826,6 +2826,37 @@ $ENTRY StrFromInt {
 %%
 }
 
+
+/**
+  <SymbCompare s.Left s.Right> == '<' | '=' | '>'
+*/
+%%
+namespace {
+
+bool compare(refalrts::Iter left, refalrts::Iter right);
+
+} // unnamed namespace
+%%
+
+$ENTRY SymbCompare {
+%%
+  refalrts::Iter pX = 0, pY = 0;
+  refalrts::Iter pFunc = refalrts::call_left(pX, pY, arg_begin, arg_end);
+
+  if (pX->next != pY) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  if (! compare(pX, pY)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::splice_to_freelist(arg_begin, pFunc);
+  refalrts::splice_to_freelist(pY, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
 %%
 namespace {
 
@@ -2852,204 +2883,75 @@ char strcmp_char(const char *x, const char *y) {
 }
 
 bool compare(refalrts::Iter left, refalrts::Iter right) {
-  char order;
+  int rank[refalrts::cData_COUNT] = { 0 };
 
-  switch(left->tag) {
-    case refalrts::cDataNumber:
-      switch(right->tag) {
-        case refalrts::cDataNumber:
-          order = compare_char(left->number_info, right->number_info);
-          break;
+  rank[refalrts::cDataNumber] = 5;
+  rank[refalrts::cDataChar] = 4;
+  rank[refalrts::cDataFunction] = 3;
+  rank[refalrts::cDataIdentifier] = 2;
+  rank[refalrts::cDataFile] = 1;
 
-        case refalrts::cDataChar:
-          order = '>';
-          break;
-
-        case refalrts::cDataFunction:
-          order = '>';
-          break;
-
-        case refalrts::cDataIdentifier:
-          order = '>';
-          break;
-
-        case refalrts::cDataFile:
-          order = '>';
-          break;
-
-        default:
-          order = '?';
-          break;
-      }
-      break;
-
-    case refalrts::cDataChar:
-      switch(right->tag) {
-        case refalrts::cDataNumber:
-          order = '<';
-          break;
-
-        case refalrts::cDataChar:
-          order = compare_char(left->char_info, right->char_info);
-          break;
-
-        case refalrts::cDataFunction:
-          order = '>';
-          break;
-
-        case refalrts::cDataIdentifier:
-          order = '>';
-          break;
-
-        case refalrts::cDataFile:
-          order = '>';
-          break;
-
-        default:
-          order = '?';
-          break;
-      }
-      break;
-
-    case refalrts::cDataFunction:
-      switch(right->tag) {
-        case refalrts::cDataNumber:
-          order = '<';
-          break;
-
-        case refalrts::cDataChar:
-          order = '<';
-          break;
-
-        case refalrts::cDataFunction:
-          {
-            refalrts::RefalFunction *fl = left->function_info;
-            refalrts::RefalFunction *fr = right->function_info;
-
-            order = strcmp_char(fl->name.name, fr->name.name);
-            if (order == '=') {
-              order = compare_char(fl->name.cookie1, fr->name.cookie1);
-            }
-            if (order == '=') {
-              order = compare_char(fl->name.cookie2, fr->name.cookie2);
-            }
-            if (order == '=') {
-              order = compare_char(fl->rasl, fr->rasl);
-            }
-          }
-          break;
-
-        case refalrts::cDataIdentifier:
-          order = '>';
-          break;
-
-        case refalrts::cDataFile:
-          order = '>';
-          break;
-
-        default:
-          order = '?';
-          break;
-      }
-      break;
-
-    case refalrts::cDataIdentifier:
-      switch(right->tag) {
-        case refalrts::cDataNumber:
-          order = '<';
-          break;
-
-        case refalrts::cDataChar:
-          order = '<';
-          break;
-
-        case refalrts::cDataFunction:
-          order = '<';
-          break;
-
-        case refalrts::cDataIdentifier:
-          order =
-            strcmp_char(left->ident_info->name(), right->ident_info->name());
-          break;
-
-        case refalrts::cDataFile:
-          order = '>';
-          break;
-
-        default:
-          order = '?';
-          break;
-      }
-      break;
-
-    case refalrts::cDataFile:
-      switch(right->tag) {
-        case refalrts::cDataNumber:
-          order = '<';
-          break;
-
-        case refalrts::cDataChar:
-          order = '<';
-          break;
-
-        case refalrts::cDataFunction:
-          order = '<';
-          break;
-
-        case refalrts::cDataIdentifier:
-          order = '<';
-          break;
-
-        case refalrts::cDataFile:
-          order = compare_char(left->file_info, right->file_info);
-          break;
-
-        default:
-          order = '?';
-          break;
-      }
-      break;
-
-    default:
-      order = '?';
-      break;
-  }
-
-  if (order != '?') {
-    refalrts::reinit_char(left, order);
-    return true;
-  } else {
+  if (! rank[left->tag] || ! rank[right->tag]) {
     return false;
   }
+
+  char order;
+
+  if (rank[left->tag] > rank[right->tag]) {
+    order = '>';
+  } else if (rank[left->tag] < rank[right->tag]) {
+    order = '<';
+  } else {
+    assert(left->tag == right->tag);
+
+    switch(left->tag) {
+      case refalrts::cDataNumber:
+        order = compare_char(left->number_info, right->number_info);
+        break;
+
+      case refalrts::cDataChar:
+        order = compare_char(left->char_info, right->char_info);
+        break;
+
+      case refalrts::cDataFunction:
+        {
+          refalrts::RefalFunction *fl = left->function_info;
+          refalrts::RefalFunction *fr = right->function_info;
+
+          order = strcmp_char(fl->name.name, fr->name.name);
+          if (order == '=') {
+            order = compare_char(fl->name.cookie1, fr->name.cookie1);
+          }
+          if (order == '=') {
+            order = compare_char(fl->name.cookie2, fr->name.cookie2);
+          }
+          if (order == '=') {
+            order = compare_char(fl->rasl, fr->rasl);
+          }
+        }
+        break;
+
+      case refalrts::cDataIdentifier:
+        order =
+          strcmp_char(left->ident_info->name(), right->ident_info->name());
+        break;
+
+      case refalrts::cDataFile:
+        order = compare_char(left->file_info, right->file_info);
+        break;
+
+      default:
+        refalrts_switch_default_violation(left->tag);
+    }
+  }
+
+  refalrts::reinit_char(left, order);
+  return true;
 }
 
 } // unnamed namespace
-
-#define BINARY(binary) \
-  refalrts::Iter pX = 0, pY = 0; \
-  refalrts::Iter pFunc = refalrts::call_left(pX, pY, arg_begin, arg_end); \
-  \
-  if (pX->next != pY) { \
-    return refalrts::cRecognitionImpossible; \
-  } \
-  \
-  binary \
-  \
-  refalrts::splice_to_freelist(arg_begin, pFunc); \
-  refalrts::splice_to_freelist(pY, arg_end); \
-  return refalrts::cSuccess;
-
-#define COMPARE_BINARY \
-  if (! compare(pX, pY)) { \
-    return refalrts::cRecognitionImpossible; \
-  }
 %%
 
-$ENTRY SymbCompare {
-%%
-  BINARY(COMPARE_BINARY);
-%%
-}
 
 
 $ENTRY FWriteBytes {

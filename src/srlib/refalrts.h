@@ -31,7 +31,8 @@ enum DataTag {
   cDataFile,
   cDataClosure,
   cDataUnwrappedClosure,
-  cDataClosureHead
+  cDataClosureHead,
+  cData_COUNT
 };
 
 typedef FnResult (*RefalFunctionPtr) (Iter begin, Iter end);
