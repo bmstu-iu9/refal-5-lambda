@@ -1955,6 +1955,30 @@ $ENTRY Upper {
 
 
 /**
+  35. Sysfun — not implemented yet
+*/
+$EENUM Sysfun;
+
+
+/**
+  45. Freeze — not implemented yet
+*/
+$EENUM Freeze;
+
+
+/**
+  46. Freezer — not implemented yet
+*/
+$EENUM Freezer;
+
+
+/**
+  47. Dn — not implemented yet
+*/
+$EENUM Dn;
+
+
+/**
   51. <GetEnv e.EnvVar> == e.EnvValue
   e.EnvVar, e.EnvValue ::= s.CHAR*
 */
@@ -2459,6 +2483,30 @@ Compare-Digits {
   return refalrts::cSuccess;
 %%
 }
+
+
+/**
+  62. DeSysfun — not implemented yet
+*/
+$EENUM DeSysfun;
+
+
+/**
+  63. XMLParse — not implemented yet
+*/
+$EENUM XMLParse;
+
+
+/**
+  64. Random — not implemented yet
+*/
+$EENUM Random;
+
+
+/**
+  65. RandomDigit — not implemented yet
+*/
+$EENUM RandomDigit;
 
 
 /**

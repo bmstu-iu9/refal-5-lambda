@@ -3,8 +3,6 @@
 //==============================================================================
 
 
-/********************************* REFACTORED *********************************/
-
 /**
   1. <Mu s.FuncName e.Arg> == <s.FuncName-Ptr e.Arg>
      <Mu (e.FuncName) e.Arg> == <s.FuncName-Ptr e.Arg>
@@ -235,6 +233,42 @@ $EXTERN Type;
 $EXTERN Upper;
 
 
+// 35. Sysfun
+
+//FROM Library
+$EXTERN Sysfun;
+
+
+// 45. Freeze
+
+//FROM Library
+$EXTERN Freeze;
+
+
+// 46. Freezer
+
+//FROM Library
+$EXTERN Freezer;
+
+
+// 47. Dn
+
+//FROM Library
+$EXTERN Dn;
+
+
+/**
+  48. Up — not implemented yet
+*/
+$ENUM Up;
+
+
+/**
+  49. Ev-met — not implemented yet
+*/
+$ENUM Ev-met;
+
+
 /**
   50. <Residue s.FuncName e.Arg> == <s.FuncName-Ptr e.Arg>
       <Residue (e.FuncName) e.Arg> == <s.FuncName-Ptr e.Arg>
@@ -315,6 +349,30 @@ $EXTERN TimeElapsed;
 $EXTERN Compare;
 
 
+// 62. DeSysfun
+
+//FROM Library
+$EXTERN DeSysfun;
+
+
+// 63. XMLParse
+
+//FROM Library
+$EXTERN XMLParse;
+
+
+// 64. Random
+
+//FROM Library
+$EXTERN Random;
+
+
+// 65. RandomDigit
+
+//FROM Library
+$EXTERN RandomDigit;
+
+
 // 66. Write
 
 //FROM Library
@@ -343,19 +401,3 @@ $EXTERN GetPID;
 
 //FROM Library
 $EXTERN GetPPID;
-
-
-/******************************* NOT REFACTORED *******************************/
-
-// Не реализованные пока функции
-$ENUM Sysfun;
-$ENUM Freeze;
-$ENUM Freezer;
-$ENUM Dn;
-$ENUM Up;
-$ENUM Ev-met;
-$ENUM DeSysfun;
-$ENUM XMLParse;
-$ENUM Random;
-$ENUM RandomDigit;
-$ENUM int4fab_1;
