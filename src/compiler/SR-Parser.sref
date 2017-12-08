@@ -256,14 +256,14 @@ ParseFunction {
 }
 
 /*
-  Block = "{" Sentence* "}" | "{" NATIVE-BLOCK "}".
-
   <ParseBlock t.ErrorList e.Tokens>
     == t.FunctionBody t.ErrorList e.Tokens
 
-  t.FunctionBody ::= (#Sentences ((e.Pattern) e.Assignment* (e.Result))*)
+  t.FunctionBody ::= (#Sentences ((e.Pattern) (e.Condition | e.Assignment)* (e.Result) (e.Blocks)*)*)
 
-  e.Assignment = (#Assign (e.Result) (e.Pattern))
+  e.Condition  = (#Cond   (e.Result) (e.Blocks)* (e.Pattern))
+  e.Assignment = (#Assign (e.Result) (e.Blocks)* (e.Pattern))
+
 
   Открывающая скобка должна отсутствовать во входном потоке.
 */
@@ -303,7 +303,7 @@ DoParseBlock {
 
 /*
   Sentence = SentencePart SentenceTail.
-  SentencePart = Pattern "=" Result.
+  SentencePart = Pattern { Condition | Assignment } Result.
   SentenceTail = ";" | ":" Sentence.
 */
 
@@ -311,7 +311,7 @@ ParseSentence {
   t.ErrorList e.Tokens
 
     = <ParseSentencePart t.ErrorList e.Tokens>
-    : ((e.StartPattern) (e.Result) (e.Blocks)) t.ErrorList^ t.NextToken e.Tokens^
+    : ((e.StartPattern) s.Type (e.Result) (e.Blocks)) t.ErrorList^ t.NextToken e.Tokens^
 
     = t.NextToken
     : {
@@ -321,13 +321,12 @@ ParseSentence {
         (#TkColon t.SrcPos)
 
           = <ParseSentence t.ErrorList e.Tokens>
-          : ((e.InnerPattern) e.Assignments (e.EndResult) (e.EndBlocks))
+          : ((e.InnerPattern) e.AssignmentsANDCond (e.EndResult) (e.EndBlocks))
             t.ErrorList^ e.Tokens^
 
-          = (#Assign (e.Result) (e.Blocks) (e.InnerPattern)) e.Assignments
-          : e.Assignments^
+          = (s.Type (e.Result) (e.Blocks) (e.InnerPattern)) e.AssignmentsANDCond : e.AssignmentsANDCond^
 
-          = ((e.StartPattern) e.Assignments (e.EndResult) (e.EndBlocks))
+          = ((e.StartPattern) e.AssignmentsANDCond (e.EndResult) (e.EndBlocks))
             t.ErrorList e.Tokens;
 
         (#TkCloseBlock t.SrcPos)
@@ -347,18 +346,41 @@ ParseSentence {
             e.Tokens;
       };
 }
+Expect2 {
+  s.Expected (e.ExpectedText) t.ErrorList (s.Expected t.SrcPos) e.Tokens
+    = s.Expected t.ErrorList e.Tokens;
+
+  s.Expected (e.ExpectedText) t.ErrorList t.Unexpected e.Tokens
+    = <EL-AddUnexpected t.ErrorList t.Unexpected e.ExpectedText>
+      t.Unexpected e.Tokens;
+}
 
 ParseSentencePart {
   t.ErrorList e.Tokens
 
     = <ParsePattern t.ErrorList e.Tokens> : t.ErrorList^ (e.Pattern) e.Tokens^
+    = <Fetch
+         e.Tokens
+        {
+           (#TkReplace t.SrcPos) e.Tokens^
+	   = #Assign t.ErrorList e.Tokens;
 
-    = <Expect #TkReplace ('=') t.ErrorList e.Tokens> : t.ErrorList^ e.Tokens^
+           (#TkComma t.SrcPos)  e.Tokens^
+	   = #Condition t.ErrorList e.Tokens;
+
+
+	   t.Unexpected e.Tokens^
+           = #Assign <EL-AddUnexpected t.ErrorList t.Unexpected '"," or "="'>
+             t.Unexpected e.Tokens;
+
+        }
+      >
+   : s.Type t.ErrorList^ e.Tokens^
 
     = <ParseResult t.ErrorList e.Tokens>
     : t.ErrorList^ (e.Result) (e.Blocks) e.Tokens^
 
-    = ((e.Pattern) (e.Result) (e.Blocks)) t.ErrorList e.Tokens;
+    = ((e.Pattern) s.Type (e.Result) (e.Blocks)) t.ErrorList e.Tokens;
 }
 
 ParsePattern {
