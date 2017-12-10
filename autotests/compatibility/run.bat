@@ -74,6 +74,7 @@ goto :EOF
   rem Without setlocal because set COMMON_SRFLAGS
 
   set COMMON_SRFLAGS= ^
+    --markup-context ^
     -c "%CPPLINEE%" ^
     --exesuffix=.exe ^
     -D../../src/srlib/platform-Windows ^
