@@ -1,0 +1,4 @@
+* THIS TEST MAKE REFGO SEGV!!! IT IS BUG IN REFGO
+$ENTRY Go {
+  = <Sysfun 1 'sysfun-fail-unbalanced-R.txt'>;
+}

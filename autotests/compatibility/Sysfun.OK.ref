@@ -1,0 +1,18 @@
+$ENTRY Go {
+  = <Eq (<Xxin-Sample>) <Sysfun 1 'xxin-sample.txt'>>
+    <Eq (5) <Step>>
+    <Eq (/* empty */) <Sysfun 1 'not-exist.txt'>>
+    <Eq (11) <Step>>
+    ;
+}
+
+Eq { (e.X) e.X = <Prout e.X>; }
+
+Xxin-Sample {
+  = '\\\'\"\(\)\<\>\n\t\r\x12'
+    '\\\'\"\(\)\<\>\n\t\r\x12'
+    ((()())())
+    This-is-a_word
+    "This is a compound" 'This is a text'
+    1234666 '!@#$%^&*';
+}

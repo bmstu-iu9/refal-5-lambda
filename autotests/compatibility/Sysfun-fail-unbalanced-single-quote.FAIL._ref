@@ -1,0 +1,4 @@
+* THIS TEST DONT RIMPS IN REFGO, THIS IS A BUG IN REFGO!!!
+$ENTRY Go {
+  = <Sysfun 1 'sysfun-fail-unbalanced-single-quote.txt'>;
+}

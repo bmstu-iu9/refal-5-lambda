@@ -1204,16 +1204,15 @@ Mul-Nat-Line {
   21. <Numb {'+'|'-'}? s.DIGIT-CHAR* e.NotDigitChars> == '-'? s.MACRODIGIT+
 */
 $ENTRY Numb {
-  '-' e.String
-    = <__Step-Start>
-      <Neg <DoNumb Numb-Ok Numb-Fail () e.String>>
-      <__Step-End>;
+  '-' e.String = <__Step-Start> <Neg <Numb-Aux e.String>> <__Step-End>;
 
-  '+' e.String
-    = <__Step-Start> <DoNumb Numb-Ok Numb-Fail () e.String> <__Step-End>;
+  '+' e.String = <__Step-Start> <Numb-Aux e.String> <__Step-End>;
 
-  e.String
-    = <__Step-Start> <DoNumb Numb-Ok Numb-Fail () e.String> <__Step-End>;
+  e.String = <__Step-Start> <Numb-Aux e.String> <__Step-End>;
+}
+
+Numb-Aux {
+  e.String = <DoNumb Numb-Ok Numb-Fail () e.String>;
 }
 
 DoNumb {
@@ -1955,9 +1954,229 @@ $ENTRY Upper {
 
 
 /**
-  35. Sysfun — not implemented yet
+  35. <Sysfun 1 e.FileName> == e.ObjectExpression
+      <Sysfun 2 e.FileName (s.Width e.ObjectExpression)> == []
+      e.FileName ::= s.CHAR+
+      s.Width ::= s.MACRODIGIT
 */
-$EENUM Sysfun;
+$ENTRY Sysfun {
+  1 e.FileName = <__Step-Start> <Sysfun-Xxin e.FileName> <__Step-End>;
+
+  2 e.FileName (s.Width e.ObjectExpression)
+    = <__Step-Start>
+      <Sysfun-Xxout e.FileName (s.Width e.ObjectExpression)>
+      <__Step-End>;
+}
+
+Sysfun-Xxin {
+  e.FileName
+    = <ExistFile e.FileName>
+    : {
+        #True
+          = <FOpen 'r' e.FileName> : s.FileNo
+          = <Xxin-Scan s.FileNo #General ('^') <Type <Get-Aux s.FileNo>>>;
+
+        #False = /* empty */;
+      };
+}
+
+Xxin-Scan {
+  s.FileNo s.State (t.Stack e.Scanned) '*' s.0
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned) <Type <Get-Aux s.FileNo>>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '\\' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\\') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '\'' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\'') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '\"' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\"') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '(' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '(') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S ')' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned ')') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '<' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '<') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '>' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '>') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S 'n' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\n') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S 't' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\t') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S 'r' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\r') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S 'x' e.Tail
+    = <Xxin-Scan
+        s.FileNo #Escape-Hex ((s.State t.Stack e.Scanned)) <Type e.Tail>
+      >;
+
+  s.FileNo #Escape-Hex ((s.State t.Stack e.Scanned) s.D1 s.D2) s.T s.S e.Tail
+    = <Xxin-Scan
+        s.FileNo
+        s.State (t.Stack e.Scanned <Chr <Add-Digits <Mul-Digits s.D1 16> s.D2>>)
+        s.T s.S e.Tail
+      >;
+
+  s.FileNo
+  #Escape-Hex ((s.State t.Stack e.Scanned) e.Digits)
+  s.T s.S s.Char e.Tail
+    = <HexDigit s.Char>
+    : {
+        s.Digit
+          = <Xxin-Scan
+              s.FileNo
+              #Escape-Hex ((s.State t.Stack e.Scanned) e.Digits s.Digit)
+              <Type e.Tail>
+            >;
+
+        /* empty */
+          = <Sysfun-Xxin-ERROR 'Unknown escape sequence \\x' s.Char>;
+      };
+
+  s.FileNo
+  #Escape-Hex ((s.State t.Stack e.Scanned) e.Digits)
+  'N' s.0 0
+    = <Sysfun-Xxin-ERROR 'Unexpected EOF in \\x...'>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) 'N' s.0 0
+    = <Sysfun-Xxin-ERROR 'Unexpected EOF in escape sequence'>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S s.Next e.Tail
+    = <Sysfun-Xxin-ERROR 'Bad escape sequence \\' s.Next>;
+
+  s.FileNo s.State (t.Stack e.Scanned) s.T s.S '\\' e.Tail
+    = <Xxin-Scan s.FileNo #Escape ((s.State t.Stack e.Scanned)) <Type e.Tail>>;
+
+  s.FileNo #General (t.Stack e.Scanned) s.T s.S '(' e.Tail
+    = <Xxin-Scan
+        s.FileNo #General ((#General t.Stack e.Scanned)) <Type e.Tail>
+      >;
+
+  s.FileNo #General ((#General t.Stack e.Scanned) e.Inner) s.T s.S ')' e.Tail
+    = <Xxin-Scan s.FileNo #General (t.Stack e.Scanned (e.Inner)) <Type e.Tail>>;
+
+  s.FileNo #General ('^' e.Scanned) s.T s.S ')' e.Tail
+    = <Sysfun-Xxin-ERROR 'Unbalanced )'>;
+
+  // EXIT FROM RECURSION
+  s.FileNo #General ('^' e.Scanned) 'N' s.0 0 = <FClose s.FileNo> e.Scanned;
+
+  s.FileNo #General ((#General t.Stack e.Scanned) e.Inner) 'N' s.0 0
+    = <Sysfun-Xxin-ERROR 'Unbalanced ('>;
+
+  s.FileNo #General (t.Stack e.Scanned) s.S s.T '\'' e.Tail
+    = <Xxin-Scan
+        s.FileNo #Quote ((#General t.Stack e.Scanned) '\'') <Type e.Tail>
+      >;
+
+  s.FileNo #General (t.Stack e.Scanned) s.S s.T '"' e.Tail
+    = <Xxin-Scan
+        s.FileNo #Quote ((#General t.Stack e.Scanned) '"') <Type e.Tail>
+      >;
+
+  s.FileNo
+  #Quote ((#General t.Stack e.Scanned) s.Quote e.Quotten)
+  s.S s.T s.Quote e.Tail
+    = <Xxin-Scan
+        s.FileNo
+        #General (t.Stack e.Scanned <Quote s.Quote e.Quotten>)
+        <Type e.Tail>
+      >;
+
+  s.FileNo #Quote ((#General t.Stack e.Scanned) s.Quote e.Quotten) 'N' s.0 0
+    = <Sysfun-Xxin-ERROR 'Unexpected EOF in ' s.Quote '...'>;
+
+  s.FileNo #General (t.Stack e.Scanned) 'L' s.S s.Letter e.Tail
+    = <Xxin-Scan
+        s.FileNo #Word ((#General t.Stack e.Scanned) s.Letter) <Type e.Tail>
+      >;
+
+  s.FileNo #Word (t.Stack e.Scanned) 'L' s.S s.Letter e.Tail
+    = <Xxin-Scan s.FileNo #Word (t.Stack e.Scanned s.Letter) <Type e.Tail>>;
+
+  s.FileNo #Word (t.Stack e.Scanned) 'D' s.0 s.Digit e.Tail
+    = <Xxin-Scan s.FileNo #Word (t.Stack e.Scanned s.Digit) <Type e.Tail>>;
+
+  s.FileNo #Word (t.Stack e.Scanned) s.T s.S '-' e.Tail
+    = <Xxin-Scan s.FileNo #Word (t.Stack e.Scanned '-') <Type e.Tail>>;
+
+  s.FileNo #Word (t.Stack e.Scanned) s.T s.S '_' e.Tail
+    = <Xxin-Scan s.FileNo #Word (t.Stack e.Scanned '_') <Type e.Tail>>;
+
+  s.FileNo #Word ((#General t.Stack e.Scanned) e.Word) s.T s.S ' ' e.Tail
+    = <Xxin-Scan
+        s.FileNo #General (t.Stack e.Scanned <Implode_Ext e.Word>) <Type e.Tail>
+      >;
+
+  s.FileNo #Word (t.Stack e.Scanned) 'N' s.0 0 /* EOF */
+    = <Sysfun-Xxin-ERROR 'Unexpected EOF while reading word'>;
+
+  s.FileNo #Word (t.Stack e.Scanned) s.T s.S s.Other e.Tail
+    = <Sysfun-Xxin-ERROR 'Unexpected "' s.Other '" while reading word'>;
+
+  s.FileNo #General (t.Stack e.Scanned) 'D' s.0 s.Digit e.Tail
+    = <Xxin-Scan
+        s.FileNo #Number ((#General t.Stack e.Scanned) s.Digit) <Type e.Tail>
+      >;
+
+  s.FileNo #Number (t.Stack e.Scanned) 'D' s.0 s.Digit e.Tail
+    = <Xxin-Scan s.FileNo #Number (t.Stack e.Scanned s.Digit) <Type e.Tail>>;
+
+  s.FileNo #Number ((#General t.Stack e.Scanned) e.Number) s.T s.S ' ' e.Tail
+    = <Numb-Aux e.Number>
+    : {
+        s.OneMacroDigit
+          = <Xxin-Scan
+              s.FileNo
+              #General (t.Stack e.Scanned s.OneMacroDigit)
+              <Type e.Tail>
+            >;
+
+        e.SeveralMacrodigits
+          = <Sysfun-Xxin-ERROR 'Very long macrodigit is read'>;
+      };
+
+  s.FileNo #Number (t.Stack e.Scanned) 'N' s.0 0 /* EOF */
+    = <Sysfun-Xxin-ERROR 'Unexpected EOF while reading macrodigit'>;
+
+  s.FileNo #Number (t.Stack e.Scanned) s.T s.S s.Other e.Tail
+    = <Sysfun-Xxin-ERROR 'Unexpected "' s.Other '" while reading macrodigit'>;
+
+  s.FileNo #General (t.Stack e.Scanned) s.T s.S ' ' e.Tail
+    = <Xxin-Scan s.FileNo #General (t.Stack e.Scanned) <Type e.Tail>>;
+
+  s.FileNo s.State (t.Stack e.Scanned) s.T s.S s.Other e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned s.Other) <Type e.Tail>>;
+}
+
+HexDigit {
+  '0' = 0;  '1' = 1;  '2' = 2;  '3' = 3;  '4' = 4;
+  '5' = 5;  '6' = 6;  '7' = 7;  '8' = 8;  '9' = 9;
+
+  'A' = 10; 'B' = 11; 'C' = 12; 'D' = 13; 'E' = 14; 'F' = 15;
+  'a' = 10; 'b' = 11; 'c' = 12; 'd' = 13; 'e' = 14; 'f' = 15;
+
+  s.Other = /* empty */;
+}
+
+$ENUM Sysfun-Xxin-ERROR;
+
+Quote {
+  '\'' e.Text = e.Text;
+  '"' e.Text = <Implode_Ext e.Text>;
+}
+
+Sysfun-Xxout {
+}
 
 
 /**
@@ -2486,9 +2705,14 @@ Compare-Digits {
 
 
 /**
-  62. DeSysfun — not implemented yet
+      <DeSysfun e.FileName (s.Width e.ObjectExpression)> == []
 */
-$EENUM DeSysfun;
+$ENTRY DeSysfun {
+  e.FileName (s.Width e.ObjectExpression)
+    = <__Step-Start>
+      <Sysfun-Xxout e.FileName (s.Width e.ObjectExpression)>
+      <__Step-End>;
+}
 
 
 /**

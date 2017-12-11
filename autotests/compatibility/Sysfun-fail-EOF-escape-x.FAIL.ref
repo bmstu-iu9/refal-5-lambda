@@ -1,0 +1,3 @@
+$ENTRY Go {
+  = <Sysfun 1 'sysfun-fail-EOF-escape-x.txt'>;
+}

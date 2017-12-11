@@ -1,0 +1,10 @@
+
+
+\\\'\"\(\)\<\>\n\t\r\x12
+
+'\\\'\"\(\)\<\>\n\t\r\x12'
+
+((()())())
+
+This-is-a_word "This is a compo
+und" 'This is a text'    1234666 !@#$ %^&*
