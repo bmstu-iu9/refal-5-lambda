@@ -2176,6 +2176,130 @@ Quote {
 }
 
 Sysfun-Xxout {
+  e.FileName (s.Width e.Expression)
+    = <Xxout-Wrap
+        <FOpen 'w' e.FileName> s.Width
+        <Xxout-Scan <Type e.Expression>>
+      >;
+}
+
+Xxout-Wrap {
+  s.FileNo s.Width e.Text
+    = <DoFirst s.Width () e.Text>
+    : {
+        (e.Line) /* empty */ = <Putout-Aux s.FileNo e.Line> <FClose s.FileNo>;
+
+        (e.Line) e.Rest
+          = <Putout-Aux s.FileNo e.Line>
+            <Xxout-Wrap s.FileNo s.Width e.Rest>;
+      };
+}
+
+Xxout-Scan {
+  'L' s.S s.Letter e.Tail
+    = <Xxout-Chars () 'L' s.S s.Letter e.Tail> : (e.Chars) s.T s.S^ e.Tail^
+    = '' e.Chars '' <Xxout-Scan s.T s.S e.Tail>;
+
+  'D' s.0 s.Digit e.Tail
+    = <Xxout-Chars () 'D' s.0 s.Digit e.Tail> : (e.Chars) s.T s.S e.Tail^
+    = '' e.Chars '' <Xxout-Scan s.T s.S e.Tail>;
+
+  'Wi' s.Word e.Tail = <Explode s.Word> ' ' <Xxout-Scan <Type e.Tail>>;
+
+  'Wq' s.Compound e.Tail
+    = <Xxout-Chars () <Type <Explode s.Compound>>> : (e.Chars) '*' s.0
+    = '"' e.Chars '"' <Xxout-Scan <Type e.Tail>>;
+
+  'N' s.0 s.Number e.Tail
+    = <StrFromInt s.Number> ' ' <Xxout-Scan <Type e.Tail>>;
+
+  'P' s.S s.Printable e.Tail
+    = <Xxout-Chars () 'P' s.S s.Printable e.Tail> : (e.Chars) s.T s.S^ e.Tail^
+    = '' e.Chars '' <Xxout-Scan s.T s.S e.Tail>;
+
+  'O' s.S s.Other e.Tail
+    = <Xxout-Chars () 'O' s.S s.Other e.Tail> : (e.Chars) s.T s.S^ e.Tail^
+    = '' e.Chars '' <Xxout-Scan s.T s.S e.Tail>;
+
+  'B' s.0 (e.Inner) e.Tail
+    = '(' <Xxout-Scan <Type e.Inner>> ')' <Xxout-Scan <Type e.Tail>>;
+
+  '*' s.0 /* empty */ = /* empty */;
+}
+
+/* TODO: uncomment with conditions
+Xxout-Chars {
+  (e.Scanned) s.T s.S s.Escaped e.Tail
+    , ('\\\\') ('\'\'') ('""') ('((') ('))')
+      ('<<') ('>>') ('\nn') ('\tt') ('\rr')
+    : e.Escaped-B (s.Escaped e.Replace) e.Escaped-E
+    = <Xxout-Chars (e.Scanned '\\' e.Replace) <Type e.Tail>>;
+
+  (e.Scanned) 'L' s.S s.Letter e.Tail
+    = <Xxout-Chars (e.Scanned s.Letter) <Type e.Tail>>;
+
+  (e.Scanned) 'D' s.S s.Digit e.Tail
+    = <Xxout-Chars (e.Scanned s.Digit) <Type e.Tail>>;
+
+  (e.Scanned) 'W' s.S s.Word e.Tail = (e.Scanned) 'W' s.S s.Word e.Tail;
+
+  (e.Scanned) 'N' s.0 s.Number e.Tail = (e.Scanned) 'N' s.0 s.Number e.Tail;
+
+  (e.Scanned) 'P' s.S s.Printable e.Tail
+    = <Xxout-Chars (e.Scanned s.Printable) <Type e.Tail>>;
+
+  (e.Scanned) 'O' s.S s.Other e.Tail
+    = <Divmod-Digits <Ord s.Other> 16> : (s.Hi) s.Low
+    = <Xxout-Chars (e.Scanned '\\x' <Hex s.Hi> <Hex s.Low>) <Type e.Tail>>;
+
+  (e.Scanned) 'B' s.0 (e.Inner) e.Tail = (e.Scanned) 'B' s.0 (e.Inner) e.Tail;
+
+  (e.Scanned) '*' s.0 /+* empty *+/ = (e.Scanned) '*' s.0 /+* empty *+/;
+}
+*/
+
+Xxout-Chars {
+  (e.Scanned) s.T s.S s.Char e.Tail
+    = ('\\\\') ('\'\'') ('""') ('((') ('))')
+      ('<<') ('>>') ('\nn') ('\tt') ('\rr')
+    : {
+        e.Escaped-B (s.Char e.Replace) e.Escaped-E
+          = <Xxout-Chars (e.Scanned '\\' e.Replace) <Type e.Tail>>;
+
+        e.Escaped
+          = s.T s.S s.Char
+          : {
+              'L' s.S^ s.Letter
+                = <Xxout-Chars (e.Scanned s.Letter) <Type e.Tail>>;
+
+              'D' s.S^ s.Digit
+                = <Xxout-Chars (e.Scanned s.Digit) <Type e.Tail>>;
+
+              'W' s.S^ s.Word = (e.Scanned) 'W' s.S s.Word e.Tail;
+
+              'N' s.0 s.Number = (e.Scanned) 'N' s.0 s.Number e.Tail;
+
+              'P' s.S^ s.Printable
+                = <Xxout-Chars (e.Scanned s.Printable) <Type e.Tail>>;
+
+              'O' s.S^ s.Other
+                = <Divmod-Digits <Ord s.Other> 16> : (s.Hi) s.Low
+                = <Xxout-Chars
+                    (e.Scanned '\\x' <Hex s.Hi> <Hex s.Low>) <Type e.Tail>
+                  >;
+            };
+      };
+
+  (e.Scanned) 'B' s.0 (e.Inner) e.Tail = (e.Scanned) 'B' s.0 (e.Inner) e.Tail;
+
+  (e.Scanned) '*' s.0 /* empty */ = (e.Scanned) '*' s.0 /* empty */;
+}
+
+Hex {
+   0 = '0';  1 = '1';  2 = '2';  3 = '3';
+   4 = '4';  5 = '5';  6 = '6';  7 = '7';
+   8 = '8';  9 = '9'; 10 = 'A'; 11 = 'B';
+  12 = 'C'; 13 = 'D'; 14 = 'E'; 15 = 'F';
 }
 
 
