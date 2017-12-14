@@ -259,10 +259,10 @@ ParseFunction {
   <ParseBlock t.ErrorList e.Tokens>
     == t.FunctionBody t.ErrorList e.Tokens
 
-  t.FunctionBody ::= (#Sentences ((e.Pattern) (e.Condition | e.Assignment)* (e.Result) (e.Blocks)*)*)
+  t.FunctionBody ::= (#Sentences ((e.Pattern) (t.Condition | t.Assignment)* (e.Result) (e.Blocks)*)*)
 
-  e.Condition  = (#Cond   (e.Result) (e.Blocks)* (e.Pattern))
-  e.Assignment = (#Assign (e.Result) (e.Blocks)* (e.Pattern))
+  t.Condition  = (#Cond   (e.Result) (e.Blocks)* (e.Pattern))
+  t.Assignment = (#Assign (e.Result) (e.Blocks)* (e.Pattern))
 
 
   Открывающая скобка должна отсутствовать во входном потоке.
@@ -324,7 +324,8 @@ ParseSentence {
           : ((e.InnerPattern) e.AssignmentsANDCond (e.EndResult) (e.EndBlocks))
             t.ErrorList^ e.Tokens^
 
-          = (s.Type (e.Result) (e.Blocks) (e.InnerPattern)) e.AssignmentsANDCond : e.AssignmentsANDCond^
+          = (s.Type (e.Result) (e.Blocks) (e.InnerPattern)) e.AssignmentsANDCond
+	  : e.AssignmentsANDCond^
 
           = ((e.StartPattern) e.AssignmentsANDCond (e.EndResult) (e.EndBlocks))
             t.ErrorList e.Tokens;
@@ -346,36 +347,25 @@ ParseSentence {
             e.Tokens;
       };
 }
-Expect2 {
-  s.Expected (e.ExpectedText) t.ErrorList (s.Expected t.SrcPos) e.Tokens
-    = s.Expected t.ErrorList e.Tokens;
-
-  s.Expected (e.ExpectedText) t.ErrorList t.Unexpected e.Tokens
-    = <EL-AddUnexpected t.ErrorList t.Unexpected e.ExpectedText>
-      t.Unexpected e.Tokens;
-}
 
 ParseSentencePart {
   t.ErrorList e.Tokens
 
     = <ParsePattern t.ErrorList e.Tokens> : t.ErrorList^ (e.Pattern) e.Tokens^
+
     = <Fetch
-         e.Tokens
+        e.Tokens
         {
-           (#TkReplace t.SrcPos) e.Tokens^
-	   = #Assign t.ErrorList e.Tokens;
+          (#TkReplace t.SrcPos) e.Tokens^ = #Assign t.ErrorList e.Tokens;
 
-           (#TkComma t.SrcPos)  e.Tokens^
-	   = #Condition t.ErrorList e.Tokens;
+          (#TkComma t.SrcPos)  e.Tokens^ = #Condition t.ErrorList e.Tokens;
 
-
-	   t.Unexpected e.Tokens^
-           = #Assign <EL-AddUnexpected t.ErrorList t.Unexpected '"," or "="'>
-             t.Unexpected e.Tokens;
-
+	  t.Unexpected e.Tokens^
+          = #Assign <EL-AddUnexpected t.ErrorList t.Unexpected '"," or "="'>
+            t.Unexpected e.Tokens;
         }
       >
-   : s.Type t.ErrorList^ e.Tokens^
+    : s.Type t.ErrorList^ e.Tokens^
 
     = <ParseResult t.ErrorList e.Tokens>
     : t.ErrorList^ (e.Result) (e.Blocks) e.Tokens^
