@@ -53,7 +53,8 @@ run_all_tests() {
     Library-FReadBytes \
     Library-FTell \
     Library-FSeek \
-    Library-PtrFromName
+    Library-PtrFromName \
+    Library-Sysfun-2
 
   simple_tests fail \
     Library-Math-Fail \

@@ -64,6 +64,7 @@ setlocal
     Library-FTell ^
     Library-FSeek ^
     Library-PtrFromName ^
+    Library-Sysfun-2 ^
     || exit /b 1
 
   call :SIMPLE_TESTS FAIL ^
