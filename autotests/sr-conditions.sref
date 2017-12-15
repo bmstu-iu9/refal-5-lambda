@@ -162,7 +162,7 @@ TestSimpleCondition {
 
 SimpleRepeatedCondition {
   (e.X) e.X e.Y, e.X: e.Y
-    , X
+    = X
     : {
         X = Equals e.X e.Y e.X e.Y;
 

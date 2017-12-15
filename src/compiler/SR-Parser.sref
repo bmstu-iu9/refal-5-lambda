@@ -314,11 +314,25 @@ ParseSentence {
   t.ErrorList e.Tokens
 
     = <ParseSentencePart t.ErrorList e.Tokens>
-    : ((e.StartPattern) s.Type (e.Result) (e.Blocks)) t.ErrorList^ t.NextToken e.Tokens^
+    : ((e.StartPattern) s.Type (e.Result) (e.Blocks))
+      t.ErrorList^ t.NextToken e.Tokens^
 
     = t.NextToken
     : {
         (#TkSemicolon t.SrcPos)
+          = <Fetch
+              s.Type
+              {
+                #Assign
+                  = t.ErrorList;
+
+                #Condition
+                  = <EL-AddErrorAt
+                      t.ErrorList t.SrcPos 'Before the last result expr must be "="'
+                    >;
+              }
+            >
+          : t.ErrorList^
           = ((e.StartPattern) (e.Result) (e.Blocks)) t.ErrorList e.Tokens;
 
         (#TkColon t.SrcPos)
