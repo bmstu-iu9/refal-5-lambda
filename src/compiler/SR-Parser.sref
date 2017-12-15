@@ -259,7 +259,10 @@ ParseFunction {
   <ParseBlock t.ErrorList e.Tokens>
     == t.FunctionBody t.ErrorList e.Tokens
 
-  t.FunctionBody ::= (#Sentences ((e.Pattern) (t.Condition | t.Assignment)* (e.Result) (e.Blocks)*)*)
+  t.FunctionBody ::=
+  (#Sentences
+    ((e.Pattern) (t.Condition | t.Assignment)* (e.Result) (e.Blocks)*)*
+  )
 
   t.Condition  = (#Cond   (e.Result) (e.Blocks)* (e.Pattern))
   t.Assignment = (#Assign (e.Result) (e.Blocks)* (e.Pattern))
@@ -325,7 +328,7 @@ ParseSentence {
             t.ErrorList^ e.Tokens^
 
           = (s.Type (e.Result) (e.Blocks) (e.InnerPattern)) e.AssignmentsANDCond
-	  : e.AssignmentsANDCond^
+          : e.AssignmentsANDCond^
 
           = ((e.StartPattern) e.AssignmentsANDCond (e.EndResult) (e.EndBlocks))
             t.ErrorList e.Tokens;
@@ -360,7 +363,7 @@ ParseSentencePart {
 
           (#TkComma t.SrcPos)  e.Tokens^ = #Condition t.ErrorList e.Tokens;
 
-	  t.Unexpected e.Tokens^
+          t.Unexpected e.Tokens^
           = #Assign <EL-AddUnexpected t.ErrorList t.Unexpected '"," or "="'>
             t.Unexpected e.Tokens;
         }
