@@ -1,0 +1,294 @@
+$SWAP Store;
+
+Br {
+  e.Key '=' e.Value = <Store ((e.Key) e.Value) <Store>>;
+}
+
+Dg {
+  e.Key
+    = <
+        {
+          e.Store-B ((e.Key) e.Value) e.Store-E
+            = e.Value <Store e.Store-B e.Store-E>;
+
+          e.Store = /* пусто */ <Store e.Store>;
+        }
+        <Store>
+      >;
+}
+
+$ENUM Prout;
+
+$ENTRY Go {
+  = <TestAllSubstrings>
+    <TestAllSubstrings-Hard>
+    <TestDocument>
+    <TestSimpleCondition>
+    <TestSimpleRepeatedCondition>
+    <TestSimpleOneELoop>
+    <TestIntersect>
+    <TestDelim>
+    <TestDelim2>;
+}
+
+AssertEq {
+  e.Equals (e.Equals) = ;
+}
+
+//*$*****************************************************************************
+
+$ENUM NotEmpty, Substr, A, B, C, D, E, ED, Q, R, Equals, Fail, X, Ok, NotEquals,
+  FORMAT, Y, False, True, NoDelim;
+
+TestAllSubstrings {
+  = <AssertEq
+      <AllSubstrings 'abcdef'>
+      (
+        () ('a') ('ab') ('abc') ('abcd') ('abcde') ('abcdef')
+        () ('b') ('bc') ('bcd') ('bcde') ('bcdef')
+        () ('c') ('cd') ('cde') ('cdef')
+        () ('d') ('de') ('def')
+        () ('e') ('ef')
+        () ('f')
+        ()
+      )
+    >;
+}
+
+AllSubstrings {
+  e.String, <Br Substr '=' /* пусто */> : NotEmpty = ;
+
+  e.Begin e.Middle e.End
+    , <Br Substr '=' <Dg Substr> (e.Middle)>
+    : NotEmpty
+    = ;
+
+  e.String = <Dg Substr>;
+}
+
+//*$*****************************************************************************
+
+TestAllSubstrings-Hard {
+  = <AssertEq
+      <AllSubstrings-Hard 'abcdef'>
+      (
+        ('a') ('ab') ('abc') ('abcd') ('abcde') ('abcdef')
+        ('b') ('bc') ('bcd') ('bcde') ('bcdef')
+        ('c') ('cd') ('cde') ('cdef')
+        ('d') ('de') ('def')
+        ('e') ('ef')
+        ('f')
+      )
+    >;
+}
+
+AllSubstrings-Hard {
+  e.String, <Br Substr '=' /* пусто */> : NotEmpty = ;
+
+  e.Begin e.Middle e.End
+    , e.Middle : t.1 e.2
+    , <Br Substr '=' <Dg Substr> (e.Middle)> : /* пусто */
+    , e.Middle : t.3
+    , e.End : /* пусто */
+    = <Dg Substr>;
+}
+
+//*$*****************************************************************************
+
+/* Функция из документа doc/5-to-basis/Подход к преобразованию условий.md */
+TestDocument {
+  = <AssertEq
+      <F-doc
+        (
+          A
+          (B (A B) C)
+          Q
+          (D (A (B (A B) C) Q D) ED)
+          R
+        )
+        (A A B A A B F)
+      >
+      (
+        Ok
+        (A (B (A B) C) Q)
+        (D)
+        (A A B)
+      )
+    >
+    <AssertEq
+      <F-doc (A (B (A B) C) D) (E E F)>
+      (Fail)
+    >;
+}
+
+F-doc {
+  (e.A (e.B (e.A e.B) e.C) e.D) (e.E e.E e.F)
+    , <G-doc (e.A) (e.B) (e.E)> : Ok
+    = Ok (e.A) (e.B) (e.E);
+
+  e.Other = Fail;
+}
+
+G-doc {
+  (e.A) (D) (A A B) = Ok;
+  e.Other = Fail;
+}
+
+
+
+//*$*****************************************************************************
+
+SimpleCondition {
+  (e.X) e.Y, e.Y: e.X = Equals e.X;
+
+  (e.X) e.Y = NotEquals (e.X) e.Y;
+
+  e.Other = FORMAT e.Other;
+}
+
+SimpleCondition-Edge {
+  (e.X) e.Y, e.Y: e.X = Equals e.X;
+}
+
+TestSimpleCondition {
+  = <AssertEq <SimpleCondition ('ABC') 'ABC'> (Equals 'ABC')>
+    <AssertEq <SimpleCondition (/* пусто */) /* пусто */> (Equals /* пусто */)>
+    <AssertEq <SimpleCondition ('AAA') 'BBB'> (NotEquals ('AAA') 'BBB')>
+    <AssertEq <SimpleCondition 'fail'> (FORMAT 'fail')>
+    <AssertEq <SimpleCondition-Edge ('ABC') 'ABC'> (Equals 'ABC')>;
+}
+
+//*$*****************************************************************************
+
+SimpleRepeatedCondition {
+  (e.X) e.X e.Y, e.X: e.Y
+    = X
+    : {
+        X = Equals e.X e.Y e.X e.Y;
+
+        Y, e.X: e.Z, e.Y: e.X
+          = <Prout e.X e.Y e.X e.X e.Y 'копирований быть не должно'>;
+      };
+
+
+  e.Other = FORMAT e.Other;
+}
+
+SimpleRepeatedCondition-Edge {
+  (e.X) e.X e.Y, e.X: e.Y = Equals e.X e.Y e.X e.Y;
+}
+
+TestSimpleRepeatedCondition {
+  = <AssertEq
+      <SimpleRepeatedCondition ('ABC') 'ABCABC'>
+      (Equals 'ABCABCABCABC')
+    >
+    <AssertEq <SimpleRepeatedCondition ()> (Equals)>
+    <AssertEq <SimpleRepeatedCondition 'other'> (FORMAT 'other')>
+    <AssertEq
+      <SimpleRepeatedCondition-Edge ('ABC') 'ABCABC'>
+      (Equals 'ABCABCABCABC')
+    >;
+}
+
+//*$*****************************************************************************
+
+SimpleOneELoop {
+  (e.Sample) e.Items-B ((e.Key) (e.Value)) e.Items-E
+    , e.Key: e.Sample
+    = (e.Items-B) (e.Value) (e.Items-E);
+
+  (e.Sample) e.Items = (e.Items);
+}
+
+SimpleOneELoop-Edge {
+  (e.Sample) e.Items-B ((e.Key) (e.Value)) e.Items-E
+    , e.Key: e.Sample
+    = (e.Items-B) (e.Value) (e.Items-E);
+}
+
+TestSimpleOneELoop {
+  = <AssertEq
+      <SimpleOneELoop
+        ('ABC')
+        X 100 (('XXX') ('YYY')) 'AAAAA' (('ABC') ('DEF')) () () ()
+      >
+      (
+        (X 100 (('XXX') ('YYY')) 'AAAAA')
+        ('DEF')
+        (() () ())
+      )
+    >
+    <AssertEq
+      <SimpleOneELoop
+        ('ABD')
+        X 100 (('XXX') ('YYY')) 'AAAAA' (('ABC') ('DEF')) () () ()
+      >
+      (
+        (X 100 (('XXX') ('YYY')) 'AAAAA' (('ABC') ('DEF')) () () ())
+      )
+    >
+    <AssertEq
+      <SimpleOneELoop-Edge
+        ('ABC')
+        X 100 (('XXX') ('YYY')) 'AAAAA' (('ABC') ('DEF')) () () ()
+      >
+      (
+        (X 100 (('XXX') ('YYY')) 'AAAAA')
+        ('DEF')
+        (() () ())
+      )
+    >;
+}
+
+//*$*****************************************************************************
+
+
+TestIntersect {
+  = <AssertEq <Intersect ('horunziy') ('heminguey')> ('huniy')>
+    <AssertEq <Intersect ('abcd') ('0123')> (/* пусто */)>;
+}
+
+Intersect {
+  (e.B1 s.1 e.E1) (e.B2 s.2 e.E2), <Eq s.1 s.2>: True
+    = s.1 <Intersect (e.E1) (e.B2 e.E2)>;
+
+  (e.1) (e.2) = /* пусто */;
+}
+
+Eq {
+  t.X t.X = True;
+  t.X t.Y = False;
+}
+
+TestDelim {
+  = <AssertEq <Delim 'hello|world'> (('hello') 'world')>
+    <AssertEq <Delim 'hello world'> (NoDelim)>;
+}
+
+Delim {
+  e.Prefix t.Delim e.Suffix, <DelimTerm t.Delim>: True = (e.Prefix) e.Suffix;
+
+  e.NoDelim = NoDelim;
+}
+
+DelimTerm {
+  '|' = True; t.Other = False;
+}
+
+
+TestDelim2 {
+  = <AssertEq <Delim2 'hellohello|world'> (('hello') ('hello'))>
+    <AssertEq <Delim2 'hello|world'> (Fail)>
+    <AssertEq <Delim2 'hello world'> (Fail)>;
+}
+
+Delim2 {
+  e.Prefix e.Prefix t.Delim e.Suffix, <DelimTerm t.Delim>: True
+    = <F e.Prefix> <G e.Prefix>;
+  e.Other = Fail;
+}
+
+F { e.X = (e.X); }
+G { e.X = (e.X); }
+
