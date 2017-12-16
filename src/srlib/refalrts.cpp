@@ -3458,39 +3458,46 @@ namespace {
 
 refalrts::ExternalReference go("Go", 0, 0);
 
+void print_error_message(FILE *stream, refalrts::FnResult res) {
+  switch(res) {
+    case refalrts::cRecognitionImpossible:
+      fprintf(stream, "\nRECOGNITION IMPOSSIBLE\n\n");
+      break;
+
+    case refalrts::cNoMemory:
+      fprintf(stream, "\nNO MEMORY\n\n");
+      break;
+
+    case refalrts::cStepLimit:
+      fprintf(
+        stream, "\nSTEP LIMIT REACHED (%u)\n\n", refalrts::vm::g_step_counter
+      );
+      break;
+
+    case refalrts::cIdentTableLimit:
+      fprintf(
+        stream, "\nIDENTS TABLE OVERFLOW (max %lu)\n\n",
+        static_cast<unsigned long>(refalrts::dynamic::idents_count())
+      );
+      break;
+
+    default:
+      fprintf(stream, "\nUNKNOWN ERROR\n\n");
+      refalrts_switch_default_violation(res);
+  }
+}
+
 }
 
 refalrts::FnResult refalrts::vm::run() {
   FnResult res = main_loop();
 
-  if (res != cSuccess) {
-    switch(res) {
-      case refalrts::cRecognitionImpossible:
-        fprintf(stderr, "\nRECOGNITION IMPOSSIBLE\n\n");
-        break;
-
-      case refalrts::cNoMemory:
-        fprintf(stderr, "\nNO MEMORY\n\n");
-        break;
-
-      case refalrts::cExit:
-        return res;
-
-      case refalrts::cStepLimit:
-        fprintf(stderr, "\nSTEP LIMIT REACHED (%u)\n\n", g_step_counter);
-        break;
-
-      case refalrts::cIdentTableLimit:
-        fprintf(
-          stderr, "\nIDENTS TABLE OVERFLOW (max %lu)\n\n",
-          static_cast<unsigned long>(refalrts::dynamic::idents_count())
-        );
-        break;
-
-      default:
-        fprintf(stderr, "\nUNKNOWN ERROR\n\n");
-        break;
+  if (res != cSuccess && res != cExit) {
+    print_error_message(stderr, res);
+    if (dump_stream() != stderr) {
+      print_error_message(dump_stream(), res);
     }
+
     make_dump(g_error_begin, g_error_end);
   }
 
