@@ -2846,15 +2846,174 @@ $EENUM XMLParse;
 
 
 /**
-  64. Random — not implemented yet
+  64. <Random '+'? s.Length> == e.LongNumber
+      s.Length ::= s.MACRODIGIT
+      e.LongNumber ::= s.MACRODIGIT+
+      |e.LongNumber| <= max(s.Length, 1)
 */
-$EENUM Random;
+%%
+namespace {
+
+class RndGen {
+  /*
+    See D. E. Knuth, The Art of Computer Programming,
+    Volume 2, chapter 3.2.2, program A
+  */
+public:
+  typedef refalrts::RefalNumber UInt;
+
+  enum {
+    cMaxVal = ~UInt(),
+    cMinDelay = 24,
+    cMaxDelay = 55,
+  };
+
+  RndGen();
+
+  UInt next_value() {
+    m_y[m_k] = m_y[m_k] + m_y[m_j];
+    UInt result = m_y[m_k];
+    m_k = (m_k + cMaxDelay - 1) % cMaxDelay;
+    m_j = (m_j + cMaxDelay - 1) % cMaxDelay;
+    return result;
+  }
+
+  UInt next_in_range(UInt max);
+
+private:
+  /*
+    Variable names from Knuth.
+  */
+  int m_k;
+  int m_j;
+  UInt m_y[cMaxDelay];
+};
+
+RndGen::RndGen()
+  : m_k(cMaxDelay - 1), m_j(cMinDelay - 1)
+{
+  UInt seed = static_cast<UInt>(time(NULL));
+
+  for (size_t i = 0; i < cMaxDelay; ++i) {
+    seed = seed * 1103515245 + 12345;
+    m_y[i] = seed;
+  }
+}
+
+RndGen::UInt RndGen::next_in_range(RndGen::UInt max) {
+  if (0 == max) {
+    return 0;
+  } else if (cMaxVal == max) {
+    return next_value();
+  } else {
+    ++max;
+
+    const UInt cBucketSize = cMaxVal / max;
+    const UInt cInvalid = cBucketSize * max;
+    UInt val;
+
+    do {
+      val = next_value();
+    } while(val > cInvalid);
+
+    return val / cBucketSize;
+  }
+}
+
+RndGen g_gen;
+
+bool positive_digit_arg(
+  refalrts::Iter& pfunc_name, refalrts::RefalNumber& value,
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+) {
+  refalrts::Iter content_b = 0, content_e = 0;
+  pfunc_name = refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  // don't check return value
+  refalrts::char_left('+', content_b, content_e);
+
+  refalrts::Iter pnumber = 0;
+  if (
+    refalrts::svar_left(pnumber, content_b, content_e)
+    && refalrts::empty_seq(content_b, content_e)
+    && refalrts::cDataNumber == pnumber->tag
+  ) {
+    value = pnumber->number_info;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+}  // unnamed namespace
+%%
+
+$ENTRY Random {
+%%
+  refalrts::Iter pfunc_name = 0;
+  refalrts::RefalNumber max = 0;
+
+  if (! positive_digit_arg(pfunc_name, max, arg_begin, arg_end)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  max = g_gen.next_in_range(max);
+
+  if (0 == max) {
+    max = 1;
+  }
+
+  refalrts::reset_allocator();
+  bool zero = true;
+  for (size_t i = 0; i < static_cast<size_t>(max); ++i) {
+    refalrts::RefalNumber digit = g_gen.next_value();
+    if (digit != 0 || ! zero) {
+      zero = false;
+
+      refalrts::Iter dummy = 0;
+      if (! refalrts::alloc_number(dummy, digit)) {
+        return refalrts::cNoMemory;
+      }
+    }
+  }
+
+  if (zero) {
+    refalrts::Iter dummy = 0;
+    if (! refalrts::alloc_number(dummy, 0)) {
+      return refalrts::cNoMemory;
+    }
+  }
+
+  refalrts::splice_from_freelist(arg_begin);
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+
+  return refalrts::cSuccess;
+%%
+}
 
 
 /**
-  65. RandomDigit — not implemented yet
+  65. <RandomDigit '+'? s.Max> == s.RandomDigit
+      s.Max, s.RandomDigit ::= s.MACRODIGIT
+      s.RandomDigit <= s.Max
 */
-$EENUM RandomDigit;
+$ENTRY RandomDigit {
+%%
+  refalrts::Iter pfunc_name = 0;
+  refalrts::RefalNumber max = 0;
+
+  if (! positive_digit_arg(pfunc_name, max, arg_begin, arg_end)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::RefalNumber digit = g_gen.next_in_range(max);
+
+  refalrts::reinit_number(arg_begin, digit);
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+
+  return refalrts::cSuccess;
+%%
+}
 
 
 /**

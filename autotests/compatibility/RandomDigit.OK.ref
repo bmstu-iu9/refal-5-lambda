@@ -1,0 +1,50 @@
+$ENTRY Go {
+  = <Loop5 150>
+    <Loop1 150>
+    <Loop0 150>;
+}
+
+Loop5 {
+  0 = ;
+
+  s.N
+    = <Check5 <RandomDigit 5>>
+      <Check5 <RandomDigit '+' 5>>
+      <Loop5 <- s.N 1>>;
+}
+
+Check5 {
+  s.Num = <InRange 0 s.Num 5>;
+}
+
+InRange {
+  s.Min s.Num s.Max
+    , <Compare s.Min s.Num> <Compare s.Num s.Max>
+    : {
+        '0-' = ;
+        '--' = ;
+        '-0' = ;
+      };
+}
+
+Loop1 {
+  0 = ;
+
+  s.N
+    = <Check1 <RandomDigit 1>>
+      <Check1 <RandomDigit '+' 1>>
+      <Loop1 <- s.N 1>>;
+}
+
+Check1 { 0 = ; 1 = ; }
+
+Loop0 {
+  0 = ;
+
+  s.N
+    = <Check0 <RandomDigit 0>>
+      <Check0 <RandomDigit '+' 0>>
+      <Loop0 <- s.N 1>>;
+}
+
+Check0 { 0 = ; }
