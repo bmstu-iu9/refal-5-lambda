@@ -15,7 +15,7 @@ $ENTRY GenProgram-RASL {
   (
     (#ModuleID s.Cookie1 s.Cookie2)
     (#CmdFuncArray s.FunctionCount e.FuncNames)
-    (#CmdLabelArray s.LabelCount e.Labels)
+    (#CmdIdentArray s.IdentCount e.Idents)
     (#CmdNumberArray s.NumberCount e.Numbers)
     (#CmdStringArray s.StringCount e.Strings)
     (#RASL e.RASL)
@@ -25,7 +25,7 @@ $ENTRY GenProgram-RASL {
     = <Lenw <BytesFromFunctionList e.FuncNames>>
     : s.ExternalSize e.FuncNamesAsBytes
 
-    = <Lenw <BytesFromLabelList e.Labels>>
+    = <Lenw <BytesFromIdentList e.Idents>>
     : s.IdentSize e.IdentsAsBytes
 
     = <Lenw <BytesFromStringList e.Strings>>
@@ -40,7 +40,7 @@ $ENTRY GenProgram-RASL {
         <PutWordLE s.Cookie1>
         <PutWordLE s.Cookie2>
         <PutWordLE s.FunctionCount>
-        <PutWordLE s.LabelCount>
+        <PutWordLE s.IdentCount>
         <PutWordLE s.NumberCount>
         <PutWordLE s.StringCount>
         <PutWordLE s.RaslLength>
@@ -67,13 +67,13 @@ BytesFromFunctionList {
     >;
 }
 
-BytesFromLabelList {
-  e.Labels =
+BytesFromIdentList {
+  e.Idents =
     <Map
       {
         (e.Ident) = <Asciiz <DisplayName e.Ident>>;
       }
-      e.Labels
+      e.Idents
     >;
 }
 
