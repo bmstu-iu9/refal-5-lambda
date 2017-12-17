@@ -356,11 +356,11 @@ PutCommand {
   s.Symbolic =
     (<NumberFromOpcode s.Symbolic> 0 0 0);
 
-  s.Symbolic t.Arg1 t.Arg2 t.Arg3 =
-    <PutCommand (s.Symbolic) t.Arg1 t.Arg2 t.Arg3>;
+  s.Symbolic s.Arg1 s.Arg2 s.Arg3 =
+    <PutCommand (s.Symbolic) s.Arg1 s.Arg2 s.Arg3>;
 
-  (e.Symbolic) t.Arg1 t.Arg2 t.Arg3 =
-    (<NumberFromOpcode e.Symbolic> t.Arg1 t.Arg2 t.Arg3);
+  (e.Symbolic) s.Arg1 s.Arg2 s.Arg3 =
+    (<NumberFromOpcode e.Symbolic> s.Arg1 s.Arg2 s.Arg3);
 }
 
 CreateCommandTag {
