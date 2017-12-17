@@ -214,6 +214,28 @@ ConvertOneInterpretCommand {
     = s.NextLabel <ConvertOneInterpretCommand-Simple t.Command>;
 }
 
+AddBacktrackStackAllocationCommand {
+  e.Commands
+    = <MapReduce
+        {
+          s.Depth (#CmdEStart e.VarInfo) =
+            <Inc s.Depth> (#CmdEStart e.VarInfo);
+
+          s.Depth (#CmdOnFailGoTo s.Offset) =
+            <Inc s.Depth> (#CmdOnFailGoTo s.Offset);
+
+          s.Depth t.OtherCommand = s.Depth t.OtherCommand;
+        }
+        0 e.Commands
+      >
+    : {
+        0 e.Commands^ = e.Commands;
+
+        s.Depth e.Commands^ =
+          (#CmdReserveBacktrackStack s.Depth) e.Commands;
+      };
+}
+
 AddFunctionNameComment {
   (e.Name) e.RASLCommands
     = <Map
@@ -583,26 +605,4 @@ OutlineConstants {
   t.OtherCommand =
     <OutlineConstants (e.Funcs) (e.Idents) (e.Numbers) (e.Strings) e.Commands>
     t.OtherCommand;
-}
-
-AddBacktrackStackAllocationCommand {
-  e.Commands
-    = <MapReduce
-        {
-          s.Depth (#CmdEStart e.VarInfo) =
-            <Inc s.Depth> (#CmdEStart e.VarInfo);
-
-          s.Depth (#CmdOnFailGoTo s.Offset) =
-            <Inc s.Depth> (#CmdOnFailGoTo s.Offset);
-
-          s.Depth t.OtherCommand = s.Depth t.OtherCommand;
-        }
-        0 e.Commands
-      >
-    : {
-        0 e.Commands^ = e.Commands;
-
-        s.Depth e.Commands^ =
-          (#CmdReserveBacktrackStack s.Depth) e.Commands;
-      };
 }
