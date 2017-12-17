@@ -430,11 +430,12 @@ ResolveLabeledDestinations {
 
     = <Sub s.DestinationOffset s.CommandOffset> : s.RelativeJump
 
-    = <TermCompare s.RelativeJump 256>
+    = <TermCompare s.RelativeJump 65536>
     : {
         '<'
+          = <Divmod s.RelativeJump 256> : (s.JumpHigh) s.JumpLow
           = e.ReadyRASL
-            <PutCommand #CmdOnFailGoTo s.RelativeJump 0 0>
+            <PutCommand #CmdOnFailGoTo s.JumpLow s.JumpHigh 0>
             <ResolveLabeledDestinations (e.Labels) e.UnscannedRASL>;
 
         s.Other
@@ -443,7 +444,7 @@ ResolveLabeledDestinations {
             >
             <WriteLine
               '  this function try jump over ' <StrFromInt s.RelativeJump>
-              ' commands, but maximum jump length is 255.'
+              ' commands, but maximum jump length is 65535.'
             >
             <WriteLine '  Compilation aborted.'>
             <Exit 1>;

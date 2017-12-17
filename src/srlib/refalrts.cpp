@@ -4943,7 +4943,7 @@ JUMP_FROM_SCALE:
         break;
 
       case icOnFailGoTo:
-        open_e_stack[stack_top++] = rasl + val1 + 1;
+        open_e_stack[stack_top++] = rasl + val1 + val2 * 256 + 1;
         break;
 
       case icProfilerStopSentence:
