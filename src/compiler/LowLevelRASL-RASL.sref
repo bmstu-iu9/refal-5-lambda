@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN MapReduce, Fetch, Seq, Map, TermCompare, Inc, DelAccumulator;
+$EXTERN MapReduce, Map, TermCompare, Inc;
 
 //FROM Library
 $EXTERN WriteLine, StrFromInt, Exit, Lenw, Add;
@@ -17,15 +17,19 @@ $EXTERN WriteLine, StrFromInt, Exit, Lenw, Add;
 */
 $ENTRY LowLevelRASL-RASL {
   s.DebugInfo s.Hash1 s.Hash2 e.Items
+
     = <MapReduce
-        (ClassifyItems-RASL s.DebugInfo)
+        ClassifyItems
         (/* Области видимости функций */)
         e.Items
       >
     : (e.FuncScopeClass) e.Definitions
+
+    = <Map (PrepareFunctionsRASL s.DebugInfo) e.Definitions> : e.Definitions^
+
     = (
         (#ModuleID s.Hash1 s.Hash2)
-        <PrepareRASL (e.FuncScopeClass) e.Definitions>
+        <PrepareCommonRASL (e.FuncScopeClass) e.Definitions>
       );
 }
 
@@ -49,68 +53,64 @@ OverflowFailure {
       <Exit 1>;
 }
 
-ClassifyItems-RASL {
-  s.DebugInfo (e.FuncScopeClass)
-  (#Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody) =
+ClassifyItems {
+  (e.FuncScopeClass) (#Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
-    <Fetch
-      e.FunctionBody
-      <Seq
-        (RemoveDebugInfo s.DebugInfo)
-        ConvertInterpretCommands
-        {
-          e.Commands-B (#OVERFLOW s.Type s.Count) e.Commands-E
-            = <OverflowFailure e.Name s.Type s.Count>;
+    (#Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody);
 
-          e.Commands = e.Commands;
-        }
-        PrepareOpenEStack
-        {
-          e.FunctionBody^ =
-            (#CmdInterpretFuncDescr
-              s.ScopeClass
-              (e.Name)
-              <Lenw
-                (#CmdProfileFunction)
-                (#CmdLoadConstants)
-                e.FunctionBody
-              >
-            );
-        }
-      >
-    >;
-
-  s.DebugInfo (e.FuncScopeClass)
-  (#Function-ToNative s.ScopeClass (e.Name) e.Commands) =
+  (e.FuncScopeClass) (#Function-ToNative s.ScopeClass (e.Name) e.Commands) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
     (#CmdNativeFuncDescr s.ScopeClass e.Name);
 
-  s.DebugInfo (e.FuncScopeClass)
-  (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
+  (e.FuncScopeClass) (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
     (#CmdNativeFuncDescr s.ScopeClass e.Name);
 
-  s.DebugInfo (e.FuncScopeClass)
-  (#CmdEnum s.ScopeClass e.Name) =
+  (e.FuncScopeClass) (#CmdEnum s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
     (#CmdEnumDescr s.ScopeClass e.Name);
 
-  s.DebugInfo (e.FuncScopeClass)
-  (#CmdSwap s.ScopeClass e.Name) =
+  (e.FuncScopeClass) (#CmdSwap s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
     (#CmdSwapDescr s.ScopeClass e.Name);
 
-  s.DebugInfo (e.FuncScopeClass)
-  (#CmdDeclaration s.ScopeClass e.Name) =
-    (e.FuncScopeClass (s.ScopeClass e.Name));
+  (e.FuncScopeClass) (#CmdDeclaration s.ScopeClass e.Name) =
+    (e.FuncScopeClass (s.ScopeClass e.Name)) /* skip */;
 
-  s.DebugInfo (e.FuncScopeClass)
-  (#CmdDefineIdent e.Name) =
-    (e.FuncScopeClass);
+  (e.FuncScopeClass) (#CmdDefineIdent e.Name) =
+    (e.FuncScopeClass) /* skip */;
 
-  s.DebugInfo (e.FuncScopeClass)
-  (#CmdEmitNativeCode t.SrcPos e.Code) =
-    (e.FuncScopeClass);
+  (e.FuncScopeClass) (#CmdEmitNativeCode t.SrcPos e.Code) =
+    (e.FuncScopeClass) /* skip */;
+}
+
+PrepareFunctionsRASL {
+  s.DebugInfo (#Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody)
+
+    = <RemoveDebugInfo s.DebugInfo e.FunctionBody> : e.FunctionBody^
+
+    = <ConvertInterpretCommands e.FunctionBody>
+    : {
+        e.Commands-B (#OVERFLOW s.Type s.Count) e.Commands-E
+          = <OverflowFailure e.Name s.Type s.Count>;
+
+        e.Commands = e.Commands;
+      }
+    : e.RASLCommands^
+
+    = <AddBacktrackStackAllocationCommand e.RASLCommands> : e.RASLCommands^
+
+    = (#CmdInterpretFuncDescr
+        s.ScopeClass
+        (e.Name)
+        <Lenw
+          (#CmdProfileFunction)
+          (#CmdLoadConstants)
+          e.RASLCommands
+        >
+      );
+
+  s.DebugInfo t.OtherItem = t.OtherItem;
 }
 
 RemoveDebugInfo {
@@ -149,64 +149,57 @@ ConvertOneInterpretCommand {
   (#CmdComment e.Text) = /* skip comment command */;
 
   (#CmdIssueMemory s.Memory)
-    = <Fetch
-        <TermCompare s.Memory 256>
-        {
-          '<' = (#CmdIssueMemory s.Memory);
+    = <TermCompare s.Memory 256>
+    : {
+        '<' = (#CmdIssueMemory s.Memory);
 
-          s.Other = (#OVERFLOW #CmdIssueMemory s.Memory);
-        }
-      >;
+        s.Other = (#OVERFLOW #CmdIssueMemory s.Memory);
+      };
 
-  (#CmdNumber s.Direction s.BracketNumber s.Number) =
-    <Fetch
-      <TermCompare s.Number 256> {
+  (#CmdNumber s.Direction s.BracketNumber s.Number)
+    = <TermCompare s.Number 256>
+    : {
         '<' = (#CmdNum s.Direction s.BracketNumber s.Number);
 
         s.Other = (#CmdHugeNum s.Direction s.BracketNumber s.Number);
-      }
-    >;
+      };
 
-  (#CmdNumberSave s.Direction s.BracketNumber s.SaveOffset s.Number) =
-    <Fetch
-      <TermCompare s.Number 256> {
+  (#CmdNumberSave s.Direction s.BracketNumber s.SaveOffset s.Number)
+    = <TermCompare s.Number 256>
+    : {
         '<' =
           (#CmdNumSave s.Direction s.BracketNumber s.SaveOffset s.Number);
 
         s.Other =
           (#CmdHugeNumSave s.Direction s.BracketNumber s.SaveOffset s.Number);
-      }
-    >;
+      };
 
-  (#CmdCreateElem s.CreateMode s.ElemNo #ElNumber s.Number) =
-    <Fetch
-      <TermCompare s.Number 256> {
+  (#CmdCreateElem s.CreateMode s.ElemNo #ElNumber s.Number)
+    = <TermCompare s.Number 256>
+    : {
         '<' = (#CmdCreateElem s.CreateMode s.ElemNo #ElNumber s.Number);
         s.Other = (#CmdCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.Number);
-      }
-    >;
+      };
 
   (#CmdUseRes) = /* пусто */;
 
-  (#CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset) =
-    (#CmdVariableDebugTable
-      s.Mode '.' e.Index '#' <StrFromInt s.Depth> s.Offset
-    );
+  (#CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset)
+    = (#CmdVariableDebugTable
+        s.Mode '.' e.Index '#' <StrFromInt s.Depth> s.Offset
+      );
 
   (#CmdSentence e.SubCommands)
     = <Lenw <ConvertInterpretCommands e.SubCommands>>
     : s.Length e.SubCommands^
-    = <Fetch
-        <TermCompare s.Length 256>
-        {
-          '<'
-             = (#CmdOnFailGoTo s.Length)
-               e.SubCommands
-               (#CmdProfilerStopSentence);
+    = <TermCompare s.Length 256>
+    : {
+        '<'
+           = (#CmdOnFailGoTo s.Length)
+             e.SubCommands
+             (#CmdProfilerStopSentence);
 
-           s.Other = (#OVERFLOW #CmdOnFailGoTo s.Length);
-        }
-      >;
+         s.Other = (#OVERFLOW #CmdOnFailGoTo s.Length);
+      };
 
   (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) =
     (#CmdEPrepare s.BracketNum s.VarNumber)
@@ -216,70 +209,72 @@ ConvertOneInterpretCommand {
   t.Command = t.Command;
 }
 
-PrepareRASL {
-  (e.FuncScopeClass) e.Definitions =
-    <Fetch
-      e.Definitions
-      <Seq
-        (MapReduce
-          {
-            (s.CurrentOffset e.All-RASL-Commands)
-            (#CmdInterpretFuncDescr
-              s.ScopeClass (e.Name) s.RASL-Length e.RASL-Commands
-            ) =
-              (
+PrepareCommonRASL {
+  (e.FuncScopeClass) e.Definitions
+
+    = <GlueFunctionRASLs e.Definitions>
+    : (s.RASL-Length e.RASL-Commands) e.Items
+
+    = <OutlineConstants
+        (0 /* функции */)
+        (0 /* идентификаторы */)
+        (0 /* большие числа */)
+        (0 /* строки */)
+        e.RASL-Commands
+      >
+    : (#CmdFuncArray s.FunctionCount e.Functions)
+      (#CmdLabelArray s.LabelCount e.Labels)
+      (#CmdNumberArray s.NumberCount e.Numbers)
+      (#CmdStringArray s.StringCount e.Strings)
+      e.RASL-Commands^
+
+    = (#CmdFuncArray
+        s.FunctionCount
+        <SetFunctionsScopeClass (e.FuncScopeClass) e.Functions>
+      )
+      (#CmdLabelArray s.LabelCount e.Labels)
+      (#CmdNumberArray s.NumberCount e.Numbers)
+      (#CmdStringArray s.StringCount e.Strings)
+      (#RASL e.RASL-Commands)
+      (#Items e.Items);
+}
+
+GlueFunctionRASLs {
+  e.Definitions
+    = <MapReduce
+        {
+          (s.CurrentOffset e.All-RASL-Commands)
+          (#CmdInterpretFuncDescr
+            s.ScopeClass (e.Name) s.RASL-Length e.RASL-Commands
+          )
+            = (
                 <Add s.CurrentOffset s.RASL-Length>
-                e.All-RASL-Commands
-                e.RASL-Commands
+                e.All-RASL-Commands e.RASL-Commands
               )
               (#CmdInterpretFuncDescr s.ScopeClass e.Name s.CurrentOffset);
 
-            (s.CurrentOffset e.All-RASL-Commands) t.OtherItem =
-              (s.CurrentOffset e.All-RASL-Commands) t.OtherItem;
-          }
-          (0 /* rasl */)
-        )
-        {
-          (s.RASL-Length e.RASL-Commands) e.Items =
-            <Fetch
-              <OutlineConstants
-                (0 /* функции */)
-                (0 /* идентификаторы */)
-                (0 /* большие числа */)
-                (0 /* строки */)
-                e.RASL-Commands
-              >
-              {
-                (#CmdFuncArray s.FunctionCount e.Functions)
-                (#CmdLabelArray s.LabelCount e.Labels)
-                (#CmdNumberArray s.NumberCount e.Numbers)
-                (#CmdStringArray s.StringCount e.Strings)
-                e.RASL-Commands^ =
-                  (#CmdFuncArray
-                    s.FunctionCount
-                    <DelAccumulator
-                      <MapReduce
-                        {
-                          (e.Decls-B (s.ScopeClass e.FuncName) e.Decls-E)
-                          (e.FuncName) =
-                            (e.Decls-B e.Decls-E)
-                            (s.ScopeClass e.FuncName);
-                        }
-                        (e.FuncScopeClass)
-                        e.Functions
-                      >
-                    >
-                  )
-                  (#CmdLabelArray s.LabelCount e.Labels)
-                  (#CmdNumberArray s.NumberCount e.Numbers)
-                  (#CmdStringArray s.StringCount e.Strings)
-                  (#RASL e.RASL-Commands)
-                  (#Items e.Items);
-              }
-            >;
+          (s.CurrentOffset e.All-RASL-Commands) t.OtherItem
+            = (s.CurrentOffset e.All-RASL-Commands) t.OtherItem;
         }
+        (0 /* rasl */)
+        e.Definitions
+      >;
+}
+
+SetFunctionsScopeClass {
+  (e.FuncScopeClass) e.Functions
+    = <MapReduce
+        {
+          (e.Decls-B (s.ScopeClass e.FuncName) e.Decls-E)
+          (e.FuncName)
+            = (e.Decls-B e.Decls-E)
+              (s.ScopeClass e.FuncName);
+        }
+        (e.FuncScopeClass)
+        e.Functions
       >
-    >;
+    : (e.FuncScopeClass-NotCalledFromRASL) e.Functions^
+    = e.Functions;
 }
 
 RemoveNumber { (s.Number e.Name) = (e.Name); }
@@ -576,32 +571,24 @@ OutlineConstants {
     t.OtherCommand;
 }
 
-PrepareOpenEStack {
-  e.Commands =
-    <Fetch
-      e.Commands
-      <Seq
-        (MapReduce
-          {
-            (#CmdReserveBacktrackStack s.Depth) (#CmdEStart e.VarInfo) =
-              (#CmdReserveBacktrackStack <Inc s.Depth>) (#CmdEStart e.VarInfo);
-
-            (#CmdReserveBacktrackStack s.Depth) (#CmdOnFailGoTo s.Offset) =
-              (#CmdReserveBacktrackStack <Inc s.Depth>) (#CmdOnFailGoTo s.Offset);
-
-            (#CmdReserveBacktrackStack s.Depth) t.OtherCommand =
-              (#CmdReserveBacktrackStack s.Depth) t.OtherCommand;
-          }
-          (#CmdReserveBacktrackStack 0)
-        )
+AddBacktrackStackAllocationCommand {
+  e.Commands
+    = <MapReduce
         {
-          (#CmdReserveBacktrackStack 0) e.Commands^ =
-            /* отбрасываем ненужную команду */
-            e.Commands;
+          s.Depth (#CmdEStart e.VarInfo) =
+            <Inc s.Depth> (#CmdEStart e.VarInfo);
 
-          (#CmdReserveBacktrackStack s.Depth) e.Commands^ =
-            (#CmdReserveBacktrackStack s.Depth) e.Commands;
+          s.Depth (#CmdOnFailGoTo s.Offset) =
+            <Inc s.Depth> (#CmdOnFailGoTo s.Offset);
+
+          s.Depth t.OtherCommand = s.Depth t.OtherCommand;
         }
+        0 e.Commands
       >
-    >;
+    : {
+        0 e.Commands^ = e.Commands;
+
+        s.Depth e.Commands^ =
+          (#CmdReserveBacktrackStack s.Depth) e.Commands;
+      };
 }
