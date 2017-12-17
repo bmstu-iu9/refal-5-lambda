@@ -3038,12 +3038,6 @@ Write-Aux {
   67. <ListOfBuiltin> == (s.NUMBER s.COMPOUND { regular | special })*
 */
 $ENTRY ListOfBuiltin {
-  = <__Step-Start> <ListOfBuiltin_1> <ListOfBuiltin_2> <__Step-End>;
-}
-
-// Функция слишком длинная для одного предложения
-// TODO: исправить после исправления #129!!!
-ListOfBuiltin_1 {
   = (1 #Mu #special)
     (2 #Add #regular)
     (3 #Arg #regular)
@@ -3078,11 +3072,8 @@ ListOfBuiltin_1 {
     (32 #Time #regular)
     (33 #Type #regular)
     (34 #Upper #regular)
-    (35 #Sysfun #regular);
-}
-
-ListOfBuiltin_2 {
-  = (45 #Freeze #regular)
+    (35 #Sysfun #regular)
+    (45 #Freeze #regular)
     (46 #Freezer #regular)
     (47 #Dn #regular)
     (48 #Up #special)
