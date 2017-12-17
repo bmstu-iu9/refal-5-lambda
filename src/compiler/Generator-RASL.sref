@@ -1,8 +1,8 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, UnBracket, Inc;
+$EXTERN Map, UnBracket, Fetch, MapReduce, Inc, TermCompare;
 
 //FROM Library
-$EXTERN Lenw, Mul, Sub, Ord, Div, Mod;
+$EXTERN Lenw, Mul, Sub, Ord, Div, Mod, WriteLine, StrFromInt, Exit;
 
 //FROM DisplayName
 $EXTERN DisplayName;
@@ -31,8 +31,7 @@ $ENTRY GenProgram-RASL {
     = <Lenw <BytesFromStringList e.Strings>>
     : s.StringSize e.StringsAsBytes
 
-    = <Lenw <Map GenCommand-RASL e.RASL>>
-    : s.RaslLength e.RASLAsBytes
+    = <Assemble e.RASL> : s.RaslLength (e.LabelOffsets) e.RASLAsWords
 
     = <PutBlock #Start <BytesFromString 'RASLCODE'>>
       <PutBlock
@@ -51,9 +50,9 @@ $ENTRY GenProgram-RASL {
         e.IdentsAsBytes
         <Map PutWordLE e.Numbers>
         e.StringsAsBytes
-        <Map UnBracket e.RASLAsBytes>
+        <Map UnBracket e.RASLAsWords>
       >
-      <Map GenCommand-Globals e.Items>;
+      <Map (GenCommand-Globals e.LabelOffsets) e.Items>;
 }
 
 BytesFromFunctionList {
@@ -125,24 +124,40 @@ NameWithSign-Bytes {
 }
 
 GenCommand-Globals {
-  (#CmdEnumDescr s.ScopeClass e.Name) =
+  e.Labels (#CmdEnumDescr s.ScopeClass e.Name) =
     <PutBlock #EmptyFunction <NameWithSign-Bytes s.ScopeClass e.Name>>;
 
-  (#CmdInterpretFuncDescr s.ScopeClass e.Name s.Offset) =
+  e.Labels-B (s.Label s.Offset) e.Labels-E
+  (#CmdInterpretFuncDescr s.ScopeClass e.Name s.Label) =
     <PutBlock
       #RefalFunction
       <NameWithSign-Bytes s.ScopeClass e.Name>
       <PutWordLE s.Offset>
     >;
 
-  (#CmdSwapDescr s.ScopeClass e.Name) =
+  e.Labels (#CmdSwapDescr s.ScopeClass e.Name) =
     <PutBlock #Swap <NameWithSign-Bytes s.ScopeClass e.Name>>;
 
-  (#CmdNativeFuncDescr s.ScopeClass e.Name) =
+  e.Labels (#CmdNativeFuncDescr s.ScopeClass e.Name) =
     <PutBlock #NativeFunction <NameWithSign-Bytes s.ScopeClass e.Name>>;
 }
 
+Assemble {
+  e.RASL
+
+    = <Map GenCommand-RASL e.RASL> : e.RASLAsWords
+
+    = <CalcLabelsOffsets e.RASLAsWords> : (s.RaslLength e.Labels) e.RASLAsWords^
+
+    = <ResolveLabeledDestinations (e.Labels) e.RASLAsWords> : e.RASLAsWords^
+
+    = s.RaslLength (e.Labels) e.RASLAsWords;
+}
+
 GenCommand-RASL {
+  // Labels
+  (#LABEL s.Label) = (#LABEL s.Label);
+
   // ---------------------------------------------------------------------------
   // Создания глобальных объектов, общие команды
 
@@ -158,8 +173,8 @@ GenCommand-RASL {
   (#CmdReserveBacktrackStack s.Depth) =
     <PutCommand #CmdReserveBacktrackStack s.Depth 0 0>;
 
-  (#CmdOnFailGoTo s.Offset) =
-    <PutCommand #CmdOnFailGoTo s.Offset 0 0>;
+  (#CmdOnFailGoTo s.Offset "Func name:" e.FuncName) =
+    (#CmdOnFailGoTo s.Offset e.FuncName);
 
   (#CmdProfilerStopSentence) =
     <PutCommand #CmdProfilerStopSentence>;
@@ -375,4 +390,55 @@ CreateCommandInfo {
   #ElUnwrappedClosure s.HeadCounter = s.HeadCounter;
 
   s.Bracket = <NumberFromBracket s.Bracket>;
+}
+
+CalcLabelsOffsets {
+  e.RASL
+    = <MapReduce
+        {
+          (s.Offset e.Labels) (#LABEL s.Label)
+            = (s.Offset e.Labels (s.Label s.Offset));
+
+          (s.Offset e.Labels)
+          (#CmdOnFailGoTo s.Destination e.FuncName)
+            = (<Inc s.Offset> e.Labels)
+              (#CmdOnFailGoTo <Inc s.Offset> s.Destination e.FuncName);
+
+          (s.Offset e.Labels) t.OtherCommand
+            = (<Inc s.Offset> e.Labels) t.OtherCommand;
+        }
+        (0) e.RASL
+      >;
+}
+
+ResolveLabeledDestinations {
+  (e.Labels)
+  e.ReadyRASL
+  (#CmdOnFailGoTo s.CommandOffset s.DestinationLabel e.FuncName)
+  e.UnscannedRASL
+
+    = e.Labels : e.Labels-B (s.DestinationLabel s.DestinationOffset) e.Labels-E
+
+    = <Sub s.DestinationOffset s.CommandOffset> : s.RelativeJump
+
+    = <TermCompare s.RelativeJump 256>
+    : {
+        '<'
+          = e.ReadyRASL
+            <PutCommand #CmdOnFailGoTo s.RelativeJump 0 0>
+            <ResolveLabeledDestinations (e.Labels) e.UnscannedRASL>;
+
+        s.Other
+          = <WriteLine
+              'Compilation failure in function ' <DisplayName e.FuncName> ':'
+            >
+            <WriteLine
+              '  this function try jump over ' <StrFromInt s.RelativeJump>
+              ' commands, but maximum jump length is 255.'
+            >
+            <WriteLine '  Compilation aborted.'>
+            <Exit 1>;
+      };
+
+  (e.Labels) e.ReadyRASL = e.ReadyRASL;
 }

@@ -1,8 +1,8 @@
 //FROM LibraryEx
-$EXTERN MapReduce, Map, TermCompare, Inc;
+$EXTERN MapReduce, Inc, TermCompare, Map;
 
 //FROM Library
-$EXTERN WriteLine, StrFromInt, Exit, Lenw, Add;
+$EXTERN WriteLine, StrFromInt, Exit;
 
 
 /**
@@ -25,7 +25,8 @@ $ENTRY LowLevelRASL-RASL {
       >
     : (e.FuncScopeClass) e.Definitions
 
-    = <Map (PrepareFunctionsRASL s.DebugInfo) e.Definitions> : e.Definitions^
+    = <MapReduce (PrepareFunctionsRASL s.DebugInfo) 0 e.Definitions>
+    : s.MaxLabel e.Definitions^
 
     = (
         (#ModuleID s.Hash1 s.Hash2)
@@ -39,15 +40,6 @@ OverflowFailure {
       <WriteLine
         '  this function requests ' <StrFromInt s.Memory> ' local variables, '
         'but maximum size is 255.'
-      >
-      <WriteLine '  Compilation aborted.'>
-      <Exit 1>;
-
-  e.Function #CmdOnFailGoTo s.Memory
-    = <WriteLine 'Compilation failure in function ' e.Function ':'>
-      <WriteLine
-        '  this function try jump over ' <StrFromInt s.Memory> ' commands, '
-        'but maximum jump length is 255.'
       >
       <WriteLine '  Compilation aborted.'>
       <Exit 1>;
@@ -85,32 +77,35 @@ ClassifyItems {
 }
 
 PrepareFunctionsRASL {
-  s.DebugInfo (#Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody)
+  s.DebugInfo s.NextLabel
+  (#Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody)
 
     = <RemoveDebugInfo s.DebugInfo e.FunctionBody> : e.FunctionBody^
 
-    = <ConvertInterpretCommands e.FunctionBody>
+    = <ConvertInterpretCommands <Inc s.NextLabel> e.FunctionBody>
     : {
-        e.Commands-B (#OVERFLOW s.Type s.Count) e.Commands-E
+        s.NextLabel^ e.Commands-B (#OVERFLOW s.Type s.Count) e.Commands-E
           = <OverflowFailure e.Name s.Type s.Count>;
 
-        e.Commands = e.Commands;
+        s.NextLabel^ e.Commands = s.NextLabel e.Commands;
       }
-    : e.RASLCommands^
+    : s.NextLabel^ e.RASLCommands^
 
     = <AddBacktrackStackAllocationCommand e.RASLCommands> : e.RASLCommands^
 
-    = (#CmdInterpretFuncDescr
+    = <AddFunctionNameComment (e.Name) e.RASLCommands> : e.RASLCommands^
+
+    = s.NextLabel
+      (#CmdInterpretFuncDescr
         s.ScopeClass
         (e.Name)
-        <Lenw
-          (#CmdProfileFunction)
-          (#CmdLoadConstants)
-          e.RASLCommands
-        >
+        (#LABEL s.NextLabel)
+        (#CmdProfileFunction)
+        (#CmdLoadConstants)
+        e.RASLCommands
       );
 
-  s.DebugInfo t.OtherItem = t.OtherItem;
+  s.DebugInfo s.NextLabel t.OtherItem = s.NextLabel t.OtherItem;
 }
 
 RemoveDebugInfo {
@@ -142,10 +137,11 @@ RemoveDebugInfoRec {
 }
 
 ConvertInterpretCommands {
-  e.Commands = <Map ConvertOneInterpretCommand e.Commands>;
+  s.NextLabel e.Commands
+    = <MapReduce ConvertOneInterpretCommand s.NextLabel e.Commands>;
 }
 
-ConvertOneInterpretCommand {
+ConvertOneInterpretCommand-Simple {
   (#CmdComment e.Text) = /* skip comment command */;
 
   (#CmdIssueMemory s.Memory)
@@ -188,32 +184,53 @@ ConvertOneInterpretCommand {
         s.Mode '.' e.Index '#' <StrFromInt s.Depth> s.Offset
       );
 
-  (#CmdSentence e.SubCommands)
-    = <Lenw <ConvertInterpretCommands e.SubCommands>>
-    : s.Length e.SubCommands^
-    = <TermCompare s.Length 256>
-    : {
-        '<'
-           = (#CmdOnFailGoTo s.Length)
-             e.SubCommands
-             (#CmdProfilerStopSentence);
-
-         s.Other = (#OVERFLOW #CmdOnFailGoTo s.Length);
-      };
-
-  (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) =
-    (#CmdEPrepare s.BracketNum s.VarNumber)
-    (#CmdEStart s.BracketNum s.VarNumber)
-    <ConvertInterpretCommands e.SubCommands>;
-
   t.Command = t.Command;
+}
+
+ConvertOneInterpretCommand {
+  s.NextLabel (#CmdSentence e.SubCommands)
+
+    = <ConvertInterpretCommands s.NextLabel e.SubCommands>
+    : s.NextLabel^ e.SubCommands^
+
+    = <Inc s.NextLabel>
+      (#CmdOnFailGoTo s.NextLabel)
+      e.SubCommands
+      (#LABEL s.NextLabel)
+      (#CmdProfilerStopSentence);
+
+
+  s.NextLabel (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands)
+
+    = <ConvertInterpretCommands s.NextLabel e.SubCommands>
+    : s.NextLabel^ e.SubCommands^
+
+    = s.NextLabel
+      (#CmdEPrepare s.BracketNum s.VarNumber)
+      (#CmdEStart s.BracketNum s.VarNumber)
+      e.SubCommands;
+
+  s.NextLabel t.Command
+    = s.NextLabel <ConvertOneInterpretCommand-Simple t.Command>;
+}
+
+AddFunctionNameComment {
+  (e.Name) e.RASLCommands
+    = <Map
+        {
+          (#CmdOnFailGoTo s.NextLabel)
+            = (#CmdOnFailGoTo s.NextLabel "Func name:" e.Name);
+
+          t.OtherCommand = t.OtherCommand;
+        }
+        e.RASLCommands
+      >;
 }
 
 PrepareCommonRASL {
   (e.FuncScopeClass) e.Definitions
 
-    = <GlueFunctionRASLs e.Definitions>
-    : (s.RASL-Length e.RASL-Commands) e.Items
+    = <GlueFunctionRASLs e.Definitions> : (e.RASL-Commands) e.Items
 
     = <OutlineConstants
         (0 /* функции */)
@@ -243,20 +260,17 @@ GlueFunctionRASLs {
   e.Definitions
     = <MapReduce
         {
-          (s.CurrentOffset e.All-RASL-Commands)
+          (e.All-RASL-Commands)
           (#CmdInterpretFuncDescr
-            s.ScopeClass (e.Name) s.RASL-Length e.RASL-Commands
+            s.ScopeClass (e.Name) (#LABEL s.Label) e.RASL-Commands
           )
-            = (
-                <Add s.CurrentOffset s.RASL-Length>
-                e.All-RASL-Commands e.RASL-Commands
-              )
-              (#CmdInterpretFuncDescr s.ScopeClass e.Name s.CurrentOffset);
+            = (e.All-RASL-Commands (#LABEL s.Label) e.RASL-Commands)
+              (#CmdInterpretFuncDescr s.ScopeClass e.Name s.Label);
 
-          (s.CurrentOffset e.All-RASL-Commands) t.OtherItem
-            = (s.CurrentOffset e.All-RASL-Commands) t.OtherItem;
+          (e.All-RASL-Commands) t.OtherItem
+            = (e.All-RASL-Commands) t.OtherItem;
         }
-        (0 /* rasl */)
+        (/* rasl */)
         e.Definitions
       >;
 }

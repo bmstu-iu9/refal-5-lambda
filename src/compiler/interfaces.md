@@ -512,7 +512,7 @@ e-переменные, распределяемые последователь�
     t.DeclarationCommand ::=
         t.CommonDeclarationCommand
       | (#CmdEnumDescr e.CookiedName)
-      | (#CmdInterpretFuncDescr e.CookiedName)
+      | (#CmdInterpretFuncDescr e.CookiedName s.LabelId)
       | (#CmdSwapDescr e.CookiedName)
 
     e.CookiedName ::= e.Name #Hash s.Cookie1 s.Cookie2
@@ -551,6 +551,7 @@ e-переменные, распределяемые последователь�
       | (#CmdFinRAA)
       | (#CmdIssueMemory s.Memory)
       | (#CmdReserveBacktrackStack s.Depth)
+      | (#LABEL s.LabelId)
 
     t.InterpretArrayLines ::=
         (#CmdInitB0)
@@ -572,7 +573,8 @@ e-переменные, распределяемые последователь�
       | (#CmdWrapClosure s.ClosureOffset)
       | (#CmdPushStack s.Offset)
       | (#CmdFail)
-      | (#CmdOnFailGoTo s.Delta)
+      | (#LABEL s.LabelId)
+      | (#CmdOnFailGoTo s.LabelId "Func name:" e.CookiedName)
       | (#CmdInitB0-Lite)
       | (s.iMatchSaveCommand s.Direction s.Offset s.iMatchSaveInfo)
       | (#CmdSetRes s.R-Offset)
@@ -580,6 +582,8 @@ e-переменные, распределяемые последователь�
       | (#CmdInsertTile s.BeginOffset s.EndOffset)
       | (#CmdSpliceToFreeList)
       | (#CmdNextStep)
+
+    s.LabelId ::= s.NUMBER
 
     s.iMatchCommand e.iMatchInfo ::=
         #CmdRepeat s.Mode s.VarOffset s.SampleOffset
@@ -689,9 +693,11 @@ e-переменные, распределяемые последователь�
   * `(#CmdCreateElem s.CreateMode s.Offset s.iAllocType e.iAllocInfo)`.
     Оговорка о `#ElNumber` и `#ElHugeNumber` та же,
     что и для `#CmdNum` и `#CmdHugeNum`.
-  * `(#CmdOnFailGoTo s.Delta)` — кладёт на стек откатов адрес команды,
-    с которой начинается следующее предложение. Смещение этой команды
-    задаётся относительно текущей команды `#CmdOnFailGoTo`.
+  * `(#CmdOnFailGoTo s.LabelId "Func name:" e.CookiedName)` — кладёт на стек
+    откатов адрес команды, с которой начинается следующее предложение.
+    Смещение этой команды задаётся именем метки,
+  * `(#LABEL s.LabelId)` — задаёт имя метки для `#CmdOnFailGoTo`
+    и `#CmdInterpretFuncDescr`.
 
 **Понятие отката.** При неудаче сопоставления с образцом в интерпретируемом
 коде запускается откат: со стека откатов снимается адрес следующей команды
