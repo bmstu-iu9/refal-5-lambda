@@ -16,11 +16,11 @@ $ENTRY NumberFromOpcode{
   #CmdChar #AlgTerm = 10;
   #CmdCharSave #AlgLeft = 11;
   #CmdCharSave #AlgRight = 12;
-  #CmdNum #AlgLeft = 13;
-  #CmdNum #AlgRight = 14;
-  #CmdNum #AlgTerm = 15;
-  #CmdNumSave #AlgLeft = 16;
-  #CmdNumSave #AlgRight = 17;
+  #CmdNumber #AlgLeft = 13;
+  #CmdNumber #AlgRight = 14;
+  #CmdNumber #AlgTerm = 15;
+  #CmdNumberSave #AlgLeft = 16;
+  #CmdNumberSave #AlgRight = 17;
   #CmdHugeNum #AlgLeft = 18;
   #CmdHugeNum #AlgRight = 19;
   #CmdHugeNum #AlgTerm = 20;

@@ -4995,32 +4995,32 @@ JUMP_FROM_SCALE:
         }
         break;
 
-      case icNumLeft:
+      case icNumberLeft:
         if (! number_left(static_cast<RefalNumber>(val2), bb, be)) {
           MATCH_FAIL;
         }
         break;
 
-      case icNumRight:
+      case icNumberRight:
         if (! number_right(static_cast<RefalNumber>(val2), bb, be)) {
           MATCH_FAIL;
         }
         break;
 
-      case icNumTerm:
+      case icNumberTerm:
         if (! number_term(static_cast<RefalNumber>(val2), bb)) {
           MATCH_FAIL;
         }
         break;
 
-      case icNumSaveLeft:
+      case icNumberSaveLeft:
         save_pos = number_left(static_cast<RefalNumber>(val2), bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
-      case icNumSaveRight:
+      case icNumberSaveRight:
         save_pos = number_right(static_cast<RefalNumber>(val2), bb, be);
         if (! save_pos) {
           MATCH_FAIL;

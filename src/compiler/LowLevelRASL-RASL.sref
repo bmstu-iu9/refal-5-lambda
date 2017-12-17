@@ -130,7 +130,7 @@ ConvertOneInterpretCommand-Simple {
   (#CmdNumber s.Direction s.BracketNumber s.Number)
     = <TermCompare s.Number 256>
     : {
-        '<' = (#CmdNum s.Direction s.BracketNumber s.Number);
+        '<' = (#CmdNumber s.Direction s.BracketNumber s.Number);
 
         s.Other = (#CmdHugeNum s.Direction s.BracketNumber s.Number);
       };
@@ -139,7 +139,7 @@ ConvertOneInterpretCommand-Simple {
     = <TermCompare s.Number 256>
     : {
         '<' =
-          (#CmdNumSave s.Direction s.BracketNumber s.SaveOffset s.Number);
+          (#CmdNumberSave s.Direction s.BracketNumber s.SaveOffset s.Number);
 
         s.Other =
           (#CmdHugeNumSave s.Direction s.BracketNumber s.SaveOffset s.Number);

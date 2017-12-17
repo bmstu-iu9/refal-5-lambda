@@ -592,7 +592,7 @@ e-переменные, распределяемые последователь�
       | #CmdVar s.Mode s.VarOffset
       | #CmdName s.NameId
       | #CmdIdent s.NameId
-      | #CmdNum s.NUMBER
+      | #CmdNumber s.NUMBER
       | #CmdHugeNum s.NumberId
       | #CmdBracket s.NewRangeOffset
 
@@ -603,7 +603,7 @@ e-переменные, распределяемые последователь�
       | #CmdVarSave s.Mode s.VarOffset
       | #CmdNameSave s.SaveOffset s.NameId
       | #CmdIdentSave s.SaveOffset s.NameId
-      | #CmdNumSave s.SaveOffset s.NUMBER
+      | #CmdNumberSave s.SaveOffset s.NUMBER
       | #CmdHugeNumSave s.SaveOffset s.NumberId
       | #CmdBracketSave s.NewRangeOffset
 

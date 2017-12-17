@@ -198,11 +198,11 @@ GenCommand-RASL {
       (#CmdCharSave s.Direction) s.SaveOffset <Ord s.Char> s.BracketNumber
     >;
 
-  (#CmdNum s.Direction s.BracketNumber s.Number) =
-    <PutCommand (#CmdNum s.Direction) 0 s.Number s.BracketNumber>;
+  (#CmdNumber s.Direction s.BracketNumber s.Number) =
+    <PutCommand (#CmdNumber s.Direction) 0 s.Number s.BracketNumber>;
 
-  (#CmdNumSave s.Direction s.BracketNumber s.SaveOffset s.Number) =
-    <PutCommand (#CmdNumSave s.Direction) s.SaveOffset s.Number s.BracketNumber>;
+  (#CmdNumberSave s.Direction s.BracketNumber s.SaveOffset s.Number) =
+    <PutCommand (#CmdNumberSave s.Direction) s.SaveOffset s.Number s.BracketNumber>;
 
   (#CmdHugeNum s.Direction s.BracketNumber s.Number) =
     <PutCommand (#CmdHugeNum s.Direction) 0 s.Number s.BracketNumber>;
