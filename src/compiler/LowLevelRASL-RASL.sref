@@ -127,31 +127,6 @@ ConvertInterpretCommands {
 ConvertOneInterpretCommand-Simple {
   (#CmdComment e.Text) = /* skip comment command */;
 
-  (#CmdNumber s.Direction s.BracketNumber s.Number)
-    = <TermCompare s.Number 256>
-    : {
-        '<' = (#CmdNumber s.Direction s.BracketNumber s.Number);
-
-        s.Other = (#CmdHugeNum s.Direction s.BracketNumber s.Number);
-      };
-
-  (#CmdNumberSave s.Direction s.BracketNumber s.SaveOffset s.Number)
-    = <TermCompare s.Number 256>
-    : {
-        '<' =
-          (#CmdNumberSave s.Direction s.BracketNumber s.SaveOffset s.Number);
-
-        s.Other =
-          (#CmdHugeNumSave s.Direction s.BracketNumber s.SaveOffset s.Number);
-      };
-
-  (#CmdCreateElem s.CreateMode s.ElemNo #ElNumber s.Number)
-    = <TermCompare s.Number 256>
-    : {
-        '<' = (#CmdCreateElem s.CreateMode s.ElemNo #ElNumber s.Number);
-        s.Other = (#CmdCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.Number);
-      };
-
   (#CmdUseRes) = /* пусто */;
 
   (#CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset)
@@ -232,13 +207,11 @@ PrepareCommonRASL {
     = <OutlineConstants
         (0 /* функции */)
         (0 /* идентификаторы */)
-        (0 /* большие числа */)
         (0 /* строки */)
         e.RASL-Commands
       >
     : (#CmdFuncArray s.FunctionCount e.Functions)
       (#CmdIdentArray s.IdentCount e.Idents)
-      (#CmdNumberArray s.NumberCount e.Numbers)
       (#CmdStringArray s.StringCount e.Strings)
       e.RASL-Commands^
 
@@ -247,7 +220,7 @@ PrepareCommonRASL {
         <SetFunctionsScopeClass (e.FuncScopeClass) e.Functions>
       )
       (#CmdIdentArray s.IdentCount e.Idents)
-      (#CmdNumberArray s.NumberCount e.Numbers)
+      (#CmdNumberArray 0 /* empty */)
       (#CmdStringArray s.StringCount e.Strings)
       (#RASL e.RASL-Commands)
       (#Items e.Items);
@@ -293,291 +266,226 @@ RemoveNumber { (s.Number e.Name) = (e.Name); }
 OutlineConstants {
   (s.NextFunc e.Funcs)
   (s.NextIdent e.Idents)
-  (s.NextNumber e.Numbers)
   (s.NextString e.Strings)
   /* пусто */ =
     (#CmdFuncArray s.NextFunc <Map RemoveNumber e.Funcs>)
     (#CmdIdentArray s.NextIdent <Map RemoveNumber e.Idents>)
-    (#CmdNumberArray s.NextNumber <Map { (s.Id s.Value) = s.Value; } e.Numbers>)
     (#CmdStringArray s.NextString <Map RemoveNumber e.Strings>);
 
-  (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents) (e.Numbers)
+  (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
   (e.Strings)
   e.Commands
   (#CmdName s.Direction s.BracketNum e.Func) =
     <OutlineConstants
-      (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents) (e.Numbers)
+      (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
       (e.Strings)
       e.Commands
     >
     (#CmdName s.Direction s.BracketNum s.Num);
 
-  (s.NextFunc e.Funcs) (e.Idents) (e.Numbers) (e.Strings)
+  (s.NextFunc e.Funcs) (e.Idents) (e.Strings)
   e.Commands
   (#CmdName s.Direction s.BracketNum e.Func) =
     <OutlineConstants
-      (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents) (e.Numbers)
+      (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents)
       (e.Strings)
       e.Commands
     >
     (#CmdName s.Direction s.BracketNum s.NextFunc);
 
-  (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents) (e.Numbers)
+  (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
   (e.Strings)
   e.Commands
   (#CmdNameSave s.Direction s.BracketNum s.SaveOffset e.Func) =
     <OutlineConstants
-      (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents) (e.Numbers)
+      (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
       (e.Strings)
       e.Commands
     >
     (#CmdNameSave s.Direction s.BracketNum s.SaveOffset s.Num);
 
-  (s.NextFunc e.Funcs) (e.Idents) (e.Numbers) (e.Strings)
+  (s.NextFunc e.Funcs) (e.Idents) (e.Strings)
   e.Commands
   (#CmdNameSave s.Direction s.BracketNum s.SaveOffset e.Func) =
     <OutlineConstants
-      (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents) (e.Numbers)
+      (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents)
       (e.Strings)
       e.Commands
     >
     (#CmdNameSave s.Direction s.BracketNum s.SaveOffset s.NextFunc);
 
-  (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents) (e.Numbers)
+  (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
   (e.Strings)
   e.Commands
   (#CmdCreateElem s.CreateMode s.ElemNo #ElName e.Func) =
     <OutlineConstants
-      (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents) (e.Numbers)
+      (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
       (e.Strings)
       e.Commands
     >
     (#CmdCreateElem s.CreateMode s.ElemNo #ElName s.Num);
 
-  (s.NextFunc e.Funcs) (e.Idents) (e.Numbers) (e.Strings)
+  (s.NextFunc e.Funcs) (e.Idents) (e.Strings)
   e.Commands
   (#CmdCreateElem s.CreateMode s.ElemNo #ElName e.Func) =
     <OutlineConstants
-      (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents) (e.Numbers)
+      (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents)
       (e.Strings)
       e.Commands
     >
     (#CmdCreateElem s.CreateMode s.ElemNo #ElName s.NextFunc);
 
-  (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents) (e.Numbers)
+  (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
   (e.Strings)
   e.Commands
   (#CmdADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
-      (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents) (e.Numbers)
+      (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
       (e.Strings)
       e.Commands
     >
     (#CmdADT s.Direction s.BracketNum s.InnerBrackets s.Num);
 
-  (s.NextFunc e.Funcs) (e.Idents) (e.Numbers) (e.Strings)
+  (s.NextFunc e.Funcs) (e.Idents) (e.Strings)
   e.Commands
   (#CmdADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
-      (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents) (e.Numbers)
+      (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents)
       (e.Strings)
       e.Commands
     >
     (#CmdADT s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
 
-  (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents) (e.Numbers)
+  (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
   (e.Strings)
   e.Commands
   (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
-      (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents) (e.Numbers)
+      (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
       (e.Strings)
       e.Commands
     >
     (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets s.Num);
 
-  (s.NextFunc e.Funcs) (e.Idents) (e.Numbers) (e.Strings)
+  (s.NextFunc e.Funcs) (e.Idents) (e.Strings)
   e.Commands
   (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
-      (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents) (e.Numbers)
+      (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents)
       (e.Strings)
       e.Commands
     >
     (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
 
-  (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E) (e.Numbers)
+  (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
   (e.Strings)
   e.Commands
   (#CmdIdent s.Direction s.BracketNum e.Ident) =
     <OutlineConstants
-      (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E) (e.Numbers)
+      (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
       (e.Strings)
       e.Commands
     >
     (#CmdIdent s.Direction s.BracketNum s.Num);
 
-  (e.Funcs) (s.NextIdent e.Idents) (e.Numbers) (e.Strings)
+  (e.Funcs) (s.NextIdent e.Idents) (e.Strings)
   e.Commands
   (#CmdIdent s.Direction s.BracketNum e.Ident) =
     <OutlineConstants
-      (e.Funcs) (<Inc s.NextIdent> e.Idents (s.NextIdent e.Ident)) (e.Numbers)
+      (e.Funcs) (<Inc s.NextIdent> e.Idents (s.NextIdent e.Ident))
       (e.Strings)
       e.Commands
     >
     (#CmdIdent s.Direction s.BracketNum s.NextIdent);
 
-  (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E) (e.Numbers)
+  (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
   (e.Strings)
   e.Commands
   (#CmdIdentSave s.Direction s.BracketNum s.SaveOffset e.Ident) =
     <OutlineConstants
-      (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E) (e.Numbers)
+      (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
       (e.Strings)
       e.Commands
     >
     (#CmdIdentSave s.Direction s.BracketNum s.SaveOffset s.Num);
 
-  (e.Funcs) (s.NextIdent e.Idents) (e.Numbers) (e.Strings)
+  (e.Funcs) (s.NextIdent e.Idents) (e.Strings)
   e.Commands
   (#CmdIdentSave s.Direction s.BracketNum s.SaveOffset e.Ident) =
     <OutlineConstants
-      (e.Funcs) (<Inc s.NextIdent> e.Idents (s.NextIdent e.Ident)) (e.Numbers)
+      (e.Funcs) (<Inc s.NextIdent> e.Idents (s.NextIdent e.Ident))
       (e.Strings)
       e.Commands
     >
     (#CmdIdentSave s.Direction s.BracketNum s.SaveOffset s.NextIdent);
 
-  (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E) (e.Numbers)
+  (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
   (e.Strings)
   e.Commands
   (#CmdCreateElem s.CreateMode s.ElemNo #ElIdent e.Ident) =
     <OutlineConstants
-      (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E) (e.Numbers)
+      (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
       (e.Strings)
       e.Commands
     >
     (#CmdCreateElem s.CreateMode s.ElemNo #ElIdent s.Num);
 
-  (e.Funcs) (s.NextIdent e.Idents) (e.Numbers) (e.Strings)
+  (e.Funcs) (s.NextIdent e.Idents) (e.Strings)
   e.Commands
   (#CmdCreateElem s.CreateMode s.ElemNo #ElIdent e.Ident) =
     <OutlineConstants
-      (e.Funcs) (<Inc s.NextIdent> e.Idents (s.NextIdent e.Ident)) (e.Numbers)
+      (e.Funcs) (<Inc s.NextIdent> e.Idents (s.NextIdent e.Ident))
       (e.Strings)
       e.Commands
     >
     (#CmdCreateElem s.CreateMode s.ElemNo #ElIdent s.NextIdent);
 
-  (e.Funcs) (e.Idents) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
-  (e.Strings)
-  e.Commands
-  (#CmdHugeNum s.Direction s.BracketNum s.Number) =
-    <OutlineConstants
-      (e.Funcs) (e.Idents) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
-      (e.Strings)
-      e.Commands
-    >
-    (#CmdHugeNum s.Direction s.BracketNum s.Id);
-
-  (e.Funcs) (e.Idents) (s.NextNumId e.Numbers) (e.Strings)
-  e.Commands
-  (#CmdHugeNum s.Direction s.BracketNum s.Number) =
-    <OutlineConstants
-      (e.Funcs) (e.Idents) (<Inc s.NextNumId> e.Numbers (s.NextNumId s.Number))
-      (e.Strings)
-      e.Commands
-    >
-    (#CmdHugeNum s.Direction s.BracketNum s.NextNumId);
-
-  (e.Funcs) (e.Idents) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
-  (e.Strings)
-  e.Commands
-  (#CmdHugeNumSave s.Direction s.BracketNum s.SaveOffset s.Number) =
-    <OutlineConstants
-      (e.Funcs) (e.Idents) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
-      (e.Strings)
-      e.Commands
-    >
-    (#CmdHugeNumSave s.Direction s.BracketNum s.SaveOffset s.Id);
-
-  (e.Funcs) (e.Idents) (s.NextNumId e.Numbers) (e.Strings)
-  e.Commands
-  (#CmdHugeNumSave s.Direction s.BracketNum s.SaveOffset s.Number) =
-    <OutlineConstants
-      (e.Funcs) (e.Idents) (<Inc s.NextNumId> e.Numbers (s.NextNumId s.Number))
-      (e.Strings)
-      e.Commands
-    >
-    (#CmdHugeNumSave s.Direction s.BracketNum s.SaveOffset s.NextNumId);
-
-  (e.Funcs) (e.Idents) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
-  (e.Strings)
-  e.Commands
-  (#CmdCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.Number) =
-    <OutlineConstants
-      (e.Funcs) (e.Idents) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
-      (e.Strings)
-      e.Commands
-    >
-    (#CmdCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.Id);
-
-  (e.Funcs) (e.Idents) (s.NextNumId e.Numbers) (e.Strings)
-  e.Commands
-  (#CmdCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.Number) =
-    <OutlineConstants
-      (e.Funcs) (e.Idents) (<Inc s.NextNumId> e.Numbers (s.NextNumId s.Number))
-      (e.Strings)
-      e.Commands
-    >
-    (#CmdCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.NextNumId);
-
-  (e.Funcs) (e.Idents) (e.Numbers)
+  (e.Funcs) (e.Idents)
   (s.NextStringId e.Strings-B (s.Id e.String) e.Strings-E)
   e.Commands
   (#CmdCreateElem s.CreateMode s.ElemNo #ElString e.String) =
     <OutlineConstants
-      (e.Funcs) (e.Idents) (e.Numbers)
+      (e.Funcs) (e.Idents)
       (s.NextStringId e.Strings-B (s.Id e.String) e.Strings-E)
       e.Commands
     >
     (#CmdCreateElem s.CreateMode s.ElemNo #ElString s.Id);
 
-  (e.Funcs) (e.Idents) (e.Numbers) (s.NextStringId e.Strings)
+  (e.Funcs) (e.Idents) (s.NextStringId e.Strings)
   e.Commands
   (#CmdCreateElem s.CreateMode s.ElemNo #ElString e.String) =
     <OutlineConstants
-      (e.Funcs) (e.Idents) (e.Numbers)
+      (e.Funcs) (e.Idents)
       (<Inc s.NextStringId> e.Strings (s.NextStringId e.String))
       e.Commands
     >
     (#CmdCreateElem s.CreateMode s.ElemNo #ElString s.NextStringId);
 
-  (e.Funcs) (e.Idents) (e.Numbers)
+  (e.Funcs) (e.Idents)
   (s.NextStringId e.Strings-B (s.Id e.VarName) e.Strings-E)
   e.Commands
   (#CmdVariableDebugTable e.VarName s.Offset) =
     <OutlineConstants
-      (e.Funcs) (e.Idents) (e.Numbers)
+      (e.Funcs) (e.Idents)
       (s.NextStringId e.Strings-B (s.Id e.VarName) e.Strings-E)
       e.Commands
     >
     (#CmdVariableDebugTable s.Id s.Offset);
 
-  (e.Funcs) (e.Idents) (e.Numbers)
+  (e.Funcs) (e.Idents)
   (s.NextStringId e.Strings)
   e.Commands
   (#CmdVariableDebugTable e.VarName s.Offset) =
     <OutlineConstants
-      (e.Funcs) (e.Idents) (e.Numbers)
+      (e.Funcs) (e.Idents)
       (<Inc s.NextStringId> e.Strings (s.NextStringId e.VarName))
       e.Commands
     >
     (#CmdVariableDebugTable s.NextStringId s.Offset);
 
-  (e.Funcs) (e.Idents) (e.Numbers) (e.Strings)
+  (e.Funcs) (e.Idents) (e.Strings)
   e.Commands
   t.OtherCommand =
-    <OutlineConstants (e.Funcs) (e.Idents) (e.Numbers) (e.Strings) e.Commands>
+    <OutlineConstants (e.Funcs) (e.Idents) (e.Strings) e.Commands>
     t.OtherCommand;
 }

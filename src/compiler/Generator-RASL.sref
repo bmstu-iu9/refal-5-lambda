@@ -204,14 +204,6 @@ GenCommand-RASL {
   (#CmdNumberSave s.Direction s.BracketNumber s.SaveOffset s.Number) =
     <PutCommand (#CmdNumberSave s.Direction) s.SaveOffset s.Number s.BracketNumber>;
 
-  (#CmdHugeNum s.Direction s.BracketNumber s.Number) =
-    <PutCommand (#CmdHugeNum s.Direction) 0 s.Number s.BracketNumber>;
-
-  (#CmdHugeNumSave s.Direction s.BracketNumber s.SaveOffset s.Number) =
-    <PutCommand
-      (#CmdHugeNumSave s.Direction) s.SaveOffset s.Number s.BracketNumber
-    >;
-
   (#CmdName s.Direction s.BracketNumber s.NameId) =
     <PutCommand (#CmdName s.Direction) 0 s.NameId s.BracketNumber>;
 
@@ -389,7 +381,6 @@ CreateCommandInfo {
   #ElName s.NameId = s.NameId;
 
   #ElNumber s.Number = s.Number;
-  #ElHugeNumber s.NumberId = s.NumberId;
 
   #ElIdent s.NameId = s.NameId;
 
