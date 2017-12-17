@@ -1,0 +1,146 @@
+//FROM LibraryEx
+$EXTERN Map, MapReduce;
+
+//FROM Library
+$EXTERN StrFromInt;
+
+
+/**
+  <LowLevelRASL-Native s.Hash1 s.Hash2 e.Items>
+    == t.NativeModule?
+
+  s.Hash1, s.Hash2 ::= s.NUMBER
+
+  In e.Items is used (#Function-ToRASL …) and (#Function-ToNative …)
+  instead (#Function …).
+*/
+$ENTRY LowLevelRASL-Native {
+  s.Hash1 s.Hash2 e.Items
+    = <Map (SetCookies s.Hash1 s.Hash2) e.Items> : e.Items^
+    = <MapReduce
+        ClassifyItems-Native
+        (/* объявления для генерации RASL’а */)
+        e.Items
+      >
+    : {
+        (e.Declarations) /* нет нативных определений */ =
+          /* нет нативного RASL’а */;
+
+        (e.Declarations) e.Definitions =
+          ((e.Declarations) (e.Definitions));
+      };
+}
+
+SetCookies {
+  s.Hash1 s.Hash2
+  (#Function-ToRASL s.ScopeClass (e.Name) e.Commands) =
+    (#Function-ToRASL
+      (<MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>)
+      e.Commands
+    );
+
+  s.Hash1 s.Hash2
+  (#Function-ToNative s.ScopeClass (e.Name) e.Commands) =
+    (#Function-ToNative
+      (<MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>)
+      e.Commands
+    );
+
+  s.Hash1 s.Hash2
+  (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
+    (#CmdNativeFunction
+      (<MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>)
+      t.SrcPos e.Code
+    );
+
+  s.Hash1 s.Hash2 (#CmdEnum s.ScopeClass e.Name) =
+    (#CmdEnum <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>);
+
+  s.Hash1 s.Hash2 (#CmdSwap s.ScopeClass e.Name) =
+    (#CmdSwap <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>);
+
+  s.Hash1 s.Hash2 (#CmdDeclaration s.ScopeClass e.Name) =
+    (#CmdDeclaration
+      <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>
+    );
+
+  s.Hash1 s.Hash2 (#CmdDefineIdent e.Name) =
+    (#CmdDefineIdent e.Name);
+
+  s.Hash1 s.Hash2 (#CmdEmitNativeCode t.SrcPos e.Code) =
+    (#CmdEmitNativeCode t.SrcPos e.Code);
+}
+
+MingleName {
+  #GN-Entry e.Name s.Hash1 s.Hash2 = e.Name #Hash 0 0;
+  #GN-Local e.Name s.Hash1 s.Hash2 = e.Name #Hash s.Hash1 s.Hash2;
+}
+
+ClassifyItems-Native {
+  (e.Declarations)
+  (#Function-ToRASL (e.Name) e.Commands) =
+    (e.Declarations (#CmdExtern e.Name));
+
+  (e.Declarations)
+  (#Function-ToNative (e.Name) e.Body) =
+    (e.Declarations (#CmdExtern e.Name))
+    (#CmdFnStart e.Name)
+    (#CmdProfileFunction)
+    <ConvertDirectCommands e.Body>
+    (#CmdFnEnd)
+    (#CmdNativeFuncDescr e.Name);
+
+  (e.Declarations)
+  (#CmdNativeFunction (e.Name) t.SrcPos e.Code) =
+    (e.Declarations (#CmdExtern e.Name))
+    (#CmdFnStart e.Name)
+    (#CmdEmitNativeCode t.SrcPos e.Code)
+    (#CmdFnEnd)
+    (#CmdNativeFuncDescr e.Name);
+
+  (e.Declarations)
+  (#CmdEnum e.Name) =
+    (e.Declarations (#CmdExtern e.Name));
+
+  (e.Declarations)
+  (#CmdSwap e.Name) =
+    (e.Declarations (#CmdExtern e.Name));
+
+  (e.Declarations)
+  (#CmdDeclaration e.Name) =
+    (e.Declarations (#CmdExtern e.Name));
+
+  (e.Declarations)
+  (#CmdDefineIdent e.Name) =
+    (e.Declarations (#CmdDefineIdent e.Name));
+
+  (e.Declarations)
+  (#CmdEmitNativeCode t.SrcPos e.Code) =
+    (e.Declarations)
+    (#CmdEmitNativeCode t.SrcPos e.Code);
+}
+
+ConvertDirectCommands {
+  (#CmdSentence e.SubCommands) e.Tail =
+    (#CmdStartSentence)
+    <ConvertDirectCommands e.SubCommands>
+    (#CmdEndSentence)
+    <ConvertDirectCommands e.Tail>;
+
+  (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) e.Tail =
+    (#CmdOpenedE-Start #AlgLeft s.BracketNum s.VarNumber)
+    <ConvertDirectCommands e.SubCommands>
+    (#CmdOpenedE-End #AlgLeft s.BracketNum s.VarNumber)
+    <ConvertDirectCommands e.Tail>;
+
+  (#CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset) e.Tail =
+    (#CmdComment
+      'DEBUG: ' s.Mode '.' e.Index '#' <StrFromInt s.Depth>
+      ': ' <StrFromInt s.Offset>
+    )
+    <ConvertDirectCommands e.Tail>;
+
+  t.Command e.Tail = t.Command <ConvertDirectCommands e.Tail>;
+
+  /* пусто */ = /* пусто */;
+}
