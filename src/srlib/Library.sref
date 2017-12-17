@@ -2187,7 +2187,7 @@ Xxout-Wrap {
   s.FileNo s.Width e.Text
     = <DoFirst s.Width () e.Text>
     : {
-        (e.Line) /* empty */ = <Putout-Aux s.FileNo e.Line> <FClose s.FileNo>;
+        (e.Line) /* empty */ = <Write-Aux s.FileNo e.Line> <FClose s.FileNo>;
 
         (e.Line) e.Rest
           = <Putout-Aux s.FileNo e.Line>
