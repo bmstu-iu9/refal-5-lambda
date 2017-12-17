@@ -277,7 +277,7 @@ enum iCmd { /*NumberFromOpcode:Cmd+ic;Alg+Left,Alg+Right,Alg+Term*/
   icFetchSwapInfoBounds = 107,
   icSwapSave = 108,
   icPerformNative = 109,
-  icEnd = 111,
+  icScale = 111,
   icVariableDebugOffset = 112,
 };
 

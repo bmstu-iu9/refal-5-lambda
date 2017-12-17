@@ -2,7 +2,7 @@
 $EXTERN MapReduce, Inc, TermCompare, Map;
 
 //FROM Library
-$EXTERN WriteLine, StrFromInt, Exit;
+$EXTERN StrFromInt;
 
 
 /**
@@ -32,17 +32,6 @@ $ENTRY LowLevelRASL-RASL {
         (#ModuleID s.Hash1 s.Hash2)
         <PrepareCommonRASL (e.FuncScopeClass) e.Definitions>
       );
-}
-
-OverflowFailure {
-  e.Function #CmdIssueMemory s.Memory
-    = <WriteLine 'Compilation failure in function ' e.Function ':'>
-      <WriteLine
-        '  this function requests ' <StrFromInt s.Memory> ' local variables, '
-        'but maximum size is 255.'
-      >
-      <WriteLine '  Compilation aborted.'>
-      <Exit 1>;
 }
 
 ClassifyItems {
@@ -83,12 +72,6 @@ PrepareFunctionsRASL {
     = <RemoveDebugInfo s.DebugInfo e.FunctionBody> : e.FunctionBody^
 
     = <ConvertInterpretCommands <Inc s.NextLabel> e.FunctionBody>
-    : {
-        s.NextLabel^ e.Commands-B (#OVERFLOW s.Type s.Count) e.Commands-E
-          = <OverflowFailure e.Name s.Type s.Count>;
-
-        s.NextLabel^ e.Commands = s.NextLabel e.Commands;
-      }
     : s.NextLabel^ e.RASLCommands^
 
     = <AddBacktrackStackAllocationCommand e.RASLCommands> : e.RASLCommands^
@@ -143,14 +126,6 @@ ConvertInterpretCommands {
 
 ConvertOneInterpretCommand-Simple {
   (#CmdComment e.Text) = /* skip comment command */;
-
-  (#CmdIssueMemory s.Memory)
-    = <TermCompare s.Memory 256>
-    : {
-        '<' = (#CmdIssueMemory s.Memory);
-
-        s.Other = (#OVERFLOW #CmdIssueMemory s.Memory);
-      };
 
   (#CmdNumber s.Direction s.BracketNumber s.Number)
     = <TermCompare s.Number 256>

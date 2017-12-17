@@ -4902,6 +4902,8 @@ refalrts::FnResult refalrts::vm::main_loop() {
     unsigned int val2 = rasl->val2;
     unsigned int bracket = rasl->bracket;
 
+JUMP_FROM_SCALE:
+
     // Интерпретация команд
     // Для ряда команд эти переменные могут не иметь смысла
     Iter &bb = context[bracket];
@@ -5777,7 +5779,21 @@ refalrts::FnResult refalrts::vm::main_loop() {
         wrap_closure(elem);
         break;
 
-      case icEnd:
+      case icScale:
+        {
+          val1 *= 256;
+          val2 *= 256;
+          bracket *= 256;
+
+          ++rasl;
+
+          val1 += rasl->val1;
+          val2 += rasl->val2;
+          bracket += rasl->bracket;
+
+          goto JUMP_FROM_SCALE;
+        }
+
       default:
         refalrts_switch_default_violation(rasl->cmd);
     }

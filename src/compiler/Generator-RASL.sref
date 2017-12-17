@@ -2,7 +2,7 @@
 $EXTERN Map, UnBracket, Fetch, MapReduce, Inc, TermCompare;
 
 //FROM Library
-$EXTERN Lenw, Mul, Sub, Ord, Div, Mod, WriteLine, StrFromInt, Exit;
+$EXTERN Lenw, Mul, Sub, Ord, Divmod, WriteLine, StrFromInt, Exit;
 
 //FROM DisplayName
 $EXTERN DisplayName;
@@ -115,7 +115,9 @@ PutBlock {
 PutWordLE {
   s.1 s.2 s.3 s.4 = s.1 s.2 s.3 s.4;
 
-  e.Bytes s.Value = <PutWordLE e.Bytes <Mod s.Value 256> <Div s.Value 256>>;
+  e.Bytes s.Value
+    = <Divmod s.Value 256> : (s.ValueHigh) s.ValueLow
+    = <PutWordLE e.Bytes s.ValueLow s.ValueHigh>;
 }
 
 NameWithSign-Bytes {
@@ -353,14 +355,21 @@ GenCommand-RASL {
 }
 
 PutCommand {
-  s.Symbolic =
-    (<NumberFromOpcode s.Symbolic> 0 0 0);
+  s.Symbolic = (<NumberFromOpcode s.Symbolic> 0 0 0);
 
-  s.Symbolic s.Arg1 s.Arg2 s.Arg3 =
-    <PutCommand (s.Symbolic) s.Arg1 s.Arg2 s.Arg3>;
+  s.Symbolic s.Arg1 s.Arg2 s.Arg3
+    = <PutCommand (s.Symbolic) s.Arg1 s.Arg2 s.Arg3>;
 
-  (e.Symbolic) s.Arg1 s.Arg2 s.Arg3 =
-    (<NumberFromOpcode e.Symbolic> s.Arg1 s.Arg2 s.Arg3);
+  (e.Symbolic) s.Arg1 s.Arg2 s.Arg3
+    = <Divmod s.Arg1 256> <Divmod s.Arg2 256> <Divmod s.Arg3 256>
+    : {
+        (0) s.LoArg1 (0) s.LoArg2 (0) s.LoArg3
+          = (<NumberFromOpcode e.Symbolic> s.LoArg1 s.LoArg2 s.LoArg3);
+
+        (s.HiArg1) s.LoArg1 (s.HiArg2) s.LoArg2 (s.HiArg3) s.LoArg3
+          = <PutCommand (#CmdScale) s.HiArg1 s.HiArg2 s.HiArg3>
+            (<NumberFromOpcode e.Symbolic> s.LoArg1 s.LoArg2 s.LoArg3);
+      };
 }
 
 CreateCommandTag {

@@ -116,7 +116,7 @@ $ENTRY NumberFromOpcode{
   #CmdFetchSwapInfoBounds = 107;
   #CmdSwapSave = 108;
   #CmdPerformNative = 109;
-  #CmdEnd = 111;
+  #CmdScale = 111;
   #CmdVariableDebugOffset = 112;
 }
 
