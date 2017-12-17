@@ -2,7 +2,7 @@
 $EXTERN Map, Fetch, UnBracket, Inc;
 
 //FROM Library
-$EXTERN Mul, Sub, Ord, Div, Mod;
+$EXTERN Lenw, Mul, Sub, Ord, Div, Mod;
 
 //FROM DisplayName
 $EXTERN DisplayName;
@@ -20,39 +20,40 @@ $ENTRY GenProgram-RASL {
     (#CmdStringArray s.StringCount e.Strings)
     (#RASL e.RASL)
     (#Items e.Items)
-  ) =
-    <PutBlock #Start <BytesFromString 'RASLCODE'>>
-    <Fetch
-      (<Length-T <BytesFromFunctionList e.FuncNames>>)
-      (<Length-T <BytesFromLabelList e.Labels>>)
-      (<Length-T <BytesFromStringList e.Strings>>)
-      (<Length-T <Map GenCommand-RASL e.RASL>>)
-      {
-        (s.ExternalSize e.FuncNamesAsBytes)
-        (s.IdentSize e.IdentsAsBytes)
-        (s.StringSize e.StringsAsBytes)
-        (s.RaslLength e.RASLAsBytes) =
-            <PutBlock
-              #ConstTable
-              <PutWordLE s.Cookie1>
-              <PutWordLE s.Cookie2>
-              <PutWordLE s.FunctionCount>
-              <PutWordLE s.LabelCount>
-              <PutWordLE s.NumberCount>
-              <PutWordLE s.StringCount>
-              <PutWordLE s.RaslLength>
-              <PutWordLE s.ExternalSize>
-              <PutWordLE s.IdentSize>
-              <PutWordLE <Sub s.StringSize <Mul 4 s.StringCount>>>
-              e.FuncNamesAsBytes
-              e.IdentsAsBytes
-              <Map PutWordLE e.Numbers>
-              e.StringsAsBytes
-              <Map UnBracket e.RASLAsBytes>
-            >;
-      }
-    >
-    <Map GenCommand-Globals e.Items>;
+  )
+
+    = <Lenw <BytesFromFunctionList e.FuncNames>>
+    : s.ExternalSize e.FuncNamesAsBytes
+
+    = <Lenw <BytesFromLabelList e.Labels>>
+    : s.IdentSize e.IdentsAsBytes
+
+    = <Lenw <BytesFromStringList e.Strings>>
+    : s.StringSize e.StringsAsBytes
+
+    = <Lenw <Map GenCommand-RASL e.RASL>>
+    : s.RaslLength e.RASLAsBytes
+
+    = <PutBlock #Start <BytesFromString 'RASLCODE'>>
+      <PutBlock
+        #ConstTable
+        <PutWordLE s.Cookie1>
+        <PutWordLE s.Cookie2>
+        <PutWordLE s.FunctionCount>
+        <PutWordLE s.LabelCount>
+        <PutWordLE s.NumberCount>
+        <PutWordLE s.StringCount>
+        <PutWordLE s.RaslLength>
+        <PutWordLE s.ExternalSize>
+        <PutWordLE s.IdentSize>
+        <PutWordLE <Sub s.StringSize <Mul 4 s.StringCount>>>
+        e.FuncNamesAsBytes
+        e.IdentsAsBytes
+        <Map PutWordLE e.Numbers>
+        e.StringsAsBytes
+        <Map UnBracket e.RASLAsBytes>
+      >
+      <Map GenCommand-Globals e.Items>;
 }
 
 BytesFromFunctionList {
@@ -82,7 +83,7 @@ BytesFromStringList {
       {
         (e.String) =
           <Fetch
-            <Length-T e.String>
+            <Lenw e.String>
             {
               s.Length e.String^ =
                 <PutWordLE s.Length> <BytesFromString e.String>;
@@ -105,20 +106,11 @@ PutBlock {
   s.Type e.Bytes =
     <BlockTypeNumber s.Type>
     <Fetch
-      <Length-T e.Bytes>
+      <Lenw e.Bytes>
       {
         s.Length e.Bytes^ = <PutWordLE s.Length> e.Bytes;
       }
     >;
-}
-
-Length-T {
-  e.Items = <DoLength-T 0 e.Items>;
-}
-
-DoLength-T {
-  s.Count e.Items t.Last = <DoLength-T <Inc s.Count> e.Items> t.Last;
-  s.Count /* пусто */ = s.Count;
 }
 
 PutWordLE {
