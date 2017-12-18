@@ -16,17 +16,12 @@ FuncArguments {
 }
 
 $ENTRY GenProgram-Native {
-  (e.SourceFileName) (e.TargetFileName)
-  (
-    (e.Declarations)
-    (e.Definitions)
-  )
+  (e.SourceFileName) (e.TargetFileName) (e.NativeRASL)
 
     = <MapReduce
         GenCommand-Native
         (/* отступ */)
-        e.Declarations
-        e.Definitions
+        e.NativeRASL
       >
     : (/* отступ должен остаться тем же */) e.Generated
 

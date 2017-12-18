@@ -514,10 +514,10 @@ e-переменные, распределяемые последователь�
         (#Items t.DeclarationCommand*)
       )
 
-    t.NativeModule ::= ((t.NativeDeclarationCommand*) (e.NativeRASL))
+    t.NativeModule ::= (e.NativeRASL)
 
     e.RASL ::= t.InterpretCommand*
-    e.NativeRASL ::= t.DirectCommand*
+    e.NativeRASL ::= { t.NativeDeclarationCommand | t.DirectCommand }*
 
     t.DeclarationCommand ::=
         (#CmdEnumDescr e.CookiedName)

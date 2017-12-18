@@ -30,7 +30,7 @@ $ENTRY LowLevelRASL-Native {
 
           = <Map PrepareFunctionsRASL e.Definitions> : e.DefinitionsRASL
 
-          = ((e.Declarations) (e.DefinitionsRASL));
+          = (e.Declarations e.DefinitionsRASL);
       };
 }
 
