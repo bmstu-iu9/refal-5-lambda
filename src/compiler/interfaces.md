@@ -499,35 +499,39 @@ e-переменные, распределяемые последователь�
 
 ## Генерация низкоуровневого RASL’а (проход 8)
     <LowLevelRASL s.GenMode e.RASLAST>
-      == e.RASL (e.NativeRASL)
+      == t.RASLModule t.NativeModule?
 
     s.GenMode ::= #OnlyDirect | #OnlyInterpret
-    e.RASL ::= t.LoCommand*
-    e.NativeRASL ::= t.NativeLoCommand*
 
-    t.LoCommand ::=
-        t.DeclarationCommand
-      | t.InterpretCommand
+    t.RASLModule ::=
+      (
+        (#ModuleID s.Cookie1 s.Cookie2)
+        (#CmdFuncArray s.FunctionCount (s.ScopeClass e.FuncName)*)
+        (#CmdIdentArray s.IdentCount (e.IdentName)*)
+        (#CmdNumberArray s.NumberCount s.NUMBER*)
+        (#CmdStringArray s.StringCount (s.CHAR*)*)
+        (#RASL e.RASL)
+        (#Items t.DeclarationCommand*)
+      )
+
+    t.NativeModule ::= ((t.NativeDeclarationCommand*) (e.NativeRASL))
+
+    e.RASL ::= t.InterpretCommand*
+    e.NativeRASL ::= t.DirectCommand*
 
     t.DeclarationCommand ::=
-        t.CommonDeclarationCommand
-      | (#CmdEnumDescr e.CookiedName)
+        (#CmdEnumDescr e.CookiedName)
       | (#CmdInterpretFuncDescr e.CookiedName s.LabelId)
       | (#CmdSwapDescr e.CookiedName)
+      | (#CmdNativeFuncDescr s.ScopeClass e.Name)
 
     e.CookiedName ::= e.Name #Hash s.Cookie1 s.Cookie2
     s.Cookie1, s.Cookie2 ::= s.NUMBER
 
     e.OptionalName ::= /* пусто */ | e.Name
 
-    t.CommonDeclarationCommand ::=
-        (#CmdExtern e.CookiedName)
-      | (#CmdDefineIndent e.Name)
-      | (#CmdSeparator)
-
-    t.NativeLoCommand ::=
-        t.NativeDeclarationCommand
-      | (#CmdProfileFunction)
+    t.DirectCommand ::=
+        (#CmdProfileFunction)
       | t.SingleCommand
       | (#CmdStartSentence)
       | (#CmdEndSentence)
@@ -535,7 +539,8 @@ e-переменные, распределяемые последователь�
       | (#CmdOpenedE-End s.Direction s.RangeOffset s.VarOffset)
 
     t.NativeDeclarationCommand ::=
-        t.CommonDeclarationCommand
+        (#CmdExtern e.CookiedName)
+      | (#CmdDefineIndent e.Name)
       | (#CmdNativeFuncDescr e.CookiedName)
       | (#CmdFnStart e.Name)
       | (#CmdFnEnd)
@@ -621,22 +626,18 @@ e-переменные, распределяемые последователь�
       | #ElUnwrappedClosure s.HeadOffset
 
 * `e.RASL` — последовательность элементарных команд. Каждая из них отображается
-  в шаблон кода на C++.
+  в команду интерпретируемого кода.
 * `e.NativeRASL` — последовательность элементарных команд. Каждая из них
   отображается в шаблон кода на C++.
-* `t.LoCommand`, `t.NativeLoCommand` — низкоуровневая команда
-* `t.CommonDeclarationCommand` — объявление или определение чего-то на C++,
-  общее для интерпретируемого и нативного RASL’а:
-  * `#CmdExtern` — создаёт предобъявление для дескриптора функции,
-  * `#CmdDefineIndent` — тот же смысл, что и для высокоуровневых команд;
-  * `#CmdSeparator` — вставка пустой строки в целевой код.
-* `t.DeclarationCommand` — объявление или определение чего-то на C++
-  для интерпретируемого RASL’а:
-  * `#CmdEnumDescr`, `#CmdInterpretFuncDescr`, `#CmdSwapDescr` —
-     определяют дескриптор соответствующего объекта.
+* `t.DeclarationCommand` — объявление или определение чего-то
+  для интерпретируемого RASL’а — компилируется в блок RASL’а:
+  * `#CmdEnumDescr`, `#CmdInterpretFuncDescr`, `#CmdSwapDescr`,
+    `#CmdNativeFuncDescr` — определяют дескриптор соответствующего объекта.
 * `t.NativeDeclarationCommand` — объявление или определение чего-то на C++
   для нативного RASL’а, сюда же  входят начало и конец регулярных функций
   на C++:
+  * `#CmdExtern` — создаёт предобъявление для дескриптора функции,
+  * `#CmdDefineIndent` — тот же смысл, что и для высокоуровневых команд;
   * `#CmdNativeFuncDescr`, — определяют дескриптор нативной функции,
   * `#CmdEmitNativeCode` — тот же смысл, что и для высокоуровневых команд;
   * `#CmdFnStart`, `#CmdFnEnd` — начало и конец тела функции.
@@ -714,11 +715,12 @@ e-переменные, распределяемые последователь�
 предложение).
 
 ## Генерация целевого кода на C++ (проход 9)
-    <GenProgram-RASL e.RASL>
+    <GenProgram-RASL t.RASLModule>
       == s.Byte*
-    <GenProgram-Native (e.SrcName) (e.OutputName) e.RASL>
-      == (e.Line)*
     s.Byte ::= s.NUMBER | s.CHAR
+
+    <GenProgram-Native (e.SrcName) (e.OutputName) t.NativeModule>
+      == (e.Line)*
 
 Генератор преобразует каждую из команд промежуточного кода в соответствующий
 фрагмент кода на C++. Функции `GenProgram-*` возвращает последовательность
