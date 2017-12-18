@@ -180,6 +180,15 @@ MakeRequestCommand {
   (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets e.Func)
     = (#REQUEST #Extern e.Func);
 
+  (#CmdIdent s.Direction s.BracketNum e.Ident)
+    = (#REQUEST #Ident e.Ident);
+
+  (#CmdIdentSave s.Direction s.BracketNum s.SaveOffset e.Ident)
+    = (#REQUEST #Ident e.Ident);
+
+  (#CmdCreateElem s.CreateMode s.ElemNo #ElIdent e.Ident)
+    = (#REQUEST #Ident e.Ident);
+
   t.OtherCommand = /* no request definitions */;
 }
 
@@ -198,6 +207,12 @@ AddDefinition {
     =  (#CmdExtern e.Name #Hash s.Hash1 s.Hash2)e.Defs-B e.Defs-E;
 
   (#Extern e.Name) e.Defs = (#CmdExtern e.Name #Hash 0 0) e.Defs;
+
+
+  (#Ident e.Name) e.Defs-B (#CmdDefineIdent e.Name) e.Defs-E
+    = (#CmdDefineIdent e.Name) e.Defs-B e.Defs-E;
+
+  (#Ident e.Name) e.Defs = (#CmdDefineIdent e.Name) e.Defs;
 }
 
 UniqSorted {

@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, Map, MapReduce, Inc, DelAccumulator, Reduce, Sort;
+$EXTERN Fetch, Seq, Map, Inc, MapReduce, DelAccumulator, Reduce;
 
 //FROM Desugaring-UnCondition
 $EXTERN Pass-UnCondition;
@@ -16,7 +16,7 @@ $ENTRY Desugar {
         Pass-RemoveBlocksAndAssigns
         (Pass-FlatNestedFuncs s.MarkupContext)
         (Pass-UnCondition s.MarkupContext)
-        Pass-CreatePredeclarations
+        Pass-RemoveRedudandElements
       >
     >;
 }
@@ -767,60 +767,12 @@ CreateContext {
     >;
 }
 
-Pass-CreatePredeclarations {
+Pass-RemoveRedudandElements {
   e.AST =
     /*
       Функция принимает абстрактное синтаксическое дерево
       и формирует новое с устранением избыточных элементов
-      и созданием необходимых.
     */
-    <Fetch
-      e.AST
-      <Seq
-        RemoveRedudandElements
-        FoldEnums
-        (MapReduce
-          {
-            (e.Idents)
-            (#Function s.ScopeClass (e.Name) e.Body) =
-              <Fetch
-                <ExtractIdents e.Body>
-                {
-                  (e.FuncIdents) e.Body^ =
-                    (e.Idents e.FuncIdents)
-                    (#Function s.ScopeClass (e.Name) e.Body);
-                }
-              >;
-
-            (e.Idents) (#Swap s.ScopeClass e.Name) =
-              (e.Idents) (#Swap s.ScopeClass e.Name);
-
-            (e.Idents) (#Enum s.ScopeClass e.Name) =
-              (e.Idents) (#Enum s.ScopeClass e.Name);
-
-            (e.Idents) (#Declaration s.ScopeClass e.Name) =
-              (e.Idents) (#Declaration s.ScopeClass e.Name);
-
-            (e.Idents) (#Ident e.Name) =
-              (e.Idents (#Ident e.Name))
-              /* пусто */;
-
-            (e.Idents) (#NativeBlock t.SrcPos e.Code) =
-              (e.Idents) (#NativeBlock t.SrcPos e.Code);
-          }
-          (/* идентификаторы */)
-        )
-        {
-          (e.Idents) e.Functions =
-            <UniqSorted <Sort e.Idents>>
-            e.Functions;
-        }
-      >
-    >;
-}
-
-RemoveRedudandElements {
-  e.AST =
     <Fetch
       e.AST
       <Seq
@@ -856,100 +808,17 @@ RemoveRedudandElements {
               e.AST
             >;
         }
-      >
-    >;
-}
-
-FoldEnums {
-  e.AST =
-    <Map
-      {
-        (#Function s.ScopeClass (e.Name) #Sentences /* пусто */) =
-          (#Enum s.ScopeClass e.Name);
-
-        t.Other = t.Other;
-      }
-      e.AST
-    >;
-}
-
-ExtractIdents {
-  #Sentences e.Sentences =
-    <Fetch
-      e.Sentences
-      <Seq
-        (MapReduce
+        // Folding enums
+        (Map
           {
-            (e.Idents) ((e.Pattern) (e.Result)) =
-              <Fetch
-                (<ExtractIdent-Expr e.Pattern>)
-                (<ExtractIdent-Expr e.Result>)
-                {
-                  ((e.PatternIdents) e.Pattern^) ((e.ResultIdents) e.Result^) =
-                    (e.Idents e.PatternIdents e.ResultIdents)
-                    ((e.Pattern) (e.Result));
-                }
-              >;
+            (#Function s.ScopeClass (e.Name) #Sentences /* пусто */) =
+              (#Enum s.ScopeClass e.Name);
+
+            t.Other = t.Other;
           }
-          (/* idents */)
         )
-        {
-          (e.Idents) e.Sentences =
-            (e.Idents) #Sentences e.Sentences;
-        }
       >
     >;
-
-  #NativeBody t.SrcPos e.Code =
-    (/* нет идентификаторов */) #NativeBody t.SrcPos e.Code;
-}
-
-ExtractIdent-Expr {
-  e.Expr =
-    <MapReduce
-      {
-        (e.Idents) (#TkIdentifier e.Name) =
-          (e.Idents (#Ident e.Name)) (#TkIdentifier e.Name);
-
-        (e.Idents) (#Brackets e.SubExpr) =
-          <Fetch
-            <ExtractIdent-Expr e.SubExpr>
-            {
-              (e.SubIdents) e.SubExpr^ =
-                (e.Idents e.SubIdents) (#Brackets e.SubExpr);
-            }
-          >;
-
-        (e.Idents) (#ADT-Brackets (e.Name) e.SubExpr) =
-          <Fetch
-            <ExtractIdent-Expr e.SubExpr>
-            {
-              (e.SubIdents) e.SubExpr^ =
-                (e.Idents e.SubIdents) (#ADT-Brackets (e.Name) e.SubExpr);
-            }
-          >;
-
-        (e.Idents) (#CallBrackets e.SubExpr) =
-          <Fetch
-            <ExtractIdent-Expr e.SubExpr>
-            {
-              (e.SubIdents) e.SubExpr^ =
-                (e.Idents e.SubIdents) (#CallBrackets e.SubExpr);
-            }
-          >;
-
-        (e.Idents) t.OtherTerm = (e.Idents) t.OtherTerm;
-      }
-      (/* idents */)
-      e.Expr
-    >;
-}
-
-UniqSorted {
-  e.Uniqs t.Repeated t.Repeated e.NotScanned =
-    e.Uniqs <UniqSorted t.Repeated e.NotScanned>;
-
-  e.Uniqs = e.Uniqs;
 }
 
 SelectiveSaver-Save {
