@@ -20,35 +20,33 @@ $ENTRY GenProgram-Native {
   (
     (e.Declarations)
     (e.Definitions)
-  ) =
-    <Fetch
-      e.Declarations
-      (#CmdSeparator)
-      e.Definitions
-      <Seq
-        (MapReduce GenCommand-Native (/* отступ */))
-        {
-          () /* отступ должен остаться тем же */
-          e.Generated =
-            ('// Automatically generated file. Don\'t edit!')
-            ('#include "refalrts.h"')
-            ()
-            ()
-            e.Generated
-            ()
-            ('//End of file');
-        }
-        {
-          e.Lines-B (#NativeInsertBegin t.SrcPos) e.Lines-E =
-            <SetLineNumbers
-              (e.SourceFileName) (e.TargetFileName) 1
-              e.Lines-B (#NativeInsertBegin t.SrcPos) e.Lines-E
-            >;
+  )
 
-          e.Lines = e.Lines;
-        }
+    = <MapReduce
+        GenCommand-Native
+        (/* отступ */)
+        e.Declarations
+        (#CmdSeparator)
+        e.Definitions
       >
-    >;
+    : (/* отступ должен остаться тем же */) e.Generated
+
+    = ('// Automatically generated file. Don\'t edit!')
+      ('#include "refalrts.h"')
+      ()
+      ()
+      e.Generated
+      ()
+      ('//End of file')
+    : {
+        e.Lines-B (#NativeInsertBegin t.SrcPos) e.Lines-E =
+          <SetLineNumbers
+            (e.SourceFileName) (e.TargetFileName) 1
+            e.Lines-B (#NativeInsertBegin t.SrcPos) e.Lines-E
+          >;
+
+        e.Lines = e.Lines;
+      };
 }
 
 SetLineNumbers {

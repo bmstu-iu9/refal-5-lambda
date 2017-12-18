@@ -23,11 +23,14 @@ $ENTRY LowLevelRASL-Native {
         e.Items
       >
     : {
-        (e.Declarations) /* нет нативных определений */ =
-          /* нет нативного RASL’а */;
+        (e.Declarations) /* нет нативных определений */
+          = /* нет нативного RASL’а */;
 
-        (e.Declarations) e.Definitions =
-          ((e.Declarations) (e.Definitions));
+        (e.Declarations) e.Definitions
+
+          = <Map PrepareFunctionsRASL e.Definitions> : e.DefinitionsRASL
+
+          = ((e.Declarations) (e.DefinitionsRASL));
       };
 }
 
@@ -84,19 +87,12 @@ ClassifyItems-Native {
   (e.Declarations)
   (#Function-ToNative (e.Name) e.Body) =
     (e.Declarations (#CmdExtern e.Name))
-    (#CmdFnStart e.Name)
-    (#CmdProfileFunction)
-    <ConvertDirectCommands e.Body>
-    (#CmdFnEnd)
-    (#CmdNativeFuncDescr e.Name);
+    (#Function-ToNative (e.Name) e.Body);
 
   (e.Declarations)
   (#CmdNativeFunction (e.Name) t.SrcPos e.Code) =
     (e.Declarations (#CmdExtern e.Name))
-    (#CmdFnStart e.Name)
-    (#CmdEmitNativeCode t.SrcPos e.Code)
-    (#CmdFnEnd)
-    (#CmdNativeFuncDescr e.Name);
+    (#CmdNativeFunction (e.Name) t.SrcPos e.Code);
 
   (e.Declarations)
   (#CmdEnum e.Name) =
@@ -118,6 +114,24 @@ ClassifyItems-Native {
   (#CmdEmitNativeCode t.SrcPos e.Code) =
     (e.Declarations)
     (#CmdEmitNativeCode t.SrcPos e.Code);
+}
+
+PrepareFunctionsRASL {
+  (#Function-ToNative (e.Name) e.Body)
+    = (#CmdFnStart e.Name)
+      (#CmdProfileFunction)
+      <ConvertDirectCommands e.Body>
+      (#CmdFnEnd)
+      (#CmdNativeFuncDescr e.Name);
+
+  (#CmdNativeFunction (e.Name) t.SrcPos e.Code)
+    = (#CmdFnStart e.Name)
+      (#CmdEmitNativeCode t.SrcPos e.Code)
+      (#CmdFnEnd)
+      (#CmdNativeFuncDescr e.Name);
+
+  (#CmdEmitNativeCode t.SrcPos e.Code)
+    = (#CmdEmitNativeCode t.SrcPos e.Code);
 }
 
 ConvertDirectCommands {
