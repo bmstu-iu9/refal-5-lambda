@@ -1,11 +1,9 @@
 //FROM LibraryEx
 $EXTERN Fetch, Seq, Map, MapReduce, Inc, DelAccumulator, Reduce, Sort;
 
-//FROM Library
-$EXTERN StrFromInt;
-
 //FROM Desugaring-UnCondition
 $EXTERN Pass-UnCondition;
+
 
 $ENTRY Desugar {
   s.MarkupContext e.AST =

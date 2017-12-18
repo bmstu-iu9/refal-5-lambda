@@ -135,24 +135,24 @@ PrepareFunctionsRASL {
 }
 
 ConvertDirectCommands {
-  (#CmdSentence e.SubCommands) e.Tail =
-    (#CmdStartSentence)
-    <ConvertDirectCommands e.SubCommands>
-    (#CmdEndSentence)
-    <ConvertDirectCommands e.Tail>;
+  (#CmdSentence e.SubCommands) e.Tail
+    = (#CmdStartSentence)
+      <ConvertDirectCommands e.SubCommands>
+      (#CmdEndSentence)
+      <ConvertDirectCommands e.Tail>;
 
-  (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) e.Tail =
-    (#CmdOpenedE-Start #AlgLeft s.BracketNum s.VarNumber)
-    <ConvertDirectCommands e.SubCommands>
-    (#CmdOpenedE-End #AlgLeft s.BracketNum s.VarNumber)
-    <ConvertDirectCommands e.Tail>;
+  (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) e.Tail
+    = (#CmdOpenedE-Start #AlgLeft s.BracketNum s.VarNumber)
+      <ConvertDirectCommands e.SubCommands>
+      (#CmdOpenedE-End #AlgLeft s.BracketNum s.VarNumber)
+      <ConvertDirectCommands e.Tail>;
 
-  (#CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset) e.Tail =
-    (#CmdComment
-      'DEBUG: ' s.Mode '.' e.Index '#' <StrFromInt s.Depth>
-      ': ' <StrFromInt s.Offset>
-    )
-    <ConvertDirectCommands e.Tail>;
+  (#CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset) e.Tail
+    = (#CmdComment
+        'DEBUG: ' s.Mode '.' e.Index '#' <StrFromInt s.Depth>
+        ': ' <StrFromInt s.Offset>
+      )
+      <ConvertDirectCommands e.Tail>;
 
   t.Command e.Tail = t.Command <ConvertDirectCommands e.Tail>;
 
