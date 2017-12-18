@@ -251,8 +251,12 @@ SetFunctionsScopeClass {
         {
           (e.Decls-B (s.ScopeClass e.FuncName) e.Decls-E)
           (e.FuncName)
-            = (e.Decls-B e.Decls-E)
-              (s.ScopeClass e.FuncName);
+            = (e.Decls-B e.Decls-E) (s.ScopeClass e.FuncName);
+
+          // not defined — it is extern
+          (e.Decls)
+          (e.FuncName)
+            = (e.Decls) (#GN-Entry e.FuncName);
         }
         (e.FuncScopeClass)
         e.Functions

@@ -825,81 +825,31 @@ RemoveRedudandElements {
       e.AST
       <Seq
         /*
-          Собираем список всех определённых функций
-        */
-        (MapReduce
-          {
-            (e.Functions) (#Function s.ScopeClass (e.Name) e.Body) =
-              (e.Functions (e.Name)) (#Function s.ScopeClass (e.Name) e.Body);
-
-            (e.Functions) (#Enum s.ScopeClass e.Name) =
-              (e.Functions (e.Name)) (#Enum s.ScopeClass e.Name);
-
-            (e.Functions) (#Swap s.ScopeClass e.Name) =
-              (e.Functions (e.Name)) (#Swap s.ScopeClass e.Name);
-
-            (e.Functions) (#Declaration s.ScopeClass e.Name) =
-              (e.Functions) (#Declaration s.ScopeClass e.Name);
-
-            (e.Functions) (#Ident e.Name) =
-              (e.Functions) (#Ident e.Name);
-
-            (e.Functions) (#NativeBlock t.SrcPos e.Code) =
-              (e.Functions) (#NativeBlock t.SrcPos e.Code);
-          }
-          (/* функции */)
-        )
-        /*
-          Удаляем все предобъявления, для которых функция определена
-          Внимание: Аккумулятор старый!
-        */
-        (MapReduce
-          {
-            (e.Functions-B (e.Name) e.Functions-E)
-            (#Declaration s.ScopeClass e.Name) =
-              (e.Functions-B (e.Name) e.Functions-E)
-              /* пропускаем объявление */;
-
-            (e.Functions) t.OtherItem =
-              (e.Functions)
-              /*
-                t.OtherItem может быть и объявлением без определения ($EXTERN)
-              */
-              t.OtherItem;
-          }
-        )
-        DelAccumulator
-        /*
-          Подчищаем $IDENT’ы только при отсутствии нативных вставок.
+          Подчищаем $EXTERN’ы и $IDENT’ы только при отсутствии нативных вставок
         */
         {
           e.AST-B (#NativeBlock t.SrcPos e.Code) e.AST-E =
-            {
-              #Ident e.Name^ = (#Ident e.Name);
-            }
+            SelectiveSaver-Save
             e.AST-B (#NativeBlock t.SrcPos e.Code) e.AST-E;
 
           e.AST-B
           (#Function s.ScopeClass (e.Name) #NativeBody e.Code)
           e.AST-E =
-            {
-              #Ident e.Name^ = (#Ident e.Name);
-            }
+            SelectiveSaver-Save
             e.AST-B
             (#Function s.ScopeClass (e.Name) #NativeBody e.Code)
             e.AST-E;
 
-          e.AST^ =
-            {
-              #Ident e.Name^ = /* пропускаем */;
-            }
-            e.AST;
+          e.AST^ = SelectiveSaver-Skip e.AST;
         }
         {
           s.FnSelectiveSaver e.AST^ =
             <Map
               {
                 (#Ident e.Name) = <s.FnSelectiveSaver #Ident e.Name>;
+
+                (#Declaration s.ScopeClass e.Name)
+                  = <s.FnSelectiveSaver #Declaration s.ScopeClass e.Name>;
 
                 t.OtherItem = t.OtherItem;
               }
@@ -1000,4 +950,14 @@ UniqSorted {
     e.Uniqs <UniqSorted t.Repeated e.NotScanned>;
 
   e.Uniqs = e.Uniqs;
+}
+
+SelectiveSaver-Save {
+  #Ident e.Name = (#Ident e.Name);
+  #Declaration s.ScopeClass e.Name = (#Declaration s.ScopeClass e.Name);
+}
+
+SelectiveSaver-Skip {
+  #Ident e.Name = /* skip */;
+  #Declaration s.ScopeClass e.Name = /* skip */;
 }

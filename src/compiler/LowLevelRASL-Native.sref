@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Map, MapReduce;
+$EXTERN Map, MapReduce, Sort;
 
 //FROM Library
 $EXTERN StrFromInt;
@@ -29,6 +29,9 @@ $ENTRY LowLevelRASL-Native {
         (e.Declarations) e.Definitions
 
           = <Map PrepareFunctionsRASL e.Definitions> : e.DefinitionsRASL
+
+          = <FillImplicitDeclarations e.DefinitionsRASL (e.Declarations)>
+          : e.DefinitionsRASL^ (e.Declarations^)
 
           = (e.Declarations e.DefinitionsRASL);
       };
@@ -154,7 +157,52 @@ ConvertDirectCommands {
       )
       <ConvertDirectCommands e.Tail>;
 
-  t.Command e.Tail = t.Command <ConvertDirectCommands e.Tail>;
+  t.Command e.Tail
+    = <MakeRequestCommand t.Command> t.Command
+      <ConvertDirectCommands e.Tail>;
 
   /* пусто */ = /* пусто */;
+}
+
+MakeRequestCommand {
+  (#CmdName s.Direction s.BracketNum e.Func)
+    = (#REQUEST #Extern e.Func);
+
+  (#CmdNameSave s.Direction s.BracketNum s.SaveOffset e.Func)
+    = (#REQUEST #Extern e.Func);
+
+  (#CmdCreateElem s.CreateMode s.ElemNo #ElName e.Func)
+    = (#REQUEST #Extern e.Func);
+
+  (#CmdADT s.Direction s.BracketNum s.InnerBrackets e.Func)
+    = (#REQUEST #Extern e.Func);
+
+  (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets e.Func)
+    = (#REQUEST #Extern e.Func);
+
+  t.OtherCommand = /* no request definitions */;
+}
+
+FillImplicitDeclarations {
+  e.RASL-B (#REQUEST s.Type e.Name) e.RASL-E (e.Definitions)
+    = e.RASL-B
+      <FillImplicitDeclarations
+        e.RASL-E (<AddDefinition (s.Type e.Name) e.Definitions>)
+      >;
+
+  e.RASL (e.Definitions) = e.RASL (<UniqSorted <Sort e.Definitions>>);
+}
+
+AddDefinition {
+  (#Extern e.Name) e.Defs-B (#CmdExtern e.Name #Hash s.Hash1 s.Hash2) e.Defs-E
+    =  (#CmdExtern e.Name #Hash s.Hash1 s.Hash2)e.Defs-B e.Defs-E;
+
+  (#Extern e.Name) e.Defs = (#CmdExtern e.Name #Hash 0 0) e.Defs;
+}
+
+UniqSorted {
+  e.Uniqs t.Repeated t.Repeated e.NotScanned =
+    e.Uniqs <UniqSorted t.Repeated e.NotScanned>;
+
+  e.Uniqs = e.Uniqs;
 }

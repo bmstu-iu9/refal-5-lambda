@@ -1,0 +1,5 @@
+$EXTERN Unused;
+
+$ENTRY Go {
+  = ;
+}
