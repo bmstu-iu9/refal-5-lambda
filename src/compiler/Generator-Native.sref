@@ -26,14 +26,14 @@ $ENTRY GenProgram-Native {
         GenCommand-Native
         (/* отступ */)
         e.Declarations
-        (#CmdSeparator)
         e.Definitions
       >
     : (/* отступ должен остаться тем же */) e.Generated
 
-    = ('// Automatically generated file. Don\'t edit!')
-      ('#include "refalrts.h"')
+    = ('// This file automatically generated from ''' e.SourceFileName '')
+      ('// Don\'t edit! Edit ''' e.SourceFileName ''' and recompile it')
       ()
+      ('#include "refalrts.h"')
       ()
       e.Generated
       ()
@@ -159,6 +159,7 @@ GenCommand-Native {
 
   (e.Indent) (#CmdNativeFuncDescr e.Name) =
     (e.Indent)
+    ()
     (
       'static refalrts::NativeReference nat_ref_' <BaseCName e.Name> '('
       <NameAndCookies e.Name> ', func_' <BaseCName e.Name>
@@ -166,17 +167,14 @@ GenCommand-Native {
     )
     ();
 
-  (e.Indent) (#CmdSeparator) =
-    (e.Indent)
-    ();
-
   (e.Indent) (#CmdFnStart e.Name) =
     (e.Indent '  ')
+    ()
     ('static refalrts::FnResult func_' <BaseCName e.Name> <FuncArguments> ' {');
 
   (e.Indent '  ') (#CmdFnEnd) =
     (e.Indent)
-    ('}') ();
+    ('}');
 
   (e.Indent) (#CmdEmitNativeCode t.SrcPos e.Code) =
     (e.Indent)
