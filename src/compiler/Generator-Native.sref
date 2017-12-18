@@ -140,7 +140,7 @@ GenCommand-Native {
   (e.Indent) (#CmdDefineIdent e.Name) =
     (e.Indent)
     (
-      'const refalrts::RefalIdentifier ident_' <CName e.Name> ' = '
+      'static const refalrts::RefalIdentifier ident_' <CName e.Name> ' = '
       'refalrts::ident_from_static("' <DisplayCName e.Name> '");'
     );
 
