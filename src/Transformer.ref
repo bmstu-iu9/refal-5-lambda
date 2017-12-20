@@ -1,4 +1,4 @@
-*$FROM Utils;
+*$FROM Utils
 $EXTERN Builtins, Map, Unique;
 
 

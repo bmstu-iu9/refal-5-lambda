@@ -1,20 +1,21 @@
-*$FROM Utils;
+*$FROM Utils
 $EXTERN ArgList, PrintLines, SaveFile;
 
-*$FROM Lexer;
+*$FROM Lexer
 $EXTERN Scan;
 
-*$FROM Parser;
+*$FROM Parser
 $EXTERN Parse;
 
-*$FROM Transformer;
+*$FROM Transformer
 $EXTERN Transform;
 
-*$FROM Plainer;
+*$FROM Plainer
 $EXTERN Plain;
 
-*$FROM Tests;
+*$FROM Tests
 $EXTERN RunTests;
+
 
 $ENTRY Go {
   = <Main <ArgList>>;

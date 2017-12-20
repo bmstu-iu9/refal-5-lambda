@@ -1,5 +1,6 @@
-*$FROM Utils;
+*$FROM Utils
 $EXTERN LoadFile, Inc;
+
 
 /**
   <Scan e.SourceFile> == t.Token*

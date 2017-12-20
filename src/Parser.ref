@@ -1,5 +1,6 @@
-*$FROM Utils;
-$EXTERN OneOf;
+*$FROM Utils
+$EXTERN OneOf, Builtins;
+
 
 /**
   <Parse e.Tokens>
@@ -651,9 +652,6 @@ Semantics {
       e.Errors = Fails e.Errors;
     };
 }
-
-*$FROM Utils;
-$EXTERN Builtins;
 
 FilterUnitsAndFunctionNames {
   e.ErrorsUnits =
