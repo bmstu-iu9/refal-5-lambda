@@ -317,6 +317,12 @@ union FunctionTableItem {
   {
     /* пусто */
   }
+
+  FunctionTableItem(RefalFunction *function)
+    : function(function)
+  {
+    /* пусто */
+  }
 };
 
 struct FunctionTable {

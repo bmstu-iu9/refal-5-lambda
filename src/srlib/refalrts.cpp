@@ -3156,7 +3156,8 @@ void refalrts::dynamic::enumerate_blocks() {
             // TODO: нужна проверка за выход из границ
             next_external_name += strlen(next_external_name) + 1;
           }
-          new_table->externals[fixed_part.external_count] = 0;
+          new_table->externals[fixed_part.external_count] =
+            static_cast<const char *>(0);
           new_table->function_table = new FunctionTable(
             fixed_part.cookie1, fixed_part.cookie2, new_table->externals
           );
@@ -3455,8 +3456,6 @@ bool refalrts::vm::empty_stack() {
 }
 
 namespace {
-
-refalrts::ExternalReference go("Go", 0, 0);
 
 void print_error_message(FILE *stream, refalrts::FnResult res) {
   switch(res) {
@@ -4852,6 +4851,19 @@ int refalrts::debugger::find_debugger_flag(int argc, char **argv) {
 //=============================================================================
 
 refalrts::FnResult refalrts::vm::main_loop() {
+  RefalFunction *go = RefalFunction::lookup(0, 0, "GO");
+
+  if (! go) {
+    go = RefalFunction::lookup(0, 0, "Go");
+  }
+
+  if (! go) {
+    fprintf(stderr, "INTERNAL ERROR: entry point (Go or GO) is not found\n");
+    exit(158);
+  }
+
+  FunctionTableItem entry_point[1] = { FunctionTableItem(go) };
+
   // Формируем вызов <Go#0:0> в поле зрения
   static const RASLCommand startup_rasl[] = {
     { icIssueMemory, 3, 0, 0 },
@@ -4870,7 +4882,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
   Iter begin = & g_last_marker; /* нужно для icSetResArgBegin в startup_rasl */
   Iter end = 0;
   const RASLCommand *rasl = startup_rasl;
-  FunctionTableItem *functions = &go.ref;
+  FunctionTableItem *functions = entry_point;
   const RefalIdentifier *idents = 0;
   const RefalNumber *numbers = 0;
   const StringItem *strings = 0;
