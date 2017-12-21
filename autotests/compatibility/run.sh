@@ -79,6 +79,7 @@ lookup_compilers() {
       --markup-context
       --exesuffix=$(platform_exe_suffix)
       -D$(platform_subdir_lookup $LIBDIR)
+      -D$LIBDIR/platform-POSIX
       -D$LIBDIR/common
       -D$LIBDIR
       --prelude=refal5-builtins.srefi

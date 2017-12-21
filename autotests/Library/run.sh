@@ -9,6 +9,7 @@ run_all_tests() {
     "-c $CPPLINEE"
     --exesuffix=$(platform_exe_suffix)
     -D$(platform_subdir_lookup $LIBDIR)
+    -D$LIBDIR/platform-POSIX
     -D$LIBDIR
     -f-DSTEP_LIMIT=1500
     -f-DMEMORY_LIMIT=1000

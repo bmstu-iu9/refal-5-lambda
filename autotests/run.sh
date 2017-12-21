@@ -192,6 +192,7 @@ run_test() {
     --exesuffix=$(platform_exe_suffix)
     --prelude=test-prelude.srefi
     -D$(platform_subdir_lookup $LIBDIR)
+    -D$LIBDIR/platform-POSIX
     -D$LIBDIR
     -f-DSTEP_LIMIT=1500
     -f-DMEMORY_LIMIT=1000
