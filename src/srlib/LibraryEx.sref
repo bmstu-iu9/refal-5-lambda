@@ -274,20 +274,27 @@ $ENTRY Trim-R {
 }
 
 /**
-  <Seq s.F1 s.F2 ... s.Fn> == s.Compose
+  <Pipe s.F1 s.F2 ... s.Fn> == s.Compose
 
   <s.Compose e.X> == <s.Fn ... <s.F2 <s.F1 e.X>>...>
+
+  Seq (deprecated) is synonim for Pipe
 */
-$ENTRY Seq {
+$ENTRY Pipe {
   t.Func = t.Func;
 
   t.Func e.Funcs =
     {
-      e.Arg = <Fetch <Apply t.Func e.Arg> <Seq e.Funcs>>;
+      e.Arg = <Fetch <Apply t.Func e.Arg> <Pipe e.Funcs>>;
     };
 
   /* пусто */ = { e.Arg = e.Arg; };
 }
+
+/**
+  Seq is deprecated, use Pipe
+*/
+$ENTRY Seq { e.Funcs = <Pipe e.Funcs>; }
 
 $ENTRY Sort {
   /* пусто */ = /* пусто */;
@@ -295,7 +302,7 @@ $ENTRY Sort {
   t.Pivot e.Items =
     <Fetch
       e.Items
-      <Seq
+      <Pipe
         (Reduce
           {
             ((e.Less) (e.Equal) (e.Greater)) t.Next =
