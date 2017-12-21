@@ -1,0 +1,19 @@
+//FROM LibraryEx
+$EXTERN Fetch, Map, LoadFile;
+
+$ENTRY SR-LoadSource {
+  e.FileName =
+    <Fetch
+      <Map LinearizeLine <LoadFile e.FileName>>
+      {
+        // Игнорируем метку порядка байт для UTF-8
+        '\xEF\xBB\xBF' e.Content = e.Content;
+
+        e.Content = e.Content;
+      }
+    >;
+}
+
+LinearizeLine {
+  (e.Line) = e.Line '\n';
+}

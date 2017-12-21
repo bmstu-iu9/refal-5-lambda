@@ -1,0 +1,16 @@
+$ENTRY Go {
+  = <Check False <RemoveFile 'not-exist.txt'>>
+    <Open 'w' 7 'for-remove.txt'>
+    <Close 7>
+    <Eq True <ExistFile 'for-remove.txt'>>
+    <Check True <RemoveFile 'for-remove.txt'>>
+    <Eq False <ExistFile 'for-remove.txt'>>
+    <Check False <RemoveFile /* empty */>>;
+}
+
+Check {
+  True True () = <Prout 'RemoveFile - True'>;
+  False False (e.Error) = <Prout 'RemoveFile - False'>;
+}
+
+Eq { s.X s.X = <Prout s.X>; }

@@ -1,0 +1,24 @@
+$ENTRY Go {
+  = < { #A = ; } <Blocks 'hello'>>
+    < { #B = ; } <Blocks 'world'>>;
+}
+
+Blocks {
+  e.Expr
+    = e.Expr e.Expr
+    : {
+        e.Begin s.Pair s.Pair e.End = e.End;
+        e.Begin 'dw' e.End = e.Begin e.End;
+      }
+    : {
+        s.Init e.Inner s.Init = s.Init s.Init;
+        e.Begin s.Rep e.Middle s.Rep e.End = e.Middle;
+      }
+    : e.Expr^
+    = e.Expr e.Expr : e.Begin s.Rep e.Middle s.Rep e.End
+    = e.Middle
+    : {
+        /* empty */ = #A;
+        s.Char = #B;
+      };
+}

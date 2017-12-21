@@ -80,7 +80,7 @@ FindErrors {
               (e.Declarations);
 
             (e.Declarations) (#NativeBlock e.Block) =
-              (e.Declarations #NativeBlockSign);
+              (e.Declarations);
           }
           (/* объявления */)
         )
@@ -103,12 +103,6 @@ CheckDeclarations {
         CleanupValidForwards
         FindInvalidForwards
         CheckRedefinitions
-        (Map
-          {
-            #NativeBlockSign = /* пусто */;
-            t.Other = t.Other;
-          }
-        )
       >
     >;
 }
@@ -155,10 +149,6 @@ FindInvalidForwards {
       (#Error t.SrcPosForward #ForwardForEntry e.Name) e.Declarations-E
     >;
 
-  // Эта проверка не выполняется для файлов с нативными блоками
-  e.Declarations-B #NativeBlockSign e.Declarations-E =
-    e.Declarations-B e.Declarations-E;
-
   e.Declarations-B
   (#Declare t.SrcPosForward #GN-Local e.Name) e.Declarations-E =
     <FindInvalidForwards
@@ -196,46 +186,56 @@ CheckFunctionBodyRec {
 }
 
 CheckSentence {
-  e.ScopeVars ((e.Pattern) e.Assignments (e.Result)) =
-    <Fetch
-      <CheckPattern (e.ScopeVars) <FlatExpr e.Pattern>>
-      <Seq
-        {
-          (e.ScopeVars^) e.PatternFunctionsAndErrors =
-          (e.PatternFunctionsAndErrors)
-          <CheckAssignments (e.Assignments) (e.ScopeVars)>;
-        }
-        {
-          (e.PatternFunctionsAndErrors^) (e.ScopeVars^) e.AssignmentsFunctionsAndErrors =
-            (e.ScopeVars) e.PatternFunctionsAndErrors e.AssignmentsFunctionsAndErrors;
-        }
-        {
-          (e.ScopeVars^) e.PatternFunctionsAndErrors^ =
-            e.PatternFunctionsAndErrors
-            <CheckResult (e.ScopeVars) <FlatExpr e.Result>>;
-        }
-      >
-    >;
+  e.ScopeVars ((e.Pattern) e.Assignments (e.Result) (e.Blocks))
+
+    = <CheckPattern (e.ScopeVars) <FlatExpr e.Pattern>>
+    : (e.ScopeVars^) e.PatternFunctionsAndErrors
+
+    = <DoCheckAssignments (e.Assignments) (e.ScopeVars) /* нет ошибок */>
+    : (e.ScopeVars^) e.AssignmentsFunctionsAndErrors
+
+    = <CheckResult (e.ScopeVars) <FlatExpr e.Result>>
+    : e.ResultFunctionsAndErrors
+
+    = <CheckBlocks (e.ScopeVars) e.Blocks> : e.BlocksFunctionsAndErrors
+
+    = e.PatternFunctionsAndErrors
+      e.AssignmentsFunctionsAndErrors
+      e.ResultFunctionsAndErrors
+      e.BlocksFunctionsAndErrors;
 }
 
-CheckAssignments {
+CheckBlocks {
+  (e.ScopeVars) e.Blocks
+    = <Map
+        {
+          (e.BlockBody) = <CheckFunctionBodyRec (e.ScopeVars) e.BlockBody>;
+        }
+        e.Blocks
+      >;
+}
+
+DoCheckAssignments {
   () (e.ScopeVars) e.Errors = (e.ScopeVars) e.Errors;
 
-  ((#Assign (e.Result) (e.Pattern)) e.Assignments) (e.ScopeVars) e.Errors =
-    <Fetch
-      <CheckResult (e.ScopeVars) <FlatExpr e.Result>>
-      <Seq
-        {
-          e.Errors^ =
-            (e.Errors)
-            <CheckPattern (e.ScopeVars) <FlatExpr e.Pattern>>;
-        }
-        {
-          (e.Errors^) (e.ScopeVars^) e.PatternFunctionsAndErrors =
-            <CheckAssignments (e.Assignments) (e.ScopeVars) e.Errors e.PatternFunctionsAndErrors>;
-        }
-      >
-    >;
+  ((s.ChainType (e.Result) (e.Blocks) (e.Pattern)) e.Assignments)
+  (e.ScopeVars) e.Errors
+
+    = <CheckResult (e.ScopeVars) <FlatExpr e.Result>>
+    : e.ResultFunctionsAndErrors
+
+    = <CheckBlocks (e.ScopeVars) e.Blocks> : e.BlocksFunctionsAndErrors
+
+    = <CheckPattern (e.ScopeVars) <FlatExpr e.Pattern>>
+    : (e.ScopeVars^) e.PatternFunctionsAndErrors
+
+    = <DoCheckAssignments
+        (e.Assignments) (e.ScopeVars)
+        e.Errors
+        e.ResultFunctionsAndErrors
+        e.BlocksFunctionsAndErrors
+        e.PatternFunctionsAndErrors
+      >;
 }
 
 FlatExpr {
@@ -286,11 +286,6 @@ CheckPattern {
         (e.KnownVars-B (s.Mode e.Index) e.KnownVars-E)
         (#TkVariable t.SrcPos s.Mode e.Index) =
           (e.KnownVars-B (s.Mode e.Index) e.KnownVars-E);
-
-        (e.KnownVars-B (s.OldMode e.Index) e.KnownVars-E)
-        (#TkVariable t.SrcPos s.NewMode e.Index) =
-          (e.KnownVars-B (s.OldMode e.Index) e.KnownVars-E)
-          (#Error t.SrcPos #InvalidMode s.OldMode s.NewMode e.Index);
 
         (e.KnownVars) (#TkVariable t.SrcPos s.Mode e.Index) =
           (e.KnownVars (s.Mode e.Index));
@@ -349,14 +344,29 @@ CheckResult {
 CheckValidUsings {
   (
     e.DeclarationsAndErrors-B
-    (s.DeclareDefine t.SrcPos s.ScopeClass e.Name)
+    (#Declare t.SrcPos s.ScopeClass e.Name)
     e.DeclarationsAndErrors-E
   )
   (#TkName t.SrcPosName e.Name) e.NameRefsAndErrors =
     <CheckValidUsings
       (
         e.DeclarationsAndErrors-B
-        (s.DeclareDefine t.SrcPos s.ScopeClass e.Name)
+        (#Declare t.SrcPos s.ScopeClass e.Name)
+        e.DeclarationsAndErrors-E
+      )
+      e.NameRefsAndErrors
+    >;
+
+  (
+    e.DeclarationsAndErrors-B
+    (#Define t.SrcPos s.ScopeClass e.Name)
+    e.DeclarationsAndErrors-E
+  )
+  (#TkName t.SrcPosName e.Name) e.NameRefsAndErrors =
+    <CheckValidUsings
+      (
+        e.DeclarationsAndErrors-B
+        (#Define t.SrcPos s.ScopeClass e.Name)
         e.DeclarationsAndErrors-E
       )
       e.NameRefsAndErrors

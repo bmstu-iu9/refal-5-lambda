@@ -1,9 +1,0 @@
-$ENTRY Go {
-  = <Hello World>;
-}
-
-Hello {
-  World = ;
-}
-
-$ENUM World;

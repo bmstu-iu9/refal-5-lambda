@@ -45,7 +45,9 @@
   * `#Ident` — `$LABEL`.
 * `#TkIdentMarker` — знак решётки.
 * `#TkName e.Name` — идентификатор (имя функции или идентификатора после `#`).
-* `#TkNumber s.Number` — целое число.
+* `#TkNumber s.Number` — целое число. `s.Number` может быть как целым числом,
+  так и знаками #Cookie1 и #Cookie2 — на более поздних проходах становятся
+  первым и вторым хешами области видимости.
 * `#TkReplace` — знак равенства.
 * `#TkSemicolon` — точка с запятой.
 * `#TkVariable s.Mode e.Index` — переменная:
@@ -69,6 +71,7 @@
       | (#Swap t.SrcPos s.ScopeClass e.Name)
       | (#Declaration t.SrcPos s.ScopeClass e.Name)
       | (#Ident t.SrcPos e.Name)
+      | (#Include t.SrcPos e.Name)
       | (#NativeBlock t.SrcPos e.Code)
 
 
@@ -78,7 +81,11 @@
     e.Body ::=
         #Sentences t.Sentence*
       | #NativeBody t.SrcPos e.Code
-    t.Sentence ::= ((e.Pattern) (e.Result))
+    t.Sentence ::= ((e.Pattern) t.AssignOrCondition* (e.Result) (e.Blocks))
+    t.AssignOrCondition ::=
+        (#Assign (e.Result) (e.Blocks) (e.Pattern))
+      | (#Condition (e.Result) (e.Blocks) (e.Pattern))
+    e.Blocks ::= (e.Body)*
     e.Pattern, e.Result ::= e.Expression
     e.Code ::= (s.Char*)*
 
@@ -96,6 +103,8 @@
       | (#Closure e.Sentences)
     e.ADTName ::= e.Name | #UnnamedADT
 
+    s.Number ::= s.NUMBER | #Cookie1 | #Cookie2
+
 * `t.ErrorList` — список ошибок, определён в `Error.sref`.
 * `e.Tokens` — последовательность токенов (см. выше).
 * `e.AST` — синтаксическое дерево исходного текста.
@@ -107,6 +116,7 @@
   * `#Swap` — определение статического ящика,
   * `#Declaration` — объявление функции,
   * `#Ident` — объявление идентификатора,
+  * `#Include` — имя включаемого файла,
   * `#NativeBlock` — блок нативного кода вне определения функции.
 * `t.SrcPos` — позиция данного объекта (требуется при семантической проверке).
 * `s.ScopeClass` — область видимости для функции.
@@ -134,17 +144,36 @@
 * `e.ADTName` — значение `#UnnamedADT` используется в случае синтаксической
   ошибки: отсутствия метки АТД-терма после квадратной скобки.
 
-## Проверка контекстных зависимостей (проход 4)
+## Разрешение подключаемых файлов (проход 4)
+Данный проход не выделен в отдельную функцию. Он выполняется внутри
+`Driver.sref`, обнаруживает в исходных текстах директивы `$INCLUDE` (элемент
+дерева `(#Include t.SrcPos e.Name)`) и подгружает содержимое указанных
+файлов. При этом для подключаемых файлов выполняются проходы 1-3.
+
+После получения всех синтаксических деревьев строится результирующее
+дерево, равное их конкатенации, при этом в нём, (а) изменяются `t.SrcPos`,
+(б) удаляются узлы `#Include` за ненадобностью.
+
+Замена `t.SrcPos`:
+
+    t.SrcPos ::= (#FileLine s.LineNumber e.FileName)
+
+Таким образом последующие проходы (5 и 9) правильным образом выписывают путь
+к файлу.
+
+## Проверка контекстных зависимостей (проход 5)
 
     <CheckProgram t.ErrorList e.AST>
       == t.ErrorList
 
 Проверка только пополняет список ошибок контекстно-зависимыми ошибками.
 
-## Редуктор до подмножества (обессахариватель) (проход 5)
+## Редуктор до подмножества (обессахариватель) (проход 6)
 
-    <Desugar e.AST>
+    <Desugar s.MarkupContext e.AST>
       == e.ReducedAST
+
+    s.MarkupContext ::= #MarkupContext | #NoMarkupContext
 
     e.ReducedAST ::= t.ReducedProgramElement*
 
@@ -173,6 +202,13 @@
       | (#ADT-Brackets (e.Name) e.Expression)
       | (#CallBrackets e.Expression)
       | (#TkVariable s.Mode e.Index s.Depth)
+      | (#ClosureBrackets e.ClosureContent)
+    e.ClosureContent ::= (#TkName e.Name) t.ContextVariable*
+    t.ContextVariable ::=
+        (#TkVariable s.ModeTS e.Index s.Depth)
+      | (#Brackets (#TkVariable 'e' e.Index s.Depth))
+      | (#TkIdentifier e.Name)
+    s.ModeTS ::= 't' | 's'
 
 Нужно отметить, что в `#ADT-Brackets` на входе не может быть имени как `#UnnamedADT`,
 поскольку этот проход и последующие вызываются только при отсутствии ошибок.
@@ -195,9 +231,14 @@
   `s.Depth` равен нулю. Таким образом, `#TkNewVariable` превращается
   в `#TkVariable` с индексом глубины, равным глубине самой функции.
   Вложенные функции из `#Closure` превращаются в глобальные функции
-  в `t.ReducedProgramElement`.
+  в `t.ReducedProgramElement`,
+* `#ClosureBrackets` сворачиваются в объекты замыкания,
+* `e.ClosureContent` — содержимое замыкания состоит из имени соответствующей
+  глобальной функции и захваченных переменных контекста, последние могут
+  предваряться (опция `s.MarkupContext`) идентификатором с именем
+  переменной для удобства отладки.
 
-## Генерация высокоуровневого RASL’а (проход 6)
+## Генерация высокоуровневого RASL’а (проход 7)
     <HighLevelRASL s.Joint s.OptResult e.AST>
       == e.RASLAST
 
@@ -227,20 +268,21 @@
       | (#CmdOpenELoop s.Direction s.RangeOffset s.VarOffset e.HiCommands)
 
     t.SingleCommand ::=
-        (#CmdIssueMem s.Offset)
+        (#CmdIssueMemory s.Offset)
       | (#CmdInitB0)
       | (#CmdInitB0-Lite)
       | (s.MatchCommand s.Direction s.Offset e.MatchInfo)
       | (#CmdSave s.OldOffset s.NewOffset)
       | (#CmdComment e.Text)
       | (#CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset)
-      | (#CmdEmptyResult)
-      | (s.CreateElemCommand s.Offset s.CreateType e.AllocInfo)
+      | (#CmdResetAllocator)
+      | (#CmdCreateElem s.CreateMode s.Offset s.CreateType e.AllocInfo)
       | (#CmdCopyVar s.Mode s.VarOffset s.SampleOffset
       | (#CmdInsertElem s.Offset)
       | (#CmdInsertRange s.Offset)
       | (#CmdInsertVar s.Mode s.Offset)
       | (#CmdLinkBrackets s.LeftOffset s.RightOffset)
+      | (#CmdWrapClosure s.Offset)
       | (#CmdPushStack s.Offset)
       | (#CmdFail)
       | (s.MatchSave s.Direction s.Offset e.MatchSaveInfo)
@@ -275,7 +317,7 @@
 
     s.Direction ::= #AlgLeft | #AlgRight | #AlgTerm
 
-    s.CreateElemCommand ::= #CmdAllocateElem | #CmdReinitElem | #CmdUpdateElem
+    s.CreateMode ::= #Allocate | #Reinit | #Update
     s.CreateType e.AllocInfo ::=
         #ElChar s.Char
       | #ElName e.Name
@@ -285,13 +327,16 @@
       | #ElOpenADT | #ElCloseADT
       | #ElOpenBracket | #ElCloseBracket
       | #ElOpenCall | #ElCloseCall
+      | #ElClosureHead
+      | #ElUnwrappedClosure s.HeadOffset
 
     s.VarOffset, s.SampleOffset ::= s.Offset
     s.OldOffset, s.NewOffset ::= s.Offset
     s.LeftOffset, s.RightOffset ::= s.Offset
     s.SaveOffset ::= s.Offset
-    s.R-Offset ::= s.Offset | #RIGHT-EDGE
+    s.R-Offset ::= #ARG-BEGIN | s.Offset | #RIGHT-EDGE
     s.L-Offset ::= s.Offset | #LEFT-EDGE
+    s.Number ::= s.NUMBER | #Cookie1 | #Cookie2
 
 * `e.AST` — см. предыдущий раздел.
 * `e.RASLAST` — (сильно упрощая) синтаксическое дерево, в котором в функциях
@@ -325,7 +370,7 @@
       ещё и предложение, последующие проходы отработают корректно, только
       предложений там возникать не должно.
 * `t.SingleCommand` — элементарная высокоуровневая команда.
-  * `(#CmdIssueMem s.Offset)` — резервирование памяти для локальных переменных.
+  * `(#CmdIssueMemory s.Offset)` — резервирование памяти для локальных переменных.
   * `(#CmdInitB0)` — инициализация нулевого диапазона на основе аргумента
     функции (`arg_begin` и `arg_end` в сгенерированном коде C++). При этом
     осуществляется пропуск скобок вызова и имени функции.
@@ -366,18 +411,21 @@
   * `(#CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset)` — формирует
     запись отладочной таблицы переменных (для интерактивного просмотра
     значений переменных в отладчике).
-  * `(#CmdEmptyResult)` — подготавливает рантайм к формированию элементов
+  * `(#CmdResetAllocator)` — подготавливает рантайм к формированию элементов
     результатного выражения в списке свободных узлов. Должно предшествовать
     любым командам распределения (включая копирование переменных).
     В режиме включённого отладчика в этой команде происходят проверки точек
     останова и диалог с пользователем.
-  * `(s.CmdCreateElem s.Offset s.AllocType e.AllocInfo)` — создание нового
-    объекта в списке свободных узлов (указатель на созданный объект помещается
-    в контекст по смещению `s.Offset`), либо повторное использование имеющегося
-    (переиспользуется элемент по указателю `s.Offset`).
+  * `(#CmdCreateElem s.CreateMode s.Offset s.AllocType e.AllocInfo)` — создание
+    нового объекта в списке свободных узлов (указатель на созданный объект
+    помещается в контекст по смещению `s.Offset`), либо повторное использование
+    имеющегося (переиспользуется элемент по указателю `s.Offset`).
     Поля `s.AllocType e.AllocInfo` определяют тип и аргументы команды
     распределения. Их смысл очевиден, за исключением `#ElString e.String` — она
-    создаёт непрерывную последовательность литер.
+    создаёт непрерывную последовательность литер. Замыкания обслуживают
+    `#ElClosureHead` и `#ElUnwrappedClosure` — первый создаёт счётчик ссылок
+    для замыкания (и устанавливает в 1), второй — узел развёрнутого замыкания
+    (ссылается на смещение уже созданного счётчика ссылок).
   * `(#CmdCopyVar s.Mode s.VarOffset s.SampleOffset)` — копирование переменной
     вида `s.Mode` в смещение `s.VarOffset`, используя как оригинал переменную
     по смещению `s.SampleOffset`.
@@ -389,6 +437,8 @@
     и смещением `s.Offset` к построенной части результатного выражения.
   * `(#CmdLinkBrackets s.LeftOffset s.RightOffset)` — связывание круглых или
     квадратных скобок с заданными смещениями.
+  * `(#CmdWrapClosure s.Offset)` — сворачивает ссылку на замыкание в кольцевой
+    список.
   * `(#CmdPushStack s.Offset)` — помещение угловой скобки на стек.
   * `(#CmdFail)` — возврат из функции значения «сопоставление невозможно».
   * `(s.MatchSave s.Direction s.Offset e.MatchInfo)` — смысл этих
@@ -409,7 +459,8 @@
   * `(#CmdInsertTile s.BeginOffset s.EndOffset)` — команда переноса диапазона 
     из списка свободных узлов в поле зрения.
   * `(#CmdSetRes s.R-Offset)` — устанавливает начальное значение переменной
-    `res` (по указателю, равному смещению в контексте, либо по правой кромке).
+    `res` (на arg_begin, по указателю, равному смещению в контексте,
+    либо по правой кромке).
   * `(#CmdTrash s.L-Offset)` — удаляет диапазон от `s.L-Offset` до текущего
     значения `res`. `s.L-Offset` равно либо смещению в контексте, либо левой
     кромке.
@@ -421,7 +472,7 @@
 
 
 ### Вычислительная модель высокоуровневых команд
-Последовательность команд внутри функции должна начинаться с `#CmdIssueMem`,
+Последовательность команд внутри функции должна начинаться с `#CmdIssueMemory`,
 которая резервирует стек для локальных переменных — указателей на элементы
 поля зрения и списка свободных узлов.
 
@@ -446,233 +497,232 @@ e-переменные, распределяемые последователь�
 В роли смещения закрытой e-переменной выступают границы диапазона, в котором
 она находится.
 
-## Генерация низкоуровневого RASL’а (проход 7)
+## Генерация низкоуровневого RASL’а (проход 8)
     <LowLevelRASL s.GenMode e.RASLAST>
-      == e.RASL
+      == t.RASLModule t.NativeModule?
 
-    s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
-    e.RASL ::= t.LoCommand*
+    s.GenMode ::= #OnlyDirect | #OnlyInterpret
 
-    t.LoCommand ::=
-        t.DeclarationCommand
-      | t.DirectCommand
-      | t.InterpretCommand
-      | t.GlueCommand
+    t.RASLModule ::=
+      (
+        (#ModuleID s.Cookie1 s.Cookie2)
+        (#CmdFuncArray s.FunctionCount (s.ScopeClass e.FuncName)*)
+        (#CmdIdentArray s.IdentCount (e.IdentName)*)
+        (#CmdNumberArray s.NumberCount s.NUMBER*)
+        (#CmdStringArray s.StringCount (s.CHAR*)*)
+        (#RASL e.RASL)
+        (#Items t.DeclarationCommand*)
+      )
+
+    t.NativeModule ::= (e.NativeRASL)
+
+    e.RASL ::= t.InterpretCommand*
+    e.NativeRASL ::= { t.NativeDeclarationCommand | t.DirectCommand }*
 
     t.DeclarationCommand ::=
-        (#CmdEnumDescr e.Name)
-      | (#CmdExtern e.Name)
-      | (#CmdExternInterpret e.Name)
-      | (#CmdFuncDescr e.Name)
-      | (#CmdInterpretFuncDescr e.Name)
-      | (#CmdSwapDescr e.Name)
-      | (#CmdFuncDescr s.ScopeClass e.Name)
-      | (#CmdDefineIndent e.Name)
-      | (#CmdEmitNativeCode t.SrcPos e.Code)
-      | (#CmdFnStart e.Name)
-      | (#CmdProfileFunction)
-      | (#CmdFnEnd)
-      | (#CmdSeparator)
-      | (#CmdNativeForward e.Name)
-      | (#CmdNamespaceStart e.OptionalName)
-      | (#CmdNamespaceEnd e.OptionalName)
+        (#CmdEnumDescr e.CookiedName)
+      | (#CmdInterpretFuncDescr e.CookiedName s.LabelId)
+      | (#CmdSwapDescr e.CookiedName)
+      | (#CmdNativeFuncDescr s.ScopeClass e.Name)
+
+    e.CookiedName ::= e.Name #Hash s.Cookie1 s.Cookie2
+    s.Cookie1, s.Cookie2 ::= s.NUMBER
 
     e.OptionalName ::= /* пусто */ | e.Name
 
     t.DirectCommand ::=
-        t.SingleCommand
+        (#CmdProfileFunction)
+      | t.SingleCommand
       | (#CmdStartSentence)
       | (#CmdEndSentence)
       | (#CmdOpenedE-Start s.Direction s.RangeOffset s.VarOffset)
       | (#CmdOpenedE-End s.Direction s.RangeOffset s.VarOffset)
 
+    t.NativeDeclarationCommand ::=
+        (#CmdExtern e.CookiedName)
+      | (#CmdDefineIndent e.Name)
+      | (#CmdNativeFuncDescr e.CookiedName)
+      | (#CmdFnStart e.Name)
+      | (#CmdFnEnd)
+      | (#CmdEmitNativeCode t.SrcPos e.Code)
+
     t.InterpretCommand ::=
-        (#CmdiFuncArray (e.Name)*)
-      | (#CmdiLabelArray (e.Name)*)
-      | (#CmdNumberArray s.Number*)
+        (#CmdFuncArray (e.Name)*)
+      | (#CmdIdentArray (e.Name)*)
+      | (#CmdNumberArray s.NUMBER*)
       | (#CmdStringArray (e.String)*)
-      | (#CmdInitRAA)
+      | (#CmdInitRAA e.Name)
       | t.InterpretArrayLines
       | (#CmdFinRAA)
-      | (#CmdiIssueMem s.Memory)
-      | (#CmdiReserveStack s.Depth)
+      | (#CmdIssueMemory s.Memory)
+      | (#CmdReserveBacktrackStack s.Depth)
+      | (#LABEL s.LabelId)
 
     t.InterpretArrayLines ::=
-        (#CmdiInitB0)
+        (#CmdInitB0)
+      | (#CmdProfileFunction)
+      | (#CmdLoadConstants)
       | (s.iMatchCommand s.Direction s.Offset e.iMatchInfo)
-      | (#CmdiSave s.OldOffset s.NewOffset)
-      | (#CmdiEPrepare s.RangeOffset s.VarOffset)
-      | (#CmdiEStart s.RangeOffset s.VarOffset)
-      | (#CmdiEmpty s.Offset)
-      | (#CmdiVariableDebugTable s.StringId s.Offset)
-      | (#CmdiEmptyResult)
-      | (#CmdiCreateElem s.CreateMode s.Offset s.iCreateType e.iCreateInfo)
-      | (#CmdiCopyVar s.Mode s.VarOffset s.SampleOffset)
-      | (#CmdiInsertElem s.Offset)
-      | (#CmdiInsertRange s.Offset)
-      | (#CmdiInsertVar s.Mode s.VarOffset)
-      | (#CmdiLinkBrackets s.LeftOffset s.RightOffset)
-      | (#CmdiPushStack s.Offset)
-      | (#CmdiFail)
-      | (#CmdiOnFailGoTo s.Delta)
-      | (#CmdiInitB0-Lite)
+      | (#CmdSave s.OldOffset s.NewOffset)
+      | (#CmdEPrepare s.RangeOffset s.VarOffset)
+      | (#CmdEStart s.RangeOffset s.VarOffset)
+      | (#CmdEmpty s.Offset)
+      | (#CmdVariableDebugTable s.StringId s.Offset)
+      | (#CmdResetAllocator)
+      | (#CmdCreateElem s.CreateMode s.Offset s.iCreateType e.iCreateInfo)
+      | (#CmdCopyVar s.Mode s.VarOffset s.SampleOffset)
+      | (#CmdInsertElem s.Offset)
+      | (#CmdInsertRange s.Offset)
+      | (#CmdInsertVar s.Mode s.VarOffset)
+      | (#CmdLinkBrackets s.LeftOffset s.RightOffset)
+      | (#CmdWrapClosure s.ClosureOffset)
+      | (#CmdPushStack s.Offset)
+      | (#CmdFail)
+      | (#LABEL s.LabelId)
+      | (#CmdOnFailGoTo s.LabelId "Func name:" e.CookiedName)
+      | (#CmdInitB0-Lite)
       | (s.iMatchSaveCommand s.Direction s.Offset s.iMatchSaveInfo)
-      | (#CmdiSetRes s.R-Offset)
-      | (#CmdiTrash s.L-Offset)
-      | (#CmdiInsertTile s.BeginOffset s.EndOffset)
-      | (#CmdiSpliceToFreeList)
-      | (#CmdiNextStep)
+      | (#CmdSetRes s.R-Offset)
+      | (#CmdTrash s.L-Offset)
+      | (#CmdInsertTile s.BeginOffset s.EndOffset)
+      | (#CmdSpliceToFreeList)
+      | (#CmdNextStep)
+
+    s.LabelId ::= s.NUMBER
 
     s.iMatchCommand e.iMatchInfo ::=
-        #CmdiRepeat s.Mode s.VarOffset s.SampleOffset
-      | #CmdiADT s.NewRangeOffset s.NameId
-      | #CmdiChar s.Char
-      | #CmdiVar s.Mode s.VarOffset
-      | #CmdiName s.NameId
-      | #CmdiIdent s.NameId
-      | #CmdiNum s.Number
-      | #CmdiHugeNum s.NumberId
-      | #CmdiBracket s.NewRangeOffset
+        #CmdRepeat s.Mode s.VarOffset s.SampleOffset
+      | #CmdADT s.NewRangeOffset s.NameId
+      | #CmdChar s.Char
+      | #CmdVar s.Mode s.VarOffset
+      | #CmdName s.NameId
+      | #CmdIdent s.NameId
+      | #CmdNumber s.NUMBER
+      | #CmdHugeNum s.NumberId
+      | #CmdBracket s.NewRangeOffset
 
     s.iMatchSaveCommand e.iMatchSaveInfo ::=
-        #CmdiRepeatedSave s.Mode s.VarOffset s.SampleOffset
-      | #CmdiADTSave s.NewRangeOffset s.NameId
-      | #CmdiCharSave s.SaveOffset s.Char
-      | #CmdiVarSave s.Mode s.VarOffset
-      | #CmdiNameSave s.SaveOffset s.NameId
-      | #CmdiIdentSave s.SaveOffset s.NameId
-      | #CmdiNumSave s.SaveOffset s.Number
-      | #CmdiHugeNumSave s.SaveOffset s.NumberId
-      | #CmdiBracketSave s.NewRangeOffset
-
-    s.CreateMode ::= #Allocate | #Reinit | #Update
+        #CmdRepeatedSave s.Mode s.VarOffset s.SampleOffset
+      | #CmdADTSave s.NewRangeOffset s.NameId
+      | #CmdCharSave s.SaveOffset s.Char
+      | #CmdVarSave s.Mode s.VarOffset
+      | #CmdNameSave s.SaveOffset s.NameId
+      | #CmdIdentSave s.SaveOffset s.NameId
+      | #CmdNumberSave s.SaveOffset s.NUMBER
+      | #CmdHugeNumSave s.SaveOffset s.NumberId
+      | #CmdBracketSave s.NewRangeOffset
 
     s.iCreateType e.iCreateInfo ::=
         #ElChar s.Char
       | #ElName s.NameId
       | #ElIdent s.NameId
       | #ElHugeNumber s.NumberId
-      | #ElNumber s.Number
+      | #ElNumber s.NUMBER
       | #ElString s.StringId
       | #ElOpenADT | #ElCloseADT
       | #ElOpenBracket | #ElCloseBracket
       | #ElOpenCall | #ElCloseCall
-
-    t.GlueCommand ::=
-        (#CmdIfDef e.Macros)
-      | (#CmdElse)
-      | (#CmdEndIf)
+      | #ElClosureHead
+      | #ElUnwrappedClosure s.HeadOffset
 
 * `e.RASL` — последовательность элементарных команд. Каждая из них отображается
-  в шаблон кода на C++.
-* `t.LoCommand` — низкоуровневая команда
-* `t.DeclarationCommand` — объявление или определение чего-то на C++, сюда же
-  входят начало и конец регулярных функций на C++, запуск профилировщика
-  для сгенерированных функций:
-  * `#CmdEnumDescr`, `#CmdFuncDescr`, `#CmdInterpretFuncDescr`,
-    `#CmdSwapDescr` — определяют дескриптор соответствующего объекта,
+  в команду интерпретируемого кода.
+* `e.NativeRASL` — последовательность элементарных команд. Каждая из них
+  отображается в шаблон кода на C++.
+* `t.DeclarationCommand` — объявление или определение чего-то
+  для интерпретируемого RASL’а — компилируется в блок RASL’а:
+  * `#CmdEnumDescr`, `#CmdInterpretFuncDescr`, `#CmdSwapDescr`,
+    `#CmdNativeFuncDescr` — определяют дескриптор соответствующего объекта.
+* `t.NativeDeclarationCommand` — объявление или определение чего-то на C++
+  для нативного RASL’а, сюда же  входят начало и конец регулярных функций
+  на C++:
   * `#CmdExtern` — создаёт предобъявление для дескриптора функции,
-  * `#CmdDefineIndent`, `#CmdEmitNativeCode` — тот же смысл, что и для
-     высокоуровневых команд;
-  * `#CmdFnStart`, `#CmdFnEnd` — начало и конец тела функции;
-  * `#CmdProfileFunction` — запуск профилировщика для функции Рефала,
-  * `#CmdSeparator` — вставка пустой строки в целевой код,
-  * `#CmdNativeForward` — объявление статической функции, которая должна
-    определяться в блоке нативной вставки,
-  * `#CmdNamespaceStart`, `#CmdNamespaceEnd` — начало и конец пространства
-    имён C++, принимают необязательный параметр `e.Name`, если он присутствует,
-    создаётся пространство имён с именем `scope_Имя`, иначе — безымянное.
+  * `#CmdDefineIndent` — тот же смысл, что и для высокоуровневых команд;
+  * `#CmdNativeFuncDescr`, — определяют дескриптор нативной функции,
+  * `#CmdEmitNativeCode` — тот же смысл, что и для высокоуровневых команд;
+  * `#CmdFnStart`, `#CmdFnEnd` — начало и конец тела функции.
+* `e.CookiedName` — имя функции с ключом области видимости
+  (0, 0 для entry-функций; два числа для локальной, для каждой единицы
+  трансляции эта пара чисел своя).
 * `t.DirectCommand` — команды прямой кодогенерации. Бо́льшая их часть совпадает
   с элементарными командами тел функций высокоуровневого RASL, в дополнение
   к ним определены команды, соответствующие началу и концу составных команд
-  (начало и конец предложения и цикла по открытой переменной).
+  (начало и конец предложения и цикла по открытой переменной):
+  * `#CmdProfileFunction` — запуск профилировщика для функции Рефала,
+  * `#CmdStartSentence`, `#CmdEndSentence` — начало и конец предложения,
+  * `#CmdOpenedE-Start`, `#CmdOpenedE-End` — начало и конец цикла по открытой
+    e-переменной.
 * `t.InterpretCommand` — команды режима интерпретации:
   * `(s.LiteralArray t.LiteralItem*)` — массив литеральных значений. Поскольку
     массивы команд в качестве аргументов могут использовать только 8-битные
     целые, для аргуметов других типов описываются массивы, а в интерпретируемых
     командах используются индексы массивов. `s.LiteralArray t.LiteralItem`:
-    * `#CmdiFuncArray e.Name` — массив указателей на функции,
-    * `#CmdiLabelArray e.Name` — массив идентификаторов,
-    * `#CmdiNumberArray s.Number` — массив больших (>255) чисел,
-    * `#CmdiStringArray e.String` — массив строк.
-  * `(#CmdInitRAA)` — заголовок массива интерпретируемых команд.
+    * `#CmdFuncArray e.Name` — массив указателей на функции,
+    * `#CmdIdentArray e.Name` — массив идентификаторов,
+    * `#CmdNumberArray s.NUMBER` — массив больших (>255) чисел,
+    * `#CmdStringArray e.String` — массив строк.
+  * `(#CmdInitRAA e.Name)` — заголовок массива интерпретируемых команд.
   * `t.InterpretArrayLines` — команды, генерирующие строчки массива.
   * `(#CmdFinRAA)` — последняя строка массива и закрывающая фигурная скобка.
-  * `(#CmdiIssueMem s.Memory)` — резервирование памяти для указателей на узлы.
-  * `(#CmdiReserveStack s.Depth)` — резервирование стека для переходов
+  * `(#CmdIssueMemory s.Memory)` — резервирование памяти для указателей на узлы.
+  * `(#CmdReserveBacktrackStack s.Depth)` — резервирование стека для переходов
     по ошибкам сопоставления. Команды инициализации цикла по открытым
-    переменным (`#CmdiEPrepare`) и перехода к концу предложения
-    (`#CmdiOnFailGoTo`) помещают смещение в этот массив.
+    переменным (`#CmdEPrepare`) и перехода к концу предложения
+    (`#CmdOnFailGoTo`) помещают смещение в этот массив.
 * `t.InterpretArrayLines` — команды, генерирующие строчки массива
-  интерпретируемых команд. Во многом совпадают с командами прямой кодогенерации.
-  Для таких команд будет использоваться запись _команда → команда_ для
-  отсылки к соответствующей команде.
-  * `#CmdiInitB0` → `#CmdInitB0`.
-  * `(s.iMatchCommand s.Direction s.Offset e.iMatchInfo)` → `s.MatchCommand`.
+  интерпретируемых команд. Во многом совпадают с одноимёнными командами прямой
+  кодогенерации — такие команды будут пропускаться. При неудаче сопоставления
+  команды сопоставления запускают _откат._
+  * `(s.iMatchCommand s.Direction s.Offset e.iMatchInfo)`.
     При неудаче сопоставления эти команды запускают _откат._
-    Отдельное замечание: `#CmdiNum` соответствует числу, влезающему в 8 бит,
+    Отдельное замечание: `#CmdNum` соответствует числу, влезающему в 8 бит,
     её аргумент записывается непосредственно в массив. `#CmdHugeNum` ссылается
     на число в массиве `numbers` по индексу.
   * `s.iMatchSaveCommand` → `s.iMatchCommand` × `s.MatchSave`.
-  * `#CmdiSave` → `#CmdSave`
-  * `#CmdiEPrepare` и `#CmdiEStart` в генерируемом коде всегда располагаются
-    рядом (но заменить их одной командой нельзя). Интерпретатор, обнаружив
-  * `(#CmdiEPrepare s.RangeOffset s.VarOffset)` устанавливает для заданной
+  * `#CmdEPrepare` и `#CmdEStart` в генерируемом коде всегда располагаются
+    рядом (но заменить их одной командой нельзя). Интерпретатор, обнаружив…
+  * `(#CmdEPrepare s.RangeOffset s.VarOffset)` устанавливает для заданной
     переменной пустое значение (аргумент `s.RangeOffset` игнорируется),
     помещает адрес следующей команды в стек откатов и пропускает следующую
-    команду (это должна быть `#CmdiEStart`).
-  * `(#CmdiEStart s.RangeOffset s.VarOffset)` удлиняет переменную `s.VarOffset`
+    команду (это должна быть `#CmdEStart`).
+  * `(#CmdEStart s.RangeOffset s.VarOffset)` удлиняет переменную `s.VarOffset`
     на один терм, отрывая его от `s.RangeOffset`, либо запускает _откат,_
     если `s.RangeOffset` уже пустой. В противном случае кладёт на стек откатов
     свой адрес.
-  * `#CmdiEmpty` → `#CmdEmpty`. При неудаче сопоставлениея запускает _откат._
   * `(#CmdiVariableDebugTable s.StringId s.Offset)` → `#CmdVariableDebugTable`.
     Человекочитаемое имя хранится в таблице строк.
-  * `#CmdiEmptyResult` → `#CmdEmptyResult`.
-  * `(#CmdiCreateElem s.CreateMode s.Offset s.iAllocType e.iAllocInfo)`
-    → `#CmdAllocateElem`, `#CmdUpdateElem`, `#CmdReinitElem`.
-    Оговорка о `#ElNumber` и `#ElHugeNumber` та же, что и для `#CmdiNum`
-    и `#CmdHugeNum`.
-  * `#CmdiCopyVar` → `#CmdCopyVar`.
-  * `#CmdiInsertElem` → `#CmdInsertElem`.
-  * `#CmdiInsertRange` → `#CmdInsertRange`.
-  * `#CmdiInsertVar` → `#CmdInsertVar`.
-  * `#CmdiLinkBrackets` → `#CmdLinkBrackets`.
-  * `#CmdiPushStack` → `#CmdPushStack`.
-  * `#CmdiFail` → `#CmdFail`.
-  * `#CmdiInitB0-Lite` → `#CmdInitB0-Lite`.
-  * `#CmdiSetRes` → `#CmdSetRes`.
-  * `#CmdiTrash` → `#CmdTrash`.
-  * `#CmdiInsertTile` → `#CmdInsertTile`.
-  * `#CmdiSpliceToFreeList` → `#CmdSpliceToFreeList`.
-  * `#CmdiNextStep` → `#CmdNextStep`.
-  * `(#CmdiOnFailGoTo s.Delta)` — кладёт на стек откатов адрес команды,
-    с которой начинается следующее предложение. Смещение этой команды
-    задаётся относительно текущей команды `#CmdiOnFailGoTo`.
-* `t.GlueCommand` — команды, генерирующие директивы препроцессора вокруг
-  команд интерпретации и прямой кодогенерации.
-  * `(#CmdIfDef e.Macros)` → `#ifdef e.Macros`,
-  * `(#CmdElse)` → `#else`,
-  * `(#CmdEndIf)` → `#endif`.
+  * `(#CmdCreateElem s.CreateMode s.Offset s.iAllocType e.iAllocInfo)`.
+    Оговорка о `#ElNumber` и `#ElHugeNumber` та же,
+    что и для `#CmdNum` и `#CmdHugeNum`.
+  * `(#CmdOnFailGoTo s.LabelId "Func name:" e.CookiedName)` — кладёт на стек
+    откатов адрес команды, с которой начинается следующее предложение.
+    Смещение этой команды задаётся именем метки,
+  * `(#LABEL s.LabelId)` — задаёт имя метки для `#CmdOnFailGoTo`
+    и `#CmdInterpretFuncDescr`.
 
 **Понятие отката.** При неудаче сопоставления с образцом в интерпретируемом
 коде запускается откат: со стека откатов снимается адрес следующей команды
 и осуществляется на неё переход. Если стек откатов пустой, то интерпретатор
 функции завершается с ошибкой сопоставления.
 
-На стек откатов нужные значения кладутся командами `#CmdiEPrepare`
-(устанавливает откат следующую команду, которая должна быть `#CmdiEStart`),
-`#CmdiEStart` (кладёт свой адрес) и `#CmdiOnFailGoTo` (кладёт адрес команды
+На стек откатов нужные значения кладутся командами `#CmdEPrepare`
+(устанавливает откат следующую команду, которая должна быть `#CmdEStart`),
+`#CmdEStart` (кладёт свой адрес) и `#CmdOnFailGoTo` (кладёт адрес команды
 с заданным смещением). Механизм откатов позволяет реализовать семантику циклов
-по открытым e-переменным (команды внутри цикла откатываются к `#CmdiEStart`,
+по открытым e-переменным (команды внутри цикла откатываются к `#CmdEStart`,
 которая удлиняет переменную) и предложений (в начале каждого предложения
-выполняется `#CmdiOnFailGoTo`, которая устанавливает адрес перехода на следующее
+выполняется `#CmdOnFailGoTo`, которая устанавливает адрес перехода на следующее
 предложение).
 
-## Генерация целевого кода на C++ (проход 8)
-    <GenProgram e.RASL>
+## Генерация целевого кода на C++ (проход 9)
+    <GenProgram-RASL t.RASLModule>
+      == s.Byte*
+    s.Byte ::= s.NUMBER | s.CHAR
+
+    <GenProgram-Native (e.SrcName) (e.OutputName) t.NativeModule>
       == (e.Line)*
 
 Генератор преобразует каждую из команд промежуточного кода в соответствующий
-фрагмент кода на C++. Функция `GenProgram` возвращает последовательность
-строк целевого файла.
+фрагмент кода на C++. Функции `GenProgram-*` возвращает последовательность
+строк целевого файла. Аргументы `e.SrcName` и `e.OutputName` необходимы
+для правильной генерации нативных вставок.

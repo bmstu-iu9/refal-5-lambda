@@ -1,0 +1,43 @@
+$ENTRY Go {
+  = <Test1>
+    <Eq (41) <Step>>
+    <Test2>
+    <Eq (75) <Step>>;
+}
+
+Test1 {
+  = <Eq () <Dg 'Hello'>>
+    <Eq () <Dg 'World'>>
+    <Eq () <Dgall>>
+    <Eq () <Br 'Hello=' 1>>
+    <Eq () <Br 'World=' 2>>
+    <Eq () <Br 'Hello=' 3 3 3>>
+    <Eq (2) <Dg 'World'>>
+    <Eq (3 3 3) <Dg 'Hello'>>
+    <Eq (1) <Cp 'Hello'>>
+    <Eq (1) <Cp 'Hello'>>
+    <Eq () <Rp 'Hello=100'>>
+    <Eq () <Rp 'World=200'>>
+    <Eq (('World=200') ('Hello=100')) <Dgall>>;
+}
+
+Test2 {
+  = <Eq () <Br 'One=' 1>>
+    <Eq () <Br 'Two=' 2>>
+    <Eq () <Br 'Three=' 3>>
+    <Eq () <Br 'Four=' 4>>
+    <Eq () <Br 'One=' 10>>
+    <Eq () <Br 'Two=' 20>>
+    <Eq () <Rp 'Three=' 300>>
+    <Eq () <Rp 'One=' 100>>
+    <Eq
+      (
+        ('Two=' 20) ('One=' 100) ('Four=' 4)
+        ('Three=' 300) ('Two=' 2) ('One=' 1)
+      )
+      <Dgall>
+    >
+    <Eq () <Dgall>>;
+}
+
+Eq { (e.X) e.X = <Prout e.X> }

@@ -1,0 +1,4 @@
+* In this test refgo dont RImp, it is strange...
+$ENTRY Go {
+  = <Sysfun 1 'sysfun-fail-word-EOF.txt'>;
+}

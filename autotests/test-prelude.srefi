@@ -1,0 +1,20 @@
+$SWAP Store;
+
+Br {
+  e.Key '=' e.Value = <Store ((e.Key) e.Value) <Store>>;
+}
+
+Dg {
+  e.Key
+    = <
+        {
+          e.Store-B ((e.Key) e.Value) e.Store-E
+            = e.Value <Store e.Store-B e.Store-E>;
+
+          e.Store = /* пусто */ <Store e.Store>;
+        }
+        <Store>
+      >;
+}
+
+$ENUM Prout;

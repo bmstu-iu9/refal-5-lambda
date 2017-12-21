@@ -1,8 +1,10 @@
 //FROM Library
 $EXTERN Add, Sub, Mul, Div, Mod;
 
-Eq { s.X s.X = s.X; }
-Overflow { s.OneAtom = ; }
+Eq {
+  s.X s.X = s.X;
+  (e.X) e.X = (e.X);
+}
 
 $ENTRY Go {
   =
@@ -11,9 +13,7 @@ $ENTRY Go {
     <Eq <Mul 3 3> 9>
     <Eq <Div 1024 10> 102>
     <Eq <Mod 1024 30> 4>
-    <Overflow <Add 3000000000 3000000000>> // x86
-    <Overflow <Add 9999999999999999999 9999999999999999999>> // x64
-    <Overflow <Sub 0 1>>
-    <Overflow <Mul 65536 65536>> // x86
-    <Overflow <Mul 4000000000 4000000000>>; // x64
+    <Eq (<Add 3000000000 3000000000>) 1 1705032704>
+    <Eq (<Sub 0 1>) '-' 1>
+    <Eq (<Mul 65536 65536>) 1 0>;
 }

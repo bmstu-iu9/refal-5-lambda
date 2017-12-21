@@ -1,0 +1,4 @@
+$ENTRY Go {
+* tabs, don't change to spaces:
+	=	<Prout '	'>;
+}

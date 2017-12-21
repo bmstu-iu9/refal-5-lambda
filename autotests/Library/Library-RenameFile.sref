@@ -1,0 +1,10 @@
+//FROM Library
+$EXTERN RenameFile;
+
+$ENTRY Go {
+  =
+    <Eq #True <RenameFile ('source.txt') ('__written_file.txt')>>
+    <Eq #False <RenameFile ('notexist.txt') ('__written_file.txt')>>;
+}
+
+Eq { s.X s.X = ; }

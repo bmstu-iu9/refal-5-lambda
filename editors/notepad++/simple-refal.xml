@@ -1,5 +1,5 @@
 <NotepadPlus>
-    <UserLang name="Simple Refal" ext="sref" udlVersion="2.1">
+    <UserLang name="Simple Refal" ext="sref;srefi" udlVersion="2.1">  <!-- TODO: проверить ext= -->
         <Settings>
             <Global caseIgnored="no" allowFoldOfComments="yes" foldCompact="no" forcePureLC="0" decimalSeparator="0" />
             <Prefix Keywords1="yes" Keywords2="yes" Keywords3="yes" Keywords4="no" Keywords5="no" Keywords6="no" Keywords7="no" Keywords8="no" />
@@ -24,7 +24,7 @@
             <Keywords name="Folders in comment, open"></Keywords>
             <Keywords name="Folders in comment, middle"></Keywords>
             <Keywords name="Folders in comment, close"></Keywords>
-            <Keywords name="Keywords1">$ENTRY&#x000D;&#x000A;$SWAP&#x000D;&#x000A;$ESWAP&#x000D;&#x000A;$EXTERN&#x000D;&#x000A;$LABEL&#x000D;&#x000A;$FORWARD&#x000D;&#x000A;$ENUM&#x000D;&#x000A;$EENUM&#x000D;&#x000A;$EASTEREGG</Keywords>
+            <Keywords name="Keywords1">$ENTRY&#x000D;&#x000A;$SWAP&#x000D;&#x000A;$ESWAP&#x000D;&#x000A;$EXTERN&#x000D;&#x000A;$LABEL&#x000D;&#x000A;$FORWARD&#x000D;&#x000A;$ENUM&#x000D;&#x000A;$EENUM&#x000D;&#x000A;$EASTEREGG&#x000D;&#x000A;$INCLUDE</Keywords>
             <Keywords name="Keywords2">s.&#x000D;&#x000A;e.&#x000D;&#x000A;t.</Keywords>
             <Keywords name="Keywords3">$</Keywords>
             <Keywords name="Keywords4"></Keywords>

@@ -1,93 +1,178 @@
-//FROM Library
-$EXTERN WriteLine, System, StrFromInt, Exit;
-
 //FROM LibraryEx
-$EXTERN ArgList, Map;
+$EXTERN ArgList, Map, Fetch;
 
-//FROM FileScanner
-$EXTERN CreateFileList;
+//FROM Library
+$EXTERN WriteLine, StrFromInt, Exit, System;
 
 //FROM ParseCmdLine
 $EXTERN ParseCommandLine;
 
+//FROM FileScanner
+$EXTERN CreateFileList;
+
+//FROM Config
+$EXTERN
+  Config-GetFolders,
+  Config-GetSourceFile,
+  Config-GetSrefCompiler,
+  Config-GetCppCompilerExe,
+  Config-GetCppCompilerLib,
+  Config-GetPrefix,
+  Config-GetReferences,
+  Config-GetPrelude,
+  Config-GetTargetMode,
+  Config-GetTargetFileName;
+
 $ENTRY Go { = <Main <ArgList>>; }
 
 Main {
-  (e.Program) =
-    <WriteLine 'Usage:'>
-    <WriteLine
-      '  srmake [-s path\\to\\srefc.exe] -c c++compiler {-d search-dir} MainFileName[.sref]'
-    >;
+  (e.Program)
+    = <WriteLine 'Usage:'>
+      <WriteLine '  srmake flags... MainFileName[.sref]'>
+      <WriteLine>
+      <WriteLine 'flags:'>
+      <WriteLine '   [-s path\\to\\srefc.exe]'>
+      <WriteLine '   -c c++compiler'>
+      <WriteLine '   {-d search-dir}'>
+      <WriteLine '   [-o target]'>
+      <WriteLine '   -X flags-for-srefc'>;
 
-  (e.Program) e.Arguments =
-    <MakeProject
-      <ParseCommandLine e.Arguments>
-    >;
+  (e.Program) e.Arguments
+    = <MakeProject
+        <ParseCommandLine e.Arguments>
+      >;
 }
 
 MakeProject {
-  #Success (e.CppCompiler) (e.SrefCompiler) (e.SourceFile) e.Folders =
-    <Make
-      (e.SrefCompiler) (e.CppCompiler) (e.Folders)
-      <CreateFileList
-        (
-          <Map
-            {
-              (s.FolderTag e.Folder) = (e.Folder);
-            }
-            e.Folders
-          >
-        )
-        e.SourceFile
+  #Success t.Config
+    = <Map
+        {
+          (s.FolderTag e.Folder) = (e.Folder);
+        }
+        <Config-GetFolders t.Config>
       >
-    >;
+    : e.Folders
+    = <Config-GetSourceFile t.Config> : e.SourceFile
+    = <CreateFileList t.Config e.SourceFile> : t.Config^ e.Units
+    = <RunSrefCompiler t.Config e.Units>;
 
-  #Fails e.Errors =
-    <Map
-      {
-        (s.Pos e.Message) =
-          <WriteLine
-            'Command line argument ' <StrFromInt s.Pos> ': ' e.Message
-          >;
-      }
-      e.Errors
-    >
-    <Exit 1>;
+  #Fails e.Errors
+    = <Map
+        {
+          (s.Pos e.Message) =
+            <WriteLine
+              'Command line argument ' <StrFromInt s.Pos> ': ' e.Message
+            >;
+        }
+        e.Errors
+      >
+      <Exit 1>;
 }
 
-Make {
-  (e.SrefC) (e.CompilerCommand) (e.Directories)
-  e.Units-B (#NotFound e.UnitName) e.Units-E =
-    <Map
-      {
-        (#NotFound e.UnitName^) =
-          <WriteLine
-            'COMMAND LINE ERROR: Unit ' e.UnitName ' not found'
-          >;
+PrintSrcPos {
+  #CMD-LINE = 'command line';
+  (s.LineNum e.FileName) = e.FileName ':' <StrFromInt s.LineNum>;
+}
 
-        (#Output e.Output) = ;
-        (#Source (e.Source) e.Output) = ;
-      }
-      (#NotFound e.UnitName) e.Units-E
-    >
-    <Exit 1>;
+RunSrefCompiler {
+  t.Config e.Units-B (#Error t.SrcPos e.Message) e.Units-E
+    = <Map
+        {
+          (#Error t.SrcPos^ e.Message^) =
+            <WriteLine <PrintSrcPos t.SrcPos> ': ' e.Message>;
 
-  (e.SrefC) (e.CompilerCommand) (e.Directories) e.Units =
-    <System
-      e.SrefC ' -c "' e.CompilerCommand '"'
-      <Map
-        {
-          (#Search e.Folder) = ' -d "' e.Folder '"';
-          (#Runtime e.Folder) = ' -D "' e.Folder '"';
+          (#Output e.Output) = ;
+          (#OutputWithNative (e.Output) e.Native) = ;
+          (#Source (s.Dialect e.Source) e.Output) = ;
+          (#Include e.Include) = ;
         }
-        e.Directories
+        (#Error t.SrcPos e.Message) e.Units-E
       >
-      <Map
+      <Exit 1>;
+
+  t.Config e.Units
+    = <Config-GetSrefCompiler t.Config> : e.SrefCompiler
+    = <Config-GetCppCompilerExe t.Config> : e.CppCompilerExe
+    = <Config-GetCppCompilerLib t.Config> : e.CppCompilerLib
+    = <MakeTargetModeFlag t.Config> : e.TargetModeFlag
+    = <MakeTargetFileFlag t.Config> : e.TargetFileFlag
+    = <MakeSearchFolderFlags t.Config> : e.SearchFolderFlags
+    = <GetPrefix t.Config> : e.Prefix
+    = <Config-GetReferences t.Config> : e.References
+    = <Config-GetPrelude t.Config> : e.Prelude
+    = <System
+        e.SrefCompiler
+        e.TargetModeFlag
+        ' --cpp-command-exe="' e.CppCompilerExe '"'
+        ' --cpp-command-lib="' e.CppCompilerLib '"'
+        e.TargetFileFlag
+        e.SearchFolderFlags
+        ' --prefix="' e.Prefix '"'
+        ' --prelude="' e.Prelude '"'
+        <Map
+          {
+            (e.Reference) = ' --reference="' e.Reference '"';
+          }
+          e.References
+        >
+        <Map
+          {
+            (#Output e.Output) = ' "' e.Output '"';
+            (#OutputWithNative (e.Output) e.Native) = ' "' e.Output '"';
+            (#Source (s.Dialect e.Source) e.Output) = ' "' e.Source '"';
+            (#Include e.Include) = /* пусто */;
+          }
+          e.Units
+        >
+      >
+      /* TODO: уточнить после обновления System в стабильной версии */
+    : e.RetCode
+    = /* пусто */;
+}
+
+MakeTargetModeFlag {
+  t.Config
+    = <Fetch
+        <Config-GetTargetMode t.Config>
         {
-          (#Output e.Output) = ' "' e.Output '"';
-          (#Source (e.Source) e.Output) = ' "' e.Source '"';
+          #DefaultEXE = /* пусто */;
+          #EXE = ' --makeexe';
+          #LIB = ' --makelib';
+          #R = ' -R';
+          #CompileOnly = ' --compile-only';
         }
-        e.Units
-      >
-    >;
+      >;
+}
+
+MakeTargetFileFlag {
+  t.Config
+    = <Fetch
+        <Config-GetTargetFileName t.Config>
+        {
+          #DefaultTarget = /* пусто */;
+          e.TargetFile = ' --target-file="' e.TargetFile '"';
+        }
+      >;
+}
+
+MakeSearchFolderFlags {
+  t.Config
+    = <Map
+        {
+          (#Search e.Folder) = ' --directory="' e.Folder '"';
+          (#Runtime e.Folder) = ' --runtime-directory="' e.Folder '"';
+        }
+        <Config-GetFolders t.Config>
+      >;
+}
+
+GetPrefix {
+  t.Config
+    = <Fetch
+        <Config-GetPrefix t.Config>
+        {
+          #NotSet = /* пусто */;
+          e.Prefix = e.Prefix;
+        }
+      >;
 }

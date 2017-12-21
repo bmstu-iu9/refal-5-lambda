@@ -1,16 +1,21 @@
 //FROM Library
 $EXTERN WriteLine, StrFromInt;
 
-//FROM Lexer
-$EXTERN StrFromToken;
+//FROM SR-Lexer
+$EXTERN SR-StrFromToken;
 
 //FROM LibraryEx
 $EXTERN Map, Sort;
 
 /**
   Внутренний формат:
-  [ErrorList (e.FileName) (s.LineNumber e.Message)*]
-  s.LineNumber ::= #NoLine | s.Number
+  [ErrorList (e.FileName) (t.SrcPos e.Message)*]
+  t.SrcPos ::=
+      #NoPos
+    | #MuGen-NoPos
+    | (#FileLine s.LineNumber e.FileName)
+    | (#RowCol s.Row s.Col)
+    | (#FileRowCol (s.Row s.Col) e.FileName)
 */
 $ENUM ErrorList;
 
@@ -20,12 +25,32 @@ $ENTRY EL-Create {
 
 $ENTRY EL-AddError {
   [ErrorList (e.FileName) e.Errors] e.Message =
-    [ErrorList (e.FileName) e.Errors (#NoLine e.Message)];
+    [ErrorList (e.FileName) e.Errors (#NoPos e.Message)];
 }
 
 $ENTRY EL-AddErrorAt {
+  [ErrorList (e.FileName) e.Errors] #NoPos e.Message =
+    [ErrorList
+      (e.FileName) e.Errors (#NoPos e.Message)
+    ];
+
+  [ErrorList (e.FileName) e.Errors] #MuGen-NoPos e.Message =
+    [ErrorList
+      (e.FileName) e.Errors (#MuGen-NoPos e.Message)
+    ];
+
   [ErrorList (e.FileName) e.Errors] s.LineNumber e.Message =
-    [ErrorList (e.FileName) e.Errors (s.LineNumber e.Message)];
+    [ErrorList
+      (e.FileName) e.Errors ((#FileLine s.LineNumber e.FileName) e.Message)
+    ];
+
+  [ErrorList (e.FileName) e.Errors] (#RowCol s.Row s.Col) e.Message
+    = [ErrorList
+        (e.FileName) e.Errors ((#FileRowCol (s.Row s.Col) e.FileName) e.Message)
+      ];
+
+  [ErrorList (e.FileName) e.Errors] t.SrcPos e.Message =
+    [ErrorList (e.FileName) e.Errors (t.SrcPos e.Message)];
 }
 
 $ENTRY EL-AddUnexpected {
@@ -43,9 +68,14 @@ $ENTRY EL-AddUnexpected {
   t.ErrorList (s.Unexpected s.LineNumber e.Info) e.Expected =
     <EL-AddErrorAt
       t.ErrorList s.LineNumber
-      'Unexpected ' <StrFromToken s.Unexpected e.Info>
+      'Unexpected ' <SR-StrFromToken s.Unexpected e.Info>
       ', expected ' e.Expected
     >;
+}
+
+$ENTRY EL-Concat {
+  [ErrorList (e.FileName-L) e.Errors-L] [ErrorList (e.FileName-R) e.Errors-R]
+    = [ErrorList (e.FileName-L) e.Errors-L e.Errors-R];
 }
 
 $ENTRY EL-Destroy {
@@ -54,13 +84,22 @@ $ENTRY EL-Destroy {
   [ErrorList (e.FileName) e.Errors] =
     <Map
       {
-        (#NoLine e.Message) =
+        (#NoPos e.Message) =
           <WriteLine '  ERROR: ' e.Message>;
 
-        (s.LineNumber e.Message) =
+        (#MuGen-NoPos e.Message)
+          = <WriteLine '  ERROR (in generated Mu): ' e.Message>;
+
+        ((#FileLine s.LineNumber e.FileName^) e.Message) =
           <WriteLine
             e.FileName ':' <StrFromInt s.LineNumber> ':ERROR: ' e.Message
           >;
+
+        ((#FileRowCol (s.Row s.Col) e.FileName^) e.Message)
+          = <WriteLine
+              e.FileName ':' <StrFromInt s.Row> ':' <StrFromInt s.Col>
+              ':' e.Message
+            >;
       }
       <Sort e.Errors>
     >

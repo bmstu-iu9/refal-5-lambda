@@ -1,0 +1,13 @@
+/*
+  Tests execute with echo Y | refgo ..., and this test use the fact
+  about execution for read stdin. If in this test error is appeared
+  then full dump to stderr will not written.
+*/
+
+$ENTRY Go {
+  = <Eq ('Y') <Card>>
+    <Eq (0) <Card>>
+    <Eq (7) <Step>>;
+}
+
+Eq { (e.X) e.X = <Prout e.X>; }

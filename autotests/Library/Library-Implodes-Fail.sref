@@ -1,0 +1,12 @@
+//FROM Library
+$EXTERN Implode, Add, StrFromInt;
+
+$ENTRY Go {
+  = <Loop 0>;
+}
+
+Loop {
+  50 = /* stop */;
+
+  s.Next = <Implode 'X-' <StrFromInt s.Next>> <Loop <Add s.Next 1>>;
+}

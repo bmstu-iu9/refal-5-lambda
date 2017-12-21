@@ -1,0 +1,403 @@
+//==============================================================================
+// Предобъявления и определения встроенных функций Рефала-5λ
+//==============================================================================
+
+
+/**
+  1. <Mu s.FuncName e.Arg> == <s.FuncName-Ptr e.Arg>
+     <Mu (e.FuncName) e.Arg> == <s.FuncName-Ptr e.Arg>
+  extension:
+     <Mu s.FuncPtr e.Arg> == <s.FuncPtr e.Arg>
+*/
+Mu {
+  // TODO: заменить на условия!!!
+  t.Function e.Arg
+    = <__Step-Start> <__Mu-Aux t.Function> : s.Function-Ptr
+    = <__Step-End> <s.Function-Ptr e.Arg>;
+}
+
+__Mu-Aux {
+  '+' = Add; '/' = Div; '%' = Mod; '*' = Mul; '?' = Residue; '-' = Sub;
+  "+" = Add; "/" = Div; "%" = Mod; "*" = Mul; "?" = Residue; "-" = Sub;
+
+  t.Function
+    = <Type t.Function>
+    : {
+        'F' s.SubType s.FnPtr = s.FnPtr;
+
+        'W' s.SubType s.FnName = <__FindMuPtr $SCOPEID s.FnName>;
+
+        'B' s.0 (e.FnName) = <__FindMuPtr $SCOPEID e.FnName>;
+      };
+}
+
+//FROM Library
+$EXTERN __FindMuPtr, __Step-Start, __Step-End;
+
+
+// 2. Add
+
+//FROM Library
+$EXTERN Add;
+
+
+// 3. Arg
+
+//FROM Library
+$EXTERN Arg;
+
+
+// 4. Br
+
+//FROM Library
+$EXTERN Br;
+
+
+// 5. Card
+
+//FROM Library
+$EXTERN Card;
+
+
+// 6. Chr
+
+//FROM Library
+$EXTERN Chr;
+
+
+// 7. Cp
+
+//FROM Library
+$EXTERN Cp;
+
+
+// 8. Dg
+
+//FROM Library
+$EXTERN Dg;
+
+
+// 9. Dgall
+
+//FROM Library
+$EXTERN Dgall;
+
+
+// 10. Div
+
+//FROM Library
+$EXTERN Div;
+
+
+// 11. Divmod
+
+//FROM Library
+$EXTERN Divmod;
+
+
+// 12. Explode
+
+//FROM Library
+$EXTERN Explode;
+
+
+// 13. First
+
+//FROM Library
+$EXTERN First;
+
+
+// 14. Get
+
+//FROM Library
+$EXTERN Get;
+
+
+// 15. Implode
+
+//FROM Library
+$EXTERN Implode;
+
+
+// 16. Last
+
+//FROM Library
+$EXTERN Last;
+
+
+// 17. Lenw
+
+//FROM Library
+$EXTERN Lenw;
+
+
+// 18. Lower
+
+//FROM Library
+$EXTERN Lower;
+
+
+// 19. Mod
+
+//FROM Library
+$EXTERN Mod;
+
+
+// 20. Mul
+
+//FROM Library
+$EXTERN Mul;
+
+
+// 21. Numb
+
+//FROM Library
+$EXTERN Numb;
+
+
+// 22. Open
+
+//FROM Library
+$EXTERN Open;
+
+
+// 23. Ord
+
+//FROM Library
+$EXTERN Ord;
+
+
+// 24. Print
+
+//FROM
+$EXTERN Print;
+
+
+// 25. Prout
+
+//FROM Library
+$EXTERN Prout, Proud, Trout;
+
+
+// 26. Put
+
+//FROM Library
+$EXTERN Put;
+
+
+// 27. Putout
+
+//FROM Library
+$EXTERN Putout;
+
+
+// 28. Rp
+
+//FROM Library
+$EXTERN Rp;
+
+
+// 29. Step
+
+//FROM Library
+$EXTERN Step;
+
+
+// 30. Sub
+
+//FROM Library
+$EXTERN Sub;
+
+
+// 31. Symb
+
+//FROM Library
+$EXTERN Symb;
+
+
+// 32. Time
+
+//FROM Library
+$EXTERN Time;
+
+
+// 33. Type
+
+//FROM Library
+$EXTERN Type;
+
+
+// 34. Upper
+
+//FROM Library
+$EXTERN Upper;
+
+
+// 35. Sysfun
+
+//FROM Library
+$EXTERN Sysfun;
+
+
+// 45. Freeze
+
+//FROM Library
+$EXTERN Freeze;
+
+
+// 46. Freezer
+
+//FROM Library
+$EXTERN Freezer;
+
+
+// 47. Dn
+
+//FROM Library
+$EXTERN Dn;
+
+
+/**
+  48. Up — not implemented yet
+*/
+$ENUM Up;
+
+
+/**
+  49. Ev-met — not implemented yet
+*/
+$ENUM Ev-met;
+
+
+/**
+  50. <Residue s.FuncName e.Arg> == <s.FuncName-Ptr e.Arg>
+      <Residue (e.FuncName) e.Arg> == <s.FuncName-Ptr e.Arg>
+  extension:
+      <Residue s.FuncPtr e.Arg> == <s.FuncPtr e.Arg>
+*/
+Residue {
+  // TODO: заменить на условия!!!
+  t.Function e.Arg
+    = <__Step-Start> <__Mu-Aux t.Function> : s.Function-Ptr
+    = <__Step-End> <s.Function-Ptr e.Arg>;
+}
+
+
+// 51. GetEnv
+
+//FROM Library
+$EXTERN GetEnv;
+
+
+// 52. System
+
+//FROM Library
+$EXTERN System;
+
+
+// 53. Exit
+
+//FROM Library
+$EXTERN Exit;
+
+
+// 54. Close
+
+//FROM Library
+$EXTERN Close;
+
+
+// 55. ExistFile
+
+//FROM Library
+$EXTERN ExistFile;
+
+
+// 56. GetCurrentDirectory
+
+//FROM Library
+$EXTERN GetCurrentDirectory;
+
+
+// 57. RemoveFile
+
+//FROM Library
+$EXTERN RemoveFile;
+
+
+// 58. Implode_Ext
+
+//FROM Library
+$EXTERN Implode_Ext;
+
+
+// 59. Explode_Ext
+
+//FROM Library
+$EXTERN Explode_Ext;
+
+
+// 60. TimeElapsed
+
+//FROM Library
+$EXTERN TimeElapsed;
+
+
+// 61. Compare
+
+//FROM Library
+$EXTERN Compare;
+
+
+// 62. DeSysfun
+
+//FROM Library
+$EXTERN DeSysfun;
+
+
+// 63. XMLParse
+
+//FROM Library
+$EXTERN XMLParse;
+
+
+// 64. Random
+
+//FROM Library
+$EXTERN Random;
+
+
+// 65. RandomDigit
+
+//FROM Library
+$EXTERN RandomDigit;
+
+
+// 66. Write
+
+//FROM Library
+$EXTERN Write;
+
+
+// 67. ListOfBuiltin
+
+//FROM Library
+$EXTERN ListOfBuiltin;
+
+
+// 68. SizeOf
+
+//FROM Library
+$EXTERN SizeOf;
+
+
+// 69. GetPID
+
+//FROM Library
+$EXTERN GetPID;
+
+
+// 71. GetPPID
+
+//FROM Library
+$EXTERN GetPPID;

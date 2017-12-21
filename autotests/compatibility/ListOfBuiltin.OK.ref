@@ -1,0 +1,34 @@
+$ENTRY Go {
+  = <Eq
+      Valid
+      <Check
+        <Eq 1 <Step>>
+        <Lenw <ListOfBuiltin>>
+        <Eq 6 <Step>>
+      >
+    >;
+}
+
+Check {
+  s.Count e.Entries-B t.InvalidEntry e.Entries-E
+    , <Valid t.InvalidEntry> : False
+    = Invalid t.InvalidEntry;
+
+  s.Count e.Entries
+    = Valid
+      <Putout 7 s.Count 'builtin functions is known'>;
+}
+
+Valid {
+  (s.Number s.Name s.Type)
+    , <Type s.Number> : 'N' e.0
+    , <Type s.Name> : 'W' e.1
+    , regular special : e.2 s.Type e.3
+    = True;
+
+  t.Invalid = False;
+}
+
+Eq {
+  s.X s.X = <Prout s.X>;
+}

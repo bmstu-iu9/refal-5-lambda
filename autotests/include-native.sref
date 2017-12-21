@@ -1,0 +1,11 @@
+$INCLUDE "././include-native";
+
+$ENTRY Go {
+  = <Eq <Native> "././include-native.srefi">;
+}
+
+Eq { s.X s.X = ; }
+
+// Необходим нативный блок в основном файле для run.*
+%%
+%%

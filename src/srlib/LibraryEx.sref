@@ -1,6 +1,6 @@
 //FROM Library
 $EXTERN FOpen, FClose, FReadLine, FWriteLine, Add, Sub, IntFromStr, Arg,
-  SymbCompare, SymbType;
+  SymbCompare, FReadBytes, FWriteBytes;
 
 // Расширения библиотеки и функции, реализуемые
 // средствами самого Простого Рефала
@@ -8,8 +8,8 @@ $EXTERN FOpen, FClose, FReadLine, FWriteLine, Add, Sub, IntFromStr, Arg,
 $ENTRY Apply {
   s.Fn e.Argument = <s.Fn e.Argument>;
 
-  (t.Closure e.Bounded) e.Argument =
-    <Apply t.Closure e.Bounded e.Argument>;
+  (t.Closure e.Bounded) e.Argument
+    = <Apply t.Closure e.Bounded e.Argument>;
 }
 
 $ENTRY Map {
@@ -19,17 +19,16 @@ $ENTRY Map {
 }
 
 $ENTRY Reduce {
-  t.Fn t.Acc t.Next e.Tail =
-    <Reduce
-      t.Fn <Apply t.Fn t.Acc t.Next> e.Tail
-    >;
+  t.Fn t.Acc t.Next e.Tail
+    = <Reduce
+        t.Fn <Apply t.Fn t.Acc t.Next> e.Tail
+      >;
 
   t.Fn t.Acc = t.Acc;
 }
 
 $ENTRY Fetch {
-  e.Argument t.Function =
-    <Apply t.Function e.Argument>;
+  e.Argument t.Function = <Apply t.Function e.Argument>;
 }
 
 $ENTRY Y {
@@ -37,26 +36,17 @@ $ENTRY Y {
 }
 
 $ENTRY MapReduce {
-  t.Fn t.Acc e.Tail =
-    <DoMapReduce t.Fn t.Acc () e.Tail>;
+  t.Fn t.Acc e.Tail = <DoMapReduce t.Fn t.Acc () e.Tail>;
 }
 
 DoMapReduce {
-  t.Fn t.Acc (e.Scanned) t.Next e.Tail =
-    <DoMapReduce
-      t.Fn
-      <MapReduce-AddScanned
-        <Apply t.Fn t.Acc t.Next> (e.Scanned)
-      >
-      e.Tail
-    >;
+  t.Fn t.Acc (e.Scanned) t.Next e.Tail
+    = <Apply t.Fn t.Acc t.Next> : t.Acc^ e.StepScanned
+    = <DoMapReduce
+        t.Fn t.Acc (e.Scanned e.StepScanned) e.Tail
+      >;
 
   t.Fn t.Acc (e.Scanned) = t.Acc e.Scanned;
-}
-
-MapReduce-AddScanned {
-  t.Acc e.StepScanned (e.Scanned) =
-    t.Acc (e.Scanned e.StepScanned);
 }
 
 $ENTRY UnBracket {
@@ -68,10 +58,7 @@ $ENTRY DelAccumulator {
 }
 
 $ENTRY LoadFile {
-  e.FileName =
-    <DoLoadFile
-      <FReadLine <FOpen 'r' e.FileName>>
-    >;
+  e.FileName = <DoLoadFile <FReadLine <FOpen 'r' e.FileName>>>;
 }
 
 DoLoadFile {
@@ -79,26 +66,55 @@ DoLoadFile {
 
   t.File e.Line 0 = (e.Line) <FClose t.File>;
 
-  t.File e.Line =
-    (e.Line)
-    <DoLoadFile
-      <FReadLine t.File>
-    >;
+  t.File e.Line = (e.Line) <DoLoadFile <FReadLine t.File>>;
 }
 
 $ENTRY SaveFile {
-  (e.FileName) e.Lines =
-    <FClose
-      <Reduce
-        WriteBracketLine
-        <FOpen 'w' e.FileName>
-        e.Lines
-      >
-    >;
+  (e.FileName) e.Lines = <SaveFile-Handle <FOpen 'w' e.FileName> e.Lines>;
 }
 
-WriteBracketLine {
-  t.File (e.Line) = <FWriteLine t.File e.Line>;
+$ENTRY AppendFile {
+  (e.FileName) e.Lines = <SaveFile-Handle <FOpen 'a' e.FileName> e.Lines>;
+}
+
+SaveFile-Handle {
+  s.FileHandle e.Lines
+    = <FClose
+        <Reduce
+          {
+            s.FileHandle^ (e.Line) = <FWriteLine s.FileHandle e.Line>;
+          }
+          s.FileHandle
+          e.Lines
+        >
+      >;
+}
+
+$ENTRY LoadBytes {
+  e.FileName = <DoLoadBytes <FOpen ('rb') e.FileName>>;
+}
+
+DoLoadBytes {
+  s.FileHandle
+    = <FReadBytes s.FileHandle 4096>
+    : {
+        /* пусто */ = <FClose s.FileHandle>;
+        e.Bytes = e.Bytes <DoLoadBytes s.FileHandle>;
+      };
+}
+
+$ENTRY SaveBytes {
+  (e.FileName) e.Bytes = <SaveBytes-Handle <FOpen ('wb') e.FileName> e.Bytes>;
+}
+
+$ENTRY AppendBytes {
+  (e.FileName) e.Bytes = <SaveBytes-Handle <FOpen ('ab') e.FileName> e.Bytes>;
+}
+
+SaveBytes-Handle {
+  s.FileHandle e.Bytes
+    = <FWriteBytes s.FileHandle e.Bytes>
+      <FClose s.FileHandle>;
 }
 
 $ENTRY Inc {
@@ -109,15 +125,8 @@ $ENTRY Dec {
   s.Num = <Sub s.Num 1>;
 }
 
-FastIntFromStr-Guard {
-  #Success s.Number = s.Number;
-}
-
 $ENTRY FastIntFromStr {
-  e.Digits =
-    <FastIntFromStr-Guard
-      <IntFromStr e.Digits>
-    >;
+  e.Digits = <IntFromStr e.Digits> : #Success s.Number = s.Number;
 }
 
 $ENTRY ArgList {
@@ -134,7 +143,7 @@ SwDoArgList {
   s.Next e.Arg = (e.Arg) <DoArgList s.Next>;
 }
 
-$ENTRY Compare {
+$ENTRY TermCompare {
   (e.Left) (e.Right) = <Lexicon (e.Left) (e.Right)>;
 
   (e.Left) s.Right = '>';
@@ -144,11 +153,11 @@ $ENTRY Compare {
 }
 
 Lexicon {
-  (t.FirstLeft e.Left) (t.FirstRight e.Right) =
-    <Lexicon-Aux
-      <Compare t.FirstLeft t.FirstRight>
-      (e.Left) (e.Right)
-    >;
+  (t.FirstLeft e.Left) (t.FirstRight e.Right)
+    = <Lexicon-Aux
+        <TermCompare t.FirstLeft t.FirstRight>
+        (e.Left) (e.Right)
+      >;
 
   () () = '=';
 
@@ -162,7 +171,7 @@ Lexicon-Aux {
   '>' (e.Left) (e.Right) = '>';
 }
 
-$ENTRY Compare-T {
+$ENTRY TermCompare-T {
   (e.Left) (e.Right) = <Lexicon-T () (e.Left) () (e.Right)>;
 
   (e.Left) s.Right = '>' (e.Left) s.Right;
@@ -173,51 +182,42 @@ $ENTRY Compare-T {
 
 Lexicon-T {
   (e.ScannedLeft) (t.FirstLeft e.Left)
-  (e.ScannedRight) (t.FirstRight e.Right) =
-    <Lexicon-T-Aux
-      (e.ScannedLeft) (e.ScannedRight)
-      <Compare-T t.FirstLeft t.FirstRight>
-      (e.Left) (e.Right)
-    >;
+  (e.ScannedRight) (t.FirstRight e.Right)
+    = <Lexicon-T-Aux
+        (e.ScannedLeft) (e.ScannedRight)
+        <TermCompare-T t.FirstLeft t.FirstRight>
+        (e.Left) (e.Right)
+      >;
 
-  (e.ScannedLeft) () (e.ScannedRight) () =
-    '=' (e.ScannedLeft) (e.ScannedRight);
+  (e.ScannedLeft) () (e.ScannedRight) ()
+    = '=' (e.ScannedLeft) (e.ScannedRight);
 
-  (e.ScannedLeft) () (e.ScannedRight) (e.Right) =
-    '<' (e.ScannedLeft) (e.ScannedRight e.Right);
+  (e.ScannedLeft) () (e.ScannedRight) (e.Right)
+    = '<' (e.ScannedLeft) (e.ScannedRight e.Right);
 
-  (e.ScannedLeft) (e.Left) (e.ScannedRight) () =
-    '>' (e.ScannedLeft e.Left) (e.ScannedRight);
+  (e.ScannedLeft) (e.Left) (e.ScannedRight) ()
+    = '>' (e.ScannedLeft e.Left) (e.ScannedRight);
 }
 
 Lexicon-T-Aux {
   (e.ScannedLeft) (e.ScannedRight)
-  '<' t.NextLeft t.NextRight (e.Left) (e.Right) =
-    '<' (e.ScannedLeft t.NextLeft e.Left)
-    (e.ScannedRight t.NextRight e.Right);
+  '<' t.NextLeft t.NextRight (e.Left) (e.Right)
+    = '<'
+      (e.ScannedLeft t.NextLeft e.Left)
+      (e.ScannedRight t.NextRight e.Right);
 
   (e.ScannedLeft) (e.ScannedRight)
-  '=' t.NextLeft t.NextRight (e.Left) (e.Right) =
-    <Lexicon-T
-      (e.ScannedLeft t.NextLeft) (e.Left)
-      (e.ScannedRight t.NextRight) (e.Right)
-    >;
+  '=' t.NextLeft t.NextRight (e.Left) (e.Right)
+    = <Lexicon-T
+        (e.ScannedLeft t.NextLeft) (e.Left)
+        (e.ScannedRight t.NextRight) (e.Right)
+      >;
 
   (e.ScannedLeft) (e.ScannedRight)
-  '>' t.NextLeft t.NextRight (e.Left) (e.Right) =
-    '>' (e.ScannedLeft t.NextLeft e.Left)
-    (e.ScannedRight t.NextRight e.Right);
-}
-
-$ENTRY Type {
-  (e.InBracket) = #TypeBracket;
-  s.Symbol = <SymbType s.Symbol>;
-}
-
-$ENTRY Type-T {
-  (e.InBrackets) e.Tail = #TypeBracket (e.InBrackets) e.Tail;
-  s.Symbol e.Tail = <SymbType s.Symbol> s.Symbol e.Tail;
-  = '*';
+  '>' t.NextLeft t.NextRight (e.Left) (e.Right)
+    = '>'
+      (e.ScannedLeft t.NextLeft e.Left)
+      (e.ScannedRight t.NextRight e.Right);
 }
 
 $ENTRY Trim {
@@ -241,74 +241,67 @@ $ENTRY Trim-R {
 }
 
 /**
-  <Seq s.F1 s.F2 ... s.Fn> == s.Compose
+  <Pipe s.F1 s.F2 ... s.Fn> == s.Compose
 
   <s.Compose e.X> == <s.Fn ... <s.F2 <s.F1 e.X>>...>
+
+  Seq (deprecated) is synonim for Pipe
 */
-$ENTRY Seq {
+$ENTRY Pipe {
   t.Func = t.Func;
 
-  t.Func e.Funcs =
-    {
-      e.Arg = <Fetch <Apply t.Func e.Arg> <Seq e.Funcs>>;
-    };
+  t.Func e.Funcs
+    = {
+        e.Arg = <Fetch <Apply t.Func e.Arg> <Pipe e.Funcs>>;
+      };
 
   /* пусто */ = { e.Arg = e.Arg; };
 }
 
+/**
+  Seq is deprecated, use Pipe
+*/
+$ENTRY Seq { e.Funcs = <Pipe e.Funcs>; }
+
 $ENTRY Sort {
   /* пусто */ = /* пусто */;
 
-  t.Pivot e.Items =
-    <Fetch
-      e.Items
-      <Seq
-        (Reduce
-          {
-            ((e.Less) (e.Equal) (e.Greater)) t.Next =
-              <Fetch
-                <Compare t.Next t.Pivot>
-                {
-                  '<' = ((e.Less t.Next) (e.Equal) (e.Greater));
-                  '=' = ((e.Less) (e.Equal t.Next) (e.Greater));
-                  '>' = ((e.Less) (e.Equal) (e.Greater t.Next));
-                }
-              >;
-          }
-          ( (/* less */) (t.Pivot /* equal */) (/* greater */) )
-        )
+  t.Pivot e.Items
+    = <Reduce
         {
-          ((e.Less) (e.Equal) (e.Greater)) =
-            <Sort e.Less> e.Equal <Sort e.Greater>;
+          ((e.Less) (e.Equal) (e.Greater)) t.Next
+            = <TermCompare t.Next t.Pivot>
+            : {
+                '<' = ((e.Less t.Next) (e.Equal) (e.Greater));
+                '=' = ((e.Less) (e.Equal t.Next) (e.Greater));
+                '>' = ((e.Less) (e.Equal) (e.Greater t.Next));
+              };
         }
+        ( (/* less */) (t.Pivot /* equal */) (/* greater */) )
+        e.Items
       >
-    >;
+    : ((e.Less) (e.Equal) (e.Greater))
+    = <Sort e.Less> e.Equal <Sort e.Greater>;
 }
 
 $ENTRY Min {
-  t.X t.Y =
-    <Fetch
-      <Compare t.X t.Y>
-      {
+  t.X t.Y
+    = <TermCompare t.X t.Y>
+    : {
         '<' = t.X;
         s.Other = t.Y;
-      }
-    >;
+      };
 
-  t.First e.Tail =
-    <Reduce Min t.First e.Tail>;
+  t.First e.Tail = <Reduce Min t.First e.Tail>;
 }
 
 $ENTRY Max {
-  t.X t.Y =
-    <Fetch
-      <Compare t.X t.Y>
-      {
+  t.X t.Y
+    = <TermCompare t.X t.Y>
+    : {
         '>' = t.X;
         s.Other = t.Y;
-      }
-    >;
+      };
 
-  t.First e.Tail =
-    <Reduce Max t.First e.Tail>;
+  t.First e.Tail = <Reduce Max t.First e.Tail>;
 }

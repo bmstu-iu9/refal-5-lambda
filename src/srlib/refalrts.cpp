@@ -1,5 +1,7 @@
+#include <errno.h>
 #include <exception>
 #include <map>
+#include <new>
 #include <set>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +12,9 @@
 #include <assert.h>
 
 #include "refalrts.h"
+
+//FROM refalrts-platform-specific
+#include "refalrts-platform-specific.h"
 
 #if 1
 #  define VALID_LINKED(iter)
@@ -35,6 +40,12 @@ void valid_linked_aux(const char *text, refalrts::Iter i) {
     assert(i->prev->next == i);
   }
 }
+
+namespace refalrts {
+
+char unsigned_int_is_uint32[sizeof(refalrts::UInt32) == 4 ? +1 : -1];
+
+} // namespace refalrts
 
 //==============================================================================
 // Примитивные операции
@@ -286,8 +297,7 @@ refalrts::Iter refalrts::ident_right(
 }
 
 bool refalrts::brackets_term(
-  refalrts::Iter& res_first, refalrts::Iter& res_last,
-  refalrts::Iter& pos
+  refalrts::Iter& res_first, refalrts::Iter& res_last, refalrts::Iter& pos
 ) {
   if (pos->tag != cDataOpenBracket) {
     return false;
@@ -374,8 +384,8 @@ refalrts::Iter refalrts::brackets_right(
 
 void refalrts::bracket_pointers(
   refalrts::Iter left_bracket,
-  refalrts::Iter& right_bracket)
-{
+  refalrts::Iter& right_bracket
+) {
   right_bracket = left_bracket->link_info;
 }
 
@@ -497,8 +507,8 @@ refalrts::Iter refalrts::adt_right(
 void refalrts::adt_pointers(
   refalrts::Iter left_bracket,
   refalrts::Iter& tag,
-  refalrts::Iter& right_bracket)
-{
+  refalrts::Iter& right_bracket
+) {
   refalrts::Iter pnext = next(left_bracket);
   tag = pnext;
   right_bracket = left_bracket->link_info;
@@ -531,8 +541,8 @@ refalrts::Iter refalrts::call_left(
 void refalrts::call_pointers(
   refalrts::Iter left_bracket,
   refalrts::Iter& tag,
-  refalrts::Iter& right_bracket)
-{
+  refalrts::Iter& right_bracket
+) {
   refalrts::Iter pnext = next(left_bracket);
   tag = pnext;
   right_bracket = left_bracket->link_info;
@@ -541,10 +551,7 @@ void refalrts::call_pointers(
 bool refalrts::svar_term(
   refalrts::Iter /* svar */, refalrts::Iter pos
 ) {
-  if (! is_open_bracket(pos)) {
-    return true;
-  }
-  return false;
+  return ! is_open_bracket(pos);
 }
 
 bool refalrts::svar_left(
@@ -876,11 +883,14 @@ bool refalrts::repeated_evar_left(
 
       first = 0;
       last = 0;
-    } else {
+    } else if (current != first) {
       evar_b = first;
       evar_e = prev(current);
 
       first = current;
+    } else {
+      evar_b = 0;
+      evar_e = 0;
     }
 
     return true;
@@ -925,11 +935,14 @@ bool refalrts::repeated_evar_right(
 
       first = 0;
       last = 0;
-    } else {
+    } else if (current != last) {
       evar_b = next(current);
       evar_e = last;
 
       last = current;
+    } else {
+      evar_b = 0;
+      evar_e = 0;
     }
 
     return true;
@@ -939,8 +952,7 @@ bool refalrts::repeated_evar_right(
 }
 
 bool refalrts::open_evar_advance(
-  Iter& evar_b, Iter& evar_e,
-  Iter& first, Iter& last
+  Iter& evar_b, Iter& evar_e, Iter& first, Iter& last
 ) {
   assert((evar_b == 0) == (evar_e == 0));
 
@@ -990,7 +1002,7 @@ void reset_allocator();
 bool alloc_node(Iter& node);
 Iter free_ptr();
 void splice_to_freelist(Iter begin, Iter end);
-void splice_from_freelist(Iter pos);
+Iter splice_from_freelist(Iter pos);
 
 } // namespace allocator
 
@@ -1011,35 +1023,27 @@ bool copy_node(refalrts::Iter& res, refalrts::Iter sample) {
   switch(sample->tag) {
     case refalrts::cDataChar:
       return refalrts::alloc_char(res, sample->char_info);
-      // break;
 
     case refalrts::cDataNumber:
       return refalrts::alloc_number(res, sample->number_info);
-      // break;
 
     case refalrts::cDataFunction:
       return refalrts::alloc_name(res, sample->function_info);
-      // break;
 
     case refalrts::cDataIdentifier:
       return refalrts::alloc_ident(res, sample->ident_info);
-      // break;
 
     case refalrts::cDataOpenBracket:
       return refalrts::alloc_open_bracket(res);
-      // break;
 
     case refalrts::cDataCloseBracket:
       return refalrts::alloc_close_bracket(res);
-      // break;
 
     case refalrts::cDataOpenADT:
       return refalrts::alloc_open_adt(res);
-      // break;
 
     case refalrts::cDataCloseADT:
       return refalrts::alloc_close_adt(res);
-      // break;
 
     case refalrts::cDataClosure: {
       bool allocated = refalrts::allocator::alloc_node(res);
@@ -1053,7 +1057,6 @@ bool copy_node(refalrts::Iter& res, refalrts::Iter sample) {
         return false;
       }
     }
-    // break;
 
     case refalrts::cDataFile: {
       bool allocated = refalrts::allocator::alloc_node(res);
@@ -1065,7 +1068,6 @@ bool copy_node(refalrts::Iter& res, refalrts::Iter sample) {
         return false;
       }
     }
-    // break;
 
     /*
       Копируем только объектное выражение -- никаких вызовов функций
@@ -1073,7 +1075,6 @@ bool copy_node(refalrts::Iter& res, refalrts::Iter sample) {
     */
     default:
       refalrts_switch_default_violation(sample->tag);
-      // break;
   }
 }
 
@@ -1197,9 +1198,7 @@ bool refalrts::alloc_char(refalrts::Iter& res, char ch) {
   }
 }
 
-bool refalrts::alloc_number(
-  refalrts::Iter& res, refalrts::RefalNumber num
-) {
+bool refalrts::alloc_number(refalrts::Iter& res, refalrts::RefalNumber num) {
   if (allocator::alloc_node(res)) {
     res->tag = cDataNumber;
     res->number_info = num;
@@ -1209,10 +1208,7 @@ bool refalrts::alloc_number(
   }
 }
 
-bool refalrts::alloc_name(
-  refalrts::Iter& res,
-  refalrts::RefalFunction *fn
-) {
+bool refalrts::alloc_name(refalrts::Iter& res, refalrts::RefalFunction *fn) {
   if (allocator::alloc_node(res)) {
     res->tag = cDataFunction;
     res->function_info = fn;
@@ -1279,6 +1275,28 @@ bool refalrts::alloc_open_call(refalrts::Iter& res) {
 
 bool refalrts::alloc_close_call(refalrts::Iter& res) {
   return alloc_some_bracket(res, cDataCloseCall);
+}
+
+bool refalrts::alloc_closure_head(refalrts::Iter& res) {
+  if (allocator::alloc_node(res)) {
+    res->tag = cDataClosureHead;
+    res->number_info = 1;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool refalrts::alloc_unwrapped_closure(
+  refalrts::Iter& res, refalrts::Iter head
+) {
+  if (allocator::alloc_node(res)) {
+    res->tag = cDataUnwrappedClosure;
+    res->link_info = head;
+    return true;
+  } else {
+    return false;
+  }
 }
 
 bool refalrts::alloc_chars(
@@ -1439,31 +1457,21 @@ void refalrts::update_char(refalrts::Iter res, char ch) {
   res->char_info = ch;
 }
 
-void refalrts::reinit_number(
-  refalrts::Iter res, refalrts::RefalNumber num)
-{
+void refalrts::reinit_number(refalrts::Iter res, refalrts::RefalNumber num) {
   res->tag = cDataNumber;
   res->number_info = num;
 }
 
-void refalrts::update_number(
-  refalrts::Iter res, refalrts::RefalNumber num
-) {
+void refalrts::update_number(refalrts::Iter res, refalrts::RefalNumber num) {
   res->number_info = num;
 }
 
-void refalrts::reinit_name(
-  refalrts::Iter res,
-  refalrts::RefalFunction *func
-) {
+void refalrts::reinit_name(refalrts::Iter res, refalrts::RefalFunction *func) {
   res->tag = cDataFunction;
   res->function_info = func;
 }
 
-void refalrts::update_name(
-  refalrts::Iter res,
-  refalrts::RefalFunction *func
-) {
+void refalrts::update_name(refalrts::Iter res, refalrts::RefalFunction *func) {
   res->function_info = func;
 }
 
@@ -1480,51 +1488,47 @@ void refalrts::update_ident(
   res->ident_info = ident;
 }
 
-void refalrts::reinit_open_bracket(
-  refalrts::Iter res
-) {
+void refalrts::reinit_open_bracket(refalrts::Iter res) {
   res->tag = cDataOpenBracket;
 }
 
-void refalrts::reinit_close_bracket(
-  refalrts::Iter res
-) {
+void refalrts::reinit_close_bracket(refalrts::Iter res) {
   res->tag = cDataCloseBracket;
 }
 
-void refalrts::reinit_open_adt(
-  refalrts::Iter res
-) {
+void refalrts::reinit_open_adt(refalrts::Iter res) {
   res->tag = cDataOpenADT;
 }
 
-void refalrts::reinit_close_adt(
-  refalrts::Iter res
-) {
+void refalrts::reinit_close_adt(refalrts::Iter res) {
   res->tag = cDataCloseADT;
 }
 
-void refalrts::reinit_open_call(
-  refalrts::Iter res
-) {
+void refalrts::reinit_open_call(refalrts::Iter res) {
   res->tag = cDataOpenCall;
 }
 
-void refalrts::reinit_close_call(
-  refalrts::Iter res
-) {
+void refalrts::reinit_close_call(refalrts::Iter res) {
   res->tag = cDataCloseCall;
 }
 
-refalrts::Iter refalrts::splice_elem(
-  refalrts::Iter res, refalrts::Iter elem
+void refalrts::reinit_closure_head(refalrts::Iter res) {
+  res->tag = cDataClosureHead;
+  res->number_info = 1;
+}
+
+void refalrts::reinit_unwrapped_closure(
+  refalrts::Iter res, refalrts::Iter head
 ) {
+  res->tag = cDataUnwrappedClosure;
+  res->link_info = head;
+}
+
+refalrts::Iter refalrts::splice_elem(refalrts::Iter res, refalrts::Iter elem) {
   return list_splice(res, elem, elem);
 }
 
-refalrts::Iter refalrts::splice_stvar(
-  refalrts::Iter res, refalrts::Iter var
-) {
+refalrts::Iter refalrts::splice_stvar(refalrts::Iter res, refalrts::Iter var) {
   refalrts::Iter var_end;
   if (is_open_bracket(var)) {
     var_end = var->link_info;
@@ -1553,38 +1557,15 @@ extern void refalrts::splice_to_freelist_open(
   }
 }
 
-void refalrts::splice_from_freelist(refalrts::Iter pos) {
-  allocator::splice_from_freelist(pos);
+refalrts::Iter refalrts::splice_from_freelist(refalrts::Iter pos) {
+  return allocator::splice_from_freelist(pos);
 }
-
-namespace {
-
-const refalrts::RASLCommand rasl_create_closure[] = {
-  { refalrts::icIssueMemory, 5, 0, 0 },
-  { refalrts::icInitB0_Lite, 0, 0, 0 },
-  { refalrts::icCallSaveLeft, 0, 2, 0 },
-  { refalrts::icNotEmpty, 0, 0, 2 },
-#ifdef ENABLE_DEBUGGER
-  { refalrts::icEmptyResult, 0, 0, 0 },
-#endif // ifdef ENABLE_DEBUGGER
-  { refalrts::icReinitClosureHead, 0, 0, 4 },
-  { refalrts::icReinitUnwrappedClosure, 4, 0, 1 },
-  { refalrts::icWrapClosure, 0, 0, 1 },
-  { refalrts::icSetRes, 0, 0, 1 },
-  { refalrts::icTrashLeftEdge, 0, 0, 0 },
-  { refalrts::icNextStep, 0, 0, 0 },
-};
-
-}
-
-refalrts::RefalFunction refalrts::create_closure(
-  rasl_create_closure, "@create_closure@"
-);
 
 /*
   Собственно замыкание (функция + контекст) определяется как
-  [next(head), prev(head)]. Т.к. замыкание создаётся только функцией
-  create_closure, которая гарантирует непустоту замыкания, то
+  [next(head), prev(head)]. Свёртка замыкания осуществляется первый
+  раз только в сгенерированном коде, развёртывается только ранее
+  созданное замыкание. Это позволяет гарантировать, что
   next(head) != head, prev(head) != head.
 */
 
@@ -1668,13 +1649,14 @@ refalrts::Iter refalrts::vm::initialize_swap_head(refalrts::Iter head) {
 }
 
 const refalrts::RASLCommand refalrts::RefalSwap::run[] = {
-  { refalrts::icThisIsGeneratedFunction, 0, 0, 0 },
+  { refalrts::icProfileFunction, 0, 0, 0 },
   { refalrts::icIssueMemory, 8, 0, 0 },
   { refalrts::icInitB0_Lite, 0, 0, 0 },
   { refalrts::icCallSaveLeft, 0, 2, 0 },
   { refalrts::icFetchSwapHead, 5, 0, 4 },
   { refalrts::icFetchSwapInfoBounds, 5, 6, 0 },
-  { refalrts::icEmptyResult, 0, 0, 0 },
+  { refalrts::icResetAllocator, 0, 0, 0 },
+  { refalrts::icSetResArgBegin, 0, 0, 0 },
   { refalrts::icSpliceEVar, 0, 0, 6 },
   { refalrts::icSwapSave, 5, 0, 2 },
   { refalrts::icSpliceToFreeList, 0, 0, 0 },
@@ -1842,9 +1824,11 @@ void refalrts::allocator::splice_to_freelist(
   g_free_ptr = list_splice(g_free_ptr, begin, end);
 }
 
-void refalrts::allocator::splice_from_freelist(refalrts::Iter pos) {
+refalrts::Iter refalrts::allocator::splice_from_freelist(refalrts::Iter pos) {
   if (g_free_ptr != g_first_marker.next) {
-    list_splice(pos, g_first_marker.next, g_free_ptr->prev);
+    return list_splice(pos, g_first_marker.next, g_free_ptr->prev);
+  } else {
+    return pos;
   }
 }
 
@@ -2337,6 +2321,12 @@ extern unsigned g_step_counter;
 
 } // namespace vm
 
+namespace dynamic {
+
+size_t idents_count();
+
+} // namespace dynamic
+
 } // namespace refalrts
 
 void refalrts::profiler::read_counters(unsigned long counters[]) {
@@ -2420,7 +2410,941 @@ void refalrts::profiler::read_counters(unsigned long counters[]) {
   counters[cPerformanceCounter_RuntimeTime] = basic_runtime_time;
   counters[cPerformanceCounter_NativeTime] = basic_native_time;
   counters[cPerformanceCounter_ContextCopyTime] = basic_context_copy_time;
+
+  counters[cPerformanceCounter_IdentsAllocated] =
+    static_cast<unsigned long>(::refalrts::dynamic::idents_count());
 }
+
+//==============================================================================
+// Динамическое связывание
+//==============================================================================
+
+//------------------------------------------------------------------------------
+
+// Хеш-таблица
+
+namespace refalrts {
+
+namespace dynamic {
+
+UInt32 one_at_a_time(UInt32 init, const char *bytes, size_t length);
+
+template <typename Key>
+struct HashKeyTraits {
+  /* ничего */
+};
+
+template <typename Key, typename Value>
+class DynamicHash {
+  // Копирование запрещено
+  DynamicHash(const DynamicHash&);
+  DynamicHash& operator=(const DynamicHash&);
+public:
+  DynamicHash();
+  ~DynamicHash();
+
+  size_t count() const {
+    return m_count;
+  }
+
+  Value *alloc(Key key);
+  Value *lookup(Key key);
+
+private:
+  struct Node {
+    UInt32 hash;
+    Value value;
+    typename DynamicHash<Key, Value>::Node *next;
+
+    Node(UInt32 hash, Node *next)
+      : hash(hash)
+      , value()
+      , next(next)
+    {
+      /* пусто */
+    }
+  };
+
+  typedef typename DynamicHash<Key, Value>::Node *NodePtr;
+  enum { cResizeThreshold = 4 };
+
+  void rehash();
+
+  Node **m_table;
+  unsigned int m_table_power;
+  size_t m_count;
+};
+
+} // namespace dynamic
+
+} // namespace refalrts
+
+template <typename Key, typename Value>
+refalrts::dynamic::DynamicHash<Key, Value>::DynamicHash()
+  : m_table()
+  , m_table_power(5)
+  , m_count(0)
+{
+  size_t table_size = size_t(1) << m_table_power;
+  m_table = new DynamicHash<Key, Value>::NodePtr[table_size];
+
+  for (size_t i = 0; i < table_size; ++i) {
+    m_table[i] = 0;
+  }
+}
+
+template <typename Key, typename Value>
+refalrts::dynamic::DynamicHash<Key, Value>::~DynamicHash() {
+  size_t table_size = size_t(1) << m_table_power;
+  for (size_t i = 0; i < table_size; ++i) {
+    Node *node = m_table[i];
+    while (node != 0) {
+      node->value.cleanup();
+      Node *next = node->next;
+      delete node;
+      node = next;
+    }
+  }
+
+  delete[] m_table;
+  m_table = 0;
+}
+
+refalrts::UInt32 refalrts::dynamic::one_at_a_time(
+  UInt32 init, const char *bytes, size_t length
+) {
+  // Хеш-функция Дженкинса one_at_a_time.
+  // Исходный код: http://www.burtleburtle.net/bob/hash/doobs.html
+  UInt32 hash = init;
+  for (size_t i = 0; i < length; ++i)
+  {
+    unsigned char byte = static_cast<unsigned char>(bytes[i]);
+    hash += byte;
+    hash += (hash << 10);
+    hash ^= (hash >> 6);
+  }
+  hash += (hash << 3);
+  hash ^= (hash >> 11);
+  hash += (hash << 15);
+  return hash;
+}
+
+template <typename Key, typename Value>
+void refalrts::dynamic::DynamicHash<Key, Value>::rehash() {
+  // Хаки для Watcom
+  using refalrts::UInt32;
+
+  size_t table_size = size_t(1) << m_table_power;
+
+  if (m_count / table_size < cResizeThreshold) {
+    return;
+  }
+
+  unsigned int new_table_power = m_table_power + 1;
+  size_t new_table_size = size_t(1) << new_table_power;
+  UInt32 hash_mask = (UInt32(1) << new_table_power) - 1;
+  Node **new_table = new DynamicHash<Key, Value>::NodePtr[new_table_size];
+
+  for (size_t i = 0; i < new_table_size; ++i) {
+    new_table[i] = 0;
+  }
+
+  for (size_t i = 0; i < table_size; ++i) {
+    Node *node = m_table[i];
+    while (node != 0) {
+      Node *next_in_old_table = node->next;
+      Node **pnext_in_new_table = &new_table[node->hash & hash_mask];
+      node->next = *pnext_in_new_table;
+      *pnext_in_new_table = node;
+      node = next_in_old_table;
+    }
+  }
+
+  m_table_power = new_table_power;
+  m_table = new_table;
+}
+
+template <typename Key, typename Value>
+Value * refalrts::dynamic::DynamicHash<Key, Value>::alloc(Key key) {
+  // Хаки для Watcom
+  using refalrts::UInt32;
+  using refalrts::dynamic::HashKeyTraits;
+
+  rehash();
+
+  UInt32 hash = HashKeyTraits<Key>::hash(key);
+  UInt32 hash_mask = (UInt32(1) << m_table_power) - 1;
+
+  Node **pstart_node = &m_table[hash & hash_mask];
+  Node *return_node = *pstart_node;
+  while (
+    return_node != 0
+    && (
+      return_node->hash != hash
+      || ! HashKeyTraits<Key>::equal(return_node->value.key(), key)
+    )
+  ) {
+    return_node = return_node->next;
+  }
+
+  if (return_node == 0) {
+    return_node = new Node(hash, *pstart_node);
+    *pstart_node = return_node;
+    ++m_count;
+  }
+
+  return &return_node->value;
+}
+
+template <typename Key, typename Value>
+Value *refalrts::dynamic::DynamicHash<Key, Value>::lookup(Key key) {
+  // Хаки для Watcom
+  using refalrts::UInt32;
+  using refalrts::dynamic::HashKeyTraits;
+
+  UInt32 hash = HashKeyTraits<Key>::hash(key);
+  UInt32 hash_mask = (UInt32(1) << m_table_power) - 1;
+
+  Node *return_node = m_table[hash & hash_mask];
+  while (
+    return_node != 0
+    && (
+      return_node->hash != hash
+      || ! HashKeyTraits<Key>::equal(return_node->value.key(), key)
+    )
+  ) {
+    return_node = return_node->next;
+  }
+
+  if (return_node != 0) {
+    return &return_node->value;
+  } else {
+    return 0;
+  }
+}
+
+//------------------------------------------------------------------------------
+
+// Идентификаторы
+
+namespace refalrts {
+
+namespace dynamic {
+
+struct IdentHashNode {
+  RefalIdentDescr ident;
+  const char *nonstatic_origin;
+
+  IdentHashNode()
+    : ident()
+    , nonstatic_origin(0)
+  {
+    /* пусто */
+  }
+
+  void cleanup() {
+    if (nonstatic_origin) {
+      delete [] nonstatic_origin;
+    }
+  };
+
+  const char *key() const {
+    return ident.name();
+  }
+};
+
+template <>
+struct HashKeyTraits<const char*> {
+  static UInt32 hash(const char *name) {
+    size_t length = name ? strlen(name) : 0;
+    return one_at_a_time(0, name, length);
+  }
+
+  static bool equal(const char *left, const char *right) {
+    return strcmp(left, right) == 0;
+  }
+};
+
+DynamicHash<const char *, IdentHashNode> *g_idents_table = 0;
+
+DynamicHash<const char *, IdentHashNode>& idents_table() {
+  if (g_idents_table == 0) {
+    g_idents_table = new DynamicHash<const char *, IdentHashNode>;
+  }
+
+  return *g_idents_table;
+}
+
+size_t idents_count() {
+  return idents_table().count();
+}
+
+void free_idents_table();
+IdentHashNode *alloc_ident_node(const char *name);
+
+} // namespace dynamic
+
+} // namespace refalrts
+
+refalrts::RefalIdentifier refalrts::RefalIdentDescr::from_static(
+  const char * name
+) {
+  dynamic::IdentHashNode *value = dynamic::alloc_ident_node(name);
+#ifdef IDENTS_LIMIT
+  if (! value) {
+    fprintf(
+      stderr, "INTERNAL ERROR: Identifiers table overflows (max %ld)\n",
+      static_cast<unsigned long>(IDENTS_LIMIT)
+    );
+    exit(154);
+  }
+#else
+  assert(value != 0);
+#endif // ifdef IDENTS_LIMIT
+
+  if (value->ident.m_name == 0) {
+    value->ident.m_name = name;
+  } else if (value->nonstatic_origin != 0) {
+    value->ident.m_name = name;
+    delete[] value->nonstatic_origin;
+    value->nonstatic_origin = 0;
+  }
+
+  return &value->ident;
+}
+
+refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
+  const char *name
+) {
+  if (! name) {
+    name = "";
+  }
+  dynamic::IdentHashNode *value = dynamic::alloc_ident_node(name);
+
+#ifdef IDENTS_LIMIT
+  if (! value) {
+    return 0;
+  }
+#else
+  assert(value != 0);
+#endif // ifdef IDENTS_LIMIT
+
+  if (value->ident.m_name == 0) {
+    if (! name) {
+      name = "";
+    }
+
+    size_t length = strlen(name);
+    char *new_name = new char[length + 1];
+    memcpy(new_name, name, length + 1);
+
+    value->ident.m_name = new_name;
+    value->nonstatic_origin = new_name;
+  }
+
+  return &value->ident;
+}
+
+void refalrts::dynamic::free_idents_table() {
+#ifndef DONT_PRINT_STATISTICS
+  fprintf(
+    stderr, "Identifiers allocated: %lu\n",
+    static_cast<unsigned long>(idents_count())
+  );
+#endif // ifndef DONT_PRINT_STATISTICS
+
+  delete g_idents_table;
+}
+
+refalrts::dynamic::IdentHashNode *refalrts::dynamic::alloc_ident_node(
+  const char *name
+) {
+#ifdef IDENTS_LIMIT
+  if (idents_count() >= IDENTS_LIMIT) {
+    return 0;
+  }
+#endif // ifdef IDENTS_LIMIT
+  return idents_table().alloc(name);
+}
+
+//------------------------------------------------------------------------------
+
+// Функции
+
+namespace refalrts {
+
+namespace dynamic {
+
+struct FuncHashNode {
+  RefalFunction *function;
+
+  FuncHashNode()
+    : function(0)
+  {
+    /* пусто */
+  }
+
+  void cleanup() {
+    // Деструкторов (в т.ч. неявных в функциях нет),
+    // память выделялась только malloc’ом, поэтому освобождаем free()
+    free(function);
+  }
+
+  RefalFuncName key() const {
+    return function->name;
+  }
+};
+
+template <>
+struct HashKeyTraits<RefalFuncName> {
+  static UInt32 hash(const RefalFuncName& name) {
+    size_t length = name.name ? strlen(name.name) : 0;
+    return one_at_a_time(name.cookie1 ^ name.cookie2, name.name, length);
+  }
+
+  static bool equal(const RefalFuncName& left, const RefalFuncName& right) {
+    return left.cookie1 == right.cookie1
+      && left.cookie2 == right.cookie2
+      && strcmp(left.name, right.name) == 0;
+  }
+};
+
+struct FunctionTable *g_unresolved_func_tables = 0;
+struct ExternalReference *g_unresolved_external_references = 0;
+
+DynamicHash<RefalFuncName, FuncHashNode> *g_funcs_table = 0;
+DynamicHash<RefalFuncName, FuncHashNode>& funcs_table() {
+  if (g_funcs_table == 0) {
+    g_funcs_table = new DynamicHash<RefalFuncName, FuncHashNode>;
+  }
+
+  return *g_funcs_table;
+}
+
+unsigned find_unresolved_externals();
+void free_funcs_table();
+
+} // namespace dynamic
+
+} // namespace refalrts
+
+void refalrts::RefalFunction::register_me() {
+  dynamic::FuncHashNode *node = dynamic::funcs_table().alloc(name);
+
+  if (node->function != 0) {
+    fprintf(
+      stderr, "INTERNAL ERROR: function redeclared: %s#%u:%u\n",
+      name.name, name.cookie1, name.cookie2
+    );
+    exit(156);
+  }
+
+  node->function = this;
+}
+
+refalrts::RefalFunction *refalrts::RefalFunction::lookup(
+  const refalrts::RefalFuncName& name
+) {
+  dynamic::FuncHashNode *node = dynamic::funcs_table().lookup(name);
+
+  if (node) {
+    return node->function;
+  } else {
+    return 0;
+  }
+}
+
+refalrts::FunctionTable::FunctionTable(
+  refalrts::UInt32 cookie1, refalrts::UInt32 cookie2,
+  refalrts::FunctionTableItem items[]
+)
+  : cookie1(cookie1)
+  , cookie2(cookie2)
+  , items(items)
+  , next(dynamic::g_unresolved_func_tables)
+{
+  dynamic::g_unresolved_func_tables = this;
+}
+
+refalrts::ExternalReference::ExternalReference(
+  const char *name, refalrts::UInt32 cookie1, refalrts::UInt32 cookie2
+)
+  : ref(name)
+  , cookie1(cookie1)
+  , cookie2(cookie2)
+  , next(dynamic::g_unresolved_external_references)
+{
+  dynamic::g_unresolved_external_references = this;
+}
+
+unsigned refalrts::dynamic::find_unresolved_externals() {
+  unsigned unresolved = 0;
+
+  while (g_unresolved_func_tables != 0) {
+    FunctionTable *table = g_unresolved_func_tables;
+    FunctionTableItem *items = table->items;
+    for (size_t i = 0; items[i].func_name != 0; ++i) {
+      const char *str_name = items[i].func_name;
+      char ch = *str_name;
+      assert(ch == '*' || ch == '#');
+
+      UInt32 cookie1 = 0;
+      UInt32 cookie2 = 0;
+      if (ch == '#') {
+        cookie1 = table->cookie1;
+        cookie2 = table->cookie2;
+      }
+
+      RefalFuncName name(str_name + 1, cookie1, cookie2);
+      FuncHashNode *node = funcs_table().lookup(name);
+      if (node != 0) {
+        items[i].function = node->function;
+      } else {
+        fprintf(
+          stderr, "INTERNAL ERROR: unresolved external %s#%u:%u\n",
+          str_name + 1, cookie1, cookie2
+        );
+        ++unresolved;
+      }
+    }
+
+    g_unresolved_func_tables = g_unresolved_func_tables->next;
+  }
+
+  while (g_unresolved_external_references != 0) {
+    ExternalReference *er = g_unresolved_external_references;
+    RefalFuncName name(er->ref.func_name, er->cookie1, er->cookie2);
+    FuncHashNode *node = funcs_table().lookup(name);
+    if (node != 0) {
+      er->ref.function = node->function;
+    } else {
+      fprintf(
+        stderr, "INTERNAL ERROR: unresolved external %s#%u:%u\n",
+        er->ref.func_name, er->cookie1, er->cookie2
+      );
+      ++unresolved;
+    }
+
+    g_unresolved_external_references = g_unresolved_external_references->next;
+  }
+
+  return unresolved;
+}
+
+void refalrts::dynamic::free_funcs_table() {
+  delete g_funcs_table;
+}
+
+//------------------------------------------------------------------------------
+
+// Загружаемый модуль
+
+namespace refalrts {
+
+namespace dynamic {
+
+template <typename T>
+inline T *malloc(size_t count = 1) {
+  T *result = static_cast<T*>(::malloc(sizeof(T) * count));
+  assert(count == 0 || result);
+  return result;
+}
+
+struct ConstTable {
+  UInt32 cookie1;
+  UInt32 cookie2;
+  FunctionTableItem *externals;
+  FunctionTable *function_table;
+  RefalIdentifier *idents;
+  RefalNumber *numbers;
+  StringItem *strings;
+  RASLCommand *rasl;
+
+  char *external_memory;
+  char *idents_memory;
+  char *strings_memory;
+
+  ConstTable *next;
+
+  RefalFuncName make_name(const char *name) const;
+};
+
+struct ConstTable *g_tables = 0;
+
+void enumerate_blocks();
+void cleanup_module();
+
+bool seek_rasl_signature(FILE *stream);
+const char *read_asciiz(FILE *stream);
+
+} // namespace dynamic
+
+} // namespace refalrts
+
+bool refalrts::dynamic::seek_rasl_signature(FILE *stream) {
+  int seek_res = fseek(stream, 0L, SEEK_END);
+  if (seek_res != 0) {
+    fprintf(stderr, "INTERNAL ERROR: can't seek in module\n");
+    exit(155);
+  }
+
+  long int file_size = ftell(stream);
+  if (file_size == -1L) {
+    fprintf(
+      stderr, "INTERNAL ERROR: filesize obtaining error %s\n",
+      strerror(errno)
+    );
+    exit(155);
+  }
+
+  long int next_offset = 0L;
+  bool found = false;
+  while (next_offset < file_size && ! found) {
+    seek_res = fseek(stream, next_offset, SEEK_SET);
+    if (seek_res != 0) {
+      fprintf(stderr, "INTERNAL ERROR: can't seek in module\n");
+      exit(155);
+    }
+
+    static char sample_sig[] = {
+      '\x00', '\x08', '\0', '\0', '\0', 'R', 'A', 'S', 'L', 'C', 'O', 'D', 'E'
+    };
+    sample_sig[0] = cBlockTypeStart;
+    char actual_sig[sizeof(sample_sig)];
+    size_t read = fread(actual_sig, sizeof(actual_sig), 1, stream);
+    if (read != 1) {
+      fprintf(stderr, "INTERNAL ERROR: can't read bytes from module\n");
+      exit(155);
+    }
+
+    found = memcmp(sample_sig, actual_sig, sizeof(sample_sig)) == 0;
+    next_offset += 4096;
+  }
+
+  /*
+    Позиция в файле после чтения сигнатуры будет в начале следующего блока,
+    что вполне нормально для функции enumerate_blocks().
+  */
+  return found;
+}
+
+const char *refalrts::dynamic::read_asciiz(FILE *stream) {
+  enum { cINC_SIZE = 20 };
+
+  size_t buflen = cINC_SIZE;
+  char *buffer = static_cast<char *>(::malloc(buflen));
+  assert(buffer);
+
+  size_t buffoffset = 0;
+
+  size_t read;
+  do {
+    read = fread(&buffer[buffoffset], 1, 1, stream);
+    if (read) {
+      ++buffoffset;
+      if (buffoffset == buflen) {
+        size_t new_buflen = buflen + cINC_SIZE;
+        char *new_buffer = static_cast<char*>(::realloc(buffer, new_buflen));
+        assert(new_buffer);
+
+        buflen = new_buflen;
+        buffer = new_buffer;
+      }
+    }
+  } while (read == 1 && buffer[buffoffset - 1] != '\0');
+
+  if (read == 1) {
+    return buffer;
+  } else {
+    free(buffer);
+    return 0;
+  }
+}
+
+refalrts::RefalFuncName
+refalrts::dynamic::ConstTable::make_name(const char *name) const {
+  char type = name[0];
+  const char *proper_name = name + 1;
+
+  assert(type == '*' || type == '#');
+  if (type == '#') {
+    return RefalFuncName(proper_name, cookie1, cookie2);
+  } else {
+    return RefalFuncName(proper_name, 0, 0);
+  }
+}
+
+void refalrts::dynamic::enumerate_blocks() {
+  char module_name[api::cModuleNameBufferLen];
+
+  bool successed = api::get_main_module_name(module_name);
+  if (! successed) {
+    fprintf(stderr, "INTERNAL ERROR: can't obtain name of main executable\n");
+    exit(155);
+  }
+
+  ConstTable *table = 0;
+
+  FILE *stream = fopen(module_name, "rb");
+  if (! stream) {
+    fprintf(stderr, "INTERNAL ERROR: can't open main executable for read\n");
+    exit(155);
+  }
+
+  successed = seek_rasl_signature(stream);
+  if (! successed) {
+    fprintf(stderr, "INTERNAL ERROR: can't find signature in executable\n");
+    exit(155);
+  }
+
+  unsigned char type;
+  while (fread(&type, sizeof(type), 1, stream) == 1) {
+    UInt32 datalen;
+
+    size_t read = fread(&datalen, sizeof(datalen), 1, stream);
+    assert(read == 1);      // TODO: сообщение об ошибке
+
+    switch (type) {
+      case cBlockTypeStart:
+        {
+          static const char sample[8] = {
+            'R', 'A', 'S', 'L', 'C', 'O', 'D', 'E'
+          };
+          assert(sizeof(sample) == datalen);
+
+          char signature[sizeof(sample)];
+          read = fread(&signature, 1, sizeof(signature), stream);
+          assert(sizeof(signature) == read);
+          assert(memcmp(sample, signature, sizeof(signature)) == 0);
+        }
+        break;
+
+      case cBlockTypeConstTable:
+        {
+          struct {
+            UInt32 cookie1;
+            UInt32 cookie2;
+            UInt32 external_count;
+            UInt32 ident_count;
+            UInt32 number_count;
+            UInt32 string_count;
+            UInt32 rasl_length;
+            UInt32 external_size;
+            UInt32 ident_size;
+            UInt32 string_size;
+          } fixed_part;
+
+          read = fread(&fixed_part, sizeof(fixed_part), 1, stream);
+          assert(read == 1);
+
+          ConstTable *new_table = malloc<ConstTable>();
+          assert(new_table);
+
+          new_table->cookie1 = fixed_part.cookie1;
+          new_table->cookie2 = fixed_part.cookie2;
+
+          new_table->externals =
+            malloc<FunctionTableItem>(fixed_part.external_count + 1);
+          new_table->external_memory = malloc<char>(fixed_part.external_size);
+          read = fread(
+            new_table->external_memory, 1, fixed_part.external_size, stream
+          );
+          assert(read == fixed_part.external_size);
+          const char *next_external_name = new_table->external_memory;
+          for (size_t i = 0; i < fixed_part.external_count; ++i) {
+            new_table->externals[i].func_name = next_external_name;
+            // TODO: нужна проверка за выход из границ
+            next_external_name += strlen(next_external_name) + 1;
+          }
+          new_table->externals[fixed_part.external_count] =
+            static_cast<const char *>(0);
+          new_table->function_table = new FunctionTable(
+            fixed_part.cookie1, fixed_part.cookie2, new_table->externals
+          );
+
+          new_table->idents = malloc<RefalIdentifier>(fixed_part.ident_count);
+          new_table->idents_memory = malloc<char>(fixed_part.ident_size);
+          read = fread(
+            new_table->idents_memory, 1, fixed_part.ident_size, stream
+          );
+          assert(read == fixed_part.ident_size);
+          const char *next_ident_name = new_table->idents_memory;
+          for (size_t i = 0; i < fixed_part.ident_count; ++i) {
+            RefalIdentifier ident = ident_implode(next_ident_name);
+#ifdef IDENTS_LIMIT
+            if (! ident) {
+              fprintf(
+                stderr,
+                "INTERNAL ERROR: Identifiers table overflows (max %ld)\n",
+                static_cast<unsigned long>(IDENTS_LIMIT)
+              );
+              exit(154);
+            }
+#else
+            assert(ident != 0);
+#endif // ifdef IDENTS_LIMIT
+            new_table->idents[i] = ident;
+            // TODO: нужна проверка за выход из границ
+            next_ident_name += strlen(next_ident_name) + 1;
+          }
+
+          new_table->numbers = malloc<RefalNumber>(fixed_part.number_count);
+          read = fread(
+            new_table->numbers, sizeof(RefalNumber), fixed_part.number_count,
+            stream
+          );
+          assert(read == fixed_part.number_count);
+
+          new_table->strings = malloc<StringItem>(fixed_part.string_count);
+          new_table->strings_memory = malloc<char>(fixed_part.string_size);
+          char *string_target = new_table->strings_memory;
+          for (size_t i = 0; i < fixed_part.string_count; ++i) {
+            UInt32 length;
+            read = fread(&length, sizeof(length), 1, stream);
+            assert(read == 1);
+            read = fread(string_target, 1, length, stream);
+            assert(read == length);
+            new_table->strings[i].string = string_target;
+            new_table->strings[i].string_len = length;
+            string_target += length;
+          }
+
+          new_table->rasl = malloc<RASLCommand>(fixed_part.rasl_length);
+          read = fread(
+            new_table->rasl, sizeof(RASLCommand), fixed_part.rasl_length,
+            stream
+          );
+          assert(read == fixed_part.rasl_length);
+
+          new_table->next = g_tables;
+          g_tables = new_table;
+
+          table = new_table;
+        }
+        break;
+
+      case cBlockTypeRefalFunction:
+        {
+          const char *name = read_asciiz(stream);
+          assert(name);
+
+          UInt32 offset;
+          read = fread(&offset, sizeof(offset), 1, stream);
+          assert(read == 1);
+
+          RASLFunction *result = dynamic::malloc<RASLFunction>();
+          // TODO: выдача сообщения об ошибке
+          assert(result != 0);
+          new (result) RASLFunction(
+            table->make_name(name),
+            table->rasl + offset,
+            table->function_table,
+            table->idents,
+            table->numbers,
+            table->strings,
+            "filename.sref"
+          );
+        }
+        break;
+
+      case cBlockTypeNativeFunction:
+        {
+          const char *name = read_asciiz(stream);
+          assert(name);
+
+          char type = name[0];
+          assert(type == '*' || type == '#');
+
+          const char *proper_name = name + 1;
+
+          NativeReference *ref = NativeReference::s_references;
+          while (
+            ref != 0
+            && ! (
+              type == '*'
+              ? (
+                ref->cookie1 == 0
+                && ref->cookie2 == 0
+                && strcmp(ref->name, proper_name) == 0
+              )
+              : (
+                ref->cookie1 == table->cookie1
+                && ref->cookie2 == table->cookie2
+                && strcmp(ref->name, proper_name) == 0
+              )
+            )
+          ) {
+            ref = ref->next;
+          }
+
+          // TODO: Сообщение об ошибке
+          assert(ref != 0);
+
+          RefalNativeFunction *result = dynamic::malloc<RefalNativeFunction>();
+          // TODO: выдача сообщения об ошибке
+          assert(result != 0);
+          new (result) RefalNativeFunction(
+            ref->code, table->make_name(name)
+          );
+        }
+        break;
+
+      case cBlockTypeEmptyFunction:
+        {
+          const char *name = read_asciiz(stream);
+          assert(name);
+
+          RefalEmptyFunction *result = dynamic::malloc<RefalEmptyFunction>();
+          // TODO: выдача сообщения об ошибке
+          assert(result != 0);
+          new (result) RefalEmptyFunction(table->make_name(name));
+        }
+        break;
+
+      case cBlockTypeSwap:
+        {
+          const char *name = read_asciiz(stream);
+          assert(name);
+
+          RefalSwap *result = dynamic::malloc<RefalSwap>();
+          // TODO: выдача сообщения об ошибке
+          assert(result != 0);
+          new (result) RefalSwap(table->make_name(name));
+        }
+        break;
+
+      default:
+        refalrts_switch_default_violation(type);
+    }
+  }
+
+  fclose(stream);
+}
+
+void refalrts::dynamic::cleanup_module() {
+  while (g_tables != 0) {
+    ConstTable *next = g_tables->next;
+
+    free(g_tables->rasl);
+
+    free(g_tables->strings_memory);
+    free(g_tables->strings);
+
+    free(g_tables->numbers);
+
+    free(g_tables->idents_memory);
+    free(g_tables->idents);
+
+    delete g_tables->function_table;
+    free(g_tables->external_memory);
+    free(g_tables->externals);
+
+    free(g_tables);
+    g_tables = next;
+  }
+}
+
+refalrts::NativeReference *refalrts::NativeReference::s_references = 0;
 
 //==============================================================================
 // Виртуальная машина
@@ -2497,6 +3421,7 @@ void refalrts::vm::Stack<T>::reserve(size_t size) {
     T *new_memory = new T[size];
     delete[] m_memory;
     m_memory = new_memory;
+    m_capacity = size;
   }
   m_size = size;
   for (size_t i = 0; i < m_size; ++i) {
@@ -2530,32 +3455,48 @@ bool refalrts::vm::empty_stack() {
   return (g_stack_ptr == 0);
 }
 
-extern refalrts::RefalFunction& Go;
+namespace {
+
+void print_error_message(FILE *stream, refalrts::FnResult res) {
+  switch(res) {
+    case refalrts::cRecognitionImpossible:
+      fprintf(stream, "\nRECOGNITION IMPOSSIBLE\n\n");
+      break;
+
+    case refalrts::cNoMemory:
+      fprintf(stream, "\nNO MEMORY\n\n");
+      break;
+
+    case refalrts::cStepLimit:
+      fprintf(
+        stream, "\nSTEP LIMIT REACHED (%u)\n\n", refalrts::vm::g_step_counter
+      );
+      break;
+
+    case refalrts::cIdentTableLimit:
+      fprintf(
+        stream, "\nIDENTS TABLE OVERFLOW (max %lu)\n\n",
+        static_cast<unsigned long>(refalrts::dynamic::idents_count())
+      );
+      break;
+
+    default:
+      fprintf(stream, "\nUNKNOWN ERROR\n\n");
+      refalrts_switch_default_violation(res);
+  }
+}
+
+}
 
 refalrts::FnResult refalrts::vm::run() {
   FnResult res = main_loop();
 
-  if (res != cSuccess) {
-    switch(res) {
-      case refalrts::cRecognitionImpossible:
-        fprintf(stderr, "\nRECOGNITION IMPOSSIBLE\n\n");
-        break;
-
-      case refalrts::cNoMemory:
-        fprintf(stderr, "\nNO MEMORY\n\n");
-        break;
-
-      case refalrts::cExit:
-        return res;
-
-      case refalrts::cStepLimit:
-        fprintf(stderr, "\nSTEP LIMIT REACHED (%u)\n\n", g_step_counter);
-        break;
-
-      default:
-        fprintf(stderr, "\nUNKNOWN ERROR\n\n");
-        break;
+  if (res != cSuccess && res != cExit) {
+    print_error_message(stderr, res);
+    if (dump_stream() != stderr) {
+      print_error_message(dump_stream(), res);
     }
+
     make_dump(g_error_begin, g_error_end);
   }
 
@@ -2564,8 +3505,7 @@ refalrts::FnResult refalrts::vm::run() {
 
 namespace {
 
-void print_indent(FILE *output, int level)
-{
+void print_indent(FILE *output, int level) {
   enum { cPERIOD = 4 };
   putc('\n', output);
   if (level < 0) {
@@ -2636,11 +3576,14 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataSwapHead:
-            fprintf(
-              output, "%c%c*Swap %s:%c",
-              space, space, begin->function_info->name, space
-            );
-            refalrts::move_left(begin, end);
+            {
+              const RefalFuncName& name = begin->function_info->name;
+              fprintf(
+                output, "\n\n*Swap %s#%u:%u:\n",
+                name.name, name.cookie1, name.cookie2
+              );
+              refalrts::move_left(begin, end);
+            }
             continue;
 
           case refalrts::cDataChar:
@@ -2649,17 +3592,22 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataNumber:
-            fprintf(output, "%lu ", begin->number_info);
+            fprintf(output, "%u ", begin->number_info);
             refalrts::move_left(begin, end);
             continue;
 
           case refalrts::cDataFunction:
-            fprintf(output, "&%s ", begin->function_info->name);
-            refalrts::move_left(begin, end);
+            {
+              const RefalFuncName& name = begin->function_info->name;
+              fprintf(
+                output, "&%s#%u:%u ", name.name, name.cookie1, name.cookie2
+              );
+              refalrts::move_left(begin, end);
+            }
             continue;
 
           case refalrts::cDataIdentifier:
-            fprintf(output, "#%s ", (begin->ident_info)());
+            fprintf(output, "#%s ", begin->ident_info->name());
             refalrts::move_left(begin, end);
             continue;
 
@@ -2732,7 +3680,7 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataClosureHead:
-            fprintf(output, "[%ld] ", begin->number_info);
+            fprintf(output, "[%d] ", begin->number_info);
             refalrts::move_left(begin, end);
             continue;
 
@@ -3459,10 +4407,6 @@ bool refalrts::debugger::RefalDebugger::quotation_mark_parse(
         write_byte(&from, &out, &str_p, '\v');
         continue;
 
-      case 'e':
-        write_byte(&from, &out, &str_p, '\e');
-        continue;
-
       case '"':
         write_byte(&from, &out, &str_p, '"');
         continue;
@@ -3471,7 +4415,7 @@ bool refalrts::debugger::RefalDebugger::quotation_mark_parse(
         {
           int hexval = parse2hex((unsigned char *)str_p + 2);
           if (hexval == cBadHexVal) {
-            return -1;
+            return false;
           }
           memmove(out, from, str_p - from);
           out += (str_p - from) + 1;
@@ -3499,7 +4443,9 @@ bool refalrts::debugger::RefalDebugger::quotation_mark_parse(
 FILE *refalrts::debugger::RefalDebugger::get_out() {
   char line[cMaxLen] = {0};
   char *line_ptr = line;
-  fgets(line, cMaxLen, m_in);
+  if (fgets(line, cMaxLen, m_in) == 0) {
+    return stdout;
+  }
   RedirectionType type = parse_redirection(&line_ptr);
   if (type == cRedirectionType_Append) {
     return fopen(line_ptr, "a");
@@ -3541,7 +4487,7 @@ bool refalrts::debugger::RefalDebugger::next_cond(Iter begin) {
 bool refalrts::debugger::RefalDebugger::run_cond(RefalFunction *callee) {
   m_dot = s_RUN;
   bool stop = break_set.is_breakpoint(
-    refalrts::vm::g_step_counter, callee == 0 ? "" : callee->name
+    refalrts::vm::g_step_counter, callee == 0 ? "" : callee->name.name
   );
   if (stop) {
     printf("stopped on function breakpoint\n");
@@ -3573,8 +4519,8 @@ bool refalrts::debugger::RefalDebugger::is_debug_stop(
 void refalrts::debugger::RefalDebugger::debug_trace(
   Iter begin, Iter end, RefalFunction *callee
 ) {
-  if (callee != 0 && func_trace_table.is_traced_func(callee->name)) {
-    FILE *trace_out = func_trace_table.get_trace_outstream(callee->name);
+  if (callee != 0 && func_trace_table.is_traced_func(callee->name.name)) {
+    FILE *trace_out = func_trace_table.get_trace_outstream(callee->name.name);
     fprintf(
       trace_out, "//==================================================\n"
     );
@@ -3755,7 +4701,10 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
   char strparam[cMaxLen] = {0};
   for ( ; ; ) {
     printf("debug>");
-    fscanf(m_in, "%15s", debcmd);
+    bool ok = fscanf(m_in, "%15s", debcmd) == 1;
+    if (! ok) {
+      break;
+    }
     if (str_equal(debcmd, s_H) || str_equal(debcmd, s_HELP)) {
       help_option();
     } else if (
@@ -3763,27 +4712,38 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       || str_equal(debcmd, s_BREAK)
       || str_equal(debcmd, s_BREAKPOINT)
     ) {
-      fscanf(m_in, "%1023s", strparam);
-      break_option(strparam);
+      ok = fscanf(m_in, "%1023s", strparam) == 1;
+      if (ok) {
+        break_option(strparam);
+      }
     } else if (
       str_equal(debcmd, s_CL)
       || str_equal(debcmd, s_CLEAR)
       || str_equal(debcmd, s_RM)
     ) {
-      fscanf(m_in, "%1023s", strparam);
-      clear_option(strparam);
+      ok = fscanf(m_in, "%1023s", strparam) == 1;
+      if (ok) {
+        clear_option(strparam);
+      }
     } else if (str_equal(debcmd, s_STEPLIMIT)) {
       int step_lim = 0;
-      fscanf(m_in, "%d", &step_lim);
-      break_set.add_breakpoint(g_step_counter+step_lim);
+      ok = fscanf(m_in, "%d", &step_lim) == 1;
+      if (ok) {
+        break_set.add_breakpoint(g_step_counter+step_lim);
+      }
     } else if (str_equal(debcmd, s_MEMORYLIMIT)) {
-      fscanf(m_in, "%u", &m_memory_limit);
+      ok = fscanf(m_in, "%u", &m_memory_limit) == 1;
+      (void) ok;
     } else if (str_equal(debcmd, s_TR) || str_equal(debcmd, s_TRACE)) {
-      fscanf(m_in, "%1023s", strparam);
-      func_trace_table.trace_func(strparam, get_out());
+      ok = fscanf(m_in, "%1023s", strparam) == 1;
+      if (ok) {
+        func_trace_table.trace_func(strparam, get_out());
+      }
     } else if (str_equal(debcmd, s_NOTR) || str_equal(debcmd, s_NOTRACE)) {
-      fscanf(m_in, "%1023s", strparam);
-      func_trace_table.notrace_func(strparam);
+      ok = fscanf(m_in, "%1023s", strparam) == 1;
+      if (ok) {
+        func_trace_table.notrace_func(strparam);
+      }
     } else if (
       str_equal(debcmd, s_R)
       || str_equal(debcmd, s_RUN)
@@ -3815,7 +4775,10 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       var_debug_table.print(out);
       close_out(out);
     } else if (str_equal(debcmd, s_P) || str_equal(debcmd, s_PRINT)) {
-      fscanf(m_in, "%1023s", strparam);
+      ok = fscanf(m_in, "%1023s", strparam) == 1;
+      if (! ok) {
+        continue;
+      }
       FILE *out = get_out();
       if (str_equal(strparam, s_ARG)) {
         print_arg_option(begin, end, out);
@@ -3857,7 +4820,7 @@ refalrts::debugger::RefalDebugger::handle_function_call(
     if (is_debug_stop(begin, callee)) {
       printf(
         "Step #%d; Function <%s ...>\n",
-        refalrts::vm::g_step_counter, callee == 0 ? "" : callee->name
+        refalrts::vm::g_step_counter, callee == 0 ? "" : callee->name.name
       );
       if (debugger_loop(begin, end) == refalrts::cExit) {
         return cExit;
@@ -3888,27 +4851,38 @@ int refalrts::debugger::find_debugger_flag(int argc, char **argv) {
 //=============================================================================
 
 refalrts::FnResult refalrts::vm::main_loop() {
+  RefalFunction *go = RefalFunction::lookup(0, 0, "GO");
+
+  if (! go) {
+    go = RefalFunction::lookup(0, 0, "Go");
+  }
+
+  if (! go) {
+    fprintf(stderr, "INTERNAL ERROR: entry point (Go or GO) is not found\n");
+    exit(158);
+  }
+
+  FunctionTableItem entry_point[1] = { FunctionTableItem(go) };
+
+  // Формируем вызов <Go#0:0> в поле зрения
   static const RASLCommand startup_rasl[] = {
     { icIssueMemory, 3, 0, 0 },
-    { icEmptyResult, 0, 0, 0 },
-    { icAllocBracket, 0, ibOpenCall, 0 },
-    { icAllocFunc, 0, 0, 1 },
-    { icAllocBracket, 0, ibCloseCall, 2 },
+    { refalrts::icResetAllocator, 0, 0, 0 },
+    { refalrts::icSetResArgBegin, 0, 0, 0 },
+    { icAllocateBracket, 0, ibOpenCall, 0 },
+    { icAllocateName, 0, 0, 1 },
+    { icAllocateBracket, 0, ibCloseCall, 2 },
     { icSpliceTile, 0, 2, 0 },
     { icPushStack, 0, 0, 2 },
     { icPushStack, 0, 0, 0 },
     { icNextStep, 0, 0, 0 }
   };
 
-  static RefalFunction *startup_func[] = {
-    & Go
-  };
-
   RefalFunction *callee = 0;
-  Iter begin = & g_last_marker; /* нужно для icEmptyResult в startup_rasl */
+  Iter begin = & g_last_marker; /* нужно для icSetResArgBegin в startup_rasl */
   Iter end = 0;
   const RASLCommand *rasl = startup_rasl;
-  RefalFunction **functions = startup_func;
+  FunctionTableItem *functions = entry_point;
   const RefalIdentifier *idents = 0;
   const RefalNumber *numbers = 0;
   const StringItem *strings = 0;
@@ -3936,28 +4910,33 @@ refalrts::FnResult refalrts::vm::main_loop() {
   }
 
   while (true) {
+    unsigned int val1 = rasl->val1;
+    unsigned int val2 = rasl->val2;
+    unsigned int bracket = rasl->bracket;
+
+JUMP_FROM_SCALE:
+
     // Интерпретация команд
     // Для ряда команд эти переменные могут не иметь смысла
-    Iter &bb = context[rasl->bracket];
-    Iter &be = context[rasl->bracket + 1];
-    Iter &elem = context[rasl->bracket];
-    Iter &save_pos = context[rasl->val1];
+    Iter &bb = context[bracket];
+    Iter &be = context[bracket + 1];
+    Iter &elem = context[bracket];
+    Iter &save_pos = context[val1];
     Iter &swap_head = save_pos;
 
     // Содержимое скобок
-    Iter &res_b = context[rasl->val2];
-    Iter &res_e = context[rasl->val2 + 1];
+    Iter &res_b = context[val2];
+    Iter &res_e = context[val2 + 1];
 
-    switch(rasl->cmd)
-    {
-      case icThisIsGeneratedFunction:
+    switch(rasl->cmd) {
+      case icProfileFunction:
         this_is_generated_function();
         break;
 
       case icLoadConstants:
         {
           RASLFunction *descr = static_cast<RASLFunction*>(callee);
-          functions = descr->functions;
+          functions = descr->functions->items;
           idents = descr->idents;
           numbers = descr->numbers;
           strings = descr->strings;
@@ -3968,15 +4947,15 @@ refalrts::FnResult refalrts::vm::main_loop() {
         break;
 
       case icIssueMemory:
-        context.reserve(rasl->val1);
+        context.reserve(val1);
         break;
 
       case icReserveBacktrackStack:
-        open_e_stack.reserve(rasl->val1);
+        open_e_stack.reserve(val1);
         break;
 
       case icOnFailGoTo:
-        open_e_stack[stack_top++] = rasl + rasl->val1 + 1;
+        open_e_stack[stack_top++] = rasl + val1 + val2 * 256 + 1;
         break;
 
       case icProfilerStopSentence:
@@ -3997,187 +4976,186 @@ refalrts::FnResult refalrts::vm::main_loop() {
         break;
 
       case icCharLeft:
-        if (! char_left(static_cast<char>(rasl->val2), bb, be)) {
+        if (! char_left(static_cast<char>(val2), bb, be)) {
           MATCH_FAIL;
         }
         break;
 
       case icCharRight:
-        if (! char_right(static_cast<char>(rasl->val2), bb, be)) {
+        if (! char_right(static_cast<char>(val2), bb, be)) {
           MATCH_FAIL;
         }
         break;
 
       case icCharTerm:
-        if (! char_term(static_cast<char>(rasl->val2), bb)) {
+        if (! char_term(static_cast<char>(val2), bb)) {
           MATCH_FAIL;
         }
         break;
 
-      case icCharLeftSave:
-        save_pos = char_left(static_cast<char>(rasl->val2), bb, be);
+      case icCharSaveLeft:
+        save_pos = char_left(static_cast<char>(val2), bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
-      case icCharRightSave:
-        save_pos = char_right(static_cast<char>(rasl->val2), bb, be);
+      case icCharSaveRight:
+        save_pos = char_right(static_cast<char>(val2), bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
-      case icNumLeft:
-        if (! number_left(static_cast<RefalNumber>(rasl->val2), bb, be)) {
+      case icNumberLeft:
+        if (! number_left(static_cast<RefalNumber>(val2), bb, be)) {
           MATCH_FAIL;
         }
         break;
 
-      case icNumRight:
-        if (! number_right(static_cast<RefalNumber>(rasl->val2), bb, be)) {
+      case icNumberRight:
+        if (! number_right(static_cast<RefalNumber>(val2), bb, be)) {
           MATCH_FAIL;
         }
         break;
 
-      case icNumTerm:
-        if (! number_term(static_cast<RefalNumber>(rasl->val2), bb)) {
+      case icNumberTerm:
+        if (! number_term(static_cast<RefalNumber>(val2), bb)) {
           MATCH_FAIL;
         }
         break;
 
-      case icNumLeftSave:
-        save_pos = number_left(static_cast<RefalNumber>(rasl->val2), bb, be);
+      case icNumberSaveLeft:
+        save_pos = number_left(static_cast<RefalNumber>(val2), bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
-      case icNumRightSave:
-        save_pos =
-          number_right(static_cast<RefalNumber>(rasl->val2), bb, be);
+      case icNumberSaveRight:
+        save_pos = number_right(static_cast<RefalNumber>(val2), bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
       case icHugeNumLeft:
-        if (! number_left(numbers[rasl->val2], bb, be)) {
+        if (! number_left(numbers[val2], bb, be)) {
           MATCH_FAIL;
         }
         break;
 
       case icHugeNumRight:
-        if (! number_right(numbers[rasl->val2], bb, be)) {
+        if (! number_right(numbers[val2], bb, be)) {
           MATCH_FAIL;
         }
         break;
 
       case icHugeNumTerm:
-        if (! number_term(numbers[rasl->val2], bb)) {
+        if (! number_term(numbers[val2], bb)) {
           MATCH_FAIL;
         }
         break;
 
-      case icHugeNumLeftSave:
-        save_pos = number_left(numbers[rasl->val2], bb, be);
+      case icHugeNumSaveLeft:
+        save_pos = number_left(numbers[val2], bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
-      case icHugeNumRightSave:
-        save_pos = number_right(numbers[rasl->val2], bb, be);
+      case icHugeNumSaveRight:
+        save_pos = number_right(numbers[val2], bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
-      case icFuncLeft:
-        if (! function_left(functions[rasl->val2], bb, be)) {
+      case icNameLeft:
+        if (! function_left(functions[val2].function, bb, be)) {
           MATCH_FAIL;
         }
         break;
 
-      case icFuncRight:
-        if (! function_right(functions[rasl->val2], bb, be)) {
+      case icNameRight:
+        if (! function_right(functions[val2].function, bb, be)) {
           MATCH_FAIL;
         }
         break;
 
-      case icFuncTerm:
-        if (! function_term(functions[rasl->val2], bb)) {
+      case icNameTerm:
+        if (! function_term(functions[val2].function, bb)) {
           MATCH_FAIL;
         }
         break;
 
-      case icFuncLeftSave:
-        save_pos = function_left(functions[rasl->val2], bb, be);
+      case icNameSaveLeft:
+        save_pos = function_left(functions[val2].function, bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
-      case icFuncRightSave:
-        save_pos = function_right(functions[rasl->val2], bb, be);
+      case icNameSaveRight:
+        save_pos = function_right(functions[val2].function, bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
       case icIdentLeft:
-        if (! ident_left(idents[rasl->val2], bb, be)) {
+        if (! ident_left(idents[val2], bb, be)) {
           MATCH_FAIL;
         }
         break;
 
       case icIdentRight:
-        if (! ident_right(idents[rasl->val2], bb, be)) {
+        if (! ident_right(idents[val2], bb, be)) {
           MATCH_FAIL;
         }
         break;
 
       case icIdentTerm:
-        if (! ident_term(idents[rasl->val2], bb)) {
+        if (! ident_term(idents[val2], bb)) {
           MATCH_FAIL;
         }
         break;
 
-      case icIdentLeftSave:
-        save_pos = ident_left(idents[rasl->val2], bb, be);
+      case icIdentSaveLeft:
+        save_pos = ident_left(idents[val2], bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
-      case icIdentRightSave:
-        save_pos = ident_right(idents[rasl->val2], bb, be);
+      case icIdentSaveRight:
+        save_pos = ident_right(idents[val2], bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
-      case icBracketLeft:
+      case icBracketsLeft:
         if (! brackets_left(res_b, res_e, bb, be)) {
           MATCH_FAIL;
         }
         break;
 
-      case icBracketRight:
+      case icBracketsRight:
         if (! brackets_right(res_b, res_e, bb, be)) {
           MATCH_FAIL;
         }
         break;
 
-      case icBracketTerm:
+      case icBracketsTerm:
         if (! brackets_term(res_b, res_e, bb)) {
           MATCH_FAIL;
         }
         break;
 
-      case icBracketLeftSave:
+      case icBracketsSaveLeft:
         {
-          int inner = rasl->val2;
+          int inner = val2;
           context[inner + 2] =
             brackets_left(context[inner], context[inner + 1], bb, be);
           if (! context[inner + 2]) {
@@ -4187,9 +5165,9 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icBracketRightSave:
+      case icBracketsSaveRight:
         {
-          int inner = rasl->val2;
+          int inner = val2;
           context[inner + 2] =
             brackets_right(context[inner], context[inner + 1], bb, be);
           if (! context[inner + 2]) {
@@ -4200,27 +5178,27 @@ refalrts::FnResult refalrts::vm::main_loop() {
         break;
 
       case icADTLeft:
-        if (! adt_left(res_b, res_e, functions[rasl->val1], bb, be)) {
+        if (! adt_left(res_b, res_e, functions[val1].function, bb, be)) {
           MATCH_FAIL;
         }
         break;
 
       case icADTRight:
-        if (! adt_right(res_b, res_e, functions[rasl->val1], bb, be)) {
+        if (! adt_right(res_b, res_e, functions[val1].function, bb, be)) {
           MATCH_FAIL;
         }
         break;
 
       case icADTTerm:
-        if (! adt_term(res_b, res_e, functions[rasl->val1], bb)) {
+        if (! adt_term(res_b, res_e, functions[val1].function, bb)) {
           MATCH_FAIL;
         }
         break;
 
-      case icADTLeftSave:
+      case icADTSaveLeft:
         {
-          int inner = rasl->val2;
-          const RefalFunction *tag = functions[rasl->val1];
+          int inner = val2;
+          const RefalFunction *tag = functions[val1].function;
           context[inner + 2] =
             adt_left(context[inner], context[inner + 1], tag, bb, be);
           if (! context[inner + 2]) {
@@ -4232,10 +5210,10 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icADTRightSave:
+      case icADTSaveRight:
         {
-          int inner = rasl->val2;
-          const RefalFunction *tag = functions[rasl->val1];
+          int inner = val2;
+          const RefalFunction *tag = functions[val1].function;
           context[inner + 2] =
             adt_right(context[inner], context[inner + 1], tag, bb, be);
           if (! context[inner + 2]) {
@@ -4247,10 +5225,10 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icADTTermSave:
+      case icADTSaveTerm:
         {
-          int inner = rasl->val2;
-          const RefalFunction *tag = functions[rasl->val1];
+          int inner = val2;
+          const RefalFunction *tag = functions[val1].function;
           context[inner + 2] =
             adt_term(context[inner], context[inner + 1], tag, bb);
           if (! context[inner + 2]) {
@@ -4260,7 +5238,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         break;
 
       case icCallSaveLeft:
-        context[rasl->val2 + 2] = call_left(res_b, res_e, bb, be);
+        context[val2 + 2] = call_left(res_b, res_e, bb, be);
         break;
 
       case icEmpty:
@@ -4276,14 +5254,14 @@ refalrts::FnResult refalrts::vm::main_loop() {
         break;
 
       case icsVarLeft:
-        index = rasl->val2;
+        index = val2;
         if (! svar_left(context[index], bb, be)) {
           MATCH_FAIL;
         }
         break;
 
       case icsVarRight:
-        index = rasl->val2;
+        index = val2;
         if (! svar_right(context[index], bb, be)) {
           MATCH_FAIL;
         }
@@ -4296,39 +5274,39 @@ refalrts::FnResult refalrts::vm::main_loop() {
         break;
 
       case ictVarLeft:
-        index = rasl->val2;
+        index = val2;
         if (! tvar_left(context[index], bb, be)) {
           MATCH_FAIL;
         }
         break;
 
       case ictVarRight:
-        index = rasl->val2;
+        index = val2;
         if (! tvar_right(context[index], bb, be)) {
           MATCH_FAIL;
         }
         break;
 
-      case ictVarLeftSave:
-        index = rasl->val2;
+      case ictVarSaveLeft:
+        index = val2;
         context[index + 1] = tvar_left(context[index], bb, be);
         if (! context[index + 1]) {
           MATCH_FAIL;
         }
         break;
 
-      case ictVarRightSave:
-        index = rasl->val2;
+      case ictVarSaveRight:
+        index = val2;
         context[index + 1] = tvar_right(context[index], bb, be);
         if (! context[index + 1]) {
           MATCH_FAIL;
         }
         break;
 
-      case iceRepeatLeft:
+      case iceRepeatedLeft:
         {
-          int index = rasl->val1;
-          int sample = rasl->val2;
+          int index = val1;
+          int sample = val2;
           Iter &evar_b = context[index];
           Iter &evar_e = context[index + 1];
           Iter &sample_b = context[sample];
@@ -4341,10 +5319,10 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case iceRepeatRight:
+      case iceRepeatedRight:
         {
-          int index = rasl->val1;
-          int sample = rasl->val2;
+          int index = val1;
+          int sample = val2;
           Iter &evar_b = context[index];
           Iter &evar_e = context[index + 1];
           Iter &sample_b = context[sample];
@@ -4357,40 +5335,40 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icsRepeatLeft:
-      case ictRepeatLeft:
+      case icsRepeatedLeft:
+      case ictRepeatedLeft:
         {
-          int index = rasl->val1;
-          int sample = rasl->val2;
+          int index = val1;
+          int sample = val2;
           if (! repeated_stvar_left(context[index], context[sample], bb, be)) {
             MATCH_FAIL;
           }
         }
         break;
 
-      case icsRepeatRight:
-      case ictRepeatRight:
+      case icsRepeatedRight:
+      case ictRepeatedRight:
         {
-          int index = rasl->val1;
-          int sample = rasl->val2;
+          int index = val1;
+          int sample = val2;
           if (! repeated_stvar_right(context[index], context[sample], bb, be)) {
             MATCH_FAIL;
           }
         }
         break;
 
-      case icsRepeatTerm:
-      case ictRepeatTerm:
-        assert(rasl->bracket == rasl->val1);
-        if (! repeated_stvar_term(context[rasl->val2], bb)) {
+      case icsRepeatedTerm:
+      case ictRepeatedTerm:
+        assert(bracket == val1);
+        if (! repeated_stvar_term(context[val2], bb)) {
           MATCH_FAIL;
         }
         break;
 
-      case ictRepeatLeftSave:
+      case ictRepeatedSaveLeft:
         {
-          int index = rasl->val1;
-          int sample = rasl->val2;
+          int index = val1;
+          int sample = val2;
 
           context[index + 1] =
             repeated_stvar_left(context[index], context[sample], bb, be);
@@ -4400,10 +5378,10 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case ictRepeatRightSave:
+      case ictRepeatedSaveRight:
         {
-          int index = rasl->val1;
-          int sample = rasl->val2;
+          int index = val1;
+          int sample = val2;
 
           context[index + 1] =
             repeated_stvar_right(context[index], context[sample], bb, be);
@@ -4440,13 +5418,16 @@ refalrts::FnResult refalrts::vm::main_loop() {
 #endif  // ifdef ENABLE_DEBUGGER
         break;
 
-      case icEmptyResult:
+      case icResetAllocator:
 #ifdef ENABLE_DEBUGGER
         if (debugger.handle_function_call(begin, end, callee) == cExit) {
           return cExit;
         }
 #endif  // ifdef ENABLE_DEBUGGER
         reset_allocator();
+        break;
+
+      case icSetResArgBegin:
         res = begin;
         break;
 
@@ -4457,27 +5438,28 @@ refalrts::FnResult refalrts::vm::main_loop() {
 
       case icSetRes:
         trash_prev = begin->prev;
-        res = context[rasl->bracket];
+        res = context[bracket];
         break;
 
       case icCopyEVar:
         {
-          unsigned int target = rasl->val1;
-          unsigned int sample = rasl->val2;
+          unsigned int target = val1;
+          unsigned int sample = val2;
           if (
             ! copy_evar(
               context[target], context[target + 1],
               context[sample], context[sample + 1]
             )
-          )
+          ) {
             return cNoMemory;
+          }
         }
         break;
 
       case icCopySTVar:
         {
-          unsigned int target = rasl->val1;
-          unsigned int sample = rasl->val2;
+          unsigned int target = val1;
+          unsigned int sample = val2;
           if (! copy_stvar(context[target], context[sample])) {
             return cNoMemory;
           }
@@ -4485,40 +5467,40 @@ refalrts::FnResult refalrts::vm::main_loop() {
         break;
 
       case icReinitSVar:
-        reinit_svar(elem, context[rasl->val2]);
+        reinit_svar(elem, context[val2]);
         break;
 
-      case icAllocChar:
-        if (! alloc_char(elem, static_cast<char>(rasl->val2))) {
+      case icAllocateChar:
+        if (! alloc_char(elem, static_cast<char>(val2))) {
           return cNoMemory;
         }
         break;
 
-      case icAllocFunc:
-        if (! alloc_name(elem, functions[rasl->val2])) {
+      case icAllocateName:
+        if (! alloc_name(elem, functions[val2].function)) {
           return cNoMemory;
         }
         break;
 
-      case icAllocInt:
-        if (! alloc_number(elem, static_cast<RefalNumber>(rasl->val2))) {
+      case icAllocateNumber:
+        if (! alloc_number(elem, static_cast<RefalNumber>(val2))) {
           return cNoMemory;
         }
         break;
 
-      case icAllocHugeInt:
-        if (! alloc_number(elem, numbers[rasl->val2])) {
+      case icAllocateHugeNumber:
+        if (! alloc_number(elem, numbers[val2])) {
           return cNoMemory;
         }
         break;
 
-      case icAllocIdent:
-        if (! alloc_ident(elem, idents[rasl->val2])) {
+      case icAllocateIdent:
+        if (! alloc_ident(elem, idents[val2])) {
           return cNoMemory;
         }
         break;
 
-      case icAllocBracket:
+      case icAllocateBracket:
         {
           static bool (*const allocator[])(Iter& res) = {
             alloc_open_adt,
@@ -4529,43 +5511,55 @@ refalrts::FnResult refalrts::vm::main_loop() {
             alloc_close_call
           };
 
-          assert(rasl->val2 <= ibCloseCall);
-          if (! allocator[rasl->val2](elem)) {
+          assert(val2 <= ibCloseCall);
+          if (! allocator[val2](elem)) {
             return cNoMemory;
           }
         }
         break;
 
-      case icAllocString:
+      case icAllocateString:
         {
           if (
             ! alloc_chars(
-              bb, be,
-              strings[rasl->val2].string, strings[rasl->val2].string_len
+              bb, be, strings[val2].string, strings[val2].string_len
             )
-          )
+          ) {
             return cNoMemory;
+          }
+        }
+        break;
+
+      case icAllocateClosureHead:
+        if (! alloc_closure_head(elem)) {
+          return cNoMemory;
+        }
+        break;
+
+      case icAllocateUnwrappedClosure:
+        if (! alloc_unwrapped_closure(elem, context[val2])) {
+          return cNoMemory;
         }
         break;
 
       case icReinitChar:
-        reinit_char(elem, static_cast<char>(rasl->val2));
+        reinit_char(elem, static_cast<char>(val2));
         break;
 
-      case icReinitFunc:
-        reinit_name(elem, functions[rasl->val2]);
+      case icReinitName:
+        reinit_name(elem, functions[val2].function);
         break;
 
-      case icReinitInt:
-        reinit_number(elem, static_cast<RefalNumber>(rasl->val2));
+      case icReinitNumber:
+        reinit_number(elem, static_cast<RefalNumber>(val2));
         break;
 
-      case icReinitHugeInt:
-        reinit_number(elem, numbers[rasl->val2]);
+      case icReinitHugeNumber:
+        reinit_number(elem, numbers[val2]);
         break;
 
       case icReinitIdent:
-        reinit_ident(elem, idents[rasl->val2]);
+        reinit_ident(elem, idents[val2]);
         break;
 
       case icReinitBracket:
@@ -4578,43 +5572,41 @@ refalrts::FnResult refalrts::vm::main_loop() {
             reinit_close_bracket,
             reinit_close_call
           };
-          assert(rasl->val2 <= ibCloseCall);
-          reiniter[rasl->val2](elem);
+          assert(val2 <= ibCloseCall);
+          reiniter[val2](elem);
         }
         break;
 
       case icReinitClosureHead:
-        elem->tag = refalrts::cDataClosureHead;
-        elem->number_info = 1;
+        reinit_closure_head(elem);
         break;
 
       case icReinitUnwrappedClosure:
-        elem->tag = cDataUnwrappedClosure;
-        elem->link_info = context[rasl->val1];
+        reinit_unwrapped_closure(elem, context[val2]);
         break;
 
       case icUpdateChar:
-        update_char(elem, static_cast<char>(rasl->val2));
+        update_char(elem, static_cast<char>(val2));
         break;
 
-      case icUpdateFunc:
-        update_name(elem, functions[rasl->val2]);
+      case icUpdateName:
+        update_name(elem, functions[val2].function);
         break;
 
-      case icUpdateInt:
-        update_number(elem, static_cast<RefalNumber>(rasl->val2));
+      case icUpdateNumber:
+        update_number(elem, static_cast<RefalNumber>(val2));
         break;
 
-      case icUpdateHugeInt:
-        update_number(elem, numbers[rasl->val2]);
+      case icUpdateHugeNumber:
+        update_number(elem, numbers[val2]);
         break;
 
       case icUpdateIdent:
-        update_ident(elem, idents[rasl->val2]);
+        update_ident(elem, idents[val2]);
         break;
 
       case icLinkBrackets:
-        link_brackets(context[rasl->val1], context[rasl->val2]);
+        link_brackets(context[val1], context[val2]);
         break;
 
       case icPushStack:
@@ -4638,7 +5630,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         break;
 
       case icSpliceTile:
-        res = splice_evar(res, context[rasl->val1], context[rasl->val2]);
+        res = splice_evar(res, context[val1], context[val2]);
         break;
 
       case icSpliceToFreeList:
@@ -4739,7 +5731,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         break;
 
       case icTrash:
-        splice_to_freelist_open(context[rasl->bracket], res);
+        splice_to_freelist_open(context[bracket], res);
         break;
 
       case icFail:
@@ -4799,7 +5791,21 @@ refalrts::FnResult refalrts::vm::main_loop() {
         wrap_closure(elem);
         break;
 
-      case icEnd:
+      case icScale:
+        {
+          val1 *= 256;
+          val2 *= 256;
+          bracket *= 256;
+
+          ++rasl;
+
+          val1 += rasl->val1;
+          val2 += rasl->val2;
+          bracket += rasl->bracket;
+
+          goto JUMP_FROM_SCALE;
+        }
+
       default:
         refalrts_switch_default_violation(rasl->cmd);
     }
@@ -4808,7 +5814,6 @@ refalrts::FnResult refalrts::vm::main_loop() {
 }
 
 
-refalrts::RefalFunction *refalrts::functions[] = { 0 };
 const refalrts::RefalIdentifier refalrts::idents[] = { 0 };
 const refalrts::RefalNumber refalrts::numbers[] = { 0 };
 const refalrts::StringItem refalrts::strings[] = { { "", 0 } };
@@ -4821,6 +5826,55 @@ void refalrts::SwitchDefaultViolation::print() {
     stderr, "%s:%d:INTERNAL ERROR: switch value %s == %ld not handled\n",
     m_filename, m_line, m_bad_expr, m_bad_switch_value
   );
+}
+
+//==============================================================================
+
+namespace refalrts {
+
+namespace at_exit_ns {
+
+struct AtExitListNode *g_at_exit_list = 0;
+
+struct AtExitListNode {
+  AtExitCB callback;
+  void *data;
+  AtExitListNode *next;
+
+  AtExitListNode(AtExitCB callback, void *data)
+    : callback(callback), data(data), next(g_at_exit_list)
+    {
+      g_at_exit_list = this;
+    }
+
+  ~AtExitListNode() {
+    callback(data);
+  }
+};
+
+void perform_at_exit() {
+  while (g_at_exit_list != 0) {
+    AtExitListNode *current = g_at_exit_list;
+
+    g_at_exit_list = g_at_exit_list->next;
+
+    delete current;
+  }
+}
+
+};  // namespace at_exit_ns
+
+};  // namespace refalrts
+
+void refalrts::at_exit(refalrts::AtExitCB callback, void *data) {
+  at_exit_ns::AtExitListNode *p = at_exit_ns::g_at_exit_list;
+  while (p != 0 && (p->callback != callback || p->data != data)) {
+    p = p->next;
+  }
+
+  if (p == 0) {
+    new at_exit_ns::AtExitListNode(callback, data);
+  }
 }
 
 //==============================================================================
@@ -4842,6 +5896,17 @@ int main(int argc, char **argv) {
 
   refalrts::FnResult res;
   try {
+    refalrts::dynamic::enumerate_blocks();
+
+    unsigned unresolved = refalrts::dynamic::find_unresolved_externals();
+    if (unresolved > 0) {
+      refalrts::dynamic::free_idents_table();
+      refalrts::dynamic::free_funcs_table();
+      refalrts::dynamic::cleanup_module();
+      fprintf(stderr, "Found %u unresolved externals\n", unresolved);
+      return 157;
+    }
+
     refalrts::profiler::start_profiler();
     res = refalrts::vm::run();
     fflush(stderr);
@@ -4857,9 +5922,13 @@ int main(int argc, char **argv) {
     return 153;
   }
 
+  refalrts::at_exit_ns::perform_at_exit();
   refalrts::profiler::end_profiler();
   refalrts::vm::free_view_field();
   refalrts::allocator::free_memory();
+  refalrts::dynamic::free_idents_table();
+  refalrts::dynamic::free_funcs_table();
+  refalrts::dynamic::cleanup_module();
 
   fflush(stdout);
 
@@ -4879,8 +5948,11 @@ int main(int argc, char **argv) {
     case refalrts::cStepLimit:
       return 103;
 
+    case refalrts::cIdentTableLimit:
+      return 104;
+
     default:
       fprintf(stderr, "INTERNAL ERROR: check switch in main (res = %d)\n", res);
-      return 105;
+      return 155;
   }
 }

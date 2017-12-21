@@ -16,33 +16,43 @@ $EXTERN CollectStrings, IncVarOffset, PrintVar;
   e.MarkedPattern — не используется
 */
 $ENTRY GenResult-Simple {
-  s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result =
-    /* e.MarkedPattern не используется */
-    <Fetch
-      <DoGenResult
-        (
-          <Map
-            {
-              (s.Mode (e.Index) e.Offsets) = (s.Mode (e.Index) () e.Offsets);
-            }
-            e.PatternVars
-          >
-        )
-        (/* alloc commands */) (/* other commands */)
-        s.ContextOffset // счётчик новых элементов
-        <CollectStrings e.Result>
-      >
-      {
+  s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
+    = /* e.MarkedPattern не используется */
+      <GenResult s.ContextOffset (e.PatternVars) e.Result>
+    : {
+        s.ContextOffset^ (e.CommonVars) /* нет команд генерации результата */ =
+          s.ContextOffset
+          <MakeVariableCommentTable e.CommonVars>
+          (#CmdSpliceToFreeList)
+          (#CmdNextStep);
+
         s.ContextOffset^ (e.CommonVars) e.ResultCommands =
           s.ContextOffset
           <MakeVariableCommentTable e.CommonVars>
-          (#CmdEmptyResult)
+          (#CmdResetAllocator)
+          (#CmdSetRes #ARG-BEGIN)
           e.ResultCommands
           (#CmdUseRes)
           (#CmdSpliceToFreeList)
           (#CmdNextStep);
-      }
-    >;
+      };
+}
+
+GenResult {
+  s.ContextOffset (e.PatternVars) e.Result
+    = <Map
+        {
+          (s.Mode (e.Index) e.Offsets) = (s.Mode (e.Index) () e.Offsets);
+        }
+        e.PatternVars
+      >
+    : e.PatternVars^
+    = <DoGenResult
+        (e.PatternVars)
+        (/* alloc commands */) (/* other commands */)
+        s.ContextOffset // счётчик новых элементов
+        <CollectStrings e.Result>
+      >;
 }
 
 DoGenResult {
@@ -50,7 +60,7 @@ DoGenResult {
   (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (#TkChar s.Value) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElChar s.Value))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElChar s.Value))
       ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.Result
     >;
@@ -58,7 +68,7 @@ DoGenResult {
   (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (#TkName e.Name) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElName e.Name))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElName e.Name))
       ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.Result
     >;
@@ -67,7 +77,7 @@ DoGenResult {
   s.Counter (#TkNumber s.Number) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElNumber s.Number))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElNumber s.Number))
       ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.Result
     >;
@@ -76,7 +86,7 @@ DoGenResult {
   s.Counter (#TkIdentifier e.Name) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElIdent e.Name))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElIdent e.Name))
       ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.Result
     >;
@@ -85,7 +95,7 @@ DoGenResult {
   s.Counter (#TkString e.Chars) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElString e.Chars))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElString e.Chars))
       ((#CmdInsertRange s.Counter) e.Commands)
       <Add s.Counter 2> e.Result
     >;
@@ -97,7 +107,7 @@ DoGenResult {
   s.Counter (#Brackets e.InBrackets) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElOpenBracket))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElOpenBracket))
       ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.InBrackets (#TkCloseBracket s.Counter) e.Result
     >;
@@ -106,20 +116,29 @@ DoGenResult {
   s.Counter (#CallBrackets e.InBrackets) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElOpenCall))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElOpenCall))
       ((#CmdInsertElem s.Counter) e.Commands)
-      <Inc s.Counter> e.InBrackets (#CloseCall s.Counter) e.Result
+      <Inc s.Counter> e.InBrackets (#TkCloseCall s.Counter) e.Result
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
   s.Counter (#ADT-Brackets (e.Name) e.InBrackets) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElOpenADT))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElOpenADT))
       ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter>
       (#TkName e.Name) e.InBrackets (#TkCloseADT s.Counter) e.Result
     >;
+
+  (e.Vars) (e.AllocCommands) (e.Commands)
+  s.Counter (#ClosureBrackets e.InBrackets) e.Result
+    = <DoGenResult
+        (e.Vars)
+        (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElClosureHead))
+        ((#CmdInsertElem s.Counter) e.Commands)
+        <Inc s.Counter> e.InBrackets (#TkUnwrappedClosure s.Counter) e.Result
+      >;
 
   /*
     Закрывающие скобки надо обрабатывать особым образом.
@@ -129,7 +148,7 @@ DoGenResult {
   s.Counter (#TkCloseBracket s.OpenCounter) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElCloseBracket))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElCloseBracket))
       (
         (#CmdLinkBrackets s.OpenCounter s.Counter)
         (#CmdInsertElem s.Counter)
@@ -142,7 +161,7 @@ DoGenResult {
   s.Counter (#TkCloseADT s.OpenCounter) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElCloseADT))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElCloseADT))
       (
         (#CmdLinkBrackets s.OpenCounter s.Counter)
         (#CmdInsertElem s.Counter)
@@ -152,10 +171,10 @@ DoGenResult {
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#CloseCall s.OpenCounter) e.Result =
+  s.Counter (#TkCloseCall s.OpenCounter) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElCloseCall))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElCloseCall))
       (
         (#CmdPushStack s.Counter)
         (#CmdPushStack s.OpenCounter)
@@ -164,6 +183,22 @@ DoGenResult {
       )
       <Inc s.Counter> e.Result
     >;
+
+  (e.Vars) (e.AllocCommands) (e.Commands)
+  s.Counter (#TkUnwrappedClosure s.HeadCounter) e.Result
+    = <DoGenResult
+        (e.Vars)
+        (
+          e.AllocCommands
+          (#CmdCreateElem #Allocate s.Counter #ElUnwrappedClosure s.HeadCounter)
+        )
+        (
+          (#CmdInsertElem s.Counter)
+          e.Commands
+          (#CmdWrapClosure s.Counter)
+        )
+        <Inc s.Counter> e.Result
+      >;
 
   // Обработка переменных
   (

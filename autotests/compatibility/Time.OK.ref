@@ -1,0 +1,26 @@
+$ENTRY Go {
+  = <Check-Format-Time <Time>>
+    <Eq (14) <Step>>;
+}
+
+Check-Format-Time {
+  e.Week ' ' e.Month '  ' e.Day ' ' e.H ':' e.M ':' e.S ' ' e.Year
+    = <C3p e.Week> <C3p e.Month> <Day e.Day>
+      <C2 e.H> <C2 e.M> <C2 e.S> <C4p e.Year>;
+
+  e.Week ' ' e.Month ' ' e.Day ' ' e.H ':' e.M ':' e.S ' ' e.Year
+    = <C3p e.Week> <C3p e.Month> <Day e.Day>
+      <C2 e.H> <C2 e.M> <C2 e.S> <C4p e.Year>;
+}
+
+C3p { s.1 s.2 s.3 = <Prout s.1 s.2 s.3>; }
+
+Day {
+  s.1 s.2 = <Prout s.1 s.2>;
+  s.2 = <Prout '0' s.2>;
+}
+
+C2 { s.1 s.2 = ; }
+C4p { s.1 s.2 s.3 s.4 = <Prout s.1 s.2 s.3 s.4>; }
+
+Eq { (e.X) e.X = <Prout e.X>; }

@@ -1,0 +1,3 @@
+$ENTRY Go {
+  e.X, (e.X) : () , e.X;
+}

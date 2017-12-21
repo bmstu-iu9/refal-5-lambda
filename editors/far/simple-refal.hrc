@@ -83,6 +83,8 @@
         <word name="$ENUM"/>
         <word name="$EENUM"/>
         <word name="$EASTEREGG"/>
+        <word name="$INCLUDE"/>
+        <word name="$SCOPEID"/>
       </keywords>
       <keywords region="simpleRefalSymbol">
         <symb name="="/>
@@ -107,7 +109,7 @@
 
       <regexp match='/\b[stev]\.[\w_\-\d]+\M(\W|$)/'
               region0="simpleRefalVariable"/>
-      <regexp match='/\b*[A-Z][\w_\-\d]*\M(\W|$)/'
+      <regexp match='/\b*[A-Za-z_][\w_\-\d]*\M(\W|$)/'
               region0="simpleRefalFunction"/>
 
       <block start="/'/" end="/'|$/"

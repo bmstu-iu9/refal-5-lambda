@@ -1,0 +1,9 @@
+$ENTRY Go {
+  = <Eq <Test () 'ABC'> (() ('ABC'))>;
+}
+
+Eq { e.Equal (e.Equal) = ; }
+
+Test {
+  (e.Repeated) e.Repeated e.Repeated e.Tail = (e.Repeated) (e.Tail);
+}

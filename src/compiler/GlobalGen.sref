@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN UnBracket, Map, Fetch, Seq, Inc, Dec, Compare, Min, Max;
+$EXTERN UnBracket, Map, Fetch, Seq, Inc, Dec, TermCompare, Min, Max;
 
 //FROM Library
 $EXTERN Add, Sub;
@@ -90,7 +90,7 @@ InList {
 
   (e.Elem) (t.ListElem e.List) =
     <Fetch
-      <Compare (t.ListElem) (e.Elem)>
+      <TermCompare (t.ListElem) (e.Elem)>
       {
         '=' = 1 ();
         s.Else = <InList (e.Elem) (e.List)>;
@@ -186,9 +186,9 @@ ComputePossibleClasses-Aux {
 
   (s.K s.M s.N) =
     <Fetch
-      <Compare s.K <Add s.M s.N>>
-      <Compare s.K s.M>
-      <Compare s.K s.N>
+      <TermCompare s.K <Add s.M s.N>>
+      <TermCompare s.K s.M>
+      <TermCompare s.K s.N>
       {
         '>' e.Tail = (s.M s.N);
         '=' e.Tail = (s.M s.N);
@@ -216,7 +216,7 @@ ComputePossibleClasses-Aux {
 GetClasses {
   s.M s.MaxM s.MplusN =
     <Fetch
-      <Compare s.M s.MaxM>
+      <TermCompare s.M s.MaxM>
         {
           '>' = ;
           s.Else = (s.M <Sub s.MplusN s.M>) <GetClasses <Inc s.M> s.MaxM s.MplusN>;
@@ -354,7 +354,7 @@ CalcComplexity {
 GetComplex {
     (s.CurComplexity e.CurBody)(s.Complexity e.Body) e.Tail =
       <Fetch
-        <Compare s.CurComplexity s.Complexity>
+        <TermCompare s.CurComplexity s.Complexity>
         {
           '>' = <GetComplex (s.CurComplexity e.CurBody) e.Tail>;
           s.Any = <GetComplex (s.Complexity e.Body) e.Tail>;

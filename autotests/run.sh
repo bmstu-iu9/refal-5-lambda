@@ -1,17 +1,40 @@
 #!/bin/bash
-source ../c-plus-plus.conf.sh
+source ../scripts/load-config.sh .. || exit 1
+source ../scripts/platform-specific.sh
+
+LIBDIR=../src/srlib
+
+prepare_prefix() {
+  if [ ! -e _test_prefix.exe-prefix ]; then
+    echo Prepare common prefix...
+    ../bin/srefc-core -o _test_prefix.exe-prefix \
+      "${COMMON_SRFLAGS[@]}" $SRFLAGS_NAT 2>__error.txt
+      if [ $? -ge 100 ] || [ ! -e _test_prefix.exe-prefix ]; then
+        echo "CAN'T CREATE COMMON PREFIX, SEE __error.txt"
+        exit 1
+      fi
+    echo
+  fi
+}
 
 run_test_all_modes() {
+  if ! grep '%%' $1 > /dev/null; then
+    prepare_prefix
+    SRFLAGS_PLUS="$SRFLAGS_PREF"
+  else
+    SRFLAGS_PLUS="$SRFLAGS_NAT"
+  fi
   SRFLAGS= $2 $1
   SRFLAGS=--markup-context $2 $1
   SRFLAGS=-OP $2 $1
   SRFLAGS=-OR $2 $1
   SRFLAGS=-OPR $2 $1
-  SRFLAGS=--gen=interp $2 $1
-  SRFLAGS='-OP --gen=interp' $2 $1
-  SRFLAGS='-OR --gen=interp' $2 $1
-  SRFLAGS='-OPR --gen=interp' $2 $1
-  SRFLAGS= CPPLINE="$CPPLINE -DENABLE_DEBUGGER" $2 $1
+  SRFLAGS_PLUS="$SRFLAGS_NAT"
+  SRFLAGS=-Od $2 $1
+  SRFLAGS=-OdP $2 $1
+  SRFLAGS=-OdR $2 $1
+  SRFLAGS=-OdPR $2 $1
+  SRFLAGS=-F-DENABLE_DEBUGGER $2 $1
 }
 
 run_test_aux() {
@@ -21,25 +44,20 @@ run_test_aux() {
 run_test_aux_with_flags() {
   echo Passing $1 \(flags $SRFLAGS\)...
   SREF=$1
-  CPP=${SREF%%.sref}.cpp
-  EXE=${SREF%%.sref}
+  RASL=${SREF%.*}.rasl
+  NATCPP=${SREF%.*}.cpp
+  EXE=${SREF%.*}$(platform_exe_suffix)
 
-  ../bin/srefc-core $SREF $SRFLAGS 2>__error.txt
-  if [ $? -ge 100 ]; then
+  ../bin/srefc-core $SREF -o $EXE "${COMMON_SRFLAGS[@]}" \
+    $SRFLAGS $SRFLAGS_PLUS 2>__error.txt
+  if [ $? -ge 100 ] || [ ! -e $EXE ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit 1
   fi
   rm __error.txt
-  if [ ! -e $CPP ]; then
-    echo COMPILATION FAILED
-    exit 1
-  fi
 
-  $CPPLINE $TEST_CPP_FLAGS -o$EXE $CPP ../srlib/refalrts.cpp
-
-  if [ $? -gt 0 ]; then
-    echo COMPILATION FAILED
-    exit 1
+  if [ ! -e $NATCPP ]; then
+    NATCPP=
   fi
 
   ./$EXE
@@ -48,7 +66,7 @@ run_test_aux_with_flags() {
     exit 1
   fi
 
-  rm $CPP $EXE
+  rm $RASL $NATCPP $EXE
   [ -e __dump.txt ] && rm __dump.txt
 
   echo
@@ -57,18 +75,18 @@ run_test_aux_with_flags() {
 run_test_aux.BAD-SYNTAX() {
   echo Passing $1 \(syntax error recovering\)...
   SREF=$1
-  CPP=${SREF%%.sref}.cpp
-  EXE=${SREF%%.sref}
+  RASL=${SREF%.*}.rasl
+  EXE=${SREF%.*}$(platform_exe_suffix)
 
-  ../bin/srefc-core $SRFLAGS $SREF 2>__error.txt
+  ../bin/srefc-core --prelude=test-prelude.srefi -C $SRFLAGS $SREF 2>__error.txt
   if [ $? -ge 100 ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit 1
   fi
   rm __error.txt
-  if [ -e $CPP ]; then
+  if [ -e $RASL ]; then
     echo COMPILATION SUCCESSED, BUT EXPECTED SYNTAX ERROR
-    rm $CPP
+    rm $RASL
     exit 1
   fi
 
@@ -83,25 +101,20 @@ run_test_aux.FAILURE() {
 run_test_aux_with_flags.FAILURE() {
   echo Passing $1 \(expecting failure, flags $SRFLAGS\)...
   SREF=$1
-  CPP=${SREF%%.sref}.cpp
-  EXE=${SREF%%.sref}
+  RASL=${SREF%.*}.rasl
+  NATCPP=${SREF%.*}.cpp
+  EXE=${SREF%.*}$(platform_exe_suffix)
 
-  ../bin/srefc-core $SREF $SRFLAGS 2>__error.txt
-  if [ $? -ge 100 ]; then
+  ../bin/srefc-core $SREF -o $EXE "${COMMON_SRFLAGS[@]}" \
+    $SRFLAGS $SRFLAGS_PLUS 2>__error.txt
+  if [ $? -ge 100 ] || [ ! -e $EXE ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit 1
   fi
   rm __error.txt
-  if [ ! -e $CPP ]; then
-    echo COMPILATION FAILED
-    exit 1
-  fi
 
-  $CPPLINE $TEST_CPP_FLAGS -o$EXE $CPP ../srlib/refalrts.cpp
-
-  if [ $? -gt 0 ]; then
-    echo COMPILATION FAILED
-    exit 1
+  if [ ! -e $NATCPP ]; then
+    NATCPP=
   fi
 
   ./$EXE
@@ -110,7 +123,7 @@ run_test_aux_with_flags.FAILURE() {
     exit 1
   fi
 
-  rm $CPP $EXE
+  rm $RASL $NATCPP $EXE
   [ -e __dump.txt ] && rm __dump.txt
 
   echo "Ok! This failure was normal and expected"
@@ -118,6 +131,8 @@ run_test_aux_with_flags.FAILURE() {
 }
 
 run_test_aux.LEXGEN() {
+  prepare_prefix
+
   echo Passing $1 \(lexgen\)...
   SREF=$1
 
@@ -132,23 +147,13 @@ run_test_aux.LEXGEN() {
     exit 1
   fi
 
-  ../bin/srefc-core _lexgen-out.sref $SRFLAGS 2>__error.txt
-  if [ $? -ge 100 ]; then
+  ../bin/srefc-core _lexgen-out.sref -o _lexgen-out$(platform_exe_suffix) \
+    "${COMMON_SRFLAGS[@]}" $SRFLAGS_PREF 2>__error.txt
+  if [ $? -ge 100 ] || [ ! -e _lexgen-out$(platform_exe_suffix) ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit 1
   fi
   rm __error.txt
-  if [ ! -e _lexgen-out.cpp ]; then
-    echo COMPILATION FAILED
-    exit 1
-  fi
-
-  $CPPLINE $TEST_CPP_FLAGS -o_lexgen-out _lexgen-out.cpp ../srlib/refalrts.cpp
-
-  if [ $? -gt 0 ]; then
-    echo COMPILATION FAILED
-    exit 1
-  fi
 
   ./_lexgen-out
   if [ $? -gt 0 ]; then
@@ -182,15 +187,25 @@ run_test_aux.BAD-SYNTAX-LEXGEN() {
 }
 
 run_test() {
-  TEST_CPP_FLAGS="
-    -I../srlib \
-    -DSTEP_LIMIT=1000 \
-    -DMEMORY_LIMIT=1000 \
-    -DDUMP_FILE=\"__dump.txt\"\
-    -DDONT_PRINT_STATISTICS \
-    -g"
+  COMMON_SRFLAGS=(
+    "-c $CPPLINEE"
+    --exesuffix=$(platform_exe_suffix)
+    --prelude=test-prelude.srefi
+    -D$(platform_subdir_lookup $LIBDIR)
+    -D$LIBDIR/platform-POSIX
+    -D$LIBDIR
+    -f-DSTEP_LIMIT=1500
+    -f-DMEMORY_LIMIT=1000
+    -f-DIDENTS_LIMIT=200
+    -f-DDUMP_FILE=\\\"__dump.txt\\\"
+    -f-DDONT_PRINT_STATISTICS
+    -f-g
+    --chmod-x-command="chmod +x"
+  )
+  SRFLAGS_PREF=--prefix=_test_prefix
+  SRFLAGS_NAT="refalrts refalrts-platform-specific"
   SREF=$1
-  SUFFIX=`echo ${SREF%%.sref} | sed 's/[^.]*\(\.[^.]*\)*/\1/'`
+  SUFFIX=`echo ${SREF%.*} | sed 's/[^.]*\(\.[^.]*\)*/\1/'`
   run_test_aux$SUFFIX $1
 }
 
@@ -214,7 +229,7 @@ run_all_dir_tests() {
 }
 
 if [ -z "$1" ]; then
-  for s in *.sref; do
+  for s in *.sref *.ref; do
     run_test $s
   done
   run_all_dir_tests
@@ -225,3 +240,5 @@ else
     run_test $s
   done
 fi
+
+[ -e _test_prefix.exe-prefix ] && rm _test_prefix.exe-prefix

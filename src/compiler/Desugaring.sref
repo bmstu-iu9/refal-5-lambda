@@ -1,8 +1,9 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, Map, MapReduce, Inc, DelAccumulator, Reduce, Sort;
+$EXTERN Fetch, Seq, Map, Inc, MapReduce, DelAccumulator, Reduce;
 
-//FROM Library
-$EXTERN StrFromInt;
+//FROM Desugaring-UnCondition
+$EXTERN Pass-UnCondition;
+
 
 $ENTRY Desugar {
   s.MarkupContext e.AST =
@@ -12,9 +13,10 @@ $ENTRY Desugar {
         Pass-RemovePos
         Pass-EnumerateVariables
         Pass-NameNestedFuncs
-        Pass-RemoveAssigns
+        Pass-RemoveBlocksAndAssigns
         (Pass-FlatNestedFuncs s.MarkupContext)
-        Pass-CreatePredeclarations
+        (Pass-UnCondition s.MarkupContext)
+        Pass-RemoveRedudandElements
       >
     >;
 }
@@ -44,26 +46,43 @@ RemovePos-Body {
     #Sentences
     <Map
       {
-        ((e.Pattern) e.Assigns (e.Result)) =
+        ((e.Pattern) e.Assigns (e.Result) (e.Blocks)) =
           (
             (<RemovePos-Expr e.Pattern>)
             <Map
               {
-                (#Assign (e.Result^) (e.Pattern^)) =
-                  (#Assign
-                    (<RemovePos-Expr e.Result>)
-                    (<RemovePos-Expr e.Pattern>)
-                  );
+                (s.ChainType (e.Result^) (e.Blocks^) (e.Pattern^))
+                  = <AssignOrCondition s.ChainType> : /* пусто */
+                  = (s.ChainType
+                      (<RemovePos-Expr e.Result>)
+                      (<RemovePos-Blocks e.Blocks>)
+                      (<RemovePos-Expr e.Pattern>)
+                    );
               }
               e.Assigns
             >
             (<RemovePos-Expr e.Result>)
+            (<RemovePos-Blocks e.Blocks>)
           );
       }
       e.Sentences
     >;
 
   #NativeBody t.SrcPos e.Code = #NativeBody t.SrcPos e.Code;
+}
+
+AssignOrCondition {
+  #Assign = ; #Condition = ;
+}
+
+RemovePos-Blocks {
+  e.Blocks
+    = <Map
+        {
+          (e.Body) = (<RemovePos-Body e.Body>);
+        }
+        e.Blocks
+      >;
 }
 
 RemovePos-Expr {
@@ -103,7 +122,7 @@ Pass-EnumerateVariables {
         (#Function s.ScopeClass (e.Name) e.Body) =
           (#Function
             s.ScopeClass (e.Name)
-            <EnumerateVars-Sentences 1 (/* переменные */) e.Body>
+            <EnumerateVars-Body 1 (/* переменные */) e.Body>
           );
 
         t.OtherProgramElement = t.OtherProgramElement;
@@ -112,32 +131,21 @@ Pass-EnumerateVariables {
     >;
 }
 
-EnumerateVars-Sentences {
+EnumerateVars-Body {
   s.Depth (e.ScopeVars) #Sentences e.Sentences =
     #Sentences
     <Map
       {
-        ((e.Pattern) e.Assigns (e.Result)) =
-          <Fetch
-            <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern>
-            <Seq
-              {
-                (e.ScopeVars^) e.Pattern^ =
-                  <EnumerateVars-Assignments () s.Depth (e.ScopeVars) e.Assigns>
-                  (e.Pattern);
-              }
-              {
-                (e.ScopeVars^) s.Depth^ e.Assigns^ (e.Pattern^) =
-                  <Fetch
-                    <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result>
-                    {
-                      (e.ScopeVars^) e.Result^ =
-                        ((e.Pattern) e.Assigns (e.Result));
-                    }
-                  >;
-              }
-            >
-          >;
+        ((e.Pattern) e.Assigns (e.Result) (e.Blocks))
+          = <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern>
+          : (e.ScopeVars^) e.Pattern^
+          = <EnumerateVars-Assignments () s.Depth (e.ScopeVars) e.Assigns>
+          : (e.ScopeVars^) s.Depth^ e.Assigns^
+          = <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result>
+          : (e.ScopeVars^) e.Result^
+          = <EnumerateVars-Blocks <Inc s.Depth> (e.ScopeVars) e.Blocks>
+          : e.Blocks^
+          = ((e.Pattern) e.Assigns (e.Result) (e.Blocks));
       }
       e.Sentences
     >;
@@ -146,29 +154,33 @@ EnumerateVars-Sentences {
     #NativeBody t.SrcPos e.Code;
 }
 
+EnumerateVars-Blocks {
+  s.Depth (e.ScopeVars) e.Blocks
+    = <Map
+        {
+          (e.Body) = (<EnumerateVars-Body s.Depth (e.ScopeVars) e.Body>);
+        }
+        e.Blocks
+      >;
+}
+
 EnumerateVars-Assignments {
   (e.RAssignments) s.Depth (e.ScopeVars) /* пусто */ =
      (e.ScopeVars) s.Depth e.RAssignments;
 
   (e.RAssignments) s.Depth (e.ScopeVars)
-  (#Assign (e.Result) (e.Pattern)) e.Assignments =
-    <Fetch
-      <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result> <Inc s.Depth>
-      <Seq
-        {
-          (e.ScopeVars^) e.Result^ s.Depth^  =
-            s.Depth
-            <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern> (e.Result);
-        }
-        {
-          s.Depth^ (e.ScopeVars^) e.Pattern^ (e.Result^) =
-            <EnumerateVars-Assignments
-              (e.RAssignments (#Assign (e.Result) (e.Pattern)))
-               s.Depth (e.ScopeVars) e.Assignments
-            >;
-        }
-      >
-    >;
+  (s.ChainType (e.Result) (e.Blocks) (e.Pattern)) e.Assignments
+    = <AssignOrCondition s.ChainType> : /* пусто */
+    = <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result>
+    : (e.ScopeVars^) e.Result^
+    = <Inc s.Depth> : s.Depth^
+    = <EnumerateVars-Blocks s.Depth (e.ScopeVars) e.Blocks> : e.Blocks^
+    = <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern>
+    : (e.ScopeVars^) e.Pattern^
+    = <EnumerateVars-Assignments
+        (e.RAssignments (s.ChainType (e.Result) (e.Blocks) (e.Pattern)))
+        s.Depth (e.ScopeVars) e.Assignments
+      >;
 }
 
 EnumerateVars-Expr {
@@ -217,7 +229,7 @@ EnumerateVars-Expr {
 
         (e.ScopeVars) (#Closure e.Sentences) =
           <Fetch
-            <EnumerateVars-Sentences <Inc s.Depth> (e.ScopeVars) e.Sentences>
+            <EnumerateVars-Body <Inc s.Depth> (e.ScopeVars) e.Sentences>
             {
               e.Sentences^ =
                 (e.ScopeVars) (#Closure e.Sentences);
@@ -247,12 +259,13 @@ Pass-NameNestedFuncs {
 }
 
 NameNestedBody {
-  (e.MainName) #Sentences ((e.Pattern) e.Assigns (e.Result))
+  (e.MainName) #Sentences ((e.Pattern) e.Assigns (e.Result) (e.Blocks))
      = #Sentences
         (
           (e.Pattern)
           <NameNestedAssigns (e.MainName) e.Assigns>
           (<NameNestedResult (e.MainName) e.Result>)
+          (<NameNestedBlocks (e.MainName) e.Blocks>)
         );
 
   (e.MainName) #Sentences e.Sentences
@@ -260,13 +273,14 @@ NameNestedBody {
       <DelAccumulator
         <MapReduce
           {
-            s.SentenceNumber ((e.Pattern) e.Assigns (e.Result))
+            s.SentenceNumber ((e.Pattern) e.Assigns (e.Result) (e.Blocks^))
               = e.MainName '$' s.SentenceNumber: e.MainName^
               = <Inc s.SentenceNumber>
                 (
                   (e.Pattern)
                   <NameNestedAssigns (e.MainName) e.Assigns>
                   (<NameNestedResult (e.MainName) e.Result>)
+                  (<NameNestedBlocks (e.MainName) e.Blocks>)
                 );
           }
           1 e.Sentences
@@ -277,17 +291,34 @@ NameNestedBody {
     = #NativeBody t.SrcPos e.Code;
 }
 
+NameNestedBlocks {
+  (e.MainName) e.Blocks
+    = <MapReduce
+        {
+          s.BlockNumber (e.Body)
+            = e.MainName ':' s.BlockNumber : e.MainName^
+            = <Inc s.BlockNumber>
+              ((e.MainName) <NameNestedBody (e.MainName) e.Body>);
+        }
+        1 e.Blocks
+      >
+    : s.BlockNumber e.Blocks^
+    = e.Blocks;
+}
+
 NameNestedAssigns {
   (e.MainName) e.Assigns
     = <DelAccumulator
         <MapReduce
           {
-            s.AssignId (#Assign (e.Result) (e.Pattern))
-              = e.MainName '=' s.AssignId: e.MainName^
+            s.AssignId (s.ChainType (e.Result) (e.Blocks) (e.Pattern))
+              = <ChainTypeMarker s.ChainType> : s.Marker
+              = e.MainName s.Marker s.AssignId : e.MainName^
               = <Inc s.AssignId>
-                (#Assign
+                (s.ChainType
                   (e.MainName)
                   (<NameNestedResult (e.MainName) e.Result>)
+                  (<NameNestedBlocks (e.MainName) e.Blocks>)
                   (e.Pattern)
                 );
           }
@@ -295,6 +326,11 @@ NameNestedAssigns {
           e.Assigns
         >
       >;
+}
+
+ChainTypeMarker {
+  #Assign = '=';
+  #Condition = '?';
 }
 
 NameNestedResult {
@@ -346,7 +382,7 @@ NameNestedResultRec {
     >;
 }
 
-Pass-RemoveAssigns {
+Pass-RemoveBlocksAndAssigns {
   e.AST =
     <Map
       {
@@ -375,29 +411,64 @@ RemoveAssigns-Sentences {
 }
 
 RemoveAssigns-Sentence {
-  ((e.Pattern) (e.Result))
-    = ((e.Pattern) (<RemoveAssigns-Result e.Result>));
-
+  /*
+    Присваивание есть синтаксический сахар — выражается через блок:
+    … = R : { B }… P …  --->  … = R : { B }… : { P … }
+  */
   (
-    (e.Pattern)
-    (#Assign (e.AssignName) (e.AssignResult) (e.AssignPattern)) e.Assignments
-    (e.Result)
+    (e.Pattern) e.Conditions
+    (#Assign (e.AssignName) (e.AssignResult) (e.Blocks) (e.AssignPattern))
+    e.SentenceTail
   )
-    = (
-        (e.Pattern)
+    = <RemoveAssigns-Sentence
         (
-          (#CallBrackets
-            (#Closure
-              (e.AssignName)
-              #Sentences
-              <RemoveAssigns-Sentence
-                ((e.AssignPattern) e.Assignments (e.Result))
-              >
-            )
-            <RemoveAssigns-Result e.AssignResult>
+          (e.Pattern) e.Conditions
+          (e.AssignResult)
+          (
+            e.Blocks
+            ((e.AssignName) #Sentences ((e.AssignPattern) e.SentenceTail))
           )
         )
-      );
+      >;
+
+  /*
+    Блоки, в свою очередь — тоже синтаксический сахар, являются замыканиями,
+    которые по очереди применяются к результату
+  */
+  ((e.Pattern) e.Conditions (e.Result) (e.Blocks))
+    = <RemoveAssigns-Conditions e.Conditions> : e.Conditions^
+    = <RemoveAssigns-WindBlocks (e.Result) e.Blocks> : (e.Result^)
+    = <RemoveAssigns-Result e.Result> : e.Result^
+    = ((e.Pattern) e.Conditions (e.Result));
+}
+
+RemoveAssigns-Conditions {
+  e.Conditions
+    = <Map
+        {
+          (#Condition
+            (e.ConditionName) (e.Result) (e.Blocks) (e.Pattern)
+          )
+            = <RemoveAssigns-WindBlocks (e.Result) e.Blocks> : (e.Result^)
+            = (#Condition
+                (e.ConditionName)
+                (<RemoveAssigns-Result e.Result>)
+                (e.Pattern)
+              );
+        }
+        e.Conditions
+      >;
+}
+
+RemoveAssigns-WindBlocks {
+  (e.Result) e.Blocks
+    = <Reduce
+        {
+          (e.Result^) ((e.BlockName) e.Body)
+            = ((#CallBrackets (#Closure (e.BlockName) e.Body) e.Result));
+        }
+        (e.Result) e.Blocks
+      >;
 }
 
 RemoveAssigns-Result {
@@ -426,15 +497,11 @@ Pass-FlatNestedFuncs {
   s.MarkupContext e.AST =
     <Map
       {
-        (#Function s.ScopeClass (e.Name) e.Body) =
-          <Fetch
-            <ExtractNested s.MarkupContext e.Body>
-            {
-              (e.NestedFuncs) e.Body^ =
-                e.NestedFuncs
-                (#Function s.ScopeClass (e.Name) e.Body);
-            }
-          >;
+        (#Function s.ScopeClass (e.Name) e.Body)
+          = <ExtractNested s.MarkupContext e.Body>
+          : (e.NestedFuncs) e.Body^
+          = e.NestedFuncs
+            (#Function s.ScopeClass (e.Name) e.Body);
 
         t.OtherProgramElement = t.OtherProgramElement;
       }
@@ -443,55 +510,82 @@ Pass-FlatNestedFuncs {
 }
 
 ExtractNested {
-  s.MarkupContext e.Sentences =
-    <Fetch
-      <ExtractNestedRec
+  s.MarkupContext e.Sentences
+    = <ExtractNestedRec
         s.MarkupContext (/* внешних переменных нет */) e.Sentences
       >
-      {
-        (/* заимстовованных переменных нет */) (e.NestedFuncs) e.Sentences^ =
-          (e.NestedFuncs) e.Sentences;
-      }
-    >;
+    : (/* заимстовованных переменных нет */) (e.NestedFuncs) e.Sentences^
+    = (e.NestedFuncs) e.Sentences;
 }
 
 ExtractNestedRec {
-  s.MarkupContext (e.ScopeVars) #Sentences e.Sentences =
-    <Fetch
-      <MapReduce
-        {
-          ((e.NestedFuncs) (e.BorrowedVars)) ((e.Pattern) (e.Result)) =
-            <Fetch
-              <ExtractNested-Pattern (e.ScopeVars) (e.BorrowedVars) e.Pattern>
-              {
-                (e.BorrowedVars^) e.LocalVars =
-                  <Fetch
-                    <ExtractNested-Result
-                      s.MarkupContext
-                      (e.NestedFuncs) (e.BorrowedVars)
-                      (e.ScopeVars) (e.LocalVars) e.Result
-                    >
-                    {
-                      (e.NestedFuncs^) (e.BorrowedVars^) e.Result^ =
-                        ((e.NestedFuncs) (e.BorrowedVars))
-                        ((e.Pattern) (e.Result));
-                    }
-                  >;
-              }
-            >;
-        }
+  s.MarkupContext (e.ScopeVars) #Sentences e.Sentences
+    = <MapReduce
+        (ExtractNested-Sentence s.MarkupContext e.ScopeVars)
         ((/* вложенные функции */) (/* заимствованные переменные */))
         e.Sentences
       >
-      {
-        ((e.NestedFuncs) (e.BorrowedVars)) e.Sentences^ =
-          (e.BorrowedVars) (e.NestedFuncs) #Sentences e.Sentences;
-      }
-    >;
+    : ((e.NestedFuncs) (e.BorrowedVars)) e.Sentences^
+    = (e.BorrowedVars) (e.NestedFuncs) #Sentences e.Sentences;
 
   s.MarkupContext (e.ScopeVars) #NativeBody t.SrcPos e.Code =
     (/* нет заимстовованных переменных */) (/* нет вложенных функций */)
     #NativeBody t.SrcPos e.Code;
+}
+
+ExtractNested-Sentence {
+  s.MarkupContext e.ScopeVars ((e.NestedFuncs) (e.BorrowedVars))
+  ((e.Pattern) e.Conditions (e.Result))
+
+    = <ExtractNested-Pattern (e.ScopeVars) (e.BorrowedVars) e.Pattern>
+    : (e.BorrowedVars^) e.LocalVars
+
+    = <ExtractNested-Conditions
+        s.MarkupContext (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
+        e.Conditions
+      >
+    : (e.ConditionsNestedFuncs) (e.BorrowedVars^) (e.LocalVars^)
+      e.Conditions^
+
+    = <ExtractNested-Result
+        s.MarkupContext (e.BorrowedVars) (e.ScopeVars) (e.LocalVars) e.Result
+      >
+    : (e.ResultNestedFuncs) (e.BorrowedVars^) e.Result^
+
+    = (
+        (e.NestedFuncs e.ConditionsNestedFuncs e.ResultNestedFuncs)
+        (e.BorrowedVars)
+      )
+      ((e.Pattern) e.Conditions (e.Result));
+}
+
+ExtractNested-Conditions {
+  s.MarkupContext (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
+  (#Condition (e.ConditionName) (e.Result) (e.Pattern)) e.Conditions
+
+    = <ExtractNested-Result
+        s.MarkupContext (e.BorrowedVars) (e.ScopeVars) (e.LocalVars) e.Result
+      >
+    : (e.ResultNestedFuncs) (e.BorrowedVars^) e.Result^
+
+    = <ExtractNested-Pattern (e.ScopeVars) (e.BorrowedVars) e.Pattern>
+    : (e.BorrowedVars^) e.PatternLocalVars
+
+    = <Uniq e.LocalVars e.PatternLocalVars> : e.LocalVars^
+
+    = <ExtractNested-Conditions
+        s.MarkupContext (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
+        e.Conditions
+      >
+    : (e.ConditionsNestedFuncs) (e.BorrowedVars^) (e.LocalVars^)
+      e.Conditions^
+
+    = (e.ResultNestedFuncs e.ConditionsNestedFuncs) (e.BorrowedVars)
+      (e.LocalVars)
+      (#Condition (e.ConditionName) (e.Result) (e.Pattern)) e.Conditions;
+
+  s.MarkupContext (e.BorrowedVars) (e.ScopeVars) (e.LocalVars) /* пусто */
+    = (/* нет вложенных функций */) (e.BorrowedVars) (e.LocalVars) /* пусто */;
 }
 
 ExtractNested-Pattern {
@@ -541,18 +635,13 @@ UpdateBorrowedVars {
 
 ExtractNested-Result {
   s.MarkupContext
-  (e.OriginNestedFuncs) (e.OriginBorrowedVars) (e.ScopeVars) (e.LocalVars)
-  e.OriginResult =
-    <Fetch
-      <MapReduce
+  (e.OriginBorrowedVars) (e.ScopeVars) (e.LocalVars) e.OriginResult
+    = <MapReduce
         (ExtractNested-Result-Term s.MarkupContext (e.ScopeVars) (e.LocalVars))
-        ((e.OriginNestedFuncs) (e.OriginBorrowedVars)) e.OriginResult
+        ((/* nested funcs */) (e.OriginBorrowedVars)) e.OriginResult
       >
-      {
-        ((e.NestedFuncs) (e.BorrowedVars)) e.Result =
-          (e.NestedFuncs) (e.BorrowedVars) e.Result;
-      }
-    >;
+    : ((e.NestedFuncs) (e.BorrowedVars)) e.Result
+    = (e.NestedFuncs) (e.BorrowedVars) e.Result;
 }
 
 ExtractNested-Result-Term {
@@ -565,106 +654,75 @@ ExtractNested-Result-Term {
     (#TkVariable s.Mode e.Index);
 
   s.MarkupContext (e.ScopeVars) (e.LocalVars)
-  ((e.NestedFuncs) (e.BorrowedVars)) (#Brackets e.InBrackets) =
-    <Fetch
-      <ExtractNested-Result
+  ((e.NestedFuncs) (e.BorrowedVars)) (#Brackets e.InBrackets)
+    = <ExtractNested-Result
         s.MarkupContext
-        (e.NestedFuncs) (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
-        e.InBrackets
+        (e.BorrowedVars) (e.ScopeVars) (e.LocalVars) e.InBrackets
       >
-      {
-        (e.NestedFuncs^) (e.BorrowedVars^) e.InBrackets^ =
-          ((e.NestedFuncs) (e.BorrowedVars))
-          (#Brackets e.InBrackets);
-      }
-    >;
+    : (e.InBracketsNestedFuncs) (e.BorrowedVars^) e.InBrackets^
+    = ((e.NestedFuncs e.InBracketsNestedFuncs) (e.BorrowedVars))
+      (#Brackets e.InBrackets);
 
   s.MarkupContext (e.ScopeVars) (e.LocalVars)
   ((e.NestedFuncs) (e.BorrowedVars))
-  (#ADT-Brackets (e.Name) e.InBrackets) =
-    <Fetch
-      <ExtractNested-Result
+  (#ADT-Brackets (e.Name) e.InBrackets)
+    = <ExtractNested-Result
         s.MarkupContext
-        (e.NestedFuncs) (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
-        e.InBrackets
+        (e.BorrowedVars) (e.ScopeVars) (e.LocalVars) e.InBrackets
       >
-      {
-        (e.NestedFuncs^) (e.BorrowedVars^) e.InBrackets^ =
-          ((e.NestedFuncs) (e.BorrowedVars))
-          (#ADT-Brackets (e.Name) e.InBrackets);
-      }
-    >;
+    : (e.InBracketsNestedFuncs) (e.BorrowedVars^) e.InBrackets^
+    = ((e.NestedFuncs e.InBracketsNestedFuncs) (e.BorrowedVars))
+      (#ADT-Brackets (e.Name) e.InBrackets);
 
   s.MarkupContext (e.ScopeVars) (e.LocalVars)
   ((e.NestedFuncs) (e.BorrowedVars))
-  (#CallBrackets e.InBrackets) =
-    <Fetch
-      <ExtractNested-Result
+  (#CallBrackets e.InBrackets)
+    = <ExtractNested-Result
         s.MarkupContext
-        (e.NestedFuncs) (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
-        e.InBrackets
+        (e.BorrowedVars) (e.ScopeVars) (e.LocalVars) e.InBrackets
       >
-      {
-        (e.NestedFuncs^) (e.BorrowedVars^) e.InBrackets^ =
-          ((e.NestedFuncs) (e.BorrowedVars))
-          (#CallBrackets e.InBrackets);
-      }
-    >;
+    : (e.InBracketsNestedFuncs) (e.BorrowedVars^) e.InBrackets^
+    = ((e.NestedFuncs e.InBracketsNestedFuncs) (e.BorrowedVars))
+      (#CallBrackets e.InBrackets);
 
   s.MarkupContext (e.ScopeVars) (e.LocalVars)
   ((e.NestedFuncs) (e.BorrowedVars))
-  (#Closure (e.ClosureName) e.Body) =
-    <Fetch
-      <ExtractNestedRec s.MarkupContext (e.ScopeVars e.LocalVars) e.Body>
-      {
-        (/* свободные переменные в функции отсутствуют */)
-        (e.NestedNestedFuncs) #Sentences e.Sentences =
-          (
-            (
-              e.NestedFuncs e.NestedNestedFuncs
-              (#Function #GN-Local (e.ClosureName) #Sentences e.Sentences)
-            )
-            (e.BorrowedVars)
-          )
-          (#TkName e.ClosureName);
+  (#Closure (e.ClosureName) e.Body)
+     = <ExtractNestedRec s.MarkupContext (e.ScopeVars e.LocalVars) e.Body>
+     : (e.NestedBorrowedVars) (e.NestedNestedFuncs) e.Body^
+     = <Fetch
+        (e.NestedBorrowedVars) e.Body
+        {
+          // Случай функции без контекста, нативной функции в том числе
+          (/* нет захваченных переменных */) e.Body^
+            = (#Function #GN-Local (e.ClosureName) e.Body)
+              (e.BorrowedVars)
+              (#TkName e.ClosureName);
 
-        (e.NestedBorrowedVars) (e.NestedNestedFuncs) #Sentences e.Sentences =
-          (
-            (
-              e.NestedFuncs e.NestedNestedFuncs
-              (#Function
+          // Случай функции с контекстом
+          (e.NestedBorrowedVars) #Sentences e.Sentences
+            = <CreateContext s.MarkupContext e.NestedBorrowedVars> : e.Context
+            = (#Function
                 #GN-Local (e.ClosureName)
                 #Sentences
                 <Map
-                  (AddContextToSentence s.MarkupContext e.NestedBorrowedVars)
+                  {
+                    ((e.Pattern) e.Conditions (e.Result))
+                      = ((e.Context e.Pattern) e.Conditions (e.Result));
+                  }
                   e.Sentences
                 >
               )
-            )
-            <Reduce
-              (CheckBorrowed (e.ScopeVars))
-              (e.BorrowedVars) e.NestedBorrowedVars
-            >
-          )
-          (#CallBrackets
-            (#TkName #CreateClosure)
-            (#TkName e.ClosureName)
-            <CreateContext s.MarkupContext e.NestedBorrowedVars>
-          );
-
-        (/* свободные переменные в нативной функции отсутствуют */)
-        (/* вложенные функции в нативной функции отсутствуют */)
-        #NativeBody t.SrcPos e.Code =
-          (
-            (
-              e.NestedFuncs
-              (#Function #GN-Local (e.ClosureName) #NativeBody t.SrcPos e.Code)
-            )
-            (e.BorrowedVars)
-          )
-          (#TkName e.ClosureName);
-      }
-    >;
+              <Reduce
+                (CheckBorrowed (e.ScopeVars))
+                (e.BorrowedVars) e.NestedBorrowedVars
+              >
+              (#ClosureBrackets (#TkName e.ClosureName) e.Context);
+        }
+      >
+    : t.Function (e.BorrowedVars^) t.ClosureTerm
+    = ((e.NestedFuncs e.NestedNestedFuncs t.Function) (e.BorrowedVars))
+      t.ClosureTerm;
 
   s.MarkupContext (e.ScopeVars) (e.LocalVars)
   ((e.NestedFuncs) (e.BorrowedVars)) t.OtherTerm =
@@ -682,11 +740,6 @@ CheckBorrowed {
 
   (e.ScopeVars) (e.BorrowedVars) (s.Mode e.Index) =
     (e.BorrowedVars);
-}
-
-AddContextToSentence {
-  s.MarkupContext e.Context ((e.Pattern) (e.Result)) =
-    ((<CreateContext s.MarkupContext e.Context> e.Pattern) (e.Result));
 }
 
 CreateContext {
@@ -714,135 +767,32 @@ CreateContext {
     >;
 }
 
-Pass-CreatePredeclarations {
+Pass-RemoveRedudandElements {
   e.AST =
     /*
       Функция принимает абстрактное синтаксическое дерево
       и формирует новое с устранением избыточных элементов
-      и созданием необходимых.
     */
     <Fetch
       e.AST
       <Seq
-        RemoveRedudandElements
-        FoldEnums
-        (MapReduce
-          {
-            (e.Idents)
-            (#Function s.ScopeClass (e.Name) e.Body) =
-              <Fetch
-                <ExtractIdents e.Body>
-                {
-                  (e.FuncIdents) e.Body^ =
-                    (e.Idents e.FuncIdents)
-                    (#Function s.ScopeClass (e.Name) e.Body);
-                }
-              >;
-
-            (e.Idents) (#Swap s.ScopeClass e.Name) =
-              (e.Idents) (#Swap s.ScopeClass e.Name);
-
-            (e.Idents) (#Enum s.ScopeClass e.Name) =
-              (e.Idents) (#Enum s.ScopeClass e.Name);
-
-            (e.Idents) (#Declaration s.ScopeClass e.Name) =
-              (e.Idents) (#Declaration s.ScopeClass e.Name);
-
-            (e.Idents) (#Ident e.Name) =
-              (e.Idents (#Ident e.Name))
-              /* пусто */;
-
-            (e.Idents) (#NativeBlock t.SrcPos e.Code) =
-              (e.Idents) (#NativeBlock t.SrcPos e.Code);
-          }
-          (/* идентификаторы */)
-        )
-        {
-          (e.Idents) e.Functions =
-            <UniqSorted <Sort e.Idents>>
-            e.Functions;
-        }
-      >
-    >;
-}
-
-RemoveRedudandElements {
-  e.AST =
-    <Fetch
-      e.AST
-      <Seq
         /*
-          Собираем список всех определённых функций
-        */
-        (MapReduce
-          {
-            (e.Functions) (#Function s.ScopeClass (e.Name) e.Body) =
-              (e.Functions (e.Name)) (#Function s.ScopeClass (e.Name) e.Body);
-
-            (e.Functions) (#Enum s.ScopeClass e.Name) =
-              (e.Functions (e.Name)) (#Enum s.ScopeClass e.Name);
-
-            (e.Functions) (#Swap s.ScopeClass e.Name) =
-              (e.Functions (e.Name)) (#Swap s.ScopeClass e.Name);
-
-            (e.Functions) (#Declaration s.ScopeClass e.Name) =
-              (e.Functions) (#Declaration s.ScopeClass e.Name);
-
-            (e.Functions) (#Ident e.Name) =
-              (e.Functions) (#Ident e.Name);
-
-            (e.Functions) (#NativeBlock t.SrcPos e.Code) =
-              (e.Functions) (#NativeBlock t.SrcPos e.Code);
-          }
-          (/* функции */)
-        )
-        /*
-          Удаляем все предобъявления, для которых функция определена
-          Внимание: Аккумулятор старый!
-        */
-        (MapReduce
-          {
-            (e.Functions-B (e.Name) e.Functions-E)
-            (#Declaration s.ScopeClass e.Name) =
-              (e.Functions-B (e.Name) e.Functions-E)
-              /* пропускаем объявление */;
-
-            (e.Functions) t.OtherItem =
-              (e.Functions)
-              /*
-                t.OtherItem может быть и объявлением без определения,
-                например $EXTERN или $FORWARD в файле с нативными вставками.
-                Во всех случаях оставляем
-              */
-              t.OtherItem;
-          }
-        )
-        DelAccumulator
-        /*
-          Подчищаем $IDENT’ы только при отсутствии нативных вставок.
+          Подчищаем $EXTERN’ы и $IDENT’ы только при отсутствии нативных вставок
         */
         {
           e.AST-B (#NativeBlock t.SrcPos e.Code) e.AST-E =
-            {
-              #Ident e.Name^ = (#Ident e.Name);
-            }
+            SelectiveSaver-Save
             e.AST-B (#NativeBlock t.SrcPos e.Code) e.AST-E;
 
           e.AST-B
           (#Function s.ScopeClass (e.Name) #NativeBody e.Code)
           e.AST-E =
-            {
-              #Ident e.Name^ = (#Ident e.Name);
-            }
+            SelectiveSaver-Save
             e.AST-B
             (#Function s.ScopeClass (e.Name) #NativeBody e.Code)
             e.AST-E;
 
-          e.AST^ =
-            {
-              #Ident e.Name^ = /* пропускаем */;
-            }
-            e.AST;
+          e.AST^ = SelectiveSaver-Skip e.AST;
         }
         {
           s.FnSelectiveSaver e.AST^ =
@@ -850,103 +800,33 @@ RemoveRedudandElements {
               {
                 (#Ident e.Name) = <s.FnSelectiveSaver #Ident e.Name>;
 
+                (#Declaration s.ScopeClass e.Name)
+                  = <s.FnSelectiveSaver #Declaration s.ScopeClass e.Name>;
+
                 t.OtherItem = t.OtherItem;
               }
               e.AST
             >;
         }
-      >
-    >;
-}
-
-FoldEnums {
-  e.AST =
-    <Map
-      {
-        (#Function s.ScopeClass (e.Name) #Sentences /* пусто */) =
-          (#Enum s.ScopeClass e.Name);
-
-        t.Other = t.Other;
-      }
-      e.AST
-    >;
-}
-
-ExtractIdents {
-  #Sentences e.Sentences =
-    <Fetch
-      e.Sentences
-      <Seq
-        (MapReduce
+        // Folding enums
+        (Map
           {
-            (e.Idents) ((e.Pattern) (e.Result)) =
-              <Fetch
-                (<ExtractIdent-Expr e.Pattern>)
-                (<ExtractIdent-Expr e.Result>)
-                {
-                  ((e.PatternIdents) e.Pattern^) ((e.ResultIdents) e.Result^) =
-                    (e.Idents e.PatternIdents e.ResultIdents)
-                    ((e.Pattern) (e.Result));
-                }
-              >;
+            (#Function s.ScopeClass (e.Name) #Sentences /* пусто */) =
+              (#Enum s.ScopeClass e.Name);
+
+            t.Other = t.Other;
           }
-          (/* idents */)
         )
-        {
-          (e.Idents) e.Sentences =
-            (e.Idents) #Sentences e.Sentences;
-        }
       >
     >;
-
-  #NativeBody t.SrcPos e.Code =
-    (/* нет идентификаторов */) #NativeBody t.SrcPos e.Code;
 }
 
-ExtractIdent-Expr {
-  e.Expr =
-    <MapReduce
-      {
-        (e.Idents) (#TkIdentifier e.Name) =
-          (e.Idents (#Ident e.Name)) (#TkIdentifier e.Name);
-
-        (e.Idents) (#Brackets e.SubExpr) =
-          <Fetch
-            <ExtractIdent-Expr e.SubExpr>
-            {
-              (e.SubIdents) e.SubExpr^ =
-                (e.Idents e.SubIdents) (#Brackets e.SubExpr);
-            }
-          >;
-
-        (e.Idents) (#ADT-Brackets (e.Name) e.SubExpr) =
-          <Fetch
-            <ExtractIdent-Expr e.SubExpr>
-            {
-              (e.SubIdents) e.SubExpr^ =
-                (e.Idents e.SubIdents) (#ADT-Brackets (e.Name) e.SubExpr);
-            }
-          >;
-
-        (e.Idents) (#CallBrackets e.SubExpr) =
-          <Fetch
-            <ExtractIdent-Expr e.SubExpr>
-            {
-              (e.SubIdents) e.SubExpr^ =
-                (e.Idents e.SubIdents) (#CallBrackets e.SubExpr);
-            }
-          >;
-
-        (e.Idents) t.OtherTerm = (e.Idents) t.OtherTerm;
-      }
-      (/* idents */)
-      e.Expr
-    >;
+SelectiveSaver-Save {
+  #Ident e.Name = (#Ident e.Name);
+  #Declaration s.ScopeClass e.Name = (#Declaration s.ScopeClass e.Name);
 }
 
-UniqSorted {
-  e.Uniqs t.Repeated t.Repeated e.NotScanned =
-    e.Uniqs <UniqSorted t.Repeated e.NotScanned>;
-
-  e.Uniqs = e.Uniqs;
+SelectiveSaver-Skip {
+  #Ident e.Name = /* skip */;
+  #Declaration s.ScopeClass e.Name = /* skip */;
 }

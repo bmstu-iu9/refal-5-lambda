@@ -1,0 +1,23 @@
+$EXTERN Native;
+
+$ENTRY Go {
+  =
+    <{ 'ABC' = ; } <Native>>;
+}
+
+%%
+static refalrts::FnResult func_Native(refalrts::Iter left_bracket, refalrts::Iter right_bracket) {
+  using namespace refalrts;
+
+  Iter func_name = left_bracket;
+  move_left(func_name, right_bracket);
+
+  reinit_char(left_bracket, 'A');
+  reinit_char(func_name, 'B');
+  reinit_char(right_bracket, 'C');
+
+  return cSuccess;
+}
+
+static refalrts::NativeReference descr_Native("Native", 0, 0, func_Native);
+%%

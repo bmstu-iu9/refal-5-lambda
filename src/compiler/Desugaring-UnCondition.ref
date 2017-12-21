@@ -1,0 +1,651 @@
+/**
+  <R5-Transform s.MarkupContext t.Unit*> == t.Unit*
+
+  s.MarkupContext ::= MarkupContext | NoMarkupContext
+*/
+$ENTRY Pass-UnCondition {
+  s.MarkupContext e.Units
+    = <Map (Transform-Unit s.MarkupContext) e.Units>;
+}
+
+Transform-Unit {
+  s.MarkupContext (Function s.Scope (e.Name) Sentences e.Sentences)
+    = <UnCondition s.MarkupContext (e.Name) s.Scope e.Sentences>;
+
+  s.MarkupContext (Ident e.Name) = (Ident e.Name);
+
+  s.MarkupContext (NativeBlock t.SrcPos e.Code) = (NativeBlock t.SrcPos e.Code);
+
+  s.MarkupContext (s.EnumSwapDeclaration s.ScopeClass e.Name)
+    = (s.EnumSwapDeclaration s.ScopeClass e.Name);
+}
+
+** НАМЕРЕННО ОТКАЗЫВАЕМСЯ ОТ ОТСЛЕЖИВАНИЯ КОПИРОВАНИЯ ПОВТОРНЫХ ПЕРЕМЕННЫХ
+
+/**
+  <UnCondition s.MarkupContext (e.Name) s.Scope e.Sentences>
+    == e.NewFunctions
+*/
+UnCondition {
+  s.MarkupContext (e.Name) s.Scope e.Sentences
+    = <DoUnCondition s.MarkupContext (s.Scope (e.Name) e.Sentences)>;
+}
+
+DoUnCondition {
+  s.MarkupContext
+  (s.Scope (e.Name) e.Sentences-B (e.ConditionalSentence) e.Sentences-E)
+  e.UnscannedFunctions
+    , e.ConditionalSentence
+    : (e.Pattern)
+      (Condition (e.ConditionName) (e.CondResult) (e.CondPattern))
+      e.Tail
+
+    , <UnConditionSentence
+        s.MarkupContext (e.ConditionName) (e.ConditionalSentence) e.Sentences-E
+      >
+    : (e.TransformedSentences) e.NewFunctions
+
+    = (Function
+        s.Scope (e.Name) Sentences e.Sentences-B e.TransformedSentences
+      )
+      <DoUnCondition s.MarkupContext e.UnscannedFunctions e.NewFunctions>;
+
+  s.MarkupContext
+  (s.Scope (e.Name) e.Sentences) e.UnscannedFunctions
+    = (Function s.Scope (e.Name) Sentences e.Sentences)
+      <DoUnCondition s.MarkupContext e.UnscannedFunctions>;
+
+  s.MarkupContext /* пусто */ = /* пусто */;
+}
+
+/**
+  <UnConditionSentence
+    s.MarkupContext (e.ConditionalSentence) e.ContinuationSentences
+  >
+    == (e.TransformedSentences) e.NewFunctions
+*/
+UnConditionSentence {
+  s.MarkupContext (e.ConditionName) (e.Sentence) e.ContinuationSentences
+    , <AnalyzeContinuation (e.ConditionName) e.ContinuationSentences>
+    : t.ContName e.ContFunction
+    , <ConditionSubFunctions
+        s.MarkupContext (e.ConditionName) t.ContName e.Sentence
+      >
+    : (e.CallCheckSentence) e.SubFunctions
+    = (
+        (e.CallCheckSentence)
+        <MakeContinuationSentence
+          t.ContName ((TkVariable 'eOther' 0)) ((TkVariable 'eOther' 0))
+        >
+      )
+      e.SubFunctions
+      e.ContFunction;
+}
+
+/*
+  Схема нумерации замыканий:
+  ?0 - функция проверки,
+  ?1 - функция продолжения (может отсутствовать)
+  ?n, n - чётное, - функция forward,
+  ?n, n - нечётное, - функция next.
+*/
+
+AnalyzeContinuation {
+  (e.ConditionName) /* пусто */ = NoContinuation /* пусто */;
+
+  (e.ConditionName) e.Sentences
+    , e.ConditionName '?' 1 : e.ContName
+    = (e.ContName) (GN-Local (e.ContName) e.Sentences);
+}
+
+MakeContinuationSentence {
+  NoContinuation (e.Pattern) (e.ContArg) = /* пусто */;
+
+  (e.ContName) (e.Pattern) (e.ContArg)
+    = ((e.Pattern) ((CallBrackets (TkName e.ContName) e.ContArg)));
+}
+
+PatternSteps {
+  (e.UsedVariables) e.Pattern
+    = <DoPatternSteps
+        (e.UsedVariables) (/* bound variables */) (HOLE e.Pattern)
+      >;
+}
+
+DoPatternSteps {
+  t.UsedVariables (e.BoundEVariables) e.HolesAndItems
+    , e.HolesAndItems
+    : {
+        /* Жёсткие элементы */
+        e.HolesAndItems-B (HOLE t.Item e.Pattern) e.HolesAndItems-E
+          , <HardItem (e.BoundEVariables) t.Item> : True
+          = <DoPatternSteps
+              t.UsedVariables (e.BoundEVariables)
+              e.HolesAndItems-B t.Item (HOLE e.Pattern) e.HolesAndItems-E
+            >;
+
+        e.HolesAndItems-B (HOLE e.Pattern t.Item) e.HolesAndItems-E
+          , <HardItem (e.BoundEVariables) t.Item> : True
+          = <DoPatternSteps
+              t.UsedVariables (e.BoundEVariables)
+              e.HolesAndItems-B (HOLE e.Pattern) t.Item e.HolesAndItems-E
+            >;
+
+        /* Закрытая e-переменная */
+        e.HolesAndItems-B (HOLE (TkVariable 'e' e.Index)) e.HolesAndItems-E
+          = <DoPatternSteps
+              t.UsedVariables (e.BoundEVariables (e.Index))
+              e.HolesAndItems-B (TkVariable 'e' e.Index) e.HolesAndItems-E
+            >;
+
+         /* Пустая дырка */
+         e.HolesAndItems-B (HOLE /* пусто */) e.HolesAndItems-E
+           = <DoPatternSteps
+               t.UsedVariables (e.BoundEVariables)
+               e.HolesAndItems-B e.HolesAndItems-E
+             >;
+
+         /* Скобки */
+         e.HolesAndItems-B
+         (HOLE (Brackets e.InBrackets) e.Pattern)
+         e.HolesAndItems-E
+           = <DoPatternSteps
+               t.UsedVariables (e.BoundEVariables)
+               e.HolesAndItems-B
+               (LeftBracket)
+               (HOLE e.InBrackets)
+               (RightBracket)
+               (HOLE e.Pattern)
+               e.HolesAndItems-E
+             >;
+
+         e.HolesAndItems-B
+         (HOLE e.Pattern (Brackets e.InBrackets))
+         e.HolesAndItems-E
+           = <DoPatternSteps
+               t.UsedVariables (e.BoundEVariables)
+               e.HolesAndItems-B
+               (HOLE e.Pattern)
+               (LeftBracket)
+               (HOLE e.InBrackets)
+               (RightBracket)
+               e.HolesAndItems-E
+             >;
+
+         /* Открытая e-переменная */
+         e.HolesAndItems-B
+         (HOLE (TkVariable 'e' e.Index) e.Pattern)
+         e.HolesAndItems-E
+           = <DoPatternSteps
+               t.UsedVariables (e.BoundEVariables (e.Index))
+               e.HolesAndItems-B
+               (OpenE 'e' e.Index)
+               (HOLE e.Pattern)
+               e.HolesAndItems-E
+             >
+             (
+               <Map
+                 transformer_BindBrackets
+                 <T1 t.UsedVariables e.HolesAndItems>
+                 <T2 t.UsedVariables e.HolesAndItems>
+                 <T3 t.UsedVariables e.HolesAndItems>
+                 <T4 t.UsedVariables e.HolesAndItems>
+                 <T5 t.UsedVariables e.HolesAndItems>
+                 <T5-sub t.UsedVariables e.Index>
+                 <T6 t.UsedVariables e.HolesAndItems>
+                 <T7 t.UsedVariables e.HolesAndItems>
+               >
+             );
+
+           /* Конец разбора */
+           e.OnlyItems
+             = (<transformer_BindBrackets <T0 e.OnlyItems>>);
+      };
+}
+
+HardItem {
+  (e.BoundEVariables) (TkIdentifier e.Compound) = True;
+  (e.BoundEVariables) (TkNumber s.Number) = True;
+  (e.BoundEVariables) (TkChar s.Char) = True;
+  (e.BoundEVariables) (TkName e.Name) = True;
+
+  (e.BoundEVariables) (TkVariable 's' e.Index) = True;
+  (e.BoundEVariables) (TkVariable 't' e.Index) = True;
+
+  (e.BoundEVariables-B (e.Index) e.BoundEVariables-E)
+  (TkVariable 'e' e.Index) = True;
+
+  (e.BoundEVariables) (TkVariable 'e' e.Index) = False;
+  (e.BoundEVariables) (Brackets e.Pattern) = False;
+}
+
+transformer_BindBrackets {
+  (e.Expr) = (<DoBindBrackets ('$') e.Expr>);
+}
+
+DoBindBrackets {
+  (t.MultiBracket e.Scanned) t.Symbol e.Tail
+    , <Symbol t.Symbol> : True
+    = <DoBindBrackets (t.MultiBracket e.Scanned t.Symbol) e.Tail>;
+
+  (t.MultiBracket e.Scanned) (TkVariable s.Type e.Index) e.Tail
+    = <DoBindBrackets
+        (t.MultiBracket e.Scanned (TkVariable s.Type e.Index)) e.Tail
+      >;
+
+  (t.MultiBracket e.Scanned) (OpenE s.Type e.Index) e.Tail
+    = <DoBindBrackets
+        (t.MultiBracket e.Scanned (Brackets (TkVariable s.Type e.Index)))
+        e.Tail
+      >;
+
+  (t.MultiBracket e.Scanned) (Brackets e.InBrackets) e.Tail
+    = <DoBindBrackets
+        (t.MultiBracket e.Scanned (Brackets e.InBrackets)) e.Tail
+      >;
+
+  (t.MultiBracket e.Scanned) (LeftBracket) e.Tail
+    = <DoBindBrackets ((t.MultiBracket e.Scanned)) e.Tail>;
+
+  ((t.MultiBracket e.Scanned) e.InBrackets) (RightBracket) e.Tail
+    = <DoBindBrackets
+        (t.MultiBracket e.Scanned (Brackets e.InBrackets)) e.Tail
+      >;
+
+  ('$' e.Scanned) = e.Scanned;
+}
+
+/*
+  Смысл функций T1…T7 поясняется в «Подход к преобразованию условий.md».
+*/
+
+T1 {
+  t.UsedVars
+  e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
+    , <NewVarName t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
+    , <NewVarName t.UsedVars1 't' e.Index ('_next')> : t.UsedVars2 e.tX_next
+    , <NewVarName t.UsedVars2 'e' e.Index ('_rest')> : t.UsedVars3 e.eX_rest
+    = (
+        e.Items
+        (Brackets (TkVariable e.eX_fix))
+        (TkVariable e.tX_next)
+        (TkVariable e.eX_rest)
+        <PassiveHoles t.UsedVars3 e.ItemsAndHoles>
+      );
+}
+
+PassiveHoles {
+  t.UsedVariables
+  e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern)
+  e.ItemsAndHoles
+    , <NewVarName t.UsedVariables 'e' e.Index ('_rest')> : t.NewVars e.eX_rest
+    = e.Items
+      (TkVariable e.eX_rest)
+      <PassiveHoles t.NewVars e.ItemsAndHoles>;
+
+  t.UsedVariables e.Items = e.Items;
+}
+
+T2 {
+  t.UsedVars
+  e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
+    , <NewVarName t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
+    , <NewVarName t.UsedVars1 't' e.Index ('_next')> : t.UsedVars2 e.tX_next
+    , <NewVarName t.UsedVars2 'e' e.Index ('_rest')> : t.UsedVars3 e.eX_rest
+    = (
+        e.Items
+        (Brackets (TkVariable e.eX_fix) (TkVariable e.tX_next))
+        (TkVariable e.eX_rest)
+        <PassiveHoles t.UsedVars3 e.ItemsAndHoles>
+      );
+}
+
+T3 {
+  t.UsedVars
+  e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
+    , <NewVarName t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
+    = (
+        e.Items
+        (Brackets (TkVariable e.eX_fix))
+        <PassiveHoles t.UsedVars1 e.ItemsAndHoles>
+      );
+}
+
+T4 {
+  t.UsedVars
+  e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
+    , <NewVarName t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
+    = (
+        e.Items (TkVariable e.eX_fix)
+        <PassiveHoles t.UsedVars1 e.ItemsAndHoles>
+      );
+}
+
+T5 {
+  t.UsedVars
+  e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
+    , <T5-sub t.UsedVars e.Index> : (t.SourceVar t.eX_fix t.eX_var)
+    = (
+        e.Items (Brackets t.eX_fix) t.eX_var
+        <Substitute
+          e.Pattern <T5-UnHole e.ItemsAndHoles> (t.SourceVar t.eX_fix t.eX_var)
+        >
+      );
+}
+
+T5-UnHole {
+  e.Items (HOLE e.Pattern) e.ItemsAndHoles
+    = e.Items e.Pattern <T5-UnHole e.ItemsAndHoles>;
+
+  e.Items = e.Items;
+}
+
+T5-sub {
+  t.UsedVars e.Index
+    , <NewVarName t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
+    , <NewVarName t.UsedVars 'e' e.Index ('_var')> : t.UsedVars2 e.eX_var
+    = ((TkVariable 'e' e.Index) (TkVariable e.eX_fix) (TkVariable e.eX_var));
+}
+
+Substitute {
+  (TkVariable s.Type e.Index) e.Tail ((TkVariable s.Type e.Index) e.Expr)
+    = e.Expr
+      <Substitute e.Tail ((TkVariable s.Type e.Index) e.Expr)>;
+
+  (Brackets e.InBrackets) e.Tail (t.Variable e.Expr)
+    = (Brackets <Substitute e.InBrackets (t.Variable e.Expr)>)
+      <Substitute e.Tail (t.Variable e.Expr)>;
+
+  (CallBrackets (TkName e.FuncName) e.InBrackets)
+  e.Tail (t.Variable e.Expr)
+    = (CallBrackets
+        (TkName e.FuncName)
+        <Substitute e.InBrackets (t.Variable e.Expr)>
+      )
+      <Substitute e.Tail (t.Variable e.Expr)>;
+
+  t.OtherItem e.Tail (t.Variable e.Expr)
+    = t.OtherItem <Substitute e.Tail (t.Variable e.Expr)>;
+
+  /* пусто */ (t.Variable e.Expr)
+    = /* пусто */;
+}
+
+T6 {
+  t.UsedVars
+  e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
+    , <NewVarName t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
+    , <NewVarName t.UsedVars1 'e' e.Index ('_rest')> : t.UsedVars2 e.eX_rest
+    = (
+        e.Items
+        (Brackets (TkVariable e.eX_fix))
+        (TkVariable e.eX_rest)
+        <PassiveHoles t.UsedVars2 e.ItemsAndHoles>
+      );
+}
+
+T7 {
+  t.UsedVars
+  e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
+    , <NewVarName t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
+    , <NewVarName t.UsedVars1 'e' e.Index ('_rest')> : t.UsedVars2 e.eX_rest
+    = (
+        e.Items
+        (TkVariable e.eX_fix) (TkVariable e.eX_rest)
+        <PassiveHoles t.UsedVars2 e.ItemsAndHoles>
+      );
+}
+
+T0 {
+  e.Items = (<DoT0 e.Items>);
+}
+
+DoT0 {
+  (OpenE 'e' e.Index) e.Tail
+    = (Brackets (TkVariable 'e' e.Index)) <DoT0 e.Tail>;
+
+  (Brackets e.InBrackets) e.Tail = (Brackets <DoT0 e.InBrackets>) <DoT0 e.Tail>;
+
+  t.OtherItem e.Tail = t.OtherItem <DoT0 e.Tail>;
+
+  /* пусто */ = /* пусто */;
+}
+
+/**
+  <ConditionSubFunctions
+    s.MarkupContext (e.ConditionName) t.ContName e.Sentence
+  >
+    == (e.CallCheckSentence) e.SubFunctions
+*/
+ConditionSubFunctions {
+  s.MarkupContext (e.ConditionName) t.ContName e.Sentence
+    , e.Sentence
+    : (e.Pattern)
+      (Condition (e.ConditionName) (e.CondResult) (e.CondPattern))
+      e.SentenceTail
+    , e.ConditionName '?' 0 : e.CheckFunction
+    , <ExtractVariables (e.Sentence)> : e.SentenceVariables
+    , <ConditionContext s.MarkupContext e.Pattern> : e.PatternVarsAsExpr
+    , <PatternSteps (e.SentenceVariables) e.Pattern> : e.PatternSteps
+    , <OpenEChain
+        (e.ConditionName) (e.SentenceVariables) t.ContName (e.CheckFunction)
+        (e.PatternVarsAsExpr) (e.CondResult)
+        e.PatternSteps
+      >
+    : (e.ContSentence) e.OpenEFunctions
+    , (
+        GN-Local (e.CheckFunction)
+        ((e.PatternVarsAsExpr e.CondPattern) e.SentenceTail)
+        e.ContSentence
+      )
+    : t.CheckFunction
+    = (
+        (e.Pattern)
+        (
+          (CallBrackets
+            (TkName e.CheckFunction) e.PatternVarsAsExpr e.CondResult
+          )
+        )
+      )
+      t.CheckFunction e.OpenEFunctions;
+}
+
+ConditionContext {
+  s.MarkupContext e.Pattern
+    = <Map
+        (transformer_MakeVariables s.MarkupContext)
+        <Unique <ExtractVariables-Expr e.Pattern>>
+      >;
+}
+
+transformer_MakeVariables {
+  MarkupContext ('e' e.Index)
+    = (TkIdentifier VAR 'e' e.Index) (Brackets (TkVariable 'e' e.Index));
+  MarkupContext (s.VarType e.Index)
+    = (TkIdentifier VAR s.VarType e.Index) (TkVariable s.VarType e.Index);
+
+  NoMarkupContext ('e' e.Index) = (Brackets (TkVariable 'e' e.Index));
+  NoMarkupContext (s.VarType e.Index) = (TkVariable s.VarType e.Index);
+}
+
+OpenEChain {
+  (e.ConditionName) (e.VarNames) NoContinuation
+  (e.CheckFunction) (e.PatternVarsAsExpr) (e.CondResult)
+  ((e.T0)) /* пусто */
+    = (/* пусто */) /* пусто */;
+
+  (e.ConditionName) (e.VarNames) (e.ContName)
+  (e.CheckFunction) (e.PatternVarsAsExpr) (e.CondResult)
+  ((e.T0)) /* пусто */
+    , <NewVarName (e.VarNames) 'e' 0 ('Other')> : (e.NewVarNames) e.eOther
+    = (
+        (
+          (e.PatternVarsAsExpr (TkVariable e.eOther))
+          ((CallBrackets (TkName e.ContName) e.T0))
+        )
+      )
+      /* пусто */;
+
+  (e.ConditionName) (e.VarNames) t.ContName
+  (e.CheckFunction) (e.PatternVarsAsExpr) (e.CondResult)
+  ((e.T0)) e.Templates
+    , e.ConditionName '?' 2 : e.NextForward
+    , <DoOpenEChain
+        (e.ConditionName) 2 (e.NextForward) t.ContName
+        (e.CheckFunction) (e.PatternVarsAsExpr e.CondResult)
+        (/* generated */) e.Templates
+      >
+    : e.NewFunctions
+    , <NewVarName (e.VarNames) 'e' 0 ('Other')> : (e.NewVarNames) e.eOther
+    = (
+        (
+          (e.PatternVarsAsExpr (TkVariable e.eOther))
+          ((CallBrackets (TkName e.NextForward) e.T0))
+        )
+      )
+      e.NewFunctions;
+}
+
+DoOpenEChain {
+  (e.ConditionName) s.CurrentForwardId (e.CurrentForward) t.ContName
+  (e.CheckFunction) (e.CheckFunctionArg)
+  (e.GeneratedFunctions) (e.TemplateSet) /* пусто */
+    , <MakeOpenE-ForwardNext
+        (e.ConditionName) s.CurrentForwardId (e.CurrentForward) t.ContName
+        (e.CheckFunction) (e.CheckFunctionArg)
+        e.TemplateSet
+      >
+    : e.NewFunctions
+    = e.GeneratedFunctions e.NewFunctions;
+
+  (e.ConditionName) s.CurrentForwardId (e.CurrentForward) t.ContName
+  (e.CheckFunction) (e.CheckFunctionArg)
+  (e.GeneratedFunctions) (e.TemplateSet) e.TemplateSets
+    , <+ 2 s.CurrentForwardId> : s.NextForwardId
+    , e.ConditionName '?' s.NextForwardId : e.NextForward
+    , <MakeOpenE-ForwardNext
+        (e.ConditionName) s.CurrentForwardId (e.CurrentForward) (e.NextForward)
+        (e.CheckFunction) (e.CheckFunctionArg)
+        e.TemplateSet
+      >
+    : e.NewFunctions
+    = <DoOpenEChain
+        (e.ConditionName) s.NextForwardId (e.NextForward) t.ContName
+        (e.CheckFunction) (e.CheckFunctionArg)
+        (e.GeneratedFunctions e.NewFunctions) e.TemplateSets
+      >;
+}
+
+MakeOpenE-ForwardNext {
+  (e.ConditionName) s.CurrentForwardId (e.CurrentForwardName) t.ContName
+  (e.CheckFunction) (e.CheckFunctionArg)
+  (e.T1) (e.T2) (e.T3) (e.T4) (e.T5) (e.T5-sub) (e.T6) (e.T7)
+    , e.ConditionName '?' <+ 1 s.CurrentForwardId> : e.NextName
+    , <Substitute e.CheckFunctionArg (e.T5-sub)> : e.CheckFuncArgSubst
+    = (
+        GN-Local (e.CurrentForwardName)
+        ((e.T1) ((CallBrackets (TkName e.NextName) e.T2)))
+        <MakeContinuationSentence t.ContName (e.T3) (e.T4)>
+      )
+      (
+        GN-Local (e.NextName)
+        ((e.T5) ((CallBrackets (TkName e.CheckFunction) e.CheckFuncArgSubst)))
+        <MakeContinuationSentence t.ContName (e.T6) (e.T7)>
+      );
+}
+
+ExtractVariables {
+  e.Sentences = <Unique <ExtractVariables-Sentences e.Sentences>>;
+}
+
+Unique {
+  e.Items-B t.Item e.Items-M t.Item e.Items-E
+    = e.Items-B <Unique e.Items-M t.Item e.Items-E>;
+
+  e.UniqueItems = e.UniqueItems;
+}
+
+ExtractVariables-Sentences {
+  ((e.Pattern) e.Tail) e.Sentences
+    = <ExtractVariables-Expr e.Pattern>
+      <ExtractVariables-Tail e.Tail>
+      <ExtractVariables-Sentences e.Sentences>;
+
+  /* пусто */ = /* пусто */;
+}
+
+ExtractVariables-Tail {
+  (Condition (e.ConditionName) (e.Result) (e.Pattern)) e.Tail
+    = <ExtractVariables-Expr e.Result>
+      <ExtractVariables-Expr e.Pattern>
+      <ExtractVariables-Tail e.Tail>;
+
+  (e.Result) = <ExtractVariables-Expr e.Result>;
+}
+
+ExtractVariables-Expr {
+  (TkVariable s.VarType e.Index) e.Terms
+    = (s.VarType e.Index) <ExtractVariables-Expr e.Terms>;
+
+  (Brackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
+  (CallBrackets (TkName e.Function) e.Inner) e.Terms
+    = <ExtractVariables-Expr e.Inner e.Terms>;
+
+  t.Other e.Terms = <ExtractVariables-Expr e.Terms>;
+
+  /* пусто */ = /* пусто */;
+}
+
+
+NewVarName {
+  (e.Names-B (e.Prefix e.Suffix s.Depth) e.Names-E) e.Prefix s.Depth (e.Suffix)
+    = <DoNewVarName
+        ((e.Prefix e.Suffix s.Depth) e.Names-B e.Names-E)
+        e.Prefix e.Suffix s.Depth 0
+      >;
+
+  (e.Names) e.Prefix s.Depth (e.Suffix)
+    = ((e.Prefix e.Suffix s.Depth) e.Names) e.Prefix e.Suffix s.Depth;
+}
+
+DoNewVarName {
+  (e.Names) e.Prefix s.Depth s.SufNo
+    , e.Prefix <Symb s.SufNo> s.Depth: e.NewName
+    , e.Names
+    : {
+        e.Names-B (e.NewName) e.Names-E
+          = <DoNewVarName
+              ((e.NewName) e.Names-B e.Names-E) e.Prefix <+ s.SufNo 1>
+            >;
+
+        e.Names = ((e.NewName) e.Names) e.NewName;
+      };
+}
+
+Symbol {
+  (TkIdentifier e.Chars) = True;
+  (TkNumber s.Number) = True;
+  (TkChar s.Char) = True;
+  (TkName e.Name) = True;
+  t.Other = False;
+}
+
+/**
+  <Apply t.Function e.Arg> == e.Res
+  t.Function ::= s.FuncName | (t.Function e.Bounded)
+*/
+Apply {
+  s.FuncName e.Arg = <Mu s.FuncName e.Arg>;
+
+  (t.Function e.Bounded) e.Arg = <Apply t.Function e.Bounded e.Arg>;
+}
+
+/**
+  <Map t.Function t.Item*> == <Apply t.Function t.Item>*
+*/
+Map {
+  t.Function t.NextItem e.Items
+    = <Apply t.Function t.NextItem> <Map t.Function e.Items>;
+
+  t.Function /* пусто */ = /* пусто */;
+}

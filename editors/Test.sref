@@ -45,6 +45,8 @@ void f() {
 Main {
   (e.ProgName) =
     <WriteLine 'Arguments not found' 10 12>
+    <WriteLine "A am compound symbol">
+    <WriteLine lowercase _underscore>
     // А вот незакрытая кавычка:
     <WriteLine 'Ooops>;
 

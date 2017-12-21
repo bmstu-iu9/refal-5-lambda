@@ -1,0 +1,17 @@
+$ENTRY Go {
+  = <CheckSizeOf 'csilp'>;
+}
+
+CheckSizeOf {
+  s.Type e.Types
+    = <CheckSizeOf-One s.Type <SizeOf s.Type>>
+      <CheckSizeOf e.Types>;
+
+  /* empty */ = /* that's all */;
+}
+
+CheckSizeOf-One {
+  s.Type s.Size
+    , <Type s.Size> : 'N' s.0 s.Size
+    = <Putout 7 s.Type ' - ' s.Size>;
+}

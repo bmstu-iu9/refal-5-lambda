@@ -26,9 +26,9 @@ $EXTERN GenResult-Opt;
   e.RASLAST ::= t.RASLFunction*
   t.RASLFunction ::=
       (#Function s.ScopeClass (e.Name) t.HiRASLCommand*)
-    | (#NativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code)
+    | (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code)
     | (s.SingularItem s.ScopeClass e.Name)
-    | (#DefineIdent e.Name)
+    | (#CmdDefineIdent e.Name)
     | (#CmdEmitNativeCode t.SrcPos e.Code)
   s.SingularItem ::= #CmdEnum | #CmdSwap | #CmdDeclaration
   t.HiRASLCommand ::=

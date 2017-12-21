@@ -1,35 +1,75 @@
 #!/bin/bash
-source ../../c-plus-plus.conf.sh
+source ../../scripts/load-config.sh ../.. || return 1
+source ../../scripts/platform-specific.sh
+
+LIBDIR=../../src/srlib
 
 run_all_tests() {
-  TEST_CPP_FLAGS="
-    -I../../srlib \
-    -DSTEP_LIMIT=1000 \
-    -DMEMORY_LIMIT=1000 \
-    -DDUMP_FILE=\"__dump.txt\"\
-    -DDONT_PRINT_STATISTICS \
-    -g"
+  COMMON_SRFLAGS=(
+    "-c $CPPLINEE"
+    --exesuffix=$(platform_exe_suffix)
+    -D$(platform_subdir_lookup $LIBDIR)
+    -D$LIBDIR/platform-POSIX
+    -D$LIBDIR
+    -f-DSTEP_LIMIT=1500
+    -f-DMEMORY_LIMIT=1000
+    -f-DIDENTS_LIMIT=100
+    -f-DDUMP_FILE=\\\"__dump.txt\\\"
+    -f-DDONT_PRINT_STATISTICS
+    -f-g
+    refalrts
+    refalrts-platform-POSIX
+    refalrts-platform-specific
+    --chmod-x-command="chmod +x"
+  )
 
-  cp ../../src/srlib/Library.sref .
-  for s in Library.sref $*; do
+  echo Precompile Library.sref
+  cp $LIBDIR/Library.sref .
+  ../../bin/srefc-core "${COMMON_SRFLAGS[@]}" -C Library 2>__error.txt
+  if [ $? -ge 100 ] || [ ! -e Library.rasl ]; then
+    echo COMPILER FAILS ON Library.sref, SEE __error.txt
+    exit 1
+  fi
+  rm __error.txt Library.sref
+  echo
+
+  for s in $*; do
     compile $s
   done
 
   simple_tests ok \
     Library-Math-OK \
+    Library-LongMath-Add-Sub-Compare-OK \
+    Library-LongMath-Mul-OK \
+    Library-LongMath-Divmod-OK \
+    Library-LongMath-Div-OK \
+    Library-LongMath-Mod-OK \
+    Library-LongMath-Numb-OK \
+    Library-LongMath-Symb-OK \
     Library-FOpen-FReadLine-FClose \
-    Library-ExistFile \
     Library-IntFromStr-StrFromInt-Chr-Ord \
     Library-SymbCompare \
-    Library-SymbType
+    Library-Type \
+    Library-Implode-Explode_Ext \
+    Library-FReadBytes \
+    Library-FTell \
+    Library-FSeek \
+    Library-PtrFromName \
+    Library-Sysfun-2
 
   simple_tests fail \
     Library-Math-Fail \
     Library-Math-Div-Fail \
     Library-Math-Mod-Fail \
     Library-FOpen-Fail \
+    Library-FClose-0-Fail \
+    Library-FClose-unopened-Fail \
+    Library-FWrite-unopened-file-Fail \
+    Library-FReadLine-0-Fail \
+    Library-FWriteLine-0-Fail \
     Library-SymbCompare-Fail \
-    Library-SymbType-Fail
+    Library-Implodes-Fail \
+    Library-PtrFromName-Fail
 
   if [ -e Library-WriteLine ]; then
     echo Pass Library-WriteLine test...
@@ -72,73 +112,61 @@ run_all_tests() {
     cleanup Library-ReadLine-2lines-no-eol
   fi
 
-  if [ -e Library-Arg ]; then
-    echo Pass Library-Arg test...
-    ./Library-Arg Hello "Hello, World"
+  if [ -e Library-FOpen-Append ]; then
+    echo Pass Library-FOpen-Append test...
+    run_exe Library-FOpen-Append
+    cleanup Library-FOpen-Append
+  fi
+
+  if [ -e Library-FOpen-extended-mode ]; then
+    echo Pass Library-FOpen-extended-mode test...
+    run_exe Library-FOpen-extended-mode
+    compare __written_file.txt 2lines.txt
+    cleanup Library-FOpen-extended-mode
+  fi
+
+  if [ -e Library-FWriteBytes ]; then
+    echo Pass Library-FWriteBytes test...
+    run_exe Library-FWriteBytes
+    compare __written_file.txt 2lines-no-eol.txt
+    cleanup Library-FWriteBytes
+  fi
+
+  if [ -e Library-RenameFile ]; then
+    echo Pass Library-RenameFile test...
+    cp 2lines.txt source.txt
+    run_exe Library-RenameFile
+    compare __written_file.txt 2lines.txt
+    cleanup Library-RenameFile
+  fi
+
+  if [ -e Library-symbolic-file-handles ]; then
+    echo Pass Library-symbolic-file-handles test...
+    ./Library-symbolic-file-handles < 2lines.txt > __out.txt 2>__err.txt
     if [ $? -gt 0 ]; then
       echo TEST FAILED, SEE __dump.txt
-      exit
-    fi
-    cleanup Library-Arg
-  fi
-
-  if [ -e Library-GetEnv ]; then
-    echo Pass Library-GetEnv test...
-    (
-      export Foo=Bar
-      export NoEnv=
-      run_exe Library-GetEnv
-    )
-    if [ $? -gt 0 ]; then
       exit 1
-    else
-      cleanup Library-GetEnv
     fi
-  fi
-
-  if [ -e Library-Exit ]; then
-    echo Pass Library-Exit test...
-    ./Library-Exit
-    if [ $? -ne 42 ]; then
-      echo "TEST FAILED, ERROR CODE NOT EQUAL 42 ($? != 42)"
-    fi
-    cleanup Library-Exit
-  fi
-
-  if [ -e Library-System ]; then
-    echo Pass Library-System test...
-    run_exe Library-System
     compare __out.txt 2lines.txt
-    cleanup Library-System
+    compare __err.txt 2lines.txt
+    cleanup Library-symbolic-file-handles
   fi
 
-  rm Library.cpp Library.sref
+  rm Library.rasl Library.cpp
 }
 
 compile() {
   echo Compiling $1
   SRC=$1
-  CPP=${SRC%%.sref}.cpp
-  TARGET=${SRC%%.sref}
+  TARGET=${SRC%%.sref}$(platform_exe_suffix)
 
-  ../../bin/srefc-core $SRC 2>__error.txt
-  if [ $? -ge 100 ]; then
+  ../../bin/srefc-core $SRC -o $TARGET "${COMMON_SRFLAGS[@]}" \
+    Library 2>__error.txt
+  if [ $? -ge 100 ] || [ ! -e $TARGET ]; then
     echo COMPILER FAILS ON $SRC, SEE __error.txt
     exit 1
   fi
   rm __error.txt
-  if [ ! -e $CPP ]; then
-    echo COMPILATION FAILED
-    exit 1
-  fi
-
-  if [ "$SRC" != "Library.sref" ]; then
-    $CPPLINE $TEST_CPP_FLAGS -o$TARGET $CPP Library.cpp ../../srlib/refalrts.cpp
-    if [ $? -gt 0 ]; then
-      echo COMPILATION FAILED
-      exit 1
-    fi
-  fi
 }
 
 simple_tests() {
@@ -180,7 +208,8 @@ run_exe() {
 }
 
 cleanup() {
-  rm -f $1 $1.cpp __dump.txt __out.txt __written_file.txt
+  rm -f $1$(platform_exe_suffix) $1.rasl $1.cpp
+  rm -f __dump.txt __out.txt __err.txt __written_file.txt
 }
 
 compare() {

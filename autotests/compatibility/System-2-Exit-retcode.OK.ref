@@ -1,0 +1,45 @@
+$ENTRY Go {
+  = <Main <Arg 1>>;
+}
+
+Main {
+  '++exit'
+    = <Exit <Numb-Arg2>>;
+
+  e.Other
+    = <Eq (3) <System 'retcode 3'>>
+      <Retcode_-3 <System 'retcode -3'>>
+      <Eq (0) <System 'retcode 0'>>
+
+      <Eq (3) <System <Me> ' ++exit 3'>>
+      <Retcode_-3 <System <Me> ' ++exit _3'>>
+      <Eq (0) <System  <Me> ' ++exit 0'>>;
+}
+
+Numb-Arg2 {
+  /* empty */
+    , <Arg 2>
+    : {
+        '_' e.Number = <Numb '-' e.Number>;
+            e.Number = <Numb     e.Number>;
+      }
+}
+
+Eq { (e.X) e.X = <Prout e.X>; }
+
+Retcode_-3 {
+  '-' 3 = ;
+  253 = ;
+}
+
+Me {
+  /* empty */
+    , <Arg 0>
+    : {
+        /* run with refgo, don't work if path contain '+' */
+        e.my-rsl '+' e.external-rsl = 'refgo "' <Arg 0> '"';
+
+        /* run exe */
+        e.only-executable = '"' e.only-executable '"';
+      };
+}

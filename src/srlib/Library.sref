@@ -1,205 +1,929 @@
 %%
 #include <assert.h>
 #include <ctype.h>
+#include <errno.h>
+#include <float.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
+#include <time.h>
 #include <vector>
+
+#include "refalrts-platform-specific.h"
 
 //FROM refalrts
 
 %%
 
 //==============================================================================
-// Библиотека "встроенных" функций
+// Функции стандартной библиотеки Library Простого Рефала
+// и встроенные функции Рефала-5λ
 //==============================================================================
 
-// Основные перечисления
+
+//------------------------------------------------------------------------------
+// Встроенные функции Рефала-5λ
+//------------------------------------------------------------------------------
+
+
+/*
+  <__FindMuPtr e.LocalScope e.FuncName> == s.FuncPtr | []
+*/
+$ENTRY __FindMuPtr {
+  s.Cookie1 s.Cookie2 e.FuncName
+    = <PtrFromName s.Cookie1 s.Cookie2 e.FuncName>
+      <PtrFromName 0 0 e.FuncName>
+    : {
+        s.FnPtr e.Rest = s.FnPtr;
+
+        /* empty */ = /* empty */;
+      };
+}
+
+
+/**
+  <PtrFromName e.Scope e.FuncName> == s.FUNCTION | []
+
+  e.Scope ::= s.Cookie1 s.Cookie2
+  s.Cookie1, s.Cookie2 ::= s.NUMBER
+  e.FuncName ::= s.COMPOUND | s.CHAR*
+*/
+$ENTRY PtrFromName {
+%%
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::Iter pfunc =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  const char *func_name = 0;
+
+  enum { cMaxFuncName = 2000 };
+  char func_name_buffer[cMaxFuncName + 1] = { 0 };
+  unsigned read;
+
+  refalrts::Iter pcookie1 = 0, pcookie2 = 0;
+  if (
+    ! refalrts::svar_left(pcookie1, content_b, content_e)
+    || refalrts::cDataNumber != pcookie1->tag
+    || ! refalrts::svar_left(pcookie2, content_b, content_e)
+    || refalrts::cDataNumber != pcookie2->tag
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  if (refalrts::cDataIdentifier == content_b->tag) {
+    func_name = content_b->ident_info->name();
+    move_left(content_b, content_e);
+  } else if (
+    (
+      read = refalrts::read_chars(
+        func_name_buffer, cMaxFuncName, content_b, content_e
+      )
+    ) != 0
+    && refalrts::empty_seq(content_b, content_e)
+  ) {
+    func_name_buffer[read] = '\0';
+    func_name = func_name_buffer;
+  }
+
+  if (0 == func_name) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::RefalFunction *func_ptr =
+    refalrts::RefalFunction::lookup(
+      pcookie1->number_info, pcookie2->number_info, func_name
+    );
+
+  refalrts::Iter start_garbage = arg_begin;
+  if (func_ptr) {
+    refalrts::reinit_name(arg_begin, func_ptr);
+    start_garbage = pfunc;
+  }
+
+  refalrts::splice_to_freelist(start_garbage, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  2. <Add t.FirstNumber e.SecondNumber> == e.NormedNumber
+
+  t.FirstNumber ::= s.NUMBER | ({'+'|'-'}? s.NUMBER+)
+  e.SecondNumber ::= {'+'|'-'}? s.NUMBER+
+  e.NormedNumber ::= '-'? s.NUMBER+
+*/
+$ENTRY Add {
+  // optimization for two digits
+  s.First s.Second
+    = <__Step-Start> <Add-Digits s.First s.Second> <__Step-End>;
+
+  // TODO: заменить на условия!!!
+  e.ArithmArg
+    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <Add-Normed (e.First) e.Second> <__Step-End>;
+}
+
+NormArithmArg {
+  // TODO: заменить на условия!!!
+  0 e.Second
+    = <NormNumber e.Second> : s.SecondSign e.Second^
+    = (0) s.SecondSign e.Second;
+
+  // TODO: заменить на условия!!!
+  s.First e.Second
+    = <Type s.First> : 'N' s.SubType s.First^
+    = <NormNumber e.Second> : s.SecondSign e.Second^
+    = ('+' s.First) s.SecondSign e.Second;
+
+  // TODO: заменить на условия!!!
+  (e.First) e.Second
+    = <NormNumber e.First> : s.FirstSign e.First^
+    = <NormNumber e.Second> : s.SecondSign e.Second^
+    = (s.FirstSign e.First) s.SecondSign e.Second;
+
+  e.OtherArg = /* empty */;
+}
+
+NormNumber {
+  '+' 0 = 0;
+  '+' 0 e.Digits = <NormNumber '+' e.Digits>;
+
+  '-' 0 = 0;
+  '-' 0 e.Digits = <NormNumber '-' e.Digits>;
+
+  0 = 0;
+  0 e.Digits = <NormNumber '+' e.Digits>;
+
+  // TODO: заменить на условия!!!
+  '+' e.Digits
+    = <AllDigits e.Digits> : #True
+    = '+' e.Digits;
+
+  '-' e.Digits
+    = <AllDigits e.Digits> : #True
+    = '-' e.Digits;
+
+  // TODO: переписать через условия!!!
+  e.Digits
+    = <Type e.Digits>
+    : {
+        'N' s.SubType e.Digits^ = <NormNumber '+' e.Digits>;
+        s.Type s.SubType e.NotIsDigits = /* empty */;
+      };
+}
+
+AllDigits {
+  e.Items = <AllDigits-SwFirst <Type e.Items>>;
+}
+
+AllDigits-SwFirst {
+  'N' s.SubType s.Digit /* empty */ = #True;
+  'N' s.SubType s.Digit e.Items = <AllDigits e.Items>;
+  s.Type s.SubType e.Expr = #False;
+}
+
+Add-Normed {
+  ('+' e.First) '+' e.Second = <Add-Nat (e.First) e.Second>;
+  ('+' e.First) '-' e.Second = <Sub-Nat (e.First) e.Second>;
+  ('+' e.First) 0            = e.First;
+  ('-' e.First) '+' e.Second = <Sub-Nat (e.Second) e.First>;
+  ('-' e.First) '-' e.Second = '-' <Add-Nat (e.First) e.Second>;
+  ('-' e.First) 0            = '-' e.First;
+  (0)           '+' e.Second = e.Second;
+  (0)           e.NegOrZero  = e.NegOrZero;
+}
+
+Add-Nat {
+  (e.First s.FirstLast) e.Second s.SecondLast
+    = <Add-Digits s.FirstLast s.SecondLast>
+    : {
+        s.LastSum = <Add-Nat (e.First) e.Second> s.LastSum;
+        1 s.LastSum = <Add-Nat (e.First) <Add-Nat (e.Second) 1>> s.LastSum;
+      };
+
+  /* one of brackets is empty */
+  (e.First) e.Second = e.First e.Second;
+}
 
 %%
-#define USE_IDENT(ident_name) \
-  (& ident_ ## ident_name<int>::name)
-%%
 
-$LABEL Success;
-$LABEL Fails;
-$LABEL True;
-$LABEL False;
-$LABEL TypeNumber;
-$LABEL TypeCharacter;
-$LABEL TypeFunction;
-$LABEL TypeFile;
-$LABEL TypeIdentifier;
-
-// Математические операции
-
-%%
-#define BINARY(binary) \
-  refalrts::Iter pX = 0, pY = 0; \
-  refalrts::Iter pFunc = refalrts::call_left(pX, pY, arg_begin, arg_end); \
+#define ARITHM_PRELUDE \
+  refalrts::Iter pFirst = 0, pSecond = 0; \
+  refalrts::Iter pFunc \
+    = refalrts::call_left(pFirst, pSecond, arg_begin, arg_end); \
   \
-  if (pX->next != pY) { \
+  if (pFirst->next != pSecond) { \
     return refalrts::cRecognitionImpossible; \
   } \
   \
-  binary \
-  \
-  refalrts::splice_to_freelist(arg_begin, pFunc); \
-  refalrts::splice_to_freelist(pY, arg_end); \
-  return refalrts::cSuccess;
-
-#define ARITHM_BINARY(op, check) \
   if ( \
-    refalrts::cDataNumber != pX->tag \
-    || refalrts::cDataNumber != pY->tag \
+    refalrts::cDataNumber != pFirst->tag \
+    || refalrts::cDataNumber != pSecond->tag \
   ) { \
     return refalrts::cRecognitionImpossible; \
   } \
   \
-  check \
-  \
-  pX->number_info op##= pY->number_info; \
-
-#define ARITHM(op, check) \
-  BINARY(ARITHM_BINARY(op, check))
-
-#define ARITHM_NO_CHECK \
-  /* пусто */
-
-#define ARITHM_ZERODIV \
-  if (0 == pY->number_info) { \
-    /* деление на нуль */ \
-    return refalrts::cRecognitionImpossible; \
-  }
+  refalrts::RefalNumber first = pFirst->number_info; \
+  refalrts::RefalNumber second = pSecond->number_info;
 
 %%
 
-$ENTRY Add {
+Add-Digits {
 %%
-  ARITHM(+, ARITHM_NO_CHECK);
-%%
-}
+  ARITHM_PRELUDE
 
-$ENTRY Sub {
-%%
-  ARITHM(-, ARITHM_NO_CHECK);
-%%
-}
+  refalrts::RefalNumber sum = first + second;
 
-$ENTRY Mul {
-%%
-  ARITHM(*, ARITHM_NO_CHECK);
-%%
-}
-
-$ENTRY Div {
-%%
-  ARITHM(/, ARITHM_ZERODIV);
-%%
-}
-
-$ENTRY Mod {
-%%
-  ARITHM(%, ARITHM_ZERODIV);
-%%
-}
-
-// Ввод-вывод
-
-%%
-refalrts::FnResult write_to_stream(
-  FILE *out, refalrts::Iter str_begin, refalrts::Iter str_end
-) {
-  if (ferror(out)) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  int printf_res = 0;
-
-  for (
-    refalrts::Iter p = str_begin;
-    printf_res >= 0 && ! refalrts::empty_seq(p, str_end);
-    refalrts::move_left(p, str_end)
-  ) {
-    switch(p->tag) {
-      case refalrts::cDataChar:
-        printf_res = fprintf(out, "%c", p->char_info);
-        break;
-
-      case refalrts::cDataNumber:
-        printf_res = fprintf(out, "%lu ", p->number_info);
-        break;
-
-      case refalrts::cDataFunction:
-        printf_res = fprintf(out, "%s ", p->function_info->name);
-        break;
-
-      case refalrts::cDataIdentifier:
-        printf_res = fprintf(out, "%s ", (p->ident_info)());
-        break;
-
-      case refalrts::cDataOpenADT:
-        printf_res = fprintf(out, "[");
-        break;
-
-      case refalrts::cDataCloseADT:
-        printf_res = fprintf(out, "]");
-        break;
-
-      case refalrts::cDataOpenBracket:
-        printf_res = fprintf(out, "(");
-        break;
-
-      case refalrts::cDataCloseBracket:
-        printf_res = fprintf(out, ")");
-        break;
-
-      case refalrts::cDataFile:
-        printf_res = fprintf(out, "*%p", p->file_info);
-        break;
-
-      case refalrts::cDataClosure:
-        printf_res = fprintf(out, "{ ");
-        p = refalrts::unwrap_closure(p);
-        break;
-
-      case refalrts::cDataClosureHead:
-        printf_res = fprintf(out, "[%lu] ", p->number_info);
-        break;
-
-      case refalrts::cDataUnwrappedClosure:
-        printf_res = fprintf(out, "} ");
-        refalrts::wrap_closure(p);
-        break;
-
-      default:
-        refalrts_switch_default_violation(p->tag);
-        // break;
-    }
-  }
-
-  if (printf_res < 0) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  printf_res = fprintf(out, "\n");
-  if (printf_res < 0) {
-    return refalrts::cRecognitionImpossible;
+  if (sum >= first) {
+    pFirst->number_info = sum;
+    refalrts::splice_to_freelist(arg_begin, pFunc);
+    refalrts::splice_to_freelist(pSecond, arg_end);
   } else {
-    return refalrts::cSuccess;
+    pFirst->number_info = 1;
+    pSecond->number_info = sum;
+    refalrts::splice_to_freelist(arg_begin, pFunc);
+    refalrts::splice_to_freelist(arg_end, arg_end);
   }
-}
-%%
 
-$ENTRY WriteLine {
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  3. <Arg s.NUMBER> == e.Arg
+  e.Arg ::= s.CHAR*
+*/
+$ENTRY Arg {
 %%
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
   refalrts::call_left(content_b, content_e, arg_begin, arg_end);
 
-  refalrts::FnResult fnres = write_to_stream(stdout, content_b, content_e);
-  if (fnres != refalrts::cSuccess) {
-    return fnres;
+  refalrts::Iter pparam_no = 0;
+  if (
+    ! refalrts::svar_left(pparam_no, content_b, content_e)
+    || ! refalrts::empty_seq(content_b, content_e)
+    || refalrts::cDataNumber != pparam_no->tag
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  unsigned int param_no = static_cast<unsigned int>(pparam_no->number_info);
+
+  refalrts::Iter param_begin = 0;
+  refalrts::Iter param_end = 0;
+  const char *param = refalrts::arg(param_no);
+
+  if (! refalrts::alloc_string(param_begin, param_end, param)) {
+    return refalrts::cNoMemory;
+  }
+
+  refalrts::splice_evar(arg_begin, param_begin, param_end);
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  4. <Br e.Key '=' e.Value> == []
+*/
+$ENTRY Br {
+  e.Key '=' e.Value
+    = <__Step-Start> <Buried (e.Key '=' e.Value) <Buried>> <__Step-End>;
+}
+
+$SWAP Buried;
+
+
+/**
+  5. <Card> == s.CHAR* 0?
+*/
+$ENTRY Card {
+  = <__Step-Start> <Get-Aux #stdin> <__Step-End>;
+}
+
+
+/**
+  6. <Chr e.Expr> == e.Expr’
+*/
+%%
+namespace {
+
+template <typename Conv>
+refalrts::FnResult convert(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end, Conv conv
+) {
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::Iter pfunc =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  while (! refalrts::empty_seq(content_b, content_e)) {
+    if (conv.for_convert(content_b)) {
+      conv.convert(content_b);
+    }
+
+    if (content_b->tag != refalrts::cDataOpenADT) {
+      refalrts::move_left(content_b, content_e);
+    } else {
+      refalrts::Iter dummy;
+      refalrts::tvar_left(dummy, content_b, content_e);
+    }
+  }
+
+  refalrts::splice_to_freelist(arg_begin, pfunc);
+  refalrts::splice_to_freelist(arg_end, arg_end);
+
+  return refalrts::cSuccess;
+}
+
+struct ChrConv {
+  bool for_convert(refalrts::Iter item) {
+    return refalrts::cDataNumber == item->tag;
+  }
+
+  void convert(refalrts::Iter item) {
+    item->tag = refalrts::cDataChar;
+    item->char_info = static_cast<char>(item->number_info);
+  }
+};
+
+}  // unnamed namespace
+%%
+
+$ENTRY Chr {
+%%
+  return convert(arg_begin, arg_end, ChrConv());
+%%
+}
+
+
+/**
+  7. <Cp e.Key> == e.Value | []
+*/
+$ENTRY Cp {
+  e.Key
+    = <__Step-Start> <Buried>
+    : {
+        e.Values-B (e.Key '=' e.Value) e.Values-E
+          = e.Value
+            <Buried e.Values-B (e.Key '=' e.Value) e.Values-E>
+            <__Step-End>;
+
+        e.Values = <Buried e.Values> <__Step-End>;
+      };
+}
+
+
+/**
+  8. <Dg e.Key> == e.Value | []
+*/
+$ENTRY Dg {
+  e.Key
+    = <__Step-Start> <Buried>
+    : {
+        e.Values-B (e.Key '=' e.Value) e.Values-E
+          = e.Value
+            <Buried e.Values-B e.Values-E>
+            <__Step-End>;
+
+        e.Values = <Buried e.Values> <__Step-End>;
+      };
+}
+
+
+/**
+  9. <Dgall> == (e.Key '=' e.Value)*
+*/
+$ENTRY Dgall {
+  = <__Step-Start> <Buried> <__Step-End>;
+}
+
+
+/**
+  10. <Div t.FirstNumber e.SecondNumber> == e.NormedNumber
+*/
+$ENTRY Div {
+  // optimization for two digits
+  s.First s.Second
+    = <__Step-Start> <Divmod-Digits s.First s.Second> : (s.Div) s.Rem
+    = s.Div <__Step-End>;
+
+  // TODO: заменить на условия!!!
+  e.ArithmArg
+    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <Divmod-Normed (e.First) e.Second> : (e.Div) e.Mod
+    = e.Div <__Step-End>;
+}
+
+
+/**
+  11. <Divmod (e.FirstNumber) e.SecondNumber> == (e.Quotient) e.Remainder
+  e.Quotient, e.Remainder ::= e.NormedNumber
+*/
+$ENTRY Divmod {
+  // optimization for two digits
+  s.First s.Second
+    = <__Step-Start> <Divmod-Digits s.First s.Second> <__Step-End>;
+
+  // TODO: заменить на условия!!!
+  e.ArithmArg
+    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) s.Sign e.Second
+    = '+-' : e.Signs-B s.Sign e.Signs-E   // TODO: тут должно быть условие!!!
+    = <Divmod-Normed (e.First) s.Sign e.Second> <__Step-End>;
+}
+
+Divmod-Digits {
+%%
+  ARITHM_PRELUDE
+
+  if (0 == second) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::Iter pleft_bracket = arg_begin;
+  refalrts::Iter pdiv = pFunc;
+  refalrts::Iter pright_bracket = pFirst;
+  refalrts::Iter pmod = pSecond;
+  refalrts::link_brackets(pleft_bracket, pright_bracket);
+
+  refalrts::reinit_open_bracket(pleft_bracket);
+  refalrts::reinit_number(pdiv, first / second);
+  refalrts::reinit_close_bracket(pright_bracket);
+  refalrts::update_number(pmod, first % second);
+  refalrts::splice_to_freelist(arg_end, arg_end);
+
+  return refalrts::cSuccess;
+%%
+}
+
+Divmod-Normed {
+  ('+' e.First) '+' e.Second = <Divmod-Nat (e.First) e.Second (   ) (   )>;
+  ('+' e.First) '-' e.Second = <Divmod-Nat (e.First) e.Second ('-') (   )>;
+  ('-' e.First) '+' e.Second = <Divmod-Nat (e.First) e.Second ('-') ('-')>;
+  ('-' e.First) '-' e.Second = <Divmod-Nat (e.First) e.Second (   ) ('-')>;
+  (0)           e.AnySecond  = (0) 0;
+}
+
+Divmod-Nat {
+  (s.Numerator) s.Denominator (e.QuotSign) (e.RemSing)
+    = <Divmod-Digits s.Numerator s.Denominator> : (s.Quot) s.Rem
+    = (e.QuotSign s.Quot) e.RemSing s.Rem;
+
+  (e.Numerator) s.DenomFirst e.Denominator (e.QuotSign) (e.RemSing)
+    = s.DenomFirst
+    : {
+%%
+        refalrts::Iter pfunc = arg_begin->next;
+        assert(refalrts::cDataFunction == pfunc->tag);
+
+        refalrts::Iter pvalue = pfunc->next;
+        assert(refalrts::cDataNumber == pvalue->tag);
+
+        refalrts::RefalNumber value = pvalue->number_info;
+        assert(value != 0);
+
+        int shift = 0;
+        while ((value & (1 << 31)) == 0) {
+          ++shift;
+          value <<= 1;
+        }
+
+        refalrts::reinit_number(arg_begin, shift);
+        refalrts::reinit_number(pfunc, 32 - shift);
+        refalrts::splice_to_freelist(pvalue, arg_end);
+        return refalrts::cSuccess;
+%%
+      }
+    : s.NormShift s.RestoreShift
+    = <Divmod-Shl s.NormShift e.Numerator> : e.Numerator^
+    = <Divmod-Shl s.NormShift s.DenomFirst e.Denominator> : e.Denominator^
+    = <Divmod-Nat-Normed (e.Numerator) e.Denominator> : (e.Quot) e.Rem
+    = <Divmod-Shl s.RestoreShift e.Rem> : e.Rem^ 0
+    = (e.QuotSign e.Quot) e.RemSing e.Rem;
+}
+
+Divmod-Shl {
+%%
+  refalrts::Iter digits_b = 0, digits_e = 0;
+  refalrts::call_left(digits_b, digits_e, arg_begin, arg_end);
+
+  refalrts::Iter pshift;
+  if (
+    ! refalrts::svar_left(pshift, digits_b, digits_e)
+    && refalrts::cDataNumber != pshift->tag
+    && refalrts::empty_seq(digits_b, digits_e)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::RefalNumber shift = pshift->number_info;
+  if (shift > 32) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  if (0 == shift) {
+    refalrts::splice_to_freelist(arg_begin, pshift);
+    refalrts::splice_to_freelist(arg_end, arg_end);
+    return refalrts::cSuccess;
+  }
+
+  refalrts::Iter garbage_end = pshift;
+  refalrts::reinit_number(arg_end, 0);
+  if (shift < 32) {
+    refalrts::Iter current = digits_e;
+    while (current != pshift) {
+      current->next->number_info |= current->number_info << shift;
+      current->number_info >>= 32 - shift;
+      current = current->prev;
+    }
+
+    if (0 == digits_b->number_info) {
+      garbage_end = digits_b;
+    }
+  }
+
+  refalrts::splice_to_freelist(arg_begin, garbage_end);
+  return refalrts::cSuccess;
+%%
+}
+
+Divmod-Nat-Normed {
+  (e.Numerator) e.Denominator
+    = <Divmod-Align (0) (e.Numerator) () e.Denominator>;
+}
+
+Divmod-Align {
+  (e.Numerator) (s.N e.NumerRest) (e.Denominator) s.D e.DenominRest
+    = <Divmod-Align
+        (e.Numerator s.N) (e.NumerRest) (e.Denominator s.D) e.DenominRest
+      >;
+
+  (e.Numerator) (e.NumerRest) (e.Denominator) /* empty */
+    = <Divmod-CalcDigits (e.Numerator) (e.NumerRest) e.Denominator>
+    : e.Quot (e.Rest)
+    = (<LeadingZeros e.Quot>) e.Rest;
+
+  (0 e.Numerator) () (e.Denominator) e.DenominRest = (0) e.Numerator;
+}
+
+Divmod-CalcDigits {
+  (e.Numerator) (e.NumerRest) e.Denominator
+    = <Divmod-GetNextDigit (e.Numerator) e.Denominator> : s.QuotDigit e.Rem
+    = e.NumerRest
+    : {
+        s.NextDigit e.NumerRest^
+          = s.QuotDigit
+            <Divmod-CalcDigits
+              (e.Rem s.NextDigit) (e.NumerRest) e.Denominator
+            >;
+
+        /* empty */ = s.QuotDigit (e.Rem);
+      };
+}
+
+Divmod-GetNextDigit {
+  (s.N1 s.N2) s.D = <Divmod-GuessDigit s.N1 s.N2 s.D>;
+
+  (s.N1 s.N2 e.Numerator) s.D e.Denominator
+    = <Divmod-GuessDigit s.N1 s.N2 s.D> : s.QuotDigit s.RemDigit
+    = <Divmod-AdjustDigit
+        s.QuotDigit
+        <Sub-Normed
+          ('+' <LeadingZeros s.N1 s.N2 e.Numerator>)
+          '+' <Mul-Nat-Line s.D e.Denominator s.QuotDigit>
+        >
+        (s.D e.Denominator)
+      >;
+}
+
+Divmod-AdjustDigit {
+  s.QuotDigit '-' e.Rem (e.Denominator)
+    = <Divmod-AdjustDigit
+        <Sub-Digits s.QuotDigit 1> <Sub-Nat (e.Denominator) e.Rem>
+        (e.Denominator)
+      >;
+
+  s.QuotDigit e.Rem (e.Denominator) = s.QuotDigit e.Rem;
+}
+
+%%
+namespace {
+
+void long_mul(
+  refalrts::UInt32& res_high, refalrts::UInt32& res_low,
+  refalrts::UInt32 first, refalrts::UInt32 second
+);
+
+}  // unnamed namespace
+%%
+
+Divmod-GuessDigit {
+%%
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::Iter pfunc =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter pN1 = 0, pN2 = 0, pD = 0;
+  if (
+    ! refalrts::svar_left(pN1, content_b, content_e)
+    || refalrts::cDataNumber != pN1->tag
+    || ! refalrts::svar_left(pN2, content_b, content_e)
+    || refalrts::cDataNumber != pN2->tag
+    || ! refalrts::svar_left(pD, content_b, content_e)
+    || refalrts::cDataNumber != pD->tag
+    || ! refalrts::empty_seq(content_b, content_e)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+
+  using refalrts::UInt32;
+  UInt32 num_hi = pN1->number_info;
+  UInt32 num_lo = pN2->number_info;
+  UInt32 denom = pD->number_info;
+
+  if (num_hi >= denom) {
+    refalrts::reinit_number(arg_begin, 4294967295U);
+    refalrts::reinit_char(pfunc, '*');
+    refalrts::splice_to_freelist(pN1, arg_end);
+    return refalrts::cSuccess;
+  }
+
+  if (num_hi >= denom || (denom & (1 << 31)) == 0) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  UInt32 denom_half_hi = denom >> 16;
+  UInt32 quot_hi = num_hi / denom_half_hi;
+  if (quot_hi >= 65536) {
+    quot_hi = 65535;
+  }
+
+  UInt32 subst_hi, subst_lo;
+  while (true) {
+    long_mul(subst_hi, subst_lo, quot_hi << 16, denom);
+
+    if (subst_hi < num_hi || (subst_hi == num_hi && subst_lo <= num_lo)) {
+      break;
+    }
+    --quot_hi;
+  }
+
+  if (subst_lo > num_lo) {
+    --num_hi;
+  }
+  num_lo -= subst_lo;
+  num_hi -= subst_hi;
+
+  assert(num_hi < 65536);
+
+  UInt32 num_major = (num_hi << 16) | (num_lo >> 16);
+  assert(num_major < denom);
+  UInt32 quot_lo = (num_major) / denom_half_hi;
+
+  while (true) {
+    long_mul(subst_hi, subst_lo, quot_lo, denom);
+
+    if (subst_hi < num_hi || (subst_hi == num_hi && subst_lo <= num_lo)) {
+      break;
+    }
+    --quot_lo;
+  }
+
+  if (subst_lo > num_lo) {
+    --num_hi;
+  }
+  num_lo -= subst_lo;
+  num_hi -= subst_hi;
+
+  assert(num_hi == 0);
+
+  UInt32 quot = (quot_hi << 16) + quot_lo;
+  UInt32 rem = num_lo;
+
+  refalrts::reinit_number(arg_begin, quot);
+  refalrts::reinit_number(pfunc, rem);
+  refalrts::splice_to_freelist(pN1, arg_end);
+
+  return refalrts::cSuccess;
+%%
+}
+
+
+
+/**
+  12. <Explode s.COMPOUND> == s.CHAR*
+*/
+$ENTRY Explode {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter pident = 0;
+  if (
+    ! refalrts::svar_right(pident, content_b, content_e)
+    || refalrts::cDataIdentifier != pident->tag
+    || ! refalrts::empty_seq(content_b, content_e)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::reset_allocator();
+  if (
+    ! refalrts::alloc_string(content_b, content_e, pident->ident_info->name())
+  ) {
+    return refalrts::cNoMemory;
+  }
+
+  refalrts::splice_evar(arg_begin, content_b, content_e);
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  13. <First s.N e.Prefix e.Suffix> == (e.Prefix) e.Suffix, |e.Prefix| == s.N
+      <First s.N e.Expr> == (e.Expr), |e.Expr| < s.N
+      s.N ::= s.NUMBER
+*/
+$ENTRY First {
+  s.N e.Expr = <__Step-Start> <DoFirst s.N () e.Expr> <__Step-End>;
+}
+
+DoFirst {
+  0 (e.Prefix) e.Suffix = (e.Prefix) e.Suffix;
+
+  s.N (e.Prefix) /* empty */ = (e.Prefix) /* empty */;
+
+  s.N (e.Prefix) t.Next e.Suffix
+    = <DoFirst <Sub-Digits s.N 1> (e.Prefix t.Next) e.Suffix>;
+}
+
+
+/**
+  14. <Get s.FileNo> == s.CHAR* 0?
+*/
+$ENTRY Get {
+  s.FileNo
+    = <__Step-Start>
+      <Autoopen 'r' s.FileNo> <Get-Aux <ZeroHandle s.FileNo #stdin>>
+      <__Step-End>;
+}
+
+ZeroHandle {
+  0 s.Default = s.Default;
+  s.FileNo s.Default = s.FileNo;
+}
+
+$LABEL stdin, stdout, stderr, stout;
+
+%%
+namespace {
+
+#define USE_IDENT(ident_name) (ident_ ## ident_name)
+
+enum { cMaxFileHandles = 40 };
+FILE *g_file_handles[cMaxFileHandles];
+
+bool file_handle_left(
+  refalrts::Iter& pfile_handle, refalrts::Iter& first, refalrts::Iter& last
+) {
+  return refalrts::svar_left(pfile_handle, first, last)
+    && (
+      refalrts::cDataNumber == pfile_handle->tag
+      || (
+        refalrts::cDataIdentifier == pfile_handle->tag
+        && (
+          USE_IDENT(stdin) == pfile_handle->ident_info
+          || USE_IDENT(stdout) == pfile_handle->ident_info
+          || USE_IDENT(stderr) == pfile_handle->ident_info
+          || USE_IDENT(stout) == pfile_handle->ident_info
+        )
+      )
+    );
+}
+
+void close_all_files_at_exit(void *) {
+  for (size_t i = 0; i < cMaxFileHandles; ++i) {
+    if (g_file_handles[i] != 0) {
+      fclose(g_file_handles[i]);
+      g_file_handles[i] = 0;    // на всякий случай
+    }
+  }
+}
+
+FILE *extract_file_handle(refalrts::Iter pfile_handle) {
+  assert(
+    refalrts::cDataNumber == pfile_handle->tag
+    || refalrts::cDataIdentifier == pfile_handle->tag
+  );
+
+  if (refalrts::cDataNumber == pfile_handle->tag) {
+    refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
+
+    if (file_no == 0) {
+      return 0;
+    }
+
+    return g_file_handles[file_no];
+  } else if (refalrts::cDataIdentifier == pfile_handle->tag) {
+    return
+      USE_IDENT(stdin) == pfile_handle->ident_info ? stdin :
+      USE_IDENT(stdout) == pfile_handle->ident_info ? stdout :
+      USE_IDENT(stderr) == pfile_handle->ident_info ? stderr : stdout;
+  } else {
+    refalrts_switch_default_violation(pfile_handle->tag);
+  }
+}
+
+bool release_file_handle(refalrts::Iter pfile_handle) {
+  if (refalrts::cDataIdentifier == pfile_handle->tag) {
+    return true;
+  }
+
+  assert(refalrts::cDataNumber == pfile_handle->tag);
+
+  refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
+
+  assert(g_file_handles[file_no] != 0);
+
+  bool successful_closed = EOF != fclose(g_file_handles[file_no]);
+  g_file_handles[file_no] = 0;
+  return successful_closed;
+}
+
+bool open_handle(
+  refalrts::RefalNumber file_no, const char *filename, const char *mode
+) {
+  if (0 != g_file_handles[file_no]) {
+    return false;
+  }
+
+  char default_name[sizeof("REFAL4294967296.DAT")];
+  if ((filename == 0 || strlen(filename) == 0)) {
+    sprintf(default_name, "REFAL%d.DAT", file_no);
+    filename = default_name;
+  }
+
+  refalrts::at_exit(close_all_files_at_exit, 0);
+  return (g_file_handles[file_no] = fopen(filename, mode)) != 0;
+}
+
+bool reopen_handle(
+  refalrts::Iter pfile_handle, const char *filename, const char *mode
+) {
+  assert(refalrts::cDataNumber == pfile_handle->tag);
+
+  refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
+
+  if (g_file_handles[file_no] != 0) {
+    if (! release_file_handle(pfile_handle)) {
+      return false;
+    }
+  }
+
+  return open_handle(file_no, filename, mode);
+}
+
+}  // unnamed namespace
+%%
+
+Autoopen {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter pmode = 0;
+  refalrts::Iter pfile_handle = 0;
+  if (
+    ! refalrts::svar_left(pmode, content_b, content_e)
+    || refalrts::cDataChar != pmode->tag
+    || ('r' != pmode->char_info && 'w' != pmode->char_info)
+    || ! file_handle_left(pfile_handle, content_b, content_e)
+    || ! refalrts::empty_seq(content_b, content_e)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  bool success = true;
+  if (refalrts::cDataNumber == pfile_handle->tag) {
+    refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
+
+    if (0 != file_no && 0 == g_file_handles[file_no]) {
+      char default_mode[] = { pmode->char_info, '\0' };
+      success = open_handle(file_no, 0, default_mode);
+    }
+  }
+
+  if (! success) {
+    return refalrts::cRecognitionImpossible;
   }
 
   refalrts::splice_to_freelist(arg_begin, arg_end);
@@ -207,7 +931,7 @@ $ENTRY WriteLine {
 %%
 }
 
-$ENTRY FWriteLine {
+Get-Aux {
 %%
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
@@ -216,67 +940,842 @@ $ENTRY FWriteLine {
   refalrts::Iter pfile_handle = 0;
 
   if (
-    ! refalrts::svar_left(pfile_handle, content_b, content_e)
-    || refalrts::cDataFile != pfile_handle->tag
+    ! file_handle_left(pfile_handle, content_b, content_e)
+    || ! refalrts::empty_seq(content_b, content_e)
   ) {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = static_cast<FILE*>(pfile_handle->file_info);
-  refalrts::FnResult fnres = write_to_stream(handle, content_b, content_e);
-  if (fnres != refalrts::cSuccess) {
-    return fnres;
+  refalrts::reset_allocator();
+
+  FILE *handle = extract_file_handle(pfile_handle);
+  if (! handle) {
+    return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::splice_stvar(arg_begin, pfile_handle);
+  refalrts::Iter dummy = 0;
+  int cur_char;
+  while ((cur_char = getc(handle)) != EOF && cur_char != '\n') {
+    /*
+      Пользуемся тем фактом, что в данной реализации размещёные в свободной
+      памяти узлы располагаются в последовательных адресах.
+    */
+    if (! refalrts::alloc_char(dummy, static_cast<char>(cur_char))) {
+      return refalrts::cNoMemory;
+    }
+  }
+
+  if (cur_char == EOF) {
+    if (! refalrts::alloc_number(dummy, 0UL)) {
+      return refalrts::cNoMemory;
+    }
+  }
+
+  refalrts::splice_from_freelist(arg_begin);
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
 
+
+/**
+  15. <Implode e.NameChars e.NotNameTerms> == s.COMPOUND e.NotNameTerms
+      <Implode e.NotNameTerms> == 0 e.NotNameTerms
+*/
+$ENTRY Implode {
+  // TODO: заменить на условия!!!
+  s.Init e.Tail
+    = <__Step-Start> <Type s.Init>
+    : {
+        'L' s.SubType s.Init^ = <DoImplode (s.Init) e.Tail> <__Step-End>;
+
+        s.Type s.SubType s.Init^ = 0 s.Init e.Tail <__Step-End>;
+      };
+
+  e.InvalidExpr = 0 e.InvalidExpr;
+}
+
+DoImplode {
+  (e.Scanned) '-' e.Tail = <DoImplode (e.Scanned '-') e.Tail>;
+  (e.Scanned) '_' e.Tail = <DoImplode (e.Scanned '_') e.Tail>;
+  (e.Scanned) '$' e.Tail = <DoImplode (e.Scanned '$') e.Tail>;
+
+  // TODO: заменить на условия!!!
+  (e.Scanned) s.Next e.Tail
+    = <Type s.Next>
+    : {
+        'L' s.SubType s.Lettern = <DoImplode (e.Scanned s.Lettern) e.Tail>;
+        'D' s.SubType s.Digit = <DoImplode (e.Scanned s.Digit) e.Tail>;
+
+        s.Type s.SubType s.Other = <Implode_Ext e.Scanned> s.Other e.Tail;
+      };
+
+  (e.Scanned) e.Other = <Implode_Ext e.Scanned> e.Other;
+}
+
+
+/**
+  16. <Last s.N e.Prefix e.Suffix> == (e.Prefix) e.Suffix, |e.Suffix| == s.N
+      <Last s.N e.Expr> == () e.Expr, |e.Expr| < s.N
+*/
+$ENTRY Last {
+  s.N e.Expr = <__Step-Start> <DoLast s.N (e.Expr)> <__Step-End>;
+}
+
+DoLast {
+  0 (e.Prefix) e.Suffix = (e.Prefix) e.Suffix;
+
+  s.N (/* empty */) e.Suffix = (/* empty */) e.Suffix;
+
+  s.N (e.Prefix t.Next) e.Suffix
+    = <DoLast <Sub-Digits s.N 1> (e.Prefix) t.Next e.Suffix>;
+}
+
+
+/**
+  17. <Lenw e.Expr> == s.N e.Expr, where s.N == |e.Expr|
+*/
+$ENTRY Lenw {
+  e.Expr = <__Step-Start> <DoLenw 0 e.Expr> <__Step-End>;
+}
+
+DoLenw {
+  s.Len /* empty */ = s.Len;
+  s.Len e.Expr t.Term = <DoLenw <Add-Digits s.Len 1> e.Expr> t.Term;
+}
+
+
+/**
+  18. <Lower e.Expr> == e.Expr’
+*/
 %%
-refalrts::FnResult read_from_stream(
-  FILE *input, refalrts::Iter& begin, refalrts::Iter& end
+namespace {
+
+struct LowerConv {
+  bool for_convert(refalrts::Iter item) {
+    return refalrts::cDataChar == item->tag;
+  }
+
+  void convert(refalrts::Iter item) {
+    item->char_info = static_cast<char>(tolower(item->char_info));
+  }
+};
+
+}  // unnamed namespace
+%%
+
+$ENTRY Lower {
+%%
+  return convert(arg_begin, arg_end, LowerConv());
+%%
+}
+
+
+/**
+  19. <Mod t.FirstNumber e.SecondNumber> == e.NormedNumber
+*/
+$ENTRY Mod {
+  // optimization for two digits
+  s.First s.Second
+    = <__Step-Start> <Divmod-Digits s.First s.Second> : (s.Div) s.Mod
+    = s.Mod <__Step-End>;
+
+  // TODO: заменить на условия!!!
+  e.ArithmArg
+    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <Divmod-Normed (e.First) e.Second> : (e.Div) e.Mod
+    = e.Mod <__Step-End>;
+}
+
+
+
+/**
+  20. <Mul t.FirstNumber e.SecondNumber> == e.NormedNumber
+*/
+$ENTRY Mul {
+  // optimization for two digits
+  s.First s.Second = <__Step-Start> <Mul-Digits s.First s.Second> <__Step-End>;
+
+  // TODO: заменить на условия!!!
+  e.ArithmArg
+    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <Mul-Normed (e.First) e.Second> <__Step-End>;
+}
+
+%%
+namespace {
+
+void long_mul(
+  refalrts::UInt32& res_high, refalrts::UInt32& res_low,
+  refalrts::UInt32 first, refalrts::UInt32 second
 ) {
-  begin = 0;
-  end = 0;
+  /*
+    Double-word multiplication scheme:
 
-  int cur_char;
-  while ((cur_char = getc(input)) != EOF && cur_char != '\n') {
-    /*
-      Пользуемся тем фактом, что в данной реализации размещёные в свободной
-      памяти узлы располагаются в последовательных адресах.
-    */
-    if (! refalrts::alloc_char(end, static_cast<char>(cur_char))) {
-      return refalrts::cNoMemory;
-    }
+    (x,y,z,t) = (F,i)*(S,e)     -- first * second
 
-    if (begin == 0) {
-      begin = end;
-    }
+       S   e        (A,a) = F * S
+     ---------      (B,b) = i * S
+     |\ b|\ d|      (C,c) = F * e
+    i| \ | \ |t     (D,d) = i * e
+     |B \|D \|
+     ---------      t = d
+     |\ a|\ c|      (Z,z) = b + D + c
+    F| \ | \ |z     (Y,y) = B + a + C + Z
+     |A \|C \|      x = A + Y
+     ---------
+       x   y        (x,y) = (A, a) + B + C + Z
+  */
+
+  using refalrts::UInt32;
+
+  UInt32 F = first >> 16;
+  UInt32 i = first & 0xFFFFU;
+  UInt32 S = second >> 16;
+  UInt32 e = second & 0xFFFFU;
+
+  UInt32 Aa = F * S;
+  UInt32 Bb = i * S;
+  UInt32 Cc = F * e;
+  UInt32 Dd = i * e;
+
+  UInt32 Zz = (Bb & 0xFFFFU) + (Dd >> 16) + (Cc & 0xFFFFU);
+  res_low = (Zz << 16) + (Dd & 0xFFFFU);
+  res_high = Aa + (Bb >> 16) + (Cc >> 16) + (Zz >> 16);
+}
+
+}  // unnamed namespace
+%%
+
+Mul-Digits {
+%%
+  ARITHM_PRELUDE
+
+  refalrts::UInt32 res_high, res_low;
+  long_mul(res_high, res_low, first, second);
+
+  if (res_high > 0) {
+    refalrts::reinit_number(arg_begin, res_high);
+    refalrts::reinit_number(pFunc, res_low);
+    refalrts::splice_to_freelist(pFirst, arg_end);
+  } else {
+    refalrts::reinit_number(arg_begin, res_low);
+    refalrts::splice_to_freelist(pFunc, arg_end);
   }
-
-  if (cur_char == EOF) {
-    if (! refalrts::alloc_number(end, 0UL)) {
-      return refalrts::cNoMemory;
-    }
-
-    if (begin == 0) {
-      begin = end;
-    }
-  }
-
-  if (begin == 0) assert (end == 0);
-  if (begin != 0) assert (end != 0);
 
   return refalrts::cSuccess;
-}
 %%
+}
 
-$ENTRY ReadLine {
+Mul-Normed {
+  ('+' e.First) '+' e.Second = <Mul-Nat (e.First) e.Second>;
+  ('+' e.First) '-' e.Second = '-' <Mul-Nat (e.First) e.Second>;
+  ('+' e.First) 0            = 0;
+  ('-' e.First) '+' e.Second = '-' <Mul-Nat (e.First) e.Second>;
+  ('-' e.First) '-' e.Second = <Mul-Nat (e.First) e.Second>;
+  ('-' e.First) 0            = 0;
+  (0)           e.AnySecond  = 0;
+}
+
+Mul-Nat {
+  (e.First) s.SecondLast = <Mul-Nat-Line e.First s.SecondLast>;
+
+  (e.First) e.Second s.SecondLast
+    = <Add-Nat
+        (<Mul-Nat (e.First) e.Second> 0) <Mul-Nat-Line e.First s.SecondLast>
+      >;
+}
+
+Mul-Nat-Line {
+  s.FirstLast s.Second = <Mul-Digits s.FirstLast s.Second>;
+
+  e.First s.FirstLast s.Second
+    = <Mul-Digits s.FirstLast s.Second>
+    : {
+        s.MulHigh s.MulLow
+          = <Add-Nat (<Mul-Nat-Line e.First s.Second>) s.MulHigh> s.MulLow;
+
+        s.MulLow = <Mul-Nat-Line e.First s.Second> s.MulLow;
+      };
+}
+
+
+/**
+  21. <Numb {'+'|'-'}? s.DIGIT-CHAR* e.NotDigitChars> == '-'? s.MACRODIGIT+
+*/
+$ENTRY Numb {
+  '-' e.String = <__Step-Start> <Neg <Numb-Aux e.String>> <__Step-End>;
+
+  '+' e.String = <__Step-Start> <Numb-Aux e.String> <__Step-End>;
+
+  e.String = <__Step-Start> <Numb-Aux e.String> <__Step-End>;
+}
+
+Numb-Aux {
+  e.String = <DoNumb Numb-Ok Numb-Fail () e.String>;
+}
+
+DoNumb {
+  s.Ok s.Fail (e.Digits) '0' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 0) e.Rest>;
+  s.Ok s.Fail (e.Digits) '1' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 1) e.Rest>;
+  s.Ok s.Fail (e.Digits) '2' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 2) e.Rest>;
+  s.Ok s.Fail (e.Digits) '3' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 3) e.Rest>;
+  s.Ok s.Fail (e.Digits) '4' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 4) e.Rest>;
+  s.Ok s.Fail (e.Digits) '5' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 5) e.Rest>;
+  s.Ok s.Fail (e.Digits) '6' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 6) e.Rest>;
+  s.Ok s.Fail (e.Digits) '7' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 7) e.Rest>;
+  s.Ok s.Fail (e.Digits) '8' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 8) e.Rest>;
+  s.Ok s.Fail (e.Digits) '9' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 9) e.Rest>;
+
+  s.Ok s.Fail () e.Rest = <s.Fail e.Rest>;
+  s.Ok s.Fail (e.Digits) e.Rest = <s.Ok (<Numb-Wrap e.Digits>) e.Rest>;
+}
+
+Numb-Ok {
+  (e.Number) e.Rest = e.Number;
+}
+
+Numb-Fail {
+  e.Rest = 0;
+}
+
+Numb-Wrap {
+  e.Digits = <DoNumb-Wrap (0) e.Digits>;
+}
+
+DoNumb-Wrap {
+  (e.Result) s.NextDigit e.Digits
+    = <DoNumb-Wrap
+        (<Add-Nat (<Mul-Nat-Line e.Result 10>) s.NextDigit>) e.Digits
+      >;
+
+  (e.Result) = e.Result;
+}
+
+
+/**
+  22. <Open s.Mode s.FileNo e.FileName> == []
+  s.Mode ::=
+      'r' | 'w' | 'a'
+    | 'R' | 'W' | 'A'
+    | s.COMPOUND | (s.CHAR*)
+*/
+$ENTRY Open {
 %%
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  std::string mode;
+
+  refalrts::Iter mode_b = 0;
+  refalrts::Iter mode_e = 0;
+  refalrts::Iter pmode = 0;
+
+  if (! refalrts::tvar_left(pmode, content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  if (refalrts::char_term('r', pmode) || refalrts::char_term('R', pmode)) {
+    mode = "r";
+  } else if (
+    refalrts::char_term('w', pmode) || refalrts::char_term('W', pmode)
+  ) {
+    mode = "w";
+  } else if (
+    refalrts::char_term('a', pmode) || refalrts::char_term('A', pmode)
+  ) {
+    mode = "a";
+  } else if (refalrts::brackets_term(mode_b, mode_e, pmode)) {
+    char mode_str[100] = { '\0' };  // должно хватить
+    unsigned len =
+      refalrts::read_chars(mode_str, sizeof(mode_str) - 1, mode_b, mode_e);
+
+    if (! refalrts::empty_seq(mode_b, mode_e) || len == 0) {
+      return refalrts::cRecognitionImpossible;
+    }
+
+    mode = mode_str;
+  } else if (refalrts::cDataIdentifier == pmode->tag) {
+    mode = pmode->ident_info->name();
+  } else {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::Iter pfile_handle = 0;
+  if (
+    ! file_handle_left(pfile_handle, content_b, content_e)
+    || refalrts::cDataNumber != pfile_handle->tag
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  char filename[FILENAME_MAX + 1] = { '\0' };
+  refalrts::read_chars(filename, FILENAME_MAX, content_b, content_e);
+
+  if (! refalrts::empty_seq(content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  if (! reopen_handle(pfile_handle, filename, mode.c_str())) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  23. <Ord e.Expr> == e.Expr’
+*/
+%%
+namespace {
+
+struct OrdConv {
+  bool for_convert(refalrts::Iter item) {
+    return refalrts::cDataChar == item->tag;
+  }
+
+  void convert(refalrts::Iter item) {
+    item->tag = refalrts::cDataNumber;
+    item->number_info = static_cast<unsigned char>(item->char_info);
+  }
+};
+
+}  // unnamed namespace
+%%
+
+$ENTRY Ord {
+%%
+  return convert(arg_begin, arg_end, OrdConv());
+%%
+}
+
+
+/**
+  24. <Print e.AnyExpression> == e.AnyExpression
+*/
+$ENTRY Print {
+  e.AnyExpression
+    = <__Step-Start> <Put-Aux #stdout e.AnyExpression> <__Step-End>;
+}
+
+
+/**
+  25. <Prout e.AnyExpression> == []
+*/
+$ENTRY Prout {
+  e.AnyExpression
+    = <__Step-Start> <Putout-Aux #stdout e.AnyExpression> <__Step-End>;
+}
+
+/**
+  Proud and Trout is synonyms for Prout :-)
+*/
+$ENTRY Proud { e.AnyExpression = <Prout e.AnyExpression>; }
+$ENTRY Trout { e.AnyExpression = <Prout e.AnyExpression>; }
+
+
+/**
+  26. <Put s.FileNo e.AnyExpression> == e.AnyExpression
+*/
+$ENTRY Put {
+  s.FileNo e.AnyExpression
+    = <__Step-Start>
+      <Autoopen 'w' s.FileNo>
+      <Put-Aux <ZeroHandle s.FileNo #stderr> e.AnyExpression>
+      <__Step-End>;
+}
+
+%%
+namespace {
+
+enum {
+  cFlags_ReturnHandle   = 1 << 3,
+  cFlags_Transparent    = 1 << 5,
+  cFlags_NoEOL          = 1 << 8,
+};
+
+extern refalrts::FnResult fwrite_line(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
+);
+
+}  // unnamed namespace
+%%
+
+Put-Aux {
+%%
+  return fwrite_line(arg_begin, arg_end, cFlags_Transparent);
+%%
+}
+
+%%
+namespace {
+
+refalrts::FnResult fwrite_line(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
+) {
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter pfile_handle = 0;
+
+  if (! file_handle_left(pfile_handle, content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  FILE *handle = extract_file_handle(pfile_handle);
+  if (! handle) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  if (ferror(handle)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  int printf_res = 0;
+
+  for (
+    refalrts::Iter p = content_b, end = content_e;
+    printf_res >= 0 && ! refalrts::empty_seq(p, end);
+    refalrts::move_left(p, end)
+  ) {
+    switch(p->tag) {
+      case refalrts::cDataChar:
+        printf_res = fprintf(handle, "%c", p->char_info);
+        break;
+
+      case refalrts::cDataNumber:
+        printf_res = fprintf(handle, "%u ", p->number_info);
+        break;
+
+      case refalrts::cDataFunction:
+        printf_res = fprintf(handle, "%s ", p->function_info->name.name);
+        break;
+
+      case refalrts::cDataIdentifier:
+        printf_res = fprintf(handle, "%s ", p->ident_info->name());
+        break;
+
+      case refalrts::cDataOpenADT:
+        printf_res = fprintf(handle, "[");
+        break;
+
+      case refalrts::cDataCloseADT:
+        printf_res = fprintf(handle, "]");
+        break;
+
+      case refalrts::cDataOpenBracket:
+        printf_res = fprintf(handle, "(");
+        break;
+
+      case refalrts::cDataCloseBracket:
+        printf_res = fprintf(handle, ")");
+        break;
+
+      case refalrts::cDataFile:
+        printf_res = fprintf(handle, "*%p", p->file_info);
+        break;
+
+      case refalrts::cDataClosure:
+        printf_res = fprintf(handle, "{ ");
+        p = refalrts::unwrap_closure(p);
+        break;
+
+      case refalrts::cDataClosureHead:
+        printf_res = fprintf(handle, "[%u] ", p->number_info);
+        break;
+
+      case refalrts::cDataUnwrappedClosure:
+        printf_res = fprintf(handle, "} ");
+        refalrts::wrap_closure(p);
+        break;
+
+      default:
+        refalrts_switch_default_violation(p->tag);
+    }
+  }
+
+  if (printf_res >= 0 && ! (flags & cFlags_NoEOL)) {
+    printf_res = fprintf(handle, "\n");
+  }
+
+  if (printf_res < 0) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::Iter res = arg_begin;
+  if (flags & cFlags_Transparent) {
+    res = refalrts::splice_evar(res, content_b, content_e);
+  }
+
+  if (flags & cFlags_ReturnHandle) {
+    refalrts::splice_stvar(res, pfile_handle);
+  }
+
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
+}
+
+}  // unnamed namespace
+%%
+
+
+/**
+  27. <Putout s.FileNo e.AnyExpression> == []
+*/
+$ENTRY Putout {
+  s.FileNo e.AnyExpression
+    = <__Step-Start>
+      <Autoopen 'w' s.FileNo>
+      <Putout-Aux <ZeroHandle s.FileNo #stderr> e.AnyExpression>
+      <__Step-End>;
+}
+
+Putout-Aux {
+%%
+  return fwrite_line(arg_begin, arg_end, 0);
+%%
+}
+
+
+/**
+  28. <Rp e.Key '=' e.Value> == []
+*/
+$ENTRY Rp {
+  e.Key '=' e.NewValue
+    = <__Step-Start> <Buried>
+    : {
+        e.Values-B (e.Key '=' e.OldValue) e.Values-E
+          = <Buried e.Values-B (e.Key '=' e.NewValue) e.Values-E>
+            <__Step-End>;
+
+        e.Values
+          = <Buried (e.Key '=' e.NewValue) e.Values> <__Step-End>;
+      };
+}
+
+
+/**
+  29. <Step> == s.NUMBER
+*/
+%%
+namespace {
+
+extern unsigned long raw_step();
+
+extern unsigned long g_correction;
+
+}  // unnamed namespace
+%%
+
+$ENTRY Step {
+%%
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::Iter pfunc =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  if (! refalrts::empty_seq(content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::RefalNumber step =
+    static_cast<refalrts::RefalNumber>(raw_step() - g_correction);
+
+  refalrts::reinit_number(arg_begin, step);
+  refalrts::splice_to_freelist(pfunc, arg_end);
+
+  return refalrts::cSuccess;
+%%
+}
+
+%%
+namespace {
+
+unsigned long raw_step() {
+  unsigned long perfomance_counters[
+    refalrts::cPerformanceCounter_COUNTERS_NUMBER
+  ];
+
+  refalrts::read_performance_counters(perfomance_counters);
+  return perfomance_counters[refalrts::cPerformanceCounter_TotalSteps];
+}
+
+unsigned long g_correction = 1;  // call of Go is not countered
+
+unsigned long g_start_step = 0;
+
+}  // unnamed namespace
+%%
+
+/*
+  <__Step-Start e.Any> == []
+  <__Step-End e.Any> == []
+*/
+$ENTRY __Step-Start {
+%%
+  if (0 != g_start_step) {
+    return refalrts::cRecognitionImpossible;
+  }
+  g_start_step = raw_step();
+
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+$ENTRY __Step-End {
+%%
+  if (0 == g_start_step) {
+    return refalrts::cRecognitionImpossible;
+  }
+  g_correction += (raw_step() - g_start_step) + 1;
+  g_start_step = 0;
+
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  30. <Sub t.FirstNumber e.SecondNumber> == e.NormedNumber
+*/
+$ENTRY Sub {
+  // optimization for two digits
+  s.First s.Second = <Sub-Digits s.First s.Second>;
+
+  // TODO: заменить на условия!!!
+  e.ArithmArg
+    = <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <Sub-Normed (e.First) e.Second>;
+}
+
+Sub-Digits {
+%%
+  ARITHM_PRELUDE
+
+  if (first >= second) {
+    refalrts::reinit_number(arg_begin, first - second);
+    refalrts::splice_to_freelist(pFunc, arg_end);
+  } else {
+    refalrts::reinit_char(arg_begin, '-');
+    refalrts::reinit_number(pFunc, second - first);
+    refalrts::splice_to_freelist(pFirst, arg_end);
+  }
+
+  return refalrts::cSuccess;
+%%
+}
+
+Sub-Normed {
+  ('+' e.First) '+' e.Second = <Sub-Nat (e.First) e.Second>;
+  ('+' e.First) '-' e.Second = <Add-Nat (e.First) e.Second>;
+  ('+' e.First) 0            = e.First;
+  ('-' e.First) '+' e.Second = '-' <Add-Nat (e.First) e.Second>;
+  ('-' e.First) '-' e.Second = <Neg <Sub-Nat (e.First) e.Second>>;
+  ('-' e.First) 0            = '-' e.First;
+  (0)           '+' e.Second = '-' e.Second;
+  (0)           '-' e.Second = e.Second;
+  (0)           0            = 0;
+}
+
+Neg {
+  0 = 0;
+  '-' e.Digits = e.Digits;
+  e.Digits = '-' e.Digits;
+}
+
+Sub-Nat {
+  (e.First) e.Second
+    = <Compare-Nat (e.First) e.Second>
+    : {
+        '+' = <Sub-Nat-Nat (e.First) e.Second>;
+        '-' = '-' <Sub-Nat-Nat (e.Second) e.First>;
+        '0' = 0;
+      };
+}
+
+Sub-Nat-Nat {
+  (e.First) e.Second = <LeadingZeros <DoSub-Nat-Nat (e.First) e.Second>>;
+}
+
+DoSub-Nat-Nat {
+  (e.First s.FirstLast) e.Second s.SecondLast
+    = s.FirstLast s.SecondLast
+    : {
+%%
+        ARITHM_PRELUDE
+
+        refalrts::RefalNumber diff = first - second;
+
+        if (diff <= first) {
+          pFirst->number_info = diff;
+          refalrts::splice_to_freelist(arg_begin, pFunc);
+          refalrts::splice_to_freelist(pSecond, arg_end);
+        } else {
+          refalrts::reinit_char(pFirst, '*');
+          pSecond->number_info = diff;
+          refalrts::splice_to_freelist(arg_begin, pFunc);
+          refalrts::splice_to_freelist(arg_end, arg_end);
+        }
+
+        return refalrts::cSuccess;
+%%
+      }
+    : {
+        s.LastDigit = <DoSub-Nat-Nat (e.First) e.Second> s.LastDigit;
+
+        '*' s.LastDigit
+          = <DoSub-Nat-Nat (<Sub-Nat-Nat (e.First) 1>) e.Second> s.LastDigit;
+      };
+
+  (e.First) /* empty */ = e.First;
+}
+
+LeadingZeros {
+  0 = 0;
+  0 e.Digits = <LeadingZeros e.Digits>;
+  e.Digits = e.Digits;
+}
+
+/**
+  31. <Symb e.Sign s.NUMBER+> == e.Sign s.CHAR-DIGIT+
+  e.Sign ::= {'+'|'-'}?
+*/
+$ENTRY Symb {
+  s.First e.Tail
+    = <__Step-Start> <NormNumber s.First e.Tail>
+    : s.NormedSign e.NormedNumber
+    = s.First s.NormedSign
+    : {
+        0 0 = '0' <__Step-End>;
+        s.Sign 0 = s.Sign '0' <__Step-End>;
+        s.Sign s.Sign = s.Sign <Symb-Nat e.NormedNumber> <__Step-End>;
+        s.Digit '+' = <Symb-Nat e.NormedNumber> <__Step-End>;
+      };
+}
+
+Symb-Nat {
+  s.Number = <StrFromInt s.Number>;
+
+  e.Number
+    = <Divmod-Nat (e.Number) 1000000000 () ()> : (e.Div) s.Mod
+    = <DoLast 9 ('000000000' <StrFromInt s.Mod>)> : (e.Zeros) e.StrDigits
+    = <Symb-Nat e.Div> e.StrDigits;
+}
+
+
+/**
+  32. <Time> == e.Time
+      e.Time ::= s.CHAR+  — represents time as ctime() format
+*/
+$ENTRY Time {
+%%
+  refalrts::Iter content_b = 0, content_e = 0;
   refalrts::call_left(content_b, content_e, arg_begin, arg_end);
 
   if (! refalrts::empty_seq(content_b, content_e)) {
@@ -285,50 +1784,547 @@ $ENTRY ReadLine {
 
   refalrts::reset_allocator();
 
-  refalrts::Iter str_begin, str_end;
-  refalrts::FnResult fn_result = read_from_stream(stdin, str_begin, str_end);
-  if (fn_result != refalrts::cSuccess) {
-    return fn_result;
+  time_t timer;
+  time(&timer);
+  char *str_time = ctime(&timer);
+
+  char *newline = strchr(str_time, '\n');
+  if (newline) {
+    *newline = '\0';
   }
 
-  refalrts::splice_evar(arg_begin, str_begin, str_end);
+  if (! refalrts::alloc_string(content_b, content_e, str_time)) {
+    return refalrts::cNoMemory;
+  }
+
+  refalrts::splice_evar(arg_begin, content_b, content_e);
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
 
-$ENTRY FReadLine {
+
+/**
+  33. <Type e.Expr> == s.Type s.SubType e.Expr
+
+  s.Type and s.SubType describes begin of e.Expr
+
+  s.Type s.SubType ::=
+      'Lu' -- latin uppercase letter
+    | 'Ll' -- latin lowercase letter
+    | 'D0' -- decimal digit
+    | 'Wi' -- identifier (compound symbol that can be written w/o quotes)
+    | 'Wq' -- other compound symbol (must be enclosed to "...")
+    | 'N0' -- macrodigit
+    | 'Pu' -- uppercase printable symbol (isupper(c) returns true)
+    | 'Pl' -- lowercase printable symbol
+    | 'Ou' -- uppercase other symbol (isupper(c) returns true)
+    | 'Ol' -- lowercase other symbol
+    | 'B0' -- structure brackets (parenthesis)
+    | '*0' -- e.Expr is empty expression
+
+      -- extensions of Refal-5λ
+    | 'H0' -- handle (pointer, refalrts::Node::file_info)
+    | 'Fg' -- global function
+    | 'Fc' -- closure capturing context
+    | 'Ba' -- ADT brackets [square brackets]
+*/
+$ENTRY Type {
 %%
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
-  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
 
-  refalrts::Iter pfile_handle = 0;
+  char type = '*';
+  char subtype = '0';
 
-  if (
-    ! refalrts::svar_left(pfile_handle, content_b, content_e)
-    || ! refalrts::empty_seq(content_b, content_e)
-    || refalrts::cDataFile != pfile_handle->tag
-  ) {
-    return refalrts::cRecognitionImpossible;
+  if (! refalrts::empty_seq(content_b, content_e)) {
+    switch (content_b->tag) {
+    case refalrts::cDataChar:
+      {
+        char ch = content_b->char_info;
+
+        if (isdigit(ch)) {
+          type = 'D';
+        } else {
+          if (isalpha(ch)) {
+            type = 'L';
+          } else if (isprint(ch)) {
+            type = 'P';
+          } else {
+            type = 'O';
+          }
+
+          if (isupper(ch)) {
+            subtype = 'u';
+          } else {
+            subtype = 'l';
+          }
+        }
+      }
+      break;
+
+    case refalrts::cDataNumber:
+      type = 'N';
+      break;
+
+    case refalrts::cDataFunction:
+      type = 'F';
+      subtype = 'g';
+      break;
+
+    case refalrts::cDataIdentifier:
+      {
+        const char *name = content_b->ident_info->name();
+
+        type = 'W';
+        subtype = 'q';
+        if (isalpha(*name)) {
+          while (
+            *name != '\0' && (isalnum(*name) || *name == '_' || *name == '-')
+          ) {
+            ++name;
+          }
+
+          if (*name == '\0') {
+            subtype = 'i';
+          }
+        }
+      }
+      break;
+
+    case refalrts::cDataOpenADT:
+      type = 'B';
+      subtype = 'a';
+      break;
+
+    case refalrts::cDataOpenBracket:
+      type = 'B';
+      break;
+
+    case refalrts::cDataFile:
+      type = 'H';
+      break;
+
+    case refalrts::cDataClosure:
+      type = 'F';
+      subtype = 'c';
+      break;
+
+    default:
+      refalrts_switch_default_violation(content_b->tag);
+      // break;
+    }
   }
 
-  refalrts::reset_allocator();
+  refalrts::reinit_char(arg_begin, type);
+  refalrts::reinit_char(pfunc_name, subtype);
+  refalrts::splice_to_freelist(arg_end, arg_end);
 
-  FILE *handle = static_cast<FILE*>(pfile_handle->file_info);
-  refalrts::Iter str_begin, str_end;
-  refalrts::FnResult fn_result = read_from_stream(handle, str_begin, str_end);
-  if (fn_result != refalrts::cSuccess) {
-    return fn_result;
-  }
-
-  refalrts::Iter res = refalrts::splice_evar(arg_begin, str_begin, str_end);
-  refalrts::splice_stvar(res, pfile_handle);
-  refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
 
+
+/**
+  34. <Upper e.Expr> == e.Expr’
+*/
+%%
+namespace {
+
+struct UpperConv {
+  bool for_convert(refalrts::Iter item) {
+    return refalrts::cDataChar == item->tag;
+  }
+
+  void convert(refalrts::Iter item) {
+    item->char_info = static_cast<char>(toupper(item->char_info));
+  }
+};
+
+}  // unnamed namespace
+%%
+
+$ENTRY Upper {
+%%
+  return convert(arg_begin, arg_end, UpperConv());
+%%
+}
+
+
+/**
+  35. <Sysfun 1 e.FileName> == e.ObjectExpression
+      <Sysfun 2 e.FileName (s.Width e.ObjectExpression)> == []
+      e.FileName ::= s.CHAR+
+      s.Width ::= s.MACRODIGIT
+*/
+$ENTRY Sysfun {
+  1 e.FileName = <__Step-Start> <Sysfun-Xxin e.FileName> <__Step-End>;
+
+  2 e.FileName (s.Width e.ObjectExpression)
+    = <__Step-Start>
+      <Sysfun-Xxout e.FileName (s.Width e.ObjectExpression)>
+      <__Step-End>;
+}
+
+Sysfun-Xxin {
+  e.FileName
+    = <ExistFile e.FileName>
+    : {
+        #True
+          = <FOpen 'r' e.FileName> : s.FileNo
+          = <Xxin-Scan s.FileNo #General ('^') <Type <Get-Aux s.FileNo>>>;
+
+        #False = /* empty */;
+      };
+}
+
+Xxin-Scan {
+  s.FileNo s.State (t.Stack e.Scanned) '*' s.0
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned) <Type <Get-Aux s.FileNo>>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '\\' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\\') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '\'' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\'') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '\"' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\"') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '(' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '(') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S ')' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned ')') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '<' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '<') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '>' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '>') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S 'n' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\n') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S 't' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\t') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S 'r' e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\r') <Type e.Tail>>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S 'x' e.Tail
+    = <Xxin-Scan
+        s.FileNo #Escape-Hex ((s.State t.Stack e.Scanned)) <Type e.Tail>
+      >;
+
+  s.FileNo #Escape-Hex ((s.State t.Stack e.Scanned) s.D1 s.D2) s.T s.S e.Tail
+    = <Xxin-Scan
+        s.FileNo
+        s.State (t.Stack e.Scanned <Chr <Add-Digits <Mul-Digits s.D1 16> s.D2>>)
+        s.T s.S e.Tail
+      >;
+
+  s.FileNo
+  #Escape-Hex ((s.State t.Stack e.Scanned) e.Digits)
+  s.T s.S s.Char e.Tail
+    = <HexDigit s.Char>
+    : {
+        s.Digit
+          = <Xxin-Scan
+              s.FileNo
+              #Escape-Hex ((s.State t.Stack e.Scanned) e.Digits s.Digit)
+              <Type e.Tail>
+            >;
+
+        /* empty */
+          = <Sysfun-Xxin-ERROR 'Unknown escape sequence \\x' s.Char>;
+      };
+
+  s.FileNo
+  #Escape-Hex ((s.State t.Stack e.Scanned) e.Digits)
+  'N' s.0 0
+    = <Sysfun-Xxin-ERROR 'Unexpected EOF in \\x...'>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) 'N' s.0 0
+    = <Sysfun-Xxin-ERROR 'Unexpected EOF in escape sequence'>;
+
+  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S s.Next e.Tail
+    = <Sysfun-Xxin-ERROR 'Bad escape sequence \\' s.Next>;
+
+  s.FileNo s.State (t.Stack e.Scanned) s.T s.S '\\' e.Tail
+    = <Xxin-Scan s.FileNo #Escape ((s.State t.Stack e.Scanned)) <Type e.Tail>>;
+
+  s.FileNo #General (t.Stack e.Scanned) s.T s.S '(' e.Tail
+    = <Xxin-Scan
+        s.FileNo #General ((#General t.Stack e.Scanned)) <Type e.Tail>
+      >;
+
+  s.FileNo #General ((#General t.Stack e.Scanned) e.Inner) s.T s.S ')' e.Tail
+    = <Xxin-Scan s.FileNo #General (t.Stack e.Scanned (e.Inner)) <Type e.Tail>>;
+
+  s.FileNo #General ('^' e.Scanned) s.T s.S ')' e.Tail
+    = <Sysfun-Xxin-ERROR 'Unbalanced )'>;
+
+  // EXIT FROM RECURSION
+  s.FileNo #General ('^' e.Scanned) 'N' s.0 0 = <FClose s.FileNo> e.Scanned;
+
+  s.FileNo #General ((#General t.Stack e.Scanned) e.Inner) 'N' s.0 0
+    = <Sysfun-Xxin-ERROR 'Unbalanced ('>;
+
+  s.FileNo #General (t.Stack e.Scanned) s.S s.T '\'' e.Tail
+    = <Xxin-Scan
+        s.FileNo #Quote ((#General t.Stack e.Scanned) '\'') <Type e.Tail>
+      >;
+
+  s.FileNo #General (t.Stack e.Scanned) s.S s.T '"' e.Tail
+    = <Xxin-Scan
+        s.FileNo #Quote ((#General t.Stack e.Scanned) '"') <Type e.Tail>
+      >;
+
+  s.FileNo
+  #Quote ((#General t.Stack e.Scanned) s.Quote e.Quotten)
+  s.S s.T s.Quote e.Tail
+    = <Xxin-Scan
+        s.FileNo
+        #General (t.Stack e.Scanned <Quote s.Quote e.Quotten>)
+        <Type e.Tail>
+      >;
+
+  s.FileNo #Quote ((#General t.Stack e.Scanned) s.Quote e.Quotten) 'N' s.0 0
+    = <Sysfun-Xxin-ERROR 'Unexpected EOF in ' s.Quote '...'>;
+
+  s.FileNo #General (t.Stack e.Scanned) 'L' s.S s.Letter e.Tail
+    = <Xxin-Scan
+        s.FileNo #Word ((#General t.Stack e.Scanned) s.Letter) <Type e.Tail>
+      >;
+
+  s.FileNo #Word (t.Stack e.Scanned) 'L' s.S s.Letter e.Tail
+    = <Xxin-Scan s.FileNo #Word (t.Stack e.Scanned s.Letter) <Type e.Tail>>;
+
+  s.FileNo #Word (t.Stack e.Scanned) 'D' s.0 s.Digit e.Tail
+    = <Xxin-Scan s.FileNo #Word (t.Stack e.Scanned s.Digit) <Type e.Tail>>;
+
+  s.FileNo #Word (t.Stack e.Scanned) s.T s.S '-' e.Tail
+    = <Xxin-Scan s.FileNo #Word (t.Stack e.Scanned '-') <Type e.Tail>>;
+
+  s.FileNo #Word (t.Stack e.Scanned) s.T s.S '_' e.Tail
+    = <Xxin-Scan s.FileNo #Word (t.Stack e.Scanned '_') <Type e.Tail>>;
+
+  s.FileNo #Word ((#General t.Stack e.Scanned) e.Word) s.T s.S ' ' e.Tail
+    = <Xxin-Scan
+        s.FileNo #General (t.Stack e.Scanned <Implode_Ext e.Word>) <Type e.Tail>
+      >;
+
+  s.FileNo #Word (t.Stack e.Scanned) 'N' s.0 0 /* EOF */
+    = <Sysfun-Xxin-ERROR 'Unexpected EOF while reading word'>;
+
+  s.FileNo #Word (t.Stack e.Scanned) s.T s.S s.Other e.Tail
+    = <Sysfun-Xxin-ERROR 'Unexpected "' s.Other '" while reading word'>;
+
+  s.FileNo #General (t.Stack e.Scanned) 'D' s.0 s.Digit e.Tail
+    = <Xxin-Scan
+        s.FileNo #Number ((#General t.Stack e.Scanned) s.Digit) <Type e.Tail>
+      >;
+
+  s.FileNo #Number (t.Stack e.Scanned) 'D' s.0 s.Digit e.Tail
+    = <Xxin-Scan s.FileNo #Number (t.Stack e.Scanned s.Digit) <Type e.Tail>>;
+
+  s.FileNo #Number ((#General t.Stack e.Scanned) e.Number) s.T s.S ' ' e.Tail
+    = <Numb-Aux e.Number>
+    : {
+        s.OneMacroDigit
+          = <Xxin-Scan
+              s.FileNo
+              #General (t.Stack e.Scanned s.OneMacroDigit)
+              <Type e.Tail>
+            >;
+
+        e.SeveralMacrodigits
+          = <Sysfun-Xxin-ERROR 'Very long macrodigit is read'>;
+      };
+
+  s.FileNo #Number (t.Stack e.Scanned) 'N' s.0 0 /* EOF */
+    = <Sysfun-Xxin-ERROR 'Unexpected EOF while reading macrodigit'>;
+
+  s.FileNo #Number (t.Stack e.Scanned) s.T s.S s.Other e.Tail
+    = <Sysfun-Xxin-ERROR 'Unexpected "' s.Other '" while reading macrodigit'>;
+
+  s.FileNo #General (t.Stack e.Scanned) s.T s.S ' ' e.Tail
+    = <Xxin-Scan s.FileNo #General (t.Stack e.Scanned) <Type e.Tail>>;
+
+  s.FileNo s.State (t.Stack e.Scanned) s.T s.S s.Other e.Tail
+    = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned s.Other) <Type e.Tail>>;
+}
+
+HexDigit {
+  '0' = 0;  '1' = 1;  '2' = 2;  '3' = 3;  '4' = 4;
+  '5' = 5;  '6' = 6;  '7' = 7;  '8' = 8;  '9' = 9;
+
+  'A' = 10; 'B' = 11; 'C' = 12; 'D' = 13; 'E' = 14; 'F' = 15;
+  'a' = 10; 'b' = 11; 'c' = 12; 'd' = 13; 'e' = 14; 'f' = 15;
+
+  s.Other = /* empty */;
+}
+
+$ENUM Sysfun-Xxin-ERROR;
+
+Quote {
+  '\'' e.Text = e.Text;
+  '"' e.Text = <Implode_Ext e.Text>;
+}
+
+Sysfun-Xxout {
+  e.FileName (s.Width e.Expression)
+    = <Xxout-Wrap
+        <FOpen 'w' e.FileName> s.Width
+        <Xxout-Scan <Type e.Expression>>
+      >;
+}
+
+Xxout-Wrap {
+  s.FileNo s.Width e.Text
+    = <DoFirst s.Width () e.Text>
+    : {
+        (e.Line) /* empty */ = <Write-Aux s.FileNo e.Line> <FClose s.FileNo>;
+
+        (e.Line) e.Rest
+          = <Putout-Aux s.FileNo e.Line>
+            <Xxout-Wrap s.FileNo s.Width e.Rest>;
+      };
+}
+
+Xxout-Scan {
+  'L' s.S s.Letter e.Tail
+    = <Xxout-Chars () 'L' s.S s.Letter e.Tail> : (e.Chars) s.T s.S^ e.Tail^
+    = '' e.Chars '' <Xxout-Scan s.T s.S e.Tail>;
+
+  'D' s.0 s.Digit e.Tail
+    = <Xxout-Chars () 'D' s.0 s.Digit e.Tail> : (e.Chars) s.T s.S e.Tail^
+    = '' e.Chars '' <Xxout-Scan s.T s.S e.Tail>;
+
+  'Wi' s.Word e.Tail = <Explode s.Word> ' ' <Xxout-Scan <Type e.Tail>>;
+
+  'Wq' s.Compound e.Tail
+    = <Xxout-Chars () <Type <Explode s.Compound>>> : (e.Chars) '*' s.0
+    = '"' e.Chars '"' <Xxout-Scan <Type e.Tail>>;
+
+  'N' s.0 s.Number e.Tail
+    = <StrFromInt s.Number> ' ' <Xxout-Scan <Type e.Tail>>;
+
+  'P' s.S s.Printable e.Tail
+    = <Xxout-Chars () 'P' s.S s.Printable e.Tail> : (e.Chars) s.T s.S^ e.Tail^
+    = '' e.Chars '' <Xxout-Scan s.T s.S e.Tail>;
+
+  'O' s.S s.Other e.Tail
+    = <Xxout-Chars () 'O' s.S s.Other e.Tail> : (e.Chars) s.T s.S^ e.Tail^
+    = '' e.Chars '' <Xxout-Scan s.T s.S e.Tail>;
+
+  'B' s.0 (e.Inner) e.Tail
+    = '(' <Xxout-Scan <Type e.Inner>> ')' <Xxout-Scan <Type e.Tail>>;
+
+  '*' s.0 /* empty */ = /* empty */;
+}
+
+/* TODO: uncomment with conditions
+Xxout-Chars {
+  (e.Scanned) s.T s.S s.Escaped e.Tail
+    , ('\\\\') ('\'\'') ('""') ('((') ('))')
+      ('<<') ('>>') ('\nn') ('\tt') ('\rr')
+    : e.Escaped-B (s.Escaped e.Replace) e.Escaped-E
+    = <Xxout-Chars (e.Scanned '\\' e.Replace) <Type e.Tail>>;
+
+  (e.Scanned) 'L' s.S s.Letter e.Tail
+    = <Xxout-Chars (e.Scanned s.Letter) <Type e.Tail>>;
+
+  (e.Scanned) 'D' s.S s.Digit e.Tail
+    = <Xxout-Chars (e.Scanned s.Digit) <Type e.Tail>>;
+
+  (e.Scanned) 'W' s.S s.Word e.Tail = (e.Scanned) 'W' s.S s.Word e.Tail;
+
+  (e.Scanned) 'N' s.0 s.Number e.Tail = (e.Scanned) 'N' s.0 s.Number e.Tail;
+
+  (e.Scanned) 'P' s.S s.Printable e.Tail
+    = <Xxout-Chars (e.Scanned s.Printable) <Type e.Tail>>;
+
+  (e.Scanned) 'O' s.S s.Other e.Tail
+    = <Divmod-Digits <Ord s.Other> 16> : (s.Hi) s.Low
+    = <Xxout-Chars (e.Scanned '\\x' <Hex s.Hi> <Hex s.Low>) <Type e.Tail>>;
+
+  (e.Scanned) 'B' s.0 (e.Inner) e.Tail = (e.Scanned) 'B' s.0 (e.Inner) e.Tail;
+
+  (e.Scanned) '*' s.0 /+* empty *+/ = (e.Scanned) '*' s.0 /+* empty *+/;
+}
+*/
+
+Xxout-Chars {
+  (e.Scanned) s.T s.S s.Char e.Tail
+    = ('\\\\') ('\'\'') ('""') ('((') ('))')
+      ('<<') ('>>') ('\nn') ('\tt') ('\rr')
+    : {
+        e.Escaped-B (s.Char e.Replace) e.Escaped-E
+          = <Xxout-Chars (e.Scanned '\\' e.Replace) <Type e.Tail>>;
+
+        e.Escaped
+          = s.T s.S s.Char
+          : {
+              'L' s.S^ s.Letter
+                = <Xxout-Chars (e.Scanned s.Letter) <Type e.Tail>>;
+
+              'D' s.S^ s.Digit
+                = <Xxout-Chars (e.Scanned s.Digit) <Type e.Tail>>;
+
+              'W' s.S^ s.Word = (e.Scanned) 'W' s.S s.Word e.Tail;
+
+              'N' s.0 s.Number = (e.Scanned) 'N' s.0 s.Number e.Tail;
+
+              'P' s.S^ s.Printable
+                = <Xxout-Chars (e.Scanned s.Printable) <Type e.Tail>>;
+
+              'O' s.S^ s.Other
+                = <Divmod-Digits <Ord s.Other> 16> : (s.Hi) s.Low
+                = <Xxout-Chars
+                    (e.Scanned '\\x' <Hex s.Hi> <Hex s.Low>) <Type e.Tail>
+                  >;
+            };
+      };
+
+  (e.Scanned) 'B' s.0 (e.Inner) e.Tail = (e.Scanned) 'B' s.0 (e.Inner) e.Tail;
+
+  (e.Scanned) '*' s.0 /* empty */ = (e.Scanned) '*' s.0 /* empty */;
+}
+
+Hex {
+   0 = '0';  1 = '1';  2 = '2';  3 = '3';
+   4 = '4';  5 = '5';  6 = '6';  7 = '7';
+   8 = '8';  9 = '9'; 10 = 'A'; 11 = 'B';
+  12 = 'C'; 13 = 'D'; 14 = 'E'; 15 = 'F';
+}
+
+
+/**
+  45. Freeze — not implemented yet
+*/
+$EENUM Freeze;
+
+
+/**
+  46. Freezer — not implemented yet
+*/
+$EENUM Freezer;
+
+
+/**
+  47. Dn — not implemented yet
+*/
+$EENUM Dn;
+
+
+/**
+  51. <GetEnv e.EnvVar> == e.EnvValue
+  e.EnvVar, e.EnvValue ::= s.CHAR*
+*/
 %%
 namespace {
 
@@ -364,131 +2360,8 @@ refalrts::FnResult string_from_seq(
   }
 }
 
-} // unnamed namespace
+}  // unnamed namespace
 %%
-
-$ENTRY FOpen {
-%%
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::Iter pfunc_name =
-    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  const char *mode;
-
-  if (refalrts::char_left('r', content_b, content_e)) {
-    mode = "r";
-  } else if (refalrts::char_left('w', content_b, content_e)) {
-    mode = "w";
-  } else {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  char filename[FILENAME_MAX + 1] = { '\0' };
-  unsigned len = read_chars(filename, FILENAME_MAX, content_b, content_e);
-
-  if (! refalrts::empty_seq(content_b, content_e) || len == 0) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  if (FILE *f = fopen(filename, mode)) {
-    refalrts::Iter file_ptr = arg_begin;
-    file_ptr->tag = refalrts::cDataFile;
-    file_ptr->file_info = f;
-  } else {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  refalrts::splice_to_freelist(pfunc_name, arg_end);
-  return refalrts::cSuccess;
-%%
-}
-
-$ENTRY FClose {
-%%
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  refalrts::Iter pfile_handle = 0;
-  if (
-    ! refalrts::svar_left(pfile_handle, content_b, content_e)
-    || ! refalrts::empty_seq(content_b, content_e)
-    || refalrts::cDataFile != pfile_handle->tag
-  ) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  FILE *handle = static_cast<FILE*>(pfile_handle->file_info);
-  if (EOF == fclose(handle)) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  refalrts::splice_to_freelist(arg_begin, arg_end);
-  return refalrts::cSuccess;
-%%
-}
-
-$ENTRY Arg {
-%%
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  refalrts::Iter pparam_no = 0;
-  if (
-    ! refalrts::svar_left(pparam_no, content_b, content_e)
-    || ! refalrts::empty_seq(content_b, content_e)
-    || refalrts::cDataNumber != pparam_no->tag
-  ) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  unsigned int param_no = static_cast<unsigned int>(pparam_no->number_info);
-
-  refalrts::Iter param_begin = 0;
-  refalrts::Iter param_end = 0;
-  const char *param = refalrts::arg(param_no);
-
-  if (! refalrts::alloc_string(param_begin, param_end, param)) {
-    return refalrts::cNoMemory;
-  }
-
-  refalrts::splice_evar(arg_begin, param_begin, param_end);
-  refalrts::splice_to_freelist(arg_begin, arg_end);
-  return refalrts::cSuccess;
-%%
-}
-
-$ENTRY ExistFile {
-%%
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::Iter pfunc_name =
-    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  char filename[FILENAME_MAX + 1] = { '\0' };
-  unsigned len = read_chars(filename, FILENAME_MAX, content_b, content_e);
-
-  if (! refalrts::empty_seq(content_b, content_e) || len == 0) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  refalrts::Iter ans = arg_begin;
-  if (FILE *f = fopen(filename, "r")) {
-    // Файл существует
-    fclose(f);
-
-    refalrts::reinit_ident(ans, USE_IDENT(True));
-  } else {
-    // Файл по-видимому не существует
-    refalrts::reinit_ident(ans, USE_IDENT(False));
-  }
-
-  refalrts::splice_to_freelist(pfunc_name, arg_end);
-  return refalrts::cSuccess;
-%%
-}
 
 $ENTRY GetEnv {
 %%
@@ -523,32 +2396,17 @@ $ENTRY GetEnv {
 %%
 }
 
-$ENTRY Exit {
-%%
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
 
-  refalrts::Iter pretcode = 0;
-  if (
-    ! refalrts::svar_left(pretcode, content_b, content_e)
-    || ! refalrts::empty_seq(content_b, content_e)
-    || refalrts::cDataNumber != pretcode->tag
-  ) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  refalrts::set_return_code(pretcode->number_info);
-  refalrts::splice_to_freelist(arg_begin, arg_end);
-  return refalrts::cExit;
-%%
-}
-
+/**
+  52. <System e.Command> == '-'? s.NUMBER
+  e.Command ::= s.CHAR
+*/
 $ENTRY System {
 %%
   refalrts::Iter command_b = 0;
   refalrts::Iter command_e = 0;
-  refalrts::call_left(command_b, command_e, arg_begin, arg_end);
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(command_b, command_e, arg_begin, arg_end);
 
   std::vector<char> command;
   refalrts::FnResult command_res =
@@ -561,60 +2419,912 @@ $ENTRY System {
   fflush(stdout);
   fflush(stderr);
 
-  system(&command[0]);
+  int ret = refalrts::api::system(&command[0]);
 
   refalrts::reset_allocator();
+  if (ret < 0) {
+    refalrts::Iter minus = 0;
+    if (! refalrts::alloc_char(minus, '-')) {
+      return refalrts::cNoMemory;
+    }
+
+    refalrts::splice_elem(arg_begin, minus);
+
+    ret = -ret;
+  }
+
+  refalrts::reinit_number(arg_begin, ret);
+
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  53. <Exit s.Sign? s.RetCode>
+  no return
+  s.Sign ::= '+' | '-'
+  s.RetCode ::= s.MACRODIGIT
+*/
+$ENTRY Exit {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  int sign = +1;
+
+  if (refalrts::char_left('+', content_b, content_e)) {
+    sign = +1;
+  } else if (refalrts::char_left('-', content_b, content_e)) {
+    sign = -1;
+  }
+
+  refalrts::Iter pretcode = 0;
+  if (
+    ! refalrts::svar_left(pretcode, content_b, content_e)
+    || ! refalrts::empty_seq(content_b, content_e)
+    || refalrts::cDataNumber != pretcode->tag
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::set_return_code(sign * static_cast<int>(pretcode->number_info));
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cExit;
+%%
+}
+
+
+/**
+  54. <Close s.FileNo> == []
+  If file not opened function never does.
+*/
+%%
+namespace {
+
+enum CloseMode { cCloseMode_Silent, cCloseMode_Fail };
+
+extern refalrts::FnResult close(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end, CloseMode mode
+);
+
+}  // unnamed namespace
+%%
+
+$ENTRY Close {
+%%
+  return close(arg_begin, arg_end, cCloseMode_Silent);
+%%
+}
+
+%%
+namespace {
+
+refalrts::FnResult close(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end, CloseMode mode
+) {
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter pfile_handle = 0;
+  if (
+    ! file_handle_left(pfile_handle, content_b, content_e)
+    || ! refalrts::empty_seq(content_b, content_e)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  FILE *handle = extract_file_handle(pfile_handle);
+  switch (mode) {
+  case cCloseMode_Silent:
+    if (handle) {
+      if (! release_file_handle(pfile_handle)) {
+        return refalrts::cRecognitionImpossible;
+      }
+    }
+    break;
+
+  case cCloseMode_Fail:
+    if (! handle) {
+      return refalrts::cRecognitionImpossible;
+    }
+
+    if (! release_file_handle(pfile_handle)) {
+      return refalrts::cRecognitionImpossible;
+    }
+    break;
+
+  default:
+    refalrts_switch_default_violation(mode);
+  }
+
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
+}
+
+}  // unnamed namespace
+%%
+
+
+/**
+  55. <ExistFile e.FileName> == True | False
+  e.FileName ::= s.CHAR*
+*/
+$LABEL True, False;
+
+$ENTRY ExistFile {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  char filename[FILENAME_MAX + 1] = { '\0' };
+  unsigned len =
+    refalrts::read_chars(filename, FILENAME_MAX, content_b, content_e);
+
+  if (! refalrts::empty_seq(content_b, content_e) || len == 0) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::Iter ans = arg_begin;
+  if (FILE *f = fopen(filename, "r")) {
+    // Файл существует
+    fclose(f);
+
+    refalrts::reinit_ident(ans, USE_IDENT(True));
+  } else {
+    // Файл по-видимому не существует
+    refalrts::reinit_ident(ans, USE_IDENT(False));
+  }
+
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  56. <GetCurrentDirectory> == s.CHAR*
+*/
+$ENTRY GetCurrentDirectory {
+%%
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  if (! refalrts::empty_seq(content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  char directory[FILENAME_MAX + 1] = { '\0' };
+
+  if (! refalrts::api::get_current_directory(directory, sizeof(directory))) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::Iter directory_b = 0, directory_e = 0;
+  if (! refalrts::alloc_string(directory_b, directory_e, directory)) {
+    return refalrts::cNoMemory;
+  }
+
+  refalrts::splice_evar(arg_begin, directory_b, directory_e);
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  57. <RemoveFile e.FileName>
+        == True ()
+        == False (e.ErrorMessage)
+      e.ErrorMessage ::= s.CHAR*
+*/
+$ENTRY RemoveFile {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter filename_b = content_b;
+  refalrts::Iter filename_e = content_e;
+
+  char filename[FILENAME_MAX + 1] = { '\0' };
+  // возвращаемое значение не проверяем для совместимости с РЕФАЛом-5
+  read_chars(filename, FILENAME_MAX, filename_b, filename_e);
+
+  const char *error_message = "";
+  refalrts::RefalIdentifier i_result = USE_IDENT(False);
+
+  if (! refalrts::empty_seq(filename_b, filename_e)) {
+    error_message = "File name is too long.";
+  } else {
+    errno = 0;
+    int result = remove(filename);
+
+    if (result == 0) {
+      i_result = USE_IDENT(True);
+    } else {
+      error_message = strerror(errno);
+    }
+  }
+
+  refalrts::Iter error_b = 0, error_e = 0;
+  if (! refalrts::alloc_string(error_b, error_e, error_message)) {
+    return refalrts::cNoMemory;
+  }
+
+  refalrts::reinit_ident(arg_begin, i_result);
+  refalrts::reinit_open_bracket(pfunc_name);
+  refalrts::reinit_close_bracket(arg_end);
+  refalrts::splice_evar(arg_end, error_b, error_e);
+  refalrts::splice_to_freelist(content_b, content_e);
+  refalrts::link_brackets(pfunc_name, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  58. <Implode_Ext e.CHARS*> == s.COMPOUND
+*/
+$ENTRY Implode_Ext {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  std::vector<char> ident_str;
+  refalrts::FnResult res = string_from_seq(ident_str, content_b, content_e);
+
+  if (res != refalrts::cSuccess) {
+    return res;
+  }
+
+  refalrts::RefalIdentifier ident = refalrts::ident_implode(&ident_str[0]);
+
+  if (! ident) {
+    return refalrts::cIdentTableLimit;
+  }
+
+  refalrts::reinit_ident(arg_begin, ident);
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  59. <Explode_Ext s.COMPOUND> == s.CHAR*
+*/
+$ENTRY Explode_Ext {
+  s.Compound = <__Step-Start> <Explode s.Compound> <__Step-End>;
+}
+
+
+/**
+  60. <TimeElapsed e.Init> == s.CHAR-DIGIT* '.' s.CHAR-DIGIT*
+*/
+%%
+namespace {
+
+clock_t g_time_elapsed_edge = clock();
+
+}  // unnamed namespace
+%%
+
+$ENTRY TimeElapsed {
+%%
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  bool make_edge = refalrts::number_left(0, content_b, content_e) != 0;
+
+  if (! refalrts::empty_seq(content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  const double fClocksPerSec = CLOCKS_PER_SEC;
+  clock_t now = clock();
+  double time_elapsed = (now - g_time_elapsed_edge) / fClocksPerSec;
+
+  char str_time_elapsed[
+    DBL_MAX_10_EXP + 1 /* maximum digits before point */
+    + 1 /* point */
+    + 6 /* default digits after point for sprintf */
+    + 1 /* last '\0' */
+    + 10 /* just in case */
+  ] = { '\0' };
+
+  sprintf(str_time_elapsed, "%f", time_elapsed);
+
+  if (! refalrts::alloc_string(content_b, content_e, str_time_elapsed)) {
+    return refalrts::cNoMemory;
+  }
+
+  if (make_edge) {
+    g_time_elapsed_edge = now;
+  }
+
+  refalrts::splice_evar(arg_begin, content_b, content_e);
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
 
-// Работа с типами символов
 
-$ENTRY IntFromStr {
+/**
+  61. <Compare t.FirstNumber e.SecondNumber> == '-' | '0' | '+'
+*/
+$ENTRY Compare {
+  // optimization for two digits
+  s.First s.Second = <Compare-Digits s.First s.Second>;
+
+  // TODO: заменить на условия!!!
+  e.ArithmArg
+    = <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <Compare-Normed (e.First) e.Second>;
+}
+
+Compare-Normed {
+  ('+' e.First) '+' e.Second = <Compare-Nat (e.First) e.Second>;
+  ('+' e.First) '-' e.Second = '+';
+  ('+' e.First) 0            = '+';
+  ('-' e.First) '+' e.Second = '-';
+  ('-' e.First) '-' e.Second = <Compare-Nat (e.Second) e.First>;
+  ('-' e.First) 0            = '-';
+  (0)           '+' e.Second = '-';
+  (0)           '-' e.Second = '+';
+  (0)           0            = '0';
+}
+
+Compare-Nat {
+  (e.First) e.Second = <Compare-Align (() e.First) () e.Second>;
+}
+
+Compare-Align {
+  ((e.First-L) s.First-Dig e.First-R) (e.Second-L) s.Second-Dig e.Second-R
+    = <Compare-Align
+        ((e.First-L s.First-Dig) e.First-R) (e.Second-L s.Second-Dig) e.Second-R
+      >;
+
+  ((e.First-L) s.First-Dig e.First-R) (e.Second-L) /* empty */ = '+';
+  ((e.First-L) /* empty */) (e.Second-L) s.Second-Dig e.Second-R = '-';
+
+  ((s.First-Dig e.First)) (s.Second-Dig e.Second)
+    = <Compare-ByDigits
+        <Compare-Digits s.First-Dig s.Second-Dig> (e.First) e.Second
+      >;
+}
+
+Compare-ByDigits {
+  '0' (s.First-Dig e.First) s.Second-Dig e.Second
+    = <Compare-ByDigits
+        <Compare-Digits s.First-Dig s.Second-Dig> (e.First) e.Second
+      >;
+
+  '0' (/* empty */) /* empty */ = '0';
+
+  s.Compare-Res (e.First) e.Second = s.Compare-Res;
+}
+
+Compare-Digits {
 %%
-  refalrts::Iter number_b = 0;
-  refalrts::Iter number_e = 0;
-  refalrts::Iter pfunc_name =
-    refalrts::call_left(number_b, number_e, arg_begin, arg_end);
+  ARITHM_PRELUDE
 
-  bool start_is_digit =
-    ! refalrts::empty_seq(number_b, number_e)
-    && refalrts::cDataChar == number_b->tag
-    && isdigit(number_b->char_info);
+  char res = first < second ? '-' : first > second ? '+' : '0';
 
-    if (! start_is_digit) {
-      refalrts::Iter fail_pos = pfunc_name;
-      refalrts::reinit_ident(fail_pos, USE_IDENT(Fails));
-      refalrts::splice_to_freelist(arg_begin, arg_begin);
-      refalrts::splice_to_freelist(arg_end, arg_end);
-    } else {
-      refalrts::RefalNumber result = 0;
-      while (
-        ! refalrts::empty_seq(number_b, number_e)
-        && refalrts::cDataChar == number_b->tag
-        && isdigit(number_b->char_info)
-      ) {
-        result *= 10;
-        result += number_b->char_info - '0';
-
-        refalrts::move_left(number_b, number_e);
-      }
-
-      refalrts::Iter success_pos = arg_begin;
-      refalrts::reinit_ident(success_pos, USE_IDENT(Success));
-      refalrts::Iter number_pos = pfunc_name;
-      refalrts::reinit_number(number_pos, result);
-
-      refalrts::Iter res =
-        refalrts::splice_evar(arg_end->next, number_b, number_e);
-      refalrts::splice_to_freelist_open(number_pos, res);
-    }
-
-    return refalrts::cSuccess;
+  refalrts::reinit_char(arg_begin, res);
+  refalrts::splice_to_freelist(pFunc, arg_end);
+  return refalrts::cSuccess;
 %%
 }
 
+
+/**
+      <DeSysfun e.FileName (s.Width e.ObjectExpression)> == []
+*/
+$ENTRY DeSysfun {
+  e.FileName (s.Width e.ObjectExpression)
+    = <__Step-Start>
+      <Sysfun-Xxout e.FileName (s.Width e.ObjectExpression)>
+      <__Step-End>;
+}
+
+
+/**
+  63. XMLParse — not implemented yet
+*/
+$EENUM XMLParse;
+
+
+/**
+  64. <Random '+'? s.Length> == e.LongNumber
+      s.Length ::= s.MACRODIGIT
+      e.LongNumber ::= s.MACRODIGIT+
+      |e.LongNumber| <= max(s.Length, 1)
+*/
+%%
+namespace {
+
+class RndGen {
+  /*
+    See D. E. Knuth, The Art of Computer Programming,
+    Volume 2, chapter 3.2.2, program A
+  */
+public:
+  typedef refalrts::RefalNumber UInt;
+
+  enum {
+    cMaxVal = ~UInt(),
+    cMinDelay = 24,
+    cMaxDelay = 55,
+  };
+
+  RndGen();
+
+  UInt next_value() {
+    m_y[m_k] = m_y[m_k] + m_y[m_j];
+    UInt result = m_y[m_k];
+    m_k = (m_k + cMaxDelay - 1) % cMaxDelay;
+    m_j = (m_j + cMaxDelay - 1) % cMaxDelay;
+    return result;
+  }
+
+  UInt next_in_range(UInt max);
+
+private:
+  /*
+    Variable names from Knuth.
+  */
+  int m_k;
+  int m_j;
+  UInt m_y[cMaxDelay];
+};
+
+RndGen::RndGen()
+  : m_k(cMaxDelay - 1), m_j(cMinDelay - 1)
+{
+  UInt seed = static_cast<UInt>(time(NULL));
+
+  for (size_t i = 0; i < cMaxDelay; ++i) {
+    seed = seed * 1103515245 + 12345;
+    m_y[i] = seed;
+  }
+}
+
+RndGen::UInt RndGen::next_in_range(RndGen::UInt max) {
+  if (0 == max) {
+    return 0;
+  } else if (cMaxVal == max) {
+    return next_value();
+  } else {
+    ++max;
+
+    const UInt cBucketSize = cMaxVal / max;
+    const UInt cInvalid = cBucketSize * max;
+    UInt val;
+
+    do {
+      val = next_value();
+    } while(val > cInvalid);
+
+    return val / cBucketSize;
+  }
+}
+
+RndGen g_gen;
+
+bool positive_digit_arg(
+  refalrts::Iter& pfunc_name, refalrts::RefalNumber& value,
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+) {
+  refalrts::Iter content_b = 0, content_e = 0;
+  pfunc_name = refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  // don't check return value
+  refalrts::char_left('+', content_b, content_e);
+
+  refalrts::Iter pnumber = 0;
+  if (
+    refalrts::svar_left(pnumber, content_b, content_e)
+    && refalrts::empty_seq(content_b, content_e)
+    && refalrts::cDataNumber == pnumber->tag
+  ) {
+    value = pnumber->number_info;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+}  // unnamed namespace
+%%
+
+$ENTRY Random {
+%%
+  refalrts::Iter pfunc_name = 0;
+  refalrts::RefalNumber max = 0;
+
+  if (! positive_digit_arg(pfunc_name, max, arg_begin, arg_end)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  max = g_gen.next_in_range(max);
+
+  if (0 == max) {
+    max = 1;
+  }
+
+  refalrts::reset_allocator();
+  bool zero = true;
+  for (size_t i = 0; i < static_cast<size_t>(max); ++i) {
+    refalrts::RefalNumber digit = g_gen.next_value();
+    if (digit != 0 || ! zero) {
+      zero = false;
+
+      refalrts::Iter dummy = 0;
+      if (! refalrts::alloc_number(dummy, digit)) {
+        return refalrts::cNoMemory;
+      }
+    }
+  }
+
+  if (zero) {
+    refalrts::Iter dummy = 0;
+    if (! refalrts::alloc_number(dummy, 0)) {
+      return refalrts::cNoMemory;
+    }
+  }
+
+  refalrts::splice_from_freelist(arg_begin);
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  65. <RandomDigit '+'? s.Max> == s.RandomDigit
+      s.Max, s.RandomDigit ::= s.MACRODIGIT
+      s.RandomDigit <= s.Max
+*/
+$ENTRY RandomDigit {
+%%
+  refalrts::Iter pfunc_name = 0;
+  refalrts::RefalNumber max = 0;
+
+  if (! positive_digit_arg(pfunc_name, max, arg_begin, arg_end)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::RefalNumber digit = g_gen.next_in_range(max);
+
+  refalrts::reinit_number(arg_begin, digit);
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  66. <Write s.FileNo e.AnyExpression> == []
+*/
+$ENTRY Write {
+  s.FileNo e.AnyExpression
+    = <__Step-Start>
+      <Autoopen 'w' s.FileNo>
+      <Write-Aux <ZeroHandle s.FileNo #stderr> e.AnyExpression>
+      <__Step-End>;
+}
+
+Write-Aux {
+%%
+  return fwrite_line(arg_begin, arg_end, cFlags_NoEOL);
+%%
+}
+
+
+/**
+  67. <ListOfBuiltin> == (s.NUMBER s.COMPOUND { regular | special })*
+*/
+$ENTRY ListOfBuiltin {
+  = (1 #Mu #special)
+    (2 #Add #regular)
+    (3 #Arg #regular)
+    (4 #Br #regular)
+    (5 #Card #regular)
+    (6 #Chr #regular)
+    (7 #Cp #regular)
+    (8 #Dg #regular)
+    (9 #Dgall #regular)
+    (10 #Div #regular)
+    (11 #Divmod #regular)
+    (12 #Explode #regular)
+    (13 #First #regular)
+    (14 #Get #regular)
+    (15 #Implode #regular)
+    (16 #Last #regular)
+    (17 #Lenw #regular)
+    (18 #Lower #regular)
+    (19 #Mod #regular)
+    (20 #Mul #regular)
+    (21 #Numb #regular)
+    (22 #Open #regular)
+    (23 #Ord #regular)
+    (24 #Print #regular)
+    (25 #Prout #regular)
+    (26 #Put #regular)
+    (27 #Putout #regular)
+    (28 #Rp #regular)
+    (29 #Step #regular)
+    (30 #Sub #regular)
+    (31 #Symb #regular)
+    (32 #Time #regular)
+    (33 #Type #regular)
+    (34 #Upper #regular)
+    (35 #Sysfun #regular)
+    (45 #Freeze #regular)
+    (46 #Freezer #regular)
+    (47 #Dn #regular)
+    (48 #Up #special)
+    (49 #Ev-met #special)
+    (50 #Residue #special)
+    (51 #GetEnv #regular)
+    (52 #System #regular)
+    (53 #Exit #regular)
+    (54 #Close #regular)
+    (55 #ExistFile #regular)
+    (56 #GetCurrentDirectory #regular)
+    (57 #RemoveFile #regular)
+    (58 #Implode_Ext #regular)
+    (59 #Explode_Ext #regular)
+    (60 #TimeElapsed #regular)
+    (61 #Compare #regular)
+    (62 #DeSysfun #regular)
+    (63 #XMLParse #regular)
+    (64 #Random #regular)
+    (65 #RandomDigit #regular)
+    (66 #Write #regular)
+    (67 #ListOfBuiltin #regular)
+    (68 #SizeOf #regular)
+    (69 #GetPID #regular)
+    (71 #GetPPID #regular);
+}
+
+
+/**
+  68. <SizeOf s.C-Type> == s.Size-of-C-Type
+     s.C-Type ::=
+         'c' -- char
+       | 's' -- short
+       | 'i' -- int
+       | 'l' -- long
+       | 'p' -- char *
+     s.Size-of-C-Type ::= s.NUMBER -- sizeof(type)
+*/
+$ENTRY SizeOf {
+%%
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter ptype = 0;
+  if (
+    ! refalrts::svar_left(ptype, content_b, content_e)
+    || refalrts::cDataChar != ptype->tag
+    || ! refalrts::empty_seq(content_b, content_e)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::RefalNumber result;
+
+  switch (ptype->char_info) {
+    case 'c': result = sizeof(char); break;
+    case 's': result = sizeof(short); break;
+    case 'i': result = sizeof(int); break;
+    case 'l': result = sizeof(long); break;
+    case 'p': result = sizeof(char *); break;
+
+    default:
+      return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::reinit_number(arg_begin, result);
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  69. <GetPID> == s.NUMBER
+*/
+%%
+namespace {
+
+refalrts::FnResult return_pid(
+  refalrts::RefalNumber pid, refalrts::Iter arg_begin, refalrts::Iter arg_end
+);
+
+}  // unnamed namespace
+%%
+
+$ENTRY GetPID {
+%%
+  return return_pid(refalrts::api::get_pid(), arg_begin, arg_end);
+%%
+}
+
+%%
+namespace {
+
+refalrts::FnResult return_pid(
+  refalrts::RefalNumber pid, refalrts::Iter arg_begin, refalrts::Iter arg_end
+) {
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  if (! refalrts::empty_seq(content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::reinit_number(arg_begin, pid);
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  return refalrts::cSuccess;
+}
+
+}  // unnamed namespace
+%%
+
+
+/**
+  71. <GetPPID> == s.NUMBER
+*/
+$ENTRY GetPPID {
+%%
+  return return_pid(refalrts::api::get_ppid(), arg_begin, arg_end);
+%%
+}
+
+
+
+//------------------------------------------------------------------------------
+// Стандартные функции Простого Рефала
+//------------------------------------------------------------------------------
+
+
+// Ввод-вывод
+
+/**
+  <FClose s.FileNo> == []
+  If file not opened function never does.
+*/
+$ENTRY FClose {
+%%
+  return close(arg_begin, arg_end, cCloseMode_Fail);
+%%
+}
+
+
+/**
+  <FOpen t.Mode e.FileName> == s.FileNo
+  t.Mode ::=
+      'r' | 'w' | 'a'
+    | 'R' | 'W' | 'A'
+    | s.COMPOUND | (s.CHAR*)
+*/
+$ENTRY FOpen {
+  t.Mode s.FileNameChar e.FileName
+    = <GetFreeHandle> : s.FreeHandle
+    = <Open t.Mode s.FreeHandle s.FileNameChar e.FileName>
+      s.FreeHandle;
+}
+
+
+/**
+  <FReadLine s.FileNo> == s.FileNo s.CHAR* 0?
+*/
+$ENTRY FReadLine {
+  s.FileNo = s.FileNo <Get-Aux s.FileNo>;
+}
+
+
+/**
+  <FWriteLine s.FileNo e.AnyExpression> == s.FileNo
+*/
+$ENTRY FWriteLine {
+%%
+  return fwrite_line(arg_begin, arg_end, cFlags_ReturnHandle);
+%%
+}
+
+
+/*
+  <GetFreeHandle> == s.FileNo
+  Function fails if free handle is not found.
+*/
+GetFreeHandle {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  if (! refalrts::empty_seq(content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::RefalNumber free_file = 1;
+  while (free_file < cMaxFileHandles && g_file_handles[free_file] != 0) {
+    ++free_file;
+  }
+
+  if (free_file == cMaxFileHandles) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::reinit_number(arg_begin, free_file);
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  <ReadLine> == s.CHAR* 0?
+*/
+$ENTRY ReadLine {
+  = <Get #stdin>;
+}
+
+
+/**
+  <WriteLine e.AnyExpression> == []
+
+  Synonym for Prout
+*/
+$ENTRY WriteLine {
+  e.AnyExpression = <Putout #stdout e.AnyExpression>;
+}
+
+
+// Работа с типами символов
+
+/**
+  <IntFromStr s.DIGIT-CHAR* e.NotDigitExpr>
+    == #Success s.MACRODIGIT e.NotDigitExpr
+  <IntFromStr e.NotDigitExpr>
+    == #Fails e.NotDigitExpr
+*/
+$ENTRY IntFromStr {
+  e.String
+    = <DoNumb
+          {
+            (e.MacroDigits s.LastDigit) e.Rest = #Success s.LastDigit e.Rest;
+          }
+          {
+            e.Rest = #Fails e.Rest;
+          }
+        () e.String
+      >;
+}
+
+
+/**
+  <StrFromInt s.MACRODIGIT> == s.DIGIT-CHAR+
+*/
 $ENTRY StrFromInt {
 %%
   refalrts::Iter content_b = 0;
@@ -671,52 +3381,33 @@ $ENTRY StrFromInt {
 %%
 }
 
-$ENTRY Chr {
-%%
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::Iter pfunc_name =
-    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
 
-  refalrts::Iter number = 0;
-  if (
-    ! refalrts::svar_left(number, content_b, content_e)
-    || ! refalrts::empty_seq(content_b, content_e)
-    || refalrts::cDataNumber != number->tag
-  ) {
+/**
+  <SymbCompare s.Left s.Right> == '<' | '=' | '>'
+*/
+%%
+namespace {
+
+bool compare(refalrts::Iter left, refalrts::Iter right);
+
+} // unnamed namespace
+%%
+
+$ENTRY SymbCompare {
+%%
+  refalrts::Iter pX = 0, pY = 0;
+  refalrts::Iter pFunc = refalrts::call_left(pX, pY, arg_begin, arg_end);
+
+  if (pX->next != pY) {
     return refalrts::cRecognitionImpossible;
   }
 
-  char result = static_cast<char>(number->number_info);
-
-  refalrts::reinit_char(number, result);
-  refalrts::splice_to_freelist(arg_begin, pfunc_name);
-  refalrts::splice_to_freelist(arg_end, arg_end);
-  return refalrts::cSuccess;
-%%
-}
-
-$ENTRY Ord {
-%%
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::Iter pfunc_name =
-    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  refalrts::Iter chr = 0;
-  if (
-    ! refalrts::svar_left(chr, content_b, content_e)
-    || ! refalrts::empty_seq(content_b, content_e)
-    || refalrts::cDataChar != chr->tag
-  ) {
+  if (! compare(pX, pY)) {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::RefalNumber result = static_cast<unsigned char>(chr->char_info);
-
-  refalrts::reinit_number(chr, result);
-  refalrts::splice_to_freelist(arg_begin, pfunc_name);
-  refalrts::splice_to_freelist(arg_end, arg_end);
+  refalrts::splice_to_freelist(arg_begin, pFunc);
+  refalrts::splice_to_freelist(pY, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -735,244 +3426,360 @@ char compare_char(T x, T y) {
   }
 }
 
-bool compare(refalrts::Iter left, refalrts::Iter right) {
-  char order;
-
-  switch(left->tag) {
-    case refalrts::cDataNumber:
-      switch(right->tag) {
-        case refalrts::cDataNumber:
-          order = compare_char(left->number_info, right->number_info);
-          break;
-
-        case refalrts::cDataChar:
-          order = '>';
-          break;
-
-        case refalrts::cDataFunction:
-          order = '>';
-          break;
-
-        case refalrts::cDataIdentifier:
-          order = '>';
-          break;
-
-        case refalrts::cDataFile:
-          order = '>';
-          break;
-
-        default:
-          order = '?';
-          break;
-      }
-      break;
-
-    case refalrts::cDataChar:
-      switch(right->tag) {
-        case refalrts::cDataNumber:
-          order = '<';
-          break;
-
-        case refalrts::cDataChar:
-          order = compare_char(left->char_info, right->char_info);
-          break;
-
-        case refalrts::cDataFunction:
-          order = '>';
-          break;
-
-        case refalrts::cDataIdentifier:
-          order = '>';
-          break;
-
-        case refalrts::cDataFile:
-          order = '>';
-          break;
-
-        default:
-          order = '?';
-          break;
-      }
-      break;
-
-    case refalrts::cDataFunction:
-      switch(right->tag) {
-        case refalrts::cDataNumber:
-          order = '<';
-          break;
-
-        case refalrts::cDataChar:
-          order = '<';
-          break;
-
-        case refalrts::cDataFunction:
-          {
-            int cmpres =
-              strcmp(left->function_info->name, right->function_info->name);
-
-            if (cmpres < 0) {
-              order = '<';
-            } else if (cmpres > 0) {
-              order = '>';
-            } else {
-              order =
-                compare_char(
-                  left->function_info->rasl,
-                  right->function_info->rasl
-                );
-            }
-          }
-          break;
-
-        case refalrts::cDataIdentifier:
-          order = '>';
-          break;
-
-        case refalrts::cDataFile:
-          order = '>';
-          break;
-
-        default:
-          order = '?';
-          break;
-      }
-      break;
-
-    case refalrts::cDataIdentifier:
-      switch(right->tag) {
-        case refalrts::cDataNumber:
-          order = '<';
-          break;
-
-        case refalrts::cDataChar:
-          order = '<';
-          break;
-
-        case refalrts::cDataFunction:
-          order = '<';
-          break;
-
-        case refalrts::cDataIdentifier:
-          {
-            int cmpres =
-              strcmp((left->ident_info)(), (right->ident_info)());
-            if (cmpres < 0) {
-              order = '<';
-            } else if (cmpres > 0) {
-              order = '>';
-            } else {
-              order = '=';
-            }
-          }
-          break;
-
-        case refalrts::cDataFile:
-          order = '>';
-          break;
-
-        default:
-          order = '?';
-          break;
-      }
-      break;
-
-    case refalrts::cDataFile:
-      switch(right->tag) {
-        case refalrts::cDataNumber:
-          order = '<';
-          break;
-
-        case refalrts::cDataChar:
-          order = '<';
-          break;
-
-        case refalrts::cDataFunction:
-          order = '<';
-          break;
-
-        case refalrts::cDataIdentifier:
-          order = '<';
-          break;
-
-        case refalrts::cDataFile:
-          order = compare_char(left->file_info, right->file_info);
-          break;
-
-        default:
-          order = '?';
-          break;
-      }
-      break;
-
-    default:
-      order = '?';
-      break;
-  }
-
-  if (order != '?') {
-    refalrts::reinit_char(left, order);
-    return true;
+char strcmp_char(const char *x, const char *y) {
+  int res = strcmp(x, y);
+  if (res < 0) {
+    return '<';
+  } else if (res > 0) {
+    return '>';
   } else {
+    return '=';
+  }
+}
+
+bool compare(refalrts::Iter left, refalrts::Iter right) {
+  int rank[refalrts::cData_COUNT] = { 0 };
+
+  rank[refalrts::cDataNumber] = 5;
+  rank[refalrts::cDataChar] = 4;
+  rank[refalrts::cDataFunction] = 3;
+  rank[refalrts::cDataIdentifier] = 2;
+  rank[refalrts::cDataFile] = 1;
+
+  if (! rank[left->tag] || ! rank[right->tag]) {
     return false;
   }
+
+  char order;
+
+  if (rank[left->tag] > rank[right->tag]) {
+    order = '>';
+  } else if (rank[left->tag] < rank[right->tag]) {
+    order = '<';
+  } else {
+    assert(left->tag == right->tag);
+
+    switch(left->tag) {
+      case refalrts::cDataNumber:
+        order = compare_char(left->number_info, right->number_info);
+        break;
+
+      case refalrts::cDataChar:
+        order = compare_char(left->char_info, right->char_info);
+        break;
+
+      case refalrts::cDataFunction:
+        {
+          refalrts::RefalFunction *fl = left->function_info;
+          refalrts::RefalFunction *fr = right->function_info;
+
+          order = strcmp_char(fl->name.name, fr->name.name);
+          if (order == '=') {
+            order = compare_char(fl->name.cookie1, fr->name.cookie1);
+          }
+          if (order == '=') {
+            order = compare_char(fl->name.cookie2, fr->name.cookie2);
+          }
+          if (order == '=') {
+            order = compare_char(fl->rasl, fr->rasl);
+          }
+        }
+        break;
+
+      case refalrts::cDataIdentifier:
+        order =
+          strcmp_char(left->ident_info->name(), right->ident_info->name());
+        break;
+
+      case refalrts::cDataFile:
+        order = compare_char(left->file_info, right->file_info);
+        break;
+
+      default:
+        refalrts_switch_default_violation(left->tag);
+    }
+  }
+
+  refalrts::reinit_char(left, order);
+  return true;
 }
 
 } // unnamed namespace
+%%
 
-#define COMPARE_BINARY \
-  if (! compare(pX, pY)) { \
-    return refalrts::cRecognitionImpossible; \
+
+// Двоичный ввод-вывод
+
+/**
+  <FWriteBytes s.FileNo s.Byte*> == []
+  s.Byte ::= s.MACRODIGIT | s.CHAR
+*/
+$ENTRY FWriteBytes {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter pfile_handle = 0;
+
+  if (! file_handle_left(pfile_handle, content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
   }
-%%
 
-$ENTRY SymbCompare {
-%%
-  BINARY(COMPARE_BINARY);
+  FILE *handle = extract_file_handle(pfile_handle);
+  if (! handle) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  int fputc_return = 0;
+
+  while (fputc_return != EOF && ! refalrts::empty_seq(content_b, content_e)) {
+    switch (content_b->tag) {
+      case refalrts::cDataChar:
+        fputc_return = fputc(content_b->char_info, handle);
+        break;
+
+      case refalrts::cDataNumber:
+        fputc_return = fputc(content_b->number_info & 0xFF, handle);
+        break;
+
+      default:
+        return refalrts::cRecognitionImpossible;
+    }
+
+    refalrts::move_left(content_b, content_e);
+  }
+
+  if (fputc_return == EOF) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
 %%
 }
 
-$ENTRY SymbType {
+
+/**
+  <FReadBytes s.FileNo s.CountBytes> == e.ReadBytes
+
+  s.CountBytes ::= s.MACRODIGIT
+  e.ReadBytes ::= s.MACRODIGIT*
+
+  |e.ReadBytes| <= s.CountBytes
+*/
+$ENTRY FReadBytes {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter pfile_handle = 0;
+  refalrts::Iter pcount_bytes = 0;
+
+  if (
+    ! file_handle_left(pfile_handle, content_b, content_e)
+    || ! refalrts::svar_left(pcount_bytes, content_b, content_e)
+    || refalrts::cDataNumber != pcount_bytes->tag
+    || ! refalrts::empty_seq(content_b, content_e)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::reset_allocator();
+
+  FILE *handle = extract_file_handle(pfile_handle);
+  if (! handle) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::RefalNumber count = pcount_bytes->number_info;
+
+  refalrts::Iter begin = 0;
+  refalrts::Iter end = 0;
+
+  clearerr(handle);
+  int cur_char = 0;
+  while (count > 0 && (cur_char = getc(handle)) != EOF) {
+    /*
+      Пользуемся тем фактом, что в данной реализации размещёные в свободной
+      памяти узлы располагаются в последовательных адресах.
+    */
+    refalrts::RefalNumber value = cur_char & 0xFFU;
+    if (! refalrts::alloc_number(end, value)) {
+      return refalrts::cNoMemory;
+    }
+
+    if (begin == 0) {
+      begin = end;
+    }
+    --count;
+  }
+
+  if (begin == 0) assert (end == 0);
+  if (begin != 0) assert (end != 0);
+
+  if (cur_char == EOF && ferror(handle)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::splice_evar(arg_begin, begin, end);
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  <FTell s.FileNo> == s.MACRODIGIT
+*/
+$ENTRY FTell {
 %%
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
   refalrts::Iter pfunc_name =
     refalrts::call_left(content_b, content_e, arg_begin, arg_end);
 
-  refalrts::Iter atom = 0;
+  refalrts::Iter pfile_handle = 0;
+
   if (
-    ! refalrts::svar_left(atom, content_b, content_e)
+    ! file_handle_left(pfile_handle, content_b, content_e)
     || ! refalrts::empty_seq(content_b, content_e)
   ) {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::RefalIdentifier type_tag;
-  switch(atom->tag) {
-    case refalrts::cDataNumber:
-      type_tag = USE_IDENT(TypeNumber);
-      break;
-
-    case refalrts::cDataChar:
-      type_tag = USE_IDENT(TypeCharacter);
-      break;
-
-    case refalrts::cDataFunction:
-      type_tag = USE_IDENT(TypeFunction);
-      break;
-
-    case refalrts::cDataIdentifier:
-      type_tag = USE_IDENT(TypeIdentifier);
-      break;
-
-    case refalrts::cDataFile:
-      type_tag = USE_IDENT(TypeFile);
-      break;
-
-    default:
-      return refalrts::cRecognitionImpossible;
+  FILE *handle = extract_file_handle(pfile_handle);
+  if (! handle) {
+    return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::reinit_ident(arg_begin, type_tag);
+  long int pos = ftell(handle);
+
+  if (pos == -1L) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::reinit_number(arg_begin, static_cast<refalrts::RefalNumber>(pos));
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  <FSeek s.FileNo s.Origin s.Sign s.Offset> == []
+
+  s.Origin ::= #CURRENT | #BEGIN | #END
+  s.Sign ::= '+' | '-'
+  s.Offset ::= s.MACRODIGIT
+*/
+$LABEL CURRENT, BEGIN, END;
+
+$ENTRY FSeek {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter pfile_handle = 0;
+  refalrts::Iter porigin = 0;
+  refalrts::Iter psign = 0;
+  refalrts::Iter poffset = 0;
+
+  if (
+    ! file_handle_left(pfile_handle, content_b, content_e)
+    || ! refalrts::svar_left(porigin, content_b, content_e)
+    || refalrts::cDataIdentifier != porigin->tag
+    || ! refalrts::svar_left(psign, content_b, content_e)
+    || refalrts::cDataChar != psign->tag
+    || ! refalrts::svar_left(poffset, content_b, content_e)
+    || refalrts::cDataNumber != poffset->tag
+    || ! refalrts::empty_seq(content_b, content_e)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  FILE *handle = extract_file_handle(pfile_handle);
+  if (! handle) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  int origin;
+  if (USE_IDENT(BEGIN) == porigin->ident_info) {
+    origin = SEEK_SET;
+  } else if (USE_IDENT(CURRENT) == porigin->ident_info) {
+    origin = SEEK_CUR;
+  } else if (USE_IDENT(END) == porigin->ident_info) {
+    origin = SEEK_END;
+  } else {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  signed sign;
+  if ('+' == psign->char_info) {
+    sign = +1;
+  } else if ('-' == psign->char_info) {
+    sign = -1;
+  } else {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  long int offset = sign * static_cast<long int>(poffset->number_info);
+
+  if (fseek(handle, offset, origin) != 0) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  <RenameFile (e.Source) (e.Destination)> == True | False
+*/
+$ENTRY RenameFile {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter source_b = 0;
+  refalrts::Iter source_e = 0;
+  refalrts::Iter target_b = 0;
+  refalrts::Iter target_e = 0;
+
+  if (
+    ! refalrts::brackets_left(source_b, source_e, content_b, content_e)
+    || ! refalrts::brackets_left(target_b, target_e, content_b, content_e)
+    || ! refalrts::empty_seq(content_b, content_e)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  char source[FILENAME_MAX + 1] = { '\0' };
+  unsigned source_len = read_chars(source, FILENAME_MAX, source_b, source_e);
+
+  if (! refalrts::empty_seq(source_b, source_e) || source_len == 0) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  char target[FILENAME_MAX + 1] = { '\0' };
+  unsigned target_len = read_chars(target, FILENAME_MAX, target_b, target_e);
+
+  if (! refalrts::empty_seq(target_b, target_e) || target_len == 0) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  int result = rename(source, target);
+
+  refalrts::RefalIdentifier i_result =
+    result == 0 ? USE_IDENT(True) : USE_IDENT(False);
+
+  refalrts::reinit_ident(arg_begin, i_result);
   refalrts::splice_to_freelist(pfunc_name, arg_end);
   return refalrts::cSuccess;
 %%

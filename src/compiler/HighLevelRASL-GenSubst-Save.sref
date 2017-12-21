@@ -5,7 +5,7 @@ $EXTERN Inc;
 $EXTERN Add;
 
 //FROM HighLevelRASL-Common
-$EXTERN Inc2, PrintVar, TextFromExpr;
+$EXTERN Inc2, PrintVar, MakeSavers, TextFromExpr;
 
 
 /**
@@ -164,7 +164,7 @@ DoGenSubst {
       (#Junk e.Junk1 (#TkVariable 's' e.Index s.Num) e.Junk2)
       e.Substs-E
       (e.Vars ('s' (e.Index) s.Num))
-      (e.Commands (#CmdVar #AlgTerm s.Num 's' s.ContextOffset))
+      (e.Commands (#CmdVar #AlgTerm s.Num 's' s.Num))
     >;
 
   // Распознавание S-подстановки
@@ -459,7 +459,7 @@ DoGenSubst {
       )
       (
         e.Commands
-        (#CmdRepeatedSave #AlgLeft s.Num s.Mode s.ContextOffset s.SampleOffset)
+        <MakeRepeatedSave #AlgLeft s.Num s.Mode s.ContextOffset s.SampleOffset>
       )
     >;
 
@@ -481,7 +481,7 @@ DoGenSubst {
       )
       (
         e.Commands
-        (#CmdRepeatedSave #AlgRight s.Num s.Mode s.ContextOffset s.SampleOffset)
+        <MakeRepeatedSave #AlgRight s.Num s.Mode s.ContextOffset s.SampleOffset>
       )
     >;
 
@@ -564,20 +564,25 @@ DoGenSubst {
       (e.Commands (#CmdVarSave #AlgRight s.Num 't' s.ContextOffset))
     >;
 
+  // Open e loops
   s.ContextOffset
-  e.Substs-B
   (#Junk e.Junk) (#E s.Num (#TkVariable 'e' e.Index) e.Range)
-  e.Substs-E
-  (e.Vars) (e.Commands) =
-    <DoGenSubst
-      <Inc2 s.ContextOffset>
-      e.Substs-B
-      (#Junk e.Junk (#TkVariable 'e' e.Index s.ContextOffset))
-      (#E s.Num e.Range)
-      e.Substs-E
-      (e.Vars ('e' (e.Index) s.ContextOffset))
-      (e.Commands (#CmdOpenedE #AlgLeft s.Num s.ContextOffset))
-    >;
+  e.SubstitutesAnsJunks
+  (e.Vars) (e.Commands)
+    = s.ContextOffset : s.VarOffset
+    = (#CmdOpenedE #AlgLeft s.Num s.VarOffset) : t.CmdOpenedE
+    = <MakeSavers
+        <Inc2 s.ContextOffset>
+        (#Junk e.Junk (#TkVariable 'e' e.Index s.ContextOffset))
+        (#E s.Num e.Range) e.SubstitutesAnsJunks
+      >
+    : s.ContextOffset^ (e.CmdSaves) e.SubstitutesAnsJunks^
+    = <DoGenSubst
+        s.ContextOffset
+        e.SubstitutesAnsJunks
+        (e.Vars ('e' (e.Index) s.VarOffset))
+        (e.Commands t.CmdOpenedE e.CmdSaves)
+      >;
 
   // Завершение разбора.
   s.ContextOffset (#Junk e.MarkedPattern) (e.Vars) (e.Commands) =
@@ -589,4 +594,13 @@ IncVarOffset-Saved {
   s.ContextOffset 'e' = <Inc2 s.ContextOffset>;
   s.ContextOffset 't' = <Inc2 s.ContextOffset>;
   s.ContextOffset 's' = <Inc s.ContextOffset>;
+}
+
+MakeRepeatedSave {
+  s.Direction s.Num 't' s.ContextOffset s.SampleOffset =
+    (#CmdRepeatedTVarSave s.Direction s.Num s.ContextOffset s.SampleOffset);
+
+  // Для других видов переменных особой команды не нужно
+  s.Direction s.Num s.Mode s.ContextOffset s.SampleOffset =
+    (#CmdRepeated s.Direction s.Num s.Mode s.ContextOffset s.SampleOffset);
 }

@@ -20,60 +20,58 @@ $EXTERN TextFromExpr, Inc2, CollectStrings;
   e.MarkedPattern — не используется
 */
 $ENTRY GenResult-Opt {
-  s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result =
-    <Fetch
-      <GST
+  s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
+
+    = <GST
         ((#LEFT-EDGE) e.MarkedPattern (#RIGHT-EDGE))
         ((#LEFT-EDGE) <FlatResult e.Result> (#RIGHT-EDGE))
       >
-      {
-        (e.Trash) (e.MarkedResult) =
-          <Fetch
-            <AddOffsets s.ContextOffset (e.PatternVars) e.MarkedResult>
-            {
-              s.ContextOffset^ e.MarkedResult^ =
-                s.ContextOffset
-                (#CmdResetAllocator)
-                <GenResult-Aux
-                  (e.Trash) (e.MarkedResult)
-                >;
-            }
-          >;
-      }
-    >;
+    : (e.Trash) (e.MarkedResult)
+
+    = <AddOffsets s.ContextOffset (e.PatternVars) e.MarkedResult>
+    : s.ContextOffset^ e.MarkedResult^
+
+    = s.ContextOffset
+      (#CmdResetAllocator)
+      <GenResult-Aux (e.Trash) (e.MarkedResult)>
+      (#CmdNextStep);
 }
 
 FlatResult {
-  e.Range-B (#CallBrackets e.SubRange-E) e.Range-E =
-    <FlatResult e.Range-B>
-    (#TkOpenCall)
-    <FlatResult e.SubRange-E>
-    (#TkCloseCall)
-    <FlatResult e.Range-E>
-    ;
+  e.Range-B (#CallBrackets e.SubRange) e.Range-E
+    = <FlatResult e.Range-B>
+      (#TkOpenCall)
+      <FlatResult e.SubRange>
+      (#TkCloseCall)
+      <FlatResult e.Range-E>;
 
-  e.Range-B (#Brackets e.SubRange-E) e.Range-E =
-    <FlatResult e.Range-B>
-    (#TkOpenBracket)
-    <FlatResult e.SubRange-E>
-    (#TkCloseBracket)
-    <FlatResult e.Range-E>
-    ;
+  e.Range-B (#Brackets e.SubRange) e.Range-E
+    = <FlatResult e.Range-B>
+      (#TkOpenBracket)
+      <FlatResult e.SubRange>
+      (#TkCloseBracket)
+      <FlatResult e.Range-E>;
 
-  e.Range-B (#ADT-Brackets (e.Name) e.SubRange-E) e.Range-E =
-    e.Range-B
-    (#TkOpenADT)
-    (#TkName e.Name)
-    <FlatResult e.SubRange-E>
-    (#TkCloseADT)
-    <FlatResult e.Range-E>
-    ;
+  e.Range-B (#ADT-Brackets (e.Name) e.SubRange) e.Range-E
+    = <FlatResult e.Range-B>
+      (#TkOpenADT)
+      (#TkName e.Name)
+      <FlatResult e.SubRange>
+      (#TkCloseADT)
+      <FlatResult e.Range-E>;
+
+  e.Range-B (#ClosureBrackets e.SubRange) e.Range-E
+    = e.Range-B
+      (#TkClosureHead)
+      <FlatResult e.SubRange>
+      (#TkUnwrappedClosure)
+      <FlatResult e.Range-E>;
 
   e.Range = e.Range;
 }
 
 // Основные команды работы с результатом
-//  (#CmdAllocateElem s.Number s.ElType e.Info)
+//  (#CmdCreateElem #Allocate s.Number s.ElType e.Info)
 //  (#CmdLinkBrackets s.Left s.Right)
 //  (#CmdPushStack s.Number)
 //  (#CmdInsertElem s.Number)
@@ -87,11 +85,33 @@ FlatResult {
 */
 
 GenResult-Aux {
-  (e.Trash) (e.MarkedResult) =
-    (#CmdComment 'TRASH:' <TextFromExpr e.Trash>)
-    (#CmdComment 'RESULT:' <TextFromExpr e.MarkedResult>)
+  (e.Trash) (e.MarkedResult)
 
-    //генерируем команды аллокаций
+    = (#CmdComment 'TRASH:' <TextFromExpr e.Trash>)
+      (#CmdComment 'RESULT:' <TextFromExpr e.MarkedResult>)
+
+      //генерируем команды аллокаций
+      <GenResult-Allocations e.MarkedResult>
+
+      //Генерируем команды reinit/update
+      <GenResult-ReinitUpdate e.MarkedResult>
+
+      //Генерируем команды связывания скобок
+      <GenPushLink
+        <FlatTilesInResult e.MarkedResult>
+      >
+
+      //Генерируем команды переноса из списка свободных узлов
+      <GenSplices (e.Trash) e.MarkedResult>
+    : e.Commands
+
+      // Исправляем логику построения замыканий: они должны сворачиваться
+      // в самом конце, а также правильно проставляем смещения.
+    = <PatchClosureLogic e.Commands>;
+}
+
+GenResult-Allocations {
+  e.MarkedResult =
     <Map
       {
         (#Tile e.Tile) = ;
@@ -103,14 +123,16 @@ GenResult-Aux {
           (#CmdCopyVar s.Mode s.Offset s.SampleOffset);
 
         (#TkString e.String s.Offset) =
-          (#CmdAllocateElem s.Offset #ElString e.String);
+          (#CmdCreateElem #Allocate s.Offset #ElString e.String);
 
-        (e.Elem) = (#CmdAllocateElem <CreateElemParam e.Elem>);
+        (e.Elem) = (#CmdCreateElem #Allocate <CreateElemParam e.Elem>);
       }
       e.MarkedResult
-    >
+    >;
+}
 
-    //Генерируем команды reinit/update
+GenResult-ReinitUpdate {
+  e.MarkedResult =
     <Map
       {
         (#Tile e.Tile) =
@@ -121,9 +143,11 @@ GenResult-Aux {
               (#HalfReuse (#TkVariable 's' e.Index s.SampleOffset s.Offset)) =
                 (#CmdReinitSVar s.Offset s.SampleOffset);
 
-              (#HalfReuse (e.Elem)) = (#CmdReinitElem <CreateElemParam e.Elem>);
+              (#HalfReuse (e.Elem)) =
+                (#CmdCreateElem #Reinit <CreateElemParam e.Elem>);
 
-              (#Reuse (e.Elem)) = (#CmdUpdateElem <CreateElemParam e.Elem>);
+              (#Reuse (e.Elem)) =
+                (#CmdCreateElem #Update <CreateElemParam e.Elem>);
 
               (#LEFT-EDGE) = /* пусто */;
               (#RIGHT-EDGE) = /* пусто */;
@@ -134,15 +158,7 @@ GenResult-Aux {
         t.Other = /* пусто */;
       }
       e.MarkedResult
-    >
-
-    //Генерируем команды связывания скобок
-    <GenPushLink
-      <ModifyResult e.MarkedResult>
-    >
-
-    //Генерируем команды переноса из списка свободных узлов
-    <GenSplices (e.Trash) e.MarkedResult>;
+    >;
 }
 
 CreateElemParam {
@@ -156,16 +172,19 @@ CreateElemParam {
   #TkCloseCall s.Offset = s.Offset #ElCloseCall;
   #TkName e.Name s.Offset = s.Offset #ElName e.Name;
   #TkIdentifier e.Name s.Offset = s.Offset #ElIdent e.Name;
+  #TkClosureHead s.Offset = s.Offset #ElClosureHead;
+  #TkUnwrappedClosure s.Offset = s.Offset #ElUnwrappedClosure;
 }
 
 GenPushLink {
-  e.MarkedResult =
-    <Fetch
-      <MapReduce
+  e.MarkedResult
+    = <MapReduce
         {
           (e.Stack) (#TkOpenCall s.Offset) = (e.Stack s.Offset);
           (e.Stack) (#TkOpenADT s.Offset) = (e.Stack s.Offset);
           (e.Stack) (#TkOpenBracket s.Offset) = (e.Stack s.Offset);
+          (e.Stack) (#TkClosureHead s.Offset) = (e.Stack s.Offset);
+
           (e.Stack s.OpenOffset) (#TkCloseCall s.Offset) =
             (e.Stack)
             (#CmdPushStack s.OpenOffset)
@@ -174,15 +193,39 @@ GenPushLink {
             (e.Stack) (#CmdLinkBrackets s.OpenOffset s.Offset);
           (e.Stack s.OpenOffset) (#TkCloseBracket s.Offset) =
             (e.Stack) (#CmdLinkBrackets s.OpenOffset s.Offset);
+          (e.Stack s.HeadOffset) (#TkUnwrappedClosure s.Offset)
+            = (e.Stack)
+              (#PatchCreateUnwrappedClosure s.HeadOffset s.Offset)
+              (#CmdWrapClosure s.Offset);
+
           (e.Stack) (s.tag e.Info) = (e.Stack) ;
         }
         (/* стек */)
         e.MarkedResult
       >
-      {
-        () e.Commands = <Reverse e.Commands>;
-      }
-    >;
+    : () e.Commands
+    = <Reverse e.Commands>;
+}
+
+PatchClosureLogic {
+  e.Commands-B (#CmdWrapClosure s.Offset) e.Commands-E
+    = <PatchClosureLogic e.Commands-B e.Commands-E>
+      (#CmdWrapClosure s.Offset);
+
+  e.Commands-B
+  (#CmdCreateElem s.CreateMode s.Offset #ElUnwrappedClosure)
+  e.Commands-E
+  (#PatchCreateUnwrappedClosure s.HeadOffset s.Offset)
+    = <PatchClosureLogic
+        e.Commands-B
+        (#CmdCreateElem s.CreateMode s.Offset #ElUnwrappedClosure s.HeadOffset)
+        e.Commands-E
+      >;
+
+  e.Commands t.OtherCommand
+    = <PatchClosureLogic e.Commands> t.OtherCommand;
+
+  /* empty */ = /* empty */;
 }
 
 Reverse {
@@ -191,19 +234,26 @@ Reverse {
   /* empty */ = /* empty */;
 }
 
-ModifyResult {
-  (#Tile e.Tile) e.Result = <ModifyTile e.Tile> <ModifyResult e.Result> ;
-  (s.tag e.info) e.Result = (s.tag e.info) <ModifyResult e.Result> ;
-  /*пусто*/ = ;
-}
+FlatTilesInResult {
+  e.Result
+    = <Map
+        {
+          (#Tile e.Tile)
+            = <Map
+                {
+                  (#RIGHT-EDGE) = ;
+                  (#LEFT-EDGE) = ;
+                  (#AsIs t.Item) = t.Item;
+                  (#HalfReuse t.Item) = t.Item;
+                  (#Reuse t.Item) = t.Item;
+                }
+                e.Tile
+              >;
 
-ModifyTile {
-  (#RIGHT-EDGE) e.Range = <ModifyTile e.Range>;
-  (#LEFT-EDGE) e.Range = <ModifyTile e.Range>;
-  (#AsIs t.Item) e.Range = t.Item <ModifyTile e.Range>;
-  (#HalfReuse t.Item) e.Range  = t.Item <ModifyTile e.Range>;
-  (#Reuse t.Item) e.Range  = t.Item <ModifyTile e.Range>;
-  /*пусто*/ = ;
+          (s.tag e.info) = (s.tag e.info);
+        }
+        e.Result
+      >;
 }
 
 GenSplices {
@@ -224,11 +274,9 @@ GenSplices {
       }
       <CollectTiles e.Result>
     >
-    (#CmdUseRes)
-    <GenTrash (e.LeftTile) e.Trash>
-    (#CmdNextStep);
+    <GenTrash (e.LeftTile) e.Trash>;
 
-  (#RemovedTile) (#Tile e.OneTile) = (#CmdNextStep);
+  (#RemovedTile) (#Tile e.OneTile) = /* do nothing */;
 }
 
 CalcRes {
@@ -268,7 +316,7 @@ GenTrash {
     <GenTrash (e.LeftTile) e.Trash-B e.Trash-E>;
 
   (e.LeftTile) /* пусто */ =
-    /* пусто */;
+    (#CmdUseRes);
 
   ((#LEFT-EDGE)) e.Trash =
     (#CmdTrash #LEFT-EDGE);

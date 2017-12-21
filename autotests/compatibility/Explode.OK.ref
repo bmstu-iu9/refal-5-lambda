@@ -1,0 +1,11 @@
+$ENTRY Go {
+  = <Eq ('Hello') <Explode Hello>>
+    <Eq ('Hello, World') <Explode "Hello, World">>
+    <Eq () <Explode "">>
+    <Eq ('Hello') <Explode_Ext Hello>>
+    <Eq ('Hello, World') <Explode_Ext "Hello, World">>
+    <Eq () <Explode_Ext "">>
+    <Eq (19) <Step>>;
+}
+
+Eq { (e.X) e.X = <Prout e.X>; }

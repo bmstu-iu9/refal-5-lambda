@@ -3,9 +3,10 @@
 <language name="Refal" section="Sources"
           version="0.01" kateversion="3.4"
           indenter="cstyle"
-          extensions="*.sref"
+          extensions="*.sref;*.srefi"
           mimetype="text/x-srefsrc;text/x-chdr"
           priority="5">
+<!-- TODO: проверить extensions выше -->
 <!--
 ##########################################################################
 ## Fixes by Sebastian Pipping (webmaster@hartwork.org)
@@ -24,6 +25,7 @@
       <item> $ENUM </item>
       <item> $EENUM </item>
       <item> $EASTEREGG </item>
+      <item> $INCLUDE </item>
     </list>
     <contexts>
       <context attribute="Normal Text" lineEndContext="#stay" name="Normal">

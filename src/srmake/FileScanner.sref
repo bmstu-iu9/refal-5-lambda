@@ -1,51 +1,197 @@
 //FROM LibraryEx
-$EXTERN LoadFile, Map, Trim;
+$EXTERN Fetch, LoadFile, MapReduce, Inc, Trim, Map;
+
+//FROM Library
+$EXTERN ExistFile;
+
+//FROM Config
+$EXTERN
+  Config-GetPrelude,
+  Config-AddReference,
+  Config-GetFolders,
+  Config-GetPrefix,
+  Config-SetPrefix;
 
 //FROM FindFile
-$EXTERN FindFiles;
+$EXTERN FindFiles, FindInclude;
+
+//FROM Escape
+$EXTERN UnEscapeString-SR;
+
 
 $ENTRY CreateFileList {
-  (e.Folders) e.Unit =
-    <DoCreateFileList
-      (e.Folders) () <FindFiles (e.Folders) (e.Unit)>
-    >;
+  t.Config e.Unit
+    = <DoCreateFileList
+        t.Config () <FindFilesEx t.Config #CMD-LINE e.Unit>
+      >;
 }
 
 DoCreateFileList {
-  (e.Folders) (e.Modules) = e.Modules;
+  t.Config (e.Modules) = t.Config e.Modules;
 
-  (e.Folders) (e.Modules-B (e.NextModule) e.Modules-E)
-  (e.NextModule) e.NotScanned =
-    <DoCreateFileList
-      (e.Folders) (e.Modules-B (e.NextModule) e.Modules-E)
-      e.NotScanned
-    >;
+  t.Config (e.Modules-B (e.NextModule) e.Modules-E)
+  (e.NextModule) e.NotScanned
+    = <DoCreateFileList
+        t.Config (e.Modules-B (e.NextModule) e.Modules-E)
+        e.NotScanned
+      >;
 
-  (e.Folders) (e.Modules) (e.NextModule) e.NotScanned =
-    <DoCreateFileList
-      (e.Folders) (e.Modules (e.NextModule))
-      <LoadList (e.Folders) e.NextModule> e.NotScanned
-    >;
+  t.Config (e.Modules) (e.NextModule) e.NotScanned
+    = <FindImports t.Config e.NextModule> : t.Config^ e.NewNotScanned
+    = <DoCreateFileList
+        t.Config (e.Modules (e.NextModule))
+        e.NewNotScanned e.NotScanned
+      >;
 }
 
 FindImports {
-  e.Folders ('//FROM ' e.Name) =
-    <FindFiles (e.Folders) (<Trim e.Name>)>;
+  t.Config #Source (s.Dialect e.NextModule) e.Output
+    = <FindImports-Aux t.Config s.Dialect e.NextModule>;
 
-  e.OtherLine = ;
+  t.Config #Output e.Output
+    = <FindImports-Aux t.Config #Froms e.Output '.froms'>;
+
+  t.Config #OutputWithNative (e.Output) e.Native
+    = <FindImports-Aux t.Config #Froms e.Output '.froms'> : t.Config^ e.FromsUnits
+    = <FindImports-Aux t.Config "C++" e.Native> : t.Config^ e.NativeUnits
+    = t.Config e.FromsUnits e.NativeUnits;
+
+  t.Config #Include s.Dialect e.IncludeFile
+    = <FindImports-Aux t.Config s.Dialect e.IncludeFile>;
+
+  t.Config #Error t.SrcPos e.Message = t.Config /* пусто */;
 }
 
-LoadList {
-  (e.Folders) #Source (e.NextModule) e.Output =
-    <Map
-      (FindImports e.Folders) <LoadFile e.NextModule>
-    >;
+CommentForDialect {
+  #R5 = '*$';
+  #SR = '//';
+  #Froms = '//';
+  "C++" = '//';
+}
 
-  (e.Folders) #Output e.Output =
-    <Map
-      (FindImports e.Folders) <LoadFile e.Output>
-    >;
+PreludePseudoIncludeLine {
+  t.Config #R5
+    = <Fetch
+        <Config-GetPrelude t.Config>
+        {
+          /* пусто */ = /* пусто */;
+          e.Prelude = (#Prelude e.Prelude);
+        }
+      >;
 
+  t.Config s.Other = /* пусто */;
+}
 
-  (e.Folders) #NotFound e.Unit = ;
+FindImports-Aux {
+  t.OriginConfig s.Dialect e.FileName
+    = <CommentForDialect s.Dialect> : e.CommentPrefix
+    = <Fetch
+        <ExistFile e.FileName>
+        {
+          #True = <LoadFile e.FileName>;
+          #False = /* пусто */;
+        }
+      >
+    : e.FileContents
+    = <PreludePseudoIncludeLine t.OriginConfig s.Dialect> : e.PseudoLine
+    = <MapReduce
+        {
+          (t.Config s.LineNum) (e.CommentPrefix 'FROM ' e.Name)
+            = (t.Config <Inc s.LineNum>)
+              <FindFilesEx t.Config (s.LineNum e.FileName) <Trim e.Name>>;
+
+          (t.Config s.LineNum) (e.CommentPrefix 'PREFIX ' e.Name)
+            = <UpdatePrefix t.Config (s.LineNum e.FileName) <Trim e.Name>>
+            : t.Config^ e.Error
+            = (t.Config <Inc s.LineNum>)
+              e.Error;
+
+          (t.Config s.LineNum) (e.CommentPrefix 'REFERENCE ' e.Name)
+            = <Config-AddReference t.Config <Trim e.Name>> : #Success t.Config^
+            = (t.Config <Inc s.LineNum>);
+
+          (t.Config s.LineNum) ('$INCLUDE "' e.EscapedName '";')
+            = (t.Config <Inc s.LineNum>)
+              <FindIncludeEx
+                t.Config (s.LineNum e.FileName)
+                <UnEscapeString-SR e.EscapedName>
+              >;
+
+          (t.Config s.LineNum) (#Prelude e.PreludeName)
+            = (t.Config s.LineNum)  // не инкрементируем, это псевдострочка
+              <FindIncludeEx
+                t.Config (s.LineNum e.FileName) #Success e.PreludeName
+              >;
+
+          (t.Config s.LineNum) (e.OtherLine)
+            = (t.Config <Inc s.LineNum>);
+        }
+        (t.OriginConfig 1)
+        e.PseudoLine e.FileContents
+      >
+    : (t.Config s.LineNum) e.Units
+    = t.Config e.Units;
+}
+
+FindFilesEx {
+  t.Config t.SrcPos e.UnitName
+    = <Fetch
+        <FindFiles (<GetFolders t.Config>) (e.UnitName)>
+        {
+          (#NotFound e.Unit)
+            = (#Error t.SrcPos 'Unit ' e.Unit ' not found');
+
+          t.FoundUnit = t.FoundUnit;
+        }
+      >;
+}
+
+GetFolders {
+  t.Config
+    = <Map
+        {
+          (s.FolderTag e.Folder) = (e.Folder);
+        }
+        <Config-GetFolders t.Config>
+      >;
+}
+
+UpdatePrefix {
+  t.Config t.SrcPos e.Prefix
+    = <Fetch
+        <Config-GetPrefix t.Config>
+        {
+          #NotSet
+            = <Config-SetPrefix t.Config e.Prefix> : #Success t.Config^
+            = t.Config;
+
+          e.Prefix /* тот же самый */
+            = t.Config;
+
+          e.OtherPrefix
+            = t.Config (#Error t.SrcPos 'prefix already defined');
+        }
+      >;
+}
+
+FindIncludeEx {
+  t.Config t.SrcPos #Fails e.ErrorMessage
+    = (#Error t.SrcPos <FormatEscapeError e.ErrorMessage>);
+
+  t.Config t.SrcPos #Success e.FileName
+    = <Fetch
+        <FindInclude (<GetFolders t.Config>) e.FileName>
+        {
+          #Success s.Dialect e.FullPath = (#Include s.Dialect e.FullPath);
+
+          #Fails
+            = (#Error t.SrcPos 'Include ' e.FileName ' not found');
+        }
+      >;
+}
+
+FormatEscapeError {
+  #BadEscapeCode e.Text = 'Bad escape code ' e.Text;
+  #BadEscapeSymbol e.BadSymbol = 'Bad escaped symbol ' e.BadSymbol;
+  #EOLAfterSlash = 'End-of-line after \\';
 }

@@ -6,46 +6,45 @@ $EXTERN GenPattern, GenResult;
 
 $ENTRY HighLevelRASL-Function-Disjoint {
   s.FnGenInitSubst s.FnGenSubst s.FnGenResult
-  s.ScopeClass (e.Name) e.Sentences =
-    <Fetch
-      e.Sentences
-      <Seq
-        (Map
-          {
-            ((e.Pattern) (e.Result)) =
-              (
-                <GenResult
-                  s.FnGenResult (e.Result)
-                  <GenPattern s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern>
-                >
-              );
-          }
-        )
-        (MapReduce
-          {
-            s.MaxMemory ((#CmdIssueMem s.Memory) e.Sentence) =
-              <Max s.MaxMemory s.Memory>
-              (#CmdSentence e.Sentence);
-          }
-          0
-        )
-        {
-          s.MaxMemory e.Sentences^ (#CmdSentence e.LastSentence) =
-            (#Function
-              s.ScopeClass (e.Name)
-              (#CmdIssueMem s.MaxMemory)
-              e.Sentences
-              <Fetch
-                e.LastSentence
-                {
-                  e.Commands (#CmdOpenELoop e.OpenELoop) =
-                    e.Commands (#CmdOpenELoop e.OpenELoop) (#CmdFail);
+  s.ScopeClass (e.Name) e.Sentences
 
-                  e.LastSentence^ = e.LastSentence;
-                }
+    = <Map
+        {
+          ((e.Pattern) (e.Result)) =
+            (
+              <GenResult
+                s.FnGenResult (e.Result)
+                <GenPattern s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern>
               >
             );
         }
+        e.Sentences
       >
-    >;
+    : e.Sentences^ ((#CmdIssueMemory s.LastMemory) e.LastSentence)
+
+    = <MapReduce
+        {
+          s.MaxMemory ((#CmdIssueMemory s.Memory) e.Sentence) =
+            <Max s.MaxMemory s.Memory>
+            (#CmdSentence e.Sentence);
+        }
+        s.LastMemory
+        e.Sentences
+      >
+    : s.MaxMemory e.Sentences^
+
+    = (#Function
+        s.ScopeClass (e.Name)
+        (#CmdIssueMemory s.MaxMemory)
+        e.Sentences
+        <Fetch
+          e.LastSentence
+          {
+            e.Commands (#CmdOpenELoop e.OpenELoop) =
+              e.Commands (#CmdOpenELoop e.OpenELoop) (#CmdFail);
+
+            e.LastSentence^ = e.LastSentence;
+          }
+        >
+      );
 }

@@ -1,0 +1,10 @@
+$ENTRY Go {
+  = <Eq
+      ('\x42\n\t\r\\\'\"\<\>\(\)')
+      'B\x0A\x09\x0D\x5C\x27"<>()'
+    >;
+}
+
+Eq {
+  (e.Eq) e.Eq = <Prout e.Eq>;
+}

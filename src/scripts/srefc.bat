@@ -13,7 +13,41 @@ set LIBDIR=%DISTRDIR%\srlib
 
 :: Запуск
 setlocal
-  call "%DISTRDIR%\c-plus-plus.conf.bat"
+  :: Команда shift не убирает первое слово из %*, убираем вручную.
+  :: Подстановка %ARGS:* =% убирает из переменной среды префикс
+  :: до первого пробела, включая этот пробел (см. ниже).
+  set ARGS=%*
+  if "%~1"=="--rich" goto MODE_RICH
+  if "%~1"=="--slim" goto MODE_SLIM
+  if "%~1"=="--scratch" goto MODE_SCRATCH
+  goto :MODE_DEFAULT
+
+:MODE_RICH
+  set ARGS=%ARGS:* =%
+  set D=-d "%LIBDIR%\rich"
+  set PREFIX=--prefix=rich
+  goto END_SWITCH
+
+:MODE_SLIM
+  set ARGS=%ARGS:* =%
+  goto MODE_DEFAULT
+  goto END_SWITCH
+
+:MODE_SCRATCH
+  set ARGS=%ARGS:* =%
+:MODE_DEFAULT
+  set D=-D "%LIBDIR%\scratch\platform-Windows" -D "%LIBDIR%\scratch"
+  set PREFIX=
+  goto END_SWITCH
+
+:END_SWITCH
+  call "%DISTRDIR%\scripts\load-config.bat" || exit /b 1
   set PATH=%BINDIR%;%PATH%
-  srefc-core %SREFC_FLAGS% -c "%CPPLINE% %CPPLINE_FLAGS%" %* -D "%LIBDIR%"
+  srefc-core ^
+    %SREFC_FLAGS% ^
+    --cpp-command-exe="%CPPLINEE%" --exesuffix=.exe ^
+    --cpp-command-lib="%CPPLINEL%" --libsuffix=.dll ^
+    --cppflags="%CPPLINE_FLAGS%" --chmod-x-command= ^
+    -d "%LIBDIR%\common" --prelude=refal5-builtins.srefi ^
+    %PREFIX% %D% %ARGS%
 endlocal

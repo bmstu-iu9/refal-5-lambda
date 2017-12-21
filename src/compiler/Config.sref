@@ -1,0 +1,545 @@
+//FROM LibraryEx
+$EXTERN Fetch;
+
+/*
+  Внутреннее представление:
+
+  [Config (s.Option e.Value)*]
+*/
+$ENUM Config;
+
+/**
+  <Config-Create> == t.Config
+*/
+$ENTRY Config-Create {
+  /* пусто */
+    = [Config
+        (#CppCompiler #NoCppCompilerExe #NoCppCompilerLib)
+        (#Optimize /* пусто */)
+        (#ErrorFile /* пусто */)
+        (#DebugMode #NoMarkupContext #NoDebugInfo)
+        (#GrammarCheck #NormalRun)
+        (#TargetFileName #DefaultTargetFileName)
+        (#TargetMode #DefaultEXE)
+        (#TargetSuffix ('.EXE') ('.DLL'))
+        (#Folders /* пусто */)
+        (#Prefix /* пусто */)
+        (#References /* пусто */)
+        (#Incorporateds /* пусто */)
+        (#ChmodXCommand /* пусто */)
+        (#Prelude /* пусто */)
+      ];
+}
+
+/**
+  <Config-GetCppCompiler t.Config s.CompilerVariant>
+    == #NoCppCompiler
+    == (e.CppCompiler) e.Flags
+
+  s.CompileVariant ::= #EXE | #LIB
+*/
+$ENTRY Config-GetCppCompiler {
+  [Config
+    e.Params-B
+   (#CppCompiler #NoCppCompilerExe t.CppCompilerLib e.Flags)
+    e.Params-E
+  ]
+  #EXE
+    = #NoCppCompiler;
+
+  [Config
+    e.Params-B
+    (#CppCompiler (e.CppCompilerExe) t.CppCompilerLib e.Flags)
+    e.Params-E
+  ]
+  #EXE
+    = (e.CppCompilerExe) e.Flags;
+
+  [Config
+    e.Params-B
+    (#CppCompiler t.CppCompilerExe #NoCppCompilerLib e.Flags)
+    e.Params-E
+  ]
+  #LIB
+    = #NoCppCompiler;
+
+  [Config
+    e.Params-B
+    (#CppCompiler t.CppCompilerExe (e.CppCompilerLib) e.Flags)
+    e.Params-E
+  ]
+  #LIB
+    = (e.CppCompilerLib) e.Flags;
+}
+
+/**
+  <Config-SetCppCompiler t.Config s.CompileVariant e.CppCompiler>
+    == #Success t.Config
+*/
+$ENTRY Config-SetCppCompiler {
+  [Config
+    e.Params-B
+    (#CppCompiler t.OldCompilerExe t.CppCompilerLib e.Flags) e.Params-E
+  ]
+  #EXE e.CppCompilerExe
+    = #Success
+      [Config
+        e.Params-B
+        (#CppCompiler (e.CppCompilerExe) t.CppCompilerLib e.Flags)
+        e.Params-E
+      ];
+
+  [Config
+    e.Params-B
+    (#CppCompiler t.CppCompilerExe t.OldCompilerLib e.Flags) e.Params-E
+  ]
+  #LIB e.CppCompilerLib
+    = #Success
+      [Config
+        e.Params-B
+        (#CppCompiler t.CppCompilerExe (e.CppCompilerLib) e.Flags)
+        e.Params-E
+      ];
+}
+
+/**
+  <Config-SetCompilerFlags t.Config e.Flags> == #Success t.Config
+*/
+$ENTRY Config-SetCompilerFlags {
+  [Config e.Params-B (#CppCompiler t.CppCompiler e.Flags) e.Params-E]
+  e.NewFlags
+    = #Success
+      [Config
+        e.Params-B (#CppCompiler t.CppCompiler e.Flags e.NewFlags) e.Params-E
+      ];
+}
+
+/**
+  <Config-GetGenMode t.Config>
+    == #OnlyDirect
+    == #OnlyInterpret
+*/
+$ENTRY Config-GetGenMode {
+  [Config e.Params-B (#Optimize e.Opt-B #OptDirect e.Opt-E) e.Params-E]
+    = #OnlyDirect;
+
+  [Config e.Params] = #OnlyInterpret;
+}
+
+/**
+  <Config-GetOptPattern t.Config>
+    == #Disjoint
+    == #Conjoint
+*/
+$ENTRY Config-GetOptPattern {
+  [Config e.Params-B (#Optimize e.Opt-B #OptPattern e.Opt-E) e.Params-E]
+    = #Conjoint;
+
+  [Config e.Params] = #Disjoint;
+}
+
+/**
+  <Config-GetOptResult t.Config>
+    == #NoOpt
+    == #OptResult
+*/
+$ENTRY Config-GetOptResult {
+  [Config e.Params-B (#Optimize e.Opt-B #OptResult e.Opt-E) e.Params-E]
+    = #OptResult;
+
+  [Config e.Params] = #NoOpt;
+}
+
+/**
+  <Config-SetOptFlags t.Config e.Flags>
+    == #Success t.Config
+    == #Fails #BadValue-Opt e.Letters
+
+  e.Flags ::= s.Letter* s.Change?
+  s.Letter ::= 'd' | 'P' | 'R'
+  s.Change ::= '+' | '-' | '='
+*/
+$ENTRY Config-SetOptFlags {
+  [Config e.Params-B (#Optimize e.OldFlags) e.Params-E] e.NewFlags
+    = <Fetch
+        <ParseOptFlags e.NewFlags> {
+          #Success e.NewFlags^ s.FnChange
+            = #Success
+              [Config
+                e.Params-B
+                (#Optimize <s.FnChange (e.OldFlags) e.NewFlags>)
+                e.Params-E
+              ];
+
+          #Fails e.NotParsed s.FnChange
+            = #Fails #BadValue-Opt e.NotParsed;
+        }
+      >;
+}
+
+ParseOptFlags {
+  e.Flags '+' = <ParseOptLetters () e.Flags> Opt-Add;
+  e.Flags '-' = <ParseOptLetters () e.Flags> Opt-Remove;
+  e.Flags '=' = <ParseOptLetters () e.Flags> Opt-Assign;
+  e.Flags /* по умолчанию */ = <ParseOptLetters () e.Flags> Opt-Add;
+}
+
+ParseOptLetters {
+  (e.Scanned) 'P' e.Flags
+    = <ParseOptLetters (<Flags-Unique e.Scanned #OptPattern>) e.Flags>;
+
+  (e.Scanned) 'R' e.Flags
+    = <ParseOptLetters (<Flags-Unique e.Scanned #OptResult>) e.Flags>;
+
+  (e.Scanned) 'd' e.Flags
+    = <ParseOptLetters (<Flags-Unique e.Scanned #OptDirect>) e.Flags>;
+
+  (e.Scanned) /* пусто */ = #Success e.Scanned;
+
+  (e.Scanned) e.Unparsed = #Fails e.Unparsed;
+}
+
+Flags-Unique {
+  e.Flags-B s.Repeated e.Flags-E s.Repeated = e.Flags-B s.Repeated e.Flags-E;
+  e.Flags s.New = e.Flags s.New;
+}
+
+Opt-Add {
+  (e.OldFlags-B s.Repeated e.OldFlags-E) s.Repeated e.NewFlags
+    = <Opt-Add (e.OldFlags-B s.Repeated e.OldFlags-E) e.NewFlags>;
+
+  (e.OldFlags) s.NextNewFlag e.NewFlags
+    = <Opt-Add (e.OldFlags s.NextNewFlag) e.NewFlags>;
+
+  (e.OldFlags) /* пусто */ = e.OldFlags;
+}
+
+Opt-Remove {
+  (e.OldFlags-B s.Repeated e.OldFlags-E) s.Repeated e.NewFlags
+    = <Opt-Remove (e.OldFlags-B e.OldFlags-E) e.NewFlags>;
+
+  (e.OldFlags) s.NextNewFlag e.NewFlags = <Opt-Remove (e.OldFlags) e.NewFlags>;
+
+  (e.OldFlags) /* пусто */ = e.OldFlags;
+}
+
+Opt-Assign {
+  (e.OldFlags) e.NewFlags = e.NewFlags;
+}
+
+/**
+  <Config-GetErrorFile t.Config>
+    == #NoErrorFile
+    == #ErrorFile e.ErrorFile
+*/
+$ENTRY Config-GetErrorFile {
+  [Config e.Params-B (#ErrorFile) e.Params-E] = #NoErrorFile;
+
+  [Config e.Params-B (#ErrorFile e.ErrorFile) e.Params-E]
+    = #ErrorFile e.ErrorFile;
+}
+
+/**
+  <Config-SetErrorFile t.Cofnig e.ErrorFile>
+    == #Success t.Config
+    == #Fails #EmptyErrorFileName
+*/
+$ENTRY Config-SetErrorFile {
+  [Config e.Params-B (#ErrorFile e.OldErrorFile) e.Params-E] #NoErrorFile
+    = #Success [Config e.Params-B (#ErrorFile /* пусто */) e.Params-E];
+
+  [Config e.Params] #ErrorFile /* пусто */
+    = #Fails #EmptyErrorFile;
+
+  [Config e.Params-B (#ErrorFile e.OldErrorFile) e.Params-E]
+  #ErrorFile e.NewErrorFile
+    = #Success [Config e.Params-B (#ErrorFile e.NewErrorFile) e.Params-E];
+}
+
+/**
+  <Config-GetDebugMode t.Config>
+    == s.MarkupContext s.DebuggerInfo
+
+  s.MarkupContext ::= #MarkupContext | #NoMarkupContext
+  s.DebuggerInfo ::= #DebugInfo | #NoDebugInfo
+*/
+$ENTRY Config-GetDebugMode {
+  [Config e.Params-B (#DebugMode s.MarkupContext s.DebuggerInfo) e.Params-E]
+    = s.MarkupContext s.DebuggerInfo;
+}
+
+/**
+  <Config-SetMarkupContext t.Config>
+    == #Success t.Config
+*/
+$ENTRY Config-SetMarkupContext {
+  [Config e.Params-B (#DebugMode s.MarkupContext s.DebuggerInfo) e.Params-E]
+    = #Success
+      [Config e.Params-B (#DebugMode #MarkupContext s.DebuggerInfo) e.Params-E];
+}
+
+/**
+  <Config-SetDebuggerInfo t.Context>
+    == #Success t.Config
+*/
+$ENTRY Config-SetDebugInfo {
+  [Config e.Params-B (#DebugMode s.MarkupContext s.DebuggerInfo) e.Params-E]
+    = #Success
+      [Config e.Params-B (#DebugMode s.MarkupContext #DebugInfo) e.Params-E];
+}
+
+/**
+  <Config-GetGrammarCheck t.Config>
+    == s.GrammarCheck
+
+  s.GrammarCheck ::= #NormalRun | #GrammarCheck
+*/
+$ENTRY Config-GetGrammarCheck {
+  [Config e.Params-B (#GrammarCheck s.GrammarCheck) e.Params-E]
+    = s.GrammarCheck;
+}
+
+/**
+  <Config-SetGrammarCheck t.Config>
+    == #Success t.Config
+*/
+$ENTRY Config-SetGrammarCheck {
+  [Config e.Params-B (#GrammarCheck s.GrammarCheck) e.Params-E]
+    = #Success [Config e.Params-B (#GrammarCheck #GrammarCheck) e.Params-E];
+}
+
+/**
+  <Config-GetTargetFileName t.Config>
+    == #DefaultTargetFileName
+    == e.TargetFileName
+*/
+$ENTRY Config-GetTargetFileName {
+  [Config e.Params-B (#TargetFileName #DefaultTargetFileName) e.Params-E]
+    = #DefaultTargetFileName;
+
+  [Config e.Params-B (#TargetFileName e.TargetFileName) e.Params-E]
+    = e.TargetFileName;
+}
+
+/**
+  <Config-SetTargetFileName t.Config e.FileName>
+    == #Success t.Config
+*/
+$ENTRY Config-SetTargetFileName {
+  [Config e.Params-B (#TargetFileName e.OldTargetFileName) e.Params-E]
+  e.NewTargetFileName
+    = #Success
+      [Config
+        e.Params-B (#TargetFileName e.NewTargetFileName) e.Params-E
+      ];
+}
+
+/**
+  <Config-GetTargetSuffix t.Config s.TargetMode>
+    == e.TargetSuffix
+*/
+$ENTRY Config-GetTargetSuffix {
+  [Config
+    e.Params-B
+    (#TargetSuffix (e.TargetSuffixExe) (e.TargetSuffixLib))
+    e.Params-E
+  ]
+  #EXE
+    = e.TargetSuffixExe;
+
+  [Config
+    e.Params-B
+    (#TargetSuffix (e.TargetSuffixExe) (e.TargetSuffixLib))
+    e.Params-E
+  ]
+  #LIB
+    = e.TargetSuffixLib;
+
+  [Config e.Params] #R = '.rasl-module';
+
+  [Config e.Params] #CompileOnly = /* пусто, потому что не важно */;
+}
+
+/**
+  <Config-SetTargetSuffix t.Config s.CompileVariant e.Suffix>
+    == #Success t.Config
+*/
+$ENTRY Config-SetTargetSuffix {
+  [Config
+    e.Params-B
+    (#TargetSuffix (e.OldTargetSuffixExe) (e.TargetSuffixLib))
+    e.Params-E
+  ]
+  #EXE e.NewTargetSuffixExe
+    = #Success
+      [Config
+        e.Params-B
+        (#TargetSuffix (e.NewTargetSuffixExe) (e.TargetSuffixLib))
+        e.Params-E
+      ];
+
+  [Config
+    e.Params-B
+    (#TargetSuffix (e.TargetSuffixExe) (e.OldTargetSuffixLib))
+    e.Params-E
+  ]
+  #LIB e.NewTargetSuffixLib
+    = #Success
+      [Config
+        e.Params-B
+        (#TargetSuffix (e.TargetSuffixExe) (e.NewTargetSuffixLib))
+        e.Params-E
+      ];
+}
+
+/**
+  <Config-GetSearchFolders t.Config>
+    == (e.Folder)*
+*/
+$ENTRY Config-GetSearchFolders {
+  [Config e.Params-B (#Folders e.Folders) e.Params-E] = e.Folders;
+}
+
+/**
+  <Config-SetSearchFolder t.Config e.Folder> == t.Config
+*/
+$ENTRY Config-SetSearchFolder {
+  [Config e.Params-B (#Folders e.Folders) e.Params-E] e.NewFolder
+    = [Config e.Params-B (#Folders e.Folders (e.NewFolder)) e.Params-E];
+}
+
+/**
+  <Config-GetPrefix t.Config>
+    == e.Prefix
+
+  При этом пустое значение префикса является допустимым — это означает,
+  что пользователь его не указал.
+*/
+$ENTRY Config-GetPrefix {
+  [Config e.Params-B (#Prefix e.Prefix) e.Params-E]
+    = e.Prefix;
+}
+
+/**
+  <Config-SetPrefix t.Config e.Prefix>
+    == #Success t.Config
+*/
+$ENTRY Config-SetPrefix {
+  [Config e.Params-B (#Prefix e.OldPrefix) e.Params-E] e.NewPrefix
+    = #Success [Config e.Params-B (#Prefix e.NewPrefix) e.Params-E];
+}
+
+/**
+  <Config-GetReferences t.Config>
+    == (e.Reference)*
+*/
+$ENTRY Config-GetReferences {
+  [Config e.Params-B (#References e.References) e.Params-E]
+    = e.References;
+}
+
+/**
+  <Config-AddReference t.Config e.Reference>
+    = #Success t.Config
+*/
+$ENTRY Config-AddReference {
+  [Config e.Params-B (#References e.References) e.Params-E] e.NewReference
+    = #Success
+      [Config
+        e.Params-B (#References e.References (e.NewReference)) e.Params-E
+      ];
+}
+
+/**
+  <Config-GetTargetMode t.Config>
+    == s.TargetMode
+
+  s.TargetMode ::= #EXE | #LIB | #R | #CompileOnly
+*/
+$ENTRY Config-GetTargetMode {
+  [Config e.Params-B (#TargetMode #DefaultEXE) e.Params-E]
+    = #EXE;
+
+  [Config e.Params-B (#TargetMode s.TargetMode) e.Params-E]
+    = s.TargetMode;
+}
+
+/**
+  <Config-SetTargetMode t.Config s.TargetMode>
+    == #Success t.Config
+    == #Fails #TargetModeAlreadySet
+*/
+$ENTRY Config-SetTargetMode {
+  [Config e.Params-B (#TargetMode #DefaultEXE) e.Params-E] s.NewTargetMode
+    = #Success
+      [Config e.Params-B (#TargetMode s.NewTargetMode) e.Params-E];
+
+  // Допускаем повторное определение того же режима
+  [Config e.Params-B (#TargetMode s.TargetMode) e.Params-E] s.TargetMode
+    = #Success [Config e.Params-B (#TargetMode s.TargetMode) e.Params-E];
+
+  [Config e.Params-B (#TargetMode s.OldTargetMode) e.Params-E] e.NewTargetMode
+    = #Fails #TargetModeAlreadySet;
+}
+
+/**
+  <Config-GetIncorporateds t.Config>
+    == (e.IncorporatedName)*
+*/
+$ENTRY Config-GetIncorporateds {
+  [Config e.Params-B (#Incorporateds e.Incorporateds) e.Params-E]
+    = e.Incorporateds;
+}
+
+/**
+  <Config-AddIncorporated t.Config e.IncorporatedName>
+    == #Success t.Config
+*/
+$ENTRY Config-AddIncorporated {
+  [Config e.Params-B (#Incorporateds e.Incorporateds) e.Params-E]
+  e.IncorporatedName
+    = #Success
+      [Config
+        e.Params-B
+        (#Incorporateds e.Incorporateds (e.IncorporatedName))
+        e.Params-E
+      ];
+}
+
+/**
+  <Config-GetChmodXCommand t.Config>
+    == e.ChmodXCommand
+*/
+$ENTRY Config-GetChmodXCommand {
+  [Config e.Params-B (#ChmodXCommand e.Command) e.Params-E]
+    = e.Command;
+}
+
+/**
+  <Config-SetChmodXCommand t.Config>
+    == #Success t.Config
+*/
+$ENTRY Config-SetChmodXCommand {
+  [Config e.Params-B (#ChmodXCommand e.OldCommand) e.Params-E]
+  e.NewCommand
+    = #Success [Config e.Params-B (#ChmodXCommand e.NewCommand) e.Params-E];
+}
+
+/**
+  <Config-GetPrelude t.Config> == e.Prelude
+
+  Пустое значение является допустимым — означает, что стандартное вступление
+  подключать не надо.
+*/
+$ENTRY Config-GetPrelude {
+  [Config e.Params-B (#Prelude e.Prelude) e.Params-E] = e.Prelude;
+}
+
+/**
+  <Config-SetPrelude t.Config e.Prelude>
+    == #Success t.Config
+*/
+$ENTRY Config-SetPrelude {
+  [Config e.Params-B (#Prelude e.OldPrelude) e.Params-E] e.NewPrelude
+    = #Success [Config e.Params-B (#Prelude e.NewPrelude) e.Params-E];
+}

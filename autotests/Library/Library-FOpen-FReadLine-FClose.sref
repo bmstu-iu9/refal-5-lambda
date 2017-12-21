@@ -11,7 +11,7 @@ Handle { s.FileHandle = s.FileHandle; }
 
 CheckContent {
   (e.FileName) e.Lines =
-    <DoCheckContent <Handle <FOpen 'r' e.FileName>> e.Lines>;
+    <DoCheckContent <Handle <FOpen 'R' e.FileName>> e.Lines>;
 }
 
 DoCheckContent {

@@ -2,14 +2,14 @@
 ---
 name: Simple Refal
 scopeName: source.sref
-fileTypes: [sref]
+fileTypes: [sref, srefi]
 uuid: 8d74d8c6-adaa-4888-bc0a-80ba4d340ed0
 
 patterns:
 - {include: '#comments'}
 - comment: keywords
   name: keyword.other.sref
-  match: '\$ENTRY|\$SWAP|\$ESWAP|\$EXTERN|\$FORWARD|\$LABEL|\$ENUM|\$EENUM|\$EASTEREGG'
+  match: '\$ENTRY|\$SWAP|\$ESWAP|\$EXTERN|\$FORWARD|\$LABEL|\$ENUM|\$EENUM|\$EASTEREGG|\$INCLUDE'
 
 - comment: broken keyword
   name: invalid.illegal.sref

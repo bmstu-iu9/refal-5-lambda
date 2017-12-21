@@ -2,7 +2,7 @@
 $EXTERN Add;
 
 //FROM LibraryEx
-$EXTERN Inc, StrFromInt, Map, Fetch;
+$EXTERN Inc, StrFromInt, Map, Fetch, MapReduce;
 
 //FROM DisplayName
 $EXTERN DisplayName;
@@ -66,10 +66,18 @@ $ENTRY TextFromExpr {
         (#TkCloseADT s.ContextOffset) =
           ' ]' <Offset s.ContextOffset>;
 
+        (#TkClosureHead s.ContextOffset)
+          = ' [*]' <Offset s.ContextOffset>;
+        (#TkUnwrappedClosure s.ContextOffset)
+          = ' {*}' <Offset s.ContextOffset>;
+
         (#TkChar s.Char s.Offset) =
           ' ''' <EscapeChar s.Char> '' <Offset s.Offset>;
 
         (#TkChars e.Chars) = ' ''' e.Chars '';
+
+        (#TkNumber #Cookie1 s.Offset) = ' <Cookie1>' <Offset s.Offset>;
+        (#TkNumber #Cookie2 s.Offset) = ' <Cookie2>' <Offset s.Offset>;
 
         (#TkNumber s.Number s.Offset) =
           ' ' <StrFromInt s.Number> <Offset s.Offset>;
@@ -88,7 +96,7 @@ $ENTRY TextFromExpr {
           <Offset s.SampleOffset> <Offset s.CopyOffset>;
 
         (#TkIdentifier e.Name s.Offset) =
-          ' # ' <DisplayName e.Name> <Offset s.Offset>;
+          ' # ' <SafeDisplayName e.Name> <Offset s.Offset>;
 
         (#Tile e.SubRange) = ' Tile{' <TextFromExpr e.SubRange> ' }';
         (#AsIs e.SubRange) = ' AsIs:' <TextFromExpr e.SubRange>;
@@ -101,6 +109,21 @@ $ENTRY TextFromExpr {
       }
       <TextFromExpr-Prepare e.Expr>
     >;
+}
+
+SafeDisplayName {
+  e.Name
+    = <Map
+        {
+          '\n' = '$n';
+          '\r' = '$r';
+          ' ' = '$_';
+          '\t' = '$t';
+          '$' = '$$';
+          s.Other = s.Other;
+        }
+        <DisplayName e.Name>
+      >;
 }
 
 TextFromExpr-Prepare {
@@ -153,7 +176,7 @@ $ENTRY GenPattern {
     s.FnGenResult (e.Result)
     s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands
   >
-    == (#CmdIssueMem s.ContextSize) e.SentenceCommands
+    == (#CmdIssueMemory s.ContextSize) e.SentenceCommands
 */
 $ENTRY GenResult {
   s.FnGenResult (e.Result)
@@ -165,7 +188,7 @@ $ENTRY GenResult {
       {
         s.ContextCount e.ResultCommands =
           <FoldOpenELoops
-            (#CmdIssueMem s.ContextCount)
+            (#CmdIssueMemory s.ContextCount)
             e.PatternCommands
             <PutVariableDebugTable e.PatternVars>
             e.ResultCommands
@@ -229,4 +252,32 @@ BuildString {
     <BuildString (e.Chars s.Value) e.Tail>;
 
   (e.Chars) e.Tail = (e.Chars) e.Tail;
+}
+
+/**
+  <MakeSavers s.ContextOffset e.SubstitutesAnsJunks>
+    == s.ContextOffset (e.CmdSaves) e.SubstitutesAnsJunks
+*/
+$ENTRY MakeSavers {
+  s.OriginContextOffset e.SubstitutesAnsJunks
+    = <MapReduce
+        {
+          (s.ContextOffset e.CmdSaves) (#Junk e.Junk)
+            = (s.ContextOffset e.CmdSaves) (#Junk e.Junk);
+
+          (s.ContextOffset e.CmdSaves) (#E s.Num e.Range)
+            = (
+                <Inc2 s.ContextOffset>
+                e.CmdSaves (#CmdSave s.Num s.ContextOffset)
+              )
+              (#E s.ContextOffset e.Range);
+
+          (s.ContextOffset e.CmdSaves) (s.S-or-T s.Num e.Range)
+            = (s.ContextOffset e.CmdSaves) (s.S-or-T s.Num e.Range);
+        }
+        (s.OriginContextOffset /* CmdSave's */)
+        e.SubstitutesAnsJunks
+      >
+    : (s.ContextOffset^ e.CmdSaves) e.SubstitutesAnsJunks^
+    = s.ContextOffset (e.CmdSaves) e.SubstitutesAnsJunks;
 }

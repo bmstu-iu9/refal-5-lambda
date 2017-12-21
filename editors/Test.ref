@@ -1,0 +1,36 @@
+* Однострочный комментарий
+
+/*
+  Многострочный комментарий
+*/
+
+* синонимы слова $EXTERN:
+$EXTERN Print;
+$EXTRN Prout;
+$EXTERNAL Card;
+
+$BADKEYWORD /* битое ключевое слово */
+
+/**
+  Документирующий комментарий
+*/
+
+* ниже — псевдокомментарий
+*$FROM Library
+$EXTERN Add;
+
+$ENTRY Go {
+  CompoundSymbol = "escapes: \x42\n\t\r\'\"\<\>\(\)";
+  Chars = 'escapes: \x42\n\t\r\\\'\"\<\>\(\)';
+  BadEscape = '\q';
+  unclosed_quote = 'abc;
+  unclosed_compound = "abc;
+  bad_escaped_character = \q;
+
+  SpecialSymbols
+    , \x42 \n \r \t \' \" \< \> \( \) \\
+    : '\x42\n\r\t\'\"\<\>\(\)'
+    = <Go 1>;
+
+  e.Other = e.Other;
+}

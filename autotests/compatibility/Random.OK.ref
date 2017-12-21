@@ -1,0 +1,49 @@
+$ENTRY Go {
+  = <Loop5 200>
+    <Loop1 200>
+    <Loop0 200>;
+}
+
+Loop5 {
+  0 = ;
+
+  s.N
+    = <Check5 <Random 5>>
+      <Check5 <Random '+' 5>>
+      <Loop5 <- s.N 1>>;
+}
+
+Check5 {
+  0 = ;
+  0 e.X = <Fail 0 e.X>;
+
+  s.1 = ;
+  s.1 s.2 = ;
+  s.1 s.2 s.3 = ;
+  s.1 s.2 s.3 s.4 = ;
+  s.1 s.2 s.3 s.4 s.5 = ;
+}
+
+Fail { /* empty */ = ; }
+
+Loop1 {
+  0 = ;
+
+  s.N
+    = <Check1 <Random 1>>
+      <Check1 <Random '+' 1>>
+      <Loop1 <- s.N 1>>;
+}
+
+Check1 {
+  s.1 = ;
+}
+
+Loop0 {
+  0 = ;
+
+  s.N
+    = <Check1 <Random 0>>
+      <Check1 <Random '+' 0>>
+      <Loop0 <- s.N 1>>;
+}

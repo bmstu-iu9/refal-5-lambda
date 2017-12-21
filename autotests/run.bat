@@ -4,9 +4,11 @@ goto :EOF
 
 :MAIN
 setlocal
-  call ..\c-plus-plus.conf.bat
+  call ..\scripts\load-config.bat || exit /b 1
+  set RUNTIME=../src/srlib/refalrts.cpp ^
+    ../src/srlib/platform-Windows/refalrts-platform-specific.cpp
   if {%1}=={} (
-    for %%s in (*.sref) do call :RUN_TEST %%s || exit /b 1
+    for %%s in (*.sref *.ref) do call :RUN_TEST %%s || exit /b 1
     call :RUN_ALL_TESTS_DIR || exit /b 1
   ) else (
     if {%1}=={--dir} (
@@ -15,7 +17,25 @@ setlocal
       for %%s in (%*) do call :RUN_TEST %%s || exit /b 1
     )
   )
+  if exist _test_prefix.exe-prefix erase _test_prefix.exe-prefix
 endlocal
+goto :EOF
+
+:PREPARE_PREFIX
+  if not exist _test_prefix.exe-prefix (
+    echo Prepare common prefix...
+    ..\bin\srefc-core -o _test_prefix.exe-prefix ^
+      %COMMON_SRFLAGS% %SRFLAGS_NAT% 2>__error.txt
+    if not exist _test_prefix.exe-prefix (
+      echo CAN'T CREATE COMMON PREFIX, SEE __error.txt
+      exit /b 1
+    )
+    erase __error.txt
+    if exist *.obj erase *.obj
+    if exist *.tds erase *.tds
+    echo.
+  )
+  exit /b 0
 goto :EOF
 
 :RUN_ALL_TESTS_DIR
@@ -44,18 +64,32 @@ goto :EOF
 
 :RUN_TEST
 setlocal
-  set TEST_CPP_FLAGS= ^
-    -I../src/srlib ^
-    -DSTEP_LIMIT=1000 ^
-    -DMEMORY_LIMIT=1000 ^
-    -DDUMP_FILE=\"__dump.txt\" ^
-    -DDONT_PRINT_STATISTICS
+  set COMMON_SRFLAGS= ^
+    -c "%CPPLINEE%" ^
+    --exesuffix=.exe ^
+    --prelude=test-prelude.srefi ^
+    -D../src/srlib/platform-Windows ^
+    -D../src/srlib ^
+    -f-DSTEP_LIMIT=1500 ^
+    -f-DMEMORY_LIMIT=1000 ^
+    -f-DIDENTS_LIMIT=200 ^
+    -f-DDUMP_FILE=%DEF_DUMP_FILE_NAME_HACK% ^
+    -f-DDONT_PRINT_STATISTICS
+  set SRFLAGS_PREF=--prefix=_test_prefix
+  set SRFLAGS_NAT=refalrts refalrts-platform-specific
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
 endlocal
 goto :EOF
 
 :RUN_TEST_ALL_MODES
 setlocal
+  find "%%" %1 > NUL
+  if errorlevel 1 (
+    call :PREPARE_PREFIX || exit /b 1
+    set SRFLAGS_PLUS=%SRFLAGS_PREF%
+  ) else (
+    set SRFLAGS_PLUS=%SRFLAGS_NAT%
+  )
   set SRFLAGS=
   call :%2 %1 || exit /b 1
   set SRFLAGS=--markup-context
@@ -66,16 +100,16 @@ setlocal
   call :%2 %1 || exit /b 1
   set SRFLAGS=-OPR
   call :%2 %1 || exit /b 1
-  set SRFLAGS=--gen=interp
+  set SRFLAGS_PLUS=%SRFLAGS_NAT%
+  set SRFLAGS=-Od
   call :%2 %1 || exit /b 1
-  set SRFLAGS=-OP --gen=interp
+  set SRFLAGS=-OdP
   call :%2 %1 || exit /b 1
-  set SRFLAGS=-OR --gen=interp
+  set SRFLAGS=-OdR
   call :%2 %1 || exit /b 1
-  set SRFLAGS=-OPR --gen=interp
+  set SRFLAGS=-OdPR
   call :%2 %1 || exit /b 1
-  set SRFLAGS=
-  set CPPLINE=%CPPLINE% -DENABLE_DEBUGGER
+  set SRFLAGS=-F-DENABLE_DEBUGGER
   call :%2 %1 || exit /b 1
 endlocal
 goto :EOF
@@ -90,26 +124,23 @@ goto :EOF
 setlocal
   echo Passing %1 (flags %SRFLAGS%)...
   set SREF=%1
-  set CPP=%~n1.cpp
+  set RASL=%~n1.rasl
+  set NATCPP=%~n1.cpp
   set EXE=%~n1.exe
 
-  ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
+  ..\bin\srefc-core %SREF% -o %EXE% %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
+    2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
   )
   erase __error.txt
-  if not exist %CPP% (
+  if not exist %EXE% (
     echo COMPILATION FAILED
     exit /b 1
   )
 
-  %CPPLINE% %TEST_CPP_FLAGS% %CPP% ../src/srlib/refalrts.cpp
-  if errorlevel 1 (
-    echo COMPILATION FAILED
-    exit /b 1
-  )
-  if exist a.exe move a.exe %EXE%
+  if not exist %NATCPP% set NATCPP=
 
   %EXE%
   if errorlevel 1 (
@@ -117,7 +148,7 @@ setlocal
     exit /b 1
   )
 
-  erase %CPP% %EXE%
+  erase %RASL% %NATCPP% %EXE%
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt
@@ -135,26 +166,23 @@ goto :EOF
 setlocal
   echo Passing %1 (expecting failure, flags %SRFLAGS%)...
   set SREF=%1
-  set CPP=%~n1.cpp
+  set RASL=%~n1.rasl
+  set NATCPP=%~n1.cpp
   set EXE=%~n1.exe
 
-  ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
+  ..\bin\srefc-core %SREF% -o %EXE% %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
+    2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
   )
   erase __error.txt
-  if not exist %CPP% (
+  if not exist %EXE% (
     echo COMPILATION FAILED
     exit /b 1
   )
 
-  %CPPLINE% %TEST_CPP_FLAGS% %CPP% ../src/srlib/refalrts.cpp
-  if errorlevel 1 (
-    echo COMPILATION FAILED
-    exit /b 1
-  )
-  if exist a.exe move a.exe %EXE%
+  if not exist %NATCPP% set NATCPP=
 
   %EXE%
   if not errorlevel 100 (
@@ -162,7 +190,7 @@ setlocal
     exit /b 1
   )
 
-  erase %CPP% %EXE%
+  erase %RASL% %NATCPP% %EXE%
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt
@@ -175,17 +203,17 @@ goto :EOF
 setlocal
   echo Passing %1 (syntax error recovering)...
   set SREF=%1
-  set CPP=%~n1.cpp
+  set RASL=%~n1.rasl
 
-  ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
+  ..\bin\srefc-core --prelude=test-prelude.srefi -C %SRFLAGS% %1 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
   )
   erase __error.txt
-  if exist %CPP% (
+  if exist %RASL% (
     echo COMPILATION SUCCESSED, BUT EXPECTED SYNTAX ERROR
-    erase %CPP%
+    erase %RASL%
     exit /b 1
   )
   echo Ok! Compiler didn't crash on invalid syntax
@@ -195,6 +223,8 @@ goto :EOF
 
 :RUN_TEST_AUX.LEXGEN
 setlocal
+  call :PREPARE_PREFIX || exit /b 1
+
   echo Passing %1 (lexgen)...
   set SREF=%1
 
@@ -209,23 +239,17 @@ setlocal
     exit /b 1
   )
 
-  ..\bin\srefc-core %SRFLAGS% _lexgen-out.sref 2> __error.txt
+  ..\bin\srefc-core _lexgen-out.sref -o _lexgen-out.exe %COMMON_SRFLAGS% ^
+    %SRFLAGS_PREF% 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
   )
   erase __error.txt
-  if not exist _lexgen-out.cpp (
+  if not exist _lexgen-out.rasl (
     echo COMPILATION FAILED
     exit /b 1
   )
-
-  %CPPLINE% %TEST_CPP_FLAGS% _lexgen-out.cpp ../src/srlib/refalrts.cpp
-  if errorlevel 1 (
-    echo COMPILATION FAILED
-    exit /b 1
-  )
-  if exist a.exe move a.exe _lexgen-out.exe
 
   _lexgen-out.exe
   if errorlevel 1 (

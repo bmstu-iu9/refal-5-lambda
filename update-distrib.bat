@@ -8,13 +8,23 @@ endlocal
 popd
 
 pushd distrib
-rd /q /s bin compiler doc lexgen srlib srmake
-xcopy /e /y ..\build\*
+rd /q /s bin scripts compiler doc lexgen srlib srmake editors
+xcopy /e /y /i ..\build\compiler compiler
+xcopy /e /y /i ..\build\lexgen lexgen
+xcopy /e /y /i ..\build\srmake srmake
+xcopy /e /y /i ..\build\srlib-rich-prefix srlib-rich-prefix
 md bin
 copy ..\src\scripts\srefc.* bin
 copy ..\src\scripts\srmake.* bin
 ren bin\*.sh *.
-xcopy /e /i /y ..\srlib srlib
+md scripts
+copy ..\scripts\* scripts
+md srlib
+xcopy /e /i /y ..\srlib\scratch srlib\scratch
+md srlib\rich
+copy ..\srlib\rich\*.rasl srlib\rich
+copy ..\srlib\rich\*.froms srlib\rich
+xcopy /e /i /y ..\srlib\common srlib\common
 md doc
 xcopy /e /i /y ..\doc\examples doc\examples
 copy ..\doc\*.pdf doc
@@ -30,5 +40,7 @@ md doc\historical\Дрогунов
 copy ..\doc\historical\Дрогунов\*.pdf doc\historical\Дрогунов
 copy ..\LICENSE .
 copy ..\README.md .
+md editors
+xcopy /e /i /y ..\editors editors
 call bootstrap.bat
 popd

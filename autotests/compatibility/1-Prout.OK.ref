@@ -1,0 +1,9 @@
+$ENTRY Go {
+  = <Prout 'Hello'>
+    <Prout 1 22 333 4444>
+    <Prout "Hello, World!">
+    <Prout Hello World>
+    <Prout ((() ()))>
+    <Prout (Hello 1 'Hello') ('World' 2 "$$123")>
+    <Prout <Step>>;
+}

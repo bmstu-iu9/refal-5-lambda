@@ -1,0 +1,662 @@
+/**
+  <Parse e.Tokens>
+    == (t.Error*) t.Unit*
+
+  t.Error ::= (t.Pos e.Message)
+  t.Unit ::= t.Function | t.Extern
+  t.Extern ::= (Declaration NoPos GN-Entry e.Name)
+
+  t.Function ::=
+      (Function t.SrcPos s.ScopeClass (e.Name) Sentences t.Sentence*)
+  s.ScopeClass ::= GN-Entry | GN-Local
+  t.Sentence ::=
+    (t.Pattern (Condition t.Result (e.Blocks) t.Pattern)* e.SentenceTail)
+  e.SentenceTail ::= t.Result (e.Blocks)
+  e.Blocks ::= (Sentences t.Sentence*)*
+
+  t.Pattern, t.Result ::= (t.Term*)
+  t.Term ::=
+      (TkIdentifier e.Chars*)
+    | (TkNumber s.Number)
+    | (TkChar s.Char)
+    | (TkVariable t.SrcPos s.VarType e.Index)
+    | (Brackets t.Term*)
+    | (CallBrackets (TkName t.SrcPos e.Function) t.Terms*)
+  s.VarType ::= 's' | 't' | 'e'
+*/
+$ENTRY R5-Parse {
+  e.Tokens = <FilterErrors <Program  e.Tokens>>;
+}
+
+FilterErrors {
+  e.UnitsAndErrors
+    = <DoFilterErrors (/* errors */) (/* units */) e.UnitsAndErrors>;
+}
+
+DoFilterErrors {
+  (e.Errors) (e.Units) e.Units-B (Error t.Pos e.Message) e.UnitsAndErrors-E
+    = <DoFilterErrors
+        (e.Errors (t.Pos e.Message)) (e.Units e.Units-B) e.UnitsAndErrors-E
+      >;
+
+  (e.Errors) (e.Units) t.Unit e.UnitsAndErrors
+    = <DoFilterErrors (e.Errors) (e.Units t.Unit) e.UnitsAndErrors>;
+
+  (e.Errors) (e.Units) /* пусто */ = (e.Errors) e.Units;
+}
+
+/*
+  Program = Unit* EOF.
+
+  <Program e.Tokens> == t.ErrorUnit*
+
+  t.ErrorUnit ::= (Error t.Pos e.Message) | t.Unit
+*/
+Program {
+  t.NextToken e.Tokens,
+      t.NextToken: (s.Type t.Pos e.Value),
+      <OneOf s.Type TkExtern TkEntry TkName TkSemicolon>: True =
+    <Program-AfterUnit <Unit t.NextToken e.Tokens>>;
+
+  (TkEOF t.Pos) = /* всё */;
+
+  t.Unexpected e.Tokens,
+      t.Unexpected: (s.Type t.Pos e.Value) =
+    <UnexpectedToken
+      t.Unexpected '$EXTERN, $ENTRY, function name or special comment'
+    >
+    <Program e.Tokens>;
+}
+
+OneOf {
+  t.Elem e.Elems-B t.Elem e.Elems-E = True;
+  t.Elem e.Elems = False;
+}
+
+Program-AfterUnit {
+  (e.ErrorsUnits) e.Tokens = e.ErrorsUnits <Program e.Tokens>;
+}
+
+/*
+  Unit = SPECIAL-COMMENT | "$EXTERN" NameList | Function.
+
+  <Unit e.Tokens> == (t.ErrorUnit*) e.Tokens
+*/
+Unit {
+  t.NextToken e.Tokens,
+      t.NextToken:
+    {
+      (TkExtern t.Pos) =
+        <NameList e.Tokens>;
+
+      (TkSemicolon t.Pos) =
+        (/* игнорируем */) e.Tokens;
+
+      (s.Type t.Pos e.Value),
+          <OneOf s.Type TkEntry TkName>: True =
+        <Function t.NextToken e.Tokens>;
+
+      /* других типов быть не должно */
+    }
+}
+
+/*
+  NameList = NAME { "," NAME } ";".
+
+  <NameList e.Tokens> == (t.ErrorUnit*) e.Tokens
+*/
+NameList {
+  (TkName t.Pos e.Name) e.Tokens =
+    <NameList-DoNames
+      (<Extern t.Pos e.Name> /* externs and errors */) e.Tokens
+    >;
+
+  t.NextToken e.Tokens,
+      t.NextToken: (s.Type t.Pos e.Value) =
+    ((Error t.Pos 'expected function name after $EXTERN keyword'))
+    t.NextToken e.Tokens;
+}
+
+Extern {
+  t.Pos e.Name = (Declaration t.Pos GN-Entry e.Name);
+}
+
+NameList-DoNames {
+  (e.ExternsAndErrors)
+  (TkComma t.CommaPos) (TkName t.NamePos e.Name) e.Tokens =
+    <NameList-DoNames (e.ExternsAndErrors <Extern t.NamePos e.Name>) e.Tokens>;
+
+  (e.ExternsAndErrors) (TkSemicolon t.Pos) e.Tokens =
+    (e.ExternsAndErrors) e.Tokens;
+
+  (e.ExternsAndErrors) (TkComma t.Pos) e.Tokens =
+    <NameList-DoNames
+      (e.ExternsAndErrors (Error t.Pos 'expected name after comma'))
+      e.Tokens
+    >;
+
+  (e.ExternsAndErrors)
+  (TkName t.NamePos e.Name) (TkOpenBlock t.BracketPos) e.Tokens =
+    (
+      e.ExternsAndErrors
+      (Error t.NamePos 'missed semicolon after previous $EXTERN declaration')
+    )
+    (TkName t.NamePos e.Name) (TkOpenBlock t.BracketPos) e.Tokens;
+
+  (e.ExternsAndErrors) (TkName t.Pos e.Name) e.Tokens =
+    <NameList-DoNames
+      (e.ExternsAndErrors (Error t.Pos 'missed comma after external name'))
+      e.Tokens
+    >;
+
+  (e.ExternsAndErrors) t.NextToken e.Tokens,
+      t.NextToken: (s.Type t.Pos e.Value),
+      <OneOf s.Type TkExtern TkEntry TkEOF>: True =
+    (
+      e.ExternsAndErrors
+      (Error t.Pos 'missed semicolon')
+    )
+    t.NextToken e.Tokens;
+
+  (e.ExternsAndErrors) t.NextToken e.Tokens =
+    <NameList-DoNames
+      (e.ExternsAndErrors <UnexpectedToken t.NextToken 'comma or semicolon'>)
+      e.Tokens
+    >;
+}
+
+/*
+  Function = ["$ENTRY"] NAME Block.
+
+  <Function e.Tokens> == (e.Errors t.FunctionUnit) e.Tokens
+*/
+Function {
+  (TkEntry t.EntryPos) (TkName t.NamePos e.Name) e.Tokens =
+    <Function-AfterBlock
+      t.EntryPos (e.Name) GN-Entry <Block e.Tokens>
+    >;
+
+  (TkName t.Pos e.Name) e.Tokens =
+    <Function-AfterBlock
+      t.Pos (e.Name) GN-Local <Block e.Tokens>
+    >;
+
+  (TkEntry t.Pos) e.Tokens =
+    ((Error t.Pos '$ENTRY without function name, skipped'))
+    e.Tokens;
+}
+
+Function-AfterBlock {
+  t.Pos (e.Name) s.Scope (e.Errors) (e.Sentences) e.Tokens =
+    (e.Errors (Function t.Pos s.Scope (e.Name) Sentences e.Sentences))
+    e.Tokens;
+}
+
+
+/*
+  Block = "{" Sentence { ";" Sentence } [";"] "}".
+
+  <Block e.Tokens> == (e.Errors) (e.Sentences) e.Tokens
+*/
+Block {
+  (TkOpenBlock t.Pos) e.Tokens =
+    <Block-AfterSentence
+      (/* errors */) (/* sentences */)
+      <Sentence e.Tokens>
+    >;
+
+  t.Unexpected e.Tokens =
+    (<UnexpectedToken t.Unexpected '\'{\''>)
+    (/* no sentences */)
+    t.Unexpected e.Tokens;
+}
+
+Block-AfterSentence {
+  (e.Errors) (e.Sentences)
+  (e.SentenceErrors) t.NextSentence
+  t.Token1 t.Token2 e.Tokens,
+      t.Token1 t.Token2:
+    {
+      (TkSemicolon t.Pos1) (TkCloseBlock t.Pos2) =
+        <CheckEmptyBlock
+          (e.Errors e.SentenceErrors)
+          (e.Sentences t.NextSentence)
+          t.Pos1 e.Tokens
+        >;
+
+      (TkCloseBlock t.Pos) t.Token2 =
+        <CheckEmptyBlock
+          (e.Errors e.SentenceErrors)
+          (e.Sentences t.NextSentence)
+          t.Pos t.Token2 e.Tokens
+        >;
+
+      (TkSemicolon t.Pos) t.Token2 =
+        <Block-AfterSentence
+          (e.Errors e.SentenceErrors)
+          (e.Sentences t.NextSentence)
+          <Sentence t.Token2 e.Tokens>
+        >;
+
+      t.Token1 t.Token2 =
+        <Block-AfterSentence
+          (
+            e.Errors e.SentenceErrors
+            <UnexpectedToken t.Token1 '\';\' or \'}\', skipped'>
+          )
+          (e.Sentences t.NextSentence)
+          <Sentence t.Token2 e.Tokens>
+        >
+    };
+
+  (e.Errors) (e.Sentences)
+  (e.SentenceErrors) t.NextSentence
+  (TkEOF t.Pos) =
+    <CheckEmptyBlock
+      (
+        e.Errors e.SentenceErrors
+        <UnexpectedToken (TkEOF t.Pos) '\';\' or \'}\''>
+      )
+      (e.Sentences t.NextSentence)
+      t.Pos (TkEOF t.Pos)
+    >;
+}
+
+CheckEmptyBlock {
+  (e.Errors) (/* no sentences */) t.Pos e.Tokens =
+    (e.Errors (Error t.Pos 'Empty function block'))
+    (/* no sentences */) e.Tokens;
+
+  (e.Errors) (e.Sentences) t.Pos e.Tokens =
+    (e.Errors) (e.Sentences) e.Tokens;
+}
+
+
+/*
+  Sentence = Pattern ("=" Result | "," ExtensionChain).
+
+  <Sentence e.Tokens> == (e.Errors) t.Sentence e.Tokens
+*/
+Sentence {
+  e.Tokens =
+    <Sentence-AfterPattern <Pattern e.Tokens>>;
+}
+
+Sentence-AfterPattern {
+  (e.Errors) t.Pattern (TkAssign t.Pos) e.Tokens =
+    <Sentence-AfterResult
+      (e.Errors) t.Pattern <Result e.Tokens>
+    >;
+
+  (e.Errors) t.Pattern (TkComma t.Pos) e.Tokens =
+    <Sentence-AfterExtensionChain
+      (e.Errors) t.Pattern <ExtensionChain e.Tokens>
+    >;
+
+  (e.Errors) t.Pattern (TkSemicolon t.Pos) e.Tokens =
+    <Sentence-AfterResult
+      (e.Errors (Error t.Pos 'Missed \'=\'')) t.Pattern
+      <Result (TkSemicolon t.Pos) e.Tokens>
+    >;
+
+  (e.Errors) t.Pattern (TkColon t.Pos) e.Tokens =
+    <Sentence-AfterExtensionChain
+      (e.Errors (Error t.Pos 'Missed \',\'')) t.Pattern
+      <ExtensionChain (TkColon t.Pos) e.Tokens>
+    >;
+
+  (e.Errors) t.Pattern t.Unexpected e.Tokens =
+    (e.Errors <UnexpectedTokenInSentence t.Unexpected>)
+    (t.Pattern (/* пустой результат */) (/* нет блоков */))
+    t.Unexpected e.Tokens;
+}
+
+UnexpectedTokenInSentence {
+  t.Unexpected =
+    <UnexpectedToken
+      t.Unexpected 'valid Refal expression, \'=\', \',\', \':\' or \';\''
+    >
+}
+
+Sentence-AfterResult {
+  (e.Errors) t.Pattern (e.ResultErrors) t.Result e.Tokens =
+    (e.Errors e.ResultErrors)
+    (t.Pattern t.Result (/* нет блоков */))
+    e.Tokens
+}
+
+Sentence-AfterExtensionChain {
+  (e.Errors) t.Pattern (e.ExtensionErrors) (e.Conditions-And-SentenceTail)
+  e.Tokens =
+    (e.Errors e.ExtensionErrors)
+    (t.Pattern e.Conditions-And-SentenceTail)
+    e.Tokens;
+}
+
+
+/*
+  ExtensionChain =
+    Result ":" (Block | Pattern ("," ExtensionChain | "=" Result)).
+
+  <ExtensionChain e.Tokens>
+    == (e.Errors) (e.Conditions-And-SentenceTail) e.Tokens
+*/
+ExtensionChain {
+  e.Tokens =
+    <ExtensionChain-AfterResult <Result e.Tokens>>;
+}
+
+ExtensionChain-AfterResult {
+  (e.Errors) t.Result (TkColon t.ColonPos) (TkOpenBlock t.BlockPos) e.Tokens =
+    <ExtensionChain-AfterBlock
+      (e.Errors) t.Result <Block (TkOpenBlock t.BlockPos) e.Tokens>
+    >;
+
+  (e.Errors) t.Result t.NextToken e.Tokens,
+      t.NextToken:
+    {
+      (TkColon t.Pos) =
+        <ExtensionChain-AfterPattern
+          (e.Errors) t.Result <Pattern e.Tokens>
+        >;
+
+      (TkOpenBlock t.Pos) =
+        <ExtensionChain-AfterBlock
+          (e.Errors (Error t.Pos 'Missed \':\' before block')) t.Result
+          <Block (TkOpenBlock t.Pos) e.Tokens>
+        >;
+
+      (TkSemicolon t.Pos) =
+        (e.Errors (Error t.Pos 'Mistaken \',\' for \'=\''))
+        (t.Result) (/* нет блоков */)
+        (TkSemicolon t.Pos) e.Tokens;
+
+      (s.Type t.Pos),
+          <OneOf s.Type TkComma TkAssign>: True =
+        <ExtensionChain-AfterPattern
+          (e.Errors (Error t.Pos 'Missed \':\'')) t.Result
+          <Pattern (TkComma t.Pos) e.Tokens>
+        >;
+
+      t.Unexpected =
+        (e.Errors <UnexpectedTokenInSentence t.Unexpected>)
+        (t.Result (/* нет блоков */)) t.Unexpected e.Tokens
+    }
+}
+
+ExtensionChain-AfterBlock {
+  (e.Errors) t.Result (e.BlockErrors) (e.Sentences) e.Tokens =
+    (e.Errors e.BlockErrors)
+    (t.Result ((Sentences e.Sentences)))
+    e.Tokens;
+}
+
+ExtensionChain-AfterPattern {
+  (e.Errors) t.Result (e.PatternErrors) t.Pattern t.NextToken e.Tokens,
+      t.NextToken:
+    {
+      (TkComma t.Pos) =
+        <ExtensionChain-AfterExtensionChain
+          (e.Errors e.PatternErrors) t.Result t.Pattern
+          <ExtensionChain e.Tokens>
+        >;
+
+      (TkAssign t.Pos) =
+        <ExtensionChain-AfterPattern-AfterResult
+          (e.Errors e.PatternErrors) t.Result t.Pattern
+          <Result e.Tokens>
+        >;
+
+      (TkColon t.Pos) =
+        <ExtensionChain-AfterExtensionChain
+          (e.Errors e.PatternErrors (Error t.Pos 'Missed \',\''))
+          t.Result t.Pattern
+          <ExtensionChain t.NextToken e.Tokens>
+        >;
+
+      (TkSemicolon t.Pos) =
+        <ExtensionChain-AfterPattern-AfterResult
+          (e.Errors e.PatternErrors (Error t.Pos 'Missed \'=\''))
+          t.Result t.Pattern
+          <Result t.NextToken e.Tokens>
+        >;
+
+      t.Unexpected =
+        (e.Errors e.PatternErrors <UnexpectedTokenInSentence t.Unexpected>)
+        (
+          (Condition t.Result (/* нет блоков */) t.Pattern)
+          (/* пустой результат */) (/* нет блоков */)
+        )
+        t.Unexpected e.Tokens;
+    }
+}
+
+ExtensionChain-AfterExtensionChain {
+  (e.Errors) t.Result t.Pattern
+  (e.ChainErrors) (e.Conditions-And-SentenceTail) e.Tokens =
+    (e.Errors e.ChainErrors)
+    (
+      (Condition t.Result (/* нет блоков */) t.Pattern)
+      e.Conditions-And-SentenceTail
+    )
+    e.Tokens;
+}
+
+ExtensionChain-AfterPattern-AfterResult {
+  (e.Errors) t.Result t.Pattern
+  (e.ResultErrors) t.FinalResult e.Tokens =
+    (e.Errors e.ResultErrors)
+    (
+      (Condition t.Result (/* нет блоков */) t.Pattern)
+      t.FinalResult (/* нет блоков */)
+    )
+    e.Tokens;
+}
+
+
+/*
+  Pattern = Expression.
+
+  <Pattern e.Tokens> == (e.Errors) t.Pattern e.Tokens
+*/
+Pattern {
+  e.Tokens = <Expression Pattern e.Tokens>;
+}
+
+
+/*
+  Result = Expression.
+
+  <Result e.Tokens> == (e.Errors) t.Result e.Tokens
+*/
+Result {
+  e.Tokens = <Expression Result e.Tokens>;
+}
+
+
+/*
+  Expression = (
+      NAME
+    | COMPOUND
+    | NUMBER
+    | CHAR
+    | VARIABLE
+    | "(" Expression ")"
+    | "<Func" Expression ">" -- допустимо только в результатных выражениях
+  )* !((")" | ">") Expression)*
+
+  <Expression s.Kind e.Tokens> == (e.Errors) t.Expression e.Tokens
+
+  s.Kind ::= Pattern | Result
+*/
+Expression {
+  s.Kind e.Tokens =
+    <Expression-CheckBrackets
+      s.Kind <Expression-Aux s.Kind e.Tokens>
+    >;
+}
+
+Expression-Aux {
+  s.Kind e.Tokens =
+    <DoExpression s.Kind (/* errors */) (/* collected */) e.Tokens>
+}
+
+DoExpression {
+  s.Kind (e.Errors) (e.Collected) t.NextToken e.Tokens,
+      t.NextToken:
+    {
+      (TkName t.Pos e.Name) =
+        <DoExpression
+          s.Kind (e.Errors) (e.Collected (TkIdentifier e.Name)) e.Tokens
+        >;
+
+      (TkCompound t.Pos e.Symbols) =
+        <DoExpression
+          s.Kind (e.Errors) (e.Collected (TkIdentifier e.Symbols)) e.Tokens
+        >;
+
+      (TkMacroDigit t.Pos s.Number) =
+        <DoExpression
+          s.Kind (e.Errors) (e.Collected (TkNumber s.Number)) e.Tokens
+        >;
+
+      (TkChar t.Pos s.Char) =
+        <DoExpression
+          s.Kind (e.Errors) (e.Collected (TkChar s.Char)) e.Tokens
+        >;
+
+      (TkVariable t.Pos s.VarType e.Index) =
+        <DoExpression
+          s.Kind (e.Errors)
+          (e.Collected (TkVariable t.Pos s.VarType e.Index)) e.Tokens
+        >;
+
+      (TkOpenBracket t.Pos) =
+        <DoExpression-AfterBracket
+          s.Kind (e.Errors) (e.Collected) <Expression-Aux s.Kind e.Tokens>
+        >;
+
+      (TkOpenCall t.Pos e.FuncName) =
+        <DoExpression-AfterCall
+          s.Kind (e.Errors) (e.Collected) t.Pos (e.FuncName)
+          <Expression-Aux s.Kind e.Tokens>
+        >;
+
+      t.OtherToken =
+        (e.Errors) (e.Collected) t.OtherToken e.Tokens;
+    }
+}
+
+DoExpression-AfterBracket {
+  s.Kind (e.Errors) (e.Collected)
+  (e.SubexprErrors) (e.BracketTerms) (TkCloseBracket t.Pos) e.Tokens =
+    <DoExpression
+      s.Kind (e.Errors e.SubexprErrors)
+      (e.Collected (Brackets e.BracketTerms)) e.Tokens
+    >;
+
+  s.Kind (e.Errors) (e.Collected)
+  (e.SubexprErrors) (e.BracketTerms) (s.Type t.Pos e.Value) e.Tokens =
+    <DoExpression
+      s.Kind (e.Errors e.SubexprErrors (Error t.Pos 'Missed \')\''))
+      (e.Collected (Brackets e.BracketTerms)) (s.Type t.Pos e.Value) e.Tokens
+    >;
+}
+
+DoExpression-AfterCall {
+  Result (e.Errors) (e.Collected) t.CallPos (e.FuncName)
+  (e.SubexprErrors) (e.BracketTerms) (TkCloseCall t.Pos) e.Tokens =
+    <DoExpression
+      Result (e.Errors e.SubexprErrors)
+      (e.Collected (CallBrackets (TkName t.CallPos e.FuncName) e.BracketTerms))
+      e.Tokens
+    >;
+
+  Pattern (e.Errors) (e.Collected) t.CallPos (e.FuncName)
+  (e.SubexprErrors) (e.BracketTerms) (TkCloseCall t.Pos) e.Tokens =
+    <DoExpression
+      Pattern
+      (
+        e.Errors e.SubexprErrors
+        (Error
+          t.CallPos
+          'unexpected \'>\' in pattern expression, maybe missed \'=\''
+        )
+      )
+      (e.Collected (Brackets e.BracketTerms)) e.Tokens
+    >;
+
+  Result (e.Errors) (e.Collected) t.CallPos (e.FuncName)
+  (e.SubexprErrors) (e.BracketTerms) (s.Type t.Pos e.Value) e.Tokens =
+    <DoExpression
+      Result (e.Errors e.SubexprErrors (Error t.Pos 'Missed \'>\''))
+      (e.Collected (CallBrackets (TkName t.CallPos e.FuncName) e.BracketTerms))
+      (s.Type t.Pos e.Value) e.Tokens
+    >;
+
+  Pattern (e.Errors) (e.Collected) t.CallPos (e.FuncName)
+  (e.SubexprErrors) (e.BracketTerms) (s.Type t.Pos e.Value) e.Tokens =
+    <DoExpression
+      Pattern
+      (
+        e.Errors e.SubexprErrors
+        (Error
+          t.CallPos
+          'unexpected \'>\' in pattern expression, maybe missed \'=\''
+        )
+        (Error t.Pos 'Missed \')\'')
+      )
+      (e.Collected (Brackets e.BracketTerms)) (s.Type t.Pos e.Value) e.Tokens
+    >;
+}
+
+Expression-CheckBrackets {
+  s.Kind (e.Errors) (e.Expression) (s.Type t.Pos) e.Tokens,
+      <OneOf s.Type TkCloseBracket TkCloseCall>: True =
+    <Expression-CheckBrackets-AfterSubexpr
+      s.Kind
+      (e.Errors (Error t.Pos 'unbalanced ' <TokName s.Type>))
+      (e.Expression)
+      <Expression-Aux s.Kind e.Tokens>
+    >;
+
+  s.Kind (e.Errors) t.Expression e.Tokens = (e.Errors) t.Expression e.Tokens;
+}
+
+Expression-CheckBrackets-AfterSubexpr {
+  s.Kind (e.Errors) (e.Expression)
+  (e.SubexprErrors) (e.Subexpression) e.Tokens =
+    <Expression-CheckBrackets
+      s.Kind (e.Errors e.SubexprErrors) (e.Expression e.Subexpression) e.Tokens
+    >;
+}
+
+
+UnexpectedToken {
+  (TkError t.Pos e.Message) e.Expected =
+    (Error t.Pos e.Message);
+
+  (s.Type t.Pos e.Value) e.Expected =
+    (Error t.Pos 'unexpected ' <TokName s.Type> ', expected ' e.Expected);
+}
+
+TokName {
+  TkName = 'identifier';
+  TkCompound = 'compound symbol';
+  TkMacroDigit = 'number';
+  TkChar = 'character';
+  TkVariable = 'variable';
+  TkOpenBracket = '\'(\'';
+  TkCloseBracket = '\')\'';
+  TkOpenBlock = '\'{\'';
+  TkCloseBlock = '\'}\'';
+  TkOpenCall = '\'<\'';
+  TkCloseCall = '\'>\'';
+  TkComma = '\',\'';
+  TkColon = '\':\'';
+  TkAssign = '\'=\'';
+  TkSemicolon = '\';\'';
+  TkExtern = '$EXTERN';
+  TkEntry = '$ENTRY';
+  TkEOF = 'end of file';
+}

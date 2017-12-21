@@ -5,9 +5,17 @@ if [ ! -e distrib/bootstrap.sh ]; then
   git submodule update
 fi
 
-( cd distrib && ./bootstrap.sh )
+echo Prepare config...
+( source scripts/load-config.sh . || : )
+
+echo Prepare stable version \(distrib\)...
+( cd distrib && ./bootstrap.sh ) || exit 1
 mkdir -p bin
 
+echo Compile sources...
 ( cd src && ./make.sh )
 
-( cd autotests && ./run.sh )
+if [ "$1" != "--no-tests" ]; then
+  echo Starting autotests...
+  ( cd autotests && ./run.sh )
+fi

@@ -1,0 +1,1061 @@
+//FROM LibraryEx
+$EXTERN FastIntFromStr, Trim-R, Map, Fetch, Inc, Seq, MapReduce, DelAccumulator;
+
+//FROM Library
+$EXTERN Chr, StrFromInt;
+
+//FROM Escape
+$EXTERN EscapeChar, EscapeString, CharFromNum, UnEscapeString-SR;
+
+$ENTRY SR-LexFolding {
+  e.SourceText =
+    <NormalizeTokens
+      <Root () e.SourceText>
+    >;
+}
+
+StrDirective {
+  #EEnum = 'EENUM';
+  #Entry = 'ENTRY';
+  #Enum = 'ENUM';
+  #Extern = 'EXTERN';
+  #Forward = 'FORWARD';
+  #Swap = 'SWAP';
+  #ESwap = 'ESWAP';
+  #Ident = 'LABEL';
+  #Include = 'INCLUDE';
+}
+
+$ENTRY SR-StrFromToken {
+  #TkChar s.Char = '' <EscapeChar s.Char> '';
+  #TkCompound e.Chars = '"' <EscapeString e.Chars> '"';
+  #TkCloseADT = '"]"';
+  #TkCloseCall = '">"';
+  #TkCloseBlock = '"}"';
+  #TkCloseBracket = '")"';
+  #TkComma = '","';
+  #TkDirective s.Directive = '"$' <StrDirective s.Directive> '"';
+  #TkEOF = 'end of file';
+  #TkError e.Message = 'LEXER ERROR: ' e.Message;
+  #TkIdentMarker = '"#"';
+  #TkName e.Name = 'Name ' e.Name;
+  #TkNumber #Cookie1 = 'Number <Cookie1>';
+  #TkNumber #Cookie2 = 'Number <Cookie2>';
+  #TkNumber s.Number = 'Number ' <StrFromInt s.Number>;
+  #TkOpenADT = '"["';
+  #TkOpenCall = '"<"';
+  #TkOpenBlock = '"{"';
+  #TkOpenBracket = '"("';
+  #TkReplace = '"="';
+  #TkSemicolon = '";"';
+  #TkColon = '":"';
+  #TkUnexpected e.Unexpected = 'Unexpected characters <' e.Unexpected '>';
+  #TkVariable s.Mode e.Index = s.Mode '.' e.Index;
+  #TkRedefinition = '"^"';
+  #TkNativeBlock e.Block = 'native code insertion';
+
+  # Open s.OpenBracket = <SR-StrFromToken s.OpenBracket>;
+  # Close s.CloseBracket = <SR-StrFromToken s.CloseBracket>;
+}
+
+NormalizeToken {
+  (#TkDirective e.Directive) =
+    <ValidDirective e.Directive>;
+
+  (#TkEOF) = (#TkEOF);
+
+  (#TkLiteral-Char s.Char) = (#TkChar s.Char);
+
+  (#TkLiteral-Code e.DecCode) =
+    (#TkChar <Chr <FastIntFromStr e.DecCode>>);
+
+  (#TkLiteral-OCode e.OctCode) =
+    (#TkChar <CharFromNum 8 e.OctCode>);
+
+  (#TkLiteral-XCode e.HexCode) =
+    (#TkChar <CharFromNum 16 e.HexCode>);
+
+  (#TkLiteral-NewLine 'n') = (#TkChar '\n');
+  (#TkLiteral-CarriageReturn 'r') = (#TkChar '\r');
+  (#TkLiteral-Tab 't') = (#TkChar '\t');
+  (#TkLiteral-Bell 'a') = (#TkChar '\x07');
+  (#TkLiteral-BS 'b') = (#TkChar '\x08');
+  (#TkLiteral-FF 'f') = (#TkChar '\x0C');
+  (#TkLiteral-VT 'v') = (#TkChar '\x0b');
+
+  (#TkCompound '"' e.CompoundRep '"')
+    // Всегда успешно, это гарантируется конечным автоматом
+    = <UnEscapeString-SR e.CompoundRep> : #Success e.Compound
+    = (#TkCompound e.Compound);
+
+  (#TkName e.Name) = (#TkName e.Name);
+
+  (#TkNewLine e.Accumulated) = (#TkNewLine);
+
+  (#TkNumber e.Digits) = (#TkNumber <FastIntFromStr e.Digits>);
+
+  (#TkPunctuation s.Punctuation) = (<SwPunctuation s.Punctuation>);
+
+  (#TkVariable s.Type '.' e.Index) = (#TkVariable s.Type e.Index);
+
+  (#TkNativeLine e.Line) = (#TkNativeLine <Trim-R e.Line>);
+
+  (#TkUnexpected e.Unexpected) = (#TkUnexpected e.Unexpected);
+
+  (#TokenError e.Message) = (#TkError e.Message);
+}
+
+ValidDirective {
+  'ENUM' = (#TkDirective #Enum);
+  'EENUM' = (#TkDirective #EEnum);
+  'ENTRY' = (#TkDirective #Entry);
+  'EXTERN' = (#TkDirective #Extern);
+  'FORWARD' = (#TkDirective #Forward);
+  'SWAP' = (#TkDirective #Swap);
+  'ESWAP' = (#TkDirective #ESwap);
+  'LABEL' = (#TkDirective #Ident);
+  'INCLUDE' = (#TkDirective #Include);
+  'EASTEREGG' = <Map { s.Char = (#TkChar s.Char); } $EASTEREGG>;
+  'SCOPEID' = (#TkNumber #Cookie1) (#TkNumber #Cookie2);
+  e.Other = (#TkError 'Unknown directive $' e.Other);
+}
+
+SwPunctuation {
+  '<' = #TkOpenCall; '>' = #TkCloseCall;
+  '{' = #TkOpenBlock; '}' = #TkCloseBlock;
+  '(' = #TkOpenBracket; ')' = #TkCloseBracket;
+  '=' = #TkReplace; ',' = #TkComma; ';' = #TkSemicolon; ':' = #TkColon;
+  '[' = #TkOpenADT; ']' = #TkCloseADT;
+  '#' = #TkIdentMarker; '^' = #TkRedefinition;
+}
+
+AddLineNumber {
+  s.LineNumber (#TkNewLine) =
+    <Inc s.LineNumber>;
+
+  s.LineNumber (#TkNativeLine e.Line) =
+    <Inc s.LineNumber> (#TkNativeLine s.LineNumber e.Line);
+
+  s.LineNumber (s.TokType e.Info) =
+    s.LineNumber (s.TokType s.LineNumber e.Info);
+}
+
+NormalizeTokens {
+  e.Tokens =
+    <Fetch
+      e.Tokens
+      <Seq
+        (Map NormalizeToken)
+        (MapReduce AddLineNumber 1)
+        DelAccumulator
+        CollectNativeLines
+      >
+    >;
+}
+
+CollectNativeLines {
+  e.SimpleTokens (#TkNativeLine s.LineNumber e.Line) e.Tail =
+    e.SimpleTokens
+    <CollectNativeLines-Aux s.LineNumber ((e.Line)) e.Tail>;
+
+  e.SimpleTokens = e.SimpleTokens;
+}
+
+CollectNativeLines-Aux {
+  s.StartLineNumber (e.Block)
+  (#TkNativeLine s.LineNumber e.Line) e.Tail =
+    <CollectNativeLines-Aux
+      s.StartLineNumber (e.Block (e.Line)) e.Tail
+    >;
+
+  s.StartLineNumber (e.Block) e.Tail =
+    (#TkNativeBlock s.StartLineNumber e.Block)
+    <CollectNativeLines e.Tail>;
+}
+
+/*GEN:TOKENS
+
+  :UpLetter: = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.
+  :LoLetter: = 'abcdefghijklmnopqrstuvwxyz'.
+  :Digit: = '0123456789'.
+  :ODigit: = '01234567' .
+  :XDigit: = '0123456789ABCDEFabcdef' .
+  :Punctuation: = '<>(){}[]=;:,#^'.
+
+  :StartIdentifier: = :UpLetter: :LoLetter: '_'.
+  :TailIdentifier: = :UpLetter: :LoLetter: :Digit: '_-'.
+  :VarName: = :TailIdentifier:.
+  :VarMode: = 'set'.
+  :DirectiveBody: = :UpLetter:.
+  :Space: = ' \t\r'.
+  :CompoundOneCharEscape: = 'nrtabfv\\\'"' :ODigit:.
+
+  :Other: = :Any:.
+
+
+  Root =
+    '%'     !-                                  StartNative-Percent       |
+                                                Main                      .
+
+  Main =
+    :Space:               !-                    Main                      |
+    :Punctuation:         !#TkPunctuation       Main                      |
+    :VarMode:                                   VariableStart             |
+    :StartIdentifier:                           Name                      |
+    :Digit:                                     Number                    |
+    '$'                   !-                    Directive                 |
+    '\''                  !-                    StringLiteral-Start       |
+    '"'                                         CompoundSymbol            |
+    '/'                                         StartComment              |
+    '\n'                  !#TkNewLine           Root                      |
+                          !#TkEOF                                         |
+    :Other:               !#TkUnexpected        Main                      .
+
+  Name =
+    :TailIdentifier:                            Name                      |
+            !#TkName                            Main                      .
+
+  Number =
+    :Digit:                                     Number                    |
+            !#TkNumber                          Main                      .
+
+  VariableStart =
+    '.'                                         VariableIndex             |
+                                                Name                      .
+
+  VariableIndex =
+    :VarName:                                   VariableIndexTail         |
+            !"Expected variable name"           Main                      .
+
+  VariableIndexTail =
+    :VarName:                                   VariableIndexTail         |
+            !#TkVariable                        Main                      .
+
+  Directive =
+    :DirectiveBody:                             DirectiveTail             |
+            !"Expected directive name"          Main                      .
+
+  DirectiveTail =
+    :DirectiveBody:                             DirectiveTail             |
+            !#TkDirective                       Main                      .
+
+  StringLiteral-Start =
+    '\''    !#TkLiteral-Char                    Main                      |
+                                                StringLiteral             .
+
+  StringLiteral =
+    '\\'    !-                                  StringLiteral-Escape      |
+    '\''    !-                                  StringLiteral-Quote       |
+    '\n'    !"Unclosed quote"                   Main                      |
+            !"Unexpected EOF in string literal"                           |
+    :Any:   !#TkLiteral-Char                    StringLiteral             .
+
+  StringLiteral-Escape =
+    'n'     !#TkLiteral-NewLine                 StringLiteral             |
+    'r'     !#TkLiteral-CarriageReturn          StringLiteral             |
+    't'     !#TkLiteral-Tab                     StringLiteral             |
+    'a'     !#TkLiteral-Bell                    StringLiteral             |
+    'b'     !#TkLiteral-BS                      StringLiteral             |
+    'f'     !#TkLiteral-FF                      StringLiteral             |
+    'v'     !#TkLiteral-VT                      StringLiteral             |
+    '\\'    !#TkLiteral-Char                    StringLiteral             |
+    '\''    !#TkLiteral-Char                    StringLiteral             |
+    '"'     !#TkLiteral-Char                    StringLiteral             |
+    'd'     !-                                  StringLiteral-Escape-Code |
+    'D'     !-                                  StringLiteral-Escape-Code |
+    :ODigit:                                    StringLiteral-Escape-OCode|
+    'x'     !-                                  StringLiteral-Escape-XCode|
+    'X'     !-                                  StringLiteral-Escape-XCode|
+    '\n'    !"Unclosed quote"                   Main                      |
+            !"Unexpected escape sequence"       StringLiteral             .
+
+  StringLiteral-Escape-Code =
+    :Digit:                                     SL-E-C1                   |
+            !"Expected decimal digit"           StringLiteral             .
+
+  SL-E-C1 =
+    :Digit:                                     SL-E-C2                   |
+            !#TkLiteral-Code                    StringLiteral             .
+
+  SL-E-C2 =
+    :Digit: !#TkLiteral-Code                    StringLiteral             |
+            !#TkLiteral-Code                    StringLiteral             .
+
+  StringLiteral-Escape-OCode =
+    :ODigit:                                    SL-E-OC1                  |
+            !#TkLiteral-OCode                   StringLiteral             .
+
+  SL-E-OC1 =
+    :ODigit:!#TkLiteral-OCode                   StringLiteral             |
+            !#TkLiteral-OCode                   StringLiteral             .
+
+  StringLiteral-Escape-XCode =
+    :XDigit:                                    StringLiteral-Escape-Xnext|
+            !"Expected hexadecimal digit"       StringLiteral             .
+
+  StringLiteral-Escape-Xnext =
+    :XDigit:                                    StringLiteral-Escape-Xnext|
+            !#TkLiteral-XCode                   StringLiteral             .
+
+  StringLiteral-Quote =
+    '\''    !#TkLiteral-Char                    StringLiteral             |
+                                                Main                      .
+
+  CompoundSymbol =
+    '"'     !#TkCompound                        Main                      |
+    '\\'                                        Compound-Escape           |
+    '\n'    !"Unclosed quote"                   Main                      |
+            !"Unexpected EOF in compound symbol"                          |
+    :Any:                                       CompoundSymbol            .
+
+  Compound-Escape =
+    :CompoundOneCharEscape:                     CompoundSymbol            |
+    'd'                                         Compound-Escape-Dec       |
+    'D'                                         Compound-Escape-Dec       |
+    'x'                                         Compound-Escape-Hex       |
+    'X'                                         Compound-Escape-Hex       |
+    '\n'    !"Unclosed quote"                   Main                      |
+            !"Unexpected escape sequence"       CompoundSymbol            .
+
+  Compound-Escape-Dec =
+    :Digit:                                     CompoundSymbol            |
+            !"Expected decimal digit"           CompoundSymbol            .
+
+  Compound-Escape-Hex =
+    :XDigit:                                    CompoundSymbol            |
+            !"Expected hexadecimal digit"       CompoundSymbol            .
+
+  StartComment =
+    '*'     !-                                  CComment                  |
+    '/'     !-                                  CppComment                |
+            !#TkUnexpected                      Main                      .
+
+  CComment =
+    '/'     !-                                  CComment-CheckNested      |
+    '*'     !-                                  CComment-CheckEnd         |
+    '\n'    !#TkNewLine                         CComment                  |
+    :Any:   !-                                  CComment                  |
+            !"Unexpected EOF: unclosed comment" Main                      .
+
+  CComment-CheckNested =
+    '*'     !"Nested comments is disabled"      CComment                  |
+                                                CComment                  .
+
+  CComment-CheckEnd =
+    '/'     !-                                  Main                      |
+                                                CComment                  .
+
+  CppComment =
+    '\n'    !#TkNewLine                         Root                      |
+            !#TkEOF                                                       |
+    :Any:   !-                                  CppComment                .
+
+  StartNative-Percent =
+    '%'     !-                                  StartNative-NewLine       |
+            !"Native inlines expects two percents"
+                                                Main                      .
+
+  StartNative-NewLine =
+    '\r'    !-                                  StartNative-NewLine       |
+    '\n'    !#TkNewLine                         Native-Begin              |
+            !"Native inlines expects new line after two percents"
+                                                Main                      .
+
+  Native-Begin =
+    '%'                                         Native-CheckEnd           |
+                                                Native                    .
+
+  Native =
+    '\n'    !#TkNativeLine                      Native-Begin              |
+    :Any:                                       Native                    |
+            !"Unexpected EOF: unclosed native insertion"
+                                                Main                      .
+
+  Native-CheckEnd =
+    '%'                                         Native-CheckEnd2          |
+                                                Native                    .
+
+  Native-CheckEnd2 =
+    '\r'                                        Native-CheckEnd2          |
+    '\n'    !#TkNewLine                         Main                      |
+                                                Native                    .
+GEN:END*/
+
+Root {
+  (e.Accum) '%' e.Text = <StartNative-Percent () e.Text>;
+  (e.Accum) e.Text = <Main (e.Accum) e.Text>;
+}
+
+StartNative-Percent {
+  (e.Accum) '%' e.Text = <StartNative-NewLine () e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Native inlines expects two percents') <Main () e.Text>;
+}
+
+Main {
+  (e.Accum) ' ' e.Text = <Main () e.Text>;
+  (e.Accum) '\t' e.Text = <Main () e.Text>;
+  (e.Accum) '\r' e.Text = <Main () e.Text>;
+  (e.Accum) '<' e.Text = (#TkPunctuation e.Accum '<') <Main () e.Text>;
+  (e.Accum) '>' e.Text = (#TkPunctuation e.Accum '>') <Main () e.Text>;
+  (e.Accum) '(' e.Text = (#TkPunctuation e.Accum '(') <Main () e.Text>;
+  (e.Accum) ')' e.Text = (#TkPunctuation e.Accum ')') <Main () e.Text>;
+  (e.Accum) '{' e.Text = (#TkPunctuation e.Accum '{') <Main () e.Text>;
+  (e.Accum) '}' e.Text = (#TkPunctuation e.Accum '}') <Main () e.Text>;
+  (e.Accum) '[' e.Text = (#TkPunctuation e.Accum '[') <Main () e.Text>;
+  (e.Accum) ']' e.Text = (#TkPunctuation e.Accum ']') <Main () e.Text>;
+  (e.Accum) '=' e.Text = (#TkPunctuation e.Accum '=') <Main () e.Text>;
+  (e.Accum) ';' e.Text = (#TkPunctuation e.Accum ';') <Main () e.Text>;
+  (e.Accum) ':' e.Text = (#TkPunctuation e.Accum ':') <Main () e.Text>;
+  (e.Accum) ',' e.Text = (#TkPunctuation e.Accum ',') <Main () e.Text>;
+  (e.Accum) '#' e.Text = (#TkPunctuation e.Accum '#') <Main () e.Text>;
+  (e.Accum) '^' e.Text = (#TkPunctuation e.Accum '^') <Main () e.Text>;
+  (e.Accum) 's' e.Text = <VariableStart (e.Accum 's') e.Text>;
+  (e.Accum) 'e' e.Text = <VariableStart (e.Accum 'e') e.Text>;
+  (e.Accum) 't' e.Text = <VariableStart (e.Accum 't') e.Text>;
+  (e.Accum) 'a' e.Text = <Name (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <Name (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <Name (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <Name (e.Accum 'd') e.Text>;
+  (e.Accum) 'f' e.Text = <Name (e.Accum 'f') e.Text>;
+  (e.Accum) 'g' e.Text = <Name (e.Accum 'g') e.Text>;
+  (e.Accum) 'h' e.Text = <Name (e.Accum 'h') e.Text>;
+  (e.Accum) 'i' e.Text = <Name (e.Accum 'i') e.Text>;
+  (e.Accum) 'j' e.Text = <Name (e.Accum 'j') e.Text>;
+  (e.Accum) 'k' e.Text = <Name (e.Accum 'k') e.Text>;
+  (e.Accum) 'l' e.Text = <Name (e.Accum 'l') e.Text>;
+  (e.Accum) 'm' e.Text = <Name (e.Accum 'm') e.Text>;
+  (e.Accum) 'n' e.Text = <Name (e.Accum 'n') e.Text>;
+  (e.Accum) 'o' e.Text = <Name (e.Accum 'o') e.Text>;
+  (e.Accum) 'p' e.Text = <Name (e.Accum 'p') e.Text>;
+  (e.Accum) 'q' e.Text = <Name (e.Accum 'q') e.Text>;
+  (e.Accum) 'r' e.Text = <Name (e.Accum 'r') e.Text>;
+  (e.Accum) 'u' e.Text = <Name (e.Accum 'u') e.Text>;
+  (e.Accum) 'v' e.Text = <Name (e.Accum 'v') e.Text>;
+  (e.Accum) 'w' e.Text = <Name (e.Accum 'w') e.Text>;
+  (e.Accum) 'x' e.Text = <Name (e.Accum 'x') e.Text>;
+  (e.Accum) 'y' e.Text = <Name (e.Accum 'y') e.Text>;
+  (e.Accum) 'z' e.Text = <Name (e.Accum 'z') e.Text>;
+  (e.Accum) 'A' e.Text = <Name (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <Name (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <Name (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <Name (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <Name (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <Name (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <Name (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <Name (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <Name (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <Name (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <Name (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <Name (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <Name (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <Name (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <Name (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <Name (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <Name (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <Name (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <Name (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <Name (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <Name (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <Name (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <Name (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <Name (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <Name (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <Name (e.Accum 'Z') e.Text>;
+  (e.Accum) '_' e.Text = <Name (e.Accum '_') e.Text>;
+  (e.Accum) '0' e.Text = <Number (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <Number (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <Number (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <Number (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <Number (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <Number (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <Number (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <Number (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <Number (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <Number (e.Accum '9') e.Text>;
+  (e.Accum) '$' e.Text = <Directive () e.Text>;
+  (e.Accum) '\'' e.Text = <StringLiteral-Start () e.Text>;
+  (e.Accum) '\"' e.Text = <CompoundSymbol (e.Accum '\"') e.Text>;
+  (e.Accum) '/' e.Text = <StartComment (e.Accum '/') e.Text>;
+  (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <Root () e.Text>;
+  (e.Accum) = (#TkEOF e.Accum);
+  (e.Accum) s.Any e.Text = (#TkUnexpected e.Accum s.Any) <Main () e.Text>;
+}
+
+StartNative-NewLine {
+  (e.Accum) '\r' e.Text = <StartNative-NewLine () e.Text>;
+  (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <Native-Begin () e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Native inlines expects new line after two percents') <Main () e.Text>;
+}
+
+VariableStart {
+  (e.Accum) '.' e.Text = <VariableIndex (e.Accum '.') e.Text>;
+  (e.Accum) e.Text = <Name (e.Accum) e.Text>;
+}
+
+Name {
+  (e.Accum) '0' e.Text = <Name (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <Name (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <Name (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <Name (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <Name (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <Name (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <Name (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <Name (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <Name (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <Name (e.Accum '9') e.Text>;
+  (e.Accum) 'a' e.Text = <Name (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <Name (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <Name (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <Name (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <Name (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <Name (e.Accum 'f') e.Text>;
+  (e.Accum) 'g' e.Text = <Name (e.Accum 'g') e.Text>;
+  (e.Accum) 'h' e.Text = <Name (e.Accum 'h') e.Text>;
+  (e.Accum) 'i' e.Text = <Name (e.Accum 'i') e.Text>;
+  (e.Accum) 'j' e.Text = <Name (e.Accum 'j') e.Text>;
+  (e.Accum) 'k' e.Text = <Name (e.Accum 'k') e.Text>;
+  (e.Accum) 'l' e.Text = <Name (e.Accum 'l') e.Text>;
+  (e.Accum) 'm' e.Text = <Name (e.Accum 'm') e.Text>;
+  (e.Accum) 'n' e.Text = <Name (e.Accum 'n') e.Text>;
+  (e.Accum) 'o' e.Text = <Name (e.Accum 'o') e.Text>;
+  (e.Accum) 'p' e.Text = <Name (e.Accum 'p') e.Text>;
+  (e.Accum) 'q' e.Text = <Name (e.Accum 'q') e.Text>;
+  (e.Accum) 'r' e.Text = <Name (e.Accum 'r') e.Text>;
+  (e.Accum) 's' e.Text = <Name (e.Accum 's') e.Text>;
+  (e.Accum) 't' e.Text = <Name (e.Accum 't') e.Text>;
+  (e.Accum) 'u' e.Text = <Name (e.Accum 'u') e.Text>;
+  (e.Accum) 'v' e.Text = <Name (e.Accum 'v') e.Text>;
+  (e.Accum) 'w' e.Text = <Name (e.Accum 'w') e.Text>;
+  (e.Accum) 'x' e.Text = <Name (e.Accum 'x') e.Text>;
+  (e.Accum) 'y' e.Text = <Name (e.Accum 'y') e.Text>;
+  (e.Accum) 'z' e.Text = <Name (e.Accum 'z') e.Text>;
+  (e.Accum) 'A' e.Text = <Name (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <Name (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <Name (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <Name (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <Name (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <Name (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <Name (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <Name (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <Name (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <Name (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <Name (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <Name (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <Name (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <Name (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <Name (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <Name (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <Name (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <Name (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <Name (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <Name (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <Name (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <Name (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <Name (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <Name (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <Name (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <Name (e.Accum 'Z') e.Text>;
+  (e.Accum) '_' e.Text = <Name (e.Accum '_') e.Text>;
+  (e.Accum) '-' e.Text = <Name (e.Accum '-') e.Text>;
+  (e.Accum) e.Text = (#TkName e.Accum) <Main () e.Text>;
+}
+
+Number {
+  (e.Accum) '0' e.Text = <Number (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <Number (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <Number (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <Number (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <Number (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <Number (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <Number (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <Number (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <Number (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <Number (e.Accum '9') e.Text>;
+  (e.Accum) e.Text = (#TkNumber e.Accum) <Main () e.Text>;
+}
+
+Directive {
+  (e.Accum) 'A' e.Text = <DirectiveTail (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <DirectiveTail (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <DirectiveTail (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <DirectiveTail (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <DirectiveTail (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <DirectiveTail (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <DirectiveTail (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <DirectiveTail (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <DirectiveTail (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <DirectiveTail (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <DirectiveTail (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <DirectiveTail (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <DirectiveTail (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <DirectiveTail (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <DirectiveTail (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <DirectiveTail (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <DirectiveTail (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <DirectiveTail (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <DirectiveTail (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <DirectiveTail (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <DirectiveTail (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <DirectiveTail (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <DirectiveTail (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <DirectiveTail (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <DirectiveTail (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <DirectiveTail (e.Accum 'Z') e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Expected directive name') <Main () e.Text>;
+}
+
+StringLiteral-Start {
+  (e.Accum) '\'' e.Text = (#TkLiteral-Char e.Accum '\'') <Main () e.Text>;
+  (e.Accum) e.Text = <StringLiteral (e.Accum) e.Text>;
+}
+
+CompoundSymbol {
+  (e.Accum) '\"' e.Text = (#TkCompound e.Accum '\"') <Main () e.Text>;
+  (e.Accum) '\\' e.Text = <Compound-Escape (e.Accum '\\') e.Text>;
+  (e.Accum) '\n' e.Text = (#TokenError 'Unclosed quote') <Main () e.Text>;
+  (e.Accum) = (#TokenError 'Unexpected EOF in compound symbol');
+  (e.Accum) s.Any e.Text = <CompoundSymbol (e.Accum s.Any) e.Text>;
+}
+
+StartComment {
+  (e.Accum) '*' e.Text = <CComment () e.Text>;
+  (e.Accum) '/' e.Text = <CppComment () e.Text>;
+  (e.Accum) e.Text = (#TkUnexpected e.Accum) <Main () e.Text>;
+}
+
+Native-Begin {
+  (e.Accum) '%' e.Text = <Native-CheckEnd (e.Accum '%') e.Text>;
+  (e.Accum) e.Text = <Native (e.Accum) e.Text>;
+}
+
+VariableIndex {
+  (e.Accum) '0' e.Text = <VariableIndexTail (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <VariableIndexTail (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <VariableIndexTail (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <VariableIndexTail (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <VariableIndexTail (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <VariableIndexTail (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <VariableIndexTail (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <VariableIndexTail (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <VariableIndexTail (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <VariableIndexTail (e.Accum '9') e.Text>;
+  (e.Accum) 'a' e.Text = <VariableIndexTail (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <VariableIndexTail (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <VariableIndexTail (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <VariableIndexTail (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <VariableIndexTail (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <VariableIndexTail (e.Accum 'f') e.Text>;
+  (e.Accum) 'g' e.Text = <VariableIndexTail (e.Accum 'g') e.Text>;
+  (e.Accum) 'h' e.Text = <VariableIndexTail (e.Accum 'h') e.Text>;
+  (e.Accum) 'i' e.Text = <VariableIndexTail (e.Accum 'i') e.Text>;
+  (e.Accum) 'j' e.Text = <VariableIndexTail (e.Accum 'j') e.Text>;
+  (e.Accum) 'k' e.Text = <VariableIndexTail (e.Accum 'k') e.Text>;
+  (e.Accum) 'l' e.Text = <VariableIndexTail (e.Accum 'l') e.Text>;
+  (e.Accum) 'm' e.Text = <VariableIndexTail (e.Accum 'm') e.Text>;
+  (e.Accum) 'n' e.Text = <VariableIndexTail (e.Accum 'n') e.Text>;
+  (e.Accum) 'o' e.Text = <VariableIndexTail (e.Accum 'o') e.Text>;
+  (e.Accum) 'p' e.Text = <VariableIndexTail (e.Accum 'p') e.Text>;
+  (e.Accum) 'q' e.Text = <VariableIndexTail (e.Accum 'q') e.Text>;
+  (e.Accum) 'r' e.Text = <VariableIndexTail (e.Accum 'r') e.Text>;
+  (e.Accum) 's' e.Text = <VariableIndexTail (e.Accum 's') e.Text>;
+  (e.Accum) 't' e.Text = <VariableIndexTail (e.Accum 't') e.Text>;
+  (e.Accum) 'u' e.Text = <VariableIndexTail (e.Accum 'u') e.Text>;
+  (e.Accum) 'v' e.Text = <VariableIndexTail (e.Accum 'v') e.Text>;
+  (e.Accum) 'w' e.Text = <VariableIndexTail (e.Accum 'w') e.Text>;
+  (e.Accum) 'x' e.Text = <VariableIndexTail (e.Accum 'x') e.Text>;
+  (e.Accum) 'y' e.Text = <VariableIndexTail (e.Accum 'y') e.Text>;
+  (e.Accum) 'z' e.Text = <VariableIndexTail (e.Accum 'z') e.Text>;
+  (e.Accum) 'A' e.Text = <VariableIndexTail (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <VariableIndexTail (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <VariableIndexTail (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <VariableIndexTail (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <VariableIndexTail (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <VariableIndexTail (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <VariableIndexTail (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <VariableIndexTail (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <VariableIndexTail (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <VariableIndexTail (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <VariableIndexTail (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <VariableIndexTail (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <VariableIndexTail (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <VariableIndexTail (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <VariableIndexTail (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <VariableIndexTail (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <VariableIndexTail (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <VariableIndexTail (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <VariableIndexTail (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <VariableIndexTail (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <VariableIndexTail (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <VariableIndexTail (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <VariableIndexTail (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <VariableIndexTail (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <VariableIndexTail (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <VariableIndexTail (e.Accum 'Z') e.Text>;
+  (e.Accum) '_' e.Text = <VariableIndexTail (e.Accum '_') e.Text>;
+  (e.Accum) '-' e.Text = <VariableIndexTail (e.Accum '-') e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Expected variable name') <Main () e.Text>;
+}
+
+DirectiveTail {
+  (e.Accum) 'A' e.Text = <DirectiveTail (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <DirectiveTail (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <DirectiveTail (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <DirectiveTail (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <DirectiveTail (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <DirectiveTail (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <DirectiveTail (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <DirectiveTail (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <DirectiveTail (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <DirectiveTail (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <DirectiveTail (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <DirectiveTail (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <DirectiveTail (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <DirectiveTail (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <DirectiveTail (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <DirectiveTail (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <DirectiveTail (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <DirectiveTail (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <DirectiveTail (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <DirectiveTail (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <DirectiveTail (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <DirectiveTail (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <DirectiveTail (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <DirectiveTail (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <DirectiveTail (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <DirectiveTail (e.Accum 'Z') e.Text>;
+  (e.Accum) e.Text = (#TkDirective e.Accum) <Main () e.Text>;
+}
+
+StringLiteral {
+  (e.Accum) '\\' e.Text = <StringLiteral-Escape () e.Text>;
+  (e.Accum) '\'' e.Text = <StringLiteral-Quote () e.Text>;
+  (e.Accum) '\n' e.Text = (#TokenError 'Unclosed quote') <Main () e.Text>;
+  (e.Accum) = (#TokenError 'Unexpected EOF in string literal');
+  (e.Accum) s.Any e.Text = (#TkLiteral-Char e.Accum s.Any) <StringLiteral () e.Text>;
+}
+
+Compound-Escape {
+  (e.Accum) '0' e.Text = <CompoundSymbol (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <CompoundSymbol (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <CompoundSymbol (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <CompoundSymbol (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <CompoundSymbol (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <CompoundSymbol (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <CompoundSymbol (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <CompoundSymbol (e.Accum '7') e.Text>;
+  (e.Accum) 'n' e.Text = <CompoundSymbol (e.Accum 'n') e.Text>;
+  (e.Accum) 'r' e.Text = <CompoundSymbol (e.Accum 'r') e.Text>;
+  (e.Accum) 't' e.Text = <CompoundSymbol (e.Accum 't') e.Text>;
+  (e.Accum) 'a' e.Text = <CompoundSymbol (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <CompoundSymbol (e.Accum 'b') e.Text>;
+  (e.Accum) 'f' e.Text = <CompoundSymbol (e.Accum 'f') e.Text>;
+  (e.Accum) 'v' e.Text = <CompoundSymbol (e.Accum 'v') e.Text>;
+  (e.Accum) '\\' e.Text = <CompoundSymbol (e.Accum '\\') e.Text>;
+  (e.Accum) '\'' e.Text = <CompoundSymbol (e.Accum '\'') e.Text>;
+  (e.Accum) '\"' e.Text = <CompoundSymbol (e.Accum '\"') e.Text>;
+  (e.Accum) 'd' e.Text = <Compound-Escape-Dec (e.Accum 'd') e.Text>;
+  (e.Accum) 'D' e.Text = <Compound-Escape-Dec (e.Accum 'D') e.Text>;
+  (e.Accum) 'x' e.Text = <Compound-Escape-Hex (e.Accum 'x') e.Text>;
+  (e.Accum) 'X' e.Text = <Compound-Escape-Hex (e.Accum 'X') e.Text>;
+  (e.Accum) '\n' e.Text = (#TokenError 'Unclosed quote') <Main () e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Unexpected escape sequence') <CompoundSymbol () e.Text>;
+}
+
+CComment {
+  (e.Accum) '/' e.Text = <CComment-CheckNested () e.Text>;
+  (e.Accum) '*' e.Text = <CComment-CheckEnd () e.Text>;
+  (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <CComment () e.Text>;
+  (e.Accum) s.Any e.Text = <CComment () e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Unexpected EOF: unclosed comment') <Main () e.Text>;
+}
+
+CppComment {
+  (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <Root () e.Text>;
+  (e.Accum) = (#TkEOF e.Accum);
+  (e.Accum) s.Any e.Text = <CppComment () e.Text>;
+}
+
+Native-CheckEnd {
+  (e.Accum) '%' e.Text = <Native-CheckEnd2 (e.Accum '%') e.Text>;
+  (e.Accum) e.Text = <Native (e.Accum) e.Text>;
+}
+
+Native {
+  (e.Accum) '\n' e.Text = (#TkNativeLine e.Accum '\n') <Native-Begin () e.Text>;
+  (e.Accum) s.Any e.Text = <Native (e.Accum s.Any) e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Unexpected EOF: unclosed native insertion') <Main () e.Text>;
+}
+
+VariableIndexTail {
+  (e.Accum) '0' e.Text = <VariableIndexTail (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <VariableIndexTail (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <VariableIndexTail (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <VariableIndexTail (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <VariableIndexTail (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <VariableIndexTail (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <VariableIndexTail (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <VariableIndexTail (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <VariableIndexTail (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <VariableIndexTail (e.Accum '9') e.Text>;
+  (e.Accum) 'a' e.Text = <VariableIndexTail (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <VariableIndexTail (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <VariableIndexTail (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <VariableIndexTail (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <VariableIndexTail (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <VariableIndexTail (e.Accum 'f') e.Text>;
+  (e.Accum) 'g' e.Text = <VariableIndexTail (e.Accum 'g') e.Text>;
+  (e.Accum) 'h' e.Text = <VariableIndexTail (e.Accum 'h') e.Text>;
+  (e.Accum) 'i' e.Text = <VariableIndexTail (e.Accum 'i') e.Text>;
+  (e.Accum) 'j' e.Text = <VariableIndexTail (e.Accum 'j') e.Text>;
+  (e.Accum) 'k' e.Text = <VariableIndexTail (e.Accum 'k') e.Text>;
+  (e.Accum) 'l' e.Text = <VariableIndexTail (e.Accum 'l') e.Text>;
+  (e.Accum) 'm' e.Text = <VariableIndexTail (e.Accum 'm') e.Text>;
+  (e.Accum) 'n' e.Text = <VariableIndexTail (e.Accum 'n') e.Text>;
+  (e.Accum) 'o' e.Text = <VariableIndexTail (e.Accum 'o') e.Text>;
+  (e.Accum) 'p' e.Text = <VariableIndexTail (e.Accum 'p') e.Text>;
+  (e.Accum) 'q' e.Text = <VariableIndexTail (e.Accum 'q') e.Text>;
+  (e.Accum) 'r' e.Text = <VariableIndexTail (e.Accum 'r') e.Text>;
+  (e.Accum) 's' e.Text = <VariableIndexTail (e.Accum 's') e.Text>;
+  (e.Accum) 't' e.Text = <VariableIndexTail (e.Accum 't') e.Text>;
+  (e.Accum) 'u' e.Text = <VariableIndexTail (e.Accum 'u') e.Text>;
+  (e.Accum) 'v' e.Text = <VariableIndexTail (e.Accum 'v') e.Text>;
+  (e.Accum) 'w' e.Text = <VariableIndexTail (e.Accum 'w') e.Text>;
+  (e.Accum) 'x' e.Text = <VariableIndexTail (e.Accum 'x') e.Text>;
+  (e.Accum) 'y' e.Text = <VariableIndexTail (e.Accum 'y') e.Text>;
+  (e.Accum) 'z' e.Text = <VariableIndexTail (e.Accum 'z') e.Text>;
+  (e.Accum) 'A' e.Text = <VariableIndexTail (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <VariableIndexTail (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <VariableIndexTail (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <VariableIndexTail (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <VariableIndexTail (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <VariableIndexTail (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <VariableIndexTail (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <VariableIndexTail (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <VariableIndexTail (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <VariableIndexTail (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <VariableIndexTail (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <VariableIndexTail (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <VariableIndexTail (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <VariableIndexTail (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <VariableIndexTail (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <VariableIndexTail (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <VariableIndexTail (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <VariableIndexTail (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <VariableIndexTail (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <VariableIndexTail (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <VariableIndexTail (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <VariableIndexTail (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <VariableIndexTail (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <VariableIndexTail (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <VariableIndexTail (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <VariableIndexTail (e.Accum 'Z') e.Text>;
+  (e.Accum) '_' e.Text = <VariableIndexTail (e.Accum '_') e.Text>;
+  (e.Accum) '-' e.Text = <VariableIndexTail (e.Accum '-') e.Text>;
+  (e.Accum) e.Text = (#TkVariable e.Accum) <Main () e.Text>;
+}
+
+StringLiteral-Escape {
+  (e.Accum) 'n' e.Text = (#TkLiteral-NewLine e.Accum 'n') <StringLiteral () e.Text>;
+  (e.Accum) 'r' e.Text = (#TkLiteral-CarriageReturn e.Accum 'r') <StringLiteral () e.Text>;
+  (e.Accum) 't' e.Text = (#TkLiteral-Tab e.Accum 't') <StringLiteral () e.Text>;
+  (e.Accum) 'a' e.Text = (#TkLiteral-Bell e.Accum 'a') <StringLiteral () e.Text>;
+  (e.Accum) 'b' e.Text = (#TkLiteral-BS e.Accum 'b') <StringLiteral () e.Text>;
+  (e.Accum) 'f' e.Text = (#TkLiteral-FF e.Accum 'f') <StringLiteral () e.Text>;
+  (e.Accum) 'v' e.Text = (#TkLiteral-VT e.Accum 'v') <StringLiteral () e.Text>;
+  (e.Accum) '\\' e.Text = (#TkLiteral-Char e.Accum '\\') <StringLiteral () e.Text>;
+  (e.Accum) '\'' e.Text = (#TkLiteral-Char e.Accum '\'') <StringLiteral () e.Text>;
+  (e.Accum) '\"' e.Text = (#TkLiteral-Char e.Accum '\"') <StringLiteral () e.Text>;
+  (e.Accum) 'd' e.Text = <StringLiteral-Escape-Code () e.Text>;
+  (e.Accum) 'D' e.Text = <StringLiteral-Escape-Code () e.Text>;
+  (e.Accum) '0' e.Text = <StringLiteral-Escape-OCode (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <StringLiteral-Escape-OCode (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <StringLiteral-Escape-OCode (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <StringLiteral-Escape-OCode (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <StringLiteral-Escape-OCode (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <StringLiteral-Escape-OCode (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <StringLiteral-Escape-OCode (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <StringLiteral-Escape-OCode (e.Accum '7') e.Text>;
+  (e.Accum) 'x' e.Text = <StringLiteral-Escape-XCode () e.Text>;
+  (e.Accum) 'X' e.Text = <StringLiteral-Escape-XCode () e.Text>;
+  (e.Accum) '\n' e.Text = (#TokenError 'Unclosed quote') <Main () e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Unexpected escape sequence') <StringLiteral () e.Text>;
+}
+
+StringLiteral-Quote {
+  (e.Accum) '\'' e.Text = (#TkLiteral-Char e.Accum '\'') <StringLiteral () e.Text>;
+  (e.Accum) e.Text = <Main (e.Accum) e.Text>;
+}
+
+Compound-Escape-Dec {
+  (e.Accum) '0' e.Text = <CompoundSymbol (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <CompoundSymbol (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <CompoundSymbol (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <CompoundSymbol (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <CompoundSymbol (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <CompoundSymbol (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <CompoundSymbol (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <CompoundSymbol (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <CompoundSymbol (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <CompoundSymbol (e.Accum '9') e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Expected decimal digit') <CompoundSymbol () e.Text>;
+}
+
+Compound-Escape-Hex {
+  (e.Accum) '0' e.Text = <CompoundSymbol (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <CompoundSymbol (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <CompoundSymbol (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <CompoundSymbol (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <CompoundSymbol (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <CompoundSymbol (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <CompoundSymbol (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <CompoundSymbol (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <CompoundSymbol (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <CompoundSymbol (e.Accum '9') e.Text>;
+  (e.Accum) 'A' e.Text = <CompoundSymbol (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <CompoundSymbol (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <CompoundSymbol (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <CompoundSymbol (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <CompoundSymbol (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <CompoundSymbol (e.Accum 'F') e.Text>;
+  (e.Accum) 'a' e.Text = <CompoundSymbol (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <CompoundSymbol (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <CompoundSymbol (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <CompoundSymbol (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <CompoundSymbol (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <CompoundSymbol (e.Accum 'f') e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Expected hexadecimal digit') <CompoundSymbol () e.Text>;
+}
+
+CComment-CheckNested {
+  (e.Accum) '*' e.Text = (#TokenError 'Nested comments is disabled') <CComment () e.Text>;
+  (e.Accum) e.Text = <CComment (e.Accum) e.Text>;
+}
+
+CComment-CheckEnd {
+  (e.Accum) '/' e.Text = <Main () e.Text>;
+  (e.Accum) e.Text = <CComment (e.Accum) e.Text>;
+}
+
+Native-CheckEnd2 {
+  (e.Accum) '\r' e.Text = <Native-CheckEnd2 (e.Accum '\r') e.Text>;
+  (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <Main () e.Text>;
+  (e.Accum) e.Text = <Native (e.Accum) e.Text>;
+}
+
+StringLiteral-Escape-Code {
+  (e.Accum) '0' e.Text = <SL-E-C1 (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <SL-E-C1 (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <SL-E-C1 (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <SL-E-C1 (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <SL-E-C1 (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <SL-E-C1 (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <SL-E-C1 (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <SL-E-C1 (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <SL-E-C1 (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <SL-E-C1 (e.Accum '9') e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Expected decimal digit') <StringLiteral () e.Text>;
+}
+
+StringLiteral-Escape-OCode {
+  (e.Accum) '0' e.Text = <SL-E-OC1 (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <SL-E-OC1 (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <SL-E-OC1 (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <SL-E-OC1 (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <SL-E-OC1 (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <SL-E-OC1 (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <SL-E-OC1 (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <SL-E-OC1 (e.Accum '7') e.Text>;
+  (e.Accum) e.Text = (#TkLiteral-OCode e.Accum) <StringLiteral () e.Text>;
+}
+
+StringLiteral-Escape-XCode {
+  (e.Accum) '0' e.Text = <StringLiteral-Escape-Xnext (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <StringLiteral-Escape-Xnext (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <StringLiteral-Escape-Xnext (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <StringLiteral-Escape-Xnext (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <StringLiteral-Escape-Xnext (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <StringLiteral-Escape-Xnext (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <StringLiteral-Escape-Xnext (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <StringLiteral-Escape-Xnext (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <StringLiteral-Escape-Xnext (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <StringLiteral-Escape-Xnext (e.Accum '9') e.Text>;
+  (e.Accum) 'A' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'F') e.Text>;
+  (e.Accum) 'a' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'f') e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Expected hexadecimal digit') <StringLiteral () e.Text>;
+}
+
+SL-E-C1 {
+  (e.Accum) '0' e.Text = <SL-E-C2 (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <SL-E-C2 (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <SL-E-C2 (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <SL-E-C2 (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <SL-E-C2 (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <SL-E-C2 (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <SL-E-C2 (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <SL-E-C2 (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <SL-E-C2 (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <SL-E-C2 (e.Accum '9') e.Text>;
+  (e.Accum) e.Text = (#TkLiteral-Code e.Accum) <StringLiteral () e.Text>;
+}
+
+SL-E-OC1 {
+  (e.Accum) '0' e.Text = (#TkLiteral-OCode e.Accum '0') <StringLiteral () e.Text>;
+  (e.Accum) '1' e.Text = (#TkLiteral-OCode e.Accum '1') <StringLiteral () e.Text>;
+  (e.Accum) '2' e.Text = (#TkLiteral-OCode e.Accum '2') <StringLiteral () e.Text>;
+  (e.Accum) '3' e.Text = (#TkLiteral-OCode e.Accum '3') <StringLiteral () e.Text>;
+  (e.Accum) '4' e.Text = (#TkLiteral-OCode e.Accum '4') <StringLiteral () e.Text>;
+  (e.Accum) '5' e.Text = (#TkLiteral-OCode e.Accum '5') <StringLiteral () e.Text>;
+  (e.Accum) '6' e.Text = (#TkLiteral-OCode e.Accum '6') <StringLiteral () e.Text>;
+  (e.Accum) '7' e.Text = (#TkLiteral-OCode e.Accum '7') <StringLiteral () e.Text>;
+  (e.Accum) e.Text = (#TkLiteral-OCode e.Accum) <StringLiteral () e.Text>;
+}
+
+StringLiteral-Escape-Xnext {
+  (e.Accum) '0' e.Text = <StringLiteral-Escape-Xnext (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <StringLiteral-Escape-Xnext (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <StringLiteral-Escape-Xnext (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <StringLiteral-Escape-Xnext (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <StringLiteral-Escape-Xnext (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <StringLiteral-Escape-Xnext (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <StringLiteral-Escape-Xnext (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <StringLiteral-Escape-Xnext (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <StringLiteral-Escape-Xnext (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <StringLiteral-Escape-Xnext (e.Accum '9') e.Text>;
+  (e.Accum) 'A' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'F') e.Text>;
+  (e.Accum) 'a' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'f') e.Text>;
+  (e.Accum) e.Text = (#TkLiteral-XCode e.Accum) <StringLiteral () e.Text>;
+}
+
+SL-E-C2 {
+  (e.Accum) '0' e.Text = (#TkLiteral-Code e.Accum '0') <StringLiteral () e.Text>;
+  (e.Accum) '1' e.Text = (#TkLiteral-Code e.Accum '1') <StringLiteral () e.Text>;
+  (e.Accum) '2' e.Text = (#TkLiteral-Code e.Accum '2') <StringLiteral () e.Text>;
+  (e.Accum) '3' e.Text = (#TkLiteral-Code e.Accum '3') <StringLiteral () e.Text>;
+  (e.Accum) '4' e.Text = (#TkLiteral-Code e.Accum '4') <StringLiteral () e.Text>;
+  (e.Accum) '5' e.Text = (#TkLiteral-Code e.Accum '5') <StringLiteral () e.Text>;
+  (e.Accum) '6' e.Text = (#TkLiteral-Code e.Accum '6') <StringLiteral () e.Text>;
+  (e.Accum) '7' e.Text = (#TkLiteral-Code e.Accum '7') <StringLiteral () e.Text>;
+  (e.Accum) '8' e.Text = (#TkLiteral-Code e.Accum '8') <StringLiteral () e.Text>;
+  (e.Accum) '9' e.Text = (#TkLiteral-Code e.Accum '9') <StringLiteral () e.Text>;
+  (e.Accum) e.Text = (#TkLiteral-Code e.Accum) <StringLiteral () e.Text>;
+}

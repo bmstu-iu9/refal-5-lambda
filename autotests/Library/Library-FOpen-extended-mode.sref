@@ -1,0 +1,21 @@
+//FROM Library
+$EXTERN FOpen, FWriteLine, FClose;
+
+$ENTRY Go {
+  =
+    <SaveFile <FOpen 'w' '__written_file.txt'> ('Ehllo') ('World')>
+    <FClose
+      <FWriteLine
+        <FOpen ('r+') '__written_file.txt'>
+        'Hello'
+      >
+    >;
+}
+
+SaveFile {
+  s.FileHandle (e.Line) e.Lines =
+    <SaveFile <FWriteLine s.FileHandle e.Line> e.Lines>;
+
+  s.FileHandle /* кончились строчки */ =
+    <FClose s.FileHandle>;
+}

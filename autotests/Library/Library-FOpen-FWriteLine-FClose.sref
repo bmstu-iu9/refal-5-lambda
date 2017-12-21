@@ -2,7 +2,7 @@
 $EXTERN FOpen, FWriteLine, FClose;
 
 $ENTRY Go {
-  = <FillFile <FOpen 'w' '__written_file.txt'>>;
+  = <FillFile <FOpen 'W' '__written_file.txt'>>;
 }
 
 Handle { s.FileHandle s.FileHandle = ; }

@@ -1,0 +1,779 @@
+//FROM LibraryEx
+$EXTERN Fetch, Map, Inc, Seq, Dec;
+
+//FROM Error
+$EXTERN EL-AddUnexpected, EL-AddErrorAt;
+
+
+$ENTRY SR-ParseProgram {
+  t.ErrorList e.Tokens =
+    <ParseElements
+      t.ErrorList
+      (/* AST */)
+      <Map PrepareBracket e.Tokens>
+    >;
+}
+
+PrepareBracket {
+  (#TkOpenBracket s.LnNum) = (# Open s.LnNum #TkOpenBracket);
+  (#TkCloseBracket s.LnNum) = (# Close s.LnNum #TkCloseBracket);
+
+  (#TkOpenADT s.LnNum) = (# Open s.LnNum #TkOpenADT);
+  (#TkCloseADT s.LnNum) = (# Close s.LnNum #TkCloseADT);
+
+  (#TkOpenCall s.LnNum) = (# Open s.LnNum #TkOpenCall);
+  (#TkCloseCall s.LnNum) = (# Close s.LnNum #TkCloseCall);
+
+  t.OtherToken = t.OtherToken;
+}
+
+/*
+  Трансляция осуществляется обычным методом рекурсивного спуска.
+
+  TranslationUnit = Element* .
+
+  Element =
+    '$ENUM' NameList |
+    '$EENUM' NameList |
+    '$EXTERN' NameList |
+    '$FORWARD' NameList |
+    '$SWAP' NameList |
+    '$ESWAP' NameList |
+    '$LABEL' NameList |
+    '$ENTRY' Function |
+    Function |
+    NATIVE-BLOCK .
+
+  NameList = Name ',' NameList | Name ';' .
+
+  Function = Name Block .
+
+  Block = '{' Sentence* '}' .
+
+  Sentence = Pattern '=' Result ';' .
+
+  Pattern = PatternTerm* .
+
+  PatternTerm = CommonTerm |
+    '(' Patter ')' | '[' Pattern ']' | RedefinitionVariable .
+
+  RedefinitionVariable = Variable '^' .
+
+  CommonTerm = Char | Number | Name | Variable | '#' Ident .
+
+  Result = ResultTerm* .
+
+  ResultTerm = CommonTerm |
+    '(' Result ')' | '[' Result ']' | '<' Result '>' | Block .
+
+  Стратегия обработки ошибок. Выделяем только одну функцию, проглатывающую
+  неожиданные лексемы. Остальные функции при обнаружении неожиданной лексемы
+  должны её оставить в лексической свёртке перейдя в одно из состояний уровнем
+  выше. Данная стратегия обработки ошибок может нарушаться, но при этом должно
+  выполняться условие, что #TkEOF передаётся в ParseElements.
+*/
+
+/*
+  TranslationUnit = Element* .
+*/
+
+/*
+  Element =
+    '$ENUM' NameList |
+    '$EENUM' NameList |
+    '$EXTERN' NameList |
+    '$FORWARD' NameList |
+    '$SWAP' NameList |
+    '$ESWAP' NameList |
+    '$LABEL' NameList-Idents |
+    '$INCLUDE ' Compound ';' |
+    '$ENTRY' Function |
+    Function .
+*/
+
+ParseElements {
+  t.ErrorList (e.AST) (#TkEOF s.LnNum) = t.ErrorList e.AST;
+
+  t.ErrorList (e.AST) (#TkDirective s.LnNum s.Directive) e.Tail
+    = <ParseElement-SwDirective t.ErrorList s.Directive e.Tail>
+    : (e.NewASTItems) t.ErrorList^ e.Tail^
+    = <ParseElements t.ErrorList (e.AST e.NewASTItems) e.Tail>;
+
+  t.ErrorList (e.AST) (#TkNativeBlock t.SrcPos e.Block) e.Tail
+    = <ParseElements
+        t.ErrorList (e.AST (#NativeBlock t.SrcPos e.Block)) e.Tail
+      >;
+
+  t.ErrorList (e.AST) (#TkName s.LnNum e.Name) e.Tail
+    = <ParseFunction #GN-Local (e.Name) t.ErrorList e.Tail>
+    : (e.NewASTItems) t.ErrorList^ e.Tail^
+    = <ParseElements t.ErrorList (e.AST e.NewASTItems) e.Tail>;
+
+  t.ErrorList (e.AST) (#TkSemicolon s.LnNum) e.Tail
+    = <ParseElements t.ErrorList (e.AST) e.Tail>;
+
+  t.ErrorList (e.AST) t.Unexpected e.Tail
+    = <ParseElements
+        <EL-AddUnexpected t.ErrorList t.Unexpected 'directive or name'>
+        (e.AST) e.Tail
+      >;
+}
+
+ASTItemFromDirective {
+  #EEnum   = #Enum        #GN-Entry;
+  #Enum    = #Enum        #GN-Local;
+  #ESwap   = #Swap        #GN-Entry;
+  #Swap    = #Swap        #GN-Local;
+
+  #Extern  = #Declaration #GN-Entry;
+
+  // Директивы $FORWARD и $LABEL эквивалентны пустому месту
+  #Forward = #Declaration #GN-Local;
+}
+
+ParseElement-SwDirective {
+  t.ErrorList #Entry (#TkName s.LnNum e.Name) e.Tail =
+    <ParseFunction #GN-Entry (e.Name) t.ErrorList e.Tail>;
+
+  t.ErrorList #Entry t.Unexpected e.Tail =
+    (/* ничего не генерируем */)
+    <EL-AddUnexpected t.ErrorList t.Unexpected 'function name'>
+    t.Unexpected e.Tail;
+
+  t.ErrorList #Include e.Tail =
+    <ParseInclude t.ErrorList e.Tail>;
+
+  t.ErrorList #Ident e.Tail =
+    <ParseNameList-Idents (/* generated */) t.ErrorList e.Tail>;
+
+  t.ErrorList s.Directive e.Tail =
+    <ParseNameList
+      (/* generated */) t.ErrorList
+      <ASTItemFromDirective s.Directive>
+      e.Tail
+    >;
+}
+
+ParseInclude {
+  t.ErrorList (#TkCompound s.LnNum1 e.Compound) (#TkSemicolon s.LnNum2) e.Tail
+    = ((#Include s.LnNum1 e.Compound)) t.ErrorList e.Tail;
+
+  t.ErrorList (#TkCompound s.LnNum e.Compound) t.Unexpected e.Tail
+    = ((#Include s.LnNum e.Compound))
+      <EL-AddUnexpected t.ErrorList t.Unexpected 'semicolon'>
+      t.Unexpected e.Tail;
+
+  t.ErrorList t.Unexpected e.Tail
+    = (/* ничего не генерируем */)
+      <EL-AddUnexpected t.ErrorList t.Unexpected 'compound symbol'>
+      t.Unexpected e.Tail;
+}
+
+/*
+  NameList = Name ',' NameList | Name ';' .
+*/
+
+ParseNameList {
+  (e.AST) t.ErrorList s.ASTItem s.ScopeClass
+  (#TkName s.LnNum e.Name) e.Tail =
+    <ParseNameList-Tail
+      (e.AST (s.ASTItem s.LnNum s.ScopeClass e.Name))
+      t.ErrorList s.ASTItem s.ScopeClass e.Tail
+    >;
+
+  (e.AST) t.ErrorList s.ASTItem s.ScopeClass
+  t.Unexpected e.Tail =
+    (e.AST)
+    <EL-AddUnexpected t.ErrorList t.Unexpected 'function name'>
+    t.Unexpected e.Tail;
+}
+
+ParseNameList-Tail {
+  (e.AST) t.ErrorList s.ASTItem s.ScopeClass (#TkComma s.LnNum) e.Tail =
+    <ParseNameList (e.AST) t.ErrorList s.ASTItem s.ScopeClass e.Tail>;
+
+  (e.AST) t.ErrorList s.ASTItem s.ScopeClass (#TkSemicolon s.LnNum) e.Tail =
+    (e.AST) t.ErrorList e.Tail;
+
+  (e.AST) t.ErrorList s.ASTItem s.ScopeClass t.Unexpected e.Tail =
+    (e.AST)
+    <EL-AddUnexpected t.ErrorList t.Unexpected 'comma or semicolon'>
+    t.Unexpected e.Tail;
+}
+
+/*
+  NameList-Idents =
+    (Name | Compound) ',' NameList-Idents | (Name | Compound) ';' .
+*/
+
+ParseNameList-Idents {
+  (e.AST) t.ErrorList (#TkName s.LnNum e.Name) e.Tail
+    = <ParseNameList-Idents-Tail
+        (e.AST (#Ident s.LnNum e.Name)) t.ErrorList e.Tail
+      >;
+
+  (e.AST) t.ErrorList (#TkCompound s.LnNum e.Name) e.Tail
+    = <ParseNameList-Idents-Tail
+        (e.AST (#Ident s.LnNum e.Name)) t.ErrorList e.Tail
+      >;
+
+  (e.AST) t.ErrorList t.Unexpected e.Tail
+    = (e.AST)
+      <EL-AddUnexpected
+        t.ErrorList t.Unexpected 'identifier name or compound symbol'
+      >
+      t.Unexpected e.Tail;
+}
+
+ParseNameList-Idents-Tail {
+  (e.AST) t.ErrorList (#TkComma s.LnNum) e.Tail
+    = <ParseNameList-Idents (e.AST) t.ErrorList e.Tail>;
+
+  (e.AST) t.ErrorList (#TkSemicolon s.LnNum) e.Tail
+    = (e.AST) t.ErrorList e.Tail;
+
+  (e.AST) t.ErrorList t.Unexpected e.Tail
+    = (e.AST)
+      <EL-AddUnexpected t.ErrorList t.Unexpected 'comma or semicolon'>
+      t.Unexpected e.Tail;
+}
+
+/*
+  Function = Name Block.
+*/
+
+ParseFunction {
+  s.ScopeClass (e.Name) t.ErrorList (#TkOpenBlock s.LnNum) e.Tail
+    = <ParseBlock t.ErrorList e.Tail>
+    : (e.Block) t.ErrorList^ e.Tail^
+    = ((#Function s.LnNum s.ScopeClass (e.Name) e.Block))
+      t.ErrorList e.Tail;
+
+  s.ScopeClass (e.Name) t.ErrorList t.Unexpected e.Tail
+    = (/* ничего не сгенерировали */)
+      <EL-AddUnexpected t.ErrorList t.Unexpected 'open brace'>
+      t.Unexpected e.Tail;
+}
+
+/*
+  <ParseBlock t.ErrorList e.Tokens>
+    == t.FunctionBody t.ErrorList e.Tokens
+
+  t.FunctionBody ::=
+  (#Sentences
+    ((e.Pattern) (t.Condition | t.Assignment)* (e.Result) (e.Blocks)*)*
+  )
+
+  t.Condition  = (#Cond   (e.Result) (e.Blocks)* (e.Pattern))
+  t.Assignment = (#Assign (e.Result) (e.Blocks)* (e.Pattern))
+
+
+  Открывающая скобка должна отсутствовать во входном потоке.
+*/
+ParseBlock {
+  t.ErrorList (#TkNativeBlock t.SrcPos e.Block) e.Tokens
+    = (#NativeBody t.SrcPos e.Block)
+      <Expect #TkCloseBlock ('}') t.ErrorList e.Tokens>;
+
+  t.ErrorList e.Tokens
+    = <DoParseBlock t.ErrorList (/* sentences */) e.Tokens>;
+}
+
+Expect {
+  s.Expected (e.ExpectedText) t.ErrorList (s.Expected t.SrcPos) e.Tokens
+    = t.ErrorList e.Tokens;
+
+  s.Expected (e.ExpectedText) t.ErrorList t.Unexpected e.Tokens
+    = <EL-AddUnexpected t.ErrorList t.Unexpected e.ExpectedText>
+      t.Unexpected e.Tokens;
+}
+
+DoParseBlock {
+  t.ErrorList (e.Sentences) (#TkCloseBlock s.LnNumber) e.Tail
+    = (#Sentences e.Sentences) t.ErrorList e.Tail;
+
+  t.ErrorList (e.Sentences) (#TkEOF s.LnNum) e.Tail
+    = (#Sentences e.Sentences)
+      <EL-AddErrorAt
+        t.ErrorList s.LnNum 'Unexpected EOF, expected "}"'
+      >
+      (#TkEOF s.LnNum) e.Tail;
+
+  t.ErrorList (e.Sentences) e.Tokens
+    = <ParseSentence t.ErrorList e.Tokens> : (e.Sentence) t.ErrorList^ e.Tail^
+    = <DoParseBlock t.ErrorList (e.Sentences (e.Sentence)) e.Tail>;
+}
+
+/*
+  Sentence = SentencePart SentenceTail.
+  SentencePart = Pattern { Condition | Assignment } Result.
+  SentenceTail = ";" | ":" Sentence.
+*/
+
+ParseSentence {
+  t.ErrorList e.Tokens
+
+    = <ParseSentencePart t.ErrorList e.Tokens>
+    : ((e.StartPattern) s.Type (e.Result) (e.Blocks))
+      t.ErrorList^ t.NextToken e.Tokens^
+
+    = t.NextToken
+    : {
+        (#TkSemicolon t.SrcPos)
+          = <Fetch
+              s.Type
+              {
+                #Assign
+                  = t.ErrorList;
+
+                #Condition
+                  = <EL-AddErrorAt
+                      t.ErrorList t.SrcPos 'Before the last result expr must be "="'
+                    >;
+              }
+            >
+          : t.ErrorList^
+          = ((e.StartPattern) (e.Result) (e.Blocks)) t.ErrorList e.Tokens;
+
+        (#TkColon t.SrcPos)
+
+          = <ParseSentence t.ErrorList e.Tokens>
+          : ((e.InnerPattern) e.AssignmentsANDCond (e.EndResult) (e.EndBlocks))
+            t.ErrorList^ e.Tokens^
+
+          = (s.Type (e.Result) (e.Blocks) (e.InnerPattern)) e.AssignmentsANDCond
+          : e.AssignmentsANDCond^
+
+          = ((e.StartPattern) e.AssignmentsANDCond (e.EndResult) (e.EndBlocks))
+            t.ErrorList e.Tokens;
+
+        (#TkCloseBlock t.SrcPos)
+          = ((e.StartPattern) (e.Result) (e.Blocks))
+            <EL-AddErrorAt t.ErrorList t.SrcPos 'Missed semicolon'>
+            (#TkCloseBlock t.SrcPos) e.Tokens;
+
+        (#TkEOF t.SrcPos)
+          = e.Tokens : /* пусто */
+          = ((e.StartPattern) (e.Result) (e.Blocks))
+            <EL-AddErrorAt t.ErrorList t.SrcPos 'Unexpected EOF in function'>
+            (#TkEOF t.SrcPos);
+
+        t.Unexpected
+          = ((e.StartPattern) (e.Result) (e.Blocks))
+            <EL-AddUnexpected t.ErrorList t.Unexpected 'semicolon'>
+            e.Tokens;
+      };
+}
+
+ParseSentencePart {
+  t.ErrorList e.Tokens
+
+    = <ParsePattern t.ErrorList e.Tokens> : t.ErrorList^ (e.Pattern) e.Tokens^
+
+    = <Fetch
+        e.Tokens
+        {
+          (#TkReplace t.SrcPos) e.Tokens^ = #Assign t.ErrorList e.Tokens;
+
+          (#TkComma t.SrcPos)  e.Tokens^ = #Condition t.ErrorList e.Tokens;
+
+          t.Unexpected e.Tokens^
+          = #Assign <EL-AddUnexpected t.ErrorList t.Unexpected '"," or "="'>
+            t.Unexpected e.Tokens;
+        }
+      >
+    : s.Type t.ErrorList^ e.Tokens^
+
+    = <ParseResult t.ErrorList e.Tokens>
+    : t.ErrorList^ (e.Result) (e.Blocks) e.Tokens^
+
+    = ((e.Pattern) s.Type (e.Result) (e.Blocks)) t.ErrorList e.Tokens;
+}
+
+ParsePattern {
+  t.ErrorList e.Tokens
+    = <DoParsePattern
+        t.ErrorList (/* мультискобки */) (/* просканировано */) e.Tokens
+      >;
+}
+
+DoParsePattern {
+  // Обработка литералов атомов
+
+  t.ErrorList (e.MultiBrackets) (e.Scanned) (#TkChar s.LnNum s.Char) e.Tail =
+    <DoParsePattern
+      t.ErrorList (e.MultiBrackets) (e.Scanned (#TkChar s.Char)) e.Tail
+    >;
+
+  t.ErrorList (e.MultiBrackets)
+  (e.Scanned) (#TkNumber s.LnNum s.Number) e.Tail =
+    <DoParsePattern
+      t.ErrorList (e.MultiBrackets) (e.Scanned (#TkNumber s.Number)) e.Tail
+    >;
+
+  t.ErrorList (e.MultiBrackets) (e.Scanned) (#TkName s.LnNum e.Name) e.Tail =
+    <DoParsePattern
+      t.ErrorList (e.MultiBrackets) (e.Scanned (#TkName s.LnNum e.Name)) e.Tail
+    >;
+
+  t.ErrorList (e.MultiBrackets)
+  (e.Scanned)
+  (#TkIdentMarker s.LnNumMarker) (#TkName s.LnNumName e.Name) e.Tail =
+    <DoParsePattern
+      t.ErrorList (e.MultiBrackets) (e.Scanned (#TkIdentifier e.Name)) e.Tail
+    >;
+
+  t.ErrorList (e.MultiBrackets) (e.Scanned) (#TkIdentMarker s.LnNum) e.Tail =
+    <DoParsePattern
+      <EL-AddErrorAt t.ErrorList s.LnNum 'Missed name after ''#'''>
+      (e.MultiBrackets)
+      (e.Scanned) e.Tail
+    >;
+
+  t.ErrorList (e.MultiBrackets) (e.Scanned) (#TkCompound s.LnNum e.Name) e.Tail =
+    <DoParsePattern
+      t.ErrorList (e.MultiBrackets) (e.Scanned (#TkIdentifier e.Name)) e.Tail
+    >;
+
+  // Переменные
+
+  t.ErrorList (e.MultiBracket)
+  (e.Scanned)
+  (#TkVariable s.LnNumVar s.Mode e.Index)
+  (#TkRedefinition s.LnNumRedef)
+  e.Tail =
+    <DoParsePattern
+      t.ErrorList (e.MultiBracket)
+      (e.Scanned (#TkNewVariable s.LnNumVar s.Mode e.Index)) e.Tail
+    >;
+
+  t.ErrorList (e.MultiBracket)
+  (e.Scanned) (#TkVariable s.LnNum s.Mode e.Index) e.Tail =
+    <DoParsePattern
+      t.ErrorList (e.MultiBracket)
+      (e.Scanned (#TkVariable s.LnNum s.Mode e.Index)) e.Tail
+    >;
+
+  t.ErrorList (e.MultiBracket)
+  (e.Scanned) (#TkRedefinition s.LnNum) e.Tail =
+    <DoParsePattern
+      <EL-AddErrorAt t.ErrorList s.LnNum 'Naked redefinition sign'>
+      (e.MultiBracket)
+      (e.Scanned) e.Tail
+    >;
+
+  /*
+    Скобки.
+
+    Стратегия обработки ошибок: если мы встретили "не ту" закрывающую скобку,
+    считаем, что "та" была пропущена. Если имеем непарную открывающую скобку,
+    считаем, что соответствующая скобка была пропущена в конце выражения;
+    если имеем непарную закрывающую скобку, считаем её лишней.
+  */
+
+  t.ErrorList (e.MultiBracket)
+  (e.Scanned) (# Open s.LnNum #TkOpenBracket) e.Tail =
+    <DoParsePattern
+      t.ErrorList
+      (
+        e.MultiBracket
+        (#Brackets s.LnNum #TkCloseBracket e.Scanned)
+      )
+      () e.Tail
+    >;
+
+  t.ErrorList (e.MultiBracket)
+  (e.Scanned)
+  (# Open s.LnNumBracket #TkOpenADT) (#TkName s.LnNumName e.Name) e.Tail =
+    <DoParsePattern
+      t.ErrorList
+      (
+        e.MultiBracket
+        (#ADT-Brackets s.LnNumBracket #TkCloseADT e.Scanned)
+      )
+      (s.LnNumName (e.Name)) e.Tail
+    >;
+
+  t.ErrorList (e.MultiBracket)
+  (e.Scanned) (# Open s.LnNum #TkOpenADT) e.Tail =
+    <DoParsePattern
+      <EL-AddErrorAt
+        t.ErrorList s.LnNum 'Expected name after "["'
+      >
+      (
+        e.MultiBracket
+        (#ADT-Brackets s.LnNum #TkCloseADT e.Scanned)
+      )
+      (s.LnNum (#UnnamedADT)) e.Tail
+    >;
+
+  t.ErrorList (e.MultiBracket)
+  (e.Scanned) (# Open s.LnNum #TkOpenCall) e.Tail =
+    <DoParsePattern
+      <EL-AddErrorAt
+        t.ErrorList s.LnNum 'Unexpected call bracket in pattern expression'
+      >
+      (
+        e.MultiBracket
+        (#Brackets s.LnNum #TkCloseCall e.Scanned)
+      )
+      () e.Tail
+    >;
+
+  t.ErrorList
+  (
+    e.MultiBracket
+    (s.BracketsSign s.InnerLnNum s.CloseBracket e.Scanned)
+  )
+  (e.InnerScanned) (# Close s.ClosedLnNum s.CloseBracket) e.Tail =
+    <DoParsePattern
+      t.ErrorList (e.MultiBracket)
+      (e.Scanned (s.BracketsSign e.InnerScanned))
+      e.Tail
+    >;
+
+  t.ErrorList
+  (
+    e.MultiBracket
+    (s.BracketsSign s.InnerLnNum s.CloseBracket e.Scanned)
+  )
+  (e.InnerScanned) (# Close s.LnNum s.OtherCloseBracket) e.Tail =
+    <DoParsePattern
+      <EL-AddErrorAt
+        t.ErrorList s.InnerLnNum
+        'Unbalanced bracket "' <StrFromBracket s.BracketsSign> '"'
+      >
+      (e.MultiBracket)
+      (e.Scanned (s.BracketsSign e.InnerScanned))
+      (# Close s.LnNum s.OtherCloseBracket) e.Tail
+    >;
+
+  t.ErrorList () (e.Scanned) (# Close s.LnNum s.CloseBracket) e.Tail =
+    <DoParsePattern
+      <EL-AddErrorAt
+        t.ErrorList s.LnNum
+        'Unbalanced bracket "' <StrFromBracket s.CloseBracket> '"'
+      >
+      ()
+      (e.Scanned) e.Tail
+    >;
+
+  t.ErrorList
+  (
+    e.MultiBracket
+    (s.BracketsSign s.InnerLnNum s.CloseBracket e.Scanned)
+  )
+  (e.InnerScanned) e.Tail =
+    <DoParsePattern
+      <EL-AddErrorAt
+        t.ErrorList s.InnerLnNum
+        'Unbalanced bracket "' <StrFromBracket s.BracketsSign> '"'
+      >
+      (e.MultiBracket)
+      (e.Scanned (s.BracketsSign e.InnerScanned))
+      e.Tail
+    >;
+
+  t.ErrorList () (e.Pattern) e.Tail =
+    t.ErrorList (e.Pattern)  e.Tail;
+}
+
+StrFromBracket {
+  #TkOpenBracket = '('; #TkCloseBracket = ')';
+  #TkOpenCall = '<'; #TkCloseCall = '>';
+  #TkOpenADT = '['; #TkCloseADT = ']';
+  #Brackets = '(';
+  #ADT-Brackets = '[';
+  #CallBrackets = '<';
+}
+
+/*
+  Result = ResultExpr Blocks.
+  Blocks = ":" Block Blocks | empty.
+*/
+ParseResult {
+  t.ErrorList e.Tokens
+    = <DoParseResult
+        t.ErrorList (/* мультискобки */) (/* просканировано */) e.Tokens
+      >
+    : t.ErrorList^ (e.Result) e.Tail
+    = <ParseBlocks t.ErrorList e.Tail> : t.ErrorList^ (e.Blocks) e.Tail^
+    = t.ErrorList (e.Result) (e.Blocks) e.Tail;
+}
+
+ParseBlocks {
+  t.ErrorList (#TkColon s.ColonPos) (#TkOpenBlock s.OpenBlockPos) e.Tail
+    = <ParseBlock t.ErrorList e.Tail> : (e.Block) t.ErrorList^ e.Tail^
+    = <ParseBlocks t.ErrorList e.Tail> : t.ErrorList^ (e.Blocks) e.Tail^
+    = t.ErrorList ((e.Block) e.Blocks) e.Tail;
+
+  t.ErrorList e.Tokens = t.ErrorList (/* нет блоков */) e.Tokens;
+}
+
+/*
+  <DoParseResult t.ErrorList (e.MultiBracket) (e.Scanned) e.Tail>
+*/
+DoParseResult {
+  // Обработка литералов атомов
+
+  t.ErrorList (e.MultiBracket) (e.Scanned) (#TkChar s.LnNum s.Char) e.Tail =
+    <DoParseResult
+      t.ErrorList (e.MultiBracket) (e.Scanned (#TkChar s.Char)) e.Tail
+    >;
+
+  t.ErrorList (e.MultiBracket) (e.Scanned) (#TkNumber s.LnNum s.Number) e.Tail =
+    <DoParseResult
+      t.ErrorList (e.MultiBracket) (e.Scanned (#TkNumber s.Number)) e.Tail
+    >;
+
+  t.ErrorList (e.MultiBracket) (e.Scanned) (#TkName s.LnNum e.Name) e.Tail =
+    <DoParseResult
+      t.ErrorList (e.MultiBracket) (e.Scanned (#TkName s.LnNum e.Name)) e.Tail
+    >;
+
+  t.ErrorList (e.MultiBracket)
+  (e.Scanned)
+  (#TkIdentMarker s.MarkerLnNum) (#TkName s.NameLnNum e.Name) e.Tail =
+    <DoParseResult
+      t.ErrorList (e.MultiBracket) (e.Scanned (#TkIdentifier e.Name)) e.Tail
+    >;
+
+  t.ErrorList (e.MultiBracket) (e.Scanned) (#TkIdentMarker s.LnNum) e.Tail =
+    <DoParseResult
+      <EL-AddErrorAt t.ErrorList s.LnNum 'Missed name after "#"'>
+      (e.MultiBracket) (e.Scanned) e.Tail
+    >;
+
+  t.ErrorList (e.MultiBracket) (e.Scanned) (#TkCompound s.LnNum e.Name) e.Tail =
+    <DoParseResult
+      t.ErrorList (e.MultiBracket) (e.Scanned (#TkIdentifier e.Name)) e.Tail
+    >;
+
+  // Переменные
+
+  t.ErrorList
+  (e.MultiBracket) (e.Scanned) (#TkVariable s.LnNum s.Mode e.Index) e.Tail =
+    <DoParseResult
+      t.ErrorList (e.MultiBracket)
+      (e.Scanned (#TkVariable s.LnNum s.Mode e.Index)) e.Tail
+    >;
+
+  /*
+    Скобки.
+
+    Стратегия обработки ошибок: если мы встретили "не ту" закрывающую скобку,
+    считаем, что "та" была пропущена. Если имеем непарную открывающую скобку,
+    считаем, что соответствующая скобка была пропущена в конце выражения;
+    если имеем непарную закрывающую скобку, считаем её лишней.
+  */
+
+  // Хитро обрабатываются АДТ-скобки, т.к. требуется, чтобы после них было имя.
+
+  t.ErrorList (e.MultiBracket)
+  (e.Scanned)
+  (# Open s.LnNumADT #TkOpenADT) (#TkName s.LnNumName e.Name) e.Tail =
+    <DoParseResult
+      t.ErrorList
+      (
+        e.MultiBracket
+        (#ADT-Brackets s.LnNumADT #TkCloseADT e.Scanned)
+      )
+      (s.LnNumName (e.Name)) e.Tail
+    >;
+
+  t.ErrorList
+  (e.MultiBracket) (e.Scanned) (# Open s.LnNum #TkOpenADT) e.Tail =
+    <DoParseResult
+      <EL-AddErrorAt
+        t.ErrorList s.LnNum 'Expected name after "["'
+      >
+      (
+        e.MultiBracket
+        (#ADT-Brackets s.LnNum #TkCloseADT e.Scanned)
+      )
+      (s.LnNum (#UnnamedADT)) e.Tail
+    >;
+
+  // Структурные и угловые скобки обрабатываются одинаково
+  t.ErrorList
+  (e.MultiBracket) (e.Scanned) (# Open s.LnNum s.OpenBracket) e.Tail =
+    <DoParseResult
+      t.ErrorList
+      (
+        e.MultiBracket
+        (
+          <Fetch
+            s.OpenBracket
+            {
+              #TkOpenBracket = #Brackets;
+              #TkOpenCall = #CallBrackets;
+            }
+          >
+          s.LnNum
+          <Fetch
+            s.OpenBracket
+            {
+              #TkOpenBracket = #TkCloseBracket;
+              #TkOpenCall = #TkCloseCall;
+            }
+          >
+          e.Scanned
+        )
+      )
+      () e.Tail
+    >;
+
+  // Правильная закрывающая скобка
+  t.ErrorList
+  (
+    e.MultiBracket
+    (s.BracketsSign s.OpenLnNum s.CloseBracket e.Scanned)
+  )
+  (e.InnerScanned) (# Close s.LnNum s.CloseBracket) e.Tail =
+    <DoParseResult
+      t.ErrorList
+      (e.MultiBracket) (e.Scanned (s.BracketsSign e.InnerScanned))
+      e.Tail
+    >;
+
+  // Лямбда-функция
+  t.ErrorList (e.MultiBracket) (e.Scanned) (#TkOpenBlock s.LnNum) e.Tail =
+    <Fetch
+      <ParseBlock t.ErrorList e.Tail>
+      {
+        (e.Block) t.ErrorList^ e.Tail^ =
+          <DoParseResult
+            t.ErrorList (e.MultiBracket)
+            (e.Scanned (#Closure e.Block)) e.Tail
+          >;
+      }
+    >;
+
+  // Неправильная закрывающая скобка или закрывающая скобка отсутствует
+  t.ErrorList
+  (
+    e.MultiBracket
+    (s.BracketsSign s.OpenLnNum s.CloseBracket e.Scanned)
+  )
+  (e.InnerScanned) e.Tail =
+    <DoParseResult
+      <EL-AddErrorAt
+        t.ErrorList s.OpenLnNum
+        'Unbalanced bracket "' <StrFromBracket s.BracketsSign> '"'
+      >
+      (e.MultiBracket) (e.Scanned (s.BracketsSign e.InnerScanned))
+      e.Tail
+    >;
+
+  t.ErrorList () (e.Scanned) (# Close s.LnNum s.CloseBracket) e.Tail =
+    <DoParseResult
+      <EL-AddErrorAt
+        t.ErrorList s.LnNum
+        'Unbalanced bracket "' <StrFromBracket s.CloseBracket> '"'
+      >
+      () (e.Scanned) e.Tail
+    >;
+
+  t.ErrorList () (e.Result) e.Tail =
+    t.ErrorList (e.Result) e.Tail;
+}

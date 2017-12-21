@@ -1,0 +1,20 @@
+//FROM Library
+$EXTERN FOpen, FReadBytes, FClose;
+
+$ENTRY Go {
+  =
+    <
+      {
+        s.FileHandle =
+          <Eq ( 0  1  2  3  4  5  6  7  8  9) <FReadBytes s.FileHandle 10>>
+          <Eq (10 11 12 13 14 15 16 17 18 19) <FReadBytes s.FileHandle 10>>
+          <Eq (20 21 22 23 24 25 26 27 28 29) <FReadBytes s.FileHandle 10>>
+          <Eq (30 31                        ) <FReadBytes s.FileHandle 10>>
+          <Eq ()                              <FReadBytes s.FileHandle 10>>
+          <FClose s.FileHandle>;
+      }
+      <FOpen ('rb') 'nonprint.bin'>
+    >;
+}
+
+Eq { (e.X) e.X = ; }

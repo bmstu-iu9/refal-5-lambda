@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Compare, Inc, Seq, Reduce, Map, MapReduce, DelAccumulator,
+$EXTERN Fetch, TermCompare, Inc, Seq, Reduce, Map, MapReduce, DelAccumulator,
   UnBracket;
 
 //FROM Library
@@ -200,27 +200,23 @@ FoldTile-EEnd {
 }
 
 FilterOverlapped {
-  t.NextTile e.Tiles =
-    <Fetch
-      <FindHeavyTile t.NextTile e.Tiles>
-      {
-        (s.MaxWeight s.IndexP s.IndexR e.MaxItems) e.Tiles^ =
-          (
-            s.IndexP s.IndexR s.MaxWeight
-            (
-              <Map
-                {
-                  (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) = s.Ident;
-                }
-                e.MaxItems
-              >
-            )
-          )
-          <FilterOverlapped
-            <RejectTile (e.Tiles) e.MaxItems>
-          >;
-      }
-    >;
+  t.NextTile e.Tiles
+    = <FindHeavyTile t.NextTile e.Tiles>
+    : (s.MaxWeight s.IndexP s.IndexR e.MaxItems) e.Tiles^
+    = (
+        s.IndexP s.IndexR s.MaxWeight
+        (
+          <Map
+            {
+              (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) = s.Ident;
+            }
+            e.MaxItems
+          >
+        )
+      )
+      <FilterOverlapped
+        <RejectTile (e.Tiles) e.MaxItems>
+      >;
 
   /* пусто */ = /* пусто */;
 }
@@ -230,10 +226,9 @@ FindHeavyTile {
     <MapReduce
       {
         (s.MaxWeight s.IndexP s.IndexR e.MaxItems)
-        (s.Weight s.CurIndexP s.CurIndexR e.Items) =
-          <Fetch
-            <Compare s.MaxWeight s.Weight>
-            {
+        (s.Weight s.CurIndexP s.CurIndexR e.Items)
+          = <TermCompare s.MaxWeight s.Weight>
+          : {
               '<' =
                 (s.Weight s.CurIndexP s.CurIndexR e.Items)
                 (s.MaxWeight s.IndexP s.IndexR e.MaxItems);
@@ -241,8 +236,7 @@ FindHeavyTile {
               s.Other =
                 (s.MaxWeight s.IndexP s.IndexR e.MaxItems)
                 (s.Weight s.CurIndexP s.CurIndexR e.Items);
-            }
-          >;
+            };
       }
       t.NextTile e.Tiles
     >;

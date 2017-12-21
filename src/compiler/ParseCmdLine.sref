@@ -1,201 +1,179 @@
 //FROM GetOpt
 $EXTERN GetOpt;
 
-//FROM GetOpt-CheckRepeated
-$EXTERN GetOpt-CheckRepeated;
-
 //FROM LibraryEx
 $EXTERN Fetch, Seq, MapReduce, Map;
 
+//FROM Config
+$EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
+  Config-SetOptFlags, Config-SetErrorFile, Config-SetMarkupContext,
+  Config-SetDebugInfo, Config-SetGrammarCheck, Config-SetTargetFileName,
+  Config-SetTargetSuffix, Config-SetSearchFolder, Config-SetPrefix,
+  Config-AddReference, Config-SetTargetMode, Config-AddIncorporated,
+  Config-SetChmodXCommand, Config-SetPrelude;
+
 /**
   <ParseCommandLine e.Arguments>
-    == #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode
-       s.GrammarCheck ((e.Folder)*) (s.ArgNum e.File)*
+    == #Success t.Config (s.ArgNum e.File)*
     == #Fails (s.ArgNum e.ErrorMessage)
-
-  t.CppCompiler ::= #NoCppCompiler | (e.CppCompiler)
-  s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
-  s.Opt ::= #OptNone | #OptPattern | #OptResult
-  t.ErrorFile ::= #NoErrorFile | (#ErrorFile e.FileName)
-  t.DebugMode ::= (s.MarkupContext s.DebuggerInfo)
-  s.MarkupContext ::= #MarkupContext | #NoMarkupContext
-  s.DebuggerInfo ::= #DebugInfo | #NoDebugInfo
-  s.GrammarCheck ::= #NormalRun | #GrammarCheck
 */
 $ENTRY ParseCommandLine {
   e.Arguments =
     <Fetch
       <GetOpt
         (
-          (#CppCompiler #Required 'c' ('cpp-command'))
-          (#GenMode #Required ('gen'))
-          (#Opt #Required 'O')
-          (#ErrorFile #Required 'e' ('error-file'))
-          (#MarkupContext #None ('markup-context'))
-          (#DebugInfo #None 'g' ('debug-info'))
-          (#SearchFolder #Required 'd' ('dir') ('directory'))
-          (#CppFlags #Required 'CF' ('cppflags'))
+          (#CppCompiler-Exe #Required 'c' ('cpp-command') ('cpp-command-exe'))
+          (#CppCompiler-Lib #Required ('cpp-command-lib'))
           (#CppFlag #Required 'f' ('cppflag'))
-          (#RuntimeFolder #Required 'D' ('runtime-dir') ('runtime-directory'))
+          (#CppFlags #Required 'F' ('cppflags'))
+          (#DebugInfo #None 'g' ('debug-info'))
+          (#ErrorFile #Required 'e' ('error-file'))
           (#GrammarCheck #None ('grammar-check'))
+          (#Incorporated #Required ('incorporated'))
+          (#MarkupContext #None ('markup-context'))
+          (#Opt #Required 'O')
+          (#Prefix #Required 'p' ('prefix'))
+          (#Reference #Required 'r' ('reference'))
+          (#RuntimeFolder #Required 'D' ('runtime-dir') ('runtime-directory'))
+          (#SearchFolder #Required 'd' ('dir') ('directory'))
+          (#TargetFileName #Required 'o' ('target-file'))
+          (#TargetMode-Exe #None 'x' ('makeexe'))
+          (#TargetMode-Lib #None 'l' ('makelib'))
+          (#TargetMode-R #None 'R')
+          (#TargetMode-C #None 'C' ('compile-only'))
+          (#TargetSuffix-Exe
+            #Required
+            ('targsuffix') ('targetsuffix') ('targsuf')
+            ('exesuffix') ('exesuf')
+          )
+          (#TargetSuffix-Lib #Required ('libsuffix') ('libsuf'))
+          (#ChmodXCommand #Required ('chmod-x') ('chmod-x-command'))
+          (#Prelude #Required ('prelude'))
         )
         e.Arguments
       >
       <Seq
         {
-          (e.Errors) e.Options =
-            <GetOpt-CheckRepeated
-              (#CppCompiler #GenMode #Opt #ErrorFile #MarkupContext #DebugInfo)
-              (e.Errors) e.Options
-            >;
+          (e.Errors) e.Options
+            = (<Config-Create> e.Errors) e.Options;
         }
-        {
-          (e.Errors)
-          e.Options-B (#CppCompiler s.Num e.CppCompiler) e.Options-E =
-            (e.Errors) ((e.CppCompiler)) e.Options-B e.Options-E;
+        (MapReduce
+          {
+            (t.Config e.Errors) (#CppCompiler-Exe s.Num e.CppCompiler)
+              = <Update
+                  t.Config (e.Errors)
+                  Config-SetCppCompiler s.Num #EXE e.CppCompiler
+                >;
 
-          (e.Errors) e.Options =
-            (e.Errors) (#NoCppCompiler) e.Options;
-        }
-        {
-          (e.Errors) (e.Bag) e.Options-B (#GenMode s.Num 'both') e.Options-E =
-            (e.Errors) (e.Bag #Both) e.Options-B e.Options-E;
+            (t.Config e.Errors) (#CppCompiler-Lib s.Num e.CppCompiler)
+              = <Update
+                  t.Config (e.Errors)
+                  Config-SetCppCompiler s.Num #LIB e.CppCompiler
+                >;
 
-          (e.Errors) (e.Bag) e.Options-B (#GenMode s.Num 'direct') e.Options-E =
-            (e.Errors) (e.Bag #OnlyDirect) e.Options-B e.Options-E;
+            (t.Config e.Errors) (#CppFlag s.Num e.Flag)
+              = <Update
+                  t.Config (e.Errors)
+                  Config-SetCompilerFlags s.Num ' "' e.Flag '"'
+                >;
 
-          (e.Errors) (e.Bag) e.Options-B (#GenMode s.Num 'interp') e.Options-E =
-            (e.Errors) (e.Bag #OnlyInterpret) e.Options-B e.Options-E;
+            (t.Config e.Errors) (#CppFlags s.Num e.Flags)
+              = <Update
+                  t.Config (e.Errors) Config-SetCompilerFlags s.Num ' ' e.Flags
+                >;
 
-          (e.Errors) (e.Bag) e.Options-B (#GenMode s.Num e.BadVal) e.Options-E =
-            (e.Errors (s.Num #BadValue-GenMode e.BadVal))
-            (e.Bag #Both) e.Options-B e.Options-E;
+            (t.Config e.Errors) (#DebugInfo s.Num)
+              = <Update t.Config (e.Errors) Config-SetDebugInfo s.Num>;
 
-          (e.Errors) (e.Bag) e.Options =
-            (e.Errors) (e.Bag #Both) e.Options;
-        }
-        {
-          (e.Errors) (e.Bag) e.Options-B (#Opt s.Num 'P') e.Options-E =
-            (e.Errors) (e.Bag #OptPattern) e.Options-B e.Options-E;
+            (t.Config e.Errors) (#ErrorFile s.Num e.FileName)
+              = <Update
+                  t.Config (e.Errors) Config-SetErrorFile s.Num e.FileName
+                >;
 
-          (e.Errors) (e.Bag) e.Options-B (#Opt s.Num 'R') e.Options-E =
-            (e.Errors) (e.Bag #OptResult) e.Options-B e.Options-E;
+            (t.Config e.Errors) (#GrammarCheck s.Num)
+              = <Update t.Config (e.Errors) Config-SetGrammarCheck s.Num>;
 
-          (e.Errors) (e.Bag) e.Options-B (#Opt s.Num 'PR') e.Options-E =
-            (e.Errors) (e.Bag #OptBoth) e.Options-B e.Options-E;
+            (t.Config e.Errors) (#Incorporated s.Num e.Name)
+              = <Update
+                  t.Config (e.Errors) Config-AddIncorporated s.Num e.Name
+                >;
 
-          (e.Errors) (e.Bag) e.Options-B (#Opt s.Num 'RP') e.Options-E =
-            (e.Errors) (e.Bag #OptBoth) e.Options-B e.Options-E;
+            (t.Config e.Errors) (#MarkupContext s.Num)
+              = <Update t.Config (e.Errors) Config-SetMarkupContext s.Num>;
 
-          (e.Errors) (e.Bag) e.Options-B (#Opt s.Num e.BadOpt) e.Options-E =
-            (e.Errors (s.Num #BadValue-Opt e.BadOpt))
-            (e.Bag #OptNone) e.Options-B e.Options-E;
+            (t.Config e.Errors) (#Opt s.Num e.Flags)
+              = <Update t.Config (e.Errors) Config-SetOptFlags s.Num e.Flags>;
 
-          (e.Errors) (e.Bag) e.Options =
-            (e.Errors) (e.Bag #OptNone) e.Options;
-        }
-        {
-          (e.Errors) (e.Bag)
-          e.Options-B (#ErrorFile s.Num e.ErrorFile) e.Options-E =
-            (e.Errors) (e.Bag (#ErrorFile e.ErrorFile)) e.Options-B e.Options-E;
+            (t.Config e.Errors) (#Prefix s.Num e.Prefix)
+              = <Update t.Config (e.Errors) Config-SetPrefix s.Num e.Prefix>;
 
-          (e.Errors) (e.Bag) e.Options =
-            (e.Errors) (e.Bag #NoErrorFile) e.Options;
-        }
-        {
-          (e.Errors) (e.Bag)
-          e.Options-B (#MarkupContext s.Num) e.Options-E =
-            (e.Errors) (e.Bag #MarkupContext) e.Options-B e.Options-E;
+            (t.Config e.Errors) (#Reference s.Num e.Reference)
+              = <Update
+                  t.Config (e.Errors) Config-AddReference s.Num e.Reference
+                >;
 
-          (e.Errors) (e.Bag) e.Options =
-            (e.Errors) (e.Bag #NoMarkupContext) e.Options;
-        }
-        {
-          (e.Errors) (e.Bag s.MarkupContext)
-          e.Options-B (#DebugInfo s.Num) e.Options-E =
-            (e.Errors) (e.Bag (s.MarkupContext #DebugInfo)) e.Options-B e.Options-E;
-
-          (e.Errors) (e.Bag s.MarkupContext) e.Options =
-            (e.Errors) (e.Bag (s.MarkupContext #NoDebugInfo)) e.Options;
-        }
-        {
-          (e.Errors) (e.Bag)
-          e.Options-B (#GrammarCheck s.Num) e.Options-E =
-            (e.Errors) (e.Bag #GrammarCheck) e.Options-B e.Options-E;
-
-          (e.Errors) (e.Bag) e.Options =
-            (e.Errors) (e.Bag #NormalRun) e.Options;
-        }
-        {
-          (e.Errors) (e.Bag) e.Options =
-            ((e.Errors) (e.Bag)) e.Options;
-        }
-        (MapReduce {
-          ((e.Errors) (#NoCppCompiler e.Bag)) (#CppFlags s.Num e.Flags) =
-            (
-              (e.Errors (s.Num #FlagsForNoCompiler))
-              (#NoCppCompiler e.Bag)
-            );
-
-          ((e.Errors) (#NoCppCompiler e.Bag)) (#CppFlag s.Num e.Flag) =
-            (
-              (e.Errors (s.Num #FlagsForNoCompiler))
-              (#NoCppCompiler e.Bag)
-            );
-
-          ((e.Errors) ((e.CppCompiler) e.Bag)) (#CppFlags s.Num e.Flags) =
-            (
-              (e.Errors)
-              ((e.CppCompiler ' ' e.Flags) e.Bag)
-            );
-
-          ((e.Errors) ((e.CppCompiler) e.Bag)) (#CppFlag s.Num e.Flag) =
-            (
-              (e.Errors)
-              ((e.CppCompiler ' "' e.Flag '"') e.Bag)
-            );
-
-          ((e.Errors) (t.CppCompiler e.Bag)) (#RuntimeFolder s.Num e.Folder) =
-            (
-              (e.Errors)
-              (
-                <Fetch
-                  t.CppCompiler {
-                    #NoCppCompiler = #NoCppCompiler;
-                    (e.CppCompiler^) = (e.CppCompiler ' -I"' e.Folder '"');
-                  }
+            (t.Config e.Errors) (#RuntimeFolder s.Num e.Path)
+              = <Update
+                  t.Config (e.Errors)
+                  Config-SetCompilerFlags s.Num ' -I"' e.Path '"'
                 >
-                e.Bag
-              )
-            )
-            (#SearchFolder s.Num e.Folder);
+                (#SearchFolder s.Num e.Path);
 
-          ((e.Errors) (e.Bag)) t.OtherOption =
-            ((e.Errors) (e.Bag)) t.OtherOption;
-        })
-        {
-          ((e.Errors) (e.Bag)) e.Options =
-            (e.Errors) (e.Bag) e.Options;
-        }
-        {
-          (e.Errors) (e.Bag) e.Options =
-            (e.Errors)
-            <MapReduce
-              {
-                (e.Bag^ (e.Folders)) (#SearchFolder s.Num e.Folder) =
-                  (e.Bag (e.Folders (e.Folder)));
+            (t.Config e.Errors) (#TargetFileName s.Num e.FileName)
+              = <Update
+                  t.Config (e.Errors) Config-SetTargetFileName s.Num e.FileName
+                >;
 
-                (e.Bag^) (#FILE s.Num e.FileName) =
-                  (e.Bag) (s.Num e.FileName);
-              }
-              (e.Bag ())
-              e.Options
-            >;
-        }
-        {
-          () (e.Bag) e.FileNames = #Success e.Bag e.FileNames;
+            (t.Config e.Errors) (#TargetMode-Exe s.Num)
+              = <Update t.Config (e.Errors) Config-SetTargetMode s.Num #EXE>;
 
-          (e.Errors) (e.Bag) e.FileNames =
+            (t.Config e.Errors) (#TargetMode-Lib s.Num)
+              = <Update t.Config (e.Errors) Config-SetTargetMode s.Num #LIB>;
+
+            (t.Config e.Errors) (#TargetMode-R s.Num)
+              = <Update t.Config (e.Errors) Config-SetTargetMode s.Num #R>;
+
+            (t.Config e.Errors) (#TargetMode-C s.Num)
+              = <Update
+                  t.Config (e.Errors) Config-SetTargetMode s.Num #CompileOnly
+                >;
+
+            (t.Config e.Errors) (#TargetSuffix-Exe s.Num e.Suffix)
+              = <Update
+                  t.Config (e.Errors) Config-SetTargetSuffix s.Num #EXE e.Suffix
+                >;
+
+            (t.Config e.Errors) (#TargetSuffix-Lib s.Num e.Suffix)
+              = <Update
+                  t.Config (e.Errors) Config-SetTargetSuffix s.Num #LIB e.Suffix
+                >;
+
+            (t.Config e.Errors) (#ChmodXCommand s.Num e.Command)
+              = <Update
+                  t.Config (e.Errors) Config-SetChmodXCommand s.Num e.Command
+                >;
+
+            (t.Config e.Errors) (#Prelude s.Num e.Prelude)
+              = <Update t.Config (e.Errors) Config-SetPrelude s.Num e.Prelude>;
+
+            (t.Config e.Errors) t.Option
+              = (t.Config e.Errors) t.Option;
+          }
+        )
+        (MapReduce
+          {
+            (t.Config e.Errors) (#SearchFolder s.Num e.Folder)
+              = (<Config-SetSearchFolder t.Config e.Folder> e.Errors);
+
+            (t.Config e.Errors) (#FILE s.Num e.FileName)
+              = (t.Config e.Errors) (s.Num e.FileName);
+          }
+        )
+        {
+          (t.Config /* нет ошибок */) e.FileNames =
+            #Success t.Config e.FileNames;
+
+          (t.Config e.Errors) e.FileNames =
             #Fails
             <Map
               {
@@ -211,46 +189,38 @@ $ENTRY ParseCommandLine {
                 // У нас все опции с параметрами, не должно возникать
                 // (s.Pos #UnexpectedLongOptionParam (e.Option) e.Param) =
 
-                (s.Pos #RepeatOption s.Tag) =
-                  (
-                    s.Pos
-                    'option '
-                    <Fetch
-                      s.Tag {
-                        #CppCompiler = '-c or --cpp-command';
-                        #GenMode = '--gen';
-                        #Opt = '-O';
-                        #ErrorFile = '-e or --error-file';
-                      }
-                    >
-                    ' must appear one time'
-                  );
-
-                (s.Pos #BadValue-GenMode e.BadValue) =
-                  (
-                    s.Pos
-                    'option --gen expects ''both'', ''direct'' or ''interp'', '
-                    'but got ''' e.BadValue ''
-                  );
-
                 (s.Pos #BadValue-Opt e.BadValue) =
                   (
                     s.Pos
-                    'option -O expects ''P'', ''R'' or both, '
-                    'but got ''' e.BadValue ''
+                    'option -O expects ''P'', ''R'', ''d'' or '
+                    'it''s combination, but got ''' e.BadValue ''
                   );
 
-                (s.Pos #FlagsForNoCompiler) =
-                  (
-                    s.Pos
-                    'options ''--cppflag'' (''-f'') and ''--cppflags'' '
-                    '(''-C'', ''-F'') must be appear only with option '
-                    '''--cppcommand'' (''-c'')'
-                  );
+                (s.Pos #EmptyErrorFileName)
+                  = (s.Pos 'option --error-file expects non-empty argument');
+
+                (s.Pos #TargetModeAlreadySet)
+                  = (s.Pos
+                      'options --makeexe (-x), --makelib (-l) and -R '
+                      'must appear one time'
+                    );
               }
               e.Errors
             >;
         }
       >
     >;
+}
+
+Update {
+  t.Config (e.Errors) s.Updater s.LineNum e.Option
+    = <Fetch
+        <s.Updater t.Config e.Option>
+        {
+          #Success t.Config^ = (t.Config e.Errors);
+
+          #Fails e.ErrorMessage
+            = (t.Config e.Errors (s.LineNum e.ErrorMessage));
+        }
+      >;
 }

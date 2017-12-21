@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!DOCTYPE hrc PUBLIC "-//Cail Lomecb//DTD Colorer HRC take5//EN"
+  "http://colorer.sf.net/2003/hrc.dtd">
+<hrc version="take5" xmlns="http://colorer.sf.net/2003/hrc"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://colorer.sf.net/2003/hrc http://colorer.sf.net/2003/hrc.xsd">
+  <type name="Refal5Lambda">
+    <import type="def"/>
+
+    <region name="refal5LambdaComment" parent="def:Comment"/>
+    <region name="refal5LambdaCommentContent" parent="def:CommentContent"/>
+    <region name="refal5LambdaOpenStruct" parent="PairStart"/>
+    <region name="refal5LambdaCloseStruct" parent="PairEnd"/>
+
+    <region name="refal5LambdaCharacter" parent="def:Character"/>
+    <region name="refal5LambdaString" parent="def:String"/>
+    <region name="refal5LambdaStringEscape" parent="def:StringContent"/>
+
+    <region name="refal5LambdaLineComment" parent="def:LineComment"/>
+
+    <region name="refal5LambdaSymbol" parent="def:SymbolStrong"/>
+
+    <region name="refal5LambdaDirective" parent="def:Directive"/>
+
+    <region name="refal5LambdaVariable" parent="def:Function"/>
+    <region name="refal5LambdaFunction" parent="def:Keyword"/>
+
+    <scheme name="refal5LambdaSymbolsCore">
+      <regexp match='/\\[nrt\\&apos;"&lt;&gt;()]/' region0="refal5LambdaStringEscape"/>
+      <regexp match='/\\x[\da-fA-F]{2}/' region0="refal5LambdaStringEscape"/>
+      <regexp match="/\\./" region0="def:Error"/>
+      <regexp match="/[^\\\']$/" region0="def:Error"/>
+    </scheme>
+
+    <scheme name="refal5LambdaStringCore">
+      <regexp match='/\\[nrt\\&apos;"&lt;&gt;()]/' region0="refal5LambdaStringEscape"/>
+      <regexp match='/\\x[\da-fA-F]{2}/' region0="refal5LambdaStringEscape"/>
+      <regexp match="/\\./" region0="def:Error"/>
+      <regexp match="/[^\\\']$/" region0="def:Error"/>
+    </scheme>
+
+    <scheme name="Refal5Lambda">
+      <inherit scheme="CString"/>
+      <inherit scheme="DecNumber"/>
+      <inherit scheme="PairedBrackets">
+        <virtual scheme="PairedBrackets" subst-scheme="Refal5Lambda"/>
+      </inherit>
+
+      <!-- угловые скобки -->
+      <block start="/(&lt;)/" end="/(&gt;)/" scheme="Refal5Lambda"
+             region00="refal5LambdaSymbol" region01="refal5LambdaOpenStruct"
+             region10="refal5LambdaSymbol" region11="refal5LambdaCloseStruct"/>
+
+      <block start="/\/\*\*/" end="/\*\//" scheme="Comment"
+             region="refal5LambdaCommentContent"
+             region00="refal5LambdaOpenStruct"
+             region10="refal5LambdaCloseStruct"/>
+      <block start="/^\*\$/" end="/$/" scheme="Comment"
+             region="refal5LambdaCommentContent"
+             region00="refal5LambdaOpenStruct"
+             region10="refal5LambdaCloseStruct"/>
+      <block start="/\/\*/" end="/\*\//" scheme="Comment"
+             region="refal5LambdaComment"
+             region00="refal5LambdaOpenStruct"
+             region10="refal5LambdaCloseStruct"/>
+      <block start="/^\*/" end="/$/" scheme="Comment"
+             region="refal5LambdaComment"
+             region00="refal5LambdaOpenStruct"
+             region10="refal5LambdaCloseStruct"/>
+      <keywords region="refal5LambdaDirective">
+        <word name="$ENTRY"/>
+        <word name="$EXTERN"/>
+        <word name="$EXTRN"/>
+        <word name="$EXTERNAL"/>
+        <word name="$EASTEREGG"/>
+      </keywords>
+      <keywords region="refal5LambdaSymbol">
+        <symb name="="/>
+        <symb name=","/>
+        <symb name=":"/>
+        <symb name=";"/>
+      </keywords>
+      <regexp match='/\$\w*/' region0="def:Error"/>
+      <keywords region="def:Error">
+        <symb name="["/><symb name="]"/>
+        <symb name="{"/><symb name="}"/>
+        <symb name="("/><symb name=")"/>
+        <symb name='&lt;'/><symb name="&gt;"/>
+        <symb name="*/"/>
+      </keywords>
+
+      <regexp match='/\b[ste]\.[\w_\-\d]+\M(\W|$)/'
+              region0="refal5LambdaVariable"/>
+      <regexp match='/\b*[A-Za-z_][\w_\-\d]*\M(\W|$)/'
+              region0="refal5LambdaFunction"/>
+
+      <block start="/'/" end="/'|$/"
+             scheme="refal5LambdaSymbolsCore" region="refal5LambdaString"/>
+      <block start='/"/' end='/"|$/'
+             scheme="refal5LambdaStringCore" region="refal5LambdaString"/>
+      <regexp match='/\\[nrt\\&apos;"&lt;&gt;()]/' region0="refal5LambdaString"/>
+      <regexp match='/\\[xX][\da-fA-F]{2}/' region0="refal5LambdaString"/>
+      <regexp match="/\\./" region0="def:Error"/>
+    </scheme>
+  </type>
+</hrc>

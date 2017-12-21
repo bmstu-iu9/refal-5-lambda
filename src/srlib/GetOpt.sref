@@ -44,12 +44,12 @@
   Все аргументы, указанные после --, являются файлами.
 */
 $ENTRY GetOpt {
-  (e.Description) e.Arguments =
-    <FoldErrors
-      <ResolveOpts
-        (e.Description) <MarkupArguments 1 e.Arguments>
-      >
-    >;
+  (e.Description) e.Arguments
+    = <FoldErrors
+        <ResolveOpts
+          (e.Description) <MarkupArguments 1 e.Arguments>
+        >
+      >;
 }
 
 //FROM Library
@@ -58,72 +58,72 @@ $EXTERN Add;
 Inc { s.Num = <Add s.Num 1>; }
 
 MarkupArguments {
-  s.Num ('--') e.Tail =
-    <MarkupAllFiles <Inc s.Num> e.Tail>;
+  s.Num ('--') e.Tail
+    = <MarkupAllFiles <Inc s.Num> e.Tail>;
 
-  s.Num ('--' e.Arg '=' e.Param) e.Tail =
-    (#Long-Param s.Num (e.Arg) e.Param) <MarkupArguments <Inc s.Num> e.Tail>;
+  s.Num ('--' e.Arg '=' e.Param) e.Tail
+    = (#Long-Param s.Num (e.Arg) e.Param) <MarkupArguments <Inc s.Num> e.Tail>;
 
-  s.Num ('--' e.Arg) e.Tail =
-    (#Long s.Num e.Arg) <MarkupArguments <Inc s.Num> e.Tail>;
+  s.Num ('--' e.Arg) e.Tail
+    = (#Long s.Num e.Arg) <MarkupArguments <Inc s.Num> e.Tail>;
 
-  s.Num ('-' s.Init e.Arg) e.Tail =
-    (#Short s.Num s.Init e.Arg) <MarkupArguments <Inc s.Num> e.Tail>;
+  s.Num ('-' s.Init e.Arg) e.Tail
+    = (#Short s.Num s.Init e.Arg) <MarkupArguments <Inc s.Num> e.Tail>;
 
-  s.Num (e.Arg) e.Tail =
-    (#Word s.Num e.Arg) <MarkupArguments <Inc s.Num> e.Tail>;
+  s.Num (e.Arg) e.Tail
+    = (#Word s.Num e.Arg) <MarkupArguments <Inc s.Num> e.Tail>;
 
   s.Num /* пусто */ = /* пусто */;
 }
 
 MarkupAllFiles {
-  s.Num (e.Arg) e.Tail =
-    (#Word s.Num e.Arg) <MarkupAllFiles <Inc s.Num> e.Tail>;
+  s.Num (e.Arg) e.Tail
+    = (#Word s.Num e.Arg) <MarkupAllFiles <Inc s.Num> e.Tail>;
 
   s.Num /* пусто */ = /* пусто */;
 }
 
 ResolveOpts {
   (e.Descrs-B (s.Tag s.HasArg e.Opts-B (e.Long) e.Opts-E) e.Descrs-E)
-  (#Long-Param s.Num (e.Long) e.Param) e.ArgsTail =
-    <ResolveOpts-LongParam
-      (e.Descrs-B (s.Tag s.HasArg e.Opts-B (e.Long) e.Opts-E) e.Descrs-E)
-      s.Num s.Tag s.HasArg (e.Long) (e.Param) e.ArgsTail
-    >;
+  (#Long-Param s.Num (e.Long) e.Param) e.ArgsTail
+    = <ResolveOpts-LongParam
+        (e.Descrs-B (s.Tag s.HasArg e.Opts-B (e.Long) e.Opts-E) e.Descrs-E)
+        s.Num s.Tag s.HasArg (e.Long) (e.Param) e.ArgsTail
+      >;
 
-  (e.Description) (#Long-Param s.Num (e.Long) e.Param) e.ArgsTail =
-    (Error s.Num #UnknownLongOption e.Long)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (e.Description) (#Long-Param s.Num (e.Long) e.Param) e.ArgsTail
+    = (Error s.Num #UnknownLongOption e.Long)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 
   (e.Descrs-B (s.Tag s.HasArg e.Opts-B (e.Long) e.Opts-E) e.Descrs-E)
-  (#Long s.Num e.Long) e.ArgsTail =
-    <ResolveOpts-Long
-      (e.Descrs-B (s.Tag s.HasArg e.Opts-B (e.Long) e.Opts-E) e.Descrs-E)
-      s.Num s.Tag s.HasArg (e.Long) e.ArgsTail
-    >;
+  (#Long s.Num e.Long) e.ArgsTail
+    = <ResolveOpts-Long
+        (e.Descrs-B (s.Tag s.HasArg e.Opts-B (e.Long) e.Opts-E) e.Descrs-E)
+        s.Num s.Tag s.HasArg (e.Long) e.ArgsTail
+      >;
 
-  (e.Description) (#Long s.Num e.Long) e.ArgsTail =
-    (Error s.Num #UnknownLongOption e.Long)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (e.Description) (#Long s.Num e.Long) e.ArgsTail
+    = (Error s.Num #UnknownLongOption e.Long)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 
   (e.Descrs-B (s.Tag s.HasArg e.Opts-B s.Short e.Opts-E) e.Descrs-E)
-  (#Short s.Num s.Short e.OptTail) e.ArgsTail =
-    <ResolveOpts-Short
-      (e.Descrs-B (s.Tag s.HasArg e.Opts-B s.Short e.Opts-E) e.Descrs-E)
-      s.Num s.Tag s.HasArg s.Short (e.OptTail) e.ArgsTail
-    >;
+  (#Short s.Num s.Short e.OptTail) e.ArgsTail
+    = <ResolveOpts-Short
+        (e.Descrs-B (s.Tag s.HasArg e.Opts-B s.Short e.Opts-E) e.Descrs-E)
+        s.Num s.Tag s.HasArg s.Short (e.OptTail) e.ArgsTail
+      >;
 
-  (e.Description) (#Short s.Num s.Short) e.ArgsTail =
-    (Error s.Num #UnknownShortOption s.Short)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (e.Description) (#Short s.Num s.Short) e.ArgsTail
+    = (Error s.Num #UnknownShortOption s.Short)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 
-  (e.Description) (#Short s.Num s.Short e.OptTail) e.ArgsTail =
-    (Error s.Num #UnknownShortOption s.Short)
-    <ResolveOpts (e.Description) (#Short s.Num e.OptTail) e.ArgsTail>;
+  (e.Description) (#Short s.Num s.Short e.OptTail) e.ArgsTail
+    = (Error s.Num #UnknownShortOption s.Short)
+      <ResolveOpts (e.Description) (#Short s.Num e.OptTail) e.ArgsTail>;
 
-  (e.Description) (#Word s.Num e.File) e.ArgsTail =
-    (#FILE s.Num e.File)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (e.Description) (#Word s.Num e.File) e.ArgsTail
+    = (#FILE s.Num e.File)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 
   (e.Description) /* пусто */ = /* пусто */;
 }
@@ -131,77 +131,77 @@ ResolveOpts {
 $ENUM Error;
 
 ResolveOpts-LongParam {
-  (e.Description) s.Num s.Tag #Required (e.Long) (e.Param) e.ArgsTail =
-    (s.Tag s.Num e.Param)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (e.Description) s.Num s.Tag #Required (e.Long) (e.Param) e.ArgsTail
+    = (s.Tag s.Num e.Param)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 
-  (e.Description) s.Num s.Tag #Optional (e.Long) (e.Param) e.ArgsTail =
-    (s.Tag s.Num e.Param)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (e.Description) s.Num s.Tag #Optional (e.Long) (e.Param) e.ArgsTail
+    = (s.Tag s.Num e.Param)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 
-  (e.Description) s.Num s.Tag #None (e.Long) (e.Param) e.ArgsTail =
-    (Error s.Num #UnexpectedLongOptionParam ('--' e.Long) e.Param)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (e.Description) s.Num s.Tag #None (e.Long) (e.Param) e.ArgsTail
+    = (Error s.Num #UnexpectedLongOptionParam ('--' e.Long) e.Param)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 }
 
 ResolveOpts-Long {
   (e.Description) s.Num s.Tag #Required (e.Long)
-  (#Word s.WordNum e.Param) e.ArgsTail =
-    (s.Tag s.Num e.Param)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (#Word s.WordNum e.Param) e.ArgsTail
+    = (s.Tag s.Num e.Param)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 
-  (e.Description) s.Num s.Tag #Required (e.Long) e.ArgsTail =
-    (Error s.Num #NoRequiredParam '--' e.Long)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (e.Description) s.Num s.Tag #Required (e.Long) e.ArgsTail
+    = (Error s.Num #NoRequiredParam '--' e.Long)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 
   (e.Description) s.Num s.Tag #Optional (e.Long)
-  (#Word s.WordNum e.Param) e.ArgsTail =
-    (s.Tag s.Num e.Param)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (#Word s.WordNum e.Param) e.ArgsTail
+    = (s.Tag s.Num e.Param)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 
-  (e.Description) s.Num s.Tag #Optional (e.Long) e.ArgsTail =
-    (s.Tag s.Num #NoParam)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (e.Description) s.Num s.Tag #Optional (e.Long) e.ArgsTail
+    = (s.Tag s.Num #NoParam)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 
-  (e.Description) s.Num s.Tag #None (e.Long) e.ArgsTail =
-    (s.Tag s.Num)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (e.Description) s.Num s.Tag #None (e.Long) e.ArgsTail
+    = (s.Tag s.Num)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 }
 
 ResolveOpts-Short {
   (e.Description) s.Num s.Tag #Required s.Short ()
-  (#Word s.WordNum e.Param) e.ArgsTail =
-    (s.Tag s.Num e.Param)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (#Word s.WordNum e.Param) e.ArgsTail
+    = (s.Tag s.Num e.Param)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 
-  (e.Description) s.Num s.Tag #Required s.Short () e.ArgsTail =
-    (Error s.Num #NoRequiredParam '-' s.Short)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (e.Description) s.Num s.Tag #Required s.Short () e.ArgsTail
+    = (Error s.Num #NoRequiredParam '-' s.Short)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 
-  (e.Description) s.Num s.Tag #Required s.Short (e.Param) e.ArgsTail =
-    (s.Tag s.Num e.Param)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (e.Description) s.Num s.Tag #Required s.Short (e.Param) e.ArgsTail
+    = (s.Tag s.Num e.Param)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 
   (e.Description) s.Num s.Tag #Optional s.Short ()
-  (#Word s.WordNum e.Param) e.ArgsTail =
-    (s.Tag s.Num e.Param)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (#Word s.WordNum e.Param) e.ArgsTail
+    = (s.Tag s.Num e.Param)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 
-  (e.Description) s.Num s.Tag #Optional s.Short () e.ArgsTail =
-    (s.Tag s.Num #NoParam)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (e.Description) s.Num s.Tag #Optional s.Short () e.ArgsTail
+    = (s.Tag s.Num #NoParam)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 
-  (e.Description) s.Num s.Tag #Optional s.Short (e.Param) e.ArgsTail =
-    (s.Tag s.Num e.Param)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (e.Description) s.Num s.Tag #Optional s.Short (e.Param) e.ArgsTail
+    = (s.Tag s.Num e.Param)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 
-  (e.Description) s.Num s.Tag #None s.Short () e.ArgsTail =
-    (s.Tag s.Num)
-    <ResolveOpts (e.Description) e.ArgsTail>;
+  (e.Description) s.Num s.Tag #None s.Short () e.ArgsTail
+    = (s.Tag s.Num)
+      <ResolveOpts (e.Description) e.ArgsTail>;
 
-  (e.Description) s.Num s.Tag #None s.Short (e.OptTail) e.ArgsTail =
-    (s.Tag s.Num)
-    <ResolveOpts (e.Description) (#Short s.Num e.OptTail) e.ArgsTail>;
+  (e.Description) s.Num s.Tag #None s.Short (e.OptTail) e.ArgsTail
+    = (s.Tag s.Num)
+      <ResolveOpts (e.Description) (#Short s.Num e.OptTail) e.ArgsTail>;
 }
 
 FoldErrors {
@@ -209,10 +209,10 @@ FoldErrors {
 }
 
 DoFoldErrors {
-  (e.Errors) e.Options (Error s.Num s.ErrorCode e.Info) e.OptionsAndErrors =
-    <DoFoldErrors
-      (e.Errors (s.Num s.ErrorCode e.Info)) e.Options e.OptionsAndErrors
-    >;
+  (e.Errors) e.Options (Error s.Num s.ErrorCode e.Info) e.OptionsAndErrors
+    = <DoFoldErrors
+        (e.Errors (s.Num s.ErrorCode e.Info)) e.Options e.OptionsAndErrors
+      >;
 
   (e.Errors) e.Options = (e.Errors) e.Options;
 }

@@ -6,11 +6,26 @@ EQ { '=' = ; }
 GT { '>' = ; }
 
 $ENTRY Go {
-  = <CompareTypes <FOpen 'r' '2lines.txt'>>;
+  = <CompareTypes <MakeHandle>>;
+}
+
+MakeHandle {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  arg_begin->tag = refalrts::cDataFile;
+  arg_begin->file_info = 0;
+
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  return refalrts::cSuccess;
+%%
 }
 
 CompareTypes {
-  s.FileHandle =
+  s.Handle =
     <LT <SymbCompare 42 666>>
     <EQ <SymbCompare 42 42>>
     <GT <SymbCompare 666 42>>
@@ -29,17 +44,15 @@ CompareTypes {
     <GT <SymbCompare #ZZ #ZA>>
 
     // ради простоты теста сравниваем только равенство
-    <EQ <SymbCompare s.FileHandle s.FileHandle>>
+    <EQ <SymbCompare s.Handle s.Handle>>
 
     <GT <SymbCompare 1 'a'>>
     <GT <SymbCompare 'a' Go>>
     <GT <SymbCompare Go #Name>>
-    <GT <SymbCompare #Name s.FileHandle>>
+    <GT <SymbCompare #Name s.Handle>>
 
-    <LT <SymbCompare s.FileHandle #Name>>
+    <LT <SymbCompare s.Handle #Name>>
     <LT <SymbCompare #Name Go>>
     <LT <SymbCompare Go 'a'>>
-    <LT <SymbCompare 'a' 1>>
-
-    <FClose s.FileHandle>;
+    <LT <SymbCompare 'a' 1>>;
 }

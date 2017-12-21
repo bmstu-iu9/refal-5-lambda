@@ -1,0 +1,8 @@
+$ENTRY External-1 {
+  s.X s.Y = <+ <* 100 s.X> s.Y>;
+}
+
+$ENTRY External-2 {
+  s.X e.Y s.Z = s.Z <External-2 e.Y> s.X;
+  e.X = e.X;
+}

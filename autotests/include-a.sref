@@ -1,0 +1,6 @@
+$INCLUDE "include-simple-1.srefi";
+$INCLUDE "include-simple-2";
+
+$ENTRY Go {
+  = <F> <G>;
+}

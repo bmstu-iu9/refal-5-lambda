@@ -6,12 +6,15 @@ setlocal
     set SREFC_FLAGS_PLUS=--markup-context --debug-info
     set SRMAKE_FLAGS_PLUS= ^
       -X--markup-context -X--debug-info ^
-      -X-C-DMEMORY_LIMIT=2500000 ^
-      -X-C-DSTEP_LIMIT=30000000 ^
-      -X-C-DENABLE_DEBUGGER
+      -X-F-DMEMORY_LIMIT=2500000 ^
+      -X-F-DSTEP_LIMIT=50000000 ^
+      -X-F-DIDENTS_LIMIT=1000 ^
+      -X-F-DENABLE_DEBUGGER
+    set DEFAULT_SCRIPT_FLAGS=--rich
   ) else (
-    set SREFC_FLAGS_PLUS=-OPR
-    set SRMAKE_FLAGS_PLUS=-X-OPR
+    set SREFC_FLAGS_PLUS=-OdPR
+    set SRMAKE_FLAGS_PLUS=-X-OdPR
+    set DEFAULT_SCRIPT_FLAGS=--scratch
   )
 
   set SREFC_FLAGS=%SREFC_FLAGS% %SREFC_FLAGS_PLUS%
@@ -21,9 +24,10 @@ setlocal
 
   if not exist ..\bin\nul mkdir ..\bin
   call :MAKE_SUBDIR scripts install-scripts.bat
+  call :MAKE_SUBDIR rasl-constants make.bat
   call :MAKE_SUBDIR compiler makeself-s.bat
   call :MAKE_SUBDIR lexgen makeself-s.bat
-  copy ..\distrib\bin\srmake-core.exe ..\bin
+  call :MAKE_SUBDIR srmake make-s.bat
   call :MAKE_SUBDIR srlib make.bat
   call :MAKE_SUBDIR srmake make.bat
   call :MAKE_SUBDIR lexgen makeself.bat
@@ -40,15 +44,21 @@ setlocal
   if {%PATH_TO_SREFC%}=={} (
     set PATH_TO_SREFC=..\..
   )
+  if {%SCRIPT_FLAGS%}=={} (
+    set SCRIPT_FLAGS=%DEFAULT_SCRIPT_FLAGS%
+  )
   if not exist ..\..\build\%DIR%\nul mkdir ..\..\build\%DIR%
-  call %PATH_TO_SREFC%\bin\srmake -d ..\common %MAINSRC%
-  if exist a.exe move a.exe ..\..\bin\%TARGET%.exe
-  if exist %MAINSRC%.exe move %MAINSRC%.exe ..\..\bin\%TARGET%.exe
+  if exist ..\..\build\%DIR%\*.* erase /Q ..\..\build\%DIR%\*.*
+  call %PATH_TO_SREFC%\bin\srmake %SCRIPT_FLAGS% -d ../common %MAINSRC% -o %TARGET%.exe
+  move %TARGET%.exe ..\..\bin
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
-  move *.cpp ..\..\build\%DIR% >NUL
-  move ..\common\*.cpp ..\..\build\%DIR% >NUL
-  copy %PATH_TO_SREFC%\srlib\*.cpp ..\..\build\%DIR% >NUL
+  move *.rasl ..\..\build\%DIR% >NUL
+  if exist *.cpp move *.cpp ..\..\build\%DIR% >NUL
+  if exist ..\common\*.rasl move ..\common\*.rasl ..\..\build\%DIR% >NUL
+  if exist ..\common\*.cpp move ..\common\*.cpp ..\..\build\%DIR% >NUL
+  copy %PATH_TO_SREFC%\srlib\scratch\*.rasl ..\..\build\%DIR% >NUL
+  copy %PATH_TO_SREFC%\srlib\scratch\*.cpp ..\..\build\%DIR% >NUL
 
 :END
 endlocal
