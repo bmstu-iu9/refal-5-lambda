@@ -42,21 +42,13 @@ $ENTRY MapReduce {
 }
 
 DoMapReduce {
-  t.Fn t.Acc (e.Scanned) t.Next e.Tail =
-    <DoMapReduce
-      t.Fn
-      <MapReduce-AddScanned
-        <Apply t.Fn t.Acc t.Next> (e.Scanned)
-      >
-      e.Tail
-    >;
+  t.Fn t.Acc (e.Scanned) t.Next e.Tail
+    = <Apply t.Fn t.Acc t.Next> : t.Acc^ e.StepScanned
+    = <DoMapReduce
+        t.Fn t.Acc (e.Scanned e.StepScanned) e.Tail
+      >;
 
   t.Fn t.Acc (e.Scanned) = t.Acc e.Scanned;
-}
-
-MapReduce-AddScanned {
-  t.Acc e.StepScanned (e.Scanned) =
-    t.Acc (e.Scanned e.StepScanned);
 }
 
 $ENTRY UnBracket {
@@ -100,7 +92,9 @@ SaveFile-Handle {
   s.FileHandle e.Lines =
     <FClose
       <Reduce
-        WriteBracketLine
+        {
+          s.FileHandle^ (e.Line) = <FWriteLine s.FileHandle e.Line>;
+        }
         s.FileHandle
         e.Lines
       >
@@ -115,14 +109,12 @@ $ENTRY LoadBytes {
 }
 
 DoLoadBytes {
-  s.FileHandle =
-    <Fetch
-      <FReadBytes s.FileHandle 4096>
-      {
+  s.FileHandle
+    = <FReadBytes s.FileHandle 4096>
+    : {
         /* пусто */ = <FClose s.FileHandle>;
         e.Bytes = e.Bytes <DoLoadBytes s.FileHandle>;
-      }
-    >;
+      };
 }
 
 $ENTRY SaveBytes {
@@ -141,10 +133,6 @@ SaveBytes-Handle {
     <FClose s.FileHandle>;
 }
 
-WriteBracketLine {
-  t.File (e.Line) = <FWriteLine t.File e.Line>;
-}
-
 $ENTRY Inc {
   s.Num = <Add s.Num 1>;
 }
@@ -153,15 +141,8 @@ $ENTRY Dec {
   s.Num = <Sub s.Num 1>;
 }
 
-FastIntFromStr-Guard {
-  #Success s.Number = s.Number;
-}
-
 $ENTRY FastIntFromStr {
-  e.Digits =
-    <FastIntFromStr-Guard
-      <IntFromStr e.Digits>
-    >;
+  e.Digits = <IntFromStr e.Digits> : #Success s.Number = s.Number;
 }
 
 $ENTRY ArgList {
@@ -299,56 +280,42 @@ $ENTRY Seq { e.Funcs = <Pipe e.Funcs>; }
 $ENTRY Sort {
   /* пусто */ = /* пусто */;
 
-  t.Pivot e.Items =
-    <Fetch
-      e.Items
-      <Pipe
-        (Reduce
-          {
-            ((e.Less) (e.Equal) (e.Greater)) t.Next =
-              <Fetch
-                <TermCompare t.Next t.Pivot>
-                {
-                  '<' = ((e.Less t.Next) (e.Equal) (e.Greater));
-                  '=' = ((e.Less) (e.Equal t.Next) (e.Greater));
-                  '>' = ((e.Less) (e.Equal) (e.Greater t.Next));
-                }
-              >;
-          }
-          ( (/* less */) (t.Pivot /* equal */) (/* greater */) )
-        )
+  t.Pivot e.Items
+    = <Reduce
         {
-          ((e.Less) (e.Equal) (e.Greater)) =
-            <Sort e.Less> e.Equal <Sort e.Greater>;
+          ((e.Less) (e.Equal) (e.Greater)) t.Next
+            = <TermCompare t.Next t.Pivot>
+            : {
+                '<' = ((e.Less t.Next) (e.Equal) (e.Greater));
+                '=' = ((e.Less) (e.Equal t.Next) (e.Greater));
+                '>' = ((e.Less) (e.Equal) (e.Greater t.Next));
+              };
         }
+        ( (/* less */) (t.Pivot /* equal */) (/* greater */) )
+        e.Items
       >
-    >;
+    : ((e.Less) (e.Equal) (e.Greater))
+    = <Sort e.Less> e.Equal <Sort e.Greater>;
 }
 
 $ENTRY Min {
-  t.X t.Y =
-    <Fetch
-      <TermCompare t.X t.Y>
-      {
+  t.X t.Y
+    = <TermCompare t.X t.Y>
+    : {
         '<' = t.X;
         s.Other = t.Y;
-      }
-    >;
+      };
 
-  t.First e.Tail =
-    <Reduce Min t.First e.Tail>;
+  t.First e.Tail = <Reduce Min t.First e.Tail>;
 }
 
 $ENTRY Max {
-  t.X t.Y =
-    <Fetch
-      <TermCompare t.X t.Y>
-      {
+  t.X t.Y
+    = <TermCompare t.X t.Y>
+    : {
         '>' = t.X;
         s.Other = t.Y;
-      }
-    >;
+      };
 
-  t.First e.Tail =
-    <Reduce Max t.First e.Tail>;
+  t.First e.Tail = <Reduce Max t.First e.Tail>;
 }
