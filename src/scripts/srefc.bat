@@ -24,8 +24,10 @@ setlocal
 
 :MODE_RICH
   set ARGS=%ARGS:* =%
+:MODE_DEFAULT
   set D=-d "%LIBDIR%\rich"
   set PREFIX=--prefix=rich
+  set CPP=
   goto END_SWITCH
 
 :MODE_SLIM
@@ -35,9 +37,9 @@ setlocal
 
 :MODE_SCRATCH
   set ARGS=%ARGS:* =%
-:MODE_DEFAULT
   set D=-D "%LIBDIR%\scratch\platform-Windows" -D "%LIBDIR%\scratch"
   set PREFIX=
+  set CPP=--cpp-command-exe="%CPPLINEE%" --cpp-command-lib="%CPPLINEL%"
   goto END_SWITCH
 
 :END_SWITCH
@@ -45,8 +47,7 @@ setlocal
   set PATH=%BINDIR%;%PATH%
   srefc-core ^
     %SREFC_FLAGS% ^
-    --cpp-command-exe="%CPPLINEE%" --exesuffix=.exe ^
-    --cpp-command-lib="%CPPLINEL%" --libsuffix=.dll ^
+    --exesuffix=.exe --libsuffix=.dll %CPP% ^
     --cppflags="%CPPLINE_FLAGS%" --chmod-x-command= ^
     -d "%LIBDIR%\common" --prelude=refal5-builtins.srefi ^
     %PREFIX% %D% %ARGS%

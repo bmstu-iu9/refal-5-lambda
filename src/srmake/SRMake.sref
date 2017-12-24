@@ -92,8 +92,10 @@ RunSrefCompiler {
 
   t.Config e.Units
     = <Config-GetSrefCompiler t.Config> : e.SrefCompiler
-    = <Config-GetCppCompilerExe t.Config> : e.CppCompilerExe
-    = <Config-GetCppCompilerLib t.Config> : e.CppCompilerLib
+    = <MakeOptionalFlag Config-GetCppCompilerExe t.Config 'cpp-command-exe'>
+    : e.CppCompilerExe
+    = <MakeOptionalFlag Config-GetCppCompilerLib t.Config 'cpp-command-lib'>
+    : e.CppCompilerLib
     = <MakeTargetModeFlag t.Config> : e.TargetModeFlag
     = <MakeTargetFileFlag t.Config> : e.TargetFileFlag
     = <MakeSearchFolderFlags t.Config> : e.SearchFolderFlags
@@ -103,8 +105,8 @@ RunSrefCompiler {
     = <System
         e.SrefCompiler
         e.TargetModeFlag
-        ' --cpp-command-exe="' e.CppCompilerExe '"'
-        ' --cpp-command-lib="' e.CppCompilerLib '"'
+        e.CppCompilerExe
+        e.CppCompilerLib
         e.TargetFileFlag
         e.SearchFolderFlags
         ' --prefix="' e.Prefix '"'
@@ -128,6 +130,15 @@ RunSrefCompiler {
       /* TODO: уточнить после обновления System в стабильной версии */
     : e.RetCode
     = /* пусто */;
+}
+
+MakeOptionalFlag {
+  s.Getter t.Config e.LongOptionName
+    = <s.Getter t.Config>
+    : {
+        /* empty */ = /* empty */;
+        e.Value = ' --' e.LongOptionName '="' e.Value '"';
+      };
 }
 
 MakeTargetModeFlag {

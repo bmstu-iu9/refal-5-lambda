@@ -51,7 +51,7 @@ $ENTRY ParseCommandLine {
         e.Arguments
       >
       <Seq
-        (CheckRequiredOptions (#CppCompilerExe /* #CppCompilerLib */ #FILE))
+        (CheckRequiredOptions (#FILE))
         {
           (e.Errors) e.Options
             = (<Config-Create> e.Errors) e.Options;
@@ -153,9 +153,6 @@ $ENTRY ParseCommandLine {
 
                 (s.Pos #ManySourceFiles) =
                   (s.Pos 'many source files in command line');
-
-                (s.Pos #No #CppCompilerExe) =
-                  (s.Pos 'option -c or --cpp-command not found');
 
                 (s.Pos #No #FILE) =
                   (s.Pos 'expected source filename in command line');

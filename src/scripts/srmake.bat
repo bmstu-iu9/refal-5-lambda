@@ -24,7 +24,9 @@ setlocal
 
 :MODE_RICH
   set ARGS=%ARGS:* =%
+:MODE_DEFAULT
   set D=-d "%LIBDIR%\rich"
+  set CPP=
   goto END_SWITCH
 
 :MODE_SLIM
@@ -34,18 +36,17 @@ setlocal
 
 :MODE_SCRATCH
   set ARGS=%ARGS:* =%
-:MODE_DEFAULT
+  call "%DISTRDIR%\scripts\load-config.bat" || exit /b 1
   set D=-D "%LIBDIR%\scratch\platform-Windows" -D "%LIBDIR%\scratch"
+  set CPP=--cpp-command-exe="%CPPLINEE%" --cpp-command-lib="%CPPLINEL%"
   goto END_SWITCH
 
 :END_SWITCH
-  call "%DISTRDIR%\scripts\load-config.bat" || exit /b 1
   set PATH=%BINDIR%;%PATH%
   srmake-core ^
     -s srefc-core.exe ^
     %SRMAKE_FLAGS% ^
-    --cpp-command-exe="%CPPLINEE%" -X--exesuffix=.exe ^
-    --cpp-command-lib="%CPPLINEL%" -X--libsuffix=.dll ^
+    -X--exesuffix=.exe -X--libsuffix=.dll %CPP% ^
     --thru=--cppflags="%CPPLINE_FLAGS%" -X--chmod-x-command= ^
     -d "%LIBDIR%\common" --prelude=refal5-builtins.srefi ^
     %D% %ARGS%

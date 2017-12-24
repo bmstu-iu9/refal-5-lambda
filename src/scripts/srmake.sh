@@ -13,6 +13,7 @@ source "$DISTRDIR/scripts/platform-specific.sh"
 
 set_rich_flags() {
   D=(-d "$LIBDIR/rich")
+  CPP=()
 }
 
 set_slim_flags() {
@@ -20,15 +21,20 @@ set_slim_flags() {
 }
 
 set_scratch_flags() {
+  source "$DISTRDIR/scripts/load-config.sh" "$DISTRDIR" || exit 1
   D=(
     -D "$(platform_subdir_lookup "$LIBDIR/scratch")"
     -D "$LIBDIR/scratch/platform-POSIX"
     -D "$LIBDIR/scratch"
   )
+  CPP=(
+    --cpp-command-exe="$CPPLINEE"
+    --cpp-command-lib="$CPPLINEL"
+  )
 }
 
 set_default_flags() {
-  set_scratch_flags
+  set_rich_flags
 }
 
 # Запуск
@@ -54,13 +60,12 @@ set_default_flags() {
       ;;
   esac
 
-  source "$DISTRDIR/scripts/load-config.sh" "$DISTRDIR" || exit 1
   PATH=$BINDIR:$PATH
   srmake-core \
     -s "srefc-core" \
     $SRMAKE_FLAGS \
-    --cpp-command-exe="$CPPLINEE" -X--exesuffix=$(platform_exe_suffix) \
-    --cpp-command-lib="$CPPLINEL" -X--libsuffix=$(platform_lib_suffix) \
+    -X--exesuffix=$(platform_exe_suffix) -X--libsuffix=$(platform_lib_suffix) \
+    "${CPP[@]}" \
     --thru=--cppflags="$CPPLINE_FLAGS"  -X--chmod-x-command="chmod +x" \
     -d "$LIBDIR/common" --prelude=refal5-builtins.srefi \
     "${D[@]}" $*
