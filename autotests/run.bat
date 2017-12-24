@@ -109,8 +109,6 @@ setlocal
   call :%2 %1 || exit /b 1
   set SRFLAGS=-OdPR
   call :%2 %1 || exit /b 1
-  set SRFLAGS=-F-DENABLE_DEBUGGER
-  call :%2 %1 || exit /b 1
 endlocal
 goto :EOF
 

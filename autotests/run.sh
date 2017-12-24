@@ -34,7 +34,6 @@ run_test_all_modes() {
   SRFLAGS=-OdP $2 $1
   SRFLAGS=-OdR $2 $1
   SRFLAGS=-OdPR $2 $1
-  SRFLAGS=-F-DENABLE_DEBUGGER $2 $1
 }
 
 run_test_aux() {
