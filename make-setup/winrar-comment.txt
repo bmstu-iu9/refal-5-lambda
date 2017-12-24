@@ -3,7 +3,7 @@
 
 Path=%APPDATA%\Refal-5-lambda
 Setup=uninstall.vbs /install
-Title=Установка Рефала-5(лямбда)
+Title=Установка Рефала-5-лямбда
 Overwrite=1
 Text
 {
