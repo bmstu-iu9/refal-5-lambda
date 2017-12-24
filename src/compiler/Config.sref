@@ -153,6 +153,18 @@ $ENTRY Config-GetOptResult {
 }
 
 /**
+  <Config-GetConditionsMode t.Config>
+    == #Conditions-Native
+    == #Conditions-Transform
+*/
+$ENTRY Config-GetConditionsMode {
+  [Config e.Params-B (#Optimize e.Opt-B #OptConditions e.Opt-E) e.Params-E]
+    = #Conditions-Native;
+
+  [Config e.Params] = #Conditions-Transform;
+}
+
+/**
   <Config-SetOptFlags t.Config e.Flags>
     == #Success t.Config
     == #Fails #BadValue-Opt e.Letters
@@ -195,6 +207,9 @@ ParseOptLetters {
 
   (e.Scanned) 'd' e.Flags
     = <ParseOptLetters (<Flags-Unique e.Scanned #OptDirect>) e.Flags>;
+
+  (e.Scanned) 'C' e.Flags
+    = <ParseOptLetters (<Flags-Unique e.Scanned #OptConditions>) e.Flags>;
 
   (e.Scanned) /* пусто */ = #Success e.Scanned;
 

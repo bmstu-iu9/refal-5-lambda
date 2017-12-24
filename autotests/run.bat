@@ -86,10 +86,12 @@ setlocal
   find "%%" %1 > NUL
   if errorlevel 1 (
     call :PREPARE_PREFIX || exit /b 1
-    set SRFLAGS_PLUS=%SRFLAGS_PREF%
+    set SRFLAGS_PLUS_INIT=%SRFLAGS_PREF%
   ) else (
-    set SRFLAGS_PLUS=%SRFLAGS_NAT%
+    set SRFLAGS_PLUS_INIT=%SRFLAGS_NAT%
   )
+
+  set SRFLAGS_PLUS=%SRFLAGS_PLUS_INIT%
   set SRFLAGS=
   call :%2 %1 || exit /b 1
   set SRFLAGS=--markup-context
@@ -109,6 +111,32 @@ setlocal
   call :%2 %1 || exit /b 1
   set SRFLAGS=-OdPR
   call :%2 %1 || exit /b 1
+
+  find "CONDITIONS" %1 > NUL
+  if not errorlevel 1 (
+    echo Pass special conditions tests:
+    rem set SRFLAGS_PLUS=%SRFLAGS_PLUS_INIT%
+    rem set SRFLAGS=-OC
+    rem call :%2 %1 || exit /b 1
+    rem set SRFLAGS=-OC --markup-context
+    rem call :%2 %1 || exit /b 1
+    rem set SRFLAGS=-OCP
+    rem call :%2 %1 || exit /b 1
+    rem set SRFLAGS=-OCR
+    rem call :%2 %1 || exit /b 1
+    rem set SRFLAGS=-OCPR
+    rem call :%2 %1 || exit /b 1
+    rem set SRFLAGS_PLUS=%SRFLAGS_NAT%
+    rem set SRFLAGS=-OCd
+    rem call :%2 %1 || exit /b 1
+    rem set SRFLAGS=-OCdP
+    rem call :%2 %1 || exit /b 1
+    rem set SRFLAGS=-OCdR
+    rem call :%2 %1 || exit /b 1
+    rem set SRFLAGS=-OCdPR
+    rem call :%2 %1 || exit /b 1
+    echo Special conditions tests is passed
+  )
 endlocal
 goto :EOF
 

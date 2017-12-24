@@ -1,0 +1,13 @@
+// CONDITIONS
+
+$ENTRY Go {
+  = <Equal #A <Test 1>>
+    <Equal #B <Test 2>>;
+}
+
+Equal { s.X s.X = ; }
+
+Test {
+  s.X, 1 : s.X = #A;
+  s.X = #B;
+}

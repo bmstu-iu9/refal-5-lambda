@@ -20,10 +20,12 @@ prepare_prefix() {
 run_test_all_modes() {
   if ! grep '%%' $1 > /dev/null; then
     prepare_prefix
-    SRFLAGS_PLUS="$SRFLAGS_PREF"
+    SRFLAGS_PLUS_INIT="$SRFLAGS_PREF"
   else
-    SRFLAGS_PLUS="$SRFLAGS_NAT"
+    SRFLAGS_PLUS_INIT="$SRFLAGS_NAT"
   fi
+
+  SRFLAGS_PLUS="$SRFLAGS_PLUS_INIT"
   SRFLAGS= $2 $1
   SRFLAGS=--markup-context $2 $1
   SRFLAGS=-OP $2 $1
@@ -34,6 +36,22 @@ run_test_all_modes() {
   SRFLAGS=-OdP $2 $1
   SRFLAGS=-OdR $2 $1
   SRFLAGS=-OdPR $2 $1
+
+  if grep 'CONDITIONS' $1 > /dev/null; then
+    echo "Pass special conditions tests:"
+    #SRFLAGS_PLUS="$SRFLAGS_PLUS_INIT"
+    #SRFLAGS=-OC $2 $1
+    #SRFLAGS="-OC --markup-context" $2 $1
+    #SRFLAGS=-OCP $2 $1
+    #SRFLAGS=-OCR $2 $1
+    #SRFLAGS=-OCPR $2 $1
+    #SRFLAGS_PLUS="$SRFLAGS_NAT"
+    #SRFLAGS=-OCd $2 $1
+    #SRFLAGS=-OCdP $2 $1
+    #SRFLAGS=-OCdR $2 $1
+    #SRFLAGS=-OCdPR $2 $1
+    echo "Special conditions tests is passed"
+  fi
 }
 
 run_test_aux() {
