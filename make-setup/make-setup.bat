@@ -35,7 +35,7 @@ setlocal
     xcopy /e /i /y %%d %%~nxd
   )
 
-  set ARC=..\_setup\sources-%VERSION%.zip
+  set ARC=..\_setup\bootstrap-refal-5-lambda-%VERSION%.zip
   if not exist %ARC% erase %ARC%
   start /w winrar m -r -t -afzip %ARC% *
   popd
@@ -70,7 +70,7 @@ goto :EOF
 :MAKERAR
 setlocal
   set FLAGS=m -r -t -sfx -av -k -z..\winrar-comment.txt
-  set ARC=..\_setup\setup-%VERSION%.exe
+  set ARC=..\_setup\setup-refal-5-lambda-%VERSION%.exe
   if exist %ARC% erase %ARC%
   start /w winrar %FLAGS% %ARC% *
 endlocal
