@@ -28,7 +28,7 @@ Private Sub Install
   '   InstallDir & "\icon.ico", "REG_SZ"
   WshShell.RegWrite CUninstallKey & "\DisplayName", _
     "Refal-5(lambda)", "REG_SZ"
-  WshShell.RegWrite CUninstallKey & "\DisplayVersion", "1.7.3", "REG_SZ"
+  WshShell.RegWrite CUninstallKey & "\DisplayVersion", "1.7.4", "REG_SZ"
   ' WshShell.RegWrite CUninstallKey & "\EstimatedSize", 15000, "REG_DWORD"
   WshShell.RegWrite CUninstallKey & "\Publisher", "BMSTU IU-9", "REG_SZ"
   WshShell.RegWrite CUninstallKey & "\UninstallString", _
