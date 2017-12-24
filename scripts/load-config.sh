@@ -11,5 +11,5 @@ if [ -e $1/../c-plus-plus.conf.sh ]; then
 fi
 
 [ -n "$CPPLINEE" ] && return 0
-echo C++ compiler is not selected, please edit file c-plus-plus.conf.sh
+echo C++ compiler is not selected, please edit file $1/c-plus-plus.conf.sh
 return 1

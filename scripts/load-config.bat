@@ -11,5 +11,5 @@ if exist "%~dp0..\..\c-plus-plus.conf.bat" (
 )
 
 if not "%CPPLINEE%" == "" exit /b 0
-echo C++ compiler is not selected, please edit file c-plus-plus.conf.bat
+echo C++ compiler is not selected, please edit file %~dp0c-plus-plus.conf.bat
 exit /b 1
