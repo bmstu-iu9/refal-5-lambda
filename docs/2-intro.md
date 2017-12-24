@@ -89,7 +89,7 @@ matching). РЕФАЛ был одним из первых языков прог
 
 Самый простой способ — скачать со страницы
 
-https://github.com/bmstu-iu9/simple-refal/releases/latest
+<https://github.com/bmstu-iu9/simple-refal/releases/latest>
 
 файл `setup-refal-5-lambda-***.exe` и просто запустить его. В этом случае
 в профиль пользователя (в папку `%APPDATA%`) будет распакован архив с исполнимыми
@@ -105,7 +105,7 @@ https://github.com/bmstu-iu9/simple-refal/releases/latest
 
 ### Раскрутка «полускомпилированного» архива (Windows, Linux, macOS)
 
-С той же страницы https://github.com/bmstu-iu9/simple-refal/releases/latest
+С той же страницы <https://github.com/bmstu-iu9/simple-refal/releases/latest>
 можно скачать файл `bootstrap-refal-5-lambda-***.zip` и распаковать его
 в любой каталог. В архиве находится Рефал-5λ, скомпилированный в код на C++
 и связующий интерпретируемый код. Для получение из него готовых исполнимых
@@ -130,7 +130,7 @@ https://github.com/bmstu-iu9/simple-refal/releases/latest
 вызов GCC C++. При желании можете заменить его, например, на Clang.
 
 Содержимое этого «полускомпилированного» архива также доступно в виде хранилища
-на GitHub по адресу https://github.com/bmstu-iu9/simple-refal-distrib. Его
+на GitHub по адресу <https://github.com/bmstu-iu9/simple-refal-distrib>. Его
 можно склонировать при помощи команды
 
     git clone https://github.com/bmstu-iu9/simple-refal-distrib
@@ -182,12 +182,12 @@ Kate, Notepad++, Sublime Text 3) поддерживается только ра�
 Для Простого Рефала существует плагин для IDEA, обеспечивающий подсветку
 синтаксических ошибок, он доступен по ссылке:
 
-https://github.com/bmstu-iu9/simple-refal-plugin
+<https://github.com/bmstu-iu9/simple-refal-plugin>
 
 Однако, он не поддерживает присваивания, условия и блоки.
 
 Существует поддержка классического РЕФАЛа-5 для текстового редактора SciTE,
-она доступна по ссылке http://www.refal.net/~belous/refscite.htm.
+она доступна по ссылке <http://www.refal.net/~belous/refscite.htm>.
 
 ### Компиляция простой программы
 
@@ -229,19 +229,19 @@ https://github.com/bmstu-iu9/simple-refal-plugin
 # Ссылки
 1. В. Ф. Турчин. Метаалгоритмический язык. Кибернетика №4, 1968, Cтр. 45-54.
    Доступно в Интернете:
-   http://pat.keldysh.ru/~roman/doc/Turchin/1968-Turchin--Metaalgoritmicheskij_yazyk--ru.pdf
+   <http://pat.keldysh.ru/~roman/doc/Turchin/1968-Turchin--Metaalgoritmicheskij_yazyk--ru.pdf>
 2. V. F. Turchin, REFAL-5 programming guide and reference manual, New England
    Publishing Co., Holyoke, 1989
    В интернете доступен перевод на русский язык (описывается устаревший
-   синтаксис): http://refal.ru/rf5_frm.htm, также доступно переработанное
-   и расширенное издание 1999 года: http://refal.botik.ru/book/html.
+   синтаксис): <http://refal.ru/rf5_frm.htm>, также доступно переработанное
+   и расширенное издание 1999 года: <http://refal.botik.ru/book/html>.
 3. V. F. Turchin, D. V. Turchin, A. P. Konyshev, A. P. Nemytykh, Refal-5:
    Sources, Executable Modules, (\[online]:
-   http://www.botik.ru/pub/local/scp/refal5/), 2000
+   <http://www.botik.ru/pub/local/scp/refal5/>), 2000
 4. Аркадий Климов, письма в рассылку refal@botik.ru. Доступно в архиве рассылки:
-   https://www.mail-archive.com/refal@botik.ru/msg00044.html,
-   https://www.mail-archive.com/refal@botik.ru/msg00055.html
+   <https://www.mail-archive.com/refal@botik.ru/msg00044.html>,
+   <https://www.mail-archive.com/refal@botik.ru/msg00055.html>
 5. Скоробогатов С.Ю. , Чеповский А.М. Язык Refal с функциями высшего порядка
    // Информационные технологии, 2006. № 9.
    Доступно в Интернете:
-   https://waybackmachine.org/web/20070719175259/http://iu9.bmstu.ru/science/refal.pdf
+   <https://waybackmachine.org/web/20070719175259/http://iu9.bmstu.ru/science/refal.pdf>
