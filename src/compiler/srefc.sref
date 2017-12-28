@@ -9,10 +9,14 @@ $EXTERN ArgList, LoadFile, Map, SaveFile, Fetch, Pipe, DelAccumulator,
 $EXTERN ParseCommandLine;
 
 //FROM Config
-$EXTERN Config-GetTargetFileName, Config-SetTargetFileName, Config-GetErrorFile,
+$EXTERN Config-GetLogFile,
+  Config-GetTargetFileName, Config-SetTargetFileName, Config-GetErrorFile,
   Config-GetCppCompiler, Config-GetGrammarCheck, Config-GetTargetSuffix,
   Config-GetSearchFolders, Config-GetTargetMode, Config-GetPrefix,
   Config-GetChmodXCommand;
+
+//FROM Log
+$EXTERN Log-Init, Log-Final;
 
 //FROM Library
 $EXTERN WriteLine, StrFromInt, Exit, Lower, System, ExistFile, FOpen,
@@ -48,7 +52,8 @@ Main-SwValidCommandLine {
       >;
 
   t.CommandLineSource #Success t.Config e.Files
-    = <CalcTargetFileName
+    = <Log-Init <Config-GetLogFile t.Config>>
+      <CalcTargetFileName
         t.Config
         (<Config-GetTargetFileName t.Config>)
         e.Files
@@ -59,7 +64,8 @@ Main-SwValidCommandLine {
     = <Main-SwFoundFiles
         t.CommandLineSource t.Config
         <LookupSourceFiles t.Config e.Files>
-      >;
+      >
+      <Log-Final>;
 
   t.CommandLineSource #Fails e.Errors
     = <ReportErrors t.CommandLineSource #NoConfig e.Errors>;

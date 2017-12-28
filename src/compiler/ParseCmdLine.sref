@@ -10,7 +10,8 @@ $EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
   Config-SetDebugInfo, Config-SetGrammarCheck, Config-SetTargetFileName,
   Config-SetTargetSuffix, Config-SetSearchFolder, Config-SetPrefix,
   Config-AddReference, Config-SetTargetMode, Config-AddIncorporated,
-  Config-SetChmodXCommand, Config-SetPrelude, Config-SetR5Mode;
+  Config-SetChmodXCommand, Config-SetPrelude, Config-SetR5Mode,
+  Config-SetLogFile;
 
 /**
   <ParseCommandLine e.Arguments>
@@ -51,6 +52,7 @@ $ENTRY ParseCommandLine {
           (#Prelude #Required ('prelude'))
           (#ClassicMode #None ('classic'))
           (#ExtendedMode #None ('extended'))
+          (#Log #Required ('log'))
         )
         e.Arguments
       >
@@ -163,6 +165,9 @@ $ENTRY ParseCommandLine {
 
             (t.Config e.Errors) (#ExtendedMode s.Num)
               = <Update t.Config (e.Errors) Config-SetR5Mode s.Num #Extended>;
+
+            (t.Config e.Errors) (#Log s.Num e.LogFile)
+              = <Update t.Config (e.Errors) Config-SetLogFile s.Num e.LogFile>;
 
             (t.Config e.Errors) t.Option
               = (t.Config e.Errors) t.Option;

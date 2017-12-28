@@ -29,6 +29,7 @@ $ENTRY Config-Create {
         (#ChmodXCommand /* пусто */)
         (#Prelude /* пусто */)
         (#Refal5Mode #Extended)
+        (#LogFile /* пусто */)
       ];
 }
 
@@ -559,4 +560,20 @@ $ENTRY Config-GetR5Mode {
 $ENTRY Config-SetR5Mode {
   [Config e.Params-B (#Refal5Mode s.OldMode) e.Params-E] s.NewMode
     = #Success [Config e.Params-B (#Refal5Mode s.NewMode) e.Params-E];
+}
+
+/**
+  <Config-GetLogFile t.Config> == e.LogFile
+*/
+$ENTRY Config-GetLogFile {
+  [Config e.Params-B (#LogFile e.LogFile) e.Params-E] = e.LogFile;
+}
+
+/**
+  <Config-SetLogFile t.Config e.LogFile>
+    == #Success t.Config
+*/
+$ENTRY Config-SetLogFile {
+  [Config e.Params-B (#LogFile e.OldLogFile) e.Params-E] e.NewLogFile
+    = #Success [Config e.Params-B (#LogFile e.NewLogFile) e.Params-E];
 }

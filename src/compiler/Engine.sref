@@ -38,6 +38,9 @@ $EXTERN FindInclude;
 //FROM Desugaring
 $EXTERN Desugar;
 
+//FROM Log
+$EXTERN Log-GetLogFunction-AST, Log-GetLogFunction-HighLevelRASL;
+
 //FROM HighLevelRASL
 $EXTERN HighLevelRASL;
 
@@ -430,7 +433,9 @@ BackEnd {
     = <Config-GetGenMode t.Config> : s.GenMode
     = <Pipe
         (Desugar s.MarkupContext)
+        <Log-GetLogFunction-AST e.SrcName>
         (HighLevelRASL s.OptPattern s.OptResult)
+        <Log-GetLogFunction-HighLevelRASL e.SrcName>
         (LowLevelRASL s.GenMode s.DebugInfo (e.SrcName))
         {
           t.RASLModule =
