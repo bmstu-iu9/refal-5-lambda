@@ -15,8 +15,8 @@ $EXTERN Config-GetTargetFileName, Config-SetTargetFileName, Config-GetErrorFile,
   Config-GetChmodXCommand;
 
 //FROM Library
-$EXTERN WriteLine, StrFromInt, Exit, System, ExistFile, FOpen, FWriteBytes,
-  FSeek, Mod, FTell, FClose, RemoveFile, RenameFile;
+$EXTERN WriteLine, StrFromInt, Exit, Lower, System, ExistFile, FOpen,
+  FWriteBytes, FSeek, Mod, FTell, FClose, RemoveFile, RenameFile;
 
 //FROM FindFile
 $EXTERN FindFiles;
@@ -24,7 +24,6 @@ $EXTERN FindFiles;
 //FROM Engine
 $EXTERN CompileFile, GrammarCheck;
 
-//------------------------------------------------------------------------------
 
 $ENTRY Go {
   = <PrintVersion 'Srefc'> <Main <ArgList>>;
@@ -683,28 +682,4 @@ DoGetFileName {
   e.FileName '\\' = ;
   e.FileName s.Last = <DoGetFileName e.FileName> s.Last;
   = ;
-}
-
-Lower {
-  e.String = <Map LowerChar e.String>;
-}
-
-LowerChar {
-  s.Char =
-    // Сначала мы проверяем, что символ является большой буквой
-    <Fetch
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-      {
-        e.Uppers-B s.Char e.Uppers-E =
-          // Символ является большой буквой, находим соответствующую маленькую
-          <Fetch
-            'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz'
-            {
-              e.UpLo-B s.Char s.Lower e.UpLo-E = s.Lower;
-            }
-          >;
-
-        e.Uppers = s.Char;
-      }
-    >;
 }
