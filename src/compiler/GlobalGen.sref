@@ -478,8 +478,6 @@ ReversePattern-Aux {
 }
 
 $ENTRY SplitGen {
-  (()) e.SentenceTails = () <SplitGen-Empty e.SentenceTails>;
-
   (e.Any) e.SentenceTails =
     <Fetch
       e.Any
@@ -488,7 +486,14 @@ $ENTRY SplitGen {
         {
           e.All =
             <GetGeneralization () e.All>
-            <GetReplacement e.All>;
+            <Fetch
+              <GetReplacement e.All>
+              {
+                () /* is no substitutions */ = <SplitGen-Empty e.SentenceTails>;
+
+                e.Substitutions = e.Substitutions;
+              }
+            >;
         }
       >
     >;
