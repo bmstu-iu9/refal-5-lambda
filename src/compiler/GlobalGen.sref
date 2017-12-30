@@ -478,25 +478,17 @@ ReversePattern-Aux {
 }
 
 $ENTRY SplitGen {
-  (e.Any) e.SentenceTails =
-    <Fetch
-      e.Any
-      <Seq
-        { e.All = <CreateIndexes ('idx') e.All>; }
-        {
-          e.All =
-            <GetGeneralization () e.All>
-            <Fetch
-              <GetReplacement e.All>
-              {
-                () /* is no substitutions */ = <SplitGen-Empty e.SentenceTails>;
+  (e.GlobalGen) e.SentenceTails
+    = <CreateIndexes ('idx') e.GlobalGen> : e.GlobalGen^
+    = <GetGeneralization () e.GlobalGen> : (e.CommonPattern)
+    = <GetReplacement e.GlobalGen>
+    : {
+        () /* is no substitutions */ = <SplitGen-Empty e.SentenceTails>;
 
-                e.Substitutions = e.Substitutions;
-              }
-            >;
-        }
-      >
-    >;
+        e.Substitutions = e.Substitutions;
+      }
+    : e.Substitutions
+    = (e.CommonPattern) e.Substitutions;
 }
 
 
