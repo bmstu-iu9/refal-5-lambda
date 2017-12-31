@@ -28,6 +28,7 @@ $ENTRY Config-Create {
         (#Incorporateds /* пусто */)
         (#ChmodXCommand /* пусто */)
         (#Prelude /* пусто */)
+        (#Refal5Mode #Extended)
       ];
 }
 
@@ -542,4 +543,20 @@ $ENTRY Config-GetPrelude {
 $ENTRY Config-SetPrelude {
   [Config e.Params-B (#Prelude e.OldPrelude) e.Params-E] e.NewPrelude
     = #Success [Config e.Params-B (#Prelude e.NewPrelude) e.Params-E];
+}
+
+/**
+  <Config-GetR5Mode t.Config> == s.Refal5Mode
+  s.Refal5Mode ::= #Classic | #Extended
+*/
+$ENTRY Config-GetR5Mode {
+  [Config e.Params-B (#Refal5Mode s.Mode) e.Params-E] = s.Mode;
+}
+
+/**
+  <Config-SetR5Mode t.Config s.Refal5Mode> == #Success t.Config
+*/
+$ENTRY Config-SetR5Mode {
+  [Config e.Params-B (#Refal5Mode s.OldMode) e.Params-E] s.NewMode
+    = #Success [Config e.Params-B (#Refal5Mode s.NewMode) e.Params-E];
 }

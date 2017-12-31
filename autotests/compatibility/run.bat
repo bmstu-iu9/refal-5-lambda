@@ -62,7 +62,7 @@ goto :EOF
 
   :: Поиск srefc
   if exist ..\..\bin\srefc-core.exe (
-    set REFAL_COMPILERS=srefc %REFAL_COMPILERS%
+    set REFAL_COMPILERS=srefc_classic srefc_lambda %REFAL_COMPILERS%
     set SREFC_EXIST=1
     echo ... found srefc
     call ..\..\scripts\load-config.bat || exit /b 1
@@ -231,7 +231,7 @@ setlocal
 endlocal
 goto :EOF
 
-:COMPILE.srefc
+:COMPILE_SREFC_COMMON
 setlocal
   set SRC=%1
   set TARGET=%~n1.exe
@@ -253,7 +253,14 @@ setlocal
 endlocal
 goto :EOF
 
-:EXECUTE_OK.srefc
+:COMPILE.srefc_classic
+setlocal
+  set COMMON_SRFLAGS=%COMMON_SRFLAGS% --classic
+  call :COMPILE_SREFC_COMMON "%~1" || exit /b 1
+endlocal
+goto :EOF
+
+:EXECUTE_OK.srefc_classic
 setlocal
   set EXE=%~n1.exe
   echo Y| %EXE% Hello "Hello, World" "" \ > stdout.txt 2>stderr.txt
@@ -266,7 +273,7 @@ setlocal
 endlocal
 goto :EOF
 
-:EXECUTE_FAIL.srefc
+:EXECUTE_FAIL.srefc_classic
 setlocal
   set EXE=%~n1.exe
   echo Y| %EXE% > stdout.txt
@@ -287,13 +294,38 @@ setlocal
 endlocal
 goto :EOF
 
-:CLEANUP.srefc
+:CLEANUP.srefc_classic
 setlocal
   call :CLEANUP_COMMON
   if exist "%~1.rasl" erase "%~1.rasl"
   if exist "%~1.exe" erase "%~1.exe"
   if exist "%~1.cpp" erase "%~1.cpp"
   if exist external.rasl erase external.rasl
+endlocal
+goto :EOF
+
+:COMPILE.srefc_lambda
+setlocal
+  set COMMON_SRFLAGS=%COMMON_SRFLAGS% --extended
+  call :COMPILE_SREFC_COMMON "%~1" || exit /b 1
+endlocal
+goto :EOF
+
+:EXECUTE_OK.srefc_lambda
+setlocal
+  call :EXECUTE_OK.srefc_classic "%~1" || exit /b 1
+endlocal
+goto :EOF
+
+:EXECUTE_FAIL.srefc_lambda
+setlocal
+  call :EXECUTE_FAIL.srefc_lambda "%~1" || exit /b 1
+endlocal
+exit /b 0
+
+:CLEANUP.srefc_lambda
+setlocal
+  call :CLEANUP.srefc_classic "%~1" || exit /b 1
 endlocal
 goto :EOF
 

@@ -7,6 +7,7 @@ $EXTERN EL-Destroy, EL-Create, EL-AddErrorAt, EL-Concat;
 //FROM Config
 $EXTERN
   Config-GetPrelude,
+  Config-GetR5Mode,
   Config-GetSearchFolders,
   Config-GetDebugMode,
   Config-GetOptPattern,
@@ -98,9 +99,9 @@ FrontEnd {
 }
 
 R5-Parse-Wrapped {
-  (e.SrcName) e.Tokens
+  s.Mode (e.SrcName) e.Tokens
     = <EL-Create e.SrcName> : t.ErrorList
-    = <R5-Parse e.Tokens> : (e.Errors) e.AST
+    = <R5-Parse s.Mode e.Tokens> : (e.Errors) e.AST
     = <MapReduce
         {
           t.ErrorList^ ((#RowCol s.Line s.Col) e.Message)
@@ -128,7 +129,8 @@ PreludeIncludeLine {
 LoadAST {
   t.Config #R5 e.SrcName
     = <R5-Scan e.SrcName> : e.Tokens
-    = <R5-Parse-Wrapped (e.SrcName) e.Tokens> : t.ErrorList e.AST
+    = <Config-GetR5Mode t.Config> : s.Mode
+    = <R5-Parse-Wrapped s.Mode (e.SrcName) e.Tokens> : t.ErrorList e.AST
     = t.ErrorList <PreludeIncludeLine t.Config> e.AST;
 
   t.Config #SR e.SrcName

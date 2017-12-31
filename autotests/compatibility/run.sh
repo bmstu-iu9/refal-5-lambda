@@ -67,7 +67,7 @@ lookup_compilers() {
 
   # Поиск srefc
   if [ -e ../../bin/srefc-core ]; then
-    REFAL_COMPILERS="srefc $REFAL_COMPILERS"
+    REFAL_COMPILERS="srefc_classic srefc_lambda $REFAL_COMPILERS"
     SREFC_EXIST=1
     echo ... found srefc
     source ../../scripts/load-config.sh ../.. || return 1
@@ -215,11 +215,12 @@ run_test_result_SYNTAX-ERROR() {
   done
 }
 
-compile_srefc() {
+compile_srefc_common() {
   SRC=$1
   TARGET=${SRC%%.ref}$(platform_exe_suffix)
+  FLAGS_EX=$2
 
-  ../../bin/srefc-core $SRC -o $TARGET "${COMMON_SRFLAGS[@]}" \
+  ../../bin/srefc-core $SRC -o $TARGET "${COMMON_SRFLAGS[@]}" $FLAGS_EX \
     --prefix=_test_prefix external 2>__error.txt
   if [ $? -ge 100 ]; then
     echo COMPILER FAILS ON $SRC, SEE __error.txt
@@ -231,7 +232,11 @@ compile_srefc() {
   rm __error.txt
 }
 
-execute_OK_srefc() {
+compile_srefc_classic() {
+  compile_srefc_common "$1" --classic || return 1
+}
+
+execute_OK_srefc_classic() {
   SRC=$1
   EXE=${SRC%%.ref}$(platform_exe_suffix)
   echo Y | ./$EXE Hello "Hello, World" "" $SEP > stdout.txt 2>stderr.txt || {
@@ -241,7 +246,7 @@ execute_OK_srefc() {
   }
 }
 
-execute_FAIL_srefc() {
+execute_FAIL_srefc_classic() {
   SRC=$1
   EXE=${SRC%%.ref}$(platform_exe_suffix)
   if echo Y | ./$EXE > stdout.txt; then
@@ -256,7 +261,7 @@ cleanup_common() {
   rm -f __dump.txt $OUTPUT_FILES REFAL7.DAT
 }
 
-cleanup_srefc() {
+cleanup_srefc_classic() {
   cleanup_common
   SRC=$1
   RASL=${SRC%%.ref}.rasl
@@ -264,6 +269,22 @@ cleanup_srefc() {
   CPP=${SRC%%.ref}.cpp
   rm -f "$RASL" "$EXE" "$CPP"
   rm -f external.rasl
+}
+
+compile_srefc_lambda() {
+  compile_srefc_common "$1" --extended || return 1
+}
+
+execute_OK_srefc_lambda() {
+  execute_OK_srefc_classic "$1" || return 1
+}
+
+execute_FAIL_srefc_lambda() {
+  execute_FAIL_srefc_classic "$1" || return 1
+}
+
+cleanup_srefc_lambda() {
+  cleanup_srefc_classic "$1" || return 1
 }
 
 compile_crefal() {

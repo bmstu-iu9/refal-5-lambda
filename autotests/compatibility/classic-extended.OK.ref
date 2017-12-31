@@ -1,0 +1,168 @@
+*$CLASSIC
+*$EXTENDED
+
+$ENTRY
+*$CLASSIC;
+Go
+*$EXTENDED;
+{
+*$CLASSIC
+  =
+*$EXTENDED
+  ;
+
+*$CLASSIC;
+  (
+*$EXTENDED;
+  A
+*$CLASSIC
+  (
+*$EXTENDED
+  10
+*$CLASSIC;
+  "BCD"
+*$EXTENDED;
+  'efgh'
+*$CLASSIC
+  )
+*$EXTENDED
+  )
+*$CLASSIC;
+  Q
+*$EXTENDED;
+  =
+*$CLASSIC
+  <Go
+*$EXTENDED
+  (
+*$CLASSIC;
+  P
+*$EXTENDED;
+  Q
+*$CLASSIC
+  <Go
+*$EXTENDED
+  >
+*$CLASSIC;
+  R
+*$EXTENDED;
+  )
+*$CLASSIC
+  's'
+*$EXTENDED
+  't'
+*$CLASSIC;
+  >
+*$EXTENDED;
+  ;
+*$CLASSIC
+
+  Pattern
+*$EXTENDED
+  ,
+*$CLASSIC;
+  CondResult1
+*$EXTENDED;
+  :
+  CondPattern1
+*$EXTENDED
+  ,
+*$CLASSIC;
+  CondResult2
+*$EXTENDED;
+  :
+*$CLASSIC
+  CondPattern2
+*$EXTENDED
+  =
+*$CLASSIC;
+  Result
+*$EXTENDED;
+  ;
+
+*$CLASSIC
+  Pattern
+*$EXTENDED
+  ,
+*$CLASSIC;
+  CondResult1
+*$EXTENDED;
+  :
+*$CLASSIC
+  CondPattern1
+*$EXTENDED
+  ,
+*$CLASSIC;
+  BlockResult2
+*$EXTENDED;
+  :
+*$CLASSIC
+  {
+*$EXTENDED
+  BlockPattern1
+*$CLASSIC;
+  =
+*$EXTENDED;
+  BlockResult1
+*$CLASSIC
+  ;
+*$EXTENDED
+  BlockPattern2
+*$CLASSIC;
+  ,
+*$EXTENDED;
+  BlockCondResult1
+*$CLASSIC
+  :
+*$EXTENDED
+  BlockCondPattern1
+*$CLASSIC;
+  =
+*$EXTENDED;
+  BlockResult2
+*$CLASSIC;
+  ;
+*$EXTENDED
+  }
+*$CLASSIC;
+  ;
+
+*$EXTENDED;
+  Pattern
+*$CLASSIC;
+  ,
+*$EXTENDED
+  BlockResult
+*$CLASSIC;
+  :
+*$EXTENDED;
+  {
+*$CLASSIC;
+  BlockPattern
+*$EXTENDED
+  =
+*$CLASSIC;
+  BlockResult
+*$EXTENDED;
+  /*;*/
+*$CLASSIC;
+  }
+*$EXTENDED
+  ;
+*$CLASSIC;
+}
+*$EXTENDED
+
+$EXTERN
+*$CLASSIC;
+Foo
+*$EXTENDED;
+,
+*$CLASSIC
+Bar
+*$EXTENDED
+,
+*$CLASSIC;
+Baz
+*$EXTENDED;
+;
