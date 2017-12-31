@@ -319,7 +319,7 @@ goto :EOF
 
 :EXECUTE_FAIL.srefc_lambda
 setlocal
-  call :EXECUTE_FAIL.srefc_lambda "%~1" || exit /b 1
+  call :EXECUTE_FAIL.srefc_classic "%~1" || exit /b 1
 endlocal
 exit /b 0
 
