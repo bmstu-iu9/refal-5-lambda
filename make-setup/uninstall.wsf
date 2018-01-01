@@ -1,3 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<job id="installer">
+  <script language="VBScript" src="constants.vbs"></script>
+  <script language="VBScript">
+<![CDATA[
 Option Explicit
 Dim WshShell, WshEnvUser, WshNamedArgs
 Dim Path, InstallDir, BinDir, DecoratedPath, DecoratedBinDir, FSO
@@ -20,6 +25,8 @@ Private Sub Init
 End Sub
 
 Private Sub Install
+  Dim Size
+
   If Not InStr(1, DecoratedPath, DecoratedBinDir, vbTextCompare) > 0 Then
     WshEnvUser("PATH") = Path & ";" & BinDir
   End If
@@ -27,13 +34,14 @@ Private Sub Install
   WshShell.RegWrite CUninstallKey & "\DisplayIcon", _
     InstallDir & "\icon.ico", "REG_SZ"
   WshShell.RegWrite CUninstallKey & "\DisplayName", _
-    "Refal-5(lambda)", "REG_SZ"
-  WshShell.RegWrite CUninstallKey & "\DisplayVersion", "1.7.4", "REG_SZ"
-  ' WshShell.RegWrite CUninstallKey & "\EstimatedSize", 15000, "REG_DWORD"
+    "Refal-5-lambda", "REG_SZ"
+  WshShell.RegWrite CUninstallKey & "\DisplayVersion", CVersion, "REG_SZ"
+  WshShell.RegWrite CUninstallKey & "\EstimatedSize", _
+    CByteSize \ 1024, "REG_DWORD"
   WshShell.RegWrite CUninstallKey & "\Publisher", "BMSTU IU-9", "REG_SZ"
   WshShell.RegWrite CUninstallKey & "\UninstallString", _
     """%SystemRoot%\system32\wscript.exe"" " & _
-    """" & InstallDir & "\uninstall.vbs""", "REG_EXPAND_SZ"
+    """" & InstallDir & "\uninstall.wsf""", "REG_EXPAND_SZ"
 
   WScript.Echo("Successfully installed")
 End Sub
@@ -45,8 +53,6 @@ Private Sub UnInstall
   Path = Left(Path, Len(Path) - 1)      'Skip right ";"
   Path = Right(Path, Len(Path) - 1)     'Skip left ";"
   WshEnvUser("PATH") = Path
-
-  WScript.Echo("InstallDir: " & InstallDir)
 
   WshShell.CurrentDirectory = InstallDir & "\.."
   FSO.DeleteFolder InstallDir, True
@@ -65,3 +71,6 @@ If WshNamedArgs.Exists("install") Then
 Else
   UnInstall
 End If
+]]>
+  </script>
+</job>

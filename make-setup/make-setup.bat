@@ -61,11 +61,24 @@ setlocal
   copy ..\..\distrib\README.md .
   copy ..\..\distrib\LICENSE .
   copy scripts\c-plus-plus.conf.bat.template c-plus-plus.conf.bat
-  copy ..\uninstall.vbs .
+  copy ..\uninstall.wsf .
   copy ..\icon.ico .
+
+  for /F %%v in ('git describe --dirty') do (
+    echo Const CVersion="%%v"> constants.vbs
+  )
+
+  set SIZE=0
+  for /R %%f in (*.*) do call :INCSIZE %%~zf
+  echo Const CByteSize=%SIZE%>> constants.vbs
+
   call :MAKERAR
   popd
 endlocal
+goto :EOF
+
+:INCSIZE
+  set /a SIZE+=%1
 goto :EOF
 
 :MAKERAR

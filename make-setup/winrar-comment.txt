@@ -2,7 +2,7 @@
 ;Файл должен быть в кодировке CP1251
 
 Path=%APPDATA%\Refal-5-lambda
-Setup=uninstall.vbs /install
+Setup=%SystemRoot%\System32\wscript.exe uninstall.wsf /install
 Title=Установка Рефала-5-лямбда
 Overwrite=1
 Text
@@ -14,7 +14,7 @@ Text
   <li>Удалить затем можно будет обычным способом через «Панель управления»</li>
 <ul>
 }
-License=Лицензия на Рефал-5(лямбда)
+License=Лицензия на Рефал-5-лямбда
 {
 <p>
 Copyright (c) 2008&ndash;2016, Alexander Konovalov, 2016, BMSTU IU9 Department
@@ -51,4 +51,4 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 Shortcut=P, doc, Refal-5-lambda, "Internal documentation files", "Internal documentation files",
 Shortcut=P, editors, Refal-5-lambda, "Plugins for text editors", "Plugins for text editors",
-Shortcut=P, uninstall.vbs, Refal-5-lambda, "Uninstall Refal-5-lambda", "Uninstall Refal-5-lambda",
+Shortcut=P, uninstall.vbs, Refal-5-lambda, "Uninstall Refal-5-lambda", "Uninstall Refal-5-lambda", icon.ico
