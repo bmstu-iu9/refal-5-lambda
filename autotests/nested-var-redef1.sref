@@ -8,6 +8,6 @@ Test {
 
 $ENTRY Go {
   =
-    <{'abc' = ; } <<Test 'abc'>>>
+    <{ 'abc' = ; } <<Test 'abc'>>>
     <{ 'efg' = ; } <<<Test 'abc'> Test> 'efg'>>;
 }
