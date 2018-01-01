@@ -62,6 +62,7 @@ setlocal
   copy ..\..\distrib\LICENSE .
   copy scripts\c-plus-plus.conf.bat.template c-plus-plus.conf.bat
   copy ..\uninstall.vbs .
+  copy ..\icon.ico .
   call :MAKERAR
   popd
 endlocal
@@ -69,8 +70,7 @@ goto :EOF
 
 :MAKERAR
 setlocal
-::  set FLAGS=m -r -t -sfx -av -k -z..\winrar-comment.txt -iicon..\icon.ico
-  set FLAGS=m -r -t -sfx -av -k -z..\winrar-comment.txt
+  set FLAGS=m -r -t -sfx -av -k -z..\winrar-comment.txt -iicon..\icon.ico
   set ARC=..\_setup\setup-refal-5-lambda-%VERSION%.exe
   if exist %ARC% erase %ARC%
   start /w winrar %FLAGS% %ARC% *

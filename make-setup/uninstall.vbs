@@ -24,8 +24,8 @@ Private Sub Install
     WshEnvUser("PATH") = Path & ";" & BinDir
   End If
 
-  ' WshShell.RegWrite CUninstallKey & "\DisplayIcon", _
-  '   InstallDir & "\icon.ico", "REG_SZ"
+  WshShell.RegWrite CUninstallKey & "\DisplayIcon", _
+    InstallDir & "\icon.ico", "REG_SZ"
   WshShell.RegWrite CUninstallKey & "\DisplayName", _
     "Refal-5(lambda)", "REG_SZ"
   WshShell.RegWrite CUninstallKey & "\DisplayVersion", "1.7.4", "REG_SZ"
