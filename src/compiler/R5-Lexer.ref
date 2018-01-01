@@ -20,6 +20,7 @@ $EXTERN LoadFile, Inc;
     TkExtern, TkEntry ~ пусто
     TkEOF ~ пусто
     TkError ~ char* -- сообщение об ошибке в лексике
+    TkRefal5Mode ~ Classic | Extended
     TkAmpersand ~ empty
   s.VarType ::= 's' | 't' | 'e'
 */
