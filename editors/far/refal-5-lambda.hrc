@@ -79,6 +79,7 @@
         <symb name=","/>
         <symb name=":"/>
         <symb name=";"/>
+        <symb name='&amp;'/>
       </keywords>
       <regexp match='/\$\w*/' region0="def:Error"/>
       <keywords region="def:Error">

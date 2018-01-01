@@ -21,12 +21,13 @@
 
   t.Pattern, t.Result ::= (t.Term*)
   t.Term ::=
-      (TkIdentifier e.Chars*)
+      (TkIdentifier s.Char*)
     | (TkNumber s.Number)
     | (TkChar s.Char)
     | (TkVariable t.SrcPos s.VarType e.Index)
     | (Brackets t.Term*)
     | (CallBrackets (TkName t.SrcPos e.Function) t.Terms*)
+    | (TkName t.SrcPos s.Char*)
   s.VarType ::= 's' | 't' | 'e'
 */
 $ENTRY R5-Parse {
@@ -600,11 +601,20 @@ DoExpression {
         = <DoExpression s.NewMode s.Kind (e.Errors) (e.Collected) e.Tokens>;
 
       (TkAmpersand t.Pos)
-        = <DoExpression
-            s.Mode s.Kind
-            (e.Errors (Error t.Pos '\'&\' is not where-with sign'))
-            (e.Collected) e.Tokens
-          >;
+        , s.Mode
+        : {
+            Classic
+              = <DoExpression
+                  s.Mode s.Kind
+                  (e.Errors (Error t.Pos '\'&\' is not where-with sign'))
+                  (e.Collected) e.Tokens
+                >;
+
+            Extended
+              = <DoExpression-AfterAmpersand
+                  s.Kind (e.Errors) (e.Collected) t.Pos e.Tokens
+                >;
+          };
 
       t.OtherToken =
         (e.Errors) (e.Collected) t.OtherToken e.Tokens;
@@ -672,6 +682,21 @@ DoExpression-AfterCall {
       )
       (e.Collected (Brackets e.BracketTerms)) (s.Type t.Pos e.Value) e.Tokens
     >;
+}
+
+DoExpression-AfterAmpersand {
+  s.Kind (e.Errors) (e.Collected) t.AmpersandPos
+  (TkName t.Pos e.Name) e.Tokens
+    = <DoExpression
+        Extended s.Kind (e.Errors) (e.Collected (TkName t.Pos e.Name)) e.Tokens
+      >;
+
+  s.Kind (e.Errors) (e.Collected) t.AmpersandPos e.Tokens
+    = <DoExpression
+        Extended s.Kind
+        (e.Errors (Error t.AmpersandPos 'Expected function name after \'&\''))
+        (e.Collected) e.Tokens
+      >;
 }
 
 Expression-CheckBrackets {

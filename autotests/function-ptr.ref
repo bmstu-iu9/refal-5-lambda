@@ -1,0 +1,14 @@
+$ENTRY Go {
+  = <Eq True <Equal &Go &Go>>
+    <Eq False <Equal &Go Go>>
+    <Eq False <Equal Go &Go>>
+    <Eq False <Equal &Eq &Go>>
+    <Eq True <Equal &Eq &Eq>>;
+}
+
+Eq { s.X s.X = ; }
+
+Equal {
+  s.X s.X = True;
+  s.X s.Y = False;
+}
