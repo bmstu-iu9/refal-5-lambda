@@ -100,7 +100,7 @@
       | (#CallBrackets e.Expression)
       | (#TkVariable t.SrcPos s.Mode e.Index)
       | (#TkNewVariable t.SrcPos s.Mode e.Index)
-      | (#Closure e.Sentences)
+      | (#Closure e.Body)
     e.ADTName ::= e.Name | #UnnamedADT
 
     s.Number ::= s.NUMBER | #Cookie1 | #Cookie2
