@@ -1,0 +1,15 @@
+*$CLASSIC;
+
+Test {
+  e.X =
+    {
+      = e.X;
+      Test = { e.Y = e.Y; };
+    };
+}
+
+$ENTRY Go {
+  =
+    <{ 'abc' = ; } <<Test 'abc'>>>
+    <{ 'efg' = ; } <<<Test 'abc'> Test> 'efg'>>;
+}

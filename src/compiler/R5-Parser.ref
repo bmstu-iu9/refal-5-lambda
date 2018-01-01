@@ -28,6 +28,7 @@
     | (Brackets t.Term*)
     | (CallBrackets (TkName t.SrcPos e.Function) t.Terms*)
     | (TkName t.SrcPos s.Char*)
+    | (Closure Sentences t.Sentence*)
   s.VarType ::= 's' | 't' | 'e'
 */
 $ENTRY R5-Parse {
@@ -627,6 +628,17 @@ DoExpression {
                 >;
           };
 
+      (TkOpenBlock t.Pos)
+        , s.Kind : Result
+        = <DoExpression-AfterBlock
+            s.Mode
+            (
+              e.Errors
+              <ClassicError s.Mode t.Pos 'Do you forged \':\' before block?'>
+            )
+            (e.Collected) <Block s.Mode (TkOpenBlock t.Pos) e.Tokens>
+          >;
+
       t.OtherToken =
         (e.Errors) (e.Collected) t.OtherToken e.Tokens;
     }
@@ -708,6 +720,14 @@ DoExpression-AfterAmpersand {
         Extended s.Kind
         (e.Errors (Error t.AmpersandPos 'Expected function name after \'&\''))
         (e.Collected) e.Tokens
+      >;
+}
+
+DoExpression-AfterBlock {
+  s.Mode (e.Errors) (e.Collected) (e.BlockErrors) (e.Sentences) e.Tokens
+    = <DoExpression
+        s.Mode Result (e.Errors e.BlockErrors)
+        (e.Collected (Closure Sentences e.Sentences)) e.Tokens
       >;
 }
 
