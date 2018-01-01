@@ -1,7 +1,5 @@
 //FROM Library
 //FROM Hash
-//FROM LibraryEx
-//FROM GetOpt
 //FROM refalrts
 //FROM refalrts-platform-specific
 //FROM refalrts-platform-POSIX

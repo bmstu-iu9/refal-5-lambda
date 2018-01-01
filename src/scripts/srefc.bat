@@ -24,7 +24,6 @@ setlocal
 
 :MODE_RICH
   set ARGS=%ARGS:* =%
-:MODE_DEFAULT
   set D=-d "%LIBDIR%\rich"
   set PREFIX=--prefix=rich
   set CPP=
@@ -32,7 +31,10 @@ setlocal
 
 :MODE_SLIM
   set ARGS=%ARGS:* =%
-  goto MODE_DEFAULT
+:MODE_DEFAULT
+  set D=-d "%LIBDIR%\slim"
+  set PREFIX=--prefix=slim
+  set CPP=
   goto END_SWITCH
 
 :MODE_SCRATCH

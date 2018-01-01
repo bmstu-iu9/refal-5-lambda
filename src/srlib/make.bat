@@ -5,15 +5,32 @@ if not exist ..\..\srlib\src\nul (
 )
 
 setlocal
-  set SOURCES=Library LibraryEx GetOpt Hash
+  set CSOURCES=Library Hash
+  set RSOURCES=LibraryEx GetOpt
   set RT=refalrts refalrts-platform-specific refalrts-platform-POSIX
 
   copy LICENSE ..\..\srlib
-  for %%s in (%SOURCES%) do copy %%s.sref ..\..\srlib\src
+  for %%s in (%CSOURCES% %RSOURCES%) do copy %%s.sref ..\..\srlib\src
 
   call :COMPILE_SCRATCH
   call :COMPILE_RICH
+  call :COMPILE_SLIM
   call :PREPARE_COMMON
+endlocal
+goto :EOF
+
+:COMPILE_SEPARATED
+setlocal
+  set TARGET="%~1"
+  set LIBS=%~2
+
+  ..\..\bin\srefc-core -C %SREFC_FLAGS% %LIBS%
+
+  for %%s in (%LIBS%) do (
+    find "//FROM" < %%s.sref > %TARGET%\%%s.rasl.froms
+    if exist %%s.cpp move %%s.cpp %TARGET%
+    move %%s.rasl %TARGET%
+  )
 endlocal
 goto :EOF
 
@@ -25,13 +42,7 @@ goto :EOF
   copy *.cpp %SCRATCHDIR%
   copy *.rasl %SCRATCHDIR%
 
-  ..\..\bin\srefc-core -C %SREFC_FLAGS% %SOURCES%
-
-  for %%s in (%SOURCES%) do (
-    find "//FROM" < %%s.sref > %SCRATCHDIR%\%%s.rasl.froms
-    if exist %%s.cpp move %%s.cpp %SCRATCHDIR%
-    move %%s.rasl %SCRATCHDIR%
-  )
+  call :COMPILE_SEPARATED  "%SCRATCHDIR%" "%CSOURCES% %RSOURCES%"
 
   for /d %%d in (platform-*) do (
     if not exist %SCRATCHDIR%\%%d\NUL (
@@ -42,21 +53,44 @@ goto :EOF
   )
 goto :EOF
 
+:PREPARE_PREFIX
+setlocal
+  set TARGET="%~1"
+  set PREFIX=%~2
+  set LIBS=%~3
+
+  pushd ..\srlib-%PREFIX%-prefix
+  call make.bat "%LIBS%"
+  popd
+  move ..\..\bin\%PREFIX%-prefix.exe %TARGET%\%PREFIX%.exe-prefix
+
+  for %%s in (%LIBS%) do (
+    copy NUL %TARGET%\%%s.rasl
+    echo //PREFIX %PREFIX%> %TARGET%\%%s.rasl.froms
+    if exist %%s.obj erase %%s.obj
+  )
+endlocal
+goto :EOF
+
 :COMPILE_RICH
   set RICHDIR=..\..\srlib\rich
   mkdir %RICHDIR%\x
   rmdir %RICHDIR%\x
 
-  pushd ..\srlib-rich-prefix
-  call make.bat
-  popd
-  move ..\..\bin\rich-prefix.exe %RICHDIR%\rich.exe-prefix
+  call :PREPARE_PREFIX "%RICHDIR%" rich "%CSOURCES% %RSOURCES% %RT%"
+goto :EOF
 
-  for %%s in (%SOURCES% %RT%) do (
-    copy NUL %RICHDIR%\%%s.rasl
-    echo //PREFIX rich> %RICHDIR%\%%s.rasl.froms
-    if exist %%s.obj erase %%s.obj
-  )
+:COMPILE_SLIM
+setlocal
+  set SLIMDIR=..\..\srlib\slim
+  mkdir %SLIMDIR%\x
+  rmdir %SLIMDIR%\x
+
+  call :PREPARE_PREFIX "%SLIMDIR%" slim "%CSOURCES% %RT%"
+
+  set SREFC_FLAGS=%SREFC_FLAGS% -Od-
+  call :COMPILE_SEPARATED  "%SLIMDIR%" "%RSOURCES%"
+endlocal
 goto :EOF
 
 :PREPARE_COMMON

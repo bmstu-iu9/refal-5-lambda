@@ -1,11 +1,10 @@
 @echo off
 setlocal
-  if not x"%SOURCES%"==x"" (
-    if not x"%RT%"==x"" (
-      if exist rich-prefix.sref erase rich-prefix.sref
-      for %%s in (%SOURCES% %RT%) do (
-        echo //FROM %%s>> rich-prefix.sref
-      )
+  set PREFIXFILES=%~1
+  if not x"%PREFIXFILES%"==x"" (
+    if exist rich-prefix.sref erase rich-prefix.sref
+    for %%s in (%PREFIXFILES%) do (
+      echo //FROM %%s>> rich-prefix.sref
     )
   )
 

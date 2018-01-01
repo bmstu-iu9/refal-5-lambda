@@ -17,7 +17,8 @@ set_rich_flags() {
 }
 
 set_slim_flags() {
-  set_default_flags
+  D=(-d "$LIBDIR/slim")
+  CPP=()
 }
 
 set_scratch_flags() {
@@ -34,7 +35,7 @@ set_scratch_flags() {
 }
 
 set_default_flags() {
-  set_rich_flags
+  set_slim_flags
 }
 
 # Запуск
