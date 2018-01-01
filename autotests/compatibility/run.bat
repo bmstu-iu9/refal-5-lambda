@@ -301,6 +301,7 @@ setlocal
   if exist "%~1.exe" erase "%~1.exe"
   if exist "%~1.cpp" erase "%~1.cpp"
   if exist external.rasl erase external.rasl
+  if exist __error.txt erase __error.txt
 endlocal
 goto :EOF
 

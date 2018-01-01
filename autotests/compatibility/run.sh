@@ -269,6 +269,7 @@ cleanup_srefc_classic() {
   CPP=${SRC%%.ref}.cpp
   rm -f "$RASL" "$EXE" "$CPP"
   rm -f external.rasl
+  rm -f __error.txt
 }
 
 compile_srefc_lambda() {
