@@ -163,6 +163,10 @@ DoScan-BuildKeyword {
     = (s.Tag t.Pos)
       <DoScan <IncCol t.Pos Len e.KeywordChars> (e.Line) e.Lines>;
 
+  t.Pos ('$EASTEREGG') (e.Line) e.Lines
+    = /* пока пусто */
+      <DoScan <IncCol t.Pos Len '$EASTEREGG'> (e.Line) e.Lines>;
+
   t.Pos (e.KeywordChars) (e.Line) e.Lines =
     (TkError t.Pos 'Bad keyword \'' e.KeywordChars '\'')
     <DoScan <IncCol t.Pos Len e.KeywordChars> (e.Line) e.Lines>;

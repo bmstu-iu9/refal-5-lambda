@@ -1,0 +1,7 @@
+$ENTRY Go {
+  = <Check $EASTEREGG>;
+}
+
+Check {
+  $EASTEREGG = ;
+}
