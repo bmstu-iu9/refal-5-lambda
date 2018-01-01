@@ -1,0 +1,17 @@
+$ENTRY Go {
+  = <Eq A <Call s &Id A>>
+    <Eq B <Call t &Id B>>
+    <Eq C <Call e &Id C>>;
+}
+
+Eq { s.X s.X = ; }
+
+Call {
+  s s.Fn e.Arg = <s.Fn e.Arg>;
+  t t.Fn e.Arg = <t.Fn e.Arg>;
+  e e.FnArg = <e.FnArg>;
+}
+
+Id {
+  e.Any = e.Any;
+}

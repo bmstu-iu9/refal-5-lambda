@@ -100,6 +100,11 @@ DoScan {
     (s.TokType t.Pos)
     <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
 
+  t.Pos ('<' s.Var '.' e.Line) e.Lines
+    , <IsVarType s.Var> : True
+    = (TkOpenCall t.Pos /* empty */)
+      <DoScan <IncCol t.Pos> (s.Var '.' e.Line) e.Lines>;
+
   t.Pos ('<' s.StartIdent e.Line) e.Lines,
       <Type s.StartIdent>: 'L' s.Case s.StartIdent =
     <DoScan-Ident t.Pos ('<' s.StartIdent) (e.Line) e.Lines>;
