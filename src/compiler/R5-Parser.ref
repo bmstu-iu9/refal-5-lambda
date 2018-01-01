@@ -596,6 +596,13 @@ DoExpression {
       (TkRefal5Mode t.Pos s.NewMode)
         = <DoExpression s.NewMode s.Kind (e.Errors) (e.Collected) e.Tokens>;
 
+      (TkAmpersand t.Pos)
+        = <DoExpression
+            s.Mode s.Kind
+            (e.Errors (Error t.Pos '\'&\' is not where-with sign'))
+            (e.Collected) e.Tokens
+          >;
+
       t.OtherToken =
         (e.Errors) (e.Collected) t.OtherToken e.Tokens;
     }
@@ -716,4 +723,5 @@ TokName {
   TkEntry = '$ENTRY';
   TkEOF = 'end of file';
   TkRefal5Mode = '*$CLASSIC or *$EXTENDED';
+  TkAmpersand = '\'&\'';
 }

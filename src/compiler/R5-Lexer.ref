@@ -20,6 +20,7 @@ $EXTERN LoadFile, Inc;
     TkExtern, TkEntry ~ пусто
     TkEOF ~ пусто
     TkError ~ char* -- сообщение об ошибке в лексике
+    TkAmpersand ~ empty
   s.VarType ::= 's' | 't' | 'e'
 */
 $ENTRY R5-Scan {
@@ -136,7 +137,7 @@ IsPunctuation {
   s.Punct,
       ('(' TkOpenBracket) (')' TkCloseBracket)
       ('{' TkOpenBlock) ('}' TkCloseBlock)
-      ('>' TkCloseCall)
+      ('>' TkCloseCall) ('&' TkAmpersand)
       (',' TkComma) (':' TkColon) ('=' TkAssign) (';' TkSemicolon):
         e.Types-B (s.Punct s.TokType) e.Types-E =
     s.TokType;

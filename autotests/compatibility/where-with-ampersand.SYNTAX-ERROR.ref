@@ -1,0 +1,11 @@
+$ENTRY Go {
+  = <Eq A <Test 1>>
+    <Eq B <Test 2>>;
+}
+
+Eq { s.X s.X = ; }
+
+Test {
+  s.X & 1 : s.X = A;
+  s.X = B;
+}
