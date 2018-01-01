@@ -1,7 +1,0 @@
-GetPtr {
-  1 = &Hello;
-  2 = &World;
-}
-
-Hello { = 'Hello' }
-World { = 'World' }

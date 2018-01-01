@@ -1,8 +1,14 @@
-$INCLUDE "function-ptr-call-get.refi";
-
 $ENTRY Go {
   = <Eq ('Hello') <<GetPtr 1>>>
     <Eq ('World') <<GetPtr 2>>>;
 }
 
 Eq { (e.X) e.X = ; }
+
+GetPtr {
+  1 = &Hello;
+  2 = &World;
+}
+
+Hello { = 'Hello' }
+World { = 'World' }

@@ -591,10 +591,21 @@ DoExpression {
           (e.Collected) <Expression-Aux s.Mode s.Kind e.Tokens>
         >;
 
+      (TkOpenCall t.Pos /* empty */)
+        = <DoExpression-AfterCall
+            s.Mode s.Kind
+            (
+              e.Errors
+              <ClassicError s.Mode t.Pos 'Identifier expected after \'<\''>
+            )
+            (e.Collected) t.Pos
+            (/* no func name */) <Expression-Aux s.Mode s.Kind e.Tokens>
+          >;
+
       (TkOpenCall t.Pos e.FuncName) =
         <DoExpression-AfterCall
-          s.Mode s.Kind (e.Errors) (e.Collected) t.Pos (e.FuncName)
-          <Expression-Aux s.Mode s.Kind e.Tokens>
+          s.Mode s.Kind (e.Errors) (e.Collected) t.Pos
+          ((TkName t.Pos e.FuncName)) <Expression-Aux s.Mode s.Kind e.Tokens>
         >;
 
       (TkRefal5Mode t.Pos s.NewMode)
@@ -638,15 +649,15 @@ DoExpression-AfterBracket {
 }
 
 DoExpression-AfterCall {
-  s.Mode Result (e.Errors) (e.Collected) t.CallPos (e.FuncName)
+  s.Mode Result (e.Errors) (e.Collected) t.CallPos (e.OptionalFuncName)
   (e.SubexprErrors) (e.BracketTerms) (TkCloseCall t.Pos) e.Tokens =
     <DoExpression
       s.Mode Result (e.Errors e.SubexprErrors)
-      (e.Collected (CallBrackets (TkName t.CallPos e.FuncName) e.BracketTerms))
+      (e.Collected (CallBrackets e.OptionalFuncName e.BracketTerms))
       e.Tokens
     >;
 
-  s.Mode Pattern (e.Errors) (e.Collected) t.CallPos (e.FuncName)
+  s.Mode Pattern (e.Errors) (e.Collected) t.CallPos (e.OptionalFuncName)
   (e.SubexprErrors) (e.BracketTerms) (TkCloseCall t.Pos) e.Tokens =
     <DoExpression
       s.Mode Pattern
@@ -657,18 +668,18 @@ DoExpression-AfterCall {
           'unexpected \'<\' in pattern expression, maybe missed \'=\''
         )
       )
-      (e.Collected (Brackets e.BracketTerms)) e.Tokens
+      (e.Collected (Brackets e.OptionalFuncName e.BracketTerms)) e.Tokens
     >;
 
-  s.Mode Result (e.Errors) (e.Collected) t.CallPos (e.FuncName)
+  s.Mode Result (e.Errors) (e.Collected) t.CallPos (e.OptionalFuncName)
   (e.SubexprErrors) (e.BracketTerms) (s.Type t.Pos e.Value) e.Tokens =
     <DoExpression
       s.Mode Result (e.Errors e.SubexprErrors (Error t.Pos 'Missed \'>\''))
-      (e.Collected (CallBrackets (TkName t.CallPos e.FuncName) e.BracketTerms))
+      (e.Collected (CallBrackets e.OptionalFuncName e.BracketTerms))
       (s.Type t.Pos e.Value) e.Tokens
     >;
 
-  s.Mode Pattern (e.Errors) (e.Collected) t.CallPos (e.FuncName)
+  s.Mode Pattern (e.Errors) (e.Collected) t.CallPos (e.OptionalFuncName)
   (e.SubexprErrors) (e.BracketTerms) (s.Type t.Pos e.Value) e.Tokens =
     <DoExpression
       s.Mode Pattern
@@ -680,7 +691,8 @@ DoExpression-AfterCall {
         )
         (Error t.Pos 'Missed \')\'')
       )
-      (e.Collected (Brackets e.BracketTerms)) (s.Type t.Pos e.Value) e.Tokens
+      (e.Collected (Brackets e.OptionalFuncName e.BracketTerms))
+      (s.Type t.Pos e.Value) e.Tokens
     >;
 }
 
@@ -722,6 +734,12 @@ Expression-CheckBrackets-AfterSubexpr {
     >;
 }
 
+
+ClassicError {
+  Classic t.Pos e.Message = (Error t.Pos e.Message);
+
+  Extended t.Pos e.Message = /* it is not a error in extended mode */;
+}
 
 UnexpectedToken {
   (TkError t.Pos e.Message) e.Expected =

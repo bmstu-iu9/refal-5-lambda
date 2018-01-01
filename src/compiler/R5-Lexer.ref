@@ -111,7 +111,7 @@ DoScan {
       <DoScan <IncCol t.Pos Len '<' s.SugarName> (e.Line) e.Lines>;
 
   t.Pos ('<' e.Line) e.Lines =
-    (TkError t.Pos 'Identifier expected after \'<\'')
+    (TkOpenCall t.Pos /* empty */)
     <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
 
   t.Pos ('\'' e.Line) e.Lines =
