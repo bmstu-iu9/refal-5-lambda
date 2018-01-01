@@ -83,7 +83,8 @@ goto :EOF
 
 :MAKERAR
 setlocal
-  set FLAGS=m -r -t -sfx -av -k -z..\winrar-comment.txt -iicon..\icon.ico
+  set FLAGS=m -r -t -sfx -av -k -z..\winrar-comment.txt ^
+    -iicon..\icon.ico -iimg..\logo.bmp
   set ARC=..\_setup\setup-refal-5-lambda-%VERSION%.exe
   if exist %ARC% erase %ARC%
   start /w winrar %FLAGS% %ARC% *
