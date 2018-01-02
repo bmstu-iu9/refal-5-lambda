@@ -59,7 +59,7 @@ compile_slim() {
   mkdir -p $SLIMDIR
   prepare_prefix "$SLIMDIR" slim "$CSOURCES $RT"
 
-  SREFC_FLAGS="$SREFC_FLAGS -Od-" compile_separated "$SLIMDIR" "$SOURCES"
+  SREFC_FLAGS="$SREFC_FLAGS -Od-" compile_separated "$SLIMDIR" "$RSOURCES"
 }
 
 prepare_common() {
@@ -74,7 +74,7 @@ prepare_common() {
 
   mkdir -p ../../srlib/src
   cp LICENSE ../../srlib
-  for s in $SOURCES; do
+  for s in $CSOURCES $RSOURCES; do
     cp $s.sref ../../srlib/src
   done
 
