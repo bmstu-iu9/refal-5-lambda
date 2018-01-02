@@ -35,9 +35,16 @@ setlocal
     xcopy /e /i /y %%d %%~nxd
   )
 
-  set ARC=..\_setup\bootstrap-refal-5-lambda-%VERSION%.zip
+  if exist c-plus-plus.conf.bat erase c-plus-plus.conf.bat
+
+  set ARC=..\_setup\bootstrap-refal-5-lambda-%VERSION%.tar.gz
+  if not exist %ARC% erase %ARC%
+  tar czvf %ARC:\=/% *
+
+  set ARC=%ARC:tar.gz=zip%
   if not exist %ARC% erase %ARC%
   start /w winrar m -r -t -afzip %ARC% *
+
   popd
 endlocal
 goto :EOF
