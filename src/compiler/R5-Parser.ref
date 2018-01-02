@@ -29,6 +29,7 @@
     | (CallBrackets (TkName t.SrcPos e.Function) t.Terms*)
     | (TkName t.SrcPos s.Char*)
     | (Closure Sentences t.Sentence*)
+    | (TkNewVariable t.SrcPos s.VarType e.Index)
   s.VarType ::= 's' | 't' | 'e'
 */
 $ENTRY R5-Parse {
@@ -628,6 +629,23 @@ DoExpression {
             (e.Collected) <Block s.Mode (TkOpenBlock t.Pos) e.Tokens>
           >;
 
+      (TkRedefinition t.Pos)
+        = <DoExpression
+            s.Mode s.Kind
+            <DoExpression-AddRedefinition
+              s.Kind
+              (
+                e.Errors
+                <ClassicError
+                  s.Mode t.Pos
+                  'Variable redefinition is available in extended mode'
+                >
+              )
+              (e.Collected) t.Pos
+            >
+            e.Tokens
+          >;
+
       t.OtherToken =
         (e.Errors) (e.Collected) t.OtherToken e.Tokens;
     }
@@ -720,6 +738,19 @@ DoExpression-AfterBlock {
       >;
 }
 
+DoExpression-AddRedefinition {
+  Pattern (e.Errors) (e.Collected (TkVariable t.VarPos s.VarType e.Index)) t.Pos
+    = (e.Errors) (e.Collected (TkNewVariable t.VarPos s.VarType e.Index));
+
+  Pattern (e.Errors) (e.Collected) t.Pos
+    = (e.Errors (Error t.Pos 'Redefinition sign expects variable before'))
+      (e.Collected);
+
+  Result (e.Errors) (e.Collected) t.Pos
+    = (e.Errors (Error t.Pos 'Illegal redefinition sign in result expression'))
+      (e.Collected);
+}
+
 Expression-CheckBrackets {
   s.Mode s.Kind (e.Errors) (e.Expression) (s.Type t.Pos) e.Tokens,
       <OneOf s.Type TkCloseBracket TkCloseCall>: True =
@@ -779,4 +810,5 @@ TokName {
   TkEOF = 'end of file';
   TkRefal5Mode = '*$CLASSIC or *$EXTENDED';
   TkAmpersand = '\'&\'';
+  TkRedefinition = '\'^\'';
 }

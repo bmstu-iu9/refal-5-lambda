@@ -22,6 +22,7 @@ $EXTERN LoadFile, Inc;
     TkError ~ char* -- сообщение об ошибке в лексике
     TkRefal5Mode ~ Classic | Extended
     TkAmpersand ~ empty
+    TkRedefinition ~ empty
   s.VarType ::= 's' | 't' | 'e'
 */
 $ENTRY R5-Scan {
@@ -143,7 +144,7 @@ IsPunctuation {
   s.Punct,
       ('(' TkOpenBracket) (')' TkCloseBracket)
       ('{' TkOpenBlock) ('}' TkCloseBlock)
-      ('>' TkCloseCall) ('&' TkAmpersand)
+      ('>' TkCloseCall) ('&' TkAmpersand) ('^' TkRedefinition)
       (',' TkComma) (':' TkColon) ('=' TkAssign) (';' TkSemicolon):
         e.Types-B (s.Punct s.TokType) e.Types-E =
     s.TokType;

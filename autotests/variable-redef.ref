@@ -1,0 +1,17 @@
+$ENTRY Go {
+  = <Eq 1 <Test 'abc'>>
+    <Eq 2 <Test 'ab'>>;
+}
+
+Eq { s.X s.X = }
+
+Test {
+  e.X
+    , e.X : 'a' e.X^
+    , e.X : 'b' e.X^
+    , e.X : 'c' e.X^
+    , e.X : /* empty */
+    = 1;
+
+  e.X = 2;
+}
