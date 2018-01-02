@@ -1,0 +1,5 @@
+$ENTRY Go {
+  = ;
+}
+
+$ENTRY F { /* empty */ }

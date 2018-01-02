@@ -1,0 +1,7 @@
+*$CLASSIC;
+
+$ENTRY Go {
+  = ;
+}
+
+$ENTRY F { /* empty */ }

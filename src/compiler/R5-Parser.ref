@@ -222,6 +222,10 @@ Function-AfterBlock {
   <Block s.Mode e.Tokens> == (e.Errors) (e.Sentences) e.Tokens
 */
 Block {
+  s.Mode (TkOpenBlock t.OpenPos) (TkCloseBlock t.ClosePos) e.Tokens
+    = (<ClassicError s.Mode t.OpenPos 'Empty function block'>)
+      (/* no sentences */) e.Tokens;
+
   s.Mode (TkOpenBlock t.Pos) e.Tokens =
     <Block-AfterSentence
       s.Mode (/* errors */) (/* sentences */)
@@ -257,19 +261,15 @@ Block-AfterSentence {
             t.Token2_ e.Tokens
           >;
 
-      (TkSemicolon t.Pos1) (TkCloseBlock t.Pos2) =
-        <CheckEmptyBlock
-          (e.Errors e.SentenceErrors)
+      (TkSemicolon t.Pos1) (TkCloseBlock t.Pos2)
+        = (e.Errors e.SentenceErrors)
           (e.Sentences t.NextSentence)
-          t.Pos1 e.Tokens
-        >;
+          e.Tokens;
 
-      (TkCloseBlock t.Pos) t.Token2 =
-        <CheckEmptyBlock
-          (e.Errors e.SentenceErrors)
+      (TkCloseBlock t.Pos) t.Token2
+        = (e.Errors e.SentenceErrors)
           (e.Sentences t.NextSentence)
-          t.Pos t.Token2 e.Tokens
-        >;
+          t.Token2 e.Tokens;
 
       (TkSemicolon t.Pos) t.Token2 =
         <Block-AfterSentence
@@ -292,24 +292,13 @@ Block-AfterSentence {
 
   (e.Errors) (e.Sentences)
   (e.SentenceErrors) t.NextSentence
-  (TkEOF t.Pos) =
-    <CheckEmptyBlock
-      (
+  (TkEOF t.Pos)
+    = (
         e.Errors e.SentenceErrors
         <UnexpectedToken (TkEOF t.Pos) '\';\' or \'}\''>
       )
       (e.Sentences t.NextSentence)
-      t.Pos (TkEOF t.Pos)
-    >;
-}
-
-CheckEmptyBlock {
-  (e.Errors) (/* no sentences */) t.Pos e.Tokens =
-    (e.Errors (Error t.Pos 'Empty function block'))
-    (/* no sentences */) e.Tokens;
-
-  (e.Errors) (e.Sentences) t.Pos e.Tokens =
-    (e.Errors) (e.Sentences) e.Tokens;
+      (TkEOF t.Pos);
 }
 
 

@@ -1,0 +1,5 @@
+$ENTRY Go {
+  = ;
+
+  "not empty", A : { /* empty */ };
+}
