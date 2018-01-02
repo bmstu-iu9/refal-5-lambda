@@ -171,12 +171,18 @@ DoScan-BuildKeyword {
       <DoScan <IncCol t.Pos Len e.KeywordChars> (e.Line) e.Lines>;
 
   t.Pos ('$EASTEREGG') (e.Line) e.Lines
-    = /* пока пусто */
+    = <EasterEgg t.Pos $EASTEREGG>
       <DoScan <IncCol t.Pos Len '$EASTEREGG'> (e.Line) e.Lines>;
 
   t.Pos (e.KeywordChars) (e.Line) e.Lines =
     (TkError t.Pos 'Bad keyword \'' e.KeywordChars '\'')
     <DoScan <IncCol t.Pos Len e.KeywordChars> (e.Line) e.Lines>;
+}
+
+EasterEgg {
+  t.Pos s.Char e.Text = (TkChar t.Pos s.Char) <EasterEgg t.Pos e.Text>;
+
+  t.Pos /* empty */ = /* empty */;
 }
 
 DoScan-Number {
