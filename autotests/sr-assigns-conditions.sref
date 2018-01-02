@@ -1,0 +1,12 @@
+$ENTRY Go {
+  = <Test 'abcdef'>;
+}
+
+Test {
+  e.X
+    = e.X e.X : e.Y
+    , e.Y : e.A 'fa' e.B
+    , e.B e.A : e.A^ 'fa' e.B^
+    = e.A : e.B
+    = /* empty */;
+}
