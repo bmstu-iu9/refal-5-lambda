@@ -73,6 +73,10 @@
         <word name="$EXTRN"/>
         <word name="$EXTERNAL"/>
         <word name="$EASTEREGG"/>
+        <word name="$ENUM"/>
+        <word name="$EENUM"/>
+        <word name="$SWAP"/>
+        <word name="$ESWAP"/>
       </keywords>
       <keywords region="refal5LambdaSymbol">
         <symb name="="/>

@@ -8,8 +8,10 @@
   s.Mode ::= Classic | Extended
 
   t.Error ::= (t.Pos e.Message)
-  t.Unit ::= t.Function | t.Extern
-  t.Extern ::= (Declaration NoPos GN-Entry e.Name)
+  t.Unit ::= t.Function | t.Extern | t.SingleDeclaration
+  t.Extern ::= (Declaration t.Pos GN-Entry e.Name)
+  t.SingleDeclaration ::= (s.SingleDeclarationTag t.Pos s.ScopeClass e.Name)
+  s.SingleDeclarationTag ::= Enum | Swap
 
   t.Function ::=
       (Function t.SrcPos s.ScopeClass (e.Name) Sentences t.Sentence*)
@@ -64,7 +66,7 @@ DoFilterErrors {
 Program {
   s.Mode t.NextToken e.Tokens,
       t.NextToken: (s.Type t.Pos e.Value),
-      <OneOf s.Type TkExtern TkEntry TkName TkSemicolon>: True =
+      <OneOf s.Type <NameListTags> TkEntry TkName TkSemicolon>: True =
     <Program-AfterUnit s.Mode <Unit s.Mode t.NextToken e.Tokens>>;
 
   s.Mode (TkRefal5Mode t.Pos s.NewMode) e.Tokens
@@ -78,6 +80,10 @@ Program {
       t.Unexpected '$EXTERN, $ENTRY, function name or special comment'
     >
     <Program s.Mode e.Tokens>;
+}
+
+NameListTags {
+  = TkExtern TkEnum TkEEnum TkSwap TkESwap;
 }
 
 OneOf {
@@ -98,15 +104,25 @@ Unit {
   s.Mode t.NextToken e.Tokens,
       t.NextToken:
     {
-      (TkExtern t.Pos) =
-        <NameList e.Tokens>;
+      (TkExtern t.Pos) = <NameList TkExtern e.Tokens>;
 
-      (TkSemicolon t.Pos) =
-        (/* игнорируем */) e.Tokens;
+      (s.Tag t.Pos)
+        , <OneOf s.Tag <NameListTags>> : True
+        , <NameList s.Tag e.Tokens>
+        : {
+            (e.ErrorsAndUnits) e.Tokens1 /*^*/
+              = (
+                  <ClassicError s.Mode t.Pos <TokName s.Tag> ' is a extension'>
+                  e.ErrorsAndUnits
+                )
+                e.Tokens1;
+          };
 
-      (s.Type t.Pos e.Value),
-          <OneOf s.Type TkEntry TkName>: True =
-        <Function s.Mode t.NextToken e.Tokens>;
+      (TkSemicolon t.Pos) = (/* игнорируем */) e.Tokens;
+
+      (s.Type t.Pos e.Value)
+        , <OneOf s.Type TkEntry TkName>: True
+        = <Function s.Mode t.NextToken e.Tokens>;
 
       /* других типов быть не должно */
     }
@@ -115,63 +131,86 @@ Unit {
 /*
   NameList = NAME { "," NAME } ";".
 
-  <NameList e.Tokens> == (t.ErrorUnit*) e.Tokens
+  <NameList s.Tag e.Tokens> == (t.ErrorUnit*) e.Tokens
 */
 NameList {
-  (TkName t.Pos e.Name) e.Tokens =
-    <NameList-DoNames
-      (<Extern t.Pos e.Name> /* externs and errors */) e.Tokens
-    >;
+  s.Tag (TkName t.Pos e.Name) e.Tokens
+    = <NameList-DoNames
+        s.Tag
+        (<Mu s.Tag t.Pos e.Name> /* externs and errors */)
+        e.Tokens
+      >;
 
-  (TkRefal5Mode t.Pos s.Mode) e.Tokens = <NameList e.Tokens>;
+  s.Tag (TkRefal5Mode t.Pos s.Mode) e.Tokens = <NameList s.Tag e.Tokens>;
 
-  t.NextToken e.Tokens,
-      t.NextToken: (s.Type t.Pos e.Value) =
-    ((Error t.Pos 'expected function name after $EXTERN keyword'))
-    t.NextToken e.Tokens;
+  s.Tag t.NextToken e.Tokens
+    , t.NextToken : (s.Type t.Pos e.Value)
+    = ((Error t.Pos 'expected function name after ' <TokName s.Tag > ' keyword'))
+      t.NextToken e.Tokens;
 }
 
-Extern {
+TkExtern {
   t.Pos e.Name = (Declaration t.Pos GN-Entry e.Name);
 }
 
+TkEnum {
+  t.Pos e.Name = (Enum t.Pos GN-Local e.Name);
+}
+
+TkEEnum {
+  t.Pos e.Name = (Enum t.Pos GN-Entry e.Name);
+}
+
+TkSwap {
+  t.Pos e.Name = (Swap t.Pos GN-Local e.Name);
+}
+
+TkESwap {
+  t.Pos e.Name = (Swap t.Pos GN-Entry e.Name);
+}
+
 NameList-DoNames {
-  (e.ExternsAndErrors)
+  s.Tag (e.ExternsAndErrors)
   (TkRefal5Mode t.Pos s.Mode) e.Tokens
-    = <NameList-DoNames (e.ExternsAndErrors) e.Tokens>;
+    = <NameList-DoNames s.Tag (e.ExternsAndErrors) e.Tokens>;
 
-  (e.ExternsAndErrors)
+  s.Tag (e.ExternsAndErrors)
   (TkComma t.CommaPos) (TkRefal5Mode t.ModePos s.Mode) e.Tokens
-    = <NameList-DoNames (e.ExternsAndErrors) (TkComma t.CommaPos) e.Tokens>;
+    = <NameList-DoNames
+        s.Tag (e.ExternsAndErrors) (TkComma t.CommaPos) e.Tokens
+      >;
 
-  (e.ExternsAndErrors)
-  (TkComma t.CommaPos) (TkName t.NamePos e.Name) e.Tokens =
-    <NameList-DoNames (e.ExternsAndErrors <Extern t.NamePos e.Name>) e.Tokens>;
+  s.Tag (e.ExternsAndErrors)
+  (TkComma t.CommaPos) (TkName t.NamePos e.Name) e.Tokens
+    = <NameList-DoNames
+        s.Tag (e.ExternsAndErrors <Mu s.Tag t.NamePos e.Name>) e.Tokens
+      >;
 
-  (e.ExternsAndErrors) (TkSemicolon t.Pos) e.Tokens =
+  s.Tag (e.ExternsAndErrors) (TkSemicolon t.Pos) e.Tokens =
     (e.ExternsAndErrors) e.Tokens;
 
-  (e.ExternsAndErrors) (TkComma t.Pos) e.Tokens =
-    <NameList-DoNames
-      (e.ExternsAndErrors (Error t.Pos 'expected name after comma'))
-      e.Tokens
-    >;
+  s.Tag (e.ExternsAndErrors) (TkComma t.Pos) e.Tokens
+    = <NameList-DoNames
+        s.Tag (e.ExternsAndErrors (Error t.Pos 'expected name after comma'))
+        e.Tokens
+      >;
 
-  (e.ExternsAndErrors)
-  (TkName t.NamePos e.Name) (TkOpenBlock t.BracketPos) e.Tokens =
-    (
-      e.ExternsAndErrors
-      (Error t.NamePos 'missed semicolon after previous $EXTERN declaration')
-    )
-    (TkName t.NamePos e.Name) (TkOpenBlock t.BracketPos) e.Tokens;
+  s.Tag (e.ExternsAndErrors)
+  (TkName t.NamePos e.Name) (TkOpenBlock t.BracketPos) e.Tokens
+    = (
+        e.ExternsAndErrors
+        (Error t.NamePos 'missed semicolon after previous $EXTERN declaration')
+      )
+      (TkName t.NamePos e.Name) (TkOpenBlock t.BracketPos) e.Tokens;
 
-  (e.ExternsAndErrors) (TkName t.Pos e.Name) e.Tokens =
-    <NameList-DoNames
-      (e.ExternsAndErrors (Error t.Pos 'missed comma after external name'))
-      e.Tokens
-    >;
+  s.Tag (e.ExternsAndErrors) (TkName t.Pos e.Name) e.Tokens
+    = <NameList-DoNames
+        s.Tag
+        (e.ExternsAndErrors (Error t.Pos 'missed comma after external name'))
+        e.Tokens
+      >;
 
-  (e.ExternsAndErrors) t.NextToken e.Tokens,
+  s.Tag (e.ExternsAndErrors) t.NextToken e.Tokens,
       t.NextToken: (s.Type t.Pos e.Value),
       <OneOf s.Type TkExtern TkEntry TkEOF>: True =
     (
@@ -180,11 +219,12 @@ NameList-DoNames {
     )
     t.NextToken e.Tokens;
 
-  (e.ExternsAndErrors) t.NextToken e.Tokens =
-    <NameList-DoNames
-      (e.ExternsAndErrors <UnexpectedToken t.NextToken 'comma or semicolon'>)
-      e.Tokens
-    >;
+  s.Tag (e.ExternsAndErrors) t.NextToken e.Tokens
+    = <NameList-DoNames
+        s.Tag
+        (e.ExternsAndErrors <UnexpectedToken t.NextToken 'comma or semicolon'>)
+        e.Tokens
+      >;
 }
 
 /*
@@ -792,6 +832,10 @@ TokName {
   TkSemicolon = '\';\'';
   TkExtern = '$EXTERN';
   TkEntry = '$ENTRY';
+  TkEnum = '$ENUM';
+  TkEEnum = '$EENUM';
+  TkSwap = '$SWAP';
+  TkESwap = '$ESWAP';
   TkEOF = 'end of file';
   TkRefal5Mode = '*$CLASSIC or *$EXTENDED';
   TkAmpersand = '\'&\'';

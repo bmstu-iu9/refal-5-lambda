@@ -1,0 +1,16 @@
+*$CLASSIC;
+
+$SWAP Swap;
+
+Equal { (e.X) e.X = ; }
+
+$ENTRY Go {
+  =
+    <Equal () <Swap>>
+    <Equal () <Swap 'Test'>>
+    <Equal ('Test') <Swap>>
+    <Equal () <Swap 'Hello'>>
+    <Equal ('Hello') <Swap 'World'>>
+    <Equal ('World') <Swap>>
+    <Equal () <Swap>>;
+}

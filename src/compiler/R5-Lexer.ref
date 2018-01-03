@@ -17,7 +17,7 @@ $EXTERN LoadFile, Inc;
     TkOpenBlock, TkCloseBlock ~ пусто
     TkOpenCall ~ char* -- имя функции
     TkComma, TkColon, TkAssign, TkSemicolon ~ пусто
-    TkExtern, TkEntry ~ пусто
+    TkExtern, TkEntry, TkEnum, TkEEnum, TkSwap, TkESwap ~ пусто
     TkEOF ~ пусто
     TkError ~ char* -- сообщение об ошибке в лексике
     TkRefal5Mode ~ Classic | Extended
@@ -172,7 +172,8 @@ DoScan-BuildKeyword {
 
   t.Pos (e.KeywordChars) (e.Line) e.Lines
     , (TkExtern '$EXTERN') (TkExtern '$EXTRN') (TkExtern '$EXTERNAL')
-      (TkEntry '$ENTRY')
+      (TkEntry '$ENTRY') (TkEnum '$ENUM') (TkEEnum '$EENUM')
+      (TkSwap '$SWAP') (TkESwap '$ESWAP')
     : e.Keywords-B (s.Tag e.KeywordChars) e.Keywords-E
     = (s.Tag t.Pos)
       <DoScan <IncCol t.Pos Len e.KeywordChars> (e.Line) e.Lines>;
