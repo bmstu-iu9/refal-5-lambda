@@ -27,7 +27,13 @@ $EXTERN LoadFile, Inc;
 */
 $ENTRY R5-Scan {
   e.FileName =
-    <DoScan (RowCol 1 1) <LoadFile e.FileName>>;
+    <DoScan (RowCol 1 1) <Skip-UTF-8-Bom <LoadFile e.FileName>>>;
+}
+
+Skip-UTF-8-Bom {
+  ('\xEF\xBB\xBF' e.Line) e.Lines = (e.Line) e.Lines;
+
+  e.Lines = e.Lines;
 }
 
 IncLine {
