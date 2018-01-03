@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch;
+$EXTERN Map;
 
 //FROM Library
 $EXTERN ExistFile;
@@ -57,74 +57,62 @@ ExistFile-T {
 }
 
 AnalyzeFile {
-  e.FileName '.ref' =
-    <Fetch
-      <ExistFile-T e.FileName '.ref'>
-      {
+  e.FileName '.ref'
+    = <ExistFile-T e.FileName '.ref'>
+    : {
         #True e.UnitName '.ref' =
           (#Source (#R5 e.UnitName '.ref') e.UnitName '.rasl');
 
         #False e.SourceName = (#NotFound e.SourceName);
-      }
-    >;
+      };
 
-  e.FileName '.sref' =
-    <Fetch
-      <ExistFile-T e.FileName '.sref'>
-      {
+  e.FileName '.sref'
+    = <ExistFile-T e.FileName '.sref'>
+    : {
         #True e.UnitName '.sref' =
           (#Source (#SR e.UnitName '.sref') e.UnitName '.rasl');
 
         #False e.SourceName = (#NotFound e.SourceName);
-      }
-    >;
+      };
 
-  e.FileName '.rasl' =
-    <Fetch
-      <ExistFile-T e.FileName '.rasl'>
-      {
-        #True e.OutName =
-          <Fetch
-            <ExistFile-T e.FileName '.cpp'>
-            {
-              #True e.NativeName =
-                (#OutputWithNative (e.OutName) e.NativeName);
+  e.FileName '.rasl'
+    = <ExistFile-T e.FileName '.rasl'>
+    : {
+        #True e.OutName
+          = <ExistFile-T e.FileName '.cpp'>
+          : {
+              #True e.NativeName = (#OutputWithNative (e.OutName) e.NativeName);
 
-              #False e.NativeName =
-                (#Output e.OutName);
-            }
-          >;
+              #False e.NativeName = (#Output e.OutName);
+            };
 
         #False e.OutName = (#NotFound e.OutName);
-      }
-    >;
+      };
 
-  e.FileName =
-    <Fetch
-      (<ExistFile-T e.FileName '.ref'>) (<ExistFile-T e.FileName '.sref'>)
+  e.FileName
+    = (<ExistFile-T e.FileName '.ref'>) (<ExistFile-T e.FileName '.sref'>)
       (<ExistFile-T e.FileName '.rasl'>) (<ExistFile-T e.FileName '.cpp'>)
-      {
+    : {
         (#True e.R5-SourceName) (s.ResSR e.SR-SourceName)
-        (s.ResOut e.OutName) (s.ResNat e.Native) =
-          (#Source (#R5 e.R5-SourceName) e.OutName);
+        (s.ResOut e.OutName) (s.ResNat e.Native)
+          = (#Source (#R5 e.R5-SourceName) e.OutName);
 
         (#False e.R5-SourceName) (#True e.SR-SourceName)
-        (s.ResOut e.OutName) (s.ResNat e.Native) =
-          (#Source (#SR e.SR-SourceName) e.OutName);
+        (s.ResOut e.OutName) (s.ResNat e.Native)
+          = (#Source (#SR e.SR-SourceName) e.OutName);
 
         (#False e.R5-SourceName) (#False e.SR-SourceName)
-        (#True e.OutName) (#True e.Native) =
-          (#OutputWithNative (e.OutName) e.Native);
+        (#True e.OutName) (#True e.Native)
+          = (#OutputWithNative (e.OutName) e.Native);
 
         (#False e.R5-SourceName) (#False e.SR-SourceName)
-        (#True e.OutName) (#False e.Native) =
-          (#Output e.OutName);
+        (#True e.OutName) (#False e.Native)
+          = (#Output e.OutName);
 
         (#False e.UnitName '.ref') (#False e.UnitName '.sref')
-        (#False e.UnitName '.rasl') (#False e.UnitName '.cpp') =
-          (#NotFound e.UnitName);
-      }
-    >;
+        (#False e.UnitName '.rasl') (#False e.UnitName '.cpp')
+          = (#NotFound e.UnitName);
+      };
 }
 
 /**
@@ -135,54 +123,45 @@ AnalyzeFile {
 */
 $ENTRY FindInclude {
   (e.Folders) e.FileName
-    = <Fetch
-        <AnalyzeInclude e.FileName>
-        <Map
-          {
-            (e.Folder) = <AnalyzeInclude e.Folder '/' e.FileName>;
-          }
-          e.Folders
-        >
+    = <AnalyzeInclude e.FileName>
+      <Map
         {
-          e.Variants-B (#Success s.Dialect e.FullPath) e.Variants-E
-            = #Success s.Dialect e.FullPath;
-
-          e.Variants = #Fails;
+          (e.Folder) = <AnalyzeInclude e.Folder '/' e.FileName>;
         }
-      >;
+        e.Folders
+      >
+    : {
+        e.Variants-B (#Success s.Dialect e.FullPath) e.Variants-E
+          = #Success s.Dialect e.FullPath;
+
+        e.Variants = #Fails;
+      };
 }
 
 AnalyzeInclude {
   e.FileName '.refi'
-    = <Fetch
-        <ExistFile-T e.FileName '.refi'>
-        {
-          #True e.FullPath = (#Success #R5 e.FullPath);
-          #False e.FullPath = (#Fails);
-        }
-      >;
+    = <ExistFile-T e.FileName '.refi'>
+    : {
+        #True e.FullPath = (#Success #R5 e.FullPath);
+        #False e.FullPath = (#Fails);
+      };
 
   e.FileName '.srefi'
-    = <Fetch
-        <ExistFile-T e.FileName '.srefi'>
-        {
-          #True e.FullPath = (#Success #SR e.FullPath);
-          #False e.FullPath = (#Fails);
-        }
-      >;
+    = <ExistFile-T e.FileName '.srefi'>
+    : {
+        #True e.FullPath = (#Success #SR e.FullPath);
+        #False e.FullPath = (#Fails);
+      };
 
   e.FileName
-    = <Fetch
-        (<ExistFile-T e.FileName '.refi'>) (<ExistFile-T e.FileName '.srefi'>)
-        {
-          (#True e.R5-FullPath) (s.ResSR e.SR-FullPath)
-            = (#Success #R5 e.R5-FullPath);
+    = (<ExistFile-T e.FileName '.refi'>) (<ExistFile-T e.FileName '.srefi'>)
+    : {
+        (#True e.R5-FullPath) (s.ResSR e.SR-FullPath)
+          = (#Success #R5 e.R5-FullPath);
 
-          (#False e.R5-FullPath) (#True e.SR-FullPath)
-            = (#Success #SR e.SR-FullPath);
+        (#False e.R5-FullPath) (#True e.SR-FullPath)
+          = (#Success #SR e.SR-FullPath);
 
-          (#False e.R5-FullPath) (#False e.SR-FullPath)
-            = (#Fails);
-        }
-      >;
+        (#False e.R5-FullPath) (#False e.SR-FullPath) = (#Fails);
+      };
 }
