@@ -15,7 +15,8 @@
       (Function t.SrcPos s.ScopeClass (e.Name) Sentences t.Sentence*)
   s.ScopeClass ::= GN-Entry | GN-Local
   t.Sentence ::=
-    (t.Pattern (Condition t.Result (e.Blocks) t.Pattern)* e.SentenceTail)
+    (t.Pattern (s.Chain t.Result (e.Blocks) t.Pattern)* e.SentenceTail)
+  s.Chain ::= Condition | Assign
   e.SentenceTail ::= t.Result (e.Blocks)
   e.Blocks ::= (Sentences t.Sentence*)*
 
@@ -304,7 +305,9 @@ Block-AfterSentence {
 
 
 /*
-  Sentence = Pattern ("=" Result | "," ExtensionChain).
+  Sentence = SentencePart SentenceTail.
+  SentencePart = Pattern ("=" | ",") Result.
+  SentenceTail = ":" SentencePart SentenceTail | empty.
 
   <Sentence s.Mode e.Tokens> == (e.Errors) t.Sentence e.Tokens
 */
@@ -312,37 +315,136 @@ Sentence {
   s.Mode (TkRefal5Mode t.Pos s.NewMode) e.Tokens
     = <Sentence s.NewMode e.Tokens>;
 
-  s.Mode e.Tokens =
-    <Sentence-AfterPattern s.Mode <Pattern s.Mode e.Tokens>>;
+   s.Mode e.Tokens
+     = <SentenceTail s.Mode <SentencePart s.Mode e.Tokens>>
 }
 
-Sentence-AfterPattern {
-  s.Mode (e.Errors) t.Pattern (TkAssign t.Pos) e.Tokens =
-    <Sentence-AfterResult
-      (e.Errors) t.Pattern <Result s.Mode e.Tokens>
-    >;
+SentenceTail {
+  s.Mode (e.Errors) t.Pattern s.PartType t.Pos t.Result (e.Blocks)
+  t.NextToken e.Tokens
+    , t.NextToken
+    : {
+        (TkColon t.ColonPos)
+          = <SentenceTail-AfterTail
+              s.Mode (e.Errors) t.Pattern s.PartType t.Pos t.Result (e.Blocks)
+              <SentenceTail s.Mode <SentencePart s.Mode e.Tokens>>
+            >;
 
-  s.Mode (e.Errors) t.Pattern (TkComma t.Pos) e.Tokens =
-    <Sentence-AfterExtensionChain
-      (e.Errors) t.Pattern <ExtensionChain s.Mode e.Tokens>
-    >;
+        t.Other
+          , <CheckSentenceEnd s.Mode s.PartType t.Pos e.Blocks>
+          : (e.EndErrors) e.Blocks1
+          = (e.Errors e.EndErrors)
+            (t.Pattern /* no conditions and assignments */ t.Result (e.Blocks1))
+            t.Other e.Tokens;
+      }
+}
 
-  s.Mode (e.Errors) t.Pattern (TkSemicolon t.Pos) e.Tokens =
-    <Sentence-AfterResult
-      (e.Errors (Error t.Pos 'Missed \'=\'')) t.Pattern
-      <Result s.Mode (TkSemicolon t.Pos) e.Tokens>
-    >;
+SentenceTail-AfterTail {
+  s.Mode (e.Errors)
+  t.FirstPattern s.PartType t.Pos t.FirstResult (e.FirstBlocks)
+  (e.TailErrors)
+  (t.NextPattern e.ConditionsAndAssignments t.LastResult (e.LastBlocks))
+  e.Tokens
+    , <CheckExceedBlocks s.Mode e.FirstBlocks>
+    : (e.ExceedBlocksErrors) e.FirstBlocks1
+    = (
+        e.Errors
+        <AssignmentError s.Mode s.PartType t.Pos>
+        e.ExceedBlocksErrors
+        e.TailErrors
+      )
+      (
+        t.FirstPattern
+        (s.PartType t.FirstResult (e.FirstBlocks1) t.NextPattern)
+        e.ConditionsAndAssignments t.LastResult (e.LastBlocks)
+      )
+      e.Tokens;
+}
 
-  s.Mode (e.Errors) t.Pattern (TkColon t.Pos) e.Tokens =
-    <Sentence-AfterExtensionChain
-      (e.Errors (Error t.Pos 'Missed \',\'')) t.Pattern
-      <ExtensionChain s.Mode (TkColon t.Pos) e.Tokens>
-    >;
+CheckExceedBlocks {
+  s.Mode e.ExceedBlocks = <DoCheckExceedBlocks s.Mode () () e.ExceedBlocks>;
+}
 
-  s.Mode (e.Errors) t.Pattern t.Unexpected e.Tokens =
-    (e.Errors <UnexpectedTokenInSentence t.Unexpected>)
-    (t.Pattern (/* пустой результат */) (/* нет блоков */))
-    t.Unexpected e.Tokens;
+DoCheckExceedBlocks {
+  s.Mode (e.Errors) (e.ScannedBlocks) (t.Pos e.Body) e.RestBlocks
+    = <DoCheckExceedBlocks
+        s.Mode
+        (e.Errors <ClassicError s.Mode t.Pos 'Exceed block in this position'>)
+        (e.ScannedBlocks (e.Body))
+        e.RestBlocks
+      >;
+
+  s.Mode (e.Errors) (e.ScannedBlocks) /* empty */ = (e.Errors) e.ScannedBlocks;
+}
+
+AssignmentError {
+  Classic Assign t.Pos
+    = (Error t.Pos 'Assignment not supported in classic mode');
+
+  s.Mode s.Type t.Pos = /* no error */;
+}
+
+CheckSentenceEnd {
+  s.Mode s.PartType t.Pos (t.BodyPos e.Body) e.ExceedBlocks
+    , <CheckMistakenAssign s.Mode s.PartType t.Pos> : e.MistakenAssignError
+    , <CheckExceedBlocks s.Mode e.ExceedBlocks>
+    : (e.ExceedBlocksErrors) e.ExceedBlocks1
+    = (e.MistakenAssignError e.ExceedBlocksErrors) (e.Body) e.ExceedBlocks1;
+
+  s.Mode Condition t.Pos /* no blocks */
+    = ((Error t.Pos 'Mistaken \',\' for \'=\'')) /* no blocks */;
+
+  s.Mode Assign t.Pos /* no blocks */ = (/* no errors */) /* no blocks */;
+}
+
+CheckMistakenAssign {
+  s.Mode Assign t.Pos
+    = <ClassicError s.Mode t.Pos 'Mistaken \'=\' for \',\' in classic mode'>;
+
+  s.Mode Condition t.Pos = /* no error */;
+}
+
+SentencePart {
+  s.Mode e.Tokens
+    = <SentencePart-AfterPattern s.Mode <Pattern s.Mode e.Tokens>>;
+}
+
+SentencePart-AfterPattern {
+  s.Mode (e.PatternErrors) t.Pattern t.NextToken e.Tokens
+    , t.NextToken
+    : {
+        (TkComma t.Pos)
+          = <SentencePart-AfterResult
+              s.Mode (e.PatternErrors) t.Pattern Condition t.Pos
+              <Result s.Mode e.Tokens>
+            >;
+
+        (TkAssign t.Pos)
+          = <SentencePart-AfterResult
+              s.Mode (e.PatternErrors) t.Pattern Assign t.Pos
+              <Result s.Mode e.Tokens>
+            >;
+
+        (s.EndOfPart t.Pos)
+          , <OneOf s.EndOfPart TkColon TkSemicolon> : True
+          = <SentencePart-AfterPattern
+              s.Mode
+              (e.PatternErrors (Error t.Pos 'Missed \',\' or \'=\''))
+              t.Pattern (TkComma t.Pos) (s.EndOfPart t.Pos) e.Tokens
+            >;
+
+        (s.Unexpected t.Pos e.Info)
+          = (e.PatternErrors <UnexpectedTokenInSentence t.NextToken>)
+            t.Pattern Assign t.Pos (/* empty result */) (/* no blocks */)
+            t.NextToken e.Tokens;
+      };
+}
+
+SentencePart-AfterResult {
+  s.Mode (e.PatternErrors) t.Pattern s.PartType t.Pos
+  (e.ResultErrors) t.Result (e.Blocks) e.Tokens
+    = (e.PatternErrors e.ResultErrors)
+      t.Pattern s.PartType t.Pos t.Result (e.Blocks) e.Tokens;
 }
 
 UnexpectedTokenInSentence {
@@ -350,151 +452,6 @@ UnexpectedTokenInSentence {
     <UnexpectedToken
       t.Unexpected 'valid Refal expression, \'=\', \',\', \':\' or \';\''
     >
-}
-
-Sentence-AfterResult {
-  (e.Errors) t.Pattern (e.ResultErrors) t.Result e.Tokens =
-    (e.Errors e.ResultErrors)
-    (t.Pattern t.Result (/* нет блоков */))
-    e.Tokens
-}
-
-Sentence-AfterExtensionChain {
-  (e.Errors) t.Pattern (e.ExtensionErrors) (e.Conditions-And-SentenceTail)
-  e.Tokens =
-    (e.Errors e.ExtensionErrors)
-    (t.Pattern e.Conditions-And-SentenceTail)
-    e.Tokens;
-}
-
-
-/*
-  ExtensionChain =
-    Result ":" (Block | Pattern ("," ExtensionChain | "=" Result)).
-
-  <ExtensionChain s.Mode e.Tokens>
-    == (e.Errors) (e.Conditions-And-SentenceTail) e.Tokens
-*/
-ExtensionChain {
-  s.Mode e.Tokens =
-    <ExtensionChain-AfterResult s.Mode <Result s.Mode e.Tokens>>;
-}
-
-ExtensionChain-AfterResult {
-  s.Mode (e.Errors) t.Result (TkRefal5Mode t.Pos s.NewMode) e.Tokens
-    = <ExtensionChain-AfterResult s.NewMode (e.Errors) t.Result e.Tokens>;
-
-  s.Mode (e.Errors) t.Result
-  (TkColon t.ColonPos) (TkRefal5Mode t.ModePos s.NewMode) e.Tokens
-    = <ExtensionChain-AfterResult
-        s.NewMode (e.Errors) t.Result (TkColon t.ColonPos) e.Tokens
-      >;
-
-  s.Mode (e.Errors) t.Result
-  (TkColon t.ColonPos) (TkOpenBlock t.BlockPos) e.Tokens =
-    <ExtensionChain-AfterBlock
-      (e.Errors) t.Result <Block s.Mode (TkOpenBlock t.BlockPos) e.Tokens>
-    >;
-
-  s.Mode (e.Errors) t.Result t.NextToken e.Tokens,
-      t.NextToken:
-    {
-      (TkColon t.Pos) =
-        <ExtensionChain-AfterPattern
-          s.Mode (e.Errors) t.Result <Pattern s.Mode e.Tokens>
-        >;
-
-      (TkOpenBlock t.Pos) =
-        <ExtensionChain-AfterBlock
-          (e.Errors (Error t.Pos 'Missed \':\' before block')) t.Result
-          <Block s.Mode (TkOpenBlock t.Pos) e.Tokens>
-        >;
-
-      (TkSemicolon t.Pos) =
-        (e.Errors (Error t.Pos 'Mistaken \',\' for \'=\''))
-        (t.Result (/* нет блоков */))
-        (TkSemicolon t.Pos) e.Tokens;
-
-      (s.Type t.Pos),
-          <OneOf s.Type TkComma TkAssign>: True =
-        <ExtensionChain-AfterPattern
-          s.Mode (e.Errors (Error t.Pos 'Missed \':\'')) t.Result
-          <Pattern s.Mode (TkComma t.Pos) e.Tokens>
-        >;
-
-      t.Unexpected =
-        (e.Errors <UnexpectedTokenInSentence t.Unexpected>)
-        (t.Result (/* нет блоков */)) t.Unexpected e.Tokens
-    }
-}
-
-ExtensionChain-AfterBlock {
-  (e.Errors) t.Result (e.BlockErrors) (e.Sentences) e.Tokens =
-    (e.Errors e.BlockErrors)
-    (t.Result ((Sentences e.Sentences)))
-    e.Tokens;
-}
-
-ExtensionChain-AfterPattern {
-  s.Mode (e.Errors) t.Result (e.PatternErrors) t.Pattern t.NextToken e.Tokens,
-      t.NextToken:
-    {
-      (TkComma t.Pos) =
-        <ExtensionChain-AfterExtensionChain
-          (e.Errors e.PatternErrors) t.Result t.Pattern
-          <ExtensionChain s.Mode e.Tokens>
-        >;
-
-      (TkAssign t.Pos) =
-        <ExtensionChain-AfterPattern-AfterResult
-          (e.Errors e.PatternErrors) t.Result t.Pattern
-          <Result s.Mode e.Tokens>
-        >;
-
-      (TkColon t.Pos) =
-        <ExtensionChain-AfterExtensionChain
-          (e.Errors e.PatternErrors (Error t.Pos 'Missed \',\''))
-          t.Result t.Pattern
-          <ExtensionChain s.Mode t.NextToken e.Tokens>
-        >;
-
-      (TkSemicolon t.Pos) =
-        <ExtensionChain-AfterPattern-AfterResult
-          (e.Errors e.PatternErrors (Error t.Pos 'Missed \'=\''))
-          t.Result t.Pattern
-          <Result s.Mode t.NextToken e.Tokens>
-        >;
-
-      t.Unexpected =
-        (e.Errors e.PatternErrors <UnexpectedTokenInSentence t.Unexpected>)
-        (
-          (Condition t.Result (/* нет блоков */) t.Pattern)
-          (/* пустой результат */) (/* нет блоков */)
-        )
-        t.Unexpected e.Tokens;
-    }
-}
-
-ExtensionChain-AfterExtensionChain {
-  (e.Errors) t.Result t.Pattern
-  (e.ChainErrors) (e.Conditions-And-SentenceTail) e.Tokens =
-    (e.Errors e.ChainErrors)
-    (
-      (Condition t.Result (/* нет блоков */) t.Pattern)
-      e.Conditions-And-SentenceTail
-    )
-    e.Tokens;
-}
-
-ExtensionChain-AfterPattern-AfterResult {
-  (e.Errors) t.Result t.Pattern
-  (e.ResultErrors) t.FinalResult e.Tokens =
-    (e.Errors e.ResultErrors)
-    (
-      (Condition t.Result (/* нет блоков */) t.Pattern)
-      t.FinalResult (/* нет блоков */)
-    )
-    e.Tokens;
 }
 
 
@@ -509,12 +466,40 @@ Pattern {
 
 
 /*
-  Result = Expression.
+  Result = Expression { ":" Block }.
 
-  <Result s.Mode e.Tokens> == (e.Errors) t.Result e.Tokens
+  <Result s.Mode e.Tokens> == (e.Errors) t.Result (e.Blocks) e.Tokens
 */
 Result {
-  s.Mode e.Tokens = <Expression s.Mode Result e.Tokens>;
+  s.Mode e.Tokens
+    = <Result-Blocks
+        s.Mode (/* blocks */) <Expression s.Mode Result e.Tokens>
+      >;
+}
+
+Result-Blocks {
+  s.Mode (e.Blocks) (e.Errors) t.Result
+  (TkColon t.ColonPos) (TkOpenBlock t.BlockPos) e.Tokens
+    /* TODO: assing */
+    , <Block s.Mode (TkOpenBlock t.BlockPos) e.Tokens>
+    : {
+        (e.BlockErrors) (e.Sentences) e.Tokens1 /*^*/
+          = <Result-Blocks
+              s.Mode (e.Blocks (t.ColonPos Sentences e.Sentences))
+              (e.Errors e.BlockErrors) t.Result e.Tokens1
+            >;
+      };
+
+  s.Mode (e.Blocks) (e.Errors) t.Result
+  /* missed TkColon */ (TkOpenBlock t.BlockPos) e.Tokens
+    = <Result-Blocks
+        s.Mode (e.Blocks) (e.Errors (Error t.BlockPos 'Missed \':\''))
+        t.Result
+        (TkColon t.BlockPos) (TkOpenBlock t.BlockPos) e.Tokens
+      >;
+
+  s.Mode (e.Blocks) (e.Errors) t.Result e.Tokens
+    = (e.Errors) t.Result (e.Blocks) e.Tokens;
 }
 
 

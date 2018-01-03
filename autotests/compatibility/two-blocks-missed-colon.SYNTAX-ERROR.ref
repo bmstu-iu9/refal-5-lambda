@@ -1,0 +1,18 @@
+$ENTRY Go {
+  = <Eq A <Test 1 2 3>>
+    <Eq B <Test 3 2 1>>;
+}
+
+Eq { s.X s.X = }
+
+Test {
+  e.Numbers
+    , e.Numbers e.Numbers
+    : {
+        e.Begin s.X e.End s.X = s.X;
+      }
+    /*:*/ {
+        3 = A;
+        1 = B;
+      };
+}
