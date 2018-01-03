@@ -22,7 +22,7 @@ $EXTERN UnEscapeString-SR;
 $ENTRY CreateFileList {
   t.Config e.Unit
     = <DoCreateFileList
-        t.Config () <FindFilesEx t.Config #CMD-LINE e.Unit>
+        t.Config () <FindFileEx t.Config #CMD-LINE e.Unit>
       >;
 }
 
@@ -94,7 +94,7 @@ FindImports-Aux {
         {
           (t.Config s.LineNum) (e.CommentPrefix 'FROM ' e.Name)
             = (t.Config <Inc s.LineNum>)
-              <FindFilesEx t.Config (s.LineNum e.FileName) <Trim e.Name>>;
+              <FindFileEx t.Config (s.LineNum e.FileName) <Trim e.Name>>;
 
           (t.Config s.LineNum) (e.CommentPrefix 'PREFIX ' e.Name)
             = <UpdatePrefix t.Config (s.LineNum e.FileName) <Trim e.Name>>
@@ -128,7 +128,7 @@ FindImports-Aux {
     = t.Config e.Units;
 }
 
-FindFilesEx {
+FindFileEx {
   t.Config t.SrcPos e.UnitName
     = <FindFiles (<GetFolders t.Config>) (e.UnitName)>
     : {
