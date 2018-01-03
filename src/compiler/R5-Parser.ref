@@ -519,6 +519,17 @@ Result {
 
 Result-Blocks {
   s.Mode (e.Blocks) (e.Errors) t.Result
+  (TkRefal5Mode t.ModePos s.NewMode) e.Tokens
+    = <Result-Blocks s.NewMode (e.Blocks) (e.Errors) t.Result e.Tokens>;
+
+  s.Mode (e.Blocks) (e.Errors) t.Result
+  (TkColon t.ColonPos) (TkRefal5Mode t.ModePos s.NewMode) e.Tokens
+    = <Result-Blocks
+        s.NewMode (e.Blocks) (e.Errors) t.Result
+        (TkColon t.ColonPos) e.Tokens
+      >;
+
+  s.Mode (e.Blocks) (e.Errors) t.Result
   (TkColon t.ColonPos) (TkOpenBlock t.BlockPos) e.Tokens
     /* TODO: assing */
     , <Block s.Mode (TkOpenBlock t.BlockPos) e.Tokens>
