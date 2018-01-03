@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN ArgList, Map, Fetch;
+$EXTERN ArgList, Map;
 
 //FROM Library
 $EXTERN WriteLine, StrFromInt, Exit, System;
@@ -143,27 +143,23 @@ MakeOptionalFlag {
 
 MakeTargetModeFlag {
   t.Config
-    = <Fetch
-        <Config-GetTargetMode t.Config>
-        {
-          #DefaultEXE = /* пусто */;
-          #EXE = ' --makeexe';
-          #LIB = ' --makelib';
-          #R = ' -R';
-          #CompileOnly = ' --compile-only';
-        }
-      >;
+    = <Config-GetTargetMode t.Config>
+    : {
+        #DefaultEXE = /* пусто */;
+        #EXE = ' --makeexe';
+        #LIB = ' --makelib';
+        #R = ' -R';
+        #CompileOnly = ' --compile-only';
+      };
 }
 
 MakeTargetFileFlag {
   t.Config
-    = <Fetch
-        <Config-GetTargetFileName t.Config>
-        {
-          #DefaultTarget = /* пусто */;
-          e.TargetFile = ' --target-file="' e.TargetFile '"';
-        }
-      >;
+    = <Config-GetTargetFileName t.Config>
+    : {
+        #DefaultTarget = /* пусто */;
+        e.TargetFile = ' --target-file="' e.TargetFile '"';
+      };
 }
 
 MakeSearchFolderFlags {
@@ -179,11 +175,9 @@ MakeSearchFolderFlags {
 
 GetPrefix {
   t.Config
-    = <Fetch
-        <Config-GetPrefix t.Config>
-        {
-          #NotSet = /* пусто */;
-          e.Prefix = e.Prefix;
-        }
-      >;
+    = <Config-GetPrefix t.Config>
+    : {
+        #NotSet = /* пусто */;
+        e.Prefix = e.Prefix;
+      };
 }
