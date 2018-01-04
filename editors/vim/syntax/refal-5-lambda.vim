@@ -1,3 +1,4 @@
+syntax include @refal5LambdaCpp $VIMRUNTIME/syntax/cpp.vim
 syntax case match
 syntax keyword refal5LambdaKeyword $ENTRY $EXTERN $EXTRN $EXTERNAL $INCLUDE
 syntax keyword refal5LambdaKeyword $EASTEREGG $ENUM $EENUM $SWAP $ESWAP
@@ -24,6 +25,10 @@ syntax region refal5LambdaComment start=/^\*/ end=/$/
 syntax region refal5LambdaSpecialComment start=/\/\*\*/ skip=/\n/ end=/\*\//
 syntax region refal5LambdaSpecialComment start=/^\*\$/ end=/$/
 
+syntax region refal5LambdaInlineNative
+  \ matchgroup=refal5LambdaInlineNativeEdge
+  \ start=/^%%$/ end=/^%%$/ contains=@refal5LambdaCpp
+
 highlight link refal5LambdaKeyword Keyword
 highlight link refal5LambdaIdentifier Normal
 highlight link refal5LambdaVariable Special
@@ -38,6 +43,7 @@ highlight link refal5LambdaBrokenKeyword Error
 highlight link refal5LambdaBrokenString Error
 highlight link refal5LambdaBrokenCompound Error
 highlight link refal5LambdaBrokenChar Error
+highlight link refal5LambdaInlineNativeEdge Macro
 
 setlocal iskeyword+=$,-
 setlocal matchpairs=(:),[:],<:>,{:}

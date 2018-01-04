@@ -59,6 +59,13 @@ SetLineNumbers {
       (e.Source) (e.Target) <Inc s.LineNum> e.Lines
     >;
 
+  (e.Source) (e.Target) s.LineNum
+  (#NativeInsertBegin (#FileRowCol (s.Line s.Col) e.File)) e.Lines =
+    ('#line ' <StrFromInt s.Line> ' ' '"' <EscapeString e.File> '"')
+    <SetLineNumbers
+      (e.Source) (e.Target) <Inc s.LineNum> e.Lines
+    >;
+
   (e.Source) (e.Target) s.LineNum (#NativeInsertEnd) e.Lines =
     ('#line ' <StrFromInt <Inc s.LineNum>> ' ' '"' <EscapeString e.Target> '"')
     <SetLineNumbers

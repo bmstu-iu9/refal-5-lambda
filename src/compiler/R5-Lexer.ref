@@ -23,6 +23,7 @@ $EXTERN LoadFile, Inc;
     TkRefal5Mode ~ Classic | Extended
     TkAmpersand ~ empty
     TkRedefinition ~ empty
+    TkNativeCode ~ (s.Char*)*
   s.VarType ::= 's' | 't' | 'e'
 */
 $ENTRY R5-Scan {
@@ -94,6 +95,9 @@ DoScan {
 
   (RowCol s.Line 1) ('*' e.Comment) e.Lines =
     <DoScan (RowCol <Inc s.Line> 1) e.Lines>;
+
+  (RowCol s.Line 1) ('%%') e.Lines
+    = <DoScan-NativeCode (RowCol <Inc s.Line> 1) e.Lines>;
 
   t.Pos (s.StartIdent e.Line) e.Lines,
       <Type s.StartIdent>: 'L' s.Case s.StartIdent =
@@ -257,6 +261,26 @@ DoScan-CComment {
   t.Pos (e.Comment) /* пусто */ =
     (TkError t.Pos 'Unexpected EOF, unclosed comment')
     (TkEOF <IncCol t.Pos Len e.Comment>);
+}
+
+DoScan-NativeCode {
+  t.Pos e.Lines = <DoScan-DoNativeCode t.Pos t.Pos () e.Lines>;
+}
+
+DoScan-DoNativeCode {
+  t.StartPos t.Pos (e.Collected) ('%%') e.Lines
+    = (TkNativeCode t.StartPos e.Collected)
+      <DoScan <IncLine t.Pos> e.Lines>;
+
+  t.StartPos t.Pos (e.Collected) /* empty */
+    = (TkNativeCode t.StartPos e.Collected)
+      (TkError t.Pos 'Unexpected EOF, unclosed native code insertion')
+      (TkEOF t.Pos);
+
+  t.StartPos t.Pos (e.Collected) (e.NextLine) e.Lines
+    = <DoScan-DoNativeCode
+        t.StartPos <IncLine t.Pos> (e.Collected (e.NextLine)) e.Lines
+      >;
 }
 
 DoScan-Ident {

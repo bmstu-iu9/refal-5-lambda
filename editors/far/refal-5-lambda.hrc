@@ -25,6 +25,8 @@
     <region name="refal5LambdaVariable" parent="def:Function"/>
     <region name="refal5LambdaFunction" parent="def:Keyword"/>
 
+    <region name="refal5LambdaInlineNative" parent="def:StringEdge"/>
+
     <scheme name="refal5LambdaSymbolsCore">
       <regexp match='/\\[nrt\\&apos;"&lt;&gt;()]/' region0="refal5LambdaStringEscape"/>
       <regexp match='/\\x[\da-fA-F]{2}/' region0="refal5LambdaStringEscape"/>
@@ -108,6 +110,10 @@
       <regexp match='/\\[nrt\\&apos;"&lt;&gt;()]/' region0="refal5LambdaString"/>
       <regexp match='/\\[xX][\da-fA-F]{2}/' region0="refal5LambdaString"/>
       <regexp match="/\\./" region0="def:Error"/>
+
+      <block start="/^%%$/" end="/^%%$/" scheme="cpp:cpp"
+             region00="refal5LambdaInlineNative"
+             region10="refal5LambdaInlineNative"/>
     </scheme>
   </type>
 </hrc>

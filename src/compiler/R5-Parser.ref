@@ -9,19 +9,22 @@
 
   t.Error ::= (t.Pos e.Message)
   t.Unit ::= t.Function | t.Extern | t.SingleDeclaration | t.Include
+    | t.NativeBlock
   t.Extern ::= (Declaration t.Pos GN-Entry e.Name)
   t.SingleDeclaration ::= (s.SingleDeclarationTag t.Pos s.ScopeClass e.Name)
   s.SingleDeclarationTag ::= Enum | Swap
   t.Include ::= (Include t.Pos e.Name)
+  t.NativeBlock ::= (NativeBlock t.Pos e.Code)
 
-  t.Function ::=
-      (Function t.SrcPos s.ScopeClass (e.Name) Sentences t.Sentence*)
+  t.Function ::= (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
+  e.Body ::= Sentences t.Sentence* | NativeBody t.Pos e.Code
   s.ScopeClass ::= GN-Entry | GN-Local
   t.Sentence ::=
     (t.Pattern (s.Chain t.Result (e.Blocks) t.Pattern)* e.SentenceTail)
   s.Chain ::= Condition | Assign
   e.SentenceTail ::= t.Result (e.Blocks)
-  e.Blocks ::= (Sentences t.Sentence*)*
+  e.Blocks ::= (e.Body)*
+  e.Code ::= (s.Char*)*
 
   t.Pattern, t.Result ::= (t.Term*)
   t.Term ::=
@@ -67,7 +70,7 @@ DoFilterErrors {
 Program {
   s.Mode t.NextToken e.Tokens,
       t.NextToken: (s.Type t.Pos e.Value),
-      <OneOf s.Type <NameListTags> TkEntry TkName TkSemicolon TkInclude>: True =
+      <OneOf s.Type <UnitStartToken>>: True =
     <Program-AfterUnit s.Mode <Unit s.Mode t.NextToken e.Tokens>>;
 
   s.Mode (TkRefal5Mode t.Pos s.NewMode) e.Tokens
@@ -81,6 +84,10 @@ Program {
       t.Unexpected '$EXTERN, $ENTRY, function name or special comment'
     >
     <Program s.Mode e.Tokens>;
+}
+
+UnitStartToken {
+  = <NameListTags> TkEntry TkName TkSemicolon TkInclude TkNativeCode;
 }
 
 NameListTags {
@@ -121,6 +128,8 @@ Unit {
           };
 
       (TkInclude t.Pos) = <Include s.Mode t.Pos e.Tokens>;
+
+      (TkNativeCode t.Pos e.Lines) = ((NativeBlock t.Pos e.Lines)) e.Tokens;
 
       (TkSemicolon t.Pos) = (/* игнорируем */) e.Tokens;
 
@@ -283,21 +292,37 @@ Function {
 }
 
 Function-AfterBlock {
-  t.Pos (e.Name) s.Scope (e.Errors) (e.Sentences) e.Tokens =
-    (e.Errors (Function t.Pos s.Scope (e.Name) Sentences e.Sentences))
+  t.Pos (e.Name) s.Scope (e.Errors) (e.Body) e.Tokens =
+    (e.Errors (Function t.Pos s.Scope (e.Name) e.Body))
     e.Tokens;
 }
 
 
 /*
-  Block = "{" Sentence { ";" Sentence } [";"] "}".
+  Block =
+      "{" Sentence { ";" Sentence } [";"] "}"
+    | "{" NATIVE-CODE "}".
 
-  <Block s.Mode e.Tokens> == (e.Errors) (e.Sentences) e.Tokens
+  <Block s.Mode e.Tokens> == (e.Errors) (e.Body) e.Tokens
 */
 Block {
   s.Mode (TkOpenBlock t.OpenPos) (TkCloseBlock t.ClosePos) e.Tokens
     = (<ClassicError s.Mode t.OpenPos 'Empty function block'>)
-      (/* no sentences */) e.Tokens;
+      (Sentences /* no sentences */) e.Tokens;
+
+  s.Mode
+  (TkOpenBlock t.OpenPos)
+  (TkNativeCode t.NativePos e.Code)
+  t.CloseBlock
+  e.Tokens
+    , <IsCloseBlock t.CloseBlock> : (e.Error) e.NextToken
+    = (
+        <ClassicError
+          s.Mode t.NativePos 'Native code insertion is an extension'
+        >
+        e.Error
+      )
+      (NativeBody t.NativePos e.Code) e.NextToken e.Tokens;
 
   s.Mode (TkOpenBlock t.Pos) e.Tokens =
     <Block-AfterSentence
@@ -312,6 +337,11 @@ Block {
     (<UnexpectedToken t.Unexpected '\'{\''>)
     (/* no sentences */)
     t.Unexpected e.Tokens;
+}
+
+IsCloseBlock {
+  (TkCloseBlock t.Pos) = (/* no error */) /* no token */;
+  t.Unexpected = (<UnexpectedToken t.Unexpected '\'}\''>) t.Unexpected;
 }
 
 Block-AfterSentence {
@@ -336,12 +366,12 @@ Block-AfterSentence {
 
       (TkSemicolon t.Pos1) (TkCloseBlock t.Pos2)
         = (e.Errors e.SentenceErrors)
-          (e.Sentences t.NextSentence)
+          (Sentences e.Sentences t.NextSentence)
           e.Tokens;
 
       (TkCloseBlock t.Pos) t.Token2
         = (e.Errors e.SentenceErrors)
-          (e.Sentences t.NextSentence)
+          (Sentences e.Sentences t.NextSentence)
           t.Token2 e.Tokens;
 
       (TkSemicolon t.Pos) t.Token2 =
@@ -370,7 +400,7 @@ Block-AfterSentence {
         e.Errors e.SentenceErrors
         <UnexpectedToken (TkEOF t.Pos) '\';\' or \'}\''>
       )
-      (e.Sentences t.NextSentence)
+      (Sentences e.Sentences t.NextSentence)
       (TkEOF t.Pos);
 }
 
@@ -565,9 +595,9 @@ Result-Blocks {
     /* TODO: assing */
     , <Block s.Mode (TkOpenBlock t.BlockPos) e.Tokens>
     : {
-        (e.BlockErrors) (e.Sentences) e.Tokens1 /*^*/
+        (e.BlockErrors) (e.Body) e.Tokens1 /*^*/
           = <Result-Blocks
-              s.Mode (e.Blocks (t.ColonPos Sentences e.Sentences))
+              s.Mode (e.Blocks (t.ColonPos e.Body))
               (e.Errors e.BlockErrors) t.Result e.Tokens1
             >;
       };
@@ -798,10 +828,10 @@ DoExpression-AfterAmpersand {
 }
 
 DoExpression-AfterBlock {
-  s.Mode (e.Errors) (e.Collected) (e.BlockErrors) (e.Sentences) e.Tokens
+  s.Mode (e.Errors) (e.Collected) (e.BlockErrors) (e.Body) e.Tokens
     = <DoExpression
         s.Mode Result (e.Errors e.BlockErrors)
-        (e.Collected (Closure Sentences e.Sentences)) e.Tokens
+        (e.Collected (Closure e.Body)) e.Tokens
       >;
 }
 
@@ -883,4 +913,5 @@ TokName {
   TkRefal5Mode = '*$CLASSIC or *$EXTENDED';
   TkAmpersand = '\'&\'';
   TkRedefinition = '\'^\'';
+  TkNativeCode = 'native code insertion';
 }

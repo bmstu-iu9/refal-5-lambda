@@ -1,0 +1,45 @@
+*$CLASSIC;
+
+%%
+static int counter = 0;
+%%
+
+Native {
+%%
+  using namespace refalrts;
+  Iter content_left, content_right;
+  Iter func_ptr = call_left(content_left, content_right, arg_begin, arg_end);
+
+  reinit_number(arg_begin, ++counter);
+  reinit_number(func_ptr, ++counter);
+  reinit_number(arg_end, ++counter);
+
+  return cSuccess;
+%%
+}
+
+Eq { (e.X) e.X = }
+
+$ENTRY Go {
+  =
+    <Eq ( 1 2 'hello' 3 ) <Native 'hello'>>
+    <Eq ( 4 5 6 ) <Native /* пусто */>>
+    <Eq ( 7 ) <Native2>>
+}
+
+Native2 {
+  /* empty */
+    , /* empty */
+    : {
+%%
+  using namespace refalrts;
+  Iter content_left, content_right;
+  Iter func_ptr = call_left(content_left, content_right, arg_begin, arg_end);
+
+  reinit_number(arg_begin, ++counter);
+
+  splice_to_freelist(func_ptr, arg_end);
+  return cSuccess;
+%%
+      };
+}
