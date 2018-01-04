@@ -159,6 +159,13 @@ GenCommand-Native {
       ');'
     );
 
+  (e.Indent) (#CmdCookieNS s.Cookie1 s.Cookie2)
+    = (e.Indent)
+      (
+        '#define cookie_ns '
+        'cookie_ns_' <StrFromInt s.Cookie1> '_' <StrFromInt s.Cookie2>
+      );
+
   (e.Indent) (#CmdNativeFuncDescr e.Name) =
     (e.Indent)
     ()

@@ -3113,7 +3113,7 @@ void refalrts::dynamic::enumerate_blocks() {
           assert(sizeof(sample) == datalen);
 
           char signature[sizeof(sample)];
-          read = fread(&signature, 1, sizeof(signature), stream);
+          read = fread(signature, 1, sizeof(signature), stream);
           assert(sizeof(signature) == read);
           assert(memcmp(sample, signature, sizeof(signature)) == 0);
         }
@@ -3918,7 +3918,7 @@ public:
   void rm_breakpoint(int step_numb);
   void rm_breakpoint(const char *func_name);
   bool is_breakpoint(int cur_step_numb, const char *cur_func_name);
-  void print(FILE *out);
+  void print(FILE *out = stdout);
 };
 
 class RefalDebugger {
@@ -3962,10 +3962,10 @@ public:
   void help_option();
   void break_option(const char *arg);
   void clear_option(const char *arg);
-  void print_callee_option(Iter begin, Iter end, FILE *out);
-  void print_arg_option(Iter begin, Iter end, FILE *out);
+  void print_callee_option(Iter begin, Iter end, FILE *out = stdout);
+  void print_arg_option(Iter begin, Iter end, FILE *out = stdout);
   void print_res_option(FILE *out);
-  bool print_var_option(const char *var_name, FILE *out);
+  bool print_var_option(const char *var_name, FILE *out = stdout);
   refalrts::FnResult debugger_loop(Iter begin, Iter end);
 
   enum RedirectionType {
@@ -4080,7 +4080,7 @@ std::map<int, int> refalrts::debugger::VariableDebugTable::find_var(
   for (const RASLCommand *it = m_first; it != 0 && it<=m_last; ++it) {
     std::pair<std::string, int> table_pair =
       parse_var_name(m_strings[it->val1].string);
-    if (input_pair.first.compare(table_pair.first) == 0) {
+    if (input_pair.first == table_pair.first) {
       if (has_depth) {
         if (table_pair.second == input_pair.second) {
           var_depth_offset_map.insert(
@@ -4249,7 +4249,7 @@ bool refalrts::debugger::BreakpointSet::is_breakpoint(
   return step_found != m_step_breaks.end() || func_found != m_func_breaks.end();
 }
 
-void refalrts::debugger::BreakpointSet::print(FILE *out = stdout) {
+void refalrts::debugger::BreakpointSet::print(FILE *out) {
   fprintf(out, "Step breakpoint set:\n");
   for (
     std::set<int>::iterator step_it = m_step_breaks.begin();
@@ -4626,8 +4626,8 @@ void refalrts::debugger::RefalDebugger::clear_option(const char *arg) {
 }
 
 void refalrts::debugger::RefalDebugger::print_callee_option(
-  refalrts::Iter begin, refalrts::Iter end, FILE *out = stdout
-){
+  refalrts::Iter begin, refalrts::Iter end, FILE *out
+) {
   move_left(begin, end);
   move_right(begin, end);
 
@@ -4643,7 +4643,7 @@ void refalrts::debugger::RefalDebugger::print_callee_option(
 }
 
 void refalrts::debugger::RefalDebugger::print_arg_option(
-  refalrts::Iter begin, refalrts::Iter end, FILE *out = stdout
+  refalrts::Iter begin, refalrts::Iter end, FILE *out
 ) {
   move_left(begin, end);
   move_right(begin, end);
@@ -4663,7 +4663,7 @@ void refalrts::debugger::RefalDebugger::print_res_option(FILE *out) {
 }
 
 bool refalrts::debugger::RefalDebugger::print_var_option(
-  const char *var_name, FILE *out = stdout
+  const char *var_name, FILE *out
 ) {
   if (var_name[1] == '.') {
     switch(var_name[0]) {

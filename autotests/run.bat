@@ -73,7 +73,7 @@ setlocal
     -f-DSTEP_LIMIT=1500 ^
     -f-DMEMORY_LIMIT=1000 ^
     -f-DIDENTS_LIMIT=200 ^
-    -f-DDUMP_FILE=%DEF_DUMP_FILE_NAME_HACK% ^
+    %DUMP_FILE_NAME_OPTION% ^
     -f-DDONT_PRINT_STATISTICS
   set SRFLAGS_PREF=--prefix=_test_prefix
   set SRFLAGS_NAT=refalrts refalrts-platform-specific

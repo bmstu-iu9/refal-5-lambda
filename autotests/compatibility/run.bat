@@ -83,7 +83,7 @@ goto :EOF
     --prelude=refal5-builtins.srefi ^
     -f-DSTEP_LIMIT=6000 ^
     -f-DMEMORY_LIMIT=1000 ^
-    -f-DDUMP_FILE=%DEF_DUMP_FILE_NAME_HACK% ^
+    %DUMP_FILE_NAME_OPTION% ^
     -f-DDONT_PRINT_STATISTICS
 
   echo Prepare common prefix...

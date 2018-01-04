@@ -33,7 +33,7 @@ $ENTRY LowLevelRASL-Native {
           = <FillImplicitDeclarations e.DefinitionsRASL (e.Declarations)>
           : e.DefinitionsRASL^ (e.Declarations^)
 
-          = (e.Declarations e.DefinitionsRASL);
+          = ((#CmdCookieNS s.Hash1 s.Hash2) e.Declarations e.DefinitionsRASL);
       };
 }
 

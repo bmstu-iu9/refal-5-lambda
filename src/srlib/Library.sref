@@ -73,7 +73,7 @@ $ENTRY PtrFromName {
 
   if (refalrts::cDataIdentifier == content_b->tag) {
     func_name = content_b->ident_info->name();
-    move_left(content_b, content_e);
+    refalrts::move_left(content_b, content_e);
   } else if (
     (
       read = refalrts::read_chars(
@@ -611,14 +611,14 @@ Divmod-AdjustDigit {
 }
 
 %%
-namespace {
+namespace cookie_ns {
 
 void long_mul(
   refalrts::UInt32& res_high, refalrts::UInt32& res_low,
   refalrts::UInt32 first, refalrts::UInt32 second
 );
 
-}  // unnamed namespace
+}  // namespace cookie_ns
 %%
 
 Divmod-GuessDigit {
@@ -665,7 +665,7 @@ Divmod-GuessDigit {
 
   UInt32 subst_hi, subst_lo;
   while (true) {
-    long_mul(subst_hi, subst_lo, quot_hi << 16, denom);
+    cookie_ns::long_mul(subst_hi, subst_lo, quot_hi << 16, denom);
 
     if (subst_hi < num_hi || (subst_hi == num_hi && subst_lo <= num_lo)) {
       break;
@@ -686,7 +686,7 @@ Divmod-GuessDigit {
   UInt32 quot_lo = (num_major) / denom_half_hi;
 
   while (true) {
-    long_mul(subst_hi, subst_lo, quot_lo, denom);
+    cookie_ns::long_mul(subst_hi, subst_lo, quot_lo, denom);
 
     if (subst_hi < num_hi || (subst_hi == num_hi && subst_lo <= num_lo)) {
       break;
@@ -1103,9 +1103,7 @@ $ENTRY Mul {
 }
 
 %%
-namespace {
-
-void long_mul(
+void cookie_ns::long_mul(
   refalrts::UInt32& res_high, refalrts::UInt32& res_low,
   refalrts::UInt32 first, refalrts::UInt32 second
 ) {
@@ -1143,8 +1141,6 @@ void long_mul(
   res_low = (Zz << 16) + (Dd & 0xFFFFU);
   res_high = Aa + (Bb >> 16) + (Cc >> 16) + (Zz >> 16);
 }
-
-}  // unnamed namespace
 %%
 
 Mul-Digits {
@@ -1152,7 +1148,7 @@ Mul-Digits {
   ARITHM_PRELUDE
 
   refalrts::UInt32 res_high, res_low;
-  long_mul(res_high, res_low, first, second);
+  cookie_ns::long_mul(res_high, res_low, first, second);
 
   if (res_high > 0) {
     refalrts::reinit_number(arg_begin, res_high);
@@ -1390,7 +1386,7 @@ $ENTRY Put {
 }
 
 %%
-namespace {
+namespace cookie_ns {
 
 enum {
   cFlags_ReturnHandle   = 1 << 3,
@@ -1402,19 +1398,19 @@ extern refalrts::FnResult fwrite_line(
   refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
 );
 
-}  // unnamed namespace
+}  // namespace cookie_ns
 %%
 
 Put-Aux {
 %%
-  return fwrite_line(arg_begin, arg_end, cFlags_Transparent);
+  return cookie_ns::fwrite_line(
+    arg_begin, arg_end, cookie_ns::cFlags_Transparent
+  );
 %%
 }
 
 %%
-namespace {
-
-refalrts::FnResult fwrite_line(
+refalrts::FnResult cookie_ns::fwrite_line(
   refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
 ) {
   refalrts::Iter content_b = 0;
@@ -1519,8 +1515,6 @@ refalrts::FnResult fwrite_line(
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
 }
-
-}  // unnamed namespace
 %%
 
 
@@ -1537,7 +1531,7 @@ $ENTRY Putout {
 
 Putout-Aux {
 %%
-  return fwrite_line(arg_begin, arg_end, 0);
+  return cookie_ns::fwrite_line(arg_begin, arg_end, 0);
 %%
 }
 
@@ -1563,13 +1557,13 @@ $ENTRY Rp {
   29. <Step> == s.NUMBER
 */
 %%
-namespace {
+namespace cookie_ns {
 
 extern unsigned long raw_step();
 
 extern unsigned long g_correction;
 
-}  // unnamed namespace
+}  // namespace cookie_ns
 %%
 
 $ENTRY Step {
@@ -1583,7 +1577,9 @@ $ENTRY Step {
   }
 
   refalrts::RefalNumber step =
-    static_cast<refalrts::RefalNumber>(raw_step() - g_correction);
+    static_cast<refalrts::RefalNumber>(
+      cookie_ns::raw_step() - cookie_ns::g_correction
+    );
 
   refalrts::reinit_number(arg_begin, step);
   refalrts::splice_to_freelist(pfunc, arg_end);
@@ -1593,9 +1589,7 @@ $ENTRY Step {
 }
 
 %%
-namespace {
-
-unsigned long raw_step() {
+unsigned long cookie_ns::raw_step() {
   unsigned long perfomance_counters[
     refalrts::cPerformanceCounter_COUNTERS_NUMBER
   ];
@@ -1604,11 +1598,13 @@ unsigned long raw_step() {
   return perfomance_counters[refalrts::cPerformanceCounter_TotalSteps];
 }
 
+namespace cookie_ns {
+
 unsigned long g_correction = 1;  // call of Go is not countered
 
 unsigned long g_start_step = 0;
 
-}  // unnamed namespace
+}  // namespace cookie_ns
 %%
 
 /*
@@ -1617,10 +1613,10 @@ unsigned long g_start_step = 0;
 */
 $ENTRY __Step-Start {
 %%
-  if (0 != g_start_step) {
+  if (0 != cookie_ns::g_start_step) {
     return refalrts::cRecognitionImpossible;
   }
-  g_start_step = raw_step();
+  cookie_ns::g_start_step = cookie_ns::raw_step();
 
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
@@ -1629,11 +1625,12 @@ $ENTRY __Step-Start {
 
 $ENTRY __Step-End {
 %%
-  if (0 == g_start_step) {
+  if (0 == cookie_ns::g_start_step) {
     return refalrts::cRecognitionImpossible;
   }
-  g_correction += (raw_step() - g_start_step) + 1;
-  g_start_step = 0;
+  cookie_ns::g_correction +=
+    (cookie_ns::raw_step() - cookie_ns::g_start_step) + 1;
+  cookie_ns::g_start_step = 0;
 
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
@@ -2482,7 +2479,7 @@ $ENTRY Exit {
   If file not opened function never does.
 */
 %%
-namespace {
+namespace cookie_ns {
 
 enum CloseMode { cCloseMode_Silent, cCloseMode_Fail };
 
@@ -2490,19 +2487,17 @@ extern refalrts::FnResult close(
   refalrts::Iter arg_begin, refalrts::Iter arg_end, CloseMode mode
 );
 
-}  // unnamed namespace
+}  // namespace cookie_ns
 %%
 
 $ENTRY Close {
 %%
-  return close(arg_begin, arg_end, cCloseMode_Silent);
+  return cookie_ns::close(arg_begin, arg_end, cookie_ns::cCloseMode_Silent);
 %%
 }
 
 %%
-namespace {
-
-refalrts::FnResult close(
+refalrts::FnResult cookie_ns::close(
   refalrts::Iter arg_begin, refalrts::Iter arg_end, CloseMode mode
 ) {
   refalrts::Iter content_b = 0;
@@ -2519,7 +2514,7 @@ refalrts::FnResult close(
 
   FILE *handle = extract_file_handle(pfile_handle);
   switch (mode) {
-  case cCloseMode_Silent:
+  case cookie_ns::cCloseMode_Silent:
     if (handle) {
       if (! release_file_handle(pfile_handle)) {
         return refalrts::cRecognitionImpossible;
@@ -2527,7 +2522,7 @@ refalrts::FnResult close(
     }
     break;
 
-  case cCloseMode_Fail:
+  case cookie_ns::cCloseMode_Fail:
     if (! handle) {
       return refalrts::cRecognitionImpossible;
     }
@@ -2544,8 +2539,6 @@ refalrts::FnResult close(
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
 }
-
-}  // unnamed namespace
 %%
 
 
@@ -2636,7 +2629,7 @@ $ENTRY RemoveFile {
 
   char filename[FILENAME_MAX + 1] = { '\0' };
   // возвращаемое значение не проверяем для совместимости с РЕФАЛом-5
-  read_chars(filename, FILENAME_MAX, filename_b, filename_e);
+  refalrts::read_chars(filename, FILENAME_MAX, filename_b, filename_e);
 
   const char *error_message = "";
   refalrts::RefalIdentifier i_result = USE_IDENT(False);
@@ -2863,7 +2856,7 @@ public:
   typedef refalrts::RefalNumber UInt;
 
   enum {
-    cMaxVal = ~UInt(),
+    cMaxVal = ~(UInt()),
     cMinDelay = 24,
     cMaxDelay = 55,
   };
@@ -3029,7 +3022,7 @@ $ENTRY Write {
 
 Write-Aux {
 %%
-  return fwrite_line(arg_begin, arg_end, cFlags_NoEOL);
+  return cookie_ns::fwrite_line(arg_begin, arg_end, cookie_ns::cFlags_NoEOL);
 %%
 }
 
@@ -3151,25 +3144,23 @@ $ENTRY SizeOf {
   69. <GetPID> == s.NUMBER
 */
 %%
-namespace {
+namespace cookie_ns {
 
 refalrts::FnResult return_pid(
   refalrts::RefalNumber pid, refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
 
-}  // unnamed namespace
+}  // namespace cookie_ns
 %%
 
 $ENTRY GetPID {
 %%
-  return return_pid(refalrts::api::get_pid(), arg_begin, arg_end);
+  return cookie_ns::return_pid(refalrts::api::get_pid(), arg_begin, arg_end);
 %%
 }
 
 %%
-namespace {
-
-refalrts::FnResult return_pid(
+refalrts::FnResult cookie_ns::return_pid(
   refalrts::RefalNumber pid, refalrts::Iter arg_begin, refalrts::Iter arg_end
 ) {
   refalrts::Iter content_b = 0, content_e = 0;
@@ -3184,8 +3175,6 @@ refalrts::FnResult return_pid(
   refalrts::splice_to_freelist(pfunc_name, arg_end);
   return refalrts::cSuccess;
 }
-
-}  // unnamed namespace
 %%
 
 
@@ -3194,7 +3183,7 @@ refalrts::FnResult return_pid(
 */
 $ENTRY GetPPID {
 %%
-  return return_pid(refalrts::api::get_ppid(), arg_begin, arg_end);
+  return cookie_ns::return_pid(refalrts::api::get_ppid(), arg_begin, arg_end);
 %%
 }
 
@@ -3213,7 +3202,7 @@ $ENTRY GetPPID {
 */
 $ENTRY FClose {
 %%
-  return close(arg_begin, arg_end, cCloseMode_Fail);
+  return cookie_ns::close(arg_begin, arg_end, cookie_ns::cCloseMode_Fail);
 %%
 }
 
@@ -3246,7 +3235,9 @@ $ENTRY FReadLine {
 */
 $ENTRY FWriteLine {
 %%
-  return fwrite_line(arg_begin, arg_end, cFlags_ReturnHandle);
+  return cookie_ns::fwrite_line(
+    arg_begin, arg_end, cookie_ns::cFlags_ReturnHandle
+  );
 %%
 }
 
@@ -3386,11 +3377,11 @@ $ENTRY StrFromInt {
   <SymbCompare s.Left s.Right> == '<' | '=' | '>'
 */
 %%
-namespace {
+namespace cookie_ns {
 
 bool compare(refalrts::Iter left, refalrts::Iter right);
 
-} // unnamed namespace
+} // namespace cookie_ns
 %%
 
 $ENTRY SymbCompare {
@@ -3402,7 +3393,7 @@ $ENTRY SymbCompare {
     return refalrts::cRecognitionImpossible;
   }
 
-  if (! compare(pX, pY)) {
+  if (! cookie_ns::compare(pX, pY)) {
     return refalrts::cRecognitionImpossible;
   }
 
@@ -3413,7 +3404,7 @@ $ENTRY SymbCompare {
 }
 
 %%
-namespace {
+namespace cookie_ns {
 
 template <typename T>
 char compare_char(T x, T y) {
@@ -3437,7 +3428,9 @@ char strcmp_char(const char *x, const char *y) {
   }
 }
 
-bool compare(refalrts::Iter left, refalrts::Iter right) {
+} // namespace cookie_ns
+
+bool cookie_ns::compare(refalrts::Iter left, refalrts::Iter right) {
   int rank[refalrts::cData_COUNT] = { 0 };
 
   rank[refalrts::cDataNumber] = 5;
@@ -3503,8 +3496,6 @@ bool compare(refalrts::Iter left, refalrts::Iter right) {
   refalrts::reinit_char(left, order);
   return true;
 }
-
-} // unnamed namespace
 %%
 
 
@@ -3572,7 +3563,7 @@ $ENTRY FReadBytes {
 %%
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
-  call_left(content_b, content_e, arg_begin, arg_end);
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
 
   refalrts::Iter pfile_handle = 0;
   refalrts::Iter pcount_bytes = 0;
@@ -3761,14 +3752,16 @@ $ENTRY RenameFile {
   }
 
   char source[FILENAME_MAX + 1] = { '\0' };
-  unsigned source_len = read_chars(source, FILENAME_MAX, source_b, source_e);
+  unsigned source_len =
+    refalrts::read_chars(source, FILENAME_MAX, source_b, source_e);
 
   if (! refalrts::empty_seq(source_b, source_e) || source_len == 0) {
     return refalrts::cRecognitionImpossible;
   }
 
   char target[FILENAME_MAX + 1] = { '\0' };
-  unsigned target_len = read_chars(target, FILENAME_MAX, target_b, target_e);
+  unsigned target_len =
+    refalrts::read_chars(target, FILENAME_MAX, target_b, target_e);
 
   if (! refalrts::empty_seq(target_b, target_e) || target_len == 0) {
     return refalrts::cRecognitionImpossible;
