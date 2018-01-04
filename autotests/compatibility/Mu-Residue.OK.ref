@@ -12,10 +12,10 @@ $ENTRY Go {
     <Eq (2443) <Mu External-1 24 43>>
     <Eq ('cba') <Mu External-2 'abc'>>
     <Eq (2) <Residue Test 1>>
-*    <Eq (2) <?Test 1>>                /* BUG in crefal */
-*    <Eq ('cba') <?External-2 'abc'>>  /* BUG in crefal */
+    <Eq (2) <?Test 1>>
+    <Eq ('cba') <?External-2 'abc'>>
     <Eq ('cba') <Residue External-2 'abc'>>
-    <Eq (45) <Step>>;
+    <Eq (54) <Step>>;
 }
 
 ADD { s.X s.Y = s.X; }
