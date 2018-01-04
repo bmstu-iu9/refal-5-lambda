@@ -743,6 +743,19 @@ DoExpression {
             e.Tokens
           >;
 
+      (TkScopeId t.Pos)
+        = <DoExpression
+            s.Mode s.Kind
+            (
+              e.Errors
+              <ClassicError
+                s.Mode t.Pos '$SCOPEID is not supported in classic REFAL-5'
+              >
+            )
+            (e.Collected (TkNumber Cookie1) (TkNumber Cookie2))
+            e.Tokens
+          >;
+
       t.OtherToken =
         (e.Errors) (e.Collected) t.OtherToken e.Tokens;
     }
@@ -909,6 +922,7 @@ TokName {
   TkSwap = '$SWAP';
   TkESwap = '$ESWAP';
   TkInclude = '$INCLUDE';
+  TkScopeId = '$SCOPEID';
   TkEOF = 'end of file';
   TkRefal5Mode = '*$CLASSIC or *$EXTENDED';
   TkAmpersand = '\'&\'';

@@ -80,6 +80,7 @@
         <word name="$SWAP"/>
         <word name="$ESWAP"/>
         <word name="$INCLUDE"/>
+        <word name="$SCOPEID"/>
       </keywords>
       <keywords region="refal5LambdaSymbol">
         <symb name="="/>
