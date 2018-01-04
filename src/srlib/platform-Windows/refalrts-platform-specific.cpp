@@ -27,7 +27,7 @@ int refalrts::api::system(const char *command) {
 }
 
 bool refalrts::api::get_current_directory(char buffer[], size_t size) {
-  DWORD result = GetCurrentDirectory(size, buffer);
+  DWORD result = GetCurrentDirectory(static_cast<DWORD>(size), buffer);
 
   return (0 != result && result < size);
 }
