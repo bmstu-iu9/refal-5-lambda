@@ -181,6 +181,18 @@ $ENTRY FastGen-Terms {
       (((#ADT-Brackets (e.Name2) s.Num2 e.2 )))
     );
 
+  s.Num ((#Brackets s.Num1 e.1)) ((#ADT-Brackets (e.Name) s.Num2 e.2)) =
+    (#T '$'
+      <SplitReps s.Num (#Brackets s.Num1 e.1)>
+      (((#ADT-Brackets (e.Name) s.Num2 e.2)))
+    );
+
+  s.Num ((#ADT-Brackets (e.Name) s.Num1 e.1)) ((#Brackets s.Num2 e.2)) =
+    (#T '$'
+      <SplitReps s.Num (#ADT-Brackets (e.Name) s.Num1 e.1)>
+      (((#Brackets s.Num2 e.2)))
+    );
+
   /* скобки с #T переменной */
   s.Num ((#T '$' e.Pattern)) ((#Brackets s.NumB e.inBr)) =
     (#T '$' e.Pattern (((#Brackets s.NumB e.inBr))) );
