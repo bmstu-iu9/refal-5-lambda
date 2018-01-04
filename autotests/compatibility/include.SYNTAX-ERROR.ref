@@ -1,0 +1,7 @@
+*$CLASSIC;
+
+$INCLUDE "include-simple";
+
+$ENTRY Go {
+  = <F>;
+}

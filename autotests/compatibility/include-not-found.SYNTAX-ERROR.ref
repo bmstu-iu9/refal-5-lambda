@@ -1,0 +1,5 @@
+$INCLUDE "not-found";
+
+$ENTRY Go {
+  = <not-found>;
+}

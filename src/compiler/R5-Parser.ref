@@ -8,10 +8,11 @@
   s.Mode ::= Classic | Extended
 
   t.Error ::= (t.Pos e.Message)
-  t.Unit ::= t.Function | t.Extern | t.SingleDeclaration
+  t.Unit ::= t.Function | t.Extern | t.SingleDeclaration | t.Include
   t.Extern ::= (Declaration t.Pos GN-Entry e.Name)
   t.SingleDeclaration ::= (s.SingleDeclarationTag t.Pos s.ScopeClass e.Name)
   s.SingleDeclarationTag ::= Enum | Swap
+  t.Include ::= (Include t.Pos e.Name)
 
   t.Function ::=
       (Function t.SrcPos s.ScopeClass (e.Name) Sentences t.Sentence*)
@@ -66,7 +67,7 @@ DoFilterErrors {
 Program {
   s.Mode t.NextToken e.Tokens,
       t.NextToken: (s.Type t.Pos e.Value),
-      <OneOf s.Type <NameListTags> TkEntry TkName TkSemicolon>: True =
+      <OneOf s.Type <NameListTags> TkEntry TkName TkSemicolon TkInclude>: True =
     <Program-AfterUnit s.Mode <Unit s.Mode t.NextToken e.Tokens>>;
 
   s.Mode (TkRefal5Mode t.Pos s.NewMode) e.Tokens
@@ -96,7 +97,8 @@ Program-AfterUnit {
 }
 
 /*
-  Unit = SPECIAL-COMMENT | "$EXTERN" NameList | Function.
+  Unit = SPECIAL-COMMENT | Keyword NameList | Include | Function.
+  Keyword = "$EXTERN" | "$ENUM" | "$EENUM" | "$SWAP" | "$ESWAP".
 
   <Unit s.Mode e.Tokens> == (t.ErrorUnit*) e.Tokens
 */
@@ -117,6 +119,8 @@ Unit {
                 )
                 e.Tokens1;
           };
+
+      (TkInclude t.Pos) = <Include s.Mode t.Pos e.Tokens>;
 
       (TkSemicolon t.Pos) = (/* игнорируем */) e.Tokens;
 
@@ -225,6 +229,33 @@ NameList-DoNames {
         (e.ExternsAndErrors <UnexpectedToken t.NextToken 'comma or semicolon'>)
         e.Tokens
       >;
+}
+
+/*
+  Include = "$INCLUDE" Compound ";".
+
+  <Include s.Mode t.IncludePos e.Tokens> == (e.Errors t.IncludeUnit?) e.Tokens
+*/
+Include {
+  s.Mode t.Pos t.Token1 t.Token2 e.Tokens
+    , <ClassicError s.Mode t.Pos '$INCLUDE is extension'> : e.MaybeError
+    , t.Token1 t.Token2
+    : {
+        (TkCompound t.FilePos e.FileName) (TkSemicolon t.SemicolonPos)
+          = (e.MaybeError (Include t.FilePos e.FileName)) e.Tokens;
+
+        (TkCompound t.FilePos e.FileName) t.Unexpected
+          = (
+              e.MaybeError
+              <UnexpectedToken t.Unexpected '\';\''>
+              (Include t.FilePos e.FileName)
+            )
+            t.Unexpected e.Tokens;
+
+        t.Unexpected1 t.Unexpected2
+          = (e.MaybeError <UnexpectedToken t.Unexpected1 'compound symbol'>)
+            t.Unexpected1 t.Unexpected2 e.Tokens;
+      };
 }
 
 /*
@@ -847,6 +878,7 @@ TokName {
   TkEEnum = '$EENUM';
   TkSwap = '$SWAP';
   TkESwap = '$ESWAP';
+  TkInclude = '$INCLUDE';
   TkEOF = 'end of file';
   TkRefal5Mode = '*$CLASSIC or *$EXTENDED';
   TkAmpersand = '\'&\'';

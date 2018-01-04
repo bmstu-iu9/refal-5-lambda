@@ -144,7 +144,7 @@ ResolveIncludes {
   e.Units-B
   (
     t.ErrorList s.Dialect (e.Aliases)
-    (e.ScannedAST) e.AST-B (#Include s.LnNum e.IncludeName) e.AST-E
+    (e.ScannedAST) e.AST-B (#Include t.SrcPos e.IncludeName) e.AST-E
   )
   e.Units-E
     = <ResolveIncludes
@@ -153,11 +153,11 @@ ResolveIncludes {
         e.Units-B
         (
           <EL-AddErrorAt
-            t.ErrorList s.LnNum
+            t.ErrorList t.SrcPos
             'Include file "' e.IncludeName '" is not found'
           >
           s.Dialect (e.Aliases)
-          (e.ScannedAST e.AST-B (#Include s.LnNum e.IncludeName)) e.AST-E
+          (e.ScannedAST e.AST-B (#Include t.SrcPos e.IncludeName)) e.AST-E
         )
         e.Units-E
       >;
@@ -166,7 +166,7 @@ ResolveIncludes {
   e.Units-B
   (
     t.ErrorList s.Dialect (e.Aliases)
-    (e.ScannedAST) e.AST-B (#Include s.LnNum e.IncludeName) e.AST-E
+    (e.ScannedAST) e.AST-B (#Include t.SrcPos e.IncludeName) e.AST-E
   )
   e.Units-E
     = <ResolveIncludes-CheckAlias
@@ -175,7 +175,7 @@ ResolveIncludes {
         (
           (
             t.ErrorList s.Dialect (e.Aliases)
-            (e.ScannedAST e.AST-B (#Include s.LnNum e.IncludeName)) e.AST-E
+            (e.ScannedAST e.AST-B (#Include t.SrcPos e.IncludeName)) e.AST-E
           )
         )
         (e.Units-E)
@@ -253,7 +253,7 @@ ResolveIncludes-CheckValid {
   (
     (
       t.ErrorList s.Dialect (e.Aliases)
-      (e.ScannedAST (#Include s.LnNum e.IncludeName)) e.NotScannedAST
+      (e.ScannedAST (#Include t.SrcPos e.IncludeName)) e.NotScannedAST
     )
   )
   (e.Units-E)
@@ -263,11 +263,11 @@ ResolveIncludes-CheckValid {
         e.Units-B
         (
           <EL-AddErrorAt
-            t.ErrorList s.LnNum
+            t.ErrorList t.SrcPos
             'Include file "' e.IncludeName '" is not found'
           >
           s.Dialect (e.Aliases)
-          (e.ScannedAST (#Include s.LnNum e.IncludeName)) e.NotScannedAST
+          (e.ScannedAST (#Include t.SrcPos e.IncludeName)) e.NotScannedAST
         )
         e.Units-E
       >;

@@ -1,5 +1,5 @@
 syntax case match
-syntax keyword refal5LambdaKeyword $ENTRY $EXTERN $EXTRN $EXTERNAL
+syntax keyword refal5LambdaKeyword $ENTRY $EXTERN $EXTRN $EXTERNAL $INCLUDE
 syntax keyword refal5LambdaKeyword $EASTEREGG $ENUM $EENUM $SWAP $ESWAP
 syntax match refal5LambdaBrokenKeyword /\$\a*\>/
 syntax match refal5LambdaIdentifier /\<[A-Za-z_][A-Za-z0-9_\-]*\>/

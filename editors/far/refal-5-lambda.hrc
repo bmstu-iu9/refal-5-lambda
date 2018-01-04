@@ -77,6 +77,7 @@
         <word name="$EENUM"/>
         <word name="$SWAP"/>
         <word name="$ESWAP"/>
+        <word name="$INCLUDE"/>
       </keywords>
       <keywords region="refal5LambdaSymbol">
         <symb name="="/>
