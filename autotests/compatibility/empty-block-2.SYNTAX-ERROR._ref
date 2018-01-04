@@ -1,9 +1,0 @@
-*$CLASSIC;
-
-/* don't work in crefal */
-
-$ENTRY Go {
-  = ;
-
-  "not empty", A : { /* empty */ };
-}

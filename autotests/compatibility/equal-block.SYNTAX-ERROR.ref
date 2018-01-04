@@ -1,7 +1,5 @@
 *$CLASSIC;
 
-/* don't work in crefal */
-
 $ENTRY Go {
   = <Eq A <Test 1 2 3>>
     <Eq B <Test 3 2 1>>;

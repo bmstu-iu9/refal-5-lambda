@@ -1,7 +1,5 @@
 *$CLASSIC;
 
-/* don't work in crefal */
-
 $ENTRY Go {
   = ;
 
