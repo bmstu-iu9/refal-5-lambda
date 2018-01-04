@@ -1,0 +1,57 @@
+Test1 {
+  e.X =
+    {
+      = e.X;
+      Test1 = { e.X^ = e.X; };
+    };
+}
+
+Test2 {
+  e.X =
+    {
+      = e.X;
+      e.X^ = ;
+    };
+}
+
+Test3 {
+  e.X =
+    {
+      1 = { = e.X; };
+      2 = { e.X^ = ; };
+      3 = { = e.X; };
+    };
+}
+
+Test4 {
+  e.X =
+    {
+      1 = e.X { e.X^ = ; };
+    };
+}
+
+Test5 {
+  e.X =
+    {
+      = e.X;
+      e.X^ = ;
+    };
+}
+
+$ENTRY Go {
+  = <{ 'abc' = ; } <<Test1 'abc'>>>
+    <{ 'efg' = ; } <<<Test1 'abc'> Test1> 'efg'>>
+    <{ 'abc' = ; } <<Test2 'abc'>>>
+    <{ = ; } <<Test2 'abc'> 'not empty'>>
+    <{ 'abc' = ; } <<<Test3 'abc'> 1>>>
+    <{ = ; } <<<Test3 'abc'> 2>>>
+    <{ 'abc' = ; } <<<Test3 'abc'> 3>>>
+    <
+      {
+        'abc' s.F = <{ = ; } <s.F>>;
+      }
+      <<Test4 'abc'> 1>
+    >
+    <{ 'abc' = ; } <<Test5 'abc'>>>
+    <{ = ; } <<Test5 'abc'> 'def'>>;
+}
