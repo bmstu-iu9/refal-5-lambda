@@ -2,7 +2,7 @@
 $EXTERN LoadFile, MapReduce, Inc, Trim, Map;
 
 //FROM Library
-$EXTERN ExistFile;
+$EXTERN ExistFile, Chr, Add, Mul;
 
 //FROM Config
 $EXTERN
@@ -110,7 +110,7 @@ FindImports-Aux {
             = (t.Config <Inc s.LineNum>)
               <FindIncludeEx
                 t.Config (s.LineNum e.FileName)
-                <UnEscapeString-SR e.EscapedName>
+                <UnEscapeString s.Dialect e.EscapedName>
               >;
 
           (t.Config s.LineNum) (#Prelude e.PreludeName)
@@ -175,8 +175,55 @@ FindIncludeEx {
       };
 }
 
+UnEscapeString {
+  #SR e.EscapedName = <UnEscapeString-SR e.EscapedName>;
+  #R5 e.EscapedName = <UnEscapeString-R5 e.EscapedName>;
+}
+
 FormatEscapeError {
   #BadEscapeCode e.Text = 'Bad escape code ' e.Text;
   #BadEscapeSymbol e.BadSymbol = 'Bad escaped symbol ' e.BadSymbol;
   #EOLAfterSlash = 'End-of-line after \\';
+}
+
+
+UnEscapeString-R5 {
+  e.String = <DoUnEscapeString-R5 () e.String>;
+}
+
+DoUnEscapeString-R5 {
+  (e.Scanned) '\\' s.Escaped e.Tail
+    , ('\'\'') ('""') ('n\n') ('r\r') ('t\t') ('((') ('))') ('<<') ('>>')
+    : e.Begin (s.Escaped s.Char) e.End
+    = <DoUnEscapeString-R5 (e.Scanned s.Char) e.Tail>;
+
+  (e.Scanned) '\\x' s.Hex1 s.Hex2 e.Tail
+    , <HexDigit s.Hex1> : s.Num1
+    , <HexDigit s.Hex2> : s.Num2
+    = <DoUnEscapeString-R5
+        (e.Scanned <Chr <Add <Mul s.Num1 16> s.Num2>>) e.Tail
+      >;
+
+  (e.Scanned) '\\x' e.Tail = #Fail #BadEscapeCode '\\x' <Prefix3 e.Tail>;
+  (e.Scanned) '\\' s.Next e.Tail = #Fail #BadEscapeSymbol '\\' s.Next;
+  (e.Scanned) '\\' /* EOL */ = #Fail #EOLAfterSlash;
+
+  (e.Scanned) s.Char e.Tail = <DoUnEscapeString-R5 (e.Scanned s.Char) e.Tail>;
+
+  (e.Scanned) /* empty */ = #Success e.Scanned;
+}
+
+HexDigit {
+  '0' = 0; '1' = 1; '2' = 2; '3' = 3; '4' = 4;
+  '5' = 5; '6' = 6; '7' = 7; '8' = 8; '9' = 9;
+
+  'A' = 10; 'B' = 11; 'C' = 12; 'D' = 13; 'E' = 14; 'F' = 15;
+  'a' = 10; 'b' = 11; 'c' = 12; 'd' = 13; 'e' = 14; 'f' = 15;
+
+  s.Other = /* empty */;
+}
+
+Prefix3 {
+  s.1 s.2 s.3 s.4 e.Tail = s.1 s.2 s.3 '...';
+  e.ShortExpr = e.ShortExpr;
 }
