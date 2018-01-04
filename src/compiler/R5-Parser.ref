@@ -769,6 +769,13 @@ DoExpression {
             e.Tokens
           >;
 
+      (TkError t.Pos e.Message)
+        = <DoExpression
+            s.Mode s.Kind
+            (e.Errors <UnexpectedToken (TkError t.Pos e.Message)>)
+            (e.Collected) e.Tokens
+          >;
+
       t.OtherToken =
         (e.Errors) (e.Collected) t.OtherToken e.Tokens;
     }
