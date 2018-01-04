@@ -13,9 +13,9 @@ $EXTERN LoadFile, Inc;
     TkMacroDigit ~ macrodigit
     TkChar ~ char
     TkVariable ~ s.VarType e.VarName
-    TkOpenBracket, TkCloseBracket, TkCloseCall,
+    TkOpenBracket, TkCloseBracket, TkCloseCall, TkCloseADT,
     TkOpenBlock, TkCloseBlock ~ пусто
-    TkOpenCall ~ char* -- имя функции
+    TkOpenCall, TkOpenADT ~ char* -- имя функции
     TkComma, TkColon, TkAssign, TkSemicolon ~ пусто
     TkExtern, TkEntry, TkEnum, TkEEnum, TkSwap, TkESwap, TkInclude ~ пусто
     TkScopeId ~ пусто
@@ -131,6 +131,15 @@ DoScan {
     (TkOpenCall t.Pos /* empty */)
     <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
 
+  t.Pos ('[' s.StartIdent e.Line) e.Lines,
+      <Type s.StartIdent>: 'L' s.Case s.StartIdent =
+    <DoScan-Ident t.Pos ('[' s.StartIdent) (e.Line) e.Lines>;
+
+  t.Pos ('[' e.Line) e.Lines
+    = (TkOpenADT t.Pos UnnamedADT)
+      (TkError t.Pos 'Expected function name after \'[\'')
+      <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
+
   t.Pos ('\'' e.Line) e.Lines =
     <DoScan-Chars <IncCol t.Pos> (e.Line) e.Lines>;
 
@@ -155,7 +164,8 @@ IsPunctuation {
   s.Punct,
       ('(' TkOpenBracket) (')' TkCloseBracket)
       ('{' TkOpenBlock) ('}' TkCloseBlock)
-      ('>' TkCloseCall) ('&' TkAmpersand) ('^' TkRedefinition)
+      ('>' TkCloseCall) (']' TkCloseADT)
+      ('&' TkAmpersand) ('^' TkRedefinition)
       (',' TkComma) (':' TkColon) ('=' TkAssign) (';' TkSemicolon):
         e.Types-B (s.Punct s.TokType) e.Types-E =
     s.TokType;
@@ -293,6 +303,10 @@ DoScan-Ident {
   t.Pos ('<' e.Ident) (e.Line) e.Lines =
     (TkOpenCall t.Pos e.Ident)
     <DoScan <IncCol t.Pos Len '<' e.Ident> (e.Line) e.Lines>;
+
+  t.Pos ('[' e.Ident) (e.Line) e.Lines =
+    (TkOpenADT t.Pos e.Ident)
+    <DoScan <IncCol t.Pos Len '[' e.Ident> (e.Line) e.Lines>;
 
   t.Pos (e.Ident) (e.Line) e.Lines =
     (TkName t.Pos e.Ident)
