@@ -17,7 +17,7 @@ Text
 License=Лицензия на Рефал-5-лямбда
 {
 <p>
-Copyright (c) 2008&ndash;2016, Alexander Konovalov, 2016, BMSTU IU9 Department
+Copyright (c) 2008&ndash;2016, Alexander Konovalov, 2016&ndash;2018, BMSTU IU9 Department
 All rights reserved.
 </p>
 </p>
