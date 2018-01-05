@@ -1,3 +1,6 @@
+//FROM Version
+$EXTERN PrintVersion;
+
 //FROM LibraryEx
 $EXTERN ArgList, Map;
 
@@ -23,7 +26,7 @@ $EXTERN
   Config-GetTargetMode,
   Config-GetTargetFileName;
 
-$ENTRY Go { = <Main <ArgList>>; }
+$ENTRY Go { = <PrintVersion 'SRMake'> <Main <ArgList>>; }
 
 Main {
   (e.Program)

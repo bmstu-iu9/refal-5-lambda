@@ -1,3 +1,6 @@
+//FROM Version
+$EXTERN PrintVersion;
+
 //FROM LibraryEx
 $EXTERN ArgList, LoadFile, Map, SaveFile, Fetch, Seq, DelAccumulator, MapReduce,
   Inc, SaveBytes, LoadBytes;
@@ -24,7 +27,7 @@ $EXTERN CompileFile, GrammarCheck;
 //------------------------------------------------------------------------------
 
 $ENTRY Go {
-  = <Main <ArgList>>;
+  = <PrintVersion 'Srefc'> <Main <ArgList>>;
 }
 
 Main {

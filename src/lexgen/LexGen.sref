@@ -2,6 +2,9 @@
   Генератор лексических анализаторов.
 */
 
+//FROM Version
+$EXTERN PrintVersion;
+
 //FROM LibraryEx
 $EXTERN ArgList, Fetch, Seq, LoadFile, SaveFile, Map, Inc, MapReduce;
 
@@ -36,7 +39,7 @@ $EXTERN Flex-Check;
 $EXTERN Flex-Desugar;
 
 $ENTRY Go {
-  =
+  = <PrintVersion 'LexGen'>
     <Fetch
       <ArgList>
       <Seq
