@@ -39,13 +39,13 @@ setlocal
 
 :MODE_SCRATCH
   set ARGS=%ARGS:* =%
+  call "%DISTRDIR%\scripts\load-config.bat" || exit /b 1
   set D=-D "%LIBDIR%\scratch\platform-Windows" -D "%LIBDIR%\scratch"
   set PREFIX=
   set CPP=--cpp-command-exe="%CPPLINEE%" --cpp-command-lib="%CPPLINEL%"
   goto END_SWITCH
 
 :END_SWITCH
-  call "%DISTRDIR%\scripts\load-config.bat" || exit /b 1
   set PATH=%BINDIR%;%PATH%
   srefc-core ^
     %SREFC_FLAGS% ^
