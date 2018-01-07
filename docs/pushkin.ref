@@ -1,0 +1,58 @@
+$ENTRY Go {
+  = <Prout <FindAncestor <Pushkin> 'FF'>>
+    <Prout <FindAncestor <Pushkin> 'FFF'>>
+    <Prout <FindAncestor <Pushkin> 'MFF'>>
+    <Prout <FindAncestor <Pushkin> 'MFM'>>
+    <Prout <FindAncestor <Pushkin> 'F'>>
+    <Prout <FindAncestor <Pushkin> 'FM'>>
+    <Prout <FindAncestor <Pushkin> 'FMF'>>
+    <Prout <FindAncestor <Pushkin> 'FMFM'>>
+}
+
+FindAncestor {
+  /* forward to father */                             
+  (e.Name t.Father t.Mother) 'F' e.Branch                
+    = <FindAncestor t.Father e.Branch>;                  
+                                                         
+  /* forwart to mother */                           
+  (e.Name t.Father t.Mother) 'M' e.Branch                
+    = <FindAncestor t.Mother e.Branch>;                  
+                                                         
+  /* unknown ancestor for unknown person */     
+  '?' e.Branch = '?';                                    
+                                                         
+  /* branch is ended, root of tree is result */      
+  (e.Name t.Father t.Mother) /* empty branch */ = e.Name;
+}
+
+Pushkin {
+  = (
+      'Alexander Sergeevich Pushkin'
+      (
+        'Sergey Lvovich Pushkin'
+        (
+          'Lev Alexandrovich Pushkin'
+          '?'   /* unknown father */
+          (
+            'Evdokiya Ivanovna Golovina'
+            '?' /* unknown father */
+            '?' /* unknown mother */
+          )
+        )
+        (
+          'Olga Vasilyevna Chicherina'
+          ('Vasiliy Ivanovich Chicherin??')
+          '?'   /* unknown mother */
+        )
+      )
+      (
+        'Nadezhda Osipovna Pushkina (Gannibal)'
+        (
+          'Osip Abramovich Gannibal'
+          ('Abram Petrovich Gannibal (arap of Peter the Great)??')
+          ('Christina Regina fon Sioberg??')
+        )
+        ('Mariya Alexeevna Pushkina??')
+      )
+    )
+}
