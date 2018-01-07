@@ -502,7 +502,12 @@ Divmod-Nat {
     = <Divmod-Shl s.NormShift e.Numerator> : e.Numerator^
     = <Divmod-Shl s.NormShift s.DenomFirst e.Denominator> : e.Denominator^
     = <Divmod-Nat-Normed (e.Numerator) e.Denominator> : (e.Quot) e.Rem
-    = <Divmod-Shl s.RestoreShift e.Rem> : e.Rem^ 0
+    = <Divmod-Shl s.RestoreShift e.Rem>
+    : {
+        0 = 0;
+        e.Rem^ 0 = e.Rem;
+      }
+    : e.Rem^
     = (e.QuotSign e.Quot) e.RemSing e.Rem;
 }
 

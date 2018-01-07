@@ -1,0 +1,10 @@
+Fact {
+  0 = 1;
+  s.N = <Mul (<Fact <Sub s.N 1>>) s.N>;
+}
+
+$ENTRY Go {
+  = <Prout '1!  = ' <Symb <Fact 1>>>
+    <Prout '10! = ' <Symb <Fact 10>>>
+    <Prout '50! = ' <Symb <Fact 50>>>
+}
