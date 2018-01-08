@@ -1,0 +1,9 @@
+$ENTRY Go {
+  = <Prout <Fab 'abracadabra'>>;
+}
+
+Fab {
+  'a' e.Rest = 'b' <Fab e.Rest>;
+  s.Other e.Rest = s.Other <Fab e.Rest>;
+  /* empty */ = /* empty */;
+}
