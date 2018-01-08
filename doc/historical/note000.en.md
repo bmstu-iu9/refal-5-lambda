@@ -350,12 +350,13 @@ cSuccess, or end with failure because of recognition impossibility or lack of
 memory, having returned refalrts::cRecognitionImpossible; in the end of
 function.
 
-A function is composed of handlers of separated sentences, each of can ends
-the function successfully (perform `return refalrts::cSuccess`) or message
-of lack of memory (perform `return refalrts::cNoMemory`). If handler don’t end
-function with one of such messages, control passes to next handler, in case of
-end handler – to statement `return refalrts::cRecognitionImpossible`) at end
-of the function.
+Within function is composed of separate sentences handlers, each of which
+could or successfully complete the function (with performing `return
+refalrts::cSuccess`) or message about lack of memory (with performing `return
+refalrts::cNoMemory`). If handler doesn't ends the function with one of those
+messages, the control takes next handler, in case of handlers depleeting –
+to the statement performs `return refalrts::cRecognitionImpossible`; in the
+function end.
 
 The executing of sentence processor passes through three phases:
 
