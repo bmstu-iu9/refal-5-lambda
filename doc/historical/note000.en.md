@@ -1,4 +1,4 @@
-This is translation of historical paper [note000.txt] from Russian.
+This is translation of historical paper [note000.txt](note000.txt) from Russian.
 
 ... (not translated yet) ...
 
@@ -73,7 +73,7 @@ independent one of other.
 
 The compiler itself left unfinished for the ready product, but as for the
 prototype it’s good enough. From several possibilities, which were ought to be
-realized or remake: is standard library catalogs support — into the present
+realized or remake: is standard library catalogs support – into the present
 version all the file pathes is setting or as absolute, or as relative from the
 present folder; the choosing possibility of C like compiler – within present
 version program calls program `call_cpp_compiler`, which appears to be the
@@ -118,7 +118,7 @@ appeared on Fortran (language was able to support the separate translation, at
 expense of what on Fortran was written a lot of libraries, some of which in
 still in use nowadays) and after saved within C and C++.) divide on two
 classes: local and entry-functions. Those classes corresponds functions with
-static and external configuration of C\C++ languages.
+static and external configuration of C/C++ languages.
 
 > _Mazdaywik, 2018-01-18:_ yes, previous paragraph has very ugly language,
 > because ugly language has original paragraph in Russian source. Thanks
@@ -139,7 +139,7 @@ function launch). For cursive writing such functions in language there is
 directives `$ENUM` and `$EENUM`. Both functions receive the name list, divided with
 commas. The setting up function name in list `$ENUM` is equivalent to declaration
 it as empty local, the setting up in list `$EENUM` – as empty entry-function
-(eenum — entry enum). For declaration such functions I didn’t use the `$EMPTY`
+(eenum – entry enum). For declaration such functions I didn’t use the `$EMPTY`
 directive (as in REFAL-2), because _enum_ word more corresponds with their
 purpose – the symbol names introduction – as transfer (enum) in such languages
 as C++, C#, Visual Basic.
@@ -168,7 +168,7 @@ directives. There is syntax in EBNF:
       Function .
 
     NameList = Name ',' NameList | Name ';' .
- 
+
     Function =
       Name '{' Sentence* '}'
 
@@ -192,7 +192,7 @@ could include hyphen, which fully equivalent with underlining. The need of
 replacing `-` to `_` linked with the fact, that C/C++ language didn’t support
 names with hyphen, but the source texts based on REFAL looks pretty good with
 usage of hyphen in names. When reading integer variable overfilling check
-hadn’t started – at excess  of size 2\*\*32−1 the result appears to be
+hadn’t started – at excess of size 2\*\*32−1 the result appears to be
 undefined.
 
 Within language strangely enough, was no place for the global variables: I’ve
@@ -223,11 +223,11 @@ functions, executing primitive operations.
 
 Within actual compiler accepted the following model. Inputing the built-in
 functions to language is ideologically disgusting for me, because the functions
-is related to user-level  definitions, but execute language-level actions.
+is related to user-level definitions, but execute language-level actions.
 Besides for the built-in functions executes special rules, for instance, they
 don’t need to introduce. That’s why I made the primitive operations as external
-– as in C like language — there is too absent built-in functions. Because of
-being the primitive  operations (those, that impossible create with REFAL
+– as in C like language – there is too absent built-in functions. Because of
+being the primitive operations (those, that impossible create with REFAL
 sources) is external, than exactly user too able to write a him/herself
 primitive functions based on C++ language and it too will be external.
 
@@ -238,22 +238,23 @@ From the standard external functions to us given the following:
 * Arithmetic:
   * `Add`, `Sub` – arithmetical operations.
 
-* Input\output:
+* Input/output:
   * `<ReadLine> == e.Line` – reads the input from console,
   * `<WriteLine e.Line> == empty` – prints to console,
   * `<FOpen s.Mode e.Name> == s.FileHandle` – opens file with preset name
     within preset configuration: `'r'` – for reading, `'w'` – for writing.
   * `<FReadLine s.FileHandle> == s.FileHandle e.Line`,
   * `<FWriteLine s.FileHandle e.Line> == s.FileHandle`,
-  * `<FClose s.FileHandle>` — close the file.
+  * `<FClose s.FileHandle>` – close the file.
 
 The input/output file functions made on an image of corresponding with module
-FileIO functions in Modular Refal, because for developing  preprocessor as for
+FileIO functions in Modular Refal, because for developing preprocessor as for
 the primitive operations I used library functions of Modular Refal.
 
 * Types transforming:
   * `<StrFromInt s.Int> == e.Digits` – transforming number to string,
-  * 
+  * `IntFromStr`:
+
     ```
     <IntFromStr e.Text>
     == Success s.Number e.Rest
@@ -266,7 +267,7 @@ the primitive operations I used library functions of Modular Refal.
 
 * OS capabilities.
   * `<System e.Command> == empty` – call this command line,
-  * `<Exit s.ReturnCode>` — ends program with distribution return code,
+  * `<Exit s.ReturnCode>` – ends program with distribution return code,
   * `<Arg s.Number> == e.Argument` – return argument of command line with
     preset number,
   * `<ExistFile e.FileName> == True | False` – file presence check.
@@ -317,12 +318,12 @@ If only that dialect could support such nameless or local functions as terms
 then such driving of context-free grammar to regular would be imposible.
 
 To sum it up, practice show, that dividing on two ways the free context syntax
-and context relations is very useful — the compiler structure became easyer.
+and context relations is very useful – the compiler structure became easyer.
 At paired brackets relations check we could don’t care about unexpected lexems,
-at variables presence check — about brackets paired relations.
+at variables presence check – about brackets paired relations.
 
  In that case independent-context syntax check, which easy to formalize, could
-be executed automatically – it is possible to  write syntax BNF analyzer
+be executed automatically – it is possible to write syntax BNF analyzer
 generator, fabricating the syntax tree. Further that tree could be bypassed by
 context relations check and construct abstract syntax representation.
 
@@ -337,7 +338,7 @@ several fields with different types. Numbers-nodes in info-field include
 pointer and `const char` pointer, including function name. Nodes, which
 corresponds to structural brackets, includes the linked brackets relations.
 Call brackets pointers situated in calls stack in that order, in which they got
-to execute.  If function call is replacing with active expression with the
+to execute. If function call is replacing with active expression with the
 different evaluation brackets, then evaluation brackets will be putted on top
 of stack in proper order – so realizing saving stack invariant. For
 implementation of the stack is used info field in brackets nodes (as in REFAL
@@ -353,13 +354,13 @@ A function is composed of handlers of separated sentences, each of can ends
 the function successfully (perform `return refalrts::cSuccess`) or message
 of lack of memory (perform `return refalrts::cNoMemory`). If handler don’t end
 function with one of such messages, control passes to next handler, in case of
-end handler — to statement `return refalrts::cRecognitionImpossible`) at end
+end handler – to statement `return refalrts::cRecognitionImpossible`) at end
 of the function.
 
 The executing of sentence processor passes through three phases:
 
 1. Argument recognition. At the argument recognition process argument remains
-   without change. If recognition is impossible, the exit procedure executes.  
+   without change. If recognition is impossible, the exit procedure executes.
 2. Variables replicating and allocating the result elements, which preset
    by literals, including structural and functional brackets (the ready brackets
    and atoms from the pattern are not in use – it’s done in compiler simplifying
@@ -378,13 +379,13 @@ The executing of sentence processor passes through three phases:
    nodes. All the operations, giving memory (copying the variables or
    constructing new nodes), creates own argument within that list. Later the
    list parts with rebuilded elements transmits into the field of view. Such
-   strategy provides consistency of both lists at raising a message 
+   strategy provides consistency of both lists at raising a message
    `refalrts::cNoMemory` – created elements remain in free blocks list,
    argument doesn’t change.
 
 ## (3.5) Sentences generation.
 
-Sentences  generation proceed in two stages: from the very beginning by
+Sentences generation proceed in two stages: from the very beginning by
 intermediate representation creates processor based on abstract imperative
 language (means, that sentence transforms to the sequence of procession
 commands), and then processor rebuilds from abstract imperative representation
@@ -392,7 +393,7 @@ to C++, and the separate commands trasmiting practically independently one of
 other. The last two phases operations: giving new memory and result fabrication
 realizing not so difficult, but the pattern recognition is very interesting.
 
-I bring rules of  pattern matching so, as it shown in REFAL-5 guide, and then
+I bring rules of pattern matching so, as it shown in REFAL-5 guide, and then
 comment, how they realized in real compiler.
 
 ### General requirements to mapping P on E (matching E : P)
@@ -410,14 +411,14 @@ comment, how they realized in real compiler.
 > ### The general requirements for P at E representing (comparing E : P)
 >
 > 1. If node N2 situated in P at the right side of node N1, the projection N2
->    in E could or compare with N1 projection, or be situated from the right side
->    of it (projection lines can’t be crossed).
+>    in E could or compare with N1 projection, or be situated from the right
+>    side of it (projection lines can’t be crossed).
 > 2. Brackets and symbols should be the same with their projections.
-> 3. Variables projections ought to compare with  syntax requirements ; means,
+> 3. Variables projections ought to compare with syntax requirements; means,
 >    be the symbols, terms or free expressions for s-,t- and e- variables. The
 >    different inputs of the same variable should have same projections.
 
 > *Translation to English of this hunk of historical paper is prepared by*
-> **Starchenko Dmitry <starchenko_dmitry@mail.ru>** _at 2018-01-07_
+> **Starchenko Dmitry <starchenko_dmitry@mail.ru>** _at 2018-01-07_
 
 ... (not translated yet) ...
