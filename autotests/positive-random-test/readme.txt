@@ -12,3 +12,4 @@ Version 16.09.2017
                                              Both TransformOfModule and PrettyProut have to be implemented by the user.
                                              No documentation on the format of main999FOUT.ref is given. Please see the presentation in examples generated.
 
+Copyright (c) 2017, Andrei P. Nemytykh <nemytykh@math.botik.ru>
