@@ -395,7 +395,7 @@ Block-AfterSentence {
         >
     };
 
-  (e.Errors) (e.Sentences)
+  s.Mode (e.Errors) (e.Sentences)
   (e.SentenceErrors) t.NextSentence
   (TkEOF t.Pos)
     = (
