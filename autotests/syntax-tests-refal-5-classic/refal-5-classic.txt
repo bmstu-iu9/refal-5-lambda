@@ -1,0 +1,18 @@
+non-terminal Program, Global, Externs, Function, Body, Sentence, Pattern,
+ Result, PatternTerm, Common, ResultTerm, ExternKeyword, Sentences;
+terminal 'Name', ',', ';', '$EXTERN', '$EXTRN', '$EXTERNAL', '$ENTRY',
+  '{', '}', '(', ')', 'e.Var', ''chars'', '123', '<Name', '>', '=', ':';
+
+Program ::= Global*;
+Global ::= Externs | Function | ';';
+Externs ::= ExternKeyword 'Name' (',' 'Name')* ';';
+ExternKeyword ::= '$EXTERN' | '$EXTRN' | '$EXTERNAL';
+Function ::= ('$ENTRY')? 'Name' Body;
+Body ::= '{' Sentences '}';
+Sentences ::= Sentence (';' Sentences?)?;
+Sentence ::= Pattern ( ('=' Result) | (',' Result ':' (Sentence | Body)) );
+Pattern ::= PatternTerm*;
+PatternTerm ::= Common | '(' Pattern ')';
+Common ::= 'Name' | ''chars'' | '123' | 'e.Var';
+Result ::= ResultTerm*;
+ResultTerm ::= Common | '(' Result ')' | '<Name' Result '>';
