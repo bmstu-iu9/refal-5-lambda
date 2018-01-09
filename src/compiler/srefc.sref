@@ -369,7 +369,7 @@ CompileFiles {
 
         (s.Pos #Source (s.Dialect e.Source) e.OutputName) =
           <WriteLine '*Grammar checking ' e.Source ':'>
-          <GrammarCheck e.Source>;
+          <GrammarCheck t.Config s.Dialect e.Source>;
       }
       e.Files
     >;

@@ -486,28 +486,16 @@ BackEnd-NativeModule {
 }
 
 /**
-  <GrammarCheck e.SrcName>
+  <GrammarCheck t.Config s.Dialect e.SrcName>
     == #Success
     == #Fails
 */
 $ENTRY GrammarCheck {
-  e.SrcName =
-    <Fetch
-      e.SrcName
-      <Seq
-        SR-LoadSource
-        SR-LexFolding
-        (SR-ParseProgram <EL-Create e.SrcName>)
-        {
-          t.ErrorList e.AST =
-            <Fetch
-              <EL-Destroy t.ErrorList>
-              {
-                #EL-NoErrors = #Success;
-                #EL-HasErrors = #Fails;
-              }
-            >;
-        }
-      >
-    >;
+  t.Config s.Dialect e.SrcName
+    = <LoadAST t.Config s.Dialect e.SrcName> : t.ErrorList e.AST
+    = <EL-Destroy t.ErrorList>
+    : {
+        #EL-NoErrors = #Success;
+        #EL-HasErrors = #Fails;
+      };
 }
