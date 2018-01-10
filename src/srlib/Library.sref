@@ -2861,7 +2861,7 @@ public:
   typedef refalrts::RefalNumber UInt;
 
   enum {
-    cMaxVal = ~(UInt()),
+    cMaxVal = ~(UInt(0)),
     cMinDelay = 24,
     cMaxDelay = 55,
   };
