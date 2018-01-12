@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, Inc, Dec;
+$EXTERN Map, Inc, Dec;
 
 UnBracketAndNum {
   s.Num (e.Any) = s.Num e.Any;
@@ -110,15 +110,13 @@ SplitReps-Brackets {
 }
 
 SplitReps {
-  s.Num e.Reps =
-    <Fetch
-      s.Num <SplitReps-Brackets e.Reps>
-      {
+  s.Num e.Reps
+    = s.Num <SplitReps-Brackets e.Reps>
+    : {
         1 e.Any = ((e.Any));
         s.Other e.Any =
           <SplitReps-Aux s.Other e.Any (/* Scanned */) (/* Else */)>;
-      }
-    >;
+      };
 }
 
 $ENTRY FastGen-Terms {
