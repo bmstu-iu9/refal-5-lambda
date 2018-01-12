@@ -4,9 +4,6 @@ $EXTERN UnBracket, Map, Fetch, Pipe, Inc, Dec, TermCompare, Min, Max;
 //FROM Library
 $EXTERN Add, Sub;
 
-//FROM Escape
-$EXTERN EscapeChar;
-
 //FROM FastGen
 $EXTERN FastGen-Terms, CreateFastGen;
 

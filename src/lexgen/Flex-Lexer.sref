@@ -5,7 +5,7 @@ $EXTERN Fetch, Pipe, Reduce, Map, MapReduce, Inc;
 $EXTERN EscapeString;
 
 //FROM Library
-$EXTERN Chr, StrFromInt, Mul, Add;
+$EXTERN Chr, Mul, Add;
 
 $ENTRY Flex-TextFromToken {
   (#TName t.Pos e.Name) = 'name ' e.Name;
