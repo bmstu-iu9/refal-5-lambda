@@ -37,11 +37,13 @@ PreparePatternHardSent {
         (#TkNumber s.value) = (#Atom #TkNumber s.value);
         (#TkName e.name) = (#Atom #TkName e.name);
         (#TkIdentifier e.ident) = (#Atom #TkIdentifier e.ident);
-        (#TkVariable s.Mode e.Index) =
-          (<Fetch s.Mode { 'e' = #E; 't' = #T; 's' = #S; }> (e.Index) ());
+
+        (#TkVariable s.Mode e.Index)
+          = (<Fetch s.Mode { 'e' = #E; 't' = #T; 's' = #S; }> (e.Index) ());
 
         (#Brackets e.inBrackets)
           = (#Brackets <PreparePatternHardSent e.inBrackets>);
+
         (#ADT-Brackets (e.Name) e.inBrackets)
           = (#ADT-Brackets (e.Name) <PreparePatternHardSent e.inBrackets>);
       }
@@ -68,8 +70,7 @@ CreateHardPattern-Aux {
       (#ADT-Brackets (e.Name) <CreateHardPattern-Aux e.body>);
 
   /* предлажение имеет вид (P') */
-  (#Brackets e.body)
-    = (#Brackets <CreateHardPattern-Aux e.body>);
+  (#Brackets e.body) = (#Brackets <CreateHardPattern-Aux e.body>);
 
   /* отщипнуть терм слева или справа */
   (#Brackets e.body) e.smth
