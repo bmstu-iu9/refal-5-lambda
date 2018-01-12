@@ -1,11 +1,11 @@
+//FROM FastGen
+$EXTERN CreateFastGen, FastGen-Terms;
+
 //FROM LibraryEx
-$EXTERN UnBracket, Map, Inc, Dec, TermCompare, Min, Max;
+$EXTERN Inc, TermCompare, Map, Min, Max, Dec, UnBracket;
 
 //FROM Library
 $EXTERN Add, Sub;
-
-//FROM FastGen
-$EXTERN FastGen-Terms, CreateFastGen;
 
 //FROM HighLevelRASL-Common
 $EXTERN TextFromExpr;
