@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, Reduce, Map, MapReduce, Inc;
+$EXTERN Fetch, Pipe, Reduce, Map, MapReduce, Inc;
 
 //FROM Escape
 $EXTERN EscapeString;
@@ -43,7 +43,7 @@ $ENTRY Flex-Tokens {
   s.FirstLineNumber e.DescriptionLines =
     <Fetch
       e.DescriptionLines
-      <Seq
+      <Pipe
         (Map
           {
             (e.Line) = e.Line '\n';

@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, MapReduce, Map, Reduce;
+$EXTERN Fetch, Pipe, MapReduce, Map, Reduce;
 
 //FROM Error
 $EXTERN ErrorAt, WarningAt;
@@ -21,7 +21,7 @@ $ENTRY DFA-Compile {
   e.Elements =
     <Fetch
       e.Elements
-      <Seq
+      <Pipe
         (Reduce
           {
             ((e.Sets) (e.Rules))
@@ -64,7 +64,7 @@ ResolvingSets {
   e.Sets =
     <Fetch
       e.Sets
-      <Seq
+      <Pipe
         (Map
           {
             (t.SrcPos (e.Name) s.Used #Any) =
@@ -296,7 +296,7 @@ NormalizeRule {
   (t.SentNamePos (e.Name) e.Alternatives) =
     <Fetch
       e.Alternatives
-      <Seq
+      <Pipe
         (MapReduce
           NormalizeAlternative
           (#EOF-NotCatched)

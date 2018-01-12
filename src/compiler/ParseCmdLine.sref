@@ -2,7 +2,7 @@
 $EXTERN GetOpt;
 
 //FROM LibraryEx
-$EXTERN Fetch, Seq, MapReduce, Map;
+$EXTERN Fetch, Pipe, MapReduce, Map;
 
 //FROM Config
 $EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
@@ -54,7 +54,7 @@ $ENTRY ParseCommandLine {
         )
         e.Arguments
       >
-      <Seq
+      <Pipe
         {
           (e.Errors) e.Options
             = (<Config-Create> e.Errors) e.Options;

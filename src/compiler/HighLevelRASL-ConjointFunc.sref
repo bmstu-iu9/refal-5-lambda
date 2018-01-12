@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, MapReduce, Max;
+$EXTERN Fetch, MapReduce, Max;
 
 //FROM HardSent
 $EXTERN CreateHardPattern;

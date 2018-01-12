@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Map, Inc, Sort, Seq;
+$EXTERN Fetch, Map, Inc, Sort, Pipe;
 
 //FROM Library
 $EXTERN Add;
@@ -238,7 +238,7 @@ MakeVariableCommentTable {
   e.Vars =
     <Fetch
       e.Vars
-      <Seq
+      <Pipe
         (Map ReplicateVar)
         Sort
         (Map MakeVariableComment)

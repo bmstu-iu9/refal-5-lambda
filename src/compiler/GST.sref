@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, TermCompare, Inc, Seq, Reduce, Map, MapReduce, DelAccumulator,
+$EXTERN Fetch, TermCompare, Inc, Pipe, Reduce, Map, MapReduce, DelAccumulator,
   UnBracket;
 
 //FROM Library
@@ -9,7 +9,7 @@ $ENTRY GST {
   (e.Pattern) (e.Result) =
     <Fetch
       (e.Pattern) (e.Result)
-      <Seq
+      <Pipe
         TileCandidates
         FilterOverlapped
         {
@@ -250,7 +250,7 @@ RejectTile {
           (e.Tiles^) (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) =
             <Fetch
               e.Tiles
-              <Seq
+              <Pipe
                 (Map (FilterPatternPos s.CurIndexP))
                 (Map (FilterResultPos s.CurIndexR))
                 { e.Tiles^ = (e.Tiles); }

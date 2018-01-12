@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN UnBracket, Map, Fetch, Seq, Inc, Dec, TermCompare, Min, Max;
+$EXTERN UnBracket, Map, Fetch, Pipe, Inc, Dec, TermCompare, Min, Max;
 
 //FROM Library
 $EXTERN Add, Sub;
@@ -18,7 +18,7 @@ $ENTRY CreateGlobalGen {
   e.HardSentences =
     <Fetch
       <CreateFastGen e.HardSentences>
-      <Seq
+      <Pipe
         {s.Num (e.FastGen) = (e.FastGen)(<InspectFastGen e.FastGen>);}
         {
           (e.FastGen)(e.Inspected) =
@@ -128,7 +128,7 @@ GlobalGen-Aux {
         {((e.Replacement)) = (e.Replacement);}
         e.Replacements
       >
-      <Seq
+      <Pipe
         {
           e.All =
             <GetComplex
@@ -149,7 +149,7 @@ ComputePossibleClasses {
   e.Patterns =
     <Fetch
       e.Patterns
-      <Seq
+      <Pipe
         ComputeClasses
         {e.Classes = <GetMinKMN (100 100 100) e.Classes>;}
         ComputePossibleClasses-Aux

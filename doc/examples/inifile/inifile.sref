@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, LoadFile, Seq, MapReduce, Inc, DelAccumulator, Map, Trim,
+$EXTERN Fetch, LoadFile, Pipe, MapReduce, Inc, DelAccumulator, Map, Trim,
   Reduce;
 
 /*
@@ -20,7 +20,7 @@ $ENTRY LoadIniFile {
   e.FileName
     = <Fetch
         <LoadFile e.FileName>
-        <Seq
+        <Pipe
           // Нумеруем строки файла
           (MapReduce
             {

@@ -2,8 +2,8 @@
 $EXTERN PrintVersion;
 
 //FROM LibraryEx
-$EXTERN ArgList, LoadFile, Map, SaveFile, Fetch, Seq, DelAccumulator, MapReduce,
-  Inc, SaveBytes, LoadBytes;
+$EXTERN ArgList, LoadFile, Map, SaveFile, Fetch, Pipe, DelAccumulator,
+  MapReduce, Inc, SaveBytes, LoadBytes;
 
 //FROM ParseCmdLine
 $EXTERN ParseCommandLine;
@@ -190,7 +190,7 @@ CalcTargetFileName {
   t.Config (#DefaultTargetFileName) (s.Pos e.FirstFile) e.OtherFiles =
     <Fetch
       e.FirstFile
-      <Seq
+      <Pipe
         GetLastPartName
         {
           e.LastPartName = (<Lower e.LastPartName>) e.LastPartName;

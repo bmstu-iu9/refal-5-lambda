@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, Seq, MapReduce, Max;
+$EXTERN Map, Fetch, MapReduce, Max;
 
 //FROM HighLevelRASL-Common
 $EXTERN GenPattern, GenResult;

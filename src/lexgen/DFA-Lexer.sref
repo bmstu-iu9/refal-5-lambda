@@ -2,7 +2,7 @@
 $EXTERN EscapeString;
 
 //FROM LibraryEx
-$EXTERN Fetch, Seq, Map, MapReduce, Inc;
+$EXTERN Fetch, Pipe, Map, MapReduce, Inc;
 
 //FROM Library
 $EXTERN IntFromStr, Chr;
@@ -46,7 +46,7 @@ $ENTRY DFA-Tokens {
   s.FirstLineNumber e.Lines =
     <Fetch
       e.Lines
-      <Seq
+      <Pipe
         (Map {
           (e.Line) = e.Line '\n';
         })

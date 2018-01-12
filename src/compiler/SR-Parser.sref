@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Map, Inc, Seq, Dec;
+$EXTERN Fetch, Map, Inc, Dec;
 
 //FROM Error
 $EXTERN EL-AddUnexpected, EL-AddErrorAt;

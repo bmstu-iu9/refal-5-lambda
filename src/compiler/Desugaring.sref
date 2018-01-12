@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, Map, Inc, MapReduce, DelAccumulator, Reduce;
+$EXTERN Fetch, Pipe, Map, Inc, MapReduce, DelAccumulator, Reduce;
 
 //FROM Desugaring-UnCondition
 $EXTERN Pass-UnCondition;
@@ -9,7 +9,7 @@ $ENTRY Desugar {
   s.MarkupContext e.AST =
     <Fetch
       e.AST
-      <Seq
+      <Pipe
         Pass-RemovePos
         Pass-EnumerateVariables
         Pass-NameNestedFuncs
@@ -775,7 +775,7 @@ Pass-RemoveRedudandElements {
     */
     <Fetch
       e.AST
-      <Seq
+      <Pipe
         /*
           Подчищаем $EXTERN’ы и $IDENT’ы только при отсутствии нативных вставок
         */

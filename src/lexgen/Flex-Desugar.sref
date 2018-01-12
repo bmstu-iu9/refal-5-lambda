@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq;
+$EXTERN Fetch, Pipe;
 
 /**
   <Desugar e.AST> == t.ReducedAST
@@ -17,7 +17,7 @@ $ENTRY Flex-Desugar {
   e.AST =
     <Fetch
       e.AST
-      <Seq
+      <Pipe
         Pass-RemoveRange
         Pass-RemoveOpt
         Pass-RemoveOneMany

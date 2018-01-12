@@ -2,7 +2,7 @@
 $EXTERN ErrorAt;
 
 //FROM LibraryEx
-$EXTERN Fetch, Seq;
+$EXTERN Fetch, Pipe;
 
 //FROM DFA-Lexer
 $EXTERN DFA-TextFromToken;
@@ -168,7 +168,7 @@ ExtractAlternatives {
   (e.Found) e.Tail =
     <Fetch
       e.Tail
-      <Seq
+      <Pipe
         {
           (s.TokType t.SrcPos e.Info) e.Tail^ =
             t.SrcPos (s.TokType t.SrcPos e.Info) e.Tail;

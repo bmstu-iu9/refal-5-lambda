@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, MapReduce, Map;
+$EXTERN Fetch, Pipe, MapReduce, Map;
 
 //FROM GetOpt
 $EXTERN GetOpt;
@@ -50,7 +50,7 @@ $ENTRY ParseCommandLine {
         )
         e.Arguments
       >
-      <Seq
+      <Pipe
         (CheckRequiredOptions (#FILE))
         {
           (e.Errors) e.Options

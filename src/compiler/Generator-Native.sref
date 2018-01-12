@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, MapReduce, Inc;
+$EXTERN Fetch, MapReduce, Inc;
 
 //FROM DisplayName
 $EXTERN DisplayCName, CName;

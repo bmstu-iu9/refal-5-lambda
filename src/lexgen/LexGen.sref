@@ -6,7 +6,7 @@
 $EXTERN PrintVersion;
 
 //FROM LibraryEx
-$EXTERN ArgList, Fetch, Seq, LoadFile, SaveFile, Map, Inc, MapReduce;
+$EXTERN ArgList, Fetch, Pipe, LoadFile, SaveFile, Map, Inc, MapReduce;
 
 //FROM ParseCmdLine
 $EXTERN ParseCommandLine;
@@ -42,7 +42,7 @@ $ENTRY Go {
   = <PrintVersion 'LexGen'>
     <Fetch
       <ArgList>
-      <Seq
+      <Pipe
         {
           (e.ProgName) e.Options =
             <ParseCommandLine e.Options>;
@@ -75,7 +75,7 @@ Transform {
   (e.Source) e.Lines =
     <Fetch
       e.Lines
-      <Seq
+      <Pipe
         {
           e.LinesBefore ('/*GEN:' e.GenMode) e.DescriptionAndTail =
             (<Length-T e.LinesBefore ('/*GEN:' e.GenMode)>)
@@ -97,7 +97,7 @@ Transform {
           (s.Length e.LinesBefore) ('TOKENS') e.Description =
             <Fetch
               s.Length e.Description
-              <Seq
+              <Pipe
                 DFA-Tokens
                 (Map
                   {
@@ -124,7 +124,7 @@ Transform {
           (s.Length e.LinesBefore) ('FLEX') e.Description =
             <Fetch
               s.Length e.Description
-              <Seq
+              <Pipe
                 Flex-Tokens
                 (Map
                   {

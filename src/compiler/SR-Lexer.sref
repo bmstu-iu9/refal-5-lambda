@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN FastIntFromStr, Trim-R, Map, Fetch, Inc, Seq, MapReduce, DelAccumulator;
+$EXTERN FastIntFromStr, Trim-R, Map, Fetch, Inc, Pipe, MapReduce, DelAccumulator;
 
 //FROM Library
 $EXTERN Chr, StrFromInt;
@@ -144,7 +144,7 @@ NormalizeTokens {
   e.Tokens =
     <Fetch
       e.Tokens
-      <Seq
+      <Pipe
         (Map NormalizeToken)
         (MapReduce AddLineNumber 1)
         DelAccumulator

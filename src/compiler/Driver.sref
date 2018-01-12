@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, Map, UnBracket, MapReduce, SaveBytes, SaveFile;
+$EXTERN Fetch, Pipe, Map, UnBracket, MapReduce, SaveBytes, SaveFile;
 
 //FROM Error
 $EXTERN EL-Destroy, EL-Create, EL-AddErrorAt, EL-Concat;
@@ -61,7 +61,7 @@ $ENTRY CompileFile {
   t.Config (s.Dialect e.SrcName) e.OutputName '.rasl'=
     <Fetch
       s.Dialect e.SrcName
-      <Seq
+      <Pipe
         (FrontEnd t.Config)
         {
           t.ErrorList e.AST =
@@ -446,7 +446,7 @@ BackEnd {
     = <Config-GetOptPattern t.Config> : s.OptPattern
     = <Config-GetOptResult t.Config> : s.OptResult
     = <Config-GetGenMode t.Config> : s.GenMode
-    = <Seq
+    = <Pipe
         (Desugar s.MarkupContext)
         (HighLevelRASL s.OptPattern s.OptResult)
         (LowLevelRASL s.GenMode s.DebugInfo (e.SrcName))

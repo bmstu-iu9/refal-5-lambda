@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Reduce, Fetch, Seq, MapReduce, Map;
+$EXTERN Reduce, Fetch, Pipe, MapReduce, Map;
 
 //FROM Error
 $EXTERN EL-AddErrorAt;
@@ -58,7 +58,7 @@ FindErrors {
   e.AST =
     <Fetch
       e.AST
-      <Seq
+      <Pipe
         (MapReduce
           {
             (e.Declarations)
@@ -99,7 +99,7 @@ CheckDeclarations {
   e.Declarations =
     <Fetch
       e.Declarations
-      <Seq
+      <Pipe
         CleanupValidForwards
         FindInvalidForwards
         CheckRedefinitions
