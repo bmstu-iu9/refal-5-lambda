@@ -1,13 +1,22 @@
 //FROM LibraryEx
-$EXTERN Map, Inc, Dec;
+$EXTERN Map, Dec, Inc;
 
-UnBracketAndNum {
-  s.Num (e.Any) = s.Num e.Any;
+
+$ENTRY CreateFastGen {
+  // args   e.Patterns
+  // return FastGen with replacements
+  e.Patterns
+    = <FastGen 1 <PreparePatternsFastGen e.Patterns>>;
 }
 
-UnBracketInBrackets {
-  1 ((e.Smth)) = e.Smth;
-  s.Other e.Any = e.Any;
+PreparePatternsFastGen {
+  e.all
+    = <Map
+        {
+          (e.sent) = (<PreparePatternsFastGen-Aux e.sent>);
+        }
+        e.all
+      >;
 }
 
 PreparePatternsFastGen-Aux {
@@ -28,97 +37,9 @@ PreparePatternsFastGen-Aux {
       >;
 }
 
-PreparePatternsFastGen {
-  e.all
-    = <Map
-        {
-          (e.sent) = (<PreparePatternsFastGen-Aux e.sent>);
-        }
-        e.all
-      >;
-}
 
-SplitReps-Aux {
-  0 e.Any (e.Scanned) (e.Else) = ;
-
-  s.Num (#Brackets s.ONum ) e.Tail (e.Scanned) (e.Else)
-    = <SplitReps-Aux
-        s.Num e.Tail
-        (e.Scanned (#Brackets s.ONum ))
-        (e.Else (#Brackets s.ONum ))
-      >;
-
-  s.Num (#Brackets s.ONum ((e.Rep)) e.Replacements) e.Tail (e.Scanned) (e.Else)
-    = <SplitReps-Aux
-        s.Num e.Tail
-        (e.Scanned (#Brackets s.ONum e.Rep))
-        (e.Else (#Brackets s.ONum e.Replacements))
-      >;
-
-  s.Num (#ADT-Brackets (e.Name) s.ONum ) e.Tail (e.Scanned) (e.Else)
-    = <SplitReps-Aux
-        s.Num e.Tail
-        (e.Scanned (#ADT-Brackets (e.Name) s.ONum))
-        (e.Else (#ADT-Brackets (e.Name) s.ONum))
-      >;
-
-  s.Num (#ADT-Brackets (e.Name) s.ONum ((e.Rep)) e.Replacements) e.Tail
-  (e.Scanned) (e.Else)
-    = <SplitReps-Aux
-        s.Num e.Tail
-        (e.Scanned (#ADT-Brackets (e.Name) s.ONum e.Rep))
-        (e.Else (#ADT-Brackets (e.Name) s.ONum e.Replacements))
-      >;
-
-  s.Num (s.Mode '$' ((e.Rep)) e.otherRep ) e.Tail (e.Scanned) (e.Else)
-    = <SplitReps-Aux
-        s.Num
-        e.Tail
-        (e.Scanned (s.Mode '$' ((e.Rep))))
-        (e.Else (s.Mode '$' e.otherRep))
-      >;
-
-  s.Num (s.Mode s.Type e.Value) e.Tail (e.Scanned) (e.Else)
-    = <SplitReps-Aux
-        s.Num
-        e.Tail
-        (e.Scanned (s.Mode s.Type e.Value))
-        (e.Else (s.Mode s.Type e.Value))
-      >;
-
-  s.Num (e.Scanned) (e.Else) =
-    ((e.Scanned)) <SplitReps-Aux <Dec s.Num> e.Else ()()>;
-}
-
-SplitReps-Brackets {
-  e.Reps
-    = <Map
-        {
-          (#Brackets s.Num e.inBrackets) =
-            (#Brackets
-              1 <UnBracketInBrackets s.Num <SplitReps s.Num e.inBrackets>>
-            );
-
-          (#ADT-Brackets (e.Name) s.Num e.inBrackets) =
-            (#ADT-Brackets
-              (e.Name) 1
-              <UnBracketInBrackets s.Num <SplitReps s.Num e.inBrackets>>
-            );
-
-          (e.Else) = (e.Else);
-        }
-        e.Reps
-      >;
-}
-
-SplitReps {
-  s.Num e.Reps
-    = s.Num <SplitReps-Brackets e.Reps>
-    : {
-        1 e.Any = ((e.Any));
-        s.Other e.Any =
-          <SplitReps-Aux s.Other e.Any (/* Scanned */) (/* Else */)>;
-      };
+UnBracketAndNum {
+  s.Num (e.Any) = s.Num e.Any;
 }
 
 $ENTRY FastGen-Terms {
@@ -245,6 +166,94 @@ $ENTRY FastGen-Terms {
     = (#S '$' e.Pattern1 e.Pattern2 );
 }
 
+SplitReps {
+  s.Num e.Reps
+    = s.Num <SplitReps-Brackets e.Reps>
+    : {
+        1 e.Any = ((e.Any));
+        s.Other e.Any =
+          <SplitReps-Aux s.Other e.Any (/* Scanned */) (/* Else */)>;
+      };
+}
+
+SplitReps-Brackets {
+  e.Reps
+    = <Map
+        {
+          (#Brackets s.Num e.inBrackets) =
+            (#Brackets
+              1 <UnBracketInBrackets s.Num <SplitReps s.Num e.inBrackets>>
+            );
+
+          (#ADT-Brackets (e.Name) s.Num e.inBrackets) =
+            (#ADT-Brackets
+              (e.Name) 1
+              <UnBracketInBrackets s.Num <SplitReps s.Num e.inBrackets>>
+            );
+
+          (e.Else) = (e.Else);
+        }
+        e.Reps
+      >;
+}
+
+UnBracketInBrackets {
+  1 ((e.Smth)) = e.Smth;
+  s.Other e.Any = e.Any;
+}
+
+SplitReps-Aux {
+  0 e.Any (e.Scanned) (e.Else) = ;
+
+  s.Num (#Brackets s.ONum ) e.Tail (e.Scanned) (e.Else)
+    = <SplitReps-Aux
+        s.Num e.Tail
+        (e.Scanned (#Brackets s.ONum ))
+        (e.Else (#Brackets s.ONum ))
+      >;
+
+  s.Num (#Brackets s.ONum ((e.Rep)) e.Replacements) e.Tail (e.Scanned) (e.Else)
+    = <SplitReps-Aux
+        s.Num e.Tail
+        (e.Scanned (#Brackets s.ONum e.Rep))
+        (e.Else (#Brackets s.ONum e.Replacements))
+      >;
+
+  s.Num (#ADT-Brackets (e.Name) s.ONum ) e.Tail (e.Scanned) (e.Else)
+    = <SplitReps-Aux
+        s.Num e.Tail
+        (e.Scanned (#ADT-Brackets (e.Name) s.ONum))
+        (e.Else (#ADT-Brackets (e.Name) s.ONum))
+      >;
+
+  s.Num (#ADT-Brackets (e.Name) s.ONum ((e.Rep)) e.Replacements) e.Tail
+  (e.Scanned) (e.Else)
+    = <SplitReps-Aux
+        s.Num e.Tail
+        (e.Scanned (#ADT-Brackets (e.Name) s.ONum e.Rep))
+        (e.Else (#ADT-Brackets (e.Name) s.ONum e.Replacements))
+      >;
+
+  s.Num (s.Mode '$' ((e.Rep)) e.otherRep ) e.Tail (e.Scanned) (e.Else)
+    = <SplitReps-Aux
+        s.Num
+        e.Tail
+        (e.Scanned (s.Mode '$' ((e.Rep))))
+        (e.Else (s.Mode '$' e.otherRep))
+      >;
+
+  s.Num (s.Mode s.Type e.Value) e.Tail (e.Scanned) (e.Else)
+    = <SplitReps-Aux
+        s.Num
+        e.Tail
+        (e.Scanned (s.Mode s.Type e.Value))
+        (e.Else (s.Mode s.Type e.Value))
+      >;
+
+  s.Num (e.Scanned) (e.Else) =
+    ((e.Scanned)) <SplitReps-Aux <Dec s.Num> e.Else ()()>;
+}
+
 FastGen-MeN {
   s.Num (t.left1 e.1 (#E e.inE1) e.2) (t.left2 e.3 (#E e.inE2) e.4)
     = <FastGen-Terms s.Num (t.left1) (t.left2) >
@@ -363,11 +372,4 @@ FastGen {
 
   /* 4. Все остальное */
   s.Num (e.1) (e.2) = ((#E '$' ((e.1)) ((e.2)) ));
-}
-
-$ENTRY CreateFastGen {
-  // args   e.Patterns
-  // return FastGen with replacements
-  e.Patterns
-    = <FastGen 1 <PreparePatternsFastGen e.Patterns>>;
 }
