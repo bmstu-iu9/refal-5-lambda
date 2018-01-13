@@ -350,11 +350,12 @@ GetComplex {
 
 
 $ENTRY PatternComment {
-  () = ;
   e.Pattern = <TextFromExpr <PatternCommentRec e.Pattern>>;
 }
 
 PatternCommentRec {
+  () = ;
+
   e.Pattern
     = <Map
         {

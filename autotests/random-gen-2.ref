@@ -1,0 +1,6 @@
+BadFunc {
+  () e.7 'a' e.11 (e.8 e.1 'bc') , B : = ;
+};
+
+
+$ENTRY Go { = }
