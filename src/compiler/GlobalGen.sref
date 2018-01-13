@@ -104,7 +104,10 @@ GlobalGen {
           (#ADT-Brackets (e.Name) s.Num e.inBrackets) =
             (#ADT-Brackets (e.Name) <GlobalGen e.inBrackets>);
 
-          (e.Any) = (e.Any);
+          (#S '$' e.Substitutions) = (#S '$' e.Substitutions);
+          (#T '$' e.Substitutions) = (#T '$' e.Substitutions);
+
+          (#Atom s.Type e.Value) = (#Atom s.Type e.Value);
         }
         e.Inspected
       >;
