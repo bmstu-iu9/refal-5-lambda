@@ -1,0 +1,15 @@
+BadFunc {
+  ACB 9 'd' e.1 e.3 e.3 e.12 9 e.5 5 A
+    , /* empty */
+    : 'b' e.12 (e.3 6 'c' (e.10 e.4 C e.7 e.13 ) 'b' (e.2 'ca' C 'c' ) )
+      (
+        (5 ADBD (BA e.4 'c' e.7 ) e.4 2 e.13 )
+        e.3 'b' (1 7 8 t.5 ) BCAB ((1 5 ) 'b' ('c' CC ) e.2 )
+      )
+    , /* empty */ : e.12 CCB
+    = 10 <A> ;
+};
+
+A { = }
+
+$ENTRY Go { = }

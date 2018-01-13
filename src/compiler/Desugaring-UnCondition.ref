@@ -615,7 +615,7 @@ DoNewVarName {
     : {
         e.Names-B (e.NewName) e.Names-E
           = <DoNewVarName
-              ((e.NewName) e.Names-B e.Names-E) e.Prefix <+ s.SufNo 1>
+              ((e.NewName) e.Names-B e.Names-E) e.Prefix s.Depth <+ s.SufNo 1>
             >;
 
         e.Names = ((e.NewName) e.Names) e.NewName;
