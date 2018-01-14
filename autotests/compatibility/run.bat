@@ -218,6 +218,12 @@ setlocal
   for %%c in (%REFAL_COMPILERS%) do (
     echo *** Perform SYNTAX ERROR test %~1 for compiler %%c...
     call :COMPILE.%%c "%~1"
+    echo errorlevel %ERRORLEVEL%
+    if errorlevel 2 (
+      echo COMPILER %%c FAILED ON SYNTAX ERROR TEST %~1
+      endlocal
+      exit /b 1
+    )
     if not errorlevel 1 (
       echo COMPILATION FOR COMPILER %%c SUCCESSED, SYNTAX ERRORS IS NOT FOUND
       endlocal
@@ -240,7 +246,7 @@ setlocal
     --prefix=_test_prefix external 2>__error.txt
   if errorlevel 100 (
     echo COMPILER FAILS ON %SRC%, SEE __error.txt
-    exit /b 1
+    exit /b 3
   )
   if not exist %TARGET% (
     endlocal
@@ -256,7 +262,8 @@ goto :EOF
 :COMPILE.srefc_classic
 setlocal
   set COMMON_SRFLAGS=%COMMON_SRFLAGS% --classic
-  call :COMPILE_SREFC_COMMON "%~1" || exit /b 1
+  call :COMPILE_SREFC_COMMON "%~1"
+  exit /b %ERRORLEVEL%
 endlocal
 goto :EOF
 
@@ -308,7 +315,8 @@ goto :EOF
 :COMPILE.srefc_lambda
 setlocal
   set COMMON_SRFLAGS=%COMMON_SRFLAGS% --extended
-  call :COMPILE_SREFC_COMMON "%~1" || exit /b 1
+  call :COMPILE_SREFC_COMMON "%~1"
+  exit /b %ERRORLEVEL%
 endlocal
 goto :EOF
 
