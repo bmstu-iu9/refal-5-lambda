@@ -17,6 +17,7 @@
 $ENTRY Go { 
 * , <Args>: e.args
  = <Br CntSteps '=' 0> 
+   <Br Comments '=' False>
    <Loop <NumbOfIterations> (Sents 5) (Length 10) (Depth 3)>
    ;
 }
