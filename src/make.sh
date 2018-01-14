@@ -39,6 +39,7 @@ make_subdir() {
     make_subdir srmake make.sh
     make_subdir lexgen makeself.sh
     make_subdir compiler makeself.sh
+    make_subdir nemytykh-random-program-generator make.sh
   else
     DIR=$1
     TARGET=$2

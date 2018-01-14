@@ -9,7 +9,6 @@ goto :EOF
 setlocal
   call :REGRESSION || exit /b 1
   call :NEW_TESTS
-  erase random.exe
 endlocal
 goto :EOF
 
@@ -35,15 +34,9 @@ goto :EOF
 setlocal
   set NOW=%DATE%_%TIME%
   echo start (%NOW%, x%LOOPS%) %TIME%>>time.txt
-  call ..\..\distrib\bin\srefc --slim random.ref
-  if exist random.exe (
-    erase random.rasl
-  ) else (
-    exit /b 1
-  )
   set NOW=%NOW::=-%
   set NOW=%NOW: =_%
-  random.exe %LOOPS% _%NOW%
+  ..\..\bin\nemytykh-random-program-generator.exe %LOOPS% _%NOW%
   echo gen (%NOW%) %TIME%>>time.txt
   for %%r in (test-*.ref) do (
     call :RUN_TEST "%%r" ^

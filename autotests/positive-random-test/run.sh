@@ -11,7 +11,6 @@ fi
 main() {
   regression || return 1
   new_tests
-  rm -f random$(platform_exe_suffix)
 }
 
 regression() {
@@ -35,14 +34,8 @@ regression() {
 new_tests() {
   NOW=$(LC_ALL=C date | sed 's/[ :]/-/g')
   echo "start ($NOW, x$LOOPS) $(date)" >> time.txt
-  ../../distrib/bin/srefc --slim random.ref
-  if [ -e random$(platform_exe_suffix) ]; then
-    rm -f random.rasl
-  else
-    return 1
-  fi
 
-  ./random$(platform_exe_suffix) $LOOPS _$NOW
+  ../../bin/nemytykh-random-program-generator $LOOPS _$NOW
   echo "gen ($NOW) $(date)" >> time.txt
 
   for r in test-*.ref; do
