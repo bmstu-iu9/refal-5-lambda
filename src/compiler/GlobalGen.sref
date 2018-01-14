@@ -310,6 +310,14 @@ Generalization {
   s.Num (e.Pattern) = (e.Pattern);
 }
 
+CalcComplexity {
+  (e.Body) e.Tail
+    = (<CalcComplexity-aux 1 e.Body> e.Body)
+      <CalcComplexity e.Tail>;
+
+  = ;
+}
+
 CalcComplexity-aux {
   s.Comp (#S e.Body) e.Tail
     = <CalcComplexity-aux <Add s.Comp 2> e.Tail>;
@@ -330,14 +338,6 @@ CalcComplexity-aux {
     = <CalcComplexity-aux <Add s.Comp 3> e.Body e.Tail>;
 
   s.Comp = s.Comp;
-}
-
-CalcComplexity {
-  (e.Body) e.Tail
-    = (<CalcComplexity-aux 1 e.Body> e.Body)
-      <CalcComplexity e.Tail>;
-
-  = ;
 }
 
 GetComplex {
@@ -541,6 +541,10 @@ GetGeneralization {
   (e.Scanned) = (e.Scanned);
 }
 
+GetReplacement {
+  e.All = <GetReplacement-Aux e.All (/*Scanned*/) (/*Else*/)>;
+}
+
 GetReplacement-Aux {
   (s.Mode (e.Name) '$') e.Tail = ;
 
@@ -563,8 +567,4 @@ GetReplacement-Aux {
   (/*Scanned*/) (/*Else*/) = ();
 
   (e.Scanned) (e.Else) = (<ReversePattern e.Scanned>) <GetReplacement e.Else>;
-}
-
-GetReplacement {
-  e.All = <GetReplacement-Aux e.All (/*Scanned*/) (/*Else*/)>;
 }
