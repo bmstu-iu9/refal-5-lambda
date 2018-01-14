@@ -1,7 +1,7 @@
 /* Generator of random Refal-5 modules.
-   Version 16.09.2017
+   Version 12.01.2018
  Using:
-       refgo random NATURAL FOUT
+       refgo random NATURAL FOUT [/SWITCH]
              where NATURAL is a number of the iteration producing a random Refal-5 module in the following two files:
                        1) tmp999FOUT.ref  -- the module written in Refal-5
                        2) main999FOUT.ref -- a Refal-5 module, where the random Refal-5 module generated is presented as Refal data that is ready
@@ -9,27 +9,37 @@
                                                                  and printed out with an external function PrettyProut;
                                              Both TransformOfModule and PrettyProut have to be implemented by the user.
                                              No documentation on the format of main999FOUT.ref is given. Please see the presentation in examples generated.
+                   SWITCH ::= comm | comms | comments , it is an optional switch allowing randomly to insert comments in the tmp999FOUT.ref module  
 */
 
 * TransformOfModule, PrettyProut
 
 $ENTRY Go { 
+* , <Args>: e.args
  = <Br CntSteps '=' 0> 
    <Loop <NumbOfIterations> (Sents 5) (Length 10) (Depth 3)>
    ;
 }
 
 NumbOfIterations {
- , <Numb <Arg 1>>: { '-' e.macro-digits = 0 <ErrMess 1>;
+ , <Numb <Arg1>>: { '-' e.macro-digits = 0 <ErrMess 1>;
+* (e.arg1) e.args 
+* , <Numb e.arg1>>: { '-' e.macro-digits = 0 <ErrMess 1>;
                      0 = 0 <ErrMess 1>;
                      s.macro-digit = s.macro-digit;
                      e.macro-digits = 0 <ErrMess 2>;
                    };
 }
 
+Arg1 { , <Args>: (e.1) e.args = e.1; }
+Arg2 { 
+ , <Args>: (e.1)(e.2) e.args = e.2; 
+      = ;
+}
+
 ErrMess { 
- 1 = <Prout "The argument" <Arg 1> "should be a natural number.">; 
- 2 = <Prout "The argument" <Arg 1> "too large.">; 
+ 1 = <Prout "The argument" <Arg1> "should be a natural number.">; 
+ 2 = <Prout "The argument" <Arg1> "too large.">; 
 }
 
 * For a number of functions:
@@ -45,7 +55,6 @@ Loop {
              <Rp CntSteps '=' <Add s.steps 1>>
              <Loop <Sub s.cnt 1> t.SentLim t.ln t.dp>; 
 }
-
 
 RandomFuncs {
  (Fnames s.fn) (Sents s.cnt) t.ln t.dp /* The number of sentences: */
@@ -312,6 +321,30 @@ Random6 {
           };
 }
 
+Random200 {
+ , <Mod <Random 1> 1201>: s.n = <Random200a 6 s.n 0>;
+}
+
+Random10 {
+ , <Mod <Random 1> 61>: s.n = <Random200a 6 s.n 0>;
+}
+
+Random200a {
+ s.m s.n s.res, <Compare s.m 1000>: '+' = <Add s.res 1>;
+ s.m s.n s.res, <Compare s.m s.n>: '+' = s.res;
+ s.m s.n s.res = <Random200a <Add s.m 6> s.n <Add s.res 1>>;
+}
+
+
+Random-2in26 {
+ , <RandomDigit 528>: s.n
+ , /* <Prout Random-2in26 '= ' s.n> : , */
+        : { ,<Compare 256 s.n>: '+'  = 1;
+                                     = 0;
+          };
+}
+
+
 RandomVars {
  s.fl  0   = ;
  s.fl s.cnt = <RandomVars s.fl <Sub s.cnt 1>> <RandomVar s.fl s.cnt>;
@@ -485,11 +518,13 @@ PutFuncs {
  REF (Func (e.fname) e.body) e.prog 
                      = <PutF '\n' e.fname '{'> <PutSents <OutSents REF e.body>> <PutF '}'>
                        <PutFuncs REF e.prog>;
+
  DATA (Func (e.fname) e.body) e.prog =
                        <PutF (<FunTag e.fname> <SentsForCrefal <OutSents DATA e.body>>)'\n'>
                        <PutFuncs DATA e.prog>;
  s.flag = ;
 }
+
 
 FunTag { 
  "$ENTRY" s.fn = ENTRY s.fn;
@@ -560,11 +595,11 @@ Entry {
 
 MainFileName   { 
      = 'main999'; 
- ref = <MainFileName> <Arg 2> '.ref'; 
+ ref = <MainFileName> <Arg2> '.ref'; 
 }
 TestFileName   { 
      = 'test999'; 
- ref = <TestFileName> <Arg 2> '.ref'; 
+ ref = <TestFileName> <Arg2> '.ref'; 
 }
 
 CrefalFileName { = 'crefal'; }
@@ -573,15 +608,96 @@ TmpFile { = 13; }
 TmpFileName { 
      = 'tmp999'; 
   1  = 'tmp888'; 
- e.1 ref = <TmpFileName e.1> <Arg 2> '.ref'; 
+ e.1 ref = <TmpFileName e.1> <Arg2> '.ref'; 
 }
 
-PutF { e.x = <Putout <TmpFile> e.x>; }
+PutF { e.x = <PutF1 <PutFcnt <IfRandomComments> e.x>>; }
+PutF1 { e.x = <Putout <TmpFile> <RandomOneLineComment <IfRandomComments> e.x>>; }
+
+
+RandomOneLineComment {
+ True   e.x, <Random10> : 0 = '*' e.x;
+ s.Bool e.x  = e.x;
+}
+
+$EXTERN GetArgs;
+
+PutFcnt {
+ False e.x = e.x;
+ True  e.x = <PutFcnt1 (Cnts <CntsRandomComments>) e.x>;
+}
+
+PutFcnt1 {
+ (Cnts No e.trash) e.x = e.x;
+
+ (Cnts Open (CntLines s.n) (Segment s.m s.k)) e.x = <OpenComments (Cnts Open (CntLines s.n) (Segment s.m s.k)) e.x>;
+
+ (Cnts Close (CntLines 1) (Segment 0 s.k)) e.x = <CloseComments (SegmentEnd s.k) e.x>;
+
+ (Cnts Close (CntLines s.n) (Segment 0 s.k)) e.x = <Rp CntsComments '=' Close (CntLines <Sub s.n 1>) (Segment 0 s.k)> e.x;
+}
+
+CntsRandomComments {
+  , <Dg CntsComments> : s.Flag (CntLines s.n) (Segment s.m s.k) = /* <Prout OldCnts '= ' s.Flag (CntLines s.n) (Segment s.m s.k)> */
+                                                                  s.Flag (CntLines s.n) (Segment s.m s.k);
+  , <Random-2in26>: { 
+                      0 = No (CntLines 0) (Segment 0 0);
+                      1 = Open (CntLines <Add <Random5> 1>) (Segment <Random200> <Random200>);
+
+*                      s.x, Open (CntLines <Add <Random5> 1>) (Segment <Random200> <Random200>) : e.y = <Prout NewCnts  '= ' e.y> e.y;
+                    };
+}
+
+OpenComments {
+ (Cnts Open (CntLines s.n) (Segment 0 s.k)) e.chars = '/*' <PutFcnt1 (Cnts Close (CntLines s.n) (Segment 0 s.k)) e.chars>;
+
+ (Cnts Open (CntLines s.n) (Segment s.m s.k)) s.char e.chars =  s.char <OpenComments (Cnts Open (CntLines s.n) (Segment <Sub s.m 1> s.k)) e.chars>;
+
+ (Cnts Open (CntLines s.n) (Segment s.m s.k))  = '/*' <Rp CntsComments '=' Close (CntLines <Sub s.n 1>) (Segment 0 s.k)>;
+
+* A inner structure is encountered. Just skip it.
+ (Cnts Open (CntLines s.n) (Segment s.m s.k)) t.term e.x = <OpenComments (Cnts Open (CntLines s.n) (Segment <Sub s.m 1> s.k)) e.x>;
+}
+
+CloseComments {
+ (SegmentEnd 0) e.chars = '*/' <Nil <Dg CntsComments>> <PutFcnt1 (Cnts <CntsRandomComments>) e.chars>;
+ (SegmentEnd s.k) s.char e.chars = s.char <CloseComments (SegmentEnd <Sub s.k 1>) e.chars>;
+ (SegmentEnd s.k)  = '*/';
+
+* A inner structure is encountered. Just skip it.
+ (SegmentEnd s.k) t.term e.x = t.term <CloseComments (SegmentEnd <Sub s.k 1>) e.x>;
+}
+
+
+
+
 Tab {
  Left = <Tab>;
  Right = <Tab Left> <Tab>;
        = '  ';
 }
+
+*  Take the command line arguments. 
+Args { ,<GetArgs>: {
+                     e.args = e.args /* <Prout "Arguments:" e.args> */;
+*                    e.error = <Help>;
+                  };
+}
+
+GetArgs {
+     = /* <Copyright> */ <GetArgs 2 <Arg 1>>;
+ s.n = ;
+ s.n '/' e.switch = <Switch e.switch> <GetArgs <+ s.n 1> <Arg s.n>>;
+ s.n e.arg = (e.arg) <GetArgs <+ s.n 1> <Arg s.n>>;
+}
+
+Switch {
+ e.sw, ('comm') ('comms') ('comments'): e.x, e.x : e.1 (e.sw) e.2 = <Rp Comments '=' True>;
+ e.1 = <Rp Comments '=' False>;
+}
+
+IfRandomComments {  = <Cp Comments>; }
+Nil { e.x = ; }
 
 *---------------------------------------------------------------------
 
