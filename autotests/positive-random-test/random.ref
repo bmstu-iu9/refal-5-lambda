@@ -43,7 +43,7 @@ Loop {
                             <Cp CntSteps>: s.steps
            = <Rp Entry '=' No> <Rp Length '=' 0>
              <Prout Iteration '#' s.steps>
-             <Prout '\n' <OutRefal <RandomFuncs (Fnames e.fns) t.SentLim t.ln t.dp>>>
+             <OutRefal s.cnt <RandomFuncs (Fnames e.fns) t.SentLim t.ln t.dp>>
              <Rp CntSteps '=' <Add s.steps 1>>
              <Loop <Sub s.cnt 1> t.SentLim t.ln t.dp>; 
 }
@@ -384,10 +384,12 @@ Set {
 
 * For a number of functions:
 OutRefal {
- (Func (e.FnName) e.sents) e.prog 
-       = <RefProg (<TmpFileName ref>) (Func (e.FnName) e.sents) e.prog>
+ s.cnt (Func (e.FnName) e.sents) e.prog
+       = <RefProg (<TmpFileName cnt s.cnt ref>) (Func (e.FnName) e.sents) e.prog>
 
+/* A.Konovalov, 2018-01-09, commented
          <MainForCrefal (Func (e.FnName) e.sents) e.prog>
+*/
 
 }
 
@@ -575,6 +577,7 @@ TmpFile { = 13; }
 TmpFileName { 
      = 'tmp999'; 
   1  = 'tmp888'; 
+ cnt s.cnt = 'test-' <Symb s.cnt>;
  e.1 ref = <TmpFileName e.1> <Arg 2> '.ref'; 
 }
 
