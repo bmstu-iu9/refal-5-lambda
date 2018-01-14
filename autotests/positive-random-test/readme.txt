@@ -1,8 +1,8 @@
 Generator of random Refal-5 modules.
-Version 16.09.2017
+Version 13.01.2018
 
  Using:
-       refgo random NATURAL FOUT
+       refgo random NATURAL FOUT [/SWITCH]
 
              where NATURAL is a number of the iteration producing a random Refal-5 module in the following two files:
                        1) tmp999FOUT.ref  -- the module written in Refal-5
@@ -11,5 +11,7 @@ Version 16.09.2017
                                                                  and printed out with an external function PrettyProut;
                                              Both TransformOfModule and PrettyProut have to be implemented by the user.
                                              No documentation on the format of main999FOUT.ref is given. Please see the presentation in examples generated.
+                   SWITCH ::= comm | comms | comments , it is an optional switch allowing randomly to insert comments in the tmp999FOUT.ref module  
 
-Copyright (c) 2017, Andrei P. Nemytykh <nemytykh@math.botik.ru>
+
+Copyright (c) 2017-2018, Andrei P. Nemytykh <nemytykh@math.botik.ru>
