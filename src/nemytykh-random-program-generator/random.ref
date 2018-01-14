@@ -9,16 +9,16 @@
                                                                  and printed out with an external function PrettyProut;
                                              Both TransformOfModule and PrettyProut have to be implemented by the user.
                                              No documentation on the format of main999FOUT.ref is given. Please see the presentation in examples generated.
-                   SWITCH ::= comm | comms | comments , it is an optional switch allowing randomly to insert comments in the tmp999FOUT.ref module  
+                   SWITCH ::= comm | comms | comments , it is an optional switch allowing randomly to insert comments in the tmp999FOUT.ref module
 
   Copyright (c) 2017-2018, Andrei P. Nemytykh <nemytykh@math.botik.ru>
 */
 
 * TransformOfModule, PrettyProut
 
-$ENTRY Go { 
+$ENTRY Go {
 * , <Args>: e.args
- = <Br CntSteps '=' 0> 
+ = <Br CntSteps '=' 0>
    <Br Comments '=' False>
    <Loop <NumbOfIterations> (Sents 5) (Length 10) (Depth 3)>
    ;
@@ -26,7 +26,7 @@ $ENTRY Go {
 
 NumbOfIterations {
  , <Numb <Arg1>>: { '-' e.macro-digits = 0 <ErrMess 1>;
-* (e.arg1) e.args 
+* (e.arg1) e.args
 * , <Numb e.arg1>>: { '-' e.macro-digits = 0 <ErrMess 1>;
                      0 = 0 <ErrMess 1>;
                      s.macro-digit = s.macro-digit;
@@ -35,20 +35,20 @@ NumbOfIterations {
 }
 
 Arg1 { , <Args>: (e.1) e.args = e.1; }
-Arg2 { 
- , <Args>: (e.1)(e.2) e.args = e.2; 
+Arg2 {
+ , <Args>: (e.1)(e.2) e.args = e.2;
       = ;
 }
 
-ErrMess { 
- 1 = <Prout "The argument" <Arg1> "should be a natural number.">; 
- 2 = <Prout "The argument" <Arg1> "too large.">; 
+ErrMess {
+ 1 = <Prout "The argument" <Arg1> "should be a natural number.">;
+ 2 = <Prout "The argument" <Arg1> "too large.">;
 }
 
 * For a number of functions:
-Loop { 
+Loop {
   0    t.SentLim t.ln t.dp = ;
- s.cnt t.SentLim t.ln t.dp, <RandomFNameList>: e.fns, 
+ s.cnt t.SentLim t.ln t.dp, <RandomFNameList>: e.fns,
                             <Set External '=' <ExternalFuncs>>
                             <Set FunNames '=' <FunNameList e.fns>>: e.x,
                             <Cp CntSteps>: s.steps
@@ -56,30 +56,30 @@ Loop {
              <Prout Iteration '#' s.steps>
              <OutRefal s.cnt <RandomFuncs (Fnames e.fns) t.SentLim t.ln t.dp>>
              <Rp CntSteps '=' <Add s.steps 1>>
-             <Loop <Sub s.cnt 1> t.SentLim t.ln t.dp>; 
+             <Loop <Sub s.cnt 1> t.SentLim t.ln t.dp>;
 }
 
 RandomFuncs {
  (Fnames s.fn) (Sents s.cnt) t.ln t.dp /* The number of sentences: */
-      = (Func (<PutEntry s.fn> s.fn) 
+      = (Func (<PutEntry s.fn> s.fn)
         <RandomFunc <Add <RandomDigit s.cnt> 1> t.ln t.dp (Pref) (Post)>);
  (Fnames s.fn e.fns) (Sents s.cnt) t.ln t.dp /* The number of sentences: */
-      = (Func (<RandomEntry s.fn> s.fn) 
+      = (Func (<RandomEntry s.fn> s.fn)
               <RandomFunc <Add <RandomDigit s.cnt> 1> t.ln t.dp (Pref) (Post)>)
         <RandomFuncs (Fnames e.fns) (Sents s.cnt) t.ln t.dp>;
 }
 
 RandomFunc {
  0     t.ln t.dp t.pref t.post = ;
- s.cnt (Length s.ln) (Depth s.dp) t.pref1 t.post1, 
+ s.cnt (Length s.ln) (Depth s.dp) t.pref1 t.post1,
                   <Rp Length '=' 0> : e.rp,
                   <Start (CntCond 0 (CntBlock <RandomDigit 2>))
                          (Length <Add s.ln 1>) (Depth <Add s.dp 1>) (Vars) t.pref1 t.post1
                   >: (Pref e.pref) (Post e.post) e.sent
                 = /*<Prout (Pref e.pref1) (Post e.post1)>*/ (Sent e.sent)
                   <RandomFunc <Sub s.cnt 1> (Length s.ln) (Depth s.dp)
-                                            (Pref e.pref) (Post e.post) 
-                  >; 
+                                            (Pref e.pref) (Post e.post)
+                  >;
 }
 
 PutEntry {
@@ -91,7 +91,7 @@ PutEntry {
 
 Start {
  (CntCond e.cnt) (Length s.ln) (Depth s.dp) (Vars e.vars) (Pref e.pref) (Post e.post)
-                 =  
+                 =
                    <RandomSent (CntCond e.cnt) (Length s.ln) (Depth s.dp) (Vars e.vars)
                     (Pref e.pref <RandomPrefix>)
                     <RandomPattern (Length s.ln) (Depth s.dp)>
@@ -100,45 +100,45 @@ Start {
 }
 
 RandomSent {
- (CntCond 0 (CntBlock 0)) 
- (Length s.ln) (Depth s.dp) (Vars e.vars0) (Pref e.pref) e.patt (Post e.post), 
+ (CntCond 0 (CntBlock 0))
+ (Length s.ln) (Depth s.dp) (Vars e.vars0) (Pref e.pref) e.patt (Post e.post),
          <ListVars e.vars0 e.pref e.patt e.post>: s.n (Vars e.vars)
        =   (Pref e.pref) (Post e.post)
-           (Patt e.pref e.patt e.post) 
+           (Patt e.pref e.patt e.post)
                      '=' (Expr <RandomExpr (<RandomSize (Length <Add s.ln 1>) (Depth <Add s.dp 1>)>
                                               (Vars e.vars) (Expr s.n)
                                            )>);
 
- (CntCond 0 (CntBlock s.bl)) 
- (Length s.ln) (Depth s.dp) (Vars e.vars0) (Pref e.pref) e.patt (Post e.post), 
+ (CntCond 0 (CntBlock s.bl))
+ (Length s.ln) (Depth s.dp) (Vars e.vars0) (Pref e.pref) e.patt (Post e.post),
          <ListVars e.vars0 e.pref e.patt e.post>: s.n (Vars e.vars)
        =   (Pref e.pref) (Post e.post)
-           (Patt e.pref e.patt e.post) 
+           (Patt e.pref e.patt e.post)
            <RandomBlock (CntBlock s.bl) (Length s.ln) (Depth s.dp) s.n (Vars e.vars)>;
 
- (CntCond 0 (CntBlock 0)) 
- (Length s.ln) (Depth s.dp) (Vars e.vars) (Cond (Expr e.expr) (Patt e.patt)), 
+ (CntCond 0 (CntBlock 0))
+ (Length s.ln) (Depth s.dp) (Vars e.vars) (Cond (Expr e.expr) (Patt e.patt)),
          <ListVars e.vars e.patt>: s.n (Vars e.vars1)
        =   (Cond (Expr e.expr) (Patt e.patt))
                      '=' (Expr <RandomExpr (<RandomSize (Length <Add s.ln 1>) (Depth <Add s.dp 1>)>
                                               (Vars e.vars1) (Expr s.n)
                                            )>);
 
- (CntCond 0 (CntBlock s.bl)) 
- (Length s.ln) (Depth s.dp) (Vars e.vars) (Cond (Expr e.expr) (Patt e.patt)), 
+ (CntCond 0 (CntBlock s.bl))
+ (Length s.ln) (Depth s.dp) (Vars e.vars) (Cond (Expr e.expr) (Patt e.patt)),
          <ListVars e.vars e.patt>: s.n (Vars e.vars1)
        =   (Cond (Expr e.expr) (Patt e.patt))
            <RandomBlock (CntBlock s.bl) (Length s.ln) (Depth s.dp) s.n (Vars e.vars1)>;
 
- (CntCond s.cnt e.bl) 
+ (CntCond s.cnt e.bl)
  (Length s.ln) (Depth s.dp) (Vars e.vars0) (Pref e.pref) e.patt (Post e.post),
          <ListVars e.vars0 e.pref e.patt e.post>: s.n (Vars e.vars)
        =   (Pref e.pref) (Post e.post)
-           (Patt e.pref e.patt e.post) 
+           (Patt e.pref e.patt e.post)
            <RandomSent (CntCond <Sub s.cnt 1> e.bl) (Length s.ln) (Depth s.dp) (Vars e.vars)
                    (Cond <RandomCond (Length s.ln) (Depth s.dp) s.n (Vars e.vars)>)>;
 
- (CntCond s.cnt e.bl) 
+ (CntCond s.cnt e.bl)
  (Length s.ln) (Depth s.dp) (Vars e.vars) (Cond (Expr e.expr) (Patt e.patt)),
          <ListVars e.vars e.patt>: s.n (Vars e.vars1)
        =   (Cond (Expr e.expr) (Patt e.patt))
@@ -148,7 +148,7 @@ RandomSent {
 }
 
 RandomCond {
- (Length s.ln) (Depth s.dp) s.n (Vars e.vars) = 
+ (Length s.ln) (Depth s.dp) s.n (Vars e.vars) =
                          (Expr <RandomExpr (<RandomSize (Length <Add s.ln 1>) (Depth <Add s.dp 1>)>
                                               (Vars e.vars) (Expr s.n)
                                            )>)
@@ -159,19 +159,19 @@ RandomBlock {
                                                        /* Pop the current length. */
  0 (CntBlock s.bl) e.info (Pref e.pref1) (Post e.post1), <Dg Length>: e.trash = ;
 
- s.cnt (CntBlock s.bl) (Length s.ln) (Depth s.dp) (Vars e.vars) (Pref e.pref1) (Post e.post1), 
+ s.cnt (CntBlock s.bl) (Length s.ln) (Depth s.dp) (Vars e.vars) (Pref e.pref1) (Post e.post1),
                   <Dg Length> <Br Length '=' <Cp Length>>: e.trash, /* Restore the current length */
                   <Start (CntCond <RandomDigit 5> (CntBlock <RandomDigit s.bl>))
-                         (Length <Add s.ln 1>) (Depth <Add s.dp 1>) (Vars e.vars) 
+                         (Length <Add s.ln 1>) (Depth <Add s.dp 1>) (Vars e.vars)
                          (Pref e.pref1) (Post e.post1)
                   >: (Pref e.pref) (Post e.post) e.sent
                 = (Sent e.sent)
                   <RandomBlock <Sub s.cnt 1> (CntBlock s.bl) (Length s.ln) (Depth s.dp) (Vars e.vars)
-                                             (Pref e.pref) (Post e.post) 
-                  >; 
+                                             (Pref e.pref) (Post e.post)
+                  >;
 
  (CntBlock s.bl) (Length s.ln) (Depth s.dp) s.n (Vars e.vars),
- <RandomDigit 3>: { 0 = <RandomBlock (CntBlock s.bl) (Length s.ln) (Depth s.dp) s.n (Vars e.vars)>; 
+ <RandomDigit 3>: { 0 = <RandomBlock (CntBlock s.bl) (Length s.ln) (Depth s.dp) s.n (Vars e.vars)>;
                     s.cnt = (Cond
                              (Expr <RandomExpr (<RandomSize (Length <Add s.ln 1>) (Depth <Add s.dp 1>)>
                                                (Vars e.vars) (Expr s.n)
@@ -186,7 +186,7 @@ RandomBlock {
 }
 
 RandomPattern {
- (Length s.ln) (Depth s.dp) = 
+ (Length s.ln) (Depth s.dp) =
                     <RandomExpr (<RandomSize (Length <Add s.ln 1>) (Depth <Add s.dp 1>)>
                                  (Vars <RandomVars Expr 13>) (Patt 13) )>;
 }
@@ -200,22 +200,22 @@ RandomPrefix {
 RandomPostfix { = <RandomPrefix>; }
 
 RandomExpr {
- (t.maxLn e.max) = <RandomLevel (t.maxLn e.max) <RandomLength t.maxLn>>; 
+ (t.maxLn e.max) = <RandomLevel (t.maxLn e.max) <RandomLength t.maxLn>>;
 }
 
 RandomLevel {
- t.max (Length 0) = ; 
- t.max (Length '-' e.n) = ; 
+ t.max (Length 0) = ;
+ t.max (Length '-' e.n) = ;
  (t.maxLn (Depth s.mdp) e.vars) (Length s.ln), <RandomTerm e.vars>:
          { s.ymbol = s.ymbol <RandomLevel (t.maxLn (Depth s.mdp) e.vars) (Length <Sub s.ln 1>)>;
-           (Var e.var) = (Var e.var) 
+           (Var e.var) = (Var e.var)
                          <RandomLevel (t.maxLn (Depth s.mdp) e.vars) (Length <Sub s.ln 1>)>;
                        = <RandomLevel (t.maxLn (Depth s.mdp) e.vars) (Length <Sub s.ln 1>)>;
            (e.hd), s.mdp : { 0 = <RandomLevel (t.maxLn (Depth s.mdp) e.vars) (Length <Sub s.ln 1>)>;
                             s.1 = (e.hd <RandomExpr (t.maxLn (Depth <Sub s.mdp 1>) e.vars)>)
                                 <RandomLevel (t.maxLn (Depth s.mdp) e.vars) (Length <Sub s.ln <Dec e.hd>>)>;
                            };
-         }; 
+         };
 }
 
 Dec {
@@ -224,8 +224,8 @@ Dec {
 }
 
 RandomSize {
- (Length s.ln) (Depth s.dp) 
-          = /*<Prout RandomSize1>*/ (Length <RandomDigit s.ln>) 
+ (Length s.ln) (Depth s.dp)
+          = /*<Prout RandomSize1>*/ (Length <RandomDigit s.ln>)
             /*<Prout RandomSize2>*/ (Depth <RandomDigit <Sub s.dp 1>>);
 }
 
@@ -234,13 +234,13 @@ RandomLength {
  (Length s.ln) = (Length <RandomDigit s.ln>);
 }
 
-RandomTerm { 
+RandomTerm {
  t.vars (Patt s.n) = <RandomTerm1 t.vars (Patt s.n) <Random5>>;
  t.vars (Expr s.n), <Permit>: No = ;
  t.vars (Expr s.n) = <RandomTerm1 t.vars (Expr s.n) <IncLn> <Random6>>;
 }
 
-RandomTerm1 { 
+RandomTerm1 {
  e.vars 0 = <RandomDig>;
  e.vars 1 = ('*');
  e.vars 2 = <RandomChar 'a'>;
@@ -249,17 +249,17 @@ RandomTerm1 {
  e.vars 5 = <RandomCall>;
 }
 
-RandomChar { 
+RandomChar {
  s.char = <Chr <Add <Ord s.char> <RandomDigit 3>>>;
 }
 
-RandomWord { 
+RandomWord {
  0    (e.chars) = <Implode e.chars>;
  s.ln (e.chars) = <RandomWord <Sub s.ln 1> (e.chars <RandomChar 'A'>)>;
  s.ln           = <RandomWord <Add <RandomDigit s.ln> 1> ()>;
 }
 
-RandomFNameList { 
+RandomFNameList {
  0 (e.fns s.n e.1 s.n e.2) = e.fns <RandomFNameList 0 (s.n e.1 e.2)>;
  0 (e.fns) = e.fns;
  s.cnt (e.fns) = <RandomFNameList <Sub s.cnt 1> (e.fns <RandomWord 4>)>;
@@ -283,12 +283,12 @@ RandomEntry {
 
 RandomDig { = <RandomDigit 10>; }
 
-RandomValue { 
- t.frequencies = <GetRandom 0 <Random 1> <Scale 0 t.frequencies>>; 
+RandomValue {
+ t.frequencies = <GetRandom 0 <Random 1> <Scale 0 t.frequencies>>;
 }
 
 Scale {
- s.sum (Freq (t.1 with s.n1) e.freqs) 
+ s.sum (Freq (t.1 with s.n1) e.freqs)
                = (t.1 with s.n1) <Scale <Add s.sum s.n1> (Freq e.freqs)>;
  s.sum (Freq ) = <Div <MaxMacroDigit> s.sum>;
 }
@@ -304,7 +304,7 @@ GetRandom {
 MaxMacroDigit { = <Sub (1 0) 1>; }
 
 Random5 {
- , <Mod <Random 1> 31>: s.n, 
+ , <Mod <Random 1> 31>: s.n,
         : { ,<Compare 6 s.n>: '+'  = 0;
             ,<Compare 12 s.n>: '+' = 1;
             ,<Compare 18 s.n>: '+' = 2;
@@ -314,7 +314,7 @@ Random5 {
 }
 
 Random6 {
- , <Mod <Random 1> 37>: s.n, 
+ , <Mod <Random 1> 37>: s.n,
         : { ,<Compare 6 s.n>: '+'  = 0;
             ,<Compare 12 s.n>: '+' = 1;
             ,<Compare 18 s.n>: '+' = 2;
@@ -353,10 +353,10 @@ RandomVars {
  s.fl s.cnt = <RandomVars s.fl <Sub s.cnt 1>> <RandomVar s.fl s.cnt>;
 }
 
-RandomVar { 
- Expr s.n 
+RandomVar {
+ Expr s.n
    = <RandomValue (Freq (<Var 's' s.n> with 1) (<Var 'e' s.n> with 10) (<Var 't' s.n> with 1))>;
- s.Pref s.n 
+ s.Pref s.n
    = <RandomValue (Freq (<Var 's' s.n> with 2) (<Var 'e' s.n> with 1) (<Var 't' s.n> with 2))>;
 }
 
@@ -365,11 +365,11 @@ Var {
 }
 
 GetRandomVar {
- t.vars (Patt s.cnt) = <GetRandomVar t.vars (Patt s.cnt) <Add <Mod <Random 1> 13> 1>>; 
+ t.vars (Patt s.cnt) = <GetRandomVar t.vars (Patt s.cnt) <Add <Mod <Random 1> 13> 1>>;
  (Vars e.vars (Var s.t s.n) e.1) (Patt s.cnt) s.n = (Var s.t s.n);
 
- t.vars (Expr 0) = ; 
- t.vars (Expr s.cnt) = <GetRandomVar t.vars (Expr s.cnt) <Mod <Random 1> s.cnt>>; 
+ t.vars (Expr 0) = ;
+ t.vars (Expr s.cnt) = <GetRandomVar t.vars (Expr s.cnt) <Mod <Random 1> s.cnt>>;
  (Vars t.Var e.vars) (Expr s.cnt)  0  = t.Var;
  (Vars t.Var e.vars) (Expr s.cnt) s.m = <GetRandomVar (Vars e.vars) (Expr s.cnt) <Sub s.m 1>>;
 }
@@ -384,7 +384,7 @@ RandomCall { , <Cp FunNames>
 
 ListVars { e.patt = <ListVars1 0 (Vars) e.patt>; }
 
-ListVars1 { 
+ListVars1 {
  s.cnt (Vars e.vars (Var s.t s.n) e.1) (Var s.t s.n) e.patt =
                    <ListVars1 s.cnt (Vars e.vars (Var s.t s.n) e.1) e.patt>;
  s.cnt (Vars e.vars) (Var s.t s.n) e.patt =
@@ -398,12 +398,12 @@ FunNameList {
  e.fns, <Cp External> : e.ext,
         <Lenw e.fns e.ext>: s.cnt e.x = (FunNames Mu e.fns e.ext
                                             Prout Print Type Lower Mu     Ev-met
-                                            Upper Lenw  Ord  Chr   Ev-met Mu 
+                                            Upper Lenw  Ord  Chr   Ev-met Mu
                                          ) <Add s.cnt 13>;
 }
 
 IncLn { = <Br Length '=' <Add <Dg Length> 1>>; }
-Permit { 
+Permit {
  ,<Compare 50 <Cp Length>>: '+' = Yes;
      = No;
 }
@@ -429,16 +429,16 @@ OutRefal {
 
 OutSents {
  s.flag (Sent (Patt e.patt) e.conds '=' (Expr e.expr)) e.sents
-        = (Sent (<JoinChars <OutExpr s.flag e.patt> <OutCond s.flag e.conds>>) 
+        = (Sent (<JoinChars <OutExpr s.flag e.patt> <OutCond s.flag e.conds>>)
             '=' (<JoinChars <OutExpr s.flag e.expr>>))
 
           <OutSents s.flag e.sents>;
  s.flag (Sent (Patt e.patt) e.conds (Cond (Expr e.expr) (Block e.block))) e.sents
-        = (Sent (<JoinChars <OutExpr s.flag e.patt> 
+        = (Sent (<JoinChars <OutExpr s.flag e.patt>
                             /* Put an image condition.*/
                             <OutCond s.flag e.conds (Cond (Expr e.expr) (Block ))>>
                  (Block <OutSents s.flag e.block>)
-                )) 
+                ))
           <OutSents s.flag e.sents>;
  s.flag = ;
 }
@@ -471,16 +471,16 @@ OutCall {
 }
 
 OutCond {
- REF (Cond (Expr e.expr) (Patt e.patt)) e.conds 
+ REF (Cond (Expr e.expr) (Patt e.patt)) e.conds
        = '\n' <Tab Right> ',' <OutExpr REF e.expr> ': ' <OutExpr REF e.patt> <OutCond REF e.conds>;
- DATA (Cond (Expr e.expr) (Patt e.patt)) e.conds 
-       = '\n' <Tab Right> '(Cond ( ' <OutExpr DATA e.expr> ') ( ' <OutExpr DATA e.patt> ')) ' 
+ DATA (Cond (Expr e.expr) (Patt e.patt)) e.conds
+       = '\n' <Tab Right> '(Cond ( ' <OutExpr DATA e.expr> ') ( ' <OutExpr DATA e.patt> ')) '
               <OutCond DATA e.conds>;
 
- REF (Cond (Expr e.expr) (Block )) 
+ REF (Cond (Expr e.expr) (Block ))
        = '\n' <Tab Right> ',' <OutExpr REF e.expr> ': ';
- DATA (Cond (Expr e.expr) (Block )) 
-       = '\n' <Tab Right> '(Cond ( ' <OutExpr DATA e.expr> ')'; 
+ DATA (Cond (Expr e.expr) (Block ))
+       = '\n' <Tab Right> '(Cond ( ' <OutExpr DATA e.expr> ')';
            /* The second parenthesis must be closed by the block itself. */
  s.fl = ;
 }
@@ -512,7 +512,7 @@ NewLine {
 }
 
 RefProg {
- (e.file) (Func (e.fname) e.body) e.prog = 
+ (e.file) (Func (e.fname) e.body) e.prog =
                            <Open 'w' <TmpFile> e.file>
                            <PutF '$EXTERN ' <PutExtern> ';\n\n'>
                            <PutFuncs REF (Func (e.fname) e.body) e.prog>
@@ -520,7 +520,7 @@ RefProg {
 }
 
 PutFuncs {
- REF (Func (e.fname) e.body) e.prog 
+ REF (Func (e.fname) e.body) e.prog
                      = <PutF '\n' e.fname '{'> <PutSents <OutSents REF e.body>> <PutF '}'>
                        <PutFuncs REF e.prog>;
 
@@ -531,7 +531,7 @@ PutFuncs {
 }
 
 
-FunTag { 
+FunTag {
  "$ENTRY" s.fn = ENTRY s.fn;
           s.fn = LOCAL s.fn;
 }
@@ -573,14 +573,14 @@ MainForCrefal {
 }
 
 SentsForCrefal {
- (Sent (e.patt) '=' (e.expr)) e.sents = 
+ (Sent (e.patt) '=' (e.expr)) e.sents =
 
                     (      '\n'
 <Tab Left>  (e.patt)  '\'=\'\n'
 <Tab Right>    (e.expr)    '\n'
                     )      '\n'  <SentsForCrefal e.sents>;
 
-(Sent (e.patt (Block e.block))) e.sents = 
+(Sent (e.patt (Block e.block))) e.sents =
 
                     (      '\n'
 <Tab Left>  (e.patt        '\n'
@@ -593,28 +593,28 @@ SentsForCrefal {
 
 }
 
-Entry { 
+Entry {
  = TransformOfModule;
- = TransformOfFunction; 
+ = TransformOfFunction;
 }
 
-MainFileName   { 
-     = 'main999'; 
- ref = <MainFileName> <Arg2> '.ref'; 
+MainFileName   {
+     = 'main999';
+ ref = <MainFileName> <Arg2> '.ref';
 }
-TestFileName   { 
-     = 'test999'; 
- ref = <TestFileName> <Arg2> '.ref'; 
+TestFileName   {
+     = 'test999';
+ ref = <TestFileName> <Arg2> '.ref';
 }
 
 CrefalFileName { = 'crefal'; }
 
 TmpFile { = 13; }
-TmpFileName { 
-     = 'tmp999'; 
-  1  = 'tmp888'; 
+TmpFileName {
+     = 'tmp999';
+  1  = 'tmp888';
  cnt s.cnt = 'test-' <Symb s.cnt>;
- e.1 ref = <TmpFileName e.1> <Arg2> '.ref'; 
+ e.1 ref = <TmpFileName e.1> <Arg2> '.ref';
 }
 
 PutF { e.x = <PutF1 <PutFcnt <IfRandomComments> e.x>>; }
@@ -646,7 +646,7 @@ PutFcnt1 {
 CntsRandomComments {
   , <Dg CntsComments> : s.Flag (CntLines s.n) (Segment s.m s.k) = /* <Prout OldCnts '= ' s.Flag (CntLines s.n) (Segment s.m s.k)> */
                                                                   s.Flag (CntLines s.n) (Segment s.m s.k);
-  , <Random-2in26>: { 
+  , <Random-2in26>: {
                       0 = No (CntLines 0) (Segment 0 0);
                       1 = Open (CntLines <Add <Random5> 1>) (Segment <Random200> <Random200>);
 
@@ -683,7 +683,7 @@ Tab {
        = '  ';
 }
 
-*  Take the command line arguments. 
+*  Take the command line arguments.
 Args { ,<GetArgs>: {
                      e.args = e.args /* <Prout "Arguments:" e.args> */;
 *                    e.error = <Help>;
@@ -704,9 +704,3 @@ Switch {
 
 IfRandomComments {  = <Cp Comments>; }
 Nil { e.x = ; }
-
-*---------------------------------------------------------------------
-
-
-
-
