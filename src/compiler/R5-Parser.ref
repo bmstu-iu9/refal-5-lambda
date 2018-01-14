@@ -337,7 +337,7 @@ Block {
 
   s.Mode t.Unexpected e.Tokens =
     (<UnexpectedToken t.Unexpected '\'{\''>)
-    (/* no sentences */)
+    (Sentences /* no sentences */)
     t.Unexpected e.Tokens;
 }
 
