@@ -14,9 +14,11 @@ PreparePatternHardSent {
         (#TkIdentifier e.ident) = (#Atom #TkIdentifier e.ident);
         (#TkVariable s.Mode e.Index) =
           (<Fetch s.Mode { 'e' = #E; 't' = #T; 's' = #S; }> (e.Index) ());
-        (#Brackets e.inBrackets) = (#Brackets <PreparePatternHardSent e.inBrackets>);
-        (#ADT-Brackets (e.Name) e.inBrackets) =
-          (#ADT-Brackets (e.Name) <PreparePatternHardSent e.inBrackets>);
+
+        (#Brackets e.inBrackets)
+          = (#Brackets <PreparePatternHardSent e.inBrackets>);
+        (#ADT-Brackets (e.Name) e.inBrackets)
+          = (#ADT-Brackets (e.Name) <PreparePatternHardSent e.inBrackets>);
       }
       e.Pattern
     >;
@@ -27,56 +29,56 @@ CreateHardPattern-Aux {
   // return t.Term1 ... t.TermN - Hard Sentence pattern
 
   /* предлажение имеет вид [P'] */
-  (#ADT-Brackets (e.Name) e.body) =
-    (#ADT-Brackets (e.Name) <CreateHardPattern-Aux e.body>);
+  (#ADT-Brackets (e.Name) e.body)
+    = (#ADT-Brackets (e.Name) <CreateHardPattern-Aux e.body>);
 
   /* отщипнуть терм слева или справа */
-  (#ADT-Brackets (e.Name) e.body) e.smth =
-    (#ADT-Brackets (e.Name) <CreateHardPattern-Aux e.body>)
-    <CreateHardPattern-Aux e.smth>;
+  (#ADT-Brackets (e.Name) e.body) e.smth
+    = (#ADT-Brackets (e.Name) <CreateHardPattern-Aux e.body>)
+      <CreateHardPattern-Aux e.smth>;
 
-  e.smth (#ADT-Brackets (e.Name) e.body) =
-    <CreateHardPattern-Aux e.smth>
-    (#ADT-Brackets (e.Name) <CreateHardPattern-Aux e.body>);
+  e.smth (#ADT-Brackets (e.Name) e.body)
+    = <CreateHardPattern-Aux e.smth>
+      (#ADT-Brackets (e.Name) <CreateHardPattern-Aux e.body>);
 
   /* предлажение имеет вид (P') */
-  (#Brackets e.body) =
-    (#Brackets <CreateHardPattern-Aux e.body>);
+  (#Brackets e.body)
+    = (#Brackets <CreateHardPattern-Aux e.body>);
 
   /* отщипнуть терм слева или справа */
-  (#Brackets e.body) e.smth =
-    (#Brackets <CreateHardPattern-Aux e.body>)
-    <CreateHardPattern-Aux e.smth>;
+  (#Brackets e.body) e.smth
+    = (#Brackets <CreateHardPattern-Aux e.body>)
+      <CreateHardPattern-Aux e.smth>;
 
-  e.smth (#Brackets e.body) =
-    <CreateHardPattern-Aux e.smth>
-    (#Brackets <CreateHardPattern-Aux e.body>);
+  e.smth (#Brackets e.body)
+    = <CreateHardPattern-Aux e.smth>
+      (#Brackets <CreateHardPattern-Aux e.body>);
 
   /* переменные */
-  (#S (e.name) (e.pattern)) e.smth =
-    (#S('idx') ( ((#S (e.name) )) ))
-    <CreateHardPattern-Aux e.smth>;
+  (#S (e.name) (e.pattern)) e.smth
+    = (#S('idx') ( ((#S (e.name) )) ))
+      <CreateHardPattern-Aux e.smth>;
 
-  e.smth (#S (e.name) (e.pattern)) =
-    <CreateHardPattern-Aux e.smth>
-    (#S('idx') ( ((#S (e.name) )) ));
+  e.smth (#S (e.name) (e.pattern))
+    = <CreateHardPattern-Aux e.smth>
+      (#S('idx') ( ((#S (e.name) )) ));
 
-  (#T (e.name) (e.pattern)) e.smth =
-    (#T('idx') (( (#T (e.name)) )))
-    <CreateHardPattern-Aux e.smth>;
+  (#T (e.name) (e.pattern)) e.smth
+    = (#T('idx') (( (#T (e.name)) )))
+      <CreateHardPattern-Aux e.smth>;
 
-  e.smth (#T (e.name) (e.pattern)) =
-    <CreateHardPattern-Aux e.smth>
-    (#T('idx') ( ((#T (e.name))) ));
+  e.smth (#T (e.name) (e.pattern))
+    = <CreateHardPattern-Aux e.smth>
+      (#T('idx') ( ((#T (e.name))) ));
 
   /* атом */
-  (#Atom e.attr) e.smth =
-    (#Atom e.attr)
-    <CreateHardPattern-Aux e.smth>;
+  (#Atom e.attr) e.smth
+    = (#Atom e.attr)
+      <CreateHardPattern-Aux e.smth>;
 
-  e.smth (#Atom e.attr) =
-    <CreateHardPattern-Aux e.smth>
-    (#Atom e.attr);
+  e.smth (#Atom e.attr)
+    = <CreateHardPattern-Aux e.smth>
+      (#Atom e.attr);
 
   /* пусто */ = ;
 
@@ -86,8 +88,9 @@ CreateHardPattern-Aux {
 
 $ENTRY CreateHardPattern {
   // args   t.Token1 ... t.TokenN - One pattern
-  // return [ (s.Tag ('idx')((Replacement)) ) / (#Atom s.Tag e.Value ) / (#Brackets e.inBrackets)]*
+  // return [ (s.Tag ('idx')((Replacement)) )
+  //          / (#Atom s.Tag e.Value )
+  //          / (#Brackets e.inBrackets)]*
   //            Hard Sentence with replacments
-  e.pattern =
-    <CreateHardPattern-Aux <PreparePatternHardSent e.pattern>>;
+  e.pattern = <CreateHardPattern-Aux <PreparePatternHardSent e.pattern>>;
 }
