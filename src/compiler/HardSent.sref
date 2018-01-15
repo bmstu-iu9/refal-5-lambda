@@ -2,6 +2,15 @@
 $EXTERN Map, Fetch;
 
 
+$ENTRY CreateHardPattern {
+  // args   t.Token1 ... t.TokenN - One pattern
+  // return [ (s.Tag ('idx')((Replacement)) )
+  //          / (#Atom s.Tag e.Value )
+  //          / (#Brackets e.inBrackets)]*
+  //            Hard Sentence with replacments
+  e.pattern = <CreateHardPattern-Aux <PreparePatternHardSent e.pattern>>;
+}
+
 PreparePatternHardSent {
   // args   t.Token1 ... t.TokenN - One pattern
   // return t.Term1 ... t.TermN - Prepared pattern
@@ -84,13 +93,4 @@ CreateHardPattern-Aux {
 
   /* все остальное */
   e.smth = (#E('idx') ((e.smth)) );
-}
-
-$ENTRY CreateHardPattern {
-  // args   t.Token1 ... t.TokenN - One pattern
-  // return [ (s.Tag ('idx')((Replacement)) )
-  //          / (#Atom s.Tag e.Value )
-  //          / (#Brackets e.inBrackets)]*
-  //            Hard Sentence with replacments
-  e.pattern = <CreateHardPattern-Aux <PreparePatternHardSent e.pattern>>;
 }
