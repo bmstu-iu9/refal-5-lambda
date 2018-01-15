@@ -37,6 +37,214 @@ PreparePatternsFastGen-Aux {
       >;
 }
 
+FastGen {
+  /* 0. Тело функции состоит из одного предложения или из пустых образцов */
+  s.Num (e.1) = s.Num (e.1);
+  s.Num () () e.Tail
+    = <FastGen
+        <Inc s.Num>
+        ()
+        e.Tail
+      >;
+
+  /* 0.75. Что-то среднее между (M, N) и (K) */
+  s.Num
+  ((#E '$' e.Pattern )) (e.any) e.Tail
+    = <FastGen
+        <Inc s.Num>
+        ((#E '$' e.Pattern ((e.any)) ))
+        e.Tail
+      >;
+
+  s.Num
+  (e.any) ((#E '$' e.Pattern)) e.Tail
+    = <FastGen
+        <Inc s.Num>
+        ((#E '$' <SplitReps s.Num e.any> e.Pattern ))
+        e.Tail
+      >;
+
+  s.Num (e.Any) () e.Tail
+    = <FastGen
+        <Inc s.Num>
+        ((#E '$' <SplitReps s.Num e.Any> (()) ))
+        e.Tail
+      >;
+
+  s.Num () (e.Any) e.Tail
+    = <FastGen
+        <Inc s.Num>
+        ((#E '$' <SplitReps s.Num /* пусто */> ((e.Any)) ))
+        e.Tail
+      >;
+
+  /* 0.5. Пара Е-шек */
+  s.Num
+  ((#E '$' e.Pattern1 )) ((#E '$' e.Pattern2 )) e.Tail
+    = <FastGen
+        <Inc s.Num>
+        ((#E '$' e.Pattern1 e.Pattern2 ))
+        e.Tail
+      >;
+
+  /* 1. Предложения являются термами; cтроим БО согласно таблице */
+  s.Num
+  (t.1) (t.2) e.Tail
+    = <FastGen
+        <Inc s.Num>
+        (<FastGen-Terms s.Num (t.1) (t.2)>)
+        e.Tail
+      >;
+
+  /* 2. Предложения класса (M,N) */
+  s.Num
+  ( e.1 (#E '$' e.Pattern1) e.2 )
+  ( e.3 (#E '$' e.Pattern2) e.4 )
+  e.Tail
+    = <FastGen
+        <Inc s.Num>
+        (<FastGen-MeN
+          s.Num
+          ( e.1 (#E '$' e.Pattern1) e.2 )
+          ( e.3 (#E '$' e.Pattern2) e.4 )
+        >)
+        e.Tail
+      >;
+
+  /* 3. Предложения класса (K) */
+  s.Num
+  ( e.1 ) ( e.2 ) e.Tail
+    = <FastGen
+        <Inc s.Num>
+        (<FastGen-K
+          s.Num
+          <LengthComp ( e.1 ) ( e.2 )>
+          ( e.1 ) ( e.2 )
+        >)
+        e.Tail
+      >;
+
+  /* 4. Все остальное */
+  s.Num (e.1) (e.2) = ((#E '$' ((e.1)) ((e.2)) ));
+}
+
+SplitReps {
+  s.Num e.Reps
+    = s.Num <SplitReps-Brackets e.Reps>
+    : {
+        1 e.Any = ((e.Any));
+        s.Other e.Any =
+          <SplitReps-Aux s.Other e.Any (/* Scanned */) (/* Else */)>;
+      };
+}
+
+SplitReps-Brackets {
+  e.Reps
+    = <Map
+        {
+          (#Brackets s.Num e.inBrackets) =
+            (#Brackets
+              1 <UnBracketInBrackets s.Num <SplitReps s.Num e.inBrackets>>
+            );
+
+          (#ADT-Brackets (e.Name) s.Num e.inBrackets) =
+            (#ADT-Brackets
+              (e.Name) 1
+              <UnBracketInBrackets s.Num <SplitReps s.Num e.inBrackets>>
+            );
+
+          (e.Else) = (e.Else);
+        }
+        e.Reps
+      >;
+}
+
+UnBracketInBrackets {
+  1 ((e.Smth)) = e.Smth;
+  s.Other e.Any = e.Any;
+}
+
+SplitReps-Aux {
+  0 e.Any (e.Scanned) (e.Else) = ;
+
+  s.Num (#Brackets s.ONum ) e.Tail (e.Scanned) (e.Else)
+    = <SplitReps-Aux
+        s.Num e.Tail
+        (e.Scanned (#Brackets s.ONum ))
+        (e.Else (#Brackets s.ONum ))
+      >;
+
+  s.Num (#Brackets s.ONum ((e.Rep)) e.Replacements) e.Tail (e.Scanned) (e.Else)
+    = <SplitReps-Aux
+        s.Num e.Tail
+        (e.Scanned (#Brackets s.ONum e.Rep))
+        (e.Else (#Brackets s.ONum e.Replacements))
+      >;
+
+  s.Num (#ADT-Brackets (e.Name) s.ONum ) e.Tail (e.Scanned) (e.Else)
+    = <SplitReps-Aux
+        s.Num e.Tail
+        (e.Scanned (#ADT-Brackets (e.Name) s.ONum))
+        (e.Else (#ADT-Brackets (e.Name) s.ONum))
+      >;
+
+  s.Num (#ADT-Brackets (e.Name) s.ONum ((e.Rep)) e.Replacements) e.Tail
+  (e.Scanned) (e.Else)
+    = <SplitReps-Aux
+        s.Num e.Tail
+        (e.Scanned (#ADT-Brackets (e.Name) s.ONum e.Rep))
+        (e.Else (#ADT-Brackets (e.Name) s.ONum e.Replacements))
+      >;
+
+  s.Num (s.Mode '$' ((e.Rep)) e.otherRep ) e.Tail (e.Scanned) (e.Else)
+    = <SplitReps-Aux
+        s.Num
+        e.Tail
+        (e.Scanned (s.Mode '$' ((e.Rep))))
+        (e.Else (s.Mode '$' e.otherRep))
+      >;
+
+  s.Num (s.Mode s.Type e.Value) e.Tail (e.Scanned) (e.Else)
+    = <SplitReps-Aux
+        s.Num
+        e.Tail
+        (e.Scanned (s.Mode s.Type e.Value))
+        (e.Else (s.Mode s.Type e.Value))
+      >;
+
+  s.Num (e.Scanned) (e.Else) =
+    ((e.Scanned)) <SplitReps-Aux <Dec s.Num> e.Else ()()>;
+}
+
+FastGen-MeN {
+  s.Num (t.left1 e.1 (#E e.inE1) e.2) (t.left2 e.3 (#E e.inE2) e.4)
+    = <FastGen-Terms s.Num (t.left1) (t.left2) >
+      <FastGen-MeN s.Num (e.1 (#E e.inE1) e.2 )(e.3 (#E e.inE2) e.4 )>;
+
+  s.Num (e.1 (#E e.inE1) e.2 t.right1) (e.3 (#E e.inE2) e.4 t.right2)
+    = <FastGen-MeN s.Num (e.1 (#E e.inE1) e.2 )(e.3 (#E e.inE2) e.4 )>
+      <FastGen-Terms s.Num (t.right1) (t.right2)>;
+
+  s.Num ((#E '$' e.inE1)) ((#E '$' ((e.inE2)) )) = (#E '$' e.inE1 ((e.inE2)));
+
+  s.Num (e.in1)(e.in2) = (#E '$' <SplitReps s.Num e.in1> ((e.in2)));
+}
+
+LengthComp {
+  (t.1 e.tail1) (t.2 e.tail2) = <LengthComp (e.tail1) (e.tail2)>;
+  () () = #Eq;
+  e.1 = #NotEq;
+}
+
+FastGen-K {
+  s.Num #Eq (t.1 e.tail1) (t.2 e.tail2)
+    = <FastGen-Terms s.Num (t.1 ) (t.2 )>
+      <FastGen-K s.Num #Eq (e.tail1) (e.tail2)>;
+
+  s.Num #Eq () () = ;
+  s.Num #NotEq (e.1) (e.2) = (#E '$' <SplitReps s.Num e.1> ((e.2)) );
+}
+
 
 UnBracketAndNum {
   s.Num (e.Any) = s.Num e.Any;
@@ -164,212 +372,4 @@ $ENTRY FastGen-Terms {
 
   s.Num ((#S '$' e.Pattern1)) ((#S '$' e.Pattern2))
     = (#S '$' e.Pattern1 e.Pattern2 );
-}
-
-SplitReps {
-  s.Num e.Reps
-    = s.Num <SplitReps-Brackets e.Reps>
-    : {
-        1 e.Any = ((e.Any));
-        s.Other e.Any =
-          <SplitReps-Aux s.Other e.Any (/* Scanned */) (/* Else */)>;
-      };
-}
-
-SplitReps-Brackets {
-  e.Reps
-    = <Map
-        {
-          (#Brackets s.Num e.inBrackets) =
-            (#Brackets
-              1 <UnBracketInBrackets s.Num <SplitReps s.Num e.inBrackets>>
-            );
-
-          (#ADT-Brackets (e.Name) s.Num e.inBrackets) =
-            (#ADT-Brackets
-              (e.Name) 1
-              <UnBracketInBrackets s.Num <SplitReps s.Num e.inBrackets>>
-            );
-
-          (e.Else) = (e.Else);
-        }
-        e.Reps
-      >;
-}
-
-UnBracketInBrackets {
-  1 ((e.Smth)) = e.Smth;
-  s.Other e.Any = e.Any;
-}
-
-SplitReps-Aux {
-  0 e.Any (e.Scanned) (e.Else) = ;
-
-  s.Num (#Brackets s.ONum ) e.Tail (e.Scanned) (e.Else)
-    = <SplitReps-Aux
-        s.Num e.Tail
-        (e.Scanned (#Brackets s.ONum ))
-        (e.Else (#Brackets s.ONum ))
-      >;
-
-  s.Num (#Brackets s.ONum ((e.Rep)) e.Replacements) e.Tail (e.Scanned) (e.Else)
-    = <SplitReps-Aux
-        s.Num e.Tail
-        (e.Scanned (#Brackets s.ONum e.Rep))
-        (e.Else (#Brackets s.ONum e.Replacements))
-      >;
-
-  s.Num (#ADT-Brackets (e.Name) s.ONum ) e.Tail (e.Scanned) (e.Else)
-    = <SplitReps-Aux
-        s.Num e.Tail
-        (e.Scanned (#ADT-Brackets (e.Name) s.ONum))
-        (e.Else (#ADT-Brackets (e.Name) s.ONum))
-      >;
-
-  s.Num (#ADT-Brackets (e.Name) s.ONum ((e.Rep)) e.Replacements) e.Tail
-  (e.Scanned) (e.Else)
-    = <SplitReps-Aux
-        s.Num e.Tail
-        (e.Scanned (#ADT-Brackets (e.Name) s.ONum e.Rep))
-        (e.Else (#ADT-Brackets (e.Name) s.ONum e.Replacements))
-      >;
-
-  s.Num (s.Mode '$' ((e.Rep)) e.otherRep ) e.Tail (e.Scanned) (e.Else)
-    = <SplitReps-Aux
-        s.Num
-        e.Tail
-        (e.Scanned (s.Mode '$' ((e.Rep))))
-        (e.Else (s.Mode '$' e.otherRep))
-      >;
-
-  s.Num (s.Mode s.Type e.Value) e.Tail (e.Scanned) (e.Else)
-    = <SplitReps-Aux
-        s.Num
-        e.Tail
-        (e.Scanned (s.Mode s.Type e.Value))
-        (e.Else (s.Mode s.Type e.Value))
-      >;
-
-  s.Num (e.Scanned) (e.Else) =
-    ((e.Scanned)) <SplitReps-Aux <Dec s.Num> e.Else ()()>;
-}
-
-FastGen-MeN {
-  s.Num (t.left1 e.1 (#E e.inE1) e.2) (t.left2 e.3 (#E e.inE2) e.4)
-    = <FastGen-Terms s.Num (t.left1) (t.left2) >
-      <FastGen-MeN s.Num (e.1 (#E e.inE1) e.2 )(e.3 (#E e.inE2) e.4 )>;
-
-  s.Num (e.1 (#E e.inE1) e.2 t.right1) (e.3 (#E e.inE2) e.4 t.right2)
-    = <FastGen-MeN s.Num (e.1 (#E e.inE1) e.2 )(e.3 (#E e.inE2) e.4 )>
-      <FastGen-Terms s.Num (t.right1) (t.right2)>;
-
-  s.Num ((#E '$' e.inE1)) ((#E '$' ((e.inE2)) )) = (#E '$' e.inE1 ((e.inE2)));
-
-  s.Num (e.in1)(e.in2) = (#E '$' <SplitReps s.Num e.in1> ((e.in2)));
-}
-
-LengthComp {
-  (t.1 e.tail1) (t.2 e.tail2) = <LengthComp (e.tail1) (e.tail2)>;
-  () () = #Eq;
-  e.1 = #NotEq;
-}
-
-FastGen-K {
-  s.Num #Eq (t.1 e.tail1) (t.2 e.tail2)
-    = <FastGen-Terms s.Num (t.1 ) (t.2 )>
-      <FastGen-K s.Num #Eq (e.tail1) (e.tail2)>;
-
-  s.Num #Eq () () = ;
-  s.Num #NotEq (e.1) (e.2) = (#E '$' <SplitReps s.Num e.1> ((e.2)) );
-}
-
-FastGen {
-  /* 0. Тело функции состоит из одного предложения или из пустых образцов */
-  s.Num (e.1) = s.Num (e.1);
-  s.Num () () e.Tail
-    = <FastGen
-        <Inc s.Num>
-        ()
-        e.Tail
-      >;
-
-  /* 0.75. Что-то среднее между (M, N) и (K) */
-  s.Num
-  ((#E '$' e.Pattern )) (e.any) e.Tail
-    = <FastGen
-        <Inc s.Num>
-        ((#E '$' e.Pattern ((e.any)) ))
-        e.Tail
-      >;
-
-  s.Num
-  (e.any) ((#E '$' e.Pattern)) e.Tail
-    = <FastGen
-        <Inc s.Num>
-        ((#E '$' <SplitReps s.Num e.any> e.Pattern ))
-        e.Tail
-      >;
-
-  s.Num (e.Any) () e.Tail
-    = <FastGen
-        <Inc s.Num>
-        ((#E '$' <SplitReps s.Num e.Any> (()) ))
-        e.Tail
-      >;
-
-  s.Num () (e.Any) e.Tail
-    = <FastGen
-        <Inc s.Num>
-        ((#E '$' <SplitReps s.Num /* пусто */> ((e.Any)) ))
-        e.Tail
-      >;
-
-  /* 0.5. Пара Е-шек */
-  s.Num
-  ((#E '$' e.Pattern1 )) ((#E '$' e.Pattern2 )) e.Tail
-    = <FastGen
-        <Inc s.Num>
-        ((#E '$' e.Pattern1 e.Pattern2 ))
-        e.Tail
-      >;
-
-  /* 1. Предложения являются термами; cтроим БО согласно таблице */
-  s.Num
-  (t.1) (t.2) e.Tail
-    = <FastGen
-        <Inc s.Num>
-        (<FastGen-Terms s.Num (t.1) (t.2)>)
-        e.Tail
-      >;
-
-  /* 2. Предложения класса (M,N) */
-  s.Num
-  ( e.1 (#E '$' e.Pattern1) e.2 )
-  ( e.3 (#E '$' e.Pattern2) e.4 )
-  e.Tail
-    = <FastGen
-        <Inc s.Num>
-        (<FastGen-MeN
-          s.Num
-          ( e.1 (#E '$' e.Pattern1) e.2 )
-          ( e.3 (#E '$' e.Pattern2) e.4 )
-        >)
-        e.Tail
-      >;
-
-  /* 3. Предложения класса (K) */
-  s.Num
-  ( e.1 ) ( e.2 ) e.Tail
-    = <FastGen
-        <Inc s.Num>
-        (<FastGen-K
-          s.Num
-          <LengthComp ( e.1 ) ( e.2 )>
-          ( e.1 ) ( e.2 )
-        >)
-        e.Tail
-      >;
-
-  /* 4. Все остальное */
-  s.Num (e.1) (e.2) = ((#E '$' ((e.1)) ((e.2)) ));
 }
