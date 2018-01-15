@@ -2,18 +2,34 @@
 $EXTERN Map, Fetch;
 
 
+/**
+  <CreateHardPattern e.Pattern>
+    == e.OptPatternHS
+
+  e.OptPatternHS ::= t.OptPatternHS-Term
+
+  t.OptPatternHS-Term ::=
+      (#Atom s.Type e.Value)
+    | (#Brackets e.OptPatternHS)
+    | (#ADT-Brackets (e.Name) e.OptPatternHS)
+    | (s.VarMode (e.Index) ((e.OptPatternHS-Nested)))
+
+  s.VarMode ::= #E | #T | #S
+  e.OptPatternHS-Nested ::= t.OptPatternHS-Nested-Term
+
+  t.OptPatternHS-Nested-Term ::=
+      (#Atom s.Type e.Value)
+    | (#Brackets e.OptPatternHS-Nested)
+    | (#ADT-Brackets (e.Name) e.OptPatternHS-Nested)
+    | (s.VarMode (e.Index) e.VarSubstHS-Nested)
+
+  e.VarSubstHS-Nested ::= empty | ()
+*/
 $ENTRY CreateHardPattern {
-  // args   t.Token1 ... t.TokenN - One pattern
-  // return [ (s.Tag ('idx')((Replacement)) )
-  //          / (#Atom s.Tag e.Value )
-  //          / (#Brackets e.inBrackets)]*
-  //            Hard Sentence with replacments
   e.pattern = <CreateHardPattern-Aux <PreparePatternHardSent e.pattern>>;
 }
 
 PreparePatternHardSent {
-  // args   t.Token1 ... t.TokenN - One pattern
-  // return t.Term1 ... t.TermN - Prepared pattern
   e.Pattern =
     <Map
       {
@@ -46,6 +62,7 @@ CreateHardPattern-Aux {
     = (#ADT-Brackets (e.Name) <CreateHardPattern-Aux e.body>)
       <CreateHardPattern-Aux e.smth>;
 
+  /* предлажение имеет вид [Name P'] */
   e.smth (#ADT-Brackets (e.Name) e.body)
     = <CreateHardPattern-Aux e.smth>
       (#ADT-Brackets (e.Name) <CreateHardPattern-Aux e.body>);
@@ -65,20 +82,20 @@ CreateHardPattern-Aux {
 
   /* переменные */
   (#S (e.name) (e.pattern)) e.smth
-    = (#S('idx') ( ((#S (e.name) )) ))
+    = ( #S ('idx') (( (#S (e.name)) )) )
       <CreateHardPattern-Aux e.smth>;
 
   e.smth (#S (e.name) (e.pattern))
     = <CreateHardPattern-Aux e.smth>
-      (#S('idx') ( ((#S (e.name) )) ));
+      ( #S ('idx') (( (#S (e.name)) )) );
 
   (#T (e.name) (e.pattern)) e.smth
-    = (#T('idx') (( (#T (e.name)) )))
+    = ( #T ('idx') (( (#T (e.name)) )) )
       <CreateHardPattern-Aux e.smth>;
 
   e.smth (#T (e.name) (e.pattern))
     = <CreateHardPattern-Aux e.smth>
-      (#T('idx') ( ((#T (e.name))) ));
+      ( #T ('idx') (( (#T (e.name)) )) );
 
   /* атом */
   (#Atom e.attr) e.smth
@@ -92,5 +109,5 @@ CreateHardPattern-Aux {
   /* пусто */ = ;
 
   /* все остальное */
-  e.smth = (#E('idx') ((e.smth)) );
+  e.smth = ( #E ('idx') ((e.smth)) );
 }

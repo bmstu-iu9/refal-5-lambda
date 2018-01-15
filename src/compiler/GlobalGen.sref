@@ -2,7 +2,7 @@
 $EXTERN CreateFastGen, FastGen-Terms;
 
 //FROM LibraryEx
-$EXTERN Inc, TermCompare, Map, Min, Max, Dec, UnBracket;
+$EXTERN Inc, TermCompare, Map, Min, Max, Dec, UnBracket, Reduce;
 
 //FROM Library
 $EXTERN Add, Sub;
@@ -11,6 +11,12 @@ $EXTERN Add, Sub;
 $EXTERN TextFromExpr;
 
 
+/**
+  <CreateGlobalGen (e.OptPatternHS)*>
+    == e.OptPatternGG
+
+  e.OptPatternGG ::= e.OptPatternFG
+*/
 $ENTRY CreateGlobalGen {
   e.HardSentences
 
@@ -25,11 +31,11 @@ InspectFastGen {
   (#E '$' e.EReplacements) e.Tail
     = <ReplacmentsCounter 0 () e.EReplacements>
     : {
-        1 = 1;
-        s.Num = 0;
+        1 = #NoScan;
+        s.Num = #DeepScan;
       }
-    : s.ReplacmentsCounter^
-    = (#E s.ReplacmentsCounter '$' e.EReplacements)
+    : s.EVarMode
+    = (#E s.EVarMode '$' e.EReplacements)
       <InspectFastGen e.Tail>;
 
   (#Brackets s.Num e.inBrackets) e.Tail
@@ -47,42 +53,45 @@ InspectFastGen {
 
 ReplacmentsCounter {
   s.Counter (e.Scanned) ((e.Replacement)) e.Tail
-    = <InList (<PrepRep e.Replacement>) (e.Scanned)>
+    = <InList (<Skeleton e.Replacement>) (e.Scanned)>
     : {
-        0 (e.PrepReplacement) =
-          <ReplacmentsCounter <Inc s.Counter> (e.Scanned (e.PrepReplacement)) e.Tail>;
+        #False (e.PrepReplacement)
+          = <ReplacmentsCounter
+              <Inc s.Counter> (e.Scanned (e.PrepReplacement)) e.Tail
+            >;
 
-        1 (e.PrepReplacement) = <ReplacmentsCounter s.Counter (e.Scanned) e.Tail>;
+        #True (e.PrepReplacement)
+          = <ReplacmentsCounter s.Counter (e.Scanned) e.Tail>;
       };
 
   s.Counter (e.Scanned) = s.Counter;
 }
 
-PrepRep {
-  (#Atom e.Body) e.Tail = (#Atom e.Body) <PrepRep e.Tail>;
+Skeleton {
+  (#Atom e.Body) e.Tail = (#Atom e.Body) <Skeleton e.Tail>;
 
   (#Brackets s.Num e.inBrackets) e.Tail
-    = (#Brackets s.Num <PrepRep e.inBrackets>)
-      <PrepRep e.Tail>;
+    = (#Brackets s.Num <Skeleton e.inBrackets>)
+      <Skeleton e.Tail>;
 
   (#ADT-Brackets (e.Name) s.Num e.inBrackets) e.Tail
-    = (#ADT-Brackets (e.Name) s.Num <PrepRep e.inBrackets>)
-      <PrepRep e.Tail>;
+    = (#ADT-Brackets (e.Name) s.Num <Skeleton e.inBrackets>)
+      <Skeleton e.Tail>;
 
-  (s.Mode e.Body) e.Tail = (s.Mode) <PrepRep e.Tail>;
+  (s.Mode e.Body) e.Tail = (s.Mode) <Skeleton e.Tail>;
 
-  (e.Else) e.Tail = (e.Else) <PrepRep e.Tail>;
+  (e.Else) e.Tail = (e.Else) <Skeleton e.Tail>;
 
   /* empty */ = /* empty */;
 }
 
 InList {
-  (e.Elem) () = 0 (e.Elem);
+  (e.Elem) () = #False (e.Elem);
 
   (e.Elem) (t.ListElem e.List)
     = <TermCompare (t.ListElem) (e.Elem)>
     : {
-        '=' = 1 ();
+        '=' = #True ();
         s.Else = <InList (e.Elem) (e.List)>;
       };
 }
@@ -94,9 +103,9 @@ GlobalGen {
   e.Inspected
     = <Map
         {
-          (#E 0 '$' e.Body) = <GlobalGen-Aux e.Body>;
+          (#E #DeepScan '$' e.Body) = <GlobalGen-Aux e.Body>;
 
-          (#E 1 '$' e.Body) = (#E '$' e.Body);
+          (#E #NoScan '$' e.Body) = (#E '$' e.Body);
 
           (#Brackets s.Num e.inBrackets) =
             (#Brackets <GlobalGen e.inBrackets>);
@@ -125,11 +134,11 @@ GlobalGen-Aux {
     = <GetComplex
         <Map
           {
-            ((e.Class) e.Body) = <CalcComplexity <Generalization 1 e.Body>>;
+            (e.PatternsForClass)
+              = <CalcComplexity <Generalization 1 e.PatternsForClass>>;
           }
           <CreateSuperposition
-            (e.Replacements)
-            (<ComputePossibleClasses e.Replacements>)
+            (e.Replacements) <ComputePossibleClasses e.Replacements>
           >
         >
       >;
@@ -138,7 +147,17 @@ GlobalGen-Aux {
 ComputePossibleClasses {
   e.Patterns
     = <ComputeClasses e.Patterns> : e.Classes^
-    = <GetMinKMN (100 100 100) e.Classes> : (s.K s.M s.N)
+    = <Reduce
+        {
+          (s.K s.M s.N) (#K s.KNum) = (<Min s.K s.KNum> s.M s.N);
+
+          (s.K s.M s.N) (#MN s.MNum s.NNum)
+            = (s.K <Min s.M s.MNum> <Min s.N s.NNum>);
+        }
+        (100 100 100)
+        e.Classes
+      >
+    : (s.K s.M s.N)
     = <ComputePossibleClasses-Aux (s.K s.M s.N)>;
 }
 
@@ -152,16 +171,6 @@ ComputeClasses {
         }
         e.Patterns
       >;
-}
-
-GetMinKMN {
-  (s.K s.M s.N) (#K s.KNum) e.OtherClasses
-    = <GetMinKMN (<Min s.K s.KNum> s.M s.N) e.OtherClasses>;
-
-  (s.K s.M s.N) (#MN s.MNum s.NNum) e.OtherClasses
-    = <GetMinKMN (s.K <Min s.M s.MNum> <Min s.N s.NNum>) e.OtherClasses>;
-
-  (s.K s.M s.N) = (s.K s.M s.N);
 }
 
 ComputePossibleClasses-Aux {
@@ -271,32 +280,34 @@ Superposition {
       (#T e.Body);
 }
 
-CreateSuperposition-Aux {
-  ((e.Pattern) e.Tail) (e.Class)
-    = (<Superposition (e.Pattern) (e.Class)>)
-      <CreateSuperposition-Aux (e.Tail) (e.Class)>;
-
-  () (e.Class) = ;
-}
-
 CreateSuperposition {
-  (e.Patterns) ((e.Class) e.Tail)
-    = ((e.Class) <CreateSuperposition-Aux (e.Patterns)(e.Class)>)
-      <CreateSuperposition (e.Patterns) (e.Tail)>;
-
-  (e.Patterns) () = ;
+  (e.Patterns) e.Classes
+    = <Map
+        {
+          (e.Class)
+            = (
+                <Map
+                  {
+                    (e.Pattern) = (<Superposition (e.Pattern) (e.Class)>);
+                  }
+                  e.Patterns
+                >
+              );
+        }
+        e.Classes
+      >;
 }
 
 Generalization-Aux {
-  s.Num (t.Term1 e.Tail1)(t.Term2 e.Tail2)
-    = <FastGen-Terms s.Num (t.Term1)(t.Term2)>
-      <Generalization-Aux s.Num (e.Tail1)(e.Tail2)>;
+  s.Num (t.Term1 e.Tail1) (t.Term2 e.Tail2)
+    = <FastGen-Terms s.Num (t.Term1) (t.Term2)>
+      <Generalization-Aux s.Num (e.Tail1) (e.Tail2)>;
 
-  s.Num ((#E e.Pattern ))() = (#E '$' (e.Pattern) ());
+  s.Num ((#E e.Pattern)) () = (#E '$' (e.Pattern) ());
 
-  s.Num ()((#E e.Pattern )) = (#E '$' () (e.Pattern));
+  s.Num () ((#E e.Pattern)) = (#E '$' () (e.Pattern));
 
-  s.Num ()() = ;
+  s.Num () () = ;
 }
 
 Generalization {
@@ -311,11 +322,14 @@ Generalization {
 }
 
 CalcComplexity {
-  (e.Body) e.Tail
-    = (<CalcComplexity-aux 1 e.Body> e.Body)
-      <CalcComplexity e.Tail>;
-
-  = ;
+  e.PatternsForClasses
+    = <Map
+        {
+          (e.PatternForClass)
+            = (<CalcComplexity-aux 1 e.PatternForClass> e.PatternForClass);
+        }
+        e.PatternsForClasses
+      >;
 }
 
 CalcComplexity-aux {
@@ -341,14 +355,21 @@ CalcComplexity-aux {
 }
 
 GetComplex {
-  (s.CurComplexity e.CurBody)(s.Complexity e.Body) e.Tail
-    = <TermCompare s.CurComplexity s.Complexity>
-    : {
-        '>' = <GetComplex (s.CurComplexity e.CurBody) e.Tail>;
-        s.Any = <GetComplex (s.Complexity e.Body) e.Tail>;
-      };
+  e.Patterns
+    = <Reduce
+        {
+          (s.CurComplexity e.CurPattern) (s.Complexity e.Pattern)
+            = <TermCompare s.CurComplexity s.Complexity>
+            : {
+                '>' = (s.CurComplexity e.CurPattern);
 
-    (s.CurComplexity e.CurBody) = e.CurBody;
+                s.Any = (s.Complexity e.Pattern);
+              };
+        }
+        e.Patterns /* e.Patterns is not empty */
+      >
+    : (s.MaxComplexity e.Pattern)
+    = e.Pattern;
 }
 
 

@@ -2,34 +2,57 @@
 $EXTERN Map, Dec, Inc;
 
 
-$ENTRY CreateFastGen {
-  // args   e.Patterns
-  // return FastGen with replacements
-  e.Patterns
-    = <FastGen 1 <PreparePatternsFastGen e.Patterns>>;
-}
+/**
+  <CreateFastGen (e.OptPatternHS)*>
+    == e.OptPatternFG
 
-PreparePatternsFastGen {
-  e.all
-    = <Map
-        {
-          (e.sent) = (<PreparePatternsFastGen-Aux e.sent>);
-        }
-        e.all
+  e.OptPatternFG ::= t.OptPatternFG-Term
+
+  t.OptPatternFG-Term ::=
+      (#Atom s.Type e.Info)
+    | (#Brackets s.Num e.OptPatternFG)
+    | (#ADT-Brackets (e.Name) s.Num e.OptPatternFG)
+    | (s.VarMode '$' t.VarSubstFG*)
+
+  t.VarSubstFG ::=
+      ((e.OptPatternFG))
+    | ((e.OptPatternHS-Nested))
+*/
+$ENTRY CreateFastGen {
+  e.Patterns
+    = <FastGen
+        1
+        <Map
+          {
+            (e.Pattern) = (<PreparePattern e.Pattern>);
+          }
+          e.Patterns
+        >
       >;
 }
 
-PreparePatternsFastGen-Aux {
+/*
+  <PreparePattern e.OptPatternHS> == e.OptPatternFG_1
+
+  e.OptPatternFG_1 ::= t.OptPatternFG-Term_1
+
+  t.OptPatternFG-Term_1 ::=
+      (#Atom s.Type e.Info)
+    | (#Brackets 1 e.OptPatternFG_1)
+    | (#ADT-Brackets (e.Name) 1 e.OptPatternFG_1)
+    | (s.VarMode '$' ((e.OptPatternHS-Nested)))
+*/
+PreparePattern {
   e.Pattern
     = <Map
         {
           (s.type (e.idx) (( e.Replacement))) = (s.type '$' ((e.Replacement)));
 
           (#Brackets e.inBrackets)
-            = (#Brackets 1 <PreparePatternsFastGen-Aux e.inBrackets>);
+            = (#Brackets 1 <PreparePattern e.inBrackets>);
 
           (#ADT-Brackets (e.Name) e.inBrackets)
-            = (#ADT-Brackets (e.Name) 1 <PreparePatternsFastGen-Aux e.inBrackets>);
+            = (#ADT-Brackets (e.Name) 1 <PreparePattern e.inBrackets>);
 
           (#Atom e.any) = (#Atom e.any);
         }
@@ -37,6 +60,10 @@ PreparePatternsFastGen-Aux {
       >;
 }
 
+/*
+  <FastGen s.SquashedPatterns (e.OptPatternFG_1)*>
+    == e.OptPatternFG
+*/
 FastGen {
   /* 0. Тело функции состоит из одного предложения или из пустых образцов */
   s.Num (e.1) = s.Num (e.1);
