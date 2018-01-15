@@ -524,11 +524,14 @@ GetReplacement-Aux {
 }
 
 ReversePattern {
-  (s.Mode (e.name) '$' e.Replacements) e.Tail
-    = (s.Mode (e.name) '$' <ReversePattern-Aux e.Replacements>)
-      <ReversePattern e.Tail>;
-
-  /* empty */ = /* empty */;
+  e.Substitutions
+    = <Map
+        {
+          (s.Mode (e.name) '$' e.Replacements)
+            = (s.Mode (e.name) '$' <ReversePattern-Aux e.Replacements>);
+        }
+        e.Substitutions
+      >;
 }
 
 ReversePattern-Aux {
@@ -557,8 +560,6 @@ ReversePattern-Aux {
   (s.Mode '$' ((e.Rep)) e.Any) e.Tail
     = <ReversePattern-Aux e.Rep>
       <ReversePattern-Aux e.Tail>;
-
-  (s.Mode '$') e.Tail = (s.Mode '$') <ReversePattern-Aux e.Tail>;
 
   (e.Else) e.Tail = (<ReversePattern-Aux e.Else>) <ReversePattern-Aux e.Tail>;
 
