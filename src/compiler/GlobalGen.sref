@@ -426,48 +426,6 @@ ModeFromTag {
   #S = 's';
 }
 
-ReversePattern {
-  (s.Mode (e.name) '$' e.Replacements) e.Tail
-    = (s.Mode (e.name) '$' <ReversePattern-Aux e.Replacements>)
-      <ReversePattern e.Tail>;
-
-  /* empty */ = /* empty */;
-}
-
-ReversePattern-Aux {
-  (#Atom s.Type e.Value) e.Tail = (s.Type e.Value) <ReversePattern-Aux e.Tail>;
-
-  (#Brackets s.Num e.inBrackets) e.Tail
-    = (#Brackets <ReversePattern-Aux e.inBrackets>)
-      <ReversePattern-Aux e.Tail>;
-
-  (#ADT-Brackets (e.Name) s.Num e.inBrackets) e.Tail
-    = (#ADT-Brackets (e.Name) <ReversePattern-Aux e.inBrackets>)
-      <ReversePattern-Aux e.Tail>;
-
-  (#Brackets e.inBrackets) e.Tail
-    = (#Brackets <ReversePattern-Aux e.inBrackets>)
-      <ReversePattern-Aux e.Tail>;
-
-  (#ADT-Brackets (e.Name) e.inBrackets) e.Tail
-    = (#ADT-Brackets (e.Name) <ReversePattern-Aux e.inBrackets>)
-      <ReversePattern-Aux e.Tail>;
-
-  (s.Mode (e.Name) e.Any) e.Tail
-    = (#TkVariable <ModeFromTag s.Mode> e.Name)
-      <ReversePattern-Aux e.Tail>;
-
-  (s.Mode '$' ((e.Rep)) e.Any) e.Tail
-    = <ReversePattern-Aux e.Rep>
-      <ReversePattern-Aux e.Tail>;
-
-  (s.Mode '$') e.Tail = (s.Mode '$') <ReversePattern-Aux e.Tail>;
-
-  (e.Else) e.Tail = (<ReversePattern-Aux e.Else>) <ReversePattern-Aux e.Tail>;
-
-  = ;
-}
-
 $ENTRY SplitGen {
   (e.GlobalGen) e.SentenceTails
     = <CreateIndexes ('idx') e.GlobalGen> : e.GlobalGen^
@@ -563,4 +521,46 @@ GetReplacement-Aux {
   (/*Scanned*/) (/*Else*/) = ();
 
   (e.Scanned) (e.Else) = (<ReversePattern e.Scanned>) <GetReplacement e.Else>;
+}
+
+ReversePattern {
+  (s.Mode (e.name) '$' e.Replacements) e.Tail
+    = (s.Mode (e.name) '$' <ReversePattern-Aux e.Replacements>)
+      <ReversePattern e.Tail>;
+
+  /* empty */ = /* empty */;
+}
+
+ReversePattern-Aux {
+  (#Atom s.Type e.Value) e.Tail = (s.Type e.Value) <ReversePattern-Aux e.Tail>;
+
+  (#Brackets s.Num e.inBrackets) e.Tail
+    = (#Brackets <ReversePattern-Aux e.inBrackets>)
+      <ReversePattern-Aux e.Tail>;
+
+  (#ADT-Brackets (e.Name) s.Num e.inBrackets) e.Tail
+    = (#ADT-Brackets (e.Name) <ReversePattern-Aux e.inBrackets>)
+      <ReversePattern-Aux e.Tail>;
+
+  (#Brackets e.inBrackets) e.Tail
+    = (#Brackets <ReversePattern-Aux e.inBrackets>)
+      <ReversePattern-Aux e.Tail>;
+
+  (#ADT-Brackets (e.Name) e.inBrackets) e.Tail
+    = (#ADT-Brackets (e.Name) <ReversePattern-Aux e.inBrackets>)
+      <ReversePattern-Aux e.Tail>;
+
+  (s.Mode (e.Name) e.Any) e.Tail
+    = (#TkVariable <ModeFromTag s.Mode> e.Name)
+      <ReversePattern-Aux e.Tail>;
+
+  (s.Mode '$' ((e.Rep)) e.Any) e.Tail
+    = <ReversePattern-Aux e.Rep>
+      <ReversePattern-Aux e.Tail>;
+
+  (s.Mode '$') e.Tail = (s.Mode '$') <ReversePattern-Aux e.Tail>;
+
+  (e.Else) e.Tail = (<ReversePattern-Aux e.Else>) <ReversePattern-Aux e.Tail>;
+
+  = ;
 }
