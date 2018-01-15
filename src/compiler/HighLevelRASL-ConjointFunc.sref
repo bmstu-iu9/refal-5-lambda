@@ -5,7 +5,7 @@ $EXTERN Fetch, MapReduce, Max;
 $EXTERN CreateHardPattern;
 
 //FROM GlobalGen
-$EXTERN CreateGlobalGen, SplitGen, PatternComment, ReverseGen;
+$EXTERN CreateGlobalGen, SplitGen, PatternComment;
 
 //FROM HighLevelRASL-Common
 $EXTERN GenPattern, MakeSavers, GenResult;
@@ -29,8 +29,6 @@ $ENTRY HighLevelRASL-Function-Conjoint {
     = <CreateGlobalGen e.HardPatterns> : (e.FastGen) (e.GlobalGen)
 
     = <SplitGen (e.GlobalGen) e.SentenceTails> : (e.CommonPattern) e.SentSubsts
-
-    = <ReverseGen e.CommonPattern> : e.CommonPattern^
 
     = <GenPattern s.FnGenInitSubst s.FnGenSubst (e.Name) e.CommonPattern>
     : s.ContextSize (e.Vars) (e.MarkedPattern) e.CommonMatchCommands

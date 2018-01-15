@@ -426,24 +426,6 @@ ModeFromTag {
   #S = 's';
 }
 
-$ENTRY ReverseGen {
-  (#Brackets e.inBrackets) e.Tail =
-    (#Brackets <ReverseGen e.inBrackets>) <ReverseGen e.Tail>;
-
-  (#ADT-Brackets (e.Name) e.inBrackets) e.Tail =
-    (#ADT-Brackets (e.Name) <ReverseGen e.inBrackets>) <ReverseGen e.Tail>;
-
-  (#Atom s.Type e.Value) e.Tail = (s.Type e.Value) <ReverseGen e.Tail>;
-
-  (s.Tag (e.Name) e.Any) e.Tail =
-    (#TkVariable <ModeFromTag s.Tag> e.Name)
-    <ReverseGen e.Tail>;
-
-  (e.Else) e.Tail = (e.Else) <ReverseGen e.Tail>;
-
-  /* empty */ = /* empty */;
-}
-
 ReversePattern {
   (s.Mode (e.name) '$' e.Replacements) e.Tail
     = (s.Mode (e.name) '$' <ReversePattern-Aux e.Replacements>)
@@ -489,7 +471,7 @@ ReversePattern-Aux {
 $ENTRY SplitGen {
   (e.GlobalGen) e.SentenceTails
     = <CreateIndexes ('idx') e.GlobalGen> : e.GlobalGen^
-    = <GetGeneralization () e.GlobalGen> : (e.CommonPattern)
+    = <GetGeneralization e.GlobalGen> : e.CommonPattern
     = <GetReplacement e.GlobalGen>
     : {
         () /* is no substitutions */ = <SplitGen-Empty e.SentenceTails>;
@@ -537,29 +519,22 @@ CreateIndexes {
 }
 
 GetGeneralization {
-  (e.Scanned) (s.gen (e.name)'$' ((e.rep)) e.reps) e.Tail
-    = <GetGeneralization (e.Scanned (s.gen (e.name))) e.Tail>;
+  e.Terms
+    = <Map
+        {
+          (#Brackets e.InBrackets)
+            = (#Brackets <GetGeneralization e.InBrackets>);
 
-  (e.Scanned) (#Brackets e.inBrackets) e.Tail
-    = <GetGeneralization
-        (e.Scanned (#Brackets <UnBracket <GetGeneralization () e.inBrackets>>))
-        e.Tail
+          (#ADT-Brackets (e.Name) e.InBrackets)
+            = (#ADT-Brackets (e.Name) <GetGeneralization e.InBrackets>);
+
+          (#Atom s.Type e.Value) = (s.Type e.Value);
+
+          (s.Tag (e.Index) '$' e.Any)
+            = (#TkVariable <ModeFromTag s.Tag> e.Index);
+        }
+        e.Terms
       >;
-
-  (e.Scanned) (#ADT-Brackets (e.Name) e.inBrackets) e.Tail
-    = <GetGeneralization
-        (
-          e.Scanned
-          (#ADT-Brackets
-            (e.Name) <UnBracket <GetGeneralization () e.inBrackets>>
-          )
-        )
-        e.Tail
-      >;
-
-  (e.Scanned) (e.gen) e.Tail = <GetGeneralization (e.Scanned (e.gen)) e.Tail>;
-
-  (e.Scanned) = (e.Scanned);
 }
 
 GetReplacement {
