@@ -22,80 +22,8 @@ $ENTRY CreateGlobalGen {
 
     = <CreateFastGen e.HardSentences> : s.Num (e.FastGen)
 
-    = <InspectFastGen e.FastGen> : e.Inspected
-
-    = (e.FastGen) (<GlobalGen e.Inspected>);
+    = (e.FastGen) (<GlobalGen e.FastGen>);
 }
-
-InspectFastGen {
-  (#E '$' e.EReplacements) e.Tail
-    = <ReplacmentsCounter 0 () e.EReplacements>
-    : {
-        1 = #NoScan;
-        s.Num = #DeepScan;
-      }
-    : s.EVarMode
-    = (#E s.EVarMode '$' e.EReplacements)
-      <InspectFastGen e.Tail>;
-
-  (#Brackets s.Num e.inBrackets) e.Tail
-    = (#Brackets s.Num <InspectFastGen e.inBrackets>)
-      <InspectFastGen e.Tail>;
-
-  (#ADT-Brackets (e.Name) s.Num e.inBrackets) e.Tail
-    = (#ADT-Brackets (e.Name) s.Num <InspectFastGen e.inBrackets>)
-      <InspectFastGen e.Tail>;
-
-  (e.Any) e.Tail = (e.Any) <InspectFastGen e.Tail>;
-
-  /* empty */ = /* empty */;
-}
-
-ReplacmentsCounter {
-  s.Counter (e.Scanned) ((e.Replacement)) e.Tail
-    = <InList (<Skeleton e.Replacement>) (e.Scanned)>
-    : {
-        #False (e.PrepReplacement)
-          = <ReplacmentsCounter
-              <Inc s.Counter> (e.Scanned (e.PrepReplacement)) e.Tail
-            >;
-
-        #True (e.PrepReplacement)
-          = <ReplacmentsCounter s.Counter (e.Scanned) e.Tail>;
-      };
-
-  s.Counter (e.Scanned) = s.Counter;
-}
-
-Skeleton {
-  (#Atom e.Body) e.Tail = (#Atom e.Body) <Skeleton e.Tail>;
-
-  (#Brackets s.Num e.inBrackets) e.Tail
-    = (#Brackets s.Num <Skeleton e.inBrackets>)
-      <Skeleton e.Tail>;
-
-  (#ADT-Brackets (e.Name) s.Num e.inBrackets) e.Tail
-    = (#ADT-Brackets (e.Name) s.Num <Skeleton e.inBrackets>)
-      <Skeleton e.Tail>;
-
-  (s.Mode e.Body) e.Tail = (s.Mode) <Skeleton e.Tail>;
-
-  (e.Else) e.Tail = (e.Else) <Skeleton e.Tail>;
-
-  /* empty */ = /* empty */;
-}
-
-InList {
-  (e.Elem) () = #False (e.Elem);
-
-  (e.Elem) (t.ListElem e.List)
-    = <TermCompare (t.ListElem) (e.Elem)>
-    : {
-        '=' = #True ();
-        s.Else = <InList (e.Elem) (e.List)>;
-      };
-}
-
 
 GlobalGen {
   /* empty */ = ();
@@ -103,9 +31,7 @@ GlobalGen {
   e.Inspected
     = <Map
         {
-          (#E #DeepScan '$' e.Body) = <GlobalGen-Aux e.Body>;
-
-          (#E #NoScan '$' e.Body) = (#E '$' e.Body);
+          (#E '$' e.Body) = <GlobalGen-Aux e.Body>;
 
           (#Brackets s.Num e.inBrackets) =
             (#Brackets <GlobalGen e.inBrackets>);

@@ -4,7 +4,7 @@ $EXTERN Map, Dec, Inc;
 
 /**
   <CreateFastGen (e.OptPatternHS)*>
-    == e.OptPatternFG
+    == s.SentencesCount e.OptPatternFG
 
   e.OptPatternFG ::= t.OptPatternFG-Term
 
@@ -62,7 +62,7 @@ PreparePattern {
 
 /*
   <FastGen s.SquashedPatterns (e.OptPatternFG_1)*>
-    == e.OptPatternFG
+    == s.SentencesCount e.OptPatternFG
 */
 FastGen {
   /* 0. Тело функции состоит из одного предложения или из пустых образцов */
