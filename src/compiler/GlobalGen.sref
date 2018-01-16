@@ -146,23 +146,6 @@ GlobalGen-Aux {
 
 ComputePossibleClasses {
   e.Patterns
-    = <ComputeClasses e.Patterns> : e.Classes^
-    = <Reduce
-        {
-          (s.K s.M s.N) (#K s.KNum) = (<Min s.K s.KNum> s.M s.N);
-
-          (s.K s.M s.N) (#MN s.MNum s.NNum)
-            = (s.K <Min s.M s.MNum> <Min s.N s.NNum>);
-        }
-        (100 100 100)
-        e.Classes
-      >
-    : (s.K s.M s.N)
-    = <ComputePossibleClasses-Aux (s.K s.M s.N)>;
-}
-
-ComputeClasses {
-  e.Patterns
     = <Map
         {
           (e.Left (#E e.Body) e.Right) =
@@ -170,48 +153,50 @@ ComputeClasses {
           (e.Pattern) = (#K <ComputeClassK e.Pattern 0>);
         }
         e.Patterns
-      >;
-}
+      >
+    : e.Classes
+    = <Reduce
+        {
+          (s.K s.M s.N) (#K s.KNum)
+            = (<Min s.K s.KNum> <Min s.M s.KNum> <Min s.N s.KNum>);
 
-ComputePossibleClasses-Aux {
-  (s.K 100 100) = <GetClasses 0 s.K s.K>;
-
-  (100 s.M s.N) = (s.M s.N);
-
-  (s.K s.M s.N)
-    = <TermCompare s.K <Add s.M s.N>>
-      <TermCompare s.K s.M>
-      <TermCompare s.K s.N>
+          (s.K s.M s.N) (#MN s.MNum s.NNum)
+            = (s.K <Min s.M s.MNum> <Min s.N s.NNum>);
+        }
+        (100 100 100)
+        e.Classes
+      >
+      /*
+        ВАЖНО!
+        Использование значения 100 в качестве «максимального» сохраняет
+        корректность оптимизированной программы, но снижает степень
+        оптимизации, если фактические классы образцов имеют номера более 100.
+        Просто в этом случае такие образцы будут считаться образцами класса
+        (100), (100, N), (M, 100) или (100, 100).
+      */
     : {
-        '>' e.Tail = (s.M s.N);
-        '=' e.Tail = (s.M s.N);
-        '<' '>' '>'
-          = <GetClasses
-              <Min <Sub s.K s.N> s.M>
-              <Max <Sub s.K s.N> s.M>
-              s.K
-            >;
-        '<' '>' '=' = <GetClasses 0 s.M s.K>;
-        '<' '>' '<' = <GetClasses 0 s.M s.K>;
+        (s.K 100 100) = <GetClasses 0 s.K s.K>;
 
-        '<' '<' '>' = <GetClasses <Sub s.K s.N> s.K s.K>;
-        '<' '<' '=' = <GetClasses 0 s.K s.K>;
-        '<' '<' '<' = <GetClasses 0 s.K s.K>;
+        (100 s.M s.N) = (s.M s.N);
 
-        '<' '=' '>' = <GetClasses <Sub s.K s.N> s.K s.K>;
-        '<' '=' '=' = <GetClasses 0 s.K s.K>;
-        '<' '=' '<' = <GetClasses 0 s.K s.K>;
+        (s.K s.M s.N)
+          , <TermCompare s.K <Add s.M s.N>> : '<'
+          = <Min <Sub s.K s.N> s.M> : s.MinLeft
+          = <Max <Sub s.K s.N> s.M> : s.MaxLeft
+          = <Sub s.K s.MinLeft> : s.MaxRight
+          = <GetClasses s.MinLeft s.MaxLeft s.MaxRight>;
+
+        (s.K s.M s.N) = (s.M s.N);
       };
 }
 
-/* (M, MplusN - M) till M <= MaxM */
+/* (Left, Right) till Left <= MaxLeft */
 GetClasses {
-  s.M s.MaxM s.MplusN
-    = <TermCompare s.M s.MaxM>
-    : {
-        '>' = ;
-        s.Else = (s.M <Sub s.MplusN s.M>) <GetClasses <Inc s.M> s.MaxM s.MplusN>;
-      };
+  s.MaxLeft s.MaxLeft s.MinRight = (s.MaxLeft s.MinRight);
+
+  s.Left s.MaxLeft s.Right
+    = (s.Left s.Right)
+      <GetClasses <Inc s.Left> s.MaxLeft <Dec s.Right>>;
 }
 
 ComputeClassK {
