@@ -172,6 +172,32 @@ DoPatternSteps {
                e.HolesAndItems-E
              >;
 
+         e.HolesAndItems-B
+         (HOLE (ADT-Brackets (e.Name) e.InBrackets) e.Pattern)
+         e.HolesAndItems-E
+           = <DoPatternSteps
+               t.UsedVariables (e.BoundEVariables)
+               e.HolesAndItems-B
+               (LeftADT e.Name)
+               (HOLE e.InBrackets)
+               (RightADT)
+               (HOLE e.Pattern)
+               e.HolesAndItems-E
+             >;
+
+         e.HolesAndItems-B
+         (HOLE e.Pattern (ADT-Brackets (e.Name) e.InBrackets))
+         e.HolesAndItems-E
+           = <DoPatternSteps
+               t.UsedVariables (e.BoundEVariables)
+               e.HolesAndItems-B
+               (HOLE e.Pattern)
+               (LeftADT e.Name)
+               (HOLE e.InBrackets)
+               (RightADT)
+               e.HolesAndItems-E
+             >;
+
          /* Открытая e-переменная */
          e.HolesAndItems-B
          (HOLE (TkVariable 'e' e.Index) e.Pattern)
@@ -217,6 +243,7 @@ HardItem {
 
   (e.BoundEVariables) (TkVariable 'e' e.Index) = False;
   (e.BoundEVariables) (Brackets e.Pattern) = False;
+  (e.BoundEVariables) (ADT-Brackets (e.Name) e.Pattern) = False;
 }
 
 transformer_BindBrackets {
@@ -250,6 +277,14 @@ DoBindBrackets {
   ((t.MultiBracket e.Scanned) e.InBrackets) (RightBracket) e.Tail
     = <DoBindBrackets
         (t.MultiBracket e.Scanned (Brackets e.InBrackets)) e.Tail
+      >;
+
+  (t.MultiBracket e.Scanned) (LeftADT e.Name) e.Tail
+    = <DoBindBrackets ((t.MultiBracket e.Scanned) (e.Name)) e.Tail>;
+
+  ((t.MultiBracket e.Scanned) (e.Name) e.InBrackets) (RightADT) e.Tail
+    = <DoBindBrackets
+        (t.MultiBracket e.Scanned (ADT-Brackets (e.Name) e.InBrackets)) e.Tail
       >;
 
   ('$' e.Scanned) = e.Scanned;
@@ -356,6 +391,10 @@ Substitute {
     = (Brackets <Substitute e.InBrackets (t.Variable e.Expr)>)
       <Substitute e.Tail (t.Variable e.Expr)>;
 
+  (ADT-Brackets (e.Name) e.InBrackets) e.Tail (t.Variable e.Expr)
+    = (ADT-Brackets (e.Name) <Substitute e.InBrackets (t.Variable e.Expr)>)
+      <Substitute e.Tail (t.Variable e.Expr)>;
+
   (CallBrackets e.InBrackets) e.Tail (t.Variable e.Expr)
     = (CallBrackets <Substitute e.InBrackets (t.Variable e.Expr)>)
       <Substitute e.Tail (t.Variable e.Expr)>;
@@ -405,6 +444,8 @@ DoT0 {
     = (Brackets (TkVariable 'e' e.Index)) <DoT0 e.Tail>;
 
   (Brackets e.InBrackets) e.Tail = (Brackets <DoT0 e.InBrackets>) <DoT0 e.Tail>;
+  (ADT-Brackets (e.Name) e.InBrackets) e.Tail
+    = (ADT-Brackets (e.Name) <DoT0 e.InBrackets>) <DoT0 e.Tail>;
 
   t.OtherItem e.Tail = t.OtherItem <DoT0 e.Tail>;
 
@@ -588,6 +629,9 @@ ExtractVariables-Expr {
     = (s.VarType e.Index) <ExtractVariables-Expr e.Terms>;
 
   (Brackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
+  (ADT-Brackets (e.Name) e.Inner) e.Terms
+    = <ExtractVariables-Expr e.Inner e.Terms>;
+
   (CallBrackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
   (ClosureBrackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
 
