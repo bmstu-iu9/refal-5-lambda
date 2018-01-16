@@ -356,12 +356,8 @@ Substitute {
     = (Brackets <Substitute e.InBrackets (t.Variable e.Expr)>)
       <Substitute e.Tail (t.Variable e.Expr)>;
 
-  (CallBrackets (TkName e.FuncName) e.InBrackets)
-  e.Tail (t.Variable e.Expr)
-    = (CallBrackets
-        (TkName e.FuncName)
-        <Substitute e.InBrackets (t.Variable e.Expr)>
-      )
+  (CallBrackets e.InBrackets) e.Tail (t.Variable e.Expr)
+    = (CallBrackets <Substitute e.InBrackets (t.Variable e.Expr)>)
       <Substitute e.Tail (t.Variable e.Expr)>;
 
   t.OtherItem e.Tail (t.Variable e.Expr)
@@ -588,8 +584,7 @@ ExtractVariables-Expr {
     = (s.VarType e.Index) <ExtractVariables-Expr e.Terms>;
 
   (Brackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
-  (CallBrackets (TkName e.Function) e.Inner) e.Terms
-    = <ExtractVariables-Expr e.Inner e.Terms>;
+  (CallBrackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
 
   t.Other e.Terms = <ExtractVariables-Expr e.Terms>;
 
