@@ -10,49 +10,49 @@ $ENTRY Go {
 }
 
 FindAncestor {
-  /* forward to father */                             
-  (e.Name t.Father t.Mother) 'F' e.Branch                
-    = <FindAncestor t.Father e.Branch>;                  
-                                                         
-  /* forwart to mother */                           
-  (e.Name t.Father t.Mother) 'M' e.Branch                
-    = <FindAncestor t.Mother e.Branch>;                  
-                                                         
-  /* unknown ancestor for unknown person */     
-  '?' e.Branch = '?';                                    
-                                                         
-  /* branch is ended, root of tree is result */      
+  /* advancing on the father line */
+  (e.Name t.Father t.Mother) 'F' e.Branch
+    = <FindAncestor t.Father e.Branch>;
+
+  /* advancing on the mother line */
+  (e.Name t.Father t.Mother) 'M' e.Branch
+    = <FindAncestor t.Mother e.Branch>;
+
+  /* an unknown character has unknown the ancestors */
+  '?' e.Branch = '?';
+
+  /* Branch ended - the person you are looking for is the current */
   (e.Name t.Father t.Mother) /* empty branch */ = e.Name;
 }
 
 Pushkin {
   = (
-      'Alexander Sergeevich Pushkin'
+      'Alexander Sergeyevich Pushkin'
       (
         'Sergey Lvovich Pushkin'
         (
-          'Lev Alexandrovich Pushkin'
+          'Lev Aleksandrovich Pushkin'
           '?'   /* unknown father */
           (
-            'Evdokiya Ivanovna Golovina'
+            'Evdokia Ivanovna Golovin'
             '?' /* unknown father */
             '?' /* unknown mother */
           )
         )
         (
-          'Olga Vasilyevna Chicherina'
-          ('Vasiliy Ivanovich Chicherin??')
+          'Olga Vasilievna Chicherina'
+          ('Vasily Ivanovich Chicherin??')
           '?'   /* unknown mother */
         )
       )
       (
-        'Nadezhda Osipovna Pushkina (Gannibal)'
+        'Nadezhda Ossipovna Pushkina (Gannibal)'
         (
-          'Osip Abramovich Gannibal'
-          ('Abram Petrovich Gannibal (arap of Peter the Great)??')
-          ('Christina Regina fon Sioberg??')
+          'Ossip Abramovich Gannibal'
+          ('Abram Petrovich Gannibal (The Moor of Peter the Great)??')
+          ('Christina Regina von Sioberg??')
         )
-        ('Mariya Alexeevna Pushkina??')
+        ('Maria Alekseevna Pushkina??')
       )
     )
 }
