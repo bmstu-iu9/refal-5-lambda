@@ -33,7 +33,7 @@ Results.
 
 # [1] The following programs were developed during the lab.
 
-* srprep — is a preprocessor that translates the code on the Simple Refal
+* srprep – is a preprocessor that translates the code on the Simple Refal
   into code on the Module Refal. Written on Module Refal. The problem of
   Simple and Module Refal modulation mismatch was solved as well as in the
   program Refal5-to-MRefal converter, used for the conversion of Module Refal
@@ -50,12 +50,12 @@ Results.
   compiler, more adequate, tokens preprocessor in the output file located errors
   on the same lines as in the original file.
 
-* srmake — is a program that facilitates the assembly of projects on the Simple
+* srmake – is a program that facilitates the assembly of projects on the Simple
   Refal. This program for simplicity did not check the time of the last change
   in the input and output files. As it was already mentioned, the program used
   special comments ('// FROM FileName') to search for dependent files.
 
-* LexGen — is a lexical analyzer generator. At the entrance the program
+* LexGen – is a lexical analyzer generator. At the entrance the program
   accepted description of the finite-state transducer (Mealy machine, since the
   actions were performed at transition in a new condition), on output there was
   created the finite state machine.
@@ -103,14 +103,14 @@ means it is not the end of input) falls into this set, then this alternative is
 performed and the symbol is read.
 
 If the set is not present, but the next state is present, then this alternative
-is also activated, and the input symbol is not read - the input stream does not
+is also activated, and the input symbol is not read – the input stream does not
 change. When the alternative is activated, if the character is read, it is
 added to the end of the buffer. The action can be absent (in this case nothing
 happens with the buffer), it can be an operation of an unnamed reset (in this
 case, the buffer is emptied), it can be a named reset (in this case, the
-content is discarded with this name - the format of the expression `(s.Name e.
-Content)`, where `s.Name` is the identifier - the name of the reset (in the case
-of Simple Refal - the name of the function), `e.Content` is the contents of the
+content is discarded with this name – the format of the expression `(s.Name e.
+Content)`, where `s.Name` is the identifier – the name of the reset (in the case
+of Simple Refal – the name of the function), `e.Content` is the contents of the
 buffer at the moment, including the read symbol. If the action is a reset-error
 message, then in the output TokenError-token is output.
 
@@ -120,7 +120,7 @@ unexpected `TokenUnexpected` character is thrown, before it the contents of the
 buffer as  `TokenAccum`, if the end of the file is found, then
 `TokenUnexpectedEOF` is thrown instead of TokenUnexpected.
 
-The set at the beginning of the alternative can be specified in two ways - as
+The set at the beginning of the alternative can be specified in two ways – as
 a set of explicitly listed characters, and as a named set. The declaration of
 a named set consists of the name of the set, the equal sign and enumeration of
 the sets included in it. The declaration of a set, like the sentence of an
@@ -160,7 +160,7 @@ difficult to say anything specific about this or that option. As a rule, a
 priori (without profiling) it is difficult to determine the optimality of the
 solution, especially for such language as a Refal.
 
-* srefc — is, actually, the language compiler itself. It will be further
+* srefc – is, actually, the language compiler itself. It will be further
   discussed precisely in detail.
 
 # [2] Several methods of lexical analysis have been tested.
@@ -216,7 +216,7 @@ default handler, because you need to replace the hyphens with underscores.
 The lexical structure of the machine was made simple enough: from complex
 constructions there were only state names, set names, dumps and literals of
 sets with escape sequences. The names of the states corresponded to the rules
-of the Refal language for identifiers, set names - a set of letters and numbers
+of the Refal language for identifiers, set names – a set of letters and numbers
 surrounded on both sides by colons, the names of the flushes began with an
 exclamation point followed by the Refal ID for the named reset, the text in the
 double quotes for an error message or a hyphen for an unnamed reset. The
@@ -313,7 +313,7 @@ handlers did not reach the point.
 
 However, after recognizing the lexical structure with the machine, additional
 secondary processing of lexemes took place. In particular, the automaton in the
-token stream added line feeds - they were only needed to add line numbers to
+token stream added line feeds – they were only needed to add line numbers to
 the tokens, they did not get to the output, all the punctuation marks were
 thrown out `(TkPunctuation s.Sign)`, later they turned into various lexemes.
 

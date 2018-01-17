@@ -13,14 +13,14 @@ REFAL implementation for ECM – he had already become a fully-featured
 programming language.
 
 The difference between REFAL and other functional languages (FL) is, first of
-all, the usage of special data structure - object expression. The most FL use
+all, the usage of special data structure – object expression. The most FL use
 single linked lists – the sequences of elements, in which only left side is
 accessed for direct elaboration. In other words, it is possible to make only
 such operations as looking on the first element, cutting off the first element,
 making the new list by adding an element in the beginning of the starting list.
 
 It is possible to derive the last element only by sequential truncation of the
-first element until the sequence won’t be empty - the last truncated element is
+first element until the sequence won’t be empty – the last truncated element is
 the last element of the list. In order to concatenate (paste) two lists, the
 elements of the first list in inverse order must be appended to the beginning
 of the second list.
@@ -55,10 +55,10 @@ to be only those, which could be described using “pen and paper”\[4].
 
 Firstly nested functions appeared in Refal-7 dialect, suggested by Sergei
 Yurievich Skorobogatov in 2006 year \[5]. Refal-5λ language has constrained
-handling of  Refal-7 nested functions - only unnamed nested functions. But, as
+handling of  Refal-7 nested functions – only unnamed nested functions. But, as
 the practice shows, it is quite enough.
 
-Syntactic sugar - redundant syntax structures of programming language, that
+Syntactic sugar – redundant syntax structures of programming language, that
 make language more comfortable for usage. Such constructions can be written as
 the combination of other syntax language elements, but usually less visually
 and more clumsily.
@@ -203,7 +203,7 @@ with this file and write the following command:
 
 In the folder files `hello.rasl` and `hello.exe` should appear (on unix-like
 systems it will be named just `hello` without extension, but they will have `+x`
-flag - executable mark). `Hello.rasl` file - a transient file with interpretive
+flag – executable mark). `Hello.rasl` file – a transient file with interpretive
 code, is not useful itself (it is made and used in compilation) and can be
 deleted.
 
@@ -244,10 +244,12 @@ References
    in mailing list archive:
    <https://www.mail-archive.com/refal@botik.ru/msg00044.html>,
    <https://www.mail-archive.com/refal@botik.ru/msg00055.html>
+   (in Russian)
 5. Sergei Yu. Skorobogatov, Andrey M. Chepovskiy.  Refal language with
    higher-order functions // Informational technologies, 2006. № 9.
    Available in the Internet:
    <https://waybackmachine.org/web/20070719175259/http://iu9.bmstu.ru/science/refal.pdf>
+   (in Russian)
 
 > *Translation to English of this paper is prepared by*
 > **Yarullina Diana <190471@list.ru>** _at 2018-01-17_
