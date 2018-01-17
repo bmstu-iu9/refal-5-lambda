@@ -2,5 +2,5 @@
 
 # Оглавление
 * [Предисловие](1-foreword.md)
-* [Введение в язык](2-intro.md)
+* [Введение в язык](2-intro.md) ([Introduction in language (English)](2-intro.en.md))
 * [Основы программирования, Базисный Рефал](3-basics.md)
