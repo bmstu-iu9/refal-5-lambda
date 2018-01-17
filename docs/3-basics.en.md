@@ -2,7 +2,7 @@
 
 This chapter is an informal introduction to Refal-5λ, which is accessible even
 to a beginner or a programming beginner. In the next chapter (manual) of this
-article, we will look at this issue in a more formal way. 
+article, we will look at this issue in a more formal way.
 
 # Basic Refal Syntax
 
@@ -47,7 +47,7 @@ E.g. the next program is the same but is littered with useless comments.
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
       tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
       veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat. 
+      commodo consequat.
     */
     $ENTRY Go {                                 /* 1 */
     * At vero eos et accusamus et iusto odio dignissimos ducimus, qui
@@ -57,7 +57,7 @@ E.g. the next program is the same but is littered with useless comments.
     * laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita
     * distinctio. Nam libero tempore, cum soluta nobis est eligendi optio,
     * cumque nihil impedit, quo minus id, quod maxime placeat, facere
-    * possimus, omnis voluptas assumenda est, omnis dolor repellendus. 
+    * possimus, omnis voluptas assumenda est, omnis dolor repellendus.
 
       /* empty */ = <Prout 'Hello, World!'>;    /* 2 */
     }                                           /* 3 */
@@ -89,7 +89,7 @@ semicolon).  A semicolon may not be used at the end of the last sentence.
 Any sentence consist of two parts – _the left part, a pattern_, which describes
 a value subset of the function argument on which the sentence is applied. And
 _the right part, a result_ that describe the function value on the subset. The
-left and the right parts are divided by `=` (equality) sign. 
+left and the right parts are divided by `=` (equality) sign.
 
 Note. _In the future we will consider the extended Refal syntax in which
 sentence syntax will be more complicated._
@@ -135,10 +135,10 @@ library is not used.
 Let us to conclude what we have learn by now.
 
 * We can write comments that do not affect program running and serve as an
-  explanation in the programs. 
+  explanation in the programs.
 * There are two comment types: single-lined and multi-lined.
 * A single-lined comment is a string where the first sign is `*`. The remaining
-  signs may be any type. 
+  signs may be any type.
 * A multi-lined comment can be situated in any place in the program (e.g next
   to a meaningless non-space character). The comment begin with the signs `/*`
   and ends with the signs `*/`.
@@ -187,7 +187,7 @@ The following entries are equivalent: `'Hello'`, `'Hel' 'lo'`,
 `'H' 'e' 'l' 'l' 'o'`.
 
 Thirdly, the function name can be any sequence of letters, numbers, signs `_`
-("dash") and `-` ("hyphens"), starting with a dash or a letter. For example,
+(“dash”) and `-` (“hyphens”), starting with a dash or a letter. For example,
 `Go`, `Hello`, `A-plus-B`, `_remove_file`, `ANSWER_42`. Lowercase and uppercase
 letters are different, i.e. the names `hello`, `Hello` and `HELLO` are
 different.
@@ -236,7 +236,7 @@ Everything is the same here, except for the last sentence. In the right part of
 the fourth sentence, a minus sign is written, followed by a function `BinSub`
 call. What does it mean? This means that the result of the function
 `<BinSub '0' '1'>` calling will be the `'-'` sign, followed by the result of
-the computation of `<BinSub '1' '0'>` - `'1'`. It means that the result of
+the computation of `<BinSub '1' '0'>` – `'1'`. It means that the result of
 `<BinSub '0' '1'>` will be equal to `'-' '1'` or `'-1'`.
 
 **Example 3.** Let's write a function that checks the equality of two binary
@@ -308,8 +308,8 @@ applicable, as noted above. We have considered only cases of subsets consisting
 of one single element by now.
 
 Refal allows us to write in the left parts of expressions (the exact definition
-of the term "expression" will be given later), which contain unknown random
-fragments – _variables_ - in addition to explicitly set 
+of the term “expression” will be given later), which contain unknown random
+fragments – _variables_ – in addition to explicitly set.
 
 The variable _type_ determines the values sets that variables can take. There
 are three types of variables in Refal: s-, t- and e-variables. We will consider
@@ -321,7 +321,7 @@ the function argument, including empty (not any but it will be considered
 later).
 
 A variable is written as a sign of (`s`, `t`, `e`) type, followed by a sign `.`
-("point") and the variable name is a sequence of letters and numbers. The
+(“point”) and the variable name is a sequence of letters and numbers. The
 variable name is often called the variable index.
 
 If the variable appears several times in the expression, then it is called
@@ -329,18 +329,18 @@ repeated.  All its occurrences must have the same value.
 
 Let's consider some expressions with variables:
 
-* `s.1 s.2 s.3` - three any symbols, for example `'ABC'`, `'999'`, `'@#$'`.
-* `s.A s.A s.A` - three any identical symbols, for example `'666'`, `'www'`.
-* `s.Edge s.Middle s.Edge` - three any symbols, where the first and last must
+* `s.1 s.2 s.3` – three any symbols, for example `'ABC'`, `'999'`, `'@#$'`.
+* `s.A s.A s.A` – three any identical symbols, for example `'666'`, `'www'`.
+* `s.Edge s.Middle s.Edge` – three any symbols, where the first and last must
   match. For example: `'@$@'`, `'kek'`, `'^_^'`.
-* `s.first e.middle s.last` - any expression containing at least two
+* `s.first e.middle s.last` – any expression containing at least two
   characters. For example: `'Hello'`, `'10'`, `'0_o'`.
-* `s.EDGE e.CENTER s.EDGE` - any expression of two characters at least,
+* `s.EDGE e.CENTER s.EDGE` – any expression of two characters at least,
   beginning and ending with the same character. For example: `'++'`, `'LOOOL'`,
   `'revolver'`.
 * `'(' e.Inner ')'` is an expression that begins and ends with a bracket.
   Examples: `'()'`, `'() ()'`, `'(ok)'`.
-* `e.Key '=' e.Value` - an expression that contains one equal sign at least.
+* `e.Key '=' e.Value` – an expression that contains one equal sign at least.
   For example: `'='`, `'x = 1'`, `'-1 = 10'`, `'A = B == C = D'`.
 * `e.Eq e.Eq` is an expression with even length, which can be divided into two
   identical halves: `'ABCABC'`, `'8888'`, the empty expression (it can be also
@@ -390,7 +390,7 @@ Both sentences are obviously applicable for the arguments of the `'ab = ab'`
 form. The first has the same expressions before and after the `'='` sign. The
 second, because it has the equality sign. As stated, the preceding sentences
 has priority over the following ones, therefore the first sentence will process
-cases of equal "halves", and the second will receive the rest (unequal).
+cases of equal “halves”, and the second will receive the rest (unequal).
 
 If both statements are interchanged, the result of the function (on its
 definition domain) will be always 'False'.
@@ -407,7 +407,7 @@ is a palindrome.
 
 The definition of this function can be read as follows. A string of one
 character is a palindrome. An empty string is also a palindrome. A string that
-starts and ends with the same symbol is a palindrome if the "middle" part of
+starts and ends with the same symbol is a palindrome if the “middle” part of
 the string is also a palindrome. Any other string is not a palindrome.
 
 The function definitions on a functional language often can be read as
@@ -419,7 +419,7 @@ two. In the first version of the addition function, we avoided this difficulty
 by transmiting two _symbols_ to the function. Now we need to transfer two
 expressions with arbitrary length. Each argument can be composed of the signs
 `'0'` and `'1'` only. So you can put any character between them, except for
-zero and one - by it you can figure out where one argument ends and another
+zero and one – by it you can figure out where one argument ends and another
 starts. We will use the symbol `'+'` for clarity.
 
 Note. _Later we will learn a much simpler, efficient and universal way of
@@ -456,7 +456,7 @@ Let's sum up:
 
 A purely mathematically studied Refal subset is sufficient for writing any
 complex algorithm (see \[4, Lecture No. 6]). But this is not enough in practice:
-the studied tools allow us to work with "flat" strings characters only, whereas
+the studied tools allow us to work with “flat” strings characters only, whereas
 many non-trivial algorithms require hierarchically organized data.
 
 What is a data hierarchy? It is an opportunity to work with some piece of data
@@ -495,13 +495,13 @@ Let us clarify our understanding of variables from a perspective of our new know
 * E-variables can take a arbitrary sequence _of terms,_ i.e. the e-variable value
   can be an expression with the correct bracket structure only.
 * The _t-variables_ value (they are written as t.varname) can be any single
-  term - both a symbol and an expression in brackets.
+  term – both a symbol and an expression in brackets.
 
 **Example 9.** Let’s depict Pushkin's genealogy in the form of a Refal
 expression. Each character of the family tree will be represented in the form
 of a bracket term that contains the character's name and two terms: father and
 mother. If the ancestor is known it will be depicted as the same character, if
-not - in its place will be located the symbol '?'. Thus, each character can be
+not – in its place will be located the symbol '?'. Thus, each character can be
 mapped to the form sample of the form
 
     (e.Name t.Father t.Mother)
@@ -543,7 +543,7 @@ of clarity some ancestors were skipped at different levels of the hierarchy
 here._
 
 **Example 10.** Let's write a function that takes the family tree and the
-ancestor branch in the form of a chain of `'MFFM…'` characters - where `'M'`
+ancestor branch in the form of a chain of `'MFFM…'` characters – where `'M'`
 means mother, `'F'` is father and finds the corresponding ancestor.
 
 For example, 'F' is father, 'FF' is the paternal grandfather, 'MM' is the
@@ -562,14 +562,14 @@ maternal grandmother, the empty expression is the character itself.
       /* an unknown character has unknown the ancestors */
       '?' e.Branch = '?';
 
-      /* Branch ended - the person you are looking for is the current */
+      /* Branch ended – the person you are looking for is the current */
       (e.Name t.Father t.Mother) /* empty branch */ = e.Name;
     }
 
 In other words, in order to find an ancestor on the father by the bloodline
 (the branch starts with `'F…'`), you should take the father's bloodline
 (t.Father field) and look for the ancestor in it (throwing the branch `'F'`from
-the beginning) - this is what makes the first sentence. The second sentence is
+the beginning) – this is what makes the first sentence. The second sentence is
 likewise.
 
 If the bloodline is unknown at some stage, then any ancestor will be unknown.
@@ -661,9 +661,9 @@ We transferred the function arguments by separating them with some sign that
 can not appear inside the arguments (for example, `'='` in the function
 `IsEqual` or `'+'` in the `BinAdd` function) when we wanted to call the
 function with several arguments. It is better when transfering several
-arguments we "wrap" them in the bracket terms. For example, if the function
+arguments we “wrap” them in the bracket terms. For example, if the function
 takes 3 arguments with a arbitrary length – let’s denote them as `e.1`, `e.2`,
-`e.3` - then they can be transferred as `(e.1) e.2 (e.3)`, `e.1 (e .2) (e.3)`,
+`e.3` – then they can be transferred as `(e.1) e.2 (e.3)`, `e.1 (e .2) (e.3)`,
 `(e.1) (e.2) e.3` and `(e.1) (e.2) (e.3)`. The last option, placing each
 argument in the bracket term, is redundant. But sometimes it makes programs
 more understandable. If N arguments are transferred to the function, then it is
@@ -690,4 +690,4 @@ Now the functions `IsEqual` and `BinAdd` can be rewritten as:
     }
 
 > *Translation to English of this hunk of this paper is prepared by*
-> **Jessica Jimenez-Kuthko <kuthko@mail.ru>** _at�2018-01-17_
+> **Jessica Jimenez-Kuthko <kuthko@mail.ru>** _at 2018-01-17_
