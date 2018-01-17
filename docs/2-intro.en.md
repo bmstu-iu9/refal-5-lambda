@@ -208,7 +208,7 @@ code, is not useful itself (it is made and used in compilation) and can be
 deleted.
 
 The `hello.exe` file-is an already compiled program. On Windows it is set the
-following way: 
+following way:
 
     hello.exe
 
@@ -222,11 +222,12 @@ Appendix. _In Refal-5λ distribution from the sources compiled programs print
 out plenty of diagnostic information in the end. In other words, after Hello,
 World!  phrase the number of steps, spent time (in details) and amount of used
 memory will be printed. It should be so._
- 
+
 It will be said about the meaning of written in `hello.ref` file in the next
 [chapter](3-basics.en.md).
 
-References 
+# References
+
 1. V.F.Turchin. Metaalgorythmic language. Cybernetics №4, 1968, pages 45-54.
    Available in the Internet:
    <http://pat.keldysh.ru/~roman/doc/Turchin/1968-Turchin--Metaalgoritmicheskij_yazyk--ru.pdf>
