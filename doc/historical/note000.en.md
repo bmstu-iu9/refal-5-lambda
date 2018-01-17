@@ -1,4 +1,4 @@
-This is translation of historical paper [note000.txt](note000.txt) from Russian.
+> This is translation of historical paper [note000.txt](note000.txt) from Russian.
 
 The goal of the lab. Write a prototype of the Refal compiler → C++. The task is
 only to examine the compilation of functions on Refal into C++ code. In this
