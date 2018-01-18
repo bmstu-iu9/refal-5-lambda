@@ -850,60 +850,20 @@ compiler mistakes. Here is a list of deficiencies.
   statements were processed collaboratively, linear handler enumeration could
   be replaced with the tree. That means, instead of
 
-    /*
-      All three sentences have the common format.
-      Also the first two sentences have much in common in the pattern
-    */
 
-    do {
-      // recognition of the first sentence
-      if ( recognition failure )
-        break;
-      // result building
-      return refalrts::cNoMemory;
-      return refalrts::cSuccess;
-    } while(0);
-
-    do {
-      // recognition of the second sentence
-      if( recognition failure )
-        break;
-      // result building
-      return refalrts::cNoMemory;
-      return refalrts::cSuccess;
-    } while(0);
-
-    do {
-      // recognition of the third sentence
-      if( recognition failure )
-        break;
-      // result building
-      return refalrts::cNoMemory;
-      return refalrts::cSuccess;
-    } while(0);
-
-    return refalrts::cRecognitionImpossible;
-
-We might write
-
-do {
-    // recognition of common to the three format proposals
-    if( recognition failure )
-      break;
-
-    do {
-      // recognition of the common elements for the first two sentences
-      if( recognition failure )
-        break;
+      /*
+        All three sentences have the common format.
+        Also the first two sentences have much in common in the pattern
+      */
 
       do {
         // recognition of the first sentence
-        if( recognition failure )
+        if ( recognition failure )
           break;
         // result building
         return refalrts::cNoMemory;
         return refalrts::cSuccess;
-      } while(0)
+      } while(0);
 
       do {
         // recognition of the second sentence
@@ -912,26 +872,67 @@ do {
         // result building
         return refalrts::cNoMemory;
         return refalrts::cSuccess;
-      } while(0)
+      } while(0);
 
-    } while(0);
+      do {
+        // recognition of the third sentence
+        if( recognition failure )
+          break;
+        // result building
+        return refalrts::cNoMemory;
+        return refalrts::cSuccess;
+      } while(0);
 
-    do {
-      // recognition of the second sentence
-      if( recognition failure)
-        break;
-      // result building
-      return refalrts::cNoMemory;
-      return refalrts::cSuccess;
-    } while(0);
+      return refalrts::cRecognitionImpossible;
 
-  } while(0);
+  We might write
 
-  return refalrts::cRecognitionImpossible;
+      do {
+          // recognition of common to the three format proposals
+          if( recognition failure )
+            break;
 
-In this case, after the recognition failure of the first sentence in the second
-we will have to complete a minimum of computations for recognition, because
-part of the expression is already recognized.
+          do {
+            // recognition of the common elements for the first two sentences
+            if( recognition failure )
+              break;
+
+            do {
+              // recognition of the first sentence
+              if( recognition failure )
+                break;
+              // result building
+              return refalrts::cNoMemory;
+              return refalrts::cSuccess;
+            } while(0)
+
+            do {
+              // recognition of the second sentence
+              if( recognition failure )
+                break;
+              // result building
+              return refalrts::cNoMemory;
+              return refalrts::cSuccess;
+            } while(0)
+
+          } while(0);
+
+          do {
+            // recognition of the second sentence
+            if( recognition failure)
+              break;
+            // result building
+            return refalrts::cNoMemory;
+            return refalrts::cSuccess;
+          } while(0);
+
+        } while(0);
+
+        return refalrts::cRecognitionImpossible;
+
+  In this case, after the recognition failure of the first sentence in the
+  second we will have to complete a minimum of computations for recognition,
+  because part of the expression is already recognized.
 
 * (9) Meager standard external (“built-in”) functions library. It is actually
   possible to address the deficiency easily.
