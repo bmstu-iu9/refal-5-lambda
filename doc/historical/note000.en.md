@@ -29,9 +29,9 @@ Module Refal.
 In the future, in case of successful development, the Module Refal itself can
 use this language as a back-end for getting ready-made exe-files.
 
-Results.
+# Results.
 
-# [1] The following programs were developed during the lab.
+## \[1] The following programs were developed during the lab.
 
 * srprep – is a preprocessor that translates the code on the Simple Refal
   into code on the Module Refal. Written on Module Refal. The problem of
@@ -163,9 +163,9 @@ solution, especially for such language as a Refal.
 * srefc – is, actually, the language compiler itself. It will be further
   discussed precisely in detail.
 
-# [2] Several methods of lexical analysis have been tested.
+## \[2] Several methods of lexical analysis have been tested.
 
-## (2.1) Lexical analysis in the preprocessor.
+### (2.1) Lexical analysis in the preprocessor.
 You can notice that most tokens can be represented either as starting with a
 character from some set (head) and consisting of some (perhaps, zero) number of
 characters from another set (tail), or as starting with a character from a set
@@ -211,7 +211,7 @@ to numbers, since nothing except output to the output files with lexemes
 happens). Strangely enough, the handler of the function name differs from the
 default handler, because you need to replace the hyphens with underscores.
 
-# (2.2) Lexical analysis in the generator of the automaton.
+### (2.2) Lexical analysis in the generator of the automaton.
 
 The lexical structure of the machine was made simple enough: from complex
 constructions there were only state names, set names, dumps and literals of
@@ -300,7 +300,8 @@ characters, `s.FailHandler` checks whether the next character is a quotation
 mark. Similarly, the function FlushNameTail recursively calls itself in case of
 success and ends the input of the name if it fails.
 
-# (2.3) Using the lexical analyzer generator.
+### (2.3) Using the lexical analyzer generator.
+
 The third method is used in the Simple Refal's compiler itself. I wrote about
 the device of the machine generator in detail above. The main difference
 between this way from the other two is that the user does not write the code
@@ -320,7 +321,7 @@ thrown out `(TkPunctuation s.Sign)`, later they turned into various lexemes.
 > *Translation to English of this hunk of historical paper is prepared by*
 > **Klepikova Valentina <na.etu.pochtu@yandex.ru>** _at 2018-01-17_
 
-## (2.4) The lexical analysis of Modular Refal (v. 0.1.953).
+### (2.4) The lexical analysis of Modular Refal (v. 0.1.953).
 
 Now I bring the lexical analysis method for comparison into Modular Refal
 itself. In Modular Refal the lexical analysis executes the classical scheme
@@ -350,7 +351,7 @@ extra memory doesn’t required. However, this architecture is more complicated,
 as if the whole source text and/or the whole lexical convolution will be
 uploaded to memory.
 
-## (2.5) Comparison with different ways.
+### (2.5) Comparison with different ways.
 
 The most convenient for me is first and third ways: first way mixing up the
 sufficient presentation with the code laconicism, third way is more flexible
@@ -380,7 +381,7 @@ transfer table describing, it’s possible to create code, which reads lexems
 from file sequentially. That’s why there possible to unite advantages of both
 methods: the high-leveled lexem description and memory economy.
 
-# \[3] Compiler features.
+## \[3] Compiler features.
 In this laboratory work while I were constructing compiler I check out for
 myself some new tricks. In particular, had been used triple-leveled simplified
 parsing algorithm and independent generation of different code elements. For
@@ -741,3 +742,223 @@ comment, how they realized in real compiler.
 > **Starchenko Dmitry <starchenko_dmitry@mail.ru>** _at 2018-01-07_
 
 ... (not translated yet) ...
+
+If recognition is impossible, the rollback with the recovery of the previous
+state (implementation of 6 Rule) should be implemented; because variables of a
+type `bb_N` and `be_N` (the boundaries of subexpressions in brackets) change during
+the recognition. For the value’s recovering are used the following property of
+the C++ language – the ability to declare variables in nested blocks with the
+same name as it is used in the outer block with the concealment of the latter.
+In that way, in the block of for-loop initialization it defines the variables
+`bb_N` and `be_N` of the refalrts `type::Iter`, which are initialized as the
+variables of the same name in the outer block. Thus, to save a value, you do
+not have to start variables with new names or nested variables to give other
+names (this would have to be done when generating Pascal code). But, since the
+result of the initialization `refalrts::Iter bb_N = bb_N;` is not defined, it is
+necessary to establish an intermediate variable:
+
+    refalrts::Iter bb_N_stk = bb_N;
+    refalrts::Iter be_N_stk = be_N;
+    for(
+      refalrts::Iter
+        ...
+        bb_N = bb_N_stk,
+        be_N = be_N_stk,
+        ...;
+      ...;
+      ...;
+    ) {
+      ...
+    }
+
+
+Unfortunately, there had been made an error. This mechanism works perfect, but
+it is saved only the value of the boundaries of such subexpression, which
+consists opened e-variable. If the boundaries of other subexpressions are
+modified within the iteration, then these changes are retained and further
+recognition is incorrect. For example, during the recognition of
+
+    e.Begin (_1 e.Inner)_1 (_2 e.Any 'X' e.Inner)_2
+
+pattern the boundaries of the pair of parentheses number 2 are modified, which
+leads to the matching impossibility, for example with the
+`('er') ('super') ('any' 'X' 'super')` expression.
+
+Basically, this error can be rectified easily by saving all recognition
+parentheses. (even if they are not modified),but I can't be bothered. I'm not
+going to follow this compiler (at least in the foreseeable future).
+
+Also, it would make sense to keep `***_stk` variables not only as pointers
+(`refalrts::Iter` – a synonym (`typedef`) for pointers), but as references
+to them (`refalrts::Iter&`) – according to the Standard reference types are
+defined just as another name of the variable – so memory allocation for them is
+not necessary to happen. But I believe in the optimization’s power of modern
+compilers, which are able to eliminate intermediate assignment in the
+`b = a; c = b;` chain and if `b` is not used anywhere else and is a simple
+built-in data type like pointer.
+
+However, I am(not) lucky: the compiler successfully compiles itself and it
+works properly despite this error. If this error led to incorrect results, then
+I would have to fix it and the outcome would have for one mistake less.
+
+
+### (3.5) Constraints of the research prototype.
+
+The result is only research prototype, it is not intended for using it in real
+life. So, I left it unfinished. The language disadvantages (requirement of
+forward declaration of functions, the lack of modularity and the C style
+compositing model, using only basic subsets support, etc.) I don't count these
+as deficiencies, because it is just the language weaknesses, but not the
+compiler mistakes. Here is a list of deficiencies.
+
+* (1) All source files must be listed in the command line by their absolute
+  pathname or partial pathname. There is not such a great opportunity as
+  specifying the directory for libraries searching.
+* (2) The absence of configuration tools. The `call_cpp_compiler` program is
+  triggered for compilation (by using `System` function), which is implemented
+  as the bat file, which actually leads the compiler.
+* (3) There are uncorrected errors such as state saving error during the
+  rollbacks in open e-variables (see above).
+* (4) The Code 	creating is rather straightforward: certain instructions of the
+  abstracted imperative language (the algorithm) are generated independently
+  from each other. Often, the variables overlap (e.g., in the presence of
+  closed e-variables inside the parentheses we could avoid using of `bb_N` and
+  `be_N` iterators).
+* (5) During further research on algorithm elaboration, it also could be used
+  the STL style ranges. In doing so, it would be possible not to use
+  `eVarName_e` variables to indicate the end of e-variables – the end in this
+  case was limited by the next variable.
+* (6) The re-use of the literal elements of the sample (atoms or brackets)
+  instead of selecting them from the list of free blocks it also could be used.
+  Also, you can reuse the unused literal elements and st-variables by
+  re-initializing them.
+* (7) As we look at the RTS implementation, we can see that the code
+  recognition of individual atoms, pairs of parentheses, repeated variables are
+  largely similar with functions `***_left` and `***_right`, which are similar
+  as twins-brothers. In principle, the compiler instead of calling functions
+  code inserting could insert the operators representing the function body.
+  Although this would lead to a sharp increase in the volume of the generated
+  code.
+* (8) There is no optimization. Due to the fact that certain statements are
+  generated independently from each other, the same operation (in the case that
+  a function has a specific format of the argument – what happens almost every
+  time) are executed repeatedly. The ineffectiveness of this can be seen if you
+  look at the automaton code of lexical analyzer in `Lexer.sref` and `Lexer.cpp`
+  files. Long shot, that the same calculations will be compiled by a C++
+  compiler – during recognition it is called an external function (see
+  section 7), which could potentially have a side-effect. Although, if the
+  statements were processed collaboratively, linear handler enumeration could
+  be replaced with the tree. That means, instead of
+
+    /*
+      All three sentences have the common format.
+      Also the first two sentences have much in common in the pattern
+    */
+
+    do {
+      // recognition of the first sentence
+      if ( recognition failure )
+        break;
+      // result building
+      return refalrts::cNoMemory;
+      return refalrts::cSuccess;
+    } while(0);
+
+    do {
+      // recognition of the second sentence
+      if( recognition failure )
+        break;
+      // result building
+      return refalrts::cNoMemory;
+      return refalrts::cSuccess;
+    } while(0);
+
+    do {
+      // recognition of the third sentence
+      if( recognition failure )
+        break;
+      // result building
+      return refalrts::cNoMemory;
+      return refalrts::cSuccess;
+    } while(0);
+
+    return refalrts::cRecognitionImpossible;
+
+We might write
+
+do {
+    // recognition of common to the three format proposals
+    if( recognition failure )
+      break;
+
+    do {
+      // recognition of the common elements for the first two sentences
+      if( recognition failure )
+        break;
+
+      do {
+        // recognition of the first sentence
+        if( recognition failure )
+          break;
+        // result building
+        return refalrts::cNoMemory;
+        return refalrts::cSuccess;
+      } while(0)
+
+      do {
+        // recognition of the second sentence
+        if( recognition failure )
+          break;
+        // result building
+        return refalrts::cNoMemory;
+        return refalrts::cSuccess;
+      } while(0)
+
+    } while(0);
+
+    do {
+      // recognition of the second sentence
+      if( recognition failure)
+        break;
+      // result building
+      return refalrts::cNoMemory;
+      return refalrts::cSuccess;
+    } while(0);
+
+  } while(0);
+
+  return refalrts::cRecognitionImpossible;
+
+In this case, after the recognition failure of the first sentence in the second
+we will have to complete a minimum of computations for recognition, because
+part of the expression is already recognized.
+
+* (9) Meager standard external (“built-in”) functions library. It is actually
+  possible to address the deficiency easily.
+
+# Conclusions.
+
+* \[1] I have written the compiler, compiling Refal into C++.  The results of
+  Refal → C++ translation research results can be found in the Results section
+  of this file. Those language features that were planned to Goal of the lab
+  were implemented. The resulting compiler works, although not without flaws
+  (see above).
+* \[2] It was written the self-hosted compiler, this means that the language
+  can be used to write non-trivial enough applications (such as compiler) and
+  not just programming of `Hello, World` and `Fibonacci`.
+* \[3] During some errors and defects fixing process, the language can be used
+  also as the C++ back end for Modular Refal (of course, by adapting it under
+  another level of code modularity). And can be used in two ways: (1) the
+  generation of files in a Simple Refal and then running of the Simple Refal
+  compiler – in the same way with the back end Refal-5 compilation and
+  (2) the code integration of the Simple Refal into the Refal Modular compiler.
+  The second option is facilitated by the fact that we have a preprocessor,
+  compiling a Simple into Modular Refal.
+* \[4] Developing of lexical generators and syntactic analyzers would be
+  useful. It is truly  comfortable
+* \[5] If (when) front-end for a Modular Refal will be developing, generating
+  code for imperative languages, it is advisable to use the STL style borders
+  and more careful planning of the generated algorithm.
+
+> *Translation to English of this hunk of historical paper is prepared by*
+> **Anna Mazura <annaeav@yandex.ru>** _at 2018-01-18_
