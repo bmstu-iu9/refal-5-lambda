@@ -691,3 +691,320 @@ Now the functions `IsEqual` and `BinAdd` can be rewritten as:
 
 > *Translation to English of this hunk of this paper is prepared by*
 > **Jessica Jimenez Kuthko <kuthko@mail.ru>** _at 2018-01-17_
+
+...not translated yet...
+
+## The abstract refal-machine. View field semantics
+
+We referred earlier to the functions in the right part of a sentence which are
+calculated somehow after a substitution of variables. Now it is time to
+specify, how exactly, because it is impossible to write effective programs and
+to execute debugging of programs on Refal-5λ without it.
+
+It is said that the Refal program is executed by the _abstract refal-machine_ —
+the imaginary calculating machine that may understand the Refal syntax. This
+machine has two areas of memory: program field, storing all the definitions of
+functions of the program, and a view field, storing a current status of
+computation. The status of computation is described in the form of the _active
+expression_ – expression of the Refal language which contains activation
+brackets, but at the same time cannot contain variables.
+
+Refal-maсhine executes the program step-by-step. Each step is an execution of
+the following sequence of actions.
+
+1. Refal-maсhine finds in a view field the most left couple of activation
+   brackets, such that doesn’t include other angle brackets in this call. This
+   section of a view field is called primary active sub-expression.
+2. Refal-maсhine observes what is on the right of the left activation bracket :
+   there should be the function name. If it is not there (language allows to
+   write such a program), then the refal-machine stops with an error
+   “recognition impossible”.
+3. Refal-maсhine finds function name in the program field. Function can be
+   either written on Refal or built-in. If it is the built-in function – the
+   refal-machine transfers control on the procedure in machine code
+   implementing the logic of this function. If the function is written on
+   Refal, the machine selects the first sentence of the function.
+4. If it is possible to choose such values of variables in the left part of the
+   current sentence that it might become the function argument, then the
+   point 5 is implemented. Otherwise the following sentence is selected and
+   point 4 repeats. If there are no sentences any more, then the refal-machine
+   stops with an error "recognition impossible".
+5. The found values of variables are added to the right part of the current
+   sentence. Refal-machine inserts received expression into the view field to
+   the place of the primary active subexpression.
+6. If there are activation brackets in the view field, then the refal-machine
+   executes the following step – returns to the point 1. Otherwise the
+   refal-machine correctly comes to the end.
+
+Initial contents of a view field is the `GO` function call with an empty
+argument:
+
+    <GO>
+
+if there is defined `GO` function, or `Go` call in the program:
+
+    <GO>
+
+if the `Go` function is defined. If there is neither that, nor other function,
+then the program won’t be started.
+
+Notes.
+
+1. _Classical REFAL-5 doesn’t support empty functions, any function has to have
+   at least one sentence. Refal-5λ supports – the call of such function leads
+   to an error "recognition impossible"._
+2. _The current implementation at the time of the program creation can’t check
+   that the `GO` or `Go` function is absent in the program. In this case there
+   will be created the program which at start will display the error message
+   and then will come to the end. Perhaps, it will be corrected in the
+   following versions._
+
+It is possible to make two important conclusions from this algorithm.
+
+Firstly, the primary active subexpression chooses the most left couple of
+activation brackets which isn’t containing in itself other activation brackets.
+It follows that Refal – is _applicative language,_ and an order of function
+computations is accurately defined: from left to right. I.e. if there are
+several calls of functions in the right part of the sentence, then they will be
+calculated from left to right, from the most internal to the most external.
+Therefore we can use functions with side effect, (for example, `Prout`) knowing
+when this side effect is carried out.
+
+Secondly, it immediately follows from semantics of a view field that Refal
+implements so-called _optimization of a tail recursion._
+
+In many imperative programming languages the recursion is quite expensive —
+overhead costs on preservation of a context of calculations are needed – points
+where process of execution has to return after the completion of a tail call.
+And the memory for this preservation is given out from limited area – a system
+stack. The programmer, as a rule, can’t control the size of a system stack,
+and at its overflow the program abnormally comes to the end. Therefore in such
+languages you are not to use a recursion for the implementation of the cyclic
+repeating actions (particularly as in imperative languages for this purpose
+there are iteration statements).
+
+In Refal functions don’t need to keep a context of calculations for return of a
+value as the function doing a recursive call comes to the end before the next
+recursive call. And it means that if the recursive call in the right part of
+the sentence is executed the last, incomplete calculations won’t collect in the
+view field. I.e. In fact there won’t be observed the recursion (the enclosed
+contexts), but a cycle will be observed.
+
+**Example 13.** We will illustrate it with the simplest example – we will
+consider the process of function evaluation of  Fab replacing all characters
+`'a'` with characters `'b'` ([`fab-1.ref`](fab-1.ref) program):
+
+    $ENTRY Go {
+      = <Prout <Fab 'abracadabra'>>;
+    }
+
+    Fab {
+      'a' e.Rest = 'b' <Fab e.Rest>;
+      s.Other e.Rest = s.Other <Fab e.Rest>;
+      /* empty */ = /* empty */;
+    }
+
+The `Go` function call will be initial content of a view field:
+
+    <Go>
+
+Refal-machine on the first step will find this call (it will be the primary
+active subexpression), will see the name `Go` after `<` and will find the `Go`
+function in a program field. The function is called with an empty argument, the
+first sentence has empty left part. There are no variables on the left and
+right parts, therefore refal-machine just replace call `<Go>` with the right
+part of a sentence:
+
+    <Prout <Fab 'abracadabra'>>
+           ^^^^^^^^^^^^^^^^^^^
+
+The `Fab` function call as it doesn’t contain the enclosed activation brackets
+will be the primary active subexpression here (the call  `Prout` contains in
+itself activation brackets of a `Fab` call).
+
+Refal-machine will see Fab after `<` and will try to match the argument
+`'abracadabra'` with the left part of the first sentence  `'a' e.Rest`. The
+recognition is possible: if instead `e.Rest` substitute `'bracadabra'`, then
+the left part turns into an argument. Refal-machine applies specified
+substitution (`e.rest →'bracadabra'`) to the right part of the sentence – then
+we get  such expression  `'b' <fab 'bracadabra'>` and it replaces a function
+call for this expression:
+
+    <Prout 'b' <Fab 'bracadabra'>>
+               ^^^^^^^^^^^^^^^^^^
+
+On the third step `Fab` function call will be primary active subexpression
+again. But the left part of the first sentence cannot be matched with an
+argument: the pattern begins with `'a'`, but an argument – with `'b'`. The
+second sentence is chosen. The recognition is possible: there is a substitution
+of the `s.Other → 'b', e.Rest → 'racadabra'`. Substitution is applied to the
+right part, the result of the substitution (`'b' <fab 'racadabra'>`) is added
+in the view field instead of primary active subexpression:
+
+    <Prout 'bb' <Fab 'racadabra'>>
+                ^^^^^^^^^^^^^^^^^
+
+Several following steps are executed  in the same way:
+
+    <Prout 'bbr' <Fab 'acadabra'>>
+                 ^^^^^^^^^^^^^^^^
+    <Prout 'bbrb' <Fab 'cadabra'>>
+                  ^^^^^^^^^^^^^^^
+    <Prout 'bbrbc' <Fab 'adabra'>>
+                   ^^^^^^^^^^^^^^
+    <Prout 'bbrbcb' <Fab 'dabra'>>
+                    ^^^^^^^^^^^^^
+    <Prout 'bbrbcbd' <Fab 'abra'>>
+                     ^^^^^^^^^^^^
+    <Prout 'bbrbcbdb' <Fab 'bra'>>
+                      ^^^^^^^^^^^
+    <Prout 'bbrbcbdbb' <Fab 'ra'>>
+                       ^^^^^^^^^^
+    <Prout 'bbrbcbdbbr' <Fab 'a'>>
+                        ^^^^^^^^^
+
+At this stage the refal-machine will execute the first sentence of the `Fab`
+function, substitution will be interesting because `e.Rest` will receive a
+value of empty expression.
+
+    <Prout 'bbrbcbdbbrb' <Fab>>
+                         ^^^^^
+
+The refal-machine will perform the `Fab` function, but the first sentence
+doesn’t match  (it is impossible to match the expression which begins on `'a'`,
+with empty expression), the second – too (it is impossible to match the
+expression which begins of a symbol with an empty expression). And here the
+third will match – an empty left part is well matched with an empty argument.
+And the refal-machine will replace a call of the `<Fab>` function with an empty
+right part of the third sentence:
+
+    <Prout 'bbrbcbdbbrb'>
+    ^^^^^^^^^^^^^^^^^^^^^
+
+Now the `Prout` function call will be the primary active subexpression.
+Refal-machine will notice that it is the built-in function and will call the
+appropriate computer operation for calculation of its result. The computer
+operation will print on the screen `'bbrbcbdbbrb'` and will return an empty
+expression. `Prout` call under the view field will be replaced with an empty
+expression.
+
+The view field will become empty – the refal-machine will correctly stop.
+
+### Tail and not tail recursion
+
+During the _tail recursion,_ as it is told above, the recursive call in the
+right part is executed the last. We will show visually why it is so. We will
+consider the `Rec1` function which executes a `F` function call in the right
+part and itself:
+
+    Rec1 {
+      continuation = <F ...> <Rec1 ...>;
+      ending= rec1-res;
+    }
+
+Development of a view field will look approximately so:
+
+    <Rec1 ...>
+    ^^^^^^^^^%
+    <F ...> <Rec1 ...>
+    ^^^^^^^
+    f-res <Rec1 ...>
+          ^^^^^^^^^^
+    f-res <F ...> <Rec1 ...>
+          ^^^^^^^
+    f-res f-res <Rec1 ...>
+                ^^^^^^^^^^
+    . . . . .
+    f-res f-res .... f-res rec1-res
+
+One might see that not calculated calls of functions don’t collect anywhere. On
+each step before a call of Rec1, there is the ‘F’ call which comes to the end
+before `Rec1` call.
+
+We will consider the `Rec2` function which slightly differs from the `Rec1`
+function:
+
+    Rec2 {
+      continuation = <Rec2 ...> <F ...>;
+      ending = rec2-res
+    }
+
+Here on the contrary – at first `Rec2`, then `F` is called. And the view field
+will develop absolutely differently:
+
+    <Rec2 ...>
+    ^^^^^^^^^^
+    <Rec2 ...> <F ...>
+    ^^^^^^^^^^
+    <Rec2 ...> <F ...> <F ...>
+    . . . . . .
+    <Rec2 ...> <F ...> <F ...> ... <F ...>
+    ^^^^^^^^^^
+    rec2-res <F ...> <F ...> ... <F ...>
+             ^^^^^^^
+    rec2-res f-res <F ...> ... <F ...>
+                   ^^^^^^^
+    . . . . . .
+    rec2-res f-res ... f-res <F ...>
+                             ^^^^^^^
+    rec2-res f-res ... f-res f-res
+
+Here already the uncalculated `F` calls are collecting, and they are collecting
+until the `Rec2` function doesn’t stop to call itself recursively.
+
+Similarly it turns out with the enclosed calls of functions. A recursion in
+`Rec3` function is tail:
+
+    Rec3 {
+      continuation = <Rec3 ... <F ...> ...>;
+      ending = rec3-res;
+    }
+
+    <Rec3 ...>
+    ^^^^^^^^^^
+    <Rec3 ... <F ...> ...>
+              ^^^^^^^
+    <Rec3 ... f-res ...>
+    ^^^^^^^^^^^^^^^^^^^^
+    <Rec3 ... <F ...> ...>
+              ^^^^^^^
+    . . . . .
+    <Rec3 ... f-res ...>
+    ^^^^^^^^^^^^^^^^^^^^
+    rec3-res
+
+Recursion in `Rec4` function is not tail:
+
+    Rec4 {
+      continuation = <F ... <Rec4 ...> ...>;
+      ending = rec4-res;
+    }
+
+    <Rec4 ...>
+    ^^^^^^^^^^
+    <F ... <Rec4 ...> ...>
+           ^^^^^^^^^^
+    <F ... <F ... <Rec4 ...> ...> ...>
+                  ^^^^^^^^^^
+    . . . . . .
+    <F ... <F ... ... <F ... rec4-res ...> ... ...> ...>
+                      ^^^^^^^^^^^^^^^^^^^^
+    . . . . . .
+    <F ... <F ... f-res ...> ...>
+           ^^^^^^^^^^^^^^^^^
+    <F ... f-res ...>
+    ^^^^^^^^^^^^^^^^^
+    f-res
+
+What is written above shouldn’t be taken to mean that a tail recursion –  is
+always good, and not tail – is always bad. It is important to understand that
+in the first case process cyclic, the view field on each iteration comes back
+to a similar state, and in the second case it expands.
+
+We will consider the tail recursion as the _cycles_ in the future. There are no
+classical imperative cycles in Refal-5λ therefore such terminology shouldn’t
+cause any confusion. It is just more convenient to speak in such cases about
+_cyclic processes_ and to use the term _iteration,_ etc.
+
+> *Translation to English of this hunk of this paper is prepared by*
+> **Maria Ivanova <ya.ivanovamaria96@yandex.ru>** _at 2018-01-17_
