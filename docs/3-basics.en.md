@@ -692,6 +692,216 @@ Now the functions `IsEqual` and `BinAdd` can be rewritten as:
 > *Translation to English of this hunk of this paper is prepared by*
 > **Jessica Jimenez Kuthko <kuthko@mail.ru>** _at 2018-01-17_
 
+## Other types of symbols: numbers
+
+We have already used some definitions; symbols, characters as synonyms. But it
+is actually not completely true. Refal can operate not only with the
+characters, but also with other types of symbols.
+
+According to Refal symbol is an object, which cannot be spread out on small
+parts using a pattern. Except characters Refal also has number symbols and
+word symbols. Word symbols would be explored in the next paragraph.
+
+_Number symbol_ or _macrodigit_ is a number in the range between 0 and 2³²−1
+written in decimal form. For example, 1, 10, 65536, 4294967295 (the biggest
+macrodigit).
+
+For the comfort by work on Refal, there are some integrated arithmetic
+functions:
+
+* Add – summation,
+* Sub – subtraction,
+* Mul – multiplication,
+* Div – division (quotient),
+* Mod – remainder of division,
+* Divmod – the result of the quotient and remainder,
+* Compare – compares two numbers,
+* Numb – converts a chain of characters into the number (decimal),
+* Symb – converts the number into a chain of characters (decimal).
+
+The reader could be interested what for the “macrodigit” is meant here. It
+involves arithmetic function that implements arbitrary-precision arithmetic —
+work with numbers of arbitrary length. Macrodigits are used for the
+representation of such numbers.
+
+Just as in the usual decimal notation the number 1864 means
+
+    1864 = 1×10³ + 8×10² + 6×10 + 4
+
+in Refal a long number like 10000000000000000000000 is represented as
+`542 434162106 2990538752`, what means
+
+    10000000000000000000000 = 542×(2³²)² + 434162106×2³² + 2990538752
+
+moreover the radix is not 10, but 2³². To write negative numbers
+literal `'-'` should be put in the beginning of the macrodogit chain, at
+the beginning of a positive number can be written optional sign `'+'`.
+
+That means that in the general case numbers are chains of terms of arbitrary
+length (e-variables), only small positive numbers are represented as single
+character (fit one macrodigit).
+
+Functions `Add`, `Sub`, `Mul`, `Div`, `Mod`, `Divmod` and `Compare` receive two
+numbers. If the first one is a small positive (macrodigit), then it is written
+as a macrodogit too. Otherwise the first argument is written as a bracket term.
+The second argument is written after the first.
+
+Function Divmod returns quotient in brackets and remainder.
+
+Function Compare returns the sign of the difference of the first and second
+numbers `'+'`, `'0'` or `'-'`, when the first is greater, equal or less than
+the second.
+
+Function `Numb` takes a string. If the string starts with an optional sign and
+decimal digits, the function returns the number represented by these numbers.
+Otherwise (if the argument don’t begin with a decimal number) the function
+returns `0`.
+
+Function `Symb` the inverse or the function `Numb`, converts a number to
+decimal record.
+
+**Example 12.** Some function calls and their results nearby:
+
+    <Add 1 2>                          3
+    <Sub 1 2>                          '-' 1
+    <Add 1 2 3>                        2 4
+    <Add (1) 2 3>                      2 4
+    <Add (2 3) 1>                      2 4
+    <Add ('-' 7) 17>                   10
+    <Mul (1 1) 1 1>                    1 2 1
+    <Div (1 2 3) 1 1>                  1 1
+    <Mod (1 2 3) 1 1                   2
+    <Divmod (1 2 3) 1 1>               (1 1) 2
+    <Compare 10 13>                    '-'
+    <Compare (0 0 100) 0 100>          '0'
+    <Compare (1 2) 1 0 0>              '-'
+    <Numb '10abcdef'>                  10
+    <Numb '-11113'>                    '-' 11113
+    <Numb 'not a number>               0
+    <Numb '10000000000000000000000'>   542 434162106 2990538752
+    <Symb 123456>                      '123456'
+    <Symb '-' 1 1>                     '-4294967297'
+    <Symb 542 434162106 2990538752>    '10000000000000000000000'
+
+**Example 13.** A function to compute the factorial. Recall that the factorial
+of N (denoted N!, read “n factorial”) is the product of all numbers from 0 to N
+inclusive. I. e. N! = 1×2×...×(N−1)×N. It is Considered that 0! = 1.
+
+One can notice that N! = 1×2×...×(N−1)×N = (1×2×...×(N−1))×N = (N−1)!×N.
+At the same, 1! = (1-1)!×1 = 0!×1 = 1×1 = 1. We can use it to write a function.
+
+    Fact {
+      0 = 1;
+      s.N = <Mul (<Fact <Sub s.N 1>>) s.N>;
+    }
+
+    $ENTRY Go {
+      = <Prout '1!   = ' <Symb <Fact 1>>>
+        <Prout '10!  = ' <Symb <Fact 10>>>
+        <Prout '100! = ' <Symb <Fact 100>>>
+    }
+
+You can notice that the first argument of the function `Mul` we wrapped in
+parentheses, what we haven’t done with the first argument `Sub`. Why? Because
+
+    13! = 6227020800 > 4294967296 = 232.
+
+For arguments, which are bigger than 12, the factorial will no longer fit one
+macrodigit. The function’s `Sub` first argument always fits macrodigit, because
+it is originally set by macrodigit and at each step of recursion, it is only
+decreasing. The program above [`fact.ref`](fact.ref) will print on the screen
+the following (the last line is too long, for the comfort of reading it is
+split into parts)
+
+
+    1!   = 1
+    10!  = 3628800
+    100! = 9332621544394415268169923885626670049071596826438162146859↓
+    29638952175999932299156089414639761565182862536979208272237582511↓
+    85210916864000000000000000000000000
+
+# Other types of symbols: words
+
+While programing on Refal the user often has a necessity to mark different
+types of objects or conditions: it is possible for a function to end
+successfully or not. State machine can possibly have different conditions.
+A program can manipulate different types of objects (representation of tokens
+during the lexical analysis, of node of the parse tree during syntax analysis
+etc.).
+
+For example, we need to write a function, which reads the configuration file
+and is called this way:
+
+    <ReadConfig e.FileName>
+
+This function can successfully read the configuration file or return
+configuration data (we won’t review the way they are organized). The function
+can find out, that the configuration file does not exist (in this case the
+program would use default configuration). It can also happen, that file has
+wrong format and it cannot be read – the program has to return clear error
+message and end.
+
+Consequently, the function has to return three different results, which must be
+distinguished by the user. In the first case – configuration data. In the
+second case – a sign, that the file does not exist. In the third case – the
+message about the syntax error in the file.
+
+These cases can be easily enumerated. In the first case the function would
+return macrodigit `1` and data, in the second one – only macrodigit `2` and in
+the third one – number `3` and the error message. The function results can be
+distinguished, but the main disadvantage of such decision is that the numbers
+don’t talk for themselves. The programmer has to remember that number `3` for
+this functions indicates a syntax error, and number `2` indicates the absence
+of the file, no other way. What if there are more of such kind of functions?
+You will have to learn the meaning of each number in relation to each function.
+
+It is possible to return a sequence of characters. For example, in the first
+case it should return `'Success' (e.Configuration)` in the second -
+`'File not found'`, in the third one – `'Syntax error' (e.ErrorMessage)`.
+Text springs talk for themselves, it becomes easy to understand the program.
+But this solution also has a disadvantage – strings – expressions of arbitrary
+length. When the function returns different data of arbitrary length, for
+example, the configuration or the error message, they must be separated by
+parentheses.  Moreover, it is excess to convey dozens of characters, when for
+the difference the only one is enough.
+
+To distinguish is needed the only one. Should we cut till the first letter?
+Then instead of `'Success' (e.Configuration)` we will write
+`'S' e.Configuration`, instead of `'File not found'` will write `'F'` instead
+of `'Syntax error (e.ErrorMessage)` write `'S' e.ErrorMessage`.  But what’s
+then the difference between the first and the second case? They both begin with
+the sign `'S'`, which may be followed by the expression of arbitrary length.
+The shortening till the first letter did not succeed – we have to choose some
+other letters. But then appears the same problem as with the numbers – single
+letters hardly talk for themselves.
+
+To solve this problem in Refal are the _symbols-words symbols-identifiers,
+compound symbols)._ These are the symbols, which are compared with the usual
+s-variable, but they have the text representation of the word without the
+quotes. The appearance of identifier is exactly the same as the name of the
+function: it consists of letters, numbers, dashes and hyphens, but it must
+begin with a letter or underscore. Examples of identifiers: `Success`,
+`FILE_NOT_FOUND`, `syntax-error`, `True`, `False`, `Error-404-Not-found`, `o_0`
+etc.
+
+Now it is obviously, that for our function `ReadConfig` in the returned value
+you need to use identifiers. For example, `Success e.Config`, `FileNotFound`
+and `SyntaxError e.Message`.
+
+Refal-5λ as the classic REFAL-5 allows the usage of arbitrary character strings
+as identifiers. This string must be enclosed in double quotes: `"This is one
+symbol:-)"`. Practicaly they are rarely used, but they can be useful, when you
+want to use the combination of signs as a characteristic-identifier, which
+cannot be written without quotation marks. For example, `"*="`, `"C++"`,
+`"=0?"` etc.  The words can be written in quotation marks, when they could
+possibly be written without any and they would be identical to the words
+without quotes – `"Success"`, `"SyntaxError"`.
+
+> *Translation to English of this hunk of this paper is prepared by*
+> **Ksenia Kalinina <ks-kalinina@mail.ru>** _at 2018-01-18_
+
+### Escape sequences
+
 ...not translated yet...
 
 ## The abstract refal-machine. View field semantics
