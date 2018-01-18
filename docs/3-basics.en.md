@@ -690,4 +690,4 @@ Now the functions `IsEqual` and `BinAdd` can be rewritten as:
     }
 
 > *Translation to English of this hunk of this paper is prepared by*
-> **Jessica Jimenez-Kuthko <kuthko@mail.ru>** _at 2018-01-17_
+> **Jessica Jimenez Kuthko <kuthko@mail.ru>** _at 2018-01-17_
