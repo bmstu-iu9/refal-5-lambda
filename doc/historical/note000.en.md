@@ -741,21 +741,441 @@ comment, how they realized in real compiler.
 > *Translation to English of this hunk of historical paper is prepared by*
 > **Starchenko Dmitry <starchenko_dmitry@mail.ru>** _at 2018-01-07_
 
-... (not translated yet) ...
+### Rules of mapping
+
+1. After a bracket is mapped, its pairing bracket is mapped next.
+2. If, as a result of previous steps, both ends of an entry of an e-variable
+   are already mapped, but this variable has no value yet (no other entry of it
+   has been mapped), then this variable is mapped next. Such entries are called
+   closed e-variables. Two closed e-variables can appear at the same time; in
+   this case, the one on the left is mapped first.
+3. An entry of a variable which already has a value is a repeated entry.
+   Brackets, symbols, s-variables, t-variables, and repeated entries of
+   e-variables in P are _rigid_ elements. If one of the ends of a rigid element is
+   mapped, the projection of the other end is unique. If Rules 1 and 2 are not
+   applicable, and there are some rigid elements with one end projected, the
+   leftmost of these is chosen. If it is possible to map this element without
+   contradicting the general requirements 1-3 above, then it is mapped, and the
+   process goes on. Otherwise, a _deadlock situation_ is stated.
+4. If Rules 1-3 are not applicable, and there are some e-variables with the
+   left end mapped, then the leftmost one is chosen. It is called an _open_
+   e-variable. Initially it gets an empty value, i.e., its right end is
+   projected on the same node as the left one. Other values may be assigned to
+   open variables through lengthening (see Rule 6).
+5. If all elements of P are mapped, the matching process is successfully
+   completed.
+6. In a deadlock situation, the process comes back to the last open e-variable
+   (i.e., the one with the maximal projection number) and its value is
+   lengthened; i.e., the projection of its right end in E is moved one term to
+   the right. Thereafter the process is resumed. If the variable cannot be
+   lengthened (because of the General requirements 1-3), the preceding open
+   variable is lengthened, etc. If there is no open variable to be lengthened,
+   the matching process fails.
+
+> Anastasia Solomatina’s independed translation:
+>
+> ### The display rules
+>
+> 1. After that the bracket is displayed, the matching parenthesis will be
+>    displayed the next to it.
+> 2. If, as a result of the previous steps, both ends of the occurrence of some
+>    e-variable are already displayed, but this variable hasn’t value (no other
+>    of its occurrences was displayed), then this variable is displayed next.
+>    Such occurrences are called closed e-variables. Two closed e-variables can
+>    appear at the same time; in this case, the one on the left is displayed
+>    first.
+> 3. The occurrence of a variable that already has a value is a repeat.
+>    Brackets, symbols, s-variables, t-variables and repeated occurrences of
+>    e-variables in Refal are rigid elements. If one of the ends of a rigid
+>    element is displayed, the projection of the second end is uniquely
+>    determined. If Rules 1 and 2 are not applicable, and there are several
+>    rigid elements with one
+>    projected end, then the left one is selected from them. If it is possible
+>    to display this element without colliding with the general requirements
+>    1-3 given above, then it is displayed and the process continues on.
+>    Otherwise, a deadlock is declared.
+> 4. If Rules 1-3 are not applicable and there are several e-variables with the
+>    left end displayed, then the leftmost one is selected. It is called an
+>    open e-variable. Initially, it gets an empty value, i.e., its right end is
+>    projected to the same node as the left one. Other values may be assigned
+>    to the open variables via elongation (see Rule 6).
+> 5. If all the elements of P are displayed, it means that the matching process
+>    has been successfully completed.
+> 6. In a deadlock situation, the process returns back to the last opened
+>    e-variable (i.e., to the one that has the maximum projection number), and
+>    its value is extended; i.e., the projection of its right end in E moves
+>    one term to the right. After that, the process restarts. If the variable
+>    cannot be extended (due to General Requirements 1-3), the previous open
+>    variable is
+>    extended, etc.  If there are no open variables to be extended, the
+>    displaying process failed.
+
+However, it is obvious that the order of displaying rigid elements and closed
+e-variables is insignificant from the point of view of the final result. Only
+the order of displaying of open e-variables is important. Therefore, in my
+case, when creating an algorithm for pattern recognition (an intermediate
+abstract imperative representation in the code is called an algorithm), the
+order of displaying rigid elements is slightly different than in the Rules
+described above.
+
+The algorithm for pattern recognition is modeled this way. Consider the method
+for the case of a “flat” expression – an expression without the parentheses,
+and then generalize to a hierarchical case. Two pointers are entered in the
+pattern – left and right (we denote them as `[` and `]`). These pointers can be
+found between the individual terms of the pattern or directly to the right or
+left outside the pattern (this is the original position of the right and left
+pointers respectively).
+
+Next, the pattern is viewed interactively and the pointer is moved according to
+the following rules:
+
+1. If to the right of `[` there is a rigid element, then a command is created
+   to recognize this hard element from the left end of the expression and the
+   pointer is shifted one element to the right.
+2. Similarly, if there is a rigid element to the left of `]`, then the command
+   is created to recognize this hard element from the right end and the pointer
+   is shifted one element to the right.
+
+   In this case, if a variable is recognized by following rules 1) or 2), then
+   it is remembered as recognized and subsequently identified as a repeated
+   one.
+3. If there is an unrecognized e-variable between the pointers: [e.Index], then
+   a command is created to identify the remainder of the expression with a
+   given e-variable. Thereby, the process of recognizing the expression is
+   completed.
+4. If the `[` and `]` pointers are encountered, a command is created to check
+   the remaining expression for emptiness.
+5. If the unrecognized e-variables are to the right of the pointer `[` and to
+   the left of the pointer `]`, then the command-marker of the open e-variable
+   is created and the pointer `[` is shifted to the right by one element. In
+   addition, all the commands between this marker and to the end are put in the
+   nested loop, in which the open variable is incremented by the term for each
+   iteration and the remaining commands are tried an execution.
+
+For example,
+
+    s.X 'a' 2 e.Y s.Z
+    [ s.X 'a' 2 e.Y s.Z ] => svar_left(s.X), s.X [ 'a' 2 e.Y s.Z ]
+    s.X [ 'a' 2 e.Y s.Z ] => char_left('a'), s.X 'a' [ 2 e.Y s.Z ]
+    s.X 'a' [ 2 e.Y s.Z ] => numb_left( 2 ), s.X 'a' 2 [ e.Y s.Z ]
+    s.X 'a' 2 [ e.Y s.Z ] => svar_right(s.Z), s.X 'a' 2 [ e.Y ] s.Z
+    s.Z 'a' 2 [ e.Y ] s.Z => rest_evar(e.Y), end of recognition
+    s.X 5 t.Z
+    [ s.X 5 t.Z ] => svar_left(s.X), s.X [ 5 t.Z ]
+    s.X [ 5 t.Z ] => numb_left( 5 ), s.X 5 [ t.Z ]
+    s.X 5 [ t.Z ] => tvar_left(t.Z), s.X 5 t.Z [ ]
+    s.X 5 t.Z [ ] => rest_empty, end of recognition
+    1 e.X 2 e.Y 3
+    [ 1 e.X 2 e.Y 3 ] => numb_left( 1 ), 1 [ e.X 2 e.Y 3 ]
+    1 [ e.X 2 e.Y 3 ] => numb_right( 3 ), 1 [ e.X 2 e.Y ] 3
+    1 [ e.X 2 e.Y ] 3 => E_CYCLE( e.X ), 1 e.X [ 2 e.Y ] 3
+    1 e.X [ 2 e.Y ] 3 => numb_left( 2 ), 1 e.X 2 [ e.Y ] 3
+    1 e.X 2 [ e.Y ] 3 => rest_evar(e.Y), end of recognition
+
+This method is easily extended to the case of a parenthesis structure: pointers
+are entered not only for the entire pattern, but for each separate pair of
+parentheses.
+
+To distinguish expressions in different parentheses, each individual pair of
+brackets can be assigned an individual integer index starting at 1. Similarly,
+the pointers receive their own individual index, while the full pattern receives
+pointers with index 0.
+
+The recognition mechanism for such a case is described by a pseudo-code on
+Refal:
+
+    PatternMatching {
+      // Recognition on the left
+
+      //1
+      e.Left [_N t.Атом e.Right =
+        atom_left( t.Atom, expression N )
+        <PatternMatchign e.Left t.Атом [_N e.Right>;
+
+      //2
+      e.Left [_N t. repeated_variable e.Right =
+        repeatedvar_left( t.repeated_variable, expression N )
+        <PatternMatching e.Left t. repeated_variable [_N e.Right>;
+
+      //3
+      e.Left [_N t.st-переменная e.Right =
+        stvar_left( t.st- variable, expression N )
+        Remember t.st-variable as recognized
+        <PatternMathcing e.Left t.st- variable [_N e.Right>;
+
+      //4
+      e.Left [_N (_M e.Inner )_M e.Right =
+        initialize expression M
+        bracket_left( expression M, expression N )
+        <PatternMatching
+          e.Left (_M [_M e.Inner ]_M )_M [_N e.Right
+        >;
+
+      // Recognition on the right
+
+      //5
+      e.Left t.Atom ]_N e.Right =
+        atom_right( t.Atom, expression N )
+        <PatternMatching e.Left ]_N t.Atom e.Right>;
+
+      //6
+      e.Left t. repeated_variable ]_N e.Right =
+        repeated_right( t.repeated_variable, expression N )
+        <PatternMatching e.Left ]_N t. repeated_variable e.Right>;
+
+      //7
+      e.Left t.st- variable ]_N e.Right =
+        stvar_right( t.st- variable, expression N )
+        <PatternMatching e.Left ]_N t.st- variable e.Right>;
+
+      //8
+      e.Left (_M e.Inner )_M ]_N e.Right =
+        initialize expression M
+        brackets_right( expression M, expression N )
+        <PatternMatching
+          e.Left ]_N (_M [_M e.Inner ]_M )_M e.Right
+        >;
+
+      // Pointer annihilation and open e-variables
+
+      //9
+      e.Left [_N t.closed-e-variable]_N e.Right =
+        closed_e( t.closed-e-variable, expression N )
+        Remember  t.closed-e-variable as recognized
+        <PatternMatching e.Left t.closed-e-variable e.Right>;
+
+      //10
+      e.Left [_N ]_N e.Right =
+        empty_expression( expression N )
+        <PatternMatching e.Left e.Right>;
+
+      //11
+      e.Left [_N t. unrecognized-e-variable-1 e.Inner
+      t.unrecognized-e-variable-2 ]_N e.Right =
+        E-CYCLE( t.unrecognized-e-variable-1, expression N )
+        Remember  t.unrecognized-e-variable-1 as recognized
+        <PatternMatching
+          e.Left t.unrecognized-e-variable-1
+          [_N e.Inner t.unrecognized-e-variable-2 ]_N e.Right
+        >;
+
+      // the loop is executed-- there are no pointers
+
+      //12
+      e.Pattern = ;
+    }
+
+### Initialization
+
+Initialize expression 0 with an argument
+
+    <PatternMatching [_0 e.Pattern ]_0>;
+
+In the pseudo code, the notation `[_N`, `]_N`, `(_N` , `)_N` denoted the
+numbered pointers and the parentheses, respectively. Up to the order of the
+displaying of rigid elements, this algorithm generates the order of the
+displaying generated by Rules 1-6. Let us define it.
+
+Rule 1 is automatically executed if the primitive recognition commands, from
+which the algorithm is created, are recognized by two parentheses at the same
+time. The way it is in the real compiler.
+Sentences 4 and 8 just generate abstract commands that perform this function.
+
+For generality of reasoning, let us assume that the argument to be recognized
+is immersed in a pair of parentheses with the number 0: `(_0 e.Pattern)_0`.
+This will simplify the description, because it will not be necessary to
+clearly distinguish the cases of the location of the elements directly next to
+the edge. Thereby, at the beginning of processing the pattern has the form
+
+    (_0, [_ 0 e.Pattern] _0) _0
+
+It can be convinced that the pointers break each sub expression into three
+parts: the right and left are already designed elements, immediately next to
+the pointers are the elements with one projected end, and between them the
+elements with free ends.
+
+If there are rigid elements with a projected left end, then sentences 1-4 will
+create commands to recognize them. Similarly, if there are rigid elements with
+a projected right end, then they are handled by sentences 5-8. Thus, up to the
+order of recognition of rigid elements, propositions 1-8 implement rule 3.
+
+If there is a closed e-variable, then it will be processed by sentence 9 -
+implementation of rule 2.
+
+Rules 4 and 6 are implemented already in the most generated code – all commands
+starting with the marker command `E-CYCLE` and up to the end of the algorithm
+for constructing the expression are placed in the nested loop (if there is
+another `E-CYCLE` marker after the `E-CYCLE` marker, then the code between them
+and the end is placed in another nested loop, etc.). Before the loop is
+executed, all the pointers that can change in the cycle are stored, at the
+beginning of each iteration the pointers are restored, at the end of each
+iteration the elongation of the open e-variable is extended by one term. If
+pattern recognition is possible, then phases 2 and 3 are executed, which can be
+completed only by returning `refalrts::cSuccess` and `refalrts::cNoMemory`.
+
+If recognition by iteration is not possible with the e-variable, the next
+iteration by the continue statement of the C++ language is started. By
+unsuccessful recognition outside the iteration, it is necessary exit the
+handler of the sentence and go to the next clause or command return
+`refalrts::cRecognitionImpossible`.
+
+Each sentence handler is inside the `do {...} while (0);` loop, therefore, you
+can exit the handler by executing the break statement outside the loops by
+e-variables. So the handler looks like this:
+
+    do {
+      // ... Recognition outside cycles by e-variables
+      if( at some step the recognition is not possible )
+        break;
+
+      // iteration over an open e-variable
+      // ... Saving the required pointers
+      for(
+        cycle initialization;
+        while elongation is possible;
+        elongation by term
+      ) {
+        // ... Restore the required pointers
+
+        // ... Recognition within a cycle
+        if( at some step the recognition is not possible )
+          continue;
+
+        // The pattern is disassembled – phase 2 – allocation of memory
+
+        if( at some step the memory was not enough )
+          return refalrts::cNoMemory
+
+        // ...The results – phase3
+        return refalrts::cSuccess;
+      }
+    } while(0);
+
+Rule 5 is done through the implementation of sentence 12 – if not left pointer
+that are next to unrecognized elements (the preceding sentences handle all
+possible cases of pointer locations), the recognition is completed.
+
+The sub ranges of the argument and result are represented by a pair of
+iterators of a doubly connected list (usual pointers to nodes). The first
+iterator points to the first node of the sub band, the second iterator to the
+last node. An empty sequence is represented by a pair of iterators set to
+`NULL`.  In the beginning, I tried to use the STL-style range designation -
+pointers to the first element of the element following the last one.
+
+However, for correct handling of such sub bands, it is necessary carefully plan
+the command sequences constructing the result; as a result of the transfer
+(splicing) of the elements immediately beyond the range in question, the element
+pointed to by the end iterator will move – the `[first, last)` pair will no
+longer indicate the correct range. When ranges `[first, last]` is used
+iterators that point to current range will not be changed when any operations
+with adjacent ranges is performed.
+
+The operations for recognizing the rigid elements of the pattern are represented
+by elementary functions with the suffixes `_left` and `_right` (with the
+exception of `move_left` and `move_right`).
+
+They all have roughly the same format:
+
+    bool ***_left(description the rigid element, Iter& first, Iter& last);
+    bool ***_right(description the rigid element, Iter& first, Iter& last);
+
+`***` – type of a rigid element (function name, number, character, structured
+parentheses, repeated variable, st-variable).
+
+The description of the rigid element is represented by setting of parameters
+characterizing a rigid element (meaning for atoms, links to the right and left
+end of the sub expression for the structured parentheses, term for s- and
+t-variables, for repeated variables – the description of the pattern (to a term
+for st-variables, a pair of iterators for e-variables) and putting the variable
+itself (reference to the iterator for st- and the pair for e-variables-)).
+
+The functions return true in the case of successful recognition, moving with
+the iterators first and last so that the newly created range `[first,last]`
+pointed to the unrecognized part of the expression.
+
+ For example,
+
+      'abcdef' => { char_left } => 'bcdef'
+      F G H => { function_right } => F G
+
+If you cannot recognize a rigid element, it returns false, and the associated
+list of the field of view does not change, the values of the variables passed
+by links are not changed.
+
+The precondition for these functions is the correct specification of the
+parameters for the description of the rigid element and the correct indication
+of the subband `[first, last]` (indicate the ends, or both are zero).
+
+The postcondition is, in the case of a well-designed algorithm, compliance with
+general requirements 1-3.
+
+Iteration uses a simple for loop on an open e-variable. If, at some iteration,
+by some length of the e-variable, the recognition the code for allocating
+memory and constructing the result is executed, which can be completed only by
+issuing `refalrts::cNoMemory` or `refalrts :: cSuccess`.  In case of
+unsuccessful recognition of the remaining elements of the pattern, the
+iteration is terminated with the continue operator and the e-variable is
+extended.
+
+If the variable cannot be lengthened, then the progress to the end of the
+sentence handler occurs: if this cycle is not nested in another cycle in the
+e-variable, then the next sentence is executed, otherwise – the iteration of
+the outer loop over the e-variable is completed (elemental from for the fact
+that we have reached the end of the body of the cycle).
+
+Pseudocode:
+
+    do {
+      // recognition up to an open e-variable
+      ...
+      if( somewhere the recognition failed )
+        break;
+      ...
+      for(
+        /* Initialization */;
+        /* Stretching is possible further */;
+        /* Variable extension */;
+      ) {
+        ...
+        if( somewhere the recognition failed )
+          continue;
+        ...
+        for(
+          /* Initialization */;
+          /* Stretching is possible further */;
+          /* Variable extension */;
+        ) {
+          ...
+          // Allocating memory
+          ...
+          if( no memory )
+            return refalrts::cNoMemory;
+          ...
+          // The results
+          ...
+          return refalrts::cSuccess;
+        }
+      }
+    } while( 0 );
+
+> _Translation to English of this hunk of historical paper is prepared by_
+> **Anastasia Solomatina <solomyash@gmail.com>** _at 2018-01-19_
+> _Markdown is prepared by_ **Liudmila Markova <luckymarkin@gmail.com>**
+> _at 2018-01-19_
 
 If recognition is impossible, the rollback with the recovery of the previous
 state (implementation of 6 Rule) should be implemented; because variables of a
-type `bb_N` and `be_N` (the boundaries of subexpressions in brackets) change during
-the recognition. For the value’s recovering are used the following property of
-the C++ language – the ability to declare variables in nested blocks with the
-same name as it is used in the outer block with the concealment of the latter.
-In that way, in the block of for-loop initialization it defines the variables
-`bb_N` and `be_N` of the refalrts `type::Iter`, which are initialized as the
-variables of the same name in the outer block. Thus, to save a value, you do
-not have to start variables with new names or nested variables to give other
-names (this would have to be done when generating Pascal code). But, since the
-result of the initialization `refalrts::Iter bb_N = bb_N;` is not defined, it is
-necessary to establish an intermediate variable:
+type `bb_N` and `be_N` (the boundaries of subexpressions in brackets) change
+during the recognition. For the value’s recovering are used the following
+property of the C++ language – the ability to declare variables in nested
+blocks with the same name as it is used in the outer block with the concealment
+of the latter.  In that way, in the block of for-loop initialization it defines
+the variables `bb_N` and `be_N` of the refalrts `type::Iter`, which are
+initialized as the variables of the same name in the outer block. Thus, to save
+a value, you do not have to start variables with new names or nested variables
+to give other names (this would have to be done when generating Pascal code).
+But, since the result of the initialization `refalrts::Iter bb_N = bb_N;` is
+not defined, it is necessary to establish an intermediate variable:
 
     refalrts::Iter bb_N_stk = bb_N;
     refalrts::Iter be_N_stk = be_N;
