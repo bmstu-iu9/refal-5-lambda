@@ -889,13 +889,13 @@ you need to use identifiers. For example, `Success e.Config`, `FileNotFound`
 and `SyntaxError e.Message`.
 
 Refal-5λ as the classic REFAL-5 allows the usage of arbitrary character strings
-as identifiers. This string must be enclosed in double quotes: `"This is one
-symbol:-)"`. Practicaly they are rarely used, but they can be useful, when you
-want to use the combination of signs as a characteristic-identifier, which
-cannot be written without quotation marks. For example, `"*="`, `"C++"`,
-`"=0?"` etc.  The words can be written in quotation marks, when they could
-possibly be written without any and they would be identical to the words
-without quotes – `"Success"`, `"SyntaxError"`.
+as identifiers. This string must be enclosed in double quotes:
+`"This is one symbol:-)"`. Practicaly they are rarely used, but they can be
+useful, when you want to use the combination of signs as a
+characteristic-identifier, which cannot be written without quotation marks. For
+example, `"*="`, `"C++"`, `"=0?"` etc.  The words can be written in quotation
+marks, when they could possibly be written without any and they would be
+identical to the words without quotes – `"Success"`, `"SyntaxError"`.
 
 > *Translation to English of this hunk of this paper is prepared by*
 > **Ksenia Kalinina <ks-kalinina@mail.ru>** _at 2018-01-18_
