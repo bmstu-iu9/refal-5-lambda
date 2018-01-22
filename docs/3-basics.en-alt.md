@@ -1,3 +1,163 @@
+## Variables
+
+> This section has alternative translations [one](3-basics.en.md), **two**.
+
+It was said earlier, that the left part determines arguments definitions
+subset, with which this sentence can be used. But now we have examined only
+subsets cases that consist of one element.
+
+Refal allows writing expressions on the left part (exact definition of
+“expression” concern will be given later), which, besides obviously provided
+symbols, contain unknown undefined fragments – _variables._
+
+Set of values, which variables can assume, are defined with variables _type._
+There are three variables types in Refal: s-, t- and e-variables. T-variables
+will be described later, when we will learn about structure brackets.
+
+Value of _s-variables_ or _symbol variables_ can be any single symbol. Value of
+_e-variable_ or _expression variables_ can be any fragment of function argument,
+also empty (not any, in fact, but it will be discussed later).
+
+Variables are written as variable type (`s`, `t`, `e`), after which goes the
+sign `.` (“dot”) and variable name-set of letters and numbers. The variable
+name often called a variable index.
+
+If variable is found in the expression not once, it is named as iterated
+variable and all her instances must have the same value.
+
+Let’s examine some expressions with variables:
+
+* `s.1 s.2 s.3` – three any symbols, for example `'ABC'`, `'999'`, `'@#$'`.
+* `s.A s.A s.A` – three any similar symbols, for example `'666'`, `'www'`.
+* `s.Edge s.Middle s.Edge` – three any symbols, the first and the last should
+  be the same. For example: `'@$@'`, `'kek'`, `'^_^'`.
+* `s.first e.middle s.last` –  any expression, which contains at least two
+  symbols. For example:`'Hello'`, `'10'`, `'0_o'`.
+* `s.EDGE e.CENTER s.EDGE` – any expression, which consists at least of two
+  symbols, which start and end with the same meaning. For example : `'++'`,
+  `'LOOOL'`, `'revolver'`.
+* `'(' e.Inner ')'` – expression, which starts and ends with bracket. Examples:
+  `'()'`, `'()()'`, `'(ok)'`.
+* `e.Key '=' e.Value` – expression, which contains at least one equal mark. For
+  example: `'='`, `'x=1'`, `'-1=10'`, `'A=B==C=D'`.
+* `e.Eq e.Eq` – expression with symmetric length, which can be divided into two
+  equal parts: `'ABCABC'`, `'8888'`, empty expression (it can also be divided
+  on two empty).
+
+Variables can be both in the left and right  parts of the sentence. In this
+case in the right part of the sentence can be used only those variables, which
+are in the left part.
+
+Now we should specify the process of function execution on Refal.
+
+1. The sentence is chosen. In its left part it should be possible to get a
+   function argument by changing variables on some values. If there are some
+   sentences like that, the one with the least number is chosen. If there are
+   no such sentences, the program is finished with recognition impossible.
+2. The variables values are fixed. They should be so, that putting them in the
+   left side of the chosen sentence, it turns in function argument. If there
+   are some expressions like that, one will be fixed, which allows the left
+   e-variable to get the shortest value; if it does not  reject the indoubt,
+   the next e-variable will be examined and so on (in the next chapter we will
+   examine this process more concrete).
+3. In the right part of the chosen sentence variables are changed into their
+   values. After that functions in the right part are counted.
+
+In the next chapter this process will be examined in more details and more
+formally.
+
+**Example 5.** Now, having got the new knowledge, we can simplify function
+`IsEqual`:
+
+    IsEqual {
+      e.Equal '=' e.Equal = 'True';
+      e.Left '=' e.Right = 'False';
+    }
+
+It can be seen that firstly the function was cut from 16 to 2 sentences,
+secondly, its domain set has become wider – it takes not only pairs of binary
+integers, but also any expressions, which contains sign `'='`.
+
+The first sentence of its function can be used with any sentences which contain
+at least one equal mark, and also can be divided so, that the part which was
+before this sign `'='`, will be similar to the part which goes after it.
+
+The second sentence can be used with any argument, which contains equal mark.
+
+Obviously, for the arguments with the type '`ab=ab'` it is possible to use both
+sentences-the first, because before and after sign `'='` there are equal
+expressions, the second, because it contains equal mark. However, as it was
+said above, preceding sentences have a priority on forthcoming, so that the
+first sentence will process only the cases of equal parts, and the second will
+get all the others (non-equal).
+
+After interchanging positions of both sentences, the function result (on its
+domain set) will always be `'False'`.
+
+**Example 6.** `IsPalindrome` function, which checks whether the function
+argument is a palindrome or not.
+
+
+    IsPalindrome {
+      s.OneSymbol = 'True';
+      /* empty */ = 'True';
+      s.Equal e.Middle s.Equal = <IsPalindrome e.Middle>;
+      e.Other = 'False';
+    }
+
+The definition of this function can be read the following way: the line which
+consists of one symbol is a palindrome. The empty line is also a palindrome.
+The line which starts and ends on the same symbol is a palindrome if the middle
+part of the line is also a palindrome. Any other line can’t be a palindrome.
+
+The definition of functions on FL can often be read as mathematical definitions.
+
+**Example 8.** We right an add option for two binary integers of undefined
+length. Functions on Refal commit one argument, but here we want to pass two of
+them. In the first variant off add option we avoided this complexity by
+expressing function into two symbols. Now we should pass two expressions of
+undefined length. Each of arguments can consist only of symbols such as `'0'`
+and `'1'`, so that it is possible to put any symbol between them, except zero
+and one – using it it will be possible to define the end of one argument and
+the beginning of another argument. We will use the `'+'` symbol for clarity.
+
+Note. _Later we will know about really easie, effective and general way of
+arguments division._
+
+    BinAdd {
+      e.Num1 '0' '+' e.Num2 '0' = <BinAdd e.Num1 '+' e.Num2> '0';
+      e.Num1 '0' '+' e.Num2 '1' = <BinAdd e.Num1 '+' e.Num2> '1';
+      e.Num1 '1' '+' e.Num2 '0' = <BinAdd e.Num1 '+' e.Num2> '1';
+      e.Num1 '1' '+' e.Num2 '1'
+        = <BinAdd <BinAdd e.Num1 '+' '1'> '+' e.Num2> '0';
+      /* empty */ '+' e.Num2 = e.Num2;
+      e.Num1 '+' /* empty */ = e.Num1;
+    }
+
+It is not difficult to see that function implements columnar addition of binary
+integers. If the last numeric symbols of both digits are `'1'` and `'1'`, then
+there is a transposition in the next place – this extending 1 adds to the first
+argument.
+
+### Intermediate conclusions
+
+Let’s summarize:
+
+* In the left and right parts of sentence can be variables – expressions
+  fragments which can be changed on undefined values in accordance with their
+  type.
+* S-variables can be changed on any symbol.
+* E-variables can be changed on undefined expression.
+* Syntax of variables names: `s.varname`, `e.ab123`, `s.123ab`.
+* That function sentence is conducted, for the left part of which it is
+  possible to fund such value substitution, which thunks the left part into
+  function argument.
+* The same substitution is made into the right part of expression.
+
+> *Translation to English of this hunk of paper is prepared by*
+> **Yarullina Diana <190471@list.ru>** _at 2018-01-17_
+
+
 ## Abstract refal-machine. The semantics of the view field.
 
 > This section has alternative translations [one](3-basics.en.md), **two**.

@@ -303,6 +303,8 @@ The first sentence have priority over the third.
 
 ## Variables
 
+> This section has alternative translations **one**, [two](3-basics.en-alt.md).
+
 The left-hand side defines an argument values subset at which this sentence is
 applicable, as noted above. We have considered only cases of subsets consisting
 of one single element by now.
