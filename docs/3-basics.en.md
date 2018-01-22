@@ -254,7 +254,7 @@ the `'='` sign.
       '10=-1' = 'False'; '10=0' = 'False'; '10=1' = 'True'; '10=10' = 'True';
     }
 
-Yes, it’s boring. Yes, it's long. Later we will see how to shorten this entry.
+Yes, it’s boring. Yes, it’s long. Later we will see how to shorten this entry.
 
 **Example 4.** Let’s write a function `Go` that demonstrates the addition
 commutability and the subtract noncommutability.
@@ -905,6 +905,8 @@ identical to the words without quotes – `"Success"`, `"SyntaxError"`.
 ...not translated yet...
 
 ## The abstract refal-machine. View field semantics
+
+> This section has alternative translations **one**, [two](3-basics.en-alt.md).
 
 We referred earlier to the functions in the right part of a sentence which are
 calculated somehow after a substitution of variables. Now it is time to
