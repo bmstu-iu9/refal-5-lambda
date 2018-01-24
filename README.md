@@ -1,4 +1,7 @@
 # Рефал-5λ
+
+> English translation of README.md is available [here](README.en.md).
+
 # О языке и компиляторе
 
 Язык Рефал-5λ — точное надмножество [Рефала-5][3], основным расширением
@@ -40,8 +43,8 @@
    * Инкапсуляция: статические ящики. В отличие от глобальной копилки
      классического Рефала-5, можно объявить статический ящик в локальной
      области видимости, недоступный извне (кстати, копилка реализована поверх
-     такого статического ящика в библиотеке Library).
-   * Утилита SRMake, позволяющая отслеживать зависимости между исходниками.
+     такого статического ящика в библиотеке `Library`).
+   * Утилита `SRMake`, позволяющая отслеживать зависимости между исходниками.
    * Целевой файл компиляции — исполнимый файл операционной системы. Для запуска
      отдельного интерпретатора не нужно.
 3. **Компилятор должен служить учебным пособием по курсу «Проектирование
@@ -59,7 +62,7 @@
      область становится неизбежным (что улучшает понимание и, тем самым,
      повышает качество работы), во-вторых, разработка методом раскрутки
      интереснее и поучительнее.
-3. **Компилятор должен быть легко переносим — должен собираться на любой машине,
+4. **Компилятор должен быть легко переносим — должен собираться на любой машине,
    где есть какой-нибудь компилятор языка C++98.**
    * Должны поддерживаться как минимум операционные системы Windows, Linux
      и macOS.
@@ -77,7 +80,7 @@
    * Должно поддерживаться максимальное количество различных компиляторов C++98,
      причём как код библиотек, так и сгенерированный код должны собираться
      с минимальным количеством предупреждений.
-2. **Компилятор должен служить back-end’ом компилятора Модульного Рефала.**
+5. **Компилятор должен служить back-end’ом компилятора Модульного Рефала.**
    * Язык должен быть достаточно выразительным, чтобы эффективно выражать
      средства Модульного Рефала. Поэтому в языке есть, например, абстрактные типы
      данных и статические ящики.
@@ -238,19 +241,19 @@ s-переменную сразу после угловой скобки:
 токенов. Тогда функция обработки процедуры имела бы вид
 
     ParseProcedure {
-        e.Tokens
+      e.Tokens
 
-          = <ParseHeader e.Tokens>
-          : (e.FuncName) (e.Parameters) (e.HeaderErrors) e.Tokens1
+        = <ParseHeader e.Tokens>
+        : (e.FuncName) (e.Parameters) (e.HeaderErrors) e.Tokens1
 
-          = <ParseDeclarations e.Tokens1>
-          : (e.Declarations) (e.DeclErrors) e.Tokens2
+        = <ParseDeclarations e.Tokens1>
+        : (e.Declarations) (e.DeclErrors) e.Tokens2
 
-          = <ParseBody e.Tokens2> : (e.Body) (e.BodyErrors) e.Tokens3
+        = <ParseBody e.Tokens2> : (e.Body) (e.BodyErrors) e.Tokens3
 
-          = ((e.FuncName) (e.Parameters) (e.Declarations) e.Body)
-            (e.HeaderErrors e.DeclErrors e.BodyErrors)
-            e.Tokens3;
+        = ((e.FuncName) (e.Parameters) (e.Declarations) e.Body)
+          (e.HeaderErrors e.DeclErrors e.BodyErrors)
+          e.Tokens3;
     }
 
 Здесь нам в каждом присваивании приходится к переменной `e.Tokens` приписывать
@@ -266,19 +269,19 @@ s-переменную сразу после угловой скобки:
 выглядеть так:
 
     ParseProcedure {
-        e.Tokens
+      e.Tokens
 
-          = <ParseHeader e.Tokens>
-          : (e.FuncName) (e.Parameters) (e.HeaderErrors) e.Tokens^
+        = <ParseHeader e.Tokens>
+        : (e.FuncName) (e.Parameters) (e.HeaderErrors) e.Tokens^
 
-          = <ParseDeclarations e.Tokens>
-          : (e.Declarations) (e.DeclErrors) e.Tokens^
+        = <ParseDeclarations e.Tokens>
+        : (e.Declarations) (e.DeclErrors) e.Tokens^
 
-          = <ParseBody e.Tokens> : (e.Body) (e.BodyErrors) e.Tokens^
+        = <ParseBody e.Tokens> : (e.Body) (e.BodyErrors) e.Tokens^
 
-          = ((e.FuncName) (e.Parameters) (e.Declarations) e.Body)
-            (e.HeaderErrors e.DeclErrors e.BodyErrors)
-            e.Tokens^;
+        = ((e.FuncName) (e.Parameters) (e.Declarations) e.Body)
+          (e.HeaderErrors e.DeclErrors e.BodyErrors)
+          e.Tokens^;
     }
 
 ### Инкапсуляция: статические ящики и абстрактные типы данных
