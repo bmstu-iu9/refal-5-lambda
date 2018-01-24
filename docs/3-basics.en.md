@@ -456,6 +456,8 @@ Let's sum up:
 
 ## Structure brackets
 
+> This section has alternative translations **one**, [two](3-basics.en-alt.md).
+
 A purely mathematically studied Refal subset is sufficient for writing any
 complex algorithm (see \[4, Lecture No. 6]). But this is not enough in practice:
 the studied tools allow us to work with “flat” strings characters only, whereas

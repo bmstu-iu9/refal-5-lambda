@@ -157,6 +157,250 @@ Let’s summarize:
 > *Translation to English of this hunk of paper is prepared by*
 > **Yarullina Diana <190471@list.ru>** _at 2018-01-17_
 
+## Structure brackets
+
+> This section has alternative translations [one](3-basics.en.md), **two**.
+
+Mathematically examined Refal subset is enough for writing an algorithm of any
+complexity.(look \[4, lection No. 6]). However, practically it is not enough:
+examined forms allow working only with “flat” symbols lines, meanwhile some
+non-trivial algorithms need also hierarchically organized data.
+
+What is data hierarchy? It is a possibility to work with a data fragment as
+with one object, abstracting from its inner complex structure. For example, we
+can work with text document like with file: transport it from one folder to
+another, copy, delete, not thinking about whether there are text, tables,
+pictures etc. in it. On defined hierarchy level it does not matter.
+
+In order to work with expression as with one object in Refal, it is put in
+brackets, which are called _structure brackets._ Such object is called _bracket
+term,_ it can be a part of another expression, which can also be in brackets.
+In this way hierarchically nested data are built. Symbols, which we examined
+previously, are also terms.  So, the expression on Refal consists of terms,
+each of which can be either a symbol or a brackets term, which has another
+Rrefal expression in it.
+
+As distinct to round, _structure_ brackets, angle brackets of function call in
+the right parts of sentences are called _evaluation brackets,_ _activation
+brackets_ and _function call brackets_ (all this phrases are synonyms).
+
+**Example 8.** Expression
+
+    ('abc') 'def' (('ghi') 'j' ('klm') ()) 'nop' ((('rst')))
+
+Consists of 9 terms. The first – brackets term,contains expression of three
+symbol terms in it, next three – type signs `'def'`, the next-brackets term
+again, which consists of three brackets terms and one symbol, and the last
+bracket term contain an empty expression.
+
+Brackets should necessarily make the correct brackets structure both in the
+left and in the right part of the sentence in Refal expression. In the right
+part of the sentence circle and angle brackets mustn’t overlap on each other.
+
+Let’s make our new knowledge about variables more concrete.
+
+* E-variables can commit indoubt sequence _of terms,_ so the value of
+  e-variable can be only expression with the right brackets structure.
+* The value of _t-variables_ (written as `t.varname`) can be any single term –
+  not only symbol, but also an expression in brackets.
+
+**Example 9.** Let’s make Pushkin’s genealogy as an expression on Refal. Each
+person of genealogy will be imaged as brackets term, which contains the
+person’s name and two terms: mother and father. And if the foregoer is known,
+it is imagined as the same person, if there is not any, then on their place
+will be sign `'?'`. So, each person can be matched with the pattern
+
+    (e.Name t.Father t.Mother)
+
+The genealogy:
+
+    (
+      'Alexander Sergeyevich Pushkin'
+      (
+        'Sergey Lvovich Pushkin'
+        (
+          'Lev Aleksandrovich Pushkin'
+          '?'   /* unknown father */
+          (
+            'Evdokia Ivanovna Golovin'
+            '?' /* unknown father */
+            '?' /* unknown mother */
+          )
+        )
+        (
+          'Olga Vasilievna Chicherina'
+          ('Vasily Ivanovich Chicherin??')
+          '?'   /* unknown mother */
+        )
+      )
+      (
+        'Nadezhda Ossipovna Pushkina (Gannibal)'
+        (
+          'Ossip Abramovich Gannibal'
+          ('Abram Petrovich Gannibal (The Moor of Peter the Great)??')
+          ('Christina Regina von Sioberg??')
+        )
+        ('Maria Alekseevna Pushkina??')
+      )
+    )
+
+**Note.** In fact, Pushkin’s biography is known more detailed, but for making
+it clear some foregoers were missed on different hierarchy levels.
+
+**Example 10.** Let’s write the function, which takes the genealogy tree and
+foregoer branch as characters string like `'MFFM…'` – where `'M'` means
+‘mother’, `'F'` – father and finds the foregoer.
+
+For example, `'F'` – father, `'FF'` – grandfather on father’s line, `'MM'` –
+grandmother on mother’s line, `'FM'`- grandmother on father’s line, `'FMM'` -
+greatgrandmother on grandmother on father’s line, empty expression – the
+person.
+
+    FindAncestor {
+      /* advancing on the father line */
+      (e.Name t.Father t.Mother) 'F' e.Branch
+        = <FindAncestor t.Father e.Branch>;
+
+      /* advancing on the mother line */
+      (e.Name t.Father t.Mother) 'M' e.Branch
+        = <FindAncestor t.Mother e.Branch>;
+
+      /* an unknown character has unknown the ancestors */
+      '?' e.Branch = '?';
+
+      /* Branch ended – the person you are looking for is the current */
+      (e.Name t.Father t.Mother) /* empty branch */ = e.Name;
+    }
+
+In other words, in order to find a foregoer on father’s line in genealogy,
+(branch starts with `'F…'`), we should take father’s genealogy (`t.Father`
+field) and find a foregoer in it (having thrown the branches `'F'` from the
+beginning – that is what the first sentence makes. The second sentence is
+similar.
+
+If the genealogy is not known on some level, then any foregoer will not be
+known – this case is worked with the third sentence. If the branch is empty
+(clearly shown empty branch or one that has been made empty after some
+iterations), then the root of this genealogy is desired person-the last forth
+sentence.
+
+
+**Example 11.** Let’s write the program, which prints out some Pushkin’s
+foregoers ([`pushkin.ref`](pushkin.ref)).
+
+    $ENTRY Go {
+      = <Prout <FindAncestor <Pushkin> 'FF'>>
+        <Prout <FindAncestor <Pushkin> 'FFF'>>
+        <Prout <FindAncestor <Pushkin> 'MFF'>>
+        <Prout <FindAncestor <Pushkin> 'MFM'>>
+        <Prout <FindAncestor <Pushkin> 'F'>>
+        <Prout <FindAncestor <Pushkin> 'FM'>>
+        <Prout <FindAncestor <Pushkin> 'FMF'>>
+        <Prout <FindAncestor <Pushkin> 'FMFM'>>
+    }
+
+    FindAncestor {
+      …see above…
+    }
+
+    Pushkin {
+      = (
+          'Alexander Sergeyevich Pushkin'
+          (
+            'Sergey Lvovich Pushkin'
+            (
+              'Lev Aleksandrovich Pushkin'
+              '?'   /* unknown father */
+              (
+                'Evdokia Ivanovna Golovin'
+                '?' /* unknown father */
+                '?' /* unknown mother */
+              )
+            )
+            (
+              'Olga Vasilievna Chicherina'
+              ('Vasily Ivanovich Chicherin??')
+              '?'   /* unknown mother */
+            )
+          )
+          (
+            'Nadezhda Ossipovna Pushkina (Gannibal)'
+            (
+              'Ossip Abramovich Gannibal'
+              ('Abram Petrovich Gannibal (The Moor of Peter the Great)??')
+              ('Christina Regina von Sioberg??')
+            )
+            ('Maria Alekseevna Pushkina??')
+          )
+        )
+    }
+
+Function `Pushkin` consists of one sentence – in any argument it brings the
+constant back. In other words, it is the definition of constant. The other
+should be clear.
+
+Note (from Russian version of tutorial). The foregoers names are written in
+translit – on some operating systems printing Cyrillic characters out on the
+screen does not work or works not correctly. It will be corrected in the new
+versions.
+
+For compilation and starting the program on Windows enter:
+
+    srefc pushkin.ref
+    pushkin.exe
+
+On  Linux:
+
+    srefc pushkin.ref
+    ./pushkin
+
+The program should print the following:
+
+    Lev Aleksandrovich Pushkin
+    ?
+    Abram Petrovich Gannibal (The Moor of Peter the Great)
+    Christina Regina von Sioberg
+    Sergey Lvovich Pushkin
+    Olga Vasilievna Chicherina
+    Vasily Ivanovich Chicherin
+    ?
+
+Previously, when we wanted to call the function with some arguments, we
+expressed them by dividing with some sign, which can’t be into arguments (for
+example, `'='` in function `IsEqual` or `'+'` in function `BinAdd`). More
+correct practice in expressing some arguments is putting them in brackets
+terms. For example, if function takes 3 arguments of any length – we will
+denote them  as `e.1`, `e.2`, `e.3`, – they can be expressed as `(e.1) e.2
+(e.3)`, `e.1 (e.2) (e.3)`, `(e.1) (e.2) e.3` and `(e.1) (e.2) (e.3)`. The last
+variant is putting each argument in bracket term is over-posted, but sometimes
+it makes programs more clear.
+
+If N arguments are expressed in function, it is enough to put in brackets only
+N-1 arguments.
+
+In the next chapter we will see that putting arguments in brackets instead of
+divider signs not only easier (it is not necessarily to create a divider sign),
+but also more effective from the point of time spent on program realization.
+
+Now functions `IsEqual` and  `BinAdd` can be written the following way:
+
+    IsEqual {
+      (e.X) (e.X) = 'True';
+      (e.X) (e.Y) = 'False';
+    }
+
+    BinAdd {
+      (e.Num1 '0') e.Num2 '0' = <BinAdd (e.Num1) e.Num2> '0';
+      (e.Num1 '0') e.Num2 '1' = <BinAdd (e.Num1) e.Num2> '1';
+      (e.Num1 '1') e.Num2 '0' = <BinAdd (e.Num1) e.Num2> '1';
+      (e.Num1 '1') e.Num2 '1' = <BinAdd (<BinAdd (e.Num1) '1'>) e.Num2> '0';
+      (/* empty */) e.Num2 = e.Num2;
+      (e.Num1) /* empty */ = e.Num1;
+    }
+
+> *Translation to English of this hunk of paper is prepared by*
+> **Yarullina Diana <190471@list.ru>** _at 2018-01-17_
+
 
 ## Abstract refal-machine. The semantics of the view field.
 
@@ -299,7 +543,7 @@ replaces the function call in the expression:
 
 In the third step, the primary active subexpression will again call the
 function `Fab`. But the left part of the first sentence is impossible to
-identify with the argument: the sample starts with `'a'`, but argument – with
+identify with the argument: the pattern starts with `'a'`, but argument – with
 `'b'`. Next the second sentence is selected. The recognition is possible: there
 exists a substitution of variables `s.Other → 'b', e.Rest → 'racadabra'`. The
 substitution is applied to the right part, the result of the substitution
