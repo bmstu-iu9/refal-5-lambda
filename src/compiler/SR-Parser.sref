@@ -2,7 +2,10 @@
 $EXTERN Fetch, Map;
 
 //FROM Error
-$EXTERN EL-AddUnexpected, EL-AddErrorAt;
+$EXTERN EL-AddErrorAt;
+
+//FROM SR-Lexer
+$EXTERN SR-StrFromToken;
 
 
 $ENTRY SR-ParseProgram {
@@ -114,7 +117,7 @@ ParseElements {
 
   t.ErrorList (e.AST) t.Unexpected e.Tail
     = <ParseElements
-        <EL-AddUnexpected t.ErrorList t.Unexpected 'directive or name'>
+        <AddUnexpected t.ErrorList t.Unexpected 'directive or name'>
         (e.AST) e.Tail
       >;
 }
@@ -137,7 +140,7 @@ ParseElement-SwDirective {
 
   t.ErrorList #Entry t.Unexpected e.Tail =
     (/* ничего не генерируем */)
-    <EL-AddUnexpected t.ErrorList t.Unexpected 'function name'>
+    <AddUnexpected t.ErrorList t.Unexpected 'function name'>
     t.Unexpected e.Tail;
 
   t.ErrorList #Include e.Tail =
@@ -160,12 +163,12 @@ ParseInclude {
 
   t.ErrorList (#TkCompound s.LnNum e.Compound) t.Unexpected e.Tail
     = ((#Include s.LnNum e.Compound))
-      <EL-AddUnexpected t.ErrorList t.Unexpected 'semicolon'>
+      <AddUnexpected t.ErrorList t.Unexpected 'semicolon'>
       t.Unexpected e.Tail;
 
   t.ErrorList t.Unexpected e.Tail
     = (/* ничего не генерируем */)
-      <EL-AddUnexpected t.ErrorList t.Unexpected 'compound symbol'>
+      <AddUnexpected t.ErrorList t.Unexpected 'compound symbol'>
       t.Unexpected e.Tail;
 }
 
@@ -184,7 +187,7 @@ ParseNameList {
   (e.AST) t.ErrorList s.ASTItem s.ScopeClass
   t.Unexpected e.Tail =
     (e.AST)
-    <EL-AddUnexpected t.ErrorList t.Unexpected 'function name'>
+    <AddUnexpected t.ErrorList t.Unexpected 'function name'>
     t.Unexpected e.Tail;
 }
 
@@ -197,7 +200,7 @@ ParseNameList-Tail {
 
   (e.AST) t.ErrorList s.ASTItem s.ScopeClass t.Unexpected e.Tail =
     (e.AST)
-    <EL-AddUnexpected t.ErrorList t.Unexpected 'comma or semicolon'>
+    <AddUnexpected t.ErrorList t.Unexpected 'comma or semicolon'>
     t.Unexpected e.Tail;
 }
 
@@ -219,7 +222,7 @@ ParseNameList-Idents {
 
   (e.AST) t.ErrorList t.Unexpected e.Tail
     = (e.AST)
-      <EL-AddUnexpected
+      <AddUnexpected
         t.ErrorList t.Unexpected 'identifier name or compound symbol'
       >
       t.Unexpected e.Tail;
@@ -234,7 +237,7 @@ ParseNameList-Idents-Tail {
 
   (e.AST) t.ErrorList t.Unexpected e.Tail
     = (e.AST)
-      <EL-AddUnexpected t.ErrorList t.Unexpected 'comma or semicolon'>
+      <AddUnexpected t.ErrorList t.Unexpected 'comma or semicolon'>
       t.Unexpected e.Tail;
 }
 
@@ -251,7 +254,7 @@ ParseFunction {
 
   s.ScopeClass (e.Name) t.ErrorList t.Unexpected e.Tail
     = (/* ничего не сгенерировали */)
-      <EL-AddUnexpected t.ErrorList t.Unexpected 'open brace'>
+      <AddUnexpected t.ErrorList t.Unexpected 'open brace'>
       t.Unexpected e.Tail;
 }
 
@@ -284,7 +287,7 @@ Expect {
     = t.ErrorList e.Tokens;
 
   s.Expected (e.ExpectedText) t.ErrorList t.Unexpected e.Tokens
-    = <EL-AddUnexpected t.ErrorList t.Unexpected e.ExpectedText>
+    = <AddUnexpected t.ErrorList t.Unexpected e.ExpectedText>
       t.Unexpected e.Tokens;
 }
 
@@ -360,7 +363,7 @@ ParseSentence {
 
         t.Unexpected
           = ((e.StartPattern) (e.Result) (e.Blocks))
-            <EL-AddUnexpected t.ErrorList t.Unexpected 'semicolon'>
+            <AddUnexpected t.ErrorList t.Unexpected 'semicolon'>
             e.Tokens;
       };
 }
@@ -378,7 +381,7 @@ ParseSentencePart {
           (#TkComma t.SrcPos)  e.Tokens^ = #Condition t.ErrorList e.Tokens;
 
           t.Unexpected e.Tokens^
-          = #Assign <EL-AddUnexpected t.ErrorList t.Unexpected '"," or "="'>
+          = #Assign <AddUnexpected t.ErrorList t.Unexpected '"," or "="'>
             t.Unexpected e.Tokens;
         }
       >
@@ -776,4 +779,24 @@ DoParseResult {
 
   t.ErrorList () (e.Result) e.Tail =
     t.ErrorList (e.Result) e.Tail;
+}
+
+AddUnexpected {
+  t.ErrorList (#TkError s.LineNumber e.Message) e.Expected =
+    <EL-AddErrorAt
+      t.ErrorList s.LineNumber e.Message
+    >;
+
+  t.ErrorList (#TkUnexpected s.LineNumber e.Unexpected) e.Expected =
+    <EL-AddErrorAt
+      t.ErrorList s.LineNumber
+      'Unknown characters "' e.Unexpected '"'
+    >;
+
+  t.ErrorList (s.Unexpected s.LineNumber e.Info) e.Expected =
+    <EL-AddErrorAt
+      t.ErrorList s.LineNumber
+      'Unexpected ' <SR-StrFromToken s.Unexpected e.Info>
+      ', expected ' e.Expected
+    >;
 }

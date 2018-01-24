@@ -1,9 +1,6 @@
 //FROM Library
 $EXTERN WriteLine, StrFromInt;
 
-//FROM SR-Lexer
-$EXTERN SR-StrFromToken;
-
 //FROM LibraryEx
 $EXTERN Map, Sort;
 
@@ -51,26 +48,6 @@ $ENTRY EL-AddErrorAt {
 
   [ErrorList (e.FileName) e.Errors] t.SrcPos e.Message =
     [ErrorList (e.FileName) e.Errors (t.SrcPos e.Message)];
-}
-
-$ENTRY EL-AddUnexpected {
-  t.ErrorList (#TkError s.LineNumber e.Message) e.Expected =
-    <EL-AddErrorAt
-      t.ErrorList s.LineNumber e.Message
-    >;
-
-  t.ErrorList (#TkUnexpected s.LineNumber e.Unexpected) e.Expected =
-    <EL-AddErrorAt
-      t.ErrorList s.LineNumber
-      'Unknown characters "' e.Unexpected '"'
-    >;
-
-  t.ErrorList (s.Unexpected s.LineNumber e.Info) e.Expected =
-    <EL-AddErrorAt
-      t.ErrorList s.LineNumber
-      'Unexpected ' <SR-StrFromToken s.Unexpected e.Info>
-      ', expected ' e.Expected
-    >;
 }
 
 $ENTRY EL-Concat {
