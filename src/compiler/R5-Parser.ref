@@ -1,6 +1,3 @@
-*$CLASSIC;
-* ^--- remove after update stable version
-
 /**
   <R5-Parse s.Mode e.Tokens>
     == (t.Error*) t.Unit*
