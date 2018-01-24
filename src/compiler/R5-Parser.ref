@@ -70,22 +70,22 @@ DoFilterErrors {
   t.ErrorUnit ::= (Error t.Pos e.Message) | t.Unit
 */
 Program {
-  s.Mode t.NextToken e.Tokens,
-      t.NextToken: (s.Type t.Pos e.Value),
-      <OneOf s.Type <UnitStartToken>>: True =
-    <Program-AfterUnit s.Mode <Unit s.Mode t.NextToken e.Tokens>>;
+  s.Mode t.NextToken e.Tokens
+    , t.NextToken : (s.Type t.Pos e.Value)
+    , <OneOf s.Type <UnitStartToken>> : True
+    = <Program-AfterUnit s.Mode <Unit s.Mode t.NextToken e.Tokens>>;
 
   s.Mode (TkRefal5Mode t.Pos s.NewMode) e.Tokens
     = <Program s.NewMode e.Tokens>;
 
   s.Mode (TkEOF t.Pos) = /* всё */;
 
-  s.Mode t.Unexpected e.Tokens,
-      t.Unexpected: (s.Type t.Pos e.Value) =
-    <UnexpectedToken
-      t.Unexpected '$EXTERN, $ENTRY, function name or special comment'
-    >
-    <Program s.Mode e.Tokens>;
+  s.Mode t.Unexpected e.Tokens
+    , t.Unexpected : (s.Type t.Pos e.Value)
+    = <UnexpectedToken
+        t.Unexpected '$EXTERN, $ENTRY, function name or special comment'
+      >
+      <Program s.Mode e.Tokens>;
 }
 
 UnitStartToken {
@@ -112,35 +112,35 @@ Program-AfterUnit {
   <Unit s.Mode e.Tokens> == (t.ErrorUnit*) e.Tokens
 */
 Unit {
-  s.Mode t.NextToken e.Tokens,
-      t.NextToken:
-    {
-      (TkExtern t.Pos) = <NameList TkExtern e.Tokens>;
+  s.Mode t.NextToken e.Tokens
+    , t.NextToken
+    : {
+        (TkExtern t.Pos) = <NameList TkExtern e.Tokens>;
 
-      (s.Tag t.Pos)
-        , <OneOf s.Tag <NameListTags>> : True
-        , <NameList s.Tag e.Tokens>
-        : {
-            (e.ErrorsAndUnits) e.Tokens1 /*^*/
-              = (
-                  <ClassicError s.Mode t.Pos <TokName s.Tag> ' is a extension'>
-                  e.ErrorsAndUnits
-                )
-                e.Tokens1;
-          };
+        (s.Tag t.Pos)
+          , <OneOf s.Tag <NameListTags>> : True
+          , <NameList s.Tag e.Tokens>
+          : {
+              (e.ErrorsAndUnits) e.Tokens1 /*^*/
+                = (
+                    <ClassicError s.Mode t.Pos <TokName s.Tag> ' is a extension'>
+                    e.ErrorsAndUnits
+                  )
+                  e.Tokens1;
+            };
 
-      (TkInclude t.Pos) = <Include s.Mode t.Pos e.Tokens>;
+        (TkInclude t.Pos) = <Include s.Mode t.Pos e.Tokens>;
 
-      (TkNativeCode t.Pos e.Lines) = ((NativeBlock t.Pos e.Lines)) e.Tokens;
+        (TkNativeCode t.Pos e.Lines) = ((NativeBlock t.Pos e.Lines)) e.Tokens;
 
-      (TkSemicolon t.Pos) = (/* игнорируем */) e.Tokens;
+        (TkSemicolon t.Pos) = (/* игнорируем */) e.Tokens;
 
-      (s.Type t.Pos e.Value)
-        , <OneOf s.Type TkEntry TkName>: True
-        = <Function s.Mode t.NextToken e.Tokens>;
+        (s.Type t.Pos e.Value)
+          , <OneOf s.Type TkEntry TkName>: True
+          = <Function s.Mode t.NextToken e.Tokens>;
 
-      /* других типов быть не должно */
-    }
+        /* других типов быть не должно */
+      }
 }
 
 /*
@@ -225,14 +225,14 @@ NameList-DoNames {
         e.Tokens
       >;
 
-  s.Tag (e.ExternsAndErrors) t.NextToken e.Tokens,
-      t.NextToken: (s.Type t.Pos e.Value),
-      <OneOf s.Type TkExtern TkEntry TkEOF>: True =
-    (
-      e.ExternsAndErrors
-      (Error t.Pos 'missed semicolon')
-    )
-    t.NextToken e.Tokens;
+  s.Tag (e.ExternsAndErrors) t.NextToken e.Tokens
+    , t.NextToken : (s.Type t.Pos e.Value)
+    , <OneOf s.Type TkExtern TkEntry TkEOF> : True
+    = (
+        e.ExternsAndErrors
+        (Error t.Pos 'missed semicolon')
+      )
+      t.NextToken e.Tokens;
 
   s.Tag (e.ExternsAndErrors) t.NextToken e.Tokens
     = <NameList-DoNames
@@ -275,28 +275,28 @@ Include {
   <Function s.Mode e.Tokens> == (e.Errors t.FunctionUnit) e.Tokens
 */
 Function {
-  s.Mode (TkEntry t.EntryPos) (TkName t.NamePos e.Name) e.Tokens =
-    <Function-AfterBlock
-      t.EntryPos (e.Name) GN-Entry <Block s.Mode e.Tokens>
-    >;
+  s.Mode (TkEntry t.EntryPos) (TkName t.NamePos e.Name) e.Tokens
+    = <Function-AfterBlock
+        t.EntryPos (e.Name) GN-Entry <Block s.Mode e.Tokens>
+      >;
 
-  s.Mode (TkName t.Pos e.Name) e.Tokens =
-    <Function-AfterBlock
-      t.Pos (e.Name) GN-Local <Block s.Mode e.Tokens>
-    >;
+  s.Mode (TkName t.Pos e.Name) e.Tokens
+    = <Function-AfterBlock
+        t.Pos (e.Name) GN-Local <Block s.Mode e.Tokens>
+      >;
 
   s.Mode (TkEntry t.EntryPos) (TkRefal5Mode t.ModePos s.NewMode) e.Tokens
     = <Function s.NewMode (TkEntry t.EntryPos) e.Tokens>;
 
-  s.Mode (TkEntry t.Pos) e.Tokens =
-    ((Error t.Pos '$ENTRY without function name, skipped'))
-    e.Tokens;
+  s.Mode (TkEntry t.Pos) e.Tokens
+    = ((Error t.Pos '$ENTRY without function name, skipped'))
+      e.Tokens;
 }
 
 Function-AfterBlock {
-  t.Pos (e.Name) s.Scope (e.Errors) (e.Body) e.Tokens =
-    (e.Errors (Function t.Pos s.Scope (e.Name) e.Body))
-    e.Tokens;
+  t.Pos (e.Name) s.Scope (e.Errors) (e.Body) e.Tokens
+    = (e.Errors (Function t.Pos s.Scope (e.Name) e.Body))
+      e.Tokens;
 }
 
 
@@ -335,10 +335,10 @@ Block {
   s.Mode (TkRefal5Mode t.Pos s.NewMode) e.Tokens
     = <Block s.NewMode e.Tokens>;
 
-  s.Mode t.Unexpected e.Tokens =
-    (<UnexpectedToken t.Unexpected '\'{\''>)
-    (Sentences /* no sentences */)
-    t.Unexpected e.Tokens;
+  s.Mode t.Unexpected e.Tokens
+    = (<UnexpectedToken t.Unexpected '\'{\''>)
+      (Sentences /* no sentences */)
+      t.Unexpected e.Tokens;
 }
 
 IsCloseBlock {
@@ -349,50 +349,50 @@ IsCloseBlock {
 Block-AfterSentence {
   s.Mode (e.Errors) (e.Sentences)
   (e.SentenceErrors) t.NextSentence
-  t.Token1 t.Token2 e.Tokens,
-      t.Token1 t.Token2:
-    {
-      (TkSemicolon t.SemicolonPos) (TkRefal5Mode t.ModePos s.NewMode)
-        = <Block-AfterSentence
-            s.NewMode (e.Errors) (e.Sentences)
-            (e.SentenceErrors) t.NextSentence
-            (TkSemicolon t.SemicolonPos) e.Tokens
-          >;
+  t.Token1 t.Token2 e.Tokens
+    , t.Token1 t.Token2
+    : {
+        (TkSemicolon t.SemicolonPos) (TkRefal5Mode t.ModePos s.NewMode)
+          = <Block-AfterSentence
+              s.NewMode (e.Errors) (e.Sentences)
+              (e.SentenceErrors) t.NextSentence
+              (TkSemicolon t.SemicolonPos) e.Tokens
+            >;
 
-      (TkRefal5Mode t.Pos s.NewMode) t.Token2_
-        = <Block-AfterSentence
-            s.NewMode (e.Errors) (e.Sentences)
-            (e.SentenceErrors) t.NextSentence
-            t.Token2_ e.Tokens
-          >;
+        (TkRefal5Mode t.Pos s.NewMode) t.Token2_
+          = <Block-AfterSentence
+              s.NewMode (e.Errors) (e.Sentences)
+              (e.SentenceErrors) t.NextSentence
+              t.Token2_ e.Tokens
+            >;
 
-      (TkSemicolon t.Pos1) (TkCloseBlock t.Pos2)
-        = (e.Errors e.SentenceErrors)
-          (Sentences e.Sentences t.NextSentence)
-          e.Tokens;
+        (TkSemicolon t.Pos1) (TkCloseBlock t.Pos2)
+          = (e.Errors e.SentenceErrors)
+            (Sentences e.Sentences t.NextSentence)
+            e.Tokens;
 
-      (TkCloseBlock t.Pos) t.Token2
-        = (e.Errors e.SentenceErrors)
-          (Sentences e.Sentences t.NextSentence)
-          t.Token2 e.Tokens;
+        (TkCloseBlock t.Pos) t.Token2
+          = (e.Errors e.SentenceErrors)
+            (Sentences e.Sentences t.NextSentence)
+            t.Token2 e.Tokens;
 
-      (TkSemicolon t.Pos) t.Token2 =
-        <Block-AfterSentence
-          s.Mode (e.Errors e.SentenceErrors)
-          (e.Sentences t.NextSentence)
-          <Sentence s.Mode t.Token2 e.Tokens>
-        >;
+        (TkSemicolon t.Pos) t.Token2
+          = <Block-AfterSentence
+              s.Mode (e.Errors e.SentenceErrors)
+              (e.Sentences t.NextSentence)
+              <Sentence s.Mode t.Token2 e.Tokens>
+            >;
 
-      t.Token1 t.Token2 =
-        <Block-AfterSentence
-          s.Mode
-          (
-            e.Errors e.SentenceErrors
-            <UnexpectedToken t.Token1 '\';\' or \'}\', skipped'>
-          )
-          (e.Sentences t.NextSentence)
-          <Sentence s.Mode t.Token2 e.Tokens>
-        >
+        t.Token1 t.Token2
+          = <Block-AfterSentence
+              s.Mode
+              (
+                e.Errors e.SentenceErrors
+                <UnexpectedToken t.Token1 '\';\' or \'}\', skipped'>
+              )
+              (e.Sentences t.NextSentence)
+              <Sentence s.Mode t.Token2 e.Tokens>
+            >;
     };
 
   s.Mode (e.Errors) (e.Sentences)
@@ -551,10 +551,10 @@ SentencePart-AfterResult {
 }
 
 UnexpectedTokenInSentence {
-  t.Unexpected =
-    <UnexpectedToken
-      t.Unexpected 'valid Refal expression, \'=\', \',\', \':\' or \';\''
-    >
+  t.Unexpected
+    = <UnexpectedToken
+        t.Unexpected 'valid Refal expression, \'=\', \',\', \':\' or \';\''
+      >
 }
 
 
@@ -633,216 +633,215 @@ Result-Blocks {
   s.Kind ::= Pattern | Result
 */
 Expression {
-  s.Mode s.Kind e.Tokens =
-    <Expression-CheckBrackets
-      s.Mode s.Kind <Expression-Aux s.Mode s.Kind e.Tokens>
-    >;
+  s.Mode s.Kind e.Tokens
+    = <Expression-CheckBrackets
+        s.Mode s.Kind <Expression-Aux s.Mode s.Kind e.Tokens>
+      >;
 }
 
 Expression-Aux {
-  s.Mode s.Kind e.Tokens =
-    <DoExpression s.Mode s.Kind (/* errors */) (/* collected */) e.Tokens>
+  s.Mode s.Kind e.Tokens
+    = <DoExpression s.Mode s.Kind (/* errors */) (/* collected */) e.Tokens>
 }
 
 DoExpression {
-  s.Mode s.Kind (e.Errors) (e.Collected) t.NextToken e.Tokens,
-      t.NextToken:
-    {
-      (TkName t.Pos e.Name) =
-        <DoExpression
-          s.Mode s.Kind (e.Errors) (e.Collected (TkIdentifier e.Name)) e.Tokens
-        >;
+  s.Mode s.Kind (e.Errors) (e.Collected) t.NextToken e.Tokens
+    , t.NextToken
+    : {
+        (TkName t.Pos e.Name)
+          = <DoExpression
+              s.Mode s.Kind (e.Errors) (e.Collected (TkIdentifier e.Name)) e.Tokens
+            >;
 
-      (TkCompound t.Pos e.Symbols) =
-        <DoExpression
-          s.Mode s.Kind (e.Errors)
-          (e.Collected (TkIdentifier e.Symbols)) e.Tokens
-        >;
+        (TkCompound t.Pos e.Symbols)
+          = <DoExpression
+              s.Mode s.Kind (e.Errors)
+              (e.Collected (TkIdentifier e.Symbols)) e.Tokens
+            >;
 
-      (TkMacroDigit t.Pos s.Number) =
-        <DoExpression
-          s.Mode s.Kind (e.Errors) (e.Collected (TkNumber s.Number)) e.Tokens
-        >;
+        (TkMacroDigit t.Pos s.Number)
+          = <DoExpression
+              s.Mode s.Kind (e.Errors) (e.Collected (TkNumber s.Number)) e.Tokens
+            >;
 
-      (TkChar t.Pos s.Char) =
-        <DoExpression
-          s.Mode s.Kind (e.Errors) (e.Collected (TkChar s.Char)) e.Tokens
-        >;
+        (TkChar t.Pos s.Char)
+          = <DoExpression
+              s.Mode s.Kind (e.Errors) (e.Collected (TkChar s.Char)) e.Tokens
+            >;
 
-      (TkVariable t.Pos s.VarType e.Index) =
-        <DoExpression
-          s.Mode s.Kind (e.Errors)
-          (e.Collected (TkVariable t.Pos s.VarType e.Index)) e.Tokens
-        >;
+        (TkVariable t.Pos s.VarType e.Index)
+          = <DoExpression
+              s.Mode s.Kind (e.Errors)
+              (e.Collected (TkVariable t.Pos s.VarType e.Index)) e.Tokens
+            >;
 
-      (TkOpenBracket t.Pos) =
-        <DoExpression-AfterBracket
-          s.Mode s.Kind (e.Errors)
-          (e.Collected) <Expression-Aux s.Mode s.Kind e.Tokens>
-        >;
+        (TkOpenBracket t.Pos)
+          = <DoExpression-AfterBracket
+              s.Mode s.Kind (e.Errors)
+              (e.Collected) <Expression-Aux s.Mode s.Kind e.Tokens>
+            >;
 
-      (TkOpenCall t.Pos /* empty */)
-        = <DoExpression-AfterCall
-            s.Mode s.Kind
-            (
-              e.Errors
-              <ClassicError s.Mode t.Pos 'Identifier expected after \'<\''>
-            )
-            (e.Collected) t.Pos
-            (/* no func name */) <Expression-Aux s.Mode s.Kind e.Tokens>
-          >;
+        (TkOpenCall t.Pos /* empty */)
+          = <DoExpression-AfterCall
+              s.Mode s.Kind
+              (
+                e.Errors
+                <ClassicError s.Mode t.Pos 'Identifier expected after \'<\''>
+              )
+              (e.Collected) t.Pos
+              (/* no func name */) <Expression-Aux s.Mode s.Kind e.Tokens>
+            >;
 
-      (TkOpenCall t.Pos e.FuncName) =
-        <DoExpression-AfterCall
-          s.Mode s.Kind (e.Errors) (e.Collected) t.Pos
-          ((TkName t.Pos e.FuncName)) <Expression-Aux s.Mode s.Kind e.Tokens>
-        >;
+        (TkOpenCall t.Pos e.FuncName)
+          = <DoExpression-AfterCall
+              s.Mode s.Kind (e.Errors) (e.Collected) t.Pos
+              ((TkName t.Pos e.FuncName)) <Expression-Aux s.Mode s.Kind e.Tokens>
+            >;
 
-      (TkOpenADT t.Pos e.FuncName) =
-        <DoExpression-AfterADT
-          s.Mode s.Kind
-          (
-            e.Errors
-            <ClassicError s.Mode t.Pos 'Abstract data types is an extension'>
-          )
-          (e.Collected) t.Pos
-          (e.FuncName) <Expression-Aux s.Mode s.Kind e.Tokens>
-        >;
+        (TkOpenADT t.Pos e.FuncName)
+          = <DoExpression-AfterADT
+              s.Mode s.Kind
+              (
+                e.Errors
+                <ClassicError s.Mode t.Pos 'Abstract data types is an extension'>
+              )
+              (e.Collected) t.Pos
+              (e.FuncName) <Expression-Aux s.Mode s.Kind e.Tokens>
+            >;
 
-      (TkRefal5Mode t.Pos s.NewMode)
-        = <DoExpression s.NewMode s.Kind (e.Errors) (e.Collected) e.Tokens>;
+        (TkRefal5Mode t.Pos s.NewMode)
+          = <DoExpression s.NewMode s.Kind (e.Errors) (e.Collected) e.Tokens>;
 
-      (TkAmpersand t.Pos)
-        , s.Mode
-        : {
-            Classic
-              = <DoExpression
-                  s.Mode s.Kind
-                  (e.Errors (Error t.Pos '\'&\' is not where-with sign'))
-                  (e.Collected) e.Tokens
-                >;
+        (TkAmpersand t.Pos)
+          , s.Mode
+          : {
+              Classic
+                = <DoExpression
+                    s.Mode s.Kind
+                    (e.Errors (Error t.Pos '\'&\' is not where-with sign'))
+                    (e.Collected) e.Tokens
+                  >;
 
-            Extended
-              = <DoExpression-AfterAmpersand
-                  s.Kind (e.Errors) (e.Collected) t.Pos e.Tokens
-                >;
-          };
+              Extended
+                = <DoExpression-AfterAmpersand
+                    s.Kind (e.Errors) (e.Collected) t.Pos e.Tokens
+                  >;
+            };
 
-      (TkOpenBlock t.Pos)
-        , s.Kind : Result
-        = <DoExpression-AfterBlock
-            s.Mode
-            (
-              e.Errors
-              <ClassicError s.Mode t.Pos 'Do you forged \':\' before block?'>
-            )
-            (e.Collected) <Block s.Mode (TkOpenBlock t.Pos) e.Tokens>
-          >;
+        (TkOpenBlock t.Pos)
+          , s.Kind : Result
+          = <DoExpression-AfterBlock
+              s.Mode
+              (
+                e.Errors
+                <ClassicError s.Mode t.Pos 'Do you forged \':\' before block?'>
+              )
+              (e.Collected) <Block s.Mode (TkOpenBlock t.Pos) e.Tokens>
+            >;
 
-      (TkRedefinition t.Pos)
-        = <DoExpression
-            s.Mode s.Kind
-            <DoExpression-AddRedefinition
-              s.Kind
+        (TkRedefinition t.Pos)
+          = <DoExpression
+              s.Mode s.Kind
+              <DoExpression-AddRedefinition
+                s.Kind
+                (
+                  e.Errors
+                  <ClassicError
+                    s.Mode t.Pos
+                    'Variable redefinition is available in extended mode'
+                  >
+                )
+                (e.Collected) t.Pos
+              >
+              e.Tokens
+            >;
+
+        (TkScopeId t.Pos)
+          = <DoExpression
+              s.Mode s.Kind
               (
                 e.Errors
                 <ClassicError
-                  s.Mode t.Pos
-                  'Variable redefinition is available in extended mode'
+                  s.Mode t.Pos '$SCOPEID is not supported in classic REFAL-5'
                 >
               )
-              (e.Collected) t.Pos
-            >
-            e.Tokens
-          >;
+              (e.Collected (TkNumber Cookie1) (TkNumber Cookie2))
+              e.Tokens
+            >;
 
-      (TkScopeId t.Pos)
-        = <DoExpression
-            s.Mode s.Kind
-            (
-              e.Errors
-              <ClassicError
-                s.Mode t.Pos '$SCOPEID is not supported in classic REFAL-5'
-              >
-            )
-            (e.Collected (TkNumber Cookie1) (TkNumber Cookie2))
-            e.Tokens
-          >;
+        (TkError t.Pos e.Message)
+          = <DoExpression
+              s.Mode s.Kind
+              (e.Errors <UnexpectedToken (TkError t.Pos e.Message)>)
+              (e.Collected) e.Tokens
+            >;
 
-      (TkError t.Pos e.Message)
-        = <DoExpression
-            s.Mode s.Kind
-            (e.Errors <UnexpectedToken (TkError t.Pos e.Message)>)
-            (e.Collected) e.Tokens
-          >;
-
-      t.OtherToken =
-        (e.Errors) (e.Collected) t.OtherToken e.Tokens;
-    }
+        t.OtherToken = (e.Errors) (e.Collected) t.OtherToken e.Tokens;
+      }
 }
 
 DoExpression-AfterBracket {
   s.Mode s.Kind (e.Errors) (e.Collected)
-  (e.SubexprErrors) (e.BracketTerms) (TkCloseBracket t.Pos) e.Tokens =
-    <DoExpression
-      s.Mode s.Kind (e.Errors e.SubexprErrors)
-      (e.Collected (Brackets e.BracketTerms)) e.Tokens
-    >;
+  (e.SubexprErrors) (e.BracketTerms) (TkCloseBracket t.Pos) e.Tokens
+    = <DoExpression
+        s.Mode s.Kind (e.Errors e.SubexprErrors)
+        (e.Collected (Brackets e.BracketTerms)) e.Tokens
+      >;
 
   s.Mode s.Kind (e.Errors) (e.Collected)
-  (e.SubexprErrors) (e.BracketTerms) (s.Type t.Pos e.Value) e.Tokens =
-    <DoExpression
-      s.Mode s.Kind (e.Errors e.SubexprErrors (Error t.Pos 'Missed \')\''))
-      (e.Collected (Brackets e.BracketTerms)) (s.Type t.Pos e.Value) e.Tokens
-    >;
+  (e.SubexprErrors) (e.BracketTerms) (s.Type t.Pos e.Value) e.Tokens
+    = <DoExpression
+        s.Mode s.Kind (e.Errors e.SubexprErrors (Error t.Pos 'Missed \')\''))
+        (e.Collected (Brackets e.BracketTerms)) (s.Type t.Pos e.Value) e.Tokens
+      >;
 }
 
 DoExpression-AfterCall {
   s.Mode Result (e.Errors) (e.Collected) t.CallPos (e.OptionalFuncName)
-  (e.SubexprErrors) (e.BracketTerms) (TkCloseCall t.Pos) e.Tokens =
-    <DoExpression
-      s.Mode Result (e.Errors e.SubexprErrors)
-      (e.Collected (CallBrackets e.OptionalFuncName e.BracketTerms))
-      e.Tokens
-    >;
+  (e.SubexprErrors) (e.BracketTerms) (TkCloseCall t.Pos) e.Tokens
+    = <DoExpression
+        s.Mode Result (e.Errors e.SubexprErrors)
+        (e.Collected (CallBrackets e.OptionalFuncName e.BracketTerms))
+        e.Tokens
+      >;
 
   s.Mode Pattern (e.Errors) (e.Collected) t.CallPos (e.OptionalFuncName)
-  (e.SubexprErrors) (e.BracketTerms) (TkCloseCall t.Pos) e.Tokens =
-    <DoExpression
-      s.Mode Pattern
-      (
-        e.Errors e.SubexprErrors
-        (Error
-          t.CallPos
-          'unexpected \'<\' in pattern expression, maybe missed \'=\''
+  (e.SubexprErrors) (e.BracketTerms) (TkCloseCall t.Pos) e.Tokens
+    = <DoExpression
+        s.Mode Pattern
+        (
+          e.Errors e.SubexprErrors
+          (Error
+            t.CallPos
+            'unexpected \'<\' in pattern expression, maybe missed \'=\''
+          )
         )
-      )
-      (e.Collected (Brackets e.OptionalFuncName e.BracketTerms)) e.Tokens
-    >;
+        (e.Collected (Brackets e.OptionalFuncName e.BracketTerms)) e.Tokens
+      >;
 
   s.Mode Result (e.Errors) (e.Collected) t.CallPos (e.OptionalFuncName)
-  (e.SubexprErrors) (e.BracketTerms) (s.Type t.Pos e.Value) e.Tokens =
-    <DoExpression
-      s.Mode Result (e.Errors e.SubexprErrors (Error t.Pos 'Missed \'>\''))
-      (e.Collected (CallBrackets e.OptionalFuncName e.BracketTerms))
-      (s.Type t.Pos e.Value) e.Tokens
-    >;
+  (e.SubexprErrors) (e.BracketTerms) (s.Type t.Pos e.Value) e.Tokens
+    = <DoExpression
+        s.Mode Result (e.Errors e.SubexprErrors (Error t.Pos 'Missed \'>\''))
+        (e.Collected (CallBrackets e.OptionalFuncName e.BracketTerms))
+        (s.Type t.Pos e.Value) e.Tokens
+      >;
 
   s.Mode Pattern (e.Errors) (e.Collected) t.CallPos (e.OptionalFuncName)
-  (e.SubexprErrors) (e.BracketTerms) (s.Type t.Pos e.Value) e.Tokens =
-    <DoExpression
-      s.Mode Pattern
-      (
-        e.Errors e.SubexprErrors
-        (Error
-          t.CallPos
-          'unexpected \'<\' in pattern expression, maybe missed \'=\''
+  (e.SubexprErrors) (e.BracketTerms) (s.Type t.Pos e.Value) e.Tokens
+    = <DoExpression
+        s.Mode Pattern
+        (
+          e.Errors e.SubexprErrors
+          (Error
+            t.CallPos
+            'unexpected \'<\' in pattern expression, maybe missed \'=\''
+          )
+          (Error t.Pos 'Missed \')\'')
         )
-        (Error t.Pos 'Missed \')\'')
-      )
-      (e.Collected (Brackets e.OptionalFuncName e.BracketTerms))
-      (s.Type t.Pos e.Value) e.Tokens
-    >;
+        (e.Collected (Brackets e.OptionalFuncName e.BracketTerms))
+        (s.Type t.Pos e.Value) e.Tokens
+      >;
 }
 
 DoExpression-AfterADT {
@@ -900,26 +899,26 @@ DoExpression-AddRedefinition {
 }
 
 Expression-CheckBrackets {
-  s.Mode s.Kind (e.Errors) (e.Expression) (s.Type t.Pos) e.Tokens,
-      <OneOf s.Type TkCloseBracket TkCloseCall TkCloseADT>: True =
-    <Expression-CheckBrackets-AfterSubexpr
-      s.Mode s.Kind
-      (e.Errors (Error t.Pos 'unbalanced ' <TokName s.Type>))
-      (e.Expression)
-      <Expression-Aux s.Mode s.Kind e.Tokens>
-    >;
+  s.Mode s.Kind (e.Errors) (e.Expression) (s.Type t.Pos) e.Tokens
+    , <OneOf s.Type TkCloseBracket TkCloseCall TkCloseADT> : True
+    = <Expression-CheckBrackets-AfterSubexpr
+        s.Mode s.Kind
+        (e.Errors (Error t.Pos 'unbalanced ' <TokName s.Type>))
+        (e.Expression)
+        <Expression-Aux s.Mode s.Kind e.Tokens>
+      >;
 
-  s.Mode s.Kind (e.Errors) t.Expression e.Tokens =
-    (e.Errors) t.Expression e.Tokens;
+  s.Mode s.Kind (e.Errors) t.Expression e.Tokens
+    = (e.Errors) t.Expression e.Tokens;
 }
 
 Expression-CheckBrackets-AfterSubexpr {
   s.Mode s.Kind (e.Errors) (e.Expression)
-  (e.SubexprErrors) (e.Subexpression) e.Tokens =
-    <Expression-CheckBrackets
-      s.Mode s.Kind (e.Errors e.SubexprErrors)
-      (e.Expression e.Subexpression) e.Tokens
-    >;
+  (e.SubexprErrors) (e.Subexpression) e.Tokens
+    = <Expression-CheckBrackets
+        s.Mode s.Kind (e.Errors e.SubexprErrors)
+        (e.Expression e.Subexpression) e.Tokens
+      >;
 }
 
 
@@ -930,11 +929,10 @@ ClassicError {
 }
 
 UnexpectedToken {
-  (TkError t.Pos e.Message) e.Expected =
-    (Error t.Pos e.Message);
+  (TkError t.Pos e.Message) e.Expected = (Error t.Pos e.Message);
 
-  (s.Type t.Pos e.Value) e.Expected =
-    (Error t.Pos 'unexpected ' <TokName s.Type> ', expected ' e.Expected);
+  (s.Type t.Pos e.Value) e.Expected
+    = (Error t.Pos 'unexpected ' <TokName s.Type> ', expected ' e.Expected);
 }
 
 TokName {
