@@ -1108,6 +1108,8 @@ The view field will become empty – the refal-machine will correctly stop.
 
 ### Tail and not tail recursion
 
+> This section has alternative translations **one**, [two](3-basics.en-alt.md).
+
 During the _tail recursion,_ as it is told above, the recursive call in the
 right part is executed the last. We will show visually why it is so. We will
 consider the `Rec1` function which executes a `F` function call in the right
@@ -1212,7 +1214,7 @@ Recursion in `Rec4` function is not tail:
     ^^^^^^^^^^^^^^^^^
     f-res
 
-What is written above shouldn’t be taken to mean that a tail recursion –  is
+What is written above shouldn’t be taken to mean that a tail recursion – is
 always good, and not tail – is always bad. It is important to understand that
 in the first case process cyclic, the view field on each iteration comes back
 to a similar state, and in the second case it expands.

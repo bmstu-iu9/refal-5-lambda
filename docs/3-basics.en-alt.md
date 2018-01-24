@@ -600,3 +600,123 @@ The view field will be empty, Refal-machine will correctly stop.
 
 > *Translation to English of this hunk of this paper is prepared by*
 > **Ksenia Kalinina <ks-kalinina@mail.ru>** _at 2018-01-18_
+
+**Tail and not tail recursion**
+
+> This section has alternative translations [one](3-basics.en.md), **two**.
+
+With _tail recursion,_ as mentioned above, the recursive call on the right side
+is the last one. Let’s clearly  demonstrate why. Let’s consider function `Rec1`
+which carries out a call of function `F` in the right part and itself:
+
+    Rec1 {
+      continued = <F ...> <Rec1 ...>;
+      end = rec1-res;
+    }
+
+The development of the view field will look something like this:
+
+    <Rec1 ...>
+    ^^^^^^^^^%
+    <F ...> <Rec1 ...>
+    ^^^^^^^
+    f-res <Rec1 ...>
+          ^^^^^^^^^^^
+    f-res <F ...> <Rec1 ...>
+          ^^^^^^^
+    f-res f-res <Rec1 ...>
+                ^^^^^^^^^^^
+    . . . . .
+    f-res f-res .... f-res rec1-res
+
+We can see that the non-recurrent function calls are not accumulating anywhere.
+At each step, before calling `Rec1`, a call `F` is placed, which ends before
+the call to `Rec1`.
+
+Consider the function `Rec2`, which is slightly different from the function
+`Rec1`:
+
+    Rec2 {
+      continuation = <Rec2 ...> <F ...>;
+      end = rec2-res
+    }
+
+Here, on the contrary, `Rec2` is first called, then `F`. And the view field
+will develop quite differently:
+
+    <Rec2 ...>
+    ^^^^^^^^^^^
+    <Rec2 ...> <F ...>
+    ^^^^^^^^^^^
+    <Rec2 ...> <F ...> <F ...>
+    . . . . . .
+    <Rec2 ...> <F ...> <F ...> ... <F ...>
+    ^^^^^^^^^^^
+    rec2-res <F ...> <F ...> ... <F ...>
+             ^^^^^^^
+    rec2-res f-res <F ...> ... <F ...>
+                   ^^^^^^^
+    . . . . . .
+    rec2-res f-res ... f-res <F ...>
+                             ^^^^^^^
+    rec2-res f-res ... f-res f-res
+
+Here, unencumbered calls `F` are accumulated, and they accumulate until the
+function `Rec2` ceases to call itself recursively.
+
+Similarly it turns out with nested calls of functions. Recursion in the
+function `Rec3` is tail:
+
+    Rec3 {
+      continuation = <Rec3 ... <F ...> ...>;
+      end = rec3-res;
+    }
+
+    <Rec3 ...>
+    ^^^^^^^^^^^
+    <Rec3 ... <F ...> ...>
+              ^^^^^^^
+    <Rec3 ... f-res ...>
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    <Rec3 ... <F ...> ...>
+              ^^^^^^^
+    . . . . .
+    <Rec3 ... f-res ...>
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    rec3-res
+
+Recursion in the function of `Rec4` is not tail:
+
+    Rec4 {
+      continuation = <F ... <Rec4 ...> ...>;
+      end = rec4-res;
+    }
+
+    <Rec4 ...>
+    ^^^^^^^^^^^
+    <F ... <Rec4 ...> ...>
+           ^^^^^^^^^^^
+    <F ... <F ... <Rec4 ...> ...> ...>
+                  ^^^^^^^^^^^
+    . . . . . .
+    <F ... <F ... ... <F ... rec4-res ...> ... ...> ...>
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    . . . . . .
+    <F ... <F ... f-res ...> ...>
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    <F ... f-res ...>
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    f-res
+
+Text above doesn’t meat that the tail recursion is always good, and the not
+tail recursion is always bad. It is just important to understand that in the
+first case the process is cyclic, the view field at each iteration returns
+to a similar state, and in the second case it grows.
+
+In what follows we shall speak of tail recursion as _cycles._ There are no
+classical imperative cycles in Refal-5λ, so this terminology should not cause
+confusion. It is simply really more convenient to speak in such cases about
+_cyclic processes,_ use the term _iteration,_ etc.
+
+> _Translation to English of this paper and Markdown is prepared by_
+> **Liudmila Markova <luckymarkin@gmail.com>** _at 2018-01-18_
