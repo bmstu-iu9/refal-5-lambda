@@ -9,7 +9,6 @@ $EXTERN Map, Sort;
   [ErrorList (e.FileName) (t.SrcPos e.Message)*]
   t.SrcPos ::=
       #NoPos
-    | #MuGen-NoPos
     | (#FileLine s.LineNumber e.FileName)
     | (#RowCol s.Row s.Col)
     | (#FileRowCol (s.Row s.Col) e.FileName)
@@ -29,11 +28,6 @@ $ENTRY EL-AddErrorAt {
   [ErrorList (e.FileName) e.Errors] #NoPos e.Message =
     [ErrorList
       (e.FileName) e.Errors (#NoPos e.Message)
-    ];
-
-  [ErrorList (e.FileName) e.Errors] #MuGen-NoPos e.Message =
-    [ErrorList
-      (e.FileName) e.Errors (#MuGen-NoPos e.Message)
     ];
 
   [ErrorList (e.FileName) e.Errors] s.LineNumber e.Message =
@@ -63,9 +57,6 @@ $ENTRY EL-Destroy {
       {
         (#NoPos e.Message) =
           <WriteLine '  ERROR: ' e.Message>;
-
-        (#MuGen-NoPos e.Message)
-          = <WriteLine '  ERROR (in generated Mu): ' e.Message>;
 
         ((#FileLine s.LineNumber e.FileName^) e.Message) =
           <WriteLine

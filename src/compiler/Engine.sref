@@ -333,7 +333,6 @@ PatchASTSrcPos {
   (e.FileName) e.AST
     = {
         #NoPos = #NoPos;
-        #MuGen-NoPos = #MuGen-NoPos;
         s.LnNum = (#FileLine s.LnNum e.FileName);
         (#RowCol s.Row s.Col) = (#FileRowCol (s.Row s.Col) e.FileName);
       }
