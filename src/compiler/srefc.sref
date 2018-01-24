@@ -21,7 +21,7 @@ $EXTERN WriteLine, StrFromInt, Exit, System, ExistFile, FOpen, FWriteBytes,
 //FROM FindFile
 $EXTERN FindFiles;
 
-//FROM Driver
+//FROM Engine
 $EXTERN CompileFile, GrammarCheck;
 
 //------------------------------------------------------------------------------
