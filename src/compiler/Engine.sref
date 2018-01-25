@@ -98,23 +98,6 @@ FrontEnd {
     = <CheckProgram t.ErrorList e.AST> e.AST;
 }
 
-R5-Parse-Wrapped {
-  s.Mode (e.SrcName) e.Tokens
-    = <EL-Create e.SrcName> : t.ErrorList
-    = <R5-Parse s.Mode e.Tokens> : (e.Errors) e.AST
-    = <MapReduce
-        {
-          t.ErrorList^ ((#RowCol s.Line s.Col) e.Message)
-            = <EL-AddErrorAt
-                t.ErrorList (#FileRowCol (s.Line s.Col) e.SrcName) e.Message
-              >;
-        }
-        t.ErrorList
-        e.Errors
-      >
-      e.AST;
-}
-
 PreludeIncludeLine {
   t.Config
     = <Fetch
@@ -130,7 +113,7 @@ LoadAST {
   t.Config #R5 e.SrcName
     = <R5-Scan e.SrcName> : e.Tokens
     = <Config-GetR5Mode t.Config> : s.Mode
-    = <R5-Parse-Wrapped s.Mode (e.SrcName) e.Tokens> : t.ErrorList e.AST
+    = <R5-Parse <EL-Create e.SrcName> s.Mode e.Tokens> : t.ErrorList e.AST
     = t.ErrorList <PreludeIncludeLine t.Config> e.AST;
 
   t.Config #SR e.SrcName
