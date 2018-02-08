@@ -415,6 +415,74 @@ language. It looks like this:
 > _Translation to English of this hunk of README.md is prepared by_
 > **Mary Yenokyan <meric1996@mail.ru>** _at 2018-01-23_
 
+`NextNumber` function was written in C++. In fact, standard language library as
+a whole was written on Refal-5λ with such native pastes as arithmetic, input
+and output and so on.
+
+### Inclusion of the files
+
+Language support `$INCLUDE` key word allowing to include the another text file
+content in the current entity (it must've `.refi` extension). File name in the
+form of composite characters in quotation marks shall be situated after key
+word.
+
+    $INCLUDE "LibraryEx";
+
+    /* later Map, Sort, LoadFile etc. can be used in the code. */
+
+## Installation
+
+Compiler can be installed into the system by downloading from
+[simple-refal-distrib.git][1] repository, or [simple-refal.git][1]. Executable
+file of compiler will be available to you in the first case (half-compiled like
+C++ source code), full source code in the second case. In both cases, the
+installation above will be the same.
+
+### Windows Installation
+
+1. Start `bootstrap.bat`. Script will create the `c-plus-plus.conf.bat` file in
+   which proposed to mention the C++ compiler used.
+2. Specify С++ compiler in `c-plus-plus.conf.bat` file (Set `CPPLINEE`
+   environment variable with command line prefix and `-O3`, `-Wall` options
+   et al. Install `PATH` variable there if you need.)
+3. Start `bootstrap.bat` again for building compiler. Script will launch, by
+   default, the complete set of automatic tests it may take several dozen
+   minutes (according to machine and C++ compiler). For starting without tests
+   perform a `bootstrap.bat --no-tests`.
+4. Add appeared directory `bin` to the directory list an environment variable
+   `PATH`.
+5. You can use `srmake` or `srefc` commands compiling programs on Simple Refal.
+   See section 5 [user guide](doc/manul.pdf) for compiler using (The Manual is
+   a little dated.)
+
+### Installation on UNIX-like (Linux, macOS, Cygwin, MinGW)
+
+Installation similar to Windows installation except that GCC specify in the
+configurations file by default.
+
+1. Start the bootstrap.sh  for compiler building. GCC compiler building and
+   running all tests  will be implemented. For passing tests use `bootstrap.sh
+   --no-tests`. In both cases `c-plus-plus.conf.sh`, configuration file will be
+   created in witch  will be specify GCC by default.
+2. If you want to use another C++ compiler edit `c-plus-plus.conf.sh` file and
+   if necessary restart the build.
+3. Add appeared directory `bin` to the directory list an environment variable
+   `PATH`.
+4. You can use `srmake` or `srefc` commands compiling programs on simple Refal.
+   See section 5 [user guide](doc/manul.pdf) for compiler using (The Manual is
+   a little dated.)
+
+## Licence
+
+The compiler distributed throughout BSD licence with a reservation concerning
+the components of standard library and runtime that may be distributed in binary
+form without definition of compiler copyrighting. In absence of reservation for
+compiled programs the compiler copyright would have to be specified. It wasn't
+rational.
+
+> _Translation to English of this hunk of README.md is prepared by_
+> **Anastasia Dudkina <anastasia.vlad2014@yandex.ru>** _at 2018-02-08_
+
 [1]: https://github.com/Mazdaywik/simple-refal-distrib.git
 [2]: https://github.com/Mazdaywik/simple-refal.git
 [3]: http://www.botik.ru/pub/local/scp/refal5/

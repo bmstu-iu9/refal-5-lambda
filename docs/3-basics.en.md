@@ -906,7 +906,43 @@ identical to the words without quotes – `"Success"`, `"SyntaxError"`.
 
 ### Escape sequences
 
-...not translated yet...
+At first glance, that it was impossible to write a character that represents
+single quote or composed character that containing double quote. But that's not
+true. We can use _escape sequences_ (special marking for some symbols) in a
+chain of letters and composed character.
+
+Escape sequence look like sign `\`, followed by one or more other signs. All of
+them make up one character (if it is written into single quotes), or one of
+characters in compound symbol. In Refal-5λ followind escape sequence are
+permissible:
+* `\'` — single quote, `'`,
+* `\"` — double quotation mark, `"`,
+* `\\` — backslash, `\`,
+* `\n` — line feed, LF,
+* `\r` — carriage returns, CR,
+* `\t` — tab,
+* `\xHH` — symbol with HH code in hexadecimal entry. For example:
+  `\x07` — sound signal, `\x0A` — line feed (the same as `\n`), because it has
+  10 code, `\x3F` — question mark `?`.
+* `\<`, `\>`, `\(`, `\)` — the same as `<`, `>`, `(`, `)` — escape sequences,
+  supporting by Refal-5 and Refal-5λ.
+
+It is clear that we can use double quotation mark without screening (symbol `\`)
+into single quotes and vice versa. Language allows using `\"` into apostrophes
+and vice versa for uniformity.
+
+**Example 13.**
+
+* The entry `'Abc\ndef\'ghi\\jkl\x6D\x6e'` means sequences of 17 characters:
+  `'A'`, `'b'`, `'c'`, line feed symbol, `'d'`, `'e'`, `'f'`, single quote,
+  `'g'`, `'h'`, `'i'`, backslash, `'j'`, `'k'`, `'l'`, `'m'`, `'n'` (the last
+  two was written in hexadecimal entry).
+* The entry `"Hello, \"World\'!"` — it is word composed of 15 symbols. `\`
+  symbol before single quote is excessive here. The same word can be written
+  like `"Hello, \"World'!"` or `"Hello, \x22World'"`.
+
+> *Translation to English of this hunk of this paper is prepared by*
+> **Anastasia Dudkina <anastasia.vlad2014@yandex.ru>** _at 2018-02-08_
 
 ## The abstract refal-machine. View field semantics
 
@@ -1226,3 +1262,50 @@ _cyclic processes_ and to use the term _iteration,_ etc.
 
 > *Translation to English of this hunk of this paper is prepared by*
 > **Maria Ivanova <ya.ivanovamaria96@yandex.ru>** _at 2018-01-17_
+
+## Object, pattern, active and result expressions
+
+Before we will continue study of Refal-5λ, necessary to institute several
+important definitions. We considered different types of Refal expressions that
+can contain different syntactic constructions. Now it's time to introduce
+strict categorization.
+
+* Refal expression called _object expression_ that can contain only symbols and
+  round brackets. Accordingly, terms of which is object expression drafted
+  called _object terms._ Function arguments can be only object expression.
+* Expression that assembled from symbols, round and angular brackets called
+  _active expression_ or _ground expression._ Content of a field of vision can be
+  only active expression.
+* Expression assembled from symbols, structural brackets and variables called
+  _pattern expression_ or _pattern._ The left sentence part is pattern
+  expression.
+* Expression assembled from symbols, round and angular brackets, variables
+  called _result expression_ or _result._ Right parts of sentence are result
+  expressions.
+
+Note: _the word ‘pattern’ often used like synonym of ‘left part’, and ‘the
+result’ like synonym of right part. This is right terminology too and meaning
+of word usually is clear by context._
+
+All four types of expressions can be imaged as a figure:
+
+   object expression:        variables         Pattern expression:
+       symbols          → → → → → → → → →    symbols, round brackets
+   and round brackets                             and variables
+          ↓                                             ↓
+          ↓ call brackets                               ↓ call brackets
+          ↓                                             ↓
+  Active expression:         variables          Result expression:
+    Symbols,round       → → → → → → → → →   symbols, round and angular
+  and angular brackets                         brackets, variables
+
+Object and active expressions exist only during the execution of a program like
+function arguments and the content of view field (the content of static boxes
+and stack could be added we will be considering later.) While pattern and
+result expressions exist only in source code like left and right parts of
+sentences. The reason for this is that there were variables. Pattern expression
+is template describing multiple object expressions. Result expression is
+template from which active expression is builded.
+
+> *Translation to English of this hunk of this paper is prepared by*
+> **Anastasia Dudkina <anastasia.vlad2014@yandex.ru>** _at 2018-02-08_
