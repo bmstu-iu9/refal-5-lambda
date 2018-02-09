@@ -12,20 +12,30 @@ $ENTRY HighLevelRASL-Function-Disjoint {
         {
           ((e.Pattern) (e.Result))
 
+            // Построение начальной подстановки <F e.0>:
+            // * подстановка на вход для s.FnGenSubst,
+            // * последовательность команд для инициализации этой
+            //   начальной подстановки.
             = <s.FnGenInitSubst 0 (e.Name) e.Pattern>
             : s.ContextTop e.Substitutes (e.FirstPatternCommands)
 
+            // Преобразование подстановки e.0 → Pattern в последовательность
+            // команд сопоставления и «размеченный образец», используемый
+            // при построении результата (в общем случае).
             = <s.FnGenSubst
                 s.ContextTop e.Substitutes (e.FirstPatternCommands)
               >
             : s.ContextOffset (e.PatternVars) (e.MarkedPattern)
               e.PatternCommands
 
+            // Генерация команд построения результатного выражения
             = <s.FnGenResult
                 s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
               >
             : s.ContextCount e.ResultCommands
 
+            // Если в образце есть команды-заголовки циклов удлинения
+            // открытых переменных, группируем команды за ними в циклы.
             = <FoldOpenELoops
                 (#CmdIssueMemory s.ContextCount)
                 e.PatternCommands
@@ -34,6 +44,8 @@ $ENTRY HighLevelRASL-Function-Disjoint {
               >
             : e.Commands
 
+            // Каждое предложение превращается в отдельную цепочку команд.
+            // (Поэтому и disjoint.)
             = (e.Commands);
         }
         e.Sentences
