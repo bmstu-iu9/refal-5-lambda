@@ -12,7 +12,7 @@ $ENTRY HighLevelRASL-Function-Disjoint {
         {
           ((e.Pattern) (e.Result))
 
-            = <s.FnGenInitSubst (e.Name) e.Pattern>
+            = <s.FnGenInitSubst 0 (e.Name) e.Pattern>
             : s.ContextTop e.Substitutes (e.FirstPatternCommands)
 
             = <s.FnGenSubst

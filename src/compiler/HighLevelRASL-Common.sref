@@ -157,7 +157,7 @@ Offset {
 */
 $ENTRY GenPattern {
   s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern
-    = <s.FnGenInitSubst (e.Name) e.Pattern>
+    = <s.FnGenInitSubst 0 (e.Name) e.Pattern>
     : s.ContextTop e.Substitutes (e.Commands)
     = <s.FnGenSubst s.ContextTop e.Substitutes (e.Commands)>;
 }

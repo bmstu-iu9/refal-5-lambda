@@ -9,18 +9,23 @@ $EXTERN Inc2, PrintVar, MakeSavers, TextFromExpr;
 
 
 /**
-  <GenInitSubst-Save (e.FuncName) e.Pattern
+  <GenInitSubst-Save s.ContextTop (e.FuncName) e.Pattern
     == s.ContextTop e.Substitutes (e.Commands)
 */
 $ENTRY GenInitSubst-Save {
-  (e.FuncName) e.Pattern
-    = 5
-      (#Junk (#TkOpenCall 0) (#TkName e.FuncName 4))
-      (#E 2 e.Pattern)
-      (#Junk (#TkCloseCall 1))
+  s.ContextTop (e.FuncName) e.Pattern
+    = s.ContextTop : s.0
+    = <Add s.ContextTop 1> : s.1
+    = <Add s.ContextTop 2> : s.2
+    = <Add s.ContextTop 4> : s.4
+    = <Add s.ContextTop 5> : s.5
+    = s.5
+      (#Junk (#TkOpenCall s.0) (#TkName e.FuncName s.4))
+      (#E s.2 e.Pattern)
+      (#Junk (#TkCloseCall s.1))
       (
         (#CmdInitB0-Lite)
-        (#CmdCallSave #AlgLeft 0 2)
+        (#CmdCallSave #AlgLeft s.0 s.2)
       );
 }
 
