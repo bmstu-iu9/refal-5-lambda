@@ -138,7 +138,8 @@ setlocal
     echo Special conditions tests is passed
   )
 endlocal
-goto :EOF
+::goto :EOF
+exit /b 0
 
 :RUN_TEST_AUX
 setlocal
