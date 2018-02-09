@@ -8,13 +8,11 @@ $EXTERN Inc;
 $EXTERN MakeSavers;
 
 /**
-  <GenInitSubst-Simple e.FuncName>
-    == s.B0-Offset s.ContextTop
-       (#Junk e.JunkLeft) (#Junk e.JunkRight) e.Commands
+  <GenInitSubst-Simple (e.FuncName) e.Pattern
+    == s.ContextTop e.Substitutes (e.Commands)
 */
 $ENTRY GenInitSubst-Simple {
-  e.FuncName =
-    0 2 (#Junk) (#Junk) (#CmdInitB0);
+  (e.FuncName) e.Pattern = 2 (#Junk) (#E 0 e.Pattern) (#Junk) ((#CmdInitB0));
 }
 
 /**

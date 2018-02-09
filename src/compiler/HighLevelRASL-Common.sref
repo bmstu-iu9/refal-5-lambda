@@ -156,19 +156,10 @@ Offset {
     == s.ContextOffset (e.Vars) (e.MarkedPattern) e.PatternCommands
 */
 $ENTRY GenPattern {
-  s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern =
-    <Fetch
-      <s.FnGenInitSubst e.Name>
-      {
-        s.B0-Offset s.ContextTop
-        (#Junk e.JunkLeft) (#Junk e.JunkRight) e.InitCommands =
-          <s.FnGenSubst
-            s.ContextTop
-            (#Junk e.JunkLeft) (#E s.B0-Offset e.Pattern) (#Junk e.JunkRight)
-            (e.InitCommands)
-          >;
-      }
-    >;
+  s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern
+    = <s.FnGenInitSubst (e.Name) e.Pattern>
+    : s.ContextTop e.Substitutes (e.Commands)
+    = <s.FnGenSubst s.ContextTop e.Substitutes (e.Commands)>;
 }
 
 /**
@@ -180,21 +171,17 @@ $ENTRY GenPattern {
 */
 $ENTRY GenResult {
   s.FnGenResult (e.Result)
-  s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands =
-    <Fetch
-      <s.FnGenResult
+  s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands
+    = <s.FnGenResult
         s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
       >
-      {
-        s.ContextCount e.ResultCommands =
-          <FoldOpenELoops
-            (#CmdIssueMemory s.ContextCount)
-            e.PatternCommands
-            <PutVariableDebugTable e.PatternVars>
-            e.ResultCommands
-          >;
-      }
-    >;
+    : s.ContextCount e.ResultCommands
+    = <FoldOpenELoops
+        (#CmdIssueMemory s.ContextCount)
+        e.PatternCommands
+        <PutVariableDebugTable e.PatternVars>
+        e.ResultCommands
+      >;
 }
 
 FoldOpenELoops {
