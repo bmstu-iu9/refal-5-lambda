@@ -184,7 +184,7 @@ $ENTRY GenResult {
       >;
 }
 
-FoldOpenELoops {
+$ENTRY FoldOpenELoops {
   e.Commands-B (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber) e.Commands-E =
     e.Commands-B
     (#CmdOpenELoop
@@ -195,7 +195,7 @@ FoldOpenELoops {
   e.Commands = e.Commands;
 }
 
-PutVariableDebugTable {
+$ENTRY PutVariableDebugTable {
   e.PatternVars =
     <Map
       {

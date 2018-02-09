@@ -2,7 +2,7 @@
 $EXTERN Map, Fetch, MapReduce, Max;
 
 //FROM HighLevelRASL-Common
-$EXTERN GenPattern, GenResult;
+$EXTERN FoldOpenELoops, PutVariableDebugTable;
 
 $ENTRY HighLevelRASL-Function-Disjoint {
   s.FnGenInitSubst s.FnGenSubst s.FnGenResult
@@ -10,13 +10,31 @@ $ENTRY HighLevelRASL-Function-Disjoint {
 
     = <Map
         {
-          ((e.Pattern) (e.Result)) =
-            (
-              <GenResult
-                s.FnGenResult (e.Result)
-                <GenPattern s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern>
+          ((e.Pattern) (e.Result))
+
+            = <s.FnGenInitSubst (e.Name) e.Pattern>
+            : s.ContextTop e.Substitutes (e.FirstPatternCommands)
+
+            = <s.FnGenSubst
+                s.ContextTop e.Substitutes (e.FirstPatternCommands)
               >
-            );
+            : s.ContextOffset (e.PatternVars) (e.MarkedPattern)
+              e.PatternCommands
+
+            = <s.FnGenResult
+                s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
+              >
+            : s.ContextCount e.ResultCommands
+
+            = <FoldOpenELoops
+                (#CmdIssueMemory s.ContextCount)
+                e.PatternCommands
+                <PutVariableDebugTable e.PatternVars>
+                e.ResultCommands
+              >
+            : e.Commands
+
+            = (e.Commands);
         }
         e.Sentences
       >
