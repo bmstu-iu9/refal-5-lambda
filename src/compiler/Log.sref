@@ -10,8 +10,8 @@ $EXTERN DisplayName;
 //FROM Escape
 $EXTERN EscapeString;
 
-//FROM Plainer
-$EXTERN Plain;
+//FROM Log-AST
+$EXTERN Log-TextFromAST;
 
 
 /**
@@ -87,7 +87,7 @@ $ENTRY Log-GetLogFunction-AST {
                     {
                       (e.Line) = <Putout s.FileHandle '  ' e.Line>;
                     }
-                    <Plain e.AST>
+                    <Log-TextFromAST e.AST>
                   >
                   e.AST;
             };

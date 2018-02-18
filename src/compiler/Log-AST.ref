@@ -6,9 +6,9 @@ $EXTERN DisplayName;
 
 
 /**
-  <Plain t.Units*> == (e.TextLine)*
+  <Log-TextFromAST t.Units*> == (e.TextLine)*
 */
-$ENTRY Plain {
+$ENTRY Log-TextFromAST {
   e.Units = <UndoubleEmtpyLines <TrimLines <Map &Element e.Units>>>;
 }
 
@@ -90,7 +90,7 @@ Sentence {
   (e.Indent) (e.Pattern) (e.Result)
     , e.Indent <InlineExpr e.Pattern> ' = ' <InlineExpr e.Result> ';'
     : e.OneLineSentence
-    , <LongLine e.OneLineSentence>: False
+    , <LongLine e.OneLineSentence> : False
     = (e.OneLineSentence);
 
   (e.Indent) (e.Pattern) e.Tail
@@ -112,9 +112,9 @@ PutComment {
 
 Tail {
   (e.Indent) (Condition (e.Name) (e.Result) (e.Pattern)) e.Tail
-    , e.Indent ', ' <InlineExpr e.Result> ' : ' <InlineExpr e.Pattern>
+    = e.Indent ', ' <InlineExpr e.Result> ' : ' <InlineExpr e.Pattern>
     : e.OneLineCondition
-    , <LongLine e.OneLineCondition>
+    = <LongLine e.OneLineCondition>
     : {
         True
           = (e.Indent '  /* ' <DisplayName e.Name> ' */')
@@ -146,18 +146,18 @@ DoExpression {
   s.Pos (e.Indent) (e.OutLine) /* пусто */ ';' = (e.OutLine ';');
 
   s.Pos (e.Indent) (e.OutLine) t.NextTerm e.Expr
-    , <InlineTerm t.NextTerm>: e.TextualTerm
-    , <AppendTerm e.OutLine (e.TextualTerm)>: e.NewOutLine
-    , <LongLine e.NewOutLine>
+    = <InlineTerm t.NextTerm> : e.TextualTerm
+    = <AppendTerm e.OutLine (e.TextualTerm)> : e.NewOutLine
+    = <LongLine e.NewOutLine>
     : {
         True
-          , e.Indent e.TextualTerm: e.OutLineTerm
-          , <LongLine e.OutLineTerm>
+          = e.Indent e.TextualTerm : e.OutLineTerm
+          = <LongLine e.OutLineTerm>
           : {
-              True, e.Expr: ';'
+              True, e.Expr : ';'
                 = <MultilineTerm s.Pos (e.OutLine) e.Indent t.NextTerm (';')>;
 
-              True, e.Expr: /* пусто */
+              True, e.Expr : /* пусто */
                 = <MultilineTerm s.Pos (e.OutLine) e.Indent t.NextTerm ()>;
 
               True
@@ -197,7 +197,7 @@ MultilineTerm {
 
 MultilineTerm-Prefix {
   (e.Prefix) e.Indent t.Term (e.Suffix)
-    , t.Term
+    = t.Term
     : {
         (Brackets e.Expr)
           = (e.Prefix '(')
@@ -250,7 +250,7 @@ TkIdentifier {
 }
 
 Compound {
-  e.Chars, <IsIdent e.Chars>: True e.Textual = e.Textual;
+  e.Chars, <IsIdent e.Chars> : True e.Textual = e.Textual;
 
   e.Chars = '\"' <DoCompound e.Chars> '\"'
 }
@@ -262,7 +262,7 @@ DoCompound {
 
 IsIdent {
   s.Initial e.Tail
-    , <Type s.Initial>: 'L' s.SubType s.Initial
+    , <Type s.Initial> : 'L' s.SubType s.Initial
     = <DoIsIdent (s.Initial) e.Tail>;
 
   e.Other = False;
@@ -273,11 +273,11 @@ DoIsIdent {
   (e.Valid) '_' e.Tail = <DoIsIdent (e.Valid '_') e.Tail>;
 
   (e.Valid) s.Next e.Tail
-    , <Type s.Next>: 'L' s.Subtype s.Next
+    , <Type s.Next> : 'L' s.Subtype s.Next
     = <DoIsIdent (e.Valid s.Next) e.Tail>;
 
   (e.Valid) s.Next e.Tail
-    , <Type s.Next>: 'D0' s.Next
+    , <Type s.Next> : 'D0' s.Next
     = <DoIsIdent (e.Valid s.Next) e.Tail>;
 
   (e.Valid) /* пусто */ = True e.Valid;
@@ -305,8 +305,8 @@ CharRep {
   '\t' = '\\t';
 
   s.Char
-    , <Ord s.Char>: s.Ord
-    , <Compare s.Ord 32>: '-'
+    , <Ord s.Char> : s.Ord
+    , <Compare s.Ord 32> : '-'
     = '\\x' <HexDigit </ s.Ord 16>> <HexDigit <% s.Ord 16>>;
 
   s.Char = s.Char;
@@ -314,7 +314,7 @@ CharRep {
 
 HexDigit {
   s.Number
-    , <First s.Number '0123456789abcdef'>: (e.1) s.Digit e.2
+    , <First s.Number '0123456789abcdef'> : (e.1) s.Digit e.2
     = s.Digit
 }
 
