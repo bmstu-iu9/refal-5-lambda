@@ -39,6 +39,7 @@ cp ..\docs\*.ref docs
 cp ..\docs\*.yml docs
 cp ../LICENSE .
 cp ../README.md .
+cp ../README.en.md .
 mkdir editors
 cp -R ../editors/* editors
 ./bootstrap.sh

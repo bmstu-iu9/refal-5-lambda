@@ -48,6 +48,7 @@ copy ..\docs\*.ref docs
 copy ..\docs\*.yml docs
 copy ..\LICENSE .
 copy ..\README.md .
+copy ..\README.en.md .
 md editors
 xcopy /e /i /y ..\editors editors
 call bootstrap.bat
