@@ -31,8 +31,8 @@ cp ../doc/historical/*.txt doc/historical
 cp ../doc/historical/*.pdf doc/historical
 cp ../doc/historical/*.jpg doc/historical
 cp ../doc/historical/*.doc doc/historical
-mkdir doc/historical/Дрогунов
-cp ../doc/historical/Дрогунов/*.pdf doc/historical/Дрогунов
+mkdir doc/historical/Drogunov
+cp ../doc/historical/Drogunov/*.pdf doc/historical/Drogunov
 cp ../LICENSE .
 cp ../README.md .
 mkdir editors

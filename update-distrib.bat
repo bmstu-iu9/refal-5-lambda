@@ -40,8 +40,8 @@ copy ..\doc\historical\*.txt doc\historical
 copy ..\doc\historical\*.pdf doc\historical
 copy ..\doc\historical\*.jpg doc\historical
 copy ..\doc\historical\*.doc doc\historical
-md doc\historical\Дрогунов
-copy ..\doc\historical\Дрогунов\*.pdf doc\historical\Дрогунов
+md doc\historical\Drogunov
+copy ..\doc\historical\Drogunov\*.pdf doc\historical\Drogunov
 copy ..\LICENSE .
 copy ..\README.md .
 md editors
