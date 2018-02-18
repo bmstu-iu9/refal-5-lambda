@@ -163,20 +163,19 @@ $ENTRY Config-GetOptResult {
 */
 $ENTRY Config-SetOptFlags {
   [Config e.Params-B (#Optimize e.OldFlags) e.Params-E] e.NewFlags
-    = <Fetch
-        <ParseOptFlags e.NewFlags> {
-          #Success e.NewFlags^ s.FnChange
-            = #Success
-              [Config
-                e.Params-B
-                (#Optimize <s.FnChange (e.OldFlags) e.NewFlags>)
-                e.Params-E
-              ];
+    = <ParseOptFlags e.NewFlags>
+    : {
+        #Success e.NewFlags^ s.FnChange
+          = #Success
+            [Config
+              e.Params-B
+              (#Optimize <s.FnChange (e.OldFlags) e.NewFlags>)
+              e.Params-E
+            ];
 
-          #Fails e.NotParsed s.FnChange
-            = #Fails #BadValue-Opt e.NotParsed;
-        }
-      >;
+        #Fails e.NotParsed s.FnChange
+          = #Fails #BadValue-Opt e.NotParsed;
+      };
 }
 
 ParseOptFlags {
@@ -187,6 +186,11 @@ ParseOptFlags {
 }
 
 ParseOptLetters {
+  // TODO: рефакторизовать как
+  // (e.Scanned) s.Flag e.Flags
+  //    , <ValidFlag s.Flag> : #True s.FlagName
+  //    = <ParseOptLetters (<Flags-Unique e.Scanned s.FlagName>) e.Flags>;
+
   (e.Scanned) 'P' e.Flags
     = <ParseOptLetters (<Flags-Unique e.Scanned #OptPattern>) e.Flags>;
 
