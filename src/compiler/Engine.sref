@@ -12,7 +12,8 @@ $EXTERN
   Config-GetDebugMode,
   Config-GetOptPattern,
   Config-GetOptResult,
-  Config-GetGenMode;
+  Config-GetGenMode,
+  Config-GetOptTree;
 
 //FROM Checker
 $EXTERN CheckProgram;
@@ -41,6 +42,9 @@ $EXTERN Desugar;
 //FROM Log
 $EXTERN Log-GetLogFunction-AST, Log-GetLogFunction-HighLevelRASL;
 
+//FROM OptTree
+$EXTERN OptTree, OptTree-CleanupMarkup;
+
 //FROM HighLevelRASL
 $EXTERN HighLevelRASL;
 
@@ -52,6 +56,7 @@ $EXTERN GenProgram-RASL;
 
 //FROM Generator-Native
 $EXTERN GenProgram-Native;
+
 
 /**
   <CompileFile t.Config (s.Dialect e.SrcName) e.OutputName>
@@ -433,7 +438,15 @@ BackEnd {
     = <Config-GetGenMode t.Config> : s.GenMode
     = <Pipe
         (Desugar s.MarkupContext)
-        <Log-GetLogFunction-AST e.SrcName>
+        <Log-GetLogFunction-AST e.SrcName ' (after desugar)'>
+        <Fetch
+          <Config-GetOptTree t.Config>
+          {
+            #OptTree = (OptTree t.Config);
+            #NoOpt = OptTree-CleanupMarkup;
+          }
+        >
+        <Log-GetLogFunction-AST e.SrcName ' (after tree optimization)'>
         (HighLevelRASL s.OptPattern s.OptResult)
         <Log-GetLogFunction-HighLevelRASL e.SrcName>
         (LowLevelRASL s.GenMode s.DebugInfo (e.SrcName))

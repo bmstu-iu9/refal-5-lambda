@@ -1,0 +1,25 @@
+/**
+  <OptTree-Drive-ExtractOptInfo s.OptDrive e.AST>
+    == (e.DriveInfo) e.AST
+
+  s.OptDrive ::= OptDrive | OptInline | NoOpt
+  e.DriveInfo ::= (e.DriveFuncNames) e.DriveInfo-Specific
+  e.DriveFuncNames ::= (e.FuncName)*
+*/
+$ENTRY OptTree-Drive-ExtractOptInfo {
+  s.OptDrive e.AST = ((/* no names */) /* no info */) e.AST;
+}
+
+/**
+  <OptTree-Drive s.OptDrive (e.DriveInfo) e.AST> == (e.DriveInfo^) e.AST^
+*/
+$ENTRY OptTree-Drive {
+  s.OptDrive (e.DriveInfo) e.AST = (e.DriveInfo) e.AST;
+}
+
+/**
+  <OptTree-Drive-Finalize s.OptDrive (e.DriveInfo) e.AST> == e.AST^
+*/
+$ENTRY OptTree-Drive-Finalize {
+  s.OptDrive ((/* no names */) /* no info */) e.AST = e.AST;
+}

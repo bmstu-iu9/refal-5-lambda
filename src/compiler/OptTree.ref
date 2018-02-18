@@ -1,0 +1,117 @@
+$INCLUDE "LibraryEx";
+
+*$FROM OptTree-Drive
+$EXTERN OptTree-Drive-ExtractOptInfo, OptTree-Drive, OptTree-Drive-Finalize;
+
+*$FROM OptTree-Spec
+$EXTERN OptTree-Spec-ExtractOptInfo, OptTree-Spec, OptTree-Spec-Finalize;
+
+*$FROM Config
+$EXTERN Config-GetTreeOptCycles, Config-GetOptDrive, Config-GetOptSpec;
+
+
+/**
+  <OptTree e.AST> == e.OptAST
+
+  e.OptAST не содержит разметки, описывающей прогоняемые, встраиваемые
+  и специализируемые функции.
+*/
+$ENTRY OptTree {
+  t.Config e.AST
+    = <Config-GetTreeOptCycles t.Config> : s.Cycles
+    = <Config-GetOptDrive t.Config> : s.OptDrive
+    = <Config-GetOptSpec t.Config> : s.OptSpec
+    = <OptTree-Aux s.Cycles s.OptDrive s.OptSpec e.AST>;
+}
+
+OptTree-Aux {
+  s.Cycles s.OptDrive s.OptSpec e.AST
+
+    = <OptTree-Drive-ExtractOptInfo s.OptDrive e.AST>
+    : ((e.DriveFuncNames) e.DriveInfo-Specific) e.AST^
+
+    = <OptTree-Spec-ExtractOptInfo s.OptSpec e.AST>
+    : ((e.SpecFuncNames) e.SpecInfo-Specific) e.AST^
+
+    = <AllFunctionNames e.AST> : (e.AllFunctions) e.AST^
+
+    = <SetDiff (e.AllFunctions) e.DriveFuncNames e.SpecFuncNames>
+    : e.NonOptimizableFunctions
+
+    = <DoOptTree
+        s.Cycles s.OptDrive s.OptSpec
+        ((e.DriveFuncNames) e.DriveInfo-Specific)
+        ((e.SpecFuncNames) e.SpecInfo-Specific)
+        (e.NonOptimizableFunctions)
+        e.AST
+      >;
+}
+
+DoOptTree {
+  0 s.OptDrive s.OptSpec
+  (e.DriveInfo) (e.SpecInfo) (e.RegularFunctions) e.AST
+    = <OptTree-Drive-Finalize s.OptDrive (e.DriveInfo) e.AST> : e.AST^
+    = <OptTree-Spec-Finalize s.OptSpec (e.SpecInfo) e.AST> : e.AST^
+    = e.AST;
+
+  s.Cycles s.OptDrive s.OptSpec
+  (e.DriveInfo) (e.SpecInfo) (e.RegularFunctions) e.AST
+    = e.AST : e.OriginAST
+    = <SimpleTreeOpts (e.RegularFunctions) e.AST> : e.AST^
+    = <OptTree-Drive s.OptDrive (e.DriveInfo) e.AST> : (e.DriveInfo^) e.AST^
+    = <OptTree-Spec s.OptSpec (e.SpecInfo) e.AST> : (e.SpecInfo^) e.AST^
+    = e.AST
+    : {
+        e.OriginAST = 0 e.AST;
+        e.AST^ = <Dec s.Cycles> e.AST;
+      }
+    : s.Cycles^ e.AST^
+    = <DoOptTree
+        s.Cycles s.OptDrive s.OptSpec
+        (e.DriveInfo) (e.SpecInfo) (e.RegularFunctions) e.AST
+      >;
+}
+
+
+/**
+  <OptTree-CleanupMarkup e.AST> == e.OptAST
+*/
+$ENTRY OptTree-CleanupMarkup {
+  e.AST = <OptTree-Aux 0 NoOpt NoOpt e.AST>;
+}
+
+
+AllFunctionNames {
+  e.AST
+    = <MapReduce
+        {
+          (e.FuncNames) (Function s.ScopeClass (e.Name) e.Body)
+            = (e.FuncNames (e.Name))
+              (Function s.ScopeClass (e.Name) e.Body);
+
+          (e.FuncNames) t.Definition
+            , t.Definition : (s.Definition t.Pos s.ScopeClass e.Name)
+            , <OneOf s.Definition Enum Swap Declaration> : True
+            = (e.FuncNames (e.Name)) t.Definition;
+
+          (e.FuncNames) (s.Type e.Info)
+            , <OneOf s.Type Ident NativeBlock> : True
+            = (e.FuncNames) (s.Type e.Info);
+        }
+        (/* func names */)
+        e.AST
+      >;
+}
+
+SetDiff {
+  (e.Set1-B s.Repeated e.Set1-E) s.Repeated e.Set2
+    = <SetDiff (e.Set1-B e.Set1-E) e.Set2>;
+
+  (e.Set1) s.NotIncluded e.Set2 = <SetDiff (e.Set1) e.Set2>;
+
+  (e.Set1) /* empty */ = e.Set1;
+}
+
+SimpleTreeOpts {
+  (e.RegularFunctions) e.AST = e.AST;
+}
