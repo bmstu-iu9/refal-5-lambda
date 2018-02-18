@@ -1,5 +1,8 @@
 @echo off
-call makeself-s.bat
+setlocal
+  set SRMAKE_FLAGS=
+  call makeself-s.bat
+endlocal
 call update-lib.bat
 call makeself.bat
 call makeself.bat
