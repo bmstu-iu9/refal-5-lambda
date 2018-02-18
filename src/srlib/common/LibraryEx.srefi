@@ -1,0 +1,7 @@
+//FROM LibraryEx
+$EXTERN Apply, Map, Reduce, Fetch, Y, MapReduce, UnBracket, DelAccumulator,
+  Inc, Dec, FastIntFromStr, Pipe, Seq;
+
+//FROM LibraryEx
+$EXTERN LoadFile, SaveFile, AppendFile, LoadBytes, SaveBytes, AppendBytes,
+  ArgList, TermCompare, TermCompare-T, Trim, Trim-L, Trim-R, Sort, Min, Max;

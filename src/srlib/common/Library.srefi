@@ -1,0 +1,8 @@
+$INCLUDE "refal5-builtins.srefi";
+
+//FROM Library
+$EXTERN PtrFromName;
+
+//FROM Library
+$EXTERN FClose, FOpen, FReadLine, FWriteLine, ReadLine, WriteLine, IntFromStr,
+  StrFromInt, SymbCompare, FWriteBytes, FReadBytes, FTell, FSeek, RenameFile;
