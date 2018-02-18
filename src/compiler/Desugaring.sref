@@ -768,57 +768,52 @@ CreateContext {
 }
 
 Pass-RemoveRedudandElements {
-  e.AST =
+  /*
+    Функция принимает абстрактное синтаксическое дерево
+    и формирует новое с устранением избыточных элементов
+  */
+  e.AST
+
     /*
-      Функция принимает абстрактное синтаксическое дерево
-      и формирует новое с устранением избыточных элементов
+      Подчищаем $EXTERN’ы и $IDENT’ы только при отсутствии нативных вставок
     */
-    <Fetch
-      e.AST
-      <Pipe
-        /*
-          Подчищаем $EXTERN’ы и $IDENT’ы только при отсутствии нативных вставок
-        */
+    = <CalcSelectiveSaver e.AST> : s.FnSelectiveSaver e.AST^
+
+    = <Map
         {
-          e.AST-B (#NativeBlock t.SrcPos e.Code) e.AST-E =
-            SelectiveSaver-Save
-            e.AST-B (#NativeBlock t.SrcPos e.Code) e.AST-E;
+          (#Ident e.Name) = <s.FnSelectiveSaver #Ident e.Name>;
 
-          e.AST-B
-          (#Function s.ScopeClass (e.Name) #NativeBody e.Code)
-          e.AST-E =
-            SelectiveSaver-Save
-            e.AST-B
-            (#Function s.ScopeClass (e.Name) #NativeBody e.Code)
-            e.AST-E;
+          (#Declaration s.ScopeClass e.Name)
+            = <s.FnSelectiveSaver #Declaration s.ScopeClass e.Name>;
 
-          e.AST^ = SelectiveSaver-Skip e.AST;
+          t.OtherItem = t.OtherItem;
         }
-        {
-          s.FnSelectiveSaver e.AST^ =
-            <Map
-              {
-                (#Ident e.Name) = <s.FnSelectiveSaver #Ident e.Name>;
-
-                (#Declaration s.ScopeClass e.Name)
-                  = <s.FnSelectiveSaver #Declaration s.ScopeClass e.Name>;
-
-                t.OtherItem = t.OtherItem;
-              }
-              e.AST
-            >;
-        }
-        // Folding enums
-        (Map
-          {
-            (#Function s.ScopeClass (e.Name) #Sentences /* пусто */) =
-              (#Enum s.ScopeClass e.Name);
-
-            t.Other = t.Other;
-          }
-        )
+        e.AST
       >
-    >;
+    : e.AST^
+
+    // Folding enums
+    = <Map
+        {
+          (#Function s.ScopeClass (e.Name) #Sentences /* пусто */) =
+            (#Enum s.ScopeClass e.Name);
+
+          t.Other = t.Other;
+        }
+        e.AST
+      >;
+}
+
+CalcSelectiveSaver {
+  e.AST-B (#NativeBlock t.SrcPos e.Code) e.AST-E
+    = SelectiveSaver-Save
+      e.AST-B (#NativeBlock t.SrcPos e.Code) e.AST-E;
+
+  e.AST-B (#Function s.ScopeClass (e.Name) #NativeBody e.Code) e.AST-E
+    = SelectiveSaver-Save
+      e.AST-B (#Function s.ScopeClass (e.Name) #NativeBody e.Code) e.AST-E;
+
+  e.AST^ = SelectiveSaver-Skip e.AST;
 }
 
 SelectiveSaver-Save {
