@@ -231,6 +231,11 @@ MultilineTerm-Prefix {
             <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
             (e.Indent '>' e.Suffix);
 
+        (ColdCallBrackets e.Expr)
+          = (e.Prefix '<*')
+            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
+            (e.Indent '*>' e.Suffix);
+
         (ClosureBrackets (TkName e.Function) e.Expr)
           = (e.Prefix '{{' <DisplayName e.Function>)
             <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
@@ -340,6 +345,10 @@ CallBrackets {
     = '<' <TkVariable e.Indirect> ' ' <InlineSubexpr e.Expr> '>';
 
   e.Expr = '< ' <InlineSubexpr e.Expr> '>';
+}
+
+ColdCallBrackets {
+  e.Expr = '<* ' <InlineSubexpr e.Expr> '*>';
 }
 
 ClosureBrackets {

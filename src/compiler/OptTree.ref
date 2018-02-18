@@ -1,13 +1,19 @@
 $INCLUDE "LibraryEx";
 
+*$FROM Config
+$EXTERN Config-GetTreeOptCycles, Config-GetOptDrive, Config-GetOptSpec;
+
 *$FROM OptTree-Drive
 $EXTERN OptTree-Drive-ExtractOptInfo, OptTree-Drive, OptTree-Drive-Finalize;
 
 *$FROM OptTree-Spec
 $EXTERN OptTree-Spec-ExtractOptInfo, OptTree-Spec, OptTree-Spec-Finalize;
 
-*$FROM Config
-$EXTERN Config-GetTreeOptCycles, Config-GetOptDrive, Config-GetOptSpec;
+*$FROM Log
+$EXTERN Log-PutLine, Log-GetLogFunction-AST;
+
+*$FROM DisplayName
+$EXTERN DisplayName;
 
 
 /**
@@ -33,42 +39,50 @@ OptTree-Aux {
     = <OptTree-Spec-ExtractOptInfo s.OptSpec e.AST>
     : ((e.SpecFuncNames) e.SpecInfo-Specific) e.AST^
 
-    = <AllFunctionNames e.AST> : (e.AllFunctions) e.AST^
+    = e.DriveFuncNames e.SpecFuncNames : e.OptimizableFunctions
 
-    = <SetDiff (e.AllFunctions) e.DriveFuncNames e.SpecFuncNames>
-    : e.NonOptimizableFunctions
-
-    = <DoOptTree
+    = <Log-PutLine
+        'Optimizable functions:'
+        <Map
+          {
+            (e.FuncName) = ' ' <DisplayName e.FuncName>
+          }
+          e.OptimizableFunctions
+        >
+      >
+      <DoOptTree
         s.Cycles s.OptDrive s.OptSpec
         ((e.DriveFuncNames) e.DriveInfo-Specific)
         ((e.SpecFuncNames) e.SpecInfo-Specific)
-        (e.NonOptimizableFunctions)
+        (e.OptimizableFunctions)
         e.AST
       >;
 }
 
 DoOptTree {
   0 s.OptDrive s.OptSpec
-  (e.DriveInfo) (e.SpecInfo) (e.RegularFunctions) e.AST
+  (e.DriveInfo) (e.SpecInfo) (e.OptimizableFunctions) e.AST
     = <OptTree-Drive-Finalize s.OptDrive (e.DriveInfo) e.AST> : e.AST^
     = <OptTree-Spec-Finalize s.OptSpec (e.SpecInfo) e.AST> : e.AST^
+    = <OptTree-Simple-Finalize e.AST> : e.AST^
     = e.AST;
 
   s.Cycles s.OptDrive s.OptSpec
-  (e.DriveInfo) (e.SpecInfo) (e.RegularFunctions) e.AST
+  (e.DriveInfo) (e.SpecInfo) (e.OptimizableFunctions) e.AST
+    = <<Log-GetLogFunction-AST 'Pass ' <Symb s.Cycles>> e.AST> : e.AST^
     = e.AST : e.OriginAST
-    = <SimpleTreeOpts (e.RegularFunctions) e.AST> : e.AST^
+    = <OptTree-Simple (e.OptimizableFunctions) e.AST> : e.AST^
     = <OptTree-Drive s.OptDrive (e.DriveInfo) e.AST> : (e.DriveInfo^) e.AST^
     = <OptTree-Spec s.OptSpec (e.SpecInfo) e.AST> : (e.SpecInfo^) e.AST^
     = e.AST
     : {
-        e.OriginAST = 0 e.AST;
+        e.OriginAST = 0 e.OriginAST;
         e.AST^ = <Dec s.Cycles> e.AST;
       }
     : s.Cycles^ e.AST^
     = <DoOptTree
         s.Cycles s.OptDrive s.OptSpec
-        (e.DriveInfo) (e.SpecInfo) (e.RegularFunctions) e.AST
+        (e.DriveInfo) (e.SpecInfo) (e.OptimizableFunctions) e.AST
       >;
 }
 
@@ -81,37 +95,149 @@ $ENTRY OptTree-CleanupMarkup {
 }
 
 
-AllFunctionNames {
-  e.AST
-    = <MapReduce
+OptTree-Simple {
+  (e.OptimizableFunctions) e.AST
+    = <Map
         {
-          (e.FuncNames) (Function s.ScopeClass (e.Name) e.Body)
-            = (e.FuncNames (e.Name))
-              (Function s.ScopeClass (e.Name) e.Body);
+          (Function s.ScopeClass (e.Name) Sentences e.Body)
+            = (Function
+                s.ScopeClass (e.Name) Sentences
+                <OptBody (e.OptimizableFunctions) e.Body>
+              );
 
-          (e.FuncNames) t.Definition
-            , t.Definition : (s.Definition t.Pos s.ScopeClass e.Name)
-            , <OneOf s.Definition Enum Swap Declaration> : True
-            = (e.FuncNames (e.Name)) t.Definition;
-
-          (e.FuncNames) (s.Type e.Info)
-            , <OneOf s.Type Ident NativeBlock> : True
-            = (e.FuncNames) (s.Type e.Info);
+          t.OtherItem = t.OtherItem;
         }
-        (/* func names */)
         e.AST
       >;
 }
 
-SetDiff {
-  (e.Set1-B s.Repeated e.Set1-E) s.Repeated e.Set2
-    = <SetDiff (e.Set1-B e.Set1-E) e.Set2>;
-
-  (e.Set1) s.NotIncluded e.Set2 = <SetDiff (e.Set1) e.Set2>;
-
-  (e.Set1) /* empty */ = e.Set1;
+OptBody {
+  (e.OptimizableFunctions) e.Sentences
+    = <Map (&OptSentence e.OptimizableFunctions) e.Sentences>;
 }
 
-SimpleTreeOpts {
-  (e.RegularFunctions) e.AST = e.AST;
+OptSentence {
+  e.OptimizableFunctions ((e.Pattern) e.Conditions (e.Result))
+    = (
+        (e.Pattern)
+        <Map
+          {
+            (Condition (e.Name) (e.Result^) (e.Pattern^))
+              = (Condition
+                  (e.Name)
+                  (<OptResult (e.OptimizableFunctions) e.Result>)
+                  (e.Pattern)
+                );
+          }
+          e.Conditions
+        >
+        (<OptResult (e.OptimizableFunctions) e.Result>)
+      );
+}
+
+/*
+  s.Temp ::= Cold | Hot — температура аргумента функции
+*/
+
+OptResult {
+  (e.OptimizableFunctions) e.Result
+    = <OptResultRec (e.OptimizableFunctions) Cold e.Result> : s.Temp e.Result^
+    = e.Result;
+}
+
+OptResultRec {
+  (e.OptimizableFunctions) s.Temp e.Result
+    = <MapReduce (&OptResultTerm e.OptimizableFunctions) Cold e.Result>;
+}
+
+OptResultTerm {
+  e.OptimizableFunctions s.Temp (Brackets e.Expr)
+    = <OptResultRec (e.OptimizableFunctions) s.Temp e.Expr> : s.Temp^ e.Expr^
+    = s.Temp (Brackets e.Expr);
+
+  e.OptimizableFunctions s.Temp (ADT-Brackets (e.Name) e.Expr)
+    = <OptResultRec (e.OptimizableFunctions) s.Temp e.Expr> : s.Temp^ e.Expr^
+    = s.Temp (ADT-Brackets (e.Name) e.Expr);
+
+  /* Терм горячий, ещё предстоит проанализировать */
+  e.OptimizableFunctions s.Temp (CallBrackets (ClosureBrackets e.Content) e.Expr)
+    = <OptResultRec (e.OptimizableFunctions) Cold e.Expr> : s.Temp^ e.Expr^
+    = Hot (CallBrackets e.Content e.Expr);
+
+  /* Вызов оптимизируемой функции, значит терм горячий */
+  e.OptimizableFunctions s.Temp (CallBrackets (TkName e.FuncName) e.Expr)
+    , e.OptimizableFunctions : e.Funcs-B (e.FuncName) e.Funcs-E
+    = <OptResultRec (e.OptimizableFunctions) Cold e.Expr> : s.Temp^ e.Expr^
+    = Hot (CallBrackets (TkName e.FuncName) e.Expr);
+
+  /*
+    Вызов неоптимизированной функции, можем остудить, если аргумент холодный
+    Сам терм тоже можем считать холодным
+  */
+  e.OptimizableFunctions s.Temp (CallBrackets e.Expr)
+    = <OptResultRec (e.OptimizableFunctions) Cold e.Expr>
+    : {
+        Hot e.Expr^ = Hot (CallBrackets e.Expr);
+
+        /* Оставляем старую температуру, мы ничего не нагрели */
+        Cold e.Expr^ = s.Temp (ColdCallBrackets e.Expr);
+      };
+
+  /* Остывший вызов уже проанализирован на прошлых проходах */
+  e.OptimizableFunctions s.Temp (ColdCallBrackets e.Expr)
+    = s.Temp (ColdCallBrackets e.Expr);
+
+  e.OptimizableFunctions s.Temp t.OtherTerm = s.Temp t.OtherTerm;
+}
+
+OptTree-Simple-Finalize {
+  e.AST
+    = <Map
+        {
+          (Function s.ScopeClass (e.Name) Sentences e.Body)
+            = (Function
+                s.ScopeClass (e.Name) Sentences <CleanupCold-Body e.Body>
+              );
+
+          t.OtherItem = t.OtherItem;
+        }
+        e.AST
+      >;
+}
+
+CleanupCold-Body {
+  e.Sentences = <Map &CleanupCold-Sentence e.Sentences>;
+}
+
+CleanupCold-Sentence {
+  ((e.Pattern) e.Conditions (e.Result))
+    = (
+        (e.Pattern)
+        <Map
+          {
+            (Condition (e.Name) (e.Result^) (e.Pattern))
+              = (Condition
+                  (e.Name) (<CleanupCold-Result e.Result>) (e.Pattern)
+                );
+          }
+          e.Conditions
+        >
+        (<CleanupCold-Result e.Result>)
+      );
+}
+
+CleanupCold-Result {
+  e.Result = <Map &CleanupCold-Term e.Result>;
+}
+
+CleanupCold-Term {
+  (Brackets e.Expr) = (Brackets <CleanupCold-Result e.Expr>);
+
+  (ADT-Brackets (e.Name) e.Expr)
+    = (ADT-Brackets (e.Name) <CleanupCold-Result e.Expr>);
+
+  (CallBrackets e.Expr) = (CallBrackets <CleanupCold-Result e.Expr>);
+  (ColdCallBrackets e.Expr) = (CallBrackets <CleanupCold-Result e.Expr>);
+
+  t.OtherTerm = t.OtherTerm;
 }
