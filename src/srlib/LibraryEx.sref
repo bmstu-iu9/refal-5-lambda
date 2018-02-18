@@ -315,5 +315,5 @@ $ENTRY Unique {
   e.Uniques t.Repeated e.Items-B t.Repeated e.Items-E
     = e.Uniques <Unique e.Items-B t.Repeated e.Items-E>;
 
-  e.Uniques = e.Uniques
+  e.Uniques = e.Uniques;
 }
