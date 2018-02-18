@@ -1,6 +1,10 @@
 //FROM LibraryEx
 $EXTERN Fetch;
 
+//FROM Library
+$EXTERN IntFromStr;
+
+
 /*
   Внутреннее представление:
 
@@ -30,6 +34,7 @@ $ENTRY Config-Create {
         (#Prelude /* пусто */)
         (#Refal5Mode #Extended)
         (#LogFile /* пусто */)
+        (#TreeOptCycles 100)
       ];
 }
 
@@ -153,6 +158,46 @@ $ENTRY Config-GetOptResult {
 }
 
 /**
+  <Config-GetOptTree t.Config>
+    == #NoOpt
+    == #OptTree
+*/
+$ENTRY Config-GetOptTree {
+  [Config e.Params-B (#Optimize e.Opt-B #OptTree e.Opt-E) e.Params-E]
+    = #OptTree;
+
+  [Config e.Params] = #NoOpt;
+}
+
+/**
+  <Config-GetOptDrive t.Config>
+    == #NoOpt
+    == #OptInline
+    == #OptDrive
+*/
+$ENTRY Config-GetOptDrive {
+  [Config e.Params-B (#Optimize e.Opt-B #OptDrive e.Opt-E) e.Params-E]
+    = #OptDrive;
+
+  [Config e.Params-B (#Optimize e.Opt-B #OptInline e.Opt-E) e.Params-E]
+    = #OptInline;
+
+  [Config e.Params] = #NoOpt;
+}
+
+/**
+  <Config-GetOptSpec t.Config>
+    == #NoOpt
+    == #OptSpec
+*/
+$ENTRY Config-GetOptSpec {
+  [Config e.Params-B (#Optimize e.Opt-B #OptSpec e.Opt-E) e.Params-E]
+    = #OptSpec;
+
+  [Config e.Params] = #NoOpt;
+}
+
+/**
   <Config-SetOptFlags t.Config e.Flags>
     == #Success t.Config
     == #Fails #BadValue-Opt e.Letters
@@ -199,6 +244,18 @@ ParseOptLetters {
 
   (e.Scanned) 'd' e.Flags
     = <ParseOptLetters (<Flags-Unique e.Scanned #OptDirect>) e.Flags>;
+
+  (e.Scanned) 'T' e.Flags
+    = <ParseOptLetters (<Flags-Unique e.Scanned #OptTree>) e.Flags>;
+
+  (e.Scanned) 'D' e.Flags
+    = <ParseOptLetters (<Flags-Unique e.Scanned #OptTree #OptDrive>) e.Flags>;
+
+  (e.Scanned) 'I' e.Flags
+    = <ParseOptLetters (<Flags-Unique e.Scanned #OptTree #OptInline>) e.Flags>;
+
+  (e.Scanned) 'S' e.Flags
+    = <ParseOptLetters (<Flags-Unique e.Scanned #OptTree #OptSpec>) e.Flags>;
 
   (e.Scanned) /* пусто */ = #Success e.Scanned;
 
@@ -576,4 +633,29 @@ $ENTRY Config-GetLogFile {
 $ENTRY Config-SetLogFile {
   [Config e.Params-B (#LogFile e.OldLogFile) e.Params-E] e.NewLogFile
     = #Success [Config e.Params-B (#LogFile e.NewLogFile) e.Params-E];
+}
+
+/**
+  <Config-GetTreeOptCycles t.Config> == s.TreeOptCycles
+  s.TreeOptCycles ::= s.NUMBER
+*/
+$ENTRY Config-GetTreeOptCycles {
+  [Config e.Params-B (#TreeOptCycles s.Cycles) e.Params-E] = s.Cycles;
+}
+
+/**
+  <Config-SetTreeOptCycles t.Config e.Cycles>
+    == #Success t.Config
+    == #Fails #BadValue-MustBeNumber e.Cycles
+*/
+$ENTRY Config-SetTreeOptCycles {
+  [Config e.Params-B (#TreeOptCycles s.OldCycles) e.Params-E] e.NewCycles
+    = <IntFromStr e.NewCycles>
+    : {
+        #Success s.NewCycles e.UnmatchedChars , e.UnmatchedChars : /* empty */
+          = #Success
+            [Config e.Params-B (#TreeOptCycles s.NewCycles) e.Params-E];
+
+        e.OtherResult = #Fails #BadValue-MustBeNumber e.NewCycles;
+      };
 }
