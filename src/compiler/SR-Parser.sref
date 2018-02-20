@@ -147,9 +147,7 @@ ParseElement-SwDirective {
 
   t.ErrorList s.Directive e.Tail =
     <ParseNameList
-      (/* generated */) t.ErrorList
-      <ASTItemFromDirective s.Directive>
-      e.Tail
+      (/* generated */) t.ErrorList <ASTItemFromDirective s.Directive> e.Tail
     >;
 }
 
@@ -169,19 +167,18 @@ ParseInclude {
 }
 
 /*
-  NameList = Name ',' NameList | Name ';' .
+  NameList = Name NameList-Tail .
+  NameList-Tail = ',' NameList | Name ';' .
 */
 
 ParseNameList {
-  (e.AST) t.ErrorList s.ASTItem s.ScopeClass
-  (#TkName s.LnNum e.Name) e.Tail =
+  (e.AST) t.ErrorList s.ASTItem s.ScopeClass (#TkName s.LnNum e.Name) e.Tail =
     <ParseNameList-Tail
       (e.AST (s.ASTItem s.LnNum s.ScopeClass e.Name))
       t.ErrorList s.ASTItem s.ScopeClass e.Tail
     >;
 
-  (e.AST) t.ErrorList s.ASTItem s.ScopeClass
-  t.Unexpected e.Tail =
+  (e.AST) t.ErrorList s.ASTItem s.ScopeClass t.Unexpected e.Tail =
     (e.AST)
     <AddUnexpected t.ErrorList t.Unexpected 'function name'>
     t.Unexpected e.Tail;
