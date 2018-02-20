@@ -48,6 +48,12 @@ $ENTRY CheckProgram {
           <EL-AddErrorAt
             t.ErrorList t.SrcPos 'Variable ' s.Mode '.' e.Index ' not found'
           >;
+
+        t.ErrorList^ (#Error t.SrcPos #DanglingEntry e.Name)
+          = <EL-AddErrorAt
+              t.ErrorList t.SrcPos
+              '$ENTRY ' e.Name '; declaration for missed function'
+            >;
       }
       t.ErrorList
       <FindErrors e.AST>
@@ -75,6 +81,9 @@ FindErrors {
             (e.Declarations) (#Declaration t.SrcPos s.ScopeClass e.Name) =
               (e.Declarations (#Declare t.SrcPos s.ScopeClass e.Name));
 
+            (e.Declarations) (#Entry t.SrcPos #GN-Entry e.Name) =
+              (e.Declarations (#Entry t.SrcPos e.Name));
+
             /* определения идентификаторов игнорируем */
             (e.Declarations) (#Ident t.SrcPos e.Name) =
               (e.Declarations);
@@ -100,11 +109,49 @@ CheckDeclarations {
     <Fetch
       e.Declarations
       <Pipe
+        CleanupValidEntry
+        FindInvalidEntry
         CleanupValidForwards
         FindInvalidForwards
         CheckRedefinitions
       >
     >;
+}
+
+CleanupValidEntry {
+  // При помощи $ENTRY Foo, Bar; можно объявлять и $ENTRY Foo { ... },
+  // поэтому и s.ScopeClass в #Define. Но потом для определения устанавливаем
+  // #GN-Entry.
+  e.Declarations-B
+  (#Entry t.SrcPosEntry e.Name) e.Declarations-M
+  (#Define t.SrcPosDefine s.ScopeClass e.Name) e.Declarations-E
+    = <CleanupValidEntry
+        e.Declarations-B e.Declarations-M
+        (#Define t.SrcPosDefine #GN-Entry e.Name) e.Declarations-E
+      >;
+
+  e.Declarations-B
+  (#Define t.SrcPosDefine s.ScopeClass e.Name) e.Declarations-M
+  (#Entry t.SrcPosEntry e.Name) e.Declarations-E
+    = <CleanupValidEntry
+        e.Declarations-B
+        (#Define t.SrcPosDefine #GN-Entry e.Name) e.Declarations-M
+        e.Declarations-E
+      >;
+
+  e.Declarations = e.Declarations;
+}
+
+FindInvalidEntry {
+  e.Declarations
+    = <Map
+        {
+          (#Entry t.SrcPos e.Name) = (#Error t.SrcPos #DanglingEntry e.Name);
+
+          t.Other = t.Other;
+        }
+        e.Declarations
+      >;
 }
 
 CleanupValidForwards {

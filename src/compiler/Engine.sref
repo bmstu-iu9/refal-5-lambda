@@ -1,5 +1,4 @@
-//FROM LibraryEx
-$EXTERN Fetch, Pipe, Map, UnBracket, MapReduce, SaveBytes, SaveFile;
+$INCLUDE "LibraryEx";
 
 //FROM Error
 $EXTERN EL-Destroy, EL-Create, EL-AddErrorAt, EL-Concat;
@@ -345,8 +344,9 @@ PatchASTSrcPos {
           (#Include t.SrcPos e.IncludeName)
             = /* пропускаем */;
 
-          (s.EnumSwapDeclaration t.SrcPos s.ScopeClass e.Name)
-            = (s.EnumSwapDeclaration <s.FnPatch t.SrcPos> s.ScopeClass e.Name);
+          (s.EnumSwapDeclEntry t.SrcPos s.ScopeClass e.Name)
+            , <OneOf s.EnumSwapDeclEntry #Enum #Swap #Declaration #Entry> : #True
+            = (s.EnumSwapDeclEntry <s.FnPatch t.SrcPos> s.ScopeClass e.Name);
         }
         e.AST
       >;

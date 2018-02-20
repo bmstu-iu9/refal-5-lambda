@@ -70,6 +70,7 @@
       | (#Enum t.SrcPos s.ScopeClass e.Name)
       | (#Swap t.SrcPos s.ScopeClass e.Name)
       | (#Declaration t.SrcPos s.ScopeClass e.Name)
+      | (#Entry t.SrcPos #GN-Entry e.Name)
       | (#Ident t.SrcPos e.Name)
       | (#Include t.SrcPos e.Name)
       | (#NativeBlock t.SrcPos e.Code)
@@ -115,6 +116,7 @@
   * `#Enum` — определение пустой функции,
   * `#Swap` — определение статического ящика,
   * `#Declaration` — объявление функции,
+  * `#Entry` — отделённое (detached) объявление функции как entry,
   * `#Ident` — объявление идентификатора,
   * `#Include` — имя включаемого файла,
   * `#NativeBlock` — блок нативного кода вне определения функции.
