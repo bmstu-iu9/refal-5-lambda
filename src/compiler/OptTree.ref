@@ -17,7 +17,7 @@ $EXTERN DisplayName;
 
 
 /**
-  <OptTree e.AST> == e.OptAST
+  <OptTree t.Config e.AST> == e.OptAST
 
   e.OptAST не содержит разметки, описывающей прогоняемые, встраиваемые
   и специализируемые функции.
