@@ -1,8 +1,15 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, MapReduce, Max;
+$EXTERN Map, Fetch, MapReduce, Max, Inc;
 
 //FROM HighLevelRASL-Common
 $EXTERN FoldOpenELoops, PutVariableDebugTable;
+
+//FROM HighLevelRASL-GenSubst-Save 
+$EXTERN GenInitSubst-Save,GenSubst-Save;
+
+//FROM HighLevelRASL-Condition
+$EXTERN SentenceTail;
+
 
 $ENTRY HighLevelRASL-Function-Disjoint {
   s.FnGenInitSubst s.FnGenSubst s.FnGenResult
@@ -45,8 +52,37 @@ $ENTRY HighLevelRASL-Function-Disjoint {
             : e.Commands
 
             // Каждое предложение превращается в отдельную цепочку команд.
-            // (Поэтому и disjoint.)
+            // (Поэтому и disjoint.)
             = (e.Commands);
+
+          ((e.Pattern) e.AssignmentsANDCond (e.Result))
+
+            = <GenInitSubst-Save 0 (e.Name) e.Pattern>
+            : s.ContextTop e.Substitutes (e.FirstPatternCommands)
+
+            = <GenSubst-Save
+                s.ContextTop e.Substitutes (e.FirstPatternCommands)
+              >
+            : s.StartOffsetCond
+              (e.PatternVars) (e.MarkedPattern)
+              e.PatternCommands
+
+            = <SentenceTail
+                (s.StartOffsetCond)
+                (s.FnGenResult e.Result)
+                (e.PatternVars) (e.MarkedPattern)
+                e.AssignmentsANDCond
+              >
+            : s.MaxOffset e.SentenceTailCommands
+
+            = <FoldOpenELoops
+                e.PatternCommands
+                <PutVariableDebugTable e.PatternVars>
+                e.SentenceTailCommands
+              >
+              : e.OuterSentence
+
+            = ((#CmdIssueMemory  s.MaxOffset) e.OuterSentence);
         }
         e.Sentences
       >

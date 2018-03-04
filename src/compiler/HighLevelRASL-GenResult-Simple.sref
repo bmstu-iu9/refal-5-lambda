@@ -55,7 +55,7 @@ GenResult {
       >;
 }
 
-DoGenResult {
+$ENTRY DoGenResult {
   // Создаём литералы
   (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (#TkChar s.Value) e.Result =
     <DoGenResult
@@ -234,7 +234,7 @@ DoGenResult {
     s.Counter (e.Vars) e.AllocCommands e.Commands;
 }
 
-MakeVariableCommentTable {
+$ENTRY MakeVariableCommentTable {
   e.Vars =
     <Fetch
       e.Vars
