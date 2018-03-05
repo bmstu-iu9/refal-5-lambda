@@ -5642,6 +5642,10 @@ JUMP_FROM_SCALE:
         splice_to_freelist(begin, end);
         break;
 
+      case icSpliceToFreeList_Range:
+        splice_to_freelist(context[val1], context[val2]);
+        break;
+
       case icNextStep:
         {
           profiler::stop_function();
