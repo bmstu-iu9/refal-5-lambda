@@ -46,7 +46,7 @@ $ENTRY SentenceTail{
     = <SentenceTail
        (s.StartOffsetCondNext)
        (e.ResultSentence)
-       (e.PatternVars) (e.MarkedPatternCur)
+       (e.PatternVarsAfterCond) (e.MarkedPatternCur)
        e.AssignsANDCondTail
       > 
       : s.NestedStackTop e.NestedSentence
@@ -77,6 +77,14 @@ $ENTRY SentenceTail{
   /*пусто*/
   
     = e.MarkedPatternCur : (e.MarkedPattern t.CloseCall)  e.MarkedPatternCur^ 
+
+    = <Map
+        {
+          (e.MarkedPattern) = e.MarkedPattern;
+        }
+        e.MarkedPatternCur
+      >
+      : e.MarkedPatternCur^
     
     = e.ResultSentence : s.FnGenResult e.Result
     
