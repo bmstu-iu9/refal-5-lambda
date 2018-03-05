@@ -5,7 +5,7 @@ $EXTERN Fetch, Map, Inc, Sort, Pipe, Max;
 $EXTERN Add;
 
 //FROM HighLevelRASL-GenSubst-Save 
-$EXTERN GenSubst-Save;
+$EXTERN GenSubst-Save-Cond;
 
 //FROM HighLevelRASL-Common
 $EXTERN Inc2,FoldOpenELoops, PutVariableDebugTable, CollectStrings, 
@@ -33,8 +33,8 @@ $ENTRY SentenceTail{
       : s.OffsetCond 
         e.CondSubstitutes (e.FirstCondPatternCommands)
 
-    = <GenSubst-Save
-        s.OffsetCond (e.PatternVars) e.CondSubstitutes 
+    = <GenSubst-Save-Cond
+        s.OffsetCond e.CondSubstitutes (e.PatternVars)
         (e.FirstCondPatternCommands)
       >
       : s.StartOffsetCondNext 
@@ -71,7 +71,7 @@ $ENTRY SentenceTail{
     = s.StackTop e.SentenceCommands;
            
   (s.ContextOffset)
-  (e.ResultSentence)
+  (s.FnGenResult e.Result)
   (e.PatternVars)  
   (e.MarkedPatternCur)
   /*пусто*/
@@ -80,18 +80,16 @@ $ENTRY SentenceTail{
 
     = <Map
         {
-          (e.MarkedPattern) = e.MarkedPattern;
+          (e.MarkedPattern^) = e.MarkedPattern;
         }
         e.MarkedPatternCur
       >
       : e.MarkedPatternCur^
     
-    = e.ResultSentence : s.FnGenResult e.Result
-    
     = <s.FnGenResult
         s.ContextOffset (e.PatternVars) 
         (e.MarkedPattern e.MarkedPatternCur t.CloseCall) 
-        (e.ResultSentence)
+        e.Result
       >
       : s.ContextCount e.ResultCommands
 
@@ -110,7 +108,9 @@ $ENTRY GenInitSubst-Cond {
       (#Junk (#TkOpenCall s.0) (#TkName e.FuncName s.4))
       (#E s.2 e.Pattern)
       (#Junk (#TkCloseCall s.1))
-      (#CmdCallSave #AlgLeft s.0 s.2);
+      (
+        (#CmdCallSave #AlgLeft s.0 s.2)
+      );
 }
 
 /**

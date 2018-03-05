@@ -48,6 +48,13 @@ $ENTRY GenSubst-Save {
     >;
 }
 
+$ENTRY GenSubst-Save-Cond {
+  s.ContextTop e.Substitutes (e.Vars) (e.PrefixCommands) =
+    <DoGenSubst
+      s.ContextTop e.Substitutes (e.Vars) (e.PrefixCommands)
+    >;
+}
+
 DoGenSubst {
   // Распознавание T-подстановки
   s.ContextOffset
