@@ -146,7 +146,7 @@ GenResult{
       >
     : e.PatternVars^
     
-    = <DoGenResult-Condition 
+    = <DoGenResult
         (e.PatternVars)
         (/* alloc commands */) (/* other commands */)
         s.ContextOffset // счётчик новых элементов
@@ -154,7 +154,7 @@ GenResult{
       >;
 }
 
-DoGenResult-Condition {
+DoGenResult {
  (e.Vars) (e.AllocCommands) (e.Commands)
   s.Counter (#TkOpenCallCond s.Offset) e.Result =
     <DoGenResult
@@ -164,6 +164,15 @@ DoGenResult-Condition {
       s.Counter e.Result
     >;
     
+  (e.Vars) (e.AllocCommands) (e.Commands)
+  s.Counter (#TkCloseCallCond s.Offset) e.Result =
+    <DoGenResult
+      (e.Vars)
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Offset #ElCloseCall))
+      ((#CmdInsertElem s.Offset) e.Commands)
+      s.Counter e.Result
+    >;
+
   // Создаём литералы
   (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (#TkChar s.Value) e.Result =
     <DoGenResult
