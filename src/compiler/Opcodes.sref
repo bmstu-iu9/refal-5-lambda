@@ -118,6 +118,7 @@ $ENTRY NumberFromOpcode{
   #CmdPerformNative = 109;
   #CmdScale = 111;
   #CmdVariableDebugOffset = 112;
+  #CmdSpliceToFreeList-Range = 115;
 }
 
 $ENTRY NumberFromBracket{

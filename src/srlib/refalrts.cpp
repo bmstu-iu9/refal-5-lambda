@@ -525,7 +525,8 @@ refalrts::Iter refalrts::call_left(
   refalrts::Iter right_bracket = last;
   refalrts::Iter function = next(left_bracket);
 
-  assert(left_bracket->link_info == right_bracket);
+  // TODO: проверить после завершения разработки условий
+  //assert(left_bracket->link_info == right_bracket);
 
   if (next(function) != right_bracket) {
     res_first = next(function);
@@ -2007,7 +2008,16 @@ int refalrts::profiler::reverse_compare(
 
 void refalrts::profiler::start_generated_function() {
   clock_t now = clock();
-  refalrts_profiler_assert_eq(g_current_state, cInRuntime);
+  // TODO: проверить после завершения разработки условий
+  //refalrts_profiler_assert_eq(g_current_state, cInRuntime);
+  switch (g_current_state) {
+    case cInRuntime:
+    case cInResultLinear:
+      break;
+
+    default:
+      refalrts_switch_default_violation(g_current_state);
+  }
   g_counters[cCounter_RuntimeTime] += (now - g_prev_cutoff);
   g_prev_cutoff = now;
   g_current_state = cInPatternLinear;

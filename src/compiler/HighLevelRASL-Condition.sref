@@ -65,7 +65,10 @@ $ENTRY SentenceTail{
         )
       : e.CmdSentenceCommands
       
-    = e.CondResultCommands e.CmdSentenceCommands 
+    = e.CondResultCommands
+      (#CmdProfilerStopSentence)
+      (#CmdProfileFunction)
+      e.CmdSentenceCommands
       : e.SentenceCommands
       
     = s.StackTop e.SentenceCommands;

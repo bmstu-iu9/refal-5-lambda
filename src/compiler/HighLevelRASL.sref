@@ -46,7 +46,7 @@ $ENTRY HighLevelRASL {
               ((e.Pattern) e.Conditions (e.Result))
                 = <Map
                     {
-                      (#Condition (e.Name) (e.Result^) (e.Pattern^))
+                      (#Condition (e.Name^) (e.Result^) (e.Pattern^))
                         = (#CmdEnum #GN-Local e.Name);
                     }
                     e.Conditions
