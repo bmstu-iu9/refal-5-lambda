@@ -329,6 +329,9 @@ GenCommand-RASL {
   (#CmdSpliceToFreeList) =
     <PutCommand #CmdSpliceToFreeList 0 0 0>;
 
+  (#CmdSpliceToFreeList-Range s.Start s.End) =
+    <PutCommand #CmdSpliceToFreeList-Range s.Start s.End 0>;
+
   (#CmdNextStep) =
     <PutCommand #CmdNextStep>;
 

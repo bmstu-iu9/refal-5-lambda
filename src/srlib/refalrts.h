@@ -279,6 +279,7 @@ enum iCmd { /*NumberFromOpcode:Cmd+ic;Alg+Left,Alg+Right,Alg+Term*/
   icPerformNative = 109,
   icScale = 111,
   icVariableDebugOffset = 112,
+  icSpliceToFreeList_Range = 115,
 };
 
 enum BracketType { /*NumberFromBracket:El+ib;*/
