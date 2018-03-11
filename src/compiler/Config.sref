@@ -251,14 +251,10 @@ $ENTRY Config-GetErrorFile {
     == #Fails #EmptyErrorFileName
 */
 $ENTRY Config-SetErrorFile {
-  [Config e.Params-B (#ErrorFile e.OldErrorFile) e.Params-E] #NoErrorFile
-    = #Success [Config e.Params-B (#ErrorFile /* пусто */) e.Params-E];
-
-  [Config e.Params] #ErrorFile /* пусто */
-    = #Fails #EmptyErrorFile;
+  [Config e.Params] /* пусто */ = #Fails #EmptyErrorFileName;
 
   [Config e.Params-B (#ErrorFile e.OldErrorFile) e.Params-E]
-  #ErrorFile e.NewErrorFile
+  e.NewErrorFile
     = #Success [Config e.Params-B (#ErrorFile e.NewErrorFile) e.Params-E];
 }
 
