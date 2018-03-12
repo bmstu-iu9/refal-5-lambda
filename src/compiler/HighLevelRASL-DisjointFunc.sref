@@ -70,7 +70,7 @@ $ENTRY HighLevelRASL-Function-Disjoint {
             = <SentenceTail
                 (s.StartOffsetCond)
                 (s.FnGenResult e.Result)
-                (e.PatternVars) (e.MarkedPattern)
+                (e.PatternVars) ((e.MarkedPattern))
                 e.AssignmentsANDCond
               >
             : s.MaxOffset e.SentenceTailCommands
