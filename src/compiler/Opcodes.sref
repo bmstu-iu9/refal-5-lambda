@@ -119,6 +119,8 @@ $ENTRY NumberFromOpcode{
   #CmdScale = 111;
   #CmdVariableDebugOffset = 112;
   #CmdSpliceToFreeList-Range = 115;
+  #CmdPushState = 116;
+  #CmdPopState = 117;
 }
 
 $ENTRY NumberFromBracket{
@@ -138,4 +140,5 @@ $ENTRY BlockTypeNumber{
   #EmptyFunction = 5;
   #Swap = 6;
   #Reference = 7;
+  #Condition = 8;
 }

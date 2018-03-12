@@ -64,6 +64,10 @@ CalcDigest {
     (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'S'>)
     (#CmdSwap s.ScopeClass e.Name);
 
+  (s.Hash1 s.Hash2) (#CmdConditionFunc s.ScopeClass e.Name) =
+    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'C'>)
+    (#CmdConditionFunc s.ScopeClass e.Name);
+
   (s.Hash1 s.Hash2) (#CmdDeclaration s.ScopeClass e.Name) =
     (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'D'>)
     (#CmdDeclaration s.ScopeClass e.Name);

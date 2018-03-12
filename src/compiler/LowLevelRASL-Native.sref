@@ -65,6 +65,9 @@ SetCookies {
   s.Hash1 s.Hash2 (#CmdSwap s.ScopeClass e.Name) =
     (#CmdSwap <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>);
 
+  s.Hash1 s.Hash2 (#CmdConditionFunc s.ScopeClass e.Name) =
+    (#CmdConditionFunc <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>);
+
   s.Hash1 s.Hash2 (#CmdDeclaration s.ScopeClass e.Name) =
     (#CmdDeclaration
       <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>
@@ -103,6 +106,10 @@ ClassifyItems-Native {
 
   (e.Declarations)
   (#CmdSwap e.Name) =
+    (e.Declarations (#CmdExtern e.Name));
+
+  (e.Declarations)
+  (#CmdConditionFunc e.Name) =
     (e.Declarations (#CmdExtern e.Name));
 
   (e.Declarations)

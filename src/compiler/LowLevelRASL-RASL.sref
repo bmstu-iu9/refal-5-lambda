@@ -55,6 +55,10 @@ ClassifyItems {
     (e.FuncScopeClass (s.ScopeClass e.Name))
     (#CmdSwapDescr s.ScopeClass e.Name);
 
+  (e.FuncScopeClass) (#CmdConditionFunc s.ScopeClass e.Name) =
+    (e.FuncScopeClass (s.ScopeClass e.Name))
+    (#CmdConditionFuncDecsr s.ScopeClass e.Name);
+
   (e.FuncScopeClass) (#CmdDeclaration s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name)) /* skip */;
 

@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Map, Inc, Sort, Pipe, Max;
+$EXTERN Fetch, Map, Inc, Sort, Pipe, Max, Dec;
 
 //FROM Library
 $EXTERN Add;
@@ -66,7 +66,8 @@ $ENTRY SentenceTail{
       : e.CmdSentenceCommands
       
     = e.CondResultCommands
-      (#CmdProfilerStopSentence)
+      (#CmdPushState)
+      (#CmdNextStep)
       (#CmdProfileFunction)
       e.CmdSentenceCommands
       : e.SentenceCommands
@@ -172,7 +173,12 @@ DoGenResult {
     <DoGenResult
       (e.Vars)
       (e.AllocCommands (#CmdCreateElem #Allocate s.Offset #ElCloseCall))
-      ((#CmdInsertElem s.Offset) e.Commands)
+      (
+        (#CmdPushStack s.Offset)
+        (#CmdPushStack <Dec s.Offset>)
+        (#CmdInsertElem s.Offset)
+        e.Commands
+      )
       s.Counter e.Result
     >;
 

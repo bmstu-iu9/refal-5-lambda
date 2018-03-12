@@ -113,6 +113,16 @@ struct RefalEmptyFunction: public RefalFunction {
   static const RASLCommand run[];
 };
 
+struct RefalCondFunction: public RefalFunction {
+  RefalCondFunction(RefalFuncName name)
+    : RefalFunction(run, name)
+  {
+    /* пусто */
+  }
+
+  static const RASLCommand run[];
+};
+
 class RefalIdentDescr;
 typedef const RefalIdentDescr *RefalIdentifier;
 
@@ -280,6 +290,8 @@ enum iCmd { /*NumberFromOpcode:Cmd+ic;Alg+Left,Alg+Right,Alg+Term*/
   icScale = 111,
   icVariableDebugOffset = 112,
   icSpliceToFreeList_Range = 115,
+  icPushState = 116,
+  icPopState = 117,
 };
 
 enum BracketType { /*NumberFromBracket:El+ib;*/
@@ -672,6 +684,7 @@ enum BlockType { /*BlockTypeNumber:cBlockType;*/
   cBlockTypeEmptyFunction = 5,
   cBlockTypeSwap = 6,
   cBlockTypeReference = 7,
+  cBlockTypeCondition = 8,
 };
 
 
