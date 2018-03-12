@@ -116,15 +116,15 @@ setlocal
   find "CONDITIONS" %1 > NUL
   if not errorlevel 1 (
     echo Pass special conditions tests:
-    rem set SRFLAGS_PLUS=%SRFLAGS_PLUS_INIT%
-    rem set SRFLAGS=-OC
-    rem call :%2 %1 || exit /b 1
-    rem set SRFLAGS=-OC --markup-context
-    rem call :%2 %1 || exit /b 1
+    set SRFLAGS_PLUS=%SRFLAGS_PLUS_INIT%
+    set SRFLAGS=-OC
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OC --markup-context
+    call :%2 %1 || exit /b 1
     rem set SRFLAGS=-OCP
     rem call :%2 %1 || exit /b 1
-    rem set SRFLAGS=-OCR
-    rem call :%2 %1 || exit /b 1
+    set SRFLAGS=-OCR
+    call :%2 %1 || exit /b 1
     rem set SRFLAGS=-OCPR
     rem call :%2 %1 || exit /b 1
     rem set SRFLAGS_PLUS=%SRFLAGS_NAT%

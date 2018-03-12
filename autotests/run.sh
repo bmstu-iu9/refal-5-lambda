@@ -39,11 +39,11 @@ run_test_all_modes() {
 
   if grep 'CONDITIONS' $1 > /dev/null; then
     echo "Pass special conditions tests:"
-    #SRFLAGS_PLUS="$SRFLAGS_PLUS_INIT"
-    #SRFLAGS=-OC $2 $1
-    #SRFLAGS="-OC --markup-context" $2 $1
+    SRFLAGS_PLUS="$SRFLAGS_PLUS_INIT"
+    SRFLAGS=-OC $2 $1
+    SRFLAGS="-OC --markup-context" $2 $1
     #SRFLAGS=-OCP $2 $1
-    #SRFLAGS=-OCR $2 $1
+    SRFLAGS=-OCR $2 $1
     #SRFLAGS=-OCPR $2 $1
     #SRFLAGS_PLUS="$SRFLAGS_NAT"
     #SRFLAGS=-OCd $2 $1
