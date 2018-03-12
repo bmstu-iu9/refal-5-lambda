@@ -27,22 +27,6 @@ $ENTRY PrintVar {
   s.Mode e.Index s.Depth = s.Mode '.' e.Index '#' <StrFromInt s.Depth>;
 }
 
-$ENTRY FakeOffset {
-  e.Expr =
-    <Map
-      {
-        (s.Bracket) = (s.Bracket #NoOffset);
-
-        (#TkVariable s.Mode e.Index s.Depth s.Offset) =
-          // без изменений
-          (#TkVariable s.Mode e.Index s.Depth s.Offset);
-
-        (s.Token e.TokenInfo) = (s.Token e.TokenInfo #NoOffset);
-      }
-      e.Expr
-    >;
-}
-
 $ENTRY TextFromExpr {
   e.Expr =
     <Map

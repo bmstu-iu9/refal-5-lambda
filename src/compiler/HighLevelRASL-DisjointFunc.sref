@@ -60,7 +60,7 @@ $ENTRY HighLevelRASL-Function-Disjoint {
             = <GenInitSubst-Save 0 (e.Name) e.Pattern>
             : s.ContextTop e.Substitutes (e.FirstPatternCommands)
 
-            = <GenSubst-Save
+            = <s.FnGenSubst
                 s.ContextTop e.Substitutes (e.FirstPatternCommands)
               >
             : s.StartOffsetCond
