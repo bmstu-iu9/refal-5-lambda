@@ -74,6 +74,7 @@ setlocal
     -f-DMEMORY_LIMIT=1000 ^
     -f-DIDENTS_LIMIT=200 ^
     %DUMP_FILE_NAME_OPTION% ^
+    --log=__log.txt ^
     -f-DDONT_PRINT_STATISTICS
   set SRFLAGS_PREF=--prefix=_test_prefix
   set SRFLAGS_NAT=refalrts refalrts-platform-specific
@@ -179,6 +180,7 @@ setlocal
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt
+  if exist __log.txt erase __log.txt
   echo.
 endlocal
 goto :EOF
@@ -221,6 +223,7 @@ setlocal
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt
+  if exist __log.txt erase __log.txt
   echo Ok! This failure was normal and expected
   echo.
 endlocal
@@ -288,6 +291,7 @@ setlocal
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt
+  if exist __log.txt erase __log.txt
   echo.
 endlocal
 goto :EOF

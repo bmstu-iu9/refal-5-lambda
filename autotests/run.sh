@@ -85,6 +85,7 @@ run_test_aux_with_flags() {
 
   rm $RASL $NATCPP $EXE
   [ -e __dump.txt ] && rm __dump.txt
+  [ -e __log.txt ] && rm __log.txt
 
   echo
 }
@@ -142,6 +143,7 @@ run_test_aux_with_flags.FAILURE() {
 
   rm $RASL $NATCPP $EXE
   [ -e __dump.txt ] && rm __dump.txt
+  [ -e __log.txt ] && rm __log.txt
 
   echo "Ok! This failure was normal and expected"
   echo
@@ -180,6 +182,7 @@ run_test_aux.LEXGEN() {
 
   rm _lexgen-out*
   [ -e __dump.txt ] && rm __dump.txt
+  [ -e __log.txt ] && rm __log.txt
 
   echo
 }
@@ -215,6 +218,7 @@ run_test() {
     -f-DMEMORY_LIMIT=1000
     -f-DIDENTS_LIMIT=200
     -f-DDUMP_FILE=\\\"__dump.txt\\\"
+    --log=__log.txt
     -f-DDONT_PRINT_STATISTICS
     -f-g
     --chmod-x-command="chmod +x"
