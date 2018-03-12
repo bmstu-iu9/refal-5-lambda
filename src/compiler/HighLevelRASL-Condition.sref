@@ -63,6 +63,7 @@ $ENTRY SentenceTail{
           s.StartOffsetCond
           <Inc s.StartOffsetCond>
         )
+        (#CmdFail)
       : e.CmdSentenceCommands
       
     = e.CondResultCommands
