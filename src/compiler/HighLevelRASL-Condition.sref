@@ -19,7 +19,7 @@ $ENTRY SentenceTail{
   (s.StartOffsetCond)
   (e.ResultSentence)
   (e.PatternVars)(e.MarkedPatternCur)
-  (#Condition (e.CondName) (e.CondResult) (e.CondPattern)) e.AssignsANDCondTail
+  (#Condition (e.CondName) (e.CondResult) (e.CondPattern)) e.ConditionsTail
     
     = <GenResult-Condition
         <Inc2 s.StartOffsetCond> (e.PatternVars) 
@@ -47,7 +47,7 @@ $ENTRY SentenceTail{
        (s.StartOffsetCondNext)
        (e.ResultSentence)
        (e.PatternVarsAfterCond) (e.MarkedPatternCur)
-       e.AssignsANDCondTail
+       e.ConditionsTail
       > 
       : s.NestedStackTop e.NestedSentence
        

@@ -55,7 +55,7 @@ $ENTRY HighLevelRASL-Function-Disjoint {
             // (Поэтому и disjoint.)
             = (e.Commands);
 
-          ((e.Pattern) e.AssignmentsANDCond (e.Result))
+          ((e.Pattern) e.Conditions (e.Result))
 
             = <GenInitSubst-Save 0 (e.Name) e.Pattern>
             : s.ContextTop e.Substitutes (e.FirstPatternCommands)
@@ -71,7 +71,7 @@ $ENTRY HighLevelRASL-Function-Disjoint {
                 (s.StartOffsetCond)
                 (s.FnGenResult e.Result)
                 (e.PatternVars) ((e.MarkedPattern))
-                e.AssignmentsANDCond
+                e.Conditions
               >
             : s.MaxOffset e.SentenceTailCommands
 
