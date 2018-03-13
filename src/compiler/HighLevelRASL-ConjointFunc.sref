@@ -8,7 +8,7 @@ $EXTERN CreateHardPattern;
 $EXTERN CreateGlobalGen, SplitGen, PatternComment;
 
 //FROM HighLevelRASL-Common
-$EXTERN GenPattern, MakeSavers, GenResult;
+$EXTERN GenPattern, MakeSavers, GenResult, FoldOpenELoops, PutVariableDebugTable;
 
 $ENTRY HighLevelRASL-Function-Conjoint {
   s.FnGenInitSubst s.FnGenSubst s.FnGenResult
@@ -45,19 +45,34 @@ $ENTRY HighLevelRASL-Function-Conjoint {
     = <MapReduce
         {
           s.MaxMemory ((e.Substitute) (e.HardGenComment) (e.Result))
+
             = <ComposeVars (e.MarkedPattern) (e.Substitute) (e.Vars)>
             : e.SubstitutesAnsJunks
+
             = <MakeSavers s.ContextSize e.SubstitutesAnsJunks>
             : s.ContextSize^ (e.CmdSaves) e.SubstitutesAnsJunks^
-            = <GenResult
-                s.FnGenResult (e.Result)
-                <s.FnGenSubst
-                  s.ContextSize
-                  e.SubstitutesAnsJunks
-                  (e.CmdSaves)
-                >
+
+            = <s.FnGenSubst
+                s.ContextSize
+                e.SubstitutesAnsJunks
+                (e.CmdSaves)
+              >
+            : s.ContextOffset (e.PatternVars) (e.MarkedPattern^)
+              e.PatternCommands
+
+            = <s.FnGenResult
+                s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
+              >
+            : s.ContextCount e.ResultCommands
+
+            = <FoldOpenELoops
+                (#CmdIssueMemory s.ContextCount)
+                e.PatternCommands
+                <PutVariableDebugTable e.PatternVars>
+                e.ResultCommands
               >
             : (#CmdIssueMemory s.Memory) e.Commands
+
             = <Max s.MaxMemory s.Memory>
               (#CmdSentence
                 (#CmdComment e.HardGenComment)
