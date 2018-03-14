@@ -10,16 +10,19 @@ $EXTERN CreateGlobalGen, SplitGen, PatternComment;
 //FROM HighLevelRASL-Common
 $EXTERN GenPattern, MakeSavers, GenResult, FoldOpenELoops, PutVariableDebugTable;
 
+//FROM HighLevelRASL-Condition
+$EXTERN SentenceTail;
+
 $ENTRY HighLevelRASL-Function-Conjoint {
   s.FnGenInitSubst s.FnGenSubst s.FnGenResult
   s.ScopeClass (e.Name) e.Sentences
 
     = <MapReduce
         {
-          (e.HardPatterns) ((e.Pattern) (e.Result))
+          (e.HardPatterns) ((e.Pattern) e.Conditions (e.Result))
             = <CreateHardPattern e.Pattern> : e.HardPattern
             = (e.HardPatterns (e.HardPattern))
-              ((<PatternComment e.HardPattern>) (e.Result));
+              ((<PatternComment e.HardPattern>) e.Conditions (e.Result));
         }
         (/* hard patterns */)
         e.Sentences
@@ -35,8 +38,13 @@ $ENTRY HighLevelRASL-Function-Conjoint {
 
     = <MapReduce
         {
-          ((e.Substitute) e.Substs) ((e.HardGenComment) (e.Result)) =
-            (e.Substs) ((e.Substitute) (e.HardGenComment) (e.Result));
+          (
+           (e.Substitute) e.Substs)
+           ((e.HardGenComment) e.Conditions (e.Result)
+          )
+          =
+            (e.Substs)
+            ((e.Substitute) (e.HardGenComment) e.Conditions (e.Result));
         }
         (e.SentSubsts) e.SentenceTails
       >
@@ -44,7 +52,7 @@ $ENTRY HighLevelRASL-Function-Conjoint {
 
     = <MapReduce
         {
-          s.MaxMemory ((e.Substitute) (e.HardGenComment) (e.Result))
+          s.MaxMemory ((e.Substitute) (e.HardGenComment) e.Conditions (e.Result))
 
             = <ComposeVars (e.MarkedPattern) (e.Substitute) (e.Vars)>
             : e.SubstitutesAnsJunks
@@ -57,23 +65,26 @@ $ENTRY HighLevelRASL-Function-Conjoint {
                 e.SubstitutesAnsJunks
                 (e.CmdSaves)
               >
-            : s.ContextOffset (e.PatternVars) (e.MarkedPattern^)
+            : s.StartOffsetCond
+              (e.PatternVars) (e.MarkedPattern^)
               e.PatternCommands
 
-            = <s.FnGenResult
-                s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
+            = <SentenceTail
+                (s.StartOffsetCond)
+                (s.FnGenResult e.Result)
+                (e.PatternVars) ((e.MarkedPattern))
+                e.Conditions
               >
-            : s.ContextCount e.ResultCommands
+            : s.MaxOffset e.SentenceTailCommands
 
             = <FoldOpenELoops
-                (#CmdIssueMemory s.ContextCount)
                 e.PatternCommands
                 <PutVariableDebugTable e.PatternVars>
-                e.ResultCommands
+                e.SentenceTailCommands
               >
-            : (#CmdIssueMemory s.Memory) e.Commands
+              : e.Commands
 
-            = <Max s.MaxMemory s.Memory>
+            = <Max s.MaxMemory s.MaxOffset>
               (#CmdSentence
                 (#CmdComment e.HardGenComment)
                 e.Commands
