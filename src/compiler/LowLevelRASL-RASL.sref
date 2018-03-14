@@ -162,7 +162,8 @@ ConvertOneInterpretCommand {
     = s.NextLabel
       (#CmdEPrepare s.BracketNum s.VarNumber)
       (#CmdEStart s.BracketNum s.VarNumber)
-      e.SubCommands;
+      e.SubCommands
+      (#CmdFail);
 
   s.NextLabel t.Command
     = s.NextLabel <ConvertOneInterpretCommand-Simple t.Command>;
