@@ -3,6 +3,8 @@ $ENTRY Go {
   refalrts::this_is_generated_function();
   refalrts::this_is_generated_function();
   refalrts::splice_to_freelist(arg_begin, arg_end);
-  return refalrts::cSuccess;
+  // TODO: вернуть на место после доработки профилировщика условиям
+  //return refalrts::cSuccess;
+  return refalrts::cRecognitionImpossible;
 %%
 }
