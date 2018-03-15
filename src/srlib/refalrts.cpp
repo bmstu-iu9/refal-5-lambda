@@ -3390,7 +3390,7 @@ refalrts::Iter pop_stack();
 bool empty_stack();
 
 refalrts::FnResult run();
-refalrts::FnResult main_loop();
+refalrts::FnResult main_loop(const RASLCommand *rasl);
 void make_dump(refalrts::Iter begin, refalrts::Iter end);
 FILE* dump_stream();
 
@@ -3564,8 +3564,76 @@ void print_error_message(FILE *stream, refalrts::FnResult res) {
 
 }
 
+struct StateRefalMachine{
+  refalrts::RefalFunction *callee;
+  refalrts::Iter begin; /* нужно для icSetResArgBegin в startup_rasl */
+  refalrts::Iter end;
+  const refalrts::RASLCommand *rasl;
+  refalrts::FunctionTableItem *functions;
+  const refalrts::RefalIdentifier *idents;
+  const refalrts::RefalNumber *numbers;
+  const refalrts::StringItem *strings;
+
+  refalrts::vm::Stack<const refalrts::RASLCommand*> open_e_stack;
+  refalrts::vm::Stack<refalrts::Iter> context;
+
+  refalrts::Iter res;
+  refalrts::Iter trash_prev;
+  int stack_top;
+};
+
+std::vector<StateRefalMachine> g_states_refal_machine(1);
+
 refalrts::FnResult refalrts::vm::run() {
-  FnResult res = main_loop();
+  RefalFunction *go = RefalFunction::lookup(0, 0, "GO");
+
+  if (! go) {
+    go = RefalFunction::lookup(0, 0, "Go");
+  }
+
+  if (! go) {
+    fprintf(stderr, "INTERNAL ERROR: entry point (Go or GO) is not found\n");
+    exit(158);
+  }
+
+  FunctionTableItem entry_point[1] = { FunctionTableItem(go) };
+
+  // Формируем вызов <Go#0:0> в поле зрения
+  static const RASLCommand startup_rasl[] = {
+    { icIssueMemory, 3, 0, 0 },
+    { refalrts::icResetAllocator, 0, 0, 0 },
+    { refalrts::icSetResArgBegin, 0, 0, 0 },
+    { icAllocateBracket, 0, ibOpenCall, 0 },
+    { icAllocateName, 0, 0, 1 },
+    { icAllocateBracket, 0, ibCloseCall, 2 },
+    { icSpliceTile, 0, 2, 0 },
+    { icPushStack, 0, 0, 2 },
+    { icPushStack, 0, 0, 0 },
+    { icNextStep, 0, 0, 0 }
+  };
+
+  StateRefalMachine start_state;
+
+  start_state.callee = 0;
+  start_state.begin = & g_last_marker; /* нужно для icSetResArgBegin в startup_rasl */
+  start_state.end = 0;
+  start_state.rasl = startup_rasl;
+  start_state.functions = entry_point;
+  start_state.idents = 0;
+  start_state.numbers = 0;
+  start_state.strings = 0;
+  start_state.open_e_stack = vm::g_open_e_stack;
+  start_state.context = vm::g_context;
+  start_state.res = 0;
+  start_state.trash_prev = 0;
+  start_state.stack_top = 0;
+  g_states_refal_machine.push_back(start_state);
+
+  static const RASLCommand set_state[] = {
+    { icPopState, 0, 0, 0 },
+  };
+
+  FnResult res = main_loop(set_state);
 
   if (res != cSuccess && res != cExit) {
     print_error_message(stderr, res);
@@ -4926,59 +4994,11 @@ int refalrts::debugger::find_debugger_flag(int argc, char **argv) {
 
 //=============================================================================
 
-struct StateRefalMachine{
-  refalrts::RefalFunction *callee;
-  refalrts::Iter begin; /* нужно для icSetResArgBegin в startup_rasl */
-  refalrts::Iter end;
-  const refalrts::RASLCommand *rasl;
-  refalrts::FunctionTableItem *functions;
-  const refalrts::RefalIdentifier *idents;
-  const refalrts::RefalNumber *numbers;
-  const refalrts::StringItem *strings;
-
-  refalrts::vm::Stack<const refalrts::RASLCommand*> open_e_stack;
-  refalrts::vm::Stack<refalrts::Iter> context;
-
-  refalrts::Iter res;
-  refalrts::Iter trash_prev;
-  int stack_top;
-};
-
-std::vector<StateRefalMachine> g_states_refal_machine(1);
-
-refalrts::FnResult refalrts::vm::main_loop() {
-  RefalFunction *go = RefalFunction::lookup(0, 0, "GO");
-
-  if (! go) {
-    go = RefalFunction::lookup(0, 0, "Go");
-  }
-
-  if (! go) {
-    fprintf(stderr, "INTERNAL ERROR: entry point (Go or GO) is not found\n");
-    exit(158);
-  }
-
-  FunctionTableItem entry_point[1] = { FunctionTableItem(go) };
-
-  // Формируем вызов <Go#0:0> в поле зрения
-  static const RASLCommand startup_rasl[] = {
-    { icIssueMemory, 3, 0, 0 },
-    { refalrts::icResetAllocator, 0, 0, 0 },
-    { refalrts::icSetResArgBegin, 0, 0, 0 },
-    { icAllocateBracket, 0, ibOpenCall, 0 },
-    { icAllocateName, 0, 0, 1 },
-    { icAllocateBracket, 0, ibCloseCall, 2 },
-    { icSpliceTile, 0, 2, 0 },
-    { icPushStack, 0, 0, 2 },
-    { icPushStack, 0, 0, 0 },
-    { icNextStep, 0, 0, 0 }
-  };
-
+refalrts::FnResult refalrts::vm::main_loop(const RASLCommand *rasl) {
   RefalFunction *callee = 0;
-  Iter begin = & g_last_marker; /* нужно для icSetResArgBegin в startup_rasl */
+  Iter begin = 0;
   Iter end = 0;
-  const RASLCommand *rasl = startup_rasl;
-  FunctionTableItem *functions = entry_point;
+  FunctionTableItem *functions = 0;
   const RefalIdentifier *idents = 0;
   const RefalNumber *numbers = 0;
   const StringItem *strings = 0;
@@ -4996,23 +5016,6 @@ refalrts::FnResult refalrts::vm::main_loop() {
   Iter trash_prev = 0;
   unsigned int index;
   int stack_top = 0;
-
-  StateRefalMachine start_state;
-
-  start_state.callee = callee;
-  start_state.begin = begin; /* нужно для icSetResArgBegin в startup_rasl */
-  start_state.end = end;
-  start_state.rasl = rasl;
-  start_state.functions = functions;
-  start_state.idents = idents;
-  start_state.numbers = numbers;
-  start_state.strings = strings;
-  start_state.open_e_stack = open_e_stack;
-  start_state.context = context;
-  start_state.res = res;
-  start_state.trash_prev = trash_prev;
-  start_state.stack_top = stack_top;
-  g_states_refal_machine.push_back(start_state);
 
 #define MATCH_FAIL \
   if (stack_top == 0) { \
@@ -5049,7 +5052,7 @@ JUMP_FROM_SCALE:
             cur_state.callee = callee;
             cur_state.begin = begin; /* нужно для icSetResArgBegin в startup_rasl */
             cur_state.end = end;
-            cur_state.rasl = rasl;
+            cur_state.rasl = rasl + 2;
             cur_state.functions = functions;
             cur_state.idents = idents;
             cur_state.numbers = numbers;
@@ -5069,7 +5072,7 @@ JUMP_FROM_SCALE:
            callee = prev_state.callee;
            begin = prev_state.begin; /* нужно для icSetResArgBegin в startup_rasl */
            end = prev_state.end;
-           rasl = prev_state.rasl+2;
+           rasl = prev_state.rasl;
            functions = prev_state.functions;
            idents = prev_state.idents;
            numbers = prev_state.numbers;
