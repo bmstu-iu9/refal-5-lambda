@@ -121,12 +121,12 @@ setlocal
     call :%2 %1 || exit /b 1
     set SRFLAGS=-OC --markup-context
     call :%2 %1 || exit /b 1
-    rem set SRFLAGS=-OCP
-    rem call :%2 %1 || exit /b 1
+    set SRFLAGS=-OCP
+    call :%2 %1 || exit /b 1
     set SRFLAGS=-OCR
     call :%2 %1 || exit /b 1
-    rem set SRFLAGS=-OCPR
-    rem call :%2 %1 || exit /b 1
+    set SRFLAGS=-OCPR
+    call :%2 %1 || exit /b 1
     rem set SRFLAGS_PLUS=%SRFLAGS_NAT%
     rem set SRFLAGS=-OCd
     rem call :%2 %1 || exit /b 1
