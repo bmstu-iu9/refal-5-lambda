@@ -13,6 +13,9 @@ $EXTERN GenPattern, MakeSavers, GenResult, FoldOpenELoops, PutVariableDebugTable
 //FROM HighLevelRASL-Condition
 $EXTERN SentenceTail;
 
+//FROM HighLevelRASL-GenSubst-Save
+$EXTERN GenInitSubst-Save;
+
 $ENTRY HighLevelRASL-Function-Conjoint {
   s.FnGenInitSubst s.FnGenSubst s.FnGenResult
   s.ScopeClass (e.Name) e.Sentences
@@ -33,7 +36,7 @@ $ENTRY HighLevelRASL-Function-Conjoint {
 
     = <SplitGen (e.GlobalGen) e.SentenceTails> : (e.CommonPattern) e.SentSubsts
 
-    = <GenPattern s.FnGenInitSubst s.FnGenSubst (e.Name) e.CommonPattern>
+    = <GenPattern GenInitSubst-Save s.FnGenSubst (e.Name) e.CommonPattern>
     : s.ContextSize (e.Vars) (e.MarkedPattern) e.CommonMatchCommands
 
     = <MapReduce
