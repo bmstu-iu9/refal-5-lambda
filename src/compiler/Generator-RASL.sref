@@ -140,8 +140,11 @@ GenCommand-Globals {
   e.Labels (#CmdSwapDescr s.ScopeClass e.Name) =
     <PutBlock #Swap <NameWithSign-Bytes s.ScopeClass e.Name>>;
 
-  e.Labels (#CmdConditionFuncDecsr  s.ScopeClass e.Name) =
-    <PutBlock #Condition <NameWithSign-Bytes s.ScopeClass e.Name>>;
+  e.Labels (#CmdConditionFuncDecsrRasl  s.ScopeClass e.Name) =
+    <PutBlock #ConditionRasl <NameWithSign-Bytes s.ScopeClass e.Name>>;
+
+  e.Labels (#CmdConditionFuncDecsrNative  s.ScopeClass e.Name) =
+    <PutBlock #ConditionNative <NameWithSign-Bytes s.ScopeClass e.Name>>;
 
   e.Labels (#CmdNativeFuncDescr s.ScopeClass e.Name) =
     <PutBlock #NativeFunction <NameWithSign-Bytes s.ScopeClass e.Name>>;

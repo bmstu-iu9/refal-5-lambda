@@ -66,8 +66,7 @@ $ENTRY SentenceTail{
       : e.CmdSentenceCommands
       
     = e.CondResultCommands
-      (#CmdPushState)
-      (#CmdNextStep)
+      (#CmdCallCondition)
       (#CmdProfileFunction)
       e.CmdSentenceCommands
       : e.SentenceCommands

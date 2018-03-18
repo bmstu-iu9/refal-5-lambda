@@ -55,9 +55,13 @@ ClassifyItems {
     (e.FuncScopeClass (s.ScopeClass e.Name))
     (#CmdSwapDescr s.ScopeClass e.Name);
 
-  (e.FuncScopeClass) (#CmdConditionFunc s.ScopeClass e.Name) =
+  (e.FuncScopeClass) (#CmdConditionFunc-ToRASL s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
-    (#CmdConditionFuncDecsr s.ScopeClass e.Name);
+    (#CmdConditionFuncDecsrRasl s.ScopeClass e.Name);
+
+  (e.FuncScopeClass) (#CmdConditionFunc-ToNative s.ScopeClass e.Name) =
+    (e.FuncScopeClass (s.ScopeClass e.Name))
+    (#CmdConditionFuncDecsrNative s.ScopeClass e.Name);
 
   (e.FuncScopeClass) (#CmdDeclaration s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name)) /* skip */;
@@ -137,6 +141,10 @@ ConvertOneInterpretCommand-Simple {
     = (#CmdVariableDebugTable
         s.Mode '.' e.Index '#' <StrFromInt s.Depth> s.Offset
       );
+
+  (#CmdCallCondition) =
+    (#CmdPushState)
+    (#CmdNextStep);
 
   t.Command = t.Command;
 }

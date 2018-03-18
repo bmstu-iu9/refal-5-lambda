@@ -1610,8 +1610,13 @@ refalrts::Iter refalrts::wrap_closure(refalrts::Iter closure) {
 }
 
 //------------------------------------------------------------------------------
-const refalrts::RASLCommand refalrts::RefalCondFunction::run[] = {
+const refalrts::RASLCommand refalrts::RefalCondFunctionRasl::run[] = {
   { refalrts::icPopState, 0, 0, 0 }
+};
+
+//------------------------------------------------------------------------------
+const refalrts::RASLCommand refalrts::RefalCondFunctionNative::run[] = {
+  { refalrts::icMainLoopReturnSuccess, 0, 0, 0 }
 };
 //------------------------------------------------------------------------------
 
@@ -3265,15 +3270,26 @@ void refalrts::dynamic::enumerate_blocks() {
         }
         break;
 
-      case cBlockTypeCondition:
+      case cBlockTypeConditionRasl:
         {
           const char *name = read_asciiz(stream);
           assert(name);
 
-          RefalCondFunction *result = dynamic::malloc<RefalCondFunction>();
+          RefalCondFunctionRasl *result = dynamic::malloc<RefalCondFunctionRasl>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
-          new (result) RefalCondFunction(table->make_name(name));
+          new (result) RefalCondFunctionRasl(table->make_name(name));
+          break;
+        }
+      case cBlockTypeConditionNative:
+        {
+          const char *name = read_asciiz(stream);
+          assert(name);
+
+          RefalCondFunctionNative *result = dynamic::malloc<RefalCondFunctionNative>();
+          // TODO: выдача сообщения об ошибке
+          assert(result != 0);
+          new (result) RefalCondFunctionNative(table->make_name(name));
           break;
         }
 
@@ -4981,6 +4997,13 @@ int refalrts::debugger::find_debugger_flag(int argc, char **argv) {
 
 //=============================================================================
 
+refalrts::FnResult refalrts::recursive_call_main_loop() {
+  const  refalrts::RASLCommand rasl[] = {
+    { refalrts::icNextStep,0,0,0},
+  };
+  return refalrts::vm::main_loop(rasl);
+}
+
 refalrts::FnResult refalrts::vm::main_loop(const RASLCommand *rasl) {
   RefalFunction *callee = 0;
   Iter begin = 0;
@@ -5783,6 +5806,9 @@ JUMP_FROM_SCALE:
       case icSpliceToFreeList_Range:
         splice_to_freelist(context[val1], context[val2]);
         break;
+
+      case icMainLoopReturnSuccess:
+        return cSuccess;
 
       case icNextStep:
         {
