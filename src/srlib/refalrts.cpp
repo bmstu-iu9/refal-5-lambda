@@ -3505,17 +3505,6 @@ T* refalrts::vm::Stack<T>::get_m_memory() const{
   return(m_memory);
 }
 
-namespace refalrts {
-
-namespace vm {
-
-Stack<const RASLCommand*> g_open_e_stack;
-Stack<Iter> g_context;
-
-} // namespace vm
-
-} // namespace refalrts
-
 void refalrts::vm::push_stack(refalrts::Iter call_bracket) {
   call_bracket->link_info = g_stack_ptr;
   g_stack_ptr = call_bracket;
@@ -3622,8 +3611,6 @@ refalrts::FnResult refalrts::vm::run() {
   start_state.idents = 0;
   start_state.numbers = 0;
   start_state.strings = 0;
-  start_state.open_e_stack = vm::g_open_e_stack;
-  start_state.context = vm::g_context;
   start_state.res = 0;
   start_state.trash_prev = 0;
   start_state.stack_top = 0;
@@ -4014,7 +4001,7 @@ enum { cMaxLen = 1024 };
 void close_out(FILE*);
 
 class VariableDebugTable {
-  vm::Stack<Iter>& m_context;
+  vm::Stack<Iter> m_context;
   const StringItem *m_strings;
   const RASLCommand *m_first;
   const RASLCommand *m_last;
@@ -4026,7 +4013,7 @@ class VariableDebugTable {
   );
 public:
   VariableDebugTable()
-    : m_context(vm::g_context)
+    : m_context()
     , m_strings(0)
     , m_first(0)
     , m_last(0)
@@ -5002,9 +4989,8 @@ refalrts::FnResult refalrts::vm::main_loop(const RASLCommand *rasl) {
   const RefalIdentifier *idents = 0;
   const RefalNumber *numbers = 0;
   const StringItem *strings = 0;
-
-  vm::Stack<const RASLCommand*>& open_e_stack = vm::g_open_e_stack;
-  vm::Stack<Iter>& context = vm::g_context;
+  Stack<const RASLCommand*> open_e_stack;
+  Stack<Iter> context;
 
 #ifdef ENABLE_DEBUGGER
   refalrts::debugger::RefalDebugger debugger;
