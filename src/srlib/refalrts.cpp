@@ -526,8 +526,7 @@ refalrts::Iter refalrts::call_left(
   refalrts::Iter right_bracket = last;
   refalrts::Iter function = next(left_bracket);
 
-  // TODO: проверить после завершения разработки условий
-  //assert(left_bracket->link_info == right_bracket);
+  assert(left_bracket->link_info == right_bracket);
 
   if (next(function) != right_bracket) {
     res_first = next(function);
@@ -2018,8 +2017,7 @@ int refalrts::profiler::reverse_compare(
 
 void refalrts::profiler::start_generated_function() {
   clock_t now = clock();
-  // TODO: проверить после завершения разработки условий
-  //refalrts_profiler_assert_eq(g_current_state, cInRuntime);
+  refalrts_profiler_assert_eq(g_current_state, cInRuntime);
   g_counters[cCounter_RuntimeTime] += (now - g_prev_cutoff);
   g_prev_cutoff = now;
   g_current_state = cInPatternLinear;
@@ -2039,10 +2037,7 @@ void refalrts::profiler::stop_sentence() {
       break;
 
     default:
-      // TODO: проверить после реализации условий
-      //refalrts_switch_default_violation(g_current_state);
-      counter = cCounter_RuntimeTime;
-      break;
+      refalrts_switch_default_violation(g_current_state);
   }
 
   g_counters[counter] += (now - g_prev_cutoff);
@@ -2089,11 +2084,7 @@ void refalrts::profiler::start_repeated_evar() {
       break;
 
     default:
-      // TODO: проверить после завершения разработки условий
-      //refalrts_switch_default_violation(g_current_state);
-      counter = cCounter_RuntimeTime;
-      next = cInRuntime;
-      break;
+      refalrts_switch_default_violation(g_current_state);
   }
 
   g_counters[counter] += (now - g_prev_cutoff);
@@ -2153,11 +2144,7 @@ void refalrts::profiler::stop_repeated() {
       break;
 
     default:
-      // TODO: проверить после завершения разработки условий
-      //refalrts_switch_default_violation(g_current_state);
-      counter = cCounter_RuntimeTime;
-      next = cInRuntime;
-      break;
+      refalrts_switch_default_violation(g_current_state);
   }
 
   g_counters[counter] += (now - g_prev_cutoff);
