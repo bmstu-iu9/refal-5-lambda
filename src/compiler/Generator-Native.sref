@@ -529,7 +529,7 @@ GenCommand-Native {
 
   (e.Indent) (#CmdFail) =
     (e.Indent)
-    (e.Indent 'return refalrts::cRecognitionImpossible;');
+    (e.Indent <BreakerFromIndent e.Indent>);
 }
 
 PrintString {
