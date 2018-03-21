@@ -69,6 +69,7 @@ $ENTRY SentenceTail{
       (#CmdCallCondition)
       (#CmdProfileFunction)
       e.CmdSentenceCommands
+      (#CmdFail)
       : e.SentenceCommands
       
     = s.StackTop e.SentenceCommands;

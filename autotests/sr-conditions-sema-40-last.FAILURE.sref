@@ -1,0 +1,9 @@
+// CONDITIONS
+
+$ENTRY Go {
+  , 2'*'2 : 5 = ;
+}
+
+$ENTRY Ok {
+  = ;
+}
