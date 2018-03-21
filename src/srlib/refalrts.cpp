@@ -5092,7 +5092,7 @@ JUMP_FROM_SCALE:
            trash_prev = prev_state.trash_prev;
            stack_top = prev_state.stack_top;
            g_states_refal_machine.pop_back();
-           break;
+           continue;  // пропускаем ++rasl в конце
 
         }
       case icProfileFunction:
