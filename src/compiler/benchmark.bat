@@ -18,7 +18,7 @@ if {%~2}=={} (
 
 echo -C>input.prj
 if not {%BENCH_FLAGS%}=={} echo %BENCH_FLAGS%>>input.prj
-dir /b *.sref>>input.prj
+dir /b *.ref *.sref>>input.prj
 
 echo.
 echo Run "..\..\bin\srefc-core -C %BENCH_FLAGS% *.sref" %TIMES% times...
