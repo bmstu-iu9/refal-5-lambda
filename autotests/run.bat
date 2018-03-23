@@ -127,15 +127,15 @@ setlocal
     call :%2 %1 || exit /b 1
     set SRFLAGS=-OCPR
     call :%2 %1 || exit /b 1
-    rem set SRFLAGS_PLUS=%SRFLAGS_NAT%
-    rem set SRFLAGS=-OCd
-    rem call :%2 %1 || exit /b 1
-    rem set SRFLAGS=-OCdP
-    rem call :%2 %1 || exit /b 1
-    rem set SRFLAGS=-OCdR
-    rem call :%2 %1 || exit /b 1
-    rem set SRFLAGS=-OCdPR
-    rem call :%2 %1 || exit /b 1
+    set SRFLAGS_PLUS=%SRFLAGS_NAT%
+    set SRFLAGS=-OCd
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OCdP
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OCdR
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OCdPR
+    call :%2 %1 || exit /b 1
     echo Special conditions tests is passed
   )
 endlocal

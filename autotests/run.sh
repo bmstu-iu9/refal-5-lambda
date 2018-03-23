@@ -45,11 +45,11 @@ run_test_all_modes() {
     SRFLAGS=-OCP $2 $1
     SRFLAGS=-OCR $2 $1
     SRFLAGS=-OCPR $2 $1
-    #SRFLAGS_PLUS="$SRFLAGS_NAT"
-    #SRFLAGS=-OCd $2 $1
-    #SRFLAGS=-OCdP $2 $1
-    #SRFLAGS=-OCdR $2 $1
-    #SRFLAGS=-OCdPR $2 $1
+    SRFLAGS_PLUS="$SRFLAGS_NAT"
+    SRFLAGS=-OCd $2 $1
+    SRFLAGS=-OCdP $2 $1
+    SRFLAGS=-OCdR $2 $1
+    SRFLAGS=-OCdPR $2 $1
     echo "Special conditions tests is passed"
   fi
 }
