@@ -10,6 +10,38 @@
 #include "refalrts-utils.h"
 
 
+#define RASL_COMMANDS_PROFILE 1
+
+#if RASL_COMMANDS_PROFILE
+#include <time.h>
+#include "refalrts-commands.h"
+
+struct StatOfRASL {
+  const char *name;
+  clock_t time;
+  unsigned long count;
+
+  static signed compare(const void *pleft, const void *pright) {
+    const StatOfRASL *left = static_cast<const StatOfRASL*>(pleft);
+    const StatOfRASL *right = static_cast<const StatOfRASL*>(pright);
+
+    if (left->time < right->time) {
+      return +1;
+    } else if (left->time > right->time) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
+};
+
+extern StatOfRASL g_rasl_stats[refalrts::icMainLoopReturnSuccess + 1];
+extern clock_t g_prev_time;
+extern clock_t g_total_time;
+extern unsigned long g_total_commands;
+#endif  // RASL_COMMANDS_PROFILE
+
+
 //==============================================================================
 // Виртуальная машина
 //==============================================================================

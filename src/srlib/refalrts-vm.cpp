@@ -550,6 +550,14 @@ refalrts::VM::create_null_debugger(refalrts::VM * /*vm*/) {
 // Интерпретатор
 //==============================================================================
 
+#if RASL_COMMANDS_PROFILE
+StatOfRASL g_rasl_stats[refalrts::icMainLoopReturnSuccess + 1];
+refalrts::iCmd g_prev_command;
+clock_t g_prev_time;
+clock_t g_total_time;
+unsigned long g_total_commands;
+#endif  // RASL_COMMANDS_PROFILE
+
 void refalrts::VM::reset_allocator() {
   profiler()->start_result();
   allocator()->reset_allocator();
@@ -593,6 +601,18 @@ refalrts::FnResult refalrts::VM::main_loop(const RASLCommand *rasl) {
     unsigned int bracket = rasl->bracket;
 
 JUMP_FROM_SCALE:
+
+#if RASL_COMMANDS_PROFILE
+    clock_t now = clock();
+    if (g_prev_time) {
+      g_rasl_stats[g_prev_command].time += now - g_prev_time;
+      ++g_rasl_stats[g_prev_command].count;
+      g_total_time += now - g_prev_time;
+      ++g_total_commands;
+    }
+    g_prev_command = static_cast<iCmd>(rasl->cmd);
+    g_prev_time = now;
+#endif  // RASL_COMMANDS_PROFILE
 
     // Интерпретация команд
     // Для ряда команд эти переменные могут не иметь смысла
