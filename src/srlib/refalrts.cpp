@@ -3440,11 +3440,23 @@ public:
   size_t get_size() const;
   T* get_m_memory() const;
 
+  void swap(Stack<T>& other) {
+    swap(m_memory, other.m_memory);
+    swap(m_size, other.m_size);
+    swap(m_capacity, other.m_capacity);
+  }
 
 private:
   T *m_memory;
   size_t m_size;
   size_t m_capacity;
+
+  template <typename U>
+  static void swap(U& x, U& y) {
+    U old_x = x;
+    x = y;
+    y = old_x;
+  }
 };
 
 
@@ -3556,6 +3568,11 @@ void print_error_message(FILE *stream, refalrts::FnResult res) {
 
 }
 
+namespace refalrts {
+
+namespace vm {
+
+
 struct StateRefalMachine{
   refalrts::RefalFunction *callee;
   refalrts::Iter begin; /* нужно для icSetResArgBegin в startup_rasl */
@@ -3572,9 +3589,93 @@ struct StateRefalMachine{
   refalrts::Iter res;
   refalrts::Iter trash_prev;
   int stack_top;
+
+  static StateRefalMachine *alloc();
+  static void free(StateRefalMachine *state);
+
+  static StateRefalMachine *pop();
+  static void push(StateRefalMachine *state);
+
+  static void free();
+
+private:
+  StateRefalMachine()
+    :next(0)
+  {
+    /* пусто */
+  }
+
+  ~StateRefalMachine() {}
+
+  StateRefalMachine *next;
+
+  static StateRefalMachine *g_free;
+  static StateRefalMachine *g_stack;
 };
 
-std::vector<StateRefalMachine> g_states_refal_machine(1);
+
+} // namespace vm
+
+} // namespace refalrts
+
+
+refalrts::vm::StateRefalMachine*
+refalrts::vm::StateRefalMachine::alloc() {
+  if (g_free != 0) {
+    StateRefalMachine *res = g_free;
+    g_free = g_free->next;
+    res->next = 0;
+    return res;
+  } else {
+    return new StateRefalMachine;
+  }
+}
+
+void
+refalrts::vm::StateRefalMachine::free(refalrts::vm::StateRefalMachine *state) {
+  assert(state->next == 0);
+
+  state->next = g_free;
+  g_free = state;
+}
+
+refalrts::vm::StateRefalMachine*
+refalrts::vm::StateRefalMachine::pop() {
+  assert(g_stack != 0);
+
+  StateRefalMachine *res = g_stack;
+  g_stack = g_stack->next;
+  res->next = 0;
+  return res;
+}
+
+void
+refalrts::vm::StateRefalMachine::push(refalrts::vm::StateRefalMachine *state) {
+  assert(state->next == 0);
+
+  state->next = g_stack;
+  g_stack = state;
+}
+
+void
+refalrts::vm::StateRefalMachine::free() {
+  StateRefalMachine *next;
+
+  while (g_free != 0) {
+    next = g_free->next;
+    delete g_free;
+    g_free = next;
+  }
+
+  while (g_stack != 0) {
+    next = g_stack->next;
+    delete g_stack;
+    g_stack = next;
+  }
+}
+
+refalrts::vm::StateRefalMachine *refalrts::vm::StateRefalMachine::g_free = 0;
+refalrts::vm::StateRefalMachine *refalrts::vm::StateRefalMachine::g_stack = 0;
 
 refalrts::FnResult refalrts::vm::run() {
   RefalFunction *go = RefalFunction::lookup(0, 0, "GO");
@@ -3604,20 +3705,20 @@ refalrts::FnResult refalrts::vm::run() {
     { icNextStep, 0, 0, 0 }
   };
 
-  StateRefalMachine start_state;
+  StateRefalMachine *start_state = StateRefalMachine::alloc();
 
-  start_state.callee = 0;
-  start_state.begin = & g_last_marker; /* нужно для icSetResArgBegin в startup_rasl */
-  start_state.end = 0;
-  start_state.rasl = startup_rasl;
-  start_state.functions = entry_point;
-  start_state.idents = 0;
-  start_state.numbers = 0;
-  start_state.strings = 0;
-  start_state.res = 0;
-  start_state.trash_prev = 0;
-  start_state.stack_top = 0;
-  g_states_refal_machine.push_back(start_state);
+  start_state->callee = 0;
+  start_state->begin = & g_last_marker; /* нужно для icSetResArgBegin в startup_rasl */
+  start_state->end = 0;
+  start_state->rasl = startup_rasl;
+  start_state->functions = entry_point;
+  start_state->idents = 0;
+  start_state->numbers = 0;
+  start_state->strings = 0;
+  start_state->res = 0;
+  start_state->trash_prev = 0;
+  start_state->stack_top = 0;
+  StateRefalMachine::push(start_state);
 
   static const RASLCommand set_state[] = {
     { icPopState, 0, 0, 0 },
@@ -5044,41 +5145,41 @@ JUMP_FROM_SCALE:
 
       case icPushState:
         {
-            StateRefalMachine cur_state;
-            cur_state.callee = callee;
-            cur_state.begin = begin; /* нужно для icSetResArgBegin в startup_rasl */
-            cur_state.end = end;
-            cur_state.rasl = rasl + 2;
-            cur_state.functions = functions;
-            cur_state.idents = idents;
-            cur_state.numbers = numbers;
-            cur_state.strings = strings;
-            cur_state.open_e_stack = open_e_stack;
-            cur_state.context = context;
-            cur_state.res = res;
-            cur_state.trash_prev = trash_prev;
-            cur_state.stack_top = stack_top;
-            g_states_refal_machine.push_back(cur_state);
-            break;
+           StateRefalMachine *cur_state = StateRefalMachine::alloc();
+           cur_state->callee = callee;
+           cur_state->begin = begin; /* нужно для icSetResArgBegin в startup_rasl */
+           cur_state->end = end;
+           cur_state->rasl = rasl + 2;
+           cur_state->functions = functions;
+           cur_state->idents = idents;
+           cur_state->numbers = numbers;
+           cur_state->strings = strings;
+           cur_state->open_e_stack.swap(open_e_stack);
+           cur_state->context.swap(context);
+           cur_state->res = res;
+           cur_state->trash_prev = trash_prev;
+           cur_state->stack_top = stack_top;
+           StateRefalMachine::push(cur_state);
+           break;
         }
 
       case icPopState:
         {
-           StateRefalMachine prev_state = g_states_refal_machine.back();
-           callee = prev_state.callee;
-           begin = prev_state.begin; /* нужно для icSetResArgBegin в startup_rasl */
-           end = prev_state.end;
-           rasl = prev_state.rasl;
-           functions = prev_state.functions;
-           idents = prev_state.idents;
-           numbers = prev_state.numbers;
-           strings = prev_state.strings;
-           open_e_stack = prev_state.open_e_stack;
-           context = prev_state.context;
-           res = prev_state.res;
-           trash_prev = prev_state.trash_prev;
-           stack_top = prev_state.stack_top;
-           g_states_refal_machine.pop_back();
+           StateRefalMachine *prev_state = StateRefalMachine::pop();
+           callee = prev_state->callee;
+           begin = prev_state->begin; /* нужно для icSetResArgBegin в startup_rasl */
+           end = prev_state->end;
+           rasl = prev_state->rasl;
+           functions = prev_state->functions;
+           idents = prev_state->idents;
+           numbers = prev_state->numbers;
+           strings = prev_state->strings;
+           open_e_stack.swap(prev_state->open_e_stack);
+           context.swap(prev_state->context);
+           res = prev_state->res;
+           trash_prev = prev_state->trash_prev;
+           stack_top = prev_state->stack_top;
+           StateRefalMachine::free(prev_state);
            continue;  // пропускаем ++rasl в конце
 
         }
@@ -6089,6 +6190,7 @@ int main(int argc, char **argv) {
   refalrts::dynamic::free_idents_table();
   refalrts::dynamic::free_funcs_table();
   refalrts::dynamic::cleanup_module();
+  refalrts::vm::StateRefalMachine::free();
 
   fflush(stdout);
 
