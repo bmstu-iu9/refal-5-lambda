@@ -13,8 +13,8 @@ make_subdir() {
     SREFC_FLAGS_PLUS="--markup-context --debug-info"
     SRMAKE_FLAGS_PLUS="
       -X--markup-context -X--debug-info
-      -X-F-DMEMORY_LIMIT=2500000
-      -X-F-DSTEP_LIMIT=50000000
+      -X-F-DMEMORY_LIMIT=5000000
+      -X-F-DSTEP_LIMIT=100000000
       -X-F-DIDENTS_LIMIT=1000
       -X-F-DENABLE_DEBUGGER
     "
