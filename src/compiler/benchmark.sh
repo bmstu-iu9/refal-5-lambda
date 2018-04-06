@@ -1,5 +1,5 @@
 #!/bin/bash
-./makeself-s.sh
+SRMAKE_FLAGS= ./makeself-s.sh
 ./update-lib.sh
 ./makeself.sh
 ./makeself.sh

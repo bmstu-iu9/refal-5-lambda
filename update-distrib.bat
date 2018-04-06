@@ -8,7 +8,7 @@ endlocal
 popd
 
 pushd distrib
-rd /q /s bin scripts compiler doc lexgen srlib srmake editors
+rd /q /s bin scripts compiler doc docs lexgen srlib srmake editors
 xcopy /e /y /i ..\build\compiler compiler
 xcopy /e /y /i ..\build\lexgen lexgen
 xcopy /e /y /i ..\build\srmake srmake
@@ -40,10 +40,15 @@ copy ..\doc\historical\*.txt doc\historical
 copy ..\doc\historical\*.pdf doc\historical
 copy ..\doc\historical\*.jpg doc\historical
 copy ..\doc\historical\*.doc doc\historical
-md doc\historical\Дрогунов
-copy ..\doc\historical\Дрогунов\*.pdf doc\historical\Дрогунов
+md doc\historical\Drogunov
+copy ..\doc\historical\Drogunov\*.pdf doc\historical\Drogunov
+md docs
+copy ..\docs\*.md docs
+copy ..\docs\*.ref docs
+copy ..\docs\*.yml docs
 copy ..\LICENSE .
 copy ..\README.md .
+copy ..\README.en.md .
 md editors
 xcopy /e /i /y ..\editors editors
 call bootstrap.bat

@@ -10,6 +10,9 @@ $EXTERN DisplayName;
 //FROM Escape
 $EXTERN EscapeString;
 
+//FROM Log-AST
+$EXTERN Log-TextFromAST;
+
 
 /**
   <Log-Init e.FileName?> == []
@@ -80,7 +83,12 @@ $ENTRY Log-GetLogFunction-AST {
           = {
               e.AST
                 = <Log-PutLine 'AST of file ' e.SrcName ':'>
-                  //<Putout s.FileHandle e.AST>
+                  <Map
+                    {
+                      (e.Line) = <Putout s.FileHandle '  ' e.Line>;
+                    }
+                    <Log-TextFromAST e.AST>
+                  >
                   e.AST;
             };
       };

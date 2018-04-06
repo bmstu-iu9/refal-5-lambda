@@ -10,9 +10,8 @@
      <Mu s.FuncPtr e.Arg> == <s.FuncPtr e.Arg>
 */
 Mu {
-  // TODO: заменить на условия!!!
   t.Function e.Arg
-    = <__Step-Start> <__Mu-Aux t.Function> : s.Function-Ptr
+    , <__Step-Start> <__Mu-Aux t.Function> : s.Function-Ptr
     = <__Step-End> <s.Function-Ptr e.Arg>;
 }
 
@@ -276,9 +275,8 @@ $ENUM Ev-met;
       <Residue s.FuncPtr e.Arg> == <s.FuncPtr e.Arg>
 */
 Residue {
-  // TODO: заменить на условия!!!
   t.Function e.Arg
-    = <__Step-Start> <__Mu-Aux t.Function> : s.Function-Ptr
+    , <__Step-Start> <__Mu-Aux t.Function> : s.Function-Ptr
     = <__Step-End> <s.Function-Ptr e.Arg>;
 }
 

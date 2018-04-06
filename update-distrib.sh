@@ -3,7 +3,7 @@
 ( cd src && RELEASE=1 ./make.sh )
 
 pushd distrib
-rm -rf bin scripts compiler doc lexgen srlib srmake editors
+rm -rf bin scripts compiler doc docs lexgen srlib srmake editors
 cp -R ../build/{compiler,lexgen,srmake,srlib-{rich,slim}-prefix} .
 mkdir bin
 cp ../src/scripts/srefc.bat bin
@@ -31,10 +31,15 @@ cp ../doc/historical/*.txt doc/historical
 cp ../doc/historical/*.pdf doc/historical
 cp ../doc/historical/*.jpg doc/historical
 cp ../doc/historical/*.doc doc/historical
-mkdir doc/historical/Дрогунов
-cp ../doc/historical/Дрогунов/*.pdf doc/historical/Дрогунов
+mkdir doc/historical/Drogunov
+cp ../doc/historical/Drogunov/*.pdf doc/historical/Drogunov
+mkdir docs
+cp ..\docs\*.md docs
+cp ..\docs\*.ref docs
+cp ..\docs\*.yml docs
 cp ../LICENSE .
 cp ../README.md .
+cp ../README.en.md .
 mkdir editors
 cp -R ../editors/* editors
 ./bootstrap.sh
