@@ -1,61 +1,187 @@
 //FROM LibraryEx
-$EXTERN Fetch, Map, Inc, Sort, Pipe;
+$EXTERN Fetch, Map, Inc, Sort, Pipe, Max, Dec;
 
 //FROM Library
 $EXTERN Add;
 
+//FROM HighLevelRASL-GenSubst-Save 
+$EXTERN GenSubst-Save-Cond;
+
 //FROM HighLevelRASL-Common
-$EXTERN CollectStrings, IncVarOffset, PrintVar;
+$EXTERN Inc2,FoldOpenELoops, PutVariableDebugTable, CollectStrings, 
+IncVarOffset, PrintVar;
+
+//FROM HighLevelRASL-GenResult-Simple
+$EXTERN DoGenResult, MakeVariableCommentTable;
+
+$ENTRY SentenceTail{
+
+  (s.StartOffsetCond)
+  (e.ResultSentence)
+  (e.PatternVars)(e.MarkedPatternCur)
+  (#Condition (e.CondName) (e.CondResult) (e.CondPattern)) e.ConditionsTail
+    
+    = <GenResult-Condition
+        <Inc2 s.StartOffsetCond> (e.PatternVars) 
+	(#TkOpenCallCond s.StartOffsetCond)
+        (#TkName e.CondName) e.CondResult
+        (#TkCloseCallCond <Inc s.StartOffsetCond>)
+      >
+      : s.EndOffsetCond-Res e.CondResultCommands        
+
+    = <GenInitSubst-Cond s.StartOffsetCond (e.CondName) e.CondPattern>
+      : s.OffsetCond 
+        e.CondSubstitutes (e.FirstCondPatternCommands)
+
+    = <GenSubst-Save-Cond
+        s.OffsetCond e.CondSubstitutes (e.PatternVars)
+        (e.FirstCondPatternCommands)
+      >
+      : s.StartOffsetCondNext 
+        (e.PatternVarsAfterCond) (e.MarkedPatternCond)
+        e.CondPatternCommands
+    
+    = e.MarkedPatternCur (e.MarkedPatternCond) : e.MarkedPatternCur^ 
+                 
+    = <SentenceTail
+       (s.StartOffsetCondNext)
+       (e.ResultSentence)
+       (e.PatternVarsAfterCond) (e.MarkedPatternCur)
+       e.ConditionsTail
+      > 
+      : s.NestedStackTop e.NestedSentence
+       
+     = <Max s.EndOffsetCond-Res s.NestedStackTop> : s.StackTop
+     
+     = (#CmdSentence <FoldOpenELoops
+                        e.CondPatternCommands
+                        <PutVariableDebugTable e.PatternVars>
+                        e.NestedSentence
+                     >
+        )
+        (#CmdSpliceToFreeList-Range
+          s.StartOffsetCond
+          <Inc s.StartOffsetCond>
+        )
+      : e.CmdSentenceCommands
+      
+    = e.CondResultCommands
+      (#CmdCallCondition)
+      (#CmdProfileFunction)
+      e.CmdSentenceCommands
+      (#CmdFail)
+      : e.SentenceCommands
+      
+    = s.StackTop e.SentenceCommands;
+           
+  (s.ContextOffset)
+  (s.FnGenResult e.Result)
+  (e.PatternVars)  
+  (e.MarkedPatternCur)
+  /*пусто*/
+  
+    = e.MarkedPatternCur : (e.MarkedPattern t.CloseCall)  e.MarkedPatternCur^ 
+
+    = <Map
+        {
+          (e.MarkedPattern^) = e.MarkedPattern;
+        }
+        e.MarkedPatternCur
+      >
+      : e.MarkedPatternCur^
+    
+    = <s.FnGenResult
+        s.ContextOffset (e.PatternVars) 
+        (e.MarkedPattern e.MarkedPatternCur t.CloseCall) 
+        e.Result
+      >
+      : s.ContextCount e.ResultCommands
+
+    = s.ContextCount e.ResultCommands;       
+  
+}
+
+$ENTRY GenInitSubst-Cond {
+  s.ContextTop (e.FuncName) e.Pattern
+    = s.ContextTop : s.0
+    = <Add s.ContextTop 1> : s.1
+    = <Add s.ContextTop 2> : s.2
+    = <Add s.ContextTop 4> : s.4
+    = <Add s.ContextTop 5> : s.5
+    = s.5
+      (#Junk (#TkOpenCall s.0) (#TkName e.FuncName s.4))
+      (#E s.2 e.Pattern)
+      (#Junk (#TkCloseCall s.1))
+      (
+        (#CmdCallSave #AlgLeft s.0 s.2)
+      );
+}
 
 /**
-  <GenResult-Simple
+  <GenResult-Condition
     s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
   >
     == s.ContextOffset^ e.ResultCommands
 
   e.MarkedPattern — не используется
 */
-$ENTRY GenResult-Simple {
-  s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
-    = /* e.MarkedPattern не используется */
-      <GenResult s.ContextOffset (e.PatternVars) e.Result>
-    : {
-        s.ContextOffset^ (e.CommonVars) /* нет команд генерации результата */ =
-          s.ContextOffset
-          <MakeVariableCommentTable e.CommonVars>
-          (#CmdSpliceToFreeList)
-          (#CmdNextStep);
 
-        s.ContextOffset^ (e.CommonVars) e.ResultCommands =
-          s.ContextOffset
-          <MakeVariableCommentTable e.CommonVars>
-          (#CmdResetAllocator)
-          (#CmdSetRes #ARG-BEGIN)
-          e.ResultCommands
-          (#CmdUseRes)
-          (#CmdSpliceToFreeList)
-          (#CmdNextStep);
-      };
+$ENTRY GenResult-Condition {
+    s.ContextOffset (e.PatternVars) e.CondResult
+      = <GenResult s.ContextOffset (e.PatternVars) e.CondResult>
+      : { 
+           s.ContextOffset^ (e.CommonVars) e.ResultCommands
+             = s.ContextOffset
+               <MakeVariableCommentTable e.CommonVars>
+               (#CmdResetAllocator)
+               (#CmdSetRes 1)
+               e.ResultCommands
+               (#CmdUseRes);
+        };
 }
 
-GenResult {
-  s.ContextOffset (e.PatternVars) e.Result
+GenResult{
+  s.ContextOffset (e.PatternVars) e.CondResult
     = <Map
         {
-          (s.Mode (e.Index) e.Offsets) = (s.Mode (e.Index) () e.Offsets);
+          (s.Mode (e.Index) e.Offsets) = (s.Mode (e.Index) (e.Offsets));
         }
         e.PatternVars
       >
     : e.PatternVars^
+    
     = <DoGenResult
         (e.PatternVars)
         (/* alloc commands */) (/* other commands */)
         s.ContextOffset // счётчик новых элементов
-        <CollectStrings e.Result>
+        <CollectStrings e.CondResult>
       >;
 }
 
-$ENTRY DoGenResult {
+DoGenResult {
+ (e.Vars) (e.AllocCommands) (e.Commands)
+  s.Counter (#TkOpenCallCond s.Offset) e.Result =
+    <DoGenResult
+      (e.Vars)
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Offset #ElOpenCall))
+      ((#CmdInsertElem s.Offset) e.Commands)
+      s.Counter e.Result
+    >;
+    
+  (e.Vars) (e.AllocCommands) (e.Commands)
+  s.Counter (#TkCloseCallCond s.Offset) e.Result =
+    <DoGenResult
+      (e.Vars)
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Offset #ElCloseCall))
+      (
+        (#CmdPushStack s.Offset)
+        (#CmdPushStack <Dec s.Offset>)
+        (#CmdInsertElem s.Offset)
+        e.Commands
+      )
+      s.Counter e.Result
+    >;
+
   // Создаём литералы
   (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (#TkChar s.Value) e.Result =
     <DoGenResult
@@ -234,31 +360,5 @@ $ENTRY DoGenResult {
     s.Counter (e.Vars) e.AllocCommands e.Commands;
 }
 
-$ENTRY MakeVariableCommentTable {
-  e.Vars =
-    <Fetch
-      e.Vars
-      <Pipe
-        (Map ReplicateVar)
-        Sort
-        (Map MakeVariableComment)
-      >
-    >;
-}
 
-ReplicateVar {
-  (s.Mode (e.Index) (e.ResultOccurences) e.PatternOccurences) =
-    <Map
-      {
-        s.ContextOffset = (s.ContextOffset s.Mode e.Index);
-      }
-      e.ResultOccurences e.PatternOccurences
-    >;
-}
 
-MakeVariableComment {
-  (s.Offset s.Mode e.Index s.Depth) =
-    (#CmdComment
-      #Offset s.Offset ': ' <PrintVar s.Mode e.Index s.Depth>
-    );
-}

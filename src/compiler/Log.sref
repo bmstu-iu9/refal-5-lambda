@@ -135,6 +135,9 @@ PutProgramElement {
   s.FileHandle (#CmdSwap s.ScopeClass e.Name)
     = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: swap'>;
 
+  s.FileHandle (#CmdConditionFunc s.ScopeClass e.Name)
+    = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: condition'>;
+
   s.FileHandle (#CmdDeclaration s.ScopeClass e.Name)
     = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: extern'>;
 

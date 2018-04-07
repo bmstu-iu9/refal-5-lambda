@@ -8,6 +8,7 @@
 #include <string>
 #include <string.h>
 #include <time.h>
+#include <vector>
 
 #include <assert.h>
 
@@ -1607,6 +1608,15 @@ refalrts::Iter refalrts::wrap_closure(refalrts::Iter closure) {
   return next(closure);
 }
 
+//------------------------------------------------------------------------------
+const refalrts::RASLCommand refalrts::RefalCondFunctionRasl::run[] = {
+  { refalrts::icPopState, 0, 0, 0 }
+};
+
+//------------------------------------------------------------------------------
+const refalrts::RASLCommand refalrts::RefalCondFunctionNative::run[] = {
+  { refalrts::icMainLoopReturnSuccess, 0, 0, 0 }
+};
 //------------------------------------------------------------------------------
 
 const refalrts::RASLCommand refalrts::RefalNativeFunction::run[] = {
@@ -3247,6 +3257,30 @@ void refalrts::dynamic::enumerate_blocks() {
         }
         break;
 
+      case cBlockTypeConditionRasl:
+        {
+          const char *name = read_asciiz(stream);
+          assert(name);
+
+          RefalCondFunctionRasl *result = dynamic::malloc<RefalCondFunctionRasl>();
+          // TODO: выдача сообщения об ошибке
+          assert(result != 0);
+          new (result) RefalCondFunctionRasl(table->make_name(name));
+          break;
+        }
+      case cBlockTypeConditionNative:
+        {
+          const char *name = read_asciiz(stream);
+          assert(name);
+
+          RefalCondFunctionNative *result = dynamic::malloc<RefalCondFunctionNative>();
+          // TODO: выдача сообщения об ошибке
+          assert(result != 0);
+          new (result) RefalCondFunctionNative(table->make_name(name));
+          break;
+        }
+
+
       case cBlockTypeNativeFunction:
         {
           const char *name = read_asciiz(stream);
@@ -3359,7 +3393,7 @@ refalrts::Iter pop_stack();
 bool empty_stack();
 
 refalrts::FnResult run();
-refalrts::FnResult main_loop();
+refalrts::FnResult main_loop(const RASLCommand *rasl);
 void make_dump(refalrts::Iter begin, refalrts::Iter end);
 FILE* dump_stream();
 
@@ -3400,18 +3434,65 @@ public:
     return m_memory[offset];
   }
 
+  Stack(const Stack<T> &obj);
+  Stack& operator=(const Stack<T> &obj);
   void reserve(size_t size);
+  size_t get_size() const;
+  T* get_m_memory() const;
+
+  void swap(Stack<T>& other) {
+    swap(m_memory, other.m_memory);
+    swap(m_size, other.m_size);
+    swap(m_capacity, other.m_capacity);
+  }
 
 private:
   T *m_memory;
   size_t m_size;
   size_t m_capacity;
+
+  template <typename U>
+  static void swap(U& x, U& y) {
+    U old_x = x;
+    x = y;
+    y = old_x;
+  }
 };
 
 
 } // namespace vm
 
 } // namespace refalrts
+
+template <typename T>
+refalrts::vm::Stack<T>::Stack(const  refalrts::vm::Stack<T> &obj){
+  size_t new_size = obj.get_size();
+  T* obj_memory = obj.get_m_memory();
+
+  m_size = new_size;
+  m_capacity = new_size;
+  m_memory = new T[new_size];
+  for (size_t i = 0; i < new_size; i++) {
+     m_memory[i] = obj_memory[i];
+  }
+}
+
+template <typename T>
+refalrts::vm::Stack<T>& refalrts::vm::Stack<T>::operator=(const refalrts::vm::Stack<T> &obj) {
+  if (this != &obj){
+    size_t new_size = obj.get_size();
+    T* obj_memory = obj.get_m_memory();
+
+    delete[] m_memory;
+    m_size = new_size;
+    m_capacity = new_size;
+    m_memory = new T[new_size];
+    for (size_t i = 0; i < new_size; i++) {
+      m_memory[i] = obj_memory[i];
+    }
+  }
+  return *this;
+ }
 
 template <typename T>
 void refalrts::vm::Stack<T>::reserve(size_t size) {
@@ -3429,16 +3510,15 @@ void refalrts::vm::Stack<T>::reserve(size_t size) {
   }
 }
 
-namespace refalrts {
+template <typename T>
+size_t refalrts::vm::Stack<T>::get_size() const{
+  return(m_size);
+}
 
-namespace vm {
-
-Stack<const RASLCommand*> g_open_e_stack;
-Stack<Iter> g_context;
-
-} // namespace vm
-
-} // namespace refalrts
+template <typename T>
+T* refalrts::vm::Stack<T>::get_m_memory() const{
+  return(m_memory);
+}
 
 void refalrts::vm::push_stack(refalrts::Iter call_bracket) {
   call_bracket->link_info = g_stack_ptr;
@@ -3488,8 +3568,163 @@ void print_error_message(FILE *stream, refalrts::FnResult res) {
 
 }
 
+namespace refalrts {
+
+namespace vm {
+
+
+struct StateRefalMachine{
+  refalrts::RefalFunction *callee;
+  refalrts::Iter begin; /* нужно для icSetResArgBegin в startup_rasl */
+  refalrts::Iter end;
+  const refalrts::RASLCommand *rasl;
+  refalrts::FunctionTableItem *functions;
+  const refalrts::RefalIdentifier *idents;
+  const refalrts::RefalNumber *numbers;
+  const refalrts::StringItem *strings;
+
+  refalrts::vm::Stack<const refalrts::RASLCommand*> open_e_stack;
+  refalrts::vm::Stack<refalrts::Iter> context;
+
+  refalrts::Iter res;
+  refalrts::Iter trash_prev;
+  int stack_top;
+
+  static StateRefalMachine *alloc();
+  static void free(StateRefalMachine *state);
+
+  static StateRefalMachine *pop();
+  static void push(StateRefalMachine *state);
+
+  static void free();
+
+private:
+  StateRefalMachine()
+    :next(0)
+  {
+    /* пусто */
+  }
+
+  ~StateRefalMachine() {}
+
+  StateRefalMachine *next;
+
+  static StateRefalMachine *g_free;
+  static StateRefalMachine *g_stack;
+};
+
+
+} // namespace vm
+
+} // namespace refalrts
+
+
+refalrts::vm::StateRefalMachine*
+refalrts::vm::StateRefalMachine::alloc() {
+  if (g_free != 0) {
+    StateRefalMachine *res = g_free;
+    g_free = g_free->next;
+    res->next = 0;
+    return res;
+  } else {
+    return new StateRefalMachine;
+  }
+}
+
+void
+refalrts::vm::StateRefalMachine::free(refalrts::vm::StateRefalMachine *state) {
+  assert(state->next == 0);
+
+  state->next = g_free;
+  g_free = state;
+}
+
+refalrts::vm::StateRefalMachine*
+refalrts::vm::StateRefalMachine::pop() {
+  assert(g_stack != 0);
+
+  StateRefalMachine *res = g_stack;
+  g_stack = g_stack->next;
+  res->next = 0;
+  return res;
+}
+
+void
+refalrts::vm::StateRefalMachine::push(refalrts::vm::StateRefalMachine *state) {
+  assert(state->next == 0);
+
+  state->next = g_stack;
+  g_stack = state;
+}
+
+void
+refalrts::vm::StateRefalMachine::free() {
+  StateRefalMachine *next;
+
+  while (g_free != 0) {
+    next = g_free->next;
+    delete g_free;
+    g_free = next;
+  }
+
+  while (g_stack != 0) {
+    next = g_stack->next;
+    delete g_stack;
+    g_stack = next;
+  }
+}
+
+refalrts::vm::StateRefalMachine *refalrts::vm::StateRefalMachine::g_free = 0;
+refalrts::vm::StateRefalMachine *refalrts::vm::StateRefalMachine::g_stack = 0;
+
 refalrts::FnResult refalrts::vm::run() {
-  FnResult res = main_loop();
+  RefalFunction *go = RefalFunction::lookup(0, 0, "GO");
+
+  if (! go) {
+    go = RefalFunction::lookup(0, 0, "Go");
+  }
+
+  if (! go) {
+    fprintf(stderr, "INTERNAL ERROR: entry point (Go or GO) is not found\n");
+    exit(158);
+  }
+
+  FunctionTableItem entry_point[1] = { FunctionTableItem(go) };
+
+  // Формируем вызов <Go#0:0> в поле зрения
+  static const RASLCommand startup_rasl[] = {
+    { icIssueMemory, 3, 0, 0 },
+    { refalrts::icResetAllocator, 0, 0, 0 },
+    { refalrts::icSetResArgBegin, 0, 0, 0 },
+    { icAllocateBracket, 0, ibOpenCall, 0 },
+    { icAllocateName, 0, 0, 1 },
+    { icAllocateBracket, 0, ibCloseCall, 2 },
+    { icSpliceTile, 0, 2, 0 },
+    { icPushStack, 0, 0, 2 },
+    { icPushStack, 0, 0, 0 },
+    { icNextStep, 0, 0, 0 }
+  };
+
+  StateRefalMachine *start_state = StateRefalMachine::alloc();
+
+  start_state->callee = 0;
+  start_state->begin = & g_last_marker; /* нужно для icSetResArgBegin в startup_rasl */
+  start_state->end = 0;
+  start_state->rasl = startup_rasl;
+  start_state->functions = entry_point;
+  start_state->idents = 0;
+  start_state->numbers = 0;
+  start_state->strings = 0;
+  start_state->res = 0;
+  start_state->trash_prev = 0;
+  start_state->stack_top = 0;
+  StateRefalMachine::push(start_state);
+
+  static const RASLCommand set_state[] = {
+    { icPopState, 0, 0, 0 },
+  };
+
+  FnResult res = main_loop(set_state);
 
   if (res != cSuccess && res != cExit) {
     print_error_message(stderr, res);
@@ -3870,7 +4105,7 @@ enum { cMaxLen = 1024 };
 void close_out(FILE*);
 
 class VariableDebugTable {
-  vm::Stack<Iter>& m_context;
+  vm::Stack<Iter> m_context;
   const StringItem *m_strings;
   const RASLCommand *m_first;
   const RASLCommand *m_last;
@@ -3882,7 +4117,7 @@ class VariableDebugTable {
   );
 public:
   VariableDebugTable()
-    : m_context(vm::g_context)
+    : m_context()
     , m_strings(0)
     , m_first(0)
     , m_last(0)
@@ -4850,45 +5085,23 @@ int refalrts::debugger::find_debugger_flag(int argc, char **argv) {
 
 //=============================================================================
 
-refalrts::FnResult refalrts::vm::main_loop() {
-  RefalFunction *go = RefalFunction::lookup(0, 0, "GO");
-
-  if (! go) {
-    go = RefalFunction::lookup(0, 0, "Go");
-  }
-
-  if (! go) {
-    fprintf(stderr, "INTERNAL ERROR: entry point (Go or GO) is not found\n");
-    exit(158);
-  }
-
-  FunctionTableItem entry_point[1] = { FunctionTableItem(go) };
-
-  // Формируем вызов <Go#0:0> в поле зрения
-  static const RASLCommand startup_rasl[] = {
-    { icIssueMemory, 3, 0, 0 },
-    { refalrts::icResetAllocator, 0, 0, 0 },
-    { refalrts::icSetResArgBegin, 0, 0, 0 },
-    { icAllocateBracket, 0, ibOpenCall, 0 },
-    { icAllocateName, 0, 0, 1 },
-    { icAllocateBracket, 0, ibCloseCall, 2 },
-    { icSpliceTile, 0, 2, 0 },
-    { icPushStack, 0, 0, 2 },
-    { icPushStack, 0, 0, 0 },
-    { icNextStep, 0, 0, 0 }
+refalrts::FnResult refalrts::recursive_call_main_loop() {
+  const  refalrts::RASLCommand rasl[] = {
+    { refalrts::icNextStep,0,0,0},
   };
+  return refalrts::vm::main_loop(rasl);
+}
 
+refalrts::FnResult refalrts::vm::main_loop(const RASLCommand *rasl) {
   RefalFunction *callee = 0;
-  Iter begin = & g_last_marker; /* нужно для icSetResArgBegin в startup_rasl */
+  Iter begin = 0;
   Iter end = 0;
-  const RASLCommand *rasl = startup_rasl;
-  FunctionTableItem *functions = entry_point;
+  FunctionTableItem *functions = 0;
   const RefalIdentifier *idents = 0;
   const RefalNumber *numbers = 0;
   const StringItem *strings = 0;
-
-  vm::Stack<const RASLCommand*>& open_e_stack = vm::g_open_e_stack;
-  vm::Stack<Iter>& context = vm::g_context;
+  Stack<const RASLCommand*> open_e_stack;
+  Stack<Iter> context;
 
 #ifdef ENABLE_DEBUGGER
   refalrts::debugger::RefalDebugger debugger;
@@ -4929,6 +5142,47 @@ JUMP_FROM_SCALE:
     Iter &res_e = context[val2 + 1];
 
     switch(rasl->cmd) {
+
+      case icPushState:
+        {
+           StateRefalMachine *cur_state = StateRefalMachine::alloc();
+           cur_state->callee = callee;
+           cur_state->begin = begin; /* нужно для icSetResArgBegin в startup_rasl */
+           cur_state->end = end;
+           cur_state->rasl = rasl + 2;
+           cur_state->functions = functions;
+           cur_state->idents = idents;
+           cur_state->numbers = numbers;
+           cur_state->strings = strings;
+           cur_state->open_e_stack.swap(open_e_stack);
+           cur_state->context.swap(context);
+           cur_state->res = res;
+           cur_state->trash_prev = trash_prev;
+           cur_state->stack_top = stack_top;
+           StateRefalMachine::push(cur_state);
+           break;
+        }
+
+      case icPopState:
+        {
+           StateRefalMachine *prev_state = StateRefalMachine::pop();
+           callee = prev_state->callee;
+           begin = prev_state->begin; /* нужно для icSetResArgBegin в startup_rasl */
+           end = prev_state->end;
+           rasl = prev_state->rasl;
+           functions = prev_state->functions;
+           idents = prev_state->idents;
+           numbers = prev_state->numbers;
+           strings = prev_state->strings;
+           open_e_stack.swap(prev_state->open_e_stack);
+           context.swap(prev_state->context);
+           res = prev_state->res;
+           trash_prev = prev_state->trash_prev;
+           stack_top = prev_state->stack_top;
+           StateRefalMachine::free(prev_state);
+           continue;  // пропускаем ++rasl в конце
+
+        }
       case icProfileFunction:
         this_is_generated_function();
         break;
@@ -5637,6 +5891,13 @@ JUMP_FROM_SCALE:
         splice_to_freelist(begin, end);
         break;
 
+      case icSpliceToFreeList_Range:
+        splice_to_freelist(context[val1], context[val2]);
+        break;
+
+      case icMainLoopReturnSuccess:
+        return cSuccess;
+
       case icNextStep:
         {
           profiler::stop_function();
@@ -5929,6 +6190,7 @@ int main(int argc, char **argv) {
   refalrts::dynamic::free_idents_table();
   refalrts::dynamic::free_funcs_table();
   refalrts::dynamic::cleanup_module();
+  refalrts::vm::StateRefalMachine::free();
 
   fflush(stdout);
 

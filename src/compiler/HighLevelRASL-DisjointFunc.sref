@@ -1,8 +1,15 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, MapReduce, Max;
+$EXTERN Map, Fetch, MapReduce, Max, Inc;
 
 //FROM HighLevelRASL-Common
-$EXTERN GenPattern, GenResult;
+$EXTERN FoldOpenELoops, PutVariableDebugTable;
+
+//FROM HighLevelRASL-GenSubst-Save 
+$EXTERN GenInitSubst-Save,GenSubst-Save;
+
+//FROM HighLevelRASL-Condition
+$EXTERN SentenceTail;
+
 
 $ENTRY HighLevelRASL-Function-Disjoint {
   s.FnGenInitSubst s.FnGenSubst s.FnGenResult
@@ -10,13 +17,72 @@ $ENTRY HighLevelRASL-Function-Disjoint {
 
     = <Map
         {
-          ((e.Pattern) (e.Result)) =
-            (
-              <GenResult
-                s.FnGenResult (e.Result)
-                <GenPattern s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern>
+          ((e.Pattern) (e.Result))
+
+            // Построение начальной подстановки <F e.0>:
+            // * подстановка на вход для s.FnGenSubst,
+            // * последовательность команд для инициализации этой
+            //   начальной подстановки.
+            = <s.FnGenInitSubst 0 (e.Name) e.Pattern>
+            : s.ContextTop e.Substitutes (e.FirstPatternCommands)
+
+            // Преобразование подстановки e.0 → Pattern в последовательность
+            // команд сопоставления и «размеченный образец», используемый
+            // при построении результата (в общем случае).
+            = <s.FnGenSubst
+                s.ContextTop e.Substitutes (e.FirstPatternCommands)
               >
-            );
+            : s.ContextOffset (e.PatternVars) (e.MarkedPattern)
+              e.PatternCommands
+
+            // Генерация команд построения результатного выражения
+            = <s.FnGenResult
+                s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
+              >
+            : s.ContextCount e.ResultCommands
+
+            // Если в образце есть команды-заголовки циклов удлинения
+            // открытых переменных, группируем команды за ними в циклы.
+            = <FoldOpenELoops
+                (#CmdIssueMemory s.ContextCount)
+                e.PatternCommands
+                <PutVariableDebugTable e.PatternVars>
+                e.ResultCommands
+              >
+            : e.Commands
+
+            // Каждое предложение превращается в отдельную цепочку команд.
+            // (Поэтому и disjoint.)
+            = (e.Commands);
+
+          ((e.Pattern) e.Conditions (e.Result))
+
+            = <GenInitSubst-Save 0 (e.Name) e.Pattern>
+            : s.ContextTop e.Substitutes (e.FirstPatternCommands)
+
+            = <s.FnGenSubst
+                s.ContextTop e.Substitutes (e.FirstPatternCommands)
+              >
+            : s.StartOffsetCond
+              (e.PatternVars) (e.MarkedPattern)
+              e.PatternCommands
+
+            = <SentenceTail
+                (s.StartOffsetCond)
+                (s.FnGenResult e.Result)
+                (e.PatternVars) ((e.MarkedPattern))
+                e.Conditions
+              >
+            : s.MaxOffset e.SentenceTailCommands
+
+            = <FoldOpenELoops
+                e.PatternCommands
+                <PutVariableDebugTable e.PatternVars>
+                e.SentenceTailCommands
+              >
+              : e.OuterSentence
+
+            = ((#CmdIssueMemory  s.MaxOffset) e.OuterSentence);
         }
         e.Sentences
       >

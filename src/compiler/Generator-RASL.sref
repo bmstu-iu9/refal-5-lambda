@@ -140,6 +140,12 @@ GenCommand-Globals {
   e.Labels (#CmdSwapDescr s.ScopeClass e.Name) =
     <PutBlock #Swap <NameWithSign-Bytes s.ScopeClass e.Name>>;
 
+  e.Labels (#CmdConditionFuncDecsrRasl  s.ScopeClass e.Name) =
+    <PutBlock #ConditionRasl <NameWithSign-Bytes s.ScopeClass e.Name>>;
+
+  e.Labels (#CmdConditionFuncDecsrNative  s.ScopeClass e.Name) =
+    <PutBlock #ConditionNative <NameWithSign-Bytes s.ScopeClass e.Name>>;
+
   e.Labels (#CmdNativeFuncDescr s.ScopeClass e.Name) =
     <PutBlock #NativeFunction <NameWithSign-Bytes s.ScopeClass e.Name>>;
 }
@@ -308,6 +314,9 @@ GenCommand-RASL {
   (#CmdPushStack s.ElemNumber) =
     <PutCommand #CmdPushStack 0 0 s.ElemNumber>;
 
+  (#CmdPushState) =
+    <PutCommand #CmdPushState 0 0 0>;
+
   (#CmdWrapClosure s.Offset)
     = <PutCommand #CmdWrapClosure 0 0 s.Offset>;
 
@@ -328,6 +337,9 @@ GenCommand-RASL {
 
   (#CmdSpliceToFreeList) =
     <PutCommand #CmdSpliceToFreeList 0 0 0>;
+
+  (#CmdSpliceToFreeList-Range s.Start s.End) =
+    <PutCommand #CmdSpliceToFreeList-Range s.Start s.End 0>;
 
   (#CmdNextStep) =
     <PutCommand #CmdNextStep>;

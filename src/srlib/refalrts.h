@@ -113,6 +113,26 @@ struct RefalEmptyFunction: public RefalFunction {
   static const RASLCommand run[];
 };
 
+struct RefalCondFunctionRasl: public RefalFunction {
+  RefalCondFunctionRasl(RefalFuncName name)
+    : RefalFunction(run, name)
+  {
+    /* пусто */
+  }
+
+  static const RASLCommand run[];
+};
+
+struct RefalCondFunctionNative: public RefalFunction {
+  RefalCondFunctionNative(RefalFuncName name)
+    : RefalFunction(run, name)
+  {
+    /* пусто */
+  }
+
+  static const RASLCommand run[];
+};
+
 class RefalIdentDescr;
 typedef const RefalIdentDescr *RefalIdentifier;
 
@@ -279,6 +299,10 @@ enum iCmd { /*NumberFromOpcode:Cmd+ic;Alg+Left,Alg+Right,Alg+Term*/
   icPerformNative = 109,
   icScale = 111,
   icVariableDebugOffset = 112,
+  icSpliceToFreeList_Range = 115,
+  icPushState = 116,
+  icPopState = 117,
+  icMainLoopReturnSuccess = 118,
 };
 
 enum BracketType { /*NumberFromBracket:El+ib;*/
@@ -555,8 +579,8 @@ extern void read_performance_counters(unsigned long counters[]);
 // Прочие функции
 
 extern void set_return_code(int retcode);
+extern FnResult recursive_call_main_loop();
 extern void use_counter(unsigned& counter);
-
 inline void set_return_code(RefalNumber retcode) {
   set_return_code(static_cast<int>(retcode));
 }
@@ -671,6 +695,8 @@ enum BlockType { /*BlockTypeNumber:cBlockType;*/
   cBlockTypeEmptyFunction = 5,
   cBlockTypeSwap = 6,
   cBlockTypeReference = 7,
+  cBlockTypeConditionRasl = 8,
+  cBlockTypeConditionNative = 9,
 };
 
 

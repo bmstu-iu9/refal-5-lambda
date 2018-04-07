@@ -74,6 +74,7 @@ setlocal
     -f-DMEMORY_LIMIT=1000 ^
     -f-DIDENTS_LIMIT=200 ^
     %DUMP_FILE_NAME_OPTION% ^
+    --log=__log.txt ^
     -f-DDONT_PRINT_STATISTICS
   set SRFLAGS_PREF=--prefix=_test_prefix
   set SRFLAGS_NAT=refalrts refalrts-platform-specific
@@ -86,10 +87,12 @@ setlocal
   find "%%" %1 > NUL
   if errorlevel 1 (
     call :PREPARE_PREFIX || exit /b 1
-    set SRFLAGS_PLUS=%SRFLAGS_PREF%
+    set SRFLAGS_PLUS_INIT=%SRFLAGS_PREF%
   ) else (
-    set SRFLAGS_PLUS=%SRFLAGS_NAT%
+    set SRFLAGS_PLUS_INIT=%SRFLAGS_NAT%
   )
+
+  set SRFLAGS_PLUS=%SRFLAGS_PLUS_INIT%
   set SRFLAGS=
   call :%2 %1 || exit /b 1
   set SRFLAGS=--markup-context
@@ -109,8 +112,35 @@ setlocal
   call :%2 %1 || exit /b 1
   set SRFLAGS=-OdPR
   call :%2 %1 || exit /b 1
+
+  find "CONDITIONS" %1 > NUL
+  if not errorlevel 1 (
+    echo Pass special conditions tests:
+    set SRFLAGS_PLUS=%SRFLAGS_PLUS_INIT%
+    set SRFLAGS=-OC
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OC --markup-context
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OCP
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OCR
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OCPR
+    call :%2 %1 || exit /b 1
+    set SRFLAGS_PLUS=%SRFLAGS_NAT%
+    set SRFLAGS=-OCd
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OCdP
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OCdR
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OCdPR
+    call :%2 %1 || exit /b 1
+    echo Special conditions tests is passed
+  )
 endlocal
-goto :EOF
+::goto :EOF
+exit /b 0
 
 :RUN_TEST_AUX
 setlocal
@@ -150,6 +180,7 @@ setlocal
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt
+  if exist __log.txt erase __log.txt
   echo.
 endlocal
 goto :EOF
@@ -192,6 +223,7 @@ setlocal
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt
+  if exist __log.txt erase __log.txt
   echo Ok! This failure was normal and expected
   echo.
 endlocal
@@ -259,6 +291,7 @@ setlocal
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt
+  if exist __log.txt erase __log.txt
   echo.
 endlocal
 goto :EOF

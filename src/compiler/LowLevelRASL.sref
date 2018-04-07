@@ -64,6 +64,10 @@ CalcDigest {
     (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'S'>)
     (#CmdSwap s.ScopeClass e.Name);
 
+  (s.Hash1 s.Hash2) (#CmdConditionFunc s.ScopeClass e.Name) =
+    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'C'>)
+    (#CmdConditionFunc s.ScopeClass e.Name);
+
   (s.Hash1 s.Hash2) (#CmdDeclaration s.ScopeClass e.Name) =
     (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'D'>)
     (#CmdDeclaration s.ScopeClass e.Name);
@@ -150,6 +154,12 @@ MarkFunctionGenMode {
 
   #OnlyDirect (#Function s.ScopeClass (e.Name) e.Commands) =
     (#Function-ToNative s.ScopeClass (e.Name) e.Commands);
+
+  #OnlyInterpret (#CmdConditionFunc s.ScopeClass e.Name)=
+   (#CmdConditionFunc-ToRASL s.ScopeClass e.Name);
+
+  #OnlyDirect (#CmdConditionFunc s.ScopeClass e.Name) =
+    (#CmdConditionFunc-ToNative s.ScopeClass e.Name);
 
   s.GenMode (s.Type e.Info) = (s.Type e.Info);
 }

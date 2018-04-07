@@ -12,6 +12,7 @@ $EXTERN
   Config-GetDebugMode,
   Config-GetOptPattern,
   Config-GetOptResult,
+  Config-GetConditionsMode,
   Config-GetGenMode;
 
 //FROM Checker
@@ -430,9 +431,10 @@ BackEnd {
     = <Config-GetDebugMode t.Config> : s.MarkupContext s.DebugInfo
     = <Config-GetOptPattern t.Config> : s.OptPattern
     = <Config-GetOptResult t.Config> : s.OptResult
+    = <Config-GetConditionsMode t.Config> : s.ConditionsMode
     = <Config-GetGenMode t.Config> : s.GenMode
     = <Pipe
-        (Desugar s.MarkupContext)
+        (Desugar s.MarkupContext s.ConditionsMode)
         <Log-GetLogFunction-AST e.SrcName>
         (HighLevelRASL s.OptPattern s.OptResult)
         <Log-GetLogFunction-HighLevelRASL e.SrcName>

@@ -6,7 +6,7 @@ $EXTERN Pass-UnCondition;
 
 
 $ENTRY Desugar {
-  s.MarkupContext e.AST =
+  s.MarkupContext s.ConditionsMode e.AST =
     <Fetch
       e.AST
       <Pipe
@@ -15,7 +15,14 @@ $ENTRY Desugar {
         Pass-NameNestedFuncs
         Pass-RemoveBlocksAndAssigns
         (Pass-FlatNestedFuncs s.MarkupContext)
-        (Pass-UnCondition s.MarkupContext)
+        <Fetch
+          s.ConditionsMode
+          {
+            #Conditions-Native = /* no pass */;
+
+            #Conditions-Transform = (Pass-UnCondition s.MarkupContext);
+          }
+        >
         Pass-RemoveRedudandElements
       >
     >;

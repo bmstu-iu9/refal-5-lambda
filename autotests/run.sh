@@ -20,10 +20,12 @@ prepare_prefix() {
 run_test_all_modes() {
   if ! grep '%%' $1 > /dev/null; then
     prepare_prefix
-    SRFLAGS_PLUS="$SRFLAGS_PREF"
+    SRFLAGS_PLUS_INIT="$SRFLAGS_PREF"
   else
-    SRFLAGS_PLUS="$SRFLAGS_NAT"
+    SRFLAGS_PLUS_INIT="$SRFLAGS_NAT"
   fi
+
+  SRFLAGS_PLUS="$SRFLAGS_PLUS_INIT"
   SRFLAGS= $2 $1
   SRFLAGS=--markup-context $2 $1
   SRFLAGS=-OP $2 $1
@@ -34,6 +36,22 @@ run_test_all_modes() {
   SRFLAGS=-OdP $2 $1
   SRFLAGS=-OdR $2 $1
   SRFLAGS=-OdPR $2 $1
+
+  if grep 'CONDITIONS' $1 > /dev/null; then
+    echo "Pass special conditions tests:"
+    SRFLAGS_PLUS="$SRFLAGS_PLUS_INIT"
+    SRFLAGS=-OC $2 $1
+    SRFLAGS="-OC --markup-context" $2 $1
+    SRFLAGS=-OCP $2 $1
+    SRFLAGS=-OCR $2 $1
+    SRFLAGS=-OCPR $2 $1
+    SRFLAGS_PLUS="$SRFLAGS_NAT"
+    SRFLAGS=-OCd $2 $1
+    SRFLAGS=-OCdP $2 $1
+    SRFLAGS=-OCdR $2 $1
+    SRFLAGS=-OCdPR $2 $1
+    echo "Special conditions tests is passed"
+  fi
 }
 
 run_test_aux() {
@@ -67,6 +85,7 @@ run_test_aux_with_flags() {
 
   rm $RASL $NATCPP $EXE
   [ -e __dump.txt ] && rm __dump.txt
+  [ -e __log.txt ] && rm __log.txt
 
   echo
 }
@@ -124,6 +143,7 @@ run_test_aux_with_flags.FAILURE() {
 
   rm $RASL $NATCPP $EXE
   [ -e __dump.txt ] && rm __dump.txt
+  [ -e __log.txt ] && rm __log.txt
 
   echo "Ok! This failure was normal and expected"
   echo
@@ -162,6 +182,7 @@ run_test_aux.LEXGEN() {
 
   rm _lexgen-out*
   [ -e __dump.txt ] && rm __dump.txt
+  [ -e __log.txt ] && rm __log.txt
 
   echo
 }
@@ -197,6 +218,7 @@ run_test() {
     -f-DMEMORY_LIMIT=1000
     -f-DIDENTS_LIMIT=200
     -f-DDUMP_FILE=\\\"__dump.txt\\\"
+    --log=__log.txt
     -f-DDONT_PRINT_STATISTICS
     -f-g
     --chmod-x-command="chmod +x"

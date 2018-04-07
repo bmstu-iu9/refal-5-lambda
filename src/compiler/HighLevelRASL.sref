@@ -41,6 +41,19 @@ $ENTRY HighLevelRASL {
     <Map
       {
         (#Function s.ScopeClass (e.Name) #Sentences e.Sentences) =
+          <Map
+            {
+              ((e.Pattern) e.Conditions (e.Result))
+                = <Map
+                    {
+                      (#Condition (e.Name^) (e.Result^) (e.Pattern^))
+                        = (#CmdConditionFunc #GN-Local e.Name);
+                    }
+                    e.Conditions
+                  >;
+            }
+            e.Sentences
+          >
           <HighLevelRASL-Function
             <GenSentenceFunc s.Joint>
             <GenResultFuncs s.OptResult>

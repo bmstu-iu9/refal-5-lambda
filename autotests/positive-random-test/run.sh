@@ -22,6 +22,14 @@ regression() {
       && run_test "$r" -Od \
       && run_test "$r" -OdP \
       && run_test "$r" -OdR \
+      && run_test "$r" -OC \
+      && run_test "$r" -OCP \
+      && run_test "$r" -OCR \
+      && run_test "$r" -OCPR \
+      && run_test "$r" -OCd \
+      && run_test "$r" -OCdP \
+      && run_test "$r" -OCdR \
+      && run_test "$r" -OCdPR \
       && run_test "$r" -OdPR
     then
       rm -f *.rasl *.cpp *.out* *.err*
@@ -46,6 +54,14 @@ new_tests() {
       && run_test "$r" -Od \
       && run_test "$r" -OdP \
       && run_test "$r" -OdR \
+      && run_test "$r" -OC \
+      && run_test "$r" -OCP \
+      && run_test "$r" -OCR \
+      && run_test "$r" -OCPR \
+      && run_test "$r" -OCd \
+      && run_test "$r" -OCdP \
+      && run_test "$r" -OCdR \
+      && run_test "$r" -OCdPR \
       && run_test "$r" -OdPR
     then
       rm -f ${r%%.ref}.*

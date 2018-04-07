@@ -191,6 +191,16 @@ GenCommand-Native {
     e.Code
     (#NativeInsertEnd);
 
+  (e.Indent) (#CmdCallCondition) =
+    (e.Indent)
+    (e.Indent
+      'refalrts::FnResult rec_res = refalrts::recursive_call_main_loop();'
+    )
+    (e.Indent
+      'if (rec_res != refalrts::cSuccess)'
+    )
+    (e.Indent '  return rec_res;');
+
   (e.Indent) (#CmdProfileFunction) =
     (e.Indent)
     (e.Indent 'refalrts::this_is_generated_function();');
@@ -488,6 +498,13 @@ GenCommand-Native {
     (e.Indent)
     (e.Indent 'refalrts::splice_to_freelist( arg_begin, arg_end );');
 
+  (e.Indent) (#CmdSpliceToFreeList-Range s.Left s.Right) =
+    (e.Indent)
+    (e.Indent
+      'refalrts::splice_to_freelist('
+      <ContextItem s.Left> ', ' <ContextItem s.Right> ');'
+    );
+
   (e.Indent) (#CmdNextStep) =
     (e.Indent)
     (e.Indent 'return refalrts::cSuccess;');
@@ -512,7 +529,7 @@ GenCommand-Native {
 
   (e.Indent) (#CmdFail) =
     (e.Indent)
-    (e.Indent 'return refalrts::cRecognitionImpossible;');
+    (e.Indent <BreakerFromIndent e.Indent>);
 }
 
 PrintString {
