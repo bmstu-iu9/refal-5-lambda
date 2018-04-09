@@ -11,10 +11,7 @@ $EXTERN PatternComment, CreateGlobalGen, SplitGen;
 $EXTERN GenInitSubst-Save;
 
 //FROM HighLevelRASL-Common
-$EXTERN GenPattern, MakeSavers, FoldOpenELoops, PutVariableDebugTable;
-
-//FROM HighLevelRASL-Condition
-$EXTERN SentenceTail;
+$EXTERN GenPattern, MakeSavers, GenResult;
 
 
 $ENTRY HighLevelRASL-Function-Conjoint {
@@ -64,31 +61,17 @@ $ENTRY HighLevelRASL-Function-Conjoint {
             = <MakeSavers s.ContextSize e.SubstitutesAnsJunks>
             : s.ContextSize^ (e.CmdSaves) e.SubstitutesAnsJunks^
 
-            = <s.FnGenSubst
-                s.ContextSize
-                e.SubstitutesAnsJunks
-                (e.CmdSaves)
+            = <GenResult
+                s.FnGenResult (e.Conditions) (e.Result)
+                <s.FnGenSubst
+                  s.ContextSize
+                  e.SubstitutesAnsJunks
+                  (e.CmdSaves)
+                >
               >
-            : s.StartOffsetCond
-              (e.PatternVars) (e.MarkedPattern^)
-              e.PatternCommands
+            : (#CmdIssueMemory s.Memory) e.Commands
 
-            = <SentenceTail
-                (s.StartOffsetCond)
-                (s.FnGenResult e.Result)
-                (e.PatternVars) ((e.MarkedPattern))
-                e.Conditions
-              >
-            : s.MaxOffset e.SentenceTailCommands
-
-            = <FoldOpenELoops
-                e.PatternCommands
-                <PutVariableDebugTable e.PatternVars>
-                e.SentenceTailCommands
-              >
-              : e.Commands
-
-            = <Max s.MaxMemory s.MaxOffset>
+            = <Max s.MaxMemory s.Memory>
               (#CmdSentence
                 (#CmdComment e.HardGenComment)
                 e.Commands

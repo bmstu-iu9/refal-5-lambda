@@ -10,6 +10,9 @@ $EXTERN DisplayName;
 //FROM Escape
 $EXTERN EscapeChar;
 
+//FROM HighLevelRASL-Condition
+$EXTERN SentenceTail;
+
 
 $ENTRY Inc2 {
   s.Num = <Add 2 s.Num>;
@@ -148,23 +151,27 @@ $ENTRY GenPattern {
 
 /**
   <GenResult
-    s.FnGenResult (e.Result)
+    s.FnGenResult (e.Conditions) (e.Result)
     s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands
   >
     == (#CmdIssueMemory s.ContextSize) e.SentenceCommands
 */
 $ENTRY GenResult {
-  s.FnGenResult (e.Result)
+  s.FnGenResult (e.Conditions) (e.Result)
   s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands
-    = <s.FnGenResult
-        s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
+    = <SentenceTail
+        (s.ContextOffset)
+        (s.FnGenResult e.Result)
+        (e.PatternVars) ((e.MarkedPattern))
+        e.Conditions
       >
-    : s.ContextCount e.ResultCommands
+    : s.ContextCount e.SentenceTailCommands
+
     = <FoldOpenELoops
         (#CmdIssueMemory s.ContextCount)
         e.PatternCommands
         <PutVariableDebugTable e.PatternVars>
-        e.ResultCommands
+        e.SentenceTailCommands
       >;
 }
 

@@ -2,13 +2,10 @@
 $EXTERN Map, MapReduce, Max, Fetch;
 
 //FROM HighLevelRASL-Common
-$EXTERN FoldOpenELoops, PutVariableDebugTable;
+$EXTERN FoldOpenELoops, PutVariableDebugTable, GenResult;
 
 //FROM HighLevelRASL-GenSubst-Save
 $EXTERN GenInitSubst-Save, GenSubst-Save;
-
-//FROM HighLevelRASL-Condition
-$EXTERN SentenceTail;
 
 
 $ENTRY HighLevelRASL-Function-Disjoint {
@@ -60,29 +57,14 @@ $ENTRY HighLevelRASL-Function-Disjoint {
             = <GenInitSubst-Save 0 (e.Name) e.Pattern>
             : s.ContextTop e.Substitutes (e.FirstPatternCommands)
 
-            = <s.FnGenSubst
-                s.ContextTop e.Substitutes (e.FirstPatternCommands)
-              >
-            : s.StartOffsetCond
-              (e.PatternVars) (e.MarkedPattern)
-              e.PatternCommands
-
-            = <SentenceTail
-                (s.StartOffsetCond)
-                (s.FnGenResult e.Result)
-                (e.PatternVars) ((e.MarkedPattern))
-                e.Conditions
-              >
-            : s.MaxOffset e.SentenceTailCommands
-
-            = <FoldOpenELoops
-                e.PatternCommands
-                <PutVariableDebugTable e.PatternVars>
-                e.SentenceTailCommands
-              >
-              : e.OuterSentence
-
-            = ((#CmdIssueMemory  s.MaxOffset) e.OuterSentence);
+            = (
+                <GenResult
+                  s.FnGenResult (e.Conditions) (e.Result)
+                  <s.FnGenSubst
+                    s.ContextTop e.Substitutes (e.FirstPatternCommands)
+                  >
+                >
+              );
         }
         e.Sentences
       >
