@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Map, Inc, Sort, Pipe;
+$EXTERN Fetch, Map, Dec, Inc, Sort, Pipe;
 
 //FROM Library
 $EXTERN Add;
@@ -18,7 +18,7 @@ $EXTERN CollectStrings, IncVarOffset, PrintVar;
 $ENTRY GenResult-Simple {
   s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
     = /* e.MarkedPattern не используется */
-      <GenResult s.ContextOffset (e.PatternVars) e.Result>
+      <GenResult s.ContextOffset MakeVarTable-Simple (e.PatternVars) e.Result>
     : {
         s.ContextOffset^ (e.CommonVars) /* нет команд генерации результата */ =
           s.ContextOffset
@@ -38,15 +38,38 @@ $ENTRY GenResult-Simple {
       };
 }
 
-GenResult {
-  s.ContextOffset (e.PatternVars) e.Result
-    = <Map
-        {
-          (s.Mode (e.Index) e.Offsets) = (s.Mode (e.Index) () e.Offsets);
-        }
-        e.PatternVars
+/**
+  <GenResult-Condition
+    s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
+  >
+    == s.ContextOffset^ e.ResultCommands
+*/
+
+$ENTRY GenResult-Condition {
+  s.ContextOffset (e.PatternVars) e.CondResult
+    = <GenResult
+        s.ContextOffset MakeVarTable-Conditions (e.PatternVars) e.CondResult
       >
-    : e.PatternVars^
+    : s.ContextOffset^ (e.CommonVars) e.ResultCommands
+    = s.ContextOffset
+      <MakeVariableCommentTable e.CommonVars>
+      (#CmdResetAllocator)
+      (#CmdSetRes 1)
+      e.ResultCommands
+      (#CmdUseRes);
+}
+
+MakeVarTable-Simple {
+  (s.Mode (e.Index) e.Offsets) = (s.Mode (e.Index) () e.Offsets);
+}
+
+MakeVarTable-Conditions {
+  (s.Mode (e.Index) e.Offsets) = (s.Mode (e.Index) (e.Offsets));
+}
+
+GenResult {
+  s.ContextOffset s.FnMakeVarTable (e.PatternVars) e.Result
+    = <Map s.FnMakeVarTable e.PatternVars> : e.PatternVars^
     = <DoGenResult
         (e.PatternVars)
         (/* alloc commands */) (/* other commands */)
@@ -56,6 +79,29 @@ GenResult {
 }
 
 $ENTRY DoGenResult {
+ (e.Vars) (e.AllocCommands) (e.Commands)
+  s.Counter (#TkOpenCallCond s.Offset) e.Result =
+    <DoGenResult
+      (e.Vars)
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Offset #ElOpenCall))
+      ((#CmdInsertElem s.Offset) e.Commands)
+      s.Counter e.Result
+    >;
+
+  (e.Vars) (e.AllocCommands) (e.Commands)
+  s.Counter (#TkCloseCallCond s.Offset) e.Result =
+    <DoGenResult
+      (e.Vars)
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Offset #ElCloseCall))
+      (
+        (#CmdPushStack s.Offset)
+        (#CmdPushStack <Dec s.Offset>)
+        (#CmdInsertElem s.Offset)
+        e.Commands
+      )
+      s.Counter e.Result
+    >;
+
   // Создаём литералы
   (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (#TkChar s.Value) e.Result =
     <DoGenResult
