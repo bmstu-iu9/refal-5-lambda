@@ -1,3 +1,5 @@
+// CONDITIONS
+
 $ENTRY Go {
   = <Eq C <Test A B C D>>
     <Eq 0 <Test A B D>>;

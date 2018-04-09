@@ -1,0 +1,14 @@
+$ENTRY Go {
+  = <Eq 1 <Test A>>
+    <Eq 2 <Test B>>
+    <Eq 3 <Test C>>
+    <Eq 13 <Step>>
+}
+
+Eq { s.X s.X = <Prout s.X> }
+
+Test {
+  s.Symbol
+    , (1 A) (2 B) (3 C) : e.Pairs-B (s.Digit s.Symbol) e.Pairs-E
+    = s.Digit;
+}

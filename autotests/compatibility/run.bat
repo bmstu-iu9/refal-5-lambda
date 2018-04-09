@@ -74,6 +74,7 @@ goto :EOF
   rem Without setlocal because set COMMON_SRFLAGS
 
   set COMMON_SRFLAGS= ^
+    -OC ^
     --markup-context ^
     -c "%CPPLINEE%" ^
     --exesuffix=.exe ^

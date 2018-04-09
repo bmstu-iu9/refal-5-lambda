@@ -76,6 +76,7 @@ lookup_compilers() {
     LIBDIR=../../src/srlib
     COMMON_SRFLAGS=(
       "-c $CPPLINEE"
+      -OC
       --markup-context
       --exesuffix=$(platform_exe_suffix)
       -D$(platform_subdir_lookup $LIBDIR)
