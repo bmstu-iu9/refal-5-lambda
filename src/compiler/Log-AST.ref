@@ -63,7 +63,7 @@ Function {
       ('}')
       ();
 
-  (e.Name) s.Scope Native t.SrcPos e.NativeBody
+  (e.Name) s.Scope NativeBody t.SrcPos e.NativeBody
     = (<Entry s.Scope> <DisplayName e.Name> ' { %% native %% }');
 };
 
