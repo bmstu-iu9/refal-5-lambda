@@ -2,10 +2,10 @@
 $EXTERN Map, MapReduce, Max, Fetch;
 
 //FROM HighLevelRASL-Common
-$EXTERN FoldOpenELoops, PutVariableDebugTable, GenResult;
+$EXTERN FoldOpenELoops, PutVariableDebugTable, GenResult, GenPattern;
 
 //FROM HighLevelRASL-GenSubst-Save
-$EXTERN GenInitSubst-Save, GenSubst-Save;
+$EXTERN GenInitSubst-Save;
 
 
 $ENTRY HighLevelRASL-Function-Disjoint {
@@ -14,54 +14,12 @@ $ENTRY HighLevelRASL-Function-Disjoint {
 
     = <Map
         {
-          ((e.Pattern) (e.Result))
-
-            // Построение начальной подстановки <F e.0>:
-            // * подстановка на вход для s.FnGenSubst,
-            // * последовательность команд для инициализации этой
-            //   начальной подстановки.
-            = <s.FnGenInitSubst 0 (e.Name) e.Pattern>
-            : s.ContextTop e.Substitutes (e.FirstPatternCommands)
-
-            // Преобразование подстановки e.0 → Pattern в последовательность
-            // команд сопоставления и «размеченный образец», используемый
-            // при построении результата (в общем случае).
-            = <s.FnGenSubst
-                s.ContextTop e.Substitutes (e.FirstPatternCommands)
-              >
-            : s.ContextOffset (e.PatternVars) (e.MarkedPattern)
-              e.PatternCommands
-
-            // Генерация команд построения результатного выражения
-            = <s.FnGenResult
-                s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
-              >
-            : s.ContextCount e.ResultCommands
-
-            // Если в образце есть команды-заголовки циклов удлинения
-            // открытых переменных, группируем команды за ними в циклы.
-            = <FoldOpenELoops
-                (#CmdIssueMemory s.ContextCount)
-                e.PatternCommands
-                <PutVariableDebugTable e.PatternVars>
-                e.ResultCommands
-              >
-            : e.Commands
-
-            // Каждое предложение превращается в отдельную цепочку команд.
-            // (Поэтому и disjoint.)
-            = (e.Commands);
-
           ((e.Pattern) e.Conditions (e.Result))
-
-            = <GenInitSubst-Save 0 (e.Name) e.Pattern>
-            : s.ContextTop e.Substitutes (e.FirstPatternCommands)
-
             = (
                 <GenResult
                   s.FnGenResult (e.Conditions) (e.Result)
-                  <s.FnGenSubst
-                    s.ContextTop e.Substitutes (e.FirstPatternCommands)
+                  <GenPattern
+                    GenInitSubst-Save s.FnGenSubst (e.Name) e.Pattern
                   >
                 >
               );
