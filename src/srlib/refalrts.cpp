@@ -3422,6 +3422,10 @@ int g_ret_code;
 
 template <typename T>
 class Stack {
+  // Запрет копирования
+  Stack(const Stack<T> &obj);
+  Stack& operator=(const Stack<T> &obj);
+
 public:
   Stack()
     :m_memory(new T[1]), m_size(0), m_capacity(1)
@@ -3437,11 +3441,7 @@ public:
     return m_memory[offset];
   }
 
-  Stack(const Stack<T> &obj);
-  Stack& operator=(const Stack<T> &obj);
   void reserve(size_t size);
-  size_t get_size() const;
-  T* get_m_memory() const;
 
   void swap(Stack<T>& other) {
     swap(m_memory, other.m_memory);
@@ -3468,36 +3468,6 @@ private:
 } // namespace refalrts
 
 template <typename T>
-refalrts::vm::Stack<T>::Stack(const  refalrts::vm::Stack<T> &obj){
-  size_t new_size = obj.get_size();
-  T* obj_memory = obj.get_m_memory();
-
-  m_size = new_size;
-  m_capacity = new_size;
-  m_memory = new T[new_size];
-  for (size_t i = 0; i < new_size; i++) {
-     m_memory[i] = obj_memory[i];
-  }
-}
-
-template <typename T>
-refalrts::vm::Stack<T>& refalrts::vm::Stack<T>::operator=(const refalrts::vm::Stack<T> &obj) {
-  if (this != &obj){
-    size_t new_size = obj.get_size();
-    T* obj_memory = obj.get_m_memory();
-
-    delete[] m_memory;
-    m_size = new_size;
-    m_capacity = new_size;
-    m_memory = new T[new_size];
-    for (size_t i = 0; i < new_size; i++) {
-      m_memory[i] = obj_memory[i];
-    }
-  }
-  return *this;
- }
-
-template <typename T>
 void refalrts::vm::Stack<T>::reserve(size_t size) {
   assert (size > 0);
 
@@ -3511,16 +3481,6 @@ void refalrts::vm::Stack<T>::reserve(size_t size) {
   for (size_t i = 0; i < m_size; ++i) {
     m_memory[i] = T();
   }
-}
-
-template <typename T>
-size_t refalrts::vm::Stack<T>::get_size() const{
-  return(m_size);
-}
-
-template <typename T>
-T* refalrts::vm::Stack<T>::get_m_memory() const{
-  return(m_memory);
 }
 
 void refalrts::vm::push_stack(refalrts::Iter call_bracket) {
@@ -4108,7 +4068,7 @@ enum { cMaxLen = 1024 };
 void close_out(FILE*);
 
 class VariableDebugTable {
-  vm::Stack<Iter> m_context;
+  vm::Stack<Iter> *m_context;
   const StringItem *m_strings;
   const RASLCommand *m_first;
   const RASLCommand *m_last;
@@ -4120,7 +4080,7 @@ class VariableDebugTable {
   );
 public:
   VariableDebugTable()
-    : m_context()
+    : m_context(0)
     , m_strings(0)
     , m_first(0)
     , m_last(0)
@@ -4272,7 +4232,7 @@ refalrts::debugger::VariableDebugTable::parse_var_name(
 void refalrts::debugger::VariableDebugTable::variable_bounds(
   refalrts::Iter& var_begin, refalrts::Iter& var_end, char type, int offset
 ) {
-  var_begin = m_context[offset];
+  var_begin = (*m_context)[offset];
   switch (type) {
     case 's':
       var_end = var_begin;
@@ -4287,7 +4247,7 @@ void refalrts::debugger::VariableDebugTable::variable_bounds(
       break;
 
     case 'e':
-      var_end = m_context[offset + 1];
+      var_end = (*m_context)[offset + 1];
       break;
 
     default:
@@ -4379,9 +4339,9 @@ void refalrts::debugger::VariableDebugTable::set_string_items(
 }
 
 void refalrts::debugger::VariableDebugTable::set_context(
-  vm::Stack<Iter>&cont
+  vm::Stack<Iter> &cont
 ) {
-  m_context = cont;
+  m_context = &cont;
 }
 
 //=============================================================================
