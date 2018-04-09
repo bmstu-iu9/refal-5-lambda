@@ -160,10 +160,8 @@ $ENTRY GenResult {
   s.FnGenResult (e.Conditions) (e.Result)
   s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands
     = <SentenceTail
-        (s.ContextOffset)
-        (s.FnGenResult e.Result)
-        (e.PatternVars) ((e.MarkedPattern))
-        e.Conditions
+        s.ContextOffset (e.PatternVars) (e.MarkedPattern)
+        e.Conditions (s.FnGenResult e.Result)
       >
     : s.ContextCount e.SentenceTailCommands
 
