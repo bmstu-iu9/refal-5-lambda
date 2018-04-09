@@ -3257,30 +3257,6 @@ void refalrts::dynamic::enumerate_blocks() {
         }
         break;
 
-      case cBlockTypeConditionRasl:
-        {
-          const char *name = read_asciiz(stream);
-          assert(name);
-
-          RefalCondFunctionRasl *result = dynamic::malloc<RefalCondFunctionRasl>();
-          // TODO: выдача сообщения об ошибке
-          assert(result != 0);
-          new (result) RefalCondFunctionRasl(table->make_name(name));
-          break;
-        }
-      case cBlockTypeConditionNative:
-        {
-          const char *name = read_asciiz(stream);
-          assert(name);
-
-          RefalCondFunctionNative *result = dynamic::malloc<RefalCondFunctionNative>();
-          // TODO: выдача сообщения об ошибке
-          assert(result != 0);
-          new (result) RefalCondFunctionNative(table->make_name(name));
-          break;
-        }
-
-
       case cBlockTypeNativeFunction:
         {
           const char *name = read_asciiz(stream);
@@ -3344,6 +3320,33 @@ void refalrts::dynamic::enumerate_blocks() {
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalSwap(table->make_name(name));
+        }
+        break;
+
+      case cBlockTypeReference:
+        refalrts_switch_default_violation(type);
+
+      case cBlockTypeConditionRasl:
+        {
+          const char *name = read_asciiz(stream);
+          assert(name);
+
+          RefalCondFunctionRasl *result = dynamic::malloc<RefalCondFunctionRasl>();
+          // TODO: выдача сообщения об ошибке
+          assert(result != 0);
+          new (result) RefalCondFunctionRasl(table->make_name(name));
+        }
+        break;
+
+      case cBlockTypeConditionNative:
+        {
+          const char *name = read_asciiz(stream);
+          assert(name);
+
+          RefalCondFunctionNative *result = dynamic::malloc<RefalCondFunctionNative>();
+          // TODO: выдача сообщения об ошибке
+          assert(result != 0);
+          new (result) RefalCondFunctionNative(table->make_name(name));
         }
         break;
 
@@ -5142,47 +5145,46 @@ JUMP_FROM_SCALE:
     Iter &res_e = context[val2 + 1];
 
     switch(rasl->cmd) {
-
       case icPushState:
         {
-           StateRefalMachine *cur_state = StateRefalMachine::alloc();
-           cur_state->callee = callee;
-           cur_state->begin = begin; /* нужно для icSetResArgBegin в startup_rasl */
-           cur_state->end = end;
-           cur_state->rasl = rasl + 2;
-           cur_state->functions = functions;
-           cur_state->idents = idents;
-           cur_state->numbers = numbers;
-           cur_state->strings = strings;
-           cur_state->open_e_stack.swap(open_e_stack);
-           cur_state->context.swap(context);
-           cur_state->res = res;
-           cur_state->trash_prev = trash_prev;
-           cur_state->stack_top = stack_top;
-           StateRefalMachine::push(cur_state);
-           break;
+          StateRefalMachine *cur_state = StateRefalMachine::alloc();
+          cur_state->callee = callee;
+          cur_state->begin = begin; /* нужно для icSetResArgBegin в startup_rasl */
+          cur_state->end = end;
+          cur_state->rasl = rasl + 2;
+          cur_state->functions = functions;
+          cur_state->idents = idents;
+          cur_state->numbers = numbers;
+          cur_state->strings = strings;
+          cur_state->open_e_stack.swap(open_e_stack);
+          cur_state->context.swap(context);
+          cur_state->res = res;
+          cur_state->trash_prev = trash_prev;
+          cur_state->stack_top = stack_top;
+          StateRefalMachine::push(cur_state);
         }
+        break;
 
       case icPopState:
         {
-           StateRefalMachine *prev_state = StateRefalMachine::pop();
-           callee = prev_state->callee;
-           begin = prev_state->begin; /* нужно для icSetResArgBegin в startup_rasl */
-           end = prev_state->end;
-           rasl = prev_state->rasl;
-           functions = prev_state->functions;
-           idents = prev_state->idents;
-           numbers = prev_state->numbers;
-           strings = prev_state->strings;
-           open_e_stack.swap(prev_state->open_e_stack);
-           context.swap(prev_state->context);
-           res = prev_state->res;
-           trash_prev = prev_state->trash_prev;
-           stack_top = prev_state->stack_top;
-           StateRefalMachine::free(prev_state);
-           continue;  // пропускаем ++rasl в конце
-
+          StateRefalMachine *prev_state = StateRefalMachine::pop();
+          callee = prev_state->callee;
+          begin = prev_state->begin; /* нужно для icSetResArgBegin в startup_rasl */
+          end = prev_state->end;
+          rasl = prev_state->rasl;
+          functions = prev_state->functions;
+          idents = prev_state->idents;
+          numbers = prev_state->numbers;
+          strings = prev_state->strings;
+          open_e_stack.swap(prev_state->open_e_stack);
+          context.swap(prev_state->context);
+          res = prev_state->res;
+          trash_prev = prev_state->trash_prev;
+          stack_top = prev_state->stack_top;
+          StateRefalMachine::free(prev_state);
         }
+        continue;  // пропускаем ++rasl в конце
+
       case icProfileFunction:
         this_is_generated_function();
         break;
