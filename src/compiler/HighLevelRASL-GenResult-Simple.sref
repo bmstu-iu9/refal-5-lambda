@@ -1,11 +1,12 @@
 //FROM LibraryEx
-$EXTERN Fetch, Map, Dec, Inc, Sort, Pipe;
+$EXTERN Map, Dec, Inc, Fetch, Pipe, Sort;
+
+//FROM HighLevelRASL-Common
+$EXTERN CollectStrings, IncVarOffset, PrintVar;
 
 //FROM Library
 $EXTERN Add;
 
-//FROM HighLevelRASL-Common
-$EXTERN CollectStrings, IncVarOffset, PrintVar;
 
 /**
   <GenResult-Simple

@@ -1,20 +1,21 @@
 //FROM LibraryEx
-$EXTERN Fetch, MapReduce, Max;
+$EXTERN MapReduce, Max, Fetch;
 
 //FROM HardSent
 $EXTERN CreateHardPattern;
 
 //FROM GlobalGen
-$EXTERN CreateGlobalGen, SplitGen, PatternComment;
+$EXTERN PatternComment, CreateGlobalGen, SplitGen;
+
+//FROM HighLevelRASL-GenSubst-Save
+$EXTERN GenInitSubst-Save;
 
 //FROM HighLevelRASL-Common
-$EXTERN GenPattern, MakeSavers, GenResult, FoldOpenELoops, PutVariableDebugTable;
+$EXTERN GenPattern, MakeSavers, FoldOpenELoops, PutVariableDebugTable;
 
 //FROM HighLevelRASL-Condition
 $EXTERN SentenceTail;
 
-//FROM HighLevelRASL-GenSubst-Save
-$EXTERN GenInitSubst-Save;
 
 $ENTRY HighLevelRASL-Function-Conjoint {
   s.FnGenInitSubst s.FnGenSubst s.FnGenResult

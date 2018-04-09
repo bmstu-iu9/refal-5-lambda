@@ -1,58 +1,57 @@
+//FROM HighLevelRASL-GenResult-Simple
+$EXTERN GenResult-Condition;
+
+//FROM HighLevelRASL-Common
+$EXTERN Inc2, FoldOpenELoops, PutVariableDebugTable;
+
 //FROM LibraryEx
-$EXTERN Fetch, Map, Inc, Sort, Pipe, Max, Dec;
+$EXTERN Inc, Max, Map;
+
+//FROM HighLevelRASL-GenSubst-Save
+$EXTERN GenSubst-Save-Cond;
 
 //FROM Library
 $EXTERN Add;
 
-//FROM HighLevelRASL-GenSubst-Save 
-$EXTERN GenSubst-Save-Cond;
 
-//FROM HighLevelRASL-Common
-$EXTERN Inc2,FoldOpenELoops, PutVariableDebugTable, CollectStrings, 
-IncVarOffset, PrintVar;
-
-//FROM HighLevelRASL-GenResult-Simple
-$EXTERN GenResult-Condition, MakeVariableCommentTable;
-
-$ENTRY SentenceTail{
-
+$ENTRY SentenceTail {
   (s.StartOffsetCond)
   (e.ResultSentence)
   (e.PatternVars)(e.MarkedPatternCur)
   (#Condition (e.CondName) (e.CondResult) (e.CondPattern)) e.ConditionsTail
-    
+
     = <GenResult-Condition
-        <Inc2 s.StartOffsetCond> (e.PatternVars) 
+        <Inc2 s.StartOffsetCond> (e.PatternVars)
 	(#TkOpenCallCond s.StartOffsetCond)
         (#TkName e.CondName) e.CondResult
         (#TkCloseCallCond <Inc s.StartOffsetCond>)
       >
-      : s.EndOffsetCond-Res e.CondResultCommands        
+      : s.EndOffsetCond-Res e.CondResultCommands
 
     = <GenInitSubst-Cond s.StartOffsetCond (e.CondName) e.CondPattern>
-      : s.OffsetCond 
+      : s.OffsetCond
         e.CondSubstitutes (e.FirstCondPatternCommands)
 
     = <GenSubst-Save-Cond
         s.OffsetCond e.CondSubstitutes (e.PatternVars)
         (e.FirstCondPatternCommands)
       >
-      : s.StartOffsetCondNext 
+      : s.StartOffsetCondNext
         (e.PatternVarsAfterCond) (e.MarkedPatternCond)
         e.CondPatternCommands
-    
-    = e.MarkedPatternCur (e.MarkedPatternCond) : e.MarkedPatternCur^ 
-                 
+
+    = e.MarkedPatternCur (e.MarkedPatternCond) : e.MarkedPatternCur^
+
     = <SentenceTail
        (s.StartOffsetCondNext)
        (e.ResultSentence)
        (e.PatternVarsAfterCond) (e.MarkedPatternCur)
        e.ConditionsTail
-      > 
+      >
       : s.NestedStackTop e.NestedSentence
-       
+
      = <Max s.EndOffsetCond-Res s.NestedStackTop> : s.StackTop
-     
+
      = (#CmdSentence <FoldOpenELoops
                         e.CondPatternCommands
                         <PutVariableDebugTable e.PatternVars>
@@ -64,23 +63,23 @@ $ENTRY SentenceTail{
           <Inc s.StartOffsetCond>
         )
       : e.CmdSentenceCommands
-      
+
     = e.CondResultCommands
       (#CmdCallCondition)
       (#CmdProfileFunction)
       e.CmdSentenceCommands
       (#CmdFail)
       : e.SentenceCommands
-      
+
     = s.StackTop e.SentenceCommands;
-           
+
   (s.ContextOffset)
   (s.FnGenResult e.Result)
-  (e.PatternVars)  
+  (e.PatternVars)
   (e.MarkedPatternCur)
   /*пусто*/
-  
-    = e.MarkedPatternCur : (e.MarkedPattern t.CloseCall)  e.MarkedPatternCur^ 
+
+    = e.MarkedPatternCur : (e.MarkedPattern t.CloseCall)  e.MarkedPatternCur^
 
     = <Map
         {
@@ -89,16 +88,16 @@ $ENTRY SentenceTail{
         e.MarkedPatternCur
       >
       : e.MarkedPatternCur^
-    
+
     = <s.FnGenResult
-        s.ContextOffset (e.PatternVars) 
-        (e.MarkedPattern e.MarkedPatternCur t.CloseCall) 
+        s.ContextOffset (e.PatternVars)
+        (e.MarkedPattern e.MarkedPatternCur t.CloseCall)
         e.Result
       >
       : s.ContextCount e.ResultCommands
 
-    = s.ContextCount e.ResultCommands;       
-  
+    = s.ContextCount e.ResultCommands;
+
 }
 
 GenInitSubst-Cond {
