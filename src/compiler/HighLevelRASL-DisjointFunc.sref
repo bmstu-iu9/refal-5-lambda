@@ -2,7 +2,7 @@
 $EXTERN Map, MapReduce, Max, Fetch;
 
 //FROM HighLevelRASL-Common
-$EXTERN FoldOpenELoops, PutVariableDebugTable, GenResult, GenPattern;
+$EXTERN GenResult, GenPattern;
 
 
 $ENTRY HighLevelRASL-Function-Disjoint {

@@ -5,13 +5,10 @@ $EXTERN GenResult-Condition;
 $EXTERN Inc2, GenInitSubst, FoldOpenELoops, PutVariableDebugTable;
 
 //FROM LibraryEx
-$EXTERN Inc, Max, Map;
+$EXTERN Inc, Max;
 
 //FROM HighLevelRASL-GenSubst-Save
 $EXTERN GenSubst-Save;
-
-//FROM Library
-$EXTERN Add;
 
 
 $ENTRY SentenceTail {
