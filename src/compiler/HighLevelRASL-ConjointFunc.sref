@@ -7,15 +7,12 @@ $EXTERN CreateHardPattern;
 //FROM GlobalGen
 $EXTERN PatternComment, CreateGlobalGen, SplitGen;
 
-//FROM HighLevelRASL-GenSubst-Save
-$EXTERN GenInitSubst-Save;
-
 //FROM HighLevelRASL-Common
 $EXTERN GenPattern, MakeSavers, GenResult;
 
 
 $ENTRY HighLevelRASL-Function-Conjoint {
-  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+  s.FnGenSubst s.FnGenResult
   s.ScopeClass (e.Name) e.Sentences
 
     = <MapReduce
@@ -34,7 +31,7 @@ $ENTRY HighLevelRASL-Function-Conjoint {
 
     = <SplitGen (e.GlobalGen) e.SentenceTails> : (e.CommonPattern) e.SentSubsts
 
-    = <GenPattern GenInitSubst-Save s.FnGenSubst (e.Name) e.CommonPattern>
+    = <GenPattern s.FnGenSubst (e.Name) e.CommonPattern>
     : s.ContextSize (e.Vars) (e.MarkedPattern) e.CommonMatchCommands
 
     = <MapReduce
@@ -66,6 +63,7 @@ $ENTRY HighLevelRASL-Function-Conjoint {
                 <s.FnGenSubst
                   s.ContextSize
                   e.SubstitutesAnsJunks
+                  (/* no new variables */)
                   (e.CmdSaves)
                 >
               >

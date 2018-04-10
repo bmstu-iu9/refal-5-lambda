@@ -139,14 +139,40 @@ Offset {
 }
 
 /**
+  <GenInitSubst s.ContextTop (e.FuncName) e.Pattern
+    == s.ContextTop e.Substitutes (e.Commands)
+*/
+$ENTRY GenInitSubst {
+  s.ContextTop (e.FuncName) e.Pattern
+    = s.ContextTop : s.0
+    = <Add s.ContextTop 1> : s.1
+    = <Add s.ContextTop 2> : s.2
+    = <Add s.ContextTop 4> : s.4
+    = <Add s.ContextTop 5> : s.5
+    = s.5
+      (#Junk (#TkOpenCall s.0) (#TkName e.FuncName s.4))
+      (#E s.2 e.Pattern)
+      (#Junk (#TkCloseCall s.1))
+      (
+        (#CmdCallSave #AlgLeft s.0 s.2)
+      );
+}
+
+/**
   <GenPattern s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern>
     == s.ContextOffset (e.Vars) (e.MarkedPattern) e.PatternCommands
 */
 $ENTRY GenPattern {
-  s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern
-    = <s.FnGenInitSubst 0 (e.Name) e.Pattern>
+  s.FnGenSubst (e.Name) e.Pattern
+    = <GenInitSubst 0 (e.Name) e.Pattern>
     : s.ContextTop e.Substitutes (e.Commands)
-    = <s.FnGenSubst s.ContextTop e.Substitutes (e.Commands)>;
+    = <s.FnGenSubst
+        s.ContextTop e.Substitutes (/* no vars */)
+        (
+          (#CmdInitB0-Lite)
+          e.Commands
+        )
+      >;
 }
 
 /**

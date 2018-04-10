@@ -4,12 +4,9 @@ $EXTERN Map, MapReduce, Max, Fetch;
 //FROM HighLevelRASL-Common
 $EXTERN FoldOpenELoops, PutVariableDebugTable, GenResult, GenPattern;
 
-//FROM HighLevelRASL-GenSubst-Save
-$EXTERN GenInitSubst-Save;
-
 
 $ENTRY HighLevelRASL-Function-Disjoint {
-  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+  s.FnGenSubst s.FnGenResult
   s.ScopeClass (e.Name) e.Sentences
 
     = <Map
@@ -18,9 +15,7 @@ $ENTRY HighLevelRASL-Function-Disjoint {
             = (
                 <GenResult
                   s.FnGenResult (e.Conditions) (e.Result)
-                  <GenPattern
-                    GenInitSubst-Save s.FnGenSubst (e.Name) e.Pattern
-                  >
+                  <GenPattern s.FnGenSubst (e.Name) e.Pattern>
                 >
               );
         }
