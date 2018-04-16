@@ -2,16 +2,13 @@
 $EXTERN GenResult-Condition;
 
 //FROM HighLevelRASL-Common
-$EXTERN Inc2, FoldOpenELoops, PutVariableDebugTable;
+$EXTERN Inc2, GenInitSubst, FoldOpenELoops, PutVariableDebugTable;
 
 //FROM LibraryEx
-$EXTERN Inc, Max, Map;
+$EXTERN Inc, Max;
 
 //FROM HighLevelRASL-GenSubst-Save
-$EXTERN GenSubst-Save-Cond;
-
-//FROM Library
-$EXTERN Add;
+$EXTERN GenSubst-Save;
 
 
 $ENTRY SentenceTail {
@@ -22,17 +19,17 @@ $ENTRY SentenceTail {
 
     = <GenResult-Condition
         <Inc2 s.StartOffsetCond> (e.PatternVars)
-	(#TkOpenCallCond s.StartOffsetCond)
+        (#TkOpenCallCond s.StartOffsetCond)
         (#TkName e.CondName) e.CondResult
         (#TkCloseCallCond <Inc s.StartOffsetCond>)
       >
     : s.EndOffsetCond-Res e.CondResultCommands
 
-    = <GenInitSubst-Cond s.StartOffsetCond (e.CondName) e.CondPattern>
+    = <GenInitSubst s.StartOffsetCond (e.CondName) e.CondPattern>
     : s.OffsetCond
       e.CondSubstitutes (e.FirstCondPatternCommands)
 
-    = <GenSubst-Save-Cond
+    = <GenSubst-Save
         s.OffsetCond e.CondSubstitutes (e.PatternVars)
         (e.FirstCondPatternCommands)
       >
@@ -77,20 +74,4 @@ $ENTRY SentenceTail {
         (e.MarkedPattern)
         e.Result
       >;
-}
-
-GenInitSubst-Cond {
-  s.ContextTop (e.FuncName) e.Pattern
-    = s.ContextTop : s.0
-    = <Add s.ContextTop 1> : s.1
-    = <Add s.ContextTop 2> : s.2
-    = <Add s.ContextTop 4> : s.4
-    = <Add s.ContextTop 5> : s.5
-    = s.5
-      (#Junk (#TkOpenCall s.0) (#TkName e.FuncName s.4))
-      (#E s.2 e.Pattern)
-      (#Junk (#TkCloseCall s.1))
-      (
-        (#CmdCallSave #AlgLeft s.0 s.2)
-      );
 }

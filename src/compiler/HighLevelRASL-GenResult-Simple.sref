@@ -79,7 +79,7 @@ GenResult {
       >;
 }
 
-$ENTRY DoGenResult {
+DoGenResult {
  (e.Vars) (e.AllocCommands) (e.Commands)
   s.Counter (#TkOpenCallCond s.Offset) e.Result =
     <DoGenResult

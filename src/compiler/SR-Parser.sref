@@ -127,21 +127,17 @@ ASTItemFromDirective {
   #Enum    = #Enum        #GN-Local;
   #ESwap   = #Swap        #GN-Entry;
   #Swap    = #Swap        #GN-Local;
-
   #Extern  = #Declaration #GN-Entry;
-
-  // Директивы $FORWARD и $LABEL эквивалентны пустому месту
   #Forward = #Declaration #GN-Local;
+  #Entry   = #Entry       #GN-Entry;
 }
 
 ParseElement-SwDirective {
-  t.ErrorList #Entry (#TkName s.LnNum e.Name) e.Tail =
-    <ParseFunction #GN-Entry (e.Name) t.ErrorList e.Tail>;
-
-  t.ErrorList #Entry t.Unexpected e.Tail =
-    (/* ничего не генерируем */)
-    <AddUnexpected t.ErrorList t.Unexpected 'function name'>
-    t.Unexpected e.Tail;
+  // LL(2)
+  t.ErrorList #Entry (#TkName s.NamePos e.Name) (#TkOpenBlock s.BracePos) e.Tail
+    = <ParseFunction
+        #GN-Entry (e.Name) t.ErrorList (#TkOpenBlock s.BracePos) e.Tail
+      >;
 
   t.ErrorList #Include e.Tail =
     <ParseInclude t.ErrorList e.Tail>;
@@ -151,9 +147,7 @@ ParseElement-SwDirective {
 
   t.ErrorList s.Directive e.Tail =
     <ParseNameList
-      (/* generated */) t.ErrorList
-      <ASTItemFromDirective s.Directive>
-      e.Tail
+      (/* generated */) t.ErrorList <ASTItemFromDirective s.Directive> e.Tail
     >;
 }
 
@@ -173,19 +167,18 @@ ParseInclude {
 }
 
 /*
-  NameList = Name ',' NameList | Name ';' .
+  NameList = Name NameList-Tail .
+  NameList-Tail = ',' NameList | Name ';' .
 */
 
 ParseNameList {
-  (e.AST) t.ErrorList s.ASTItem s.ScopeClass
-  (#TkName s.LnNum e.Name) e.Tail =
+  (e.AST) t.ErrorList s.ASTItem s.ScopeClass (#TkName s.LnNum e.Name) e.Tail =
     <ParseNameList-Tail
       (e.AST (s.ASTItem s.LnNum s.ScopeClass e.Name))
       t.ErrorList s.ASTItem s.ScopeClass e.Tail
     >;
 
-  (e.AST) t.ErrorList s.ASTItem s.ScopeClass
-  t.Unexpected e.Tail =
+  (e.AST) t.ErrorList s.ASTItem s.ScopeClass t.Unexpected e.Tail =
     (e.AST)
     <AddUnexpected t.ErrorList t.Unexpected 'function name'>
     t.Unexpected e.Tail;

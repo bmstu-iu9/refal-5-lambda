@@ -7,20 +7,10 @@ $EXTERN Inc;
 //FROM HighLevelRASL-Common
 $EXTERN MakeSavers;
 
-/**
-  <GenInitSubst-Simple s.ContextTop (e.FuncName) e.Pattern
-    == s.ContextTop e.Substitutes (e.Commands)
-*/
-$ENTRY GenInitSubst-Simple {
-  s.ContextTop (e.FuncName) e.Pattern
-    = <Inc2 s.ContextTop>
-      (#Junk) (#E s.ContextTop e.Pattern) (#Junk)
-      ((#CmdInitB0));
-}
 
 /**
   <GenSubst-Simple
-    s.ContextTop e.Substitutes (e.PrefixCommands)
+    s.ContextTop e.Substitutes (e.Vars) (e.PrefixCommands)
   >
     == s.ContextTop (e.PatternVars) (e.MarkedPattern) e.PatternCommands
 
@@ -31,9 +21,9 @@ $ENTRY GenInitSubst-Simple {
   s.SubType ::= #S | #T | #E
 */
 $ENTRY GenSubst-Simple {
-  s.ContextTop e.Substitutes (e.PrefixCommands) =
+  s.ContextTop e.Substitutes (e.Vars) (e.PrefixCommands) =
     <DoGenSubst
-      s.ContextTop e.Substitutes (/* vars */) (e.PrefixCommands)
+      s.ContextTop e.Substitutes (e.Vars) (e.PrefixCommands)
     >;
 }
 

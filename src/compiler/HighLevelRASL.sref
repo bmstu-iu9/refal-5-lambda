@@ -8,13 +8,13 @@ $EXTERN HighLevelRASL-Function-Disjoint;
 $EXTERN HighLevelRASL-Function-Conjoint;
 
 //FROM HighLevelRASL-GenSubst-Simple
-$EXTERN GenInitSubst-Simple, GenSubst-Simple;
+$EXTERN GenSubst-Simple;
 
 //FROM HighLevelRASL-GenResult-Simple
 $EXTERN GenResult-Simple;
 
 //FROM HighLevelRASL-GenSubst-Save
-$EXTERN GenInitSubst-Save, GenSubst-Save;
+$EXTERN GenSubst-Save;
 
 //FROM HighLevelRASL-GenResult-Opt
 $EXTERN GenResult-Opt;
@@ -82,23 +82,23 @@ $ENTRY HighLevelRASL {
 }
 
 HighLevelRASL-Function {
-  s.FnGenFunction s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+  s.FnGenFunction s.FnGenSubst s.FnGenResult
   s.ScopeClass (e.Name) /* нет предложений */ =
     (#CmdEnum s.ScopeClass e.Name);
 
-  s.FnGenFunction s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+  s.FnGenFunction s.FnGenSubst s.FnGenResult
   s.ScopeClass (e.Name) t.OneSentence =
     // Нет смысла вызывать оптимизацию совместного сопоставления
     // с образцом
     <HighLevelRASL-Function-Disjoint
-      s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+      s.FnGenSubst s.FnGenResult
       s.ScopeClass (e.Name) t.OneSentence
     >;
 
-  s.FnGenFunction s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+  s.FnGenFunction s.FnGenSubst s.FnGenResult
   s.ScopeClass (e.Name) e.Sentences =
     <s.FnGenFunction
-      s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+      s.FnGenSubst s.FnGenResult
       s.ScopeClass (e.Name) e.Sentences
     >;
 }
@@ -110,6 +110,6 @@ GenSentenceFunc {
 }
 
 GenResultFuncs {
-  #NoOpt     = GenInitSubst-Simple GenSubst-Simple GenResult-Simple;
-  #OptResult = GenInitSubst-Save   GenSubst-Save   GenResult-Opt;
+  #NoOpt     = GenSubst-Simple GenResult-Simple;
+  #OptResult = GenSubst-Save   GenResult-Opt;
 }

@@ -3,17 +3,17 @@ setlocal
   if {%RELEASE%}=={} (
     rem Максимум 40 000 000 байт (x32), 80 000 000 байт (x64)
     rem SREFC_FLAGS используются только для сборки библиотек
-    set SREFC_FLAGS_PLUS=--markup-context --debug-info
+    set SREFC_FLAGS_PLUS=--markup-context --debug-info -OC
     set SRMAKE_FLAGS_PLUS= ^
-      -X--markup-context -X--debug-info ^
+      -X--markup-context -X--debug-info -X-OC ^
       -X-F-DMEMORY_LIMIT=5000000 ^
       -X-F-DSTEP_LIMIT=100000000 ^
       -X-F-DIDENTS_LIMIT=1000 ^
       -X-F-DENABLE_DEBUGGER
     set DEFAULT_SCRIPT_FLAGS=--rich
   ) else (
-    set SREFC_FLAGS_PLUS=-OdPR
-    set SRMAKE_FLAGS_PLUS=-X-OdPR
+    set SREFC_FLAGS_PLUS=-OCdPR
+    set SRMAKE_FLAGS_PLUS=-X-OCdPR
     set DEFAULT_SCRIPT_FLAGS=--scratch
   )
 
