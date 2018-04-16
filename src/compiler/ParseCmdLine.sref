@@ -205,7 +205,7 @@ $ENTRY ParseCommandLine {
                 (s.Pos #BadValue-Opt e.BadValue) =
                   (
                     s.Pos
-                    'option -O expects ''P'', ''R'', ''d'' or '
+                    'option -O expects ''P'', ''Q'', ''R'', ''d'' or '
                     'it''s combination, but got ''' e.BadValue ''
                   );
 
