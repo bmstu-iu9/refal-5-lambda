@@ -104,8 +104,9 @@ HighLevelRASL-Function {
 }
 
 GenSentenceFunc {
-  #Conjoint = HighLevelRASL-Function-Conjoint;
-  #Disjoint = HighLevelRASL-Function-Disjoint;
+  #Conjoint    = HighLevelRASL-Function-Conjoint;
+  #ConjointExt = HighLevelRASL-Function-Conjoint;
+  #Disjoint    = HighLevelRASL-Function-Disjoint;
 }
 
 GenResultFuncs {
