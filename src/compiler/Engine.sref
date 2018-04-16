@@ -1,5 +1,4 @@
-//FROM LibraryEx
-$EXTERN Fetch, Pipe, Map, UnBracket, MapReduce, SaveBytes, SaveFile;
+$INCLUDE "LibraryEx";
 
 //FROM Error
 $EXTERN EL-Destroy, EL-Create, EL-AddErrorAt, EL-Concat;
@@ -13,7 +12,8 @@ $EXTERN
   Config-GetOptPattern,
   Config-GetOptResult,
   Config-GetConditionsMode,
-  Config-GetGenMode;
+  Config-GetGenMode,
+  Config-GetOptTree;
 
 //FROM Checker
 $EXTERN CheckProgram;
@@ -42,6 +42,9 @@ $EXTERN Desugar;
 //FROM Log
 $EXTERN Log-GetLogFunction-AST, Log-GetLogFunction-HighLevelRASL;
 
+//FROM OptTree
+$EXTERN OptTree, OptTree-CleanupMarkup;
+
 //FROM HighLevelRASL
 $EXTERN HighLevelRASL;
 
@@ -53,6 +56,7 @@ $EXTERN GenProgram-RASL;
 
 //FROM Generator-Native
 $EXTERN GenProgram-Native;
+
 
 /**
   <CompileFile t.Config (s.Dialect e.SrcName) e.OutputName>
@@ -324,28 +328,27 @@ PatchASTSrcPos {
         (#RowCol s.Row s.Col) = (#FileRowCol (s.Row s.Col) e.FileName);
       }
     : s.FnPatch
-    = <Map
-        {
-          (#Function t.SrcPos s.ScopeClass (e.Name) e.Body)
-            = (#Function
-                <s.FnPatch t.SrcPos>
-                s.ScopeClass (e.Name)
-                <PatchASTSrcPos-Body s.FnPatch e.Body>
-              );
+    = <Map (PatchASTSrcPos-Item s.FnPatch) e.AST>;
+}
 
-          (#Ident t.SrcPos e.Name) = (#Ident <s.FnPatch t.SrcPos> e.Name);
+PatchASTSrcPos-Item {
+  s.FnPatch (#Function t.SrcPos s.ScopeClass (e.Name) e.Body)
+    = (#Function
+        <s.FnPatch t.SrcPos>
+        s.ScopeClass (e.Name)
+        <PatchASTSrcPos-Body s.FnPatch e.Body>
+      );
 
-          (#NativeBlock t.SrcPos e.Name)
-            = (#NativeBlock <s.FnPatch t.SrcPos> e.Name);
+  s.FnPatch (#Ident t.SrcPos e.Name) = (#Ident <s.FnPatch t.SrcPos> e.Name);
 
-          (#Include t.SrcPos e.IncludeName)
-            = /* пропускаем */;
+  s.FnPatch (#NativeBlock t.SrcPos e.Name)
+    = (#NativeBlock <s.FnPatch t.SrcPos> e.Name);
 
-          (s.EnumSwapDeclaration t.SrcPos s.ScopeClass e.Name)
-            = (s.EnumSwapDeclaration <s.FnPatch t.SrcPos> s.ScopeClass e.Name);
-        }
-        e.AST
-      >;
+  s.FnPatch (#Include t.SrcPos e.IncludeName) = /* пропускаем */;
+
+  s.FnPatch (s.EnumSwapDeclEntry t.SrcPos s.ScopeClass e.Name)
+    , <OneOf s.EnumSwapDeclEntry #Enum #Swap #Declaration #Entry> : #True
+    = (s.EnumSwapDeclEntry <s.FnPatch t.SrcPos> s.ScopeClass e.Name);
 }
 
 PatchASTSrcPos-Body {
@@ -435,7 +438,15 @@ BackEnd {
     = <Config-GetGenMode t.Config> : s.GenMode
     = <Pipe
         (Desugar s.MarkupContext s.ConditionsMode)
-        <Log-GetLogFunction-AST e.SrcName>
+        <Log-GetLogFunction-AST e.SrcName ' (after desugar)'>
+        <Fetch
+          <Config-GetOptTree t.Config>
+          {
+            #OptTree = (OptTree t.Config);
+            #NoOpt = OptTree-CleanupMarkup;
+          }
+        >
+        <Log-GetLogFunction-AST e.SrcName ' (after tree optimization)'>
         (HighLevelRASL s.OptPattern s.OptResult)
         <Log-GetLogFunction-HighLevelRASL e.SrcName>
         (LowLevelRASL s.GenMode s.DebugInfo (e.SrcName))

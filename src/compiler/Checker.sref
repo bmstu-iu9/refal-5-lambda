@@ -5,94 +5,80 @@ $EXTERN Reduce, Fetch, Pipe, MapReduce, Map;
 $EXTERN EL-AddErrorAt;
 
 $ENTRY CheckProgram {
-  t.ErrorList e.AST =
-    <Reduce
-      {
-        t.ErrorList^ (#Error t.SrcPos #AlreadyDefined e.Name) =
-          <EL-AddErrorAt
-            t.ErrorList t.SrcPos 'Function ' e.Name ' already defined'
-          >;
+  t.ErrorList e.AST
+    = <Reduce
+        {
+          t.ErrorList^ (#Error t.SrcPos e.Message)
+            = <EL-AddErrorAt t.ErrorList t.SrcPos <PrepareMessage e.Message>>;
+        }
+        t.ErrorList
+        <FindErrors e.AST>
+      >;
+}
 
-        t.ErrorList^ (#Error t.SrcPos #ForwardForEntry e.Name) =
-          <EL-AddErrorAt
-            t.ErrorList t.SrcPos '$FORWARD ' e.Name ' for $ENTRY ' e.Name
-          >;
+PrepareMessage {
+  #AlreadyDefined e.Name = 'Function ' e.Name ' already defined';
 
-        t.ErrorList^ (#Error t.SrcPos #ForwardNotDefined e.Name) =
-          <EL-AddErrorAt
-            t.ErrorList t.SrcPos
-            'Function for $FORWARD ' e.Name ' is not defined'
-          >;
+  #ForwardForEntry e.Name = '$FORWARD ' e.Name ' for $ENTRY ' e.Name;
 
-        t.ErrorList^ (#Error t.SrcPos #NotDefined e.Name) =
-          <EL-AddErrorAt
-            t.ErrorList t.SrcPos 'Function ' e.Name ' is not defined'
-          >;
+  #ForwardNotDefined e.Name = 'Function for $FORWARD ' e.Name ' is not defined';
 
-        t.ErrorList^ (#Error t.SrcPos #AlreadyBounded s.Mode e.Index) =
-          <EL-AddErrorAt
-            t.ErrorList t.SrcPos
-            'Variable hide operator^ must be applied to first occurence of '
-            'variable ' s.Mode '.' e.Index
-          >;
+  #NotDefined e.Name = 'Function ' e.Name ' is not defined';
 
-        t.ErrorList^
-        (#Error t.SrcPos #InvalidMode s.OldMode s.NewMode e.Index) =
-          <EL-AddErrorAt
-            t.ErrorList t.SrcPos
-            'Variables ' s.OldMode '.' e.Index ' and '
-            s.NewMode '.' e.Index ' has different modes'
-          >;
+  #AlreadyBounded s.Mode e.Index
+    = 'Variable hide operator^ must be applied to first occurence of '
+      'variable ' s.Mode '.' e.Index;
 
-        t.ErrorList^ (#Error t.SrcPos #VariableNotFound s.Mode e.Index) =
-          <EL-AddErrorAt
-            t.ErrorList t.SrcPos 'Variable ' s.Mode '.' e.Index ' not found'
-          >;
-      }
-      t.ErrorList
-      <FindErrors e.AST>
-    >;
+  #InvalidMode s.OldMode s.NewMode e.Index
+    = 'Variables ' s.OldMode '.' e.Index ' and '
+      s.NewMode '.' e.Index ' has different modes';
+
+  #VariableNotFound s.Mode e.Index
+    = 'Variable ' s.Mode '.' e.Index ' not found';
+
+  #DanglingEntry e.Name = '$ENTRY ' e.Name '; declaration for missed function';
 }
 
 FindErrors {
-  e.AST =
-    <Fetch
-      e.AST
-      <Pipe
-        (MapReduce
-          {
-            (e.Declarations)
-            (#Function t.SrcPos s.ScopeClass (e.Name) e.Body) =
-              (e.Declarations (#Define t.SrcPos s.ScopeClass e.Name))
-              (e.Body);
+  e.AST
+    = <SeparateDefines e.AST> : (e.Declarations) e.FunctionBodies
+    = <CheckValidUsings
+        (<CheckDeclarations e.Declarations>)
+        <Map CheckFunctionBody e.FunctionBodies>
+      >;
+}
 
-            (e.Declarations) (#Swap t.SrcPos s.ScopeClass e.Name) =
-              (e.Declarations (#Define t.SrcPos s.ScopeClass e.Name));
-
-            (e.Declarations) (#Enum t.SrcPos s.ScopeClass e.Name) =
-              (e.Declarations (#Define t.SrcPos s.ScopeClass e.Name));
-
-            (e.Declarations) (#Declaration t.SrcPos s.ScopeClass e.Name) =
-              (e.Declarations (#Declare t.SrcPos s.ScopeClass e.Name));
-
-            /* определения идентификаторов игнорируем */
-            (e.Declarations) (#Ident t.SrcPos e.Name) =
-              (e.Declarations);
-
-            (e.Declarations) (#NativeBlock e.Block) =
-              (e.Declarations);
-          }
-          (/* объявления */)
-        )
+SeparateDefines {
+  e.AST
+    = <MapReduce
         {
-          (e.Declarations) e.FunctionBodies =
-            <CheckValidUsings
-              (<CheckDeclarations e.Declarations>)
-              <Map CheckFunctionBody e.FunctionBodies>
-            >;
+          (e.Declarations)
+          (#Function t.SrcPos s.ScopeClass (e.Name) e.Body) =
+            (e.Declarations (#Define t.SrcPos s.ScopeClass e.Name))
+            (e.Body);
+
+          (e.Declarations) (#Swap t.SrcPos s.ScopeClass e.Name) =
+            (e.Declarations (#Define t.SrcPos s.ScopeClass e.Name));
+
+          (e.Declarations) (#Enum t.SrcPos s.ScopeClass e.Name) =
+            (e.Declarations (#Define t.SrcPos s.ScopeClass e.Name));
+
+          (e.Declarations) (#Declaration t.SrcPos s.ScopeClass e.Name) =
+            (e.Declarations (#Declare t.SrcPos s.ScopeClass e.Name));
+
+          (e.Declarations) (#Entry t.SrcPos #GN-Entry e.Name) =
+            (e.Declarations (#Entry t.SrcPos e.Name));
+
+          /* определения идентификаторов игнорируем */
+          (e.Declarations) (#Ident t.SrcPos e.Name) =
+            (e.Declarations);
+
+          (e.Declarations) (#NativeBlock e.Block) =
+            (e.Declarations);
         }
-      >
-    >;
+        (/* объявления */)
+        e.AST
+      >;
 }
 
 CheckDeclarations {
@@ -100,11 +86,49 @@ CheckDeclarations {
     <Fetch
       e.Declarations
       <Pipe
+        CleanupValidEntry
+        FindInvalidEntry
         CleanupValidForwards
         FindInvalidForwards
         CheckRedefinitions
       >
     >;
+}
+
+CleanupValidEntry {
+  // При помощи $ENTRY Foo, Bar; можно объявлять и $ENTRY Foo { ... },
+  // поэтому и s.ScopeClass в #Define. Но потом для определения устанавливаем
+  // #GN-Entry.
+  e.Declarations-B
+  (#Entry t.SrcPosEntry e.Name) e.Declarations-M
+  (#Define t.SrcPosDefine s.ScopeClass e.Name) e.Declarations-E
+    = <CleanupValidEntry
+        e.Declarations-B e.Declarations-M
+        (#Define t.SrcPosDefine #GN-Entry e.Name) e.Declarations-E
+      >;
+
+  e.Declarations-B
+  (#Define t.SrcPosDefine s.ScopeClass e.Name) e.Declarations-M
+  (#Entry t.SrcPosEntry e.Name) e.Declarations-E
+    = <CleanupValidEntry
+        e.Declarations-B
+        (#Define t.SrcPosDefine #GN-Entry e.Name) e.Declarations-M
+        e.Declarations-E
+      >;
+
+  e.Declarations = e.Declarations;
+}
+
+FindInvalidEntry {
+  e.Declarations
+    = <Map
+        {
+          (#Entry t.SrcPos e.Name) = (#Error t.SrcPos #DanglingEntry e.Name);
+
+          t.Other = t.Other;
+        }
+        e.Declarations
+      >;
 }
 
 CleanupValidForwards {
