@@ -135,15 +135,16 @@ $ENTRY Config-GetGenMode {
 
 /**
   <Config-GetOptPattern t.Config>
-    == #Disjoint
+    == #ConjointExt
     == #Conjoint
+    == #Disjoint
 */
 $ENTRY Config-GetOptPattern {
-  [Config e.Params-B (#Optimize e.Opt-B #OptPattern e.Opt-E) e.Params-E]
-    = #Conjoint;
-
   [Config e.Params-B (#Optimize e.Opt-B #OptPatternExt e.Opt-E) e.Params-E]
     = #ConjointExt;
+
+  [Config e.Params-B (#Optimize e.Opt-B #OptPattern e.Opt-E) e.Params-E]
+    = #Conjoint;
 
   [Config e.Params] = #Disjoint;
 }
@@ -218,7 +219,7 @@ $ENTRY Config-GetOptSpec {
     == #Fails #BadValue-Opt e.Letters
 
   e.Flags ::= s.Letter* s.Change?
-  s.Letter ::= 'd' | 'P' | 'R'
+  s.Letter ::= 'd' | 'Q' | 'P' | 'R'
   s.Change ::= '+' | '-' | '='
 */
 $ENTRY Config-SetOptFlags {
@@ -251,11 +252,11 @@ ParseOptLetters {
   //    , <ValidFlag s.Flag> : #True s.FlagName
   //    = <ParseOptLetters (<Flags-Unique e.Scanned s.FlagName>) e.Flags>;
 
-  (e.Scanned) 'P' e.Flags
-    = <ParseOptLetters (<Flags-Unique e.Scanned #OptPattern>) e.Flags>;
-
   (e.Scanned) 'Q' e.Flags
     = <ParseOptLetters (<Flags-Unique e.Scanned #OptPatternExt>) e.Flags>;
+
+  (e.Scanned) 'P' e.Flags
+    = <ParseOptLetters (<Flags-Unique e.Scanned #OptPattern>) e.Flags>;
 
   (e.Scanned) 'R' e.Flags
     = <ParseOptLetters (<Flags-Unique e.Scanned #OptResult>) e.Flags>;
