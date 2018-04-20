@@ -178,6 +178,14 @@ struct Node {
     NodePtr link_info;
     void *file_info;
   };
+
+  Node() {}
+
+  Node(NodePtr prev, NodePtr next)
+    : prev(prev), next(next), tag(cDataIllegal)
+  {
+    file_info = 0;
+  }
 };
 
 enum iCmd { /*NumberFromOpcode:Cmd+ic;Alg+Left,Alg+Right,Alg+Term*/

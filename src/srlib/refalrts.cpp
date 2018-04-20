@@ -41,6 +41,101 @@ void valid_linked_aux(const char *text, refalrts::Iter i) {
   }
 }
 
+//==============================================================================
+// Внутренние структуры данных
+//==============================================================================
+
+namespace refalrts {
+
+namespace vm {
+struct StateRefalMachine;
+};
+
+struct VM {
+  NodePtr left_swap_ptr;
+  int ret_code;
+  char **argv;
+  unsigned int argc;
+  Node first_marker;
+  Node last_marker;
+  Iter error_begin;
+  Iter error_end;
+  unsigned step_counter;
+  NodePtr stack_ptr;
+  vm::StateRefalMachine *private_state_stack_free;
+  vm::StateRefalMachine *private_state_stack_stack;
+
+  VM();
+};
+
+inline VM::VM()
+  : left_swap_ptr(& last_marker)
+  , ret_code(0)
+  , argv(0)
+  , argc(0)
+  , first_marker(0, & last_marker)
+  , last_marker(& first_marker, 0)
+  , error_begin(& first_marker)
+  , error_end(& last_marker)
+  , step_counter(0)
+  , stack_ptr(0)
+  , private_state_stack_free(0)
+  , private_state_stack_stack(0)
+{
+  /* пусто */
+}
+
+struct VM g_vm;
+
+
+namespace allocator {
+namespace pool {
+struct Chunk;
+typedef Chunk *ChunkPtr;
+}
+}
+
+struct Allocator {
+  Node first_marker;
+  Node last_marker;
+  NodePtr free_ptr;
+
+  struct Pool {
+    allocator::pool::ChunkPtr pool;
+    unsigned avail;
+    Node *pnext_node;
+
+    Pool();
+  };
+
+  Pool pool;
+  unsigned memory_use;
+
+  Allocator();
+};
+
+inline Allocator::Pool::Pool()
+  : pool(0)
+  , avail(0)
+  , pnext_node(0)
+{
+  /* пусто */
+}
+
+inline Allocator::Allocator()
+  : first_marker(0, & last_marker)
+  , last_marker(& first_marker, 0)
+  , free_ptr(& last_marker)
+  , pool()
+  , memory_use(0)
+{
+  /* пусто */
+}
+
+struct Allocator g_allocator;
+
+}  // namespace refalrts
+
 namespace refalrts {
 
 char unsigned_int_is_uint32[sizeof(refalrts::UInt32) == 4 ? +1 : -1];
@@ -1637,7 +1732,6 @@ namespace refalrts {
 
 namespace vm {
 
-extern NodePtr g_left_swap_ptr;
 Iter initialize_swap_head(refalrts::Iter head);
 
 } // namespace vm
@@ -1649,12 +1743,12 @@ refalrts::Iter refalrts::vm::initialize_swap_head(refalrts::Iter head) {
   assert(RefalSwap::run == head->function_info->rasl);
 
   RefalSwap *swap = static_cast<RefalSwap*>(head->function_info);
-  splice_elem(vm::g_left_swap_ptr, head);
+  splice_elem(g_vm.left_swap_ptr, head);
   head->tag = cDataSwapHead;
-  swap->next_head = vm::g_left_swap_ptr;
+  swap->next_head = g_vm.left_swap_ptr;
 
-  vm::g_left_swap_ptr = head;
-  return vm::g_left_swap_ptr;
+  g_vm.left_swap_ptr = head;
+  return g_vm.left_swap_ptr;
 }
 
 const refalrts::RASLCommand refalrts::RefalSwap::run[] = {
@@ -1715,26 +1809,22 @@ namespace refalrts {
 
 namespace vm {
 
-extern int g_ret_code;
 extern void print_seq(
   FILE *output, refalrts::Iter begin, refalrts::Iter end,
   bool multiline = true, unsigned max_node = -1
 );
-
-char **g_argv = 0;
-unsigned int g_argc = 0;
 
 } // namespace vm
 
 } // namespace refalrts
 
 void refalrts::set_return_code(int code) {
-  refalrts::vm::g_ret_code = code;
+  refalrts::g_vm.ret_code = code;
 }
 
 const char* refalrts::arg(unsigned int param) {
-  if (param < vm::g_argc) {
-    return vm::g_argv[param];
+  if (param < g_vm.argc) {
+    return g_vm.argv[param];
   } else {
     return "";
   }
@@ -1758,15 +1848,6 @@ bool create_nodes();
 
 void free_memory();
 
-extern refalrts::Node g_last_marker;
-
-refalrts::Node g_first_marker =
-  { 0, & g_last_marker, refalrts::cDataIllegal, { '\0' } };
-refalrts::Node g_last_marker =
-  { & g_first_marker, 0, refalrts::cDataIllegal, { '\0' } };
-
-refalrts::NodePtr g_free_ptr = & g_last_marker;
-
 namespace pool {
 
 enum { cChunkSize = 1000 };
@@ -1781,61 +1862,55 @@ refalrts::NodePtr alloc_node();
 void free();
 bool grow();
 
-ChunkPtr g_pool = 0;
-unsigned g_avail = 0;
-refalrts::Node *g_pnext_node = 0;
-
 } // namespace pool
-
-unsigned g_memory_use = 0;
 
 } // namespace allocator
 
 } // namespace refalrts
 
 inline void refalrts::allocator::reset_allocator() {
-  g_free_ptr = g_first_marker.next;
+  g_allocator.free_ptr = g_allocator.first_marker.next;
 }
 
 bool refalrts::allocator::alloc_node(refalrts::Iter& node) {
-  if ((g_free_ptr == & g_last_marker) && ! create_nodes()) {
+  if ((g_allocator.free_ptr == & g_allocator.last_marker) && ! create_nodes()) {
     return false;
   } else {
-    if (refalrts::cDataClosure == g_free_ptr->tag) {
-      refalrts::Iter head = g_free_ptr->link_info;
+    if (refalrts::cDataClosure == g_allocator.free_ptr->tag) {
+      refalrts::Iter head = g_allocator.free_ptr->link_info;
       -- head->number_info;
 
       if (0 == head->number_info) {
-        unwrap_closure(g_free_ptr);
-        // теперь перед g_free_ptr находится "развёрнутое" замыкание
-        g_free_ptr->tag = refalrts::cDataClosureHead;
-        g_free_ptr->number_info = 407193; // :-)
+        unwrap_closure(g_allocator.free_ptr);
+        // теперь перед g_allocator.free_ptr находится "развёрнутое" замыкание
+        g_allocator.free_ptr->tag = refalrts::cDataClosureHead;
+        g_allocator.free_ptr->number_info = 407193; // :-)
 
-        g_free_ptr = head;
+        g_allocator.free_ptr = head;
       }
     }
 
-    node = g_free_ptr;
-    g_free_ptr = next(g_free_ptr);
+    node = g_allocator.free_ptr;
+    g_allocator.free_ptr = next(g_allocator.free_ptr);
     node->tag = refalrts::cDataIllegal;
     return true;
   }
 }
 
 refalrts::Iter refalrts::allocator::free_ptr() {
-  return g_free_ptr;
+  return g_allocator.free_ptr;
 }
 
 void refalrts::allocator::splice_to_freelist(
   refalrts::Iter begin, refalrts::Iter end
 ) {
   reset_allocator();
-  g_free_ptr = list_splice(g_free_ptr, begin, end);
+  g_allocator.free_ptr = list_splice(g_allocator.free_ptr, begin, end);
 }
 
 refalrts::Iter refalrts::allocator::splice_from_freelist(refalrts::Iter pos) {
-  if (g_free_ptr != g_first_marker.next) {
-    return list_splice(pos, g_first_marker.next, g_free_ptr->prev);
+  if (g_allocator.free_ptr != g_allocator.first_marker.next) {
+    return list_splice(pos, g_allocator.first_marker.next, g_allocator.free_ptr->prev);
   } else {
     return pos;
   }
@@ -1846,7 +1921,7 @@ bool refalrts::allocator::create_nodes() {
 
 #ifdef MEMORY_LIMIT
 
-  if (g_memory_use >= MEMORY_LIMIT) {
+  if (g_allocator.memory_use >= MEMORY_LIMIT) {
     return false;
   }
 
@@ -1855,16 +1930,16 @@ bool refalrts::allocator::create_nodes() {
   if (new_node == 0) {
     return false;
   } else {
-    refalrts::NodePtr before_free_ptr = prev(g_free_ptr);
+    refalrts::NodePtr before_free_ptr = prev(g_allocator.free_ptr);
     before_free_ptr->next = new_node;
     new_node->prev = before_free_ptr;
 
-    g_free_ptr->prev = new_node;
-    new_node->next = g_free_ptr;
+    g_allocator.free_ptr->prev = new_node;
+    new_node->next = g_allocator.free_ptr;
 
-    g_free_ptr = new_node;
-    g_free_ptr->tag = refalrts::cDataIllegal;
-    ++ g_memory_use;
+    g_allocator.free_ptr = new_node;
+    g_allocator.free_ptr->tag = refalrts::cDataIllegal;
+    ++ g_allocator.memory_use;
 
     return true;
   }
@@ -1876,18 +1951,18 @@ void refalrts::allocator::free_memory() {
   fprintf(
     stderr,
     "Memory used %d nodes, %d * %lu = %lu bytes\n",
-    g_memory_use,
-    g_memory_use,
+    g_allocator.memory_use,
+    g_allocator.memory_use,
     static_cast<unsigned long>(sizeof(Node)),
-    static_cast<unsigned long>(g_memory_use * sizeof(Node))
+    static_cast<unsigned long>(g_allocator.memory_use * sizeof(Node))
   );
 #endif // ifndef DONT_PRINT_STATISTICS
 }
 
 refalrts::NodePtr refalrts::allocator::pool::alloc_node() {
-  if ((g_avail != 0) || grow()) {
-    -- g_avail;
-    return g_pnext_node++;
+  if ((g_allocator.pool.avail != 0) || grow()) {
+    -- g_allocator.pool.avail;
+    return g_allocator.pool.pnext_node++;
   } else {
     return 0;
   }
@@ -1896,10 +1971,10 @@ refalrts::NodePtr refalrts::allocator::pool::alloc_node() {
 bool refalrts::allocator::pool::grow() {
   ChunkPtr p = static_cast<ChunkPtr>(malloc(sizeof(Chunk)));
   if (p != 0) {
-    p->next = g_pool;
-    g_pool = p;
-    g_avail = cChunkSize;
-    g_pnext_node = p->elems;
+    p->next = g_allocator.pool.pool;
+    g_allocator.pool.pool = p;
+    g_allocator.pool.avail = cChunkSize;
+    g_allocator.pool.pnext_node = p->elems;
     return true;
   } else {
     return false;
@@ -1907,9 +1982,9 @@ bool refalrts::allocator::pool::grow() {
 }
 
 void refalrts::allocator::pool::free() {
-  while (g_pool != 0) {
-    ChunkPtr p = g_pool;
-    g_pool = g_pool->next;
+  while (g_allocator.pool.pool != 0) {
+    ChunkPtr p = g_allocator.pool.pool;
+    g_allocator.pool.pool = g_allocator.pool.pool->next;
     ::free(p);
   }
 }
@@ -1983,16 +2058,29 @@ void stop_function();
 #define refalrts_profiler_assert_eq(variable, constant)
 #endif
 
-clock_t g_counters[cCounter_TOTAL] = { 0 };
-clock_t g_prev_cutoff;
-State g_current_state = cInRuntime;
-
 } // namespace profiler
+
+struct Profiler {
+  clock_t counters[profiler::cCounter_TOTAL];
+  clock_t prev_cutoff;
+  profiler::State current_state;
+
+  Profiler();
+};
+
+inline Profiler::Profiler()
+  : prev_cutoff(0)
+  , current_state(profiler::cInRuntime)
+{
+  memset(counters, '\0', sizeof(counters));
+}
+
+Profiler g_profiler;
 
 } // namespace refalrts
 
 void refalrts::profiler::start_profiler() {
-  g_prev_cutoff = clock();
+  g_profiler.prev_cutoff = clock();
 }
 
 #ifndef DONT_PRINT_STATISTICS
@@ -2016,17 +2104,17 @@ int refalrts::profiler::reverse_compare(
 
 void refalrts::profiler::start_generated_function() {
   clock_t now = clock();
-  refalrts_profiler_assert_eq(g_current_state, cInRuntime);
-  g_counters[cCounter_RuntimeTime] += (now - g_prev_cutoff);
-  g_prev_cutoff = now;
-  g_current_state = cInPatternLinear;
+  refalrts_profiler_assert_eq(g_profiler.current_state, cInRuntime);
+  g_profiler.counters[cCounter_RuntimeTime] += (now - g_profiler.prev_cutoff);
+  g_profiler.prev_cutoff = now;
+  g_profiler.current_state = cInPatternLinear;
 }
 
 void refalrts::profiler::stop_sentence() {
   clock_t now = clock();
   BaseCounter counter;
 
-  switch (g_current_state) {
+  switch (g_profiler.current_state) {
     case cInPatternLinear:
       counter = cCounter_LinearPatternTime;
       break;
@@ -2036,19 +2124,19 @@ void refalrts::profiler::stop_sentence() {
       break;
 
     default:
-      refalrts_switch_default_violation(g_current_state);
+      refalrts_switch_default_violation(g_profiler.current_state);
   }
 
-  g_counters[counter] += (now - g_prev_cutoff);
-  g_prev_cutoff = now;
-  g_current_state = cInPatternLinear;
+  g_profiler.counters[counter] += (now - g_profiler.prev_cutoff);
+  g_profiler.prev_cutoff = now;
+  g_profiler.current_state = cInPatternLinear;
 }
 
 void refalrts::profiler::start_e_loop() {
   clock_t now = clock();
   BaseCounter counter;
 
-  switch (g_current_state) {
+  switch (g_profiler.current_state) {
     case cInPatternLinear:
       counter = cCounter_LinearPatternTime;
       break;
@@ -2058,12 +2146,12 @@ void refalrts::profiler::start_e_loop() {
       break;
 
     default:
-      refalrts_switch_default_violation(g_current_state);
+      refalrts_switch_default_violation(g_profiler.current_state);
   }
 
-  g_counters[counter] += (now - g_prev_cutoff);
-  g_prev_cutoff = now;
-  g_current_state = cInPatternELoop;
+  g_profiler.counters[counter] += (now - g_profiler.prev_cutoff);
+  g_profiler.prev_cutoff = now;
+  g_profiler.current_state = cInPatternELoop;
 }
 
 void refalrts::profiler::start_repeated_evar() {
@@ -2071,7 +2159,7 @@ void refalrts::profiler::start_repeated_evar() {
   State next;
   BaseCounter counter;
 
-  switch (g_current_state) {
+  switch (g_profiler.current_state) {
     case cInPatternLinear:
       counter = cCounter_LinearPatternTime;
       next = cInPatternRepeatedEVar;
@@ -2083,12 +2171,12 @@ void refalrts::profiler::start_repeated_evar() {
       break;
 
     default:
-      refalrts_switch_default_violation(g_current_state);
+      refalrts_switch_default_violation(g_profiler.current_state);
   }
 
-  g_counters[counter] += (now - g_prev_cutoff);
-  g_prev_cutoff = now;
-  g_current_state = next;
+  g_profiler.counters[counter] += (now - g_profiler.prev_cutoff);
+  g_profiler.prev_cutoff = now;
+  g_profiler.current_state = next;
 }
 
 void refalrts::profiler::start_repeated_tvar() {
@@ -2096,7 +2184,7 @@ void refalrts::profiler::start_repeated_tvar() {
   State next;
   BaseCounter counter;
 
-  switch (g_current_state) {
+  switch (g_profiler.current_state) {
     case cInPatternLinear:
       counter = cCounter_LinearPatternTime;
       next = cInPatternRepeatedTVar;
@@ -2108,12 +2196,12 @@ void refalrts::profiler::start_repeated_tvar() {
       break;
 
     default:
-      refalrts_switch_default_violation(g_current_state);
+      refalrts_switch_default_violation(g_profiler.current_state);
   }
 
-  g_counters[counter] += (now - g_prev_cutoff);
-  g_prev_cutoff = now;
-  g_current_state = next;
+  g_profiler.counters[counter] += (now - g_profiler.prev_cutoff);
+  g_profiler.prev_cutoff = now;
+  g_profiler.current_state = next;
 }
 
 void refalrts::profiler::stop_repeated() {
@@ -2121,7 +2209,7 @@ void refalrts::profiler::stop_repeated() {
   State next;
   BaseCounter counter;
 
-  switch (g_current_state) {
+  switch (g_profiler.current_state) {
     case cInPatternRepeatedEVar:
       next = cInPatternLinear;
       counter = cCounter_RepeatedEvarOutsideECycle;
@@ -2143,12 +2231,12 @@ void refalrts::profiler::stop_repeated() {
       break;
 
     default:
-      refalrts_switch_default_violation(g_current_state);
+      refalrts_switch_default_violation(g_profiler.current_state);
   }
 
-  g_counters[counter] += (now - g_prev_cutoff);
-  g_prev_cutoff = now;
-  g_current_state = next;
+  g_profiler.counters[counter] += (now - g_profiler.prev_cutoff);
+  g_profiler.prev_cutoff = now;
+  g_profiler.current_state = next;
 }
 
 void refalrts::profiler::start_result() {
@@ -2156,7 +2244,7 @@ void refalrts::profiler::start_result() {
   State next = cInResultLinear;
   BaseCounter counter;
 
-  switch (g_current_state) {
+  switch (g_profiler.current_state) {
     case cInRuntime:
       counter = cCounter_NativeTime;
       next = cInRuntime;
@@ -2171,12 +2259,12 @@ void refalrts::profiler::start_result() {
       break;
 
     default:
-      refalrts_switch_default_violation(g_current_state);
+      refalrts_switch_default_violation(g_profiler.current_state);
   }
 
-  g_counters[counter] += (now - g_prev_cutoff);
-  g_prev_cutoff = now;
-  g_current_state = next;
+  g_profiler.counters[counter] += (now - g_profiler.prev_cutoff);
+  g_profiler.prev_cutoff = now;
+  g_profiler.current_state = next;
 }
 
 void refalrts::profiler::start_copy() {
@@ -2184,7 +2272,7 @@ void refalrts::profiler::start_copy() {
   State next;
   BaseCounter counter;
 
-  switch (g_current_state) {
+  switch (g_profiler.current_state) {
     case cInRuntime:
       counter = cCounter_RuntimeTime;
       next = cInRuntimeCopy;
@@ -2196,12 +2284,12 @@ void refalrts::profiler::start_copy() {
       break;
 
     default:
-      refalrts_switch_default_violation(g_current_state);
+      refalrts_switch_default_violation(g_profiler.current_state);
   }
 
-  g_counters[counter] += (now - g_prev_cutoff);
-  g_prev_cutoff = now;
-  g_current_state = next;
+  g_profiler.counters[counter] += (now - g_profiler.prev_cutoff);
+  g_profiler.prev_cutoff = now;
+  g_profiler.current_state = next;
 }
 
 void refalrts::profiler::stop_copy() {
@@ -2209,7 +2297,7 @@ void refalrts::profiler::stop_copy() {
   State next;
   BaseCounter counter;
 
-  switch (g_current_state) {
+  switch (g_profiler.current_state) {
     case cInRuntimeCopy:
       next = cInRuntime;
       counter = cCounter_ContextCopyTime;
@@ -2221,19 +2309,19 @@ void refalrts::profiler::stop_copy() {
       break;
 
     default:
-      refalrts_switch_default_violation(g_current_state);
+      refalrts_switch_default_violation(g_profiler.current_state);
   }
 
-  g_counters[counter] += (now - g_prev_cutoff);
-  g_prev_cutoff = now;
-  g_current_state = next;
+  g_profiler.counters[counter] += (now - g_profiler.prev_cutoff);
+  g_profiler.prev_cutoff = now;
+  g_profiler.current_state = next;
 }
 
 void refalrts::profiler::stop_function() {
   clock_t now = clock();
   BaseCounter counter;
 
-  switch (g_current_state) {
+  switch (g_profiler.current_state) {
     case cInRuntime:
       counter = cCounter_NativeTime;
       break;
@@ -2251,12 +2339,12 @@ void refalrts::profiler::stop_function() {
       break;
 
     default:
-      refalrts_switch_default_violation(g_current_state);
+      refalrts_switch_default_violation(g_profiler.current_state);
   }
 
-  g_counters[counter] += (now - g_prev_cutoff);
-  g_prev_cutoff = now;
-  g_current_state = cInRuntime;
+  g_profiler.counters[counter] += (now - g_profiler.prev_cutoff);
+  g_profiler.prev_cutoff = now;
+  g_profiler.current_state = cInRuntime;
 }
 
 void refalrts::profiler::end_profiler() {
@@ -2324,12 +2412,6 @@ void refalrts::profiler::end_profiler() {
 
 namespace refalrts {
 
-namespace vm {
-
-extern unsigned g_step_counter;
-
-} // namespace vm
-
 namespace dynamic {
 
 size_t idents_count();
@@ -2339,21 +2421,21 @@ size_t idents_count();
 } // namespace refalrts
 
 void refalrts::profiler::read_counters(unsigned long counters[]) {
-  clock_t basic_runtime_time = g_counters[cCounter_RuntimeTime];
-  clock_t basic_native_time = g_counters[cCounter_NativeTime];
-  clock_t basic_linear_pattern_time = g_counters[cCounter_LinearPatternTime];
+  clock_t basic_runtime_time = g_profiler.counters[cCounter_RuntimeTime];
+  clock_t basic_native_time = g_profiler.counters[cCounter_NativeTime];
+  clock_t basic_linear_pattern_time = g_profiler.counters[cCounter_LinearPatternTime];
   clock_t basic_repeated_evar_outside_ecycle =
-    g_counters[cCounter_RepeatedEvarOutsideECycle];
+    g_profiler.counters[cCounter_RepeatedEvarOutsideECycle];
   clock_t basic_repeated_tvar_outside_ecycle =
-    g_counters[cCounter_RepeatedTvarOutsideECycle];
+    g_profiler.counters[cCounter_RepeatedTvarOutsideECycle];
   clock_t basic_repeated_evar_inside_ecycle =
-    g_counters[cCounter_RepeatedEvarInsideECycle];
+    g_profiler.counters[cCounter_RepeatedEvarInsideECycle];
   clock_t basic_repeated_tvar_inside_ecycle =
-    g_counters[cCounter_RepeatedTvarInsideECycle];
-  clock_t basic_context_copy_time = g_counters[cCounter_ContextCopyTime];
-  clock_t basic_ecycle_clear_time = g_counters[cCounter_ECycleClearTime];
-  clock_t basic_linear_result_time = g_counters[cCounter_LinearResultTime];
-  clock_t basic_tevar_copy_time = g_counters[cCounter_TEvarCopyTime];
+    g_profiler.counters[cCounter_RepeatedTvarInsideECycle];
+  clock_t basic_context_copy_time = g_profiler.counters[cCounter_ContextCopyTime];
+  clock_t basic_ecycle_clear_time = g_profiler.counters[cCounter_ECycleClearTime];
+  clock_t basic_linear_result_time = g_profiler.counters[cCounter_LinearResultTime];
+  clock_t basic_tevar_copy_time = g_profiler.counters[cCounter_TEvarCopyTime];
 
   clock_t full_time =
     basic_runtime_time
@@ -2396,10 +2478,10 @@ void refalrts::profiler::read_counters(unsigned long counters[]) {
     total_pattern_match_time + total_building_result_time;
   counters[cPerformanceCounter_PatternMatchTime] = total_pattern_match_time;
   counters[cPerformanceCounter_BuildResultTime] = total_building_result_time;
-  counters[cPerformanceCounter_TotalSteps] = ::refalrts::vm::g_step_counter;
+  counters[cPerformanceCounter_TotalSteps] = ::refalrts::g_vm.step_counter;
   counters[cPerformanceCounter_HeapSize] =
     static_cast<unsigned long>(
-      ::refalrts::allocator::g_memory_use * sizeof(Node)
+      ::refalrts::g_allocator.memory_use * sizeof(Node)
     );
   counters[cPerformanceCounter_TEvarCopyTime] = basic_tevar_copy_time;
   counters[cPerformanceCounter_RepeatTvarMatchTime] =
@@ -2674,24 +2756,30 @@ struct HashKeyTraits<const char*> {
   }
 };
 
-DynamicHash<const char *, IdentHashNode> *g_idents_table = 0;
+DynamicHash<const char *, IdentHashNode>& idents_table();
 
-DynamicHash<const char *, IdentHashNode>& idents_table() {
-  if (g_idents_table == 0) {
-    g_idents_table = new DynamicHash<const char *, IdentHashNode>;
-  }
-
-  return *g_idents_table;
-}
-
-size_t idents_count() {
-  return idents_table().count();
-}
+size_t idents_count();
 
 void free_idents_table();
 IdentHashNode *alloc_ident_node(const char *name);
 
+struct FuncHashNode;
+struct ConstTable;
+
+
 } // namespace dynamic
+
+struct Dynamic {
+  struct FunctionTable *unresolved_func_tables;
+  dynamic::DynamicHash<RefalFuncName, dynamic::FuncHashNode> *funcs_table;
+  struct dynamic::ConstTable *tables;
+  struct ExternalReference *unresolved_external_references;
+  dynamic::DynamicHash<const char *, dynamic::IdentHashNode> *idents_table;
+
+  // Нет конструктора, должен инициализироваться статически
+};
+
+struct Dynamic g_dynamic = { 0, 0, 0, 0, 0 };
 
 } // namespace refalrts
 
@@ -2754,6 +2842,19 @@ refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
   return &value->ident;
 }
 
+refalrts::dynamic::DynamicHash<const char *, refalrts::dynamic::IdentHashNode>&
+refalrts::dynamic::idents_table() {
+  if (g_dynamic.idents_table == 0) {
+    g_dynamic.idents_table = new DynamicHash<const char *, IdentHashNode>;
+  }
+
+  return *g_dynamic.idents_table;
+}
+
+size_t refalrts::dynamic::idents_count() {
+  return idents_table().count();
+}
+
 void refalrts::dynamic::free_idents_table() {
 #ifndef DONT_PRINT_STATISTICS
   fprintf(
@@ -2762,7 +2863,7 @@ void refalrts::dynamic::free_idents_table() {
   );
 #endif // ifndef DONT_PRINT_STATISTICS
 
-  delete g_idents_table;
+  delete g_dynamic.idents_table;
 }
 
 refalrts::dynamic::IdentHashNode *refalrts::dynamic::alloc_ident_node(
@@ -2818,16 +2919,12 @@ struct HashKeyTraits<RefalFuncName> {
   }
 };
 
-struct FunctionTable *g_unresolved_func_tables = 0;
-struct ExternalReference *g_unresolved_external_references = 0;
-
-DynamicHash<RefalFuncName, FuncHashNode> *g_funcs_table = 0;
 DynamicHash<RefalFuncName, FuncHashNode>& funcs_table() {
-  if (g_funcs_table == 0) {
-    g_funcs_table = new DynamicHash<RefalFuncName, FuncHashNode>;
+  if (g_dynamic.funcs_table == 0) {
+    g_dynamic.funcs_table = new DynamicHash<RefalFuncName, FuncHashNode>;
   }
 
-  return *g_funcs_table;
+  return *g_dynamic.funcs_table;
 }
 
 unsigned find_unresolved_externals();
@@ -2870,9 +2967,9 @@ refalrts::FunctionTable::FunctionTable(
   : cookie1(cookie1)
   , cookie2(cookie2)
   , items(items)
-  , next(dynamic::g_unresolved_func_tables)
+  , next(g_dynamic.unresolved_func_tables)
 {
-  dynamic::g_unresolved_func_tables = this;
+  g_dynamic.unresolved_func_tables = this;
 }
 
 refalrts::ExternalReference::ExternalReference(
@@ -2881,16 +2978,16 @@ refalrts::ExternalReference::ExternalReference(
   : ref(name)
   , cookie1(cookie1)
   , cookie2(cookie2)
-  , next(dynamic::g_unresolved_external_references)
+  , next(g_dynamic.unresolved_external_references)
 {
-  dynamic::g_unresolved_external_references = this;
+  g_dynamic.unresolved_external_references = this;
 }
 
 unsigned refalrts::dynamic::find_unresolved_externals() {
   unsigned unresolved = 0;
 
-  while (g_unresolved_func_tables != 0) {
-    FunctionTable *table = g_unresolved_func_tables;
+  while (g_dynamic.unresolved_func_tables != 0) {
+    FunctionTable *table = g_dynamic.unresolved_func_tables;
     FunctionTableItem *items = table->items;
     for (size_t i = 0; items[i].func_name != 0; ++i) {
       const char *str_name = items[i].func_name;
@@ -2917,11 +3014,11 @@ unsigned refalrts::dynamic::find_unresolved_externals() {
       }
     }
 
-    g_unresolved_func_tables = g_unresolved_func_tables->next;
+    g_dynamic.unresolved_func_tables = g_dynamic.unresolved_func_tables->next;
   }
 
-  while (g_unresolved_external_references != 0) {
-    ExternalReference *er = g_unresolved_external_references;
+  while (g_dynamic.unresolved_external_references != 0) {
+    ExternalReference *er = g_dynamic.unresolved_external_references;
     RefalFuncName name(er->ref.func_name, er->cookie1, er->cookie2);
     FuncHashNode *node = funcs_table().lookup(name);
     if (node != 0) {
@@ -2934,14 +3031,14 @@ unsigned refalrts::dynamic::find_unresolved_externals() {
       ++unresolved;
     }
 
-    g_unresolved_external_references = g_unresolved_external_references->next;
+    g_dynamic.unresolved_external_references = g_dynamic.unresolved_external_references->next;
   }
 
   return unresolved;
 }
 
 void refalrts::dynamic::free_funcs_table() {
-  delete g_funcs_table;
+  delete g_dynamic.funcs_table;
 }
 
 //------------------------------------------------------------------------------
@@ -2977,8 +3074,6 @@ struct ConstTable {
 
   RefalFuncName make_name(const char *name) const;
 };
-
-struct ConstTable *g_tables = 0;
 
 void enumerate_blocks();
 void cleanup_module();
@@ -3225,8 +3320,8 @@ void refalrts::dynamic::enumerate_blocks() {
           );
           assert(read == fixed_part.rasl_length);
 
-          new_table->next = g_tables;
-          g_tables = new_table;
+          new_table->next = g_dynamic.tables;
+          g_dynamic.tables = new_table;
 
           table = new_table;
         }
@@ -3358,25 +3453,25 @@ void refalrts::dynamic::enumerate_blocks() {
 }
 
 void refalrts::dynamic::cleanup_module() {
-  while (g_tables != 0) {
-    ConstTable *next = g_tables->next;
+  while (g_dynamic.tables != 0) {
+    ConstTable *next = g_dynamic.tables->next;
 
-    free(g_tables->rasl);
+    free(g_dynamic.tables->rasl);
 
-    free(g_tables->strings_memory);
-    free(g_tables->strings);
+    free(g_dynamic.tables->strings_memory);
+    free(g_dynamic.tables->strings);
 
-    free(g_tables->numbers);
+    free(g_dynamic.tables->numbers);
 
-    free(g_tables->idents_memory);
-    free(g_tables->idents);
+    free(g_dynamic.tables->idents_memory);
+    free(g_dynamic.tables->idents);
 
-    delete g_tables->function_table;
-    free(g_tables->external_memory);
-    free(g_tables->externals);
+    delete g_dynamic.tables->function_table;
+    free(g_dynamic.tables->external_memory);
+    free(g_dynamic.tables->externals);
 
-    free(g_tables);
-    g_tables = next;
+    free(g_dynamic.tables);
+    g_dynamic.tables = next;
   }
 }
 
@@ -3400,24 +3495,6 @@ void make_dump(refalrts::Iter begin, refalrts::Iter end);
 FILE* dump_stream();
 
 void free_view_field();
-
-refalrts::NodePtr g_stack_ptr = 0;
-
-extern refalrts::Node g_last_marker;
-
-refalrts::Node g_first_marker =
-  { 0, & g_last_marker, refalrts::cDataIllegal, { '\0' } };
-refalrts::Node g_last_marker =
-  { & g_first_marker, 0, refalrts::cDataIllegal, { '\0' } };
-
-refalrts::NodePtr g_left_swap_ptr = & g_last_marker;
-
-Iter g_error_begin = & g_first_marker;
-Iter g_error_end = & g_last_marker;
-
-unsigned g_step_counter = 0;
-
-int g_ret_code;
 
 template <typename T>
 class Stack {
@@ -3483,18 +3560,18 @@ void refalrts::vm::Stack<T>::reserve(size_t size) {
 }
 
 void refalrts::vm::push_stack(refalrts::Iter call_bracket) {
-  call_bracket->link_info = g_stack_ptr;
-  g_stack_ptr = call_bracket;
+  call_bracket->link_info = g_vm.stack_ptr;
+  g_vm.stack_ptr = call_bracket;
 }
 
 refalrts::Iter refalrts::vm::pop_stack() {
-  refalrts::Iter res = g_stack_ptr;
-  g_stack_ptr = g_stack_ptr->link_info;
+  refalrts::Iter res = g_vm.stack_ptr;
+  g_vm.stack_ptr = g_vm.stack_ptr->link_info;
   return res;
 }
 
 bool refalrts::vm::empty_stack() {
-  return (g_stack_ptr == 0);
+  return (g_vm.stack_ptr == 0);
 }
 
 namespace {
@@ -3511,7 +3588,7 @@ void print_error_message(FILE *stream, refalrts::FnResult res) {
 
     case refalrts::cStepLimit:
       fprintf(
-        stream, "\nSTEP LIMIT REACHED (%u)\n\n", refalrts::vm::g_step_counter
+        stream, "\nSTEP LIMIT REACHED (%u)\n\n", refalrts::g_vm.step_counter
       );
       break;
 
@@ -3570,9 +3647,6 @@ private:
   ~StateRefalMachine() {}
 
   StateRefalMachine *next;
-
-  static StateRefalMachine *g_free;
-  static StateRefalMachine *g_stack;
 };
 
 
@@ -3583,9 +3657,9 @@ private:
 
 refalrts::vm::StateRefalMachine*
 refalrts::vm::StateRefalMachine::alloc() {
-  if (g_free != 0) {
-    StateRefalMachine *res = g_free;
-    g_free = g_free->next;
+  if (g_vm.private_state_stack_free != 0) {
+    StateRefalMachine *res = g_vm.private_state_stack_free;
+    g_vm.private_state_stack_free = g_vm.private_state_stack_free->next;
     res->next = 0;
     return res;
   } else {
@@ -3597,16 +3671,16 @@ void
 refalrts::vm::StateRefalMachine::free(refalrts::vm::StateRefalMachine *state) {
   assert(state->next == 0);
 
-  state->next = g_free;
-  g_free = state;
+  state->next = g_vm.private_state_stack_free;
+  g_vm.private_state_stack_free = state;
 }
 
 refalrts::vm::StateRefalMachine*
 refalrts::vm::StateRefalMachine::pop() {
-  assert(g_stack != 0);
+  assert(g_vm.private_state_stack_stack != 0);
 
-  StateRefalMachine *res = g_stack;
-  g_stack = g_stack->next;
+  StateRefalMachine *res = g_vm.private_state_stack_stack;
+  g_vm.private_state_stack_stack = g_vm.private_state_stack_stack->next;
   res->next = 0;
   return res;
 }
@@ -3615,29 +3689,26 @@ void
 refalrts::vm::StateRefalMachine::push(refalrts::vm::StateRefalMachine *state) {
   assert(state->next == 0);
 
-  state->next = g_stack;
-  g_stack = state;
+  state->next = g_vm.private_state_stack_stack;
+  g_vm.private_state_stack_stack = state;
 }
 
 void
 refalrts::vm::StateRefalMachine::free() {
   StateRefalMachine *next;
 
-  while (g_free != 0) {
-    next = g_free->next;
-    delete g_free;
-    g_free = next;
+  while (g_vm.private_state_stack_free != 0) {
+    next = g_vm.private_state_stack_free->next;
+    delete g_vm.private_state_stack_free;
+    g_vm.private_state_stack_free = next;
   }
 
-  while (g_stack != 0) {
-    next = g_stack->next;
-    delete g_stack;
-    g_stack = next;
+  while (g_vm.private_state_stack_stack != 0) {
+    next = g_vm.private_state_stack_stack->next;
+    delete g_vm.private_state_stack_stack;
+    g_vm.private_state_stack_stack = next;
   }
 }
-
-refalrts::vm::StateRefalMachine *refalrts::vm::StateRefalMachine::g_free = 0;
-refalrts::vm::StateRefalMachine *refalrts::vm::StateRefalMachine::g_stack = 0;
 
 refalrts::FnResult refalrts::vm::run() {
   RefalFunction *go = RefalFunction::lookup(0, 0, "GO");
@@ -3670,7 +3741,7 @@ refalrts::FnResult refalrts::vm::run() {
   StateRefalMachine *start_state = StateRefalMachine::alloc();
 
   start_state->callee = 0;
-  start_state->begin = & g_last_marker; /* нужно для icSetResArgBegin в startup_rasl */
+  start_state->begin = & g_vm.last_marker; /* нужно для icSetResArgBegin в startup_rasl */
   start_state->end = 0;
   start_state->rasl = startup_rasl;
   start_state->functions = entry_point;
@@ -3694,7 +3765,7 @@ refalrts::FnResult refalrts::vm::run() {
       print_error_message(dump_stream(), res);
     }
 
-    make_dump(g_error_begin, g_error_end);
+    make_dump(g_vm.error_begin, g_vm.error_end);
   }
 
   return res;
@@ -3955,19 +4026,19 @@ void refalrts::vm::print_seq(
 void refalrts::vm::make_dump(refalrts::Iter begin, refalrts::Iter end) {
   using refalrts::vm::dump_stream;
 
-  fprintf(dump_stream(), "\nSTEP NUMBER %u\n", g_step_counter);
+  fprintf(dump_stream(), "\nSTEP NUMBER %u\n", g_vm.step_counter);
   fprintf(dump_stream(), "\nERROR EXPRESSION:\n");
   print_seq(dump_stream(), begin, end);
   fprintf(dump_stream(), "VIEW FIELD:\n");
-  print_seq(dump_stream(), & g_first_marker, & g_last_marker);
+  print_seq(dump_stream(), & g_vm.first_marker, & g_vm.last_marker);
 
 #ifdef DUMP_FREE_LIST
 
   fprintf(dump_stream(), "\nFREE LIST:\n");
   print_seq(
     dump_stream(),
-    & refalrts::allocator::g_first_marker,
-    & refalrts::allocator::g_last_marker
+    & refalrts::allocator::g_allocator.first_marker,
+    & refalrts::allocator::g_allocator.last_marker
   );
 
 #endif // ifdef DUMP_FREE_LIST
@@ -4001,8 +4072,8 @@ FILE *refalrts::vm::dump_stream() {
 }
 
 void refalrts::vm::free_view_field() {
-  refalrts::Iter begin = g_first_marker.next;
-  refalrts::Iter end = & g_last_marker;
+  refalrts::Iter begin = g_vm.first_marker.next;
+  refalrts::Iter end = & g_vm.last_marker;
 
   if (begin != end) {
     end = end->prev;
@@ -4014,7 +4085,7 @@ void refalrts::vm::free_view_field() {
   }
 
 #ifndef DONT_PRINT_STATISTICS
-  fprintf(stderr, "Step count %d\n", g_step_counter);
+  fprintf(stderr, "Step count %d\n", g_vm.step_counter);
 #endif // ifndef DONT_PRINT_STATISTICS
 }
 
@@ -4663,7 +4734,7 @@ void refalrts::debugger::close_out(FILE *out) {
 //  Класс отладчика
 
 bool refalrts::debugger::RefalDebugger::mem_cond() {
-  bool res = allocator::g_memory_use > m_memory_limit;
+  bool res = g_allocator.memory_use > m_memory_limit;
   if (res) {
     m_memory_limit = -1;
     printf("stopped on memory overflow\n");
@@ -4684,7 +4755,7 @@ bool refalrts::debugger::RefalDebugger::next_cond(Iter begin) {
 bool refalrts::debugger::RefalDebugger::run_cond(RefalFunction *callee) {
   m_dot = s_RUN;
   bool stop = break_set.is_breakpoint(
-    refalrts::vm::g_step_counter, callee == 0 ? "" : callee->name.name
+    refalrts::g_vm.step_counter, callee == 0 ? "" : callee->name.name
   );
   if (stop) {
     printf("stopped on function breakpoint\n");
@@ -4694,8 +4765,8 @@ bool refalrts::debugger::RefalDebugger::run_cond(RefalFunction *callee) {
 
 bool refalrts::debugger::RefalDebugger::step_cond() {
   using namespace refalrts::vm;
-  bool scond = (g_step_counter == m_step_numb);
-  m_step_numb = g_step_counter;
+  bool scond = (g_vm.step_counter == m_step_numb);
+  m_step_numb = g_vm.step_counter;
   m_dot = s_STEP;
   if (scond) {
     printf("stopped on step\n");
@@ -4926,7 +4997,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       int step_lim = 0;
       ok = fscanf(m_in, "%d", &step_lim) == 1;
       if (ok) {
-        break_set.add_breakpoint(g_step_counter+step_lim);
+        break_set.add_breakpoint(g_vm.step_counter+step_lim);
       }
     } else if (str_equal(debcmd, s_MEMORYLIMIT)) {
       ok = fscanf(m_in, "%u", &m_memory_limit) == 1;
@@ -4953,18 +5024,18 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       || str_equal(debcmd, s_STEP)
       || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_STEP))
     ) {
-      m_step_numb = g_step_counter+1;
+      m_step_numb = g_vm.step_counter+1;
       m_dot = s_STEP;
       break;
     } else if (str_equal(debcmd, s_Q) || str_equal(debcmd, s_QUIT)) {
-      g_ret_code = 0;
+      g_vm.ret_code = 0;
       return cExit;
     } else if (
       str_equal(debcmd, s_N)
       || str_equal(debcmd, s_NEXT)
       || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_NEXT))
     ) {
-      m_next_expr = g_stack_ptr;
+      m_next_expr = g_vm.stack_ptr;
       m_dot = s_NEXT;
       break;
     } else if (str_equal(debcmd, s_VARS)) {
@@ -5017,7 +5088,7 @@ refalrts::debugger::RefalDebugger::handle_function_call(
     if (is_debug_stop(begin, callee)) {
       printf(
         "Step #%d; Function <%s ...>\n",
-        refalrts::vm::g_step_counter, callee == 0 ? "" : callee->name.name
+        refalrts::g_vm.step_counter, callee == 0 ? "" : callee->name.name
       );
       if (debugger_loop(begin, end) == refalrts::cExit) {
         return cExit;
@@ -5862,10 +5933,10 @@ JUMP_FROM_SCALE:
       case icNextStep:
         {
           profiler::stop_function();
-          ++ g_step_counter;
+          ++ g_vm.step_counter;
 
 #ifdef STEP_LIMIT
-          if (g_step_counter >= STEP_LIMIT) {
+          if (g_vm.step_counter >= STEP_LIMIT) {
             return cStepLimit;
           }
 #endif // ifdef STEP_LIMIT
@@ -5878,11 +5949,11 @@ JUMP_FROM_SCALE:
           assert(! empty_stack());
           end = pop_stack();
 
-          g_error_begin = begin;
-          g_error_end = end;
+          g_vm.error_begin = begin;
+          g_vm.error_end = end;
 
 #if SHOW_DEBUG
-          if (g_step_counter >= (unsigned) SHOW_DEBUG) {
+          if (g_vm.step_counter >= (unsigned) SHOW_DEBUG) {
             make_dump(begin, end);
           }
 #endif // if SHOW_DEBUG
@@ -5931,7 +6002,7 @@ JUMP_FROM_SCALE:
             }
 
             if (res == cSuccess) {
-              ++ g_step_counter;
+              ++ g_vm.step_counter;
               function = next(begin);
               assert(cDataFunction == function->tag);
               callee = function->function_info;
@@ -6113,8 +6184,8 @@ int main(int argc, char **argv) {
   }
 #endif // ifdef ENABLE_DEBUGGER
 
-  refalrts::vm::g_argc = argc;
-  refalrts::vm::g_argv = argv;
+  refalrts::g_vm.argc = argc;
+  refalrts::g_vm.argv = argv;
 
   refalrts::FnResult res;
   try {
@@ -6166,7 +6237,7 @@ int main(int argc, char **argv) {
       return 102;
 
     case refalrts::cExit:
-      return refalrts::vm::g_ret_code;
+      return refalrts::g_vm.ret_code;
 
     case refalrts::cStepLimit:
       return 103;
