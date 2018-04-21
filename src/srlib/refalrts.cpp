@@ -88,24 +88,33 @@ inline VM::VM()
 struct VM g_vm;
 
 
-namespace allocator {
-namespace pool {
-struct Chunk;
-typedef Chunk *ChunkPtr;
-}
-}
-
 struct Allocator {
   Node first_marker;
   Node last_marker;
   NodePtr free_ptr;
 
-  struct Pool {
-    allocator::pool::ChunkPtr pool;
-    unsigned avail;
-    Node *pnext_node;
+  class Pool {
+  public:  // BCC 5.5 не может скомпилировать с private
+    enum { cChunkSize = 1000 };
 
+  private:
+    struct Chunk {
+      Chunk *next;
+      Node elems[cChunkSize];
+    };
+
+    typedef Chunk *ChunkPtr;
+
+    ChunkPtr m_pool;
+    unsigned m_avail;
+    Node *m_pnext_node;
+
+  public:
     Pool();
+
+    NodePtr alloc_node();
+    void free();
+    bool grow();
   };
 
   Pool pool;
@@ -115,9 +124,9 @@ struct Allocator {
 };
 
 inline Allocator::Pool::Pool()
-  : pool(0)
-  , avail(0)
-  , pnext_node(0)
+  : m_pool(0)
+  , m_avail(0)
+  , m_pnext_node(0)
 {
   /* пусто */
 }
@@ -1848,22 +1857,6 @@ bool create_nodes();
 
 void free_memory();
 
-namespace pool {
-
-enum { cChunkSize = 1000 };
-typedef struct Chunk {
-  Chunk *next;
-  refalrts::Node elems[cChunkSize];
-} Chunk;
-
-typedef Chunk *ChunkPtr;
-
-refalrts::NodePtr alloc_node();
-void free();
-bool grow();
-
-} // namespace pool
-
 } // namespace allocator
 
 } // namespace refalrts
@@ -1917,7 +1910,7 @@ refalrts::Iter refalrts::allocator::splice_from_freelist(refalrts::Iter pos) {
 }
 
 bool refalrts::allocator::create_nodes() {
-  refalrts::NodePtr new_node = refalrts::allocator::pool::alloc_node();
+  refalrts::NodePtr new_node = refalrts::g_allocator.pool.alloc_node();
 
 #ifdef MEMORY_LIMIT
 
@@ -1946,7 +1939,7 @@ bool refalrts::allocator::create_nodes() {
 }
 
 void refalrts::allocator::free_memory() {
-  refalrts::allocator::pool::free();
+  refalrts::g_allocator.pool.free();
 #ifndef DONT_PRINT_STATISTICS
   fprintf(
     stderr,
@@ -1959,32 +1952,32 @@ void refalrts::allocator::free_memory() {
 #endif // ifndef DONT_PRINT_STATISTICS
 }
 
-refalrts::NodePtr refalrts::allocator::pool::alloc_node() {
-  if ((g_allocator.pool.avail != 0) || grow()) {
-    -- g_allocator.pool.avail;
-    return g_allocator.pool.pnext_node++;
+refalrts::NodePtr refalrts::Allocator::Pool::alloc_node() {
+  if ((m_avail != 0) || grow()) {
+    -- m_avail;
+    return m_pnext_node++;
   } else {
     return 0;
   }
 }
 
-bool refalrts::allocator::pool::grow() {
+bool refalrts::Allocator::Pool::grow() {
   ChunkPtr p = static_cast<ChunkPtr>(malloc(sizeof(Chunk)));
   if (p != 0) {
-    p->next = g_allocator.pool.pool;
-    g_allocator.pool.pool = p;
-    g_allocator.pool.avail = cChunkSize;
-    g_allocator.pool.pnext_node = p->elems;
+    p->next = m_pool;
+    m_pool = p;
+    m_avail = cChunkSize;
+    m_pnext_node = p->elems;
     return true;
   } else {
     return false;
   }
 }
 
-void refalrts::allocator::pool::free() {
-  while (g_allocator.pool.pool != 0) {
-    ChunkPtr p = g_allocator.pool.pool;
-    g_allocator.pool.pool = g_allocator.pool.pool->next;
+void refalrts::Allocator::Pool::free() {
+  while (m_pool != 0) {
+    ChunkPtr p = m_pool;
+    m_pool = m_pool->next;
     ::free(p);
   }
 }
