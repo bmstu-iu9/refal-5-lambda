@@ -356,6 +356,155 @@ inline Profiler::Profiler()
 
 Profiler g_profiler;
 
+
+// Использовать class, public и private нельзя — требуется статическая
+// инициализация:
+//   X x = { ... };
+struct Dynamic {
+  static UInt32 one_at_a_time(UInt32 init, const char *bytes, size_t length);
+
+  template <typename Key>
+  struct HashKeyTraits {
+    /* ничего */
+  };
+
+  template <typename Key, typename Value>
+  class DynamicHash {
+    // Копирование запрещено
+    DynamicHash(const DynamicHash&);
+    DynamicHash& operator=(const DynamicHash&);
+  public:
+    DynamicHash();
+    ~DynamicHash();
+
+    size_t count() const {
+      return m_count;
+    }
+
+    Value *alloc(Key key);
+    Value *lookup(Key key);
+
+  private:
+    struct Node {
+      UInt32 hash;
+      Value value;
+      typename DynamicHash<Key, Value>::Node *next;
+
+      Node(UInt32 hash, Node *next)
+        : hash(hash)
+        , value()
+        , next(next)
+      {
+        /* пусто */
+      }
+    };
+
+    typedef typename DynamicHash<Key, Value>::Node *NodePtr;
+    enum { cResizeThreshold = 4 };
+
+    void rehash();
+
+    Node **m_table;
+    unsigned int m_table_power;
+    size_t m_count;
+  };
+
+  struct IdentHashNode {
+    RefalIdentDescr ident;
+    const char *nonstatic_origin;
+
+    IdentHashNode()
+      : ident()
+      , nonstatic_origin(0)
+    {
+      /* пусто */
+    }
+
+    void cleanup() {
+      if (nonstatic_origin) {
+        delete [] nonstatic_origin;
+      }
+    };
+
+    const char *key() const {
+      return ident.name();
+    }
+  };
+
+  struct FuncHashNode {
+    RefalFunction *function;
+
+    FuncHashNode()
+      : function(0)
+    {
+      /* пусто */
+    }
+
+    void cleanup() {
+      // Деструкторов (в т.ч. неявных в функциях нет),
+      // память выделялась только malloc’ом, поэтому освобождаем free()
+      free(function);
+    }
+
+    RefalFuncName key() const {
+      return function->name;
+    }
+  };
+
+  struct ConstTable {
+    UInt32 cookie1;
+    UInt32 cookie2;
+    FunctionTableItem *externals;
+    FunctionTable *function_table;
+    RefalIdentifier *idents;
+    RefalNumber *numbers;
+    StringItem *strings;
+    RASLCommand *rasl;
+
+    char *external_memory;
+    char *idents_memory;
+    char *strings_memory;
+
+    ConstTable *next;
+
+    RefalFuncName make_name(const char *name) const;
+  };
+
+  struct FunctionTable *m_unresolved_func_tables;
+  DynamicHash<RefalFuncName, FuncHashNode> *m_funcs_table;
+  struct ConstTable *m_tables;
+  struct ExternalReference *m_unresolved_external_references;
+  DynamicHash<const char *, IdentHashNode> *m_idents_table;
+
+  // Нет конструктора, должен инициализироваться статически
+
+  DynamicHash<const char *, IdentHashNode>& idents_table();
+
+  size_t idents_count();
+
+  void free_idents_table();
+  IdentHashNode *alloc_ident_node(const char *name);
+
+  DynamicHash<RefalFuncName, FuncHashNode>& funcs_table();
+  unsigned find_unresolved_externals();
+  void free_funcs_table();
+
+  template <typename T>
+  static T *malloc(size_t count = 1) {
+    T *result = static_cast<T*>(::malloc(sizeof(T) * count));
+    assert(count == 0 || result);
+    return result;
+  }
+
+  void enumerate_blocks();
+  void cleanup_module();
+
+  bool seek_rasl_signature(FILE *stream);
+  const char *read_asciiz(FILE *stream);
+};
+
+struct Dynamic g_dynamic = { 0, 0, 0, 0, 0 };
+
 }  // namespace refalrts
 
 namespace refalrts {
@@ -2442,16 +2591,6 @@ void refalrts::Profiler::end_profiler() {
 #endif // ifndef DONT_PRINT_STATISTICS
 }
 
-namespace refalrts {
-
-namespace dynamic {
-
-size_t idents_count();
-
-} // namespace dynamic
-
-} // namespace refalrts
-
 void refalrts::Profiler::read_counters(unsigned long counters[]) {
   clock_t basic_runtime_time = m_counters[cCounter_RuntimeTime];
   clock_t basic_native_time = m_counters[cCounter_NativeTime];
@@ -2535,7 +2674,7 @@ void refalrts::Profiler::read_counters(unsigned long counters[]) {
   counters[cPerformanceCounter_ContextCopyTime] = basic_context_copy_time;
 
   counters[cPerformanceCounter_IdentsAllocated] =
-    static_cast<unsigned long>(::refalrts::dynamic::idents_count());
+    static_cast<unsigned long>(::refalrts::g_dynamic.idents_count());
 }
 
 //==============================================================================
@@ -2546,64 +2685,8 @@ void refalrts::Profiler::read_counters(unsigned long counters[]) {
 
 // Хеш-таблица
 
-namespace refalrts {
-
-namespace dynamic {
-
-UInt32 one_at_a_time(UInt32 init, const char *bytes, size_t length);
-
-template <typename Key>
-struct HashKeyTraits {
-  /* ничего */
-};
-
 template <typename Key, typename Value>
-class DynamicHash {
-  // Копирование запрещено
-  DynamicHash(const DynamicHash&);
-  DynamicHash& operator=(const DynamicHash&);
-public:
-  DynamicHash();
-  ~DynamicHash();
-
-  size_t count() const {
-    return m_count;
-  }
-
-  Value *alloc(Key key);
-  Value *lookup(Key key);
-
-private:
-  struct Node {
-    UInt32 hash;
-    Value value;
-    typename DynamicHash<Key, Value>::Node *next;
-
-    Node(UInt32 hash, Node *next)
-      : hash(hash)
-      , value()
-      , next(next)
-    {
-      /* пусто */
-    }
-  };
-
-  typedef typename DynamicHash<Key, Value>::Node *NodePtr;
-  enum { cResizeThreshold = 4 };
-
-  void rehash();
-
-  Node **m_table;
-  unsigned int m_table_power;
-  size_t m_count;
-};
-
-} // namespace dynamic
-
-} // namespace refalrts
-
-template <typename Key, typename Value>
-refalrts::dynamic::DynamicHash<Key, Value>::DynamicHash()
+refalrts::Dynamic::DynamicHash<Key, Value>::DynamicHash()
   : m_table()
   , m_table_power(5)
   , m_count(0)
@@ -2617,7 +2700,7 @@ refalrts::dynamic::DynamicHash<Key, Value>::DynamicHash()
 }
 
 template <typename Key, typename Value>
-refalrts::dynamic::DynamicHash<Key, Value>::~DynamicHash() {
+refalrts::Dynamic::DynamicHash<Key, Value>::~DynamicHash() {
   size_t table_size = size_t(1) << m_table_power;
   for (size_t i = 0; i < table_size; ++i) {
     Node *node = m_table[i];
@@ -2633,7 +2716,7 @@ refalrts::dynamic::DynamicHash<Key, Value>::~DynamicHash() {
   m_table = 0;
 }
 
-refalrts::UInt32 refalrts::dynamic::one_at_a_time(
+refalrts::UInt32 refalrts::Dynamic::one_at_a_time(
   UInt32 init, const char *bytes, size_t length
 ) {
   // Хеш-функция Дженкинса one_at_a_time.
@@ -2653,7 +2736,7 @@ refalrts::UInt32 refalrts::dynamic::one_at_a_time(
 }
 
 template <typename Key, typename Value>
-void refalrts::dynamic::DynamicHash<Key, Value>::rehash() {
+void refalrts::Dynamic::DynamicHash<Key, Value>::rehash() {
   // Хаки для Watcom
   using refalrts::UInt32;
 
@@ -2688,10 +2771,9 @@ void refalrts::dynamic::DynamicHash<Key, Value>::rehash() {
 }
 
 template <typename Key, typename Value>
-Value * refalrts::dynamic::DynamicHash<Key, Value>::alloc(Key key) {
+Value * refalrts::Dynamic::DynamicHash<Key, Value>::alloc(Key key) {
   // Хаки для Watcom
   using refalrts::UInt32;
-  using refalrts::dynamic::HashKeyTraits;
 
   rehash();
 
@@ -2720,10 +2802,9 @@ Value * refalrts::dynamic::DynamicHash<Key, Value>::alloc(Key key) {
 }
 
 template <typename Key, typename Value>
-Value *refalrts::dynamic::DynamicHash<Key, Value>::lookup(Key key) {
+Value *refalrts::Dynamic::DynamicHash<Key, Value>::lookup(Key key) {
   // Хаки для Watcom
   using refalrts::UInt32;
-  using refalrts::dynamic::HashKeyTraits;
 
   UInt32 hash = HashKeyTraits<Key>::hash(key);
   UInt32 hash_mask = (UInt32(1) << m_table_power) - 1;
@@ -2752,32 +2833,8 @@ Value *refalrts::dynamic::DynamicHash<Key, Value>::lookup(Key key) {
 
 namespace refalrts {
 
-namespace dynamic {
-
-struct IdentHashNode {
-  RefalIdentDescr ident;
-  const char *nonstatic_origin;
-
-  IdentHashNode()
-    : ident()
-    , nonstatic_origin(0)
-  {
-    /* пусто */
-  }
-
-  void cleanup() {
-    if (nonstatic_origin) {
-      delete [] nonstatic_origin;
-    }
-  };
-
-  const char *key() const {
-    return ident.name();
-  }
-};
-
 template <>
-struct HashKeyTraits<const char*> {
+struct Dynamic::HashKeyTraits<const char*> {
   static UInt32 hash(const char *name) {
     size_t length = name ? strlen(name) : 0;
     return one_at_a_time(0, name, length);
@@ -2788,37 +2845,12 @@ struct HashKeyTraits<const char*> {
   }
 };
 
-DynamicHash<const char *, IdentHashNode>& idents_table();
-
-size_t idents_count();
-
-void free_idents_table();
-IdentHashNode *alloc_ident_node(const char *name);
-
-struct FuncHashNode;
-struct ConstTable;
-
-
-} // namespace dynamic
-
-struct Dynamic {
-  struct FunctionTable *unresolved_func_tables;
-  dynamic::DynamicHash<RefalFuncName, dynamic::FuncHashNode> *funcs_table;
-  struct dynamic::ConstTable *tables;
-  struct ExternalReference *unresolved_external_references;
-  dynamic::DynamicHash<const char *, dynamic::IdentHashNode> *idents_table;
-
-  // Нет конструктора, должен инициализироваться статически
-};
-
-struct Dynamic g_dynamic = { 0, 0, 0, 0, 0 };
-
-} // namespace refalrts
+}  // namespace refalrts
 
 refalrts::RefalIdentifier refalrts::RefalIdentDescr::from_static(
   const char * name
 ) {
-  dynamic::IdentHashNode *value = dynamic::alloc_ident_node(name);
+  Dynamic::IdentHashNode *value = g_dynamic.alloc_ident_node(name);
 #ifdef IDENTS_LIMIT
   if (! value) {
     fprintf(
@@ -2848,7 +2880,7 @@ refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
   if (! name) {
     name = "";
   }
-  dynamic::IdentHashNode *value = dynamic::alloc_ident_node(name);
+  Dynamic::IdentHashNode *value = g_dynamic.alloc_ident_node(name);
 
 #ifdef IDENTS_LIMIT
   if (! value) {
@@ -2874,20 +2906,20 @@ refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
   return &value->ident;
 }
 
-refalrts::dynamic::DynamicHash<const char *, refalrts::dynamic::IdentHashNode>&
-refalrts::dynamic::idents_table() {
-  if (g_dynamic.idents_table == 0) {
-    g_dynamic.idents_table = new DynamicHash<const char *, IdentHashNode>;
+refalrts::Dynamic::DynamicHash<const char *, refalrts::Dynamic::IdentHashNode>&
+refalrts::Dynamic::idents_table() {
+  if (m_idents_table == 0) {
+    m_idents_table = new Dynamic::DynamicHash<const char *, IdentHashNode>;
   }
 
-  return *g_dynamic.idents_table;
+  return *m_idents_table;
 }
 
-size_t refalrts::dynamic::idents_count() {
+size_t refalrts::Dynamic::idents_count() {
   return idents_table().count();
 }
 
-void refalrts::dynamic::free_idents_table() {
+void refalrts::Dynamic::free_idents_table() {
 #ifndef DONT_PRINT_STATISTICS
   fprintf(
     stderr, "Identifiers allocated: %lu\n",
@@ -2895,10 +2927,10 @@ void refalrts::dynamic::free_idents_table() {
   );
 #endif // ifndef DONT_PRINT_STATISTICS
 
-  delete g_dynamic.idents_table;
+  delete m_idents_table;
 }
 
-refalrts::dynamic::IdentHashNode *refalrts::dynamic::alloc_ident_node(
+refalrts::Dynamic::IdentHashNode *refalrts::Dynamic::alloc_ident_node(
   const char *name
 ) {
 #ifdef IDENTS_LIMIT
@@ -2915,30 +2947,8 @@ refalrts::dynamic::IdentHashNode *refalrts::dynamic::alloc_ident_node(
 
 namespace refalrts {
 
-namespace dynamic {
-
-struct FuncHashNode {
-  RefalFunction *function;
-
-  FuncHashNode()
-    : function(0)
-  {
-    /* пусто */
-  }
-
-  void cleanup() {
-    // Деструкторов (в т.ч. неявных в функциях нет),
-    // память выделялась только malloc’ом, поэтому освобождаем free()
-    free(function);
-  }
-
-  RefalFuncName key() const {
-    return function->name;
-  }
-};
-
 template <>
-struct HashKeyTraits<RefalFuncName> {
+struct Dynamic::HashKeyTraits<refalrts::RefalFuncName> {
   static UInt32 hash(const RefalFuncName& name) {
     size_t length = name.name ? strlen(name.name) : 0;
     return one_at_a_time(name.cookie1 ^ name.cookie2, name.name, length);
@@ -2951,23 +2961,21 @@ struct HashKeyTraits<RefalFuncName> {
   }
 };
 
-DynamicHash<RefalFuncName, FuncHashNode>& funcs_table() {
-  if (g_dynamic.funcs_table == 0) {
-    g_dynamic.funcs_table = new DynamicHash<RefalFuncName, FuncHashNode>;
+}  // namespace refalrts
+
+refalrts::Dynamic::DynamicHash<
+  refalrts::RefalFuncName, refalrts::Dynamic::FuncHashNode
+>&
+refalrts::Dynamic::funcs_table() {
+  if (m_funcs_table == 0) {
+    m_funcs_table = new Dynamic::DynamicHash<RefalFuncName, FuncHashNode>;
   }
 
-  return *g_dynamic.funcs_table;
+  return *m_funcs_table;
 }
 
-unsigned find_unresolved_externals();
-void free_funcs_table();
-
-} // namespace dynamic
-
-} // namespace refalrts
-
 void refalrts::RefalFunction::register_me() {
-  dynamic::FuncHashNode *node = dynamic::funcs_table().alloc(name);
+  Dynamic::FuncHashNode *node = g_dynamic.funcs_table().alloc(name);
 
   if (node->function != 0) {
     fprintf(
@@ -2983,7 +2991,7 @@ void refalrts::RefalFunction::register_me() {
 refalrts::RefalFunction *refalrts::RefalFunction::lookup(
   const refalrts::RefalFuncName& name
 ) {
-  dynamic::FuncHashNode *node = dynamic::funcs_table().lookup(name);
+  Dynamic::FuncHashNode *node = g_dynamic.funcs_table().lookup(name);
 
   if (node) {
     return node->function;
@@ -2999,9 +3007,9 @@ refalrts::FunctionTable::FunctionTable(
   : cookie1(cookie1)
   , cookie2(cookie2)
   , items(items)
-  , next(g_dynamic.unresolved_func_tables)
+  , next(g_dynamic.m_unresolved_func_tables)
 {
-  g_dynamic.unresolved_func_tables = this;
+  g_dynamic.m_unresolved_func_tables = this;
 }
 
 refalrts::ExternalReference::ExternalReference(
@@ -3010,16 +3018,16 @@ refalrts::ExternalReference::ExternalReference(
   : ref(name)
   , cookie1(cookie1)
   , cookie2(cookie2)
-  , next(g_dynamic.unresolved_external_references)
+  , next(g_dynamic.m_unresolved_external_references)
 {
-  g_dynamic.unresolved_external_references = this;
+  g_dynamic.m_unresolved_external_references = this;
 }
 
-unsigned refalrts::dynamic::find_unresolved_externals() {
+unsigned refalrts::Dynamic::find_unresolved_externals() {
   unsigned unresolved = 0;
 
-  while (g_dynamic.unresolved_func_tables != 0) {
-    FunctionTable *table = g_dynamic.unresolved_func_tables;
+  while (m_unresolved_func_tables != 0) {
+    FunctionTable *table = m_unresolved_func_tables;
     FunctionTableItem *items = table->items;
     for (size_t i = 0; items[i].func_name != 0; ++i) {
       const char *str_name = items[i].func_name;
@@ -3046,11 +3054,11 @@ unsigned refalrts::dynamic::find_unresolved_externals() {
       }
     }
 
-    g_dynamic.unresolved_func_tables = g_dynamic.unresolved_func_tables->next;
+    m_unresolved_func_tables = m_unresolved_func_tables->next;
   }
 
-  while (g_dynamic.unresolved_external_references != 0) {
-    ExternalReference *er = g_dynamic.unresolved_external_references;
+  while (m_unresolved_external_references != 0) {
+    ExternalReference *er = m_unresolved_external_references;
     RefalFuncName name(er->ref.func_name, er->cookie1, er->cookie2);
     FuncHashNode *node = funcs_table().lookup(name);
     if (node != 0) {
@@ -3063,61 +3071,21 @@ unsigned refalrts::dynamic::find_unresolved_externals() {
       ++unresolved;
     }
 
-    g_dynamic.unresolved_external_references = g_dynamic.unresolved_external_references->next;
+    m_unresolved_external_references = m_unresolved_external_references->next;
   }
 
   return unresolved;
 }
 
-void refalrts::dynamic::free_funcs_table() {
-  delete g_dynamic.funcs_table;
+void refalrts::Dynamic::free_funcs_table() {
+  delete m_funcs_table;
 }
 
 //------------------------------------------------------------------------------
 
 // Загружаемый модуль
 
-namespace refalrts {
-
-namespace dynamic {
-
-template <typename T>
-inline T *malloc(size_t count = 1) {
-  T *result = static_cast<T*>(::malloc(sizeof(T) * count));
-  assert(count == 0 || result);
-  return result;
-}
-
-struct ConstTable {
-  UInt32 cookie1;
-  UInt32 cookie2;
-  FunctionTableItem *externals;
-  FunctionTable *function_table;
-  RefalIdentifier *idents;
-  RefalNumber *numbers;
-  StringItem *strings;
-  RASLCommand *rasl;
-
-  char *external_memory;
-  char *idents_memory;
-  char *strings_memory;
-
-  ConstTable *next;
-
-  RefalFuncName make_name(const char *name) const;
-};
-
-void enumerate_blocks();
-void cleanup_module();
-
-bool seek_rasl_signature(FILE *stream);
-const char *read_asciiz(FILE *stream);
-
-} // namespace dynamic
-
-} // namespace refalrts
-
-bool refalrts::dynamic::seek_rasl_signature(FILE *stream) {
+bool refalrts::Dynamic::seek_rasl_signature(FILE *stream) {
   int seek_res = fseek(stream, 0L, SEEK_END);
   if (seek_res != 0) {
     fprintf(stderr, "INTERNAL ERROR: can't seek in module\n");
@@ -3164,7 +3132,7 @@ bool refalrts::dynamic::seek_rasl_signature(FILE *stream) {
   return found;
 }
 
-const char *refalrts::dynamic::read_asciiz(FILE *stream) {
+const char *refalrts::Dynamic::read_asciiz(FILE *stream) {
   enum { cINC_SIZE = 20 };
 
   size_t buflen = cINC_SIZE;
@@ -3198,7 +3166,7 @@ const char *refalrts::dynamic::read_asciiz(FILE *stream) {
 }
 
 refalrts::RefalFuncName
-refalrts::dynamic::ConstTable::make_name(const char *name) const {
+refalrts::Dynamic::ConstTable::make_name(const char *name) const {
   char type = name[0];
   const char *proper_name = name + 1;
 
@@ -3210,7 +3178,7 @@ refalrts::dynamic::ConstTable::make_name(const char *name) const {
   }
 }
 
-void refalrts::dynamic::enumerate_blocks() {
+void refalrts::Dynamic::enumerate_blocks() {
   char module_name[api::cModuleNameBufferLen];
 
   bool successed = api::get_main_module_name(module_name);
@@ -3352,8 +3320,8 @@ void refalrts::dynamic::enumerate_blocks() {
           );
           assert(read == fixed_part.rasl_length);
 
-          new_table->next = g_dynamic.tables;
-          g_dynamic.tables = new_table;
+          new_table->next = m_tables;
+          m_tables = new_table;
 
           table = new_table;
         }
@@ -3368,7 +3336,7 @@ void refalrts::dynamic::enumerate_blocks() {
           read = fread(&offset, sizeof(offset), 1, stream);
           assert(read == 1);
 
-          RASLFunction *result = dynamic::malloc<RASLFunction>();
+          RASLFunction *result = Dynamic::malloc<RASLFunction>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RASLFunction(
@@ -3416,7 +3384,7 @@ void refalrts::dynamic::enumerate_blocks() {
           // TODO: Сообщение об ошибке
           assert(ref != 0);
 
-          RefalNativeFunction *result = dynamic::malloc<RefalNativeFunction>();
+          RefalNativeFunction *result = Dynamic::malloc<RefalNativeFunction>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalNativeFunction(
@@ -3430,7 +3398,7 @@ void refalrts::dynamic::enumerate_blocks() {
           const char *name = read_asciiz(stream);
           assert(name);
 
-          RefalEmptyFunction *result = dynamic::malloc<RefalEmptyFunction>();
+          RefalEmptyFunction *result = Dynamic::malloc<RefalEmptyFunction>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalEmptyFunction(table->make_name(name));
@@ -3442,7 +3410,7 @@ void refalrts::dynamic::enumerate_blocks() {
           const char *name = read_asciiz(stream);
           assert(name);
 
-          RefalSwap *result = dynamic::malloc<RefalSwap>();
+          RefalSwap *result = Dynamic::malloc<RefalSwap>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalSwap(table->make_name(name));
@@ -3457,7 +3425,7 @@ void refalrts::dynamic::enumerate_blocks() {
           const char *name = read_asciiz(stream);
           assert(name);
 
-          RefalCondFunctionRasl *result = dynamic::malloc<RefalCondFunctionRasl>();
+          RefalCondFunctionRasl *result = Dynamic::malloc<RefalCondFunctionRasl>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalCondFunctionRasl(table->make_name(name));
@@ -3469,7 +3437,7 @@ void refalrts::dynamic::enumerate_blocks() {
           const char *name = read_asciiz(stream);
           assert(name);
 
-          RefalCondFunctionNative *result = dynamic::malloc<RefalCondFunctionNative>();
+          RefalCondFunctionNative *result = Dynamic::malloc<RefalCondFunctionNative>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalCondFunctionNative(table->make_name(name));
@@ -3484,26 +3452,26 @@ void refalrts::dynamic::enumerate_blocks() {
   fclose(stream);
 }
 
-void refalrts::dynamic::cleanup_module() {
-  while (g_dynamic.tables != 0) {
-    ConstTable *next = g_dynamic.tables->next;
+void refalrts::Dynamic::cleanup_module() {
+  while (m_tables != 0) {
+    ConstTable *next = m_tables->next;
 
-    free(g_dynamic.tables->rasl);
+    free(m_tables->rasl);
 
-    free(g_dynamic.tables->strings_memory);
-    free(g_dynamic.tables->strings);
+    free(m_tables->strings_memory);
+    free(m_tables->strings);
 
-    free(g_dynamic.tables->numbers);
+    free(m_tables->numbers);
 
-    free(g_dynamic.tables->idents_memory);
-    free(g_dynamic.tables->idents);
+    free(m_tables->idents_memory);
+    free(m_tables->idents);
 
-    delete g_dynamic.tables->function_table;
-    free(g_dynamic.tables->external_memory);
-    free(g_dynamic.tables->externals);
+    delete m_tables->function_table;
+    free(m_tables->external_memory);
+    free(m_tables->externals);
 
-    free(g_dynamic.tables);
-    g_dynamic.tables = next;
+    free(m_tables);
+    m_tables = next;
   }
 }
 
@@ -3565,7 +3533,7 @@ void print_error_message(FILE *stream, refalrts::FnResult res) {
     case refalrts::cIdentTableLimit:
       fprintf(
         stream, "\nIDENTS TABLE OVERFLOW (max %lu)\n\n",
-        static_cast<unsigned long>(refalrts::dynamic::idents_count())
+        static_cast<unsigned long>(refalrts::g_dynamic.idents_count())
       );
       break;
 
@@ -6107,13 +6075,13 @@ int main(int argc, char **argv) {
 
   refalrts::FnResult res;
   try {
-    refalrts::dynamic::enumerate_blocks();
+    refalrts::g_dynamic.enumerate_blocks();
 
-    unsigned unresolved = refalrts::dynamic::find_unresolved_externals();
+    unsigned unresolved = refalrts::g_dynamic.find_unresolved_externals();
     if (unresolved > 0) {
-      refalrts::dynamic::free_idents_table();
-      refalrts::dynamic::free_funcs_table();
-      refalrts::dynamic::cleanup_module();
+      refalrts::g_dynamic.free_idents_table();
+      refalrts::g_dynamic.free_funcs_table();
+      refalrts::g_dynamic.cleanup_module();
       fprintf(stderr, "Found %u unresolved externals\n", unresolved);
       return 157;
     }
@@ -6137,9 +6105,9 @@ int main(int argc, char **argv) {
   refalrts::g_profiler.end_profiler();
   refalrts::g_vm.free_view_field();
   refalrts::g_allocator.free_memory();
-  refalrts::dynamic::free_idents_table();
-  refalrts::dynamic::free_funcs_table();
-  refalrts::dynamic::cleanup_module();
+  refalrts::g_dynamic.free_idents_table();
+  refalrts::g_dynamic.free_funcs_table();
+  refalrts::g_dynamic.cleanup_module();
   refalrts::g_vm.free_states_stack();
 
   fflush(stdout);
