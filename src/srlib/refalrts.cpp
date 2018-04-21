@@ -47,45 +47,162 @@ void valid_linked_aux(const char *text, refalrts::Iter i) {
 
 namespace refalrts {
 
-namespace vm {
-struct StateRefalMachine;
-};
+class VM {
+  struct StateRefalMachine;
 
-struct VM {
-  NodePtr left_swap_ptr;
-  int ret_code;
-  char **argv;
-  unsigned int argc;
-  Node first_marker;
-  Node last_marker;
-  Iter error_begin;
-  Iter error_end;
-  unsigned step_counter;
-  NodePtr stack_ptr;
-  vm::StateRefalMachine *private_state_stack_free;
-  vm::StateRefalMachine *private_state_stack_stack;
+  NodePtr m_left_swap_ptr;
+  int m_ret_code;
+  char **m_argv;
+  unsigned int m_argc;
+  Node m_first_marker;
+  Node m_last_marker;
+  Iter m_error_begin;
+  Iter m_error_end;
+  unsigned m_step_counter;
+  NodePtr m_stack_ptr;
+  StateRefalMachine *m_private_state_stack_free;
+  StateRefalMachine *m_private_state_stack_stack;
 
+public:
+  template <typename T>
+  class Stack {
+    // Запрет копирования
+    Stack(const Stack<T> &obj);
+    Stack& operator=(const Stack<T> &obj);
+
+  public:
+    Stack()
+      :m_memory(new T[1]), m_size(0), m_capacity(1)
+    {
+      /* пусто */
+    }
+
+    ~Stack() {
+      delete[] m_memory;
+    }
+
+    T& operator[](size_t offset) {
+      return m_memory[offset];
+    }
+
+    void reserve(size_t size);
+
+    void swap(Stack<T>& other) {
+      swap(m_memory, other.m_memory);
+      swap(m_size, other.m_size);
+      swap(m_capacity, other.m_capacity);
+    }
+
+  private:
+    T *m_memory;
+    size_t m_size;
+    size_t m_capacity;
+
+    template <typename U>
+    static void swap(U& x, U& y) {
+      U old_x = x;
+      x = y;
+      y = old_x;
+    }
+  };
+
+private:
+  struct StateRefalMachine {
+    refalrts::RefalFunction *callee;
+    refalrts::Iter begin; /* нужно для icSetResArgBegin в startup_rasl */
+    refalrts::Iter end;
+    const refalrts::RASLCommand *rasl;
+    refalrts::FunctionTableItem *functions;
+    const refalrts::RefalIdentifier *idents;
+    const refalrts::RefalNumber *numbers;
+    const refalrts::StringItem *strings;
+
+    Stack<const refalrts::RASLCommand*> open_e_stack;
+    Stack<refalrts::Iter> context;
+
+    refalrts::Iter res;
+    refalrts::Iter trash_prev;
+    int stack_top;
+
+    StateRefalMachine()
+      :next(0)
+    {
+      /* пусто */
+    }
+
+    ~StateRefalMachine() {}
+
+    StateRefalMachine *next;
+  };
+
+  StateRefalMachine *states_stack_alloc();
+  void states_stack_free(StateRefalMachine *state);
+
+  StateRefalMachine *states_stack_pop();
+  void states_stack_push(StateRefalMachine *state);
+
+public:
   VM();
+
+  int get_return_code() const {
+    return m_ret_code;
+  }
+
+  void set_return_code(int code) {
+    m_ret_code = code;
+  }
+
+  const char* arg(unsigned int param);
+  void set_args(int argc, char **argv) {
+    m_argc = argc;
+    m_argv = argv;
+  }
+
+  unsigned step_counter() const {
+    return m_step_counter;
+  }
+  Iter stack_ptr() const {
+    return m_stack_ptr;
+  }
+
+  void push_stack(refalrts::Iter call_bracket);
+  refalrts::Iter pop_stack();
+  bool empty_stack();
+
+  refalrts::FnResult run();
+  refalrts::FnResult main_loop(const RASLCommand *rasl);
+  void make_dump(refalrts::Iter begin, refalrts::Iter end);
+  FILE* dump_stream();
+
+  void free_view_field();
+
+  Iter initialize_swap_head(refalrts::Iter head);
+  static void print_seq(
+    FILE *output, refalrts::Iter begin, refalrts::Iter end,
+    bool multiline = true, unsigned max_node = -1
+  );
+
+  void free_states_stack();
 };
 
 inline VM::VM()
-  : left_swap_ptr(& last_marker)
-  , ret_code(0)
-  , argv(0)
-  , argc(0)
-  , first_marker(0, & last_marker)
-  , last_marker(& first_marker, 0)
-  , error_begin(& first_marker)
-  , error_end(& last_marker)
-  , step_counter(0)
-  , stack_ptr(0)
-  , private_state_stack_free(0)
-  , private_state_stack_stack(0)
+  : m_left_swap_ptr(& m_last_marker)
+  , m_ret_code(0)
+  , m_argv(0)
+  , m_argc(0)
+  , m_first_marker(0, & m_last_marker)
+  , m_last_marker(& m_first_marker, 0)
+  , m_error_begin(& m_first_marker)
+  , m_error_end(& m_last_marker)
+  , m_step_counter(0)
+  , m_stack_ptr(0)
+  , m_private_state_stack_free(0)
+  , m_private_state_stack_stack(0)
 {
   /* пусто */
 }
 
-struct VM g_vm;
+VM g_vm;
 
 
 class Allocator {
@@ -1190,16 +1307,6 @@ bool copy_node(refalrts::Iter& res, refalrts::Iter sample) {
 } // unnamed namespace
 
 
-namespace refalrts {
-
-namespace vm {
-
-void make_dump(refalrts::Iter begin, refalrts::Iter end);
-
-} // namespace vm
-
-} // namespace refalrts
-
 namespace {
 
 bool copy_nonempty_evar(
@@ -1457,18 +1564,8 @@ bool refalrts::alloc_string(
   }
 }
 
-namespace refalrts {
-
-namespace vm {
-
-void push_stack(refalrts::Iter call_bracket);
-
-} // namespace vm
-
-} // namespace refalrts
-
 void refalrts::push_stack(Iter call_bracket) {
-  vm::push_stack(call_bracket);
+  g_vm.push_stack(call_bracket);
 }
 
 void refalrts::link_brackets(Iter left, Iter right) {
@@ -1742,27 +1839,17 @@ const refalrts::RASLCommand refalrts::RefalEmptyFunction::run[] = {
 
 // Инициализация головного узла статического ящика
 
-namespace refalrts {
-
-namespace vm {
-
-Iter initialize_swap_head(refalrts::Iter head);
-
-} // namespace vm
-
-} // namespace refalrts
-
-refalrts::Iter refalrts::vm::initialize_swap_head(refalrts::Iter head) {
+refalrts::Iter refalrts::VM::initialize_swap_head(refalrts::Iter head) {
   assert(cDataFunction == head->tag);
   assert(RefalSwap::run == head->function_info->rasl);
 
   RefalSwap *swap = static_cast<RefalSwap*>(head->function_info);
-  splice_elem(g_vm.left_swap_ptr, head);
+  splice_elem(m_left_swap_ptr, head);
   head->tag = cDataSwapHead;
-  swap->next_head = g_vm.left_swap_ptr;
+  swap->next_head = m_left_swap_ptr;
 
-  g_vm.left_swap_ptr = head;
-  return g_vm.left_swap_ptr;
+  m_left_swap_ptr = head;
+  return m_left_swap_ptr;
 }
 
 const refalrts::RASLCommand refalrts::RefalSwap::run[] = {
@@ -1819,35 +1906,26 @@ void refalrts::start_e_loop() {
 
 // Прочие операции
 
-namespace refalrts {
-
-namespace vm {
-
-extern void print_seq(
-  FILE *output, refalrts::Iter begin, refalrts::Iter end,
-  bool multiline = true, unsigned max_node = -1
-);
-
-} // namespace vm
-
-} // namespace refalrts
-
 void refalrts::set_return_code(int code) {
-  refalrts::g_vm.ret_code = code;
+  refalrts::g_vm.set_return_code(code);
 }
 
-const char* refalrts::arg(unsigned int param) {
-  if (param < g_vm.argc) {
-    return g_vm.argv[param];
+const char* refalrts::VM::arg(unsigned int param) {
+  if (param < m_argc) {
+    return m_argv[param];
   } else {
     return "";
   }
 }
 
+const char* refalrts::arg(unsigned int param) {
+  return g_vm.arg(param);
+}
+
 void refalrts::debug_print_expr(
   void *file, refalrts::Iter first, refalrts::Iter last
 ) {
-  refalrts::vm::print_seq(static_cast<FILE*>(file), first, last);
+  refalrts::VM::print_seq(static_cast<FILE*>(file), first, last);
 }
 
 //==============================================================================
@@ -2464,7 +2542,7 @@ void refalrts::profiler::read_counters(unsigned long counters[]) {
     total_pattern_match_time + total_building_result_time;
   counters[cPerformanceCounter_PatternMatchTime] = total_pattern_match_time;
   counters[cPerformanceCounter_BuildResultTime] = total_building_result_time;
-  counters[cPerformanceCounter_TotalSteps] = ::refalrts::g_vm.step_counter;
+  counters[cPerformanceCounter_TotalSteps] = ::refalrts::g_vm.step_counter();
   counters[cPerformanceCounter_HeapSize] =
     static_cast<unsigned long>(
       ::refalrts::g_allocator.memory_use() * sizeof(Node)
@@ -3467,70 +3545,8 @@ refalrts::NativeReference *refalrts::NativeReference::s_references = 0;
 // Виртуальная машина
 //==============================================================================
 
-namespace refalrts {
-
-namespace vm {
-
-void push_stack(refalrts::Iter call_bracket);
-refalrts::Iter pop_stack();
-bool empty_stack();
-
-refalrts::FnResult run();
-refalrts::FnResult main_loop(const RASLCommand *rasl);
-void make_dump(refalrts::Iter begin, refalrts::Iter end);
-FILE* dump_stream();
-
-void free_view_field();
-
 template <typename T>
-class Stack {
-  // Запрет копирования
-  Stack(const Stack<T> &obj);
-  Stack& operator=(const Stack<T> &obj);
-
-public:
-  Stack()
-    :m_memory(new T[1]), m_size(0), m_capacity(1)
-  {
-    /* пусто */
-  }
-
-  ~Stack() {
-    delete[] m_memory;
-  }
-
-  T& operator[](size_t offset) {
-    return m_memory[offset];
-  }
-
-  void reserve(size_t size);
-
-  void swap(Stack<T>& other) {
-    swap(m_memory, other.m_memory);
-    swap(m_size, other.m_size);
-    swap(m_capacity, other.m_capacity);
-  }
-
-private:
-  T *m_memory;
-  size_t m_size;
-  size_t m_capacity;
-
-  template <typename U>
-  static void swap(U& x, U& y) {
-    U old_x = x;
-    x = y;
-    y = old_x;
-  }
-};
-
-
-} // namespace vm
-
-} // namespace refalrts
-
-template <typename T>
-void refalrts::vm::Stack<T>::reserve(size_t size) {
+void refalrts::VM::Stack<T>::reserve(size_t size) {
   assert (size > 0);
 
   if (m_capacity < size) {
@@ -3545,19 +3561,19 @@ void refalrts::vm::Stack<T>::reserve(size_t size) {
   }
 }
 
-void refalrts::vm::push_stack(refalrts::Iter call_bracket) {
-  call_bracket->link_info = g_vm.stack_ptr;
-  g_vm.stack_ptr = call_bracket;
+void refalrts::VM::push_stack(refalrts::Iter call_bracket) {
+  call_bracket->link_info = m_stack_ptr;
+  m_stack_ptr = call_bracket;
 }
 
-refalrts::Iter refalrts::vm::pop_stack() {
-  refalrts::Iter res = g_vm.stack_ptr;
-  g_vm.stack_ptr = g_vm.stack_ptr->link_info;
+refalrts::Iter refalrts::VM::pop_stack() {
+  refalrts::Iter res = m_stack_ptr;
+  m_stack_ptr = m_stack_ptr->link_info;
   return res;
 }
 
-bool refalrts::vm::empty_stack() {
-  return (g_vm.stack_ptr == 0);
+bool refalrts::VM::empty_stack() {
+  return (m_stack_ptr == 0);
 }
 
 namespace {
@@ -3574,7 +3590,7 @@ void print_error_message(FILE *stream, refalrts::FnResult res) {
 
     case refalrts::cStepLimit:
       fprintf(
-        stream, "\nSTEP LIMIT REACHED (%u)\n\n", refalrts::g_vm.step_counter
+        stream, "\nSTEP LIMIT REACHED (%u)\n\n", refalrts::g_vm.step_counter()
       );
       break;
 
@@ -3593,59 +3609,12 @@ void print_error_message(FILE *stream, refalrts::FnResult res) {
 
 }
 
-namespace refalrts {
 
-namespace vm {
-
-
-struct StateRefalMachine{
-  refalrts::RefalFunction *callee;
-  refalrts::Iter begin; /* нужно для icSetResArgBegin в startup_rasl */
-  refalrts::Iter end;
-  const refalrts::RASLCommand *rasl;
-  refalrts::FunctionTableItem *functions;
-  const refalrts::RefalIdentifier *idents;
-  const refalrts::RefalNumber *numbers;
-  const refalrts::StringItem *strings;
-
-  refalrts::vm::Stack<const refalrts::RASLCommand*> open_e_stack;
-  refalrts::vm::Stack<refalrts::Iter> context;
-
-  refalrts::Iter res;
-  refalrts::Iter trash_prev;
-  int stack_top;
-
-  static StateRefalMachine *alloc();
-  static void free(StateRefalMachine *state);
-
-  static StateRefalMachine *pop();
-  static void push(StateRefalMachine *state);
-
-  static void free();
-
-private:
-  StateRefalMachine()
-    :next(0)
-  {
-    /* пусто */
-  }
-
-  ~StateRefalMachine() {}
-
-  StateRefalMachine *next;
-};
-
-
-} // namespace vm
-
-} // namespace refalrts
-
-
-refalrts::vm::StateRefalMachine*
-refalrts::vm::StateRefalMachine::alloc() {
-  if (g_vm.private_state_stack_free != 0) {
-    StateRefalMachine *res = g_vm.private_state_stack_free;
-    g_vm.private_state_stack_free = g_vm.private_state_stack_free->next;
+refalrts::VM::StateRefalMachine*
+refalrts::VM::states_stack_alloc() {
+  if (m_private_state_stack_free != 0) {
+    StateRefalMachine *res = m_private_state_stack_free;
+    m_private_state_stack_free = m_private_state_stack_free->next;
     res->next = 0;
     return res;
   } else {
@@ -3654,49 +3623,49 @@ refalrts::vm::StateRefalMachine::alloc() {
 }
 
 void
-refalrts::vm::StateRefalMachine::free(refalrts::vm::StateRefalMachine *state) {
+refalrts::VM::states_stack_free(refalrts::VM::StateRefalMachine *state) {
   assert(state->next == 0);
 
-  state->next = g_vm.private_state_stack_free;
-  g_vm.private_state_stack_free = state;
+  state->next = m_private_state_stack_free;
+  m_private_state_stack_free = state;
 }
 
-refalrts::vm::StateRefalMachine*
-refalrts::vm::StateRefalMachine::pop() {
-  assert(g_vm.private_state_stack_stack != 0);
+refalrts::VM::StateRefalMachine*
+refalrts::VM::states_stack_pop() {
+  assert(m_private_state_stack_stack != 0);
 
-  StateRefalMachine *res = g_vm.private_state_stack_stack;
-  g_vm.private_state_stack_stack = g_vm.private_state_stack_stack->next;
+  StateRefalMachine *res = m_private_state_stack_stack;
+  m_private_state_stack_stack = m_private_state_stack_stack->next;
   res->next = 0;
   return res;
 }
 
 void
-refalrts::vm::StateRefalMachine::push(refalrts::vm::StateRefalMachine *state) {
+refalrts::VM::states_stack_push(refalrts::VM::StateRefalMachine *state) {
   assert(state->next == 0);
 
-  state->next = g_vm.private_state_stack_stack;
-  g_vm.private_state_stack_stack = state;
+  state->next = m_private_state_stack_stack;
+  m_private_state_stack_stack = state;
 }
 
 void
-refalrts::vm::StateRefalMachine::free() {
+refalrts::VM::free_states_stack() {
   StateRefalMachine *next;
 
-  while (g_vm.private_state_stack_free != 0) {
-    next = g_vm.private_state_stack_free->next;
-    delete g_vm.private_state_stack_free;
-    g_vm.private_state_stack_free = next;
+  while (m_private_state_stack_free != 0) {
+    next = m_private_state_stack_free->next;
+    delete m_private_state_stack_free;
+    m_private_state_stack_free = next;
   }
 
-  while (g_vm.private_state_stack_stack != 0) {
-    next = g_vm.private_state_stack_stack->next;
-    delete g_vm.private_state_stack_stack;
-    g_vm.private_state_stack_stack = next;
+  while (m_private_state_stack_stack != 0) {
+    next = m_private_state_stack_stack->next;
+    delete m_private_state_stack_stack;
+    m_private_state_stack_stack = next;
   }
 }
 
-refalrts::FnResult refalrts::vm::run() {
+refalrts::FnResult refalrts::VM::run() {
   RefalFunction *go = RefalFunction::lookup(0, 0, "GO");
 
   if (! go) {
@@ -3724,10 +3693,10 @@ refalrts::FnResult refalrts::vm::run() {
     { icNextStep, 0, 0, 0 }
   };
 
-  StateRefalMachine *start_state = StateRefalMachine::alloc();
+  StateRefalMachine *start_state = states_stack_alloc();
 
   start_state->callee = 0;
-  start_state->begin = & g_vm.last_marker; /* нужно для icSetResArgBegin в startup_rasl */
+  start_state->begin = & m_last_marker; /* нужно для icSetResArgBegin в startup_rasl */
   start_state->end = 0;
   start_state->rasl = startup_rasl;
   start_state->functions = entry_point;
@@ -3737,7 +3706,7 @@ refalrts::FnResult refalrts::vm::run() {
   start_state->res = 0;
   start_state->trash_prev = 0;
   start_state->stack_top = 0;
-  StateRefalMachine::push(start_state);
+  states_stack_push(start_state);
 
   static const RASLCommand set_state[] = {
     { icPopState, 0, 0, 0 },
@@ -3751,7 +3720,7 @@ refalrts::FnResult refalrts::vm::run() {
       print_error_message(dump_stream(), res);
     }
 
-    make_dump(g_vm.error_begin, g_vm.error_end);
+    make_dump(m_error_begin, m_error_end);
   }
 
   return res;
@@ -3779,7 +3748,7 @@ void print_indent(FILE *output, int level) {
 
 } // unnamed namespace
 
-void refalrts::vm::print_seq(
+void refalrts::VM::print_seq(
   FILE *output, refalrts::Iter begin, refalrts::Iter end,
   bool multiline, unsigned max_node
 ) {
@@ -4009,14 +3978,12 @@ void refalrts::vm::print_seq(
   fprintf(output, "\n");
 }
 
-void refalrts::vm::make_dump(refalrts::Iter begin, refalrts::Iter end) {
-  using refalrts::vm::dump_stream;
-
-  fprintf(dump_stream(), "\nSTEP NUMBER %u\n", g_vm.step_counter);
+void refalrts::VM::make_dump(refalrts::Iter begin, refalrts::Iter end) {
+  fprintf(dump_stream(), "\nSTEP NUMBER %u\n", m_step_counter);
   fprintf(dump_stream(), "\nERROR EXPRESSION:\n");
   print_seq(dump_stream(), begin, end);
   fprintf(dump_stream(), "VIEW FIELD:\n");
-  print_seq(dump_stream(), & g_vm.first_marker, & g_vm.last_marker);
+  print_seq(dump_stream(), & m_first_marker, & m_last_marker);
 
 #ifdef DUMP_FREE_LIST
 
@@ -4033,7 +4000,7 @@ void refalrts::vm::make_dump(refalrts::Iter begin, refalrts::Iter end) {
   fflush(dump_stream());
 }
 
-FILE *refalrts::vm::dump_stream() {
+FILE *refalrts::VM::dump_stream() {
 #ifdef DUMP_FILE
 
   static FILE *dump_file = 0;
@@ -4057,9 +4024,9 @@ FILE *refalrts::vm::dump_stream() {
 #endif // ifdef DUMP_FILE
 }
 
-void refalrts::vm::free_view_field() {
-  refalrts::Iter begin = g_vm.first_marker.next;
-  refalrts::Iter end = & g_vm.last_marker;
+void refalrts::VM::free_view_field() {
+  refalrts::Iter begin = m_first_marker.next;
+  refalrts::Iter end = & m_last_marker;
 
   if (begin != end) {
     end = end->prev;
@@ -4071,7 +4038,7 @@ void refalrts::vm::free_view_field() {
   }
 
 #ifndef DONT_PRINT_STATISTICS
-  fprintf(stderr, "Step count %d\n", g_vm.step_counter);
+  fprintf(stderr, "Step count %d\n", m_step_counter);
 #endif // ifndef DONT_PRINT_STATISTICS
 }
 
@@ -4124,7 +4091,7 @@ enum { cMaxLen = 1024 };
 void close_out(FILE*);
 
 class VariableDebugTable {
-  vm::Stack<Iter> *m_context;
+  VM::Stack<Iter> *m_context;
   const StringItem *m_strings;
   const RASLCommand *m_first;
   const RASLCommand *m_last;
@@ -4149,7 +4116,7 @@ public:
   void print(FILE *out);
   void print_var(const char *var_name, FILE *out);
   void set_string_items(const StringItem *items);
-  void set_context(vm::Stack<Iter>& cont);
+  void set_context(VM::Stack<Iter>& cont);
 };
 
 class TracedFunctionTable {
@@ -4362,7 +4329,7 @@ void refalrts::debugger::VariableDebugTable::print(FILE *out) {
     refalrts::Iter var_begin = 0;
     refalrts::Iter var_end = 0;
     variable_bounds(var_begin, var_end, var_name[0], it->bracket);
-    vm::print_seq(out, var_begin, var_end, false);
+    VM::print_seq(out, var_begin, var_end, false);
   }
   fprintf(
     out,
@@ -4384,7 +4351,7 @@ void refalrts::debugger::VariableDebugTable::print_var(
     refalrts::Iter var_begin = 0;
     refalrts::Iter var_end = 0;
     variable_bounds(var_begin, var_end, var_name[0], it->second);
-    vm::print_seq(out, var_begin, var_end, false);
+    VM::print_seq(out, var_begin, var_end, false);
   }
 }
 
@@ -4395,7 +4362,7 @@ void refalrts::debugger::VariableDebugTable::set_string_items(
 }
 
 void refalrts::debugger::VariableDebugTable::set_context(
-  vm::Stack<Iter> &cont
+  VM::Stack<Iter> &cont
 ) {
   m_context = &cont;
 }
@@ -4741,7 +4708,7 @@ bool refalrts::debugger::RefalDebugger::next_cond(Iter begin) {
 bool refalrts::debugger::RefalDebugger::run_cond(RefalFunction *callee) {
   m_dot = s_RUN;
   bool stop = break_set.is_breakpoint(
-    refalrts::g_vm.step_counter, callee == 0 ? "" : callee->name.name
+    refalrts::g_vm.step_counter(), callee == 0 ? "" : callee->name.name
   );
   if (stop) {
     printf("stopped on function breakpoint\n");
@@ -4750,9 +4717,8 @@ bool refalrts::debugger::RefalDebugger::run_cond(RefalFunction *callee) {
 }
 
 bool refalrts::debugger::RefalDebugger::step_cond() {
-  using namespace refalrts::vm;
-  bool scond = (g_vm.step_counter == m_step_numb);
-  m_step_numb = g_vm.step_counter;
+  bool scond = (g_vm.step_counter() == m_step_numb);
+  m_step_numb = g_vm.step_counter();
   m_dot = s_STEP;
   if (scond) {
     printf("stopped on step\n");
@@ -4782,7 +4748,7 @@ void refalrts::debugger::RefalDebugger::debug_trace(
     print_callee_option(begin, end, trace_out);
     fprintf(trace_out, "\n");
     fprintf(trace_out, "Traced call:   ");
-    vm::print_seq(trace_out, begin, end, false);
+    VM::print_seq(trace_out, begin, end, false);
     fprintf(
       trace_out, "//==================================================\n"
     );
@@ -4893,7 +4859,7 @@ void refalrts::debugger::RefalDebugger::print_callee_option(
     callee_end = callee->link_info;
   }
 
-  vm::print_seq(out, callee, callee_end, false);
+  VM::print_seq(out, callee, callee_end, false);
 }
 
 void refalrts::debugger::RefalDebugger::print_arg_option(
@@ -4905,12 +4871,12 @@ void refalrts::debugger::RefalDebugger::print_arg_option(
   Iter callee = 0;
   tvar_left(callee, begin, end);
 
-  vm::print_seq(out, begin, end, false);
+  VM::print_seq(out, begin, end, false);
 }
 
 void refalrts::debugger::RefalDebugger::print_res_option(FILE *out) {
   if (m_res_begin != 0 && m_res_end != 0) {
-    vm::print_seq(out, m_res_begin->next, m_res_end->prev, false);
+    VM::print_seq(out, m_res_begin->next, m_res_end->prev, false);
   } else {
     fprintf(out, "[NONE]\n");
   }
@@ -4950,7 +4916,6 @@ bool str_equal(const char *lhs, const char *rhs) {
 refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
   refalrts::Iter begin, refalrts::Iter end
 ) {
-  using namespace refalrts::vm;
   char debcmd[16] = {0};
   char strparam[cMaxLen] = {0};
   for ( ; ; ) {
@@ -4983,7 +4948,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       int step_lim = 0;
       ok = fscanf(m_in, "%d", &step_lim) == 1;
       if (ok) {
-        break_set.add_breakpoint(g_vm.step_counter+step_lim);
+        break_set.add_breakpoint(g_vm.step_counter()+step_lim);
       }
     } else if (str_equal(debcmd, s_MEMORYLIMIT)) {
       ok = fscanf(m_in, "%u", &m_memory_limit) == 1;
@@ -5010,18 +4975,18 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       || str_equal(debcmd, s_STEP)
       || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_STEP))
     ) {
-      m_step_numb = g_vm.step_counter+1;
+      m_step_numb = g_vm.step_counter()+1;
       m_dot = s_STEP;
       break;
     } else if (str_equal(debcmd, s_Q) || str_equal(debcmd, s_QUIT)) {
-      g_vm.ret_code = 0;
+      g_vm.set_return_code(0);
       return cExit;
     } else if (
       str_equal(debcmd, s_N)
       || str_equal(debcmd, s_NEXT)
       || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_NEXT))
     ) {
-      m_next_expr = g_vm.stack_ptr;
+      m_next_expr = g_vm.stack_ptr();
       m_dot = s_NEXT;
       break;
     } else if (str_equal(debcmd, s_VARS)) {
@@ -5037,7 +5002,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       if (str_equal(strparam, s_ARG)) {
         print_arg_option(begin, end, out);
       } else if (str_equal(strparam, s_CALL)) {
-        print_seq(out, begin, end, true);
+        VM::print_seq(out, begin, end, true);
       } else if (str_equal(strparam, s_CALLEE)) {
         print_callee_option(begin, end, out);
       } else if (str_equal(strparam, s_RES)) {
@@ -5074,7 +5039,7 @@ refalrts::debugger::RefalDebugger::handle_function_call(
     if (is_debug_stop(begin, callee)) {
       printf(
         "Step #%d; Function <%s ...>\n",
-        refalrts::g_vm.step_counter, callee == 0 ? "" : callee->name.name
+        refalrts::g_vm.step_counter(), callee == 0 ? "" : callee->name.name
       );
       if (debugger_loop(begin, end) == refalrts::cExit) {
         return cExit;
@@ -5108,10 +5073,10 @@ refalrts::FnResult refalrts::recursive_call_main_loop() {
   const  refalrts::RASLCommand rasl[] = {
     { refalrts::icNextStep,0,0,0},
   };
-  return refalrts::vm::main_loop(rasl);
+  return refalrts::g_vm.main_loop(rasl);
 }
 
-refalrts::FnResult refalrts::vm::main_loop(const RASLCommand *rasl) {
+refalrts::FnResult refalrts::VM::main_loop(const RASLCommand *rasl) {
   RefalFunction *callee = 0;
   Iter begin = 0;
   Iter end = 0;
@@ -5163,7 +5128,7 @@ JUMP_FROM_SCALE:
     switch(rasl->cmd) {
       case icPushState:
         {
-          StateRefalMachine *cur_state = StateRefalMachine::alloc();
+          StateRefalMachine *cur_state = states_stack_alloc();
           cur_state->callee = callee;
           cur_state->begin = begin; /* нужно для icSetResArgBegin в startup_rasl */
           cur_state->end = end;
@@ -5177,13 +5142,13 @@ JUMP_FROM_SCALE:
           cur_state->res = res;
           cur_state->trash_prev = trash_prev;
           cur_state->stack_top = stack_top;
-          StateRefalMachine::push(cur_state);
+          states_stack_push(cur_state);
         }
         break;
 
       case icPopState:
         {
-          StateRefalMachine *prev_state = StateRefalMachine::pop();
+          StateRefalMachine *prev_state = states_stack_pop();
           callee = prev_state->callee;
           begin = prev_state->begin; /* нужно для icSetResArgBegin в startup_rasl */
           end = prev_state->end;
@@ -5197,7 +5162,7 @@ JUMP_FROM_SCALE:
           res = prev_state->res;
           trash_prev = prev_state->trash_prev;
           stack_top = prev_state->stack_top;
-          StateRefalMachine::free(prev_state);
+          states_stack_free(prev_state);
         }
         continue;  // пропускаем ++rasl в конце
 
@@ -5882,7 +5847,7 @@ JUMP_FROM_SCALE:
         break;
 
       case icPushStack:
-        ::refalrts::vm::push_stack(elem);
+        push_stack(elem);
         break;
 
       case icSpliceElem:
@@ -5919,10 +5884,10 @@ JUMP_FROM_SCALE:
       case icNextStep:
         {
           profiler::stop_function();
-          ++ g_vm.step_counter;
+          ++ m_step_counter;
 
 #ifdef STEP_LIMIT
-          if (g_vm.step_counter >= STEP_LIMIT) {
+          if (m_step_counter >= STEP_LIMIT) {
             return cStepLimit;
           }
 #endif // ifdef STEP_LIMIT
@@ -5935,11 +5900,11 @@ JUMP_FROM_SCALE:
           assert(! empty_stack());
           end = pop_stack();
 
-          g_vm.error_begin = begin;
-          g_vm.error_end = end;
+          m_error_begin = begin;
+          m_error_end = end;
 
 #if SHOW_DEBUG
-          if (g_vm.step_counter >= (unsigned) SHOW_DEBUG) {
+          if (m_step_counter >= (unsigned) SHOW_DEBUG) {
             make_dump(begin, end);
           }
 #endif // if SHOW_DEBUG
@@ -5988,7 +5953,7 @@ JUMP_FROM_SCALE:
             }
 
             if (res == cSuccess) {
-              ++ g_vm.step_counter;
+              ++ m_step_counter;
               function = next(begin);
               assert(cDataFunction == function->tag);
               callee = function->function_info;
@@ -6170,8 +6135,7 @@ int main(int argc, char **argv) {
   }
 #endif // ifdef ENABLE_DEBUGGER
 
-  refalrts::g_vm.argc = argc;
-  refalrts::g_vm.argv = argv;
+  refalrts::g_vm.set_args(argc, argv);
 
   refalrts::FnResult res;
   try {
@@ -6187,7 +6151,7 @@ int main(int argc, char **argv) {
     }
 
     refalrts::profiler::start_profiler();
-    res = refalrts::vm::run();
+    res = refalrts::g_vm.run();
     fflush(stderr);
     fflush(stdout);
   } catch (refalrts::SwitchDefaultViolation& error) {
@@ -6203,12 +6167,12 @@ int main(int argc, char **argv) {
 
   refalrts::at_exit_ns::perform_at_exit();
   refalrts::profiler::end_profiler();
-  refalrts::vm::free_view_field();
+  refalrts::g_vm.free_view_field();
   refalrts::g_allocator.free_memory();
   refalrts::dynamic::free_idents_table();
   refalrts::dynamic::free_funcs_table();
   refalrts::dynamic::cleanup_module();
-  refalrts::vm::StateRefalMachine::free();
+  refalrts::g_vm.free_states_stack();
 
   fflush(stdout);
 
@@ -6223,7 +6187,7 @@ int main(int argc, char **argv) {
       return 102;
 
     case refalrts::cExit:
-      return refalrts::g_vm.ret_code;
+      return refalrts::g_vm.get_return_code();
 
     case refalrts::cStepLimit:
       return 103;
