@@ -1,12 +1,11 @@
 #include <stdlib.h>
+#include <memory>
 
 #include "refalrts-vm.h"
 #include "refalrts-utils.h"
 
 //FROM refalrts-allocator
 #include "refalrts-allocator.h"
-//FROM refalrts-debugger
-#include "refalrts-debugger.h"
 //FROM refalrts-dynamic
 #include "refalrts-dynamic.h"
 //FROM refalrts-profiler
@@ -549,6 +548,35 @@ void refalrts::VM::free_view_field() {
 
 
 //==============================================================================
+// Фальшивый отладчик
+//==============================================================================
+
+class refalrts::VM::NullDebugger: public refalrts::VM::Debugger {
+public:
+  virtual void set_context(Stack<Iter>& /*context*/) {
+    /* пусто */
+  }
+
+  virtual void set_string_items(const StringItem * /*items*/) {
+    /* пусто */
+  }
+  virtual void insert_var(const RASLCommand * /*next*/) {
+    /* пусто */
+  }
+
+  virtual FnResult handle_function_call(
+    Iter /*begin*/, Iter /*end*/, RefalFunction * /*callee*/
+  ) {
+    return cSuccess;
+  }
+};
+
+refalrts::VM::Debugger*
+refalrts::VM::create_null_debugger(refalrts::VM * /*vm*/) {
+  return new NullDebugger;
+}
+
+//==============================================================================
 // Интерпретатор
 //==============================================================================
 
@@ -564,9 +592,9 @@ refalrts::FnResult refalrts::VM::main_loop(const RASLCommand *rasl) {
   Stack<Iter> context;
 
 #ifdef ENABLE_DEBUGGER
-  refalrts::debugger::RefalDebugger debugger;
-  debugger.var_debug_table.set_context(context);
-  debugger.var_debug_table.set_string_items(strings);
+  std::auto_ptr<Debugger> debugger(m_create_debugger(this));
+  debugger->set_context(context);
+  debugger->set_string_items(strings);
 #endif // ifdef ENABLE_DEBUGGER
 
   Iter res = 0;
@@ -654,7 +682,7 @@ JUMP_FROM_SCALE:
           numbers = descr->numbers;
           strings = descr->strings;
 #ifdef ENABLE_DEBUGGER
-          debugger.var_debug_table.set_string_items(strings);
+          debugger->set_string_items(strings);
 #endif // ifdef ENABLE_DEBUGGER
         }
         break;
@@ -1127,13 +1155,13 @@ JUMP_FROM_SCALE:
 
       case icVariableDebugOffset:
 #ifdef ENABLE_DEBUGGER
-        debugger.var_debug_table.insert_var(rasl);
+        debugger->insert_var(rasl);
 #endif  // ifdef ENABLE_DEBUGGER
         break;
 
       case icResetAllocator:
 #ifdef ENABLE_DEBUGGER
-        if (debugger.handle_function_call(begin, end, callee) == cExit) {
+        if (debugger->handle_function_call(begin, end, callee) == cExit) {
           return cExit;
         }
 #endif  // ifdef ENABLE_DEBUGGER
@@ -1394,7 +1422,7 @@ JUMP_FROM_SCALE:
             refalrts::Iter head = function->link_info;
 
 #ifdef ENABLE_DEBUGGER
-            if (debugger.handle_function_call(begin, end, 0) == cExit) {
+            if (debugger->handle_function_call(begin, end, 0) == cExit) {
               return cExit;
             }
 #endif  // ifdef ENABLE_DEBUGGER
@@ -1494,7 +1522,7 @@ JUMP_FROM_SCALE:
       case icPerformNative:
         {
 #ifdef ENABLE_DEBUGGER
-          if (debugger.handle_function_call(begin, end, callee) == cExit) {
+          if (debugger->handle_function_call(begin, end, callee) == cExit) {
             return cExit;
           }
 #endif  // ifdef ENABLE_DEBUGGER

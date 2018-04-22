@@ -72,7 +72,7 @@ public:
   void print(FILE *out = stdout);
 };
 
-class RefalDebugger {
+class RefalDebugger: public VM::Debugger {
   const char *m_dot;
   unsigned m_step_numb;
   unsigned m_memory_limit;
@@ -137,9 +137,25 @@ public:
   static int parse2hex (unsigned char *in);
   static bool quotation_mark_parse(char *from, char *out);
 
-  refalrts::FnResult handle_function_call(
+  virtual void set_context(VM::Stack<Iter>& context) {
+    var_debug_table.set_context(context);
+  }
+
+  virtual void set_string_items(const StringItem *items) {
+    var_debug_table.set_string_items(items);
+  }
+
+  virtual void insert_var(const RASLCommand *next) {
+    var_debug_table.insert_var(next);
+  }
+
+  virtual refalrts::FnResult handle_function_call(
     Iter begin, Iter end, RefalFunction *callee
   );
+
+  static VM::Debugger *create(VM * /*vm*/) {
+    return new RefalDebugger();
+  }
 };
 
 int find_debugger_flag(int argc, char **argv);
