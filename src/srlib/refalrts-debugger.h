@@ -80,12 +80,14 @@ class RefalDebugger: public VM::Debugger {
   Iter m_next_expr;
   Iter m_res_begin;
   Iter m_res_end;
+  VM *m_vm;
+
 public:
   VariableDebugTable var_debug_table;
   TracedFunctionTable func_trace_table;
   BreakpointSet break_set;
 
-  RefalDebugger()
+  RefalDebugger(VM *vm)
     : m_dot(s_STEP)
     , m_step_numb(0)
     , m_memory_limit(-1)
@@ -93,6 +95,7 @@ public:
     , m_next_expr(0)
     , m_res_begin(0)
     , m_res_end(0)
+    , m_vm(vm)
   {
     /* пусто */
   }
@@ -153,8 +156,8 @@ public:
     Iter begin, Iter end, RefalFunction *callee
   );
 
-  static VM::Debugger *create(VM * /*vm*/) {
-    return new RefalDebugger();
+  static VM::Debugger *create(VM * vm) {
+    return new RefalDebugger(vm);
   }
 };
 

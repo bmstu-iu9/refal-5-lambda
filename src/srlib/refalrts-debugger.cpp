@@ -519,7 +519,7 @@ void refalrts::debugger::close_out(FILE *out) {
 //  Класс отладчика
 
 bool refalrts::debugger::RefalDebugger::mem_cond() {
-  bool res = g_allocator.memory_use() > m_memory_limit;
+  bool res = m_vm->allocator()->memory_use() > m_memory_limit;
   if (res) {
     m_memory_limit = -1;
     printf("stopped on memory overflow\n");
@@ -540,7 +540,7 @@ bool refalrts::debugger::RefalDebugger::next_cond(Iter begin) {
 bool refalrts::debugger::RefalDebugger::run_cond(RefalFunction *callee) {
   m_dot = s_RUN;
   bool stop = break_set.is_breakpoint(
-    refalrts::g_vm.step_counter(), callee == 0 ? "" : callee->name.name
+    m_vm->step_counter(), callee == 0 ? "" : callee->name.name
   );
   if (stop) {
     printf("stopped on function breakpoint\n");
@@ -549,8 +549,8 @@ bool refalrts::debugger::RefalDebugger::run_cond(RefalFunction *callee) {
 }
 
 bool refalrts::debugger::RefalDebugger::step_cond() {
-  bool scond = (g_vm.step_counter() == m_step_numb);
-  m_step_numb = g_vm.step_counter();
+  bool scond = (m_vm->step_counter() == m_step_numb);
+  m_step_numb = m_vm->step_counter();
   m_dot = s_STEP;
   if (scond) {
     printf("stopped on step\n");
@@ -780,7 +780,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       int step_lim = 0;
       ok = fscanf(m_in, "%d", &step_lim) == 1;
       if (ok) {
-        break_set.add_breakpoint(g_vm.step_counter()+step_lim);
+        break_set.add_breakpoint(m_vm->step_counter()+step_lim);
       }
     } else if (str_equal(debcmd, s_MEMORYLIMIT)) {
       ok = fscanf(m_in, "%u", &m_memory_limit) == 1;
@@ -807,18 +807,18 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       || str_equal(debcmd, s_STEP)
       || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_STEP))
     ) {
-      m_step_numb = g_vm.step_counter()+1;
+      m_step_numb = m_vm->step_counter()+1;
       m_dot = s_STEP;
       break;
     } else if (str_equal(debcmd, s_Q) || str_equal(debcmd, s_QUIT)) {
-      g_vm.set_return_code(0);
+      m_vm->set_return_code(0);
       return cExit;
     } else if (
       str_equal(debcmd, s_N)
       || str_equal(debcmd, s_NEXT)
       || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_NEXT))
     ) {
-      m_next_expr = g_vm.stack_ptr();
+      m_next_expr = m_vm->stack_ptr();
       m_dot = s_NEXT;
       break;
     } else if (str_equal(debcmd, s_VARS)) {
@@ -871,7 +871,7 @@ refalrts::debugger::RefalDebugger::handle_function_call(
     if (is_debug_stop(begin, callee)) {
       printf(
         "Step #%d; Function <%s ...>\n",
-        refalrts::g_vm.step_counter(), callee == 0 ? "" : callee->name.name
+        m_vm->step_counter(), callee == 0 ? "" : callee->name.name
       );
       if (debugger_loop(begin, end) == refalrts::cExit) {
         return cExit;
