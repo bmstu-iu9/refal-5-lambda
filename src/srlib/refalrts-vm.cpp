@@ -1560,3 +1560,7 @@ JUMP_FROM_SCALE:
     ++rasl;
   }
 }
+
+void refalrts::VM::read_counters(unsigned long counters[]) {
+  counters[cPerformanceCounter_TotalSteps] = step_counter();
+}

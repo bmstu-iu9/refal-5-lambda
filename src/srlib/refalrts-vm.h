@@ -177,6 +177,8 @@ public:
     }
     m_create_debugger = debugger_factory;
   }
+
+  void read_counters(unsigned long counters[]);
 };
 
 inline VM::VM()

@@ -63,6 +63,8 @@ public:
     return & m_last_marker;
   }
 
+  void read_counters(unsigned long counters[]);
+
 private:
   bool create_nodes();
 };

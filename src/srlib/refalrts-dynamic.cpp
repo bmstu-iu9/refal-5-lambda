@@ -540,3 +540,8 @@ void refalrts::Dynamic::cleanup_module() {
     m_tables = next;
   }
 }
+
+void refalrts::Dynamic::read_counters(unsigned long counters[]) {
+  counters[cPerformanceCounter_IdentsAllocated] =
+    static_cast<unsigned long>(idents_count());
+}

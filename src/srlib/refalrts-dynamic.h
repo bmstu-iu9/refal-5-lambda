@@ -158,6 +158,7 @@ struct Dynamic {
 
   bool seek_rasl_signature(FILE *stream);
   const char *read_asciiz(FILE *stream);
+  void read_counters(unsigned long counters[]);
 };
 
 extern struct Dynamic g_dynamic;

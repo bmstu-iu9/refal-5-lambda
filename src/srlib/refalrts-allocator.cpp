@@ -129,3 +129,8 @@ void refalrts::Allocator::Pool::free() {
     ::free(p);
   }
 }
+
+void refalrts::Allocator::read_counters(unsigned long counters[]) {
+  counters[cPerformanceCounter_HeapSize] =
+    static_cast<unsigned long>(memory_use() * sizeof(Node));
+}

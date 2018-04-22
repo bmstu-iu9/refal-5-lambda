@@ -1,11 +1,7 @@
-#include "refalrts-profiler.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-//FROM refalrts-allocator
-#include "refalrts-allocator.h"
-//FROM refalrts-dynamic
-#include "refalrts-dynamic.h"
-//FROM refalrts-vm
-#include "refalrts-vm.h"
+#include "refalrts-profiler.h"
 
 
 //==============================================================================
@@ -411,11 +407,6 @@ void refalrts::Profiler::read_counters(unsigned long counters[]) {
     total_pattern_match_time + total_building_result_time;
   counters[cPerformanceCounter_PatternMatchTime] = total_pattern_match_time;
   counters[cPerformanceCounter_BuildResultTime] = total_building_result_time;
-  counters[cPerformanceCounter_TotalSteps] = ::refalrts::g_vm.step_counter();
-  counters[cPerformanceCounter_HeapSize] =
-    static_cast<unsigned long>(
-      ::refalrts::g_allocator.memory_use() * sizeof(Node)
-    );
   counters[cPerformanceCounter_TEvarCopyTime] = basic_tevar_copy_time;
   counters[cPerformanceCounter_RepeatTvarMatchTime] =
     basic_repeated_tvar_inside_ecycle;
@@ -434,7 +425,4 @@ void refalrts::Profiler::read_counters(unsigned long counters[]) {
   counters[cPerformanceCounter_RuntimeTime] = basic_runtime_time;
   counters[cPerformanceCounter_NativeTime] = basic_native_time;
   counters[cPerformanceCounter_ContextCopyTime] = basic_context_copy_time;
-
-  counters[cPerformanceCounter_IdentsAllocated] =
-    static_cast<unsigned long>(::refalrts::g_dynamic.idents_count());
 }

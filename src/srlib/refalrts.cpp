@@ -1527,6 +1527,9 @@ unsigned long refalrts::ticks_per_second() {
 
 void refalrts::read_performance_counters(unsigned long counters[]) {
   refalrts::g_profiler.read_counters(counters);
+  refalrts::g_vm.read_counters(counters);
+  refalrts::g_allocator.read_counters(counters);
+  refalrts::g_dynamic.read_counters(counters);
 }
 
 void refalrts::stop_sentence() {
