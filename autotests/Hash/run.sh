@@ -18,6 +18,11 @@ run_all_tests() {
     -f-DDONT_PRINT_STATISTICS
     -f-g
     refalrts
+    refalrts-allocator
+    refalrts-debugger
+    refalrts-dynamic
+    refalrts-profiler
+    refalrts-vm
     refalrts-platform-POSIX
     refalrts-platform-specific
     --chmod-x-command="chmod +x"

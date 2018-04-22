@@ -91,7 +91,14 @@ goto :EOF
   if exist _test_prefix.exe-prefix erase _test_prefix.exe-prefix
   copy ..\..\src\srlib\Library.sref .
   ..\..\bin\srefc-core -o _test_prefix.exe-prefix %COMMON_SRFLAGS% ^
-    Library refalrts refalrts-platform-specific 2>__error.txt
+    Library ^
+    refalrts ^
+    refalrts-allocator ^
+    refalrts-debugger ^
+    refalrts-dynamic ^
+    refalrts-profiler ^
+    refalrts-vm ^
+    refalrts-platform-specific 2>__error.txt
   if not exist _test_prefix.exe-prefix (
     echo CAN'T CREATE COMMON PREFIX, SEE __error.txt
     exit /b 1

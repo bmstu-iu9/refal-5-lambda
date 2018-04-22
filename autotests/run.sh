@@ -217,6 +217,7 @@ run_test() {
     -f-DSTEP_LIMIT=1500
     -f-DMEMORY_LIMIT=1000
     -f-DIDENTS_LIMIT=200
+    -f-DENABLE_DEBUGGER
     -f-DDUMP_FILE=\\\"__dump.txt\\\"
     --log=__log.txt
     -f-DDONT_PRINT_STATISTICS
@@ -224,7 +225,15 @@ run_test() {
     --chmod-x-command="chmod +x"
   )
   SRFLAGS_PREF=--prefix=_test_prefix
-  SRFLAGS_NAT="refalrts refalrts-platform-specific"
+  SRFLAGS_NAT="
+    refalrts
+    refalrts-allocator
+    refalrts-debugger
+    refalrts-dynamic
+    refalrts-profiler
+    refalrts-vm
+    refalrts-platform-specific
+  "
   SREF=$1
   SUFFIX=`echo ${SREF%.*} | sed 's/[^.]*\(\.[^.]*\)*/\1/'`
   run_test_aux$SUFFIX $1

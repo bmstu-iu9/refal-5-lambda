@@ -70,7 +70,17 @@ prepare_common() {
 (
   CSOURCES="Library Hash"
   RSOURCES="LibraryEx GetOpt"
-  RT="refalrts refalrts-platform-specific refalrts-platform-POSIX"
+  RT="
+    refalrts
+    refalrts-allocator
+    refalrts-debugger
+    refalrts-dynamic
+    refalrts-platform-specific
+    refalrts-profiler
+    refalrts-vm
+    refalrts-platform-specific
+    refalrts-platform-POSIX
+  "
 
   mkdir -p ../../srlib/src
   cp LICENSE ../../srlib

@@ -5,8 +5,6 @@ goto :EOF
 :MAIN
 setlocal
   call ..\scripts\load-config.bat || exit /b 1
-  set RUNTIME=../src/srlib/refalrts.cpp ^
-    ../src/srlib/platform-Windows/refalrts-platform-specific.cpp
   if {%1}=={} (
     for %%s in (*.sref *.ref) do call :RUN_TEST %%s || exit /b 1
     call :RUN_ALL_TESTS_DIR || exit /b 1
@@ -73,11 +71,18 @@ setlocal
     -f-DSTEP_LIMIT=1500 ^
     -f-DMEMORY_LIMIT=1000 ^
     -f-DIDENTS_LIMIT=200 ^
+    -f-DENABLE_DEBUGGER ^
     %DUMP_FILE_NAME_OPTION% ^
     --log=__log.txt ^
     -f-DDONT_PRINT_STATISTICS
   set SRFLAGS_PREF=--prefix=_test_prefix
-  set SRFLAGS_NAT=refalrts refalrts-platform-specific
+  set SRFLAGS_NAT=refalrts ^
+    refalrts-allocator ^
+    refalrts-debugger ^
+    refalrts-dynamic ^
+    refalrts-profiler ^
+    refalrts-vm ^
+    refalrts-platform-specific
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
 endlocal
 goto :EOF

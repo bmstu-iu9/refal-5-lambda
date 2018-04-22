@@ -1,0 +1,1534 @@
+#include <stdlib.h>
+
+#include "refalrts-vm.h"
+#include "refalrts-utils.h"
+
+//FROM refalrts-allocator
+#include "refalrts-allocator.h"
+//FROM refalrts-debugger
+#include "refalrts-debugger.h"
+//FROM refalrts-dynamic
+#include "refalrts-dynamic.h"
+//FROM refalrts-profiler
+#include "refalrts-profiler.h"
+
+#include <assert.h>
+
+
+//------------------------------------------------------------------------------
+// Инициализация головного узла статического ящика
+//------------------------------------------------------------------------------
+
+refalrts::Iter refalrts::VM::initialize_swap_head(refalrts::Iter head) {
+  assert(cDataFunction == head->tag);
+  assert(RefalSwap::run == head->function_info->rasl);
+
+  RefalSwap *swap = static_cast<RefalSwap*>(head->function_info);
+  splice_elem(m_left_swap_ptr, head);
+  head->tag = cDataSwapHead;
+  swap->next_head = m_left_swap_ptr;
+
+  m_left_swap_ptr = head;
+  return m_left_swap_ptr;
+}
+
+//------------------------------------------------------------------------------
+// Прочие операции
+//------------------------------------------------------------------------------
+
+const char* refalrts::VM::arg(unsigned int param) {
+  if (param < m_argc) {
+    return m_argv[param];
+  } else {
+    return "";
+  }
+}
+
+//==============================================================================
+// Виртуальная машина
+//==============================================================================
+
+template <typename T>
+void refalrts::VM::Stack<T>::reserve(size_t size) {
+  assert (size > 0);
+
+  if (m_capacity < size) {
+    T *new_memory = new T[size];
+    delete[] m_memory;
+    m_memory = new_memory;
+    m_capacity = size;
+  }
+  m_size = size;
+  for (size_t i = 0; i < m_size; ++i) {
+    m_memory[i] = T();
+  }
+}
+
+void refalrts::VM::push_stack(refalrts::Iter call_bracket) {
+  call_bracket->link_info = m_stack_ptr;
+  m_stack_ptr = call_bracket;
+}
+
+refalrts::Iter refalrts::VM::pop_stack() {
+  refalrts::Iter res = m_stack_ptr;
+  m_stack_ptr = m_stack_ptr->link_info;
+  return res;
+}
+
+bool refalrts::VM::empty_stack() {
+  return (m_stack_ptr == 0);
+}
+
+namespace {
+
+void print_error_message(
+  refalrts::VM *vm, FILE *stream, refalrts::FnResult res
+) {
+  switch(res) {
+    case refalrts::cRecognitionImpossible:
+      fprintf(stream, "\nRECOGNITION IMPOSSIBLE\n\n");
+      break;
+
+    case refalrts::cNoMemory:
+      fprintf(stream, "\nNO MEMORY\n\n");
+      break;
+
+    case refalrts::cStepLimit:
+      fprintf(
+        stream, "\nSTEP LIMIT REACHED (%u)\n\n", vm->step_counter()
+      );
+      break;
+
+    case refalrts::cIdentTableLimit:
+      fprintf(
+        stream, "\nIDENTS TABLE OVERFLOW (max %lu)\n\n",
+        static_cast<unsigned long>(refalrts::g_dynamic.idents_count())
+      );
+      break;
+
+    default:
+      fprintf(stream, "\nUNKNOWN ERROR\n\n");
+      refalrts_switch_default_violation(res);
+  }
+}
+
+}
+
+
+refalrts::VM::StateRefalMachine*
+refalrts::VM::states_stack_alloc() {
+  if (m_private_state_stack_free != 0) {
+    StateRefalMachine *res = m_private_state_stack_free;
+    m_private_state_stack_free = m_private_state_stack_free->next;
+    res->next = 0;
+    return res;
+  } else {
+    return new StateRefalMachine;
+  }
+}
+
+void
+refalrts::VM::states_stack_free(refalrts::VM::StateRefalMachine *state) {
+  assert(state->next == 0);
+
+  state->next = m_private_state_stack_free;
+  m_private_state_stack_free = state;
+}
+
+refalrts::VM::StateRefalMachine*
+refalrts::VM::states_stack_pop() {
+  assert(m_private_state_stack_stack != 0);
+
+  StateRefalMachine *res = m_private_state_stack_stack;
+  m_private_state_stack_stack = m_private_state_stack_stack->next;
+  res->next = 0;
+  return res;
+}
+
+void
+refalrts::VM::states_stack_push(refalrts::VM::StateRefalMachine *state) {
+  assert(state->next == 0);
+
+  state->next = m_private_state_stack_stack;
+  m_private_state_stack_stack = state;
+}
+
+void
+refalrts::VM::free_states_stack() {
+  StateRefalMachine *next;
+
+  while (m_private_state_stack_free != 0) {
+    next = m_private_state_stack_free->next;
+    delete m_private_state_stack_free;
+    m_private_state_stack_free = next;
+  }
+
+  while (m_private_state_stack_stack != 0) {
+    next = m_private_state_stack_stack->next;
+    delete m_private_state_stack_stack;
+    m_private_state_stack_stack = next;
+  }
+}
+
+refalrts::FnResult refalrts::VM::run() {
+  RefalFunction *go = RefalFunction::lookup(0, 0, "GO");
+
+  if (! go) {
+    go = RefalFunction::lookup(0, 0, "Go");
+  }
+
+  if (! go) {
+    fprintf(stderr, "INTERNAL ERROR: entry point (Go or GO) is not found\n");
+    exit(158);
+  }
+
+  FunctionTableItem entry_point[1] = { FunctionTableItem(go) };
+
+  // Формируем вызов <Go#0:0> в поле зрения
+  static const RASLCommand startup_rasl[] = {
+    { icIssueMemory, 3, 0, 0 },
+    { refalrts::icResetAllocator, 0, 0, 0 },
+    { refalrts::icSetResArgBegin, 0, 0, 0 },
+    { icAllocateBracket, 0, ibOpenCall, 0 },
+    { icAllocateName, 0, 0, 1 },
+    { icAllocateBracket, 0, ibCloseCall, 2 },
+    { icSpliceTile, 0, 2, 0 },
+    { icPushStack, 0, 0, 2 },
+    { icPushStack, 0, 0, 0 },
+    { icNextStep, 0, 0, 0 }
+  };
+
+  StateRefalMachine *start_state = states_stack_alloc();
+
+  start_state->callee = 0;
+  start_state->begin = & m_last_marker; /* нужно для icSetResArgBegin в startup_rasl */
+  start_state->end = 0;
+  start_state->rasl = startup_rasl;
+  start_state->functions = entry_point;
+  start_state->idents = 0;
+  start_state->numbers = 0;
+  start_state->strings = 0;
+  start_state->res = 0;
+  start_state->trash_prev = 0;
+  start_state->stack_top = 0;
+  states_stack_push(start_state);
+
+  static const RASLCommand set_state[] = {
+    { icPopState, 0, 0, 0 },
+  };
+
+  FnResult res = main_loop(set_state);
+
+  if (res != cSuccess && res != cExit) {
+    print_error_message(this, stderr, res);
+    if (dump_stream() != stderr) {
+      print_error_message(this, dump_stream(), res);
+    }
+
+    make_dump(m_error_begin, m_error_end);
+  }
+
+  return res;
+}
+
+namespace {
+
+void print_indent(FILE *output, int level) {
+  enum { cPERIOD = 4 };
+  putc('\n', output);
+  if (level < 0) {
+    putc('!', output);
+    return;
+  }
+  for (int i = 0; i < level; ++i) {
+    // Каждые cPERIOD позиций вместо пробела ставим точку.
+    bool put_marker = ((i % cPERIOD) == (cPERIOD - 1));
+
+    const char cSpace = ' ';
+    const char cMarker = '.';
+
+    putc((put_marker ? cMarker : cSpace), output);
+  }
+}
+
+} // unnamed namespace
+
+void refalrts::VM::print_seq(
+  FILE *output, refalrts::Iter begin, refalrts::Iter end,
+  bool multiline, unsigned max_node
+) {
+  enum {
+    cStateView = 100,
+    cStateString,
+    cStateFinish
+  } state = cStateView;
+
+  int indent = 0;
+  bool after_bracket = false;
+  bool reset_after_bracket = true;
+
+
+  char space = (multiline) ? '\n' : ' ';
+
+  // TODO: while
+  for (
+    unsigned cur_node = 0;
+    (state != cStateFinish)
+    && ! refalrts::empty_seq(begin, end)
+    && cur_node <= max_node;
+    cur_node++
+  ) {
+
+    if (reset_after_bracket) {
+      after_bracket = false;
+      reset_after_bracket = false;
+    }
+
+    if (after_bracket) {
+      reset_after_bracket = true;
+    }
+
+    switch(state) {
+      case cStateView:
+        switch(begin->tag) {
+          case refalrts::cDataIllegal:
+            if (0 == begin->prev) {
+              fprintf(output, "[FIRST] ");
+            } else if (0 == begin->next) {
+              fprintf(output, "%c[LAST]", space);
+              state = cStateFinish;
+            } else {
+              fprintf(output, "%c[NONE]", space);
+            }
+            refalrts::move_left(begin, end);
+            continue;
+
+          case refalrts::cDataSwapHead:
+            {
+              const RefalFuncName& name = begin->function_info->name;
+              fprintf(
+                output, "\n\n*Swap %s#%u:%u:\n",
+                name.name, name.cookie1, name.cookie2
+              );
+              refalrts::move_left(begin, end);
+            }
+            continue;
+
+          case refalrts::cDataChar:
+            state = cStateString;
+            fprintf(output, "\'");
+            continue;
+
+          case refalrts::cDataNumber:
+            fprintf(output, "%u ", begin->number_info);
+            refalrts::move_left(begin, end);
+            continue;
+
+          case refalrts::cDataFunction:
+            {
+              const RefalFuncName& name = begin->function_info->name;
+              fprintf(
+                output, "&%s#%u:%u ", name.name, name.cookie1, name.cookie2
+              );
+              refalrts::move_left(begin, end);
+            }
+            continue;
+
+          case refalrts::cDataIdentifier:
+            fprintf(output, "#%s ", begin->ident_info->name());
+            refalrts::move_left(begin, end);
+            continue;
+
+          case refalrts::cDataOpenADT:
+            if (! after_bracket && multiline) {
+              print_indent(output, indent);
+            }
+            ++indent;
+            after_bracket = true;
+            reset_after_bracket = false;
+            fprintf(output, "[");
+            refalrts::move_left(begin, end);
+            continue;
+
+          case refalrts::cDataCloseADT:
+            --indent;
+            fprintf(output, "]");
+            refalrts::move_left(begin, end);
+            continue;
+
+          case refalrts::cDataOpenBracket:
+            if (! after_bracket && multiline) {
+              print_indent(output, indent);
+            }
+            ++indent;
+            after_bracket = true;
+            reset_after_bracket = false;
+            fprintf(output, "(");
+            refalrts::move_left(begin, end);
+            continue;
+
+          case refalrts::cDataCloseBracket:
+            --indent;
+            fprintf(output, ")");
+            refalrts::move_left(begin, end);
+            continue;
+
+          case refalrts::cDataOpenCall:
+            if (! after_bracket && multiline) {
+              print_indent(output, indent);
+            }
+            ++indent;
+            after_bracket = true;
+            reset_after_bracket = false;
+            fprintf(output, "<");
+            refalrts::move_left(begin, end);
+            continue;
+
+          case refalrts::cDataCloseCall:
+            --indent;
+            fprintf(output, ">");
+            refalrts::move_left(begin, end);
+            continue;
+
+          case refalrts::cDataFile:
+            fprintf(output, "*%p ", begin->file_info);
+            refalrts::move_left(begin, end);
+            continue;
+
+          case refalrts::cDataClosure:
+            if (! after_bracket && multiline) {
+              print_indent(output, indent);
+            }
+            ++indent;
+            after_bracket = true;
+            reset_after_bracket = false;
+            fprintf(output, "{");
+            begin = unwrap_closure(begin);
+            refalrts::move_left(begin, end);
+            continue;
+
+          case refalrts::cDataClosureHead:
+            fprintf(output, "[%d] ", begin->number_info);
+            refalrts::move_left(begin, end);
+            continue;
+
+          case refalrts::cDataUnwrappedClosure:
+            --indent;
+            fprintf(output, "}");
+            begin = wrap_closure(begin);
+            continue;
+
+          default:
+            refalrts_switch_default_violation(begin->tag);
+            // break;
+        }
+
+      case cStateString:
+        switch(begin->tag) {
+          case refalrts::cDataChar: {
+            unsigned char ch = static_cast<unsigned char>(begin->char_info);
+            switch(ch)
+              {
+                case '(': case ')':
+                case '<': case '>':
+                  fprintf(output, "\\%c", ch);
+                  break;
+
+                case '\n':
+                  fprintf(output, "\\n");
+                  break;
+
+                case '\t':
+                  fprintf(output, "\\t");
+                  break;
+
+                case '\\':
+                  fprintf(output, "\\\\");
+                  break;
+
+                case '\'':
+                  fprintf(output, "\\\'");
+                  break;
+
+                default:
+                  if (ch < '\x20') {
+                    fprintf(output, "\\x%02x", static_cast<int>(ch));
+                  } else {
+                    fprintf(output, "%c", ch);
+                  }
+                  break;
+              }
+              refalrts::move_left(begin, end);
+              continue;
+            }
+
+          default:
+            state = cStateView;
+            fprintf(output, "\' ");
+            continue;
+        }
+
+      case cStateFinish:
+        continue;
+
+      default:
+        refalrts_switch_default_violation(state);
+    }
+  }
+
+  if (cStateString == state) {
+    fprintf(output, "\'");
+  }
+
+  fprintf(output, "\n");
+}
+
+void refalrts::VM::make_dump(refalrts::Iter begin, refalrts::Iter end) {
+  fprintf(dump_stream(), "\nSTEP NUMBER %u\n", m_step_counter);
+  fprintf(dump_stream(), "\nERROR EXPRESSION:\n");
+  print_seq(dump_stream(), begin, end);
+  fprintf(dump_stream(), "VIEW FIELD:\n");
+  print_seq(dump_stream(), & m_first_marker, & m_last_marker);
+
+#ifdef DUMP_FREE_LIST
+
+  fprintf(dump_stream(), "\nFREE LIST:\n");
+  print_seq(
+    dump_stream(),
+    refalrts::g_allocator.first_marker(),
+    refalrts::g_allocator.last_marker()
+  );
+
+#endif // ifdef DUMP_FREE_LIST
+
+  fprintf(dump_stream(), "\nEnd dump\n");
+  fflush(dump_stream());
+}
+
+FILE *refalrts::VM::dump_stream() {
+#ifdef DUMP_FILE
+
+  static FILE *dump_file = 0;
+
+  if (dump_file == 0) {
+    // Необходимо открыть файл.
+    // Если файл не открывается, используем stderr
+    dump_file = fopen(DUMP_FILE, "wt");
+
+    if (dump_file == 0) {
+      dump_file = stderr;
+    }
+  }
+
+  return dump_file;
+
+#else // ifdef DUMP_FILE
+
+  return stderr;
+
+#endif // ifdef DUMP_FILE
+}
+
+void refalrts::VM::free_view_field() {
+  refalrts::Iter begin = m_first_marker.next;
+  refalrts::Iter end = & m_last_marker;
+
+  if (begin != end) {
+    end = end->prev;
+    refalrts::g_allocator.splice_to_freelist(begin, end);
+  } else {
+    /*
+      Поле зрения пустое -- его не нужно освобождать.
+    */;
+  }
+
+#ifndef DONT_PRINT_STATISTICS
+  fprintf(stderr, "Step count %d\n", m_step_counter);
+#endif // ifndef DONT_PRINT_STATISTICS
+}
+
+
+//==============================================================================
+// Интерпретатор
+//==============================================================================
+
+refalrts::FnResult refalrts::VM::main_loop(const RASLCommand *rasl) {
+  RefalFunction *callee = 0;
+  Iter begin = 0;
+  Iter end = 0;
+  FunctionTableItem *functions = 0;
+  const RefalIdentifier *idents = 0;
+  const RefalNumber *numbers = 0;
+  const StringItem *strings = 0;
+  Stack<const RASLCommand*> open_e_stack;
+  Stack<Iter> context;
+
+#ifdef ENABLE_DEBUGGER
+  refalrts::debugger::RefalDebugger debugger;
+  debugger.var_debug_table.set_context(context);
+  debugger.var_debug_table.set_string_items(strings);
+#endif // ifdef ENABLE_DEBUGGER
+
+  Iter res = 0;
+  Iter trash_prev = 0;
+  unsigned int index;
+  int stack_top = 0;
+
+#define MATCH_FAIL \
+  if (stack_top == 0) { \
+    return cRecognitionImpossible; \
+  } else { \
+    rasl = open_e_stack[--stack_top]; \
+    continue; \
+  }
+
+  while (true) {
+    unsigned int val1 = rasl->val1;
+    unsigned int val2 = rasl->val2;
+    unsigned int bracket = rasl->bracket;
+
+JUMP_FROM_SCALE:
+
+    // Интерпретация команд
+    // Для ряда команд эти переменные могут не иметь смысла
+    Iter &bb = context[bracket];
+    Iter &be = context[bracket + 1];
+    Iter &elem = context[bracket];
+    Iter &save_pos = context[val1];
+    Iter &swap_head = save_pos;
+
+    // Содержимое скобок
+    Iter &res_b = context[val2];
+    Iter &res_e = context[val2 + 1];
+
+    switch(rasl->cmd) {
+      case icPushState:
+        {
+          StateRefalMachine *cur_state = states_stack_alloc();
+          cur_state->callee = callee;
+          cur_state->begin = begin; /* нужно для icSetResArgBegin в startup_rasl */
+          cur_state->end = end;
+          cur_state->rasl = rasl + 2;
+          cur_state->functions = functions;
+          cur_state->idents = idents;
+          cur_state->numbers = numbers;
+          cur_state->strings = strings;
+          cur_state->open_e_stack.swap(open_e_stack);
+          cur_state->context.swap(context);
+          cur_state->res = res;
+          cur_state->trash_prev = trash_prev;
+          cur_state->stack_top = stack_top;
+          states_stack_push(cur_state);
+        }
+        break;
+
+      case icPopState:
+        {
+          StateRefalMachine *prev_state = states_stack_pop();
+          callee = prev_state->callee;
+          begin = prev_state->begin; /* нужно для icSetResArgBegin в startup_rasl */
+          end = prev_state->end;
+          rasl = prev_state->rasl;
+          functions = prev_state->functions;
+          idents = prev_state->idents;
+          numbers = prev_state->numbers;
+          strings = prev_state->strings;
+          open_e_stack.swap(prev_state->open_e_stack);
+          context.swap(prev_state->context);
+          res = prev_state->res;
+          trash_prev = prev_state->trash_prev;
+          stack_top = prev_state->stack_top;
+          states_stack_free(prev_state);
+        }
+        continue;  // пропускаем ++rasl в конце
+
+      case icProfileFunction:
+        this_is_generated_function();
+        break;
+
+      case icLoadConstants:
+        {
+          RASLFunction *descr = static_cast<RASLFunction*>(callee);
+          functions = descr->functions->items;
+          idents = descr->idents;
+          numbers = descr->numbers;
+          strings = descr->strings;
+#ifdef ENABLE_DEBUGGER
+          debugger.var_debug_table.set_string_items(strings);
+#endif // ifdef ENABLE_DEBUGGER
+        }
+        break;
+
+      case icIssueMemory:
+        context.reserve(val1);
+        break;
+
+      case icReserveBacktrackStack:
+        open_e_stack.reserve(val1);
+        break;
+
+      case icOnFailGoTo:
+        open_e_stack[stack_top++] = rasl + val1 + val2 * 256 + 1;
+        break;
+
+      case icProfilerStopSentence:
+        stop_sentence();
+        break;
+
+      case icInitB0:
+        context[0] = begin;
+        context[1] = end;
+        move_left(context[0], context[1]);
+        move_left(context[0], context[1]);
+        move_right(context[0], context[1]);
+        break;
+
+      case icInitB0_Lite:
+        context[0] = begin;
+        context[1] = end;
+        break;
+
+      case icCharLeft:
+        if (! char_left(static_cast<char>(val2), bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icCharRight:
+        if (! char_right(static_cast<char>(val2), bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icCharTerm:
+        if (! char_term(static_cast<char>(val2), bb)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icCharSaveLeft:
+        save_pos = char_left(static_cast<char>(val2), bb, be);
+        if (! save_pos) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icCharSaveRight:
+        save_pos = char_right(static_cast<char>(val2), bb, be);
+        if (! save_pos) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icNumberLeft:
+        if (! number_left(static_cast<RefalNumber>(val2), bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icNumberRight:
+        if (! number_right(static_cast<RefalNumber>(val2), bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icNumberTerm:
+        if (! number_term(static_cast<RefalNumber>(val2), bb)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icNumberSaveLeft:
+        save_pos = number_left(static_cast<RefalNumber>(val2), bb, be);
+        if (! save_pos) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icNumberSaveRight:
+        save_pos = number_right(static_cast<RefalNumber>(val2), bb, be);
+        if (! save_pos) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icHugeNumLeft:
+        if (! number_left(numbers[val2], bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icHugeNumRight:
+        if (! number_right(numbers[val2], bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icHugeNumTerm:
+        if (! number_term(numbers[val2], bb)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icHugeNumSaveLeft:
+        save_pos = number_left(numbers[val2], bb, be);
+        if (! save_pos) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icHugeNumSaveRight:
+        save_pos = number_right(numbers[val2], bb, be);
+        if (! save_pos) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icNameLeft:
+        if (! function_left(functions[val2].function, bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icNameRight:
+        if (! function_right(functions[val2].function, bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icNameTerm:
+        if (! function_term(functions[val2].function, bb)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icNameSaveLeft:
+        save_pos = function_left(functions[val2].function, bb, be);
+        if (! save_pos) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icNameSaveRight:
+        save_pos = function_right(functions[val2].function, bb, be);
+        if (! save_pos) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icIdentLeft:
+        if (! ident_left(idents[val2], bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icIdentRight:
+        if (! ident_right(idents[val2], bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icIdentTerm:
+        if (! ident_term(idents[val2], bb)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icIdentSaveLeft:
+        save_pos = ident_left(idents[val2], bb, be);
+        if (! save_pos) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icIdentSaveRight:
+        save_pos = ident_right(idents[val2], bb, be);
+        if (! save_pos) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icBracketsLeft:
+        if (! brackets_left(res_b, res_e, bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icBracketsRight:
+        if (! brackets_right(res_b, res_e, bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icBracketsTerm:
+        if (! brackets_term(res_b, res_e, bb)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icBracketsSaveLeft:
+        {
+          int inner = val2;
+          context[inner + 2] =
+            brackets_left(context[inner], context[inner + 1], bb, be);
+          if (! context[inner + 2]) {
+            MATCH_FAIL;
+          }
+          bracket_pointers(context[inner + 2], context[inner + 3]);
+        }
+        break;
+
+      case icBracketsSaveRight:
+        {
+          int inner = val2;
+          context[inner + 2] =
+            brackets_right(context[inner], context[inner + 1], bb, be);
+          if (! context[inner + 2]) {
+            MATCH_FAIL;
+          }
+          bracket_pointers(context[inner + 2], context[inner + 3]);
+        }
+        break;
+
+      case icADTLeft:
+        if (! adt_left(res_b, res_e, functions[val1].function, bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icADTRight:
+        if (! adt_right(res_b, res_e, functions[val1].function, bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icADTTerm:
+        if (! adt_term(res_b, res_e, functions[val1].function, bb)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icADTSaveLeft:
+        {
+          int inner = val2;
+          const RefalFunction *tag = functions[val1].function;
+          context[inner + 2] =
+            adt_left(context[inner], context[inner + 1], tag, bb, be);
+          if (! context[inner + 2]) {
+            MATCH_FAIL;
+          }
+          adt_pointers(
+            context[inner + 2], context[inner + 3], context[inner + 4]
+          );
+        }
+        break;
+
+      case icADTSaveRight:
+        {
+          int inner = val2;
+          const RefalFunction *tag = functions[val1].function;
+          context[inner + 2] =
+            adt_right(context[inner], context[inner + 1], tag, bb, be);
+          if (! context[inner + 2]) {
+            MATCH_FAIL;
+          }
+          adt_pointers(
+            context[inner + 2], context[inner + 3], context[inner + 4]
+          );
+        }
+        break;
+
+      case icADTSaveTerm:
+        {
+          int inner = val2;
+          const RefalFunction *tag = functions[val1].function;
+          context[inner + 2] =
+            adt_term(context[inner], context[inner + 1], tag, bb);
+          if (! context[inner + 2]) {
+            MATCH_FAIL;
+          }
+        }
+        break;
+
+      case icCallSaveLeft:
+        context[val2 + 2] = call_left(res_b, res_e, bb, be);
+        break;
+
+      case icEmpty:
+        if (! empty_seq(bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icNotEmpty:
+        if (empty_seq(bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icsVarLeft:
+        index = val2;
+        if (! svar_left(context[index], bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icsVarRight:
+        index = val2;
+        if (! svar_right(context[index], bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case icsVarTerm:
+        if (! svar_term(bb, bb)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case ictVarLeft:
+        index = val2;
+        if (! tvar_left(context[index], bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case ictVarRight:
+        index = val2;
+        if (! tvar_right(context[index], bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case ictVarSaveLeft:
+        index = val2;
+        context[index + 1] = tvar_left(context[index], bb, be);
+        if (! context[index + 1]) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case ictVarSaveRight:
+        index = val2;
+        context[index + 1] = tvar_right(context[index], bb, be);
+        if (! context[index + 1]) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case iceRepeatedLeft:
+        {
+          int index = val1;
+          int sample = val2;
+          Iter &evar_b = context[index];
+          Iter &evar_e = context[index + 1];
+          Iter &sample_b = context[sample];
+          Iter &sample_e = context[sample + 1];
+          if (
+            ! repeated_evar_left(evar_b, evar_e, sample_b, sample_e, bb, be)
+          ) {
+            MATCH_FAIL;
+          }
+        }
+        break;
+
+      case iceRepeatedRight:
+        {
+          int index = val1;
+          int sample = val2;
+          Iter &evar_b = context[index];
+          Iter &evar_e = context[index + 1];
+          Iter &sample_b = context[sample];
+          Iter &sample_e = context[sample + 1];
+          if (
+            ! repeated_evar_right(evar_b, evar_e, sample_b, sample_e, bb, be)
+          ) {
+            MATCH_FAIL;
+          }
+        }
+        break;
+
+      case icsRepeatedLeft:
+      case ictRepeatedLeft:
+        {
+          int index = val1;
+          int sample = val2;
+          if (! repeated_stvar_left(context[index], context[sample], bb, be)) {
+            MATCH_FAIL;
+          }
+        }
+        break;
+
+      case icsRepeatedRight:
+      case ictRepeatedRight:
+        {
+          int index = val1;
+          int sample = val2;
+          if (! repeated_stvar_right(context[index], context[sample], bb, be)) {
+            MATCH_FAIL;
+          }
+        }
+        break;
+
+      case icsRepeatedTerm:
+      case ictRepeatedTerm:
+        assert(bracket == val1);
+        if (! repeated_stvar_term(context[val2], bb)) {
+          MATCH_FAIL;
+        }
+        break;
+
+      case ictRepeatedSaveLeft:
+        {
+          int index = val1;
+          int sample = val2;
+
+          context[index + 1] =
+            repeated_stvar_left(context[index], context[sample], bb, be);
+          if (! context[index + 1]) {
+            MATCH_FAIL;
+          }
+        }
+        break;
+
+      case ictRepeatedSaveRight:
+        {
+          int index = val1;
+          int sample = val2;
+
+          context[index + 1] =
+            repeated_stvar_right(context[index], context[sample], bb, be);
+          if (! context[index + 1]) {
+            MATCH_FAIL;
+          }
+        }
+        break;
+
+      case icEPrepare:
+        res_b = 0;
+        res_e = 0;
+        open_e_stack[stack_top++] = ++rasl;
+        start_e_loop();
+        break;
+
+      case icEStart:
+        {
+          if (! open_evar_advance(res_b, res_e, bb, be)) {
+            MATCH_FAIL;
+          }
+          open_e_stack[stack_top++] = rasl;
+        }
+        break;
+
+      case icSave:
+        res_b = bb;
+        res_e = be;
+        break;
+
+      case icVariableDebugOffset:
+#ifdef ENABLE_DEBUGGER
+        debugger.var_debug_table.insert_var(rasl);
+#endif  // ifdef ENABLE_DEBUGGER
+        break;
+
+      case icResetAllocator:
+#ifdef ENABLE_DEBUGGER
+        if (debugger.handle_function_call(begin, end, callee) == cExit) {
+          return cExit;
+        }
+#endif  // ifdef ENABLE_DEBUGGER
+        reset_allocator();
+        break;
+
+      case icSetResArgBegin:
+        res = begin;
+        break;
+
+      case icSetResRightEdge:
+        trash_prev = begin->prev;
+        res = end->next;
+        break;
+
+      case icSetRes:
+        trash_prev = begin->prev;
+        res = context[bracket];
+        break;
+
+      case icCopyEVar:
+        {
+          unsigned int target = val1;
+          unsigned int sample = val2;
+          if (
+            ! copy_evar(
+              context[target], context[target + 1],
+              context[sample], context[sample + 1]
+            )
+          ) {
+            return cNoMemory;
+          }
+        }
+        break;
+
+      case icCopySTVar:
+        {
+          unsigned int target = val1;
+          unsigned int sample = val2;
+          if (! copy_stvar(context[target], context[sample])) {
+            return cNoMemory;
+          }
+        }
+        break;
+
+      case icReinitSVar:
+        reinit_svar(elem, context[val2]);
+        break;
+
+      case icAllocateChar:
+        if (! alloc_char(elem, static_cast<char>(val2))) {
+          return cNoMemory;
+        }
+        break;
+
+      case icAllocateName:
+        if (! alloc_name(elem, functions[val2].function)) {
+          return cNoMemory;
+        }
+        break;
+
+      case icAllocateNumber:
+        if (! alloc_number(elem, static_cast<RefalNumber>(val2))) {
+          return cNoMemory;
+        }
+        break;
+
+      case icAllocateHugeNumber:
+        if (! alloc_number(elem, numbers[val2])) {
+          return cNoMemory;
+        }
+        break;
+
+      case icAllocateIdent:
+        if (! alloc_ident(elem, idents[val2])) {
+          return cNoMemory;
+        }
+        break;
+
+      case icAllocateBracket:
+        {
+          static bool (*const allocator[])(Iter& res) = {
+            alloc_open_adt,
+            alloc_open_bracket,
+            alloc_open_call,
+            alloc_close_adt,
+            alloc_close_bracket,
+            alloc_close_call
+          };
+
+          assert(val2 <= ibCloseCall);
+          if (! allocator[val2](elem)) {
+            return cNoMemory;
+          }
+        }
+        break;
+
+      case icAllocateString:
+        {
+          if (
+            ! alloc_chars(
+              bb, be, strings[val2].string, strings[val2].string_len
+            )
+          ) {
+            return cNoMemory;
+          }
+        }
+        break;
+
+      case icAllocateClosureHead:
+        if (! alloc_closure_head(elem)) {
+          return cNoMemory;
+        }
+        break;
+
+      case icAllocateUnwrappedClosure:
+        if (! alloc_unwrapped_closure(elem, context[val2])) {
+          return cNoMemory;
+        }
+        break;
+
+      case icReinitChar:
+        reinit_char(elem, static_cast<char>(val2));
+        break;
+
+      case icReinitName:
+        reinit_name(elem, functions[val2].function);
+        break;
+
+      case icReinitNumber:
+        reinit_number(elem, static_cast<RefalNumber>(val2));
+        break;
+
+      case icReinitHugeNumber:
+        reinit_number(elem, numbers[val2]);
+        break;
+
+      case icReinitIdent:
+        reinit_ident(elem, idents[val2]);
+        break;
+
+      case icReinitBracket:
+        {
+          static void (*const reiniter[])(Iter res) = {
+            reinit_open_adt,
+            reinit_open_bracket,
+            reinit_open_call,
+            reinit_close_adt,
+            reinit_close_bracket,
+            reinit_close_call
+          };
+          assert(val2 <= ibCloseCall);
+          reiniter[val2](elem);
+        }
+        break;
+
+      case icReinitClosureHead:
+        reinit_closure_head(elem);
+        break;
+
+      case icReinitUnwrappedClosure:
+        reinit_unwrapped_closure(elem, context[val2]);
+        break;
+
+      case icUpdateChar:
+        update_char(elem, static_cast<char>(val2));
+        break;
+
+      case icUpdateName:
+        update_name(elem, functions[val2].function);
+        break;
+
+      case icUpdateNumber:
+        update_number(elem, static_cast<RefalNumber>(val2));
+        break;
+
+      case icUpdateHugeNumber:
+        update_number(elem, numbers[val2]);
+        break;
+
+      case icUpdateIdent:
+        update_ident(elem, idents[val2]);
+        break;
+
+      case icLinkBrackets:
+        link_brackets(context[val1], context[val2]);
+        break;
+
+      case icPushStack:
+        push_stack(elem);
+        break;
+
+      case icSpliceElem:
+        res = splice_elem(res, elem);
+        break;
+
+      case icSpliceEVar:
+        res = splice_evar(res, bb, be);
+        break;
+
+      case icSpliceSTVar:
+        res = splice_stvar(res, elem);
+        break;
+
+      case icSpliceRange:
+        res = splice_evar(res, bb, be);
+        break;
+
+      case icSpliceTile:
+        res = splice_evar(res, context[val1], context[val2]);
+        break;
+
+      case icSpliceToFreeList:
+        splice_to_freelist(begin, end);
+        break;
+
+      case icSpliceToFreeList_Range:
+        splice_to_freelist(context[val1], context[val2]);
+        break;
+
+      case icMainLoopReturnSuccess:
+        return cSuccess;
+
+      case icNextStep:
+        {
+          g_profiler.stop_function();
+          ++ m_step_counter;
+
+#ifdef STEP_LIMIT
+          if (m_step_counter >= STEP_LIMIT) {
+            return cStepLimit;
+          }
+#endif // ifdef STEP_LIMIT
+
+          if (empty_stack()) {
+            return cSuccess;    // УСПЕШНОЕ ЗАВЕРШЕНИЕ ГЛАВНОГО ЦИКЛА
+          }
+
+          begin = pop_stack();
+          assert(! empty_stack());
+          end = pop_stack();
+
+          m_error_begin = begin;
+          m_error_end = end;
+
+#if SHOW_DEBUG
+          if (m_step_counter >= (unsigned) SHOW_DEBUG) {
+            make_dump(begin, end);
+          }
+#endif // if SHOW_DEBUG
+
+          refalrts::Iter function = next(begin);
+          FnResult res;
+          if (cDataFunction == function->tag) {
+            callee = function->function_info;
+            res = cSuccess;
+          } else if (cDataClosure == function->tag) {
+            refalrts::Iter head = function->link_info;
+
+#ifdef ENABLE_DEBUGGER
+            if (debugger.handle_function_call(begin, end, 0) == cExit) {
+              return cExit;
+            }
+#endif  // ifdef ENABLE_DEBUGGER
+
+            if (1 == head->number_info) {
+              /*
+                Пользуемся тем, что при развёртке содержимое замыкания
+                оказывается в поле зрения между головой и (развёрнутым!) узлом
+                замыкания.
+                Во избежание проблем, связанным с помещением развёрнутого
+                замыкания в список свободных блоков, проинициализируем его
+                как голову замыкания.
+              */
+              unwrap_closure(function);
+              function->tag = cDataClosureHead;
+              function->number_info = 73501505; // :-)
+              splice_to_freelist(function, function);
+              splice_to_freelist(head, head);
+              res = cSuccess;
+            } else {
+              refalrts::Iter begin_argument = next(function);
+              refalrts::Iter closure_b = 0;
+              refalrts::Iter closure_e = 0;
+
+              if (! copy_evar(closure_b, closure_e, next(head), prev(head))) {
+                res = cNoMemory;
+              } else {
+                list_splice(begin_argument, closure_b, closure_e);
+                splice_to_freelist(function, function);
+                res = cSuccess;
+              }
+            }
+
+            if (res == cSuccess) {
+              ++ m_step_counter;
+              function = next(begin);
+              assert(cDataFunction == function->tag);
+              callee = function->function_info;
+            }
+          } else {
+            res = cRecognitionImpossible;
+          }
+
+          if (res != cSuccess) {
+            return res;
+          }
+          rasl = callee->rasl;
+          stack_top = 0;
+        }
+        continue;       // избегаем ++rasl в конце цикла
+
+      case icTrashLeftEdge:
+        splice_to_freelist_open(trash_prev, res);
+        break;
+
+      case icTrash:
+        splice_to_freelist_open(context[bracket], res);
+        break;
+
+      case icFail:
+        MATCH_FAIL;
+
+      case icFetchSwapHead:
+        {
+          assert(RefalSwap::run == elem->function_info->rasl);
+          assert(elem->function_info == callee);
+          RefalSwap *swap = static_cast<RefalSwap*>(callee);
+
+          if (! swap->head) {
+            swap->head = initialize_swap_head(elem);
+          }
+          swap_head = swap->head;
+        }
+        break;
+
+      case icFetchSwapInfoBounds:
+        {
+          assert(cDataSwapHead == swap_head->tag);
+
+          RefalSwap *swap = static_cast<RefalSwap*>(swap_head->function_info);
+          res_b = swap_head;
+          res_e = swap->next_head;
+          move_left(res_b, res_e);
+          move_right(res_b, res_e);
+        }
+        break;
+
+      case icSwapSave:
+        {
+          assert(cDataSwapHead == swap_head->tag);
+
+          RefalSwap *swap = static_cast<RefalSwap*>(swap_head->function_info);
+          list_splice(swap->next_head, bb, be);
+        }
+        break;
+
+      case icPerformNative:
+        {
+#ifdef ENABLE_DEBUGGER
+          if (debugger.handle_function_call(begin, end, callee) == cExit) {
+            return cExit;
+          }
+#endif  // ifdef ENABLE_DEBUGGER
+          RefalNativeFunction *native_callee =
+            static_cast<RefalNativeFunction*>(callee);
+          FnResult res = (native_callee->ptr)(begin, end);
+          if (res != cSuccess) {
+            return res;
+          }
+        }
+        break;
+
+      case icWrapClosure:
+        wrap_closure(elem);
+        break;
+
+      case icScale:
+        {
+          val1 *= 256;
+          val2 *= 256;
+          bracket *= 256;
+
+          ++rasl;
+
+          val1 += rasl->val1;
+          val2 += rasl->val2;
+          bracket += rasl->bracket;
+
+          goto JUMP_FROM_SCALE;
+        }
+
+      default:
+        refalrts_switch_default_violation(rasl->cmd);
+    }
+    ++rasl;
+  }
+}

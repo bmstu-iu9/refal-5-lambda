@@ -100,7 +100,15 @@ prepare_prefix() {
   rm -f _test_prefix.exe-prefix
   cp $LIBDIR/Library.sref .
   ../../bin/srefc-core -o _test_prefix.exe-prefix "${COMMON_SRFLAGS[@]}" \
-    Library refalrts refalrts-platform-POSIX refalrts-platform-specific \
+    Library \
+    refalrts \
+    refalrts-allocator \
+    refalrts-debugger \
+    refalrts-dynamic \
+    refalrts-profiler \
+    refalrts-vm \
+    refalrts-platform-POSIX \
+    refalrts-platform-specific \
     2>__error.txt
   if [ $? -ge 100 ] || [ ! -e _test_prefix.exe-prefix ]; then
     echo COMPILER FAILS ON $SRC, SEE __error.txt

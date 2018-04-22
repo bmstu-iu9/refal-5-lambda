@@ -25,6 +25,11 @@ setlocal
     %DUMP_FILE_NAME_OPTION% ^
     -f-DDONT_PRINT_STATISTICS ^
     refalrts ^
+    refalrts-allocator ^
+    refalrts-debugger ^
+    refalrts-dynamic ^
+    refalrts-profiler ^
+    refalrts-vm ^
     refalrts-platform-specific
 
   copy ..\..\src\srlib\Hash.sref .

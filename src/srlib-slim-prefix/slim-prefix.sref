@@ -1,5 +1,11 @@
 //FROM Library
 //FROM Hash
 //FROM refalrts
+//FROM refalrts-allocator
+//FROM refalrts-debugger
+//FROM refalrts-dynamic
+//FROM refalrts-platform-specific
+//FROM refalrts-profiler
+//FROM refalrts-vm
 //FROM refalrts-platform-specific
 //FROM refalrts-platform-POSIX

@@ -26,6 +26,11 @@ setlocal
     %DUMP_FILE_NAME_OPTION% ^
     -f-DDONT_PRINT_STATISTICS ^
     refalrts ^
+    refalrts-allocator ^
+    refalrts-debugger ^
+    refalrts-dynamic ^
+    refalrts-profiler ^
+    refalrts-vm ^
     refalrts-platform-specific
 
   echo Precompile Library.sref

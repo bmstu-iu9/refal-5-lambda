@@ -7,7 +7,15 @@ if not exist ..\..\srlib\src\nul (
 setlocal
   set CSOURCES=Library Hash
   set RSOURCES=LibraryEx GetOpt
-  set RT=refalrts refalrts-platform-specific refalrts-platform-POSIX
+  set RT=refalrts ^
+    refalrts-allocator ^
+    refalrts-debugger ^
+    refalrts-dynamic ^
+    refalrts-platform-specific ^
+    refalrts-profiler ^
+    refalrts-vm ^
+    refalrts-platform-specific ^
+    refalrts-platform-POSIX
 
   copy LICENSE ..\..\srlib
   for %%s in (%CSOURCES% %RSOURCES%) do copy %%s.sref ..\..\srlib\src
