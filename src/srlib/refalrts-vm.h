@@ -12,6 +12,8 @@
 
 namespace refalrts {
 
+class Allocator;
+
 class VM {
   struct StateRefalMachine;
 
@@ -128,8 +130,10 @@ private:
   class NullDebugger;
   static Debugger* create_null_debugger(VM *vm);
 
+  Allocator *m_allocator;
+
 public:
-  VM();
+  VM(Allocator *allocator);
 
   int get_return_code() const {
     return m_ret_code;
@@ -179,9 +183,13 @@ public:
   }
 
   void read_counters(unsigned long counters[]);
+
+  Allocator *allocator() const {
+    return m_allocator;
+  }
 };
 
-inline VM::VM()
+inline VM::VM(Allocator *allocator)
   : m_left_swap_ptr(& m_last_marker)
   , m_ret_code(0)
   , m_argv(0)
@@ -195,6 +203,7 @@ inline VM::VM()
   , m_private_state_stack_free(0)
   , m_private_state_stack_stack(0)
   , m_create_debugger(create_null_debugger)
+  , m_allocator(allocator)
 {
   /* пусто */
 }

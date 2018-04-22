@@ -30,8 +30,8 @@
 
 namespace refalrts {
 
-VM g_vm;
 Allocator g_allocator;
+VM g_vm(&g_allocator);
 Profiler g_profiler;
 struct Dynamic g_dynamic = { 0, 0, 0, 0, 0 };
 

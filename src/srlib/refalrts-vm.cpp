@@ -494,8 +494,8 @@ void refalrts::VM::make_dump(refalrts::Iter begin, refalrts::Iter end) {
   fprintf(dump_stream(), "\nFREE LIST:\n");
   print_seq(
     dump_stream(),
-    refalrts::g_allocator.first_marker(),
-    refalrts::g_allocator.last_marker()
+    m_allocator->first_marker(),
+    m_allocator->last_marker()
   );
 
 #endif // ifdef DUMP_FREE_LIST
@@ -534,7 +534,7 @@ void refalrts::VM::free_view_field() {
 
   if (begin != end) {
     end = end->prev;
-    refalrts::g_allocator.splice_to_freelist(begin, end);
+    m_allocator->splice_to_freelist(begin, end);
   } else {
     /*
       Поле зрения пустое -- его не нужно освобождать.
