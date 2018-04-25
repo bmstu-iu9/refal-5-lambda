@@ -32,7 +32,8 @@ $EXTERN PutBlockReference, PutBlockIncorporated;
 
 
 $ENTRY Go {
-  = <PrintVersion 'Srefc'> <Main <ArgList>>;
+  = // <PrintVersion 'Srefc'>
+    <Main <ArgList>>;
 }
 
 Main {

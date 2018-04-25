@@ -37,15 +37,231 @@ PrepareMessage {
     = 'Variable ' s.Mode '.' e.Index ' not found';
 
   #DanglingEntry e.Name = '$ENTRY ' e.Name '; declaration for missed function';
+
+// Ошибки специализации
+  #RedefineSpec e.Name = 'Specialization of function ' e.Name 'is redefined';
+
+  #MustBeHardPattern = 'Pattern of function specialization maust be hard';
+
+  #BadSpecForFunction = 'Bad fucntion specialization';
+
+  #OrphanSpec = 'Orphan function specialization';
+
+  #RepVarInSpecPattern s.Mode e.Index
+    = 'Repeating Variable ' s.Mode '.' e.Index ' in specialization pattern';
 }
 
 FindErrors {
   e.AST
+    = <CheckSpecs e.AST> : (e.SpecErrors) e.AST^
     = <SeparateDefines e.AST> : (e.Declarations) e.FunctionBodies
-    = <CheckValidUsings
+    = e.SpecErrors
+      <CheckValidUsings
         (<CheckDeclarations e.Declarations>)
         <Map CheckFunctionBody e.FunctionBodies>
       >;
+}
+
+CheckSpecs {
+  e.AST
+    = <CheckSpecs-Redefine e.AST> : e.AST-and-errors
+    = <CheckSpecs-Formats e.AST-and-errors> : e.AST-and-errors^
+    = <CheckSpecs-Functions e.AST-and-errors> : e.AST-and-errors^
+    = <CheckSpecs-SeparateErrors e.AST-and-errors>;
+}
+
+// Проверка переопределения специализации
+CheckSpecs-Redefine {
+  e.AST-B
+  (#Spec t.SrcPos1 (e.Name) e.Pattern1) e.AST-M
+  (#Spec t.SrcPos2 (e.Name) e.Pattern2) e.AST-E
+    = <CheckSpecs-Redefine
+        e.AST-B
+        (#Spec t.SrcPos1 (e.Name) e.Pattern1) e.AST-M
+        (#Error t.SrcPos2 #RedefineSpec e.Name) e.AST-E
+      >;
+
+  e.AST = e.AST;
+}
+
+// Проверка форматов образцов специализаций
+CheckSpecs-Formats {
+  e.AST
+    = <Map
+        {
+          (#Spec t.SrcPos (e.Name) e.Pattern)
+            = <IsHardPattern e.Pattern>
+            : {
+                #True
+                  = <CheckRepeatedVariables e.Pattern>
+                  : {
+                    /* пусто */ = (#Spec t.SrcPos (e.Name) e.Pattern);
+
+                    e.Errors = e.Errors;
+                  };
+
+                #False = (#Error t.SrcPos #MustBeHardPattern);
+              };
+
+          t.Other = t.Other;
+        }
+        e.AST
+      >;
+}
+
+// Проверка жёсткости образцв в специализации
+IsHardPattern {
+  /* empty */ = #True;
+
+  (#TkVariable t.SrcPos1 'e' e.Index) = #True;
+
+  (#TkVariable t.SrcPos1 'e' e.Index1) e.Pattern-M
+  (#TkVariable t.SrcPos2 'e' e.Index2)
+    = #False;
+
+  (#Brackets e.PatternPart1) e.PatternPart2
+    = <IsHardPattern e.PatternPart1>
+    : {
+        #True = <IsHardPattern e.PatternPart2>;
+
+        #False = #False;
+      };
+
+  e.PatternPart1 (#Brackets e.PatternPart2)
+    = <IsHardPattern e.PatternPart1>
+    : {
+        #True = <IsHardPattern e.PatternPart2>;
+
+        #False = #False;
+      };
+
+  t.Term e.Pattern-E, <IsHardTerm t.Term> : #True = <IsHardPattern e.Pattern-E>;
+
+  e.Pattern-B t.Term, <IsHardTerm t.Term> : #True = <IsHardPattern e.Pattern-B>;
+}
+
+IsHardTerm {
+  (#TkChar s.Char) = #True;
+
+  (#TkNumber s.Number) = #True;
+
+  (#Ident t.SrcPos e.Name) = #True;
+
+  (#TkName t.SrcPos e.Name) = #True;
+
+  (#TkVariable t.SrcPos 's' e.Index) = #True;
+
+  (#TkVariable t.SrcPos 't' e.Index) = #True;
+
+  t.Term = #False;
+}
+
+// Проверка на повторные переменные в образце специализации
+CheckRepeatedVariables {
+  e.Pattern = <ErrorsForRepeatedVariables <FindVariables e.Pattern>>;
+}
+
+ErrorsForRepeatedVariables {
+  e.VarList-B
+  (#TkVariable t.SrcPos1 s.Mode e.Index) e.VarList-M
+  (#TkVariable t.SrcPos2 s.Mode e.Index) e.VarList-E
+    = <CheckSpecs-Redefine
+        e.VarList-B
+        (#TkVariable t.SrcPos1 s.Mode e.Index) e.VarList-M
+        e.VarList-E
+      >
+      (#Error t.SrcPos2 #RepVarInSpecPattern s.Mode e.Index);
+
+  e.VarList = /* empty */;
+}
+
+FindVariables {
+  e.Pattern
+    = <Map
+        {
+          (#TkVariable t.SrcPos s.Mode e.Index)
+            = (#TkVariable t.SrcPos s.Mode e.Index);
+
+          (#Brackets e.InBrackets) = <FindVariables e.InBrackets>;
+
+          (#ADT-Brackets t.SrcPos (e.Name) e.InBrackets)
+            = <FindVariables e.InBrackets>;
+
+          t.Term = /* empty */;
+        }
+        e.Pattern
+      >;
+}
+
+// Проверка, что упоминаемые функции определены
+CheckSpecs-Functions {
+  e.AST-B
+  (#Spec t.SrcPos1 (e.Name) e.Pattern) e.AST-M
+  (#Function t.SrcPos2 s.ScopeClass (e.Name) e.Body) e.AST-E
+    = <ValidBodyForSpec (e.Pattern) e.Body>
+    : {
+        #True =
+          e.AST-B e.AST-M
+          (#Function t.SrcPos2 s.ScopeClass (e.Name) e.Body)
+          e.AST-E;
+
+        #False =
+          e.AST-B
+          (#Error t.SrcPos1 #BadSpecForFunction)
+          e.AST-M
+          (#Function t.SrcPos2 s.ScopeClass (e.Name) e.Body)
+          e.AST-E;
+      }
+    : e.AST
+    = <CheckSpecs-Functions e.AST>;
+
+  e.AST-B
+  (#Function t.SrcPos1 s.ScopeClass (e.Name) e.Body) e.AST-M
+  (#Spec t.SrcPos2 (e.Name) e.Pattern) e.AST-E
+    = <ValidBodyForSpec (e.Pattern) e.Body>
+    : {
+        #True =
+          e.AST-B
+          (#Function t.SrcPos1 s.ScopeClass (e.Name) e.Body)
+          e.AST-M e.AST-E;
+
+        #False =
+          e.AST-B
+          (#Function t.SrcPos1 s.ScopeClass (e.Name) e.Body)
+          e.AST-M
+          (#Error t.SrcPos2 #BadSpecForFunction)
+          e.AST-E;
+      }
+    : e.AST
+    = <CheckSpecs-Functions e.AST>;
+
+  e.AST-B (#Spec t.SrcPos (e.Name) e.Pattern) e.AST-E
+    = <CheckSpecs-Functions
+        e.AST-B (#Error t.SrcPos #OrphanSpec e.Name) e.AST-E
+      >;
+
+  e.AST = e.AST;
+}
+
+//=== будет дорабатываться после завершения задачи (#156)
+ValidBodyForSpec {
+  (e.Pattern) e.Body = #True;
+}
+
+CheckSpecs-SeparateErrors {
+  e.AST
+    = <CheckSpecs-SeparateErrors-Rec (/* empty spec errror list*/) e.AST>;
+}
+
+CheckSpecs-SeparateErrors-Rec {
+  (e.SpecErrorList) e.AST-B (#Error t.SrsPos t.SpecErrorType e.Name) e.AST-E
+    = <CheckSpecs-SeparateErrors-Rec
+        (e.SpecErrorList (#Error t.SrsPos t.SpecErrorType e.Name))
+        e.AST-B e.AST-E
+      >;
+
+  (e.ErrorList) e.AST
+    = (e.ErrorList) e.AST;
 }
 
 SeparateDefines {

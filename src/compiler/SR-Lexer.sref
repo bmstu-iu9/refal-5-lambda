@@ -24,6 +24,7 @@ StrDirective {
   #ESwap = 'ESWAP';
   #Ident = 'LABEL';
   #Include = 'INCLUDE';
+  #Spec = 'SPEC';
 }
 
 $ENTRY SR-StrFromToken {
@@ -117,6 +118,7 @@ ValidDirective {
   'INCLUDE' = (#TkDirective #Include);
   'EASTEREGG' = <Map { s.Char = (#TkChar s.Char); } $EASTEREGG>;
   'SCOPEID' = (#TkNumber #Cookie1) (#TkNumber #Cookie2);
+  'SPEC' = (#TkDirective #Spec);
   e.Other = (#TkError 'Unknown directive $' e.Other);
 }
 

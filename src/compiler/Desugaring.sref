@@ -29,23 +29,26 @@ $ENTRY Desugar {
 }
 
 Pass-RemovePos {
-  e.AST =
-    <Map
-      {
-        (#Function t.SrcPos s.ScopeClass (e.Name) e.Body) =
-          (#Function s.ScopeClass (e.Name) <RemovePos-Body e.Body>);
+  e.AST
+    = <Map
+        {
+          (#Function t.SrcPos s.ScopeClass (e.Name) e.Body)
+            = (#Function s.ScopeClass (e.Name) <RemovePos-Body e.Body>);
 
-        (#Ident t.SrcPos e.Name) =
-          (#Ident e.Name);
+          (#Ident t.SrcPos e.Name)
+            = (#Ident e.Name);
 
-        (#NativeBlock t.SrcPos e.Code) =
-          (#NativeBlock t.SrcPos e.Code);
+          (#NativeBlock t.SrcPos e.Code)
+            = (#NativeBlock t.SrcPos e.Code);
 
-        (s.EnumSwapDeclaration t.SrcPos s.ScopeClass e.Name) =
-          (s.EnumSwapDeclaration s.ScopeClass e.Name);
-      }
-      e.AST
-    >;
+          (#Spec t.SrcPos (e.Name) e.Pattern)
+            = (#Spec (e.Name) <RemovePos-Expr e.Pattern>);
+
+          (s.EnumSwapDeclaration t.SrcPos s.ScopeClass e.Name)
+            = (s.EnumSwapDeclaration s.ScopeClass e.Name);
+        }
+        e.AST
+      >;
 }
 
 RemovePos-Body {
@@ -161,6 +164,9 @@ Pass-AttachEntries {
 
   (#NativeBlock t.SrcPos e.Code) e.Items
     = (#NativeBlock t.SrcPos e.Code) <Pass-AttachEntries e.Items>;
+
+  (#Spec (e.Name) e.Pattern) e.Items
+    = (#Spec (e.Name) e.Pattern) <Pass-AttachEntries e.Items>;
 
   /* empty */ = /* empty */;
 }

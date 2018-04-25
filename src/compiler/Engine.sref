@@ -349,6 +349,12 @@ PatchASTSrcPos-Item {
   s.FnPatch (s.EnumSwapDeclEntry t.SrcPos s.ScopeClass e.Name)
     , <OneOf s.EnumSwapDeclEntry #Enum #Swap #Declaration #Entry> : #True
     = (s.EnumSwapDeclEntry <s.FnPatch t.SrcPos> s.ScopeClass e.Name);
+
+  s.FnPatch (#Spec t.SrcPos (e.Name) e.Pattern)
+    = (
+        #Spec <s.FnPatch t.SrcPos> (e.Name)
+        <PatchASTSrcPos-Expr s.FnPatch e.Pattern>
+      );
 }
 
 PatchASTSrcPos-Body {

@@ -145,10 +145,27 @@ ParseElement-SwDirective {
   t.ErrorList #Ident e.Tail =
     <ParseNameList-Idents (/* generated */) t.ErrorList e.Tail>;
 
+  t.ErrorList #Spec e.Tail
+    = <ParseSpec t.ErrorList e.Tail>;
+
   t.ErrorList s.Directive e.Tail =
     <ParseNameList
       (/* generated */) t.ErrorList <ASTItemFromDirective s.Directive> e.Tail
     >;
+}
+
+ParseSpec {
+  t.ErrorList (#TkName s.LnNum e.Name) e.Tail
+    = <ParsePattern t.ErrorList e.Tail >
+    : t.ErrorList^ (e.Pattern^) e.Tail^
+    = <Expect #TkSemicolon (';') t.ErrorList e.Tail>
+    : t.ErrorList e.Tail^
+    = ((#Spec s.LnNum (e.Name) e.Pattern)) t.ErrorList e.Tail;
+
+  t.ErrorList t.Unexpected e.Tail
+    = (/* ничего не генерируем */)
+      <AddUnexpected t.ErrorList t.Unexpected 'function name'>
+      t.Unexpected e.Tail;
 }
 
 ParseInclude {
