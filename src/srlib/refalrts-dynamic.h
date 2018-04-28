@@ -24,8 +24,6 @@ struct Module {
   unsigned int next_external_id;
 };
 
-extern struct Module g_module;
-
 class Dynamic {
 public:
   static UInt32 one_at_a_time(UInt32 init, const char *bytes, size_t length);
@@ -144,9 +142,10 @@ private:
   DynamicHash<const char *, IdentHashNode> *m_idents_table;
   RefalIdentifier *m_native_identifiers;
   RefalFunction **m_native_externals;
+  Module *m_main_module;
 
 public:
-  Dynamic();
+  Dynamic(Module *main_module);
 
   DynamicHash<const char *, IdentHashNode>& idents_table();
 
@@ -187,8 +186,6 @@ public:
   const char *read_asciiz(FILE *stream);
   void read_counters(unsigned long counters[]);
 };
-
-extern struct Dynamic g_dynamic;
 
 }  // namespace refalrts
 

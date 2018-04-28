@@ -101,7 +101,7 @@ void print_error_message(
     case refalrts::cIdentTableLimit:
       fprintf(
         stream, "\nIDENTS TABLE OVERFLOW (max %lu)\n\n",
-        static_cast<unsigned long>(refalrts::g_dynamic.idents_count())
+        static_cast<unsigned long>(vm->dynamic()->idents_count())
       );
       break;
 
@@ -1387,7 +1387,7 @@ JUMP_FROM_SCALE:
 
       case icNextStep:
         {
-          g_profiler.stop_function();
+          m_profiler->stop_function();
           ++ m_step_counter;
 
 #ifdef STEP_LIMIT

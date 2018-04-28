@@ -87,8 +87,6 @@ inline Allocator::Allocator()
   /* пусто */
 }
 
-extern Allocator g_allocator;
-
 }  // namespace refalrts
 
 

@@ -83,8 +83,6 @@ inline Profiler::Profiler()
   memset(m_counters, '\0', sizeof(m_counters));
 }
 
-extern Profiler g_profiler;
-
 }  // namespace refalrts
 
 

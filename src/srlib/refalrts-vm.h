@@ -13,6 +13,8 @@
 namespace refalrts {
 
 class Allocator;
+class Profiler;
+class Dynamic;
 
 class VM {
   struct StateRefalMachine;
@@ -131,9 +133,11 @@ private:
   static Debugger* create_null_debugger(VM *vm);
 
   Allocator *m_allocator;
+  Profiler *m_profiler;
+  Dynamic *m_dynamic;
 
 public:
-  VM(Allocator *allocator);
+  VM(Allocator *allocator, Profiler *profiler, Dynamic *dynamic);
 
   int get_return_code() const {
     return m_ret_code;
@@ -187,9 +191,17 @@ public:
   Allocator *allocator() const {
     return m_allocator;
   }
+
+  Profiler *profiler() const {
+    return m_profiler;
+  }
+
+  Dynamic *dynamic() const {
+    return m_dynamic;
+  }
 };
 
-inline VM::VM(Allocator *allocator)
+inline VM::VM(Allocator *allocator, Profiler *profiler, Dynamic *dynamic)
   : m_left_swap_ptr(& m_last_marker)
   , m_ret_code(0)
   , m_argv(0)
@@ -204,6 +216,8 @@ inline VM::VM(Allocator *allocator)
   , m_private_state_stack_stack(0)
   , m_create_debugger(create_null_debugger)
   , m_allocator(allocator)
+  , m_profiler(profiler)
+  , m_dynamic(dynamic)
 {
   /* пусто */
 }

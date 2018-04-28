@@ -12,15 +12,14 @@
 // Динамическое связывание
 //==============================================================================
 
-/*static*/ struct refalrts::Module refalrts::g_module = { 0, 0 };
-
-refalrts::Dynamic::Dynamic()
+refalrts::Dynamic::Dynamic(Module *main_module)
   : m_unresolved_func_tables(0)
   , m_funcs_table(0)
   , m_tables(0)
   , m_idents_table(0)
   , m_native_identifiers(0)
   , m_native_externals(0)
+  , m_main_module(main_module)
 {
   /* пусто */
 }
@@ -89,10 +88,10 @@ refalrts::Dynamic::IdentHashNode *refalrts::Dynamic::alloc_ident_node(
 }
 
 void refalrts::Dynamic::load_native_identifiers() {
-  m_native_identifiers = malloc<RefalIdentifier>(g_module.next_ident_id);
+  m_native_identifiers = malloc<RefalIdentifier>(m_main_module->next_ident_id);
 
-  for (IdentReference *p = g_module.list_idents; p != 0; p = p->next) {
-    assert(p->id < g_module.next_ident_id);
+  for (IdentReference *p = m_main_module->list_idents; p != 0; p = p->next) {
+    assert(p->id < m_main_module->next_ident_id);
     RefalIdentifier ident = ident_implode(p->name);
 #ifdef IDENTS_LIMIT
     if (! ident) {
@@ -158,16 +157,16 @@ unsigned refalrts::Dynamic::find_unresolved_externals() {
     m_unresolved_func_tables = m_unresolved_func_tables->next;
   }
 
-  m_native_externals = malloc<RefalFunction*>(g_module.next_external_id);
+  m_native_externals = malloc<RefalFunction*>(m_main_module->next_external_id);
   for (
-    const ExternalReference *er = g_module.list_externals;
+    const ExternalReference *er = m_main_module->list_externals;
     er != 0;
     er = er->next
   ) {
     RefalFuncName name(er->name, er->cookie1, er->cookie2);
     FuncHashNode *node = funcs_table().lookup(name);
     if (node != 0) {
-      assert(er->id < g_module.next_external_id);
+      assert(er->id < m_main_module->next_external_id);
       m_native_externals[er->id] = node->function;
     } else {
       fprintf(

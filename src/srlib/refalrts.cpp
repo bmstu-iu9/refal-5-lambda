@@ -24,18 +24,7 @@
 //FROM refalrts-platform-specific
 #include "refalrts-platform-specific.h"
 
-//==============================================================================
-// Внутренние структуры данных
-//==============================================================================
-
-namespace refalrts {
-
-Allocator g_allocator;
-VM g_vm(&g_allocator);
-Profiler g_profiler;
-Dynamic g_dynamic;
-
-}  // namespace refalrts
+static struct refalrts::Module g_module = { 0, 0 };
 
 namespace refalrts {
 
@@ -673,7 +662,7 @@ bool equal_expressions(
   assert((first1 == 0) == (last1 == 0));
   assert((first2 == 0) == (last2 == 0));
 
-  refalrts::g_profiler.start_repeated_tvar();
+  refalrts::g_vm.profiler()->start_repeated_tvar();
 
   while (
     // Порядок условий важен
@@ -690,7 +679,7 @@ bool equal_expressions(
       || ! equal_nodes(first1, first2)
   */
 
-  refalrts::g_profiler.stop_repeated();
+  refalrts::g_vm.profiler()->stop_repeated();
 
   // Успешное завершение -- если мы достигли конца в обоих выражениях
   return refalrts::empty_seq(first1, last1)
@@ -809,7 +798,7 @@ bool refalrts::repeated_evar_left(
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
-  g_profiler.start_repeated_evar();
+  g_vm.profiler()->start_repeated_evar();
   refalrts::Iter current = first;
   refalrts::Iter cur_sample = evar_b_sample;
   refalrts::Iter copy_last = last;
@@ -823,7 +812,7 @@ bool refalrts::repeated_evar_left(
     move_left(current, copy_last);
   }
 
-  g_profiler.stop_repeated();
+  g_vm.profiler()->stop_repeated();
 
   /*
     Здесь empty_seq(cur_sample, evar_e_sample) или
@@ -860,7 +849,7 @@ bool refalrts::repeated_evar_right(
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
-  g_profiler.start_repeated_evar();
+  g_vm.profiler()->start_repeated_evar();
   refalrts::Iter current = last;
   refalrts::Iter cur_sample = evar_e_sample;
   refalrts::Iter copy_first = first;
@@ -874,7 +863,7 @@ bool refalrts::repeated_evar_right(
     move_right(evar_b_sample, cur_sample);
   }
 
-  g_profiler.stop_repeated();
+  g_vm.profiler()->stop_repeated();
 
   /*
     Здесь empty_seq(evar_b_sample, cur_sample) или
@@ -951,8 +940,8 @@ unsigned refalrts::read_chars(
 // Операции построения результата
 
 void refalrts::reset_allocator() {
-  g_profiler.start_result();
-  g_allocator.reset_allocator();
+  g_vm.profiler()->start_result();
+  g_vm.allocator()->reset_allocator();
 }
 
 namespace {
@@ -984,7 +973,7 @@ bool copy_node(refalrts::Iter& res, refalrts::Iter sample) {
       return refalrts::alloc_close_adt(res);
 
     case refalrts::cDataClosure: {
-      bool allocated = refalrts::g_allocator.alloc_node(res);
+      bool allocated = refalrts::g_vm.allocator()->alloc_node(res);
       if (allocated) {
         res->tag = refalrts::cDataClosure;
         refalrts::Iter head = sample->link_info;
@@ -997,7 +986,7 @@ bool copy_node(refalrts::Iter& res, refalrts::Iter sample) {
     }
 
     case refalrts::cDataFile: {
-      bool allocated = refalrts::g_allocator.alloc_node(res);
+      bool allocated = refalrts::g_vm.allocator()->alloc_node(res);
       if (allocated) {
         res->tag = refalrts::cDataFile;
         res->file_info = sample->file_info;
@@ -1025,17 +1014,17 @@ bool copy_nonempty_evar(
   refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
 ) {
-  refalrts::g_profiler.start_copy();
+  refalrts::g_vm.profiler()->start_copy();
 
   refalrts::Iter res = 0;
   refalrts::Iter bracket_stack = 0;
 
   refalrts::Iter prev_res_begin =
-    prev(refalrts::g_allocator.free_ptr());
+    prev(refalrts::g_vm.allocator()->free_ptr());
 
   while (! refalrts::empty_seq(evar_b_sample, evar_e_sample)) {
     if (! copy_node(res, evar_b_sample)) {
-      refalrts::g_profiler.stop_copy();
+      refalrts::g_vm.profiler()->stop_copy();
       return false;
     }
 
@@ -1058,7 +1047,7 @@ bool copy_nonempty_evar(
   evar_res_b = next(prev_res_begin);
   evar_res_e = res;
 
-  refalrts::g_profiler.stop_copy();
+  refalrts::g_vm.profiler()->stop_copy();
 
   return true;
 }
@@ -1117,7 +1106,7 @@ bool refalrts::alloc_copy_svar_(
 
 
 bool refalrts::alloc_char(refalrts::Iter& res, char ch) {
-  if (g_allocator.alloc_node(res)) {
+  if (g_vm.allocator()->alloc_node(res)) {
     res->tag = cDataChar;
     res->char_info = ch;
     return true;
@@ -1127,7 +1116,7 @@ bool refalrts::alloc_char(refalrts::Iter& res, char ch) {
 }
 
 bool refalrts::alloc_number(refalrts::Iter& res, refalrts::RefalNumber num) {
-  if (g_allocator.alloc_node(res)) {
+  if (g_vm.allocator()->alloc_node(res)) {
     res->tag = cDataNumber;
     res->number_info = num;
     return true;
@@ -1137,7 +1126,7 @@ bool refalrts::alloc_number(refalrts::Iter& res, refalrts::RefalNumber num) {
 }
 
 bool refalrts::alloc_name(refalrts::Iter& res, refalrts::RefalFunction *fn) {
-  if (g_allocator.alloc_node(res)) {
+  if (g_vm.allocator()->alloc_node(res)) {
     res->tag = cDataFunction;
     res->function_info = fn;
     return true;
@@ -1149,7 +1138,7 @@ bool refalrts::alloc_name(refalrts::Iter& res, refalrts::RefalFunction *fn) {
 bool refalrts::alloc_ident(
   refalrts::Iter& res, refalrts::RefalIdentifier ident
 ) {
-  if (g_allocator.alloc_node(res)) {
+  if (g_vm.allocator()->alloc_node(res)) {
     res->tag = cDataIdentifier;
     res->ident_info = ident;
     return true;
@@ -1161,7 +1150,7 @@ bool refalrts::alloc_ident(
 namespace {
 
 bool alloc_some_bracket(refalrts::Iter& res, refalrts::DataTag tag) {
-  if (refalrts::g_allocator.alloc_node(res)) {
+  if (refalrts::g_vm.allocator()->alloc_node(res)) {
     res->tag = tag;
     return true;
   } else {
@@ -1196,7 +1185,7 @@ bool refalrts::alloc_close_call(refalrts::Iter& res) {
 }
 
 bool refalrts::alloc_closure_head(refalrts::Iter& res) {
-  if (g_allocator.alloc_node(res)) {
+  if (g_vm.allocator()->alloc_node(res)) {
     res->tag = cDataClosureHead;
     res->number_info = 1;
     return true;
@@ -1208,7 +1197,7 @@ bool refalrts::alloc_closure_head(refalrts::Iter& res) {
 bool refalrts::alloc_unwrapped_closure(
   refalrts::Iter& res, refalrts::Iter head
 ) {
-  if (g_allocator.alloc_node(res)) {
+  if (g_vm.allocator()->alloc_node(res)) {
     res->tag = cDataUnwrappedClosure;
     res->link_info = head;
     return true;
@@ -1226,7 +1215,7 @@ bool refalrts::alloc_chars(
     res_e = 0;
     return true;
   } else {
-    refalrts::Iter before_begin_seq = prev(refalrts::g_allocator.free_ptr());
+    refalrts::Iter before_begin_seq = prev(refalrts::g_vm.allocator()->free_ptr());
     refalrts::Iter end_seq = 0;
 
     for (unsigned i = 0; i < buflen; ++ i) {
@@ -1250,7 +1239,7 @@ bool refalrts::alloc_string(
     res_e = 0;
     return true;
   } else {
-    refalrts::Iter before_begin_seq = prev(refalrts::g_allocator.free_ptr());
+    refalrts::Iter before_begin_seq = prev(refalrts::g_vm.allocator()->free_ptr());
     refalrts::Iter end_seq = 0;
 
     for (const char *p = string; *p != '\0'; ++ p) {
@@ -1413,7 +1402,7 @@ refalrts::Iter refalrts::splice_evar(
 }
 
 void refalrts::splice_to_freelist(refalrts::Iter begin, refalrts::Iter end) {
-  g_allocator.splice_to_freelist(begin, end);
+  g_vm.allocator()->splice_to_freelist(begin, end);
 }
 
 extern void refalrts::splice_to_freelist_open(
@@ -1425,7 +1414,7 @@ extern void refalrts::splice_to_freelist_open(
 }
 
 refalrts::Iter refalrts::splice_from_freelist(refalrts::Iter pos) {
-  return g_allocator.splice_from_freelist(pos);
+  return g_vm.allocator()->splice_from_freelist(pos);
 }
 
 /*
@@ -1518,7 +1507,7 @@ const refalrts::RASLCommand refalrts::RefalSwap::run[] = {
 // Средства профилирования
 
 void refalrts::this_is_generated_function() {
-  g_profiler.start_generated_function();
+  g_vm.profiler()->start_generated_function();
 }
 
 unsigned long refalrts::ticks_per_second() {
@@ -1526,18 +1515,18 @@ unsigned long refalrts::ticks_per_second() {
 }
 
 void refalrts::read_performance_counters(unsigned long counters[]) {
-  refalrts::g_profiler.read_counters(counters);
+  refalrts::g_vm.profiler()->read_counters(counters);
   refalrts::g_vm.read_counters(counters);
-  refalrts::g_allocator.read_counters(counters);
-  refalrts::g_dynamic.read_counters(counters);
+  refalrts::g_vm.allocator()->read_counters(counters);
+  refalrts::g_vm.dynamic()->read_counters(counters);
 }
 
 void refalrts::stop_sentence() {
-  g_profiler.stop_sentence();
+  g_vm.profiler()->stop_sentence();
 }
 
 void refalrts::start_e_loop() {
-  g_profiler.start_e_loop();
+  g_vm.profiler()->start_e_loop();
 }
 
 //------------------------------------------------------------------------------
@@ -1572,7 +1561,7 @@ refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
   if (! name) {
     name = "";
   }
-  Dynamic::IdentHashNode *value = g_dynamic.alloc_ident_node(name);
+  Dynamic::IdentHashNode *value = g_vm.dynamic()->alloc_ident_node(name);
 
 #ifdef IDENTS_LIMIT
   if (! value) {
@@ -1607,7 +1596,7 @@ refalrts::IdentReference::IdentReference(const char *name)
 }
 
 refalrts::RefalIdentifier refalrts::IdentReference::ref() const {
-  return g_dynamic[*this];
+  return (*g_vm.dynamic())[*this];
 }
 
 //------------------------------------------------------------------------------
@@ -1615,7 +1604,7 @@ refalrts::RefalIdentifier refalrts::IdentReference::ref() const {
 // Функции
 
 void refalrts::RefalFunction::register_me() {
-  Dynamic::FuncHashNode *node = g_dynamic.funcs_table().alloc(name);
+  Dynamic::FuncHashNode *node = g_vm.dynamic()->funcs_table().alloc(name);
 
   if (node->function != 0) {
     fprintf(
@@ -1631,7 +1620,7 @@ void refalrts::RefalFunction::register_me() {
 refalrts::RefalFunction *refalrts::RefalFunction::lookup(
   const refalrts::RefalFuncName& name
 ) {
-  Dynamic::FuncHashNode *node = g_dynamic.funcs_table().lookup(name);
+  Dynamic::FuncHashNode *node = g_vm.dynamic()->funcs_table().lookup(name);
 
   if (node) {
     return node->function;
@@ -1648,7 +1637,7 @@ refalrts::FunctionTable::FunctionTable(
   , cookie2(cookie2)
   , items(items)
 {
-  g_dynamic.register_(this);
+  g_vm.dynamic()->register_(this);
 }
 
 refalrts::ExternalReference::ExternalReference(
@@ -1665,7 +1654,7 @@ refalrts::ExternalReference::ExternalReference(
 
 refalrts::RefalFunction *
 refalrts::ExternalReference::ref() const {
-  return g_dynamic[*this];
+  return (*g_vm.dynamic())[*this];
 }
 
 //------------------------------------------------------------------------------
@@ -1749,6 +1738,15 @@ void refalrts::at_exit(refalrts::AtExitCB callback, void *data) {
 }
 
 //==============================================================================
+
+namespace refalrts {
+
+Allocator g_allocator;
+Profiler g_profiler;
+Dynamic g_dynamic(&g_module);
+VM g_vm(&g_allocator, &g_profiler, &g_dynamic);
+
+}  // namespace refalrts
 
 int main(int argc, char **argv) {
 #ifdef ENABLE_DEBUGGER
