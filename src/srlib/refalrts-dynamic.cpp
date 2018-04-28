@@ -147,27 +147,31 @@ unsigned refalrts::Dynamic::find_unresolved_externals() {
     m_unresolved_func_tables = m_unresolved_func_tables->next;
   }
 
-  while (m_unresolved_external_references != 0) {
-    ExternalReference *er = m_unresolved_external_references;
-    RefalFuncName name(er->ref.func_name, er->cookie1, er->cookie2);
+  m_native_externals = malloc<RefalFunction*>(g_module.next_external_id);
+  for (
+    const ExternalReference *er = g_module.list_externals;
+    er != 0;
+    er = er->next
+  ) {
+    RefalFuncName name(er->name, er->cookie1, er->cookie2);
     FuncHashNode *node = funcs_table().lookup(name);
     if (node != 0) {
-      er->ref.function = node->function;
+      assert(er->id < g_module.next_external_id);
+      m_native_externals[er->id] = node->function;
     } else {
       fprintf(
         stderr, "INTERNAL ERROR: unresolved external %s#%u:%u\n",
-        er->ref.func_name, er->cookie1, er->cookie2
+        er->name, er->cookie1, er->cookie2
       );
       ++unresolved;
     }
-
-    m_unresolved_external_references = m_unresolved_external_references->next;
   }
 
   return unresolved;
 }
 
 void refalrts::Dynamic::free_funcs_table() {
+  free(m_native_externals);
   delete m_funcs_table;
 }
 

@@ -107,7 +107,7 @@ PrintBracketsVarInit {
 }
 
 CNameAlias {
-  e.RegularName = 'ref_' <CName e.RegularName> '.ref.function';
+  e.RegularName = 'ref_' <CName e.RegularName> '.ref()';
 }
 
 BaseCName {

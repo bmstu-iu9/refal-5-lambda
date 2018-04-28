@@ -1655,12 +1655,18 @@ refalrts::FunctionTable::FunctionTable(
 refalrts::ExternalReference::ExternalReference(
   const char *name, refalrts::UInt32 cookie1, refalrts::UInt32 cookie2
 )
-  : ref(name)
+  : name(name)
+  , next(g_module.list_externals)
   , cookie1(cookie1)
   , cookie2(cookie2)
-  , next(g_dynamic.m_unresolved_external_references)
+  , id(g_module.next_external_id++)
 {
-  g_dynamic.m_unresolved_external_references = this;
+  g_module.list_externals = this;
+}
+
+refalrts::RefalFunction *
+refalrts::ExternalReference::ref() const {
+  return g_dynamic[*this];
 }
 
 //------------------------------------------------------------------------------

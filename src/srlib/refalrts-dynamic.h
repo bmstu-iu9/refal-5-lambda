@@ -20,6 +20,8 @@ namespace refalrts {
 struct Module {
   IdentReference *list_idents;
   unsigned int next_ident_id;
+  ExternalReference *list_externals;
+  unsigned int next_external_id;
 };
 
 extern struct Module g_module;
@@ -140,9 +142,9 @@ struct Dynamic {
   struct FunctionTable *m_unresolved_func_tables;
   DynamicHash<RefalFuncName, FuncHashNode> *m_funcs_table;
   struct ConstTable *m_tables;
-  struct ExternalReference *m_unresolved_external_references;
   DynamicHash<const char *, IdentHashNode> *m_idents_table;
   RefalIdentifier *m_native_identifiers;
+  RefalFunction **m_native_externals;
 
   // Нет конструктора, должен инициализироваться статически
 
@@ -161,6 +163,10 @@ struct Dynamic {
   DynamicHash<RefalFuncName, FuncHashNode>& funcs_table();
   unsigned find_unresolved_externals();
   void free_funcs_table();
+
+  RefalFunction* operator[](const ExternalReference& ref) const {
+    return m_native_externals[ref.id];
+  }
 
   template <typename T>
   static T *malloc(size_t count = 1) {

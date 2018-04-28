@@ -372,12 +372,15 @@ struct FunctionTable {
 };
 
 struct ExternalReference {
-  FunctionTableItem ref;
-  UInt32 cookie1;
-  UInt32 cookie2;
-  ExternalReference *next;
+  const char *const name;
+  const ExternalReference *next;
+  const UInt32 cookie1;
+  const UInt32 cookie2;
+  const unsigned int id;
 
   ExternalReference(const char *name, UInt32 cookie1, UInt32 cookie2);
+
+  RefalFunction *ref() const;
 };
 
 extern void use(Iter&);
