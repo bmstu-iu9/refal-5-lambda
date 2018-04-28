@@ -866,25 +866,21 @@ refalrts::FnResult
 refalrts::debugger::RefalDebugger::handle_function_call(
   refalrts::Iter begin, refalrts::Iter end, refalrts::RefalFunction *callee
 ) {
-  if (enable_debug()) {
-    debug_trace(begin, end, callee);
-    if (is_debug_stop(begin, callee)) {
-      printf(
-        "Step #%d; Function <%s ...>\n",
-        m_vm->step_counter(), callee == 0 ? "" : callee->name.name
-      );
-      if (debugger_loop(begin, end) == refalrts::cExit) {
-        return cExit;
-      }
+  debug_trace(begin, end, callee);
+  if (is_debug_stop(begin, callee)) {
+    printf(
+      "Step #%d; Function <%s ...>\n",
+      m_vm->step_counter(), callee == 0 ? "" : callee->name.name
+    );
+    if (debugger_loop(begin, end) == refalrts::cExit) {
+      return cExit;
     }
-    var_debug_table.clear();
-    set_step_res(begin, end);
   }
+  var_debug_table.clear();
+  set_step_res(begin, end);
 
   return refalrts::cSuccess;
 }
-
-bool refalrts::debugger::g_enable_debug = false;
 
 int refalrts::debugger::find_debugger_flag(int argc, char **argv) {
   int i = 1;

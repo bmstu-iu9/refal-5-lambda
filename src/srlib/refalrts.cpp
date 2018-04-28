@@ -1779,9 +1779,8 @@ int main(int argc, char **argv) {
       argv[i] = argv[i + 1];
     }
     --argc;
-    refalrts::debugger::set_enable_debug();
+    vm.set_debugger_factory(refalrts::debugger::RefalDebugger::create);
   }
-  vm.set_debugger_factory(refalrts::debugger::RefalDebugger::create);
 #endif // ifdef ENABLE_DEBUGGER
 
   vm.set_args(argc, argv);

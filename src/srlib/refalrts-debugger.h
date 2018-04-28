@@ -163,16 +163,6 @@ public:
 
 int find_debugger_flag(int argc, char **argv);
 
-extern bool g_enable_debug;
-
-inline bool enable_debug() {
-  return g_enable_debug;
-}
-
-inline void set_enable_debug() {
-  g_enable_debug = true;
-}
-
 } // namespace debugger
 
 }  // namespace refalrts
