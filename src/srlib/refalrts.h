@@ -3,6 +3,9 @@
 
 namespace refalrts {
 
+class VM;
+class Dynamic;
+
 enum FnResult {
   cRecognitionImpossible = 0,
   cNoMemory = 1,
@@ -35,7 +38,7 @@ enum DataTag {
   cData_COUNT
 };
 
-typedef FnResult (*RefalFunctionPtr) (Iter begin, Iter end);
+typedef FnResult (*RefalFunctionPtr) (VM *vm, Iter begin, Iter end);
 
 typedef unsigned int UInt32;
 
@@ -57,22 +60,22 @@ struct RefalFunction {
   const RASLCommand *rasl;
   RefalFuncName name;
 
-  RefalFunction(const RASLCommand rasl[], RefalFuncName name)
+  RefalFunction(const RASLCommand rasl[], RefalFuncName name, Dynamic *dynamic)
     : rasl(rasl), name(name)
   {
-    register_me();
+    register_me(dynamic);
   }
 
-  static RefalFunction *lookup(const RefalFuncName& name);
+  static RefalFunction *lookup(VM *vm, const RefalFuncName& name);
 
   static RefalFunction *lookup(
-    UInt32 cookie1, UInt32 cookie2, const char *name
+    VM *vm, UInt32 cookie1, UInt32 cookie2, const char *name
   ) {
-    return lookup(RefalFuncName(name, cookie1, cookie2));
+    return lookup(vm, RefalFuncName(name, cookie1, cookie2));
   }
 
 private:
-  void register_me();
+  void register_me(Dynamic *dynamic);
 };
 
 typedef UInt32 RefalNumber;
@@ -81,8 +84,12 @@ typedef UInt32 RefalNumber;
 struct RefalNativeFunction: public RefalFunction {
   RefalFunctionPtr ptr;
 
-  RefalNativeFunction(RefalFunctionPtr ptr, RefalFuncName name)
-    : RefalFunction(run, name), ptr(ptr)
+  RefalNativeFunction(
+    RefalFunctionPtr ptr,
+    RefalFuncName name,
+    Dynamic *dynamic
+  )
+    : RefalFunction(run, name, dynamic), ptr(ptr)
   {
     /* пусто */
   }
@@ -94,8 +101,8 @@ struct RefalSwap: public RefalFunction {
   Iter head;
   Iter next_head;
 
-  RefalSwap(RefalFuncName name)
-    : RefalFunction(run, name), head(), next_head()
+  RefalSwap(RefalFuncName name, Dynamic *dynamic)
+    : RefalFunction(run, name, dynamic), head(), next_head()
   {
     /* пусто */
   }
@@ -104,8 +111,8 @@ struct RefalSwap: public RefalFunction {
 };
 
 struct RefalEmptyFunction: public RefalFunction {
-  RefalEmptyFunction(RefalFuncName name)
-    : RefalFunction(run, name)
+  RefalEmptyFunction(RefalFuncName name, Dynamic *dynamic)
+    : RefalFunction(run, name, dynamic)
   {
     /* пусто */
   }
@@ -114,8 +121,8 @@ struct RefalEmptyFunction: public RefalFunction {
 };
 
 struct RefalCondFunctionRasl: public RefalFunction {
-  RefalCondFunctionRasl(RefalFuncName name)
-    : RefalFunction(run, name)
+  RefalCondFunctionRasl(RefalFuncName name, Dynamic *dynamic)
+    : RefalFunction(run, name, dynamic)
   {
     /* пусто */
   }
@@ -124,8 +131,8 @@ struct RefalCondFunctionRasl: public RefalFunction {
 };
 
 struct RefalCondFunctionNative: public RefalFunction {
-  RefalCondFunctionNative(RefalFuncName name)
-    : RefalFunction(run, name)
+  RefalCondFunctionNative(RefalFuncName name, Dynamic *dynamic)
+    : RefalFunction(run, name, dynamic)
   {
     /* пусто */
   }
@@ -151,15 +158,17 @@ public:
     return m_name;
   }
 
-  static RefalIdentifier implode(const char *name);
+  static RefalIdentifier implode(Dynamic *dynamic, const char *name);
 
 private:
   const char *m_name;
 };
 
-inline RefalIdentifier ident_implode(const char *name) {
-  return RefalIdentDescr::implode(name);
+inline RefalIdentifier ident_implode(Dynamic *dynamic, const char *name) {
+  return RefalIdentDescr::implode(dynamic, name);
 }
+
+RefalIdentifier ident_implode(VM *vm, const char *name);
 
 struct IdentReference {
   const char *const name;
@@ -168,7 +177,7 @@ struct IdentReference {
 
   IdentReference(const char *name);
 
-  RefalIdentifier ref() const;
+  RefalIdentifier ref(VM *vm) const;
 };
 
 struct Node {
@@ -368,7 +377,9 @@ struct FunctionTable {
   FunctionTableItem *items;
   FunctionTable *next;
 
-  FunctionTable(UInt32 cookie1, UInt32 cookie2, FunctionTableItem *items);
+  FunctionTable(
+    Dynamic *dynamic, UInt32 cookie1, UInt32 cookie2, FunctionTableItem *items
+  );
 };
 
 struct ExternalReference {
@@ -380,7 +391,7 @@ struct ExternalReference {
 
   ExternalReference(const char *name, UInt32 cookie1, UInt32 cookie2);
 
-  RefalFunction *ref() const;
+  RefalFunction *ref(VM *vm) const;
 };
 
 extern void use(Iter&);
@@ -474,21 +485,23 @@ extern bool svar_right(Iter& svar, Iter& first, Iter& last);
 extern refalrts::Iter tvar_left(Iter& tvar, Iter& first, Iter& last);
 extern refalrts::Iter tvar_right(Iter& tvar, Iter& first, Iter& last);
 
-extern bool repeated_stvar_term(Iter stvar_sample, Iter pos);
+extern bool repeated_stvar_term(VM *vm, Iter stvar_sample, Iter pos);
 extern refalrts::Iter repeated_stvar_left(
-  Iter& stvar, Iter stvar_sample, Iter& first, Iter& last
+  VM *vm, Iter& stvar, Iter stvar_sample, Iter& first, Iter& last
 );
 extern refalrts::Iter repeated_stvar_right(
-  Iter& stvar, Iter stvar_sample, Iter& first, Iter& last
+  VM *vm, Iter& stvar, Iter stvar_sample, Iter& first, Iter& last
 );
 
 extern bool repeated_evar_left(
+  VM *vm,
   Iter& evar_b, Iter& evar_e,
   Iter evar_b_sample, Iter evar_e_sample,
   Iter& first, Iter& last
 );
 
 extern bool repeated_evar_right(
+  VM *vm,
   Iter& evar_b, Iter& evar_e,
   Iter evar_b_sample, Iter evar_e_sample,
   Iter& first, Iter& last
@@ -505,27 +518,27 @@ extern unsigned read_chars(
 
 // Операции построения результата
 
-extern void reset_allocator();
+extern void reset_allocator(VM *vm);
 
 extern bool copy_evar(
-  Iter& evar_res_b, Iter& evar_res_e,
+  VM *vm, Iter& evar_res_b, Iter& evar_res_e,
   Iter evar_b_sample, Iter evar_e_sample
 );
 
-extern bool copy_stvar(Iter& stvar_res, Iter stvar_sample);
+extern bool copy_stvar(VM *vm, Iter& stvar_res, Iter stvar_sample);
 
-extern bool alloc_char(Iter& res, char ch);
-extern bool alloc_number(Iter& res, RefalNumber num);
-extern bool alloc_name(Iter& res, RefalFunction *func);
-extern bool alloc_ident(Iter& res, RefalIdentifier ident);
-extern bool alloc_open_adt(Iter& res);
-extern bool alloc_close_adt(Iter& res);
-extern bool alloc_open_bracket(Iter& res);
-extern bool alloc_close_bracket(Iter& res);
-extern bool alloc_open_call(Iter& res);
-extern bool alloc_close_call(Iter& res);
-extern bool alloc_closure_head(Iter& res);
-extern bool alloc_unwrapped_closure(Iter& res, Iter head);
+extern bool alloc_char(VM *vm, Iter& res, char ch);
+extern bool alloc_number(VM *vm, Iter& res, RefalNumber num);
+extern bool alloc_name(VM *vm, Iter& res, RefalFunction *func);
+extern bool alloc_ident(VM *vm, Iter& res, RefalIdentifier ident);
+extern bool alloc_open_adt(VM *vm, Iter& res);
+extern bool alloc_close_adt(VM *vm, Iter& res);
+extern bool alloc_open_bracket(VM *vm, Iter& res);
+extern bool alloc_close_bracket(VM *vm, Iter& res);
+extern bool alloc_open_call(VM *vm, Iter& res);
+extern bool alloc_close_call(VM *vm, Iter& res);
+extern bool alloc_closure_head(VM *vm, Iter& res);
+extern bool alloc_unwrapped_closure(VM *vm, Iter& res, Iter head);
 
 #ifndef alloc_copy_svar
 #define alloc_copy_svar alloc_copy_svar_
@@ -536,33 +549,33 @@ extern bool alloc_unwrapped_closure(Iter& res, Iter head);
 #endif
 
 extern bool alloc_copy_evar(
-  Iter& res, Iter evar_b_sample, Iter evar_e_sample
+  VM *vm, Iter& res, Iter evar_b_sample, Iter evar_e_sample
 );
-extern bool alloc_copy_svar_(Iter& svar_res, Iter svar_sample);
+extern bool alloc_copy_svar_(VM *vm, Iter& svar_res, Iter svar_sample);
 
 extern bool alloc_chars(
-  Iter& res_b, Iter& res_e, const char buffer[], unsigned buflen
+  VM *vm, Iter& res_b, Iter& res_e, const char buffer[], unsigned buflen
 );
-extern bool alloc_string(Iter& res_b, Iter& res_e, const char *string);
+extern bool alloc_string(VM *vm, Iter& res_b, Iter& res_e, const char *string);
 
-extern void push_stack(Iter call_bracket);
+extern void push_stack(VM *vm, Iter call_bracket);
 extern void link_brackets(Iter left, Iter right);
 
 extern Iter splice_elem(Iter res, Iter elem);
 extern Iter splice_stvar(Iter res, Iter var);
 extern Iter splice_evar(Iter res, Iter first, Iter last);
-extern void splice_to_freelist(Iter first, Iter last);
-extern void splice_to_freelist_open(Iter before_first, Iter after_last);
-extern Iter splice_from_freelist(Iter pos);
+extern void splice_to_freelist(VM *vm, Iter first, Iter last);
+extern void splice_to_freelist_open(VM *vm, Iter before_first, Iter after_last);
+extern Iter splice_from_freelist(VM *vm, Iter pos);
 
 Iter unwrap_closure(Iter closure); // Развернуть замыкание
 Iter wrap_closure(Iter closure); // Свернуть замыкание
 
 // Профилирование
 
-extern void this_is_generated_function();
-extern void stop_sentence();
-extern void start_e_loop();
+extern void this_is_generated_function(VM *vm);
+extern void stop_sentence(VM *vm);
+extern void start_e_loop(VM *vm);
 
 enum PerformanceCounters {
   cPerformanceCounter_TotalTime,
@@ -590,18 +603,18 @@ enum PerformanceCounters {
 };
 
 extern unsigned long ticks_per_second();
-extern void read_performance_counters(unsigned long counters[]);
+extern void read_performance_counters(VM *vm, unsigned long counters[]);
 
 // Прочие функции
 
-extern void set_return_code(int retcode);
-extern FnResult recursive_call_main_loop();
+extern void set_return_code(VM *vm, int retcode);
+extern FnResult recursive_call_main_loop(VM *vm);
 extern void use_counter(unsigned& counter);
-inline void set_return_code(RefalNumber retcode) {
-  set_return_code(static_cast<int>(retcode));
+inline void set_return_code(VM *vm, RefalNumber retcode) {
+  set_return_code(vm, static_cast<int>(retcode));
 }
 
-const char* arg(unsigned int param);
+const char* arg(VM *vm, unsigned int param);
 
 /*
   Функция производит печать рефал-выражения в поток file
@@ -630,9 +643,10 @@ struct RASLFunction: public RefalFunction {
     const RefalIdentifier *idents,
     const RefalNumber *numbers,
     const StringItem *strings,
-    const char *filename
+    const char *filename,
+    Dynamic *dynamic
   )
-    : RefalFunction(rasl, name)
+    : RefalFunction(rasl, name, dynamic)
     , functions(functions)
     , idents(idents)
     , numbers(numbers)

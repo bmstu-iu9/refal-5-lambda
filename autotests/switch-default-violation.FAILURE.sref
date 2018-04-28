@@ -1,8 +1,8 @@
 $ENTRY Go {
 %%
-  refalrts::this_is_generated_function();
-  refalrts::this_is_generated_function();
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::this_is_generated_function(vm);
+  refalrts::this_is_generated_function(vm);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }

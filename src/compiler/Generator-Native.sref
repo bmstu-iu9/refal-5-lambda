@@ -11,10 +11,6 @@ $EXTERN StrFromInt, Add;
 $EXTERN EscapeChar, EscapeString;
 
 
-FuncArguments {
-  = '(refalrts::Iter arg_begin, refalrts::Iter arg_end)';
-}
-
 $ENTRY GenProgram-Native {
   (e.SourceFileName) (e.TargetFileName) (e.NativeRASL)
 
@@ -107,7 +103,7 @@ PrintBracketsVarInit {
 }
 
 CNameAlias {
-  e.RegularName = 'ref_' <CName e.RegularName> '.ref()';
+  e.RegularName = 'ref_' <CName e.RegularName> '.ref(vm)';
 }
 
 BaseCName {
@@ -179,7 +175,12 @@ GenCommand-Native {
   (e.Indent) (#CmdFnStart e.Name) =
     (e.Indent '  ')
     ()
-    ('static refalrts::FnResult func_' <BaseCName e.Name> <FuncArguments> ' {');
+    (
+      'static refalrts::FnResult func_' <BaseCName e.Name>
+      '(refalrts::VM *vm, refalrts::Iter arg_begin, refalrts::Iter arg_end)'
+      ' {'
+    )
+    ('  (void) vm;');
 
   (e.Indent '  ') (#CmdFnEnd) =
     (e.Indent)
@@ -194,7 +195,7 @@ GenCommand-Native {
   (e.Indent) (#CmdCallCondition) =
     (e.Indent)
     (e.Indent
-      'refalrts::FnResult rec_res = refalrts::recursive_call_main_loop();'
+      'refalrts::FnResult rec_res = refalrts::recursive_call_main_loop(vm);'
     )
     (e.Indent
       'if (rec_res != refalrts::cSuccess)'
@@ -203,7 +204,7 @@ GenCommand-Native {
 
   (e.Indent) (#CmdProfileFunction) =
     (e.Indent)
-    (e.Indent 'refalrts::this_is_generated_function();');
+    (e.Indent 'refalrts::this_is_generated_function(vm);');
 
   (e.Indent) (#CmdIssueMemory s.Number) =
     (e.Indent)
@@ -221,7 +222,7 @@ GenCommand-Native {
   (e.Indent '  ') (#CmdEndSentence) =
     (e.Indent)
     (e.Indent '} while ( 0 );')
-    (e.Indent 'refalrts::stop_sentence();')
+    (e.Indent 'refalrts::stop_sentence(vm);')
     ();
 
   (e.Indent) (#CmdInitB0) =
@@ -354,7 +355,7 @@ GenCommand-Native {
     (e.Indent '  ')
     (e.Indent <ContextRange-B s.VarNumber> ' = 0;')
     (e.Indent <ContextRange-E s.VarNumber> ' = 0;')
-    (e.Indent 'refalrts::start_e_loop();')
+    (e.Indent 'refalrts::start_e_loop(vm);')
     (e.Indent 'do {')
     ;
 
@@ -385,7 +386,7 @@ GenCommand-Native {
   (e.Indent) (#CmdResetAllocator) =
     (e.Indent)
     ()
-    (e.Indent 'refalrts::reset_allocator();');
+    (e.Indent 'refalrts::reset_allocator(vm);');
 
   (e.Indent) (#CmdSetRes #ARG-BEGIN) =
     (e.Indent)
@@ -406,7 +407,7 @@ GenCommand-Native {
   (e.Indent) (#CmdCopyVar 'e' s.Target s.Sample) =
     (e.Indent)
     (e.Indent
-      'if (! refalrts::copy_evar(' <ContextRange s.Target> ', '
+      'if (! refalrts::copy_evar(vm, ' <ContextRange s.Target> ', '
       <ContextRange s.Sample> '))'
     )
     (e.Indent '  return refalrts::cNoMemory;');
@@ -414,7 +415,7 @@ GenCommand-Native {
   (e.Indent) (#CmdCopyVar s.Mode s.Target s.Sample) =
     (e.Indent)
     (e.Indent
-      'if (! refalrts::copy_stvar(' <ContextItem s.Target> ', '
+      'if (! refalrts::copy_stvar(vm, ' <ContextItem s.Target> ', '
       <ContextItem s.Sample> '))'
     )
     (e.Indent '  return refalrts::cNoMemory;');
@@ -430,7 +431,7 @@ GenCommand-Native {
   (e.Indent) (#CmdCreateElem #Allocate s.ElemNumber #ElString e.String) =
     (e.Indent)
     (e.Indent
-      'if( ! refalrts::alloc_chars( '
+      'if( ! refalrts::alloc_chars( vm, '
       <ContextItem s.ElemNumber> ', ' <ContextItem <Inc s.ElemNumber>> ', '
       <PrintString e.String> ' ) )'
     )
@@ -450,7 +451,7 @@ GenCommand-Native {
 
   (e.Indent) (#CmdPushStack s.ElemNumber) =
     (e.Indent)
-    (e.Indent 'refalrts::push_stack( ' <ContextItem s.ElemNumber> ' );');
+    (e.Indent 'refalrts::push_stack( vm, ' <ContextItem s.ElemNumber> ' );');
 
   (e.Indent) (#CmdWrapClosure s.Offset)
     = (e.Indent)
@@ -496,12 +497,12 @@ GenCommand-Native {
 
   (e.Indent) (#CmdSpliceToFreeList) =
     (e.Indent)
-    (e.Indent 'refalrts::splice_to_freelist( arg_begin, arg_end );');
+    (e.Indent 'refalrts::splice_to_freelist( vm, arg_begin, arg_end );');
 
   (e.Indent) (#CmdSpliceToFreeList-Range s.Left s.Right) =
     (e.Indent)
     (e.Indent
-      'refalrts::splice_to_freelist('
+      'refalrts::splice_to_freelist(vm, '
       <ContextItem s.Left> ', ' <ContextItem s.Right> ');'
     );
 
@@ -516,12 +517,12 @@ GenCommand-Native {
       {
         #LEFT-EDGE =
           (e.Indent
-            'refalrts::splice_to_freelist_open( trash_prev, res );'
+            'refalrts::splice_to_freelist_open( vm, trash_prev, res );'
           );
 
         s.Offset^ =
           (e.Indent
-            'refalrts::splice_to_freelist_open( '
+            'refalrts::splice_to_freelist_open( vm, '
             <ContextItem s.Offset> ', res );'
           );
       }
@@ -598,7 +599,7 @@ PrintMatchIdent {
   (e.Indent) s.Direction s.BracketNumber e.Name =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
-      ('ident') ' ident_' <CName e.Name> '.ref()'
+      ('ident') ' ident_' <CName e.Name> '.ref(vm)'
     >;
 }
 
@@ -606,7 +607,7 @@ PrintMatchIdentSave {
   (e.Indent) s.Offset s.Direction s.BracketNumber e.Name =
     <PrintMatchSave
       (e.Indent) s.Offset s.Direction s.BracketNumber
-      ('ident') ' ident_' <CName e.Name> '.ref()'
+      ('ident') ' ident_' <CName e.Name> '.ref(vm)'
     >;
 }
 
@@ -711,7 +712,7 @@ PrintMatchSTVarSave {
 
 PrintMatchRepeated {
   (e.Indent) s.Direction s.BracketNumber 'e' s.VarNumber s.SampleNumber =
-    <PrintMatch
+    <PrintMatch-VM
       (e.Indent) s.Direction s.BracketNumber
       ('repeated_evar')
       <ContextRange s.VarNumber> ', ' <ContextRange s.SampleNumber>
@@ -719,13 +720,13 @@ PrintMatchRepeated {
 
   (e.Indent) #AlgTerm s.BracketNumber s.Mode s.VarNumber s.SampleNumber =
     (e.Indent
-      'if( ! refalrts::repeated_stvar_term( ' <ContextItem s.VarNumber>
+      'if( ! refalrts::repeated_stvar_term( vm, ' <ContextItem s.VarNumber>
       ', ' <ContextItem s.SampleNumber> ' ) )'
     )
     (e.Indent '  ' <BreakerFromIndent e.Indent>);
 
   (e.Indent) s.Direction s.BracketNumber s.Mode s.VarNumber s.SampleNumber =
-    <PrintMatch
+    <PrintMatch-VM
       (e.Indent) s.Direction s.BracketNumber
       ('repeated_stvar')
       <ContextItem s.VarNumber> ', ' <ContextItem s.SampleNumber>
@@ -734,7 +735,7 @@ PrintMatchRepeated {
 
 PrintMatchRepeatedTVarSave {
   (e.Indent) s.Direction s.BracketNumber s.VarNumber s.SampleNumber =
-    <PrintMatchSave
+    <PrintMatchSave-VM
       (e.Indent) <Inc s.VarNumber> s.Direction s.BracketNumber
       ('repeated_stvar')
       <ContextItem s.VarNumber> ', ' <ContextItem s.SampleNumber>
@@ -768,10 +769,37 @@ PrintMatchSave {
     (e.Indent '  ' <BreakerFromIndent e.Indent>);
 }
 
+PrintMatch-VM {
+  (e.Indent) #AlgTerm s.Offset (e.Function) e.TextRep =
+    (e.Indent
+      'if( ! refalrts::' e.Function '_term( vm, ' e.TextRep ', '
+      <ContextItem s.Offset> ' ) )'
+    )
+    (e.Indent '  ' <BreakerFromIndent e.Indent>);
+
+  (e.Indent) s.Direction s.BracketNumber (e.Function) e.TextRep =
+    (e.Indent
+      'if( ! refalrts::' e.Function '_' <StrFromDirection s.Direction>
+      '( vm, ' e.TextRep ', ' <ContextRange s.BracketNumber> ' ) )'
+    )
+    (e.Indent '  ' <BreakerFromIndent e.Indent>);
+}
+
+PrintMatchSave-VM {
+  (e.Indent) s.Offset s.Direction s.BracketNumber (e.Function) e.TextRep =
+    (e.Indent
+      <ContextItem s.Offset> ' = '
+      'refalrts::' e.Function '_' <StrFromDirection s.Direction>
+      '( vm, ' e.TextRep ', ' <ContextRange s.BracketNumber> ' );'
+    )
+    (e.Indent 'if( ! ' <ContextItem s.Offset> ' )')
+    (e.Indent '  ' <BreakerFromIndent e.Indent>);
+}
+
 PrintCreateElem {
   (e.Indent) #Allocate s.ElemNumber s.ElementType e.Info =
     (e.Indent
-      'if( ! refalrts::alloc_' <AllocatorFuncName s.ElementType> '( '
+      'if( ! refalrts::alloc_' <AllocatorFuncName s.ElementType> '( vm, '
       <ContextItem s.ElemNumber> <AllocatorFuncArgument s.ElementType e.Info>
       ' ) )'
     )
@@ -817,7 +845,7 @@ AllocatorFuncArgument {
 
   #ElNumber s.Number = ', ' <StrFromInt s.Number> 'UL';
 
-  #ElIdent e.Name = ', ident_' <CName e.Name> '.ref()';
+  #ElIdent e.Name = ', ident_' <CName e.Name> '.ref(vm)';
 
   #ElUnwrappedClosure s.HeadOffset = ', ' <ContextItem s.HeadOffset>;
 

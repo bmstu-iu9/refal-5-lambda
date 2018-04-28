@@ -222,8 +222,6 @@ inline VM::VM(Allocator *allocator, Profiler *profiler, Dynamic *dynamic)
   /* пусто */
 }
 
-extern VM g_vm;
-
 }  // namespace refalrts
 
 #endif  // RefalRTS_VM_H_

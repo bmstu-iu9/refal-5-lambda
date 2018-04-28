@@ -1,12 +1,12 @@
 Native {
 %%
-  refalrts::RefalIdentifier filename = refalrts::ident_implode(__FILE__);
+  refalrts::RefalIdentifier filename = refalrts::ident_implode(vm, __FILE__);
   refalrts::Iter ident_filename = 0;
-  if (! refalrts::alloc_ident(ident_filename, filename)) {
+  if (! refalrts::alloc_ident(vm, ident_filename, filename)) {
     return refalrts::cNoMemory;
   }
   refalrts::splice_elem(arg_begin, ident_filename);
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }

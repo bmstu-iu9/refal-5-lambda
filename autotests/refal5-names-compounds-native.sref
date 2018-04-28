@@ -5,13 +5,13 @@ $ENTRY Go {
   (void) arg_begin;
   (void) arg_end;
 
-  refalrts::RefalIdentifier mingled = refalrts::ident_implode("_-x");
-  if (mingled != ident_u_m_x.ref()) {
+  refalrts::RefalIdentifier mingled = refalrts::ident_implode(vm, "_-x");
+  if (mingled != ident_u_m_x.ref(vm)) {
     return refalrts::cRecognitionImpossible;
   }
 
-  mingled = refalrts::ident_implode("A + B\n");
-  if (mingled != ident_Ak32_k43_k32_Bk10_.ref()) {
+  mingled = refalrts::ident_implode(vm, "A + B\n");
+  if (mingled != ident_Ak32_k43_k32_Bk10_.ref(vm)) {
     return refalrts::cRecognitionImpossible;
   }
 

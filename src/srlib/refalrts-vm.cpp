@@ -170,10 +170,10 @@ refalrts::VM::free_states_stack() {
 }
 
 refalrts::FnResult refalrts::VM::run() {
-  RefalFunction *go = RefalFunction::lookup(0, 0, "GO");
+  RefalFunction *go = RefalFunction::lookup(this, 0, 0, "GO");
 
   if (! go) {
-    go = RefalFunction::lookup(0, 0, "Go");
+    go = RefalFunction::lookup(this, 0, 0, "Go");
   }
 
   if (! go) {
@@ -671,7 +671,7 @@ JUMP_FROM_SCALE:
         continue;  // пропускаем ++rasl в конце
 
       case icProfileFunction:
-        this_is_generated_function();
+        this_is_generated_function(this);
         break;
 
       case icLoadConstants:
@@ -700,7 +700,7 @@ JUMP_FROM_SCALE:
         break;
 
       case icProfilerStopSentence:
-        stop_sentence();
+        stop_sentence(this);
         break;
 
       case icInitB0:
@@ -1053,7 +1053,9 @@ JUMP_FROM_SCALE:
           Iter &sample_b = context[sample];
           Iter &sample_e = context[sample + 1];
           if (
-            ! repeated_evar_left(evar_b, evar_e, sample_b, sample_e, bb, be)
+            ! repeated_evar_left(
+              this, evar_b, evar_e, sample_b, sample_e, bb, be
+            )
           ) {
             MATCH_FAIL;
           }
@@ -1069,7 +1071,9 @@ JUMP_FROM_SCALE:
           Iter &sample_b = context[sample];
           Iter &sample_e = context[sample + 1];
           if (
-            ! repeated_evar_right(evar_b, evar_e, sample_b, sample_e, bb, be)
+            ! repeated_evar_right(
+                this, evar_b, evar_e, sample_b, sample_e, bb, be
+            )
           ) {
             MATCH_FAIL;
           }
@@ -1081,7 +1085,9 @@ JUMP_FROM_SCALE:
         {
           int index = val1;
           int sample = val2;
-          if (! repeated_stvar_left(context[index], context[sample], bb, be)) {
+          if (
+            ! repeated_stvar_left(this, context[index], context[sample], bb, be)
+          ) {
             MATCH_FAIL;
           }
         }
@@ -1092,7 +1098,11 @@ JUMP_FROM_SCALE:
         {
           int index = val1;
           int sample = val2;
-          if (! repeated_stvar_right(context[index], context[sample], bb, be)) {
+          if (
+            ! repeated_stvar_right(
+              this, context[index], context[sample], bb, be
+            )
+          ) {
             MATCH_FAIL;
           }
         }
@@ -1101,7 +1111,7 @@ JUMP_FROM_SCALE:
       case icsRepeatedTerm:
       case ictRepeatedTerm:
         assert(bracket == val1);
-        if (! repeated_stvar_term(context[val2], bb)) {
+        if (! repeated_stvar_term(this, context[val2], bb)) {
           MATCH_FAIL;
         }
         break;
@@ -1112,7 +1122,7 @@ JUMP_FROM_SCALE:
           int sample = val2;
 
           context[index + 1] =
-            repeated_stvar_left(context[index], context[sample], bb, be);
+            repeated_stvar_left(this, context[index], context[sample], bb, be);
           if (! context[index + 1]) {
             MATCH_FAIL;
           }
@@ -1125,7 +1135,7 @@ JUMP_FROM_SCALE:
           int sample = val2;
 
           context[index + 1] =
-            repeated_stvar_right(context[index], context[sample], bb, be);
+            repeated_stvar_right(this, context[index], context[sample], bb, be);
           if (! context[index + 1]) {
             MATCH_FAIL;
           }
@@ -1136,7 +1146,7 @@ JUMP_FROM_SCALE:
         res_b = 0;
         res_e = 0;
         open_e_stack[stack_top++] = ++rasl;
-        start_e_loop();
+        start_e_loop(this);
         break;
 
       case icEStart:
@@ -1165,7 +1175,7 @@ JUMP_FROM_SCALE:
           return cExit;
         }
 #endif  // ifdef ENABLE_DEBUGGER
-        reset_allocator();
+        reset_allocator(this);
         break;
 
       case icSetResArgBegin:
@@ -1188,6 +1198,7 @@ JUMP_FROM_SCALE:
           unsigned int sample = val2;
           if (
             ! copy_evar(
+              this,
               context[target], context[target + 1],
               context[sample], context[sample + 1]
             )
@@ -1201,7 +1212,7 @@ JUMP_FROM_SCALE:
         {
           unsigned int target = val1;
           unsigned int sample = val2;
-          if (! copy_stvar(context[target], context[sample])) {
+          if (! copy_stvar(this, context[target], context[sample])) {
             return cNoMemory;
           }
         }
@@ -1212,38 +1223,38 @@ JUMP_FROM_SCALE:
         break;
 
       case icAllocateChar:
-        if (! alloc_char(elem, static_cast<char>(val2))) {
+        if (! alloc_char(this, elem, static_cast<char>(val2))) {
           return cNoMemory;
         }
         break;
 
       case icAllocateName:
-        if (! alloc_name(elem, functions[val2].function)) {
+        if (! alloc_name(this, elem, functions[val2].function)) {
           return cNoMemory;
         }
         break;
 
       case icAllocateNumber:
-        if (! alloc_number(elem, static_cast<RefalNumber>(val2))) {
+        if (! alloc_number(this, elem, static_cast<RefalNumber>(val2))) {
           return cNoMemory;
         }
         break;
 
       case icAllocateHugeNumber:
-        if (! alloc_number(elem, numbers[val2])) {
+        if (! alloc_number(this, elem, numbers[val2])) {
           return cNoMemory;
         }
         break;
 
       case icAllocateIdent:
-        if (! alloc_ident(elem, idents[val2])) {
+        if (! alloc_ident(this, elem, idents[val2])) {
           return cNoMemory;
         }
         break;
 
       case icAllocateBracket:
         {
-          static bool (*const allocator[])(Iter& res) = {
+          static bool (*const allocator[])(VM *vm, Iter& res) = {
             alloc_open_adt,
             alloc_open_bracket,
             alloc_open_call,
@@ -1253,7 +1264,7 @@ JUMP_FROM_SCALE:
           };
 
           assert(val2 <= ibCloseCall);
-          if (! allocator[val2](elem)) {
+          if (! allocator[val2](this, elem)) {
             return cNoMemory;
           }
         }
@@ -1263,7 +1274,7 @@ JUMP_FROM_SCALE:
         {
           if (
             ! alloc_chars(
-              bb, be, strings[val2].string, strings[val2].string_len
+              this, bb, be, strings[val2].string, strings[val2].string_len
             )
           ) {
             return cNoMemory;
@@ -1272,13 +1283,13 @@ JUMP_FROM_SCALE:
         break;
 
       case icAllocateClosureHead:
-        if (! alloc_closure_head(elem)) {
+        if (! alloc_closure_head(this, elem)) {
           return cNoMemory;
         }
         break;
 
       case icAllocateUnwrappedClosure:
-        if (! alloc_unwrapped_closure(elem, context[val2])) {
+        if (! alloc_unwrapped_closure(this, elem, context[val2])) {
           return cNoMemory;
         }
         break;
@@ -1375,11 +1386,11 @@ JUMP_FROM_SCALE:
         break;
 
       case icSpliceToFreeList:
-        splice_to_freelist(begin, end);
+        splice_to_freelist(this, begin, end);
         break;
 
       case icSpliceToFreeList_Range:
-        splice_to_freelist(context[val1], context[val2]);
+        splice_to_freelist(this, context[val1], context[val2]);
         break;
 
       case icMainLoopReturnSuccess:
@@ -1439,19 +1450,21 @@ JUMP_FROM_SCALE:
               unwrap_closure(function);
               function->tag = cDataClosureHead;
               function->number_info = 73501505; // :-)
-              splice_to_freelist(function, function);
-              splice_to_freelist(head, head);
+              splice_to_freelist(this, function, function);
+              splice_to_freelist(this, head, head);
               res = cSuccess;
             } else {
               refalrts::Iter begin_argument = next(function);
               refalrts::Iter closure_b = 0;
               refalrts::Iter closure_e = 0;
 
-              if (! copy_evar(closure_b, closure_e, next(head), prev(head))) {
+              if (
+                ! copy_evar(this, closure_b, closure_e, next(head), prev(head))
+              ) {
                 res = cNoMemory;
               } else {
                 list_splice(begin_argument, closure_b, closure_e);
-                splice_to_freelist(function, function);
+                splice_to_freelist(this, function, function);
                 res = cSuccess;
               }
             }
@@ -1475,11 +1488,11 @@ JUMP_FROM_SCALE:
         continue;       // избегаем ++rasl в конце цикла
 
       case icTrashLeftEdge:
-        splice_to_freelist_open(trash_prev, res);
+        splice_to_freelist_open(this, trash_prev, res);
         break;
 
       case icTrash:
-        splice_to_freelist_open(context[bracket], res);
+        splice_to_freelist_open(this, context[bracket], res);
         break;
 
       case icFail:
@@ -1528,7 +1541,7 @@ JUMP_FROM_SCALE:
 #endif  // ifdef ENABLE_DEBUGGER
           RefalNativeFunction *native_callee =
             static_cast<RefalNativeFunction*>(callee);
-          FnResult res = (native_callee->ptr)(begin, end);
+          FnResult res = (native_callee->ptr)(this, begin, end);
           if (res != cSuccess) {
             return res;
           }

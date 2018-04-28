@@ -22,14 +22,14 @@ void hashlittle2(
 Example {
 %%
   refalrts::Iter str_b = 0, str_e = 0;
-  refalrts::reset_allocator();
+  refalrts::reset_allocator(vm);
 
-  if (! refalrts::alloc_string(str_b, str_e, example)) {
+  if (! refalrts::alloc_string(vm, str_b, str_e, example)) {
     return refalrts::cNoMemory;
   }
 
   refalrts::splice_evar(arg_begin, str_b, str_e);
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -40,7 +40,7 @@ InitValues {
   arg_begin->number_info = init_value_1;
   arg_end->tag = refalrts::cDataNumber;
   arg_end->number_info = init_value_2;
-  refalrts::splice_to_freelist_open(arg_begin, arg_end);
+  refalrts::splice_to_freelist_open(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -56,7 +56,7 @@ CalcHashOriginal {
   arg_begin->number_info = pc;
   arg_end->tag = refalrts::cDataNumber;
   arg_end->number_info = pb;
-  refalrts::splice_to_freelist_open(arg_begin, arg_end);
+  refalrts::splice_to_freelist_open(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }

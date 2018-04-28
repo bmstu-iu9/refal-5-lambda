@@ -92,7 +92,7 @@ void refalrts::Dynamic::load_native_identifiers() {
 
   for (IdentReference *p = m_main_module->list_idents; p != 0; p = p->next) {
     assert(p->id < m_main_module->next_ident_id);
-    RefalIdentifier ident = ident_implode(p->name);
+    RefalIdentifier ident = ident_implode(this, p->name);
 #ifdef IDENTS_LIMIT
     if (! ident) {
       fprintf(
@@ -367,7 +367,7 @@ void refalrts::Dynamic::enumerate_blocks() {
           new_table->externals[fixed_part.external_count] =
             static_cast<const char *>(0);
           new_table->function_table = new FunctionTable(
-            fixed_part.cookie1, fixed_part.cookie2, new_table->externals
+            this, fixed_part.cookie1, fixed_part.cookie2, new_table->externals
           );
 
           new_table->idents = malloc<RefalIdentifier>(fixed_part.ident_count);
@@ -378,7 +378,7 @@ void refalrts::Dynamic::enumerate_blocks() {
           assert(read == fixed_part.ident_size);
           const char *next_ident_name = new_table->idents_memory;
           for (size_t i = 0; i < fixed_part.ident_count; ++i) {
-            RefalIdentifier ident = ident_implode(next_ident_name);
+            RefalIdentifier ident = ident_implode(this, next_ident_name);
 #ifdef IDENTS_LIMIT
             if (! ident) {
               fprintf(
@@ -450,7 +450,8 @@ void refalrts::Dynamic::enumerate_blocks() {
             table->idents,
             table->numbers,
             table->strings,
-            "filename.sref"
+            "filename.sref",
+            this
           );
         }
         break;
@@ -492,7 +493,7 @@ void refalrts::Dynamic::enumerate_blocks() {
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalNativeFunction(
-            ref->code, table->make_name(name)
+            ref->code, table->make_name(name), this
           );
         }
         break;
@@ -505,7 +506,7 @@ void refalrts::Dynamic::enumerate_blocks() {
           RefalEmptyFunction *result = Dynamic::malloc<RefalEmptyFunction>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
-          new (result) RefalEmptyFunction(table->make_name(name));
+          new (result) RefalEmptyFunction(table->make_name(name), this);
         }
         break;
 
@@ -517,7 +518,7 @@ void refalrts::Dynamic::enumerate_blocks() {
           RefalSwap *result = Dynamic::malloc<RefalSwap>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
-          new (result) RefalSwap(table->make_name(name));
+          new (result) RefalSwap(table->make_name(name), this);
         }
         break;
 
@@ -532,7 +533,7 @@ void refalrts::Dynamic::enumerate_blocks() {
           RefalCondFunctionRasl *result = Dynamic::malloc<RefalCondFunctionRasl>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
-          new (result) RefalCondFunctionRasl(table->make_name(name));
+          new (result) RefalCondFunctionRasl(table->make_name(name), this);
         }
         break;
 
@@ -544,7 +545,7 @@ void refalrts::Dynamic::enumerate_blocks() {
           RefalCondFunctionNative *result = Dynamic::malloc<RefalCondFunctionNative>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
-          new (result) RefalCondFunctionNative(table->make_name(name));
+          new (result) RefalCondFunctionNative(table->make_name(name), this);
         }
         break;
 

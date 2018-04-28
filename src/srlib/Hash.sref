@@ -160,10 +160,10 @@ $ENTRY HashLittle2-Chars {
   sPrimInitval->number_info = c;
   sSecInitval->number_info = b;
 
-  refalrts::splice_to_freelist(arg_begin, func_name);
+  refalrts::splice_to_freelist(vm, arg_begin, func_name);
   refalrts::Iter start_garbage =
     content_b != 0 ? content_b : arg_end;
-  refalrts::splice_to_freelist(start_garbage, arg_end);
+  refalrts::splice_to_freelist(vm, start_garbage, arg_end);
 
 #undef final
 #undef mix

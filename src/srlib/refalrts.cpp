@@ -655,6 +655,7 @@ bool equal_nodes(
 namespace {
 
 bool equal_expressions(
+  refalrts::VM *vm,
   refalrts::Iter first1, refalrts::Iter last1,
   refalrts::Iter first2, refalrts::Iter last2
 ) // throws refalrts::SwitchDefaultViolation
@@ -662,7 +663,7 @@ bool equal_expressions(
   assert((first1 == 0) == (last1 == 0));
   assert((first2 == 0) == (last2 == 0));
 
-  refalrts::g_vm.profiler()->start_repeated_tvar();
+  vm->profiler()->start_repeated_tvar();
 
   while (
     // Порядок условий важен
@@ -679,7 +680,7 @@ bool equal_expressions(
       || ! equal_nodes(first1, first2)
   */
 
-  refalrts::g_vm.profiler()->stop_repeated();
+  vm->profiler()->stop_repeated();
 
   // Успешное завершение -- если мы достигли конца в обоих выражениях
   return refalrts::empty_seq(first1, last1)
@@ -689,7 +690,7 @@ bool equal_expressions(
 } // unnamed namespace
 
 bool refalrts::repeated_stvar_term(
-  refalrts::Iter stvar_sample, refalrts::Iter pos
+  refalrts::VM *vm, refalrts::Iter stvar_sample, refalrts::Iter pos
 ) {
   if (svar_term(stvar_sample, stvar_sample)) {
     return svar_term(pos, pos) && equal_nodes(pos, stvar_sample);
@@ -697,13 +698,14 @@ bool refalrts::repeated_stvar_term(
     refalrts::Iter pos_e = pos->link_info;
     refalrts::Iter stvar_sample_e = stvar_sample->link_info;
 
-    return equal_expressions(stvar_sample, stvar_sample_e, pos, pos_e);
+    return equal_expressions(vm, stvar_sample, stvar_sample_e, pos, pos_e);
   } else {
     return false;
   }
 }
 
 refalrts::Iter refalrts::repeated_stvar_left(
+  refalrts::VM *vm,
   refalrts::Iter& stvar, refalrts::Iter stvar_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
@@ -735,7 +737,7 @@ refalrts::Iter refalrts::repeated_stvar_left(
     }
 
     bool equal = equal_expressions(
-      left_term, left_term_e,
+      vm, left_term, left_term_e,
       stvar_sample, stvar_sample_e
     );
 
@@ -752,6 +754,7 @@ refalrts::Iter refalrts::repeated_stvar_left(
 }
 
 refalrts::Iter refalrts::repeated_stvar_right(
+  refalrts::VM *vm,
   refalrts::Iter& stvar, refalrts::Iter stvar_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
@@ -777,7 +780,7 @@ refalrts::Iter refalrts::repeated_stvar_right(
     }
 
     bool equal = equal_expressions(
-      right_term, right_term_e,
+      vm, right_term, right_term_e,
       stvar_sample, stvar_sample_e
     );
 
@@ -794,11 +797,12 @@ refalrts::Iter refalrts::repeated_stvar_right(
 }
 
 bool refalrts::repeated_evar_left(
+  refalrts::VM *vm,
   refalrts::Iter& evar_b, refalrts::Iter& evar_e,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
-  g_vm.profiler()->start_repeated_evar();
+  vm->profiler()->start_repeated_evar();
   refalrts::Iter current = first;
   refalrts::Iter cur_sample = evar_b_sample;
   refalrts::Iter copy_last = last;
@@ -812,7 +816,7 @@ bool refalrts::repeated_evar_left(
     move_left(current, copy_last);
   }
 
-  g_vm.profiler()->stop_repeated();
+  vm->profiler()->stop_repeated();
 
   /*
     Здесь empty_seq(cur_sample, evar_e_sample) или
@@ -845,11 +849,12 @@ bool refalrts::repeated_evar_left(
 }
 
 bool refalrts::repeated_evar_right(
+  refalrts::VM *vm,
   refalrts::Iter& evar_b, refalrts::Iter& evar_e,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
-  g_vm.profiler()->start_repeated_evar();
+  vm->profiler()->start_repeated_evar();
   refalrts::Iter current = last;
   refalrts::Iter cur_sample = evar_e_sample;
   refalrts::Iter copy_first = first;
@@ -863,7 +868,7 @@ bool refalrts::repeated_evar_right(
     move_right(evar_b_sample, cur_sample);
   }
 
-  g_vm.profiler()->stop_repeated();
+  vm->profiler()->stop_repeated();
 
   /*
     Здесь empty_seq(evar_b_sample, cur_sample) или
@@ -939,41 +944,41 @@ unsigned refalrts::read_chars(
 
 // Операции построения результата
 
-void refalrts::reset_allocator() {
-  g_vm.profiler()->start_result();
-  g_vm.allocator()->reset_allocator();
+void refalrts::reset_allocator(refalrts::VM *vm) {
+  vm->profiler()->start_result();
+  vm->allocator()->reset_allocator();
 }
 
 namespace {
 
-bool copy_node(refalrts::Iter& res, refalrts::Iter sample) {
+bool copy_node(refalrts::VM *vm, refalrts::Iter& res, refalrts::Iter sample) {
   switch(sample->tag) {
     case refalrts::cDataChar:
-      return refalrts::alloc_char(res, sample->char_info);
+      return refalrts::alloc_char(vm, res, sample->char_info);
 
     case refalrts::cDataNumber:
-      return refalrts::alloc_number(res, sample->number_info);
+      return refalrts::alloc_number(vm, res, sample->number_info);
 
     case refalrts::cDataFunction:
-      return refalrts::alloc_name(res, sample->function_info);
+      return refalrts::alloc_name(vm, res, sample->function_info);
 
     case refalrts::cDataIdentifier:
-      return refalrts::alloc_ident(res, sample->ident_info);
+      return refalrts::alloc_ident(vm, res, sample->ident_info);
 
     case refalrts::cDataOpenBracket:
-      return refalrts::alloc_open_bracket(res);
+      return refalrts::alloc_open_bracket(vm, res);
 
     case refalrts::cDataCloseBracket:
-      return refalrts::alloc_close_bracket(res);
+      return refalrts::alloc_close_bracket(vm, res);
 
     case refalrts::cDataOpenADT:
-      return refalrts::alloc_open_adt(res);
+      return refalrts::alloc_open_adt(vm, res);
 
     case refalrts::cDataCloseADT:
-      return refalrts::alloc_close_adt(res);
+      return refalrts::alloc_close_adt(vm, res);
 
     case refalrts::cDataClosure: {
-      bool allocated = refalrts::g_vm.allocator()->alloc_node(res);
+      bool allocated = vm->allocator()->alloc_node(res);
       if (allocated) {
         res->tag = refalrts::cDataClosure;
         refalrts::Iter head = sample->link_info;
@@ -986,7 +991,7 @@ bool copy_node(refalrts::Iter& res, refalrts::Iter sample) {
     }
 
     case refalrts::cDataFile: {
-      bool allocated = refalrts::g_vm.allocator()->alloc_node(res);
+      bool allocated = vm->allocator()->alloc_node(res);
       if (allocated) {
         res->tag = refalrts::cDataFile;
         res->file_info = sample->file_info;
@@ -1011,20 +1016,20 @@ bool copy_node(refalrts::Iter& res, refalrts::Iter sample) {
 namespace {
 
 bool copy_nonempty_evar(
+  refalrts::VM *vm,
   refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
 ) {
-  refalrts::g_vm.profiler()->start_copy();
+  vm->profiler()->start_copy();
 
   refalrts::Iter res = 0;
   refalrts::Iter bracket_stack = 0;
 
-  refalrts::Iter prev_res_begin =
-    prev(refalrts::g_vm.allocator()->free_ptr());
+  refalrts::Iter prev_res_begin = prev(vm->allocator()->free_ptr());
 
   while (! refalrts::empty_seq(evar_b_sample, evar_e_sample)) {
-    if (! copy_node(res, evar_b_sample)) {
-      refalrts::g_vm.profiler()->stop_copy();
+    if (! copy_node(vm, res, evar_b_sample)) {
+      vm->profiler()->stop_copy();
       return false;
     }
 
@@ -1047,7 +1052,7 @@ bool copy_nonempty_evar(
   evar_res_b = next(prev_res_begin);
   evar_res_e = res;
 
-  refalrts::g_vm.profiler()->stop_copy();
+  vm->profiler()->stop_copy();
 
   return true;
 }
@@ -1055,7 +1060,7 @@ bool copy_nonempty_evar(
 } // unnamed namespace
 
 bool refalrts::copy_evar(
-  refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
+  refalrts::VM *vm, refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
 ) {
   if (empty_seq(evar_b_sample, evar_e_sample)) {
@@ -1064,27 +1069,27 @@ bool refalrts::copy_evar(
     return true;
   } else {
     return copy_nonempty_evar(
-      evar_res_b, evar_res_e, evar_b_sample, evar_e_sample
+      vm, evar_res_b, evar_res_e, evar_b_sample, evar_e_sample
     );
   }
 }
 
 bool refalrts::copy_stvar(
-  refalrts::Iter& stvar_res, refalrts::Iter stvar_sample
+  refalrts::VM *vm, refalrts::Iter& stvar_res, refalrts::Iter stvar_sample
 ) {
   if (is_open_bracket(stvar_sample)) {
     refalrts::Iter end_of_sample = stvar_sample->link_info;
     refalrts::Iter end_of_res;
     return copy_evar(
-      stvar_res, end_of_res, stvar_sample, end_of_sample
+      vm, stvar_res, end_of_res, stvar_sample, end_of_sample
     );
   } else {
-    return copy_node(stvar_res, stvar_sample);
+    return copy_node(vm, stvar_res, stvar_sample);
   }
 }
 
 bool refalrts::alloc_copy_evar(
-  refalrts::Iter& res,
+  refalrts::VM *vm, refalrts::Iter& res,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
 ) {
   if (empty_seq(evar_b_sample, evar_e_sample)) {
@@ -1093,20 +1098,20 @@ bool refalrts::alloc_copy_evar(
   } else {
     refalrts::Iter res_e = 0;
     return copy_nonempty_evar(
-      res, res_e, evar_b_sample, evar_e_sample
+      vm, res, res_e, evar_b_sample, evar_e_sample
     );
   }
 }
 
 bool refalrts::alloc_copy_svar_(
-  refalrts::Iter& svar_res, refalrts::Iter svar_sample
+  refalrts::VM *vm, refalrts::Iter& svar_res, refalrts::Iter svar_sample
 ) {
-  return copy_node(svar_res, svar_sample);
+  return copy_node(vm, svar_res, svar_sample);
 }
 
 
-bool refalrts::alloc_char(refalrts::Iter& res, char ch) {
-  if (g_vm.allocator()->alloc_node(res)) {
+bool refalrts::alloc_char(refalrts::VM *vm, refalrts::Iter& res, char ch) {
+  if (vm->allocator()->alloc_node(res)) {
     res->tag = cDataChar;
     res->char_info = ch;
     return true;
@@ -1115,8 +1120,10 @@ bool refalrts::alloc_char(refalrts::Iter& res, char ch) {
   }
 }
 
-bool refalrts::alloc_number(refalrts::Iter& res, refalrts::RefalNumber num) {
-  if (g_vm.allocator()->alloc_node(res)) {
+bool refalrts::alloc_number(
+  refalrts::VM *vm, refalrts::Iter& res, refalrts::RefalNumber num
+) {
+  if (vm->allocator()->alloc_node(res)) {
     res->tag = cDataNumber;
     res->number_info = num;
     return true;
@@ -1125,8 +1132,10 @@ bool refalrts::alloc_number(refalrts::Iter& res, refalrts::RefalNumber num) {
   }
 }
 
-bool refalrts::alloc_name(refalrts::Iter& res, refalrts::RefalFunction *fn) {
-  if (g_vm.allocator()->alloc_node(res)) {
+bool refalrts::alloc_name(
+  refalrts::VM *vm, refalrts::Iter& res, refalrts::RefalFunction *fn
+) {
+  if (vm->allocator()->alloc_node(res)) {
     res->tag = cDataFunction;
     res->function_info = fn;
     return true;
@@ -1136,9 +1145,9 @@ bool refalrts::alloc_name(refalrts::Iter& res, refalrts::RefalFunction *fn) {
 }
 
 bool refalrts::alloc_ident(
-  refalrts::Iter& res, refalrts::RefalIdentifier ident
+  refalrts::VM *vm, refalrts::Iter& res, refalrts::RefalIdentifier ident
 ) {
-  if (g_vm.allocator()->alloc_node(res)) {
+  if (vm->allocator()->alloc_node(res)) {
     res->tag = cDataIdentifier;
     res->ident_info = ident;
     return true;
@@ -1149,8 +1158,10 @@ bool refalrts::alloc_ident(
 
 namespace {
 
-bool alloc_some_bracket(refalrts::Iter& res, refalrts::DataTag tag) {
-  if (refalrts::g_vm.allocator()->alloc_node(res)) {
+bool alloc_some_bracket(
+  refalrts::VM *vm, refalrts::Iter& res, refalrts::DataTag tag
+) {
+  if (vm->allocator()->alloc_node(res)) {
     res->tag = tag;
     return true;
   } else {
@@ -1160,32 +1171,32 @@ bool alloc_some_bracket(refalrts::Iter& res, refalrts::DataTag tag) {
 
 } // unnamed namespace
 
-bool refalrts::alloc_open_adt(refalrts::Iter& res) {
-  return alloc_some_bracket(res, cDataOpenADT);
+bool refalrts::alloc_open_adt(refalrts::VM *vm, refalrts::Iter& res) {
+  return alloc_some_bracket(vm, res, cDataOpenADT);
 }
 
-bool refalrts::alloc_close_adt(refalrts::Iter& res) {
-  return alloc_some_bracket(res, cDataCloseADT);
+bool refalrts::alloc_close_adt(refalrts::VM *vm, refalrts::Iter& res) {
+  return alloc_some_bracket(vm, res, cDataCloseADT);
 }
 
-bool refalrts::alloc_open_bracket(refalrts::Iter& res) {
-  return alloc_some_bracket(res, cDataOpenBracket);
+bool refalrts::alloc_open_bracket(refalrts::VM *vm, refalrts::Iter& res) {
+  return alloc_some_bracket(vm, res, cDataOpenBracket);
 }
 
-bool refalrts::alloc_close_bracket(refalrts::Iter& res) {
-  return alloc_some_bracket(res, cDataCloseBracket);
+bool refalrts::alloc_close_bracket(refalrts::VM *vm, refalrts::Iter& res) {
+  return alloc_some_bracket(vm, res, cDataCloseBracket);
 }
 
-bool refalrts::alloc_open_call(refalrts::Iter& res) {
-  return alloc_some_bracket(res, cDataOpenCall);
+bool refalrts::alloc_open_call(refalrts::VM *vm, refalrts::Iter& res) {
+  return alloc_some_bracket(vm, res, cDataOpenCall);
 }
 
-bool refalrts::alloc_close_call(refalrts::Iter& res) {
-  return alloc_some_bracket(res, cDataCloseCall);
+bool refalrts::alloc_close_call(refalrts::VM *vm, refalrts::Iter& res) {
+  return alloc_some_bracket(vm, res, cDataCloseCall);
 }
 
-bool refalrts::alloc_closure_head(refalrts::Iter& res) {
-  if (g_vm.allocator()->alloc_node(res)) {
+bool refalrts::alloc_closure_head(refalrts::VM *vm, refalrts::Iter& res) {
+  if (vm->allocator()->alloc_node(res)) {
     res->tag = cDataClosureHead;
     res->number_info = 1;
     return true;
@@ -1195,9 +1206,9 @@ bool refalrts::alloc_closure_head(refalrts::Iter& res) {
 }
 
 bool refalrts::alloc_unwrapped_closure(
-  refalrts::Iter& res, refalrts::Iter head
+  refalrts::VM *vm, refalrts::Iter& res, refalrts::Iter head
 ) {
-  if (g_vm.allocator()->alloc_node(res)) {
+  if (vm->allocator()->alloc_node(res)) {
     res->tag = cDataUnwrappedClosure;
     res->link_info = head;
     return true;
@@ -1207,6 +1218,7 @@ bool refalrts::alloc_unwrapped_closure(
 }
 
 bool refalrts::alloc_chars(
+  refalrts::VM *vm,
   refalrts::Iter& res_b, refalrts::Iter& res_e,
   const char buffer[], unsigned buflen
 ) {
@@ -1215,11 +1227,11 @@ bool refalrts::alloc_chars(
     res_e = 0;
     return true;
   } else {
-    refalrts::Iter before_begin_seq = prev(refalrts::g_vm.allocator()->free_ptr());
+    refalrts::Iter before_begin_seq = prev(vm->allocator()->free_ptr());
     refalrts::Iter end_seq = 0;
 
     for (unsigned i = 0; i < buflen; ++ i) {
-      if (! alloc_char(end_seq, buffer[i])) {
+      if (! alloc_char(vm, end_seq, buffer[i])) {
         return false;
       }
     }
@@ -1232,6 +1244,7 @@ bool refalrts::alloc_chars(
 }
 
 bool refalrts::alloc_string(
+  refalrts::VM *vm,
   refalrts::Iter& res_b, refalrts::Iter& res_e, const char *string
 ) {
   if (*string == '\0') {
@@ -1239,11 +1252,11 @@ bool refalrts::alloc_string(
     res_e = 0;
     return true;
   } else {
-    refalrts::Iter before_begin_seq = prev(refalrts::g_vm.allocator()->free_ptr());
+    refalrts::Iter before_begin_seq = prev(vm->allocator()->free_ptr());
     refalrts::Iter end_seq = 0;
 
     for (const char *p = string; *p != '\0'; ++ p) {
-      if (! alloc_char(end_seq, *p)) {
+      if (! alloc_char(vm, end_seq, *p)) {
         return false;
       }
     }
@@ -1255,8 +1268,8 @@ bool refalrts::alloc_string(
   }
 }
 
-void refalrts::push_stack(Iter call_bracket) {
-  g_vm.push_stack(call_bracket);
+void refalrts::push_stack(refalrts::VM *vm, refalrts::Iter call_bracket) {
+  vm->push_stack(call_bracket);
 }
 
 void refalrts::link_brackets(Iter left, Iter right) {
@@ -1401,20 +1414,24 @@ refalrts::Iter refalrts::splice_evar(
   return list_splice(res, begin, end);
 }
 
-void refalrts::splice_to_freelist(refalrts::Iter begin, refalrts::Iter end) {
-  g_vm.allocator()->splice_to_freelist(begin, end);
+void refalrts::splice_to_freelist(
+  refalrts::VM *vm, refalrts::Iter begin, refalrts::Iter end
+) {
+  vm->allocator()->splice_to_freelist(begin, end);
 }
 
 extern void refalrts::splice_to_freelist_open(
-  refalrts::Iter before_first, refalrts::Iter after_last
+  refalrts::VM *vm, refalrts::Iter before_first, refalrts::Iter after_last
 ) {
   if (before_first->next != after_last) {
-    refalrts::splice_to_freelist(before_first->next, after_last->prev);
+    refalrts::splice_to_freelist(vm, before_first->next, after_last->prev);
   }
 }
 
-refalrts::Iter refalrts::splice_from_freelist(refalrts::Iter pos) {
-  return g_vm.allocator()->splice_from_freelist(pos);
+refalrts::Iter refalrts::splice_from_freelist(
+  refalrts::VM *vm, refalrts::Iter pos
+) {
+  return vm->allocator()->splice_from_freelist(pos);
 }
 
 /*
@@ -1506,39 +1523,41 @@ const refalrts::RASLCommand refalrts::RefalSwap::run[] = {
 
 // Средства профилирования
 
-void refalrts::this_is_generated_function() {
-  g_vm.profiler()->start_generated_function();
+void refalrts::this_is_generated_function(refalrts::VM *vm) {
+  vm->profiler()->start_generated_function();
 }
 
 unsigned long refalrts::ticks_per_second() {
   return CLOCKS_PER_SEC;
 }
 
-void refalrts::read_performance_counters(unsigned long counters[]) {
-  refalrts::g_vm.profiler()->read_counters(counters);
-  refalrts::g_vm.read_counters(counters);
-  refalrts::g_vm.allocator()->read_counters(counters);
-  refalrts::g_vm.dynamic()->read_counters(counters);
+void refalrts::read_performance_counters(
+  refalrts::VM *vm, unsigned long counters[]
+) {
+  vm->profiler()->read_counters(counters);
+  vm->read_counters(counters);
+  vm->allocator()->read_counters(counters);
+  vm->dynamic()->read_counters(counters);
 }
 
-void refalrts::stop_sentence() {
-  g_vm.profiler()->stop_sentence();
+void refalrts::stop_sentence(refalrts::VM *vm) {
+  vm->profiler()->stop_sentence();
 }
 
-void refalrts::start_e_loop() {
-  g_vm.profiler()->start_e_loop();
+void refalrts::start_e_loop(refalrts::VM *vm) {
+  vm->profiler()->start_e_loop();
 }
 
 //------------------------------------------------------------------------------
 
 // Прочие операции
 
-void refalrts::set_return_code(int code) {
-  refalrts::g_vm.set_return_code(code);
+void refalrts::set_return_code(refalrts::VM *vm, int code) {
+  vm->set_return_code(code);
 }
 
-const char* refalrts::arg(unsigned int param) {
-  return g_vm.arg(param);
+const char* refalrts::arg(refalrts::VM *vm, unsigned int param) {
+  return vm->arg(param);
 }
 
 void refalrts::debug_print_expr(
@@ -1556,12 +1575,12 @@ void refalrts::debug_print_expr(
 // Идентификаторы
 
 refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
-  const char *name
+  refalrts::Dynamic *dynamic, const char *name
 ) {
   if (! name) {
     name = "";
   }
-  Dynamic::IdentHashNode *value = g_vm.dynamic()->alloc_ident_node(name);
+  Dynamic::IdentHashNode *value = dynamic->alloc_ident_node(name);
 
 #ifdef IDENTS_LIMIT
   if (! value) {
@@ -1587,6 +1606,12 @@ refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
   return &value->ident;
 }
 
+refalrts::RefalIdentifier refalrts::ident_implode(
+  refalrts::VM *vm, const char *name
+) {
+  return ident_implode(vm->dynamic(), name);
+}
+
 refalrts::IdentReference::IdentReference(const char *name)
   : name(name)
   , next(g_module.list_idents)
@@ -1595,16 +1620,17 @@ refalrts::IdentReference::IdentReference(const char *name)
   g_module.list_idents = this;
 }
 
-refalrts::RefalIdentifier refalrts::IdentReference::ref() const {
-  return (*g_vm.dynamic())[*this];
+refalrts::RefalIdentifier
+refalrts::IdentReference::ref(refalrts::VM *vm) const {
+  return (*vm->dynamic())[*this];
 }
 
 //------------------------------------------------------------------------------
 
 // Функции
 
-void refalrts::RefalFunction::register_me() {
-  Dynamic::FuncHashNode *node = g_vm.dynamic()->funcs_table().alloc(name);
+void refalrts::RefalFunction::register_me(refalrts::Dynamic *dynamic) {
+  Dynamic::FuncHashNode *node = dynamic->funcs_table().alloc(name);
 
   if (node->function != 0) {
     fprintf(
@@ -1618,9 +1644,9 @@ void refalrts::RefalFunction::register_me() {
 }
 
 refalrts::RefalFunction *refalrts::RefalFunction::lookup(
-  const refalrts::RefalFuncName& name
+  refalrts::VM *vm, const refalrts::RefalFuncName& name
 ) {
-  Dynamic::FuncHashNode *node = g_vm.dynamic()->funcs_table().lookup(name);
+  Dynamic::FuncHashNode *node = vm->dynamic()->funcs_table().lookup(name);
 
   if (node) {
     return node->function;
@@ -1630,6 +1656,7 @@ refalrts::RefalFunction *refalrts::RefalFunction::lookup(
 }
 
 refalrts::FunctionTable::FunctionTable(
+  refalrts::Dynamic *dynamic,
   refalrts::UInt32 cookie1, refalrts::UInt32 cookie2,
   refalrts::FunctionTableItem items[]
 )
@@ -1637,7 +1664,7 @@ refalrts::FunctionTable::FunctionTable(
   , cookie2(cookie2)
   , items(items)
 {
-  g_vm.dynamic()->register_(this);
+  dynamic->register_(this);
 }
 
 refalrts::ExternalReference::ExternalReference(
@@ -1653,8 +1680,8 @@ refalrts::ExternalReference::ExternalReference(
 }
 
 refalrts::RefalFunction *
-refalrts::ExternalReference::ref() const {
-  return (*g_vm.dynamic())[*this];
+refalrts::ExternalReference::ref(refalrts::VM *vm) const {
+  return (*vm->dynamic())[*this];
 }
 
 //------------------------------------------------------------------------------
@@ -1667,11 +1694,11 @@ refalrts::NativeReference *refalrts::NativeReference::s_references = 0;
 // Интерпретатор
 //==============================================================================
 
-refalrts::FnResult refalrts::recursive_call_main_loop() {
+refalrts::FnResult refalrts::recursive_call_main_loop(refalrts::VM *vm) {
   const  refalrts::RASLCommand rasl[] = {
-    { refalrts::icNextStep,0,0,0},
+    { refalrts::icNextStep, 0, 0, 0 },
   };
-  return refalrts::g_vm.main_loop(rasl);
+  return vm->main_loop(rasl);
 }
 
 const refalrts::RefalIdentifier refalrts::idents[] = { 0 };
@@ -1739,16 +1766,12 @@ void refalrts::at_exit(refalrts::AtExitCB callback, void *data) {
 
 //==============================================================================
 
-namespace refalrts {
-
-Allocator g_allocator;
-Profiler g_profiler;
-Dynamic g_dynamic(&g_module);
-VM g_vm(&g_allocator, &g_profiler, &g_dynamic);
-
-}  // namespace refalrts
-
 int main(int argc, char **argv) {
+  refalrts::Allocator allocator;
+  refalrts::Profiler profiler;
+  refalrts::Dynamic dynamic(&g_module);
+  refalrts::VM vm(&allocator, &profiler, &dynamic);
+
 #ifdef ENABLE_DEBUGGER
   int debug_arg = refalrts::debugger::find_debugger_flag(argc, argv);
   if (debug_arg != -1) {
@@ -1758,27 +1781,27 @@ int main(int argc, char **argv) {
     --argc;
     refalrts::debugger::set_enable_debug();
   }
-  refalrts::g_vm.set_debugger_factory(refalrts::debugger::RefalDebugger::create);
+  vm.set_debugger_factory(refalrts::debugger::RefalDebugger::create);
 #endif // ifdef ENABLE_DEBUGGER
 
-  refalrts::g_vm.set_args(argc, argv);
+  vm.set_args(argc, argv);
 
   refalrts::FnResult res;
   try {
-    refalrts::g_dynamic.enumerate_blocks();
-    refalrts::g_dynamic.load_native_identifiers();
+    dynamic.enumerate_blocks();
+    dynamic.load_native_identifiers();
 
-    unsigned unresolved = refalrts::g_dynamic.find_unresolved_externals();
+    unsigned unresolved = dynamic.find_unresolved_externals();
     if (unresolved > 0) {
-      refalrts::g_dynamic.free_idents_table();
-      refalrts::g_dynamic.free_funcs_table();
-      refalrts::g_dynamic.cleanup_module();
+      dynamic.free_idents_table();
+      dynamic.free_funcs_table();
+      dynamic.cleanup_module();
       fprintf(stderr, "Found %u unresolved externals\n", unresolved);
       return 157;
     }
 
-    refalrts::g_profiler.start_profiler();
-    res = refalrts::g_vm.run();
+    profiler.start_profiler();
+    res = vm.run();
     fflush(stderr);
     fflush(stdout);
   } catch (refalrts::SwitchDefaultViolation& error) {
@@ -1793,13 +1816,13 @@ int main(int argc, char **argv) {
   }
 
   refalrts::at_exit_ns::perform_at_exit();
-  refalrts::g_profiler.end_profiler();
-  refalrts::g_vm.free_view_field();
-  refalrts::g_allocator.free_memory();
-  refalrts::g_dynamic.free_idents_table();
-  refalrts::g_dynamic.free_funcs_table();
-  refalrts::g_dynamic.cleanup_module();
-  refalrts::g_vm.free_states_stack();
+  profiler.end_profiler();
+  vm.free_view_field();
+  allocator.free_memory();
+  dynamic.free_idents_table();
+  dynamic.free_funcs_table();
+  dynamic.cleanup_module();
+  vm.free_states_stack();
 
   fflush(stdout);
 
@@ -1814,7 +1837,7 @@ int main(int argc, char **argv) {
       return 102;
 
     case refalrts::cExit:
-      return refalrts::g_vm.get_return_code();
+      return vm.get_return_code();
 
     case refalrts::cStepLimit:
       return 103;
