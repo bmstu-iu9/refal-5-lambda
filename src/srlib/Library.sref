@@ -791,7 +791,7 @@ $LABEL stdin, stdout, stderr, stout;
 %%
 namespace {
 
-#define USE_IDENT(ident_name) (ident_ ## ident_name)
+#define USE_IDENT(ident_name) (ident_ ## ident_name.ref())
 
 enum { cMaxFileHandles = 40 };
 FILE *g_file_handles[cMaxFileHandles];

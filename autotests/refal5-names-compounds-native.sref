@@ -6,12 +6,12 @@ $ENTRY Go {
   (void) arg_end;
 
   refalrts::RefalIdentifier mingled = refalrts::ident_implode("_-x");
-  if (mingled != ident_u_m_x) {
+  if (mingled != ident_u_m_x.ref()) {
     return refalrts::cRecognitionImpossible;
   }
 
   mingled = refalrts::ident_implode("A + B\n");
-  if (mingled != ident_Ak32_k43_k32_Bk10_) {
+  if (mingled != ident_Ak32_k43_k32_Bk10_.ref()) {
     return refalrts::cRecognitionImpossible;
   }
 

@@ -17,6 +17,16 @@ namespace refalrts {
 // Использовать class, public и private нельзя — требуется статическая
 // инициализация:
 //   X x = { ... };
+struct Module {
+  IdentReference *list_idents;
+  unsigned int next_ident_id;
+};
+
+extern struct Module g_module;
+
+// Использовать class, public и private нельзя — требуется статическая
+// инициализация:
+//   X x = { ... };
 struct Dynamic {
   static UInt32 one_at_a_time(UInt32 init, const char *bytes, size_t length);
 
@@ -132,6 +142,7 @@ struct Dynamic {
   struct ConstTable *m_tables;
   struct ExternalReference *m_unresolved_external_references;
   DynamicHash<const char *, IdentHashNode> *m_idents_table;
+  RefalIdentifier *m_native_identifiers;
 
   // Нет конструктора, должен инициализироваться статически
 
@@ -141,6 +152,11 @@ struct Dynamic {
 
   void free_idents_table();
   IdentHashNode *alloc_ident_node(const char *name);
+
+  void load_native_identifiers();
+  RefalIdentifier operator[](const IdentReference& ref) const {
+    return m_native_identifiers[ref.id];
+  }
 
   DynamicHash<RefalFuncName, FuncHashNode>& funcs_table();
   unsigned find_unresolved_externals();

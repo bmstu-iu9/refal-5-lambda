@@ -166,6 +166,16 @@ inline RefalIdentifier ident_implode(const char *name) {
   return RefalIdentDescr::implode(name);
 }
 
+struct IdentReference {
+  const char *const name;
+  IdentReference *const next;
+  unsigned int const id;
+
+  IdentReference(const char *name);
+
+  RefalIdentifier ref() const;
+};
+
 struct Node {
   NodePtr prev;
   NodePtr next;

@@ -147,8 +147,8 @@ GenCommand-Native {
   (e.Indent) (#CmdDefineIdent e.Name) =
     (e.Indent)
     (
-      'static const refalrts::RefalIdentifier ident_' <CName e.Name> ' = '
-      'refalrts::ident_from_static("' <DisplayCName e.Name> '");'
+      'static const refalrts::IdentReference ident_' <CName e.Name>
+      '("' <DisplayCName e.Name> '");'
     );
 
   (e.Indent) (#CmdExtern e.Name) =
@@ -598,7 +598,7 @@ PrintMatchIdent {
   (e.Indent) s.Direction s.BracketNumber e.Name =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
-      ('ident') ' ident_' <CName e.Name>
+      ('ident') ' ident_' <CName e.Name> '.ref()'
     >;
 }
 
@@ -606,7 +606,7 @@ PrintMatchIdentSave {
   (e.Indent) s.Offset s.Direction s.BracketNumber e.Name =
     <PrintMatchSave
       (e.Indent) s.Offset s.Direction s.BracketNumber
-      ('ident') ' ident_' <CName e.Name>
+      ('ident') ' ident_' <CName e.Name> '.ref()'
     >;
 }
 
@@ -817,7 +817,7 @@ AllocatorFuncArgument {
 
   #ElNumber s.Number = ', ' <StrFromInt s.Number> 'UL';
 
-  #ElIdent e.Name = ', ident_' <CName e.Name>;
+  #ElIdent e.Name = ', ident_' <CName e.Name> '.ref()';
 
   #ElUnwrappedClosure s.HeadOffset = ', ' <ContextItem s.HeadOffset>;
 

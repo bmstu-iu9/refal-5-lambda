@@ -33,7 +33,7 @@ namespace refalrts {
 Allocator g_allocator;
 VM g_vm(&g_allocator);
 Profiler g_profiler;
-struct Dynamic g_dynamic = { 0, 0, 0, 0, 0 };
+struct Dynamic g_dynamic = { 0, 0, 0, 0, 0, 0 };
 
 }  // namespace refalrts
 
@@ -231,7 +231,7 @@ refalrts::Iter refalrts::number_right(
 bool refalrts::ident_term(
   refalrts::RefalIdentifier ident, refalrts::Iter& pos
 ) {
-    return (pos->tag == cDataIdentifier) && (pos->ident_info == ident);
+  return (pos->tag == cDataIdentifier) && (pos->ident_info == ident);
 }
 
 refalrts::Iter refalrts::ident_left(
@@ -1625,6 +1625,18 @@ refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
   return &value->ident;
 }
 
+refalrts::IdentReference::IdentReference(const char *name)
+  : name(name)
+  , next(g_module.list_idents)
+  , id(g_module.next_ident_id++)
+{
+  g_module.list_idents = this;
+}
+
+refalrts::RefalIdentifier refalrts::IdentReference::ref() const {
+  return g_dynamic[*this];
+}
+
 //------------------------------------------------------------------------------
 
 // Функции
@@ -1778,6 +1790,7 @@ int main(int argc, char **argv) {
   refalrts::FnResult res;
   try {
     refalrts::g_dynamic.enumerate_blocks();
+    refalrts::g_dynamic.load_native_identifiers();
 
     unsigned unresolved = refalrts::g_dynamic.find_unresolved_externals();
     if (unresolved > 0) {
