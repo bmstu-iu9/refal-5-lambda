@@ -26,10 +26,8 @@ struct Module {
 
 extern struct Module g_module;
 
-// Использовать class, public и private нельзя — требуется статическая
-// инициализация:
-//   X x = { ... };
-struct Dynamic {
+class Dynamic {
+public:
   static UInt32 one_at_a_time(UInt32 init, const char *bytes, size_t length);
 
   template <typename Key>
@@ -120,6 +118,7 @@ struct Dynamic {
     }
   };
 
+private:
   struct ConstTable {
     UInt32 cookie1;
     UInt32 cookie2;
@@ -146,7 +145,8 @@ struct Dynamic {
   RefalIdentifier *m_native_identifiers;
   RefalFunction **m_native_externals;
 
-  // Нет конструктора, должен инициализироваться статически
+public:
+  Dynamic();
 
   DynamicHash<const char *, IdentHashNode>& idents_table();
 
@@ -166,6 +166,11 @@ struct Dynamic {
 
   RefalFunction* operator[](const ExternalReference& ref) const {
     return m_native_externals[ref.id];
+  }
+
+  void register_(FunctionTable *table) {
+    table->next = m_unresolved_func_tables;
+    m_unresolved_func_tables = table;
   }
 
   template <typename T>

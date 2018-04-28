@@ -14,6 +14,17 @@
 
 /*static*/ struct refalrts::Module refalrts::g_module = { 0, 0 };
 
+refalrts::Dynamic::Dynamic()
+  : m_unresolved_func_tables(0)
+  , m_funcs_table(0)
+  , m_tables(0)
+  , m_idents_table(0)
+  , m_native_identifiers(0)
+  , m_native_externals(0)
+{
+  /* пусто */
+}
+
 //------------------------------------------------------------------------------
 // Хеш-таблица
 //------------------------------------------------------------------------------

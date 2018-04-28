@@ -33,7 +33,7 @@ namespace refalrts {
 Allocator g_allocator;
 VM g_vm(&g_allocator);
 Profiler g_profiler;
-struct Dynamic g_dynamic = { 0, 0, 0, 0, 0, 0 };
+Dynamic g_dynamic;
 
 }  // namespace refalrts
 
@@ -1647,9 +1647,8 @@ refalrts::FunctionTable::FunctionTable(
   : cookie1(cookie1)
   , cookie2(cookie2)
   , items(items)
-  , next(g_dynamic.m_unresolved_func_tables)
 {
-  g_dynamic.m_unresolved_func_tables = this;
+  g_dynamic.register_(this);
 }
 
 refalrts::ExternalReference::ExternalReference(
