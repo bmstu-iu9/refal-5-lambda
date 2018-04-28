@@ -151,16 +151,11 @@ public:
     return m_name;
   }
 
-  static RefalIdentifier from_static(const char *name);
   static RefalIdentifier implode(const char *name);
 
 private:
   const char *m_name;
 };
-
-inline RefalIdentifier ident_from_static(const char *name) {
-  return RefalIdentDescr::from_static(name);
-}
 
 inline RefalIdentifier ident_implode(const char *name) {
   return RefalIdentDescr::implode(name);

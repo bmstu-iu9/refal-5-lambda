@@ -1566,33 +1566,6 @@ void refalrts::debug_print_expr(
 
 // Идентификаторы
 
-refalrts::RefalIdentifier refalrts::RefalIdentDescr::from_static(
-  const char * name
-) {
-  Dynamic::IdentHashNode *value = g_dynamic.alloc_ident_node(name);
-#ifdef IDENTS_LIMIT
-  if (! value) {
-    fprintf(
-      stderr, "INTERNAL ERROR: Identifiers table overflows (max %ld)\n",
-      static_cast<unsigned long>(IDENTS_LIMIT)
-    );
-    exit(154);
-  }
-#else
-  assert(value != 0);
-#endif // ifdef IDENTS_LIMIT
-
-  if (value->ident.m_name == 0) {
-    value->ident.m_name = name;
-  } else if (value->nonstatic_origin != 0) {
-    value->ident.m_name = name;
-    delete[] value->nonstatic_origin;
-    value->nonstatic_origin = 0;
-  }
-
-  return &value->ident;
-}
-
 refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
   const char *name
 ) {
