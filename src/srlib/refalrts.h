@@ -730,9 +730,9 @@ enum BlockType { /*BlockTypeNumber:cBlockType;*/
 };
 
 
-typedef void (*AtExitCB)(void *data);
+typedef void (*AtExitCB)(Dynamic *dynamic, void *data);
 
-void at_exit(AtExitCB callback, void *data);
+void at_exit(VM *vm, AtExitCB callback, void *data);
 
 
 } // namespace refalrts

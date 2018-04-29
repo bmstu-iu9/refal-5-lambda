@@ -1717,51 +1717,8 @@ void refalrts::SwitchDefaultViolation::print() {
 
 //==============================================================================
 
-namespace refalrts {
-
-namespace at_exit_ns {
-
-struct AtExitListNode *g_at_exit_list = 0;
-
-struct AtExitListNode {
-  AtExitCB callback;
-  void *data;
-  AtExitListNode *next;
-
-  AtExitListNode(AtExitCB callback, void *data)
-    : callback(callback), data(data), next(g_at_exit_list)
-    {
-      g_at_exit_list = this;
-    }
-
-  ~AtExitListNode() {
-    callback(data);
-  }
-};
-
-void perform_at_exit() {
-  while (g_at_exit_list != 0) {
-    AtExitListNode *current = g_at_exit_list;
-
-    g_at_exit_list = g_at_exit_list->next;
-
-    delete current;
-  }
-}
-
-};  // namespace at_exit_ns
-
-};  // namespace refalrts
-
-void refalrts::at_exit(refalrts::AtExitCB callback, void *data) {
-  at_exit_ns::AtExitListNode *p = at_exit_ns::g_at_exit_list;
-  while (p != 0 && (p->callback != callback || p->data != data)) {
-    p = p->next;
-  }
-
-  if (p == 0) {
-    new at_exit_ns::AtExitListNode(callback, data);
-  }
+void refalrts::at_exit(VM *vm, refalrts::AtExitCB callback, void *data) {
+  vm->dynamic()->at_exit(callback, data);
 }
 
 //==============================================================================
@@ -1814,7 +1771,7 @@ int main(int argc, char **argv) {
     return 153;
   }
 
-  refalrts::at_exit_ns::perform_at_exit();
+  dynamic.perform_at_exit();
   profiler.end_profiler();
   vm.free_view_field();
   allocator.free_memory();

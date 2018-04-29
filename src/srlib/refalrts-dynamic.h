@@ -136,6 +136,24 @@ private:
     RefalFuncName make_name(const char *name) const;
   };
 
+  struct AtExitListNode {
+    AtExitCB callback;
+    void *data;
+    AtExitListNode *next;
+
+    AtExitListNode(AtExitCB callback, void *data, Dynamic *dynamic)
+      : callback(callback), data(data), next(dynamic->m_at_exit_list)
+    {
+      dynamic->m_at_exit_list = this;
+    }
+
+    void call(Dynamic *dynamic) {
+      callback(dynamic, data);
+    }
+  };
+
+  friend struct AtExitListNode;
+
   struct FunctionTable *m_unresolved_func_tables;
   DynamicHash<RefalFuncName, FuncHashNode> *m_funcs_table;
   struct ConstTable *m_tables;
@@ -143,6 +161,7 @@ private:
   RefalIdentifier *m_native_identifiers;
   RefalFunction **m_native_externals;
   Module *m_main_module;
+  AtExitListNode *m_at_exit_list;
 
 public:
   Dynamic(Module *main_module);
@@ -185,6 +204,9 @@ public:
   bool seek_rasl_signature(FILE *stream);
   const char *read_asciiz(FILE *stream);
   void read_counters(unsigned long counters[]);
+
+  void at_exit(AtExitCB callback, void *data);
+  void perform_at_exit();
 };
 
 }  // namespace refalrts

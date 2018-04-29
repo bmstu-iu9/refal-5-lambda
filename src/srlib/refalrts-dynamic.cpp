@@ -20,6 +20,7 @@ refalrts::Dynamic::Dynamic(Module *main_module)
   , m_native_identifiers(0)
   , m_native_externals(0)
   , m_main_module(main_module)
+  , m_at_exit_list(0)
 {
   /* пусто */
 }
@@ -583,4 +584,24 @@ void refalrts::Dynamic::cleanup_module() {
 void refalrts::Dynamic::read_counters(unsigned long counters[]) {
   counters[cPerformanceCounter_IdentsAllocated] =
     static_cast<unsigned long>(idents_count());
+}
+
+void refalrts::Dynamic::at_exit(refalrts::AtExitCB callback, void *data) {
+  AtExitListNode *p = m_at_exit_list;
+  while (p != 0 && (p->callback != callback || p->data != data)) {
+    p = p->next;
+  }
+
+  if (p == 0) {
+    new AtExitListNode(callback, data, this);
+  }
+}
+
+void refalrts::Dynamic::perform_at_exit() {
+  while (m_at_exit_list != 0) {
+    AtExitListNode *current = m_at_exit_list;
+    m_at_exit_list = m_at_exit_list->next;
+    current->call(this);
+    delete current;
+  }
 }

@@ -815,7 +815,7 @@ bool file_handle_left(
     );
 }
 
-void close_all_files_at_exit(void *) {
+void close_all_files_at_exit(refalrts::Dynamic *, void *) {
   for (size_t i = 0; i < cMaxFileHandles; ++i) {
     if (g_file_handles[i] != 0) {
       fclose(g_file_handles[i]);
@@ -865,6 +865,7 @@ bool release_file_handle(refalrts::Iter pfile_handle) {
 }
 
 bool open_handle(
+  refalrts::VM *vm,
   refalrts::RefalNumber file_no, const char *filename, const char *mode
 ) {
   if (0 != g_file_handles[file_no]) {
@@ -877,11 +878,12 @@ bool open_handle(
     filename = default_name;
   }
 
-  refalrts::at_exit(close_all_files_at_exit, 0);
+  refalrts::at_exit(vm, close_all_files_at_exit, 0);
   return (g_file_handles[file_no] = fopen(filename, mode)) != 0;
 }
 
 bool reopen_handle(
+  refalrts::VM *vm,
   refalrts::Iter pfile_handle, const char *filename, const char *mode
 ) {
   assert(refalrts::cDataNumber == pfile_handle->tag);
@@ -894,7 +896,7 @@ bool reopen_handle(
     }
   }
 
-  return open_handle(file_no, filename, mode);
+  return open_handle(vm, file_no, filename, mode);
 }
 
 }  // unnamed namespace
@@ -924,7 +926,7 @@ Autoopen {
 
     if (0 != file_no && 0 == g_file_handles[file_no]) {
       char default_mode[] = { pmode->char_info, '\0' };
-      success = open_handle(file_no, 0, default_mode);
+      success = open_handle(vm, file_no, 0, default_mode);
     }
   }
 
@@ -1319,7 +1321,7 @@ $ENTRY Open {
     return refalrts::cRecognitionImpossible;
   }
 
-  if (! reopen_handle(pfile_handle, filename, mode.c_str())) {
+  if (! reopen_handle(vm, pfile_handle, filename, mode.c_str())) {
     return refalrts::cRecognitionImpossible;
   }
 
