@@ -1,6 +1,7 @@
 #include <new>
 
 #include <assert.h>
+#include <string.h>
 
 #include "refalrts-dynamic.h"
 
@@ -21,6 +22,7 @@ refalrts::Dynamic::Dynamic(Module *main_module)
   , m_native_externals(0)
   , m_main_module(main_module)
   , m_at_exit_list(0)
+  , m_global_variables(0)
 {
   /* пусто */
 }
@@ -604,4 +606,13 @@ void refalrts::Dynamic::perform_at_exit() {
     current->call(this);
     delete current;
   }
+}
+
+void refalrts::Dynamic::alloc_global_variables() {
+  m_global_variables = malloc<char>(m_main_module->global_variables_memory);
+  memset(m_global_variables, '\0', m_main_module->global_variables_memory);
+}
+
+void refalrts::Dynamic::free_global_variables() {
+  free(m_global_variables);
 }

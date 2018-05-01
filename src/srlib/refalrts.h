@@ -1,6 +1,9 @@
 #ifndef RefalRTS_H_
 #define RefalRTS_H_
 
+#include <stddef.h>
+
+
 namespace refalrts {
 
 class VM;
@@ -733,6 +736,43 @@ enum BlockType { /*BlockTypeNumber:cBlockType;*/
 typedef void (*AtExitCB)(Dynamic *dynamic, void *data);
 
 void at_exit(VM *vm, AtExitCB callback, void *data);
+
+
+class GlobalRefBase {
+  size_t m_offset;
+
+protected:
+  GlobalRefBase(size_t size);
+
+  void *ptr(VM *vm);
+  void *ptr(Dynamic *dynamic);
+};
+
+template <typename T>
+class GlobalRef: private GlobalRefBase {
+  // Объединение более-менее обеспечивает выравнивание,
+  // кроме того, требует чтобы тип T не имел нетривиальных
+  // конструкторов (C++98).
+  union Aligned {
+    T t;
+    void *p;
+    double *d;
+  };
+
+public:
+  GlobalRef(size_t count = 1)
+    : GlobalRefBase(sizeof(Aligned) * count)
+  {
+    /* пусто */
+  }
+
+  T& ref(VM *vm, size_t index = 0) {
+    return static_cast<T*>(ptr(vm))[index];
+  }
+  T& ref(Dynamic *dynamic, size_t index = 0) {
+    return static_cast<T*>(ptr(dynamic))[index];
+  }
+};
 
 
 } // namespace refalrts

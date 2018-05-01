@@ -794,7 +794,7 @@ namespace {
 #define USE_IDENT(ident_name) (ident_ ## ident_name.ref(vm))
 
 enum { cMaxFileHandles = 40 };
-FILE *g_file_handles[cMaxFileHandles];
+refalrts::GlobalRef<FILE*> g_file_handles(cMaxFileHandles);
 
 bool file_handle_left(
   refalrts::VM *vm,
@@ -815,11 +815,11 @@ bool file_handle_left(
     );
 }
 
-void close_all_files_at_exit(refalrts::Dynamic *, void *) {
+void close_all_files_at_exit(refalrts::Dynamic *dynamic, void *) {
   for (size_t i = 0; i < cMaxFileHandles; ++i) {
-    if (g_file_handles[i] != 0) {
-      fclose(g_file_handles[i]);
-      g_file_handles[i] = 0;    // на всякий случай
+    if (g_file_handles.ref(dynamic, i) != 0) {
+      fclose(g_file_handles.ref(dynamic, i));
+      g_file_handles.ref(dynamic, i) = 0;    // на всякий случай
     }
   }
 }
@@ -837,7 +837,7 @@ FILE *extract_file_handle(refalrts::VM *vm, refalrts::Iter pfile_handle) {
       return 0;
     }
 
-    return g_file_handles[file_no];
+    return g_file_handles.ref(vm, file_no);
   } else if (refalrts::cDataIdentifier == pfile_handle->tag) {
     return
       USE_IDENT(stdin) == pfile_handle->ident_info ? stdin :
@@ -848,7 +848,7 @@ FILE *extract_file_handle(refalrts::VM *vm, refalrts::Iter pfile_handle) {
   }
 }
 
-bool release_file_handle(refalrts::Iter pfile_handle) {
+bool release_file_handle(refalrts::VM *vm, refalrts::Iter pfile_handle) {
   if (refalrts::cDataIdentifier == pfile_handle->tag) {
     return true;
   }
@@ -857,10 +857,10 @@ bool release_file_handle(refalrts::Iter pfile_handle) {
 
   refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
 
-  assert(g_file_handles[file_no] != 0);
+  assert(g_file_handles.ref(vm, file_no) != 0);
 
-  bool successful_closed = EOF != fclose(g_file_handles[file_no]);
-  g_file_handles[file_no] = 0;
+  bool successful_closed = EOF != fclose(g_file_handles.ref(vm, file_no));
+  g_file_handles.ref(vm, file_no) = 0;
   return successful_closed;
 }
 
@@ -868,7 +868,7 @@ bool open_handle(
   refalrts::VM *vm,
   refalrts::RefalNumber file_no, const char *filename, const char *mode
 ) {
-  if (0 != g_file_handles[file_no]) {
+  if (0 != g_file_handles.ref(vm, file_no)) {
     return false;
   }
 
@@ -879,7 +879,7 @@ bool open_handle(
   }
 
   refalrts::at_exit(vm, close_all_files_at_exit, 0);
-  return (g_file_handles[file_no] = fopen(filename, mode)) != 0;
+  return (g_file_handles.ref(vm, file_no) = fopen(filename, mode)) != 0;
 }
 
 bool reopen_handle(
@@ -890,8 +890,8 @@ bool reopen_handle(
 
   refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
 
-  if (g_file_handles[file_no] != 0) {
-    if (! release_file_handle(pfile_handle)) {
+  if (g_file_handles.ref(vm, file_no) != 0) {
+    if (! release_file_handle(vm, pfile_handle)) {
       return false;
     }
   }
@@ -924,7 +924,7 @@ Autoopen {
   if (refalrts::cDataNumber == pfile_handle->tag) {
     refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
 
-    if (0 != file_no && 0 == g_file_handles[file_no]) {
+    if (0 != file_no && 0 == g_file_handles.ref(vm, file_no)) {
       char default_mode[] = { pmode->char_info, '\0' };
       success = open_handle(vm, file_no, 0, default_mode);
     }
@@ -1570,8 +1570,7 @@ $ENTRY Rp {
 namespace cookie_ns {
 
 extern unsigned long raw_step(refalrts::VM *vm);
-
-extern unsigned long g_correction;
+extern unsigned long correction(refalrts::VM *vm);
 
 }  // namespace cookie_ns
 %%
@@ -1588,7 +1587,7 @@ $ENTRY Step {
 
   refalrts::RefalNumber step =
     static_cast<refalrts::RefalNumber>(
-      cookie_ns::raw_step(vm) - cookie_ns::g_correction
+      cookie_ns::raw_step(vm) - cookie_ns::correction(vm)
     );
 
   refalrts::reinit_number(arg_begin, step);
@@ -1610,9 +1609,12 @@ unsigned long cookie_ns::raw_step(refalrts::VM *vm) {
 
 namespace cookie_ns {
 
-unsigned long g_correction = 1;  // call of Go is not countered
+refalrts::GlobalRef<unsigned long> g_correction;
+refalrts::GlobalRef<unsigned long> g_start_step;
 
-unsigned long g_start_step = 0;
+unsigned long correction(refalrts::VM *vm) {
+  return g_correction.ref(vm) + 1;      // call of Go is not countered
+}
 
 }  // namespace cookie_ns
 %%
@@ -1623,10 +1625,10 @@ unsigned long g_start_step = 0;
 */
 $ENTRY __Step-Start {
 %%
-  if (0 != cookie_ns::g_start_step) {
+  if (0 != cookie_ns::g_start_step.ref(vm)) {
     return refalrts::cRecognitionImpossible;
   }
-  cookie_ns::g_start_step = cookie_ns::raw_step(vm);
+  cookie_ns::g_start_step.ref(vm) = cookie_ns::raw_step(vm);
 
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
@@ -1635,12 +1637,12 @@ $ENTRY __Step-Start {
 
 $ENTRY __Step-End {
 %%
-  if (0 == cookie_ns::g_start_step) {
+  if (0 == cookie_ns::g_start_step.ref(vm)) {
     return refalrts::cRecognitionImpossible;
   }
-  cookie_ns::g_correction +=
-    (cookie_ns::raw_step(vm) - cookie_ns::g_start_step) + 1;
-  cookie_ns::g_start_step = 0;
+  cookie_ns::g_correction.ref(vm) +=
+    (cookie_ns::raw_step(vm) - cookie_ns::g_start_step.ref(vm)) + 1;
+  cookie_ns::g_start_step.ref(vm) = 0;
 
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
@@ -2528,7 +2530,7 @@ refalrts::FnResult cookie_ns::close(
   switch (mode) {
   case cookie_ns::cCloseMode_Silent:
     if (handle) {
-      if (! release_file_handle(pfile_handle)) {
+      if (! release_file_handle(vm, pfile_handle)) {
         return refalrts::cRecognitionImpossible;
       }
     }
@@ -2539,7 +2541,7 @@ refalrts::FnResult cookie_ns::close(
       return refalrts::cRecognitionImpossible;
     }
 
-    if (! release_file_handle(pfile_handle)) {
+    if (! release_file_handle(vm, pfile_handle)) {
       return refalrts::cRecognitionImpossible;
     }
     break;
@@ -2720,6 +2722,7 @@ $ENTRY Explode_Ext {
 %%
 namespace {
 
+// Пока нет возможности и смысла сделать эту переменную реентерантной
 clock_t g_time_elapsed_edge = clock();
 
 }  // unnamed namespace
@@ -2925,7 +2928,20 @@ RndGen::UInt RndGen::next_in_range(RndGen::UInt max) {
   }
 }
 
-RndGen g_gen;
+refalrts::GlobalRef<RndGen*> g_gen;
+
+void delete_gen(refalrts::Dynamic *dynamic, void *) {
+  delete g_gen.ref(dynamic);
+}
+
+RndGen& gen(refalrts::VM *vm) {
+  if (g_gen.ref(vm) == 0) {
+    g_gen.ref(vm) = new RndGen();
+    refalrts::at_exit(vm, delete_gen, 0);
+  }
+
+  return *g_gen.ref(vm);
+}
 
 bool positive_digit_arg(
   refalrts::Iter& pfunc_name, refalrts::RefalNumber& value,
@@ -2962,7 +2978,7 @@ $ENTRY Random {
     return refalrts::cRecognitionImpossible;
   }
 
-  max = g_gen.next_in_range(max);
+  max = gen(vm).next_in_range(max);
 
   if (0 == max) {
     max = 1;
@@ -2971,7 +2987,7 @@ $ENTRY Random {
   refalrts::reset_allocator(vm);
   bool zero = true;
   for (size_t i = 0; i < static_cast<size_t>(max); ++i) {
-    refalrts::RefalNumber digit = g_gen.next_value();
+    refalrts::RefalNumber digit = gen(vm).next_value();
     if (digit != 0 || ! zero) {
       zero = false;
 
@@ -3011,7 +3027,7 @@ $ENTRY RandomDigit {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::RefalNumber digit = g_gen.next_in_range(max);
+  refalrts::RefalNumber digit = gen(vm).next_in_range(max);
 
   refalrts::reinit_number(arg_begin, digit);
   refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
@@ -3276,7 +3292,7 @@ GetFreeHandle {
   }
 
   refalrts::RefalNumber free_file = 1;
-  while (free_file < cMaxFileHandles && g_file_handles[free_file] != 0) {
+  while (free_file < cMaxFileHandles && g_file_handles.ref(vm, free_file) != 0) {
     ++free_file;
   }
 

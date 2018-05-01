@@ -24,7 +24,7 @@
 //FROM refalrts-platform-specific
 #include "refalrts-platform-specific.h"
 
-static struct refalrts::Module g_module = { 0, 0 };
+static struct refalrts::Module g_module = { 0, 0, 0 };
 
 namespace refalrts {
 
@@ -1721,6 +1721,20 @@ void refalrts::at_exit(VM *vm, refalrts::AtExitCB callback, void *data) {
   vm->dynamic()->at_exit(callback, data);
 }
 
+refalrts::GlobalRefBase::GlobalRefBase(size_t size)
+  : m_offset(g_module.global_variables_memory)
+{
+  g_module.global_variables_memory += size;
+}
+
+void *refalrts::GlobalRefBase::ptr(refalrts::VM *vm) {
+  return ptr(vm->dynamic());
+}
+
+void *refalrts::GlobalRefBase::ptr(refalrts::Dynamic *dynamic) {
+  return dynamic->global_variable(m_offset);
+}
+
 //==============================================================================
 
 int main(int argc, char **argv) {
@@ -1746,9 +1760,11 @@ int main(int argc, char **argv) {
   try {
     dynamic.enumerate_blocks();
     dynamic.load_native_identifiers();
+    dynamic.alloc_global_variables();
 
     unsigned unresolved = dynamic.find_unresolved_externals();
     if (unresolved > 0) {
+      dynamic.free_global_variables();
       dynamic.free_idents_table();
       dynamic.free_funcs_table();
       dynamic.cleanup_module();
@@ -1775,6 +1791,7 @@ int main(int argc, char **argv) {
   profiler.end_profiler();
   vm.free_view_field();
   allocator.free_memory();
+  dynamic.free_global_variables();
   dynamic.free_idents_table();
   dynamic.free_funcs_table();
   dynamic.cleanup_module();

@@ -22,6 +22,7 @@ struct Module {
   unsigned int next_ident_id;
   ExternalReference *list_externals;
   unsigned int next_external_id;
+  size_t global_variables_memory;
 };
 
 class Dynamic {
@@ -162,6 +163,7 @@ private:
   RefalFunction **m_native_externals;
   Module *m_main_module;
   AtExitListNode *m_at_exit_list;
+  char *m_global_variables;
 
 public:
   Dynamic(Module *main_module);
@@ -207,6 +209,12 @@ public:
 
   void at_exit(AtExitCB callback, void *data);
   void perform_at_exit();
+
+  void alloc_global_variables();
+  void free_global_variables();
+  void *global_variable(size_t offset) {
+    return &m_global_variables[offset];
+  }
 };
 
 }  // namespace refalrts
