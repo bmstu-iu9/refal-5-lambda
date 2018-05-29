@@ -19,75 +19,105 @@ $ENTRY GenericMatch {
 }
 
 /*
-  Сопоставляем (P:He) выражение общего вида P и жесткий образец He, который
-  имеет вид: "Ht1′ … HtN′ e.X HtM″ … Ht1″" либо "Ht1 … HtN"
-  Возможны 4 случая:
+  Сопоставляем P:H
+    P - выражение общего вида
+    H - жесткий образец, который имеет вид:
+      "t.1 … t.N e.X t.M … t.K″" или "t.1 … t.N"
 */
 GenericMatch-Aux {
-  /* 1. He = Ht He` */
   (t.Pt e.Pe) (t.Ht e.He) (e.Substs)
-    , <IsTerm t.Ht> : True
+    , <IsTerm t.Ht> : True /* H начинается на t */
     , <IsTerm t.Pt> : True /* P начинается на t */
     = <TermMatch t.Pt t.Ht>
     : {
         Clear e.TermSubsts
-          = <GenericMatch-Aux (e.Pe) (e.He) (e.Substs (e.TermSubsts))>;
+          = <GenericMatch-Aux (e.Pe) (e.He) (e.Substs e.TermSubsts)>;
 
         Failure = Failure;
         Undefined = Undefined;
         /* Contracted пока не поддерживаем */
       };
 
-  /* P начинается на е
-  (e.Pe) (t.Ht e.He) = Failure;
-  /* E начинается на вызов функции */
-  /* todo */
+  (e.Pe t.Pt) (e.He t.Ht) (e.Substs)
+    , <IsTerm t.Ht> : True /* H заканчивается на t */
+    , <IsTerm t.Pt> : True /* P заканчивается на t */
+    = <TermMatch t.Pt t.Ht>
+    : {
+        Clear e.TermSubsts
+          = <GenericMatch-Aux (e.Pe) (e.He) (e.Substs e.TermSubsts)>;
 
-  /* 2. He = Ht He` */
-  (e.Pe t.Pt) (e.He t.Ht)
-    = Contracted ( (Ct e.Pe ':' e.He) (Ct t.Pt ':' t.Ht) );
-  /* выражение заканчивается на е-переменную */
-  (e.Pe) (e.He t.Ht) = Failure;
-  /* или вызов функции */
-  /* todo */
+        Failure = Failure;
+        Undefined = Undefined;
+        /* Contracted пока не поддерживаем */
+      };
 
-  /* 3. He = e.X */
-  (e.Pe) (e.He) = Clear;
+  () () (e.Substs) /* H пустое выражение, тогда P пустое выражение */
+    = Clear e.Substs;
 
-  /* 4. He = '' */
-  (e.Pe) () = Clear;
+  (e.P) (t.H) (e.Substs)
+    , <IsEVar t.H> : True /* H состоит из e-переменной */
+    = <TermMatch (e.P) t.H>
+    : {
+        Clear e.TermSubsts
+        /* можно сразу "= Clear e.Substs (e.TermSubsts);" */
+          = <GenericMatch-Aux () () (e.Substs e.TermSubsts)>;
+
+        Failure = Failure;
+        Undefined = Undefined;
+        /* Contracted пока не поддерживаем */
+      };
+
+  e.Else = Undefined;
 }
 
-/* Сопоставление термов T : Ht */
-$ENTRY TermMatch {
-  (e.T)(TkVariable 't' e.HIndex) /* Ht является t-переменной */
-    = Clear (e.T)':'('t' e.HIndex);
+/* Сопоставление термов T : H */
+TermMatch {
+  (e.T)(TkVariable 'e' e.HIndex) /* H является e-переменной */
+    = Clear (e.T':'('e' e.HIndex));
 
-  (e.T)(TkVariable 's' e.HIndex) /* Ht является s-переменной */
+  (e.T)(TkVariable 't' e.HIndex) /* H является t-переменной */
+    = Clear ((e.T)':'('t' e.HIndex));
+
+  (e.T)(TkVariable 's' e.HIndex) /* H является s-переменной */
     = <IsSVarSubset (e.T)>
     : {
-        True = Clear (e.T)':'('s' e.HIndex);
+        True = Clear ((e.T)':'('s' e.HIndex));
         False = Failure;
       };
 
-  (e.T)(t.HToken e.HBody) /* Ht является символом */
-    , <IsSymbol (t.HToken e.HBody)>
+  (e.T)(t.HToken e.HBody) /* H является символом */
+    , <IsSymbol (t.HToken e.HBody)> : True
+    , <IsEqual (e.T)(t.HToken e.HBody)>
     : {
-        True = Clear (e.T)':'(e.HBody);
+        True = (Clear (e.T)':'(e.HBody));
         False = Failure;
       };
 
-  /* Ht является выражением в круглых скобках (He′) */
+  (t.TToken e.TBody)(t.HToken e.HBody)
+    , <IsBrackets (t.HToken e.HBody)> : True /* H является (H′) */
+    , <IsBrackets (t.TToken e.TBody)> /* T является (T′) */
+    : {
+        True = <GenericMatch (e.TBody)(e.HBody)>;
+        False = Failure;
+      };
 
-  /* Ht является выражением в абстрактных скобках [X He′] */
+  (t.TToken e.TBody)(t.HToken e.HBody)
+    , <IsADT-Brackets (t.HToken e.HBody)> : True /* H является [H′] */
+    , <IsADT-Brackets (t.TToken e.TBody)> /* T является [T′] */
+    : {
+        True = <GenericMatch (e.TBody)(e.HBody)>;
+        False = Failure;
+      };
 
-  /* ... */
+  /* Далее аналогично рекурсивно */
 }
 
 IsSVarSubset {
-  (TkChar s.Char) = True;
+  t.Symbol, <IsSymbol t.Symbol> : True = True;
+  /*(TkChar s.Char) = True;*/
   (TkVariable 's' e.Tindex) = True;
   (Closure e.Body) = True;
+
   (Brackets e.Expression) = False;
   (ADT-Brackets (e.ADTName) e.Expression) = False;
 
@@ -105,6 +135,15 @@ IsTerm {
   t.OtherTerm = True;
 }
 
+IsEVar {
+  (TkVariable 'e' e.Index) = True;
+
+  /* Рассматриваем для оптимизаций встраивания, прогонки и специализации */
+  (CallBrackets e.Nested) = False;
+
+  t.OtherTerm = False;
+}
+
 IsSymbol {
   /* идентификатор, имя функции, число или литера */
   (TkIdentifier e.Name) = True;
@@ -113,4 +152,21 @@ IsSymbol {
   (TkChar s.HChar) = True;
 
   t.OtherTerm = False;
+}
+
+IsADT-Brackets {
+  (ADT-Brackets e.Expression) = True;
+
+  t.OtherTerm = False;
+}
+
+IsBrackets {
+  (Brackets e.Expression) = True;
+
+  t.OtherTerm = False;
+}
+IsEqual {
+  (e.Var)(e.Var) = True;
+
+  e.Else = False;
 }
