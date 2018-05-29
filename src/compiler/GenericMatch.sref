@@ -1,0 +1,83 @@
+/*
+  <GenericMatch (e.Pattern) (e.LPattern)>
+    == Clear (e.Val ':' t.Var)*
+    == Contracted ((Ct t.Var ':' e.Val)* (As (e.Val ':' t.Var)*))*
+    == Failure
+    == Undefined
+
+  e.Pattern, e.LPattern ::= t.PatternTerm*
+  t.PatternTerm — см. interfaces.md + переменные в e.Pattern могут иметь тип 'k' — неразменные переменные.
+
+  e.Val ::= t.PatternTerm*
+  t.Var ::= (s.VarType e.Index)
+  s.VarType ::= 's' | 't' | 'e'
+**/
+$ENTRY GenericMatch {
+  (e.Pattern) (e.LPattern)
+    = <GenericMatch-Aux (e.Pattern) (e.LPattern) (/* Substitutions */) >;
+}
+
+/*
+  TODO: придумать логику, как при невозможности сопоставления в подстановке
+  выкидывать Failed наверх в GenericMatch-Aux и затем в GenericMatch
+
+  Сопоставляем (E:He) выражение общего вида E и жесткий образец He, который
+  имеет вид: "Ht1′ … HtN′ e.X HtM″ … Ht1″" либо "Ht1 … HtN"
+  Возможны 4 случая:
+*/
+GenericMatch-Aux {
+  /* 1. He = Ht He` */
+  // E начинается на t
+  (t.Pt e.Pe) (t.Ht e.He) (e.ExistSubsts)
+    = <GenericMatch-Aux (e.Pe) (e.He) 
+        ( ( <TermMatch (t.Pt)(t.Ht) > ) (e.ExistSubsts) )
+      >;
+  // E начинается на е
+  (e.Pe) (t.Ht e.He) = #Failure;
+  // E начинается на вызов функции
+  // todo
+
+  /* 2. He = Ht He` */
+  (e.Pe t.Pt) (e.He t.Ht) 
+    = #Contracted ( (#Ct e.Pe ':' e.He) (#Ct t.Pt ':' t.Ht) );
+  // выражение заканчивается на е-переменную
+  (e.Pe) (e.He t.Ht) = #Failure;
+  // или вызов функции
+  // todo
+
+  /* 3. He = e.X */
+  (e.Pe) (e.He) = #Clear;
+
+  /* 4. He = '' */
+  (e.Pe) () = #Clear;
+}
+
+/* Сопоставление термов T : Ht */
+TermMatch {
+  // Ht является t-переменной
+  (e.T)(#TkVariable 't' e.Hindex) = (e.T)':'('t' e.Hindex);
+  
+  // Ht является s-переменной
+  (#TkChar s.Char)(#TkVariable 's' e.Hindex)
+    = (#TkChar s.Char)':'('s' e.Hindex);
+
+  (#TkVariable 's' e.Tindex)(#TkVariable 's' e.Hindex)
+    = (#TkVariable 's' e.Tindex)':'('s' e.Hindex);
+  
+  (#Closure e.Body)(#TkVariable 's' e.Hindex)
+    = (#Closure e.Body)':'('s' e.Hindex);
+  
+  (#Brackets e.Expression)(#TkVariable 's' e.Hindex) = #Failure;
+  
+  (#ADT-Brackets (e.ADTName) e.Expression)(#TkVariable 's' e.Hindex)
+    = #Failure;
+
+  // Ht является символом
+  // (e.T)(#TkChar s.HChar), (#TkChar s.Char):(e.T) = (e.T)':'('s' e.Hindex)
+
+  // Ht является выражением в круглых скобках (He′)
+
+  // Ht является выражением в абстрактных скобках [X He′]
+
+  // ...
+}
