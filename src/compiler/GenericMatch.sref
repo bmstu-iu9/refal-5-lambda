@@ -58,19 +58,8 @@ TermMatch {
   (e.T)(#TkVariable 't' e.Hindex) = (e.T)':'('t' e.Hindex);
   
   // Ht является s-переменной
-  (#TkChar s.Char)(#TkVariable 's' e.Hindex)
-    = (#TkChar s.Char)':'('s' e.Hindex);
-
-  (#TkVariable 's' e.Tindex)(#TkVariable 's' e.Hindex)
-    = (#TkVariable 's' e.Tindex)':'('s' e.Hindex);
-  
-  (#Closure e.Body)(#TkVariable 's' e.Hindex)
-    = (#Closure e.Body)':'('s' e.Hindex);
-  
-  (#Brackets e.Expression)(#TkVariable 's' e.Hindex) = #Failure;
-  
-  (#ADT-Brackets (e.ADTName) e.Expression)(#TkVariable 's' e.Hindex)
-    = #Failure;
+  (e.T)(#TkVariable 's' e.Hindex), <IsSVarClarification e.T> : #True
+    = (e.T)':'('s' e.Hindex);
 
   // Ht является символом
   // (e.T)(#TkChar s.HChar), (#TkChar s.Char):(e.T) = (e.T)':'('s' e.Hindex)
@@ -80,4 +69,12 @@ TermMatch {
   // Ht является выражением в абстрактных скобках [X He′]
 
   // ...
+}
+
+IsSVarClarification {
+  (#TkChar s.Char) = #True;
+  (#TkVariable 's' e.Tindex) = #True;
+  (#Closure e.Body) = #True;
+  (#Brackets e.Expression) = #True;
+  (#ADT-Brackets (e.ADTName) e.Expression) = #Failure;
 }
