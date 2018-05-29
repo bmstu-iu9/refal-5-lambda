@@ -1,0 +1,116 @@
+/*
+  <GenericMatch (e.Pattern) (e.LPattern)>
+    == Clear (e.Val ':' t.Var)*
+    == Contracted ((Ct t.Var ':' e.Val)* (As (e.Val ':' t.Var)*))*
+    == Failure
+    == Undefined
+
+  e.Pattern, e.LPattern ::= t.PatternTerm*
+  t.PatternTerm — см. interfaces.md + переменные в e.Pattern могут иметь тип
+    'k' — неразменные переменные.
+
+  e.Val ::= t.PatternTerm*
+  t.Var ::= (s.VarType e.Index)
+  s.VarType ::= 's' | 't' | 'e'
+*/
+$ENTRY GenericMatch {
+  (e.Pattern) (e.LPattern)
+    = <GenericMatch-Aux (e.Pattern) (e.LPattern) (/* Substitutions */) >;
+}
+
+/*
+  Сопоставляем (P:He) выражение общего вида P и жесткий образец He, который
+  имеет вид: "Ht1′ … HtN′ e.X HtM″ … Ht1″" либо "Ht1 … HtN"
+  Возможны 4 случая:
+*/
+GenericMatch-Aux {
+  /* 1. He = Ht He` */
+  (t.Pt e.Pe) (t.Ht e.He) (e.Substs)
+    , <IsTerm t.Ht> : True
+    , <IsTerm t.Pt> : True /* P начинается на t */
+    = <TermMatch t.Pt t.Ht>
+    : {
+        Clear e.TermSubsts
+          = <GenericMatch-Aux (e.Pe) (e.He) (e.Substs (e.TermSubsts))>;
+
+        Failure = Failure;
+        Undefined = Undefined;
+        /* Contracted пока не поддерживаем */
+      };
+
+  /* P начинается на е
+  (e.Pe) (t.Ht e.He) = Failure;
+  /* E начинается на вызов функции */
+  /* todo */
+
+  /* 2. He = Ht He` */
+  (e.Pe t.Pt) (e.He t.Ht)
+    = Contracted ( (Ct e.Pe ':' e.He) (Ct t.Pt ':' t.Ht) );
+  /* выражение заканчивается на е-переменную */
+  (e.Pe) (e.He t.Ht) = Failure;
+  /* или вызов функции */
+  /* todo */
+
+  /* 3. He = e.X */
+  (e.Pe) (e.He) = Clear;
+
+  /* 4. He = '' */
+  (e.Pe) () = Clear;
+}
+
+/* Сопоставление термов T : Ht */
+$ENTRY TermMatch {
+  (e.T)(TkVariable 't' e.HIndex) /* Ht является t-переменной */
+    = Clear (e.T)':'('t' e.HIndex);
+
+  (e.T)(TkVariable 's' e.HIndex) /* Ht является s-переменной */
+    = <IsSVarSubset (e.T)>
+    : {
+        True = Clear (e.T)':'('s' e.HIndex);
+        False = Failure;
+      };
+
+  (e.T)(t.HToken e.HBody) /* Ht является символом */
+    , <IsSymbol (t.HToken e.HBody)>
+    : {
+        True = Clear (e.T)':'(e.HBody);
+        False = Failure;
+      };
+
+  /* Ht является выражением в круглых скобках (He′) */
+
+  /* Ht является выражением в абстрактных скобках [X He′] */
+
+  /* ... */
+}
+
+IsSVarSubset {
+  (TkChar s.Char) = True;
+  (TkVariable 's' e.Tindex) = True;
+  (Closure e.Body) = True;
+  (Brackets e.Expression) = False;
+  (ADT-Brackets (e.ADTName) e.Expression) = False;
+
+  /* Нужно ли здесь оставлять этот вариант? */
+  t.OtherTerm = False;
+}
+
+IsTerm {
+  (TkVariable 'e' e.Index) = False;
+
+  /* Рассматриваем для оптимизаций встраивания, прогонки и специализации */
+  (CallBrackets e.Nested) = False;
+
+  /* s-, t-переменная, скобки обоих видов, символ */
+  t.OtherTerm = True;
+}
+
+IsSymbol {
+  /* идентификатор, имя функции, число или литера */
+  (TkIdentifier e.Name) = True;
+  (TkName t.SrcPos e.Name) = True;
+  (TkNumber s.Number) = True;
+  (TkChar s.HChar) = True;
+
+  t.OtherTerm = False;
+}
