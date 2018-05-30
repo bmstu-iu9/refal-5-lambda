@@ -51,8 +51,8 @@ GenericMatch-Aux {
         /* Contracted пока не поддерживаем */
       };
 
-  () () (e.Substs) /* H пустое выражение, тогда P пустое выражение */
-    = Clear e.Substs;
+  /* H пустое выражение, тогда P пустое выражение */
+  () () (e.Substs) = Clear e.Substs;
 
   (e.P) ((TkVariable 'e' e.Index)) (e.Substs) /* H состоит из e-переменной */
     = Clear e.Substs (e.P ':' ('e' e.Index));
@@ -62,60 +62,32 @@ GenericMatch-Aux {
 
 /* Сопоставление термов T:H */
 TermMatch {
-  (e.T)(TkVariable 't' e.HIndex) /* H является t-переменной */
-    = Clear ((e.T)':'('t' e.HIndex));
+  /* H является символом */
+  t.Symbol t.Symbol, <IsSymbol t.Symbol> : True = Clear /* нет подстановок */;
 
-  (e.T)(TkVariable 's' e.HIndex) /* H является s-переменной */
-    = <IsSVarSubset (e.T)>
-    : {
-        True = Clear ((e.T)':'('s' e.HIndex));
-        False = Failure;
-      };
+  /* H является t-переменной */
+  t.TVar (TkVariable 't' e.HIndex) = Clear (t.TVar':'('t' e.HIndex));
 
-  (e.T)(t.HToken e.HBody) /* H является символом */
-    , <IsSymbol (t.HToken e.HBody)> : True
-    , <IsEqual (e.T)(t.HToken e.HBody)>
-    : {
-        True = (Clear (e.T)':'(e.HBody));
-        False = Failure;
-      };
+  /* H является s-переменной */
+  t.SVar (TkVariable 's' e.HIndex), <IsSVarSubset t.SVar> : True
+    = Clear (t.SVar':'('s' e.HIndex));
 
-    (e.T)(Brackets e.HBody) /* H является (H′) */
-    , e.T
-    : {
-        Brackets e.TBody   /* тогда T является (T′) */
-          = <GenericMatch (e.TBody)(e.HBody)>;
+  /* H является (H′) */
+  (Brackets e.TBody)(Brackets e.HBody)
+    = <GenericMatch (e.TBody)(e.HBody)>;
 
-        e.Else = Failure;
-      };
+  /* H является [H′] */
+  (ADT-Brackets (e.Name) e.TBody)(ADT-Brackets (e.Name) e.HBody)
+    = <GenericMatch (e.TBody)(e.HBody)>;
 
-
-  (e.T)(ADT-Brackets t.HName e.HBody) /* H является [H′] */
-    , e.T
-    : {
-        ADT-Brackets t.TName e.TBody  /* тогда T является [T′] */
-          , <IsEqual t.TName t.HName> /* И метки H и T совпадают */
-          : {
-              True = <GenericMatch (e.TBody)(e.HBody)>;
-              False = Failure;
-            };
-
-        e.Else = Failure;
-      };
-
-  /* Далее аналогично рекурсивно */
+  t.T t.H = Failure;
 }
 
 IsSVarSubset {
   t.Symbol, <IsSymbol t.Symbol> : True = True;
-  /*(TkChar s.Char) = True;*/
   (TkVariable 's' e.Tindex) = True;
   (Closure e.Body) = True;
 
-  (Brackets e.Expression) = False;
-  (ADT-Brackets (e.ADTName) e.Expression) = False;
-
-  /* Нужно ли здесь оставлять этот вариант? */
   t.OtherTerm = False;
 }
 
@@ -137,10 +109,4 @@ IsSymbol {
   (TkChar s.HChar) = True;
 
   t.OtherTerm = False;
-}
-
-IsEqual {
-  (e.Var)(e.Var) = True;
-
-  e.Else = False;
 }
