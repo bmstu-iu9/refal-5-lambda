@@ -54,27 +54,14 @@ GenericMatch-Aux {
   () () (e.Substs) /* H пустое выражение, тогда P пустое выражение */
     = Clear e.Substs;
 
-  (e.P) (t.H) (e.Substs)
-    , <IsEVar t.H> : True /* H состоит из e-переменной */
-    = <TermMatch (e.P) t.H>
-    : {
-        Clear e.TermSubsts
-        /* можно сразу "= Clear e.Substs (e.TermSubsts);" */
-          = <GenericMatch-Aux () () (e.Substs e.TermSubsts)>;
-
-        Failure = Failure;
-        Undefined = Undefined;
-        /* Contracted пока не поддерживаем */
-      };
+  (e.P) ((TkVariable 'e' e.Index)) (e.Substs) /* H состоит из e-переменной */
+    = Clear e.Substs (e.P ':' ('e' e.Index));
 
   e.Else = Undefined;
 }
 
-/* Сопоставление термов T : H */
+/* Сопоставление термов T:H */
 TermMatch {
-  (e.T)(TkVariable 'e' e.HIndex) /* H является e-переменной */
-    = Clear (e.T':'('e' e.HIndex));
-
   (e.T)(TkVariable 't' e.HIndex) /* H является t-переменной */
     = Clear ((e.T)':'('t' e.HIndex));
 
@@ -93,20 +80,27 @@ TermMatch {
         False = Failure;
       };
 
-  (t.TToken e.TBody)(t.HToken e.HBody)
-    , <IsBrackets (t.HToken e.HBody)> : True /* H является (H′) */
-    , <IsBrackets (t.TToken e.TBody)> /* T является (T′) */
+    (e.T)(Brackets e.HBody) /* H является (H′) */
+    , e.T
     : {
-        True = <GenericMatch (e.TBody)(e.HBody)>;
-        False = Failure;
+        Brackets e.TBody   /* тогда T является (T′) */
+          = <GenericMatch (e.TBody)(e.HBody)>;
+
+        e.Else = Failure;
       };
 
-  (t.TToken e.TBody)(t.HToken e.HBody)
-    , <IsADT-Brackets (t.HToken e.HBody)> : True /* H является [H′] */
-    , <IsADT-Brackets (t.TToken e.TBody)> /* T является [T′] */
+
+  (e.T)(ADT-Brackets t.HName e.HBody) /* H является [H′] */
+    , e.T
     : {
-        True = <GenericMatch (e.TBody)(e.HBody)>;
-        False = Failure;
+        ADT-Brackets t.TName e.TBody  /* тогда T является [T′] */
+          , <IsEqual t.TName t.HName> /* И метки H и T совпадают */
+          : {
+              True = <GenericMatch (e.TBody)(e.HBody)>;
+              False = Failure;
+            };
+
+        e.Else = Failure;
       };
 
   /* Далее аналогично рекурсивно */
@@ -135,15 +129,6 @@ IsTerm {
   t.OtherTerm = True;
 }
 
-IsEVar {
-  (TkVariable 'e' e.Index) = True;
-
-  /* Рассматриваем для оптимизаций встраивания, прогонки и специализации */
-  (CallBrackets e.Nested) = False;
-
-  t.OtherTerm = False;
-}
-
 IsSymbol {
   /* идентификатор, имя функции, число или литера */
   (TkIdentifier e.Name) = True;
@@ -154,17 +139,6 @@ IsSymbol {
   t.OtherTerm = False;
 }
 
-IsADT-Brackets {
-  (ADT-Brackets e.Expression) = True;
-
-  t.OtherTerm = False;
-}
-
-IsBrackets {
-  (Brackets e.Expression) = True;
-
-  t.OtherTerm = False;
-}
 IsEqual {
   (e.Var)(e.Var) = True;
 
