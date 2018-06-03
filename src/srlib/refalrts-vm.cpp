@@ -63,11 +63,6 @@ void refalrts::VM::Stack<T>::reserve(size_t size) {
   }
 }
 
-void refalrts::VM::push_stack(refalrts::Iter call_bracket) {
-  call_bracket->link_info = m_stack_ptr;
-  m_stack_ptr = call_bracket;
-}
-
 refalrts::Iter refalrts::VM::pop_stack() {
   refalrts::Iter res = m_stack_ptr;
   m_stack_ptr = m_stack_ptr->link_info;
@@ -560,6 +555,7 @@ public:
   virtual void set_string_items(const StringItem * /*items*/) {
     /* пусто */
   }
+
   virtual void insert_var(const RASLCommand * /*next*/) {
     /* пусто */
   }
@@ -579,6 +575,15 @@ refalrts::VM::create_null_debugger(refalrts::VM * /*vm*/) {
 //==============================================================================
 // Интерпретатор
 //==============================================================================
+
+void refalrts::VM::reset_allocator() {
+  profiler()->start_result();
+  allocator()->reset_allocator();
+}
+
+bool refalrts::VM::alloc_node(Iter& res) {
+  return allocator()->alloc_node(res);
+}
 
 refalrts::FnResult refalrts::VM::main_loop(const RASLCommand *rasl) {
   RefalFunction *callee = 0;
@@ -628,6 +633,16 @@ JUMP_FROM_SCALE:
     // Содержимое скобок
     Iter &res_b = context[val2];
     Iter &res_e = context[val2 + 1];
+
+    // Используется в case icAllocateBracket и case icReinitBracket
+    static DataTag bracket_tag[] = {
+      cDataOpenADT,
+      cDataOpenBracket,
+      cDataOpenCall,
+      cDataCloseADT,
+      cDataCloseBracket,
+      cDataCloseCall,
+    };
 
     switch(rasl->cmd) {
       case icPushState:
@@ -1009,7 +1024,7 @@ JUMP_FROM_SCALE:
         break;
 
       case icsVarTerm:
-        if (! svar_term(bb, bb)) {
+        if (! svar_term(bb)) {
           MATCH_FAIL;
         }
         break;
@@ -1053,9 +1068,7 @@ JUMP_FROM_SCALE:
           Iter &sample_b = context[sample];
           Iter &sample_e = context[sample + 1];
           if (
-            ! repeated_evar_left(
-              this, evar_b, evar_e, sample_b, sample_e, bb, be
-            )
+            ! repeated_evar_left(evar_b, evar_e, sample_b, sample_e, bb, be)
           ) {
             MATCH_FAIL;
           }
@@ -1071,9 +1084,7 @@ JUMP_FROM_SCALE:
           Iter &sample_b = context[sample];
           Iter &sample_e = context[sample + 1];
           if (
-            ! repeated_evar_right(
-                this, evar_b, evar_e, sample_b, sample_e, bb, be
-            )
+            ! repeated_evar_right(evar_b, evar_e, sample_b, sample_e, bb, be)
           ) {
             MATCH_FAIL;
           }
@@ -1085,9 +1096,7 @@ JUMP_FROM_SCALE:
         {
           int index = val1;
           int sample = val2;
-          if (
-            ! repeated_stvar_left(this, context[index], context[sample], bb, be)
-          ) {
+          if (! repeated_stvar_left(context[index], context[sample], bb, be)) {
             MATCH_FAIL;
           }
         }
@@ -1098,11 +1107,7 @@ JUMP_FROM_SCALE:
         {
           int index = val1;
           int sample = val2;
-          if (
-            ! repeated_stvar_right(
-              this, context[index], context[sample], bb, be
-            )
-          ) {
+          if (! repeated_stvar_right(context[index], context[sample], bb, be)) {
             MATCH_FAIL;
           }
         }
@@ -1111,7 +1116,7 @@ JUMP_FROM_SCALE:
       case icsRepeatedTerm:
       case ictRepeatedTerm:
         assert(bracket == val1);
-        if (! repeated_stvar_term(this, context[val2], bb)) {
+        if (! repeated_stvar_term(context[val2], bb)) {
           MATCH_FAIL;
         }
         break;
@@ -1122,7 +1127,7 @@ JUMP_FROM_SCALE:
           int sample = val2;
 
           context[index + 1] =
-            repeated_stvar_left(this, context[index], context[sample], bb, be);
+            repeated_stvar_left(context[index], context[sample], bb, be);
           if (! context[index + 1]) {
             MATCH_FAIL;
           }
@@ -1135,7 +1140,7 @@ JUMP_FROM_SCALE:
           int sample = val2;
 
           context[index + 1] =
-            repeated_stvar_right(this, context[index], context[sample], bb, be);
+            repeated_stvar_right(context[index], context[sample], bb, be);
           if (! context[index + 1]) {
             MATCH_FAIL;
           }
@@ -1175,7 +1180,7 @@ JUMP_FROM_SCALE:
           return cExit;
         }
 #endif  // ifdef ENABLE_DEBUGGER
-        reset_allocator(this);
+        reset_allocator();
         break;
 
       case icSetResArgBegin:
@@ -1198,7 +1203,6 @@ JUMP_FROM_SCALE:
           unsigned int sample = val2;
           if (
             ! copy_evar(
-              this,
               context[target], context[target + 1],
               context[sample], context[sample + 1]
             )
@@ -1212,7 +1216,7 @@ JUMP_FROM_SCALE:
         {
           unsigned int target = val1;
           unsigned int sample = val2;
-          if (! copy_stvar(this, context[target], context[sample])) {
+          if (! copy_stvar(context[target], context[sample])) {
             return cNoMemory;
           }
         }
@@ -1223,50 +1227,39 @@ JUMP_FROM_SCALE:
         break;
 
       case icAllocateChar:
-        if (! alloc_char(this, elem, static_cast<char>(val2))) {
+        if (! alloc_char(elem, static_cast<char>(val2))) {
           return cNoMemory;
         }
         break;
 
       case icAllocateName:
-        if (! alloc_name(this, elem, functions[val2].function)) {
+        if (! alloc_name(elem, functions[val2].function)) {
           return cNoMemory;
         }
         break;
 
       case icAllocateNumber:
-        if (! alloc_number(this, elem, static_cast<RefalNumber>(val2))) {
+        if (! alloc_number(elem, static_cast<RefalNumber>(val2))) {
           return cNoMemory;
         }
         break;
 
       case icAllocateHugeNumber:
-        if (! alloc_number(this, elem, numbers[val2])) {
+        if (! alloc_number(elem, numbers[val2])) {
           return cNoMemory;
         }
         break;
 
       case icAllocateIdent:
-        if (! alloc_ident(this, elem, idents[val2])) {
+        if (! alloc_ident(elem, idents[val2])) {
           return cNoMemory;
         }
         break;
 
       case icAllocateBracket:
-        {
-          static bool (*const allocator[])(VM *vm, Iter& res) = {
-            alloc_open_adt,
-            alloc_open_bracket,
-            alloc_open_call,
-            alloc_close_adt,
-            alloc_close_bracket,
-            alloc_close_call
-          };
-
-          assert(val2 <= ibCloseCall);
-          if (! allocator[val2](this, elem)) {
-            return cNoMemory;
-          }
+        assert(val2 <= ibCloseCall);
+        if (! alloc_some_bracket(elem, bracket_tag[val2])) {
+          return cNoMemory;
         }
         break;
 
@@ -1274,7 +1267,7 @@ JUMP_FROM_SCALE:
         {
           if (
             ! alloc_chars(
-              this, bb, be, strings[val2].string, strings[val2].string_len
+              bb, be, strings[val2].string, strings[val2].string_len
             )
           ) {
             return cNoMemory;
@@ -1283,13 +1276,13 @@ JUMP_FROM_SCALE:
         break;
 
       case icAllocateClosureHead:
-        if (! alloc_closure_head(this, elem)) {
+        if (! alloc_closure_head(elem)) {
           return cNoMemory;
         }
         break;
 
       case icAllocateUnwrappedClosure:
-        if (! alloc_unwrapped_closure(this, elem, context[val2])) {
+        if (! alloc_unwrapped_closure(elem, context[val2])) {
           return cNoMemory;
         }
         break;
@@ -1315,18 +1308,8 @@ JUMP_FROM_SCALE:
         break;
 
       case icReinitBracket:
-        {
-          static void (*const reiniter[])(Iter res) = {
-            reinit_open_adt,
-            reinit_open_bracket,
-            reinit_open_call,
-            reinit_close_adt,
-            reinit_close_bracket,
-            reinit_close_call
-          };
-          assert(val2 <= ibCloseCall);
-          reiniter[val2](elem);
-        }
+        assert(val2 <= ibCloseCall);
+        elem->tag = bracket_tag[val2];
         break;
 
       case icReinitClosureHead:
@@ -1458,9 +1441,7 @@ JUMP_FROM_SCALE:
               refalrts::Iter closure_b = 0;
               refalrts::Iter closure_e = 0;
 
-              if (
-                ! copy_evar(this, closure_b, closure_e, next(head), prev(head))
-              ) {
+              if (! copy_evar(closure_b, closure_e, next(head), prev(head))) {
                 res = cNoMemory;
               } else {
                 list_splice(begin_argument, closure_b, closure_e);
@@ -1576,4 +1557,463 @@ JUMP_FROM_SCALE:
 
 void refalrts::VM::read_counters(unsigned long counters[]) {
   counters[cPerformanceCounter_TotalSteps] = step_counter();
+}
+
+bool refalrts::VM::equal_nodes(refalrts::Iter node1, refalrts::Iter node2) {
+  if (node1->tag != node2->tag) {
+    return false;
+  } else {
+    switch(node1->tag) {
+      case refalrts::cDataChar:
+        return (node1->char_info == node2->char_info);
+
+      case refalrts::cDataNumber:
+        return (node1->number_info == node2->number_info);
+
+      case refalrts::cDataFunction:
+        return (node1->function_info == node2->function_info);
+
+      case refalrts::cDataIdentifier:
+        return (node1->ident_info == node2->ident_info);
+
+      /*
+        Сведения о связях между скобками нужны для других целей, здесь
+        же нам важны только их одновременные появления.
+      */
+      case refalrts::cDataOpenBracket:
+      case refalrts::cDataCloseBracket:
+      case refalrts::cDataOpenADT:
+      case refalrts::cDataCloseADT:
+        return true;
+
+      case refalrts::cDataFile:
+        return (node1->file_info == node2->file_info);
+
+      case refalrts::cDataClosure:
+        return (node1->link_info == node2->link_info);
+
+      /*
+        Данная функция предназначена только для использования функциями рас-
+        познавания образца. Поэтому других узлов мы тут не ожидаем.
+      */
+      default:
+        refalrts_switch_default_violation(node1->tag);
+    }
+    // Все ветви в case завершаются либо return, либо throw.
+  }
+}
+
+bool refalrts::VM::equal_expressions(
+  refalrts::Iter first1, refalrts::Iter last1,
+  refalrts::Iter first2, refalrts::Iter last2
+) {
+  assert((first1 == 0) == (last1 == 0));
+  assert((first2 == 0) == (last2 == 0));
+
+  profiler()->start_repeated_tvar();
+
+  while (
+    // Порядок условий важен
+    ! refalrts::empty_seq(first1, last1)
+    && ! refalrts::empty_seq(first2, last2)
+    && equal_nodes(first1, first2)
+  ) {
+    refalrts::move_left(first1, last1);
+    refalrts::move_left(first2, last2);
+  }
+
+  /*
+    Здесь empty_seq(first1, last1) || empty_seq(first2, last2)
+      || ! equal_nodes(first1, first2)
+  */
+
+  profiler()->stop_repeated();
+
+  // Успешное завершение -- если мы достигли конца в обоих выражениях
+  return refalrts::empty_seq(first1, last1)
+    && refalrts::empty_seq(first2, last2);
+}
+
+refalrts::Iter refalrts::VM::repeated_stvar_left(
+  refalrts::Iter& stvar, refalrts::Iter stvar_sample,
+  refalrts::Iter& first, refalrts::Iter& last
+) {
+  assert((first == 0) == (last == 0));
+
+  refalrts::Iter left_term = 0;
+  refalrts::Iter copy_last = last;
+
+  if (! is_open_bracket(stvar_sample) && svar_left(stvar, first, last)) {
+    if (equal_nodes(stvar, stvar_sample)) {
+      return stvar;
+    } else {
+      return 0;
+    }
+  } else if (tvar_left(left_term, first, last)) {
+    refalrts::Iter left_term_e;
+    refalrts::Iter stvar_sample_e;
+
+    if (empty_seq(first, last)) {
+      left_term_e = copy_last;
+    } else {
+      left_term_e = prev(first);
+    }
+
+    if (is_open_bracket(stvar_sample)) {
+      stvar_sample_e = stvar_sample->link_info;
+    } else {
+      stvar_sample_e = stvar_sample;
+    }
+
+    bool equal = equal_expressions(
+      left_term, left_term_e,
+      stvar_sample, stvar_sample_e
+    );
+
+    if (equal) {
+      stvar = left_term;
+
+      return left_term_e;
+    } else {
+      return 0;
+    }
+  } else {
+    return 0;
+  }
+}
+
+refalrts::Iter refalrts::VM::repeated_stvar_right(
+  refalrts::Iter& stvar, refalrts::Iter stvar_sample,
+  refalrts::Iter& first, refalrts::Iter& last
+) {
+  assert((first == 0) == (last == 0));
+
+  refalrts::Iter right_term = 0;
+  refalrts::Iter old_last = last;
+
+  if (! is_open_bracket(stvar_sample) && svar_right(stvar, first, last)) {
+    if (equal_nodes(stvar, stvar_sample)) {
+      return stvar;
+    } else {
+      return 0;
+    }
+  } else if (tvar_right(right_term, first, last)) {
+    refalrts::Iter right_term_e = old_last;
+    refalrts::Iter stvar_sample_e;
+
+    if (is_open_bracket(stvar_sample)) {
+      stvar_sample_e = stvar_sample->link_info;
+    } else {
+      stvar_sample_e = stvar_sample;
+    }
+
+    bool equal = equal_expressions(
+      right_term, right_term_e,
+      stvar_sample, stvar_sample_e
+    );
+
+    if (equal) {
+      stvar = right_term;
+
+      return right_term_e;
+    } else {
+      return 0;
+    }
+  } else {
+    return 0;
+  }
+}
+
+bool refalrts::VM::repeated_evar_left(
+  refalrts::Iter& evar_b, refalrts::Iter& evar_e,
+  refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
+  refalrts::Iter& first, refalrts::Iter& last
+) {
+  profiler()->start_repeated_evar();
+  refalrts::Iter current = first;
+  refalrts::Iter cur_sample = evar_b_sample;
+  refalrts::Iter copy_last = last;
+
+  while (
+    // порядок условий важен
+    ! empty_seq(cur_sample, evar_e_sample)
+    && ! (empty_seq(current, copy_last) || ! equal_nodes(current, cur_sample))
+  ) {
+    move_left(cur_sample, evar_e_sample);
+    move_left(current, copy_last);
+  }
+
+  profiler()->stop_repeated();
+
+  /*
+    Здесь empty_seq(cur_sample, evar_e_sample) или
+      ! empty_seq(cur_sample, evar_e_sample)
+      && (empty_seq(current, copy_last) || ! equal_nodes(current, cur_sample))
+  */
+  if (empty_seq(cur_sample, evar_e_sample)) {
+    // Это нормальное завершение цикла -- вся образцовая переменная проверена
+
+    if (empty_seq(current, copy_last)) {
+      evar_b = first;
+      evar_e = last;
+
+      first = 0;
+      last = 0;
+    } else if (current != first) {
+      evar_b = first;
+      evar_e = prev(current);
+
+      first = current;
+    } else {
+      evar_b = 0;
+      evar_e = 0;
+    }
+
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool refalrts::VM::repeated_evar_right(
+  refalrts::Iter& evar_b, refalrts::Iter& evar_e,
+  refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
+  refalrts::Iter& first, refalrts::Iter& last
+) {
+  profiler()->start_repeated_evar();
+  refalrts::Iter current = last;
+  refalrts::Iter cur_sample = evar_e_sample;
+  refalrts::Iter copy_first = first;
+
+  while (
+    // порядок перечисления условий важен
+    ! empty_seq(evar_b_sample, cur_sample)
+    && ! (empty_seq(copy_first, current) || ! VM::equal_nodes(current, cur_sample))
+  ) {
+    move_right(copy_first, current);
+    move_right(evar_b_sample, cur_sample);
+  }
+
+  profiler()->stop_repeated();
+
+  /*
+    Здесь empty_seq(evar_b_sample, cur_sample) или
+      ! empty_seq(evar_b_sample, cur_sample)
+      && (empty_seq(copy_first, current) || ! equal_nodes(current, cur_sample))
+  */
+
+  if (empty_seq(evar_b_sample, cur_sample)) {
+    // Это нормальное завершение цикла: вся переменная-образец просмотрена
+
+    if (empty_seq(copy_first, current)) {
+      evar_b = first;
+      evar_e = last;
+
+      first = 0;
+      last = 0;
+    } else if (current != last) {
+      evar_b = next(current);
+      evar_e = last;
+
+      last = current;
+    } else {
+      evar_b = 0;
+      evar_e = 0;
+    }
+
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool refalrts::VM::copy_node(refalrts::Iter& res, refalrts::Iter sample) {
+  VM *vm = this;  // ←TODO
+  switch(sample->tag) {
+    case refalrts::cDataChar:
+      return refalrts::alloc_char(vm, res, sample->char_info);
+
+    case refalrts::cDataNumber:
+      return refalrts::alloc_number(vm, res, sample->number_info);
+
+    case refalrts::cDataFunction:
+      return refalrts::alloc_name(vm, res, sample->function_info);
+
+    case refalrts::cDataIdentifier:
+      return refalrts::alloc_ident(vm, res, sample->ident_info);
+
+    case refalrts::cDataOpenBracket:
+      return refalrts::alloc_open_bracket(vm, res);
+
+    case refalrts::cDataCloseBracket:
+      return refalrts::alloc_close_bracket(vm, res);
+
+    case refalrts::cDataOpenADT:
+      return refalrts::alloc_open_adt(vm, res);
+
+    case refalrts::cDataCloseADT:
+      return refalrts::alloc_close_adt(vm, res);
+
+    case refalrts::cDataClosure: {
+      bool allocated = vm->allocator()->alloc_node(res);
+      if (allocated) {
+        res->tag = refalrts::cDataClosure;
+        refalrts::Iter head = sample->link_info;
+        res->link_info = head;
+        ++ (head->number_info);
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    case refalrts::cDataFile: {
+      bool allocated = vm->allocator()->alloc_node(res);
+      if (allocated) {
+        res->tag = refalrts::cDataFile;
+        res->file_info = sample->file_info;
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    /*
+      Копируем только объектное выражение -- никаких вызовов функций
+      быть не должно.
+    */
+    default:
+      refalrts_switch_default_violation(sample->tag);
+  }
+}
+
+bool refalrts::VM::copy_nonempty_evar(
+  refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
+  refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
+) {
+  VM *vm = this;  // ←TODO
+  vm->profiler()->start_copy();
+
+  refalrts::Iter res = 0;
+  refalrts::Iter bracket_stack = 0;
+
+  refalrts::Iter prev_res_begin = prev(vm->allocator()->free_ptr());
+
+  while (! refalrts::empty_seq(evar_b_sample, evar_e_sample)) {
+    if (! copy_node(res, evar_b_sample)) {
+      vm->profiler()->stop_copy();
+      return false;
+    }
+
+    if (is_open_bracket(res)) {
+      res->link_info = bracket_stack;
+      bracket_stack = res;
+    } else if (is_close_bracket(res)) {
+      assert(bracket_stack != 0);
+
+      refalrts::Iter open_cobracket = bracket_stack;
+      bracket_stack = bracket_stack->link_info;
+      refalrts::link_brackets(open_cobracket, res);
+    }
+
+    refalrts::move_left(evar_b_sample, evar_e_sample);
+  }
+
+  assert(bracket_stack == 0);
+
+  evar_res_b = next(prev_res_begin);
+  evar_res_e = res;
+
+  vm->profiler()->stop_copy();
+
+  return true;
+}
+
+bool refalrts::VM::alloc_chars(
+  refalrts::Iter& res_b, refalrts::Iter& res_e,
+  const char buffer[], unsigned buflen
+) {
+  if (buflen == 0) {
+    res_b = 0;
+    res_e = 0;
+    return true;
+  } else {
+    refalrts::Iter before_begin_seq = prev(allocator()->free_ptr());
+    refalrts::Iter end_seq = 0;
+
+    for (unsigned i = 0; i < buflen; ++ i) {
+      if (! alloc_char(end_seq, buffer[i])) {
+        return false;
+      }
+    }
+
+    res_b = next(before_begin_seq);
+    res_e = end_seq;
+
+    return true;
+  }
+}
+
+bool refalrts::VM::alloc_string(
+  refalrts::Iter& res_b, refalrts::Iter& res_e, const char *string
+) {
+  if (*string == '\0') {
+    res_b = 0;
+    res_e = 0;
+    return true;
+  } else {
+    refalrts::Iter before_begin_seq = prev(allocator()->free_ptr());
+    refalrts::Iter end_seq = 0;
+
+    for (const char *p = string; *p != '\0'; ++ p) {
+      if (! alloc_char(end_seq, *p)) {
+        return false;
+      }
+    }
+
+    res_b = next(before_begin_seq);
+    res_e = end_seq;
+
+    return true;
+  }
+}
+
+void refalrts::VM::reinit_svar(refalrts::Iter res, refalrts::Iter sample) {
+  res->tag = sample->tag;
+
+  switch(sample->tag) {
+    case refalrts::cDataChar:
+      res->char_info = sample->char_info;
+      break;
+
+    case refalrts::cDataNumber:
+      res->number_info = sample->number_info;
+      break;
+
+    case refalrts::cDataFunction:
+      res->function_info = sample->function_info;
+      break;
+
+    case refalrts::cDataIdentifier:
+      res->ident_info = sample->ident_info;
+      break;
+
+    case refalrts::cDataClosure: {
+      res->tag = refalrts::cDataClosure;
+      refalrts::Iter head = sample->link_info;
+      res->link_info = head;
+      ++ (head->number_info);
+    }
+    break;
+
+    case refalrts::cDataFile:
+      res->file_info = sample->file_info;
+      break;
+
+    /*
+      Копируем только атом, скобок быть не должно.
+    */
+    default:
+      refalrts_switch_default_violation(sample->tag);
+  }
 }

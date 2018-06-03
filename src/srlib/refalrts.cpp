@@ -54,302 +54,114 @@ void refalrts::use_counter(unsigned&) {
   компилятора о том, что переменная не используется */;
 }
 
-void refalrts::move_left(
-  refalrts::Iter& first, refalrts::Iter& last
-) {
-  // assert((first == 0) == (last == 0));
-  if (first == 0) assert (last == 0);
-  if (first != 0) assert (last != 0);
-
-  if (first == last) {
-    first = 0;
-    last = 0;
-  } else {
-    first = next(first);
-  }
+void refalrts::move_left(refalrts::Iter& first, refalrts::Iter& last) {
+  VM::move_left(first, last);
 }
 
-void refalrts::move_right(
-  refalrts::Iter& first, refalrts::Iter& last
-) {
-  // assert((first == 0) == (last == 0));
-  if (first == 0) assert (last == 0);
-  if (first != 0) assert (last != 0);
-
-  if (first == last) {
-    first = 0;
-    last = 0;
-  } else {
-    last = prev(last);
-  }
+void refalrts::move_right(refalrts::Iter& first, refalrts::Iter& last) {
+  VM::move_right(first, last);
 }
 
 bool refalrts::empty_seq(refalrts::Iter first, refalrts::Iter last) {
-  // assert((first == 0) == (last == 0));
-  if (first == 0) assert (last == 0);
-  if (first != 0) assert (last != 0);
-
-  return (first == 0) && (last == 0);
+  return VM::empty_seq(first, last);
 }
 
 bool refalrts::function_term(
   const refalrts::RefalFunction *func, refalrts::Iter pos
 ) {
-  return (pos->tag == cDataFunction) && (pos->function_info == func);
+  return VM::function_term(func, pos);
 }
 
 refalrts::Iter refalrts::function_left(
   const refalrts::RefalFunction *fn, refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  if (empty_seq(first, last)) {
-    return 0;
-  } else if (first->tag != cDataFunction) {
-    return 0;
-  } else if (first->function_info != fn) {
-    return 0;
-  } else {
-    Iter func_pos = first;
-    move_left(first, last);
-    return func_pos;
-  }
+  return VM::function_left(fn, first, last);
 }
 
 refalrts::Iter refalrts::function_right(
   const refalrts::RefalFunction *fn, refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  if (empty_seq(first, last)) {
-    return 0;
-  } else if (cDataFunction != last->tag) {
-    return 0;
-  } else if (last->function_info != fn) {
-    return 0;
-  } else {
-    Iter func_pos = last;
-    move_right(first, last);
-    return func_pos;
-  }
+  return VM::function_right(fn, first, last);
 }
 
 bool refalrts::char_term(char ch, refalrts::Iter& pos) {
-  return (pos->tag == cDataChar) && (pos->char_info == ch);
+  return VM::char_term(ch, pos);
 }
 
 refalrts::Iter refalrts::char_left(
   char ch, refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  if (empty_seq(first, last)) {
-    return 0;
-  } else if (cDataChar != first->tag) {
-    return 0;
-  } else if (first->char_info != ch) {
-    return 0;
-  } else {
-    Iter char_pos = first;
-    move_left(first, last);
-    return char_pos;
-  }
+  return VM::char_left(ch, first, last);
 }
 
 refalrts::Iter refalrts::char_right(
   char ch, refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  if (empty_seq(first, last)) {
-    return 0;
-  } else if (cDataChar != last->tag) {
-    return 0;
-  } else if (last->char_info != ch) {
-    return 0;
-  } else {
-    Iter char_pos = last;
-    move_right(first, last);
-    return char_pos;
-  }
+  return VM::char_right(ch, first, last);
 }
 
 
 bool refalrts::number_term(
   refalrts::RefalNumber num, refalrts::Iter& pos
 ) {
-    return (pos->tag == cDataNumber) && (pos->number_info == num);
+  return VM::number_term(num, pos);
 }
 
 refalrts::Iter refalrts::number_left(
   refalrts::RefalNumber num, refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  if (empty_seq(first, last)) {
-    return 0;
-  } else if (cDataNumber != first->tag) {
-    return 0;
-  } else if (first->number_info != num) {
-    return 0;
-  } else {
-    Iter num_pos = first;
-    move_left(first, last);
-    return num_pos;
-  }
+  return VM::number_left(num, first, last);
 }
 
 refalrts::Iter refalrts::number_right(
   refalrts::RefalNumber num, refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  if (empty_seq(first, last)) {
-    return 0;
-  } else if (cDataNumber != last->tag) {
-    return 0;
-  } else if (last->number_info != num) {
-    return 0;
-  } else {
-    Iter num_pos = last;
-    move_right(first, last);
-    return num_pos;
-  }
+  return VM::number_right(num, first, last);
 }
 
 bool refalrts::ident_term(
   refalrts::RefalIdentifier ident, refalrts::Iter& pos
 ) {
-  return (pos->tag == cDataIdentifier) && (pos->ident_info == ident);
+  return VM::ident_term(ident, pos);
 }
 
 refalrts::Iter refalrts::ident_left(
   refalrts::RefalIdentifier ident, refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  if (empty_seq(first, last)) {
-    return 0;
-  } else if (cDataIdentifier != first->tag) {
-    return 0;
-  } else if (first->ident_info != ident) {
-    return 0;
-  } else {
-    Iter ident_pos = first;
-    move_left(first, last);
-    return ident_pos;
-  }
+  return VM::ident_left(ident, first, last);
 }
 
 refalrts::Iter refalrts::ident_right(
   refalrts::RefalIdentifier ident, refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  if (empty_seq(first, last)) {
-    return 0;
-  } else if (cDataIdentifier != last->tag) {
-    return 0;
-  } else if (last->ident_info != ident) {
-    return 0;
-  } else {
-    Iter ident_pos = last;
-    move_right(first, last);
-    return ident_pos;
-  }
+  return VM::ident_right(ident, first, last);
 }
 
 bool refalrts::brackets_term(
   refalrts::Iter& res_first, refalrts::Iter& res_last, refalrts::Iter& pos
 ) {
-  if (pos->tag != cDataOpenBracket) {
-    return false;
-  }
-
-  refalrts::Iter right_bracket = pos->link_info;
-
-  if (next(pos) != right_bracket) {
-    res_first = next(pos);
-    res_last = prev(right_bracket);
-  } else {
-    res_first = 0;
-    res_last = 0;
-  }
-
-  return true;
+  return VM::brackets_term(res_first, res_last, pos);
 }
 
 refalrts::Iter refalrts::brackets_left(
   refalrts::Iter& res_first, refalrts::Iter& res_last,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  if (empty_seq(first, last)) {
-    return 0;
-  } else if (cDataOpenBracket != first->tag) {
-    return 0;
-  } else {
-    refalrts::Iter left_bracket = first;
-    refalrts::Iter right_bracket = left_bracket->link_info;
-
-    if (next(left_bracket) != right_bracket) {
-      res_first = next(left_bracket);
-      res_last = prev(right_bracket);
-    } else {
-      res_first = 0;
-      res_last = 0;
-    }
-
-    if (right_bracket == last) {
-      first = 0;
-      last = 0;
-    } else {
-      first = next(right_bracket);
-    }
-
-    return left_bracket;
-  }
+  return VM::brackets_left(res_first, res_last, first, last);
 }
 
 refalrts::Iter refalrts::brackets_right(
   refalrts::Iter& res_first, refalrts::Iter& res_last,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  if (empty_seq(first, last)) {
-    return 0;
-  } else if (cDataCloseBracket != last->tag) {
-    return 0;
-  } else {
-    refalrts::Iter right_bracket = last;
-    refalrts::Iter left_bracket = right_bracket->link_info;
-
-    if (next(left_bracket) != right_bracket) {
-      res_first = next(left_bracket);
-      res_last = prev(right_bracket);
-    } else {
-      res_first = 0;
-      res_last = 0;
-    }
-
-    if (first == left_bracket) {
-      first = 0;
-      last = 0;
-    } else {
-      last = prev(left_bracket);
-    }
-
-    return left_bracket;
-  }
+  return VM::brackets_right(res_first, res_last, first, last);
 }
 
 void refalrts::bracket_pointers(
   refalrts::Iter left_bracket,
   refalrts::Iter& right_bracket
 ) {
-  right_bracket = left_bracket->link_info;
+  return VM::bracket_pointers(left_bracket, right_bracket);
 }
 
 refalrts::Iter refalrts::adt_term(
@@ -357,28 +169,7 @@ refalrts::Iter refalrts::adt_term(
   const refalrts::RefalFunction *tag,
   refalrts::Iter pos
 ) {
-  if (pos->tag != cDataOpenADT) {
-    return 0;
-  }
-
-  refalrts::Iter adt_tag = next(pos);
-
-  assert (adt_tag->tag == cDataFunction);
-  if (adt_tag->function_info != tag) {
-    return 0;
-  }
-
-  refalrts::Iter right_bracket = pos->link_info;
-
-  if (next(adt_tag) != right_bracket) {
-    res_first = next(adt_tag);
-    res_last = prev(right_bracket);
-  } else {
-    res_first = 0;
-    res_last = 0;
-  }
-
-  return adt_tag;
+  return VM::adt_term(res_first, res_last, tag, pos);
 }
 
 refalrts::Iter refalrts::adt_left(
@@ -386,42 +177,7 @@ refalrts::Iter refalrts::adt_left(
   const refalrts::RefalFunction *tag,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  if (empty_seq(first, last)) {
-    return 0;
-  } else if (cDataOpenADT != first->tag) {
-    return 0;
-  } else {
-    refalrts::Iter left_bracket = first;
-    refalrts::Iter right_bracket = left_bracket->link_info;
-    refalrts::Iter pnext = next(left_bracket);
-
-    if (pnext == right_bracket) {
-      return 0;
-    } else if (cDataFunction != pnext->tag) {
-      return 0;
-    } else if (pnext->function_info != tag) {
-      return 0;
-    } else {
-      if (next(pnext) != right_bracket) {
-        res_first = next(pnext);
-        res_last = prev(right_bracket);
-      } else {
-        res_first = 0;
-        res_last = 0;
-      }
-
-      if (right_bracket == last) {
-        first = 0;
-        last = 0;
-      } else {
-        first = next(right_bracket);
-      }
-
-      return left_bracket;
-    }
-  }
+  return VM::adt_left(res_first, res_last, tag, first, last);
 }
 
 refalrts::Iter refalrts::adt_right(
@@ -429,42 +185,7 @@ refalrts::Iter refalrts::adt_right(
   const refalrts::RefalFunction *tag,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  if (empty_seq(first, last)) {
-    return 0;
-  } else if (cDataCloseADT != last->tag) {
-    return 0;
-  } else {
-    refalrts::Iter right_bracket = last;
-    refalrts::Iter left_bracket = right_bracket->link_info;
-    refalrts::Iter pnext = next(left_bracket);
-
-    if (pnext == right_bracket) {
-      return 0;
-    } else if (cDataFunction != pnext->tag) {
-      return 0;
-    } else if (pnext->function_info != tag) {
-      return 0;
-    } else {
-      if (next(pnext) != right_bracket) {
-        res_first = next(pnext);
-        res_last = prev(right_bracket);
-      } else {
-        res_first = 0;
-        res_last = 0;
-      }
-
-      if (first == left_bracket) {
-        first = 0;
-        last = 0;
-      } else {
-        last = prev(left_bracket);
-      }
-
-      return left_bracket;
-    }
-  }
+  return VM::adt_right(res_first, res_last, tag, first, last);
 }
 
 void refalrts::adt_pointers(
@@ -472,33 +193,14 @@ void refalrts::adt_pointers(
   refalrts::Iter& tag,
   refalrts::Iter& right_bracket
 ) {
-  refalrts::Iter pnext = next(left_bracket);
-  tag = pnext;
-  right_bracket = left_bracket->link_info;
+  return VM::adt_pointers(left_bracket, tag, right_bracket);
 }
 
 refalrts::Iter refalrts::call_left(
   refalrts::Iter& res_first, refalrts::Iter& res_last,
   refalrts::Iter first, refalrts::Iter last
 ) {
-  assert((first != 0) && (last != 0));
-  assert(cDataOpenCall == first->tag);
-
-  refalrts::Iter left_bracket = first;
-  refalrts::Iter right_bracket = last;
-  refalrts::Iter function = next(left_bracket);
-
-  assert(left_bracket->link_info == right_bracket);
-
-  if (next(function) != right_bracket) {
-    res_first = next(function);
-    res_last = prev(right_bracket);
-  } else {
-    res_first = 0;
-    res_last = 0;
-  }
-
-  return function;
+  return VM::call_left(res_first, res_last, first, last);
 }
 
 void refalrts::call_pointers(
@@ -506,202 +208,43 @@ void refalrts::call_pointers(
   refalrts::Iter& tag,
   refalrts::Iter& right_bracket
 ) {
-  refalrts::Iter pnext = next(left_bracket);
-  tag = pnext;
-  right_bracket = left_bracket->link_info;
+  return VM::call_pointers(left_bracket, tag, right_bracket);
 }
 
 bool refalrts::svar_term(
   refalrts::Iter /* svar */, refalrts::Iter pos
 ) {
-  return ! is_open_bracket(pos);
+  return VM::svar_term(pos);
 }
 
 bool refalrts::svar_left(
   refalrts::Iter& svar, refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  if (empty_seq(first, last)) {
-    return false;
-  } else if (is_open_bracket(first)) {
-    return false;
-  } else {
-    svar = first;
-    move_left(first, last);
-    return true;
-  }
+  return VM::svar_left(svar, first, last);
 }
 
 bool refalrts::svar_right(
   refalrts::Iter& svar, refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  if (empty_seq(first, last)) {
-    return false;
-  } else if (is_close_bracket(last)) {
-    return false;
-  } else {
-    svar = last;
-    move_right(first, last);
-    return true;
-  }
+  return VM::svar_right(svar, first, last);
 }
 
 refalrts::Iter refalrts::tvar_left(
   refalrts::Iter& tvar, refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  if (empty_seq(first, last)) {
-    return 0;
-  } else if (is_open_bracket(first)) {
-    refalrts::Iter right_bracket = first->link_info;
-
-    tvar = first;
-    first = right_bracket;
-    move_left(first, last);
-    return right_bracket;
-  } else {
-    tvar = first;
-    move_left(first, last);
-    return tvar;
-  }
+  return VM::tvar_left(tvar, first, last);
 }
 
 refalrts::Iter refalrts::tvar_right(
   refalrts::Iter& tvar, refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  if (empty_seq(first, last)) {
-    return 0;
-  } else if (is_close_bracket(last)) {
-    refalrts::Iter right_bracket = last;
-    refalrts::Iter left_bracket = right_bracket->link_info;
-
-    tvar = left_bracket;
-    last = left_bracket;
-    move_right(first, last);
-    return right_bracket;
-  } else {
-    tvar = last;
-    move_right(first, last);
-    return tvar;
-  }
+  return VM::tvar_right(tvar, first, last);
 }
-
-namespace {
-
-bool equal_nodes(
-  refalrts::Iter node1, refalrts::Iter node2
-) // throws refalrts::SwitchDefaultViolation
-{
-  if (node1->tag != node2->tag) {
-    return false;
-  } else {
-    switch(node1->tag) {
-      case refalrts::cDataChar:
-        return (node1->char_info == node2->char_info);
-        // break;
-
-      case refalrts::cDataNumber:
-        return (node1->number_info == node2->number_info);
-        // break;
-
-      case refalrts::cDataFunction:
-        return (node1->function_info == node2->function_info);
-        // break;
-
-      case refalrts::cDataIdentifier:
-        return (node1->ident_info == node2->ident_info);
-        // break;
-
-      /*
-        Сведения о связях между скобками нужны для других целей, здесь
-        же нам важны только их одновременные появления.
-      */
-      case refalrts::cDataOpenBracket:
-      case refalrts::cDataCloseBracket:
-      case refalrts::cDataOpenADT:
-      case refalrts::cDataCloseADT:
-        return true;
-        // break;
-
-      case refalrts::cDataFile:
-        return (node1->file_info == node2->file_info);
-        // break;
-
-      case refalrts::cDataClosure:
-        return (node1->link_info == node2->link_info);
-        // break;
-
-      /*
-        Данная функция предназначена только для использования функциями рас-
-        познавания образца. Поэтому других узлов мы тут не ожидаем.
-      */
-      default:
-        refalrts_switch_default_violation(node1->tag);
-        // break;
-    }
-    // Все ветви в case завершаются либо return, либо throw.
-  }
-}
-
-} // unnamed namespace
-
-
-namespace {
-
-bool equal_expressions(
-  refalrts::VM *vm,
-  refalrts::Iter first1, refalrts::Iter last1,
-  refalrts::Iter first2, refalrts::Iter last2
-) // throws refalrts::SwitchDefaultViolation
-{
-  assert((first1 == 0) == (last1 == 0));
-  assert((first2 == 0) == (last2 == 0));
-
-  vm->profiler()->start_repeated_tvar();
-
-  while (
-    // Порядок условий важен
-    ! refalrts::empty_seq(first1, last1)
-    && ! refalrts::empty_seq(first2, last2)
-    && equal_nodes(first1, first2)
-  ) {
-    refalrts::move_left(first1, last1);
-    refalrts::move_left(first2, last2);
-  }
-
-  /*
-    Здесь empty_seq(first1, last1) || empty_seq(first2, last2)
-      || ! equal_nodes(first1, first2)
-  */
-
-  vm->profiler()->stop_repeated();
-
-  // Успешное завершение -- если мы достигли конца в обоих выражениях
-  return refalrts::empty_seq(first1, last1)
-    && refalrts::empty_seq(first2, last2);
-}
-
-} // unnamed namespace
 
 bool refalrts::repeated_stvar_term(
   refalrts::VM *vm, refalrts::Iter stvar_sample, refalrts::Iter pos
 ) {
-  if (svar_term(stvar_sample, stvar_sample)) {
-    return svar_term(pos, pos) && equal_nodes(pos, stvar_sample);
-  } else if (is_open_bracket(pos)) {
-    refalrts::Iter pos_e = pos->link_info;
-    refalrts::Iter stvar_sample_e = stvar_sample->link_info;
-
-    return equal_expressions(vm, stvar_sample, stvar_sample_e, pos, pos_e);
-  } else {
-    return false;
-  }
+  return vm->repeated_stvar_term(stvar_sample, pos);
 }
 
 refalrts::Iter refalrts::repeated_stvar_left(
@@ -709,48 +252,7 @@ refalrts::Iter refalrts::repeated_stvar_left(
   refalrts::Iter& stvar, refalrts::Iter stvar_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  refalrts::Iter left_term = 0;
-  refalrts::Iter copy_last = last;
-
-  if (! is_open_bracket(stvar_sample) && svar_left(stvar, first, last)) {
-    if (equal_nodes(stvar, stvar_sample)) {
-      return stvar;
-    } else {
-      return 0;
-    }
-  } else if (tvar_left(left_term, first, last)) {
-    refalrts::Iter left_term_e;
-    refalrts::Iter stvar_sample_e;
-
-    if (empty_seq(first, last)) {
-      left_term_e = copy_last;
-    } else {
-      left_term_e = prev(first);
-    }
-
-    if (is_open_bracket(stvar_sample)) {
-      stvar_sample_e = stvar_sample->link_info;
-    } else {
-      stvar_sample_e = stvar_sample;
-    }
-
-    bool equal = equal_expressions(
-      vm, left_term, left_term_e,
-      stvar_sample, stvar_sample_e
-    );
-
-    if (equal) {
-      stvar = left_term;
-
-      return left_term_e;
-    } else {
-      return 0;
-    }
-  } else {
-    return 0;
-  }
+  return vm->repeated_stvar_left(stvar, stvar_sample, first, last);
 }
 
 refalrts::Iter refalrts::repeated_stvar_right(
@@ -758,42 +260,7 @@ refalrts::Iter refalrts::repeated_stvar_right(
   refalrts::Iter& stvar, refalrts::Iter stvar_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
-  assert((first == 0) == (last == 0));
-
-  refalrts::Iter right_term = 0;
-  refalrts::Iter old_last = last;
-
-  if (! is_open_bracket(stvar_sample) && svar_right(stvar, first, last)) {
-    if (equal_nodes(stvar, stvar_sample)) {
-      return stvar;
-    } else {
-      return 0;
-    }
-  } else if (tvar_right(right_term, first, last)) {
-    refalrts::Iter right_term_e = old_last;
-    refalrts::Iter stvar_sample_e;
-
-    if (is_open_bracket(stvar_sample)) {
-      stvar_sample_e = stvar_sample->link_info;
-    } else {
-      stvar_sample_e = stvar_sample;
-    }
-
-    bool equal = equal_expressions(
-      vm, right_term, right_term_e,
-      stvar_sample, stvar_sample_e
-    );
-
-    if (equal) {
-      stvar = right_term;
-
-      return right_term_e;
-    } else {
-      return 0;
-    }
-  } else {
-    return 0;
-  }
+  return vm->repeated_stvar_right(stvar, stvar_sample, first, last);
 }
 
 bool refalrts::repeated_evar_left(
@@ -802,50 +269,9 @@ bool refalrts::repeated_evar_left(
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
-  vm->profiler()->start_repeated_evar();
-  refalrts::Iter current = first;
-  refalrts::Iter cur_sample = evar_b_sample;
-  refalrts::Iter copy_last = last;
-
-  while (
-    // порядок условий важен
-    ! empty_seq(cur_sample, evar_e_sample)
-    && ! (empty_seq(current, copy_last) || ! equal_nodes(current, cur_sample))
-  ) {
-    move_left(cur_sample, evar_e_sample);
-    move_left(current, copy_last);
-  }
-
-  vm->profiler()->stop_repeated();
-
-  /*
-    Здесь empty_seq(cur_sample, evar_e_sample) или
-      ! empty_seq(cur_sample, evar_e_sample)
-      && (empty_seq(current, copy_last) || ! equal_nodes(current, cur_sample))
-  */
-  if (empty_seq(cur_sample, evar_e_sample)) {
-    // Это нормальное завершение цикла -- вся образцовая переменная проверена
-
-    if (empty_seq(current, copy_last)) {
-      evar_b = first;
-      evar_e = last;
-
-      first = 0;
-      last = 0;
-    } else if (current != first) {
-      evar_b = first;
-      evar_e = prev(current);
-
-      first = current;
-    } else {
-      evar_b = 0;
-      evar_e = 0;
-    }
-
-    return true;
-  } else {
-    return false;
-  }
+  return vm->repeated_evar_left(
+    evar_b, evar_e, evar_b_sample, evar_e_sample, first, last
+  );
 }
 
 bool refalrts::repeated_evar_right(
@@ -854,75 +280,15 @@ bool refalrts::repeated_evar_right(
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
-  vm->profiler()->start_repeated_evar();
-  refalrts::Iter current = last;
-  refalrts::Iter cur_sample = evar_e_sample;
-  refalrts::Iter copy_first = first;
-
-  while (
-    // порядок перечисления условий важен
-    ! empty_seq(evar_b_sample, cur_sample)
-    && ! (empty_seq(copy_first, current) || ! equal_nodes(current, cur_sample))
-  ) {
-    move_right(copy_first, current);
-    move_right(evar_b_sample, cur_sample);
-  }
-
-  vm->profiler()->stop_repeated();
-
-  /*
-    Здесь empty_seq(evar_b_sample, cur_sample) или
-      ! empty_seq(evar_b_sample, cur_sample)
-      && (empty_seq(copy_first, current) || ! equal_nodes(current, cur_sample))
-  */
-
-  if (empty_seq(evar_b_sample, cur_sample)) {
-    // Это нормальное завершение цикла: вся переменная-образец просмотрена
-
-    if (empty_seq(copy_first, current)) {
-      evar_b = first;
-      evar_e = last;
-
-      first = 0;
-      last = 0;
-    } else if (current != last) {
-      evar_b = next(current);
-      evar_e = last;
-
-      last = current;
-    } else {
-      evar_b = 0;
-      evar_e = 0;
-    }
-
-    return true;
-  } else {
-    return false;
-  }
+  return vm->repeated_evar_right(
+    evar_b, evar_e, evar_b_sample, evar_e_sample, first, last
+  );
 }
 
 bool refalrts::open_evar_advance(
   Iter& evar_b, Iter& evar_e, Iter& first, Iter& last
 ) {
-  assert((evar_b == 0) == (evar_e == 0));
-
-  refalrts::Iter prev_first = 0;
-
-  if (tvar_left(prev_first, first, last)) {
-    if (! evar_b) {
-      evar_b = prev_first;
-    }
-
-    if (is_open_bracket(prev_first)) {
-      evar_e = prev_first->link_info;
-    } else {
-      evar_e = prev_first;
-    }
-
-    return true;
-  } else {
-    return false;
-  }
+  return VM::open_evar_advance(evar_b, evar_e, first, last);
 }
 
 unsigned refalrts::read_chars(
@@ -945,276 +311,90 @@ unsigned refalrts::read_chars(
 // Операции построения результата
 
 void refalrts::reset_allocator(refalrts::VM *vm) {
-  vm->profiler()->start_result();
-  vm->allocator()->reset_allocator();
+  vm->reset_allocator();
 }
-
-namespace {
-
-bool copy_node(refalrts::VM *vm, refalrts::Iter& res, refalrts::Iter sample) {
-  switch(sample->tag) {
-    case refalrts::cDataChar:
-      return refalrts::alloc_char(vm, res, sample->char_info);
-
-    case refalrts::cDataNumber:
-      return refalrts::alloc_number(vm, res, sample->number_info);
-
-    case refalrts::cDataFunction:
-      return refalrts::alloc_name(vm, res, sample->function_info);
-
-    case refalrts::cDataIdentifier:
-      return refalrts::alloc_ident(vm, res, sample->ident_info);
-
-    case refalrts::cDataOpenBracket:
-      return refalrts::alloc_open_bracket(vm, res);
-
-    case refalrts::cDataCloseBracket:
-      return refalrts::alloc_close_bracket(vm, res);
-
-    case refalrts::cDataOpenADT:
-      return refalrts::alloc_open_adt(vm, res);
-
-    case refalrts::cDataCloseADT:
-      return refalrts::alloc_close_adt(vm, res);
-
-    case refalrts::cDataClosure: {
-      bool allocated = vm->allocator()->alloc_node(res);
-      if (allocated) {
-        res->tag = refalrts::cDataClosure;
-        refalrts::Iter head = sample->link_info;
-        res->link_info = head;
-        ++ (head->number_info);
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    case refalrts::cDataFile: {
-      bool allocated = vm->allocator()->alloc_node(res);
-      if (allocated) {
-        res->tag = refalrts::cDataFile;
-        res->file_info = sample->file_info;
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    /*
-      Копируем только объектное выражение -- никаких вызовов функций
-      быть не должно.
-    */
-    default:
-      refalrts_switch_default_violation(sample->tag);
-  }
-}
-
-} // unnamed namespace
-
-
-namespace {
-
-bool copy_nonempty_evar(
-  refalrts::VM *vm,
-  refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
-  refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
-) {
-  vm->profiler()->start_copy();
-
-  refalrts::Iter res = 0;
-  refalrts::Iter bracket_stack = 0;
-
-  refalrts::Iter prev_res_begin = prev(vm->allocator()->free_ptr());
-
-  while (! refalrts::empty_seq(evar_b_sample, evar_e_sample)) {
-    if (! copy_node(vm, res, evar_b_sample)) {
-      vm->profiler()->stop_copy();
-      return false;
-    }
-
-    if (is_open_bracket(res)) {
-      res->link_info = bracket_stack;
-      bracket_stack = res;
-    } else if (is_close_bracket(res)) {
-      assert(bracket_stack != 0);
-
-      refalrts::Iter open_cobracket = bracket_stack;
-      bracket_stack = bracket_stack->link_info;
-      refalrts::link_brackets(open_cobracket, res);
-    }
-
-    refalrts::move_left(evar_b_sample, evar_e_sample);
-  }
-
-  assert(bracket_stack == 0);
-
-  evar_res_b = next(prev_res_begin);
-  evar_res_e = res;
-
-  vm->profiler()->stop_copy();
-
-  return true;
-}
-
-} // unnamed namespace
 
 bool refalrts::copy_evar(
   refalrts::VM *vm, refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
 ) {
-  if (empty_seq(evar_b_sample, evar_e_sample)) {
-    evar_res_b = 0;
-    evar_res_e = 0;
-    return true;
-  } else {
-    return copy_nonempty_evar(
-      vm, evar_res_b, evar_res_e, evar_b_sample, evar_e_sample
-    );
-  }
+  return vm->copy_evar(evar_res_b, evar_res_e, evar_b_sample, evar_e_sample);
 }
 
 bool refalrts::copy_stvar(
   refalrts::VM *vm, refalrts::Iter& stvar_res, refalrts::Iter stvar_sample
 ) {
-  if (is_open_bracket(stvar_sample)) {
-    refalrts::Iter end_of_sample = stvar_sample->link_info;
-    refalrts::Iter end_of_res;
-    return copy_evar(
-      vm, stvar_res, end_of_res, stvar_sample, end_of_sample
-    );
-  } else {
-    return copy_node(vm, stvar_res, stvar_sample);
-  }
+  return vm->copy_stvar(stvar_res, stvar_sample);
 }
 
 bool refalrts::alloc_copy_evar(
   refalrts::VM *vm, refalrts::Iter& res,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
 ) {
-  if (empty_seq(evar_b_sample, evar_e_sample)) {
-    res = 0;
-    return true;
-  } else {
-    refalrts::Iter res_e = 0;
-    return copy_nonempty_evar(
-      vm, res, res_e, evar_b_sample, evar_e_sample
-    );
-  }
+  return vm->alloc_copy_evar(res, evar_b_sample, evar_e_sample);
 }
 
 bool refalrts::alloc_copy_svar_(
   refalrts::VM *vm, refalrts::Iter& svar_res, refalrts::Iter svar_sample
 ) {
-  return copy_node(vm, svar_res, svar_sample);
+  return vm->copy_node(svar_res, svar_sample);
 }
 
 
 bool refalrts::alloc_char(refalrts::VM *vm, refalrts::Iter& res, char ch) {
-  if (vm->allocator()->alloc_node(res)) {
-    res->tag = cDataChar;
-    res->char_info = ch;
-    return true;
-  } else {
-    return false;
-  }
+  return vm->alloc_char(res, ch);
 }
 
 bool refalrts::alloc_number(
   refalrts::VM *vm, refalrts::Iter& res, refalrts::RefalNumber num
 ) {
-  if (vm->allocator()->alloc_node(res)) {
-    res->tag = cDataNumber;
-    res->number_info = num;
-    return true;
-  } else {
-    return false;
-  }
+  return vm->alloc_number(res, num);
 }
 
 bool refalrts::alloc_name(
   refalrts::VM *vm, refalrts::Iter& res, refalrts::RefalFunction *fn
 ) {
-  if (vm->allocator()->alloc_node(res)) {
-    res->tag = cDataFunction;
-    res->function_info = fn;
-    return true;
-  } else {
-    return false;
-  }
+  return vm->alloc_name(res, fn);
 }
 
 bool refalrts::alloc_ident(
   refalrts::VM *vm, refalrts::Iter& res, refalrts::RefalIdentifier ident
 ) {
-  if (vm->allocator()->alloc_node(res)) {
-    res->tag = cDataIdentifier;
-    res->ident_info = ident;
-    return true;
-  } else {
-    return false;
-  }
+  return vm->alloc_ident(res, ident);
 }
-
-namespace {
-
-bool alloc_some_bracket(
-  refalrts::VM *vm, refalrts::Iter& res, refalrts::DataTag tag
-) {
-  if (vm->allocator()->alloc_node(res)) {
-    res->tag = tag;
-    return true;
-  } else {
-    return false;
-  }
-}
-
-} // unnamed namespace
 
 bool refalrts::alloc_open_adt(refalrts::VM *vm, refalrts::Iter& res) {
-  return alloc_some_bracket(vm, res, cDataOpenADT);
+  return vm->alloc_open_adt(res);
 }
 
 bool refalrts::alloc_close_adt(refalrts::VM *vm, refalrts::Iter& res) {
-  return alloc_some_bracket(vm, res, cDataCloseADT);
+  return vm->alloc_close_adt(res);
 }
 
 bool refalrts::alloc_open_bracket(refalrts::VM *vm, refalrts::Iter& res) {
-  return alloc_some_bracket(vm, res, cDataOpenBracket);
+  return vm->alloc_open_bracket(res);
 }
 
 bool refalrts::alloc_close_bracket(refalrts::VM *vm, refalrts::Iter& res) {
-  return alloc_some_bracket(vm, res, cDataCloseBracket);
+  return vm->alloc_close_bracket(res);
 }
 
 bool refalrts::alloc_open_call(refalrts::VM *vm, refalrts::Iter& res) {
-  return alloc_some_bracket(vm, res, cDataOpenCall);
+  return vm->alloc_open_call(res);
 }
 
 bool refalrts::alloc_close_call(refalrts::VM *vm, refalrts::Iter& res) {
-  return alloc_some_bracket(vm, res, cDataCloseCall);
+  return vm->alloc_close_call(res);
 }
 
 bool refalrts::alloc_closure_head(refalrts::VM *vm, refalrts::Iter& res) {
-  if (vm->allocator()->alloc_node(res)) {
-    res->tag = cDataClosureHead;
-    res->number_info = 1;
-    return true;
-  } else {
-    return false;
-  }
+  return vm->alloc_closure_head(res);
 }
 
 bool refalrts::alloc_unwrapped_closure(
   refalrts::VM *vm, refalrts::Iter& res, refalrts::Iter head
 ) {
-  if (vm->allocator()->alloc_node(res)) {
-    res->tag = cDataUnwrappedClosure;
-    res->link_info = head;
-    return true;
-  } else {
-    return false;
-  }
+  return vm->alloc_unwrapped_closure(res, head);
 }
 
 bool refalrts::alloc_chars(
@@ -1222,50 +402,14 @@ bool refalrts::alloc_chars(
   refalrts::Iter& res_b, refalrts::Iter& res_e,
   const char buffer[], unsigned buflen
 ) {
-  if (buflen == 0) {
-    res_b = 0;
-    res_e = 0;
-    return true;
-  } else {
-    refalrts::Iter before_begin_seq = prev(vm->allocator()->free_ptr());
-    refalrts::Iter end_seq = 0;
-
-    for (unsigned i = 0; i < buflen; ++ i) {
-      if (! alloc_char(vm, end_seq, buffer[i])) {
-        return false;
-      }
-    }
-
-    res_b = next(before_begin_seq);
-    res_e = end_seq;
-
-    return true;
-  }
+  return vm->alloc_chars(res_b, res_e, buffer, buflen);
 }
 
 bool refalrts::alloc_string(
   refalrts::VM *vm,
   refalrts::Iter& res_b, refalrts::Iter& res_e, const char *string
 ) {
-  if (*string == '\0') {
-    res_b = 0;
-    res_e = 0;
-    return true;
-  } else {
-    refalrts::Iter before_begin_seq = prev(vm->allocator()->free_ptr());
-    refalrts::Iter end_seq = 0;
-
-    for (const char *p = string; *p != '\0'; ++ p) {
-      if (! alloc_char(vm, end_seq, *p)) {
-        return false;
-      }
-    }
-
-    res_b = next(before_begin_seq);
-    res_e = end_seq;
-
-    return true;
-  }
+  return vm->alloc_string(res_b, res_e, string);
 }
 
 void refalrts::push_stack(refalrts::VM *vm, refalrts::Iter call_bracket) {
@@ -1273,145 +417,95 @@ void refalrts::push_stack(refalrts::VM *vm, refalrts::Iter call_bracket) {
 }
 
 void refalrts::link_brackets(Iter left, Iter right) {
-  left->link_info = right;
-  right->link_info = left;
+  return VM::link_brackets(left, right);
 }
 
 void refalrts::reinit_svar(refalrts::Iter res, refalrts::Iter sample) {
-  res->tag = sample->tag;
-
-  switch(sample->tag) {
-    case refalrts::cDataChar:
-      res->char_info = sample->char_info;
-      break;
-
-    case refalrts::cDataNumber:
-      res->number_info = sample->number_info;
-      break;
-
-    case refalrts::cDataFunction:
-      res->function_info = sample->function_info;
-      break;
-
-    case refalrts::cDataIdentifier:
-      res->ident_info = sample->ident_info;
-      break;
-
-    case refalrts::cDataClosure: {
-      res->tag = refalrts::cDataClosure;
-      refalrts::Iter head = sample->link_info;
-      res->link_info = head;
-      ++ (head->number_info);
-    }
-    break;
-
-    case refalrts::cDataFile:
-      res->file_info = sample->file_info;
-      break;
-
-    /*
-      Копируем только атом, скобок быть не должно.
-    */
-    default:
-      refalrts_switch_default_violation(sample->tag);
-  }
+  return VM::reinit_svar(res, sample);
 }
 
 void refalrts::reinit_char(refalrts::Iter res, char ch) {
-  res->tag = cDataChar;
-  res->char_info = ch;
+  return VM::reinit_char(res, ch);
 }
 
 void refalrts::update_char(refalrts::Iter res, char ch) {
-  res->char_info = ch;
+  return VM::update_char(res, ch);
 }
 
 void refalrts::reinit_number(refalrts::Iter res, refalrts::RefalNumber num) {
-  res->tag = cDataNumber;
-  res->number_info = num;
+  return VM::reinit_number(res, num);
 }
 
 void refalrts::update_number(refalrts::Iter res, refalrts::RefalNumber num) {
-  res->number_info = num;
+  return VM::update_number(res, num);
 }
 
 void refalrts::reinit_name(refalrts::Iter res, refalrts::RefalFunction *func) {
-  res->tag = cDataFunction;
-  res->function_info = func;
+  return VM::reinit_name(res, func);
 }
 
 void refalrts::update_name(refalrts::Iter res, refalrts::RefalFunction *func) {
-  res->function_info = func;
+  return VM::update_name(res, func);
 }
 
 void refalrts::reinit_ident(
   refalrts::Iter res, refalrts::RefalIdentifier ident
 ) {
-  res->tag = cDataIdentifier;
-  res->ident_info = ident;
+  return VM::reinit_ident(res, ident);
 }
 
 void refalrts::update_ident(
   refalrts::Iter res, refalrts::RefalIdentifier ident
 ) {
-  res->ident_info = ident;
+  return VM::update_ident(res, ident);
 }
 
 void refalrts::reinit_open_bracket(refalrts::Iter res) {
-  res->tag = cDataOpenBracket;
+  return VM::reinit_open_bracket(res);
 }
 
 void refalrts::reinit_close_bracket(refalrts::Iter res) {
-  res->tag = cDataCloseBracket;
+  return VM::reinit_close_bracket(res);
 }
 
 void refalrts::reinit_open_adt(refalrts::Iter res) {
-  res->tag = cDataOpenADT;
+  return VM::reinit_open_adt(res);
 }
 
 void refalrts::reinit_close_adt(refalrts::Iter res) {
-  res->tag = cDataCloseADT;
+  return VM::reinit_close_adt(res);
 }
 
 void refalrts::reinit_open_call(refalrts::Iter res) {
-  res->tag = cDataOpenCall;
+  return VM::reinit_open_call(res);
 }
 
 void refalrts::reinit_close_call(refalrts::Iter res) {
-  res->tag = cDataCloseCall;
+  return VM::reinit_close_call(res);
 }
 
 void refalrts::reinit_closure_head(refalrts::Iter res) {
-  res->tag = cDataClosureHead;
-  res->number_info = 1;
+  return VM::reinit_closure_head(res);
 }
 
 void refalrts::reinit_unwrapped_closure(
   refalrts::Iter res, refalrts::Iter head
 ) {
-  res->tag = cDataUnwrappedClosure;
-  res->link_info = head;
+  return VM::reinit_unwrapped_closure(res, head);
 }
 
 refalrts::Iter refalrts::splice_elem(refalrts::Iter res, refalrts::Iter elem) {
-  return list_splice(res, elem, elem);
+  return VM::splice_elem(res, elem);
 }
 
 refalrts::Iter refalrts::splice_stvar(refalrts::Iter res, refalrts::Iter var) {
-  refalrts::Iter var_end;
-  if (is_open_bracket(var)) {
-    var_end = var->link_info;
-  } else {
-    var_end = var;
-  }
-
-  return list_splice(res, var, var_end);
+  return VM::splice_stvar(res, var);
 }
 
 refalrts::Iter refalrts::splice_evar(
   refalrts::Iter res, refalrts::Iter begin, refalrts::Iter end
 ) {
-  return list_splice(res, begin, end);
+  return VM::splice_evar(res, begin, end);
 }
 
 void refalrts::splice_to_freelist(
