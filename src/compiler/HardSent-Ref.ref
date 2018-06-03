@@ -1,0 +1,38 @@
+/*
+Два основных принципа алгоритма приведения к жёсткому выражению:
+- у всех переменных удаляются индексы,
+- участки выражений вида «e … e» заменяются на «e».
+*/
+$ENTRY HardSentence {
+  (TkVariable 'e' e.LIndex) e.Rest (TkVariable 'e' e.RIndex) = (TkVariable 'e');
+
+  t.Term e.Rest = <HardTerm t.Term> <HardSentence e.Rest>;
+  e.Rest t.Term = <HardSentence e.Rest> <HardTerm t.Term>;
+
+  /* */ = ;
+}
+
+HardTerm {
+  t.Symbol, <IsSymbol t.Symbol> : True = t.Symbol;
+
+  (TkVariable 's' e.Index) = (TkVariable 's');
+  (TkVariable 't' e.Index) = (TkVariable 't');
+  (TkVariable 'e' e.Index) = (TkVariable 'e');
+
+  (ADT-Brackets t.Name e.Rest) = (ADT-Brackets t.Name <HardSentence e.Rest>);
+
+  /* Имеют общий вид. Пока не заменяю, чтобы ловить ошибки */
+  (Brackets e.Rest) = (Brackets <HardSentence e.Rest>);
+  (Closure e.Rest) = (Closure <HardSentence e.Rest>);
+  (CallBrackets e.Rest) = (CallBrackets <HardSentence e.Rest>);
+}
+
+$ENTRY IsSymbol {
+  /* идентификатор, имя функции, число или литера */
+  (TkIdentifier e.Name) = True;
+  (TkName t.SrcPos e.Name) = True;
+  (TkNumber s.Number) = True;
+  (TkChar s.HChar) = True;
+
+  t.OtherTerm = False;
+}
