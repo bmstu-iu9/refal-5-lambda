@@ -116,31 +116,26 @@ $ENTRY PtrFromName {
 */
 $ENTRY Add {
   // optimization for two digits
-  s.First s.Second
-    = <__Step-Start> <Add-Digits s.First s.Second> <__Step-End>;
+  s.First s.Second = <__Step-Start> <Add-Digits s.First s.Second> <__Step-End>;
 
-  // TODO: заменить на условия!!!
   e.ArithmArg
-    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    , <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
     = <Add-Normed (e.First) e.Second> <__Step-End>;
 }
 
 NormArithmArg {
-  // TODO: заменить на условия!!!
   0 e.Second
-    = <NormNumber e.Second> : s.SecondSign e.Second^
+    , <NormNumber e.Second> : s.SecondSign e.Second^
     = (0) s.SecondSign e.Second;
 
-  // TODO: заменить на условия!!!
   s.First e.Second
-    = <Type s.First> : 'N' s.SubType s.First^
-    = <NormNumber e.Second> : s.SecondSign e.Second^
+    , <Type s.First> : 'N' s.SubType s.First^
+    , <NormNumber e.Second> : s.SecondSign e.Second^
     = ('+' s.First) s.SecondSign e.Second;
 
-  // TODO: заменить на условия!!!
   (e.First) e.Second
-    = <NormNumber e.First> : s.FirstSign e.First^
-    = <NormNumber e.Second> : s.SecondSign e.Second^
+    , <NormNumber e.First> : s.FirstSign e.First^
+    , <NormNumber e.Second> : s.SecondSign e.Second^
     = (s.FirstSign e.First) s.SecondSign e.Second;
 
   e.OtherArg = /* empty */;
@@ -156,22 +151,14 @@ NormNumber {
   0 = 0;
   0 e.Digits = <NormNumber '+' e.Digits>;
 
-  // TODO: заменить на условия!!!
-  '+' e.Digits
-    = <AllDigits e.Digits> : #True
-    = '+' e.Digits;
+  '+' e.Digits, <AllDigits e.Digits> : #True = '+' e.Digits;
 
-  '-' e.Digits
-    = <AllDigits e.Digits> : #True
-    = '-' e.Digits;
+  '-' e.Digits, <AllDigits e.Digits> : #True = '-' e.Digits;
 
-  // TODO: переписать через условия!!!
-  e.Digits
-    = <Type e.Digits>
-    : {
-        'N' s.SubType e.Digits^ = <NormNumber '+' e.Digits>;
-        s.Type s.SubType e.NotIsDigits = /* empty */;
-      };
+  e.Digits, <Type e.Digits> : 'N' s.SubType e.Digits^
+    = <NormNumber '+' e.Digits>;
+
+  e.Digits = /* empty */;
 }
 
 AllDigits {
@@ -412,10 +399,9 @@ $ENTRY Div {
     = <__Step-Start> <Divmod-Digits s.First s.Second> : (s.Div) s.Rem
     = s.Div <__Step-End>;
 
-  // TODO: заменить на условия!!!
   e.ArithmArg
-    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
-    = <Divmod-Normed (e.First) e.Second> : (e.Div) e.Mod
+    , <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    , <Divmod-Normed (e.First) e.Second> : (e.Div) e.Mod
     = e.Div <__Step-End>;
 }
 
@@ -429,10 +415,9 @@ $ENTRY Divmod {
   s.First s.Second
     = <__Step-Start> <Divmod-Digits s.First s.Second> <__Step-End>;
 
-  // TODO: заменить на условия!!!
   e.ArithmArg
-    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) s.Sign e.Second
-    = '+-' : e.Signs-B s.Sign e.Signs-E   // TODO: тут должно быть условие!!!
+    , <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) s.Sign e.Second
+    , '+-' : e.Signs-B s.Sign e.Signs-E
     = <Divmod-Normed (e.First) s.Sign e.Second> <__Step-End>;
 }
 
@@ -991,8 +976,8 @@ Get-Aux {
       <Implode e.NotNameTerms> == 0 e.NotNameTerms
 */
 $ENTRY Implode {
-  // TODO: заменить на условия!!!
   s.Init e.Tail
+    // Тут нельзя записать через условия, потому что __Step-Start
     = <__Step-Start> <Type s.Init>
     : {
         'L' s.SubType s.Init^ = <DoImplode (s.Init) e.Tail> <__Step-End>;
@@ -1008,15 +993,11 @@ DoImplode {
   (e.Scanned) '_' e.Tail = <DoImplode (e.Scanned '_') e.Tail>;
   (e.Scanned) '$' e.Tail = <DoImplode (e.Scanned '$') e.Tail>;
 
-  // TODO: заменить на условия!!!
-  (e.Scanned) s.Next e.Tail
-    = <Type s.Next>
-    : {
-        'L' s.SubType s.Lettern = <DoImplode (e.Scanned s.Lettern) e.Tail>;
-        'D' s.SubType s.Digit = <DoImplode (e.Scanned s.Digit) e.Tail>;
+  (e.Scanned) s.Next e.Tail, <Type s.Next> : 'L' s.SubType s.Lettern
+    = <DoImplode (e.Scanned s.Lettern) e.Tail>;
 
-        s.Type s.SubType s.Other = <Implode_Ext e.Scanned> s.Other e.Tail;
-      };
+  (e.Scanned) s.Next e.Tail, <Type s.Next> : 'D' s.SubType s.Digit
+    = <DoImplode (e.Scanned s.Digit) e.Tail>;
 
   (e.Scanned) e.Other = <Implode_Ext e.Scanned> e.Other;
 }
@@ -1088,10 +1069,9 @@ $ENTRY Mod {
     = <__Step-Start> <Divmod-Digits s.First s.Second> : (s.Div) s.Mod
     = s.Mod <__Step-End>;
 
-  // TODO: заменить на условия!!!
   e.ArithmArg
-    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
-    = <Divmod-Normed (e.First) e.Second> : (e.Div) e.Mod
+    , <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    , <Divmod-Normed (e.First) e.Second> : (e.Div) e.Mod
     = e.Mod <__Step-End>;
 }
 
@@ -1104,9 +1084,8 @@ $ENTRY Mul {
   // optimization for two digits
   s.First s.Second = <__Step-Start> <Mul-Digits s.First s.Second> <__Step-End>;
 
-  // TODO: заменить на условия!!!
   e.ArithmArg
-    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    , <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
     = <Mul-Normed (e.First) e.Second> <__Step-End>;
 }
 
@@ -1657,9 +1636,8 @@ $ENTRY Sub {
   // optimization for two digits
   s.First s.Second = <Sub-Digits s.First s.Second>;
 
-  // TODO: заменить на условия!!!
   e.ArithmArg
-    = <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    , <NormArithmArg e.ArithmArg> : (e.First) e.Second
     = <Sub-Normed (e.First) e.Second>;
 }
 
@@ -2236,7 +2214,6 @@ Xxout-Scan {
   '*' s.0 /* empty */ = /* empty */;
 }
 
-/* TODO: uncomment with conditions
 Xxout-Chars {
   (e.Scanned) s.T s.S s.Escaped e.Tail
     , ('\\\\') ('\'\'') ('""') ('((') ('))')
@@ -2260,44 +2237,6 @@ Xxout-Chars {
   (e.Scanned) 'O' s.S s.Other e.Tail
     = <Divmod-Digits <Ord s.Other> 16> : (s.Hi) s.Low
     = <Xxout-Chars (e.Scanned '\\x' <Hex s.Hi> <Hex s.Low>) <Type e.Tail>>;
-
-  (e.Scanned) 'B' s.0 (e.Inner) e.Tail = (e.Scanned) 'B' s.0 (e.Inner) e.Tail;
-
-  (e.Scanned) '*' s.0 /+* empty *+/ = (e.Scanned) '*' s.0 /+* empty *+/;
-}
-*/
-
-Xxout-Chars {
-  (e.Scanned) s.T s.S s.Char e.Tail
-    = ('\\\\') ('\'\'') ('""') ('((') ('))')
-      ('<<') ('>>') ('\nn') ('\tt') ('\rr')
-    : {
-        e.Escaped-B (s.Char e.Replace) e.Escaped-E
-          = <Xxout-Chars (e.Scanned '\\' e.Replace) <Type e.Tail>>;
-
-        e.Escaped
-          = s.T s.S s.Char
-          : {
-              'L' s.S^ s.Letter
-                = <Xxout-Chars (e.Scanned s.Letter) <Type e.Tail>>;
-
-              'D' s.S^ s.Digit
-                = <Xxout-Chars (e.Scanned s.Digit) <Type e.Tail>>;
-
-              'W' s.S^ s.Word = (e.Scanned) 'W' s.S s.Word e.Tail;
-
-              'N' s.0 s.Number = (e.Scanned) 'N' s.0 s.Number e.Tail;
-
-              'P' s.S^ s.Printable
-                = <Xxout-Chars (e.Scanned s.Printable) <Type e.Tail>>;
-
-              'O' s.S^ s.Other
-                = <Divmod-Digits <Ord s.Other> 16> : (s.Hi) s.Low
-                = <Xxout-Chars
-                    (e.Scanned '\\x' <Hex s.Hi> <Hex s.Low>) <Type e.Tail>
-                  >;
-            };
-      };
 
   (e.Scanned) 'B' s.0 (e.Inner) e.Tail = (e.Scanned) 'B' s.0 (e.Inner) e.Tail;
 
@@ -2775,9 +2714,8 @@ $ENTRY Compare {
   // optimization for two digits
   s.First s.Second = <Compare-Digits s.First s.Second>;
 
-  // TODO: заменить на условия!!!
   e.ArithmArg
-    = <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    , <NormArithmArg e.ArithmArg> : (e.First) e.Second
     = <Compare-Normed (e.First) e.Second>;
 }
 
