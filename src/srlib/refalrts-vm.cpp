@@ -1827,34 +1827,33 @@ bool refalrts::VM::repeated_evar_right(
 }
 
 bool refalrts::VM::copy_node(refalrts::Iter& res, refalrts::Iter sample) {
-  VM *vm = this;  // ←TODO
   switch(sample->tag) {
     case refalrts::cDataChar:
-      return refalrts::alloc_char(vm, res, sample->char_info);
+      return alloc_char(res, sample->char_info);
 
     case refalrts::cDataNumber:
-      return refalrts::alloc_number(vm, res, sample->number_info);
+      return alloc_number(res, sample->number_info);
 
     case refalrts::cDataFunction:
-      return refalrts::alloc_name(vm, res, sample->function_info);
+      return alloc_name(res, sample->function_info);
 
     case refalrts::cDataIdentifier:
-      return refalrts::alloc_ident(vm, res, sample->ident_info);
+      return alloc_ident(res, sample->ident_info);
 
     case refalrts::cDataOpenBracket:
-      return refalrts::alloc_open_bracket(vm, res);
+      return alloc_open_bracket(res);
 
     case refalrts::cDataCloseBracket:
-      return refalrts::alloc_close_bracket(vm, res);
+      return alloc_close_bracket(res);
 
     case refalrts::cDataOpenADT:
-      return refalrts::alloc_open_adt(vm, res);
+      return alloc_open_adt(res);
 
     case refalrts::cDataCloseADT:
-      return refalrts::alloc_close_adt(vm, res);
+      return alloc_close_adt(res);
 
     case refalrts::cDataClosure: {
-      bool allocated = vm->allocator()->alloc_node(res);
+      bool allocated = allocator()->alloc_node(res);
       if (allocated) {
         res->tag = refalrts::cDataClosure;
         refalrts::Iter head = sample->link_info;
@@ -1867,7 +1866,7 @@ bool refalrts::VM::copy_node(refalrts::Iter& res, refalrts::Iter sample) {
     }
 
     case refalrts::cDataFile: {
-      bool allocated = vm->allocator()->alloc_node(res);
+      bool allocated = allocator()->alloc_node(res);
       if (allocated) {
         res->tag = refalrts::cDataFile;
         res->file_info = sample->file_info;
@@ -1890,17 +1889,16 @@ bool refalrts::VM::copy_nonempty_evar(
   refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
 ) {
-  VM *vm = this;  // ←TODO
-  vm->profiler()->start_copy();
+  profiler()->start_copy();
 
   refalrts::Iter res = 0;
   refalrts::Iter bracket_stack = 0;
 
-  refalrts::Iter prev_res_begin = prev(vm->allocator()->free_ptr());
+  refalrts::Iter prev_res_begin = prev(allocator()->free_ptr());
 
   while (! refalrts::empty_seq(evar_b_sample, evar_e_sample)) {
     if (! copy_node(res, evar_b_sample)) {
-      vm->profiler()->stop_copy();
+      profiler()->stop_copy();
       return false;
     }
 
@@ -1923,7 +1921,7 @@ bool refalrts::VM::copy_nonempty_evar(
   evar_res_b = next(prev_res_begin);
   evar_res_e = res;
 
-  vm->profiler()->stop_copy();
+  profiler()->stop_copy();
 
   return true;
 }
