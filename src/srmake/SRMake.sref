@@ -130,9 +130,13 @@ RunSrefCompiler {
           e.Units
         >
       >
-      /* TODO: уточнить после обновления System в стабильной версии */
-    : e.RetCode
-    = /* пусто */;
+    : {
+        0 = /* пусто */;
+
+        s.RetCode
+          = <WriteLine 'ERROR: srefc-core returned code ' <StrFromInt s.RetCode>>
+            <Exit 1>;
+      };
 }
 
 MakeOptionalFlag {
