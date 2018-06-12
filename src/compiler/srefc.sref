@@ -479,10 +479,19 @@ Chmod-X-Prefix {
 
         e.ChmodXCommand
           = <System e.ChmodXCommand ' "' e.IntermediateName '"'>
-            /* TODO: уточнить после обновления System в стабильной версии */
-          : e.RetCode
-          = /* пусто */;
+          : s.RetCode
+          = <CheckReturnCode t.Config s.RetCode 'chmod'>;
       };
+}
+
+CheckReturnCode {
+  t.Config 0 e.Component = /* пусто */;
+
+  t.Config s.RetCode e.Component
+    = <LinkError
+        t.Config
+        e.Component ' finished with return code ' <StrFromInt s.RetCode>
+      >;
 }
 
 Link-CppCompile {
@@ -502,9 +511,9 @@ Link-CppCompile {
                   e.Files
                 >
               >
-              /* TODO: уточнить после обновления System в стабильной версии */
-            : e.RetCode
-            = <CheckCppCompilationSuccessed t.Config e.IntermediateName>
+            : s.RetCode
+            = <CheckReturnCode t.Config s.RetCode 'C++ compiler'>
+              <CheckCppCompilationSuccessed t.Config e.IntermediateName>
               <EnsureAligned4096 e.IntermediateName>;
         }
         t.Config e.Files
@@ -533,12 +542,14 @@ PreLinkCleanupTemporary {
         #True
           = <RemoveFile e.Temporary>
           : {
-              /* TODO: уточнить после обновления RemoveFile в стабильной версии */
-              #True e.TrueTail /* () */
+              #True ()
                 = <WriteLine 'Lost temporary file ' e.Temporary ' is removed'>;
 
-              #False e.FalseTail /* (e.ErrorMessage) */
-                = <LinkError t.Config 'Can''t remove file ' e.Temporary>;
+              #False (e.ErrorMessage)
+                = <LinkError
+                    t.Config
+                    'Can''t remove file ' e.Temporary ': ' e.ErrorMessage
+                  >;
             };
       }
     >;
@@ -602,12 +613,13 @@ PostLinkRename {
         #True
           = <RemoveFile e.TargetFileName>
           : {
-              /* TODO: уточнить после обновления RemoveFile в стабильной версии */
-              #True e.TrueTail /* () */
-                = /* ничего не делаем */;
+              #True () = /* ничего не делаем */;
 
-              #False e.FalseTail /* (e.ErrorMessage) */
-                = <LinkError t.Config 'Can''t remove file ' e.TargetFileName>;
+              #False (e.ErrorMessage)
+                = <LinkError
+                    t.Config
+                    'Can''t remove file ' e.TargetFileName ', ' e.ErrorMessage
+                  >;
              };
 
         #False = /* ничего не делаем */;
