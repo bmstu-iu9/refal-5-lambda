@@ -6,7 +6,6 @@
           extensions="*.sref;*.srefi"
           mimetype="text/x-srefsrc;text/x-chdr"
           priority="5">
-<!-- TODO: проверить extensions выше -->
 <!--
 ##########################################################################
 ## Fixes by Sebastian Pipping (webmaster@hartwork.org)

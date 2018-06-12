@@ -264,7 +264,6 @@ void refalrts::VM::print_seq(
 
   char space = (multiline) ? '\n' : ' ';
 
-  // TODO: while
   for (
     unsigned cur_node = 0;
     (state != cStateFinish)
