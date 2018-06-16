@@ -17,20 +17,28 @@ setlocal
   for %%r in (saved-test-*.ref) do (
     call :RUN_TEST "%%r" ^
       && call :RUN_TEST "%%r" -OP ^
+      && call :RUN_TEST "%%r" -OQ ^
       && call :RUN_TEST "%%r" -OR ^
       && call :RUN_TEST "%%r" -OPR ^
+      && call :RUN_TEST "%%r" -OQR ^
       && call :RUN_TEST "%%r" -Od ^
       && call :RUN_TEST "%%r" -OdP ^
+      && call :RUN_TEST "%%r" -OdQ ^
       && call :RUN_TEST "%%r" -OdR ^
       && call :RUN_TEST "%%r" -OdPR ^
+      && call :RUN_TEST "%%r" -OdQR ^
       && call :RUN_TEST "%%r" -OC ^
       && call :RUN_TEST "%%r" -OCP ^
+      && call :RUN_TEST "%%r" -OCQ ^
       && call :RUN_TEST "%%r" -OCR ^
       && call :RUN_TEST "%%r" -OCPR ^
+      && call :RUN_TEST "%%r" -OCQR ^
       && call :RUN_TEST "%%r" -OCd ^
       && call :RUN_TEST "%%r" -OCdP ^
+      && call :RUN_TEST "%%r" -OCdQ ^
       && call :RUN_TEST "%%r" -OCdR ^
-      && call :RUN_TEST "%%r" -OCdPR
+      && call :RUN_TEST "%%r" -OCdPR ^
+      && call :RUN_TEST "%%r" -OCdQR
 
     if errorlevel 1 exit /b 1
     erase *.rasl *.cpp *.out* *.err*
@@ -49,20 +57,28 @@ setlocal
   for %%r in (test-*.ref) do (
     call :RUN_TEST "%%r" ^
       && call :RUN_TEST "%%r" -OP ^
+      && call :RUN_TEST "%%r" -OQ ^
       && call :RUN_TEST "%%r" -OR ^
       && call :RUN_TEST "%%r" -OPR ^
+      && call :RUN_TEST "%%r" -OQR ^
       && call :RUN_TEST "%%r" -Od ^
       && call :RUN_TEST "%%r" -OdP ^
+      && call :RUN_TEST "%%r" -OdQ ^
       && call :RUN_TEST "%%r" -OdR ^
       && call :RUN_TEST "%%r" -OdPR ^
+      && call :RUN_TEST "%%r" -OdQR ^
       && call :RUN_TEST "%%r" -OC ^
       && call :RUN_TEST "%%r" -OCP ^
+      && call :RUN_TEST "%%r" -OCQ ^
       && call :RUN_TEST "%%r" -OCR ^
       && call :RUN_TEST "%%r" -OCPR ^
+      && call :RUN_TEST "%%r" -OCQR ^
       && call :RUN_TEST "%%r" -OCd ^
       && call :RUN_TEST "%%r" -OCdP ^
+      && call :RUN_TEST "%%r" -OCdQ ^
       && call :RUN_TEST "%%r" -OCdR ^
-      && call :RUN_TEST "%%r" -OCdPR
+      && call :RUN_TEST "%%r" -OCdPR ^
+      && call :RUN_TEST "%%r" -OCdQR
     if not errorlevel 1 (
       erase "%%~nr.*"
     )
