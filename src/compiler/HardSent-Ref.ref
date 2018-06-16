@@ -6,10 +6,12 @@
 $ENTRY HardSentence {
   (TkVariable 'e' e.LIndex) e.Rest (TkVariable 'e' e.RIndex) = (TkVariable 'e');
 
-  t.Term e.Rest = <HardTerm t.Term> <HardSentence e.Rest>;
-  e.Rest t.Term = <HardSentence e.Rest> <HardTerm t.Term>;
+  (TkVariable 'e' e.LIndex) e.Rest t.Term
+    = <HardSentence (TkVariable 'e' e.LIndex) e.Rest> <HardTerm t.Term>;
 
-  /* */ = ;
+  t.Term e.Rest = <HardTerm t.Term> <HardSentence e.Rest>;
+
+  /* пусто */ = /* пусто */;
 }
 
 HardTerm {
