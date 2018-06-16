@@ -1,0 +1,141 @@
+$INCLUDE "LibraryEx";
+
+*$FROM HighLevelRASL-Common
+$EXTERN GenPattern, MakeSavers, GenResult;
+
+*$FROM HardSent-Ref
+$EXTERN HardSentence;
+
+*$FROM GlobalGen-Ref
+$EXTERN GlobalGen;
+
+*$FROM GenericMatch
+$EXTERN GenericMatch;
+
+$ENTRY HighLevelRASL-Function-ConjointExt {
+  s.FnGenSubst s.FnGenResult s.ScopeClass (e.Name) e.Sentences
+
+    /* Получаем из предложений образцы и преобразуем в жесткие образцы */
+    = <Map
+        { ((e.Pattern) e.Conditions (e.Result)) = (<HardSentence e.Pattern>); }
+        e.Sentences
+      >
+    : e.HardPatterns
+
+    /* Для жестких образцов строим Глобальное сложнейшее обобщение (ГСО) */
+    = <GlobalGen e.HardPatterns> : e.GlobalGen
+
+    /* Добавляем к ГСО уникальные идентификаторы */
+    = <EnumerateVars e.GlobalGen> : e.GlobalGen^
+
+    /* Сопоставляем образец каждого предложения с ГСО */
+    = <Map
+        {
+          ((e.Pattern) e.Conditions (e.Result))
+
+            /* Строим подстановки, переводящие ГСО в образец */
+            = <GenericMatch (e.Pattern)(e.GlobalGen)> : Clear e.Substs
+
+            /* Заменяем образцы на подстановки */
+            = ((e.Substs)(/* e.HardGenComment */) e.Conditions (e.Result));
+        }
+        e.Sentences
+      >
+    : e.SentencesWithSubst
+
+    /* GenPattern для ГСО */
+    = <GenPattern s.FnGenSubst (e.Name) e.GlobalGen>
+    : s.ContextSize (e.Vars) (e.MarkedPattern) e.CommonMatchCommands
+
+    /* Строим подстановки, переводящие ГСО в образец */
+    = <MapReduce
+        {
+          s.MaxMemory ((e.Substitute) (e.HardGenComment) e.Conditions (e.Result))
+
+            /* Помечаем Junk все кроме переменных. Им ставим изначальное имя */
+            = <ComposeVars (e.MarkedPattern) (e.Substitute)> : e.SubstsAndJunks
+
+            /* Для е-переменных, сохраняем позицию и контекст в e.CmdSaves
+               Затем заменяем ее позицию на контекст, увеличиваем смещение */
+            = <MakeSavers s.ContextSize e.SubstsAndJunks>
+            : s.ContextSize^ (e.CmdSaves) e.SubstsAndJunks^
+
+            = <s.FnGenSubst
+                s.ContextSize e.SubstsAndJunks (/* no new vars */) (e.CmdSaves)
+              >
+            : s.ContextSize^ (e.Vars^) (e.MarkedPattern^) e.PatternCommands
+
+            = <GenResult
+                s.FnGenResult (e.Conditions) (e.Result)
+                s.ContextSize (e.Vars) (e.MarkedPattern) e.PatternCommands
+              >
+            : (CmdIssueMemory s.Memory) e.Commands
+
+            = <Max s.MaxMemory s.Memory>
+              (CmdSentence
+                (CmdComment e.HardGenComment)
+                e.Commands
+              );
+        }
+        s.ContextSize e.SentencesWithSubst
+      >
+    : s.MaxMemory e.Sentences^ (CmdSentence e.LastSentence)
+
+    = (Function
+        s.ScopeClass (e.Name)
+        (CmdIssueMemory s.MaxMemory)
+        (CmdComment 'GLOBAL GEN:' /*<PatternComment e.GlobalGen>*/)
+        e.CommonMatchCommands
+        e.Sentences
+        <Fetch
+          e.LastSentence
+          {
+            e.Commands (CmdOpenELoop e.OpenELoop) =
+              e.Commands (CmdOpenELoop e.OpenELoop) (CmdFail);
+            e.LastSentence^ = e.LastSentence;
+          }
+        >
+      );
+}
+
+/* Перебирает переменные в обобщении и заменяет на значения подстановок */
+ComposeVars {
+  (e.MarkedPattern-B (TkVariable s.Mode e.Name s.Offset) e.MarkedPattern-E)
+  (e.Substitute-B ( e.Subst ':' (s.Mode e.Name) ) e.Substitute-E)
+    = s.Mode : { 's' = S; 't' = T; 'e' = E; } : s.Mode^
+    = (Junk e.MarkedPattern-B) (s.Mode s.Offset e.Subst)
+      <ComposeVars
+        (e.MarkedPattern-E)
+        (e.Substitute-B e.Substitute-E)
+      >;
+
+  (e.MarkedPattern) () = (Junk e.MarkedPattern);
+}
+
+/* Добавляет уникальные индексы */
+$ENTRY EnumerateVars {
+  e.Expr
+    = <EnumerateVarsRec 0 e.Expr> : s.NextNum e.Expr^
+    = e.Expr;
+}
+
+EnumerateVarsRec {
+  s.NextNumber e.Expr
+    = <MapReduce
+        {
+          s.Next (TkVariable s.Type)
+            = <Inc s.Next> (TkVariable s.Type 'new' s.Next);
+
+          s.Next (Brackets e.Nested)
+            = <EnumerateVarsRec s.Next e.Nested> : s.Next^ e.Nested^
+            = s.Next (Brackets e.Nested);
+
+          s.Next (ADT-Brackets (e.Name) e.Nested)
+            = <EnumerateVarsRec s.Next e.Nested> : s.Next^ e.Nested^
+            = s.Next (ADT-Brackets (e.Name) e.Nested);
+
+          s.Next t.OtherTerm = s.Next t.OtherTerm;
+        }
+        s.NextNumber e.Expr
+      >;
+}
