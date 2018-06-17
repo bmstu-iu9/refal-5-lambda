@@ -7,7 +7,7 @@ $EXTERN GenPattern, MakeSavers, GenResult;
 $EXTERN HardSentence;
 
 *$FROM GlobalGen-Ref
-$EXTERN GlobalGen;
+$EXTERN GlobalGen, Len;
 
 *$FROM GenericMatch
 $EXTERN GenericMatch;
@@ -23,25 +23,29 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
     : e.HardPatterns
 
     /* Для жестких образцов строим Глобальное сложнейшее обобщение (ГСО) */
-    = <GlobalGen e.HardPatterns> : e.GlobalGen
+    = <GlobalGen e.HardPatterns> : e.GlobalGenNoIdents
 
     /* Добавляем к ГСО уникальные идентификаторы */
-    = <EnumerateVars e.GlobalGen> : e.GlobalGen^
+    = <EnumerateVars e.GlobalGenNoIdents> : e.GlobalGen
 
     /* Сопоставляем образец каждого предложения с ГСО */
-    = <Map
+    = <MapReduce
         {
+          (e.PatternSubsts)
           ((e.Pattern) e.Conditions (e.Result))
 
             /* Строим подстановки, переводящие ГСО в образец */
             = <GenericMatch (e.Pattern)(e.GlobalGen)> : Clear e.Substs
 
-            /* Заменяем образцы на подстановки */
-            = ((e.Substs)(/* e.HardGenComment */) e.Conditions (e.Result));
+            /* Сохраняем подстановки для группировки.
+               Заменяем образцы на подстановки */
+            = (e.PatternSubsts (e.Substs))
+              ((e.Substs)(/* e.HardGenComment */) e.Conditions (e.Result));
         }
+        (/* подстановки для каждого предложения */)
         e.Sentences
       >
-    : e.SentencesWithSubst
+    : t.Substs e.SentencesWithSubst
 
     /* GenPattern для ГСО */
     = <GenPattern s.FnGenSubst (e.Name) e.GlobalGen>
@@ -79,14 +83,47 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
         }
         s.ContextSize e.SentencesWithSubst
       >
-    : s.MaxMemory e.Sentences^ (CmdSentence e.LastSentence)
+    : s.MaxMemory e.ResultSentences (CmdSentence e.LastSentence)
+
+    /* Блок группировки. Не влияет на результат */
+
+    = <FindDivision t.Substs (e.GlobalGenNoIdents)> : s.DivisionNum
+
+    = <First s.DivisionNum e.Sentences> : (e.FirstGroup) e.Rest
+
+    = <Map
+        { ((e.Pattern) e.Conditions (e.Result)) = (<HardSentence e.Pattern>); }
+        e.FirstGroup
+      >
+    : e.HardPatterns^
+
+    = <GlobalGen e.HardPatterns> : e.GlobalGenNoIdents^
+
+    = <EnumerateVars e.GlobalGenNoIdents> : e.GlobalGen^
+
+    = <MapReduce
+        {
+          (e.PatternSubsts)
+          ((e.Pattern) e.Conditions (e.Result))
+
+            = <GenericMatch (e.Pattern)(e.GlobalGen)> : Clear e.Substs^
+
+            = (e.PatternSubsts (e.Substs))
+              ((e.Substs)() e.Conditions (e.Result));
+        }
+        ()
+        e.FirstGroup
+      >
+    : t.Substs^ e.SentencesWithSubst^
+
+    /* Конец блока группировки */
 
     = (Function
         s.ScopeClass (e.Name)
         (CmdIssueMemory s.MaxMemory)
         (CmdComment 'GLOBAL GEN:' /*<PatternComment e.GlobalGen>*/)
         e.CommonMatchCommands
-        e.Sentences
+        e.ResultSentences
         <Fetch
           e.LastSentence
           {
@@ -138,4 +175,58 @@ EnumerateVarsRec {
         }
         s.NextNumber e.Expr
       >;
+}
+
+
+/*
+  ГСО должно быть без индексов, т.е. неразмеченное
+
+  Возвращает длину первой группы
+*/
+FindDivision {
+  /* Если осталось одно предложение, можно сразу вернуть 1 (группа из 1 предложения) */
+
+  (e.FirstSentences t.LastSentence) (e.GlobalGen)
+    = <CompareSubsts e.FirstSentences (e.GlobalGen)>
+    : {
+        Stop = <Len e.FirstSentences>;
+        Continue = <FindDivision (e.FirstSentences) (e.GlobalGen)>;
+      };
+}
+
+CompareSubsts {
+  e.Sentences (/* GlobalGen */) = Continue;
+
+  e.Sentences (t.GlobalGenFirst e.GlobalGen)
+
+    /* Отделяем по одной подстановке слева и берем только её значение */
+    = <MapReduce
+        {
+          (e.PrevVal) ((e.Val ':' t.Var) e.OtherSubsts)
+            = (e.PrevVal (e.Val)) (e.OtherSubsts)
+        }
+        (/* Значения подстановок */)
+        e.Sentences
+      >
+    : (e.SubstsVals) e.Sentences^
+
+    /* Получаем из значений подстановок жесткие подстановки */
+    = <Map
+        { (e.SubstsVal) = (<HardSentence e.SubstsVal>); }
+        e.SubstsVals
+      >
+    : e.HardSubsts
+
+    /* Строим ГСО для подстановок */
+    = <GlobalGen e.HardSubsts> : e.GlobalGenOfSubsts
+
+    /* Сравним ГСО для подстановок группы и для всех предложений */
+    = e.GlobalGenOfSubsts
+    : {
+        /* Если ГСО точнее не стало, рассмотрим остальные подстановки */
+        t.GlobalGenFirst = <CompareSubsts e.Sentences (e.GlobalGen)>;
+
+        /* Иначе, разбиение на группы найдено */
+        e.Else = Stop;
+      };
 }
