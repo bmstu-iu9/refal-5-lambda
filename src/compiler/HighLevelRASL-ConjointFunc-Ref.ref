@@ -1,7 +1,7 @@
 $INCLUDE "LibraryEx";
 
 *$FROM HighLevelRASL-Common
-$EXTERN GenPattern, MakeSavers, GenResult, GenInitSubst;
+$EXTERN GenPattern, MakeSavers, GenResult;
 
 *$FROM HardSent-Ref
 $EXTERN HardSentence;
