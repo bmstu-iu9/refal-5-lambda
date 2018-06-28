@@ -11,7 +11,7 @@ $EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
   Config-SetTargetSuffix, Config-SetSearchFolder, Config-SetPrefix,
   Config-AddReference, Config-SetTargetMode, Config-AddIncorporated,
   Config-SetChmodXCommand, Config-SetPrelude, Config-SetR5Mode,
-  Config-SetLogFile;
+  Config-SetLogFile, Config-SetTreeOptCycles;
 
 /**
   <ParseCommandLine e.Arguments>
@@ -53,6 +53,7 @@ $ENTRY ParseCommandLine {
           (#ClassicMode #None ('classic'))
           (#ExtendedMode #None ('extended'))
           (#Log #Required ('log'))
+          (#TreeOptCycles #Required ('opt-tree-cycles'))
         )
         e.Arguments
       >
@@ -169,6 +170,11 @@ $ENTRY ParseCommandLine {
             (t.Config e.Errors) (#Log s.Num e.LogFile)
               = <Update t.Config (e.Errors) Config-SetLogFile s.Num e.LogFile>;
 
+            (t.Config e.Errors) (#TreeOptCycles s.Num e.Cycles)
+              = <Update
+                  t.Config (e.Errors) Config-SetTreeOptCycles s.Num e.Cycles
+                >;
+
             (t.Config e.Errors) t.Option
               = (t.Config e.Errors) t.Option;
           }
@@ -205,7 +211,7 @@ $ENTRY ParseCommandLine {
                 (s.Pos #BadValue-Opt e.BadValue) =
                   (
                     s.Pos
-                    'option -O expects ''P'', ''R'', ''d'' or '
+                    'option -O expects ''P'', ''Q'', ''R'', ''d'' or '
                     'it''s combination, but got ''' e.BadValue ''
                   );
 
@@ -217,6 +223,9 @@ $ENTRY ParseCommandLine {
                       'options --makeexe (-x), --makelib (-l) and -R '
                       'must appear one time'
                     );
+
+                (s.Pos #BadValue-MustBeNumber e.Cycles)
+                  = (s.Pos 'option --tree-opt-cycles expects number parameter');
               }
               e.Errors
             >;

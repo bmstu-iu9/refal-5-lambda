@@ -29,13 +29,17 @@ run_test_all_modes() {
   SRFLAGS= $2 $1
   SRFLAGS=--markup-context $2 $1
   SRFLAGS=-OP $2 $1
+  SRFLAGS=-OQ $2 $1
   SRFLAGS=-OR $2 $1
   SRFLAGS=-OPR $2 $1
+  SRFLAGS=-OQR $2 $1
   SRFLAGS_PLUS="$SRFLAGS_NAT"
   SRFLAGS=-Od $2 $1
   SRFLAGS=-OdP $2 $1
+  SRFLAGS=-OdQ $2 $1
   SRFLAGS=-OdR $2 $1
   SRFLAGS=-OdPR $2 $1
+  SRFLAGS=-OdQR $2 $1
 
   if grep 'CONDITIONS' $1 > /dev/null; then
     echo "Pass special conditions tests:"
@@ -43,13 +47,17 @@ run_test_all_modes() {
     SRFLAGS=-OC $2 $1
     SRFLAGS="-OC --markup-context" $2 $1
     SRFLAGS=-OCP $2 $1
+    SRFLAGS=-OCQ $2 $1
     SRFLAGS=-OCR $2 $1
     SRFLAGS=-OCPR $2 $1
+    SRFLAGS=-OCQR $2 $1
     SRFLAGS_PLUS="$SRFLAGS_NAT"
     SRFLAGS=-OCd $2 $1
     SRFLAGS=-OCdP $2 $1
+    SRFLAGS=-OCdQ $2 $1
     SRFLAGS=-OCdR $2 $1
     SRFLAGS=-OCdPR $2 $1
+    SRFLAGS=-OCdQR $2 $1
     echo "Special conditions tests is passed"
   fi
 }

@@ -1,0 +1,25 @@
+/**
+  <OptTree-Spec-ExtractOptInfo s.OptSpec e.AST>
+    == (e.SpecInfo) e.AST
+
+  s.OptSpec ::= OptSpec | NoOpt
+  e.SpecInfo ::= (e.SpecFuncNames) e.SpecInfo-Specific
+  e.SpecFuncNames ::= (e.FuncName)*
+*/
+$ENTRY OptTree-Spec-ExtractOptInfo {
+  s.OptSpec e.AST = ((/* no names */) /* no info */) e.AST;
+}
+
+/**
+  <OptTree-Spec s.OptSpec (e.SpecInfo) e.AST> == (e.SpecInfo^) e.AST^
+*/
+$ENTRY OptTree-Spec {
+  s.OptSpec (e.SpecInfo) e.AST = (e.SpecInfo) e.AST;
+}
+
+/**
+  <OptTree-Spec-Finalize s.OptSpec (e.SpecInfo) e.AST> == e.AST^
+*/
+$ENTRY OptTree-Spec-Finalize {
+  s.OptSpec ((/* no names */) /* no info */) e.AST = e.AST;
+}

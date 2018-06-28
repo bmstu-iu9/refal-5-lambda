@@ -1,5 +1,4 @@
-//FROM LibraryEx
-$EXTERN Fetch, Pipe, Map, Inc, MapReduce, DelAccumulator, Reduce;
+$INCLUDE "LibraryEx";
 
 //FROM Desugaring-UnCondition
 $EXTERN Pass-UnCondition;
@@ -11,6 +10,7 @@ $ENTRY Desugar {
       e.AST
       <Pipe
         Pass-RemovePos
+        Pass-AttachEntries
         Pass-EnumerateVariables
         Pass-NameNestedFuncs
         Pass-RemoveBlocksAndAssigns
@@ -120,6 +120,49 @@ RemovePos-Expr {
       }
       e.Expr
     >;
+}
+
+Pass-AttachEntries {
+  (#Entry #GN-Entry e.Name)
+  e.Items-B (#Function s.ScopeClass (e.Name) e.Body) e.Items-E
+    = <Pass-AttachEntries
+        e.Items-B (#Function #GN-Entry (e.Name) e.Body) e.Items-E
+      >;
+
+  (#Entry #GN-Entry e.Name)
+  e.Items-B (s.EnumSwapDeclaration s.ScopeClass e.Name) e.Items-E
+    , <OneOf s.EnumSwapDeclaration #Enum #Swap #Declaration> : #True
+    = <Pass-AttachEntries
+        e.Items-B (s.EnumSwapDeclaration #GN-Entry e.Name) e.Items-E
+      >;
+
+  (#Function s.ScopeClass (e.Name) e.Body)
+  e.Items-B (#Entry #GN-Entry e.Name) e.Items-E
+    = <Pass-AttachEntries
+        (#Function #GN-Entry (e.Name) e.Body) e.Items-B e.Items-E
+      >;
+
+  (#Function s.ScopeClass (e.Name) e.Body) e.Items
+    = (#Function s.ScopeClass (e.Name) e.Body) <Pass-AttachEntries e.Items>;
+
+  (s.EnumSwapDeclaration s.ScopeClass e.Name)
+  e.Items-B (#Entry #GN-Entry e.Name) e.Items-E
+    , <OneOf s.EnumSwapDeclaration #Enum #Swap #Declaration> : #True
+    = <Pass-AttachEntries
+        (s.EnumSwapDeclaration s.ScopeClass e.Name)
+      >;
+
+  (s.EnumSwapDeclaration s.ScopeClass e.Name) e.Items
+    , <OneOf s.EnumSwapDeclaration #Enum #Swap #Declaration> : #True
+    = (s.EnumSwapDeclaration s.ScopeClass e.Name)
+      <Pass-AttachEntries e.Items>;
+
+  (#Ident e.Name) e.Items = (#Ident e.Name) <Pass-AttachEntries e.Items>;
+
+  (#NativeBlock t.SrcPos e.Code) e.Items
+    = (#NativeBlock t.SrcPos e.Code) <Pass-AttachEntries e.Items>;
+
+  /* empty */ = /* empty */;
 }
 
 Pass-EnumerateVariables {

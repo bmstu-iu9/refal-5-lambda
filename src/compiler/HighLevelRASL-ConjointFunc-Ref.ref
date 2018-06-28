@@ -1,0 +1,533 @@
+$INCLUDE "LibraryEx";
+
+*$FROM HighLevelRASL-Common
+$EXTERN GenPattern, MakeSavers, GenResult;
+
+*$FROM HardSent-Ref
+$EXTERN HardSentence;
+
+*$FROM GlobalGen-Ref
+$EXTERN GlobalGen, Len;
+
+*$FROM GenericMatch
+$EXTERN GenericMatch;
+
+$ENTRY HighLevelRASL-Function-ConjointExt {
+  s.FnGenSubst s.FnGenResult s.ScopeClass (e.Name) e.Sentences
+
+    /* Получаем из предложений образцы */
+    = <Map
+        { ((e.Pattern) e.Conditions (e.Result)) = (e.Pattern); }
+        e.Sentences
+      >
+    : e.Patterns
+
+    /* Преобразуем образцы в жесткие образцы */
+    = <Map
+        { (e.Pattern) = (<HardSentence e.Pattern>); }
+        e.Patterns
+      >
+    : e.HardPatterns
+
+    /* Для жестких образцов строим Глобальное сложнейшее обобщение (ГСО) */
+    = <GlobalGen e.HardPatterns> : e.GlobalGenNoIdents
+
+    /* Добавляем к ГСО уникальные идентификаторы */
+    = <EnumerateVars 0 e.GlobalGenNoIdents> : e.GlobalGen
+
+    /* Сопоставляем образец каждого предложения с ГСО */
+    = <Map
+        {
+          ((e.Pattern) e.Conditions (e.Result))
+
+            /* Строим подстановки, переводящие ГСО в образец */
+            = <GenericMatch (e.Pattern)(e.GlobalGen)> : Clear e.Substs
+
+            /* Заменяем образцы на подстановки */
+            = ((e.Substs)(/* e.HardGenComment */) e.Conditions (e.Result));
+        }
+        e.Sentences
+      >
+    : e.SentencesWithSubst
+
+    /* Собираем подстановки из всех предложений */
+    = <MapReduce
+        {
+          (e.PatternSubsts)
+          ((e.Substs)(/* e.HardGenComment */) e.Conditions (e.Result))
+
+            = (e.PatternSubsts (e.Substs));
+        }
+        (/* подстановки для каждого предложения */)
+        e.SentencesWithSubst
+      >
+    : (e.SubstsForSentences)
+
+    /* GenPattern для ГСО. Получаем общий набор команд */
+    = <GenPattern s.FnGenSubst (e.Name) e.GlobalGen>
+    : s.ContextSize (e.Vars) (e.MarkedPattern) e.CommonMatchCommands
+
+    /* Рекурсивно вычисляем команды для предложений, формируя группы */
+    = <GenerateCommandsOfGroups
+        (e.GlobalGen) (e.SubstsForSentences)
+        s.FnGenSubst s.FnGenResult
+        (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns) s.ContextSize 0
+      >
+    : s.MaxContextSize e.ResultCommands
+
+    /* Добавляем найденные команды в блок функции */
+    = (Function
+        s.ScopeClass (e.Name)
+        (CmdIssueMemory s.MaxContextSize)
+        (CmdComment 'GLOBAL GEN:' /*<PatternComment e.GlobalGen>*/)
+        e.CommonMatchCommands
+        e.ResultCommands
+      );
+}
+
+/* Формируем группы предложений и рекурсивно находим для них команды */
+GenerateCommandsOfGroups {
+  (e.GlobalGen) (e.SubstsForSentences)
+  s.FnGenSubst s.FnGenResult
+  (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns) s.ContextSize s.BaseNum
+
+    /* Ищем разбиение предложений на 2 группы */
+    = <FindDivision (e.SubstsForSentences)> : e.FirstGroup
+
+    = e.SubstsForSentences : e.FirstGroup e.SecondGroup
+
+    = <Len e.FirstGroup><Len e.SecondGroup>
+    : {
+        /* Дальнейшее разбиение невозможно. Формируем команды для предложений */
+        0 s.Num2 = <ReturnCommandsOfLastSentences
+              s.FnGenSubst s.FnGenResult
+              (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize
+            >;
+
+        s.Num1 s.Num2
+          = <First s.Num1 e.SentencesWithSubst>
+          : (e.SentencesWithSubst1) e.SentencesWithSubst2
+
+          = <First s.Num1 e.Patterns> : (e.Patterns1) e.Patterns2
+
+          /* Генерация команд для первой группы */
+          = s.Num1
+          : {
+              1 = <ReturnCommandsOfLastSentences
+                    s.FnGenSubst s.FnGenResult
+                    (e.MarkedPattern) (e.SentencesWithSubst1) s.ContextSize
+                  >
+                : s.FirstSentenceContext e.FirstSentenceCommands
+                = s.FirstSentenceContext (CmdSentence e.FirstSentenceCommands);
+
+              s.Num1^
+                = <GenerateCommands
+                    s.FnGenSubst s.FnGenResult
+                    (e.MarkedPattern) (e.SentencesWithSubst1) (e.Patterns1)
+                    (e.GlobalGen)
+                    s.ContextSize <Inc s.BaseNum>
+                  >
+                : s.FirstGroupContext e.FirstGroupCommands
+                = s.FirstGroupContext (CmdSentence e.FirstGroupCommands);
+            }
+          : s.FirstPartContext e.FirstPartCommands
+
+          /* Генерация команд для второй группы */
+          = s.Num2
+          : {
+              1 = <ReturnCommandsOfLastSentences
+                    s.FnGenSubst s.FnGenResult
+                    (e.MarkedPattern) (e.SentencesWithSubst2) s.ContextSize
+                  >
+                : s.SecondSentenceContext e.SecondSentenceCommands
+                = s.SecondSentenceContext e.SecondSentenceCommands;
+
+              s.Num2^
+                = <Last s.Num2 e.SubstsForSentences>
+                : (e.SubstsForSentences1) e.SubstsForSentences2
+
+                = <GenerateCommandsOfGroups
+                    (e.GlobalGen) (e.SubstsForSentences2)
+                    s.FnGenSubst s.FnGenResult
+                    (e.MarkedPattern) (e.SentencesWithSubst2) (e.Patterns2)
+                    s.ContextSize s.BaseNum
+                  >
+                : s.SecondGroupContext e.SecondGroupCommands
+                = s.SecondGroupContext e.SecondGroupCommands;
+            }
+          : s.SecondPartContext e.SecondPartCommands
+
+          = <Max s.FirstPartContext s.SecondPartContext> : s.ContextSize^
+
+          = s.ContextSize e.FirstPartCommands e.SecondPartCommands;
+      }
+    : s.MaxMemory e.ResultCommands
+
+    = s.MaxMemory e.ResultCommands;
+}
+
+/* Рекурсивно вычисляем команды для предложений */
+GenerateCommands {
+  s.FnGenSubst s.FnGenResult (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns)
+  (e.GlobalGenOld)
+  s.ContextSize s.BaseNum
+
+    /* Вычисляем ГСО подстановок и подстановки в e.MarkedPattern */
+    = <GlobalGenOfSubsts s.BaseNum (e.GlobalGenOld) e.SentencesWithSubst>
+    : (e.GlobalGen) e.NewSubsts
+
+    /* Находим новый e.MarkedPattern */
+    = <ComposeVars (e.MarkedPattern) (e.NewSubsts)> : e.SubstsAndJunks
+
+    = <MakeSavers s.ContextSize e.SubstsAndJunks>
+      : s.ContextSize^ (e.CmdSaves) e.SubstsAndJunks^
+
+    = <s.FnGenSubst
+        s.ContextSize e.SubstsAndJunks (/* no new vars */) (e.CmdSaves)
+      >
+    : s.ContextSize^ (e.Vars^) (e.MarkedPattern^) e.PatternCommands
+
+    /* Строим подстановки, переводящие новое ГСО в образец */
+    = <Map
+        {
+          (e.Pattern)
+            = <GenericMatch (e.Pattern) (e.GlobalGen)> : Clear e.Substs
+            = (e.Substs);
+        }
+        e.Patterns
+      >
+    : e.SubstsForSentences
+
+    /* Заменяем старые подстановки на найденные */
+    = <ReplacePatternsWithTerm (e.SentencesWithSubst) (e.SubstsForSentences)>
+    : e.SentencesWithSubst^
+
+    /* Ищем разбиение на группы и формируем команды для новых предложений */
+    = <GenerateCommandsOfGroups
+        (e.GlobalGen) (e.SubstsForSentences)
+        s.FnGenSubst s.FnGenResult
+        (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns)
+        s.ContextSize s.BaseNum
+      >
+    : s.MaxMemory e.ResultCommands
+
+    = s.MaxMemory e.PatternCommands e.ResultCommands;
+}
+
+/* Итоговый набор команд для предложений, которые нельзя разделить на группы */
+ReturnCommandsOfLastSentences {
+  s.FnGenSubst s.FnGenResult
+  (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize
+
+    = <MapReduce
+        {
+          s.MaxMemory ((e.Substitute) (e.HardGenComment) e.Conditions (e.Result))
+
+            = <ComposeVars (e.MarkedPattern) (e.Substitute)> : e.SubstsAndJunks
+
+            = <MakeSavers s.ContextSize e.SubstsAndJunks>
+            : s.ContextSize^ (e.CmdSaves) e.SubstsAndJunks^
+
+            = <s.FnGenSubst
+                s.ContextSize e.SubstsAndJunks (/* no new vars */) (e.CmdSaves)
+              >
+            : s.ContextSize^ (e.Vars^) (e.MarkedPattern^) e.PatternCommands
+
+            = <GenResult
+                s.FnGenResult (e.Conditions) (e.Result)
+                s.ContextSize (e.Vars) (e.MarkedPattern) e.PatternCommands
+              >
+            : (CmdIssueMemory s.Memory) e.Commands
+
+            = <Max s.MaxMemory s.Memory>
+              (CmdSentence
+                (CmdComment e.HardGenComment)
+                e.Commands
+              );
+        }
+        s.ContextSize e.SentencesWithSubst
+      >
+    : s.MaxMemory e.ResultSentences (CmdSentence e.LastSentence)
+
+    = <Fetch
+        e.LastSentence
+        {
+          e.Commands (CmdOpenELoop e.OpenELoop) =
+            e.Commands (CmdOpenELoop e.OpenELoop) (CmdFail);
+          e.LastSentence^ = e.LastSentence;
+        }
+      >
+    : e.LastSentence^
+
+    = s.MaxMemory e.ResultSentences e.LastSentence;
+}
+
+/* Заменяет образец на заданный терм */
+ReplacePatternsWithTerm {
+  () (e.Terms) = ;
+
+  (t.FirstSentence e.Sentences) (t.FirstTerm e.Terms)
+    = t.FirstSentence
+    : ((e.Pattern) (/* e.HardGenComment */) e.Conditions (e.Result))
+
+    = (t.FirstTerm (/* e.HardGenComment */) e.Conditions (e.Result))
+      <ReplacePatternsWithTerm (e.Sentences) (e.Terms)>;
+}
+
+
+/* Перебирает переменные в обобщении и заменяет на значения подстановок */
+ComposeVars {
+  (e.MarkedPattern-B (TkVariable s.Mode e.Name s.Offset) e.MarkedPattern-E)
+  (e.Substitute-B ( e.Subst ':' (s.Mode e.Name) ) e.Substitute-E)
+    = s.Mode : { 's' = S; 't' = T; 'e' = E; } : s.Mode^
+    = (Junk e.MarkedPattern-B) (s.Mode s.Offset e.Subst)
+      <ComposeVars
+        (e.MarkedPattern-E)
+        (e.Substitute-B e.Substitute-E)
+      >;
+
+  (e.MarkedPattern) () = (Junk e.MarkedPattern);
+}
+
+/* Добавляет уникальные индексы */
+$ENTRY EnumerateVars {
+  s.BaseNum e.Expr
+    = <EnumerateVarsRec 0 s.BaseNum e.Expr> : s.NextNum e.Expr^
+    = e.Expr;
+}
+
+EnumerateVarsRec {
+  s.NextNumber s.BaseNum e.Expr
+    = <MapReduce
+        {
+          s.Next (TkVariable s.Type)
+            = <Inc s.Next> (TkVariable s.Type 'new' s.BaseNum s.Next);
+
+          s.Next (Brackets e.Nested)
+            = <EnumerateVarsRec s.Next s.BaseNum e.Nested> : s.Next^ e.Nested^
+            = s.Next (Brackets e.Nested);
+
+          s.Next (ADT-Brackets (e.Name) e.Nested)
+            = <EnumerateVarsRec s.Next s.BaseNum e.Nested> : s.Next^ e.Nested^
+            = s.Next (ADT-Brackets (e.Name) e.Nested);
+
+          s.Next t.OtherTerm = s.Next t.OtherTerm;
+        }
+        s.NextNumber e.Expr
+      >;
+}
+
+/*
+  Ищет разбиение предложений на 2 группы, сравнивая ГСО и ГСО подстановок
+  ГСО должно быть без индексов, т.е. неразмеченное
+
+  Возвращает предложения первой группы
+*/
+FindDivision {
+  () = /* пусто */;
+
+  /* Если осталось одно предложение, можно его сразу вернуть */
+  (t.Sentence) = /* пусто */;
+
+  (e.FirstSentences t.LastSentence)
+    = <CompareSubsts e.FirstSentences>
+    : {
+        Stop = e.FirstSentences;
+        Continue = <FindDivision (e.FirstSentences)>;
+      };
+}
+
+/* Сравнивает ГСО для подстановок группы и для всех предложений */
+CompareSubsts {
+  (/* подстановки закончились*/) e.OtherSentences = Continue;
+
+  e.Sentences
+    /* Отделяем по одной подстановке слева и берем только её значение */
+    = <MapReduce
+        {
+          ((e.PrevVal) ':' e.Var)
+          (
+            (e.Val ':' (s.VarType e.Index))
+            e.OtherSubsts
+          )
+            = ((e.PrevVal (e.Val)) ':' (TkVariable s.VarType))
+              (e.OtherSubsts);
+        }
+        ((/* Значения подстановок */) ':' /* обобщение */)
+        e.Sentences
+      >
+    : ((e.SubstsVals) ':' t.Var) e.Sentences^
+
+    /* Получаем из значений подстановок жесткие подстановки */
+    = <Map
+        { (e.SubstsVal) = (<HardSentence e.SubstsVal>); }
+        e.SubstsVals
+      >
+    : e.HardSubsts
+
+    /* Строим ГСО для подстановок */
+    = <GlobalGen e.HardSubsts> : e.GlobalGenOfSubsts
+
+    /* Сравним ГСО для подстановок группы и для всех предложений */
+    = e.GlobalGenOfSubsts
+    : {
+        /* Если ГСО точнее не стало, рассмотрим остальные подстановки */
+        t.Var = <CompareSubsts e.Sentences>;
+
+        /* Иначе, разбиение на группы найдено */
+        e.Else = Stop;
+      };
+}
+
+/* Собирает значения подстановок по одной переменной и находит их ГСО */
+GlobalGenOfSubsts {
+  s.BaseNum (e.GlobalGenOld) e.SentencesWithSubst
+
+    /* Получаем подстановки из предложений */
+    = <MapReduce
+        {
+          (e.PatternSubsts)
+          ((e.Substs) (/* e.HardGenComment */) e.Conditions (e.Result))
+
+            = (e.PatternSubsts (e.Substs));
+        }
+        (/* подстановки для каждого предложения */)
+        e.SentencesWithSubst
+      >
+    : (e.SubstsSet)
+
+    /* Собираем значения подстановок по одной переменной */
+    = <CollectSubsts e.SubstsSet> : e.CollectedSubsts
+
+    /* Находим жесткие значения подстановок и затем их ГСО */
+    = <MapReduce
+        {
+          (s.Index (e.GlobalGenReplacements))
+          (e.SubstsVals ':' (e.Var))
+
+            /* Получаем из значений подстановок жесткие значения */
+            = <Map
+                { (e.SubstsVal) = (<HardSentence e.SubstsVal>); }
+                e.SubstsVals
+              >
+            : e.HardSubstsVals
+
+            /* Считаем ГСО по жестким значениям для одной подстановки */
+            = <GlobalGen e.HardSubstsVals> : e.GlobalGenNoIdents
+
+            /* Добавляем к ГСО уникальные идентификаторы */
+            = <EnumerateVarsRec s.Index s.BaseNum e.GlobalGenNoIdents>
+            : s.Index^ e.GlobalGen
+
+            = (
+                s.Index
+                (
+                  e.GlobalGenReplacements
+                  ((e.GlobalGen) ':' (TkVariable e.Var))
+                )
+              )
+              (e.GlobalGen ':' (e.Var));
+        }
+        (0 (/* наборы вида ((ГСО с индексами) ':' переменная) */))
+        e.CollectedSubsts
+      >
+    : (s.Index (e.GlobalGenReplacements)) e.GlobalGenSubsts
+
+    /* Заменяем переменные в исходном ГСО на их уточненные значения */
+    = <MapReduce
+        {
+          (e.GlobalGenOldL t.NestedVarTk e.GlobalGenOldR)
+          ((e.GlobalGen) ':' t.VarTk)
+            , <IsInsideTerm t.VarTk t.NestedVarTk> : True
+
+            = <ReplaceInside t.VarTk (e.GlobalGen) (t.NestedVarTk)>
+            : e.NestedGlobalGen
+
+            = (
+                e.GlobalGenOldL
+                e.NestedGlobalGen
+                e.GlobalGenOldR
+              );
+        }
+        (e.GlobalGenOld)
+        e.GlobalGenReplacements
+      >
+    : (e.ResultGlobalGen)
+
+    = (e.ResultGlobalGen) e.GlobalGenSubsts;
+}
+
+/*
+  Рекурсивно ищет в e.Sentences и заменяет t.Needle на e.Value
+  Ожидаем, что e.Sentences гарантированно содержит t.Needle.
+  Иначе, стоит раскомментировать последнее предложение
+*/
+ReplaceInside {
+  t.Needle (e.Value) (e.SentencesL t.Term e.SentencesR)
+    , <IsInsideTerm t.Needle t.Term> : True
+    = t.Term
+    : {
+        t.Needle = e.SentencesL e.Value e.SentencesR;
+
+        (Brackets e.Rest)
+          = e.SentencesL
+            (Brackets <ReplaceInside t.Needle (e.Value) (e.Rest)>)
+            e.SentencesR;
+
+        (Closure e.Rest)
+          = e.SentencesL
+            (Closure <ReplaceInside t.Needle (e.Value) (e.Rest)>)
+            e.SentencesR;
+
+        (CallBrackets e.Rest)
+          = e.SentencesL
+            (CallBrackets <ReplaceInside t.Needle (e.Value) (e.Rest)>)
+            e.SentencesR;
+
+        (ADT-Brackets t.Name e.Rest)
+          = e.SentencesL
+            (ADT-Brackets t.Name <ReplaceInside t.Needle (e.Value) (e.Rest)>)
+            e.SentencesR;
+      }
+  /* e.Else = False; */
+}
+
+/* Рекурсивно ищет t.Needle в e.Sentences */
+IsInside {
+  t.Needle () = False;
+
+  t.Needle (e.SentencesL t.Term e.SentencesR)
+    , <IsInsideTerm t.Needle t.Term> : True
+    = True;
+
+  e.Else = False;
+}
+
+/* В подстановках утеряны скобки, поэтому встретив скобки в ГСО, ищет в e.Rest */
+IsInsideTerm {
+  t.Needle t.Needle = True;
+
+  t.Needle (Brackets e.Rest) = <IsInside t.Needle (e.Rest)>;
+  t.Needle (Closure e.Rest) = <IsInside t.Needle (e.Rest)>;
+  t.Needle (CallBrackets e.Rest) = <IsInside t.Needle (e.Rest)>;
+  t.Needle (ADT-Brackets t.Name e.Rest) = <IsInside t.Needle (e.Rest)>;
+
+  e.Else = False;
+}
+
+/* Объединяет наборы подстановок по обобщению (по t.Var справа от ':') */
+CollectSubsts {
+  e.Before (/* подстановки закончились */) e.Other = /* пусто */;
+
+  e.SubstsSet
+    = <MapReduce
+        {
+          (e.PrevVals ':' e.PrevVar) ((e.Val ':' t.Var) e.OtherSubsts)
+            = (e.PrevVals (e.Val) ':' t.Var) (e.OtherSubsts);
+        }
+        (/* Значения подстановок */ ':' /* Их обобщение */)
+        e.SubstsSet
+      >
+    : (e.SubstsVals ':' t.Var) e.SubstsSet^
+    = (e.SubstsVals ':' t.Var) <CollectSubsts e.SubstsSet>;
+}

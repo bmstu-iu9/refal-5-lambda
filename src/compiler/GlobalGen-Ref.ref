@@ -1,0 +1,296 @@
+$INCLUDE "LibraryEx";
+
+*$FROM HardSent-Ref
+$EXTERN IsSymbol;
+
+$ENTRY GlobalGen {
+  e.HardSentences
+    = <Map &BuildImage e.HardSentences> : e.Images
+    = <Generalization e.Images> : e.Generalization
+    = <Collapse e.Generalization>;
+}
+
+
+/*
+  Строим многорезультатное обобщение терма
+  <BuildImage t.Term*> == t.Image*
+
+  t.Term ::=
+      t.Symbol
+    | (TkVariable 't')
+    | (TkVariable 's')
+    | (ADT-Brackets t.Name t.Term*)
+    | (Brackets t.Term*)
+    | (Closure t.Term*)
+    | (CallBrackets t.Term*)
+    | (t.Term* (TkVariable 'e') t.Term*)
+    | (t.Term*)
+  t.Symbol ::=
+      (TkIdentifier e.Name)
+    | (TkName t.SrcPos e.Name)
+    | (TkNumber s.Number)
+    | (TkChar s.HChar)
+
+  t.Image ::=
+      (K ':' s.Len ',' (t.Image*))
+    | (MN ':' s.Len ',' (t.Image*) ',' (t.Image*))
+    | t.Symbol
+    | (TkVariable 't')
+    | (TkVariable 's')
+    | (ADT-Brackets t.Name t.Image*)
+    | (Brackets t.Image*)
+    | (Closure t.Image*)
+    | (CallBrackets t.Image*)
+*/
+BuildImage {
+  e.HardSentence
+    = <Map
+        {
+          t.Symbol, <IsSymbol t.Symbol> : True = t.Symbol;
+          (TkVariable 't') = (TkVariable 't');
+          (TkVariable 's') = (TkVariable 's');
+
+          (ADT-Brackets t.Name e.Rest)
+            = (ADT-Brackets t.Name <BuildImage (e.Rest)>);
+
+          /* Имеют общий вид. Пока не заменяю, чтобы ловить ошибки */
+          (Brackets e.Rest) = (Brackets <BuildImage (e.Rest)>);
+          (Closure e.Rest) = (Closure <BuildImage (e.Rest)>);
+          (CallBrackets e.Rest) = (CallBrackets <BuildImage (e.Rest)>);
+
+          (e.Left (TkVariable 'e') e.Right)
+            = (
+                MN ':' <Len e.Left e.Right> ','
+                (<BuildImage e.Left>) ','
+                (<BuildImage e.Right>)
+              );
+
+          (e.Pattern) = (K ':' <Len e.Pattern> ',' (<BuildImage e.Pattern>));
+        }
+        e.HardSentence
+      >;
+}
+
+/* Вычисляет длину выражения в термах */
+$ENTRY Len {
+  e.Sentence = <Lenw e.Sentence> : s.N e.Sentence = s.N;
+}
+
+
+/*
+  Попарно обобщаем все полученные образы:
+  <Generalization t.Image*> == t.Image?
+*/
+Generalization {
+  t.Image1 t.Image2 e.Rest
+    = <Generalization <TermGeneralization t.Image1 t.Image2> e.Rest>;
+  e.Image = e.Image;
+}
+
+TermGeneralization {
+  t.Symbol t.Symbol, <IsSymbol t.Symbol> : True = t.Symbol;
+
+  t.Term1 t.Term2
+    , <IsSVarSubset t.Term1> : True
+    , <IsSVarSubset t.Term2> : True
+    = (TkVariable 's');
+
+  (Brackets e.BodyL) (Brackets e.BodyR)
+    = (Brackets <Generalization e.BodyL e.BodyR>);
+
+  (ADT-Brackets t.Name e.BodyL) (ADT-Brackets t.Name e.BodyR)
+    = (ADT-Brackets t.Name <Generalization e.BodyL e.BodyR>);
+
+  t.Term1 t.Term2
+    , <IsTVarSubsetOrTVar t.Term1> : True
+    , <IsTVarSubsetOrTVar t.Term2> : True
+    = (TkVariable 't');
+
+  (K ':' s.Num ',' t.Left)
+  (K ':' s.Num ',' t.Right)
+    = (K ':' s.Num ',' (<GeneralizationInPairs t.Left t.Right>));
+
+  (K ':' s.NumL ',' t.Left)
+  (K ':' s.NumR ',' t.Right)
+    = <Min s.NumL s.NumR> : s.Num
+    = t.Left t.Right : e.Pairs
+    = (
+        MN ':' s.Num ','
+        (<GeneralizationInPairs Left e.Pairs>) ','
+        (<GeneralizationInPairs Right e.Pairs>)
+      );
+
+  (MN ':' s.NumL ',' (e.TermsL1) ',' (e.TermsL2))
+  (MN ':' s.NumR ',' (e.TermsR1) ',' (e.TermsR2))
+    = <Min s.NumL s.NumR> : s.Num
+    = (e.TermsL1) (e.TermsR1) : e.LPairs
+    = (e.TermsL2) (e.TermsR2) : e.RPairs
+    = (
+        MN ':' s.Num ','
+        (<GeneralizationInPairs Left e.LPairs>) ','
+        (<GeneralizationInPairs Right e.RPairs>)
+      );
+
+  (MN ':' s.NumL ',' (e.TermsL1) ',' (e.TermsL2))
+  (K ':' s.NumR ',' t.TermsR)
+    = <Min s.NumL s.NumR> : s.Num
+    = (e.TermsL1) t.TermsR : e.LPairs
+    = (e.TermsL2) t.TermsR : e.RPairs
+    = (
+        MN ':' s.Num ','
+        (<GeneralizationInPairs Left e.LPairs>) ','
+        (<GeneralizationInPairs Right e.RPairs>)
+      );
+
+  (K ':' s.NumL ',' t.TermsL)
+  (MN ':' s.NumR ',' (e.TermsR1) ',' (e.TermsR2))
+    = <Min s.NumL s.NumR> : s.Num
+    = t.TermsL (e.TermsR1) : e.LPairs
+    = t.TermsL (e.TermsR2) : e.RPairs
+    = (
+        MN ':' s.Num ','
+        (<GeneralizationInPairs Left e.LPairs>) ','
+        (<GeneralizationInPairs Right e.RPairs>)
+      );
+}
+
+GeneralizationInPairs {
+  (t.Term1 e.Rest1) (t.Term2 e.Rest2)
+    = <TermGeneralization t.Term1 t.Term2>
+      <GeneralizationInPairs (e.Rest1) (e.Rest2)>;
+
+  Left (t.Term1 e.Rest1) (t.Term2 e.Rest2)
+    = <TermGeneralization t.Term1 t.Term2>
+      <GeneralizationInPairs Left (e.Rest1) (e.Rest2)>;
+
+  Right (e.Rest1 t.Term1) (e.Rest2 t.Term2)
+    = <GeneralizationInPairs Right (e.Rest1) (e.Rest2)>
+      <TermGeneralization t.Term1 t.Term2>;
+
+  e.Else = /* пусто */;
+}
+
+IsTVarSubsetOrTVar {
+  t.Term, <IsSVarSubset t.Term> : True = True;
+  t.Term, <IsAnyBrackets t.Term> : True = True;
+
+  (TkVariable 't') = True;
+
+  t.OtherTerm = False;
+}
+
+IsSVarSubset {
+  t.Symbol, <IsSymbol t.Symbol> : True = True;
+  (TkVariable 's') = True;
+  (Closure e.Body) = True;
+
+  t.OtherTerm = False;
+}
+
+IsAnyBrackets {
+  (ADT-Brackets t.Name e.Rest) = True;
+  (Brackets e.Rest) = True;
+  (CallBrackets e.Rest) = True;
+
+  e.OtherTerm = False;
+}
+
+
+/*
+  Коллапс:
+  <Collapse t.Image?> == t.Term*
+
+  Скобочные термы (K: t′1…t’K) коллапсируют в (t1…tK), где внутренние
+    термы коллапсируют рекурсивно
+
+  Скобочные термы (MN: K, t′L1…t′LM, t′RN…t′R1) соответствуют семейству ЛСО.
+    Рекурсивно коллапсируют вложенные термы.
+    Среди этих образцов выбирается образец, обладающий наибольшей сложностью.
+    Результат - скобочный терм (tL1…tLM** e.X tRN**…tR1), являющийся ГСО.
+    Если несколько вариантов с одинаковой сложностью - выбираем произвольный
+*/
+$ENTRY Collapse {
+  e.Generalization
+    = <Map
+        {
+          t.Symbol, <IsSymbol t.Symbol> : True = t.Symbol;
+          (TkVariable 't') = (TkVariable 't');
+          (TkVariable 's') = (TkVariable 's');
+
+          (Brackets e.Terms) = (Brackets <Collapse e.Terms>);
+
+          (ADT-Brackets t.Name e.Terms)
+            = (ADT-Brackets t.Name <Collapse e.Terms>);
+
+          (K ':' s.Num ',' (e.Terms)) = <Collapse e.Terms>;
+
+          (MN ':' s.Num ',' (e.Terms1) ',' (e.Terms2))
+            = <Collapse e.Terms1> : e.TermsC1
+            = <Collapse e.Terms2> : e.TermsC2
+            = <GlobalGenFromLocalGen
+                <LocalGen s.Num (e.TermsC1) (e.TermsC2)>
+              >;
+        }
+        e.Generalization
+      >;
+}
+
+/* Возвращает набор ЛСО (s.Complexity e.LocalGen)* */
+LocalGen {
+  s.Num (e.TermsL) (e.TermsR) = <DoLocalGen 0 s.Num (e.TermsL) (e.TermsR)>;
+}
+
+DoLocalGen {
+  s.NumL s.NumR (e.TermsL) (e.TermsR)
+    = <First s.NumL e.TermsL> : (e.FirstTermsL) e.RestL
+    = <Last s.NumR e.TermsR> : (e.RestR) e.LastTermsR
+    = e.FirstTermsL (TkVariable 'e') e.LastTermsR : e.LocalGen
+    = (<CalcComplexity e.LocalGen> e.LocalGen) : t.Result
+    = s.NumR
+    : {
+        0 = t.Result;
+        s.NumR^ = t.Result
+                  <DoLocalGen <Inc s.NumL> <Dec s.NumR> (e.TermsL) (e.TermsR)>;
+      };
+}
+
+/* Возвращает первый элемент с максимальным ключом */
+GlobalGenFromLocalGen {
+  t.Sentence e.OtherSentences
+    = <MapReduce
+      {
+        (s.NumAcc e.SentenceAcc) (s.NumNext e.SentenceNext)
+          = <Max s.NumAcc s.NumNext>
+          : {
+              s.NumAcc = (s.NumAcc e.SentenceAcc);
+              s.NumNext = (s.NumNext e.SentenceNext);
+            };
+      }
+      t.Sentence
+      e.OtherSentences
+    >
+    : (s.MaxNum e.Sentence^)
+    = e.Sentence;
+}
+
+/*
+  Вычисляет сложность выражения по формуле:
+  C(P) = n_t + 2*n_s + 3*n_X + 3*n_() − n_e + 1
+*/
+$ENTRY CalcComplexity {
+  t.Term e.Rest = <Add <CalcTermComplexity t.Term> <CalcComplexity e.Rest>>;
+  /* пусто */ = 1;
+}
+
+CalcTermComplexity {
+  (TkVariable 't') = 1;
+  (TkVariable 's') = 2;
+  (TkVariable 'e') = ('-' 1);
+
+  t.Symbol, <IsSymbol t.Symbol> : True = 3;
+
+  /* Прибавляем 2, а не 3, т.к. для вложенного выражения прибавится лишняя 1 */
+  (Brackets e.Terms) = <Add <CalcComplexity e.Terms> 2>;
+  (ADT-Brackets t.Name e.Terms) = <Add <CalcComplexity e.Terms> 2>;
+  /* CallBrackets ? */
+}
