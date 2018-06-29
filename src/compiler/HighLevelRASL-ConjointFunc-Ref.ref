@@ -7,7 +7,7 @@ $EXTERN GenPattern, MakeSavers, GenResult;
 $EXTERN HardSentence;
 
 *$FROM GlobalGen-Ref
-$EXTERN GlobalGen, Len;
+$EXTERN GlobalGen, Len, BuildImage, Generalization, Collapse;
 
 *$FROM GenericMatch
 $EXTERN GenericMatch;
@@ -332,54 +332,79 @@ FindDivision {
   /* Если осталось одно предложение, можно его сразу вернуть */
   (t.Sentence) = /* пусто */;
 
-  (e.FirstSentences t.LastSentence)
-    = <CompareSubsts e.FirstSentences>
-    : {
-        Stop = e.FirstSentences;
-        Continue = <FindDivision (e.FirstSentences)>;
-      };
+  /*
+    Алгоритм вычисления обобщений работает только с выражениями,
+    а не последовательностями подстановок. Поэтому из подстановок
+    строим выражения. Общее правило: каждая подстановка переменной
+    превращается в один терм, s- и t-подстановки — в сами себя,
+    e-подстановка — в скобочный терм. Также строим «эталонное»
+    тривиальное ГСО для обобщения — по типам переменных.
+
+    Предполагается, что во всех подстановках переменные перечислены
+    в одном порядке.
+  */
+  ((e.FirstSubst) e.Sentences)
+    = <Map
+        {
+          (e.Value ':' ('e' e.Index)) = (Brackets (TkVariable 'e'));
+          (e.Value ':' (s.ST e.Index)) = (TkVariable s.ST);
+        }
+        e.FirstSubst
+      >
+    : e.TrivialGCG
+
+    /* Добавляем изображения к подстановкам */
+    = <Map
+        {
+          (e.Subst)
+            = <Map
+                {
+                  (e.Value ':' ('e' e.Index)) = (Brackets e.Value);
+                  (e.Value ':' (s.ST e.Index)) = e.Value;
+                }
+                e.Subst
+              >
+            : e.ExprFromSubst
+            = <BuildImage (<HardSentence e.ExprFromSubst>)> : t.Image
+            = (e.Subst t.Image);
+        }
+        (e.FirstSubst) e.Sentences
+      >
+    : (e.FirstSubst^ t.FirstImage) e.Sentences^
+
+    = <DoFindDivision
+        (e.TrivialGCG) t.FirstImage ((e.FirstSubst)) e.Sentences
+      >;
 }
 
-/* Сравнивает ГСО для подстановок группы и для всех предложений */
-CompareSubsts {
-  (/* подстановки закончились*/) e.OtherSentences = Continue;
+/*
+  <DoFindDivision (e.TrivialGCG) t.Image (e.FirstGroup) e.RestSentences>
+    == e.FirstGroup
 
-  e.Sentences
-    /* Отделяем по одной подстановке слева и берем только её значение */
-    = <MapReduce
-        {
-          ((e.PrevVal) ':' e.Var)
-          (
-            (e.Val ':' (s.VarType e.Index))
-            e.OtherSubsts
-          )
-            = ((e.PrevVal (e.Val)) ':' (TkVariable s.VarType))
-              (e.OtherSubsts);
-        }
-        ((/* Значения подстановок */) ':' /* обобщение */)
-        e.Sentences
-      >
-    : ((e.SubstsVals) ':' t.Var) e.Sentences^
-
-    /* Получаем из значений подстановок жесткие подстановки */
-    = <Map
-        { (e.SubstsVal) = (<HardSentence e.SubstsVal>); }
-        e.SubstsVals
-      >
-    : e.HardSubsts
-
-    /* Строим ГСО для подстановок */
-    = <GlobalGen e.HardSubsts> : e.GlobalGenOfSubsts
-
-    /* Сравним ГСО для подстановок группы и для всех предложений */
-    = e.GlobalGenOfSubsts
+  Функция накапливает в e.FirstGroup подстановки до тех пор, пока их ГСО
+  будет отличаться от тривиального.
+*/
+DoFindDivision {
+  (e.TrivialGCG) t.Image (e.FirstGroup)
+  (e.NextSentence t.NextImage) e.Sentences
+    = <Generalization t.Image t.NextImage> : t.Image^
+    = <Collapse t.Image>
     : {
-        /* Если ГСО точнее не стало, рассмотрим остальные подстановки */
-        t.Var = <CompareSubsts e.Sentences>;
+        e.TrivialGCG = e.FirstGroup;
 
-        /* Иначе, разбиение на группы найдено */
-        e.Else = Stop;
+        e.OtherGCG
+          = <DoFindDivision
+              (e.TrivialGCG) t.Image (e.FirstGroup (e.NextSentence)) e.Sentences
+            >;
       };
+
+  /*
+    TODO: грязный хак.
+    На вход функции DoFindDivision падают подстановки, которые сами могут иметь
+    нетривиальный ГСО. При этом вызывающий код ожидает, что возвращаемое
+    значение долно быть короче, чем аргумент функции.
+  */
+  (e.TrivialGCG) t.Image (e.FirstGroup t.Last) = e.FirstGroup;
 }
 
 

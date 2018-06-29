@@ -43,7 +43,7 @@ $ENTRY GlobalGen {
     | (Closure t.Image*)
     | (CallBrackets t.Image*)
 */
-BuildImage {
+$ENTRY BuildImage {
   e.HardSentence
     = <Map
         {
@@ -82,7 +82,7 @@ $ENTRY Len {
   Попарно обобщаем все полученные образы:
   <Generalization t.Image*> == t.Image?
 */
-Generalization {
+$ENTRY Generalization {
   t.Image1 t.Image2 e.Rest
     = <Generalization <TermGeneralization t.Image1 t.Image2> e.Rest>;
   e.Image = e.Image;
