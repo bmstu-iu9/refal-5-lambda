@@ -267,6 +267,15 @@ $ENTRY MakeSavers {
           (s.ContextOffset e.CmdSaves) (#Junk e.Junk)
             = (s.ContextOffset e.CmdSaves) (#Junk e.Junk);
 
+          /* Сопоставление с пустыми подстановками не изменяет диапазоны */
+          (s.ContextOffset e.CmdSaves) (#E s.Num /* пусто */)
+            = (s.ContextOffset e.CmdSaves) (#E s.Num /* пусто */);
+
+          /* Тривиальная подстановка не изменяет диапазоны */
+          (s.ContextOffset e.CmdSaves) (#E s.Num (#TkVariable 'e' e.Index))
+            = (s.ContextOffset e.CmdSaves) (#E s.Num (#TkVariable 'e' e.Index));
+
+          /* В остальных случаях подстановки могут изменять диапазон */
           (s.ContextOffset e.CmdSaves) (#E s.Num e.Range)
             = (
                 <Inc2 s.ContextOffset>
