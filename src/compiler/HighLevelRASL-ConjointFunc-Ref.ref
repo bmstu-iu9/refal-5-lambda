@@ -57,12 +57,13 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
           (e.PatternSubsts)
           ((e.Substs) (/* e.HardGenComment */) e.Conditions (e.Result))
 
-            = (e.PatternSubsts (e.Substs));
+            = (e.PatternSubsts (e.Substs))
+              ((e.Substs) (/* e.HardGenComment */) e.Conditions (e.Result));
         }
         (/* подстановки для каждого предложения */)
         e.SentencesWithSubst
       >
-    : (e.SubstsForSentences)
+    : (e.SubstsForSentences) e.SentencesWithSubst^
 
     /* GenPattern для ГСО. Получаем общий набор команд */
     = <GenPattern s.FnGenSubst (e.Name) e.GlobalGen>
@@ -431,8 +432,7 @@ GlobalGenOfSubsts {
     /* Находим жесткие значения подстановок и затем их ГСО */
     = <MapReduce
         {
-          (s.Index (e.GlobalGenReplacements))
-          (e.SubstsVals ':' (e.Var))
+          s.Index (e.SubstsVals ':' (e.Var))
 
             /* Получаем из значений подстановок жесткие значения */
             = <Map
@@ -448,100 +448,41 @@ GlobalGenOfSubsts {
             = <EnumerateVarsRec s.Index s.BaseNum e.GlobalGenNoIdents>
             : s.Index^ e.GlobalGen
 
-            = (
-                s.Index
-                (
-                  e.GlobalGenReplacements
-                  ((e.GlobalGen) ':' (TkVariable e.Var))
-                )
-              )
-              (e.GlobalGen ':' (e.Var));
+            = s.Index (e.GlobalGen ':' (e.Var));
         }
-        (0 (/* наборы вида ((ГСО с индексами) ':' переменная) */))
-        e.CollectedSubsts
+        0 e.CollectedSubsts
       >
-    : (s.Index (e.GlobalGenReplacements)) e.GlobalGenSubsts
+    : s.Index e.GlobalGenSubsts
 
     /* Заменяем переменные в исходном ГСО на их уточненные значения */
-    = <MapReduce
-        {
-          (e.GlobalGenOldL t.NestedVarTk e.GlobalGenOldR)
-          ((e.GlobalGen) ':' t.VarTk)
-            , <IsInsideTerm t.VarTk t.NestedVarTk> : True
-
-            = <ReplaceInside t.VarTk (e.GlobalGen) (t.NestedVarTk)>
-            : e.NestedGlobalGen
-
-            = (
-                e.GlobalGenOldL
-                e.NestedGlobalGen
-                e.GlobalGenOldR
-              );
-        }
-        (e.GlobalGenOld)
-        e.GlobalGenReplacements
-      >
-    : (e.ResultGlobalGen)
+    = <Substitute (e.GlobalGenSubsts) e.GlobalGenOld>
+    : (/* должно стать пусто */) e.ResultGlobalGen
 
     = (e.ResultGlobalGen) e.GlobalGenSubsts;
 }
 
-/*
-  Рекурсивно ищет в e.Sentences и заменяет t.Needle на e.Value
-  Ожидаем, что e.Sentences гарантированно содержит t.Needle.
-  Иначе, стоит раскомментировать последнее предложение
-*/
-ReplaceInside {
-  t.Needle (e.Value) (e.SentencesL t.Term e.SentencesR)
-    , <IsInsideTerm t.Needle t.Term> : True
-    = t.Term
-    : {
-        t.Needle = e.SentencesL e.Value e.SentencesR;
+Substitute {
+  (e.Substs) e.Expr
+    = <MapReduce
+        {
+          (/* no substs */) t.AnyTerm = (/* no substs */) t.AnyTerm;
 
-        (Brackets e.Rest)
-          = e.SentencesL
-            (Brackets <ReplaceInside t.Needle (e.Value) (e.Rest)>)
-            e.SentencesR;
+          (e.Substs-B (e.Value ':' (s.Type e.Index)) e.Substs-E)
+          (TkVariable s.Type e.Index)
+            = (e.Substs-B e.Substs-E) e.Value;
 
-        (Closure e.Rest)
-          = e.SentencesL
-            (Closure <ReplaceInside t.Needle (e.Value) (e.Rest)>)
-            e.SentencesR;
+          (e.Substs^) (Brackets e.Nested)
+            = <Substitute (e.Substs) e.Nested> : (e.Substs^) e.Nested^
+            = (e.Substs) (Brackets e.Nested);
 
-        (CallBrackets e.Rest)
-          = e.SentencesL
-            (CallBrackets <ReplaceInside t.Needle (e.Value) (e.Rest)>)
-            e.SentencesR;
+          (e.Substs^) (ADT-Brackets (e.Name) e.Nested)
+            = <Substitute (e.Substs) e.Nested> : (e.Substs^) e.Nested^
+            = (e.Substs) (ADT-Brackets (e.Name) e.Nested);
 
-        (ADT-Brackets t.Name e.Rest)
-          = e.SentencesL
-            (ADT-Brackets t.Name <ReplaceInside t.Needle (e.Value) (e.Rest)>)
-            e.SentencesR;
-      }
-  /* e.Else = False; */
-}
-
-/* Рекурсивно ищет t.Needle в e.Sentences */
-IsInside {
-  t.Needle () = False;
-
-  t.Needle (e.SentencesL t.Term e.SentencesR)
-    , <IsInsideTerm t.Needle t.Term> : True
-    = True;
-
-  e.Else = False;
-}
-
-/* В подстановках утеряны скобки, поэтому встретив скобки в ГСО, ищет в e.Rest */
-IsInsideTerm {
-  t.Needle t.Needle = True;
-
-  t.Needle (Brackets e.Rest) = <IsInside t.Needle (e.Rest)>;
-  t.Needle (Closure e.Rest) = <IsInside t.Needle (e.Rest)>;
-  t.Needle (CallBrackets e.Rest) = <IsInside t.Needle (e.Rest)>;
-  t.Needle (ADT-Brackets t.Name e.Rest) = <IsInside t.Needle (e.Rest)>;
-
-  e.Else = False;
+          (e.Substs^) t.OtherTerm = (e.Substs) t.OtherTerm;
+        }
+        (e.Substs) e.Expr
+      >;
 }
 
 /* Объединяет наборы подстановок по обобщению (по t.Var справа от ':') */
