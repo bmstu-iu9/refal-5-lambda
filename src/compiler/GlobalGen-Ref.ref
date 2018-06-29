@@ -3,6 +3,7 @@ $INCLUDE "LibraryEx";
 *$FROM HardSent-Ref
 $EXTERN IsSymbol;
 
+
 $ENTRY GlobalGen {
   e.HardSentences
     = <Map &BuildImage e.HardSentences> : e.Images
@@ -249,8 +250,10 @@ DoLocalGen {
     = s.NumR
     : {
         0 = t.Result;
-        s.NumR^ = t.Result
-                  <DoLocalGen <Inc s.NumL> <Dec s.NumR> (e.TermsL) (e.TermsR)>;
+
+        s.NumR^
+          = t.Result
+            <DoLocalGen <Inc s.NumL> <Dec s.NumR> (e.TermsL) (e.TermsR)>;
       };
 }
 

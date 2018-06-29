@@ -12,6 +12,7 @@ $EXTERN GlobalGen, Len;
 *$FROM GenericMatch
 $EXTERN GenericMatch;
 
+
 $ENTRY HighLevelRASL-Function-ConjointExt {
   s.FnGenSubst s.FnGenResult s.ScopeClass (e.Name) e.Sentences
 
@@ -44,7 +45,7 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
             = <GenericMatch (e.Pattern)(e.GlobalGen)> : Clear e.Substs
 
             /* Заменяем образцы на подстановки */
-            = ((e.Substs)(/* e.HardGenComment */) e.Conditions (e.Result));
+            = ((e.Substs) (/* e.HardGenComment */) e.Conditions (e.Result));
         }
         e.Sentences
       >
@@ -54,7 +55,7 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
     = <MapReduce
         {
           (e.PatternSubsts)
-          ((e.Substs)(/* e.HardGenComment */) e.Conditions (e.Result))
+          ((e.Substs) (/* e.HardGenComment */) e.Conditions (e.Result))
 
             = (e.PatternSubsts (e.Substs));
         }
@@ -99,7 +100,8 @@ GenerateCommandsOfGroups {
     = <Len e.FirstGroup><Len e.SecondGroup>
     : {
         /* Дальнейшее разбиение невозможно. Формируем команды для предложений */
-        0 s.Num2 = <ReturnCommandsOfLastSentences
+        0 s.Num2 =
+            <ReturnCommandsOfLastSentences
               s.FnGenSubst s.FnGenResult
               (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize
             >;
@@ -317,6 +319,7 @@ EnumerateVarsRec {
       >;
 }
 
+
 /*
   Ищет разбиение предложений на 2 группы, сравнивая ГСО и ГСО подстановок
   ГСО должно быть без индексов, т.е. неразмеченное
@@ -378,6 +381,7 @@ CompareSubsts {
         e.Else = Stop;
       };
 }
+
 
 /* Собирает значения подстановок по одной переменной и находит их ГСО */
 GlobalGenOfSubsts {
