@@ -68,6 +68,14 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
       >
     : s.MaxContextSize e.ResultCommands
 
+    = e.ResultCommands
+    : {
+        e.Commands (CmdOpenELoop e.OpenELoop) =
+          e.Commands (CmdOpenELoop e.OpenELoop) (CmdFail);
+        e.Commands = e.Commands;
+      }
+    : e.ResultCommands^
+
     /* Добавляем найденные команды в блок функции */
     = (Function
         s.ScopeClass (e.Name)
@@ -82,76 +90,108 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
 GenerateCommandsOfGroups {
   (e.GlobalGen)
   s.FnGenSubst s.FnGenResult
+  (e.MarkedPattern) ((e.SentenceWithSubst)) ((e.Pattern)) s.ContextSize s.BaseNum
+    = <GenerateOneSentence
+        s.FnGenSubst s.FnGenResult
+        (e.MarkedPattern) (e.SentenceWithSubst) s.ContextSize
+      >;
+
+  (e.GlobalGen)
+  s.FnGenSubst s.FnGenResult
   (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns) s.ContextSize s.BaseNum
 
     /* Ищем разбиение предложений на 2 группы */
     = <FindDivision (e.SentencesWithSubst)> : (e.FirstGroup) e.SecondGroup
 
+    = <GenerateForSplit
+        (e.GlobalGen)
+        s.FnGenSubst s.FnGenResult
+        (e.MarkedPattern) (e.Patterns) s.ContextSize s.BaseNum
+        (e.FirstGroup) e.SecondGroup
+      >;
+}
+
+GenerateOneSentence {
+  s.FnGenSubst s.FnGenResult
+  (e.MarkedPattern) (e.SentenceWithSubst) s.ContextSize
+
+    = e.SentenceWithSubst : (e.Substitute) e.Conditions (e.Result)
+
+    = <ComposeVars (e.MarkedPattern) (e.Substitute)> : e.SubstsAndJunks
+
+    = <s.FnGenSubst
+        s.ContextSize e.SubstsAndJunks
+        (/* no new vars */) (/* no prefix commands */)
+      >
+    : s.ContextSize^ (e.Vars^) (e.MarkedPattern^) e.PatternCommands
+
+    = <GenResult
+        s.FnGenResult (e.Conditions) (e.Result)
+        s.ContextSize (e.Vars) (e.MarkedPattern) e.PatternCommands
+      >
+    : (CmdIssueMemory s.Memory) e.Commands
+
+    = s.Memory e.Commands;
+}
+
+GenerateForSplit {
+  (e.GlobalGen)
+  s.FnGenSubst s.FnGenResult
+  (e.MarkedPattern) (e.Patterns) s.ContextSize s.BaseNum
+  (e.FirstGroup) e.SecondGroup
+
     = <Lenw e.FirstGroup> : s.Num1 e.SentencesWithSubst1
     = <Lenw e.SecondGroup> : s.Num2 e.SentencesWithSubst2
-    = s.Num1 s.Num2
+
+    = <First s.Num1 e.Patterns> : (e.Patterns1) e.Patterns2
+
+    /* Генерация команд для первой группы */
+    = s.Num1
     : {
-        /* Дальнейшее разбиение невозможно. Формируем команды для предложений */
-        0 s.Num2 =
-            <ReturnCommandsOfLastSentences
+        1 = <ReturnCommandsOfLastSentences
               s.FnGenSubst s.FnGenResult
-              (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize
-            >;
+              (e.MarkedPattern) (e.SentencesWithSubst1) s.ContextSize
+            >
+          : s.FirstSentenceContext e.FirstSentenceCommands
+          = s.FirstSentenceContext (CmdSentence e.FirstSentenceCommands);
 
-        s.Num1 s.Num2
-          = <First s.Num1 e.Patterns> : (e.Patterns1) e.Patterns2
-
-          /* Генерация команд для первой группы */
-          = s.Num1
-          : {
-              1 = <ReturnCommandsOfLastSentences
-                    s.FnGenSubst s.FnGenResult
-                    (e.MarkedPattern) (e.SentencesWithSubst1) s.ContextSize
-                  >
-                : s.FirstSentenceContext e.FirstSentenceCommands
-                = s.FirstSentenceContext (CmdSentence e.FirstSentenceCommands);
-
-              s.Num1^
-                = <GenerateCommands
-                    s.FnGenSubst s.FnGenResult
-                    (e.MarkedPattern) (e.SentencesWithSubst1) (e.Patterns1)
-                    (e.GlobalGen)
-                    s.ContextSize <Inc s.BaseNum>
-                  >
-                : s.FirstGroupContext e.FirstGroupCommands
-                = s.FirstGroupContext (CmdSentence e.FirstGroupCommands);
-            }
-          : s.FirstPartContext e.FirstPartCommands
-
-          /* Генерация команд для второй группы */
-          = s.Num2
-          : {
-              1 = <ReturnCommandsOfLastSentences
-                    s.FnGenSubst s.FnGenResult
-                    (e.MarkedPattern) (e.SentencesWithSubst2) s.ContextSize
-                  >
-                : s.SecondSentenceContext e.SecondSentenceCommands
-                = s.SecondSentenceContext e.SecondSentenceCommands;
-
-              s.Num2^
-                = <GenerateCommandsOfGroups
-                    (e.GlobalGen)
-                    s.FnGenSubst s.FnGenResult
-                    (e.MarkedPattern) (e.SentencesWithSubst2) (e.Patterns2)
-                    s.ContextSize s.BaseNum
-                  >
-                : s.SecondGroupContext e.SecondGroupCommands
-                = s.SecondGroupContext e.SecondGroupCommands;
-            }
-          : s.SecondPartContext e.SecondPartCommands
-
-          = <Max s.FirstPartContext s.SecondPartContext> : s.ContextSize^
-
-          = s.ContextSize e.FirstPartCommands e.SecondPartCommands;
+        s.Num1^
+          = <GenerateCommands
+              s.FnGenSubst s.FnGenResult
+              (e.MarkedPattern) (e.SentencesWithSubst1) (e.Patterns1)
+              (e.GlobalGen)
+              s.ContextSize <Inc s.BaseNum>
+            >
+          : s.FirstGroupContext e.FirstGroupCommands
+          = s.FirstGroupContext (CmdSentence e.FirstGroupCommands);
       }
-    : s.MaxMemory e.ResultCommands
+    : s.FirstPartContext e.FirstPartCommands
 
-    = s.MaxMemory e.ResultCommands;
+    /* Генерация команд для второй группы */
+    = s.Num2
+    : {
+        1 = <ReturnCommandsOfLastSentences
+              s.FnGenSubst s.FnGenResult
+              (e.MarkedPattern) (e.SentencesWithSubst2) s.ContextSize
+            >
+          : s.SecondSentenceContext e.SecondSentenceCommands
+          = s.SecondSentenceContext e.SecondSentenceCommands;
+
+        s.Num2^
+          = <GenerateCommandsOfGroups
+              (e.GlobalGen)
+              s.FnGenSubst s.FnGenResult
+              (e.MarkedPattern) (e.SentencesWithSubst2) (e.Patterns2)
+              s.ContextSize s.BaseNum
+            >
+          : s.SecondGroupContext e.SecondGroupCommands
+          = s.SecondGroupContext e.SecondGroupCommands;
+      }
+    : s.SecondPartContext e.SecondPartCommands
+
+    = <Max s.FirstPartContext s.SecondPartContext> : s.ContextSize^
+
+    = s.ContextSize e.FirstPartCommands e.SecondPartCommands;
 }
 
 /* Рекурсивно вычисляем команды для предложений */
@@ -237,16 +277,6 @@ ReturnCommandsOfLastSentences {
       >
     : s.MaxMemory e.ResultSentences (CmdSentence e.LastSentence)
 
-    = <Fetch
-        e.LastSentence
-        {
-          e.Commands (CmdOpenELoop e.OpenELoop) =
-            e.Commands (CmdOpenELoop e.OpenELoop) (CmdFail);
-          e.LastSentence^ = e.LastSentence;
-        }
-      >
-    : e.LastSentence^
-
     = s.MaxMemory e.ResultSentences e.LastSentence;
 }
 
@@ -313,11 +343,6 @@ EnumerateVarsRec {
   Возвращает предложения первой группы
 */
 FindDivision {
-  () = /* пусто */;
-
-  /* Если осталось одно предложение, можно его сразу вернуть */
-  (t.Sentence) = (/* пусто */) t.Sentence;
-
   /*
     Предполагается, что во всех подстановках переменные перечислены
     в одном порядке.
