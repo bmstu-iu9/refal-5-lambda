@@ -101,7 +101,21 @@ GenerateCommandsOfGroups {
   (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns) s.ContextSize s.BaseNum
 
     /* Ищем разбиение предложений на 2 группы */
-    = <FindDivision (e.SentencesWithSubst)> : (e.FirstGroup) e.SecondGroup
+    = <FindDivision e.SentencesWithSubst>
+    : {
+        ForGroup (e.NewGCG-Subst) (e.FirstGroup) e.SecondGroup
+          = (e.FirstGroup) e.SecondGroup;
+
+        /*
+          TODO: грязный хак.
+          На вход функции DoFindDivision падают подстановки, которые сами могут
+          иметь нетривиальный ГСО. При этом вызывающий код ожидает,
+          что возвращаемое значение долно быть короче, чем аргумент функции.
+        */
+        ForAllSentences (e.NewGCG-Subst) e.Sentences t.Last
+          = (e.Sentences) t.Last;
+      }
+    : (e.FirstGroup) e.SecondGroup
 
     = <GenerateForSplit
         (e.GlobalGen)
@@ -337,17 +351,16 @@ EnumerateVarsRec {
 
 
 /*
-  Ищет разбиение предложений на 2 группы, сравнивая ГСО и ГСО подстановок
-  ГСО должно быть без индексов, т.е. неразмеченное
+  <FindDivision e.SentencesWithSubst>
+    == ForGroup (e.NewGCG-Subst) (e.FirstGroup) e.SecondGroup
+    == ForAllSentences (e.NewGCG-Subst) e.SentencesWithSubst^
 
-  Возвращает предложения первой группы
+  Функция пытается найти префикс из предложений с нетривиальным ГСО.
+  Если префикс охватывает все предложения (суффикс пустой), то она просто
+  возвращает подстановку нетривиального ГСО.
 */
 FindDivision {
-  /*
-    Предполагается, что во всех подстановках переменные перечислены
-    в одном порядке.
-  */
-  ((e.FirstSentence) e.Sentences)
+  (e.FirstSentence) e.Sentences
     , e.FirstSentence : (e.FirstSubst) e.FirstConditions (e.FirstResult)
     = <ImagedSentence e.FirstSentence> : (e.FirstImage) e.FirstSentence^
     = <MakeTrivialSubstImage e.FirstImage> : e.TrivialGCG
@@ -377,7 +390,6 @@ MakeTrivialSubstImage {
 
 /*
   <DoFindDivision (e.TrivialGCG) t.Image (e.FirstGroup) e.RestSentences>
-    == e.FirstGroup
 
   Функция накапливает в e.FirstGroup подстановки до тех пор, пока их ГСО
   будет отличаться от тривиального.
@@ -385,26 +397,23 @@ MakeTrivialSubstImage {
 DoFindDivision {
   (e.TrivialGCG) (e.Image) (e.FirstGroup) (e.NextSentence) e.Sentences
     = <ImagedSentence e.NextSentence> : (e.NextImage) e.NextSentence
-    = <Subst-Generalization (e.Image) (e.NextImage)> : e.Image^
-    = e.Image
+    = <Subst-Generalization (e.Image) (e.NextImage)> : e.NewImage
+    = e.NewImage
     : {
-        e.TrivialGCG = (e.FirstGroup) (e.NextSentence) e.Sentences;
+        e.TrivialGCG
+          = ForGroup
+            (<Subst-Collapse e.Image>)
+            (e.FirstGroup) (e.NextSentence) e.Sentences;
 
         e.OtherGCG
           = <DoFindDivision
-              (e.TrivialGCG) (e.Image) (e.FirstGroup (e.NextSentence))
+              (e.TrivialGCG) (e.NewImage) (e.FirstGroup (e.NextSentence))
               e.Sentences
             >;
       };
 
-  /*
-    TODO: грязный хак.
-    На вход функции DoFindDivision падают подстановки, которые сами могут иметь
-    нетривиальный ГСО. При этом вызывающий код ожидает, что возвращаемое
-    значение долно быть короче, чем аргумент функции.
-  */
-  (e.TrivialGCG) (e.Image) (e.FirstGroup t.LastSentence)
-    = (e.FirstGroup) t.LastSentence;
+  (e.TrivialGCG) (e.Image) (e.FirstGroup)
+    = ForAllSentences (<Subst-Collapse e.Image>) e.FirstGroup
 }
 
 
