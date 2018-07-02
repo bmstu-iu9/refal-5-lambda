@@ -25,7 +25,7 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
     = <GlobalGen e.Patterns> : e.GlobalGenNoIdents
 
     /* Добавляем к ГСО уникальные идентификаторы */
-    = <EnumerateVars 0 e.GlobalGenNoIdents> : e.GlobalGen
+    = <EnumerateVarsRec 0 e.GlobalGenNoIdents> : s.BaseNum e.GlobalGen
 
     /* Сопоставляем образец каждого предложения с ГСО */
     = <Map
@@ -64,7 +64,8 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
     = <GenerateCommandsOfGroups
         (e.GlobalGen)
         s.FnGenSubst s.FnGenResult
-        (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns) s.ContextSize 0
+        (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns) s.ContextSize
+        s.BaseNum
       >
     : s.MaxContextSize e.ResultCommands
 
@@ -174,7 +175,7 @@ GenerateForSplit {
               s.FnGenSubst s.FnGenResult
               (e.MarkedPattern) (e.SentencesWithSubst1) (e.Patterns1)
               (e.GlobalGen)
-              s.ContextSize <Inc s.BaseNum>
+              s.ContextSize s.BaseNum
             >
           : s.FirstGroupContext e.FirstGroupCommands
           = s.FirstGroupContext (CmdSentence e.FirstGroupCommands);
@@ -216,7 +217,7 @@ GenerateCommands {
 
     /* Вычисляем ГСО подстановок и подстановки в e.MarkedPattern */
     = <GlobalGenOfSubsts s.BaseNum (e.GlobalGenOld) e.SentencesWithSubst>
-    : (e.GlobalGen) e.NewSubsts
+    : s.BaseNum^ (e.GlobalGen) e.NewSubsts
 
     /* Находим новый e.MarkedPattern */
     = <ComposeVars (e.MarkedPattern) (e.NewSubsts)> : e.SubstsAndJunks
@@ -322,25 +323,19 @@ ComposeVars {
 }
 
 /* Добавляет уникальные индексы */
-$ENTRY EnumerateVars {
-  s.BaseNum e.Expr
-    = <EnumerateVarsRec 0 s.BaseNum e.Expr> : s.NextNum e.Expr^
-    = e.Expr;
-}
-
 EnumerateVarsRec {
-  s.NextNumber s.BaseNum e.Expr
+  s.NextNumber e.Expr
     = <MapReduce
         {
           s.Next (TkVariable s.Type)
-            = <Inc s.Next> (TkVariable s.Type 'new' s.BaseNum s.Next);
+            = <Inc s.Next> (TkVariable s.Type 'new' s.Next);
 
           s.Next (Brackets e.Nested)
-            = <EnumerateVarsRec s.Next s.BaseNum e.Nested> : s.Next^ e.Nested^
+            = <EnumerateVarsRec s.Next e.Nested> : s.Next^ e.Nested^
             = s.Next (Brackets e.Nested);
 
           s.Next (ADT-Brackets (e.Name) e.Nested)
-            = <EnumerateVarsRec s.Next s.BaseNum e.Nested> : s.Next^ e.Nested^
+            = <EnumerateVarsRec s.Next e.Nested> : s.Next^ e.Nested^
             = s.Next (ADT-Brackets (e.Name) e.Nested);
 
           s.Next t.OtherTerm = s.Next t.OtherTerm;
@@ -446,12 +441,12 @@ GlobalGenOfSubsts {
             = <GlobalGen e.SubstsVals> : e.GlobalGenNoIdents
 
             /* Добавляем к ГСО уникальные идентификаторы */
-            = <EnumerateVarsRec s.Index s.BaseNum e.GlobalGenNoIdents>
+            = <EnumerateVarsRec s.Index e.GlobalGenNoIdents>
             : s.Index^ e.GlobalGen
 
             = s.Index (e.GlobalGen ':' (e.Var));
         }
-        0 e.CollectedSubsts
+        s.BaseNum e.CollectedSubsts
       >
     : s.Index e.GlobalGenSubsts
 
@@ -459,7 +454,7 @@ GlobalGenOfSubsts {
     = <Substitute (e.GlobalGenSubsts) e.GlobalGenOld>
     : (/* должно стать пусто */) e.ResultGlobalGen
 
-    = (e.ResultGlobalGen) e.GlobalGenSubsts;
+    = s.Index (e.ResultGlobalGen) e.GlobalGenSubsts;
 }
 
 Substitute {
