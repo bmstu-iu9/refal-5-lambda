@@ -135,7 +135,7 @@ TextFromExpr-Prepare-Chars {
 
 Offset {
   #NoOffset = ;
-  s.Offset = '/' #Offset s.Offset;
+  s.Offset = '/' <StrFromInt s.Offset>;
 }
 
 /**

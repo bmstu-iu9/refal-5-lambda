@@ -3,11 +3,8 @@ $INCLUDE "LibraryEx";
 *$FROM HighLevelRASL-Common
 $EXTERN GenPattern, MakeSavers, GenResult;
 
-*$FROM HardSent-Ref
-$EXTERN HardSentence;
-
 *$FROM GlobalGen-Ref
-$EXTERN GlobalGen, Len, BuildImage, Generalization, Collapse;
+$EXTERN GlobalGen, BuildImage, Generalization, Collapse;
 
 *$FROM GenericMatch
 $EXTERN GenericMatch;
@@ -23,15 +20,8 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
       >
     : e.Patterns
 
-    /* Преобразуем образцы в жесткие образцы */
-    = <Map
-        { (e.Pattern) = (<HardSentence e.Pattern>); }
-        e.Patterns
-      >
-    : e.HardPatterns
-
     /* Для жестких образцов строим Глобальное сложнейшее обобщение (ГСО) */
-    = <GlobalGen e.HardPatterns> : e.GlobalGenNoIdents
+    = <GlobalGen e.Patterns> : e.GlobalGenNoIdents
 
     /* Добавляем к ГСО уникальные идентификаторы */
     = <EnumerateVars 0 e.GlobalGenNoIdents> : e.GlobalGen
@@ -167,6 +157,11 @@ GenerateCommandsOfGroups {
     : s.MaxMemory e.ResultCommands
 
     = s.MaxMemory e.ResultCommands;
+}
+
+/* Вычисляет длину выражения в термах */
+Len {
+  e.Sentence = <Lenw e.Sentence> : s.N e.Sentence = s.N;
 }
 
 /* Рекурсивно вычисляем команды для предложений */
@@ -366,7 +361,7 @@ FindDivision {
                 e.Subst
               >
             : e.ExprFromSubst
-            = <BuildImage (<HardSentence e.ExprFromSubst>)> : t.Image
+            = <BuildImage (e.ExprFromSubst)> : t.Image
             = (e.Subst t.Image);
         }
         (e.FirstSubst) e.Sentences
@@ -434,15 +429,8 @@ GlobalGenOfSubsts {
         {
           s.Index (e.SubstsVals ':' (e.Var))
 
-            /* Получаем из значений подстановок жесткие значения */
-            = <Map
-                { (e.SubstsVal) = (<HardSentence e.SubstsVal>); }
-                e.SubstsVals
-              >
-            : e.HardSubstsVals
-
             /* Считаем ГСО по жестким значениям для одной подстановки */
-            = <GlobalGen e.HardSubstsVals> : e.GlobalGenNoIdents
+            = <GlobalGen e.SubstsVals> : e.GlobalGenNoIdents
 
             /* Добавляем к ГСО уникальные идентификаторы */
             = <EnumerateVarsRec s.Index s.BaseNum e.GlobalGenNoIdents>
