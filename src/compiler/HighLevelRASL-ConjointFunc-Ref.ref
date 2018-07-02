@@ -4,7 +4,8 @@ $INCLUDE "LibraryEx";
 $EXTERN GenPattern, MakeSavers, GenResult;
 
 *$FROM GlobalGen-Ref
-$EXTERN GlobalGen, BuildImage, Generalization, Collapse;
+$EXTERN GlobalGen, BuildImage, Generalization, Collapse,
+  BuildImage-Term, Generalization-Term, Collapse-Term;
 
 *$FROM GenericMatch
 $EXTERN GenericMatch;
@@ -35,7 +36,7 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
             = <GenericMatch (e.Pattern)(e.GlobalGen)> : Clear e.Substs
 
             /* Заменяем образцы на подстановки */
-            = ((e.Substs) (/* e.HardGenComment */) e.Conditions (e.Result));
+            = ((e.Substs) e.Conditions (e.Result));
         }
         e.Sentences
       >
@@ -45,10 +46,10 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
     = <MapReduce
         {
           (e.PatternSubsts)
-          ((e.Substs) (/* e.HardGenComment */) e.Conditions (e.Result))
+          ((e.Substs) e.Conditions (e.Result))
 
             = (e.PatternSubsts (e.Substs))
-              ((e.Substs) (/* e.HardGenComment */) e.Conditions (e.Result));
+              ((e.Substs) e.Conditions (e.Result));
         }
         (/* подстановки для каждого предложения */)
         e.SentencesWithSubst
@@ -61,7 +62,7 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
 
     /* Рекурсивно вычисляем команды для предложений, формируя группы */
     = <GenerateCommandsOfGroups
-        (e.GlobalGen) (e.SubstsForSentences)
+        (e.GlobalGen)
         s.FnGenSubst s.FnGenResult
         (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns) s.ContextSize 0
       >
@@ -79,16 +80,16 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
 
 /* Формируем группы предложений и рекурсивно находим для них команды */
 GenerateCommandsOfGroups {
-  (e.GlobalGen) (e.SubstsForSentences)
+  (e.GlobalGen)
   s.FnGenSubst s.FnGenResult
   (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns) s.ContextSize s.BaseNum
 
     /* Ищем разбиение предложений на 2 группы */
-    = <FindDivision (e.SubstsForSentences)> : e.FirstGroup
+    = <FindDivision (e.SentencesWithSubst)> : (e.FirstGroup) e.SecondGroup
 
-    = e.SubstsForSentences : e.FirstGroup e.SecondGroup
-
-    = <Len e.FirstGroup><Len e.SecondGroup>
+    = <Lenw e.FirstGroup> : s.Num1 e.SentencesWithSubst1
+    = <Lenw e.SecondGroup> : s.Num2 e.SentencesWithSubst2
+    = s.Num1 s.Num2
     : {
         /* Дальнейшее разбиение невозможно. Формируем команды для предложений */
         0 s.Num2 =
@@ -98,9 +99,6 @@ GenerateCommandsOfGroups {
             >;
 
         s.Num1 s.Num2
-          = <First s.Num1 e.SentencesWithSubst>
-          : (e.SentencesWithSubst1) e.SentencesWithSubst2
-
           = <First s.Num1 e.Patterns> : (e.Patterns1) e.Patterns2
 
           /* Генерация команд для первой группы */
@@ -136,11 +134,8 @@ GenerateCommandsOfGroups {
                 = s.SecondSentenceContext e.SecondSentenceCommands;
 
               s.Num2^
-                = <Last s.Num2 e.SubstsForSentences>
-                : (e.SubstsForSentences1) e.SubstsForSentences2
-
                 = <GenerateCommandsOfGroups
-                    (e.GlobalGen) (e.SubstsForSentences2)
+                    (e.GlobalGen)
                     s.FnGenSubst s.FnGenResult
                     (e.MarkedPattern) (e.SentencesWithSubst2) (e.Patterns2)
                     s.ContextSize s.BaseNum
@@ -157,11 +152,6 @@ GenerateCommandsOfGroups {
     : s.MaxMemory e.ResultCommands
 
     = s.MaxMemory e.ResultCommands;
-}
-
-/* Вычисляет длину выражения в термах */
-Len {
-  e.Sentence = <Lenw e.Sentence> : s.N e.Sentence = s.N;
 }
 
 /* Рекурсивно вычисляем команды для предложений */
@@ -197,12 +187,12 @@ GenerateCommands {
     : e.SubstsForSentences
 
     /* Заменяем старые подстановки на найденные */
-    = <ReplacePatternsWithTerm (e.SentencesWithSubst) (e.SubstsForSentences)>
+    = <ReplacePatternToNewSubst (e.SentencesWithSubst) (e.SubstsForSentences)>
     : e.SentencesWithSubst^
 
     /* Ищем разбиение на группы и формируем команды для новых предложений */
     = <GenerateCommandsOfGroups
-        (e.GlobalGen) (e.SubstsForSentences)
+        (e.GlobalGen)
         s.FnGenSubst s.FnGenResult
         (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns)
         s.ContextSize s.BaseNum
@@ -219,7 +209,7 @@ ReturnCommandsOfLastSentences {
 
     = <MapReduce
         {
-          s.MaxMemory ((e.Substitute) (e.HardGenComment) e.Conditions (e.Result))
+          s.MaxMemory ((e.Substitute) e.Conditions (e.Result))
 
             = <ComposeVars (e.MarkedPattern) (e.Substitute)> : e.SubstsAndJunks
 
@@ -239,7 +229,7 @@ ReturnCommandsOfLastSentences {
 
             = <Max s.MaxMemory s.Memory>
               (CmdSentence
-                (CmdComment e.HardGenComment)
+                /* (CmdComment e.HardGenComment) */
                 e.Commands
               );
         }
@@ -261,15 +251,15 @@ ReturnCommandsOfLastSentences {
 }
 
 /* Заменяет образец на заданный терм */
-ReplacePatternsWithTerm {
-  () (e.Terms) = ;
+ReplacePatternToNewSubst {
+  () () = ;
 
   (t.FirstSentence e.Sentences) (t.FirstTerm e.Terms)
     = t.FirstSentence
-    : ((e.Pattern) (/* e.HardGenComment */) e.Conditions (e.Result))
+    : ((e.Pattern) e.Conditions (e.Result))
 
-    = (t.FirstTerm (/* e.HardGenComment */) e.Conditions (e.Result))
-      <ReplacePatternsWithTerm (e.Sentences) (e.Terms)>;
+    = (t.FirstTerm e.Conditions (e.Result))
+      <ReplacePatternToNewSubst (e.Sentences) (e.Terms)>;
 }
 
 
@@ -326,50 +316,37 @@ FindDivision {
   () = /* пусто */;
 
   /* Если осталось одно предложение, можно его сразу вернуть */
-  (t.Sentence) = /* пусто */;
+  (t.Sentence) = (/* пусто */) t.Sentence;
 
   /*
-    Алгоритм вычисления обобщений работает только с выражениями,
-    а не последовательностями подстановок. Поэтому из подстановок
-    строим выражения. Общее правило: каждая подстановка переменной
-    превращается в один терм, s- и t-подстановки — в сами себя,
-    e-подстановка — в скобочный терм. Также строим «эталонное»
-    тривиальное ГСО для обобщения — по типам переменных.
-
     Предполагается, что во всех подстановках переменные перечислены
     в одном порядке.
   */
-  ((e.FirstSubst) e.Sentences)
-    = <Map
-        {
-          (e.Value ':' ('e' e.Index)) = (Brackets (TkVariable 'e'));
-          (e.Value ':' (s.ST e.Index)) = (TkVariable s.ST);
-        }
-        e.FirstSubst
-      >
-    : e.TrivialGCG
-
-    /* Добавляем изображения к подстановкам */
-    = <Map
-        {
-          (e.Subst)
-            = <Map
-                {
-                  (e.Value ':' ('e' e.Index)) = (Brackets e.Value);
-                  (e.Value ':' (s.ST e.Index)) = e.Value;
-                }
-                e.Subst
-              >
-            : e.ExprFromSubst
-            = <BuildImage (e.ExprFromSubst)> : t.Image
-            = (e.Subst t.Image);
-        }
-        (e.FirstSubst) e.Sentences
-      >
-    : (e.FirstSubst^ t.FirstImage) e.Sentences^
-
+  ((e.FirstSentence) e.Sentences)
+    , e.FirstSentence : (e.FirstSubst) e.FirstConditions (e.FirstResult)
+    = <ImagedSentence e.FirstSentence> : (e.FirstImage) e.FirstSentence^
+    = <MakeTrivialSubstImage e.FirstImage> : e.TrivialGCG
     = <DoFindDivision
-        (e.TrivialGCG) t.FirstImage ((e.FirstSubst)) e.Sentences
+        (e.TrivialGCG) (e.FirstImage) ((e.FirstSentence)) e.Sentences
+      >;
+}
+
+ImagedSentence {
+  (e.Subst) e.Conditions (e.Result)
+    = <Subst-BuildImage e.Subst> : e.SubstImage
+    = (e.SubstImage) (e.Subst) e.Conditions (e.Result);
+}
+
+MakeTrivialSubstImage {
+  e.SubstImage
+    = <Map
+        {
+          (t.Image ':' ('e' e.Index))
+            = ((MN ':' 0 ',' () ',' ()) ':' ('e' e.Index));
+
+          (t.Image ':' (s.ST e.Index)) = ((TkVariable s.ST) ':' (s.ST e.Index));
+        }
+        e.SubstImage
       >;
 }
 
@@ -381,16 +358,17 @@ FindDivision {
   будет отличаться от тривиального.
 */
 DoFindDivision {
-  (e.TrivialGCG) t.Image (e.FirstGroup)
-  (e.NextSentence t.NextImage) e.Sentences
-    = <Generalization t.Image t.NextImage> : t.Image^
-    = <Collapse t.Image>
+  (e.TrivialGCG) (e.Image) (e.FirstGroup) (e.NextSentence) e.Sentences
+    = <ImagedSentence e.NextSentence> : (e.NextImage) e.NextSentence
+    = <Subst-Generalization (e.Image) (e.NextImage)> : e.Image^
+    = e.Image
     : {
-        e.TrivialGCG = e.FirstGroup;
+        e.TrivialGCG = (e.FirstGroup) (e.NextSentence) e.Sentences;
 
         e.OtherGCG
           = <DoFindDivision
-              (e.TrivialGCG) t.Image (e.FirstGroup (e.NextSentence)) e.Sentences
+              (e.TrivialGCG) (e.Image) (e.FirstGroup (e.NextSentence))
+              e.Sentences
             >;
       };
 
@@ -400,7 +378,8 @@ DoFindDivision {
     нетривиальный ГСО. При этом вызывающий код ожидает, что возвращаемое
     значение долно быть короче, чем аргумент функции.
   */
-  (e.TrivialGCG) t.Image (e.FirstGroup t.Last) = e.FirstGroup;
+  (e.TrivialGCG) (e.Image) (e.FirstGroup t.LastSentence)
+    = (e.FirstGroup) t.LastSentence;
 }
 
 
@@ -412,7 +391,7 @@ GlobalGenOfSubsts {
     = <MapReduce
         {
           (e.PatternSubsts)
-          ((e.Substs) (/* e.HardGenComment */) e.Conditions (e.Result))
+          ((e.Substs) e.Conditions (e.Result))
 
             = (e.PatternSubsts (e.Substs));
         }
@@ -488,4 +467,56 @@ CollectSubsts {
       >
     : (e.SubstsVals ':' t.Var) e.SubstsSet^
     = (e.SubstsVals ':' t.Var) <CollectSubsts e.SubstsSet>;
+}
+
+
+Subst-BuildImage {
+  e.Substitution
+    = <Map
+        {
+          (e.Value ':' ('e' e.Index))
+            = (<BuildImage e.Value> ':' ('e' e.Index));
+          (t.Value ':' (s.ST e.Index))
+            = (<BuildImage-Term t.Value> ':' (s.ST e.Index));
+        }
+        e.Substitution
+      >;
+}
+
+Subst-Generalization {
+  ((t.Image1 ':' ('e' e.Index)) e.Images1)
+  ((t.Image2 ':' ('e' e.Index)) e.Images2)
+    = (<Generalization t.Image1 t.Image2> ':' ('e' e.Index))
+      <Subst-Generalization (e.Images1) (e.Images2)>;
+
+  ((t.Image1 ':' ('t' e.Index)) e.Images1)
+  ((t.Image2 ':' ('t' e.Index)) e.Images2)
+    = (<Generalization-Term t.Image1 t.Image2> ':' ('t' e.Index))
+      <Subst-Generalization (e.Images1) (e.Images2)>;
+
+  /* Они оба — или одинаковый символ, или безымянная s-переменная */
+  ((t.Image ':' ('s' e.Index)) e.Images1)
+  ((t.Image ':' ('s' e.Index)) e.Images2)
+    = (t.Image ':' ('s' e.Index))
+      <Subst-Generalization (e.Images1) (e.Images2)>;
+
+  /* Разные символы или символ vs s-переменная — обобщаем */
+  ((t.Image1 ':' ('s' e.Index)) e.Images1)
+  ((t.Image2 ':' ('s' e.Index)) e.Images2)
+    = ((TkVariable 's') ':' ('s' e.Index))
+      <Subst-Generalization (e.Images1) (e.Images2)>;
+
+  (/* пусто */) (/* пусто */) = /* пусто */;
+}
+
+Subst-Collapse {
+  e.Substitution
+    = <Map
+        {
+          (t.Image ':' ('e' e.Index)) = (<Collapse t.Image> ':' ('e' e.Index));
+          (t.Image ':' ('t' e.Index)) = (<Collapse-Term t.Image> ':' ('t' e.Index));
+          (t.Image ':' ('s' e.Index)) = (t.Image ':' ('s' e.Index));
+        }
+        e.Substitution
+      >;
 }

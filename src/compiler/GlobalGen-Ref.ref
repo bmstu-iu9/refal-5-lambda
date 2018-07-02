@@ -3,7 +3,7 @@ $INCLUDE "LibraryEx";
 
 $ENTRY GlobalGen {
   e.HardSentences
-    = <Map &BuildImage e.HardSentences> : e.Images
+    = <Map { (e.Pattern) = <BuildImage e.Pattern> } e.HardSentences> : e.Images
     = <Generalization e.Images> : t.Generalization
     = <Collapse t.Generalization>;
 }
@@ -11,7 +11,7 @@ $ENTRY GlobalGen {
 
 /*
   Строим многорезультатное обобщение терма
-  <BuildImage (e.Pattern)> == t.Image
+  <BuildImage e.Pattern> == t.Image
 
   e.Pattern ::= t.Term*
   t.Term ::=
@@ -41,14 +41,14 @@ $ENTRY GlobalGen {
     | (Brackets t.Image)
 */
 $ENTRY BuildImage {
-  (e.Pattern-B (TkVariable 'e' e.Index) e.Pattern-E)
-    = <Lenw <Map &BuildImage-Term e.Pattern-B>> : s.LeftLen e.Left
+  e.Pattern-B (TkVariable 'e' e.Index) e.Pattern-E
+    = <Lenw <BuildImage-Terms e.Pattern-B>> : s.LeftLen e.Left
     = <CutE e.Pattern-E> : e.Pattern-E^
-    = <Lenw <Map &BuildImage-Term e.Pattern-E>> : s.RightLen e.Right
+    = <Lenw <BuildImage-Terms e.Pattern-E>> : s.RightLen e.Right
     = (MN ':' <+ s.LeftLen s.RightLen> ',' (e.Left) ',' (e.Right));
 
-  (e.Pattern)
-    = <Lenw <Map &BuildImage-Term e.Pattern>> : s.Len e.Terms
+  e.Pattern
+    = <Lenw <BuildImage-Terms e.Pattern>> : s.Len e.Terms
     = (K ':' s.Len ',' (e.Terms));
 }
 
@@ -59,21 +59,17 @@ CutE {
   e.Pattern = e.Pattern;
 }
 
-BuildImage-Term {
-  e.Terms
-    = <Map
-        {
-          t.Symbol, <IsSymbol t.Symbol> : True = t.Symbol;
-          (TkVariable 't' e.Index) = (TkVariable 't');
-          (TkVariable 's' e.Index) = (TkVariable 's');
+BuildImage-Terms {
+  e.Terms = <Map &BuildImage-Term e.Terms>;
+}
 
-          (ADT-Brackets t.Name e.Rest)
-            = (ADT-Brackets t.Name <BuildImage (e.Rest)>);
+$ENTRY BuildImage-Term {
+  t.Symbol, <IsSymbol t.Symbol> : True = t.Symbol;
+  (TkVariable 't' e.Index) = (TkVariable 't');
+  (TkVariable 's' e.Index) = (TkVariable 's');
 
-          (Brackets e.Rest) = (Brackets <BuildImage (e.Rest)>);
-        }
-        e.Terms
-      >;
+  (ADT-Brackets t.Name e.Rest) = (ADT-Brackets t.Name <BuildImage e.Rest>);
+  (Brackets e.Rest) = (Brackets <BuildImage e.Rest>);
 }
 
 IsSymbol {
@@ -130,7 +126,7 @@ Generalization-Pair {
       >;
 }
 
-Generalization-Term {
+$ENTRY Generalization-Term {
   t.Symbol t.Symbol, <IsSymbol t.Symbol> : True = t.Symbol;
 
   t.Term1 t.Term2
@@ -205,20 +201,16 @@ $ENTRY Collapse {
 }
 
 Collapse-Terms {
-  e.Generalization
-    = <Map
-        {
-          t.Symbol, <IsSymbol t.Symbol> : True = t.Symbol;
-          (TkVariable 't') = (TkVariable 't');
-          (TkVariable 's') = (TkVariable 's');
+  e.Generalization = <Map &Collapse-Term e.Generalization>;
+}
 
-          (Brackets t.Image) = (Brackets <Collapse t.Image>);
+$ENTRY Collapse-Term {
+  t.Symbol, <IsSymbol t.Symbol> : True = t.Symbol;
+  (TkVariable 't') = (TkVariable 't');
+  (TkVariable 's') = (TkVariable 's');
 
-          (ADT-Brackets t.Name t.Image)
-            = (ADT-Brackets t.Name <Collapse t.Image>);
-        }
-        e.Generalization
-      >;
+  (Brackets t.Image) = (Brackets <Collapse t.Image>);
+  (ADT-Brackets t.Name t.Image) = (ADT-Brackets t.Name <Collapse t.Image>);
 }
 
 /* Возвращает набор ЛСО (s.Complexity e.LocalGen)* */
