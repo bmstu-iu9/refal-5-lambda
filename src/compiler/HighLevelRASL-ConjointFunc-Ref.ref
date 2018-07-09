@@ -71,12 +71,26 @@ GenerateCommandsOfGroups {
     = <FindDivision e.SentencesWithSubst>
     : {
         ForGroup (e.NewGCG-Subst) (e.FirstGroup) e.SecondGroup
-          = <GenerateForSplit
-              (e.NewGCG-Subst)
+          /* Генерация команд для первой группы */
+          = <GenerateCommands
               s.FnGenSubst s.FnGenResult
-              (e.MarkedPattern) s.ContextSize s.BaseNum
-              (e.FirstGroup) e.SecondGroup
-            >;
+              (e.MarkedPattern) (e.FirstGroup)
+              (e.NewGCG-Subst)
+              s.ContextSize s.BaseNum
+            >
+          : s.FirstPartContext e.FirstPartCommands
+
+          /* Генерация команд для второй группы */
+          = <GenerateCommandsOfGroups
+              s.FnGenSubst s.FnGenResult
+              (e.MarkedPattern) (e.SecondGroup)
+              s.ContextSize s.BaseNum
+            >
+          : s.SecondPartContext e.SecondPartCommands
+
+          = <Max s.FirstPartContext s.SecondPartContext> : s.ContextSize^
+
+          = s.ContextSize (CmdSentence e.FirstPartCommands) e.SecondPartCommands;
 
         ForAllSentences (e.NewGCG-Subst) e.SentencesWithSubst^
           = <GenerateGroupWithGCGSubst
@@ -144,34 +158,6 @@ GenerateOneSentence {
     : (CmdIssueMemory s.Memory) e.Commands
 
     = s.Memory e.Commands;
-}
-
-GenerateForSplit {
-  (e.NewGCG-Subst)
-  s.FnGenSubst s.FnGenResult
-  (e.MarkedPattern) s.ContextSize s.BaseNum
-  (e.FirstGroup) e.SecondGroup
-
-    /* Генерация команд для первой группы */
-    = <GenerateCommands
-        s.FnGenSubst s.FnGenResult
-        (e.MarkedPattern) (e.FirstGroup)
-        (e.NewGCG-Subst)
-        s.ContextSize s.BaseNum
-      >
-    : s.FirstPartContext e.FirstPartCommands
-
-    /* Генерация команд для второй группы */
-    = <GenerateCommandsOfGroups
-        s.FnGenSubst s.FnGenResult
-        (e.MarkedPattern) (e.SecondGroup)
-        s.ContextSize s.BaseNum
-      >
-    : s.SecondPartContext e.SecondPartCommands
-
-    = <Max s.FirstPartContext s.SecondPartContext> : s.ContextSize^
-
-    = s.ContextSize (CmdSentence e.FirstPartCommands) e.SecondPartCommands;
 }
 
 /* Рекурсивно вычисляем команды для предложений */
