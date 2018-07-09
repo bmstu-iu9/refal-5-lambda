@@ -117,9 +117,12 @@ GenerateOneSentence {
 
     = <ComposeVars (e.MarkedPattern) (e.Substitute)> : e.SubstsAndJunks
 
+    = <MakeSavers s.ContextSize e.SubstsAndJunks>
+    : s.ContextSize^ (e.CmdSaves) e.SubstsAndJunks^
+
     = <s.FnGenSubst
         s.ContextSize e.SubstsAndJunks
-        (/* no new vars */) (/* no prefix commands */)
+        (/* no new vars */) (e.CmdSaves)
       >
     : s.ContextSize^ (e.Vars^) (e.MarkedPattern^) e.PatternCommands
 
@@ -138,46 +141,38 @@ GenerateForSplit {
   (e.MarkedPattern) s.ContextSize s.BaseNum
   (e.FirstGroup) e.SecondGroup
 
-    = <Lenw e.FirstGroup> : s.Num1 e.SentencesWithSubst1
-    = <Lenw e.SecondGroup> : s.Num2 e.SentencesWithSubst2
-
     /* Генерация команд для первой группы */
-    = s.Num1
-    : {
-        1 = <ReturnCommandsOfLastSentences
-              s.FnGenSubst s.FnGenResult
-              (e.MarkedPattern) (e.SentencesWithSubst1) s.ContextSize
-            >
-          : s.FirstSentenceContext e.FirstSentenceCommands
-          = s.FirstSentenceContext (CmdSentence e.FirstSentenceCommands);
-
-        s.Num1^
-          = <GenerateCommands
-              s.FnGenSubst s.FnGenResult
-              (e.MarkedPattern) (e.SentencesWithSubst1)
-              (e.NewGCG-Subst)
-              s.ContextSize s.BaseNum
-            >
-          : s.FirstGroupContext e.FirstGroupCommands
-          = s.FirstGroupContext (CmdSentence e.FirstGroupCommands);
-      }
+    = <GenerateCommands
+        s.FnGenSubst s.FnGenResult
+        (e.MarkedPattern) (e.FirstGroup)
+        (e.NewGCG-Subst)
+        s.ContextSize s.BaseNum
+      >
     : s.FirstPartContext e.FirstPartCommands
 
     /* Генерация команд для второй группы */
     = <GenerateCommandsOfGroups
         s.FnGenSubst s.FnGenResult
-        (e.MarkedPattern) (e.SentencesWithSubst2)
+        (e.MarkedPattern) (e.SecondGroup)
         s.ContextSize s.BaseNum
       >
     : s.SecondPartContext e.SecondPartCommands
 
     = <Max s.FirstPartContext s.SecondPartContext> : s.ContextSize^
 
-    = s.ContextSize e.FirstPartCommands e.SecondPartCommands;
+    = s.ContextSize (CmdSentence e.FirstPartCommands) e.SecondPartCommands;
 }
 
 /* Рекурсивно вычисляем команды для предложений */
 GenerateCommands {
+  s.FnGenSubst s.FnGenResult (e.MarkedPattern) ((e.SentenceWithSubst))
+  (e.NewGCG-Subst)
+  s.ContextSize s.BaseNum
+    = <GenerateOneSentence
+        s.FnGenSubst s.FnGenResult
+        (e.MarkedPattern) (e.SentenceWithSubst) s.ContextSize
+      >;
+
   s.FnGenSubst s.FnGenResult (e.MarkedPattern) (e.SentencesWithSubst)
   (e.NewGCG-Subst)
   s.ContextSize s.BaseNum
@@ -210,44 +205,6 @@ GenerateCommands {
     : s.MaxMemory e.ResultCommands
 
     = s.MaxMemory e.PatternCommands e.ResultCommands;
-}
-
-/* Итоговый набор команд для предложений, которые нельзя разделить на группы */
-ReturnCommandsOfLastSentences {
-  s.FnGenSubst s.FnGenResult
-  (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize
-
-    = <MapReduce
-        {
-          s.MaxMemory ((e.Substitute) e.Conditions (e.Result))
-
-            = <ComposeVars (e.MarkedPattern) (e.Substitute)> : e.SubstsAndJunks
-
-            = <MakeSavers s.ContextSize e.SubstsAndJunks>
-            : s.ContextSize^ (e.CmdSaves) e.SubstsAndJunks^
-
-            = <s.FnGenSubst
-                s.ContextSize e.SubstsAndJunks (/* no new vars */) (e.CmdSaves)
-              >
-            : s.ContextSize^ (e.Vars^) (e.MarkedPattern^) e.PatternCommands
-
-            = <GenResult
-                s.FnGenResult (e.Conditions) (e.Result)
-                s.ContextSize (e.Vars) (e.MarkedPattern) e.PatternCommands
-              >
-            : (CmdIssueMemory s.Memory) e.Commands
-
-            = <Max s.MaxMemory s.Memory>
-              (CmdSentence
-                /* (CmdComment e.HardGenComment) */
-                e.Commands
-              );
-        }
-        s.ContextSize e.SentencesWithSubst
-      >
-    : s.MaxMemory e.ResultSentences (CmdSentence e.LastSentence)
-
-    = s.MaxMemory e.ResultSentences e.LastSentence;
 }
 
 
