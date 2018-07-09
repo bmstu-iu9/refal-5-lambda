@@ -15,7 +15,7 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
   s.FnGenSubst s.FnGenResult s.ScopeClass (e.Name) e.Sentences
 
     /*
-      Функция GenerateCommandsOfGroups работает с подстановками,
+      Функция FindDivisionAndGenerate работает с подстановками,
       поэтому заменяем все образцы на подстановки e.new#0.
     */
     = <Map
@@ -30,8 +30,7 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
     = <GenPattern s.FnGenSubst (e.Name) (TkVariable 'enew' 0)>
     : s.ContextSize (e.Vars) (e.MarkedPattern) e.CommonMatchCommands
 
-    /* Рекурсивно вычисляем команды для предложений, формируя группы */
-    = <GenerateCommandsOfGroups
+    = <FindDivisionAndGenerate
         s.FnGenSubst s.FnGenResult
         (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize
         1 /* base num */
@@ -46,7 +45,6 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
       }
     : e.ResultCommands^
 
-    /* Добавляем найденные команды в блок функции */
     = (Function
         s.ScopeClass (e.Name)
         (CmdIssueMemory s.MaxContextSize)
@@ -55,11 +53,10 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
       );
 }
 
-/* Формируем группы предложений и рекурсивно находим для них команды */
-GenerateCommandsOfGroups {
+FindDivisionAndGenerate {
   s.FnGenSubst s.FnGenResult
   (e.MarkedPattern) ((e.SentenceWithSubst)) s.ContextSize s.BaseNum
-    = <GenerateOneSentence
+    = <GenerateSingleSentence
         s.FnGenSubst s.FnGenResult
         (e.MarkedPattern) (e.SentenceWithSubst) s.ContextSize
       >;
@@ -67,12 +64,10 @@ GenerateCommandsOfGroups {
   s.FnGenSubst s.FnGenResult
   (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize s.BaseNum
 
-    /* Ищем разбиение предложений на 2 группы */
     = <FindDivision e.SentencesWithSubst>
     : {
         ForGroup (e.NewGCG-Subst) (e.FirstGroup) e.SecondGroup
-          /* Генерация команд для первой группы */
-          = <GenerateCommands
+          = <GenerateFirstGroup
               s.FnGenSubst s.FnGenResult
               (e.MarkedPattern) (e.FirstGroup)
               (e.NewGCG-Subst)
@@ -80,8 +75,7 @@ GenerateCommandsOfGroups {
             >
           : s.FirstPartContext e.FirstPartCommands
 
-          /* Генерация команд для второй группы */
-          = <GenerateCommandsOfGroups
+          = <FindDivisionAndGenerate
               s.FnGenSubst s.FnGenResult
               (e.MarkedPattern) (e.SecondGroup)
               s.ContextSize s.BaseNum
@@ -123,7 +117,7 @@ GenerateGroupWithGCGSubst {
     = <NarrowSentenceSubstitutions (e.NewGCG-Subst) e.SentencesWithSubst>
     : e.SentencesWithSubst^
 
-    = <GenerateCommandsOfGroups
+    = <FindDivisionAndGenerate
         s.FnGenSubst s.FnGenResult
         (e.MarkedPattern)
         (e.SentencesWithSubst)
@@ -134,7 +128,7 @@ GenerateGroupWithGCGSubst {
     = s.ContextSize e.GCG-Commands e.Commands;
 }
 
-GenerateOneSentence {
+GenerateSingleSentence {
   s.FnGenSubst s.FnGenResult
   (e.MarkedPattern) (e.SentenceWithSubst) s.ContextSize
 
@@ -160,12 +154,11 @@ GenerateOneSentence {
     = s.Memory e.Commands;
 }
 
-/* Рекурсивно вычисляем команды для предложений */
-GenerateCommands {
+GenerateFirstGroup {
   s.FnGenSubst s.FnGenResult (e.MarkedPattern) ((e.SentenceWithSubst))
   (e.NewGCG-Subst)
   s.ContextSize s.BaseNum
-    = <GenerateOneSentence
+    = <GenerateSingleSentence
         s.FnGenSubst s.FnGenResult
         (e.MarkedPattern) (e.SentenceWithSubst) s.ContextSize
       >;
