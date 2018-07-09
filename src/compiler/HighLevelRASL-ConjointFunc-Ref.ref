@@ -42,20 +42,6 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
       >
     : e.SentencesWithSubst
 
-    /* Собираем подстановки из всех предложений */
-    = <MapReduce
-        {
-          (e.PatternSubsts)
-          ((e.Substs) e.Conditions (e.Result))
-
-            = (e.PatternSubsts (e.Substs))
-              ((e.Substs) e.Conditions (e.Result));
-        }
-        (/* подстановки для каждого предложения */)
-        e.SentencesWithSubst
-      >
-    : (e.SubstsForSentences) e.SentencesWithSubst^
-
     /* GenPattern для ГСО. Получаем общий набор команд */
     = <GenPattern s.FnGenSubst (e.Name) e.GlobalGen>
     : s.ContextSize (e.Vars) (e.MarkedPattern) e.CommonMatchCommands
@@ -63,7 +49,7 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
     /* Рекурсивно вычисляем команды для предложений, формируя группы */
     = <GenerateCommandsOfGroups
         s.FnGenSubst s.FnGenResult
-        (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns) s.ContextSize
+        (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize
         s.BaseNum
       >
     : s.MaxContextSize e.ResultCommands
@@ -89,14 +75,14 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
 /* Формируем группы предложений и рекурсивно находим для них команды */
 GenerateCommandsOfGroups {
   s.FnGenSubst s.FnGenResult
-  (e.MarkedPattern) ((e.SentenceWithSubst)) ((e.Pattern)) s.ContextSize s.BaseNum
+  (e.MarkedPattern) ((e.SentenceWithSubst)) s.ContextSize s.BaseNum
     = <GenerateOneSentence
         s.FnGenSubst s.FnGenResult
         (e.MarkedPattern) (e.SentenceWithSubst) s.ContextSize
       >;
 
   s.FnGenSubst s.FnGenResult
-  (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns) s.ContextSize s.BaseNum
+  (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize s.BaseNum
 
     /* Ищем разбиение предложений на 2 группы */
     = <FindDivision e.SentencesWithSubst>
@@ -105,7 +91,7 @@ GenerateCommandsOfGroups {
           = <GenerateForSplit
               (e.NewGCG-Subst)
               s.FnGenSubst s.FnGenResult
-              (e.MarkedPattern) (e.Patterns) s.ContextSize s.BaseNum
+              (e.MarkedPattern) s.ContextSize s.BaseNum
               (e.FirstGroup) e.SecondGroup
             >;
 
@@ -132,7 +118,6 @@ GenerateCommandsOfGroups {
               s.FnGenSubst s.FnGenResult
               (e.MarkedPattern)
               (e.SentencesWithSubst)
-              (e.Patterns)
               s.ContextSize s.BaseNum
             >
           : s.ContextSize^ e.Commands
@@ -167,13 +152,11 @@ GenerateOneSentence {
 GenerateForSplit {
   (e.NewGCG-Subst)
   s.FnGenSubst s.FnGenResult
-  (e.MarkedPattern) (e.Patterns) s.ContextSize s.BaseNum
+  (e.MarkedPattern) s.ContextSize s.BaseNum
   (e.FirstGroup) e.SecondGroup
 
     = <Lenw e.FirstGroup> : s.Num1 e.SentencesWithSubst1
     = <Lenw e.SecondGroup> : s.Num2 e.SentencesWithSubst2
-
-    = <First s.Num1 e.Patterns> : (e.Patterns1) e.Patterns2
 
     /* Генерация команд для первой группы */
     = s.Num1
@@ -188,7 +171,7 @@ GenerateForSplit {
         s.Num1^
           = <GenerateCommands
               s.FnGenSubst s.FnGenResult
-              (e.MarkedPattern) (e.SentencesWithSubst1) (e.Patterns1)
+              (e.MarkedPattern) (e.SentencesWithSubst1)
               (e.NewGCG-Subst)
               s.ContextSize s.BaseNum
             >
@@ -200,7 +183,7 @@ GenerateForSplit {
     /* Генерация команд для второй группы */
     = <GenerateCommandsOfGroups
         s.FnGenSubst s.FnGenResult
-        (e.MarkedPattern) (e.SentencesWithSubst2) (e.Patterns2)
+        (e.MarkedPattern) (e.SentencesWithSubst2)
         s.ContextSize s.BaseNum
       >
     : s.SecondPartContext e.SecondPartCommands
@@ -212,7 +195,7 @@ GenerateForSplit {
 
 /* Рекурсивно вычисляем команды для предложений */
 GenerateCommands {
-  s.FnGenSubst s.FnGenResult (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns)
+  s.FnGenSubst s.FnGenResult (e.MarkedPattern) (e.SentencesWithSubst)
   (e.NewGCG-Subst)
   s.ContextSize s.BaseNum
 
@@ -238,7 +221,7 @@ GenerateCommands {
     /* Ищем разбиение на группы и формируем команды для новых предложений */
     = <GenerateCommandsOfGroups
         s.FnGenSubst s.FnGenResult
-        (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns)
+        (e.MarkedPattern) (e.SentencesWithSubst)
         s.ContextSize s.BaseNum
       >
     : s.MaxMemory e.ResultCommands
