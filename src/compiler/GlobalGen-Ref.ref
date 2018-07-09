@@ -105,11 +105,12 @@ Generalization-Pair {
 
   (MN ':' s.NumL ',' (e.TermsL1) ',' (e.TermsL2))
   (MN ':' s.NumR ',' (e.TermsR1) ',' (e.TermsR2))
-    = (
-        MN ':' <Min s.NumL s.NumR> ','
-        (<GeneralizationInPairs-Left (e.TermsL1) (e.TermsR1)>) ','
-        (<GeneralizationInPairs-Right (e.TermsL2) (e.TermsR2)>)
-      );
+    = <Lenw <GeneralizationInPairs-Left (e.TermsL1) (e.TermsR1)>>
+    : s.LenLeft e.Left
+    = <Lenw <GeneralizationInPairs-Right (e.TermsL2) (e.TermsR2)>>
+    : s.LenRight e.Right
+    = <Min s.NumL s.NumR <+ s.LenLeft s.LenRight>> : s.Min
+    = (MN ':' s.Min ',' (e.Left) ',' (e.Right));
 
   (MN ':' s.NumL ',' (e.TermsL1) ',' (e.TermsL2))
   (K ':' s.NumR ',' (e.TermsR))
