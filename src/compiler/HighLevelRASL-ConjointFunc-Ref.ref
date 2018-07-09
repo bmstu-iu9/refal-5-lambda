@@ -62,7 +62,6 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
 
     /* Рекурсивно вычисляем команды для предложений, формируя группы */
     = <GenerateCommandsOfGroups
-        (e.GlobalGen)
         s.FnGenSubst s.FnGenResult
         (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns) s.ContextSize
         s.BaseNum
@@ -89,7 +88,6 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
 
 /* Формируем группы предложений и рекурсивно находим для них команды */
 GenerateCommandsOfGroups {
-  (e.GlobalGen)
   s.FnGenSubst s.FnGenResult
   (e.MarkedPattern) ((e.SentenceWithSubst)) ((e.Pattern)) s.ContextSize s.BaseNum
     = <GenerateOneSentence
@@ -97,7 +95,6 @@ GenerateCommandsOfGroups {
         (e.MarkedPattern) (e.SentenceWithSubst) s.ContextSize
       >;
 
-  (e.GlobalGen)
   s.FnGenSubst s.FnGenResult
   (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns) s.ContextSize s.BaseNum
 
@@ -106,7 +103,7 @@ GenerateCommandsOfGroups {
     : {
         ForGroup (e.NewGCG-Subst) (e.FirstGroup) e.SecondGroup
           = <GenerateForSplit
-              (e.GlobalGen)
+              (e.NewGCG-Subst)
               s.FnGenSubst s.FnGenResult
               (e.MarkedPattern) (e.Patterns) s.ContextSize s.BaseNum
               (e.FirstGroup) e.SecondGroup
@@ -131,11 +128,7 @@ GenerateCommandsOfGroups {
           = <NarrowSentenceSubstitutions (e.NewGCG-Subst) e.SentencesWithSubst>
           : e.SentencesWithSubst^
 
-          = <Substitute (e.NewGCG-Subst) e.GlobalGen>
-          : (/* пусто */) e.GlobalGen^
-
           = <GenerateCommandsOfGroups
-              (e.GlobalGen)
               s.FnGenSubst s.FnGenResult
               (e.MarkedPattern)
               (e.SentencesWithSubst)
@@ -172,7 +165,7 @@ GenerateOneSentence {
 }
 
 GenerateForSplit {
-  (e.GlobalGen)
+  (e.NewGCG-Subst)
   s.FnGenSubst s.FnGenResult
   (e.MarkedPattern) (e.Patterns) s.ContextSize s.BaseNum
   (e.FirstGroup) e.SecondGroup
@@ -196,7 +189,7 @@ GenerateForSplit {
           = <GenerateCommands
               s.FnGenSubst s.FnGenResult
               (e.MarkedPattern) (e.SentencesWithSubst1) (e.Patterns1)
-              (e.GlobalGen)
+              (e.NewGCG-Subst)
               s.ContextSize s.BaseNum
             >
           : s.FirstGroupContext e.FirstGroupCommands
@@ -206,7 +199,6 @@ GenerateForSplit {
 
     /* Генерация команд для второй группы */
     = <GenerateCommandsOfGroups
-        (e.GlobalGen)
         s.FnGenSubst s.FnGenResult
         (e.MarkedPattern) (e.SentencesWithSubst2) (e.Patterns2)
         s.ContextSize s.BaseNum
@@ -221,15 +213,15 @@ GenerateForSplit {
 /* Рекурсивно вычисляем команды для предложений */
 GenerateCommands {
   s.FnGenSubst s.FnGenResult (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns)
-  (e.GlobalGenOld)
+  (e.NewGCG-Subst)
   s.ContextSize s.BaseNum
 
     /* Вычисляем ГСО подстановок и подстановки в e.MarkedPattern */
-    = <GlobalGenOfSubsts s.BaseNum (e.GlobalGenOld) e.SentencesWithSubst>
-    : s.BaseNum^ (e.GlobalGen) e.NewSubsts
+    = <EnumerateVars-Subst s.BaseNum e.NewGCG-Subst>
+    : s.BaseNum^ e.NewGCG-Subst^
 
     /* Находим новый e.MarkedPattern */
-    = <ComposeVars (e.MarkedPattern) (e.NewSubsts)> : e.SubstsAndJunks
+    = <ComposeVars (e.MarkedPattern) (e.NewGCG-Subst)> : e.SubstsAndJunks
 
     = <MakeSavers s.ContextSize e.SubstsAndJunks>
       : s.ContextSize^ (e.CmdSaves) e.SubstsAndJunks^
@@ -240,23 +232,11 @@ GenerateCommands {
     : s.ContextSize^ (e.Vars^) (e.MarkedPattern^) e.PatternCommands
 
     /* Строим подстановки, переводящие новое ГСО в образец */
-    = <Map
-        {
-          (e.Pattern)
-            = <GenericMatch (e.Pattern) (e.GlobalGen)> : Clear e.Substs
-            = (e.Substs);
-        }
-        e.Patterns
-      >
-    : e.SubstsForSentences
-
-    /* Заменяем старые подстановки на найденные */
-    = <ReplacePatternToNewSubst (e.SentencesWithSubst) (e.SubstsForSentences)>
+    = <NarrowSentenceSubstitutions (e.NewGCG-Subst) e.SentencesWithSubst>
     : e.SentencesWithSubst^
 
     /* Ищем разбиение на группы и формируем команды для новых предложений */
     = <GenerateCommandsOfGroups
-        (e.GlobalGen)
         s.FnGenSubst s.FnGenResult
         (e.MarkedPattern) (e.SentencesWithSubst) (e.Patterns)
         s.ContextSize s.BaseNum
@@ -302,18 +282,6 @@ ReturnCommandsOfLastSentences {
     : s.MaxMemory e.ResultSentences (CmdSentence e.LastSentence)
 
     = s.MaxMemory e.ResultSentences e.LastSentence;
-}
-
-/* Заменяет образец на заданный терм */
-ReplacePatternToNewSubst {
-  () () = ;
-
-  (t.FirstSentence e.Sentences) (t.FirstTerm e.Terms)
-    = t.FirstSentence
-    : ((e.Pattern) e.Conditions (e.Result))
-
-    = (t.FirstTerm e.Conditions (e.Result))
-      <ReplacePatternToNewSubst (e.Sentences) (e.Terms)>;
 }
 
 
@@ -433,75 +401,6 @@ DoFindDivision {
 }
 
 
-/* Собирает значения подстановок по одной переменной и находит их ГСО */
-GlobalGenOfSubsts {
-  s.BaseNum (e.GlobalGenOld) e.SentencesWithSubst
-
-    /* Получаем подстановки из предложений */
-    = <MapReduce
-        {
-          (e.PatternSubsts)
-          ((e.Substs) e.Conditions (e.Result))
-
-            = (e.PatternSubsts (e.Substs));
-        }
-        (/* подстановки для каждого предложения */)
-        e.SentencesWithSubst
-      >
-    : (e.SubstsSet)
-
-    /* Собираем значения подстановок по одной переменной */
-    = <CollectSubsts e.SubstsSet> : e.CollectedSubsts
-
-    /* Находим жесткие значения подстановок и затем их ГСО */
-    = <MapReduce
-        {
-          s.Index (e.SubstsVals ':' (e.Var))
-
-            /* Считаем ГСО по жестким значениям для одной подстановки */
-            = <GlobalGen e.SubstsVals> : e.GlobalGenNoIdents
-
-            /* Добавляем к ГСО уникальные идентификаторы */
-            = <EnumerateVarsRec s.Index e.GlobalGenNoIdents>
-            : s.Index^ e.GlobalGen
-
-            = s.Index (e.GlobalGen ':' (e.Var));
-        }
-        s.BaseNum e.CollectedSubsts
-      >
-    : s.Index e.GlobalGenSubsts
-
-    /* Заменяем переменные в исходном ГСО на их уточненные значения */
-    = <Substitute (e.GlobalGenSubsts) e.GlobalGenOld>
-    : (/* должно стать пусто */) e.ResultGlobalGen
-
-    = s.Index (e.ResultGlobalGen) e.GlobalGenSubsts;
-}
-
-Substitute {
-  (e.Substs) e.Expr
-    = <MapReduce
-        {
-          (/* no substs */) t.AnyTerm = (/* no substs */) t.AnyTerm;
-
-          (e.Substs-B (e.Value ':' (s.Type e.Index)) e.Substs-E)
-          (TkVariable s.Type e.Index)
-            = (e.Substs-B e.Substs-E) e.Value;
-
-          (e.Substs^) (Brackets e.Nested)
-            = <Substitute (e.Substs) e.Nested> : (e.Substs^) e.Nested^
-            = (e.Substs) (Brackets e.Nested);
-
-          (e.Substs^) (ADT-Brackets (e.Name) e.Nested)
-            = <Substitute (e.Substs) e.Nested> : (e.Substs^) e.Nested^
-            = (e.Substs) (ADT-Brackets (e.Name) e.Nested);
-
-          (e.Substs^) t.OtherTerm = (e.Substs) t.OtherTerm;
-        }
-        (e.Substs) e.Expr
-      >;
-}
-
 NarrowSentenceSubstitutions {
   (e.NewGCG-Subst) e.Sentences
     = <Map
@@ -525,23 +424,6 @@ NarrowSubst {
       <NarrowSubst (e.GCG-Substs-B e.GCG-Substs-E) (e.SentenceSubsts)>;
 
   () () = /* пусто */;
-}
-
-/* Объединяет наборы подстановок по обобщению (по t.Var справа от ':') */
-CollectSubsts {
-  e.Before (/* подстановки закончились */) e.Other = /* пусто */;
-
-  e.SubstsSet
-    = <MapReduce
-        {
-          (e.PrevVals ':' e.PrevVar) ((e.Val ':' t.Var) e.OtherSubsts)
-            = (e.PrevVals (e.Val) ':' t.Var) (e.OtherSubsts);
-        }
-        (/* Значения подстановок */ ':' /* Их обобщение */)
-        e.SubstsSet
-      >
-    : (e.SubstsVals ':' t.Var) e.SubstsSet^
-    = (e.SubstsVals ':' t.Var) <CollectSubsts e.SubstsSet>;
 }
 
 
