@@ -105,25 +105,47 @@ GenerateCommandsOfGroups {
     = <FindDivision e.SentencesWithSubst>
     : {
         ForGroup (e.NewGCG-Subst) (e.FirstGroup) e.SecondGroup
-          = (e.FirstGroup) e.SecondGroup;
+          = <GenerateForSplit
+              (e.GlobalGen)
+              s.FnGenSubst s.FnGenResult
+              (e.MarkedPattern) (e.Patterns) s.ContextSize s.BaseNum
+              (e.FirstGroup) e.SecondGroup
+            >;
 
-        /*
-          TODO: грязный хак.
-          На вход функции DoFindDivision падают подстановки, которые сами могут
-          иметь нетривиальный ГСО. При этом вызывающий код ожидает,
-          что возвращаемое значение долно быть короче, чем аргумент функции.
-        */
-        ForAllSentences (e.NewGCG-Subst) e.Sentences t.Last
-          = (e.Sentences) t.Last;
+        ForAllSentences (e.NewGCG-Subst) e.SentencesWithSubst^
+
+          = <EnumerateVars-Subst s.BaseNum e.NewGCG-Subst>
+          : s.BaseNum^ e.NewGCG-Subst^
+
+          = <ComposeVars (e.MarkedPattern) (e.NewGCG-Subst)> : e.SubstsAndJunks
+
+          = <MakeSavers s.ContextSize e.SubstsAndJunks>
+          : s.ContextSize^ (e.CmdSaves) e.SubstsAndJunks^
+
+          = <s.FnGenSubst
+              s.ContextSize e.SubstsAndJunks
+              (/* no known variables */) (e.CmdSaves)
+            >
+          : s.ContextSize^ (e.Vars) (e.MarkedPattern^) e.GCG-Commands
+
+          = <NarrowSentenceSubstitutions (e.NewGCG-Subst) e.SentencesWithSubst>
+          : e.SentencesWithSubst^
+
+          = <Substitute (e.NewGCG-Subst) e.GlobalGen>
+          : (/* пусто */) e.GlobalGen^
+
+          = <GenerateCommandsOfGroups
+              (e.GlobalGen)
+              s.FnGenSubst s.FnGenResult
+              (e.MarkedPattern)
+              (e.SentencesWithSubst)
+              (e.Patterns)
+              s.ContextSize s.BaseNum
+            >
+          : s.ContextSize^ e.Commands
+
+          = s.ContextSize e.GCG-Commands e.Commands;
       }
-    : (e.FirstGroup) e.SecondGroup
-
-    = <GenerateForSplit
-        (e.GlobalGen)
-        s.FnGenSubst s.FnGenResult
-        (e.MarkedPattern) (e.Patterns) s.ContextSize s.BaseNum
-        (e.FirstGroup) e.SecondGroup
-      >;
 }
 
 GenerateOneSentence {
@@ -344,6 +366,18 @@ EnumerateVarsRec {
       >;
 }
 
+EnumerateVars-Subst {
+  s.StartNumber e.Substitute
+    = <MapReduce
+        {
+          s.NextNumber (e.Value ':' (e.Var))
+            = <EnumerateVarsRec s.NextNumber e.Value> : s.NextNumber^ e.Value^
+            = s.NextNumber (e.Value ':' (e.Var))
+        }
+        s.StartNumber e.Substitute
+      >;
+}
+
 
 /*
   <FindDivision e.SentencesWithSubst>
@@ -479,6 +513,31 @@ Substitute {
         }
         (e.Substs) e.Expr
       >;
+}
+
+NarrowSentenceSubstitutions {
+  (e.NewGCG-Subst) e.Sentences
+    = <Map
+        {
+          ((e.Substs) e.Conditions (e.Result))
+            = (
+                (<NarrowSubst (e.NewGCG-Subst) (e.Substs)>)
+                e.Conditions
+                (e.Result)
+              );
+        }
+        e.Sentences
+      >;
+}
+
+NarrowSubst {
+  (e.GCG-Substs-B (e.GCG ':' (e.Var)) e.GCG-Substs-E)
+  ((e.Pattern ':' (e.Var)) e.SentenceSubsts)
+    = <GenericMatch (e.Pattern) (e.GCG)> : Clear e.NarrowSubsts
+    = e.NarrowSubsts
+      <NarrowSubst (e.GCG-Substs-B e.GCG-Substs-E) (e.SentenceSubsts)>;
+
+  () () = /* пусто */;
 }
 
 /* Объединяет наборы подстановок по обобщению (по t.Var справа от ':') */
