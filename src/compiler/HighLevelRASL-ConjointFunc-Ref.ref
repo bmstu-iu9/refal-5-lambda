@@ -3,54 +3,38 @@ $INCLUDE "LibraryEx";
 *$FROM HighLevelRASL-Common
 $EXTERN GenPattern, MakeSavers, GenResult;
 
-*$FROM GlobalGen-Ref
-$EXTERN GlobalGen, BuildImage, Generalization, Collapse,
-  BuildImage-Term, Generalization-Term, Collapse-Term;
-
 *$FROM GenericMatch
 $EXTERN GenericMatch;
+
+*$FROM GlobalGen-Ref
+$EXTERN BuildImage, BuildImage-Term, Generalization, Generalization-Term,
+  Collapse, Collapse-Term;
 
 
 $ENTRY HighLevelRASL-Function-ConjointExt {
   s.FnGenSubst s.FnGenResult s.ScopeClass (e.Name) e.Sentences
 
-    /* Получаем из предложений образцы */
-    = <Map
-        { ((e.Pattern) e.Conditions (e.Result)) = (e.Pattern); }
-        e.Sentences
-      >
-    : e.Patterns
-
-    /* Для жестких образцов строим Глобальное сложнейшее обобщение (ГСО) */
-    = <GlobalGen e.Patterns> : e.GlobalGenNoIdents
-
-    /* Добавляем к ГСО уникальные идентификаторы */
-    = <EnumerateVarsRec 0 e.GlobalGenNoIdents> : s.BaseNum e.GlobalGen
-
-    /* Сопоставляем образец каждого предложения с ГСО */
+    /*
+      Функция GenerateCommandsOfGroups работает с подстановками,
+      поэтому заменяем все образцы на подстановки e.new#0.
+    */
     = <Map
         {
           ((e.Pattern) e.Conditions (e.Result))
-
-            /* Строим подстановки, переводящие ГСО в образец */
-            = <GenericMatch (e.Pattern)(e.GlobalGen)> : Clear e.Substs
-
-            /* Заменяем образцы на подстановки */
-            = ((e.Substs) e.Conditions (e.Result));
+            = (((e.Pattern ':' ('enew' 0))) e.Conditions (e.Result));
         }
         e.Sentences
       >
     : e.SentencesWithSubst
 
-    /* GenPattern для ГСО. Получаем общий набор команд */
-    = <GenPattern s.FnGenSubst (e.Name) e.GlobalGen>
+    = <GenPattern s.FnGenSubst (e.Name) (TkVariable 'enew' 0)>
     : s.ContextSize (e.Vars) (e.MarkedPattern) e.CommonMatchCommands
 
     /* Рекурсивно вычисляем команды для предложений, формируя группы */
     = <GenerateCommandsOfGroups
         s.FnGenSubst s.FnGenResult
         (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize
-        s.BaseNum
+        1 /* base num */
       >
     : s.MaxContextSize e.ResultCommands
 
@@ -66,7 +50,6 @@ $ENTRY HighLevelRASL-Function-ConjointExt {
     = (Function
         s.ScopeClass (e.Name)
         (CmdIssueMemory s.MaxContextSize)
-        (CmdComment 'GLOBAL GEN:' /*<PatternComment e.GlobalGen>*/)
         e.CommonMatchCommands
         e.ResultCommands
       );
