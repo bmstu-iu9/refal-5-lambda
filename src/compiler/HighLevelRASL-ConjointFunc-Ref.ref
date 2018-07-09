@@ -205,25 +205,12 @@ GenerateForSplit {
     : s.FirstPartContext e.FirstPartCommands
 
     /* Генерация команд для второй группы */
-    = s.Num2
-    : {
-        1 = <ReturnCommandsOfLastSentences
-              s.FnGenSubst s.FnGenResult
-              (e.MarkedPattern) (e.SentencesWithSubst2) s.ContextSize
-            >
-          : s.SecondSentenceContext e.SecondSentenceCommands
-          = s.SecondSentenceContext e.SecondSentenceCommands;
-
-        s.Num2^
-          = <GenerateCommandsOfGroups
-              (e.GlobalGen)
-              s.FnGenSubst s.FnGenResult
-              (e.MarkedPattern) (e.SentencesWithSubst2) (e.Patterns2)
-              s.ContextSize s.BaseNum
-            >
-          : s.SecondGroupContext e.SecondGroupCommands
-          = s.SecondGroupContext e.SecondGroupCommands;
-      }
+    = <GenerateCommandsOfGroups
+        (e.GlobalGen)
+        s.FnGenSubst s.FnGenResult
+        (e.MarkedPattern) (e.SentencesWithSubst2) (e.Patterns2)
+        s.ContextSize s.BaseNum
+      >
     : s.SecondPartContext e.SecondPartCommands
 
     = <Max s.FirstPartContext s.SecondPartContext> : s.ContextSize^
