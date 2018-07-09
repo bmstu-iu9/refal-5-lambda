@@ -79,34 +79,45 @@ GenerateCommandsOfGroups {
             >;
 
         ForAllSentences (e.NewGCG-Subst) e.SentencesWithSubst^
-
-          = <EnumerateVars-Subst s.BaseNum e.NewGCG-Subst>
-          : s.BaseNum^ e.NewGCG-Subst^
-
-          = <ComposeVars (e.MarkedPattern) (e.NewGCG-Subst)> : e.SubstsAndJunks
-
-          = <MakeSavers s.ContextSize e.SubstsAndJunks>
-          : s.ContextSize^ (e.CmdSaves) e.SubstsAndJunks^
-
-          = <s.FnGenSubst
-              s.ContextSize e.SubstsAndJunks
-              (/* no known variables */) (e.CmdSaves)
-            >
-          : s.ContextSize^ (e.Vars) (e.MarkedPattern^) e.GCG-Commands
-
-          = <NarrowSentenceSubstitutions (e.NewGCG-Subst) e.SentencesWithSubst>
-          : e.SentencesWithSubst^
-
-          = <GenerateCommandsOfGroups
+          = <GenerateGroupWithGCGSubst
               s.FnGenSubst s.FnGenResult
-              (e.MarkedPattern)
-              (e.SentencesWithSubst)
-              s.ContextSize s.BaseNum
-            >
-          : s.ContextSize^ e.Commands
-
-          = s.ContextSize e.GCG-Commands e.Commands;
+              (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize s.BaseNum
+              e.NewGCG-Subst
+            >;
       }
+}
+
+GenerateGroupWithGCGSubst {
+  s.FnGenSubst s.FnGenResult
+  (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize s.BaseNum
+  e.NewGCG-Subst
+
+    = <EnumerateVars-Subst s.BaseNum e.NewGCG-Subst>
+    : s.BaseNum^ e.NewGCG-Subst^
+
+    = <ComposeVars (e.MarkedPattern) (e.NewGCG-Subst)> : e.SubstsAndJunks
+
+    = <MakeSavers s.ContextSize e.SubstsAndJunks>
+    : s.ContextSize^ (e.CmdSaves) e.SubstsAndJunks^
+
+    = <s.FnGenSubst
+        s.ContextSize e.SubstsAndJunks
+        (/* no known variables */) (e.CmdSaves)
+      >
+    : s.ContextSize^ (e.Vars) (e.MarkedPattern^) e.GCG-Commands
+
+    = <NarrowSentenceSubstitutions (e.NewGCG-Subst) e.SentencesWithSubst>
+    : e.SentencesWithSubst^
+
+    = <GenerateCommandsOfGroups
+        s.FnGenSubst s.FnGenResult
+        (e.MarkedPattern)
+        (e.SentencesWithSubst)
+        s.ContextSize s.BaseNum
+      >
+    : s.ContextSize^ e.Commands
+
+    = s.ContextSize e.GCG-Commands e.Commands;
 }
 
 GenerateOneSentence {
@@ -176,35 +187,11 @@ GenerateCommands {
   s.FnGenSubst s.FnGenResult (e.MarkedPattern) (e.SentencesWithSubst)
   (e.NewGCG-Subst)
   s.ContextSize s.BaseNum
-
-    /* Вычисляем ГСО подстановок и подстановки в e.MarkedPattern */
-    = <EnumerateVars-Subst s.BaseNum e.NewGCG-Subst>
-    : s.BaseNum^ e.NewGCG-Subst^
-
-    /* Находим новый e.MarkedPattern */
-    = <ComposeVars (e.MarkedPattern) (e.NewGCG-Subst)> : e.SubstsAndJunks
-
-    = <MakeSavers s.ContextSize e.SubstsAndJunks>
-      : s.ContextSize^ (e.CmdSaves) e.SubstsAndJunks^
-
-    = <s.FnGenSubst
-        s.ContextSize e.SubstsAndJunks (/* no new vars */) (e.CmdSaves)
-      >
-    : s.ContextSize^ (e.Vars^) (e.MarkedPattern^) e.PatternCommands
-
-    /* Строим подстановки, переводящие новое ГСО в образец */
-    = <NarrowSentenceSubstitutions (e.NewGCG-Subst) e.SentencesWithSubst>
-    : e.SentencesWithSubst^
-
-    /* Ищем разбиение на группы и формируем команды для новых предложений */
-    = <GenerateCommandsOfGroups
+    = <GenerateGroupWithGCGSubst
         s.FnGenSubst s.FnGenResult
-        (e.MarkedPattern) (e.SentencesWithSubst)
-        s.ContextSize s.BaseNum
-      >
-    : s.MaxMemory e.ResultCommands
-
-    = s.MaxMemory e.PatternCommands e.ResultCommands;
+        (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize s.BaseNum
+        e.NewGCG-Subst
+      >;
 }
 
 
