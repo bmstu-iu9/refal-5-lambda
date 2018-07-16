@@ -99,26 +99,18 @@ setlocal
   call :%2 %1 || exit /b 1
   set SRFLAGS=-OP
   call :%2 %1 || exit /b 1
-  set SRFLAGS=-OQ
-  call :%2 %1 || exit /b 1
   set SRFLAGS=-OR
   call :%2 %1 || exit /b 1
   set SRFLAGS=-OPR
-  call :%2 %1 || exit /b 1
-  set SRFLAGS=-OQR
   call :%2 %1 || exit /b 1
   set SRFLAGS_PLUS=%SRFLAGS_NAT%
   set SRFLAGS=-Od
   call :%2 %1 || exit /b 1
   set SRFLAGS=-OdP
   call :%2 %1 || exit /b 1
-  set SRFLAGS=-OdQ
-  call :%2 %1 || exit /b 1
   set SRFLAGS=-OdR
   call :%2 %1 || exit /b 1
   set SRFLAGS=-OdPR
-  call :%2 %1 || exit /b 1
-  set SRFLAGS=-OdQR
   call :%2 %1 || exit /b 1
 
   find "CONDITIONS" %1 > NUL
@@ -131,26 +123,18 @@ setlocal
     call :%2 %1 || exit /b 1
     set SRFLAGS=-OCP
     call :%2 %1 || exit /b 1
-    set SRFLAGS=-OCQ
-    call :%2 %1 || exit /b 1
     set SRFLAGS=-OCR
     call :%2 %1 || exit /b 1
     set SRFLAGS=-OCPR
-    call :%2 %1 || exit /b 1
-    set SRFLAGS=-OCQR
     call :%2 %1 || exit /b 1
     set SRFLAGS_PLUS=%SRFLAGS_NAT%
     set SRFLAGS=-OCd
     call :%2 %1 || exit /b 1
     set SRFLAGS=-OCdP
     call :%2 %1 || exit /b 1
-    set SRFLAGS=-OCdQ
-    call :%2 %1 || exit /b 1
     set SRFLAGS=-OCdR
     call :%2 %1 || exit /b 1
     set SRFLAGS=-OCdPR
-    call :%2 %1 || exit /b 1
-    set SRFLAGS=-OCdQR
     call :%2 %1 || exit /b 1
     echo Special conditions tests is passed
   )

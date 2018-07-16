@@ -135,13 +135,16 @@ $ENTRY Config-GetGenMode {
 
 /**
   <Config-GetOptPattern t.Config>
-    == #ConjointExt
     == #Conjoint
     == #Disjoint
 */
 $ENTRY Config-GetOptPattern {
+  /*
+    Заглушка оставлена на случай будущих новых экспериментов с алгоритмом
+    совместного сопоставления с образцом.
+  */
   [Config e.Params-B (#Optimize e.Opt-B #OptPatternExt e.Opt-E) e.Params-E]
-    = #ConjointExt;
+    = #Conjoint;
 
   [Config e.Params-B (#Optimize e.Opt-B #OptPattern e.Opt-E) e.Params-E]
     = #Conjoint;
@@ -253,6 +256,7 @@ ParseOptLetters {
   //    = <ParseOptLetters (<Flags-Unique e.Scanned s.FlagName>) e.Flags>;
 
   (e.Scanned) 'Q' e.Flags
+    // См. Config-GetOptPattern
     = <ParseOptLetters (<Flags-Unique e.Scanned #OptPatternExt>) e.Flags>;
 
   (e.Scanned) 'P' e.Flags

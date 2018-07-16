@@ -7,9 +7,6 @@ $EXTERN HighLevelRASL-Function-Disjoint;
 //FROM HighLevelRASL-ConjointFunc
 $EXTERN HighLevelRASL-Function-Conjoint;
 
-//FROM HighLevelRASL-ConjointFunc-Ref
-$EXTERN HighLevelRASL-Function-ConjointExt;
-
 //FROM HighLevelRASL-GenSubst-Simple
 $EXTERN GenSubst-Simple;
 
@@ -108,7 +105,6 @@ HighLevelRASL-Function {
 
 GenSentenceFunc {
   #Conjoint    = HighLevelRASL-Function-Conjoint;
-  #ConjointExt = HighLevelRASL-Function-ConjointExt;
   #Disjoint    = HighLevelRASL-Function-Disjoint;
 }
 

@@ -18,27 +18,19 @@ regression() {
     if run_test "$r" \
       && run_test "$r" -OP \
       && run_test "$r" -OR \
-      && run_test "$r" -OQ \
       && run_test "$r" -OPR \
-      && run_test "$r" -OQR \
       && run_test "$r" -Od \
       && run_test "$r" -OdP \
       && run_test "$r" -OdR \
-      && run_test "$r" -OdQ \
       && run_test "$r" -OC \
       && run_test "$r" -OCP \
       && run_test "$r" -OCR \
-      && run_test "$r" -OCQ \
       && run_test "$r" -OCPR \
-      && run_test "$r" -OCQR \
       && run_test "$r" -OCd \
       && run_test "$r" -OCdP \
       && run_test "$r" -OCdR \
-      && run_test "$r" -OCdQ \
       && run_test "$r" -OCdPR \
-      && run_test "$r" -OCdQR \
-      && run_test "$r" -OdPR \
-      && run_test "$r" -OdQR
+      && run_test "$r" -OdPR
     then
       rm -f *.rasl *.cpp *.out* *.err*
     else
@@ -58,27 +50,19 @@ new_tests() {
     if run_test "$r" \
       && run_test "$r" -OP \
       && run_test "$r" -OR \
-      && run_test "$r" -OQ \
       && run_test "$r" -OPR \
-      && run_test "$r" -OQR \
       && run_test "$r" -Od \
       && run_test "$r" -OdP \
       && run_test "$r" -OdR \
-      && run_test "$r" -OdQ \
       && run_test "$r" -OC \
       && run_test "$r" -OCP \
       && run_test "$r" -OCR \
-      && run_test "$r" -OCQ \
       && run_test "$r" -OCPR \
-      && run_test "$r" -OCQR \
       && run_test "$r" -OCd \
       && run_test "$r" -OCdP \
       && run_test "$r" -OCdR \
-      && run_test "$r" -OCdQ \
       && run_test "$r" -OCdPR \
-      && run_test "$r" -OCdQR \
-      && run_test "$r" -OdPR \
-      && run_test "$r" -OdQR
+      && run_test "$r" -OdPR
     then
       rm -f ${r%%.ref}.*
     fi

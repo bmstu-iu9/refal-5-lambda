@@ -6,12 +6,12 @@ $EXTERN GenPattern, MakeSavers, GenResult;
 *$FROM GenericMatch
 $EXTERN GenericMatch;
 
-*$FROM GlobalGen-Ref
+*$FROM GlobalGen
 $EXTERN BuildImage, BuildImage-Term, Generalization, Generalization-Term,
   Collapse, Collapse-Term;
 
 
-$ENTRY HighLevelRASL-Function-ConjointExt {
+$ENTRY HighLevelRASL-Function-Conjoint {
   s.FnGenSubst s.FnGenResult s.ScopeClass (e.Name) e.Sentences
 
     /*
