@@ -94,8 +94,8 @@ GenerateGroupWithGCGSubst {
   (e.MarkedPattern) ((e.SentenceWithSubst)) s.ContextSize s.BaseNum
   e.NewGCG-Subst
     = <GenerateSingleSentence
-        s.FnGenSubst s.FnGenResult
-        (e.MarkedPattern) (e.SentenceWithSubst) s.ContextSize
+        s.FnGenSubst s.FnGenResult s.ContextSize (e.MarkedPattern)
+        e.SentenceWithSubst
       >;
 
   s.FnGenSubst s.FnGenResult
@@ -105,15 +105,7 @@ GenerateGroupWithGCGSubst {
     = <EnumerateVars-Subst s.BaseNum e.NewGCG-Subst>
     : s.BaseNum^ e.NewGCG-Subst^
 
-    = <ComposeVars (e.MarkedPattern) (e.NewGCG-Subst)> : e.SubstsAndJunks
-
-    = <MakeSavers s.ContextSize e.SubstsAndJunks>
-    : s.ContextSize^ (e.CmdSaves) e.SubstsAndJunks^
-
-    = <s.FnGenSubst
-        s.ContextSize e.SubstsAndJunks
-        (/* no known variables */) (e.CmdSaves)
-      >
+    = <CodeForSubst s.FnGenSubst s.ContextSize (e.MarkedPattern) e.NewGCG-Subst>
     : s.ContextSize^ (e.Vars) (e.MarkedPattern^) e.GCG-Commands
 
     = <NarrowSentenceSubstitutions (e.NewGCG-Subst) e.SentencesWithSubst>
@@ -130,11 +122,8 @@ GenerateGroupWithGCGSubst {
     = s.ContextSize e.GCG-Commands e.Commands;
 }
 
-GenerateSingleSentence {
-  s.FnGenSubst s.FnGenResult
-  (e.MarkedPattern) (e.SentenceWithSubst) s.ContextSize
-
-    = e.SentenceWithSubst : (e.Substitute) e.Conditions (e.Result)
+CodeForSubst {
+  s.FnGenSubst s.ContextSize (e.MarkedPattern) e.Substitute
 
     = <ComposeVars (e.MarkedPattern) (e.Substitute)> : e.SubstsAndJunks
 
@@ -145,6 +134,13 @@ GenerateSingleSentence {
         s.ContextSize e.SubstsAndJunks
         (/* no new vars */) (e.CmdSaves)
       >
+}
+
+GenerateSingleSentence {
+  s.FnGenSubst s.FnGenResult s.ContextSize (e.MarkedPattern)
+  (e.Substitute) e.Conditions (e.Result)
+
+    = <CodeForSubst s.FnGenSubst s.ContextSize (e.MarkedPattern) e.Substitute>
     : s.ContextSize^ (e.Vars^) (e.MarkedPattern^) e.PatternCommands
 
     = <GenResult
