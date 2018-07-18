@@ -24,7 +24,7 @@
 //FROM refalrts-platform-specific
 #include "refalrts-platform-specific.h"
 
-static struct refalrts::Module g_module = { 0, 0, 0 };
+static struct refalrts::Module g_module = { 0, 0, 0, 0, 0 };
 
 namespace refalrts {
 

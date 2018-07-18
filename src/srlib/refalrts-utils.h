@@ -38,12 +38,12 @@ refalrts::Iter prev(refalrts::Iter current) {
   return current->prev;
 }
 
-bool is_open_bracket(refalrts::Iter node) {
+inline bool is_open_bracket(refalrts::Iter node) {
   return (refalrts::cDataOpenBracket == node->tag)
     || (refalrts::cDataOpenADT == node->tag);
 }
 
-bool is_close_bracket(refalrts::Iter node) {
+inline bool is_close_bracket(refalrts::Iter node) {
   return (refalrts::cDataCloseBracket == node->tag)
     || (refalrts::cDataCloseADT == node->tag);
 }
