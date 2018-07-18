@@ -35,18 +35,24 @@ $ENTRY Y {
   s.Y-Func = { e.Arg = <<s.Y-Func <Y s.Y-Func>> e.Arg>; };
 }
 
-$ENTRY MapReduce {
-  t.Fn t.Acc e.Tail = <DoMapReduce t.Fn t.Acc () e.Tail>;
+$ENTRY MapAccum {
+  t.Fn t.Acc e.Tail = <DoMapAccum t.Fn t.Acc () e.Tail>;
 }
 
-DoMapReduce {
+DoMapAccum {
   t.Fn t.Acc (e.Scanned) t.Next e.Tail
     = <Apply t.Fn t.Acc t.Next> : t.Acc^ e.StepScanned
-    = <DoMapReduce
+    = <DoMapAccum
         t.Fn t.Acc (e.Scanned e.StepScanned) e.Tail
       >;
 
   t.Fn t.Acc (e.Scanned) = t.Acc e.Scanned;
+}
+
+// Function MapReduce is deprecated!!!
+// Use MapAccum instead it.
+$ENTRY MapReduce {
+  t.Fn t.Acc e.Tail = <MapAccum t.Fn t.Acc e.Tail>;
 }
 
 $ENTRY UnBracket {
