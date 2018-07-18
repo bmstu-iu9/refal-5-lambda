@@ -26,6 +26,7 @@ cp ../doc/*.pdf doc
 cp ../doc/*.jpg doc
 mkdir doc/OptPattern
 cp ../doc/OptPattern/*.pdf doc/OptPattern
+cp ../doc/OptPattern/*.md doc/OptPattern
 mkdir doc/historical
 cp ../doc/historical/*.txt doc/historical
 cp ../doc/historical/*.pdf doc/historical
