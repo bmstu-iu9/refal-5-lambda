@@ -211,8 +211,9 @@ $ENTRY ParseCommandLine {
                 (s.Pos #BadValue-Opt e.BadValue) =
                   (
                     s.Pos
-                    'option -O expects ''P'', ''Q'', ''R'', ''d'' or '
-                    'it''s combination, but got ''' e.BadValue ''
+                    'option -O expects ''d'', ''C'', ''D'', ''I'', ''P'', '
+                    '''R'', ''S'', ''T'' or it''s combination, '
+                    'but got ''' e.BadValue ''
                   );
 
                 (s.Pos #EmptyErrorFileName)

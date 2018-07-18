@@ -1,0 +1,278 @@
+$INCLUDE "LibraryEx";
+
+
+$ENTRY GlobalGen {
+  e.HardSentences
+    = <Map { (e.Pattern) = <BuildImage e.Pattern> } e.HardSentences> : e.Images
+    = <Generalization e.Images> : t.Generalization
+    = <Collapse t.Generalization>;
+}
+
+
+/*
+  Строим многорезультатное обобщение терма
+  <BuildImage e.Pattern> == t.Image
+
+  e.Pattern ::= t.Term*
+  t.Term ::=
+      t.Symbol
+    | (TkVariable 't' e.Index)
+    | (TkVariable 's' e.Index)
+    | (TkVariable 'e' e.Index)
+    | (ADT-Brackets t.Name t.Term*)
+    | (Brackets t.Term*)
+    | (Closure t.Term*)
+    | (CallBrackets t.Term*)
+  t.Symbol ::=
+      (TkIdentifier e.Name)
+    | (TkName t.SrcPos e.Name)
+    | (TkNumber s.Number)
+    | (TkChar s.HChar)
+
+  t.Image ::=
+      (K ':' s.Len ',' (t.TermImage*))
+    | (MN ':' s.Len ',' (t.TermImage*) ',' (t.TermImage*))
+
+  t.TermImage ::=
+      t.Symbol
+    | (TkVariable 't')
+    | (TkVariable 's')
+    | (ADT-Brackets t.Name t.Image*)
+    | (Brackets t.Image)
+*/
+$ENTRY BuildImage {
+  e.Pattern-B (TkVariable 'e' e.Index) e.Pattern-E
+    = <Lenw <BuildImage-Terms e.Pattern-B>> : s.LeftLen e.Left
+    = <CutE e.Pattern-E> : e.Pattern-E^
+    = <Lenw <BuildImage-Terms e.Pattern-E>> : s.RightLen e.Right
+    = (MN ':' <+ s.LeftLen s.RightLen> ',' (e.Left) ',' (e.Right));
+
+  e.Pattern
+    = <Lenw <BuildImage-Terms e.Pattern>> : s.Len e.Terms
+    = (K ':' s.Len ',' (e.Terms));
+}
+
+CutE {
+  /* тут бы пригодилось удлинение справа-налево */
+  e.Pattern-B (TkVariable 'e' e.Index) e.Pattern-E = <CutE e.Pattern-E>;
+
+  e.Pattern = e.Pattern;
+}
+
+BuildImage-Terms {
+  e.Terms = <Map &BuildImage-Term e.Terms>;
+}
+
+$ENTRY BuildImage-Term {
+  t.Symbol, <IsSymbol t.Symbol> : True = t.Symbol;
+  (TkVariable 't' e.Index) = (TkVariable 't');
+  (TkVariable 's' e.Index) = (TkVariable 's');
+
+  (ADT-Brackets t.Name e.Rest) = (ADT-Brackets t.Name <BuildImage e.Rest>);
+  (Brackets e.Rest) = (Brackets <BuildImage e.Rest>);
+}
+
+IsSymbol {
+  /* идентификатор, имя функции, число или литера */
+  (TkIdentifier e.Name) = True;
+  (TkName t.SrcPos e.Name) = True;
+  (TkNumber s.Number) = True;
+  (TkChar s.HChar) = True;
+
+  t.OtherTerm = False;
+}
+
+
+/*
+  Попарно обобщаем все полученные образы:
+  <Generalization t.Image*> == t.Image?
+*/
+$ENTRY Generalization {
+  t.Image1 t.Image2 e.Rest
+    = <Generalization <Generalization-Pair t.Image1 t.Image2> e.Rest>;
+  t.Image = t.Image;
+}
+
+Generalization-Pair {
+  (K ':' s.Num ',' (e.Left)) (K ':' s.Num ',' (e.Right))
+    = (K ':' s.Num ',' (<GeneralizationInPairs (e.Left) (e.Right)>));
+
+  (K ':' s.NumL ',' (e.Left)) (K ':' s.NumR ',' (e.Right))
+    = <Generalization-Pair
+        (MN ':' s.NumL ',' (e.Left) ',' (e.Left))
+        (MN ':' s.NumR ',' (e.Right) ',' (e.Right))
+      >;
+
+  (MN ':' s.NumL ',' (e.TermsL1) ',' (e.TermsL2))
+  (MN ':' s.NumR ',' (e.TermsR1) ',' (e.TermsR2))
+    = <Lenw <GeneralizationInPairs-Left (e.TermsL1) (e.TermsR1)>>
+    : s.LenLeft e.Left
+    = <Lenw <GeneralizationInPairs-Right (e.TermsL2) (e.TermsR2)>>
+    : s.LenRight e.Right
+    = <Min s.NumL s.NumR <+ s.LenLeft s.LenRight>> : s.Min
+    = (MN ':' s.Min ',' (e.Left) ',' (e.Right));
+
+  (MN ':' s.NumL ',' (e.TermsL1) ',' (e.TermsL2))
+  (K ':' s.NumR ',' (e.TermsR))
+    = <Generalization-Pair
+        (MN ':' s.NumL ',' (e.TermsL1) ',' (e.TermsL2))
+        (MN ':' s.NumR ',' (e.TermsR) ',' (e.TermsR))
+      >;
+
+  (K ':' s.NumL ',' (e.TermsL))
+  (MN ':' s.NumR ',' (e.TermsR1) ',' (e.TermsR2))
+    = <Generalization-Pair
+        (MN ':' s.NumL ',' (e.TermsL) ',' (e.TermsL))
+        (MN ':' s.NumR ',' (e.TermsR1) ',' (e.TermsR2))
+      >;
+}
+
+$ENTRY Generalization-Term {
+  t.Symbol t.Symbol, <IsSymbol t.Symbol> : True = t.Symbol;
+
+  t.Term1 t.Term2
+    , <IsSVarSubset t.Term1> : True
+    , <IsSVarSubset t.Term2> : True
+    = (TkVariable 's');
+
+  (Brackets e.BodyL) (Brackets e.BodyR)
+    = (Brackets <Generalization e.BodyL e.BodyR>);
+
+  (ADT-Brackets t.Name e.BodyL) (ADT-Brackets t.Name e.BodyR)
+    = (ADT-Brackets t.Name <Generalization e.BodyL e.BodyR>);
+
+  t.Term1 t.Term2 = (TkVariable 't');
+}
+
+GeneralizationInPairs {
+  (t.Term1 e.Rest1) (t.Term2 e.Rest2)
+    = <Generalization-Term t.Term1 t.Term2>
+      <GeneralizationInPairs (e.Rest1) (e.Rest2)>;
+
+  () () = /* пусто */;
+}
+
+GeneralizationInPairs-Left {
+  (t.Term1 e.Rest1) (t.Term2 e.Rest2)
+    = <Generalization-Term t.Term1 t.Term2>
+      <GeneralizationInPairs-Left (e.Rest1) (e.Rest2)>;
+
+  (e.Rest1) (e.Rest2) = /* пусто */;
+}
+
+GeneralizationInPairs-Right {
+  (e.Rest1 t.Term1) (e.Rest2 t.Term2)
+    = <GeneralizationInPairs-Right (e.Rest1) (e.Rest2)>
+      <Generalization-Term t.Term1 t.Term2>;
+
+  (e.Rest1) (e.Rest2) = /* пусто */;
+}
+
+IsSVarSubset {
+  t.Symbol, <IsSymbol t.Symbol> : True = True;
+  (TkVariable 's') = True;
+  (Closure e.Body) = True;
+
+  t.OtherTerm = False;
+}
+
+
+/*
+  Коллапс:
+  <Collapse t.Image> == e.Pattern
+
+  Скобочные термы (K: t′1…t’K) коллапсируют в (t1…tK), где внутренние
+    термы коллапсируют рекурсивно
+
+  Скобочные термы (MN: K, t′L1…t′LM, t′RN…t′R1) соответствуют семейству ЛСО.
+    Рекурсивно коллапсируют вложенные термы.
+    Среди этих образцов выбирается образец, обладающий наибольшей сложностью.
+    Результат - скобочный терм (tL1…tLM** e.X tRN**…tR1), являющийся ГСО.
+    Если несколько вариантов с одинаковой сложностью - выбираем произвольный
+*/
+$ENTRY Collapse {
+  (K ':' s.Num ',' (e.Terms)) = <Collapse-Terms e.Terms>;
+
+  (MN ':' s.Num ',' (e.Terms1) ',' (e.Terms2))
+    = <Collapse-Terms e.Terms1> : e.TermsC1
+    = <Collapse-Terms e.Terms2> : e.TermsC2
+    = <GlobalGenFromLocalGen
+        <LocalGen s.Num (e.TermsC1) (e.TermsC2)>
+      >;
+}
+
+Collapse-Terms {
+  e.Generalization = <Map &Collapse-Term e.Generalization>;
+}
+
+$ENTRY Collapse-Term {
+  t.Symbol, <IsSymbol t.Symbol> : True = t.Symbol;
+  (TkVariable 't') = (TkVariable 't');
+  (TkVariable 's') = (TkVariable 's');
+
+  (Brackets t.Image) = (Brackets <Collapse t.Image>);
+  (ADT-Brackets t.Name t.Image) = (ADT-Brackets t.Name <Collapse t.Image>);
+}
+
+/* Возвращает набор ЛСО (s.Complexity e.LocalGen)* */
+LocalGen {
+  s.Num (e.TermsL) (e.TermsR)
+    = <Lenw e.TermsR> : s.LenR e.Terms-R^
+    = <First <- s.Num s.LenR> e.TermsL> : (e.TermsL^) e.TermsL-Skipped
+    = <DoLocalGen ((e.TermsL) e.TermsL-Skipped) ((e.TermsR))>;
+}
+
+DoLocalGen {
+  ((e.TermsL) t.NextL e.TermsL-Skipped) (e.TermsR-Skipped (t.NextR e.TermsR))
+    = e.TermsL (TkVariable 'e') t.NextR e.TermsR : e.LocalGen
+    = (<CalcComplexity e.LocalGen> e.LocalGen) : t.Result
+    = t.Result
+      <DoLocalGen
+        ((e.TermsL t.NextL) e.TermsL-Skipped)
+        (e.TermsR-Skipped t.NextR (e.TermsR))
+      >;
+
+  ((e.TermsL)) (e.TermsR-Skipped (e.TermsR))
+    = e.TermsL (TkVariable 'e') e.TermsR : e.LocalGen
+    = (<CalcComplexity e.LocalGen> e.LocalGen);
+}
+
+/* Возвращает первый элемент с максимальным ключом */
+GlobalGenFromLocalGen {
+  t.Sentence e.OtherSentences
+    = <MapReduce
+        {
+          (s.NumAcc e.SentenceAcc) (s.NumNext e.SentenceNext)
+            = <Max s.NumAcc s.NumNext>
+            : {
+                s.NumAcc = (s.NumAcc e.SentenceAcc);
+                s.NumNext = (s.NumNext e.SentenceNext);
+              };
+        }
+        t.Sentence
+        e.OtherSentences
+      >
+    : (s.MaxNum e.Sentence^)
+    = e.Sentence;
+}
+
+/*
+  Вычисляет сложность выражения по формуле:
+  C(P) = n_t + 2*n_s + 3*n_X + 3*n_() − n_e + 1
+*/
+$ENTRY CalcComplexity {
+  t.Term e.Rest = <Add <CalcTermComplexity t.Term> <CalcComplexity e.Rest>>;
+  /* пусто */ = 1;
+}
+
+CalcTermComplexity {
+  (TkVariable 't') = 1;
+  (TkVariable 's') = 2;
+  (TkVariable 'e') = ('-' 1);
+
+  t.Symbol, <IsSymbol t.Symbol> : True = 3;
+
+  /* Прибавляем 2, а не 3, т.к. для вложенного выражения прибавится лишняя 1 */
+  (Brackets e.Terms) = <Add <CalcComplexity e.Terms> 2>;
+  (ADT-Brackets t.Name e.Terms) = <Add <CalcComplexity e.Terms> 2>;
+}

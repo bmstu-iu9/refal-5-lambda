@@ -35,6 +35,7 @@ copy ..\doc\*.pdf doc
 copy ..\doc\*.jpg doc
 md doc\OptPattern
 copy ..\doc\OptPattern\*.pdf doc\OptPattern
+copy ..\doc\OptPattern\*.md doc\OptPattern
 md doc\historical
 copy ..\doc\historical\*.txt doc\historical
 copy ..\doc\historical\*.pdf doc\historical
