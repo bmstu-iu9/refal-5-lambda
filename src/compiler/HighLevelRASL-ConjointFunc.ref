@@ -34,6 +34,7 @@ $ENTRY HighLevelRASL-Function-Conjoint {
         s.FnGenSubst s.FnGenResult
         (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize
         1 /* base num */
+        0 /* depth */
       >
     : s.MaxContextSize e.ResultCommands
 
@@ -55,7 +56,7 @@ $ENTRY HighLevelRASL-Function-Conjoint {
 
 FindDivisionAndGenerate {
   s.FnGenSubst s.FnGenResult
-  (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize s.BaseNum
+  (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize s.BaseNum s.Depth
 
     = <FindDivision e.SentencesWithSubst>
     : {
@@ -63,7 +64,7 @@ FindDivisionAndGenerate {
           = <GenerateGroupWithGCGSubst
               s.FnGenSubst s.FnGenResult
               (e.MarkedPattern) (e.FirstGroup)
-              s.ContextSize s.BaseNum
+              s.ContextSize s.BaseNum <Inc s.Depth>
               e.NewGCG-Subst
             >
           : s.FirstPartContext e.FirstPartCommands
@@ -71,7 +72,7 @@ FindDivisionAndGenerate {
           = <FindDivisionAndGenerate
               s.FnGenSubst s.FnGenResult
               (e.MarkedPattern) (e.SecondGroup)
-              s.ContextSize s.BaseNum
+              s.ContextSize s.BaseNum s.Depth
             >
           : s.SecondPartContext e.SecondPartCommands
 
@@ -83,7 +84,8 @@ FindDivisionAndGenerate {
         ForAllSentences (e.NewGCG-Subst) e.SentencesWithSubst^
           = <GenerateGroupWithGCGSubst
               s.FnGenSubst s.FnGenResult
-              (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize s.BaseNum
+              (e.MarkedPattern) (e.SentencesWithSubst)
+              s.ContextSize s.BaseNum s.Depth
               e.NewGCG-Subst
             >;
       }
@@ -91,21 +93,23 @@ FindDivisionAndGenerate {
 
 GenerateGroupWithGCGSubst {
   s.FnGenSubst s.FnGenResult
-  (e.MarkedPattern) ((e.SentenceWithSubst)) s.ContextSize s.BaseNum
+  (e.MarkedPattern) ((e.SentenceWithSubst)) s.ContextSize s.BaseNum s.Depth
   e.NewGCG-Subst
     = <GenerateSingleSentence
         s.FnGenSubst s.FnGenResult s.ContextSize (e.MarkedPattern)
-        e.SentenceWithSubst
+        s.Depth e.SentenceWithSubst
       >;
 
   s.FnGenSubst s.FnGenResult
-  (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize s.BaseNum
+  (e.MarkedPattern) (e.SentencesWithSubst) s.ContextSize s.BaseNum s.Depth
   e.NewGCG-Subst
 
-    = <EnumerateVars-Subst s.BaseNum e.NewGCG-Subst>
+    = <EnumerateVars-Subst s.BaseNum s.Depth e.NewGCG-Subst>
     : s.BaseNum^ e.NewGCG-Subst^
 
-    = <CodeForSubst s.FnGenSubst s.ContextSize (e.MarkedPattern) e.NewGCG-Subst>
+    = <CodeForSubst
+        s.FnGenSubst s.ContextSize (e.MarkedPattern) e.NewGCG-Subst s.Depth
+      >
     : s.ContextSize^ (e.Vars) (e.MarkedPattern^) e.GCG-Commands
 
     = <NarrowSentenceSubstitutions (e.NewGCG-Subst) e.SentencesWithSubst>
@@ -115,7 +119,7 @@ GenerateGroupWithGCGSubst {
         s.FnGenSubst s.FnGenResult
         (e.MarkedPattern)
         (e.SentencesWithSubst)
-        s.ContextSize s.BaseNum
+        s.ContextSize s.BaseNum s.Depth
       >
     : s.ContextSize^ e.Commands
 
@@ -123,11 +127,15 @@ GenerateGroupWithGCGSubst {
 }
 
 CodeForSubst {
-  s.FnGenSubst s.ContextSize (e.MarkedPattern) e.Substitute
+  s.FnGenSubst s.ContextSize (e.MarkedPattern) e.Substitute s.Depth
 
     = <ComposeVars (e.MarkedPattern) (e.Substitute)> : e.SubstsAndJunks
 
-    = <MakeSavers s.ContextSize e.SubstsAndJunks>
+    = s.Depth
+    : {
+        0 = s.ContextSize (/* no savers commands */) e.SubstsAndJunks;
+        s.Depth^ = <MakeSavers s.ContextSize e.SubstsAndJunks>;
+      }
     : s.ContextSize^ (e.CmdSaves) e.SubstsAndJunks^
 
     = <s.FnGenSubst
@@ -138,9 +146,11 @@ CodeForSubst {
 
 GenerateSingleSentence {
   s.FnGenSubst s.FnGenResult s.ContextSize (e.MarkedPattern)
-  (e.Substitute) e.Conditions (e.Result)
+  s.Depth (e.Substitute) e.Conditions (e.Result)
 
-    = <CodeForSubst s.FnGenSubst s.ContextSize (e.MarkedPattern) e.Substitute>
+    = <CodeForSubst
+        s.FnGenSubst s.ContextSize (e.MarkedPattern) e.Substitute s.Depth
+      >
     : s.ContextSize^ (e.Vars^) (e.MarkedPattern^) e.PatternCommands
 
     = <GenResult
@@ -190,7 +200,7 @@ EnumerateVarsRec {
 }
 
 EnumerateVars-Subst {
-  s.StartNumber e.Substitute
+  s.StartNumber s.Depth e.Substitute
     = <MapReduce
         {
           s.NextNumber (e.Value ':' (e.Var))
