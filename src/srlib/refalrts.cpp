@@ -795,10 +795,6 @@ refalrts::FnResult refalrts::recursive_call_main_loop(refalrts::VM *vm) {
   return vm->main_loop(rasl);
 }
 
-const refalrts::RefalIdentifier refalrts::idents[] = { 0 };
-const refalrts::RefalNumber refalrts::numbers[] = { 0 };
-const refalrts::StringItem refalrts::strings[] = { { "", 0 } };
-
 
 //==============================================================================
 

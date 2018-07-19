@@ -660,10 +660,6 @@ struct RASLFunction: public RefalFunction {
   }
 };
 
-extern const RefalIdentifier idents[];
-extern const RefalNumber numbers[];
-extern const StringItem strings[];
-
 class SwitchDefaultViolation {
   const char *m_filename;
   int m_line;
