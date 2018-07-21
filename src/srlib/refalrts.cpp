@@ -24,7 +24,7 @@
 //FROM refalrts-platform-specific
 #include "refalrts-platform-specific.h"
 
-static struct refalrts::Module g_module = { 0, 0, 0, 0, 0 };
+static struct refalrts::NativeModule g_module = { 0, 0, 0, 0, 0 };
 
 namespace refalrts {
 
@@ -631,7 +631,7 @@ void refalrts::read_performance_counters(
   vm->profiler()->read_counters(counters);
   vm->read_counters(counters);
   vm->allocator()->read_counters(counters);
-  vm->dynamic()->read_counters(counters);
+  vm->domain()->read_counters(counters);
 }
 
 void refalrts::stop_sentence(refalrts::VM *vm) {
@@ -669,20 +669,20 @@ void refalrts::debug_print_expr(
 // Идентификаторы
 
 refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
-  refalrts::Dynamic *dynamic, const char *name
+  refalrts::Domain *domain, const char *name
 ) {
   if (! name) {
     name = "";
   }
 
-  RefalIdentifier res = dynamic->lookup_ident(name);
+  RefalIdentifier res = domain->lookup_ident(name);
   if (! res) {
     size_t length = strlen(name);
     char *new_name = new char[length + 1];
     memcpy(new_name, name, length + 1);
 
     res = new RefalIdentDescr(new_name);
-    bool allocated = dynamic->register_ident(res);
+    bool allocated = domain->register_ident(res);
 
 #ifdef IDENTS_LIMIT
     if (! allocated) {
@@ -698,7 +698,7 @@ refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
 refalrts::RefalIdentifier refalrts::ident_implode(
   refalrts::VM *vm, const char *name
 ) {
-  return ident_implode(vm->dynamic(), name);
+  return ident_implode(vm->domain(), name);
 }
 
 refalrts::IdentReference::IdentReference(const char *name)
@@ -711,15 +711,15 @@ refalrts::IdentReference::IdentReference(const char *name)
 
 refalrts::RefalIdentifier
 refalrts::IdentReference::ref(refalrts::VM *vm) const {
-  return (*vm->dynamic())[*this];
+  return (*vm->domain())[*this];
 }
 
 //------------------------------------------------------------------------------
 
 // Функции
 
-void refalrts::RefalFunction::register_me(refalrts::Dynamic *dynamic) {
-  bool successed = dynamic->register_function(this);
+void refalrts::RefalFunction::register_me(refalrts::Domain *domain) {
+  bool successed = domain->register_function(this);
 
   if (! successed) {
     fprintf(
@@ -733,11 +733,11 @@ void refalrts::RefalFunction::register_me(refalrts::Dynamic *dynamic) {
 refalrts::RefalFunction *refalrts::RefalFunction::lookup(
   refalrts::VM *vm, const refalrts::RefalFuncName& name
 ) {
-  return vm->dynamic()->lookup_function(name);
+  return vm->domain()->lookup_function(name);
 }
 
 refalrts::FunctionTable::FunctionTable(
-  refalrts::Dynamic *dynamic,
+  refalrts::Domain *domain,
   refalrts::UInt32 cookie1, refalrts::UInt32 cookie2,
   refalrts::FunctionTableItem items[]
 )
@@ -745,7 +745,7 @@ refalrts::FunctionTable::FunctionTable(
   , cookie2(cookie2)
   , items(items)
 {
-  dynamic->register_(this);
+  domain->register_(this);
 }
 
 refalrts::ExternalReference::ExternalReference(
@@ -762,7 +762,7 @@ refalrts::ExternalReference::ExternalReference(
 
 refalrts::RefalFunction *
 refalrts::ExternalReference::ref(refalrts::VM *vm) const {
-  return (*vm->dynamic())[*this];
+  return (*vm->domain())[*this];
 }
 
 //------------------------------------------------------------------------------
@@ -795,7 +795,7 @@ void refalrts::SwitchDefaultViolation::print() {
 //==============================================================================
 
 void refalrts::at_exit(VM *vm, refalrts::AtExitCB callback, void *data) {
-  vm->dynamic()->at_exit(callback, data);
+  vm->domain()->at_exit(callback, data);
 }
 
 refalrts::GlobalRefBase::GlobalRefBase(size_t size)
@@ -805,11 +805,11 @@ refalrts::GlobalRefBase::GlobalRefBase(size_t size)
 }
 
 void *refalrts::GlobalRefBase::ptr(refalrts::VM *vm) {
-  return ptr(vm->dynamic());
+  return ptr(vm->domain());
 }
 
-void *refalrts::GlobalRefBase::ptr(refalrts::Dynamic *dynamic) {
-  return dynamic->global_variable(m_offset);
+void *refalrts::GlobalRefBase::ptr(refalrts::Domain *domain) {
+  return domain->global_variable(m_offset);
 }
 
 //==============================================================================
@@ -817,8 +817,8 @@ void *refalrts::GlobalRefBase::ptr(refalrts::Dynamic *dynamic) {
 int main(int argc, char **argv) {
   refalrts::Allocator allocator;
   refalrts::Profiler profiler;
-  refalrts::Dynamic dynamic(&g_module);
-  refalrts::VM vm(&allocator, &profiler, &dynamic);
+  refalrts::Domain domain(&g_module);
+  refalrts::VM vm(&allocator, &profiler, &domain);
 
 #ifdef ENABLE_DEBUGGER
   int debug_arg = refalrts::debugger::find_debugger_flag(argc, argv);
@@ -835,16 +835,16 @@ int main(int argc, char **argv) {
 
   refalrts::FnResult res;
   try {
-    dynamic.enumerate_blocks();
-    dynamic.load_native_identifiers();
-    dynamic.alloc_global_variables();
+    domain.enumerate_blocks();
+    domain.load_native_identifiers();
+    domain.alloc_global_variables();
 
-    unsigned unresolved = dynamic.find_unresolved_externals();
+    unsigned unresolved = domain.find_unresolved_externals();
     if (unresolved > 0) {
-      dynamic.free_global_variables();
-      dynamic.free_idents_table();
-      dynamic.free_funcs_table();
-      dynamic.cleanup_module();
+      domain.free_global_variables();
+      domain.free_idents_table();
+      domain.free_funcs_table();
+      domain.cleanup_module();
       fprintf(stderr, "Found %u unresolved externals\n", unresolved);
       return 157;
     }
@@ -864,14 +864,14 @@ int main(int argc, char **argv) {
     return 153;
   }
 
-  dynamic.perform_at_exit();
+  domain.perform_at_exit();
   profiler.end_profiler();
   vm.free_view_field();
   allocator.free_memory();
-  dynamic.free_global_variables();
-  dynamic.free_idents_table();
-  dynamic.free_funcs_table();
-  dynamic.cleanup_module();
+  domain.free_global_variables();
+  domain.free_idents_table();
+  domain.free_funcs_table();
+  domain.cleanup_module();
   vm.free_states_stack();
 
   fflush(stdout);

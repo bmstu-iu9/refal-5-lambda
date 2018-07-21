@@ -800,11 +800,11 @@ bool file_handle_left(
     );
 }
 
-void close_all_files_at_exit(refalrts::Dynamic *dynamic, void *) {
+void close_all_files_at_exit(refalrts::Domain *domain, void *) {
   for (size_t i = 0; i < cMaxFileHandles; ++i) {
-    if (g_file_handles.ref(dynamic, i) != 0) {
-      fclose(g_file_handles.ref(dynamic, i));
-      g_file_handles.ref(dynamic, i) = 0;    // на всякий случай
+    if (g_file_handles.ref(domain, i) != 0) {
+      fclose(g_file_handles.ref(domain, i));
+      g_file_handles.ref(domain, i) = 0;    // на всякий случай
     }
   }
 }
@@ -2868,8 +2868,8 @@ RndGen::UInt RndGen::next_in_range(RndGen::UInt max) {
 
 refalrts::GlobalRef<RndGen*> g_gen;
 
-void delete_gen(refalrts::Dynamic *dynamic, void *) {
-  delete g_gen.ref(dynamic);
+void delete_gen(refalrts::Domain *domain, void *) {
+  delete g_gen.ref(domain);
 }
 
 RndGen& gen(refalrts::VM *vm) {

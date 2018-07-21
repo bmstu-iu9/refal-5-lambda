@@ -18,7 +18,7 @@ namespace refalrts {
 // Использовать class, public и private нельзя — требуется статическая
 // инициализация:
 //   X x = { ... };
-struct Module {
+struct NativeModule {
   IdentReference *list_idents;
   unsigned int next_ident_id;
   ExternalReference *list_externals;
@@ -57,7 +57,7 @@ inline bool operator<(const RefalFuncName& lhs, const RefalFuncName& rhs) {
   }
 }
 
-class Dynamic {
+class Domain {
   struct ConstTable {
     UInt32 cookie1;
     UInt32 cookie2;
@@ -82,14 +82,14 @@ class Dynamic {
     void *data;
     AtExitListNode *next;
 
-    AtExitListNode(AtExitCB callback, void *data, Dynamic *dynamic)
-      : callback(callback), data(data), next(dynamic->m_at_exit_list)
+    AtExitListNode(AtExitCB callback, void *data, Domain *domain)
+      : callback(callback), data(data), next(domain->m_at_exit_list)
     {
-      dynamic->m_at_exit_list = this;
+      domain->m_at_exit_list = this;
     }
 
-    void call(Dynamic *dynamic) {
-      callback(dynamic, data);
+    void call(Domain *domain) {
+      callback(domain, data);
     }
   };
 
@@ -104,12 +104,12 @@ class Dynamic {
   IdentsMap m_idents_table;
   RefalIdentifier *m_native_identifiers;
   RefalFunction **m_native_externals;
-  Module *m_main_module;
+  NativeModule *m_main_module;
   AtExitListNode *m_at_exit_list;
   char *m_global_variables;
 
 public:
-  Dynamic(Module *main_module);
+  Domain(NativeModule *main_module);
 
   size_t idents_count();
 

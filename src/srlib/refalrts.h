@@ -7,7 +7,7 @@
 namespace refalrts {
 
 class VM;
-class Dynamic;
+class Domain;
 
 enum FnResult {
   cRecognitionImpossible = 0,
@@ -63,10 +63,10 @@ struct RefalFunction {
   const RASLCommand *rasl;
   RefalFuncName name;
 
-  RefalFunction(const RASLCommand rasl[], RefalFuncName name, Dynamic *dynamic)
+  RefalFunction(const RASLCommand rasl[], RefalFuncName name, Domain *domain)
     : rasl(rasl), name(name)
   {
-    register_me(dynamic);
+    register_me(domain);
   }
 
   static RefalFunction *lookup(VM *vm, const RefalFuncName& name);
@@ -78,7 +78,7 @@ struct RefalFunction {
   }
 
 private:
-  void register_me(Dynamic *dynamic);
+  void register_me(Domain *domain);
 };
 
 typedef UInt32 RefalNumber;
@@ -90,9 +90,9 @@ struct RefalNativeFunction: public RefalFunction {
   RefalNativeFunction(
     RefalFunctionPtr ptr,
     RefalFuncName name,
-    Dynamic *dynamic
+    Domain *domain
   )
-    : RefalFunction(run, name, dynamic), ptr(ptr)
+    : RefalFunction(run, name, domain), ptr(ptr)
   {
     /* пусто */
   }
@@ -104,8 +104,8 @@ struct RefalSwap: public RefalFunction {
   Iter head;
   Iter next_head;
 
-  RefalSwap(RefalFuncName name, Dynamic *dynamic)
-    : RefalFunction(run, name, dynamic), head(), next_head()
+  RefalSwap(RefalFuncName name, Domain *domain)
+    : RefalFunction(run, name, domain), head(), next_head()
   {
     /* пусто */
   }
@@ -114,8 +114,8 @@ struct RefalSwap: public RefalFunction {
 };
 
 struct RefalEmptyFunction: public RefalFunction {
-  RefalEmptyFunction(RefalFuncName name, Dynamic *dynamic)
-    : RefalFunction(run, name, dynamic)
+  RefalEmptyFunction(RefalFuncName name, Domain *domain)
+    : RefalFunction(run, name, domain)
   {
     /* пусто */
   }
@@ -124,8 +124,8 @@ struct RefalEmptyFunction: public RefalFunction {
 };
 
 struct RefalCondFunctionRasl: public RefalFunction {
-  RefalCondFunctionRasl(RefalFuncName name, Dynamic *dynamic)
-    : RefalFunction(run, name, dynamic)
+  RefalCondFunctionRasl(RefalFuncName name, Domain *domain)
+    : RefalFunction(run, name, domain)
   {
     /* пусто */
   }
@@ -134,8 +134,8 @@ struct RefalCondFunctionRasl: public RefalFunction {
 };
 
 struct RefalCondFunctionNative: public RefalFunction {
-  RefalCondFunctionNative(RefalFuncName name, Dynamic *dynamic)
-    : RefalFunction(run, name, dynamic)
+  RefalCondFunctionNative(RefalFuncName name, Domain *domain)
+    : RefalFunction(run, name, domain)
   {
     /* пусто */
   }
@@ -162,14 +162,14 @@ public:
     return m_name;
   }
 
-  static RefalIdentifier implode(Dynamic *dynamic, const char *name);
+  static RefalIdentifier implode(Domain *domain, const char *name);
 
 private:
   const char *m_name;
 };
 
-inline RefalIdentifier ident_implode(Dynamic *dynamic, const char *name) {
-  return RefalIdentDescr::implode(dynamic, name);
+inline RefalIdentifier ident_implode(Domain *domain, const char *name) {
+  return RefalIdentDescr::implode(domain, name);
 }
 
 RefalIdentifier ident_implode(VM *vm, const char *name);
@@ -382,7 +382,7 @@ struct FunctionTable {
   FunctionTable *next;
 
   FunctionTable(
-    Dynamic *dynamic, UInt32 cookie1, UInt32 cookie2, FunctionTableItem *items
+    Domain *domain, UInt32 cookie1, UInt32 cookie2, FunctionTableItem *items
   );
 };
 
@@ -648,9 +648,9 @@ struct RASLFunction: public RefalFunction {
     const RefalNumber *numbers,
     const StringItem *strings,
     const char *filename,
-    Dynamic *dynamic
+    Domain *domain
   )
-    : RefalFunction(rasl, name, dynamic)
+    : RefalFunction(rasl, name, domain)
     , functions(functions)
     , idents(idents)
     , numbers(numbers)
@@ -730,7 +730,7 @@ enum BlockType { /*BlockTypeNumber:cBlockType;*/
 };
 
 
-typedef void (*AtExitCB)(Dynamic *dynamic, void *data);
+typedef void (*AtExitCB)(Domain *domain, void *data);
 
 void at_exit(VM *vm, AtExitCB callback, void *data);
 
@@ -742,7 +742,7 @@ protected:
   GlobalRefBase(size_t size);
 
   void *ptr(VM *vm);
-  void *ptr(Dynamic *dynamic);
+  void *ptr(Domain *domain);
 };
 
 template <typename T>
@@ -766,8 +766,8 @@ public:
   T& ref(VM *vm, size_t index = 0) {
     return static_cast<T*>(ptr(vm))[index];
   }
-  T& ref(Dynamic *dynamic, size_t index = 0) {
-    return static_cast<T*>(ptr(dynamic))[index];
+  T& ref(Domain *domain, size_t index = 0) {
+    return static_cast<T*>(ptr(domain))[index];
   }
 };
 

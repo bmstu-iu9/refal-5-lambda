@@ -16,7 +16,7 @@ namespace refalrts {
 
 class Allocator;
 class Profiler;
-class Dynamic;
+class Domain;
 
 class VM {
   struct StateRefalMachine;
@@ -136,10 +136,10 @@ private:
 
   Allocator *m_allocator;
   Profiler *m_profiler;
-  Dynamic *m_dynamic;
+  Domain *m_domain;
 
 public:
-  VM(Allocator *allocator, Profiler *profiler, Dynamic *dynamic);
+  VM(Allocator *allocator, Profiler *profiler, Domain *domain);
 
   int get_return_code() const {
     return m_ret_code;
@@ -200,8 +200,8 @@ public:
     return m_profiler;
   }
 
-  Dynamic *dynamic() const {
-    return m_dynamic;
+  Domain *domain() const {
+    return m_domain;
   }
 
 public:
@@ -1023,7 +1023,7 @@ public:
 
 };
 
-inline VM::VM(Allocator *allocator, Profiler *profiler, Dynamic *dynamic)
+inline VM::VM(Allocator *allocator, Profiler *profiler, Domain *domain)
   : m_left_swap_ptr(& m_last_marker)
   , m_ret_code(0)
   , m_argv(0)
@@ -1039,7 +1039,7 @@ inline VM::VM(Allocator *allocator, Profiler *profiler, Dynamic *dynamic)
   , m_create_debugger(create_null_debugger)
   , m_allocator(allocator)
   , m_profiler(profiler)
-  , m_dynamic(dynamic)
+  , m_domain(domain)
 {
   /* пусто */
 }

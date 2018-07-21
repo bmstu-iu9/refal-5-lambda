@@ -14,7 +14,7 @@
 // Динамическое связывание
 //==============================================================================
 
-refalrts::Dynamic::Dynamic(Module *main_module)
+refalrts::Domain::Domain(NativeModule *main_module)
   : m_unresolved_func_tables(0)
   , m_funcs_table()
   , m_tables(0)
@@ -32,11 +32,11 @@ refalrts::Dynamic::Dynamic(Module *main_module)
 // Идентификаторы
 //------------------------------------------------------------------------------
 
-size_t refalrts::Dynamic::idents_count() {
+size_t refalrts::Domain::idents_count() {
   return m_idents_table.size();
 }
 
-void refalrts::Dynamic::free_idents_table() {
+void refalrts::Domain::free_idents_table() {
 #ifndef DONT_PRINT_STATISTICS
   fprintf(
     stderr, "Identifiers allocated: %lu\n",
@@ -57,7 +57,7 @@ void refalrts::Dynamic::free_idents_table() {
 
 
 refalrts::RefalIdentifier
-refalrts::Dynamic::lookup_ident(const char *name) {
+refalrts::Domain::lookup_ident(const char *name) {
   IdentsMap::iterator p = m_idents_table.find(StringRef(name));
 
   if (p != m_idents_table.end()) {
@@ -67,7 +67,7 @@ refalrts::Dynamic::lookup_ident(const char *name) {
   }
 }
 
-bool refalrts::Dynamic::register_ident(RefalIdentifier ident) {
+bool refalrts::Domain::register_ident(RefalIdentifier ident) {
 #ifdef IDENTS_LIMIT
   if (idents_count() >= IDENTS_LIMIT) {
     return false;
@@ -80,7 +80,7 @@ bool refalrts::Dynamic::register_ident(RefalIdentifier ident) {
   return res.second;
 }
 
-void refalrts::Dynamic::load_native_identifiers() {
+void refalrts::Domain::load_native_identifiers() {
   m_native_identifiers = malloc<RefalIdentifier>(m_main_module->next_ident_id);
 
   for (IdentReference *p = m_main_module->list_idents; p != 0; p = p->next) {
@@ -106,7 +106,7 @@ void refalrts::Dynamic::load_native_identifiers() {
 //------------------------------------------------------------------------------
 
 refalrts::RefalFunction *
-refalrts::Dynamic::lookup_function(const refalrts::RefalFuncName& name) {
+refalrts::Domain::lookup_function(const refalrts::RefalFuncName& name) {
   FuncsMap::iterator p = m_funcs_table.find(name);
 
   if (p != m_funcs_table.end()) {
@@ -116,13 +116,13 @@ refalrts::Dynamic::lookup_function(const refalrts::RefalFuncName& name) {
   }
 }
 
-bool refalrts::Dynamic::register_function(refalrts::RefalFunction *func) {
+bool refalrts::Domain::register_function(refalrts::RefalFunction *func) {
   FuncsMap::value_type new_value(func->name, func);
   std::pair<FuncsMap::iterator, bool> res = m_funcs_table.insert(new_value);
   return res.second;
 }
 
-unsigned refalrts::Dynamic::find_unresolved_externals() {
+unsigned refalrts::Domain::find_unresolved_externals() {
   unsigned unresolved = 0;
 
   while (m_unresolved_func_tables != 0) {
@@ -179,7 +179,7 @@ unsigned refalrts::Dynamic::find_unresolved_externals() {
   return unresolved;
 }
 
-void refalrts::Dynamic::free_funcs_table() {
+void refalrts::Domain::free_funcs_table() {
   free(m_native_externals);
   while (m_funcs_table.size() > 0) {
     FuncsMap::iterator p = m_funcs_table.begin();
@@ -195,7 +195,7 @@ void refalrts::Dynamic::free_funcs_table() {
 // Загружаемый модуль
 //------------------------------------------------------------------------------
 
-bool refalrts::Dynamic::seek_rasl_signature(FILE *stream) {
+bool refalrts::Domain::seek_rasl_signature(FILE *stream) {
   int seek_res = fseek(stream, 0L, SEEK_END);
   if (seek_res != 0) {
     fprintf(stderr, "INTERNAL ERROR: can't seek in module\n");
@@ -242,7 +242,7 @@ bool refalrts::Dynamic::seek_rasl_signature(FILE *stream) {
   return found;
 }
 
-const char *refalrts::Dynamic::read_asciiz(FILE *stream) {
+const char *refalrts::Domain::read_asciiz(FILE *stream) {
   enum { cINC_SIZE = 20 };
 
   size_t buflen = cINC_SIZE;
@@ -276,7 +276,7 @@ const char *refalrts::Dynamic::read_asciiz(FILE *stream) {
 }
 
 refalrts::RefalFuncName
-refalrts::Dynamic::ConstTable::make_name(const char *name) const {
+refalrts::Domain::ConstTable::make_name(const char *name) const {
   char type = name[0];
   const char *proper_name = name + 1;
 
@@ -288,7 +288,7 @@ refalrts::Dynamic::ConstTable::make_name(const char *name) const {
   }
 }
 
-void refalrts::Dynamic::enumerate_blocks() {
+void refalrts::Domain::enumerate_blocks() {
   char module_name[api::cModuleNameBufferLen];
 
   bool successed = api::get_main_module_name(module_name);
@@ -446,7 +446,7 @@ void refalrts::Dynamic::enumerate_blocks() {
           read = fread(&offset, sizeof(offset), 1, stream);
           assert(read == 1);
 
-          RASLFunction *result = Dynamic::malloc<RASLFunction>();
+          RASLFunction *result = Domain::malloc<RASLFunction>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RASLFunction(
@@ -495,7 +495,7 @@ void refalrts::Dynamic::enumerate_blocks() {
           // TODO: Сообщение об ошибке
           assert(ref != 0);
 
-          RefalNativeFunction *result = Dynamic::malloc<RefalNativeFunction>();
+          RefalNativeFunction *result = Domain::malloc<RefalNativeFunction>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalNativeFunction(
@@ -509,7 +509,7 @@ void refalrts::Dynamic::enumerate_blocks() {
           const char *name = read_asciiz(stream);
           assert(name);
 
-          RefalEmptyFunction *result = Dynamic::malloc<RefalEmptyFunction>();
+          RefalEmptyFunction *result = Domain::malloc<RefalEmptyFunction>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalEmptyFunction(table->make_name(name), this);
@@ -521,7 +521,7 @@ void refalrts::Dynamic::enumerate_blocks() {
           const char *name = read_asciiz(stream);
           assert(name);
 
-          RefalSwap *result = Dynamic::malloc<RefalSwap>();
+          RefalSwap *result = Domain::malloc<RefalSwap>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalSwap(table->make_name(name), this);
@@ -536,7 +536,7 @@ void refalrts::Dynamic::enumerate_blocks() {
           const char *name = read_asciiz(stream);
           assert(name);
 
-          RefalCondFunctionRasl *result = Dynamic::malloc<RefalCondFunctionRasl>();
+          RefalCondFunctionRasl *result = Domain::malloc<RefalCondFunctionRasl>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalCondFunctionRasl(table->make_name(name), this);
@@ -548,7 +548,7 @@ void refalrts::Dynamic::enumerate_blocks() {
           const char *name = read_asciiz(stream);
           assert(name);
 
-          RefalCondFunctionNative *result = Dynamic::malloc<RefalCondFunctionNative>();
+          RefalCondFunctionNative *result = Domain::malloc<RefalCondFunctionNative>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalCondFunctionNative(table->make_name(name), this);
@@ -563,7 +563,7 @@ void refalrts::Dynamic::enumerate_blocks() {
   fclose(stream);
 }
 
-void refalrts::Dynamic::cleanup_module() {
+void refalrts::Domain::cleanup_module() {
   while (m_tables != 0) {
     ConstTable *next = m_tables->next;
 
@@ -586,12 +586,12 @@ void refalrts::Dynamic::cleanup_module() {
   }
 }
 
-void refalrts::Dynamic::read_counters(unsigned long counters[]) {
+void refalrts::Domain::read_counters(unsigned long counters[]) {
   counters[cPerformanceCounter_IdentsAllocated] =
     static_cast<unsigned long>(idents_count());
 }
 
-void refalrts::Dynamic::at_exit(refalrts::AtExitCB callback, void *data) {
+void refalrts::Domain::at_exit(refalrts::AtExitCB callback, void *data) {
   AtExitListNode *p = m_at_exit_list;
   while (p != 0 && (p->callback != callback || p->data != data)) {
     p = p->next;
@@ -602,7 +602,7 @@ void refalrts::Dynamic::at_exit(refalrts::AtExitCB callback, void *data) {
   }
 }
 
-void refalrts::Dynamic::perform_at_exit() {
+void refalrts::Domain::perform_at_exit() {
   while (m_at_exit_list != 0) {
     AtExitListNode *current = m_at_exit_list;
     m_at_exit_list = m_at_exit_list->next;
@@ -611,11 +611,11 @@ void refalrts::Dynamic::perform_at_exit() {
   }
 }
 
-void refalrts::Dynamic::alloc_global_variables() {
+void refalrts::Domain::alloc_global_variables() {
   m_global_variables = malloc<char>(m_main_module->global_variables_memory);
   memset(m_global_variables, '\0', m_main_module->global_variables_memory);
 }
 
-void refalrts::Dynamic::free_global_variables() {
+void refalrts::Domain::free_global_variables() {
   free(m_global_variables);
 }

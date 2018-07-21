@@ -96,7 +96,7 @@ void print_error_message(
     case refalrts::cIdentTableLimit:
       fprintf(
         stream, "\nIDENTS TABLE OVERFLOW (max %lu)\n\n",
-        static_cast<unsigned long>(vm->dynamic()->idents_count())
+        static_cast<unsigned long>(vm->domain()->idents_count())
       );
       break;
 
