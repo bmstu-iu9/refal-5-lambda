@@ -817,7 +817,7 @@ void *refalrts::GlobalRefBase::ptr(refalrts::Domain *domain) {
 int main(int argc, char **argv) {
   refalrts::Allocator allocator;
   refalrts::Profiler profiler;
-  refalrts::Domain domain(&g_module);
+  refalrts::Domain domain;
   refalrts::VM vm(&allocator, &profiler, &domain);
 
 #ifdef ENABLE_DEBUGGER
@@ -835,17 +835,10 @@ int main(int argc, char **argv) {
 
   refalrts::FnResult res;
   try {
-    domain.enumerate_blocks();
-    domain.load_native_identifiers();
-    domain.alloc_global_variables();
+    bool successed = domain.load_native_module(&g_module);
 
-    unsigned unresolved = domain.find_unresolved_externals();
-    if (unresolved > 0) {
-      domain.free_global_variables();
-      domain.free_idents_table();
-      domain.free_funcs_table();
-      domain.cleanup_module();
-      fprintf(stderr, "Found %u unresolved externals\n", unresolved);
+    if (! successed) {
+      domain.unload();
       return 157;
     }
 
@@ -868,10 +861,7 @@ int main(int argc, char **argv) {
   profiler.end_profiler();
   vm.free_view_field();
   allocator.free_memory();
-  domain.free_global_variables();
-  domain.free_idents_table();
-  domain.free_funcs_table();
-  domain.cleanup_module();
+  domain.unload();
   vm.free_states_stack();
 
   fflush(stdout);

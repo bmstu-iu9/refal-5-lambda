@@ -14,18 +14,42 @@
 // Динамическое связывание
 //==============================================================================
 
-refalrts::Domain::Domain(NativeModule *main_module)
+refalrts::Domain::Domain()
   : m_unresolved_func_tables(0)
   , m_funcs_table()
   , m_tables(0)
   , m_idents_table()
   , m_native_identifiers(0)
   , m_native_externals(0)
-  , m_main_module(main_module)
+  , m_main_module(0)
   , m_at_exit_list(0)
   , m_global_variables(0)
 {
   /* пусто */
+}
+
+bool refalrts::Domain::load_native_module(NativeModule *main_module) {
+  m_main_module = main_module;
+
+  enumerate_blocks();
+  load_native_identifiers();
+  alloc_global_variables();
+
+  unsigned unresolved = find_unresolved_externals();
+
+  if (unresolved > 0) {
+    fprintf(stderr, "Found %u unresolved externals\n", unresolved);
+    return false;
+  }
+
+  return true;
+}
+
+void refalrts::Domain::unload() {
+  free_global_variables();
+  free_idents_table();
+  free_funcs_table();
+  cleanup_module();
 }
 
 //------------------------------------------------------------------------------
