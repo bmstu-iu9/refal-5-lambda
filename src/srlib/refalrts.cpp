@@ -719,29 +719,21 @@ refalrts::IdentReference::ref(refalrts::VM *vm) const {
 // Функции
 
 void refalrts::RefalFunction::register_me(refalrts::Dynamic *dynamic) {
-  Dynamic::FuncHashNode *node = dynamic->funcs_table().alloc(name);
+  bool successed = dynamic->register_function(this);
 
-  if (node->function != 0) {
+  if (! successed) {
     fprintf(
       stderr, "INTERNAL ERROR: function redeclared: %s#%u:%u\n",
       name.name, name.cookie1, name.cookie2
     );
     exit(156);
   }
-
-  node->function = this;
 }
 
 refalrts::RefalFunction *refalrts::RefalFunction::lookup(
   refalrts::VM *vm, const refalrts::RefalFuncName& name
 ) {
-  Dynamic::FuncHashNode *node = vm->dynamic()->funcs_table().lookup(name);
-
-  if (node) {
-    return node->function;
-  } else {
-    return 0;
-  }
+  return vm->dynamic()->lookup_function(name);
 }
 
 refalrts::FunctionTable::FunctionTable(

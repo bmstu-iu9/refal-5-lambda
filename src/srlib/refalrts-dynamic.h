@@ -43,6 +43,20 @@ struct StringRef {
   const char *str;
 };
 
+inline bool operator<(const RefalFuncName& lhs, const RefalFuncName& rhs) {
+  if (lhs.cookie1 < rhs.cookie1) {
+    return true;
+  } else if (lhs.cookie1 > rhs.cookie1) {
+    return false;
+  } else if (lhs.cookie2 < rhs.cookie2) {
+    return true;
+  } else if (lhs.cookie2 > rhs.cookie2) {
+    return false;
+  } else {
+    return strcmp(lhs.name, rhs.name) < 0;
+  }
+}
+
 class Dynamic {
 public:
   static UInt32 one_at_a_time(UInt32 init, const char *bytes, size_t length);
@@ -93,26 +107,6 @@ public:
     size_t m_count;
   };
 
-  struct FuncHashNode {
-    RefalFunction *function;
-
-    FuncHashNode()
-      : function(0)
-    {
-      /* пусто */
-    }
-
-    void cleanup() {
-      // Деструкторов (в т.ч. неявных в функциях нет),
-      // память выделялась только malloc’ом, поэтому освобождаем free()
-      free(function);
-    }
-
-    RefalFuncName key() const {
-      return function->name;
-    }
-  };
-
 private:
   struct ConstTable {
     UInt32 cookie1;
@@ -151,10 +145,11 @@ private:
 
   friend struct AtExitListNode;
 
+  typedef std::map<RefalFuncName, RefalFunction*> FuncsMap;
   typedef std::map<StringRef, RefalIdentifier> IdentsMap;
 
   struct FunctionTable *m_unresolved_func_tables;
-  DynamicHash<RefalFuncName, FuncHashNode> *m_funcs_table;
+  FuncsMap m_funcs_table;
   struct ConstTable *m_tables;
   IdentsMap m_idents_table;
   RefalIdentifier *m_native_identifiers;
@@ -178,7 +173,9 @@ public:
     return m_native_identifiers[ref.id];
   }
 
-  DynamicHash<RefalFuncName, FuncHashNode>& funcs_table();
+  RefalFunction *lookup_function(const RefalFuncName& name);
+  bool register_function(RefalFunction *func);
+
   unsigned find_unresolved_externals();
   void free_funcs_table();
 
@@ -344,28 +341,5 @@ void refalrts::Dynamic::DynamicHash<Key, Value>::rehash() {
   m_table_power = new_table_power;
   m_table = new_table;
 }
-
-//------------------------------------------------------------------------------
-// Функции
-//------------------------------------------------------------------------------
-
-namespace refalrts {
-
-template <>
-struct Dynamic::HashKeyTraits<refalrts::RefalFuncName> {
-  static UInt32 hash(const RefalFuncName& name) {
-    size_t length = name.name ? strlen(name.name) : 0;
-    return one_at_a_time(name.cookie1 ^ name.cookie2, name.name, length);
-  }
-
-  static bool equal(const RefalFuncName& left, const RefalFuncName& right) {
-    return left.cookie1 == right.cookie1
-      && left.cookie2 == right.cookie2
-      && strcmp(left.name, right.name) == 0;
-  }
-};
-
-}  // namespace refalrts
-
 
 #endif  // RefalRTS_DYNAMIC_H_

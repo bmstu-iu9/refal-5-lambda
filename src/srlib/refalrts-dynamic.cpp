@@ -16,7 +16,7 @@
 
 refalrts::Dynamic::Dynamic(Module *main_module)
   : m_unresolved_func_tables(0)
-  , m_funcs_table(0)
+  , m_funcs_table()
   , m_tables(0)
   , m_idents_table()
   , m_native_identifiers(0)
@@ -128,15 +128,21 @@ void refalrts::Dynamic::load_native_identifiers() {
 // Функции
 //------------------------------------------------------------------------------
 
-refalrts::Dynamic::DynamicHash<
-  refalrts::RefalFuncName, refalrts::Dynamic::FuncHashNode
->&
-refalrts::Dynamic::funcs_table() {
-  if (m_funcs_table == 0) {
-    m_funcs_table = new Dynamic::DynamicHash<RefalFuncName, FuncHashNode>;
-  }
+refalrts::RefalFunction *
+refalrts::Dynamic::lookup_function(const refalrts::RefalFuncName& name) {
+  FuncsMap::iterator p = m_funcs_table.find(name);
 
-  return *m_funcs_table;
+  if (p != m_funcs_table.end()) {
+    return p->second;
+  } else {
+    return 0;
+  }
+}
+
+bool refalrts::Dynamic::register_function(refalrts::RefalFunction *func) {
+  FuncsMap::value_type new_value(func->name, func);
+  std::pair<FuncsMap::iterator, bool> res = m_funcs_table.insert(new_value);
+  return res.second;
 }
 
 unsigned refalrts::Dynamic::find_unresolved_externals() {
@@ -158,9 +164,9 @@ unsigned refalrts::Dynamic::find_unresolved_externals() {
       }
 
       RefalFuncName name(str_name + 1, cookie1, cookie2);
-      FuncHashNode *node = funcs_table().lookup(name);
-      if (node != 0) {
-        items[i].function = node->function;
+      RefalFunction *function = lookup_function(name);
+      if (function) {
+        items[i].function = function;
       } else {
         fprintf(
           stderr, "INTERNAL ERROR: unresolved external %s#%u:%u\n",
@@ -180,10 +186,10 @@ unsigned refalrts::Dynamic::find_unresolved_externals() {
     er = er->next
   ) {
     RefalFuncName name(er->name, er->cookie1, er->cookie2);
-    FuncHashNode *node = funcs_table().lookup(name);
-    if (node != 0) {
+    RefalFunction *function = lookup_function(name);
+    if (function) {
       assert(er->id < m_main_module->next_external_id);
-      m_native_externals[er->id] = node->function;
+      m_native_externals[er->id] = function;
     } else {
       fprintf(
         stderr, "INTERNAL ERROR: unresolved external %s#%u:%u\n",
@@ -198,7 +204,14 @@ unsigned refalrts::Dynamic::find_unresolved_externals() {
 
 void refalrts::Dynamic::free_funcs_table() {
   free(m_native_externals);
-  delete m_funcs_table;
+  while (m_funcs_table.size() > 0) {
+    FuncsMap::iterator p = m_funcs_table.begin();
+    RefalFunction *function = p->second;
+    m_funcs_table.erase(p);
+    // Деструкторов (в т.ч. неявных в функциях нет),
+    // память выделялась только malloc’ом, поэтому освобождаем free()
+    free(function);
+  }
 }
 
 //------------------------------------------------------------------------------
