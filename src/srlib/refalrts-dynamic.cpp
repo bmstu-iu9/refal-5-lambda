@@ -29,29 +29,6 @@ refalrts::Dynamic::Dynamic(Module *main_module)
 }
 
 //------------------------------------------------------------------------------
-// Хеш-таблица
-//------------------------------------------------------------------------------
-
-refalrts::UInt32 refalrts::Dynamic::one_at_a_time(
-  UInt32 init, const char *bytes, size_t length
-) {
-  // Хеш-функция Дженкинса one_at_a_time.
-  // Исходный код: http://www.burtleburtle.net/bob/hash/doobs.html
-  UInt32 hash = init;
-  for (size_t i = 0; i < length; ++i)
-  {
-    unsigned char byte = static_cast<unsigned char>(bytes[i]);
-    hash += byte;
-    hash += (hash << 10);
-    hash ^= (hash >> 6);
-  }
-  hash += (hash << 3);
-  hash ^= (hash >> 11);
-  hash += (hash << 15);
-  return hash;
-}
-
-//------------------------------------------------------------------------------
 // Идентификаторы
 //------------------------------------------------------------------------------
 
