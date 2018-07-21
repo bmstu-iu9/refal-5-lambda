@@ -674,30 +674,25 @@ refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
   if (! name) {
     name = "";
   }
-  Dynamic::IdentHashNode *value = dynamic->alloc_ident_node(name);
 
-#ifdef IDENTS_LIMIT
-  if (! value) {
-    return 0;
-  }
-#else
-  assert(value != 0);
-#endif // ifdef IDENTS_LIMIT
-
-  if (value->ident.m_name == 0) {
-    if (! name) {
-      name = "";
-    }
-
+  RefalIdentifier res = dynamic->lookup_ident(name);
+  if (! res) {
     size_t length = strlen(name);
     char *new_name = new char[length + 1];
     memcpy(new_name, name, length + 1);
 
-    value->ident.m_name = new_name;
-    value->nonstatic_origin = new_name;
-  }
+    res = new RefalIdentDescr(new_name);
+    bool allocated = dynamic->register_ident(res);
 
-  return &value->ident;
+#ifdef IDENTS_LIMIT
+    if (! allocated) {
+      return 0;
+    }
+#else
+    assert(allocated != 0);
+#endif // ifdef IDENTS_LIMIT
+  }
+  return res;
 }
 
 refalrts::RefalIdentifier refalrts::ident_implode(

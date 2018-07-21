@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <string.h>
+#include <utility>
 
 #include "refalrts-dynamic.h"
 
@@ -17,7 +18,7 @@ refalrts::Dynamic::Dynamic(Module *main_module)
   : m_unresolved_func_tables(0)
   , m_funcs_table(0)
   , m_tables(0)
-  , m_idents_table(0)
+  , m_idents_table()
   , m_native_identifiers(0)
   , m_native_externals(0)
   , m_main_module(main_module)
@@ -54,17 +55,8 @@ refalrts::UInt32 refalrts::Dynamic::one_at_a_time(
 // Идентификаторы
 //------------------------------------------------------------------------------
 
-refalrts::Dynamic::DynamicHash<const char *, refalrts::Dynamic::IdentHashNode>&
-refalrts::Dynamic::idents_table() {
-  if (m_idents_table == 0) {
-    m_idents_table = new Dynamic::DynamicHash<const char *, IdentHashNode>;
-  }
-
-  return *m_idents_table;
-}
-
 size_t refalrts::Dynamic::idents_count() {
-  return idents_table().count();
+  return m_idents_table.size();
 }
 
 void refalrts::Dynamic::free_idents_table() {
@@ -76,18 +68,39 @@ void refalrts::Dynamic::free_idents_table() {
 #endif // ifndef DONT_PRINT_STATISTICS
 
   free(m_native_identifiers);
-  delete m_idents_table;
+  while (m_idents_table.size() > 0) {
+    IdentsMap::iterator p = m_idents_table.begin();
+    StringRef name = p->first;
+    RefalIdentifier ident = p->second;
+    m_idents_table.erase(p);
+    delete[] name.str;
+    delete ident;
+  }
 }
 
-refalrts::Dynamic::IdentHashNode *refalrts::Dynamic::alloc_ident_node(
-  const char *name
-) {
-#ifdef IDENTS_LIMIT
-  if (idents_count() >= IDENTS_LIMIT) {
+
+refalrts::RefalIdentifier
+refalrts::Dynamic::lookup_ident(const char *name) {
+  IdentsMap::iterator p = m_idents_table.find(StringRef(name));
+
+  if (p != m_idents_table.end()) {
+    return p->second;
+  } else {
     return 0;
   }
+}
+
+bool refalrts::Dynamic::register_ident(RefalIdentifier ident) {
+#ifdef IDENTS_LIMIT
+  if (idents_count() >= IDENTS_LIMIT) {
+    return false;
+  }
 #endif // ifdef IDENTS_LIMIT
-  return idents_table().alloc(name);
+
+  IdentsMap::value_type new_value(StringRef(ident->name()), ident);
+  std::pair<IdentsMap::iterator, bool> res = m_idents_table.insert(new_value);
+  assert(res.second);
+  return res.second;
 }
 
 void refalrts::Dynamic::load_native_identifiers() {

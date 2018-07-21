@@ -150,13 +150,14 @@ class RefalIdentDescr {
   // Запрет копирования
   RefalIdentDescr(const RefalIdentDescr&);
   RefalIdentDescr& operator=(const RefalIdentDescr&);
-public:
-  RefalIdentDescr()
-    : m_name(0)
+
+  RefalIdentDescr(const char *name)
+    : m_name(name)
   {
     /* пусто */
   }
 
+public:
   const char *name() const {
     return m_name;
   }

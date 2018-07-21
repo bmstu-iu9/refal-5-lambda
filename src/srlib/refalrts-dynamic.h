@@ -1,6 +1,7 @@
 #ifndef RefalRTS_DYNAMIC_H_
 #define RefalRTS_DYNAMIC_H_
 
+#include <map>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,6 +24,23 @@ struct Module {
   ExternalReference *list_externals;
   unsigned int next_external_id;
   size_t global_variables_memory;
+};
+
+struct StringRef {
+  explicit StringRef(const char *str = "")
+    : str(str ? str : "")
+  {
+    /* пусто */
+  }
+
+  // Конструктор копирования создаётся компилятором
+  // Оператор присваивания создаётся компилятором
+
+  bool operator<(const StringRef& other) const {
+    return strcmp(str, other.str) < 0;
+  }
+
+  const char *str;
 };
 
 class Dynamic {
@@ -73,28 +91,6 @@ public:
     Node **m_table;
     unsigned int m_table_power;
     size_t m_count;
-  };
-
-  struct IdentHashNode {
-    RefalIdentDescr ident;
-    const char *nonstatic_origin;
-
-    IdentHashNode()
-      : ident()
-      , nonstatic_origin(0)
-    {
-      /* пусто */
-    }
-
-    void cleanup() {
-      if (nonstatic_origin) {
-        delete [] nonstatic_origin;
-      }
-    };
-
-    const char *key() const {
-      return ident.name();
-    }
   };
 
   struct FuncHashNode {
@@ -155,10 +151,12 @@ private:
 
   friend struct AtExitListNode;
 
+  typedef std::map<StringRef, RefalIdentifier> IdentsMap;
+
   struct FunctionTable *m_unresolved_func_tables;
   DynamicHash<RefalFuncName, FuncHashNode> *m_funcs_table;
   struct ConstTable *m_tables;
-  DynamicHash<const char *, IdentHashNode> *m_idents_table;
+  IdentsMap m_idents_table;
   RefalIdentifier *m_native_identifiers;
   RefalFunction **m_native_externals;
   Module *m_main_module;
@@ -168,12 +166,12 @@ private:
 public:
   Dynamic(Module *main_module);
 
-  DynamicHash<const char *, IdentHashNode>& idents_table();
-
   size_t idents_count();
 
   void free_idents_table();
-  IdentHashNode *alloc_ident_node(const char *name);
+
+  RefalIdentifier lookup_ident(const char *name);
+  bool register_ident(RefalIdentifier ident);
 
   void load_native_identifiers();
   RefalIdentifier operator[](const IdentReference& ref) const {
@@ -346,26 +344,6 @@ void refalrts::Dynamic::DynamicHash<Key, Value>::rehash() {
   m_table_power = new_table_power;
   m_table = new_table;
 }
-
-//------------------------------------------------------------------------------
-// Идентификаторы
-//------------------------------------------------------------------------------
-
-namespace refalrts {
-
-template <>
-struct Dynamic::HashKeyTraits<const char*> {
-  static UInt32 hash(const char *name) {
-    size_t length = name ? strlen(name) : 0;
-    return one_at_a_time(0, name, length);
-  }
-
-  static bool equal(const char *left, const char *right) {
-    return strcmp(left, right) == 0;
-  }
-};
-
-}  // namespace refalrts
 
 //------------------------------------------------------------------------------
 // Функции
