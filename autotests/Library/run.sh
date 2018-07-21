@@ -74,7 +74,8 @@ run_all_tests() {
     Library-FWriteLine-0-Fail \
     Library-SymbCompare-Fail \
     Library-Implodes-Fail \
-    Library-PtrFromName-Fail
+    Library-PtrFromName-Fail \
+    redeclaration-fail
 
   if [ -e Library-WriteLine ]; then
     echo Pass Library-WriteLine test...
