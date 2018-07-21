@@ -24,6 +24,7 @@ struct NativeModule {
   ExternalReference *list_externals;
   unsigned int next_external_id;
   size_t global_variables_memory;
+  NativeReference *native_references;
 };
 
 struct StringRef {

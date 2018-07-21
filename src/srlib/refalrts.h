@@ -699,22 +699,12 @@ struct NativeReference {
   RefalFunctionPtr code;
   NativeReference *next;
 
-  static NativeReference *s_references;
-
   NativeReference(
     const char *name,
     UInt32 cookie1,
     UInt32 cookie2,
     RefalFunctionPtr code
-  )
-    : name(name)
-    , cookie1(cookie1)
-    , cookie2(cookie2)
-    , code(code)
-    , next(s_references)
-  {
-    s_references = this;
-  }
+  );
 };
 
 enum BlockType { /*BlockTypeNumber:cBlockType;*/

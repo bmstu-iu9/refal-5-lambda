@@ -24,7 +24,7 @@
 //FROM refalrts-platform-specific
 #include "refalrts-platform-specific.h"
 
-static struct refalrts::NativeModule g_module = { 0, 0, 0, 0, 0 };
+static struct refalrts::NativeModule g_module = { 0, 0, 0, 0, 0, 0 };
 
 namespace refalrts {
 
@@ -769,7 +769,20 @@ refalrts::ExternalReference::ref(refalrts::VM *vm) const {
 
 // Загружаемый модуль
 
-refalrts::NativeReference *refalrts::NativeReference::s_references = 0;
+refalrts::NativeReference::NativeReference(
+  const char *name,
+  UInt32 cookie1,
+  UInt32 cookie2,
+  RefalFunctionPtr code
+)
+  : name(name)
+  , cookie1(cookie1)
+  , cookie2(cookie2)
+  , code(code)
+  , next(g_module.native_references)
+{
+  g_module.native_references = this;
+}
 
 //==============================================================================
 // Интерпретатор

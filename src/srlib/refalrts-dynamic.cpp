@@ -496,7 +496,7 @@ void refalrts::Domain::enumerate_blocks() {
 
           const char *proper_name = name + 1;
 
-          NativeReference *ref = NativeReference::s_references;
+          NativeReference *ref = m_main_module->native_references;
           while (
             ref != 0
             && ! (
