@@ -2,6 +2,7 @@
 #include <memory>
 
 #include "refalrts-vm.h"
+#include "refalrts-commands.h"
 #include "refalrts-utils.h"
 
 //FROM refalrts-allocator

@@ -8,6 +8,7 @@
 #include <assert.h>
 
 #include "refalrts.h"
+#include "refalrts-commands.h"
 #include "refalrts-utils.h"
 
 //FROM refalrts-allocator

@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "refalrts-dynamic.h"
+#include "refalrts-commands.h"
 
 //FROM refalrts-platform-specific
 #include "refalrts-platform-specific.h"
