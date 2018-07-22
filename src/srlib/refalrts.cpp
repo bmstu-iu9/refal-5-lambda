@@ -17,6 +17,8 @@
 #include "refalrts-debugger.h"
 //FROM refalrts-dynamic
 #include "refalrts-dynamic.h"
+//FROM refalrts-functions
+#include "refalrts-functions.h"
 //FROM refalrts-profiler
 #include "refalrts-profiler.h"
 //FROM refalrts-vm
@@ -576,46 +578,6 @@ refalrts::Iter refalrts::wrap_closure(refalrts::Iter closure) {
 }
 
 //------------------------------------------------------------------------------
-const refalrts::RASLCommand refalrts::RefalCondFunctionRasl::run[] = {
-  { refalrts::icPopState, 0, 0, 0 }
-};
-
-//------------------------------------------------------------------------------
-const refalrts::RASLCommand refalrts::RefalCondFunctionNative::run[] = {
-  { refalrts::icMainLoopReturnSuccess, 0, 0, 0 }
-};
-//------------------------------------------------------------------------------
-
-const refalrts::RASLCommand refalrts::RefalNativeFunction::run[] = {
-  { refalrts::icPerformNative, 0, 0, 0 },
-  { refalrts::icNextStep, 0, 0, 0 }
-};
-
-//------------------------------------------------------------------------------
-
-const refalrts::RASLCommand refalrts::RefalEmptyFunction::run[] = {
-  { refalrts::icFail, 0, 0, 0 }
-};
-
-//------------------------------------------------------------------------------
-
-const refalrts::RASLCommand refalrts::RefalSwap::run[] = {
-  { refalrts::icProfileFunction, 0, 0, 0 },
-  { refalrts::icIssueMemory, 8, 0, 0 },
-  { refalrts::icInitB0_Lite, 0, 0, 0 },
-  { refalrts::icCallSaveLeft, 0, 2, 0 },
-  { refalrts::icFetchSwapHead, 5, 0, 4 },
-  { refalrts::icFetchSwapInfoBounds, 5, 6, 0 },
-  { refalrts::icResetAllocator, 0, 0, 0 },
-  { refalrts::icSetResArgBegin, 0, 0, 0 },
-  { refalrts::icSpliceEVar, 0, 0, 6 },
-  { refalrts::icSwapSave, 5, 0, 2 },
-  { refalrts::icSpliceToFreeList, 0, 0, 0 },
-  { refalrts::icNextStep, 0, 0, 0 }
-};
-
-//------------------------------------------------------------------------------
-
 // Средства профилирования
 
 void refalrts::this_is_generated_function(refalrts::VM *vm) {
@@ -719,35 +681,23 @@ refalrts::IdentReference::ref(refalrts::VM *vm) const {
 
 // Функции
 
-void refalrts::RefalFunction::register_me(refalrts::Domain *domain) {
-  bool successed = domain->register_function(this);
-
-  if (! successed) {
-    fprintf(
-      stderr, "INTERNAL ERROR: function redeclared: %s#%u:%u\n",
-      name.name, name.cookie1, name.cookie2
-    );
-    exit(156);
-  }
-}
-
-refalrts::RefalFunction *refalrts::RefalFunction::lookup(
+refalrts::RefalFunction *
+refalrts::lookup_function(
   refalrts::VM *vm, const refalrts::RefalFuncName& name
 ) {
-  return vm->domain()->lookup_function(name);
+  return RefalFunction::lookup(vm, name);
 }
 
-refalrts::FunctionTable::FunctionTable(
-  refalrts::Domain *domain,
-  refalrts::UInt32 cookie1, refalrts::UInt32 cookie2,
-  refalrts::FunctionTableItem items[]
-)
-  : cookie1(cookie1)
-  , cookie2(cookie2)
-  , items(items)
-{
-  domain->register_(this);
+const refalrts::RefalFuncName *refalrts::function_name(
+  const refalrts::RefalFunction *func
+) {
+  return &func->name;
 }
+
+const void *refalrts::function_rasl(const refalrts::RefalFunction *func) {
+  return &func->rasl;
+}
+
 
 refalrts::ExternalReference::ExternalReference(
   const char *name, refalrts::UInt32 cookie1, refalrts::UInt32 cookie2

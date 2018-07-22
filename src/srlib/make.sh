@@ -75,6 +75,7 @@ prepare_common() {
     refalrts-allocator
     refalrts-debugger
     refalrts-dynamic
+    refalrts-functions
     refalrts-platform-specific
     refalrts-profiler
     refalrts-vm

@@ -96,6 +96,7 @@ goto :EOF
     refalrts-allocator ^
     refalrts-debugger ^
     refalrts-dynamic ^
+    refalrts-functions ^
     refalrts-profiler ^
     refalrts-vm ^
     refalrts-platform-specific 2>__error.txt

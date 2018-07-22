@@ -80,6 +80,7 @@ setlocal
     refalrts-allocator ^
     refalrts-debugger ^
     refalrts-dynamic ^
+    refalrts-functions ^
     refalrts-profiler ^
     refalrts-vm ^
     refalrts-platform-specific

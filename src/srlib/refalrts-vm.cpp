@@ -9,6 +9,8 @@
 #include "refalrts-allocator.h"
 //FROM refalrts-dynamic
 #include "refalrts-dynamic.h"
+//FROM refalrts-functions
+#include "refalrts-functions.h"
 //FROM refalrts-profiler
 #include "refalrts-profiler.h"
 

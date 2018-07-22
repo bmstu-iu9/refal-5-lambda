@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "refalrts.h"
+#include "refalrts-functions.h"
 
 
 //==============================================================================

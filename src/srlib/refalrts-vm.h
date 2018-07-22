@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #include "refalrts.h"
+#include "refalrts-functions.h"
 #include "refalrts-utils.h"
 
 

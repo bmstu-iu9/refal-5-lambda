@@ -91,7 +91,7 @@ $ENTRY PtrFromName {
   }
 
   refalrts::RefalFunction *func_ptr =
-    refalrts::RefalFunction::lookup(
+    refalrts::lookup_function(
       vm, pcookie1->number_info, pcookie2->number_info, func_name
     );
 
@@ -1438,7 +1438,9 @@ refalrts::FnResult cookie_ns::fwrite_line(
         break;
 
       case refalrts::cDataFunction:
-        printf_res = fprintf(handle, "%s ", p->function_info->name.name);
+        printf_res = fprintf(
+          handle, "%s ", refalrts::function_name(p->function_info)->name
+        );
         break;
 
       case refalrts::cDataIdentifier:
@@ -3438,15 +3440,20 @@ bool cookie_ns::compare(refalrts::Iter left, refalrts::Iter right) {
           refalrts::RefalFunction *fl = left->function_info;
           refalrts::RefalFunction *fr = right->function_info;
 
-          order = strcmp_char(fl->name.name, fr->name.name);
+          const refalrts::RefalFuncName *fln = refalrts::function_name(fl);
+          const refalrts::RefalFuncName *frn = refalrts::function_name(fr);
+
+          order = strcmp_char(fln->name, frn->name);
           if (order == '=') {
-            order = compare_char(fl->name.cookie1, fr->name.cookie1);
+            order = compare_char(fln->cookie1, frn->cookie1);
           }
           if (order == '=') {
-            order = compare_char(fl->name.cookie2, fr->name.cookie2);
+            order = compare_char(fln->cookie2, frn->cookie2);
           }
           if (order == '=') {
-            order = compare_char(fl->rasl, fr->rasl);
+            order = compare_char(
+              refalrts::function_rasl(fl), refalrts::function_rasl(fr)
+            );
           }
         }
         break;

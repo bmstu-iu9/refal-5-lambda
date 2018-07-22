@@ -6,6 +6,7 @@
 //FROM refalrts-allocator
 //FROM refalrts-debugger
 //FROM refalrts-dynamic
+//FROM refalrts-functions
 //FROM refalrts-platform-specific
 //FROM refalrts-profiler
 //FROM refalrts-vm
