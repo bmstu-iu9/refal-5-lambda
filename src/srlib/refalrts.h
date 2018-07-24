@@ -69,7 +69,6 @@ inline RefalFunction *lookup_function(
 }
 
 const RefalFuncName *function_name(const RefalFunction *func);
-const void *function_rasl(const RefalFunction *func);
 
 typedef UInt32 RefalNumber;
 

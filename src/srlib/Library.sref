@@ -3453,9 +3453,7 @@ bool cookie_ns::compare(refalrts::Iter left, refalrts::Iter right) {
             order = compare_char(fln->cookie2, frn->cookie2);
           }
           if (order == '=') {
-            order = compare_char(
-              refalrts::function_rasl(fl), refalrts::function_rasl(fr)
-            );
+            order = compare_char(fl, fr);
           }
         }
         break;

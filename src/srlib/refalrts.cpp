@@ -694,10 +694,6 @@ const refalrts::RefalFuncName *refalrts::function_name(
   return &func->name;
 }
 
-const void *refalrts::function_rasl(const refalrts::RefalFunction *func) {
-  return &func->rasl;
-}
-
 
 refalrts::ExternalReference::ExternalReference(
   const char *name, refalrts::UInt32 cookie1, refalrts::UInt32 cookie2
