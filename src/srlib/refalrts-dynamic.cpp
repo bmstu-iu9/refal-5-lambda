@@ -14,7 +14,7 @@
 
 
 //==============================================================================
-// Динамическое связывание
+// Модуль
 //==============================================================================
 
 refalrts::Module::Module(Domain *domain, NativeModule *native)
@@ -32,87 +32,12 @@ refalrts::Module::Module(Domain *domain, NativeModule *native)
   alloc_global_variables();
 }
 
-refalrts::Domain::Domain()
-  : m_idents_table()
-  , m_at_exit_list(0)
-  , m_module(0)
-{
-  /* пусто */
-}
-
-bool refalrts::Domain::load_native_module(NativeModule *main_module) {
-  assert(m_module == 0);
-  m_module = new Module(this, main_module);
-
-  unsigned unresolved = m_module->find_unresolved_externals();
-
-  if (unresolved > 0) {
-    fprintf(stderr, "Found %u unresolved externals\n", unresolved);
-    return false;
-  }
-
-  return true;
-}
-
-void refalrts::Domain::unload() {
-  free_idents_table();
-  m_module->cleanup();
-  delete m_module;
-}
-
 //------------------------------------------------------------------------------
 // Идентификаторы
 //------------------------------------------------------------------------------
 
-size_t refalrts::Domain::idents_count() {
-  return m_idents_table.size();
-}
-
-void refalrts::Domain::free_idents_table() {
-#ifndef DONT_PRINT_STATISTICS
-  fprintf(
-    stderr, "Identifiers allocated: %lu\n",
-    static_cast<unsigned long>(idents_count())
-  );
-#endif // ifndef DONT_PRINT_STATISTICS
-
-  while (m_idents_table.size() > 0) {
-    IdentsMap::iterator p = m_idents_table.begin();
-    StringRef name = p->first;
-    RefalIdentifier ident = p->second;
-    m_idents_table.erase(p);
-    delete[] name.str;
-    delete ident;
-  }
-}
-
 void refalrts::Module::free_idents_table() {
   free(m_native_identifiers);
-}
-
-
-refalrts::RefalIdentifier
-refalrts::Domain::lookup_ident(const char *name) {
-  IdentsMap::iterator p = m_idents_table.find(StringRef(name));
-
-  if (p != m_idents_table.end()) {
-    return p->second;
-  } else {
-    return 0;
-  }
-}
-
-bool refalrts::Domain::register_ident(RefalIdentifier ident) {
-#ifdef IDENTS_LIMIT
-  if (idents_count() >= IDENTS_LIMIT) {
-    return false;
-  }
-#endif // ifdef IDENTS_LIMIT
-
-  IdentsMap::value_type new_value(StringRef(ident->name()), ident);
-  std::pair<IdentsMap::iterator, bool> res = m_idents_table.insert(new_value);
-  assert(res.second);
-  return res.second;
 }
 
 void refalrts::Module::load_native_identifiers() {
@@ -621,6 +546,99 @@ void refalrts::Module::cleanup_module() {
   }
 }
 
+void refalrts::Module::alloc_global_variables() {
+  m_global_variables = malloc<char>(m_native->global_variables_memory);
+  memset(m_global_variables, '\0', m_native->global_variables_memory);
+}
+
+void refalrts::Module::free_global_variables() {
+  free(m_global_variables);
+}
+
+
+//==============================================================================
+// Домен
+//==============================================================================
+
+refalrts::Domain::Domain()
+  : m_idents_table()
+  , m_at_exit_list(0)
+  , m_module(0)
+{
+  /* пусто */
+}
+
+bool refalrts::Domain::load_native_module(NativeModule *main_module) {
+  assert(m_module == 0);
+  m_module = new Module(this, main_module);
+
+  unsigned unresolved = m_module->find_unresolved_externals();
+
+  if (unresolved > 0) {
+    fprintf(stderr, "Found %u unresolved externals\n", unresolved);
+    return false;
+  }
+
+  return true;
+}
+
+void refalrts::Domain::unload() {
+  free_idents_table();
+  m_module->cleanup();
+  delete m_module;
+}
+
+//------------------------------------------------------------------------------
+// Идентификаторы
+//------------------------------------------------------------------------------
+
+size_t refalrts::Domain::idents_count() {
+  return m_idents_table.size();
+}
+
+void refalrts::Domain::free_idents_table() {
+#ifndef DONT_PRINT_STATISTICS
+  fprintf(
+    stderr, "Identifiers allocated: %lu\n",
+    static_cast<unsigned long>(idents_count())
+  );
+#endif // ifndef DONT_PRINT_STATISTICS
+
+  while (m_idents_table.size() > 0) {
+    IdentsMap::iterator p = m_idents_table.begin();
+    StringRef name = p->first;
+    RefalIdentifier ident = p->second;
+    m_idents_table.erase(p);
+    delete[] name.str;
+    delete ident;
+  }
+}
+
+
+refalrts::RefalIdentifier
+refalrts::Domain::lookup_ident(const char *name) {
+  IdentsMap::iterator p = m_idents_table.find(StringRef(name));
+
+  if (p != m_idents_table.end()) {
+    return p->second;
+  } else {
+    return 0;
+  }
+}
+
+bool refalrts::Domain::register_ident(RefalIdentifier ident) {
+#ifdef IDENTS_LIMIT
+  if (idents_count() >= IDENTS_LIMIT) {
+    return false;
+  }
+#endif // ifdef IDENTS_LIMIT
+
+  IdentsMap::value_type new_value(StringRef(ident->name()), ident);
+  std::pair<IdentsMap::iterator, bool> res = m_idents_table.insert(new_value);
+  assert(res.second);
+  return res.second;
+}
+
 void refalrts::Domain::read_counters(unsigned long counters[]) {
   counters[cPerformanceCounter_IdentsAllocated] =
     static_cast<unsigned long>(idents_count());
@@ -644,13 +662,4 @@ void refalrts::Domain::perform_at_exit() {
     current->call(this);
     delete current;
   }
-}
-
-void refalrts::Module::alloc_global_variables() {
-  m_global_variables = malloc<char>(m_native->global_variables_memory);
-  memset(m_global_variables, '\0', m_native->global_variables_memory);
-}
-
-void refalrts::Module::free_global_variables() {
-  free(m_global_variables);
 }
