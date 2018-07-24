@@ -190,6 +190,12 @@ public:
     return m_module->lookup_function(name);
   }
 
+  RefalFunction *lookup_function(
+    UInt32 cookie1, UInt32 cookie2, const char *name
+  ) {
+    return lookup_function(RefalFuncName(name, cookie1, cookie2));
+  }
+
   RefalIdentifier lookup_ident(const char *name);
   bool register_ident(RefalIdentifier ident);
 

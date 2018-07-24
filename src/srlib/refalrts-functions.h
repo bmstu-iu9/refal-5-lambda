@@ -20,14 +20,6 @@ struct RefalFunction {
     register_me();
   }
 
-  static RefalFunction *lookup(VM *vm, const RefalFuncName& name);
-
-  static RefalFunction *lookup(
-    VM *vm, UInt32 cookie1, UInt32 cookie2, const char *name
-  ) {
-    return lookup(vm, RefalFuncName(name, cookie1, cookie2));
-  }
-
 private:
   void register_me();
 };

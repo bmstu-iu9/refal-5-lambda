@@ -168,10 +168,10 @@ refalrts::VM::free_states_stack() {
 }
 
 refalrts::FnResult refalrts::VM::run() {
-  RefalFunction *go = RefalFunction::lookup(this, 0, 0, "GO");
+  RefalFunction *go = domain()->lookup_function(0, 0, "GO");
 
   if (! go) {
-    go = RefalFunction::lookup(this, 0, 0, "Go");
+    go = domain()->lookup_function(0, 0, "Go");
   }
 
   if (! go) {

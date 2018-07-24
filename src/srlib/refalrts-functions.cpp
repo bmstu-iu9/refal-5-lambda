@@ -19,12 +19,6 @@ void refalrts::RefalFunction::register_me() {
   }
 }
 
-refalrts::RefalFunction *refalrts::RefalFunction::lookup(
-  refalrts::VM *vm, const refalrts::RefalFuncName& name
-) {
-  return vm->domain()->lookup_function(name);
-}
-
 refalrts::FunctionTable::FunctionTable(
   refalrts::Module *module,
   refalrts::UInt32 cookie1, refalrts::UInt32 cookie2,

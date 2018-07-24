@@ -685,7 +685,7 @@ refalrts::RefalFunction *
 refalrts::lookup_function(
   refalrts::VM *vm, const refalrts::RefalFuncName& name
 ) {
-  return RefalFunction::lookup(vm, name);
+  return vm->domain()->lookup_function(name);
 }
 
 const refalrts::RefalFuncName *refalrts::function_name(
