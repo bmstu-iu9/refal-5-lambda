@@ -674,7 +674,7 @@ refalrts::IdentReference::IdentReference(const char *name)
 
 refalrts::RefalIdentifier
 refalrts::IdentReference::ref(refalrts::VM *vm) const {
-  return (*vm->domain())[*this];
+  return (*vm->module())[*this];
 }
 
 //------------------------------------------------------------------------------
@@ -713,7 +713,7 @@ refalrts::ExternalReference::ExternalReference(
 
 refalrts::RefalFunction *
 refalrts::ExternalReference::ref(refalrts::VM *vm) const {
-  return (*vm->domain())[*this];
+  return (*vm->module())[*this];
 }
 
 //------------------------------------------------------------------------------
@@ -769,11 +769,15 @@ refalrts::GlobalRefBase::GlobalRefBase(size_t size)
 }
 
 void *refalrts::GlobalRefBase::ptr(refalrts::VM *vm) {
-  return ptr(vm->domain());
+  return ptr(vm->module());
 }
 
-void *refalrts::GlobalRefBase::ptr(refalrts::Domain *domain) {
-  return domain->global_variable(m_offset);
+void *refalrts::GlobalRefBase::ptr(refalrts::Module *module) {
+  return module->global_variable(m_offset);
+}
+
+refalrts::Module *refalrts::current_module(refalrts::VM *vm) {
+  return vm->module();
 }
 
 //==============================================================================

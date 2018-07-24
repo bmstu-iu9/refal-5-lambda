@@ -800,11 +800,12 @@ bool file_handle_left(
     );
 }
 
-void close_all_files_at_exit(refalrts::Domain *domain, void *) {
+void close_all_files_at_exit(refalrts::Domain *, void *void_module) {
+  refalrts::Module *module = reinterpret_cast<refalrts::Module*>(void_module);
   for (size_t i = 0; i < cMaxFileHandles; ++i) {
-    if (g_file_handles.ref(domain, i) != 0) {
-      fclose(g_file_handles.ref(domain, i));
-      g_file_handles.ref(domain, i) = 0;    // на всякий случай
+    if (g_file_handles.ref(module, i) != 0) {
+      fclose(g_file_handles.ref(module, i));
+      g_file_handles.ref(module, i) = 0;    // на всякий случай
     }
   }
 }
@@ -863,7 +864,7 @@ bool open_handle(
     filename = default_name;
   }
 
-  refalrts::at_exit(vm, close_all_files_at_exit, 0);
+  refalrts::at_exit(vm, close_all_files_at_exit, refalrts::current_module(vm));
   return (g_file_handles.ref(vm, file_no) = fopen(filename, mode)) != 0;
 }
 
@@ -2870,14 +2871,15 @@ RndGen::UInt RndGen::next_in_range(RndGen::UInt max) {
 
 refalrts::GlobalRef<RndGen*> g_gen;
 
-void delete_gen(refalrts::Domain *domain, void *) {
-  delete g_gen.ref(domain);
+void delete_gen(refalrts::Domain *, void *void_module) {
+  refalrts::Module *module = reinterpret_cast<refalrts::Module*>(void_module);
+  delete g_gen.ref(module);
 }
 
 RndGen& gen(refalrts::VM *vm) {
   if (g_gen.ref(vm) == 0) {
     g_gen.ref(vm) = new RndGen();
-    refalrts::at_exit(vm, delete_gen, 0);
+    refalrts::at_exit(vm, delete_gen, refalrts::current_module(vm));
   }
 
   return *g_gen.ref(vm);

@@ -7,8 +7,8 @@
 #include "refalrts-vm.h"
 
 
-void refalrts::RefalFunction::register_me(refalrts::Domain *domain) {
-  bool successed = domain->register_function(this);
+void refalrts::RefalFunction::register_me() {
+  bool successed = module->register_function(this);
 
   if (! successed) {
     fprintf(
@@ -26,7 +26,7 @@ refalrts::RefalFunction *refalrts::RefalFunction::lookup(
 }
 
 refalrts::FunctionTable::FunctionTable(
-  refalrts::Domain *domain,
+  refalrts::Module *module,
   refalrts::UInt32 cookie1, refalrts::UInt32 cookie2,
   refalrts::FunctionTableItem items[]
 )
@@ -34,7 +34,7 @@ refalrts::FunctionTable::FunctionTable(
   , cookie2(cookie2)
   , items(items)
 {
-  domain->register_(this);
+  module->register_(this);
 }
 
 const refalrts::RASLCommand refalrts::RefalNativeFunction::run[] = {

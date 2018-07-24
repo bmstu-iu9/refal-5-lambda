@@ -18,6 +18,7 @@ namespace refalrts {
 class Allocator;
 class Profiler;
 class Domain;
+class Module;
 
 class VM {
   struct StateRefalMachine;
@@ -138,6 +139,7 @@ private:
   Allocator *m_allocator;
   Profiler *m_profiler;
   Domain *m_domain;
+  Module *m_module;
 
 public:
   VM(Allocator *allocator, Profiler *profiler, Domain *domain);
@@ -203,6 +205,10 @@ public:
 
   Domain *domain() const {
     return m_domain;
+  }
+
+  Module *module() const {
+    return m_module;
   }
 
 public:
@@ -1041,6 +1047,7 @@ inline VM::VM(Allocator *allocator, Profiler *profiler, Domain *domain)
   , m_allocator(allocator)
   , m_profiler(profiler)
   , m_domain(domain)
+  , m_module(0)
 {
   /* пусто */
 }

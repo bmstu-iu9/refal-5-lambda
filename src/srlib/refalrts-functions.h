@@ -7,15 +7,17 @@
 namespace refalrts {
 
 struct RASLCommand;
+class Module;
 
 struct RefalFunction {
   const RASLCommand *rasl;
   RefalFuncName name;
+  Module *module;
 
-  RefalFunction(const RASLCommand rasl[], RefalFuncName name, Domain *domain)
-    : rasl(rasl), name(name)
+  RefalFunction(const RASLCommand rasl[], RefalFuncName name, Module *module)
+    : rasl(rasl), name(name), module(module)
   {
-    register_me(domain);
+    register_me();
   }
 
   static RefalFunction *lookup(VM *vm, const RefalFuncName& name);
@@ -27,7 +29,7 @@ struct RefalFunction {
   }
 
 private:
-  void register_me(Domain *domain);
+  void register_me();
 };
 
 struct RefalNativeFunction: public RefalFunction {
@@ -36,9 +38,9 @@ struct RefalNativeFunction: public RefalFunction {
   RefalNativeFunction(
     RefalFunctionPtr ptr,
     RefalFuncName name,
-    Domain *domain
+    Module *module
   )
-    : RefalFunction(run, name, domain), ptr(ptr)
+    : RefalFunction(run, name, module), ptr(ptr)
   {
     /* пусто */
   }
@@ -50,8 +52,8 @@ struct RefalSwap: public RefalFunction {
   Iter head;
   Iter next_head;
 
-  RefalSwap(RefalFuncName name, Domain *domain)
-    : RefalFunction(run, name, domain), head(), next_head()
+  RefalSwap(RefalFuncName name, Module *module)
+    : RefalFunction(run, name, module), head(), next_head()
   {
     /* пусто */
   }
@@ -60,8 +62,8 @@ struct RefalSwap: public RefalFunction {
 };
 
 struct RefalEmptyFunction: public RefalFunction {
-  RefalEmptyFunction(RefalFuncName name, Domain *domain)
-    : RefalFunction(run, name, domain)
+  RefalEmptyFunction(RefalFuncName name, Module *module)
+    : RefalFunction(run, name, module)
   {
     /* пусто */
   }
@@ -70,8 +72,8 @@ struct RefalEmptyFunction: public RefalFunction {
 };
 
 struct RefalCondFunctionRasl: public RefalFunction {
-  RefalCondFunctionRasl(RefalFuncName name, Domain *domain)
-    : RefalFunction(run, name, domain)
+  RefalCondFunctionRasl(RefalFuncName name, Module *module)
+    : RefalFunction(run, name, module)
   {
     /* пусто */
   }
@@ -80,8 +82,8 @@ struct RefalCondFunctionRasl: public RefalFunction {
 };
 
 struct RefalCondFunctionNative: public RefalFunction {
-  RefalCondFunctionNative(RefalFuncName name, Domain *domain)
-    : RefalFunction(run, name, domain)
+  RefalCondFunctionNative(RefalFuncName name, Module *module)
+    : RefalFunction(run, name, module)
   {
     /* пусто */
   }
@@ -132,7 +134,7 @@ struct FunctionTable {
   FunctionTable *next;
 
   FunctionTable(
-    Domain *domain, UInt32 cookie1, UInt32 cookie2, FunctionTableItem *items
+    Module *module, UInt32 cookie1, UInt32 cookie2, FunctionTableItem *items
   );
 };
 
@@ -151,9 +153,9 @@ struct RASLFunction: public RefalFunction {
     const RefalNumber *numbers,
     const StringItem *strings,
     const char *filename,
-    Domain *domain
+    Module *module
   )
-    : RefalFunction(rasl, name, domain)
+    : RefalFunction(rasl, name, module)
     , functions(functions)
     , idents(idents)
     , numbers(numbers)

@@ -8,6 +8,7 @@ namespace refalrts {
 
 class VM;
 class Domain;
+class Module;
 
 enum FnResult {
   cRecognitionImpossible = 0,
@@ -441,7 +442,7 @@ protected:
   GlobalRefBase(size_t size);
 
   void *ptr(VM *vm);
-  void *ptr(Domain *domain);
+  void *ptr(Module *module);
 };
 
 template <typename T>
@@ -465,10 +466,12 @@ public:
   T& ref(VM *vm, size_t index = 0) {
     return static_cast<T*>(ptr(vm))[index];
   }
-  T& ref(Domain *domain, size_t index = 0) {
-    return static_cast<T*>(ptr(domain))[index];
+  T& ref(Module *module, size_t index = 0) {
+    return static_cast<T*>(ptr(module))[index];
   }
 };
+
+Module *current_module(VM *vm);
 
 
 } // namespace refalrts

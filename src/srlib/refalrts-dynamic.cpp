@@ -17,28 +17,34 @@
 // Динамическое связывание
 //==============================================================================
 
-refalrts::Domain::Domain()
+refalrts::Module::Module(Domain *domain, NativeModule *native)
   : m_unresolved_func_tables(0)
   , m_funcs_table()
   , m_tables(0)
-  , m_idents_table()
   , m_native_identifiers(0)
   , m_native_externals(0)
-  , m_main_module(0)
-  , m_at_exit_list(0)
+  , m_native(native)
   , m_global_variables(0)
+  , m_domain(domain)
+{
+  enumerate_blocks();
+  load_native_identifiers();
+  alloc_global_variables();
+}
+
+refalrts::Domain::Domain()
+  : m_idents_table()
+  , m_at_exit_list(0)
+  , m_module(0)
 {
   /* пусто */
 }
 
 bool refalrts::Domain::load_native_module(NativeModule *main_module) {
-  m_main_module = main_module;
+  assert(m_module == 0);
+  m_module = new Module(this, main_module);
 
-  enumerate_blocks();
-  load_native_identifiers();
-  alloc_global_variables();
-
-  unsigned unresolved = find_unresolved_externals();
+  unsigned unresolved = m_module->find_unresolved_externals();
 
   if (unresolved > 0) {
     fprintf(stderr, "Found %u unresolved externals\n", unresolved);
@@ -49,10 +55,9 @@ bool refalrts::Domain::load_native_module(NativeModule *main_module) {
 }
 
 void refalrts::Domain::unload() {
-  free_global_variables();
   free_idents_table();
-  free_funcs_table();
-  cleanup_module();
+  m_module->cleanup();
+  delete m_module;
 }
 
 //------------------------------------------------------------------------------
@@ -71,7 +76,6 @@ void refalrts::Domain::free_idents_table() {
   );
 #endif // ifndef DONT_PRINT_STATISTICS
 
-  free(m_native_identifiers);
   while (m_idents_table.size() > 0) {
     IdentsMap::iterator p = m_idents_table.begin();
     StringRef name = p->first;
@@ -80,6 +84,10 @@ void refalrts::Domain::free_idents_table() {
     delete[] name.str;
     delete ident;
   }
+}
+
+void refalrts::Module::free_idents_table() {
+  free(m_native_identifiers);
 }
 
 
@@ -107,12 +115,12 @@ bool refalrts::Domain::register_ident(RefalIdentifier ident) {
   return res.second;
 }
 
-void refalrts::Domain::load_native_identifiers() {
-  m_native_identifiers = malloc<RefalIdentifier>(m_main_module->next_ident_id);
+void refalrts::Module::load_native_identifiers() {
+  m_native_identifiers = malloc<RefalIdentifier>(m_native->next_ident_id);
 
-  for (IdentReference *p = m_main_module->list_idents; p != 0; p = p->next) {
-    assert(p->id < m_main_module->next_ident_id);
-    RefalIdentifier ident = ident_implode(this, p->name);
+  for (IdentReference *p = m_native->list_idents; p != 0; p = p->next) {
+    assert(p->id < m_native->next_ident_id);
+    RefalIdentifier ident = ident_implode(m_domain, p->name);
 #ifdef IDENTS_LIMIT
     if (! ident) {
       fprintf(
@@ -133,7 +141,7 @@ void refalrts::Domain::load_native_identifiers() {
 //------------------------------------------------------------------------------
 
 refalrts::RefalFunction *
-refalrts::Domain::lookup_function(const refalrts::RefalFuncName& name) {
+refalrts::Module::lookup_function(const refalrts::RefalFuncName& name) {
   FuncsMap::iterator p = m_funcs_table.find(name);
 
   if (p != m_funcs_table.end()) {
@@ -143,13 +151,13 @@ refalrts::Domain::lookup_function(const refalrts::RefalFuncName& name) {
   }
 }
 
-bool refalrts::Domain::register_function(refalrts::RefalFunction *func) {
+bool refalrts::Module::register_function(refalrts::RefalFunction *func) {
   FuncsMap::value_type new_value(func->name, func);
   std::pair<FuncsMap::iterator, bool> res = m_funcs_table.insert(new_value);
   return res.second;
 }
 
-unsigned refalrts::Domain::find_unresolved_externals() {
+unsigned refalrts::Module::find_unresolved_externals() {
   unsigned unresolved = 0;
 
   while (m_unresolved_func_tables != 0) {
@@ -183,16 +191,16 @@ unsigned refalrts::Domain::find_unresolved_externals() {
     m_unresolved_func_tables = m_unresolved_func_tables->next;
   }
 
-  m_native_externals = malloc<RefalFunction*>(m_main_module->next_external_id);
+  m_native_externals = malloc<RefalFunction*>(m_native->next_external_id);
   for (
-    const ExternalReference *er = m_main_module->list_externals;
+    const ExternalReference *er = m_native->list_externals;
     er != 0;
     er = er->next
   ) {
     RefalFuncName name(er->name, er->cookie1, er->cookie2);
     RefalFunction *function = lookup_function(name);
     if (function) {
-      assert(er->id < m_main_module->next_external_id);
+      assert(er->id < m_native->next_external_id);
       m_native_externals[er->id] = function;
     } else {
       fprintf(
@@ -206,7 +214,7 @@ unsigned refalrts::Domain::find_unresolved_externals() {
   return unresolved;
 }
 
-void refalrts::Domain::free_funcs_table() {
+void refalrts::Module::free_funcs_table() {
   free(m_native_externals);
   while (m_funcs_table.size() > 0) {
     FuncsMap::iterator p = m_funcs_table.begin();
@@ -222,7 +230,7 @@ void refalrts::Domain::free_funcs_table() {
 // Загружаемый модуль
 //------------------------------------------------------------------------------
 
-bool refalrts::Domain::seek_rasl_signature(FILE *stream) {
+bool refalrts::Module::seek_rasl_signature(FILE *stream) {
   int seek_res = fseek(stream, 0L, SEEK_END);
   if (seek_res != 0) {
     fprintf(stderr, "INTERNAL ERROR: can't seek in module\n");
@@ -269,7 +277,7 @@ bool refalrts::Domain::seek_rasl_signature(FILE *stream) {
   return found;
 }
 
-const char *refalrts::Domain::read_asciiz(FILE *stream) {
+const char *refalrts::Module::read_asciiz(FILE *stream) {
   enum { cINC_SIZE = 20 };
 
   size_t buflen = cINC_SIZE;
@@ -303,7 +311,7 @@ const char *refalrts::Domain::read_asciiz(FILE *stream) {
 }
 
 refalrts::RefalFuncName
-refalrts::Domain::ConstTable::make_name(const char *name) const {
+refalrts::Module::ConstTable::make_name(const char *name) const {
   char type = name[0];
   const char *proper_name = name + 1;
 
@@ -315,7 +323,7 @@ refalrts::Domain::ConstTable::make_name(const char *name) const {
   }
 }
 
-void refalrts::Domain::enumerate_blocks() {
+void refalrts::Module::enumerate_blocks() {
   char module_name[api::cModuleNameBufferLen];
 
   bool successed = api::get_main_module_name(module_name);
@@ -411,7 +419,7 @@ void refalrts::Domain::enumerate_blocks() {
           assert(read == fixed_part.ident_size);
           const char *next_ident_name = new_table->idents_memory;
           for (size_t i = 0; i < fixed_part.ident_count; ++i) {
-            RefalIdentifier ident = ident_implode(this, next_ident_name);
+            RefalIdentifier ident = ident_implode(m_domain, next_ident_name);
 #ifdef IDENTS_LIMIT
             if (! ident) {
               fprintf(
@@ -473,7 +481,7 @@ void refalrts::Domain::enumerate_blocks() {
           read = fread(&offset, sizeof(offset), 1, stream);
           assert(read == 1);
 
-          RASLFunction *result = Domain::malloc<RASLFunction>();
+          RASLFunction *result = Module::malloc<RASLFunction>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RASLFunction(
@@ -499,7 +507,7 @@ void refalrts::Domain::enumerate_blocks() {
 
           const char *proper_name = name + 1;
 
-          NativeReference *ref = m_main_module->native_references;
+          NativeReference *ref = m_native->native_references;
           while (
             ref != 0
             && ! (
@@ -522,7 +530,7 @@ void refalrts::Domain::enumerate_blocks() {
           // TODO: Сообщение об ошибке
           assert(ref != 0);
 
-          RefalNativeFunction *result = Domain::malloc<RefalNativeFunction>();
+          RefalNativeFunction *result = Module::malloc<RefalNativeFunction>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalNativeFunction(
@@ -536,7 +544,7 @@ void refalrts::Domain::enumerate_blocks() {
           const char *name = read_asciiz(stream);
           assert(name);
 
-          RefalEmptyFunction *result = Domain::malloc<RefalEmptyFunction>();
+          RefalEmptyFunction *result = Module::malloc<RefalEmptyFunction>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalEmptyFunction(table->make_name(name), this);
@@ -548,7 +556,7 @@ void refalrts::Domain::enumerate_blocks() {
           const char *name = read_asciiz(stream);
           assert(name);
 
-          RefalSwap *result = Domain::malloc<RefalSwap>();
+          RefalSwap *result = Module::malloc<RefalSwap>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalSwap(table->make_name(name), this);
@@ -563,7 +571,7 @@ void refalrts::Domain::enumerate_blocks() {
           const char *name = read_asciiz(stream);
           assert(name);
 
-          RefalCondFunctionRasl *result = Domain::malloc<RefalCondFunctionRasl>();
+          RefalCondFunctionRasl *result = Module::malloc<RefalCondFunctionRasl>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalCondFunctionRasl(table->make_name(name), this);
@@ -575,7 +583,7 @@ void refalrts::Domain::enumerate_blocks() {
           const char *name = read_asciiz(stream);
           assert(name);
 
-          RefalCondFunctionNative *result = Domain::malloc<RefalCondFunctionNative>();
+          RefalCondFunctionNative *result = Module::malloc<RefalCondFunctionNative>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalCondFunctionNative(table->make_name(name), this);
@@ -590,7 +598,7 @@ void refalrts::Domain::enumerate_blocks() {
   fclose(stream);
 }
 
-void refalrts::Domain::cleanup_module() {
+void refalrts::Module::cleanup_module() {
   while (m_tables != 0) {
     ConstTable *next = m_tables->next;
 
@@ -638,11 +646,11 @@ void refalrts::Domain::perform_at_exit() {
   }
 }
 
-void refalrts::Domain::alloc_global_variables() {
-  m_global_variables = malloc<char>(m_main_module->global_variables_memory);
-  memset(m_global_variables, '\0', m_main_module->global_variables_memory);
+void refalrts::Module::alloc_global_variables() {
+  m_global_variables = malloc<char>(m_native->global_variables_memory);
+  memset(m_global_variables, '\0', m_native->global_variables_memory);
 }
 
-void refalrts::Domain::free_global_variables() {
+void refalrts::Module::free_global_variables() {
   free(m_global_variables);
 }

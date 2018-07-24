@@ -59,7 +59,9 @@ inline bool operator<(const RefalFuncName& lhs, const RefalFuncName& rhs) {
   }
 }
 
-class Domain {
+class Domain;
+
+class Module {
   struct ConstTable {
     UInt32 cookie1;
     UInt32 cookie2;
@@ -79,6 +81,78 @@ class Domain {
     RefalFuncName make_name(const char *name) const;
   };
 
+  typedef std::map<RefalFuncName, RefalFunction*> FuncsMap;
+
+  struct FunctionTable *m_unresolved_func_tables;
+  FuncsMap m_funcs_table;
+  struct ConstTable *m_tables;
+  RefalIdentifier *m_native_identifiers;
+  RefalFunction **m_native_externals;
+  NativeModule *m_native;
+  char *m_global_variables;
+  Domain *m_domain;
+
+public:
+  Module(Domain *domain, NativeModule *native = 0);
+
+  RefalIdentifier operator[](const IdentReference& ref) const {
+    return m_native_identifiers[ref.id];
+  }
+
+  RefalFunction *lookup_function(const RefalFuncName& name);
+  bool register_function(RefalFunction *func);
+
+  RefalFunction* operator[](const ExternalReference& ref) const {
+    return m_native_externals[ref.id];
+  }
+
+  void register_(FunctionTable *table) {
+    table->next = m_unresolved_func_tables;
+    m_unresolved_func_tables = table;
+  }
+
+  void *global_variable(size_t offset) {
+    return &m_global_variables[offset];
+  }
+
+  Domain *domain() {
+    return m_domain;
+  }
+
+  unsigned find_unresolved_externals();
+
+  void cleanup() {
+    free_global_variables();
+    free_idents_table();
+    free_funcs_table();
+    cleanup_module();
+  }
+
+private:
+  void load_native_identifiers();
+
+  void free_funcs_table();
+
+  template <typename T>
+  static T *malloc(size_t count = 1) {
+    T *result = static_cast<T*>(::malloc(sizeof(T) * count));
+    assert(count == 0 || result);
+    return result;
+  }
+
+  void enumerate_blocks();
+  void cleanup_module();
+
+  bool seek_rasl_signature(FILE *stream);
+  const char *read_asciiz(FILE *stream);
+
+  void alloc_global_variables();
+  void free_global_variables();
+
+  void free_idents_table();
+};
+
+class Domain {
   struct AtExitListNode {
     AtExitCB callback;
     void *data;
@@ -97,18 +171,12 @@ class Domain {
 
   friend struct AtExitListNode;
 
-  typedef std::map<RefalFuncName, RefalFunction*> FuncsMap;
   typedef std::map<StringRef, RefalIdentifier> IdentsMap;
 
-  struct FunctionTable *m_unresolved_func_tables;
-  FuncsMap m_funcs_table;
-  struct ConstTable *m_tables;
   IdentsMap m_idents_table;
-  RefalIdentifier *m_native_identifiers;
-  RefalFunction **m_native_externals;
-  NativeModule *m_main_module;
   AtExitListNode *m_at_exit_list;
-  char *m_global_variables;
+
+  Module *m_module;      // TODO: должен быть список модулей
 
 public:
   Domain();
@@ -118,57 +186,20 @@ public:
 
   size_t idents_count();
 
+  RefalFunction *lookup_function(const RefalFuncName& name) {
+    return m_module->lookup_function(name);
+  }
+
   RefalIdentifier lookup_ident(const char *name);
   bool register_ident(RefalIdentifier ident);
-
-  RefalIdentifier operator[](const IdentReference& ref) const {
-    return m_native_identifiers[ref.id];
-  }
-
-  RefalFunction *lookup_function(const RefalFuncName& name);
-  bool register_function(RefalFunction *func);
-
-  RefalFunction* operator[](const ExternalReference& ref) const {
-    return m_native_externals[ref.id];
-  }
-
-  void register_(FunctionTable *table) {
-    table->next = m_unresolved_func_tables;
-    m_unresolved_func_tables = table;
-  }
 
   void read_counters(unsigned long counters[]);
 
   void at_exit(AtExitCB callback, void *data);
   void perform_at_exit();
 
-  void *global_variable(size_t offset) {
-    return &m_global_variables[offset];
-  }
-
 private:
   void free_idents_table();
-
-  void load_native_identifiers();
-
-  unsigned find_unresolved_externals();
-  void free_funcs_table();
-
-  template <typename T>
-  static T *malloc(size_t count = 1) {
-    T *result = static_cast<T*>(::malloc(sizeof(T) * count));
-    assert(count == 0 || result);
-    return result;
-  }
-
-  void enumerate_blocks();
-  void cleanup_module();
-
-  bool seek_rasl_signature(FILE *stream);
-  const char *read_asciiz(FILE *stream);
-
-  void alloc_global_variables();
-  void free_global_variables();
 };
 
 }  // namespace refalrts

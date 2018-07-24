@@ -1466,6 +1466,7 @@ JUMP_FROM_SCALE:
             return res;
           }
           rasl = callee->rasl;
+          m_module = callee->module;
           stack_top = 0;
         }
         continue;       // избегаем ++rasl в конце цикла
