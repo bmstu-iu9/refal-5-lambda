@@ -77,7 +77,7 @@ class Module {
     std::vector<char> idents_memory;
     std::vector<char> strings_memory;
 
-    RefalFuncName make_name(const char *name) const;
+    RefalFuncName make_name(const std::string& name) const;
   };
 
   struct LoadModuleError {
@@ -108,7 +108,7 @@ class Module {
     }
 
     bool seek_rasl_signature();
-    const char *read_asciiz();
+    std::string read_asciiz();
   };
 
   friend class Loader;

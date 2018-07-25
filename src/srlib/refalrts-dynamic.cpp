@@ -193,43 +193,31 @@ bool refalrts::Module::Loader::seek_rasl_signature() {
   return found;
 }
 
-const char *refalrts::Module::Loader::read_asciiz() {
-  enum { cINC_SIZE = 20 };
+/*
+  Функция также добавляет дополнительный \0 в конец строки.
+*/
+std::string refalrts::Module::Loader::read_asciiz() {
+  std::string result;
 
-  size_t buflen = cINC_SIZE;
-  char *buffer = static_cast<char *>(::malloc(buflen));
-  assert(buffer);
-
-  size_t buffoffset = 0;
-
-  size_t read;
+  int byte;
   do {
-    read = fread(&buffer[buffoffset], 1, 1);
-    if (read) {
-      ++buffoffset;
-      if (buffoffset == buflen) {
-        size_t new_buflen = buflen + cINC_SIZE;
-        char *new_buffer = static_cast<char*>(::realloc(buffer, new_buflen));
-        assert(new_buffer);
-
-        buflen = new_buflen;
-        buffer = new_buffer;
-      }
+    byte = fgetc(m_stream);
+    if (byte != EOF) {
+      result += (char) byte;
     }
-  } while (read == 1 && buffer[buffoffset - 1] != '\0');
+  } while (byte != EOF && byte != '\0');
 
-  if (read == 1) {
-    return buffer;
-  } else {
-    free(buffer);
-    return 0;
+  if (byte == EOF) {
+    throw LoadModuleError("can't read ASCIIZ string - EOF is reached");
   }
+
+  return result;
 }
 
 refalrts::RefalFuncName
-refalrts::Module::ConstTable::make_name(const char *name) const {
+refalrts::Module::ConstTable::make_name(const std::string& name) const {
   char type = name[0];
-  const char *proper_name = name + 1;
+  const char *proper_name = name.data() + 1;
 
   assert(type == '*' || type == '#');
   if (type == '#') {
@@ -396,8 +384,7 @@ void refalrts::Module::Loader::enumerate_blocks() {
 
       case cBlockTypeRefalFunction:
         {
-          const char *name = read_asciiz();
-          assert(name);
+          std::string name = read_asciiz();
 
           UInt32 offset;
           read = fread(&offset, sizeof(offset), 1);
@@ -418,13 +405,12 @@ void refalrts::Module::Loader::enumerate_blocks() {
 
       case cBlockTypeNativeFunction:
         {
-          const char *name = read_asciiz();
-          assert(name);
+          std::string name = read_asciiz();
 
           char type = name[0];
           assert(type == '*' || type == '#');
 
-          const char *proper_name = name + 1;
+          const char *proper_name = name.data() + 1;
 
           NativeReference *ref = m_module->m_native->native_references;
           UInt32 cookie1, cookie2;
@@ -457,42 +443,22 @@ void refalrts::Module::Loader::enumerate_blocks() {
         break;
 
       case cBlockTypeEmptyFunction:
-        {
-          const char *name = read_asciiz();
-          assert(name);
-
-          new RefalEmptyFunction(table->make_name(name), m_module);
-        }
+        new RefalEmptyFunction(table->make_name(read_asciiz()), m_module);
         break;
 
       case cBlockTypeSwap:
-        {
-          const char *name = read_asciiz();
-          assert(name);
-
-          new RefalSwap(table->make_name(name), m_module);
-        }
+        new RefalSwap(table->make_name(read_asciiz()), m_module);
         break;
 
       case cBlockTypeReference:
         refalrts_switch_default_violation(type);
 
       case cBlockTypeConditionRasl:
-        {
-          const char *name = read_asciiz();
-          assert(name);
-
-          new RefalCondFunctionRasl(table->make_name(name), m_module);
-        }
+        new RefalCondFunctionRasl(table->make_name(read_asciiz()), m_module);
         break;
 
       case cBlockTypeConditionNative:
-        {
-          const char *name = read_asciiz();
-          assert(name);
-
-          new RefalCondFunctionNative(table->make_name(name), m_module);
-        }
+        new RefalCondFunctionNative(table->make_name(read_asciiz()), m_module);
         break;
 
       default:

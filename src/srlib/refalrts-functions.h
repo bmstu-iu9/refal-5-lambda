@@ -1,6 +1,8 @@
 #ifndef RefalRTS_FUNCTIONS_H_
 #define RefalRTS_FUNCTIONS_H_
 
+#include <string>
+
 #include "refalrts.h"
 
 
@@ -11,11 +13,15 @@ class Module;
 
 struct RefalFunction {
   const RASLCommand *rasl;
+  std::string base_name;
   RefalFuncName name;
   Module *module;
 
   RefalFunction(const RASLCommand rasl[], RefalFuncName name, Module *module)
-    : rasl(rasl), name(name), module(module)
+    : rasl(rasl)
+    , base_name(name.name)
+    , name(base_name.c_str(), name.cookie1, name.cookie2)
+    , module(module)
   {
     register_me();
   }
