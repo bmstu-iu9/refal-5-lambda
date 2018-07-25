@@ -18,7 +18,7 @@
 //==============================================================================
 
 refalrts::Module::Module(Domain *domain, NativeModule *native)
-  : m_unresolved_func_tables(0)
+  : m_unresolved_func_tables()
   , m_funcs_table()
   , m_tables()
   , m_native_identifiers(0)
@@ -85,10 +85,10 @@ bool refalrts::Module::register_function(refalrts::RefalFunction *func) {
 unsigned refalrts::Module::find_unresolved_externals() {
   unsigned unresolved = 0;
 
-  while (m_unresolved_func_tables != 0) {
-    FunctionTable *table = m_unresolved_func_tables;
-    FunctionTableItem *items = table->items;
-    for (size_t i = 0; items[i].func_name != 0; ++i) {
+  while (! m_unresolved_func_tables.empty()) {
+    ConstTable *table = m_unresolved_func_tables.front();
+    std::vector<FunctionTableItem>& items = table->externals;
+    for (size_t i = 0; i < items.size(); ++i) {
       const char *str_name = items[i].func_name;
       char ch = *str_name;
       assert(ch == '*' || ch == '#');
@@ -113,7 +113,7 @@ unsigned refalrts::Module::find_unresolved_externals() {
       }
     }
 
-    m_unresolved_func_tables = m_unresolved_func_tables->next;
+    m_unresolved_func_tables.pop_front();
   }
 
   m_native_externals = malloc<RefalFunction*>(m_native->next_external_id);
@@ -317,7 +317,7 @@ void refalrts::Module::enumerate_blocks() {
           new_table->cookie1 = fixed_part.cookie1;
           new_table->cookie2 = fixed_part.cookie2;
 
-          new_table->externals.resize(fixed_part.external_count + 1);
+          new_table->externals.resize(fixed_part.external_count);
           new_table->external_memory.resize(fixed_part.external_size);
           read = fread(
             &new_table->external_memory[0], 1, fixed_part.external_size, stream
@@ -329,11 +329,7 @@ void refalrts::Module::enumerate_blocks() {
             // TODO: нужна проверка за выход из границ
             next_external_name += strlen(next_external_name) + 1;
           }
-          new_table->externals[fixed_part.external_count] =
-            static_cast<const char *>(0);
-          new_table->function_table = new FunctionTable(
-            this, fixed_part.cookie1, fixed_part.cookie2, &new_table->externals[0]
-          );
+          m_unresolved_func_tables.push_front(new_table);
 
           new_table->idents.resize(fixed_part.ident_count);
           new_table->idents_memory.resize(fixed_part.ident_size);
@@ -408,7 +404,7 @@ void refalrts::Module::enumerate_blocks() {
           new (result) RASLFunction(
             table->make_name(name),
             &table->rasl[offset],
-            table->function_table,
+            &table->externals[0],
             &table->idents[0],
             &table->numbers[0],
             &table->strings[0],
@@ -517,16 +513,6 @@ void refalrts::Module::enumerate_blocks() {
   }
 
   fclose(stream);
-}
-
-void refalrts::Module::cleanup_module() {
-  for (
-    std::list<ConstTable>::iterator p = m_tables.begin();
-    p != m_tables.end();
-    ++p
-  ) {
-    delete p->function_table;
-  }
 }
 
 void refalrts::Module::alloc_global_variables() {

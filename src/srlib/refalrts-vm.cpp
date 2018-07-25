@@ -694,7 +694,7 @@ JUMP_FROM_SCALE:
       case icLoadConstants:
         {
           RASLFunction *descr = static_cast<RASLFunction*>(callee);
-          functions = descr->functions->items;
+          functions = descr->functions;
           idents = descr->idents;
           numbers = descr->numbers;
           strings = descr->strings;

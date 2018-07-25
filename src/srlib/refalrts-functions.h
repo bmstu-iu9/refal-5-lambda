@@ -125,19 +125,8 @@ union FunctionTableItem {
   }
 };
 
-struct FunctionTable {
-  UInt32 cookie1;
-  UInt32 cookie2;
-  FunctionTableItem *items;
-  FunctionTable *next;
-
-  FunctionTable(
-    Module *module, UInt32 cookie1, UInt32 cookie2, FunctionTableItem *items
-  );
-};
-
 struct RASLFunction: public RefalFunction {
-  const FunctionTable *functions;
+  FunctionTableItem *functions;
   const RefalIdentifier *idents;
   const RefalNumber *numbers;
   const StringItem *strings;
@@ -146,7 +135,7 @@ struct RASLFunction: public RefalFunction {
   RASLFunction(
     RefalFuncName name,
     const RASLCommand *rasl,
-    const FunctionTable *functions,
+    FunctionTableItem *functions,
     const RefalIdentifier *idents,
     const RefalNumber *numbers,
     const StringItem *strings,

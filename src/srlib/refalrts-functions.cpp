@@ -19,18 +19,6 @@ void refalrts::RefalFunction::register_me() {
   }
 }
 
-refalrts::FunctionTable::FunctionTable(
-  refalrts::Module *module,
-  refalrts::UInt32 cookie1, refalrts::UInt32 cookie2,
-  refalrts::FunctionTableItem items[]
-)
-  : cookie1(cookie1)
-  , cookie2(cookie2)
-  , items(items)
-{
-  module->register_(this);
-}
-
 const refalrts::RASLCommand refalrts::RefalNativeFunction::run[] = {
   { refalrts::icPerformNative, 0, 0, 0 },
   { refalrts::icNextStep, 0, 0, 0 }

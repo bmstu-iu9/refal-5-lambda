@@ -68,7 +68,6 @@ class Module {
     UInt32 cookie1;
     UInt32 cookie2;
     std::vector<FunctionTableItem> externals;
-    FunctionTable *function_table;
     std::vector<RefalIdentifier> idents;
     std::vector<RefalNumber> numbers;
     std::vector<StringItem> strings;
@@ -83,7 +82,7 @@ class Module {
 
   typedef std::map<RefalFuncName, RefalFunction*> FuncsMap;
 
-  struct FunctionTable *m_unresolved_func_tables;
+  std::list<ConstTable*> m_unresolved_func_tables;
   FuncsMap m_funcs_table;
   std::list<ConstTable> m_tables;
   RefalIdentifier *m_native_identifiers;
@@ -106,11 +105,6 @@ public:
     return m_native_externals[ref.id];
   }
 
-  void register_(FunctionTable *table) {
-    table->next = m_unresolved_func_tables;
-    m_unresolved_func_tables = table;
-  }
-
   void *global_variable(size_t offset) {
     return &m_global_variables[offset];
   }
@@ -125,7 +119,6 @@ public:
     free_global_variables();
     free_idents_table();
     free_funcs_table();
-    cleanup_module();
   }
 
 private:
@@ -141,7 +134,6 @@ private:
   }
 
   void enumerate_blocks();
-  void cleanup_module();
 
   bool seek_rasl_signature(FILE *stream);
   const char *read_asciiz(FILE *stream);
