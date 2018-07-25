@@ -80,6 +80,35 @@ class Module {
     RefalFuncName make_name(const char *name) const;
   };
 
+  struct LoadModuleError {
+    const char *message1;
+    const char *message2;
+
+    LoadModuleError(const char *message1, const char *message2 = "")
+      : message1(message1)
+      , message2(message2)
+    {
+      /* пусто */
+    }
+  };
+
+  class Loader {
+    Module *m_module;
+    FILE *m_stream;
+
+  public:
+    Loader(Module *module, const char *name);
+    ~Loader();
+
+    void enumerate_blocks();
+
+  private:
+    bool seek_rasl_signature();
+    const char *read_asciiz();
+  };
+
+  friend class Loader;
+
   typedef std::map<RefalFuncName, RefalFunction*> FuncsMap;
 
   std::list<ConstTable*> m_unresolved_func_tables;
@@ -134,9 +163,6 @@ private:
   }
 
   void enumerate_blocks();
-
-  bool seek_rasl_signature(FILE *stream);
-  const char *read_asciiz(FILE *stream);
 
   void alloc_global_variables();
   void free_global_variables();

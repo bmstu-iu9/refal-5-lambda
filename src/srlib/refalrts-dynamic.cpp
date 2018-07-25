@@ -155,29 +155,23 @@ void refalrts::Module::free_funcs_table() {
 // Загружаемый модуль
 //------------------------------------------------------------------------------
 
-bool refalrts::Module::seek_rasl_signature(FILE *stream) {
-  int seek_res = fseek(stream, 0L, SEEK_END);
+bool refalrts::Module::Loader::seek_rasl_signature() {
+  int seek_res = fseek(m_stream, 0L, SEEK_END);
   if (seek_res != 0) {
-    fprintf(stderr, "INTERNAL ERROR: can't seek in module\n");
-    exit(155);
+    throw LoadModuleError("can't seek in module");
   }
 
-  long int file_size = ftell(stream);
+  long int file_size = ftell(m_stream);
   if (file_size == -1L) {
-    fprintf(
-      stderr, "INTERNAL ERROR: filesize obtaining error %s\n",
-      strerror(errno)
-    );
-    exit(155);
+    throw LoadModuleError("filesize obtaining error", strerror(errno));
   }
 
   long int next_offset = 0L;
   bool found = false;
   while (next_offset < file_size && ! found) {
-    seek_res = fseek(stream, next_offset, SEEK_SET);
+    seek_res = fseek(m_stream, next_offset, SEEK_SET);
     if (seek_res != 0) {
-      fprintf(stderr, "INTERNAL ERROR: can't seek in module\n");
-      exit(155);
+      throw LoadModuleError("can't seek in module");
     }
 
     static char sample_sig[] = {
@@ -185,10 +179,9 @@ bool refalrts::Module::seek_rasl_signature(FILE *stream) {
     };
     sample_sig[0] = cBlockTypeStart;
     char actual_sig[sizeof(sample_sig)];
-    size_t read = fread(actual_sig, sizeof(actual_sig), 1, stream);
+    size_t read = fread(actual_sig, sizeof(actual_sig), 1, m_stream);
     if (read != 1) {
-      fprintf(stderr, "INTERNAL ERROR: can't read bytes from module\n");
-      exit(155);
+      throw LoadModuleError("can't read bytes from module");
     }
 
     found = memcmp(sample_sig, actual_sig, sizeof(sample_sig)) == 0;
@@ -202,7 +195,7 @@ bool refalrts::Module::seek_rasl_signature(FILE *stream) {
   return found;
 }
 
-const char *refalrts::Module::read_asciiz(FILE *stream) {
+const char *refalrts::Module::Loader::read_asciiz() {
   enum { cINC_SIZE = 20 };
 
   size_t buflen = cINC_SIZE;
@@ -213,7 +206,7 @@ const char *refalrts::Module::read_asciiz(FILE *stream) {
 
   size_t read;
   do {
-    read = fread(&buffer[buffoffset], 1, 1, stream);
+    read = fread(&buffer[buffoffset], 1, 1, m_stream);
     if (read) {
       ++buffoffset;
       if (buffoffset == buflen) {
@@ -257,25 +250,43 @@ void refalrts::Module::enumerate_blocks() {
     exit(155);
   }
 
-  ConstTable *table = 0;
-
-  FILE *stream = fopen(module_name, "rb");
-  if (! stream) {
-    fprintf(stderr, "INTERNAL ERROR: can't open main executable for read\n");
+  try {
+    Loader loader(this, module_name);
+    loader.enumerate_blocks();
+  } catch (LoadModuleError& e) {
+    fprintf(stderr, "INTERNAL ERROR: %s%s\n", e.message1, e.message2);
     exit(155);
   }
+}
 
-  successed = seek_rasl_signature(stream);
+refalrts::Module::Loader::Loader(refalrts::Module *module, const char *filename)
+  : m_module(module)
+  , m_stream(fopen(filename, "rb"))
+{
+  if (! m_stream) {
+    throw LoadModuleError("can't open main executable for read");
+  }
+}
+
+refalrts::Module::Loader::~Loader() {
+  if (m_stream) {
+    fclose(m_stream);
+  }
+}
+
+void refalrts::Module::Loader::enumerate_blocks() {
+  ConstTable *table = 0;
+
+  bool successed = seek_rasl_signature();
   if (! successed) {
-    fprintf(stderr, "INTERNAL ERROR: can't find signature in executable\n");
-    exit(155);
+    throw LoadModuleError("can't find signature in executable\n");
   }
 
   unsigned char type;
-  while (fread(&type, sizeof(type), 1, stream) == 1) {
+  while (fread(&type, sizeof(type), 1, m_stream) == 1) {
     UInt32 datalen;
 
-    size_t read = fread(&datalen, sizeof(datalen), 1, stream);
+    size_t read = fread(&datalen, sizeof(datalen), 1, m_stream);
     assert(read == 1);      // TODO: сообщение об ошибке
 
     switch (type) {
@@ -287,7 +298,7 @@ void refalrts::Module::enumerate_blocks() {
           assert(sizeof(sample) == datalen);
 
           char signature[sizeof(sample)];
-          read = fread(signature, 1, sizeof(signature), stream);
+          read = fread(signature, 1, sizeof(signature), m_stream);
           assert(sizeof(signature) == read);
           assert(memcmp(sample, signature, sizeof(signature)) == 0);
         }
@@ -308,11 +319,11 @@ void refalrts::Module::enumerate_blocks() {
             UInt32 string_size;
           } fixed_part;
 
-          read = fread(&fixed_part, sizeof(fixed_part), 1, stream);
+          read = fread(&fixed_part, sizeof(fixed_part), 1, m_stream);
           assert(read == 1);
 
-          m_tables.push_back(ConstTable());
-          ConstTable *new_table = &m_tables.back();
+          m_module->m_tables.push_back(ConstTable());
+          ConstTable *new_table = &m_module->m_tables.back();
 
           new_table->cookie1 = fixed_part.cookie1;
           new_table->cookie2 = fixed_part.cookie2;
@@ -320,7 +331,7 @@ void refalrts::Module::enumerate_blocks() {
           new_table->externals.resize(fixed_part.external_count);
           new_table->external_memory.resize(fixed_part.external_size);
           read = fread(
-            &new_table->external_memory[0], 1, fixed_part.external_size, stream
+            &new_table->external_memory[0], 1, fixed_part.external_size, m_stream
           );
           assert(read == fixed_part.external_size);
           const char *next_external_name = &new_table->external_memory[0];
@@ -329,17 +340,17 @@ void refalrts::Module::enumerate_blocks() {
             // TODO: нужна проверка за выход из границ
             next_external_name += strlen(next_external_name) + 1;
           }
-          m_unresolved_func_tables.push_front(new_table);
+          m_module->m_unresolved_func_tables.push_front(new_table);
 
           new_table->idents.resize(fixed_part.ident_count);
           new_table->idents_memory.resize(fixed_part.ident_size);
           read = fread(
-            &new_table->idents_memory[0], 1, fixed_part.ident_size, stream
+            &new_table->idents_memory[0], 1, fixed_part.ident_size, m_stream
           );
           assert(read == fixed_part.ident_size);
           const char *next_ident_name = &new_table->idents_memory[0];
           for (size_t i = 0; i < fixed_part.ident_count; ++i) {
-            RefalIdentifier ident = ident_implode(m_domain, next_ident_name);
+            RefalIdentifier ident = ident_implode(m_module->m_domain, next_ident_name);
 #ifdef IDENTS_LIMIT
             if (! ident) {
               fprintf(
@@ -360,7 +371,7 @@ void refalrts::Module::enumerate_blocks() {
           new_table->numbers.resize(fixed_part.number_count);
           read = fread(
             &new_table->numbers[0], sizeof(RefalNumber), fixed_part.number_count,
-            stream
+            m_stream
           );
           assert(read == fixed_part.number_count);
 
@@ -369,9 +380,9 @@ void refalrts::Module::enumerate_blocks() {
           char *string_target = &new_table->strings_memory[0];
           for (size_t i = 0; i < fixed_part.string_count; ++i) {
             UInt32 length;
-            read = fread(&length, sizeof(length), 1, stream);
+            read = fread(&length, sizeof(length), 1, m_stream);
             assert(read == 1);
-            read = fread(string_target, 1, length, stream);
+            read = fread(string_target, 1, length, m_stream);
             assert(read == length);
             new_table->strings[i].string = string_target;
             new_table->strings[i].string_len = length;
@@ -381,7 +392,7 @@ void refalrts::Module::enumerate_blocks() {
           new_table->rasl.resize(fixed_part.rasl_length);
           read = fread(
             &new_table->rasl[0], sizeof(RASLCommand), fixed_part.rasl_length,
-            stream
+            m_stream
           );
           assert(read == fixed_part.rasl_length);
 
@@ -391,11 +402,11 @@ void refalrts::Module::enumerate_blocks() {
 
       case cBlockTypeRefalFunction:
         {
-          const char *name = read_asciiz(stream);
+          const char *name = read_asciiz();
           assert(name);
 
           UInt32 offset;
-          read = fread(&offset, sizeof(offset), 1, stream);
+          read = fread(&offset, sizeof(offset), 1, m_stream);
           assert(read == 1);
 
           RASLFunction *result = Module::malloc<RASLFunction>();
@@ -409,14 +420,14 @@ void refalrts::Module::enumerate_blocks() {
             &table->numbers[0],
             &table->strings[0],
             "filename.sref",
-            this
+            m_module
           );
         }
         break;
 
       case cBlockTypeNativeFunction:
         {
-          const char *name = read_asciiz(stream);
+          const char *name = read_asciiz();
           assert(name);
 
           char type = name[0];
@@ -424,7 +435,7 @@ void refalrts::Module::enumerate_blocks() {
 
           const char *proper_name = name + 1;
 
-          NativeReference *ref = m_native->native_references;
+          NativeReference *ref = m_module->m_native->native_references;
           while (
             ref != 0
             && ! (
@@ -451,32 +462,32 @@ void refalrts::Module::enumerate_blocks() {
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
           new (result) RefalNativeFunction(
-            ref->code, table->make_name(name), this
+            ref->code, table->make_name(name), m_module
           );
         }
         break;
 
       case cBlockTypeEmptyFunction:
         {
-          const char *name = read_asciiz(stream);
+          const char *name = read_asciiz();
           assert(name);
 
           RefalEmptyFunction *result = Module::malloc<RefalEmptyFunction>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
-          new (result) RefalEmptyFunction(table->make_name(name), this);
+          new (result) RefalEmptyFunction(table->make_name(name), m_module);
         }
         break;
 
       case cBlockTypeSwap:
         {
-          const char *name = read_asciiz(stream);
+          const char *name = read_asciiz();
           assert(name);
 
           RefalSwap *result = Module::malloc<RefalSwap>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
-          new (result) RefalSwap(table->make_name(name), this);
+          new (result) RefalSwap(table->make_name(name), m_module);
         }
         break;
 
@@ -485,25 +496,25 @@ void refalrts::Module::enumerate_blocks() {
 
       case cBlockTypeConditionRasl:
         {
-          const char *name = read_asciiz(stream);
+          const char *name = read_asciiz();
           assert(name);
 
           RefalCondFunctionRasl *result = Module::malloc<RefalCondFunctionRasl>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
-          new (result) RefalCondFunctionRasl(table->make_name(name), this);
+          new (result) RefalCondFunctionRasl(table->make_name(name), m_module);
         }
         break;
 
       case cBlockTypeConditionNative:
         {
-          const char *name = read_asciiz(stream);
+          const char *name = read_asciiz();
           assert(name);
 
           RefalCondFunctionNative *result = Module::malloc<RefalCondFunctionNative>();
           // TODO: выдача сообщения об ошибке
           assert(result != 0);
-          new (result) RefalCondFunctionNative(table->make_name(name), this);
+          new (result) RefalCondFunctionNative(table->make_name(name), m_module);
         }
         break;
 
@@ -511,8 +522,6 @@ void refalrts::Module::enumerate_blocks() {
         refalrts_switch_default_violation(type);
     }
   }
-
-  fclose(stream);
 }
 
 void refalrts::Module::alloc_global_variables() {
