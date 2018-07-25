@@ -103,6 +103,10 @@ class Module {
     void enumerate_blocks();
 
   private:
+    size_t fread(void *ptr, size_t size, size_t count) {
+      return ::fread(ptr, size, count, m_stream);
+    }
+
     bool seek_rasl_signature();
     const char *read_asciiz();
   };
