@@ -117,6 +117,12 @@ union FunctionTableItem {
   {
     /* пусто */
   }
+
+  FunctionTableItem()
+    : func_name(0)
+  {
+    /* пусто */
+  }
 };
 
 struct FunctionTable {

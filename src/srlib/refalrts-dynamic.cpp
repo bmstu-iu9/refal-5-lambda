@@ -20,7 +20,7 @@
 refalrts::Module::Module(Domain *domain, NativeModule *native)
   : m_unresolved_func_tables(0)
   , m_funcs_table()
-  , m_tables(0)
+  , m_tables()
   , m_native_identifiers(0)
   , m_native_externals(0)
   , m_native(native)
@@ -311,20 +311,19 @@ void refalrts::Module::enumerate_blocks() {
           read = fread(&fixed_part, sizeof(fixed_part), 1, stream);
           assert(read == 1);
 
-          ConstTable *new_table = malloc<ConstTable>();
-          assert(new_table);
+          m_tables.push_back(ConstTable());
+          ConstTable *new_table = &m_tables.back();
 
           new_table->cookie1 = fixed_part.cookie1;
           new_table->cookie2 = fixed_part.cookie2;
 
-          new_table->externals =
-            malloc<FunctionTableItem>(fixed_part.external_count + 1);
-          new_table->external_memory = malloc<char>(fixed_part.external_size);
+          new_table->externals.resize(fixed_part.external_count + 1);
+          new_table->external_memory.resize(fixed_part.external_size);
           read = fread(
-            new_table->external_memory, 1, fixed_part.external_size, stream
+            &new_table->external_memory[0], 1, fixed_part.external_size, stream
           );
           assert(read == fixed_part.external_size);
-          const char *next_external_name = new_table->external_memory;
+          const char *next_external_name = &new_table->external_memory[0];
           for (size_t i = 0; i < fixed_part.external_count; ++i) {
             new_table->externals[i].func_name = next_external_name;
             // TODO: нужна проверка за выход из границ
@@ -333,16 +332,16 @@ void refalrts::Module::enumerate_blocks() {
           new_table->externals[fixed_part.external_count] =
             static_cast<const char *>(0);
           new_table->function_table = new FunctionTable(
-            this, fixed_part.cookie1, fixed_part.cookie2, new_table->externals
+            this, fixed_part.cookie1, fixed_part.cookie2, &new_table->externals[0]
           );
 
-          new_table->idents = malloc<RefalIdentifier>(fixed_part.ident_count);
-          new_table->idents_memory = malloc<char>(fixed_part.ident_size);
+          new_table->idents.resize(fixed_part.ident_count);
+          new_table->idents_memory.resize(fixed_part.ident_size);
           read = fread(
-            new_table->idents_memory, 1, fixed_part.ident_size, stream
+            &new_table->idents_memory[0], 1, fixed_part.ident_size, stream
           );
           assert(read == fixed_part.ident_size);
-          const char *next_ident_name = new_table->idents_memory;
+          const char *next_ident_name = &new_table->idents_memory[0];
           for (size_t i = 0; i < fixed_part.ident_count; ++i) {
             RefalIdentifier ident = ident_implode(m_domain, next_ident_name);
 #ifdef IDENTS_LIMIT
@@ -362,16 +361,16 @@ void refalrts::Module::enumerate_blocks() {
             next_ident_name += strlen(next_ident_name) + 1;
           }
 
-          new_table->numbers = malloc<RefalNumber>(fixed_part.number_count);
+          new_table->numbers.resize(fixed_part.number_count);
           read = fread(
-            new_table->numbers, sizeof(RefalNumber), fixed_part.number_count,
+            &new_table->numbers[0], sizeof(RefalNumber), fixed_part.number_count,
             stream
           );
           assert(read == fixed_part.number_count);
 
-          new_table->strings = malloc<StringItem>(fixed_part.string_count);
-          new_table->strings_memory = malloc<char>(fixed_part.string_size);
-          char *string_target = new_table->strings_memory;
+          new_table->strings.resize(fixed_part.string_count);
+          new_table->strings_memory.resize(fixed_part.string_size);
+          char *string_target = &new_table->strings_memory[0];
           for (size_t i = 0; i < fixed_part.string_count; ++i) {
             UInt32 length;
             read = fread(&length, sizeof(length), 1, stream);
@@ -383,15 +382,12 @@ void refalrts::Module::enumerate_blocks() {
             string_target += length;
           }
 
-          new_table->rasl = malloc<RASLCommand>(fixed_part.rasl_length);
+          new_table->rasl.resize(fixed_part.rasl_length);
           read = fread(
-            new_table->rasl, sizeof(RASLCommand), fixed_part.rasl_length,
+            &new_table->rasl[0], sizeof(RASLCommand), fixed_part.rasl_length,
             stream
           );
           assert(read == fixed_part.rasl_length);
-
-          new_table->next = m_tables;
-          m_tables = new_table;
 
           table = new_table;
         }
@@ -411,11 +407,11 @@ void refalrts::Module::enumerate_blocks() {
           assert(result != 0);
           new (result) RASLFunction(
             table->make_name(name),
-            table->rasl + offset,
+            &table->rasl[offset],
             table->function_table,
-            table->idents,
-            table->numbers,
-            table->strings,
+            &table->idents[0],
+            &table->numbers[0],
+            &table->strings[0],
             "filename.sref",
             this
           );
@@ -524,25 +520,12 @@ void refalrts::Module::enumerate_blocks() {
 }
 
 void refalrts::Module::cleanup_module() {
-  while (m_tables != 0) {
-    ConstTable *next = m_tables->next;
-
-    free(m_tables->rasl);
-
-    free(m_tables->strings_memory);
-    free(m_tables->strings);
-
-    free(m_tables->numbers);
-
-    free(m_tables->idents_memory);
-    free(m_tables->idents);
-
-    delete m_tables->function_table;
-    free(m_tables->external_memory);
-    free(m_tables->externals);
-
-    free(m_tables);
-    m_tables = next;
+  for (
+    std::list<ConstTable>::iterator p = m_tables.begin();
+    p != m_tables.end();
+    ++p
+  ) {
+    delete p->function_table;
   }
 }
 

@@ -1,10 +1,12 @@
 #ifndef RefalRTS_DYNAMIC_H_
 #define RefalRTS_DYNAMIC_H_
 
+#include <list>
 #include <map>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <vector>
 
 #include "refalrts.h"
 #include "refalrts-functions.h"
@@ -65,18 +67,16 @@ class Module {
   struct ConstTable {
     UInt32 cookie1;
     UInt32 cookie2;
-    FunctionTableItem *externals;
+    std::vector<FunctionTableItem> externals;
     FunctionTable *function_table;
-    RefalIdentifier *idents;
-    RefalNumber *numbers;
-    StringItem *strings;
-    RASLCommand *rasl;
+    std::vector<RefalIdentifier> idents;
+    std::vector<RefalNumber> numbers;
+    std::vector<StringItem> strings;
+    std::vector<RASLCommand> rasl;
 
-    char *external_memory;
-    char *idents_memory;
-    char *strings_memory;
-
-    ConstTable *next;
+    std::vector<char> external_memory;
+    std::vector<char> idents_memory;
+    std::vector<char> strings_memory;
 
     RefalFuncName make_name(const char *name) const;
   };
@@ -85,7 +85,7 @@ class Module {
 
   struct FunctionTable *m_unresolved_func_tables;
   FuncsMap m_funcs_table;
-  struct ConstTable *m_tables;
+  std::list<ConstTable> m_tables;
   RefalIdentifier *m_native_identifiers;
   RefalFunction **m_native_externals;
   NativeModule *m_native;
