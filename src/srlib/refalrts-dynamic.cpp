@@ -145,9 +145,7 @@ void refalrts::Module::free_funcs_table() {
     FuncsMap::iterator p = m_funcs_table.begin();
     RefalFunction *function = p->second;
     m_funcs_table.erase(p);
-    // Деструкторов (в т.ч. неявных в функциях нет),
-    // память выделялась только malloc’ом, поэтому освобождаем free()
-    free(function);
+    delete function;
   }
 }
 
@@ -405,10 +403,7 @@ void refalrts::Module::Loader::enumerate_blocks() {
           read = fread(&offset, sizeof(offset), 1);
           assert(read == 1);
 
-          RASLFunction *result = Module::malloc<RASLFunction>();
-          // TODO: выдача сообщения об ошибке
-          assert(result != 0);
-          new (result) RASLFunction(
+          new RASLFunction(
             table->make_name(name),
             &table->rasl[offset],
             &table->externals[0],
@@ -455,10 +450,7 @@ void refalrts::Module::Loader::enumerate_blocks() {
           // TODO: Сообщение об ошибке
           assert(ref != 0);
 
-          RefalNativeFunction *result = Module::malloc<RefalNativeFunction>();
-          // TODO: выдача сообщения об ошибке
-          assert(result != 0);
-          new (result) RefalNativeFunction(
+          new RefalNativeFunction(
             ref->code, table->make_name(name), m_module
           );
         }
@@ -469,10 +461,7 @@ void refalrts::Module::Loader::enumerate_blocks() {
           const char *name = read_asciiz();
           assert(name);
 
-          RefalEmptyFunction *result = Module::malloc<RefalEmptyFunction>();
-          // TODO: выдача сообщения об ошибке
-          assert(result != 0);
-          new (result) RefalEmptyFunction(table->make_name(name), m_module);
+          new RefalEmptyFunction(table->make_name(name), m_module);
         }
         break;
 
@@ -481,10 +470,7 @@ void refalrts::Module::Loader::enumerate_blocks() {
           const char *name = read_asciiz();
           assert(name);
 
-          RefalSwap *result = Module::malloc<RefalSwap>();
-          // TODO: выдача сообщения об ошибке
-          assert(result != 0);
-          new (result) RefalSwap(table->make_name(name), m_module);
+          new RefalSwap(table->make_name(name), m_module);
         }
         break;
 
@@ -496,10 +482,7 @@ void refalrts::Module::Loader::enumerate_blocks() {
           const char *name = read_asciiz();
           assert(name);
 
-          RefalCondFunctionRasl *result = Module::malloc<RefalCondFunctionRasl>();
-          // TODO: выдача сообщения об ошибке
-          assert(result != 0);
-          new (result) RefalCondFunctionRasl(table->make_name(name), m_module);
+          new RefalCondFunctionRasl(table->make_name(name), m_module);
         }
         break;
 
@@ -508,10 +491,7 @@ void refalrts::Module::Loader::enumerate_blocks() {
           const char *name = read_asciiz();
           assert(name);
 
-          RefalCondFunctionNative *result = Module::malloc<RefalCondFunctionNative>();
-          // TODO: выдача сообщения об ошибке
-          assert(result != 0);
-          new (result) RefalCondFunctionNative(table->make_name(name), m_module);
+          new RefalCondFunctionNative(table->make_name(name), m_module);
         }
         break;
 

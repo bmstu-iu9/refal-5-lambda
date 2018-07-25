@@ -20,6 +20,10 @@ struct RefalFunction {
     register_me();
   }
 
+  virtual ~RefalFunction() {
+    /* пусто */
+  }
+
 private:
   void register_me();
 };
