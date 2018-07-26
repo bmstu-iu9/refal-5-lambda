@@ -1,6 +1,7 @@
 #include <new>
 
 #include <assert.h>
+#include <new>
 #include <string.h>
 #include <utility>
 
@@ -554,7 +555,6 @@ void refalrts::Domain::free_idents_table() {
     StringRef name = p->first;
     RefalIdentifier ident = p->second;
     m_idents_table.erase(p);
-    delete[] name.str;
     delete ident;
   }
 }
@@ -572,16 +572,20 @@ refalrts::Domain::lookup_ident(const char *name) {
 }
 
 bool refalrts::Domain::register_ident(RefalIdentifier ident) {
+  try {
 #ifdef IDENTS_LIMIT
-  if (idents_count() >= IDENTS_LIMIT) {
-    return false;
-  }
+    if (idents_count() >= IDENTS_LIMIT) {
+      return false;
+    }
 #endif // ifdef IDENTS_LIMIT
 
-  IdentsMap::value_type new_value(StringRef(ident->name()), ident);
-  std::pair<IdentsMap::iterator, bool> res = m_idents_table.insert(new_value);
-  assert(res.second);
-  return res.second;
+    IdentsMap::value_type new_value(StringRef(ident->name()), ident);
+    std::pair<IdentsMap::iterator, bool> res = m_idents_table.insert(new_value);
+    assert(res.second);
+    return res.second;
+  } catch (std::bad_alloc&) {
+    return false;
+  }
 }
 
 void refalrts::Domain::read_counters(unsigned long counters[]) {

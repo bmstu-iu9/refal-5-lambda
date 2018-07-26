@@ -1,5 +1,6 @@
 #include <errno.h>
 #include <exception>
+#include <new>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -631,6 +632,17 @@ void refalrts::debug_print_expr(
 
 // Идентификаторы
 
+refalrts::RefalIdentDescr::RefalIdentDescr(const char *name)
+  : m_name(0)
+{
+  size_t length = strlen(name);
+  m_name = static_cast<char*>(memcpy(new char[length + 1], name, length + 1));
+}
+
+refalrts::RefalIdentDescr::~RefalIdentDescr() {
+  delete[] m_name;
+}
+
 refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
   refalrts::Domain *domain, const char *name
 ) {
@@ -640,20 +652,20 @@ refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
 
   RefalIdentifier res = domain->lookup_ident(name);
   if (! res) {
-    size_t length = strlen(name);
-    char *new_name = new char[length + 1];
-    memcpy(new_name, name, length + 1);
+    try {
+      res = new RefalIdentDescr(name);
+      bool allocated = domain->register_ident(res);
 
-    res = new RefalIdentDescr(new_name);
-    bool allocated = domain->register_ident(res);
-
-#ifdef IDENTS_LIMIT
-    if (! allocated) {
-      return 0;
+      if (! allocated) {
+        delete res;
+        res = 0;
+      }
+    } catch (std::bad_alloc&) {
+      if (res) {
+        delete res;
+        res = 0;
+      }
     }
-#else
-    assert(allocated != 0);
-#endif // ifdef IDENTS_LIMIT
   }
   return res;
 }

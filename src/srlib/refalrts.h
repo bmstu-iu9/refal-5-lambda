@@ -80,13 +80,11 @@ class RefalIdentDescr {
   RefalIdentDescr(const RefalIdentDescr&);
   RefalIdentDescr& operator=(const RefalIdentDescr&);
 
-  RefalIdentDescr(const char *name)
-    : m_name(name)
-  {
-    /* пусто */
-  }
+  RefalIdentDescr(const char *name);
 
 public:
+  ~RefalIdentDescr();
+
   const char *name() const {
     return m_name;
   }
