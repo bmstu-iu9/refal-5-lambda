@@ -156,7 +156,9 @@ bool refalrts::Module::Loader::seek_rasl_signature() {
 
   long int file_size = ftell(m_stream);
   if (file_size == -1L) {
-    throw LoadModuleError("filesize obtaining error", strerror(errno));
+    throw LoadModuleError(
+      std::string("filesize obtaining error") + strerror(errno)
+    );
   }
 
   long int next_offset = 0L;
@@ -214,11 +216,12 @@ refalrts::Module::ConstTable::make_name(const std::string& name) const {
   char type = name[0];
   const char *proper_name = name.data() + 1;
 
-  assert(type == '*' || type == '#');
   if (type == '#') {
     return RefalFuncName(proper_name, cookie1, cookie2);
-  } else {
+  } else if (type == '*') {
     return RefalFuncName(proper_name, 0, 0);
+  } else {
+    throw LoadModuleError("name must start from '*' or '#', but got " + name);
   }
 }
 
@@ -235,7 +238,7 @@ void refalrts::Module::enumerate_blocks() {
     Loader loader(this, module_name);
     loader.enumerate_blocks();
   } catch (LoadModuleError& e) {
-    fprintf(stderr, "INTERNAL ERROR: %s%s\n", e.message1, e.message2);
+    fprintf(stderr, "INTERNAL ERROR: %s\n", e.message.c_str());
     exit(155);
   }
 }
@@ -255,6 +258,14 @@ refalrts::Module::Loader::~Loader() {
   }
 }
 
+#define PARSE_ASSERT(condition, message) \
+  if (! (condition)) { \
+    throw LoadModuleError( \
+      std::string("RASL invariant error: ") + (message) \
+      + " (failed " + #condition + ")" \
+    ); \
+  }
+
 void refalrts::Module::Loader::enumerate_blocks() {
   ConstTable *table = 0;
 
@@ -268,7 +279,7 @@ void refalrts::Module::Loader::enumerate_blocks() {
     UInt32 datalen;
 
     size_t read = fread(&datalen, sizeof(datalen), 1);
-    assert(read == 1);      // TODO: сообщение об ошибке
+    PARSE_ASSERT(read == 1, "can't read block size");
 
     switch (type) {
       case cBlockTypeStart:
@@ -276,12 +287,17 @@ void refalrts::Module::Loader::enumerate_blocks() {
           static const char sample[8] = {
             'R', 'A', 'S', 'L', 'C', 'O', 'D', 'E'
           };
-          assert(sizeof(sample) == datalen);
+          PARSE_ASSERT(
+            sizeof(sample) == datalen, "invalid START block size"
+          );
 
           char signature[sizeof(sample)];
           read = fread(signature, 1, sizeof(signature));
-          assert(sizeof(signature) == read);
-          assert(memcmp(sample, signature, sizeof(signature)) == 0);
+          PARSE_ASSERT(sizeof(signature) == read, "can't read START signature");
+          PARSE_ASSERT(
+            memcmp(sample, signature, sizeof(signature)) == 0,
+            "invalid signature in START, " + std::string(signature, read)
+          );
         }
         break;
 
@@ -301,7 +317,7 @@ void refalrts::Module::Loader::enumerate_blocks() {
           } fixed_part;
 
           read = fread(&fixed_part, sizeof(fixed_part), 1);
-          assert(read == 1);
+          PARSE_ASSERT(read == 1, "can't read fixed part of CONST_TABLE");
 
           m_module->m_tables.push_back(ConstTable());
           ConstTable *new_table = &m_module->m_tables.back();
@@ -314,7 +330,10 @@ void refalrts::Module::Loader::enumerate_blocks() {
           read = fread(
             &new_table->external_memory[0], 1, fixed_part.external_size
           );
-          assert(read == fixed_part.external_size);
+          PARSE_ASSERT(
+            read == fixed_part.external_size,
+            "can't read externals list in CONST_TABLE"
+          );
           const char *next_external_name = &new_table->external_memory[0];
           for (size_t i = 0; i < fixed_part.external_count; ++i) {
             new_table->externals[i].func_name = next_external_name;
@@ -326,7 +345,10 @@ void refalrts::Module::Loader::enumerate_blocks() {
           new_table->idents.resize(fixed_part.ident_count);
           new_table->idents_memory.resize(fixed_part.ident_size);
           read = fread(&new_table->idents_memory[0], 1, fixed_part.ident_size);
-          assert(read == fixed_part.ident_size);
+          PARSE_ASSERT(
+            read == fixed_part.ident_size,
+            "can't read idents list in CONST_TABLE"
+          );
           const char *next_ident_name = &new_table->idents_memory[0];
           for (size_t i = 0; i < fixed_part.ident_count; ++i) {
             RefalIdentifier ident = ident_implode(m_module->m_domain, next_ident_name);
@@ -351,7 +373,10 @@ void refalrts::Module::Loader::enumerate_blocks() {
           read = fread(
             &new_table->numbers[0], sizeof(RefalNumber), fixed_part.number_count
           );
-          assert(read == fixed_part.number_count);
+          PARSE_ASSERT(
+            read == fixed_part.number_count,
+            "can't read numbers list in CONST_TABLE"
+          );
 
           new_table->strings.resize(fixed_part.string_count);
           new_table->strings_memory.resize(fixed_part.string_size);
@@ -359,9 +384,11 @@ void refalrts::Module::Loader::enumerate_blocks() {
           for (size_t i = 0; i < fixed_part.string_count; ++i) {
             UInt32 length;
             read = fread(&length, sizeof(length), 1);
-            assert(read == 1);
+            PARSE_ASSERT(read == 1, "can't read STRING size in CONST_TABLE");
             read = fread(string_target, 1, length);
-            assert(read == length);
+            PARSE_ASSERT(
+              read == length, "can't read STRING chars in CONST_TABLE"
+            );
             new_table->strings[i].string = string_target;
             new_table->strings[i].string_len = length;
             string_target += length;
@@ -371,7 +398,9 @@ void refalrts::Module::Loader::enumerate_blocks() {
           read = fread(
             &new_table->rasl[0], sizeof(RASLCommand), fixed_part.rasl_length
           );
-          assert(read == fixed_part.rasl_length);
+          PARSE_ASSERT(
+            read == fixed_part.rasl_length, "can't read rasl in CONST_TABLE"
+          );
 
           table = new_table;
         }
@@ -383,7 +412,7 @@ void refalrts::Module::Loader::enumerate_blocks() {
 
           UInt32 offset;
           read = fread(&offset, sizeof(offset), 1);
-          assert(read == 1);
+          PARSE_ASSERT(read == 1, "can't read offset in REFAL_FUNCTION");
 
           new RASLFunction(
             table->make_name(name),
@@ -403,8 +432,6 @@ void refalrts::Module::Loader::enumerate_blocks() {
           std::string name = read_asciiz();
 
           char type = name[0];
-          assert(type == '*' || type == '#');
-
           const char *proper_name = name.data() + 1;
 
           NativeReference *ref = m_module->m_native->native_references;
@@ -412,9 +439,14 @@ void refalrts::Module::Loader::enumerate_blocks() {
           if (type == '*') {
             cookie1 = 0;
             cookie2 = 0;
-          } else {
+          } else if (type == '#') {
             cookie1 = table->cookie1;
             cookie2 = table->cookie2;
+          } else {
+            throw LoadModuleError(
+              "Invalid name '" + name + "', "
+              "valid name must start from '*' or '#'"
+            );
           }
 
           while (
@@ -428,8 +460,11 @@ void refalrts::Module::Loader::enumerate_blocks() {
             ref = ref->next;
           }
 
-          // TODO: Сообщение об ошибке
-          assert(ref != 0);
+          if (ref == 0) {
+            throw LoadModuleError(
+              "Native function '" + name + "' is not found in executable"
+            );
+          }
 
           new RefalNativeFunction(
             ref->code, table->make_name(name), m_module
