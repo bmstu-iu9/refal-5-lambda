@@ -32,6 +32,15 @@ refalrts::Module::Module(Domain *domain, NativeModule *native)
   alloc_global_variables();
 }
 
+refalrts::Module::~Module() {
+  while (m_funcs_table.size() > 0) {
+    FuncsMap::iterator p = m_funcs_table.begin();
+    RefalFunction *function = p->second;
+    m_funcs_table.erase(p);
+    delete function;
+  }
+}
+
 //------------------------------------------------------------------------------
 // Идентификаторы
 //------------------------------------------------------------------------------
@@ -133,15 +142,6 @@ unsigned refalrts::Module::find_unresolved_externals() {
   }
 
   return unresolved;
-}
-
-void refalrts::Module::free_funcs_table() {
-  while (m_funcs_table.size() > 0) {
-    FuncsMap::iterator p = m_funcs_table.begin();
-    RefalFunction *function = p->second;
-    m_funcs_table.erase(p);
-    delete function;
-  }
 }
 
 //------------------------------------------------------------------------------
@@ -495,7 +495,6 @@ bool refalrts::Domain::load_native_module(NativeModule *main_module) {
 
 void refalrts::Domain::unload() {
   free_idents_table();
-  m_module->cleanup();
   delete m_module;
 }
 

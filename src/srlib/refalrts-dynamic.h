@@ -126,6 +126,7 @@ class Module {
 
 public:
   Module(Domain *domain, NativeModule *native = 0);
+  ~Module();
 
   RefalIdentifier operator[](const IdentReference& ref) const {
     return m_native_identifiers[ref.id];
@@ -148,14 +149,8 @@ public:
 
   unsigned find_unresolved_externals();
 
-  void cleanup() {
-    free_funcs_table();
-  }
-
 private:
   void load_native_identifiers();
-
-  void free_funcs_table();
 
   void enumerate_blocks();
 
