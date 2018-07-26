@@ -118,10 +118,10 @@ class Module {
   std::list<ConstTable*> m_unresolved_func_tables;
   FuncsMap m_funcs_table;
   std::list<ConstTable> m_tables;
-  RefalIdentifier *m_native_identifiers;
-  RefalFunction **m_native_externals;
+  std::vector<RefalIdentifier> m_native_identifiers;
+  std::vector<RefalFunction*> m_native_externals;
   NativeModule *m_native;
-  char *m_global_variables;
+  std::vector<char> m_global_variables;
   Domain *m_domain;
 
 public:
@@ -149,8 +149,6 @@ public:
   unsigned find_unresolved_externals();
 
   void cleanup() {
-    free_global_variables();
-    free_idents_table();
     free_funcs_table();
   }
 
@@ -159,19 +157,9 @@ private:
 
   void free_funcs_table();
 
-  template <typename T>
-  static T *malloc(size_t count = 1) {
-    T *result = static_cast<T*>(::malloc(sizeof(T) * count));
-    assert(count == 0 || result);
-    return result;
-  }
-
   void enumerate_blocks();
 
   void alloc_global_variables();
-  void free_global_variables();
-
-  void free_idents_table();
 };
 
 class Domain {

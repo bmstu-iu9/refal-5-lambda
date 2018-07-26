@@ -21,10 +21,10 @@ refalrts::Module::Module(Domain *domain, NativeModule *native)
   : m_unresolved_func_tables()
   , m_funcs_table()
   , m_tables()
-  , m_native_identifiers(0)
-  , m_native_externals(0)
+  , m_native_identifiers()
+  , m_native_externals()
   , m_native(native)
-  , m_global_variables(0)
+  , m_global_variables()
   , m_domain(domain)
 {
   enumerate_blocks();
@@ -36,12 +36,8 @@ refalrts::Module::Module(Domain *domain, NativeModule *native)
 // Идентификаторы
 //------------------------------------------------------------------------------
 
-void refalrts::Module::free_idents_table() {
-  free(m_native_identifiers);
-}
-
 void refalrts::Module::load_native_identifiers() {
-  m_native_identifiers = malloc<RefalIdentifier>(m_native->next_ident_id);
+  m_native_identifiers.resize(m_native->next_ident_id);
 
   for (IdentReference *p = m_native->list_idents; p != 0; p = p->next) {
     assert(p->id < m_native->next_ident_id);
@@ -116,7 +112,7 @@ unsigned refalrts::Module::find_unresolved_externals() {
     m_unresolved_func_tables.pop_front();
   }
 
-  m_native_externals = malloc<RefalFunction*>(m_native->next_external_id);
+  m_native_externals.resize(m_native->next_external_id);
   for (
     const ExternalReference *er = m_native->list_externals;
     er != 0;
@@ -140,7 +136,6 @@ unsigned refalrts::Module::find_unresolved_externals() {
 }
 
 void refalrts::Module::free_funcs_table() {
-  free(m_native_externals);
   while (m_funcs_table.size() > 0) {
     FuncsMap::iterator p = m_funcs_table.begin();
     RefalFunction *function = p->second;
@@ -468,12 +463,7 @@ void refalrts::Module::Loader::enumerate_blocks() {
 }
 
 void refalrts::Module::alloc_global_variables() {
-  m_global_variables = malloc<char>(m_native->global_variables_memory);
-  memset(m_global_variables, '\0', m_native->global_variables_memory);
-}
-
-void refalrts::Module::free_global_variables() {
-  free(m_global_variables);
+  m_global_variables.assign(m_native->global_variables_memory, '\0');
 }
 
 
