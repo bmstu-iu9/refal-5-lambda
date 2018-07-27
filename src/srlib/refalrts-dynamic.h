@@ -90,6 +90,8 @@ class Module {
     }
   };
 
+  struct AllocIdentifierError { };
+
   class Loader {
     Module *m_module;
     FILE *m_stream;
@@ -112,6 +114,7 @@ class Module {
   friend class Loader;
 
   typedef std::map<RefalFuncName, RefalFunction*> FuncsMap;
+  typedef std::list<RefalFuncName> NameList;
 
   std::list<ConstTable*> m_unresolved_func_tables;
   FuncsMap m_funcs_table;
@@ -122,9 +125,30 @@ class Module {
   std::vector<char> m_global_variables;
   Domain *m_domain;
 
+  // Информация об ошибках
+  std::string m_error_message;
+  NameList m_unresolved_externals;
+
 public:
-  Module(Domain *domain, NativeModule *native = 0);
   ~Module();
+
+  enum Error {
+    cSuccess,
+    cObtainMainModuleNameError,
+    cReadRaslError,
+    cMemoryAllocError,
+    cIdentAllocError,
+    cUnresolvedExternal,
+    cUnresolvedNative,
+  };
+
+  static Module *load_main_module(
+    Domain *domain, NativeModule *native, Error& error
+  );
+
+  static Module *load_main_module_and_report_error(
+    Domain *domain, NativeModule *native, Error& error
+  );
 
   RefalIdentifier operator[](const IdentReference& ref) const {
     return m_native_identifiers[ref.id];
@@ -145,13 +169,16 @@ public:
     return m_domain;
   }
 
-  unsigned find_unresolved_externals();
+  void find_unresolved_externals();
+
+  std::string last_error_message() const {
+    return m_error_message;
+  }
 
 private:
+  Module(Domain *domain, NativeModule *native = 0);
+
   void load_native_identifiers();
-
-  void enumerate_blocks();
-
   void alloc_global_variables();
 };
 

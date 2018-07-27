@@ -27,10 +27,10 @@ refalrts::Module::Module(Domain *domain, NativeModule *native)
   , m_native(native)
   , m_global_variables()
   , m_domain(domain)
+  , m_error_message()
+  , m_unresolved_externals()
 {
-  enumerate_blocks();
-  load_native_identifiers();
-  alloc_global_variables();
+  /* пусто */
 }
 
 refalrts::Module::~Module() {
@@ -42,6 +42,111 @@ refalrts::Module::~Module() {
   }
 }
 
+refalrts::Module *
+refalrts::Module::load_main_module(
+  refalrts::Domain *domain, refalrts::NativeModule *native,
+  refalrts::Module::Error& error
+) {
+  error = cSuccess;
+
+  Module *module = new Module(domain, native);
+
+  char module_name[api::cModuleNameBufferLen];
+
+  bool successed = api::get_main_module_name(module_name);
+  if (! successed) {
+    error = cObtainMainModuleNameError;
+    return module;
+  }
+
+  try {
+    Loader loader(module, module_name);
+    loader.enumerate_blocks();
+    module->load_native_identifiers();
+    module->alloc_global_variables();
+  } catch (LoadModuleError& e) {
+    error = cReadRaslError;
+    module->m_error_message = e.message;
+  } catch (AllocIdentifierError&) {
+    error = cIdentAllocError;
+  } catch (std::bad_alloc& e) {
+    error = cMemoryAllocError;
+    module->m_error_message = e.what();
+  }
+
+  if (error == cSuccess) {
+    module->find_unresolved_externals();
+
+    if (! module->m_unresolved_externals.empty()) {
+      error = cUnresolvedExternal;
+    }
+  }
+
+  return module;
+}
+
+refalrts::Module *
+refalrts::Module::load_main_module_and_report_error(
+  refalrts::Domain *domain, refalrts::NativeModule *native,
+  refalrts::Module::Error& error
+) {
+  Module *module = load_main_module(domain, native, error);
+
+  switch (error) {
+    case cSuccess:
+      return module;
+
+    case cObtainMainModuleNameError:
+      fprintf(stderr, "INTERNAL ERROR: can't obtain name of main executable\n");
+      exit(155);
+
+    case cReadRaslError:
+      fprintf(stderr, "INTERNAL ERROR: %s\n", module->m_error_message.c_str());
+      exit(155);
+
+    case cMemoryAllocError:
+      fprintf(
+        stderr, "INTERNAL ERROR: out of memory while loading module, %s\n",
+        module->m_error_message.c_str()
+      );
+      exit(155);
+
+    case cIdentAllocError:
+#ifdef IDENTS_LIMIT
+      fprintf(
+        stderr, "INTERNAL ERROR: Identifiers table overflows (max %ld)\n",
+        static_cast<unsigned long>(IDENTS_LIMIT)
+      );
+#else
+      fprintf(stderr, "INTERNAL ERROR: can't allocate identifier\n");
+#endif
+      exit(154);
+
+    case cUnresolvedExternal:
+      fprintf(
+        stderr, "INTERNAL ERROR: found %u unresolved externals:\n",
+        module->m_unresolved_externals.size()
+      );
+      for (
+        NameList::iterator p = module->m_unresolved_externals.begin();
+        p != module->m_unresolved_externals.end();
+        ++p
+      ) {
+        fprintf(stderr, "  * %s#%u:%u\n", p->name, p->cookie1, p->cookie2);
+      }
+      break;
+
+    case cUnresolvedNative:
+      refalrts_switch_default_violation(error);
+
+    default:
+      refalrts_switch_default_violation(error);
+  }
+
+  return module;
+}
+
+
 //------------------------------------------------------------------------------
 // Идентификаторы
 //------------------------------------------------------------------------------
@@ -52,17 +157,9 @@ void refalrts::Module::load_native_identifiers() {
   for (IdentReference *p = m_native->list_idents; p != 0; p = p->next) {
     assert(p->id < m_native->next_ident_id);
     RefalIdentifier ident = ident_implode(m_domain, p->name);
-#ifdef IDENTS_LIMIT
     if (! ident) {
-      fprintf(
-        stderr, "INTERNAL ERROR: Identifiers table overflows (max %ld)\n",
-        static_cast<unsigned long>(IDENTS_LIMIT)
-      );
-      exit(154);
+      throw AllocIdentifierError();
     }
-#else
-    assert(ident != 0);
-#endif // ifdef IDENTS_LIMIT
     m_native_identifiers[p->id] = ident;
   }
 }
@@ -88,34 +185,33 @@ bool refalrts::Module::register_function(refalrts::RefalFunction *func) {
   return res.second;
 }
 
-unsigned refalrts::Module::find_unresolved_externals() {
-  unsigned unresolved = 0;
-
+void refalrts::Module::find_unresolved_externals() {
   while (! m_unresolved_func_tables.empty()) {
     ConstTable *table = m_unresolved_func_tables.front();
     std::vector<FunctionTableItem>& items = table->externals;
     for (size_t i = 0; i < items.size(); ++i) {
       const char *str_name = items[i].func_name;
-      char ch = *str_name;
-      assert(ch == '*' || ch == '#');
+      char type = *str_name;
 
-      UInt32 cookie1 = 0;
-      UInt32 cookie2 = 0;
-      if (ch == '#') {
+      UInt32 cookie1, cookie2;
+      if (type == '*') {
+        cookie1 = 0;
+        cookie2 = 0;
+      } else if (type == '#') {
         cookie1 = table->cookie1;
         cookie2 = table->cookie2;
+      } else {
+        throw LoadModuleError(
+          std::string("Bad external functin name '")
+          + str_name + "', name must start from '*' or '#'"
+        );
       }
 
       RefalFuncName name(str_name + 1, cookie1, cookie2);
       RefalFunction *function = lookup_function(name);
-      if (function) {
-        items[i].function = function;
-      } else {
-        fprintf(
-          stderr, "INTERNAL ERROR: unresolved external %s#%u:%u\n",
-          str_name + 1, cookie1, cookie2
-        );
-        ++unresolved;
+      items[i].function = function;
+      if (! function) {
+        m_unresolved_externals.push_back(name);
       }
     }
 
@@ -130,19 +226,12 @@ unsigned refalrts::Module::find_unresolved_externals() {
   ) {
     RefalFuncName name(er->name, er->cookie1, er->cookie2);
     RefalFunction *function = lookup_function(name);
-    if (function) {
-      assert(er->id < m_native->next_external_id);
-      m_native_externals[er->id] = function;
-    } else {
-      fprintf(
-        stderr, "INTERNAL ERROR: unresolved external %s#%u:%u\n",
-        er->name, er->cookie1, er->cookie2
-      );
-      ++unresolved;
+    assert(er->id < m_native->next_external_id);
+    m_native_externals[er->id] = function;
+    if (! function) {
+      m_unresolved_externals.push_back(name);
     }
   }
-
-  return unresolved;
 }
 
 //------------------------------------------------------------------------------
@@ -223,24 +312,6 @@ refalrts::Module::ConstTable::make_name(const std::string& name) const {
     return RefalFuncName(proper_name, 0, 0);
   } else {
     throw LoadModuleError("name must start from '*' or '#', but got " + name);
-  }
-}
-
-void refalrts::Module::enumerate_blocks() {
-  char module_name[api::cModuleNameBufferLen];
-
-  bool successed = api::get_main_module_name(module_name);
-  if (! successed) {
-    fprintf(stderr, "INTERNAL ERROR: can't obtain name of main executable\n");
-    exit(155);
-  }
-
-  try {
-    Loader loader(this, module_name);
-    loader.enumerate_blocks();
-  } catch (LoadModuleError& e) {
-    fprintf(stderr, "INTERNAL ERROR: %s\n", e.message.c_str());
-    exit(155);
   }
 }
 
@@ -353,18 +424,9 @@ void refalrts::Module::Loader::enumerate_blocks() {
           const char *next_ident_name = &new_table->idents_memory[0];
           for (size_t i = 0; i < fixed_part.ident_count; ++i) {
             RefalIdentifier ident = ident_implode(m_module->m_domain, next_ident_name);
-#ifdef IDENTS_LIMIT
             if (! ident) {
-              fprintf(
-                stderr,
-                "INTERNAL ERROR: Identifiers table overflows (max %ld)\n",
-                static_cast<unsigned long>(IDENTS_LIMIT)
-              );
-              exit(154);
+              throw AllocIdentifierError();
             }
-#else
-            assert(ident != 0);
-#endif // ifdef IDENTS_LIMIT
             new_table->idents[i] = ident;
             // TODO: нужна проверка за выход из границ
             next_ident_name += strlen(next_ident_name) + 1;
@@ -517,16 +579,11 @@ refalrts::Domain::Domain()
 
 bool refalrts::Domain::load_native_module(NativeModule *main_module) {
   assert(m_module == 0);
-  m_module = new Module(this, main_module);
 
-  unsigned unresolved = m_module->find_unresolved_externals();
+  Module::Error error;
+  m_module = Module::load_main_module_and_report_error(this, main_module, error);
 
-  if (unresolved > 0) {
-    fprintf(stderr, "Found %u unresolved externals\n", unresolved);
-    return false;
-  }
-
-  return true;
+  return error == Module::cSuccess;
 }
 
 void refalrts::Domain::unload() {
