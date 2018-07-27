@@ -27,6 +27,7 @@ refalrts::Module::Module(Domain *domain, NativeModule *native)
   , m_native(native)
   , m_global_variables()
   , m_domain(domain)
+  , m_unresolved_native_functions()
   , m_error_message()
   , m_unresolved_externals()
 {
@@ -79,6 +80,14 @@ refalrts::Module::load_main_module(
 
     if (! module->m_unresolved_externals.empty()) {
       error = cUnresolvedExternal;
+    }
+  }
+
+  if (error == cSuccess) {
+    module->resolve_native_functions();
+
+    if (! module->m_unresolved_native_functions.empty()) {
+      error = cUnresolvedNative;
     }
   }
 
@@ -137,7 +146,19 @@ refalrts::Module::load_main_module_and_report_error(
       break;
 
     case cUnresolvedNative:
-      refalrts_switch_default_violation(error);
+      fprintf(
+        stderr, "INTERNAL ERROR: found %u unresolved native functions:\n",
+        module->m_unresolved_externals.size()
+      );
+      for (
+        NativeList::iterator p = module->m_unresolved_native_functions.begin();
+        p != module->m_unresolved_native_functions.end();
+        ++p
+      ) {
+        RefalFuncName& n = (*p)->name;
+        fprintf(stderr, "  * %s#%u:%u\n", n.name, n.cookie1, n.cookie2);
+      }
+      break;
 
     default:
       refalrts_switch_default_violation(error);
@@ -230,6 +251,33 @@ void refalrts::Module::find_unresolved_externals() {
     m_native_externals[er->id] = function;
     if (! function) {
       m_unresolved_externals.push_back(name);
+    }
+  }
+}
+
+void refalrts::Module::resolve_native_functions() {
+  NativeList::iterator p = m_unresolved_native_functions.begin();
+  while (p != m_unresolved_native_functions.end()) {
+    RefalNativeFunction *func = m_unresolved_native_functions.front();
+    assert(func->ptr == 0);
+
+    NativeReference *ref = m_native->native_references;
+    while (
+      ref != 0
+      && (
+        ref->cookie1 != func->name.cookie1
+        || ref->cookie2 != func->name.cookie2
+        || strcmp(ref->name, func->name.name) != 0
+      )
+    ) {
+      ref = ref->next;
+    }
+
+    if (ref != 0) {
+      func->ptr = ref->code;
+      p = m_unresolved_native_functions.erase(p);
+    } else {
+      ++p;
     }
   }
 }
@@ -466,43 +514,9 @@ void refalrts::Module::Loader::read_refal_function(
 void refalrts::Module::Loader::read_native_function(
   refalrts::Module::ConstTable *table
 ) {
-  std::string name = read_asciiz();
-
-  char type = name[0];
-  const char *proper_name = name.data() + 1;
-
-  NativeReference *ref = m_module->m_native->native_references;
-  UInt32 cookie1, cookie2;
-  if (type == '*') {
-    cookie1 = 0;
-    cookie2 = 0;
-  } else if (type == '#') {
-    cookie1 = table->cookie1;
-    cookie2 = table->cookie2;
-  } else {
-    throw LoadModuleError(
-      "Invalid name '" + name + "', valid name must start from '*' or '#'"
-    );
-  }
-
-  while (
-    ref != 0
-    && (
-      ref->cookie1 != cookie1
-      || ref->cookie2 != cookie2
-      || strcmp(ref->name, proper_name) != 0
-    )
-  ) {
-    ref = ref->next;
-  }
-
-  if (ref == 0) {
-    throw LoadModuleError(
-      "Native function '" + name + "' is not found in executable"
-    );
-  }
-
-  new RefalNativeFunction(ref->code, table->make_name(name), m_module);
+  m_module->m_unresolved_native_functions.push_back(
+    new RefalNativeFunction(0, table->make_name(read_asciiz()), m_module)
+  );
 }
 
 void refalrts::Module::Loader::enumerate_blocks() {

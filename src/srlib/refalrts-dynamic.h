@@ -119,6 +119,7 @@ class Module {
 
   typedef std::map<RefalFuncName, RefalFunction*> FuncsMap;
   typedef std::list<RefalFuncName> NameList;
+  typedef std::list<RefalNativeFunction*> NativeList;
 
   std::list<ConstTable*> m_unresolved_func_tables;
   FuncsMap m_funcs_table;
@@ -128,6 +129,7 @@ class Module {
   NativeModule *m_native;
   std::vector<char> m_global_variables;
   Domain *m_domain;
+  NativeList m_unresolved_native_functions;
 
   // Информация об ошибках
   std::string m_error_message;
@@ -174,6 +176,7 @@ public:
   }
 
   void find_unresolved_externals();
+  void resolve_native_functions();
 
   std::string last_error_message() const {
     return m_error_message;

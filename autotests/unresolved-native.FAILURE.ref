@@ -1,0 +1,15 @@
+$ENTRY Go {
+  = <Native>;
+}
+
+%%
+#define nat_ref_Native(name, cookie1, cookie2, ptr) \
+  nat_ref_Native2("Native2", cookie1, cookie2, ptr)
+%%
+
+Native {
+%%
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
