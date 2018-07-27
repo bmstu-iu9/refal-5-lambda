@@ -100,10 +100,6 @@ class Module {
     Loader(Module *module, const char *name);
     ~Loader();
 
-    void read_start_block(size_t datalen);
-    ConstTable *read_const_table();
-    void read_refal_function(ConstTable *table);
-    void read_native_function(ConstTable *table);
     void enumerate_blocks();
 
   private:
@@ -113,6 +109,9 @@ class Module {
 
     bool seek_rasl_signature();
     std::string read_asciiz();
+    void read_start_block(size_t datalen);
+    ConstTable *read_const_table();
+    void read_refal_function(ConstTable *table);
   };
 
   friend class Loader;
@@ -175,9 +174,6 @@ public:
     return m_domain;
   }
 
-  void find_unresolved_externals();
-  void resolve_native_functions();
-
   std::string last_error_message() const {
     return m_error_message;
   }
@@ -186,6 +182,8 @@ private:
   Module(Domain *domain, NativeModule *native = 0);
 
   void load_native_identifiers();
+  void find_unresolved_externals();
+  void resolve_native_functions();
   void alloc_global_variables();
 };
 

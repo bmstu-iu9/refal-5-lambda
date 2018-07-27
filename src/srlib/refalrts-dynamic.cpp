@@ -511,14 +511,6 @@ void refalrts::Module::Loader::read_refal_function(
   );
 }
 
-void refalrts::Module::Loader::read_native_function(
-  refalrts::Module::ConstTable *table
-) {
-  m_module->m_unresolved_native_functions.push_back(
-    new RefalNativeFunction(0, table->make_name(read_asciiz()), m_module)
-  );
-}
-
 void refalrts::Module::Loader::enumerate_blocks() {
   ConstTable *table = 0;
 
@@ -548,7 +540,9 @@ void refalrts::Module::Loader::enumerate_blocks() {
         break;
 
       case cBlockTypeNativeFunction:
-        read_native_function(table);
+        m_module->m_unresolved_native_functions.push_back(
+          new RefalNativeFunction(0, table->make_name(read_asciiz()), m_module)
+        );
         break;
 
       case cBlockTypeEmptyFunction:
