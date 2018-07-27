@@ -338,6 +338,173 @@ refalrts::Module::Loader::~Loader() {
     ); \
   }
 
+void refalrts::Module::Loader::read_start_block(size_t datalen) {
+  static const char sample[8] = {
+    'R', 'A', 'S', 'L', 'C', 'O', 'D', 'E'
+  };
+  PARSE_ASSERT(sizeof(sample) == datalen, "invalid START block size");
+
+  char signature[sizeof(sample)];
+  size_t read = fread(signature, 1, sizeof(signature));
+  PARSE_ASSERT(sizeof(signature) == read, "can't read START signature");
+  PARSE_ASSERT(
+    memcmp(sample, signature, sizeof(signature)) == 0,
+    "invalid signature in START, " + std::string(signature, read)
+  );
+}
+
+refalrts::Module::ConstTable *
+refalrts::Module::Loader::read_const_table() {
+  struct {
+    UInt32 cookie1;
+    UInt32 cookie2;
+    UInt32 external_count;
+    UInt32 ident_count;
+    UInt32 number_count;
+    UInt32 string_count;
+    UInt32 rasl_length;
+    UInt32 external_size;
+    UInt32 ident_size;
+    UInt32 string_size;
+  } fixed_part;
+
+  size_t read = fread(&fixed_part, sizeof(fixed_part), 1);
+  PARSE_ASSERT(read == 1, "can't read fixed part of CONST_TABLE");
+
+  m_module->m_tables.push_back(ConstTable());
+  ConstTable *new_table = &m_module->m_tables.back();
+
+  new_table->cookie1 = fixed_part.cookie1;
+  new_table->cookie2 = fixed_part.cookie2;
+
+  new_table->externals.resize(fixed_part.external_count);
+  new_table->external_memory.resize(fixed_part.external_size);
+  read = fread(&new_table->external_memory[0], 1, fixed_part.external_size);
+  PARSE_ASSERT(
+    read == fixed_part.external_size,
+    "can't read externals list in CONST_TABLE"
+  );
+  const char *next_external_name = &new_table->external_memory[0];
+  for (size_t i = 0; i < fixed_part.external_count; ++i) {
+    new_table->externals[i].func_name = next_external_name;
+    // TODO: нужна проверка за выход из границ
+    next_external_name += strlen(next_external_name) + 1;
+  }
+  m_module->m_unresolved_func_tables.push_front(new_table);
+
+  new_table->idents.resize(fixed_part.ident_count);
+  new_table->idents_memory.resize(fixed_part.ident_size);
+  read = fread(&new_table->idents_memory[0], 1, fixed_part.ident_size);
+  PARSE_ASSERT(
+    read == fixed_part.ident_size,
+    "can't read idents list in CONST_TABLE"
+  );
+  const char *next_ident_name = &new_table->idents_memory[0];
+  for (size_t i = 0; i < fixed_part.ident_count; ++i) {
+    RefalIdentifier ident = ident_implode(m_module->m_domain, next_ident_name);
+    if (! ident) {
+      throw AllocIdentifierError();
+    }
+    new_table->idents[i] = ident;
+    // TODO: нужна проверка за выход из границ
+    next_ident_name += strlen(next_ident_name) + 1;
+  }
+
+  new_table->numbers.resize(fixed_part.number_count);
+  read = fread(
+    &new_table->numbers[0], sizeof(RefalNumber), fixed_part.number_count
+  );
+  PARSE_ASSERT(
+    read == fixed_part.number_count,
+    "can't read numbers list in CONST_TABLE"
+  );
+
+  new_table->strings.resize(fixed_part.string_count);
+  new_table->strings_memory.resize(fixed_part.string_size);
+  char *string_target = &new_table->strings_memory[0];
+  for (size_t i = 0; i < fixed_part.string_count; ++i) {
+    UInt32 length;
+    read = fread(&length, sizeof(length), 1);
+    PARSE_ASSERT(read == 1, "can't read STRING size in CONST_TABLE");
+    read = fread(string_target, 1, length);
+    PARSE_ASSERT(read == length, "can't read STRING chars in CONST_TABLE");
+    new_table->strings[i].string = string_target;
+    new_table->strings[i].string_len = length;
+    string_target += length;
+  }
+
+  new_table->rasl.resize(fixed_part.rasl_length);
+  read = fread(&new_table->rasl[0], sizeof(RASLCommand), fixed_part.rasl_length);
+  PARSE_ASSERT(
+    read == fixed_part.rasl_length, "can't read rasl in CONST_TABLE"
+  );
+
+  return new_table;
+}
+
+void refalrts::Module::Loader::read_refal_function(
+  refalrts::Module::ConstTable *table
+) {
+  std::string name = read_asciiz();
+
+  UInt32 offset;
+  size_t read = fread(&offset, sizeof(offset), 1);
+  PARSE_ASSERT(read == 1, "can't read offset in REFAL_FUNCTION");
+
+  new RASLFunction(
+    table->make_name(name),
+    &table->rasl[offset],
+    &table->externals[0],
+    &table->idents[0],
+    &table->numbers[0],
+    &table->strings[0],
+    "filename.sref",
+    m_module
+  );
+}
+
+void refalrts::Module::Loader::read_native_function(
+  refalrts::Module::ConstTable *table
+) {
+  std::string name = read_asciiz();
+
+  char type = name[0];
+  const char *proper_name = name.data() + 1;
+
+  NativeReference *ref = m_module->m_native->native_references;
+  UInt32 cookie1, cookie2;
+  if (type == '*') {
+    cookie1 = 0;
+    cookie2 = 0;
+  } else if (type == '#') {
+    cookie1 = table->cookie1;
+    cookie2 = table->cookie2;
+  } else {
+    throw LoadModuleError(
+      "Invalid name '" + name + "', valid name must start from '*' or '#'"
+    );
+  }
+
+  while (
+    ref != 0
+    && (
+      ref->cookie1 != cookie1
+      || ref->cookie2 != cookie2
+      || strcmp(ref->name, proper_name) != 0
+    )
+  ) {
+    ref = ref->next;
+  }
+
+  if (ref == 0) {
+    throw LoadModuleError(
+      "Native function '" + name + "' is not found in executable"
+    );
+  }
+
+  new RefalNativeFunction(ref->code, table->make_name(name), m_module);
+}
+
 void refalrts::Module::Loader::enumerate_blocks() {
   ConstTable *table = 0;
 
@@ -355,184 +522,19 @@ void refalrts::Module::Loader::enumerate_blocks() {
 
     switch (type) {
       case cBlockTypeStart:
-        {
-          static const char sample[8] = {
-            'R', 'A', 'S', 'L', 'C', 'O', 'D', 'E'
-          };
-          PARSE_ASSERT(
-            sizeof(sample) == datalen, "invalid START block size"
-          );
-
-          char signature[sizeof(sample)];
-          read = fread(signature, 1, sizeof(signature));
-          PARSE_ASSERT(sizeof(signature) == read, "can't read START signature");
-          PARSE_ASSERT(
-            memcmp(sample, signature, sizeof(signature)) == 0,
-            "invalid signature in START, " + std::string(signature, read)
-          );
-        }
+        read_start_block(datalen);
         break;
 
       case cBlockTypeConstTable:
-        {
-          struct {
-            UInt32 cookie1;
-            UInt32 cookie2;
-            UInt32 external_count;
-            UInt32 ident_count;
-            UInt32 number_count;
-            UInt32 string_count;
-            UInt32 rasl_length;
-            UInt32 external_size;
-            UInt32 ident_size;
-            UInt32 string_size;
-          } fixed_part;
-
-          read = fread(&fixed_part, sizeof(fixed_part), 1);
-          PARSE_ASSERT(read == 1, "can't read fixed part of CONST_TABLE");
-
-          m_module->m_tables.push_back(ConstTable());
-          ConstTable *new_table = &m_module->m_tables.back();
-
-          new_table->cookie1 = fixed_part.cookie1;
-          new_table->cookie2 = fixed_part.cookie2;
-
-          new_table->externals.resize(fixed_part.external_count);
-          new_table->external_memory.resize(fixed_part.external_size);
-          read = fread(
-            &new_table->external_memory[0], 1, fixed_part.external_size
-          );
-          PARSE_ASSERT(
-            read == fixed_part.external_size,
-            "can't read externals list in CONST_TABLE"
-          );
-          const char *next_external_name = &new_table->external_memory[0];
-          for (size_t i = 0; i < fixed_part.external_count; ++i) {
-            new_table->externals[i].func_name = next_external_name;
-            // TODO: нужна проверка за выход из границ
-            next_external_name += strlen(next_external_name) + 1;
-          }
-          m_module->m_unresolved_func_tables.push_front(new_table);
-
-          new_table->idents.resize(fixed_part.ident_count);
-          new_table->idents_memory.resize(fixed_part.ident_size);
-          read = fread(&new_table->idents_memory[0], 1, fixed_part.ident_size);
-          PARSE_ASSERT(
-            read == fixed_part.ident_size,
-            "can't read idents list in CONST_TABLE"
-          );
-          const char *next_ident_name = &new_table->idents_memory[0];
-          for (size_t i = 0; i < fixed_part.ident_count; ++i) {
-            RefalIdentifier ident = ident_implode(m_module->m_domain, next_ident_name);
-            if (! ident) {
-              throw AllocIdentifierError();
-            }
-            new_table->idents[i] = ident;
-            // TODO: нужна проверка за выход из границ
-            next_ident_name += strlen(next_ident_name) + 1;
-          }
-
-          new_table->numbers.resize(fixed_part.number_count);
-          read = fread(
-            &new_table->numbers[0], sizeof(RefalNumber), fixed_part.number_count
-          );
-          PARSE_ASSERT(
-            read == fixed_part.number_count,
-            "can't read numbers list in CONST_TABLE"
-          );
-
-          new_table->strings.resize(fixed_part.string_count);
-          new_table->strings_memory.resize(fixed_part.string_size);
-          char *string_target = &new_table->strings_memory[0];
-          for (size_t i = 0; i < fixed_part.string_count; ++i) {
-            UInt32 length;
-            read = fread(&length, sizeof(length), 1);
-            PARSE_ASSERT(read == 1, "can't read STRING size in CONST_TABLE");
-            read = fread(string_target, 1, length);
-            PARSE_ASSERT(
-              read == length, "can't read STRING chars in CONST_TABLE"
-            );
-            new_table->strings[i].string = string_target;
-            new_table->strings[i].string_len = length;
-            string_target += length;
-          }
-
-          new_table->rasl.resize(fixed_part.rasl_length);
-          read = fread(
-            &new_table->rasl[0], sizeof(RASLCommand), fixed_part.rasl_length
-          );
-          PARSE_ASSERT(
-            read == fixed_part.rasl_length, "can't read rasl in CONST_TABLE"
-          );
-
-          table = new_table;
-        }
+        table = read_const_table();
         break;
 
       case cBlockTypeRefalFunction:
-        {
-          std::string name = read_asciiz();
-
-          UInt32 offset;
-          read = fread(&offset, sizeof(offset), 1);
-          PARSE_ASSERT(read == 1, "can't read offset in REFAL_FUNCTION");
-
-          new RASLFunction(
-            table->make_name(name),
-            &table->rasl[offset],
-            &table->externals[0],
-            &table->idents[0],
-            &table->numbers[0],
-            &table->strings[0],
-            "filename.sref",
-            m_module
-          );
-        }
+        read_refal_function(table);
         break;
 
       case cBlockTypeNativeFunction:
-        {
-          std::string name = read_asciiz();
-
-          char type = name[0];
-          const char *proper_name = name.data() + 1;
-
-          NativeReference *ref = m_module->m_native->native_references;
-          UInt32 cookie1, cookie2;
-          if (type == '*') {
-            cookie1 = 0;
-            cookie2 = 0;
-          } else if (type == '#') {
-            cookie1 = table->cookie1;
-            cookie2 = table->cookie2;
-          } else {
-            throw LoadModuleError(
-              "Invalid name '" + name + "', "
-              "valid name must start from '*' or '#'"
-            );
-          }
-
-          while (
-            ref != 0
-            && (
-              ref->cookie1 != cookie1
-              || ref->cookie2 != cookie2
-              || strcmp(ref->name, proper_name) != 0
-            )
-          ) {
-            ref = ref->next;
-          }
-
-          if (ref == 0) {
-            throw LoadModuleError(
-              "Native function '" + name + "' is not found in executable"
-            );
-          }
-
-          new RefalNativeFunction(
-            ref->code, table->make_name(name), m_module
-          );
-        }
+        read_native_function(table);
         break;
 
       case cBlockTypeEmptyFunction:

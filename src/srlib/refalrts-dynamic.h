@@ -100,6 +100,10 @@ class Module {
     Loader(Module *module, const char *name);
     ~Loader();
 
+    void read_start_block(size_t datalen);
+    ConstTable *read_const_table();
+    void read_refal_function(ConstTable *table);
+    void read_native_function(ConstTable *table);
     void enumerate_blocks();
 
   private:
