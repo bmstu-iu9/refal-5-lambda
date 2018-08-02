@@ -52,15 +52,7 @@ Main-SwValidCommandLine {
 
   t.CommandLineSource #Success t.Config e.Files
     = <Log-Init <Config-GetLogFile t.Config>>
-      <CalcTargetFileName
-        t.Config
-        (<Config-GetTargetFileName t.Config>)
-        e.Files
-      >
-    : e.TargetFileName
-    = <Config-SetTargetFileName t.Config e.TargetFileName>
-    : #Success t.Config^
-    = <Main-SwFoundFiles
+      <Main-SwFoundFiles
         t.CommandLineSource t.Config
         <LookupSourceFiles t.Config e.Files>
       >
@@ -71,32 +63,45 @@ Main-SwValidCommandLine {
 }
 
 ReportErrors {
-  #CommandLine t.Config e.Errors
-    = <Map
-        {
-          (s.Pos e.Message)
-            = <WriteLine
-                'Command line argument ' <StrFromInt s.Pos> ': '
-                'Error: ' e.Message
-              >;
-        }
-        e.Errors
-      >
-      <CreateErrorFileMark t.Config>
-      <Exit 1>;
+  t.CommandLineSource t.Config e.Errors
+    = <ReportMessages (OnErrors 'Error') t.CommandLineSource t.Config e.Errors>;
+}
 
-  (e.ConfigFile) t.Config e.Errors
+OnErrors {
+  t.Config
+    = <CreateErrorFileMark t.Config>
+      <Exit 1>;
+}
+
+ReportWarnings {
+  t.CommandLineSource t.Config e.Warnings
+    = <ReportMessages
+        (OnWarnings 'Warning') t.CommandLineSource t.Config e.Warnings
+      >;
+}
+
+OnWarnings {
+  t.Config = /* пусто */;
+}
+
+ReportMessages {
+  (s.FnAfterMessages e.Banner) t.CommandLineSource t.Config e.Messages
+    = t.CommandLineSource
+    : {
+        (e.ConfigFile) = e.ConfigFile ':';
+        #CommandLine = 'Command line argument ';
+      }
+    : e.Prefix
     = <Map
         {
           (s.Pos e.Message)
             = <WriteLine
-                e.ConfigFile ':' <StrFromInt s.Pos> ': Error: ' e.Message
+                e.Prefix <StrFromInt s.Pos> ': ' e.Banner ': ' e.Message
               >;
         }
-        e.Errors
+        e.Messages
       >
-      <CreateErrorFileMark t.Config>
-      <Exit 1>;
+      <s.FnAfterMessages t.Config>;
 }
 
 CreateErrorFileMark {
@@ -180,29 +185,18 @@ Main-SwRenamedTargets {
 //------------------------------------------------------------------------------
 
 CalcTargetFileName {
-  t.Config (#DefaultTargetFileName) (s.Pos e.FirstFile) e.OtherFiles
-    = <GetLastPartName e.FirstFile> : e.LastPartName
-    = (<Lower e.LastPartName>) e.LastPartName
+  s.TargetMode t.Config e.OutputFiles
+    = <Config-GetTargetFileName t.Config>
     : {
-        (e.LowerBaseName '.ref') e.BaseName '.' s.R s.E s.F
-          = e.BaseName;
+        #DefaultTargetFileName
+          = e.OutputFiles : (#RASL e.FirstFile) e.OtherFiles
+          = <GetLastPartName e.FirstFile> : e.LastPartName
+          = <Lower e.LastPartName> : e.LowerBaseName '.rasl'    // assert
+          = e.LastPartName : e.BaseName '.' s.R s.A s.S s.L
+          = e.BaseName <Config-GetTargetSuffix t.Config s.TargetMode>;
 
-        (e.LowerBaseName '.sref') e.BaseName '.' s.S s.R s.E s.F
-          = e.BaseName;
-
-        (e.LowerBaseName '.rasl') e.BaseName '.' s.R s.A s.S s.L
-          = e.BaseName;
-
-        (e.LowerBaseName '.cpp') e.BaseName '.' s.C s.P1 s.P2
-          = e.BaseName;
-
-        (e.LowerBaseName) e.BaseName = e.BaseName;
-      }
-    : e.BaseName
-    = e.BaseName
-      <Config-GetTargetSuffix t.Config <Config-GetTargetMode t.Config>>;
-
-  t.Config (e.TargetFileName) e.InputFiles = e.TargetFileName;
+        e.TargetFileName = e.TargetFileName;
+      };
 }
 
 LookupSourceFiles {
@@ -365,7 +359,7 @@ Link {
     = <Config-GetTargetMode t.Config>
     : {
         #EXE
-          = <Link-ExeLib
+          = <Link-Exe
               t.CommandLineSource t.Config
               (<Config-GetCppCompiler t.Config #EXE>)
               (<Config-GetPrefix t.Config>)
@@ -373,34 +367,28 @@ Link {
             >;
 
         #LIB
-          = <Link-ExeLib
+          = <Link-Lib
               t.CommandLineSource t.Config
               (<Config-GetCppCompiler t.Config #LIB>)
               (<Config-GetPrefix t.Config>)
               e.Files
             >;
 
-        #R = <WriteLine 'R modules is not supported yet'>;
+        #R = <Link-R t.CommandLineSource t.Config e.Files>;
 
         #CompileOnly = /* ничего не делаем */;
       };
 }
 
-Link-ExeLib {
+Link-Exe {
   t.CommandLineSource t.Config
   (#NoCppCompiler) (/* нет префикса */) e.Files
-    = <Config-GetTargetMode t.Config>
-    : {
-        #EXE = 'x' 'exe';
-        #LIB = 'l' 'lib';
-      }
-    : s.Key e.FlagSuf
     = <ReportErrors
         t.CommandLineSource t.Config
         (
           1
-          'option -' s.Key ' (or --' e.FlagSuf ') require option '
-          '--cpp-command-' e.FlagSuf ' with nonempty value'
+          'option -x (or --exe) require option '
+          '--cpp-command-exe with nonempty value'
         )
       >;
 
@@ -427,17 +415,97 @@ Link-ExeLib {
         #Success e.PrefixFileName
           = <Link-WithPrefix (e.PrefixFileName) t.Config e.Files>;
 
-        #Fails
+        #Fails e.ExpectedPrefixName
           = <ReportErrors
               t.CommandLineSource t.Config
-              (1 'Can''t find prefix ' e.Prefix)
+              (1 'Can''t find prefix ' e.ExpectedPrefixName)
             >;
       };
+}
+
+Link-Lib {
+  t.CommandLineSource t.Config
+  (#NoCppCompiler) (/* нет префикса */)
+  e.Files-B (#Native e.FileName) e.Files-E
+    = <ReportErrors
+        t.CommandLineSource t.Config
+        (
+          1
+          'option -l (or --lib) with native code require option '
+          '--cpp-command-lib with nonempty value'
+        )
+      >;
+
+  t.CommandLineSource t.Config
+  (#NoCppCompiler) (/* нет префикса */) e.Files
+    = <ReportWarnings
+        t.CommandLineSource t.Config
+        (
+          1
+          'prefix name or C++ command line is not found, '
+          'create library without prefix'
+        )
+      >
+      <Link-R t.CommandLineSource t.Config e.Files>;
+
+  t.CommandLineSource t.Config
+  ((e.CommandLine) e.Flags) (/* нет префикса */) e.Files
+    = <Link-CppCompile t.Config ((e.CommandLine) e.Flags) e.Files>;
+
+  t.CommandLineSource t.Config
+  (e.AnyCommandLine) (e.Prefix)
+  e.Files-B (#Native e.FileName) e.Files-E
+    = <ReportErrors
+        t.CommandLineSource t.Config
+        (
+          1
+          'unexpected native file ' e.FileName ' while compilation runs '
+          'with prefix'
+        )
+      >;
+
+  t.CommandLineSource t.Config
+  (e.AnyCommandLine) (e.Prefix) e.Files
+    = <FindPrefix t.Config e.Prefix>
+    : {
+        #Success e.PrefixFileName
+          = <Link-WithPrefix (e.PrefixFileName) t.Config e.Files>;
+
+        #Fails e.ExpectedPrefixName
+          = <ReportWarnings
+              t.CommandLineSource t.Config
+              (
+                1
+                'Can''t find prefix ' e.ExpectedPrefixName ', create module '
+                'without prefix (R module)'
+              )
+            >
+            <Link-R t.CommandLineSource t.Config e.Files>;
+      };
+}
+
+Link-R {
+  t.CommandLineSource t.Config
+  e.Files-B (#Native e.FileName) e.Files-E
+    = <ReportErrors
+        t.CommandLineSource t.Config
+        (1 'unexpected native file ' e.FileName ' while creating R module')
+      >;
+
+  t.CommandLineSource t.Config e.Files
+    = <Link-Aux
+        #R
+        {
+          e.IntermediateName = /* ничего не делаем */;
+        }
+        t.Config e.Files
+      >;
 }
 
 Link-WithPrefix {
   (e.PrefixFileName) t.Config e.Files
     = <Link-Aux
+        <Config-GetTargetMode t.Config>
         {
           e.IntermediateName
             = <CopyPrefix (e.PrefixFileName) (e.IntermediateName)>
@@ -473,6 +541,7 @@ CheckReturnCode {
 Link-CppCompile {
   t.Config ((e.CommandLine) e.Flags) e.Files
     = <Link-Aux
+        <Config-GetTargetMode t.Config>
         {
           e.IntermediateName
             = <System
@@ -497,8 +566,8 @@ Link-CppCompile {
 }
 
 Link-Aux {
-  s.FnCreatePrefix t.Config e.Files
-    = <Config-GetTargetFileName t.Config> : e.TargetFileName
+  s.TargetMode s.FnCreatePrefix t.Config e.Files
+    = <CalcTargetFileName s.TargetMode t.Config e.Files> : e.TargetFileName
     = e.TargetFileName '.partial' : e.IntermediateName
     = <PreLinkCleanupTemporary t.Config e.IntermediateName>
       <s.FnCreatePrefix e.IntermediateName>
@@ -630,7 +699,7 @@ DoFindPrefix {
       };
 
   (e.PrefixName) /* кончились папки */
-    = #Fails;
+    = #Fails e.PrefixName;
 }
 
 GlueNames {
