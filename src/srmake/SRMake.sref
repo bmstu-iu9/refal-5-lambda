@@ -17,6 +17,7 @@ $EXTERN CreateFileList;
 $EXTERN
   Config-GetFolders,
   Config-GetSourceFile,
+  Config-GetRuntimeFiles,
   Config-GetSrefCompiler,
   Config-GetCppCompilerExe,
   Config-GetCppCompilerLib,
@@ -56,7 +57,9 @@ MakeProject {
       >
     : e.Folders
     = <Config-GetSourceFile t.Config> : e.SourceFile
-    = <CreateFileList t.Config e.SourceFile> : t.Config^ e.Units
+    = <Config-GetRuntimeFiles t.Config> : e.RuntimeFiles
+    = <CreateFileList t.Config (e.SourceFile) e.RuntimeFiles>
+    : t.Config^ e.Units
     = <RunSrefCompiler t.Config e.Units>;
 
   #Fails e.Errors

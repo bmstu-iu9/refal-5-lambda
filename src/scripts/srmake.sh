@@ -14,11 +14,13 @@ source "$DISTRDIR/scripts/platform-specific.sh"
 set_rich_flags() {
   D=(-d "$LIBDIR/rich")
   CPP=()
+  RT=()
 }
 
 set_slim_flags() {
   D=(-d "$LIBDIR/slim")
   CPP=()
+  RT=()
 }
 
 set_scratch_flags() {
@@ -31,6 +33,9 @@ set_scratch_flags() {
   CPP=(
     --cpp-command-exe="$CPPLINEE"
     --cpp-command-lib="$CPPLINEL"
+  )
+  RT=(
+    --runtime=refalrts
   )
 }
 
@@ -69,5 +74,5 @@ set_default_flags() {
     "${CPP[@]}" \
     --thru=--cppflags="$CPPLINE_FLAGS"  -X--chmod-x-command="chmod +x" \
     -d "$LIBDIR/common" --prelude=refal5-builtins.srefi \
-    "${D[@]}" $*
+    "${D[@]}" "${RT[@]}" $*
 )

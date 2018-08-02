@@ -26,6 +26,7 @@ setlocal
   set ARGS=%ARGS:* =%
   set D=-d "%LIBDIR%\rich"
   set CPP=
+  set RT=
   goto END_SWITCH
 
 :MODE_SLIM
@@ -33,6 +34,7 @@ setlocal
 :MODE_DEFAULT
   set D=-d "%LIBDIR%\slim"
   set CPP=
+  set RT=
   goto END_SWITCH
 
 :MODE_SCRATCH
@@ -40,6 +42,7 @@ setlocal
   call "%DISTRDIR%\scripts\load-config.bat" || exit /b 1
   set D=-D "%LIBDIR%\scratch\platform-Windows" -D "%LIBDIR%\scratch"
   set CPP=--cpp-command-exe="%CPPLINEE%" --cpp-command-lib="%CPPLINEL%"
+  set RT=--runtime=refalrts
   goto END_SWITCH
 
 :END_SWITCH
@@ -50,5 +53,5 @@ setlocal
     -X--exesuffix=.exe -X--libsuffix=.dll %CPP% ^
     --thru=--cppflags="%CPPLINE_FLAGS%" -X--chmod-x-command= ^
     -d "%LIBDIR%\common" --prelude=refal5-builtins.srefi ^
-    %D% %ARGS%
+    %D% %RT% %ARGS%
 endlocal

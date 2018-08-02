@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN LoadFile, MapReduce, Inc, Trim, Map;
+$EXTERN Map, LoadFile, MapReduce, Inc, Trim;
 
 //FROM Library
 $EXTERN ExistFile, Chr, Add, Mul;
@@ -20,9 +20,15 @@ $EXTERN UnEscapeString-SR;
 
 
 $ENTRY CreateFileList {
-  t.Config e.Unit
+  t.Config e.Units
     = <DoCreateFileList
-        t.Config () <FindFileEx t.Config #CMD-LINE e.Unit>
+        t.Config ()
+        <Map
+          {
+            (e.Unit) = <FindFileEx t.Config #CMD-LINE e.Unit>;
+          }
+          e.Units
+        >
       >;
 }
 

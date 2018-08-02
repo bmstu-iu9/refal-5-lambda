@@ -17,6 +17,7 @@ $EXTERN
   Config-SetTargetFileName,
   Config-SetTargetMode,
   Config-SetPrelude,
+  Config-AddRuntimeFile,
   Config-SetSourceFile;
 
 /**
@@ -47,6 +48,7 @@ $ENTRY ParseCommandLine {
           (#TargetMode-R #None 'R')
           (#TargetMode-C #None 'C' ('compile-only'))
           (#Prelude #Required ('prelude'))
+          (#Runtime #Required ('runtime'))
         )
         e.Arguments
       >
@@ -121,6 +123,9 @@ $ENTRY ParseCommandLine {
 
             (t.Config e.Errors) (#Prelude s.Num e.Prelude)
               = <Update t.Config (e.Errors) Config-SetPrelude s.Num e.Prelude>;
+
+            (t.Config e.Errors) (#Runtime s.Num e.File)
+              = <Update t.Config (e.Errors) Config-AddRuntimeFile s.Num e.File>;
 
             (t.Config e.Errors) (#FILE s.Num e.SourceFile)
               = <Update
