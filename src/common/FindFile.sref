@@ -17,23 +17,24 @@ $EXTERN ExistFile;
   s.Dialect ::= #R5 | #SR
 */
 $ENTRY FindFiles {
-  (e.Folders) e.Files =
-    <Map
-      {
-        (e.FileName) =
-          <AnalyzeFile-CheckNotFound
-            (e.FileName)
-            <AnalyzeFile e.FileName>
-            <Map
-              {
-                (e.Folder) = <AnalyzeFile e.Folder '/' e.FileName>;
-              }
-              e.Folders
-            >
-          >;
-      }
-      e.Files
-    >;
+  (e.Folders) e.Files
+    = <Map
+        {
+          (e.FileName)
+            = <AnalyzeFile-CheckNotFound
+                (e.FileName)
+                <AnalyzeFile e.FileName>
+                <Map
+                  {
+                    (e.Folder)
+                      = <AnalyzeFile e.Folder '/' e.FileName>;
+                  }
+                  e.Folders
+                >
+              >;
+        }
+        e.Files
+      >;
 }
 
 AnalyzeFile-CheckNotFound {
