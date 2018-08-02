@@ -5,9 +5,15 @@ $EXTERN Map;
 $EXTERN ExistFile;
 
 /**
-  <FindFiles (e.Folders) e.Files>
+  <FindFiles s.TargetMode (e.Folders) e.Files>
     == t.FoundFile*
 
+  s.TargetMode ::=
+      #DefaultEXE   -- subdir 'exe'
+    | #EXE          -- subdir 'exe'
+    | #LIB          -- subdir 'lib'
+    | #R            -- subdir 'lib'
+    | #CompileOnly  -- subdir 'exe'
   t.FoundFile ::=
     (#Source (s.Dialect e.Source) e.Output)
     (#Output e.Output)
@@ -17,17 +23,28 @@ $EXTERN ExistFile;
   s.Dialect ::= #R5 | #SR
 */
 $ENTRY FindFiles {
-  (e.Folders) e.Files
+  s.TargetMode (e.Folders) e.Files
+    = s.TargetMode
+    : {
+        #DefaultEXE = 'exe';
+        #EXE = 'exe';
+        #LIB = 'lib';
+        #R = 'lib';
+        #CompileOnly = 'exe';
+      }
+    : e.Subdir
     = <Map
         {
           (e.FileName)
             = <AnalyzeFile-CheckNotFound
                 (e.FileName)
+                <AnalyzeFile e.Subdir '/' e.FileName>
                 <AnalyzeFile e.FileName>
                 <Map
                   {
                     (e.Folder)
-                      = <AnalyzeFile e.Folder '/' e.FileName>;
+                      = <AnalyzeFile e.Folder '/' e.Subdir '/' e.FileName>
+                        <AnalyzeFile e.Folder '/' e.FileName>;
                   }
                   e.Folders
                 >

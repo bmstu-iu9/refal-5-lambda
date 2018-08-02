@@ -207,10 +207,12 @@ CalcTargetFileName {
 
 LookupSourceFiles {
   t.Config e.Files
+    = <Config-GetTargetMode t.Config> : s.TargetMode
+    = <Config-GetSearchFolders t.Config> : e.SearchFolders
     = <Map
         {
           (s.Pos e.FileName)
-            = <FindFiles (<Config-GetSearchFolders t.Config>) (e.FileName)>
+            = <FindFiles s.TargetMode (e.SearchFolders) (e.FileName)>
             : {
                 (s.ResultTag e.Info) = (s.Pos s.ResultTag e.Info);
               };

@@ -8,6 +8,7 @@ $EXTERN ExistFile, Chr, Add, Mul;
 $EXTERN
   Config-GetPrelude,
   Config-AddReference,
+  Config-GetTargetMode,
   Config-GetFolders,
   Config-GetPrefix,
   Config-SetPrefix;
@@ -136,7 +137,8 @@ FindImports-Aux {
 
 FindFileEx {
   t.Config t.SrcPos e.UnitName
-    = <FindFiles (<GetFolders t.Config>) (e.UnitName)>
+    = <Config-GetTargetMode t.Config> : s.TargetMode
+    = <FindFiles s.TargetMode (<GetFolders t.Config>) (e.UnitName)>
     : {
         (#NotFound e.Unit) = (#Error t.SrcPos 'Unit ' e.Unit ' not found');
 
