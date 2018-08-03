@@ -1,6 +1,7 @@
 #include <new>
 
 #include <assert.h>
+#include <errno.h>
 #include <new>
 #include <string.h>
 #include <utility>
@@ -134,7 +135,7 @@ refalrts::Module::load_main_module_and_report_error(
     case cUnresolvedExternal:
       fprintf(
         stderr, "INTERNAL ERROR: found %u unresolved externals:\n",
-        module->m_unresolved_externals.size()
+        (unsigned) module->m_unresolved_externals.size()
       );
       for (
         NameList::iterator p = module->m_unresolved_externals.begin();
@@ -148,7 +149,7 @@ refalrts::Module::load_main_module_and_report_error(
     case cUnresolvedNative:
       fprintf(
         stderr, "INTERNAL ERROR: found %u unresolved native functions:\n",
-        module->m_unresolved_externals.size()
+        (unsigned) module->m_unresolved_externals.size()
       );
       for (
         NativeList::iterator p = module->m_unresolved_native_functions.begin();
@@ -634,7 +635,6 @@ void refalrts::Domain::free_idents_table() {
 
   while (m_idents_table.size() > 0) {
     IdentsMap::iterator p = m_idents_table.begin();
-    StringRef name = p->first;
     RefalIdentifier ident = p->second;
     m_idents_table.erase(p);
     delete ident;
