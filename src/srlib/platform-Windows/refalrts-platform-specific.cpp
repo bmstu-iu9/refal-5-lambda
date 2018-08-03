@@ -39,3 +39,59 @@ refalrts::RefalNumber refalrts::api::get_pid() {
 refalrts::RefalNumber refalrts::api::get_ppid() {
   return static_cast<refalrts::RefalNumber>(GetCurrentProcessId());
 }
+
+struct refalrts::api::stat {
+  BY_HANDLE_FILE_INFORMATION stat;
+};
+
+const refalrts::api::stat *
+refalrts::api::stat_create(const char *filename) {
+  HANDLE h = CreateFile(
+    filename,
+    GENERIC_READ,
+    FILE_SHARE_READ | FILE_SHARE_WRITE,
+    NULL,
+    OPEN_EXISTING,
+    FILE_ATTRIBUTE_NORMAL,
+    NULL
+  );
+
+  if (h == INVALID_HANDLE_VALUE) {
+    return 0;
+  }
+
+  refalrts::api::stat *api_stat = new ::refalrts::api::stat();
+  BOOL res = GetFileInformationByHandle(h, &api_stat->stat);
+  CloseHandle(h);
+
+  if (res) {
+    return api_stat;
+  } else {
+    delete api_stat;
+    return 0;
+  }
+}
+
+signed refalrts::api::stat_compare(
+  const refalrts::api::stat *left, const refalrts::api::stat *right
+) {
+  if (left->stat.dwVolumeSerialNumber < right->stat.dwVolumeSerialNumber) {
+    return -1;
+  } else if (left->stat.dwVolumeSerialNumber > right->stat.dwVolumeSerialNumber) {
+    return +1;
+  } else if (left->stat.nFileIndexHigh < right->stat.nFileIndexHigh) {
+    return -1;
+  } else if (left->stat.nFileIndexHigh > right->stat.nFileIndexHigh) {
+    return +1;
+  } else if (left->stat.nFileIndexLow < right->stat.nFileIndexLow) {
+    return -1;
+  } else if (left->stat.nFileIndexLow > right->stat.nFileIndexLow) {
+    return +1;
+  } else {
+    return 0;
+  }
+}
+
+void refalrts::api::stat_destroy(const refalrts::api::stat *stat) {
+  delete stat;
+}

@@ -21,6 +21,12 @@ bool get_current_directory(char buffer[], size_t size);
 refalrts::RefalNumber get_pid();
 refalrts::RefalNumber get_ppid();
 
+struct stat;
+
+const stat *stat_create(const char *filename);
+signed stat_compare(const stat *left, const stat *right);
+void stat_destroy(const stat *stat);
+
 } // namespace api
 
 } // namespace refalrts
