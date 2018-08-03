@@ -450,7 +450,7 @@ class GlobalRef: private GlobalRefBase {
   union Aligned {
     T t;
     void *p;
-    double *d;
+    double d;
   };
 
 public:
