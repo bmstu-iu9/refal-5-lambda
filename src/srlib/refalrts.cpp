@@ -788,6 +788,14 @@ refalrts::Module *refalrts::current_module(refalrts::VM *vm) {
   return vm->module();
 }
 
+refalrts::Module *refalrts::load_module(refalrts::VM *vm, const char *name) {
+  return vm->domain()->load_module(vm, name);
+}
+
+void refalrts::unload_module(refalrts::VM *vm, refalrts::Module *module) {
+  return vm->domain()->unload_module(vm, module);
+}
+
 //==============================================================================
 
 int main(int argc, char **argv) {

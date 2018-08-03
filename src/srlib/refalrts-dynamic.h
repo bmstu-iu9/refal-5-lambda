@@ -217,6 +217,9 @@ public:
   Domain();
 
   bool load_native_module(NativeModule *main_module);
+  Module *load_module(VM *vm, const char *name);
+  void unload_module(VM *vm, Module *module);
+
   void unload();
 
   size_t idents_count();

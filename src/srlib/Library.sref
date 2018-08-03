@@ -3754,3 +3754,83 @@ $ENTRY RenameFile {
   return refalrts::cSuccess;
 %%
 }
+
+/**
+  <LoadModule e.ModuleName>
+    == #Success s.ModuleHandle
+    == #Fails
+*/
+$LABEL Success, Fails;
+
+$ENTRY LoadModule {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  char module_name[FILENAME_MAX + 1] = { '\0' };
+  unsigned module_name_len =
+    refalrts::read_chars(module_name, FILENAME_MAX, content_b, content_e);
+
+  if (! refalrts::empty_seq(content_b, content_e) || module_name_len == 0) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::Module *module = refalrts::load_module(vm, module_name);
+
+  if (module != 0) {
+    refalrts::Iter pSuccess = 0;
+    refalrts::Iter pHandle = 0;
+
+    if (
+      ! refalrts::alloc_ident(vm, pSuccess, USE_IDENT(Success))
+      || ! refalrts::alloc_number(vm, pHandle, 0)
+    ) {
+      return refalrts::cNoMemory;
+    }
+
+    pHandle->tag = refalrts::cDataFile;
+    pHandle->file_info = module;
+
+    refalrts::splice_elem(arg_begin, pSuccess);
+    refalrts::splice_elem(arg_begin, pHandle);
+  } else {
+    refalrts::Iter pFails = 0;
+    if (! refalrts::alloc_ident(vm, pFails, USE_IDENT(Fails))) {
+      return refalrts::cNoMemory;
+    }
+
+    refalrts::splice_elem(arg_begin, pFails);
+  }
+
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+/**
+  <UnloadModule s.ModuleHandle> == []
+*/
+$ENTRY UnloadModule {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter pHandle = 0;
+  if (
+    ! refalrts::svar_right(pHandle, content_b, content_e)
+    || ! refalrts::empty_seq(content_b, content_e)
+    || pHandle->tag != refalrts::cDataFile
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  // static_cast не работает на BCC 5.5.1
+  refalrts::Module *module = (refalrts::Module*) pHandle->file_info;
+  refalrts::unload_module(vm, module);
+
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}

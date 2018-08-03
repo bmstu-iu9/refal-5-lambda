@@ -469,6 +469,8 @@ public:
 };
 
 Module *current_module(VM *vm);
+Module *load_module(VM *vm, const char *name);
+void unload_module(VM *vm, Module *module);
 
 
 } // namespace refalrts

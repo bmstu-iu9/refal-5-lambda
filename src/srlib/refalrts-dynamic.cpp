@@ -596,6 +596,21 @@ bool refalrts::Domain::load_native_module(NativeModule *main_module) {
   return error == Module::cSuccess;
 }
 
+refalrts::Module *
+refalrts::Domain::load_module(refalrts::VM * /*vm*/, const char * /*name*/) {
+  // assert(this == vm->domain());
+  return 0;
+}
+
+void refalrts::Domain::unload_module(
+  refalrts::VM * /*vm*/, refalrts::Module * /*module*/
+) {
+  //assert(this == vm->domain());
+  //assert(this == module->domain());
+
+  /* пока пусто */
+}
+
 void refalrts::Domain::unload() {
   free_idents_table();
   delete m_module;
