@@ -1,10 +1,7 @@
-#include <new>
-
 #include <algorithm>
 #include <assert.h>
 #include <errno.h>
 #include <new>
-#include <string.h>
 #include <utility>
 
 #include "refalrts-dynamic.h"
