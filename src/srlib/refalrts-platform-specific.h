@@ -27,6 +27,12 @@ const stat *stat_create(const char *filename);
 signed stat_compare(const stat *left, const stat *right);
 void stat_destroy(const stat *stat);
 
+extern const char path_env_separator;
+extern const char *const directory_separators;
+
+bool is_directory_ended_to_separator(const char *directory);
+bool is_single_file_name(const char *name);
+
 } // namespace api
 
 } // namespace refalrts

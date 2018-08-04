@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -66,4 +67,16 @@ signed refalrts::api::stat_compare(
 
 void refalrts::api::stat_destroy(const refalrts::api::stat *stat) {
   delete stat;
+}
+
+const char refalrts::api::path_env_separator = ':';
+const char *const refalrts::api::directory_separators = "/";
+
+bool refalrts::api::is_directory_ended_to_separator(const char *directory) {
+  size_t len = strlen(directory);
+  return (len == 0) || directory[len - 1] == '/';
+}
+
+bool refalrts::api::is_single_file_name(const char *name) {
+  return strchr(name, '/') == 0;
 }

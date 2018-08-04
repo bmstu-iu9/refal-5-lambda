@@ -1,4 +1,6 @@
+#include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
 #include <windows.h>
 
 #include "refalrts-platform-specific.h"
@@ -94,4 +96,23 @@ signed refalrts::api::stat_compare(
 
 void refalrts::api::stat_destroy(const refalrts::api::stat *stat) {
   delete stat;
+}
+
+const char refalrts::api::path_env_separator = ';';
+const char *const refalrts::api::directory_separators = "\\/";
+
+bool refalrts::api::is_directory_ended_to_separator(const char *directory) {
+  size_t len = strlen(directory);
+  return (len == 0) || directory[len - 1] == '/' || directory[len - 1] == '\\'
+    || (len == 2 && directory[1] == ':');
+}
+
+bool refalrts::api::is_single_file_name(const char *name) {
+  size_t len = strlen(name);
+
+  return
+    // путь не содержит разделителей каталогов
+    strchr(name, '/') == 0 && strchr(name, '\\') == 0
+    // и не начинается с буквы диска (c:filename.ext)
+    && ! (len >= 2 && isalpha(name[0]) && name[1] == ':');
 }
