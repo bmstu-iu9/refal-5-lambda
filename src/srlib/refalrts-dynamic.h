@@ -61,6 +61,11 @@ inline bool operator<(const RefalFuncName& lhs, const RefalFuncName& rhs) {
   }
 }
 
+inline bool operator!=(const RefalFuncName& lhs, const RefalFuncName& rhs) {
+  return lhs.cookie1 != rhs.cookie1 || lhs.cookie2 != rhs.cookie2
+    || strcmp(lhs.name, rhs.name) != 0;
+}
+
 class Domain;
 
 class Module {

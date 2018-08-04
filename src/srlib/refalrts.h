@@ -424,6 +424,10 @@ struct NativeReference {
     UInt32 cookie2,
     RefalFunctionPtr code
   );
+
+  RefalFuncName refal_func_name() const {
+    return RefalFuncName(name, cookie1, cookie2);
+  }
 };
 
 

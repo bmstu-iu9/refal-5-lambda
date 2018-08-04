@@ -263,14 +263,7 @@ void refalrts::Module::resolve_native_functions() {
     assert(func->ptr == 0);
 
     NativeReference *ref = m_native->native_references;
-    while (
-      ref != 0
-      && (
-        ref->cookie1 != func->name.cookie1
-        || ref->cookie2 != func->name.cookie2
-        || strcmp(ref->name, func->name.name) != 0
-      )
-    ) {
+    while (ref != 0 && ref->refal_func_name() != func->name) {
       ref = ref->next;
     }
 
