@@ -1,5 +1,6 @@
 #include <new>
 
+#include <algorithm>
 #include <assert.h>
 #include <errno.h>
 #include <new>
@@ -51,8 +52,10 @@ refalrts::Module::initialize(const char *module_name) {
   try {
     Loader loader(this, module_name);
     loader.enumerate_blocks();
-    load_native_identifiers();
-    alloc_global_variables();
+    if (m_native) {
+      load_native_identifiers();
+      alloc_global_variables();
+    }
   } catch (LoadModuleError& e) {
     error = cReadRaslError;
     m_error_message = e.message;
@@ -65,6 +68,9 @@ refalrts::Module::initialize(const char *module_name) {
 
   if (error == cSuccess) {
     find_unresolved_externals();
+    if (m_native) {
+      find_unresolved_externals_native();
+    }
 
     if (! m_unresolved_externals.empty()) {
       error = cUnresolvedExternal;
@@ -100,6 +106,16 @@ refalrts::Module::load_main_module(
   }
 
   error = module->initialize(module_name);
+  return module;
+}
+
+refalrts::Module *
+refalrts::Module::load_module(
+  refalrts::Domain *domain, const char *real_name,
+  refalrts::Module::Error& error
+) {
+  Module *module = new Module(domain);
+  error = module->initialize(real_name);
   return module;
 }
 
@@ -239,7 +255,9 @@ void refalrts::Module::find_unresolved_externals() {
 
     m_unresolved_func_tables.pop_front();
   }
+}
 
+void refalrts::Module::find_unresolved_externals_native() {
   m_native_externals.resize(m_native->next_external_id);
   for (
     const ExternalReference *er = m_native->list_externals;
@@ -257,6 +275,10 @@ void refalrts::Module::find_unresolved_externals() {
 }
 
 void refalrts::Module::resolve_native_functions() {
+  if (! m_native) {
+    return;
+  }
+
   NativeList::iterator p = m_unresolved_native_functions.begin();
   while (p != m_unresolved_native_functions.end()) {
     RefalNativeFunction *func = m_unresolved_native_functions.front();
@@ -576,39 +598,96 @@ void refalrts::Module::alloc_global_variables() {
 refalrts::Domain::Domain()
   : m_idents_table()
   , m_at_exit_list(0)
-  , m_module(0)
+  , m_modules()
+  , m_module_by_stat()
 {
   /* пусто */
 }
 
 bool refalrts::Domain::load_native_module(NativeModule *main_module) {
-  assert(m_module == 0);
-
   Module::Error error;
-  m_module = Module::load_main_module(this, main_module, error);
+  Module *new_module = Module::load_main_module(this, main_module, error);
+
   new_module->report_errors(error);
 
-  return error == Module::cSuccess;
+  if (error == Module::cSuccess) {
+    m_modules.push_back(new_module);
+    return true;
+  } else {
+    delete new_module;
+    return false;
+  }
 }
 
 refalrts::Module *
-refalrts::Domain::load_module(refalrts::VM * /*vm*/, const char * /*name*/) {
+refalrts::Domain::load_module(refalrts::VM * /*vm*/, const char *name) {
   // assert(this == vm->domain());
-  return 0;
+
+  std::string real_name;
+  const refalrts::api::stat *module_stat = lookup_module_by_name(name, real_name);
+
+  if (! module_stat) {
+    // TODO: сообщение об ошибке
+    return 0;
+  }
+
+  ModuleByStatMap::iterator known = m_module_by_stat.find(module_stat);
+  if (known != m_module_by_stat.end()) {
+    // TODO: счётчик ссылок
+    return known->second;
+  }
+
+  Module::Error error;
+  Module *new_module = Module::load_module(this, real_name.c_str(), error);
+  new_module->report_errors(error);
+
+  if (error == Module::cSuccess) {
+    m_modules.push_back(new_module);
+    m_module_by_stat[module_stat] = new_module;
+  } else {
+    delete new_module;
+    api::stat_destroy(module_stat);
+    new_module = 0;
+  }
+
+  return new_module;
 }
 
 void refalrts::Domain::unload_module(
-  refalrts::VM * /*vm*/, refalrts::Module * /*module*/
+  refalrts::VM * /*vm*/, refalrts::Module *module
 ) {
   //assert(this == vm->domain());
-  //assert(this == module->domain());
+  assert(this == module->domain());
 
-  /* пока пусто */
+  ModuleByStatMap::iterator map_pos = m_module_by_stat.begin();
+  while (map_pos != m_module_by_stat.end() && map_pos->second != module) {
+    ++map_pos;
+  }
+  assert(map_pos != m_module_by_stat.end());
+  const api::stat *stat_to_destroy = map_pos->first;
+  m_module_by_stat.erase(map_pos);
+  api::stat_destroy(stat_to_destroy);
+
+  std::list<Module*>::iterator list_pos =
+    std::find(m_modules.begin(), m_modules.end(), module);
+  assert(list_pos != m_modules.end());
+  m_modules.erase(list_pos);
+
+  delete module;
 }
 
 void refalrts::Domain::unload() {
   free_idents_table();
-  delete m_module;
+  while (! m_modules.empty()) {
+    delete m_modules.front();
+    m_modules.pop_front();
+  }
+
+  while (! m_module_by_stat.empty()) {
+    const api::stat *to_destroy = m_module_by_stat.begin()->first;
+    m_module_by_stat.erase(m_module_by_stat.begin());
+    api::stat_destroy(to_destroy);
+  }
 }
 
 //------------------------------------------------------------------------------
@@ -635,6 +714,17 @@ void refalrts::Domain::free_idents_table() {
   }
 }
 
+refalrts::RefalFunction *
+refalrts::Domain::lookup_function(const refalrts::RefalFuncName& name) {
+  std::list<Module*>::iterator p = m_modules.begin();
+  RefalFunction *func = 0;
+
+  while (p != m_modules.end() && ((func = (*p)->lookup_function(name)) == 0)) {
+    ++p;
+  }
+
+  return func;
+}
 
 refalrts::RefalIdentifier
 refalrts::Domain::lookup_ident(const char *name) {
@@ -687,4 +777,61 @@ void refalrts::Domain::perform_at_exit() {
     current->call(this);
     delete current;
   }
+}
+
+const refalrts::api::stat *
+refalrts::Domain::lookup_module_by_name(
+  const std::string& name, std::string& real_name
+) {
+  if (! api::is_single_file_name(name.c_str())) {
+    real_name = name;
+    return api::stat_create(real_name.c_str());
+  }
+
+  std::list<std::string> directories;
+
+  char exe_file_directory[api::cModuleNameBufferLen];
+  bool main_module_successed = api::get_main_module_name(exe_file_directory);
+
+  if (main_module_successed) {
+    // Да, тут квадратичная сложность, но здесь это не критично
+    size_t len = strlen(exe_file_directory);
+    while (
+      len > 0 && ! api::is_directory_ended_to_separator(exe_file_directory)
+    ) {
+      exe_file_directory[--len] = '\0';
+    }
+
+    directories.push_back(exe_file_directory);
+  }
+
+  std::string path = not_null(getenv("RL_MODULE_PATH"));
+  if (! path.empty()) {
+    size_t sep;
+    do {
+      sep = path.find(api::path_env_separator);
+      std::string next_dir = path.substr(0, sep);
+      if (sep != std::string::npos) {
+        path = path.substr(sep);
+      }
+      if (! next_dir.empty()) {
+        if (! api::is_directory_ended_to_separator(next_dir.c_str())) {
+          next_dir += *api::directory_separators;
+        }
+        directories.push_back(next_dir);
+      }
+    } while (sep != std::string::npos);
+  }
+
+  const api::stat *result = 0;
+  for (
+    std::list<std::string>::iterator p = directories.begin();
+    p != directories.end() && result == 0;
+    ++p
+  ) {
+    real_name = *p + name;
+    result = api::stat_create(real_name.c_str());
+  }
+
+  return result;
 }

@@ -10,6 +10,7 @@
 
 #include "refalrts.h"
 #include "refalrts-functions.h"
+#include "refalrts-platform-specific.h"
 
 
 //==============================================================================
@@ -155,6 +156,9 @@ public:
   static Module *load_main_module(
     Domain *domain, NativeModule *native, Error& error
   );
+  static Module *load_module(
+    Domain *domain, const char *real_name, Error& error
+  );
 
   void report_errors(Error error);
 
@@ -187,8 +191,15 @@ private:
 
   void load_native_identifiers();
   void find_unresolved_externals();
+  void find_unresolved_externals_native();
   void resolve_native_functions();
   void alloc_global_variables();
+};
+
+struct StatComparer {
+  bool operator() (const api::stat *left, const api::stat *right) const {
+    return api::stat_compare(left, right) < 0;
+  }
 };
 
 class Domain {
@@ -211,11 +222,13 @@ class Domain {
   friend struct AtExitListNode;
 
   typedef std::map<StringRef, RefalIdentifier> IdentsMap;
+  typedef std::map<const api::stat*, Module*, StatComparer> ModuleByStatMap;
 
   IdentsMap m_idents_table;
   AtExitListNode *m_at_exit_list;
 
-  Module *m_module;      // TODO: должен быть список модулей
+  std::list<Module*> m_modules;
+  ModuleByStatMap m_module_by_stat;
 
 public:
   Domain();
@@ -228,9 +241,7 @@ public:
 
   size_t idents_count();
 
-  RefalFunction *lookup_function(const RefalFuncName& name) {
-    return m_module->lookup_function(name);
-  }
+  RefalFunction *lookup_function(const RefalFuncName& name);
 
   RefalFunction *lookup_function(
     UInt32 cookie1, UInt32 cookie2, const char *name
@@ -247,6 +258,14 @@ public:
   void perform_at_exit();
 
 private:
+  static const char *not_null(const char *str) {
+    return str ? str : "";
+  }
+
+  const api::stat *lookup_module_by_name(
+    const std::string& name, std::string& real_name
+  );
+
   void free_idents_table();
 };
 
