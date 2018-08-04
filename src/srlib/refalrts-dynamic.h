@@ -156,9 +156,7 @@ public:
     Domain *domain, NativeModule *native, Error& error
   );
 
-  static Module *load_main_module_and_report_error(
-    Domain *domain, NativeModule *native, Error& error
-  );
+  void report_errors(Error error);
 
   RefalIdentifier operator[](const IdentReference& ref) const {
     return m_native_identifiers[ref.id];
@@ -185,6 +183,7 @@ public:
 
 private:
   Module(Domain *domain, NativeModule *native = 0);
+  Error initialize(const char *module_name);
 
   void load_native_identifiers();
   void find_unresolved_externals();

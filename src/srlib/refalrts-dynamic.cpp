@@ -44,6 +44,44 @@ refalrts::Module::~Module() {
   }
 }
 
+refalrts::Module::Error
+refalrts::Module::initialize(const char *module_name) {
+  Error error = cSuccess;
+
+  try {
+    Loader loader(this, module_name);
+    loader.enumerate_blocks();
+    load_native_identifiers();
+    alloc_global_variables();
+  } catch (LoadModuleError& e) {
+    error = cReadRaslError;
+    m_error_message = e.message;
+  } catch (AllocIdentifierError&) {
+    error = cIdentAllocError;
+  } catch (std::bad_alloc& e) {
+    error = cMemoryAllocError;
+    m_error_message = e.what();
+  }
+
+  if (error == cSuccess) {
+    find_unresolved_externals();
+
+    if (! m_unresolved_externals.empty()) {
+      error = cUnresolvedExternal;
+    }
+  }
+
+  if (error == cSuccess) {
+    resolve_native_functions();
+
+    if (! m_unresolved_native_functions.empty()) {
+      error = cUnresolvedNative;
+    }
+  }
+
+  return error;
+}
+
 refalrts::Module *
 refalrts::Module::load_main_module(
   refalrts::Domain *domain, refalrts::NativeModule *native,
@@ -61,63 +99,27 @@ refalrts::Module::load_main_module(
     return module;
   }
 
-  try {
-    Loader loader(module, module_name);
-    loader.enumerate_blocks();
-    module->load_native_identifiers();
-    module->alloc_global_variables();
-  } catch (LoadModuleError& e) {
-    error = cReadRaslError;
-    module->m_error_message = e.message;
-  } catch (AllocIdentifierError&) {
-    error = cIdentAllocError;
-  } catch (std::bad_alloc& e) {
-    error = cMemoryAllocError;
-    module->m_error_message = e.what();
-  }
-
-  if (error == cSuccess) {
-    module->find_unresolved_externals();
-
-    if (! module->m_unresolved_externals.empty()) {
-      error = cUnresolvedExternal;
-    }
-  }
-
-  if (error == cSuccess) {
-    module->resolve_native_functions();
-
-    if (! module->m_unresolved_native_functions.empty()) {
-      error = cUnresolvedNative;
-    }
-  }
-
+  error = module->initialize(module_name);
   return module;
 }
 
-refalrts::Module *
-refalrts::Module::load_main_module_and_report_error(
-  refalrts::Domain *domain, refalrts::NativeModule *native,
-  refalrts::Module::Error& error
-) {
-  Module *module = load_main_module(domain, native, error);
-
+void refalrts::Module::report_errors(Error error) {
   switch (error) {
     case cSuccess:
-      return module;
+      break;
 
     case cObtainMainModuleNameError:
       fprintf(stderr, "INTERNAL ERROR: can't obtain name of main executable\n");
       exit(155);
 
     case cReadRaslError:
-      fprintf(stderr, "INTERNAL ERROR: %s\n", module->m_error_message.c_str());
+      fprintf(stderr, "INTERNAL ERROR: %s\n", m_error_message.c_str());
       exit(155);
 
     case cMemoryAllocError:
       fprintf(
         stderr, "INTERNAL ERROR: out of memory while loading module, %s\n",
-        module->m_error_message.c_str()
+        m_error_message.c_str()
       );
       exit(155);
 
@@ -135,11 +137,11 @@ refalrts::Module::load_main_module_and_report_error(
     case cUnresolvedExternal:
       fprintf(
         stderr, "INTERNAL ERROR: found %u unresolved externals:\n",
-        (unsigned) module->m_unresolved_externals.size()
+        (unsigned) m_unresolved_externals.size()
       );
       for (
-        NameList::iterator p = module->m_unresolved_externals.begin();
-        p != module->m_unresolved_externals.end();
+        NameList::iterator p = m_unresolved_externals.begin();
+        p != m_unresolved_externals.end();
         ++p
       ) {
         fprintf(stderr, "  * %s#%u:%u\n", p->name, p->cookie1, p->cookie2);
@@ -149,11 +151,11 @@ refalrts::Module::load_main_module_and_report_error(
     case cUnresolvedNative:
       fprintf(
         stderr, "INTERNAL ERROR: found %u unresolved native functions:\n",
-        (unsigned) module->m_unresolved_externals.size()
+        (unsigned) m_unresolved_native_functions.size()
       );
       for (
-        NativeList::iterator p = module->m_unresolved_native_functions.begin();
-        p != module->m_unresolved_native_functions.end();
+        NativeList::iterator p = m_unresolved_native_functions.begin();
+        p != m_unresolved_native_functions.end();
         ++p
       ) {
         RefalFuncName& n = (*p)->name;
@@ -164,8 +166,6 @@ refalrts::Module::load_main_module_and_report_error(
     default:
       refalrts_switch_default_violation(error);
   }
-
-  return module;
 }
 
 
@@ -585,7 +585,8 @@ bool refalrts::Domain::load_native_module(NativeModule *main_module) {
   assert(m_module == 0);
 
   Module::Error error;
-  m_module = Module::load_main_module_and_report_error(this, main_module, error);
+  m_module = Module::load_main_module(this, main_module, error);
+  new_module->report_errors(error);
 
   return error == Module::cSuccess;
 }
