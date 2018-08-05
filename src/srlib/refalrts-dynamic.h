@@ -257,6 +257,7 @@ private:
     return str ? str : "";
   }
 
+  const api::stat *lookup_module_with_extensions(std::string *real_name);
   const api::stat *lookup_module_by_name(
     const std::string& name, std::string& real_name
   );

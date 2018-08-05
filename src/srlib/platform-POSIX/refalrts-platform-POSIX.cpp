@@ -80,3 +80,5 @@ bool refalrts::api::is_directory_ended_to_separator(const char *directory) {
 bool refalrts::api::is_single_file_name(const char *name) {
   return strchr(name, '/') == 0;
 }
+
+const char *refalrts::api::default_lib_extension = ".so";

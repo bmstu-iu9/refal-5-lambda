@@ -33,6 +33,8 @@ extern const char *const directory_separators;
 bool is_directory_ended_to_separator(const char *directory);
 bool is_single_file_name(const char *name);
 
+extern const char *default_lib_extension;
+
 } // namespace api
 
 } // namespace refalrts

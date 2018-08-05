@@ -116,3 +116,5 @@ bool refalrts::api::is_single_file_name(const char *name) {
     // и не начинается с буквы диска (c:filename.ext)
     && ! (len >= 2 && isalpha(name[0]) && name[1] == ':');
 }
+
+const char *refalrts::api::default_lib_extension = ".dll";

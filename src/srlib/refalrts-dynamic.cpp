@@ -741,12 +741,32 @@ void refalrts::Domain::perform_at_exit() {
 }
 
 const refalrts::api::stat *
+refalrts::Domain::lookup_module_with_extensions(std::string *real_name) {
+  const char *suffixes[] = {
+    "", ".rasl-module", api::default_lib_extension, 0
+  };
+
+  const api::stat *result = 0;
+  std::string new_name;
+  for (const char **ext = suffixes; *ext != 0 && result == 0; ++ext) {
+    new_name = *real_name + *ext;
+    result = api::stat_create(new_name.c_str());
+  }
+
+  if (result) {
+    *real_name = new_name;
+  }
+
+  return result;
+}
+
+const refalrts::api::stat *
 refalrts::Domain::lookup_module_by_name(
   const std::string& name, std::string& real_name
 ) {
   if (! api::is_single_file_name(name.c_str())) {
     real_name = name;
-    return api::stat_create(real_name.c_str());
+    return lookup_module_with_extensions(&real_name);
   }
 
   std::list<std::string> directories;
@@ -791,7 +811,7 @@ refalrts::Domain::lookup_module_by_name(
     ++p
   ) {
     real_name = *p + name;
-    result = api::stat_create(real_name.c_str());
+    result = lookup_module_with_extensions(&real_name);
   }
 
   return result;
