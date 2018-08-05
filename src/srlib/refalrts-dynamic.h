@@ -144,24 +144,14 @@ class Module {
 public:
   ~Module();
 
-  enum Error {
-    cSuccess,
-    cObtainMainModuleNameError,
-    cReadRaslError,
-    cMemoryAllocError,
-    cIdentAllocError,
-    cUnresolvedExternal,
-    cUnresolvedNative,
-  };
-
   static Module *load_main_module(
-    Domain *domain, NativeModule *native, Error& error
+    Domain *domain, NativeModule *native, bool& success,
+    LoadModuleEvent event, void *callback_data
   );
   static Module *load_module(
-    Domain *domain, const char *real_name, Error& error
+    Domain *domain, const char *real_name, bool& success,
+    LoadModuleEvent event, void *callback_data
   );
-
-  void report_errors(Error error);
 
   RefalIdentifier operator[](const IdentReference& ref) const {
     return m_native_identifiers[ref.id];
@@ -188,7 +178,9 @@ public:
 
 private:
   Module(Domain *domain, NativeModule *native = 0);
-  Error initialize(const char *module_name);
+  bool initialize(
+    const char *module_name, LoadModuleEvent event, void *callback_data
+  );
 
   void load_native_identifiers();
   void find_unresolved_externals();
@@ -235,7 +227,9 @@ public:
   Domain();
 
   bool load_native_module(NativeModule *main_module);
-  Module *load_module(VM *vm, const char *name);
+  Module *load_module(
+    VM *vm, const char *name, LoadModuleEvent event, void *callback_data
+  );
   void unload_module(VM *vm, Module *module);
 
   void unload();
@@ -268,6 +262,12 @@ private:
   );
 
   void free_idents_table();
+
+  static void load_native_module_report_error(
+    ModuleLoadingError error,
+    ModuleLoadingErrorDetail *detail,
+    void *callback_data
+  );
 };
 
 }  // namespace refalrts

@@ -473,7 +473,39 @@ public:
 };
 
 Module *current_module(VM *vm);
-Module *load_module(VM *vm, const char *name);
+
+enum ModuleLoadingError {
+  cModuleLoadingError_ModuleNotFound,
+  cModuleLoadingError_CantObtainModuleName,
+  cModuleLoadingError_InvalidRasl,
+  cModuleLoadingError_CantAllocMemory,
+  cModuleLoadingError_CantAllocIdent,
+  cModuleLoadingError_UnresolvedExternal,
+  cModuleLoadingError_UnresolvedNative,
+};
+
+struct ModuleLoadingErrorDetail {
+  const char *message;
+  RefalFuncName func_name;
+
+  ModuleLoadingErrorDetail()
+    : message("")
+    , func_name(RefalFuncName("", 0, 0))
+  {
+    /* пусто */
+  }
+};
+
+typedef void (*LoadModuleEvent)(
+  ModuleLoadingError error,
+  ModuleLoadingErrorDetail *detail,
+  void *callback_data
+);
+
+Module *load_module(
+  VM *vm, const char *name,
+  LoadModuleEvent event, void *callback_data
+);
 void unload_module(VM *vm, Module *module);
 
 

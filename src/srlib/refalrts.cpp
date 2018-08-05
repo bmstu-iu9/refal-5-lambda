@@ -788,8 +788,26 @@ refalrts::Module *refalrts::current_module(refalrts::VM *vm) {
   return vm->module();
 }
 
-refalrts::Module *refalrts::load_module(refalrts::VM *vm, const char *name) {
-  return vm->domain()->load_module(vm, name);
+namespace {
+
+void empty_module_loading_error_callback (
+  refalrts::ModuleLoadingError /*error*/,
+  refalrts::ModuleLoadingErrorDetail * /*detail*/,
+  void * /*callback_data*/
+) {
+  /* пусто */
+}
+
+}  // безымянное namespace
+
+refalrts::Module *refalrts::load_module(
+  refalrts::VM *vm, const char *name,
+  refalrts::LoadModuleEvent event, void *callback_data
+) {
+  if (! event) {
+    event = empty_module_loading_error_callback;
+  }
+  return vm->domain()->load_module(vm, name, event, callback_data);
 }
 
 void refalrts::unload_module(refalrts::VM *vm, refalrts::Module *module) {

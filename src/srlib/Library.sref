@@ -3776,7 +3776,7 @@ $ENTRY LoadModule {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::Module *module = refalrts::load_module(vm, module_name);
+  refalrts::Module *module = refalrts::load_module(vm, module_name, 0, 0);
 
   if (module != 0) {
     refalrts::Iter pSuccess = 0;
