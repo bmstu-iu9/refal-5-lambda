@@ -233,6 +233,7 @@ run_test() {
     refalrts-functions
     refalrts-profiler
     refalrts-vm
+    refalrts-platform-POSIX
     refalrts-platform-specific
   "
   SREF=$1
