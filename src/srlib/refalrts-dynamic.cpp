@@ -28,8 +28,6 @@ refalrts::Module::Module(Domain *domain, NativeModule *native)
   , m_domain(domain)
   , m_unresolved_native_functions()
   , m_references()
-  , m_error_message()
-  , m_unresolved_externals()
 {
   /* пусто */
 }
@@ -69,40 +67,10 @@ bool refalrts::Module::initialize(
     success = false;
   }
 
-  if (success) {
-    find_unresolved_externals();
-    if (m_native) {
-      find_unresolved_externals_native();
-    }
-
-    if (! m_unresolved_externals.empty()) {
-      for (
-        NameList::iterator p = m_unresolved_externals.begin();
-        p != m_unresolved_externals.end();
-        ++p
-      ) {
-        detail.func_name = *p;
-        event(cModuleLoadingError_UnresolvedExternal, &detail, callback_data);
-      }
-      success = false;
-    }
-  }
-
-  if (success) {
-    resolve_native_functions();
-
-    if (! m_unresolved_native_functions.empty()) {
-      for (
-        NativeList::iterator p = m_unresolved_native_functions.begin();
-        p != m_unresolved_native_functions.end();
-        ++p
-      ) {
-        detail.func_name = (*p)->name;
-        event(cModuleLoadingError_UnresolvedNative, &detail, callback_data);
-      }
-      success = false;
-    }
-  }
+  success = success
+    && find_unresolved_externals(event, callback_data)
+    && (! m_native || find_unresolved_externals_native(event, callback_data))
+    && resolve_native_functions(event, callback_data);
 
   return success;
 }
@@ -180,7 +148,11 @@ bool refalrts::Module::register_function(refalrts::RefalFunction *func) {
   return res.second;
 }
 
-void refalrts::Module::find_unresolved_externals() {
+bool refalrts::Module::find_unresolved_externals(
+  refalrts::LoadModuleEvent event, void *callback_data
+) {
+  bool success = true;
+
   while (! m_unresolved_func_tables.empty()) {
     ConstTable *table = m_unresolved_func_tables.front();
     std::vector<FunctionTableItem>& items = table->externals;
@@ -206,15 +178,24 @@ void refalrts::Module::find_unresolved_externals() {
       RefalFunction *function = lookup_function(name);
       items[i].function = function;
       if (! function) {
-        m_unresolved_externals.push_back(name);
+        ModuleLoadingErrorDetail detail;
+        detail.func_name = name;
+        event(cModuleLoadingError_UnresolvedExternal, &detail, callback_data);
+        success = false;
       }
     }
 
     m_unresolved_func_tables.pop_front();
   }
+
+  return success;
 }
 
-void refalrts::Module::find_unresolved_externals_native() {
+bool refalrts::Module::find_unresolved_externals_native(
+  refalrts::LoadModuleEvent event, void *callback_data
+) {
+  bool success = true;
+
   m_native_externals.resize(m_native->next_external_id);
   for (
     const ExternalReference *er = m_native->list_externals;
@@ -226,19 +207,31 @@ void refalrts::Module::find_unresolved_externals_native() {
     assert(er->id < m_native->next_external_id);
     m_native_externals[er->id] = function;
     if (! function) {
-      m_unresolved_externals.push_back(name);
+      ModuleLoadingErrorDetail detail;
+      detail.func_name = name;
+      event(cModuleLoadingError_UnresolvedExternal, &detail, callback_data);
+      success = false;
     }
   }
+
+  return success;
 }
 
-void refalrts::Module::resolve_native_functions() {
+bool refalrts::Module::resolve_native_functions(
+  refalrts::LoadModuleEvent event, void *callback_data
+) {
   if (! m_native) {
-    return;
+    return true;
   }
 
-  NativeList::iterator p = m_unresolved_native_functions.begin();
-  while (p != m_unresolved_native_functions.end()) {
-    RefalNativeFunction *func = m_unresolved_native_functions.front();
+  bool success = true;
+
+  for (
+    NativeList::iterator p = m_unresolved_native_functions.begin();
+    p != m_unresolved_native_functions.end();
+    ++p
+  ) {
+    RefalNativeFunction *func = *p;
     assert(func->ptr == 0);
 
     NativeReference *ref = m_native->native_references;
@@ -248,11 +241,15 @@ void refalrts::Module::resolve_native_functions() {
 
     if (ref != 0) {
       func->ptr = ref->code;
-      p = m_unresolved_native_functions.erase(p);
     } else {
-      ++p;
+      ModuleLoadingErrorDetail detail;
+      detail.func_name = (*p)->name;
+      event(cModuleLoadingError_UnresolvedNative, &detail, callback_data);
+      success = false;
     }
   }
+
+  return success;
 }
 
 //------------------------------------------------------------------------------

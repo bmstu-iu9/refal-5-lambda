@@ -124,7 +124,6 @@ class Module {
   friend class Loader;
 
   typedef std::map<RefalFuncName, RefalFunction*> FuncsMap;
-  typedef std::list<RefalFuncName> NameList;
   typedef std::list<RefalNativeFunction*> NativeList;
   typedef std::map<std::string, Module*> ReferenceMap;
 
@@ -138,10 +137,6 @@ class Module {
   Domain *m_domain;
   NativeList m_unresolved_native_functions;
   ReferenceMap m_references;
-
-  // Информация об ошибках
-  std::string m_error_message;
-  NameList m_unresolved_externals;
 
 public:
   ~Module();
@@ -174,10 +169,6 @@ public:
     return m_domain;
   }
 
-  std::string last_error_message() const {
-    return m_error_message;
-  }
-
 private:
   Module(Domain *domain, NativeModule *native = 0);
   bool initialize(
@@ -185,9 +176,11 @@ private:
   );
 
   void load_native_identifiers();
-  void find_unresolved_externals();
-  void find_unresolved_externals_native();
-  void resolve_native_functions();
+  bool find_unresolved_externals(LoadModuleEvent event, void *callback_data);
+  bool find_unresolved_externals_native(
+    LoadModuleEvent event, void *callback_data
+  );
+  bool resolve_native_functions(LoadModuleEvent event, void *callback_data);
   void alloc_global_variables();
 };
 
