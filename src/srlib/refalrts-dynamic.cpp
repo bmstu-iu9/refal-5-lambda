@@ -472,16 +472,32 @@ void refalrts::Module::Loader::read_refal_function(
   size_t read = fread(&offset, sizeof(offset), 1);
   PARSE_ASSERT(read == 1, "can't read offset in REFAL_FUNCTION");
 
-  new RASLFunction(
-    table->make_name(name),
-    &table->rasl[offset],
-    &table->externals[0],
-    &table->idents[0],
-    &table->numbers[0],
-    &table->strings[0],
-    "filename.sref",
-    m_module
+  register_(
+    new RASLFunction(
+      table->make_name(name),
+      &table->rasl[offset],
+      &table->externals[0],
+      &table->idents[0],
+      &table->numbers[0],
+      &table->strings[0],
+      "filename.sref"
+    )
   );
+}
+
+void refalrts::Module::Loader::register_(refalrts::RefalFunction *func) {
+  assert(func->module == 0);
+
+  func->module = m_module;
+  bool successed = m_module->register_function(func);
+
+  if (! successed) {
+    fprintf(
+      stderr, "INTERNAL ERROR: function redeclared: %s#%u:%u\n",
+      func->name.name, func->name.cookie1, func->name.cookie2
+    );
+    exit(156);
+  }
 }
 
 void refalrts::Module::Loader::enumerate_blocks() {
@@ -513,17 +529,20 @@ void refalrts::Module::Loader::enumerate_blocks() {
         break;
 
       case cBlockTypeNativeFunction:
-        m_module->m_unresolved_native_functions.push_back(
-          new RefalNativeFunction(0, table->make_name(read_asciiz()), m_module)
-        );
+        {
+          RefalNativeFunction *func =
+            new RefalNativeFunction(0, table->make_name(read_asciiz()));
+          register_(func);
+          m_module->m_unresolved_native_functions.push_back(func);
+        }
         break;
 
       case cBlockTypeEmptyFunction:
-        new RefalEmptyFunction(table->make_name(read_asciiz()), m_module);
+        register_(new RefalEmptyFunction(table->make_name(read_asciiz())));
         break;
 
       case cBlockTypeSwap:
-        new RefalSwap(table->make_name(read_asciiz()), m_module);
+        register_(new RefalSwap(table->make_name(read_asciiz())));
         break;
 
       case cBlockTypeReference:
@@ -531,11 +550,11 @@ void refalrts::Module::Loader::enumerate_blocks() {
         break;
 
       case cBlockTypeConditionRasl:
-        new RefalCondFunctionRasl(table->make_name(read_asciiz()), m_module);
+        register_(new RefalCondFunctionRasl(table->make_name(read_asciiz())));
         break;
 
       case cBlockTypeConditionNative:
-        new RefalCondFunctionNative(table->make_name(read_asciiz()), m_module);
+        register_(new RefalCondFunctionNative(table->make_name(read_asciiz())));
         break;
 
       default:

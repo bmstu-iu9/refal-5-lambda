@@ -119,6 +119,7 @@ class Module {
     void read_start_block(size_t datalen);
     ConstTable *read_const_table();
     void read_refal_function(ConstTable *table);
+    void register_(RefalFunction *func);
   };
 
   friend class Loader;

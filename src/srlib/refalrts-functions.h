@@ -17,32 +17,25 @@ struct RefalFunction {
   RefalFuncName name;
   Module *module;
 
-  RefalFunction(const RASLCommand rasl[], RefalFuncName name, Module *module)
+  RefalFunction(const RASLCommand rasl[], RefalFuncName name)
     : rasl(rasl)
     , base_name(name.name)
     , name(base_name.c_str(), name.cookie1, name.cookie2)
-    , module(module)
+    , module(0)
   {
-    register_me();
+    /* пусто */
   }
 
   virtual ~RefalFunction() {
     /* пусто */
   }
-
-private:
-  void register_me();
 };
 
 struct RefalNativeFunction: public RefalFunction {
   RefalFunctionPtr ptr;
 
-  RefalNativeFunction(
-    RefalFunctionPtr ptr,
-    RefalFuncName name,
-    Module *module
-  )
-    : RefalFunction(run, name, module), ptr(ptr)
+  RefalNativeFunction(RefalFunctionPtr ptr, RefalFuncName name)
+    : RefalFunction(run, name), ptr(ptr)
   {
     /* пусто */
   }
@@ -54,8 +47,8 @@ struct RefalSwap: public RefalFunction {
   Iter head;
   Iter next_head;
 
-  RefalSwap(RefalFuncName name, Module *module)
-    : RefalFunction(run, name, module), head(), next_head()
+  RefalSwap(RefalFuncName name)
+    : RefalFunction(run, name), head(), next_head()
   {
     /* пусто */
   }
@@ -64,8 +57,8 @@ struct RefalSwap: public RefalFunction {
 };
 
 struct RefalEmptyFunction: public RefalFunction {
-  RefalEmptyFunction(RefalFuncName name, Module *module)
-    : RefalFunction(run, name, module)
+  RefalEmptyFunction(RefalFuncName name)
+    : RefalFunction(run, name)
   {
     /* пусто */
   }
@@ -74,8 +67,8 @@ struct RefalEmptyFunction: public RefalFunction {
 };
 
 struct RefalCondFunctionRasl: public RefalFunction {
-  RefalCondFunctionRasl(RefalFuncName name, Module *module)
-    : RefalFunction(run, name, module)
+  RefalCondFunctionRasl(RefalFuncName name)
+    : RefalFunction(run, name)
   {
     /* пусто */
   }
@@ -84,8 +77,8 @@ struct RefalCondFunctionRasl: public RefalFunction {
 };
 
 struct RefalCondFunctionNative: public RefalFunction {
-  RefalCondFunctionNative(RefalFuncName name, Module *module)
-    : RefalFunction(run, name, module)
+  RefalCondFunctionNative(RefalFuncName name)
+    : RefalFunction(run, name)
   {
     /* пусто */
   }
@@ -149,10 +142,9 @@ struct RASLFunction: public RefalFunction {
     const RefalIdentifier *idents,
     const RefalNumber *numbers,
     const StringItem *strings,
-    const char *filename,
-    Module *module
+    const char *filename
   )
-    : RefalFunction(rasl, name, module)
+    : RefalFunction(rasl, name)
     , functions(functions)
     , idents(idents)
     , numbers(numbers)

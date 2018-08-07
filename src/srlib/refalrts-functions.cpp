@@ -7,18 +7,6 @@
 #include "refalrts-vm.h"
 
 
-void refalrts::RefalFunction::register_me() {
-  bool successed = module->register_function(this);
-
-  if (! successed) {
-    fprintf(
-      stderr, "INTERNAL ERROR: function redeclared: %s#%u:%u\n",
-      name.name, name.cookie1, name.cookie2
-    );
-    exit(156);
-  }
-}
-
 const refalrts::RASLCommand refalrts::RefalNativeFunction::run[] = {
   { refalrts::icPerformNative, 0, 0, 0 },
   { refalrts::icNextStep, 0, 0, 0 }
