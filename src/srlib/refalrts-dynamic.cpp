@@ -500,6 +500,7 @@ void refalrts::Module::Loader::enumerate_blocks() {
 
       case cBlockTypeRefalFunction:
         {
+          PARSE_ASSERT(table != 0, "CONST_TABLE must precede any function");
           std::string name = read_asciiz();
 
           UInt32 offset;
@@ -522,6 +523,7 @@ void refalrts::Module::Loader::enumerate_blocks() {
 
       case cBlockTypeNativeFunction:
         {
+          PARSE_ASSERT(table != 0, "CONST_TABLE must precede any function");
           RefalNativeFunction *func =
             new RefalNativeFunction(0, table->make_name(read_asciiz()));
           register_(func);
@@ -530,10 +532,12 @@ void refalrts::Module::Loader::enumerate_blocks() {
         break;
 
       case cBlockTypeEmptyFunction:
+        PARSE_ASSERT(table != 0, "CONST_TABLE must precede any function");
         register_(new RefalEmptyFunction(table->make_name(read_asciiz())));
         break;
 
       case cBlockTypeSwap:
+        PARSE_ASSERT(table != 0, "CONST_TABLE must precede any function");
         register_(new RefalSwap(table->make_name(read_asciiz())));
         break;
 
@@ -542,10 +546,12 @@ void refalrts::Module::Loader::enumerate_blocks() {
         break;
 
       case cBlockTypeConditionRasl:
+        PARSE_ASSERT(table != 0, "CONST_TABLE must precede any function");
         register_(new RefalCondFunctionRasl(table->make_name(read_asciiz())));
         break;
 
       case cBlockTypeConditionNative:
+        PARSE_ASSERT(table != 0, "CONST_TABLE must precede any function");
         register_(new RefalCondFunctionNative(table->make_name(read_asciiz())));
         break;
 
