@@ -136,7 +136,9 @@ class Module {
     void read_start_block(size_t datalen);
     ConstTable *read_const_table();
     void read_refal_function(ConstTable *table);
-    void register_(RefalFunction *func);
+    void register_(RefalFunction *func) {
+      m_module->register_function(func);
+    }
   };
 
   friend class Loader;
@@ -173,7 +175,6 @@ public:
   }
 
   RefalFunction *lookup_function(const RefalFuncName& name);
-  bool register_function(RefalFunction *func);
 
   RefalFunction* operator[](const ExternalReference& ref) const {
     return m_native_externals[ref.id];
@@ -194,6 +195,7 @@ private:
   );
 
   void load_native_identifiers();
+  void register_function(RefalFunction *func);
   bool find_unresolved_externals(LoadModuleEvent event, void *callback_data);
   bool find_unresolved_externals_rasl(
     LoadModuleEvent event, void *callback_data

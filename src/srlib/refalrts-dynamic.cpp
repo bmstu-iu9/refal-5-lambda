@@ -145,10 +145,18 @@ refalrts::Module::lookup_function(const refalrts::RefalFuncName& name) {
   }
 }
 
-bool refalrts::Module::register_function(refalrts::RefalFunction *func) {
+void refalrts::Module::register_function(refalrts::RefalFunction *func) {
+  assert(func->module == 0);
+  func->module = this;
+
   FuncsMap::value_type new_value(func->name, func);
   std::pair<FuncsMap::iterator, bool> res = m_funcs_table.insert(new_value);
-  return res.second;
+  if (! res.second) {
+    // Если сначала удалить func, то не удастся из него извлечь имя
+    RedeclarationError error(func->name);
+    delete func;
+    throw error;
+  }
 }
 
 bool refalrts::Module::find_unresolved_externals(
@@ -486,20 +494,6 @@ void refalrts::Module::Loader::read_refal_function(
       "filename.sref"
     )
   );
-}
-
-void refalrts::Module::Loader::register_(refalrts::RefalFunction *func) {
-  assert(func->module == 0);
-
-  func->module = m_module;
-  bool successed = m_module->register_function(func);
-
-  if (! successed) {
-    // Если сначала удалить func, то не удастся из него извлечь имя
-    RedeclarationError error(func->name);
-    delete func;
-    throw error;
-  }
 }
 
 void refalrts::Module::Loader::enumerate_blocks() {
