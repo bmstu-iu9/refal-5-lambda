@@ -177,6 +177,9 @@ private:
 
   void load_native_identifiers();
   bool find_unresolved_externals(LoadModuleEvent event, void *callback_data);
+  bool find_unresolved_externals_rasl(
+    LoadModuleEvent event, void *callback_data
+  );
   bool find_unresolved_externals_native(
     LoadModuleEvent event, void *callback_data
   );

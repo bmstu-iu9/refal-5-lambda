@@ -44,7 +44,6 @@ refalrts::Module::~Module() {
 bool refalrts::Module::initialize(
   const char *module_name, refalrts::LoadModuleEvent event, void *callback_data
 ) {
-  bool success = true;
   ModuleLoadingErrorDetail detail;
 
   try {
@@ -53,26 +52,21 @@ bool refalrts::Module::initialize(
     if (m_native) {
       load_native_identifiers();
       alloc_global_variables();
+      return resolve_native_functions(event, callback_data);
+    } else {
+      return true;
     }
   } catch (LoadModuleError& e) {
     detail.message = e.message.c_str();
     event(cModuleLoadingError_InvalidRasl, &detail, callback_data);
-    success = false;
   } catch (AllocIdentifierError&) {
     event(cModuleLoadingError_CantAllocIdent, &detail, callback_data);
-    success = false;
   } catch (std::bad_alloc& e) {
     detail.message = e.what();
     event(cModuleLoadingError_CantAllocMemory, &detail, callback_data);
-    success = false;
   }
 
-  success = success
-    && find_unresolved_externals(event, callback_data)
-    && (! m_native || find_unresolved_externals_native(event, callback_data))
-    && resolve_native_functions(event, callback_data);
-
-  return success;
+  return false;
 }
 
 refalrts::Module *
@@ -95,6 +89,9 @@ refalrts::Module::load_main_module(
   }
 
   success = module->initialize(module_name, event, callback_data);
+  if (success) {
+    success = module->find_unresolved_externals(event, callback_data);
+  }
   return module;
 }
 
@@ -106,6 +103,9 @@ refalrts::Module::load_module(
   assert(event);
   Module *module = new Module(domain);
   success = module->initialize(real_name, event, callback_data);
+  if (success) {
+    success = module->find_unresolved_externals(event, callback_data);
+  }
   return module;
 }
 
@@ -149,6 +149,13 @@ bool refalrts::Module::register_function(refalrts::RefalFunction *func) {
 }
 
 bool refalrts::Module::find_unresolved_externals(
+  refalrts::LoadModuleEvent event, void *callback_data
+) {
+  return find_unresolved_externals_rasl(event, callback_data)
+    && (! m_native || find_unresolved_externals_native(event, callback_data));
+}
+
+bool refalrts::Module::find_unresolved_externals_rasl(
   refalrts::LoadModuleEvent event, void *callback_data
 ) {
   bool success = true;
@@ -220,10 +227,6 @@ bool refalrts::Module::find_unresolved_externals_native(
 bool refalrts::Module::resolve_native_functions(
   refalrts::LoadModuleEvent event, void *callback_data
 ) {
-  if (! m_native) {
-    return true;
-  }
-
   bool success = true;
 
   for (
