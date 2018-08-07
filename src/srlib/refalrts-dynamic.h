@@ -203,7 +203,9 @@ private:
     LoadModuleEvent event, void *callback_data
   );
   bool resolve_native_functions(LoadModuleEvent event, void *callback_data);
-  void alloc_global_variables();
+  void alloc_global_variables() {
+    m_global_variables.assign(m_native->global_variables_memory, '\0');
+  }
 };
 
 struct StatComparer {

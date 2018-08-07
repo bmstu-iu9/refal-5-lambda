@@ -561,10 +561,6 @@ void refalrts::Module::Loader::enumerate_blocks() {
   }
 }
 
-void refalrts::Module::alloc_global_variables() {
-  m_global_variables.assign(m_native->global_variables_memory, '\0');
-}
-
 
 //==============================================================================
 // Домен
