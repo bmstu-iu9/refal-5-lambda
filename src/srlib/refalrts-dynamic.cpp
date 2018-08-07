@@ -61,6 +61,9 @@ bool refalrts::Module::initialize(
     event(cModuleLoadingError_InvalidRasl, &detail, callback_data);
   } catch (AllocIdentifierError&) {
     event(cModuleLoadingError_CantAllocIdent, &detail, callback_data);
+  } catch (RedeclarationError& e) {
+    detail.func_name = e.func_name();
+    event(cModuleLoadingError_FunctionIsRedeclared, &detail, callback_data);
   } catch (std::bad_alloc& e) {
     detail.message = e.what();
     event(cModuleLoadingError_CantAllocMemory, &detail, callback_data);
@@ -492,11 +495,10 @@ void refalrts::Module::Loader::register_(refalrts::RefalFunction *func) {
   bool successed = m_module->register_function(func);
 
   if (! successed) {
-    fprintf(
-      stderr, "INTERNAL ERROR: function redeclared: %s#%u:%u\n",
-      func->name.name, func->name.cookie1, func->name.cookie2
-    );
-    exit(156);
+    // Если сначала удалить func, то не удастся из него извлечь имя
+    RedeclarationError error(func->name);
+    delete func;
+    throw error;
   }
 }
 
@@ -892,6 +894,15 @@ void refalrts::Domain::load_native_module_report_error(
         detail->func_name.cookie2
       );
       break;
+
+    case cModuleLoadingError_FunctionIsRedeclared:
+      fprintf(
+        stderr, "INTERNAL ERROR: function is redeclared: %s#%u:%u\n",
+        detail->func_name.name,
+        detail->func_name.cookie1,
+        detail->func_name.cookie2
+      );
+      exit(156);
 
     default:
       refalrts_switch_default_violation(error);

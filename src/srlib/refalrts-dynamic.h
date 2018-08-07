@@ -97,6 +97,23 @@ class Module {
     }
   };
 
+  struct RedeclarationError {
+    std::string name;
+    UInt32 cookie1, cookie2;
+
+    RedeclarationError(const RefalFuncName& func_name)
+      : name(func_name.name)
+      , cookie1(func_name.cookie1)
+      , cookie2(func_name.cookie2)
+    {
+      /* пусто */
+    }
+
+    RefalFuncName func_name() const {
+      return RefalFuncName(name.c_str(), cookie1, cookie2);
+    }
+  };
+
   struct AllocIdentifierError { };
 
   class Loader {

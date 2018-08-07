@@ -482,6 +482,7 @@ enum ModuleLoadingError {
   cModuleLoadingError_CantAllocIdent,
   cModuleLoadingError_UnresolvedExternal,
   cModuleLoadingError_UnresolvedNative,
+  cModuleLoadingError_FunctionIsRedeclared,
 };
 
 struct ModuleLoadingErrorDetail {
