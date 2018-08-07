@@ -126,6 +126,7 @@ class Module {
   typedef std::map<RefalFuncName, RefalFunction*> FuncsMap;
   typedef std::list<RefalFuncName> NameList;
   typedef std::list<RefalNativeFunction*> NativeList;
+  typedef std::map<std::string, Module*> ReferenceMap;
 
   std::list<ConstTable*> m_unresolved_func_tables;
   FuncsMap m_funcs_table;
@@ -136,6 +137,7 @@ class Module {
   std::vector<char> m_global_variables;
   Domain *m_domain;
   NativeList m_unresolved_native_functions;
+  ReferenceMap m_references;
 
   // Информация об ошибках
   std::string m_error_message;

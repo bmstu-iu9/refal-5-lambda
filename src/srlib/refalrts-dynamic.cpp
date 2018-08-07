@@ -27,6 +27,7 @@ refalrts::Module::Module(Domain *domain, NativeModule *native)
   , m_global_variables()
   , m_domain(domain)
   , m_unresolved_native_functions()
+  , m_references()
   , m_error_message()
   , m_unresolved_externals()
 {
@@ -526,7 +527,8 @@ void refalrts::Module::Loader::enumerate_blocks() {
         break;
 
       case cBlockTypeReference:
-        refalrts_switch_default_violation(type);
+        m_module->m_references.insert(ReferenceMap::value_type(read_asciiz(), 0));
+        break;
 
       case cBlockTypeConditionRasl:
         new RefalCondFunctionRasl(table->make_name(read_asciiz()), m_module);
