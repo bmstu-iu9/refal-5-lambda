@@ -572,9 +572,7 @@ Link-Aux {
     = <PreLinkCleanupTemporary t.Config e.IntermediateName>
       <s.FnCreatePrefix e.IntermediateName>
       <AppendRASLToBinary (e.IntermediateName) e.Files>
-      <PostLinkRename
-        t.Config (e.IntermediateName) (e.TargetFileName)
-      >;
+      <PostLinkRename t.Config (e.IntermediateName) (e.TargetFileName)>;
 }
 
 PreLinkCleanupTemporary {
@@ -602,11 +600,8 @@ CheckCppCompilationSuccessed {
   t.Config e.TemporaryName
     = <ExistFile e.TemporaryName>
     : {
-        #False =
-          <LinkError t.Config 'C++ compilation is failed'>;
-
-        #True =
-          /* ничего не делаем */;
+        #False = <LinkError t.Config 'C++ compilation is failed'>;
+        #True = /* ничего не делаем */;
       };
 }
 
@@ -615,6 +610,19 @@ EnsureAligned4096 {
     = <FOpen ('ab') e.BinaryName> : s.FileHandle
     = <AlignToPage s.FileHandle>
       <FClose s.FileHandle>;
+}
+
+AlignToPage {
+  s.FileHandle
+    = <FSeek s.FileHandle #END '-' 0> : /* пусто */
+    = <Mod <FTell s.FileHandle> 4096>
+    : {
+        0 = /* ничего не делаем */;
+
+        s.Other =
+          <FWriteBytes s.FileHandle '@'>
+          <AlignToPage s.FileHandle>;
+      };
 }
 
 AppendRASLToBinary {
@@ -630,19 +638,6 @@ AppendRASLToBinary {
         e.Files
       >
       <FClose s.FileHandle>;
-}
-
-AlignToPage {
-  s.FileHandle
-    = <FSeek s.FileHandle #END '-' 0> : /* пусто */
-    = <Mod <FTell s.FileHandle> 4096>
-    : {
-        0 = /* ничего не делаем */;
-
-        s.Other =
-          <FWriteBytes s.FileHandle '@'>
-          <AlignToPage s.FileHandle>;
-      };
 }
 
 PostLinkRename {
