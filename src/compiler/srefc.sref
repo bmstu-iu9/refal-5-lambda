@@ -12,7 +12,7 @@ $EXTERN Config-GetLogFile,
   Config-GetTargetFileName, Config-SetTargetFileName, Config-GetErrorFile,
   Config-GetCppCompiler, Config-GetGrammarCheck, Config-GetTargetSuffix,
   Config-GetSearchFolders, Config-GetTargetMode, Config-GetPrefix,
-  Config-GetChmodXCommand;
+  Config-GetChmodXCommand, Config-GetReferences;
 
 //FROM Log
 $EXTERN Log-Init, Log-Final;
@@ -26,6 +26,9 @@ $EXTERN FindFiles;
 
 //FROM Engine
 $EXTERN CompileFile, GrammarCheck;
+
+//FROM Generator-RASL
+$EXTERN PutBlockReference;
 
 
 $ENTRY Go {
@@ -569,9 +572,11 @@ Link-Aux {
   s.TargetMode s.FnCreatePrefix t.Config e.Files
     = <CalcTargetFileName s.TargetMode t.Config e.Files> : e.TargetFileName
     = e.TargetFileName '.partial' : e.IntermediateName
+    = <Config-GetReferences t.Config> : e.References
     = <PreLinkCleanupTemporary t.Config e.IntermediateName>
       <s.FnCreatePrefix e.IntermediateName>
       <AppendRASLToBinary (e.IntermediateName) e.Files>
+      <AppendReferencesToBinary (e.IntermediateName) e.References>
       <PostLinkRename t.Config (e.IntermediateName) (e.TargetFileName)>;
 }
 
@@ -636,6 +641,19 @@ AppendRASLToBinary {
           (#Native e.NativeName) = /* ничего не делаем */;
         }
         e.Files
+      >
+      <FClose s.FileHandle>;
+}
+
+AppendReferencesToBinary {
+  (e.BinaryName) e.References
+    = <FOpen ('ab') e.BinaryName> : s.FileHandle
+    = <Map
+        {
+          (e.Reference)
+            = <FWriteBytes s.FileHandle <PutBlockReference e.Reference>>;
+        }
+        e.References
       >
       <FClose s.FileHandle>;
 }

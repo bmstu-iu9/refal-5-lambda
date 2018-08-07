@@ -455,3 +455,7 @@ ResolveLabeledDestinations {
 
   (e.Labels) e.ReadyRASL = e.ReadyRASL;
 }
+
+$ENTRY PutBlockReference {
+  e.Reference = <PutBlock #Reference <Asciiz e.Reference>>;
+}
