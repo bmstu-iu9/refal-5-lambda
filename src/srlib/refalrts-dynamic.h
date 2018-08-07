@@ -135,7 +135,6 @@ class Module {
     std::string read_asciiz();
     void read_start_block(size_t datalen);
     ConstTable *read_const_table();
-    void read_refal_function(ConstTable *table);
     void register_(RefalFunction *func) {
       m_module->register_function(func);
     }

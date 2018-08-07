@@ -474,28 +474,6 @@ refalrts::Module::Loader::read_const_table() {
   return new_table;
 }
 
-void refalrts::Module::Loader::read_refal_function(
-  refalrts::Module::ConstTable *table
-) {
-  std::string name = read_asciiz();
-
-  UInt32 offset;
-  size_t read = fread(&offset, sizeof(offset), 1);
-  PARSE_ASSERT(read == 1, "can't read offset in REFAL_FUNCTION");
-
-  register_(
-    new RASLFunction(
-      table->make_name(name),
-      &table->rasl[offset],
-      &table->externals[0],
-      &table->idents[0],
-      &table->numbers[0],
-      &table->strings[0],
-      "filename.sref"
-    )
-  );
-}
-
 void refalrts::Module::Loader::enumerate_blocks() {
   ConstTable *table = 0;
 
@@ -521,7 +499,25 @@ void refalrts::Module::Loader::enumerate_blocks() {
         break;
 
       case cBlockTypeRefalFunction:
-        read_refal_function(table);
+        {
+          std::string name = read_asciiz();
+
+          UInt32 offset;
+          read = fread(&offset, sizeof(offset), 1);
+          PARSE_ASSERT(read == 1, "can't read offset in REFAL_FUNCTION");
+
+          register_(
+            new RASLFunction(
+              table->make_name(name),
+              &table->rasl[offset],
+              &table->externals[0],
+              &table->idents[0],
+              &table->numbers[0],
+              &table->strings[0],
+              "filename.sref"
+            )
+          );
+        }
         break;
 
       case cBlockTypeNativeFunction:
