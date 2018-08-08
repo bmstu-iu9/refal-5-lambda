@@ -321,12 +321,9 @@ std::string refalrts::Module::Loader::read_asciiz() {
   std::string result;
 
   int byte;
-  do {
-    byte = fgetc(m_stream);
-    if (byte != EOF) {
-      result += (char) byte;
-    }
-  } while (byte != EOF && byte != '\0');
+  while (byte = fgetc(m_stream), byte != EOF && byte != '\0') {
+    result += (char) byte;
+  }
 
   if (byte == EOF) {
     throw LoadModuleError("can't read ASCIIZ string - EOF is reached");
