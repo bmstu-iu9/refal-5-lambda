@@ -249,7 +249,7 @@ class Domain {
   struct Stack {
     const api::stat *stat;
     Module *module;
-    Stack *next;
+    const Stack *next;
 
     Stack()
       : stat(0), module(0), next(0)
@@ -257,24 +257,55 @@ class Domain {
       /* пусто */
     }
 
-    Stack(const api::stat *stat, Module *module, Stack *next)
+    Stack(const api::stat *stat, Module *module, const Stack *next)
       : stat(stat), module(module), next(next)
     {
       /* пусто */
     }
 
-    Module *contain(const api::stat *stat);
+    Module *contain(const api::stat *stat) const;
   };
 
+  class ModuleStorage {
+    typedef std::map<const api::stat*, Module*, StatComparer> ModuleByStatMap;
+    typedef std::list<Module*> ModuleList;
+
+    Domain *m_domain;
+    ModuleList m_modules;
+    ModuleByStatMap m_module_by_stat;
+
+  public:
+    ModuleStorage(Domain *domain);
+    ~ModuleStorage();
+
+    Module *operator[](const api::stat *stat) const;
+    RefalFunction *operator[](const RefalFuncName& name) const;
+
+    bool load_references(
+      Stack *stack, LoadModuleEvent event, void *callback_data
+    );
+
+    void unload();
+    void splice(ModuleStorage& other);
+
+    void unload_module(Module *module);
+
+    void add_module_hack(Module *module) {
+      m_modules.push_back(module);
+    }
+
+  private:
+    Module *find_known(const Stack& stack, const api::stat *stat) const;
+  };
+
+  friend class ModuleStorage;
+
   typedef std::map<StringRef, RefalIdentifier> IdentsMap;
-  typedef std::map<const api::stat*, Module*, StatComparer> ModuleByStatMap;
-  typedef std::list<Module*> ModuleList;
 
   IdentsMap m_idents_table;
   AtExitListNode *m_at_exit_list;
 
-  ModuleList m_modules;
-  ModuleByStatMap m_module_by_stat;
+  ModuleStorage m_storage;
 
 public:
   Domain();
@@ -289,7 +320,9 @@ public:
 
   size_t idents_count();
 
-  RefalFunction *lookup_function(const RefalFuncName& name);
+  RefalFunction *lookup_function(const RefalFuncName& name) {
+    return m_storage[name];
+  }
 
   RefalFunction *lookup_function(
     UInt32 cookie1, UInt32 cookie2, const char *name
@@ -313,11 +346,6 @@ private:
   const api::stat *lookup_module_with_extensions(std::string *real_name);
   const api::stat *lookup_module_by_name(
     const std::string& name, std::string& real_name
-  );
-
-  bool load_references(
-    Stack *stack, ModuleList& modules, ModuleByStatMap& module_by_stat,
-    LoadModuleEvent event, void *callback_data
   );
 
   void free_idents_table();
