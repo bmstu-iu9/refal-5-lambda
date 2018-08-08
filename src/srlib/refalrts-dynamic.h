@@ -156,6 +156,7 @@ class Module {
   Domain *m_domain;
   NativeList m_unresolved_native_functions;
   ReferenceMap m_references;
+  std::string m_name;
 
 public:
   ~Module();
@@ -185,6 +186,10 @@ public:
 
   Domain *domain() {
     return m_domain;
+  }
+
+  std::string name() const {
+    return m_name;
   }
 
 private:

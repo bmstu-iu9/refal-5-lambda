@@ -28,6 +28,7 @@ refalrts::Module::Module(Domain *domain, NativeModule *native)
   , m_domain(domain)
   , m_unresolved_native_functions()
   , m_references()
+  , m_name()
 {
   /* пусто */
 }
@@ -44,6 +45,7 @@ refalrts::Module::~Module() {
 bool refalrts::Module::initialize(
   const char *module_name, refalrts::LoadModuleEvent event, void *callback_data
 ) {
+  m_name = module_name;
   ModuleLoadingErrorDetail detail;
 
   try {
