@@ -290,10 +290,6 @@ class Domain {
 
     void unload_module(Module *module);
 
-    void add_module_hack(Module *module) {
-      m_modules.push_back(module);
-    }
-
   private:
     Module *find_known(const Stack& stack, const api::stat *stat) const;
   };

@@ -734,13 +734,26 @@ bool refalrts::Domain::load_native_module(NativeModule *main_module) {
     this, main_module, success, load_native_module_report_error, 0
   );
 
-  if (success) {
-    m_storage.add_module_hack(new_module);
-    return true;
-  } else {
-    delete new_module;
-    return false;
+  const refalrts::api::stat *module_stat =
+    api::stat_create(new_module->name().c_str());
+
+  if (! module_stat) {
+    // TODO: сообщение об ошибке
+    return 0;
   }
+
+  Stack stack(module_stat, new_module, 0);
+  ModuleStorage new_storage(this);
+  bool success_references = new_storage.load_references(
+    &stack, load_native_module_report_error, 0
+  );
+  success = success && success_references;
+
+  if (success) {
+    m_storage.splice(new_storage);
+  }
+
+  return success;
 }
 
 refalrts::Module *
