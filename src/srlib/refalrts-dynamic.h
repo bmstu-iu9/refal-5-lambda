@@ -71,6 +71,10 @@ inline bool operator!=(const RefalFuncName& lhs, const RefalFuncName& rhs) {
 class Domain;
 
 class Module {
+public:
+  typedef std::map<std::string, Module*> ReferenceMap;
+
+private:
   struct ConstTable {
     UInt32 cookie1;
     UInt32 cookie2;
@@ -144,7 +148,6 @@ class Module {
 
   typedef std::map<RefalFuncName, RefalFunction*> FuncsMap;
   typedef std::list<RefalNativeFunction*> NativeList;
-  typedef std::map<std::string, Module*> ReferenceMap;
 
   std::list<ConstTable*> m_unresolved_func_tables;
   FuncsMap m_funcs_table;
@@ -186,6 +189,11 @@ public:
 
   Domain *domain() {
     return m_domain;
+  }
+
+  // TODO: продумать инкапсуляцию
+  ReferenceMap& references() {
+    return m_references;
   }
 
   std::string name() const {
@@ -238,13 +246,34 @@ class Domain {
 
   friend struct AtExitListNode;
 
+  struct Stack {
+    const api::stat *stat;
+    Module *module;
+    Stack *next;
+
+    Stack()
+      : stat(0), module(0), next(0)
+    {
+      /* пусто */
+    }
+
+    Stack(const api::stat *stat, Module *module, Stack *next)
+      : stat(stat), module(module), next(next)
+    {
+      /* пусто */
+    }
+
+    Module *contain(const api::stat *stat);
+  };
+
   typedef std::map<StringRef, RefalIdentifier> IdentsMap;
   typedef std::map<const api::stat*, Module*, StatComparer> ModuleByStatMap;
+  typedef std::list<Module*> ModuleList;
 
   IdentsMap m_idents_table;
   AtExitListNode *m_at_exit_list;
 
-  std::list<Module*> m_modules;
+  ModuleList m_modules;
   ModuleByStatMap m_module_by_stat;
 
 public:
@@ -284,6 +313,11 @@ private:
   const api::stat *lookup_module_with_extensions(std::string *real_name);
   const api::stat *lookup_module_by_name(
     const std::string& name, std::string& real_name
+  );
+
+  bool load_references(
+    Stack *stack, ModuleList& modules, ModuleByStatMap& module_by_stat,
+    LoadModuleEvent event, void *callback_data
   );
 
   void free_idents_table();

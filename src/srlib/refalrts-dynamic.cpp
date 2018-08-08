@@ -616,16 +616,118 @@ refalrts::Domain::load_module(
     this, real_name.c_str(), success, event, callback_data
   );
 
+  Stack stack(module_stat, new_module, 0);
+  ModuleList new_modules;
+  ModuleByStatMap new_modules_by_stat;
+  bool success_references = load_references(
+    &stack, new_modules, new_modules_by_stat,
+    event, callback_data
+  );
+  success = success && success_references;
+
   if (success) {
-    m_modules.push_back(new_module);
-    m_module_by_stat[module_stat] = new_module;
+    m_modules.splice(
+      m_modules.end(), new_modules, new_modules.begin(), new_modules.end()
+    );
+
+    for (
+      ModuleByStatMap::iterator p = new_modules_by_stat.begin();
+      p != new_modules_by_stat.end();
+      ++p
+    ) {
+      m_module_by_stat[p->first] = p->second;
+    }
   } else {
-    delete new_module;
-    api::stat_destroy(module_stat);
+    while (! new_modules_by_stat.empty()) {
+      ModuleByStatMap::iterator begin = new_modules_by_stat.begin();
+      const api::stat *stat = begin->first;
+      new_modules_by_stat.erase(begin);
+      api::stat_destroy(stat);
+    }
+
+    for (
+      ModuleList::iterator p = new_modules.begin();
+      p != new_modules.end();
+      ++p
+    ) {
+      delete *p;
+    }
+
+    // TODO: счётчик ссылок
     new_module = 0;
   }
 
   return new_module;
+}
+
+bool refalrts::Domain::load_references(
+  refalrts::Domain::Stack *stack,
+  refalrts::Domain::ModuleList& modules,
+  refalrts::Domain::ModuleByStatMap& module_by_stat,
+  refalrts::LoadModuleEvent event, void *callback_data
+) {
+  bool success = true;
+  Module *current = stack->module;
+
+  for (
+    Module::ReferenceMap::iterator p = current->references().begin();
+    p != current->references().end();
+    ++p
+  ) {
+    std::string real_name_ref;
+    const api::stat *ref_stat = lookup_module_by_name(p->first, real_name_ref);
+    if (! ref_stat) {
+      // TODO: сообщение об ошибке
+      fprintf(stderr, "not found %s\n", real_name_ref.c_str());
+      success = false;
+      continue;
+    }
+
+    ModuleByStatMap::iterator known = m_module_by_stat.find(ref_stat);
+    if (known != m_module_by_stat.end()) {
+      p->second = known->second;
+      api::stat_destroy(ref_stat);
+      continue;
+    }
+
+    known = module_by_stat.find(ref_stat);
+    if (known != module_by_stat.end()) {
+      p->second = known->second;
+      api::stat_destroy(ref_stat);
+      continue;
+    }
+
+    Module *in_stack = stack->contain(ref_stat);
+    if (in_stack) {
+      p->second = in_stack;
+      api::stat_destroy(ref_stat);
+      continue;
+    }
+
+    Module *ref_module = Module::load_module(
+      this, real_name_ref.c_str(), success, event, callback_data
+    );
+    Stack new_stack(ref_stat, ref_module, stack);
+    bool ref_success = load_references(
+      &new_stack, modules, module_by_stat,
+      event, callback_data
+    );
+    success = success && ref_success;
+  }
+
+  modules.push_back(current);
+  module_by_stat[stack->stat] = current;
+  return success;
+}
+
+refalrts::Module *
+refalrts::Domain::Stack::contain(const refalrts::api::stat *stat) {
+  Stack *node = this;
+  while (node != 0 && api::stat_compare(node->stat, stat) != 0) {
+    node = node->next;
+  }
+
+  return node != 0 ? node->module : 0;
 }
 
 void refalrts::Domain::unload_module(
