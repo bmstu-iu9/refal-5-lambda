@@ -160,11 +160,12 @@ private:
   NativeList m_unresolved_native_functions;
   ReferenceMap m_references;
   std::string m_name;
+  const api::stat *m_stat;
 
 public:
   Module(
-    Domain *domain, const char *real_name, bool& success,
-    LoadModuleEvent event, void *callback_data,
+    Domain *domain, const std::string& real_name, const api::stat *stat,
+    bool& success, LoadModuleEvent event, void *callback_data,
     NativeModule *native = 0
   );
   ~Module();
@@ -196,6 +197,10 @@ public:
 
   std::string name() const {
     return m_name;
+  }
+
+  const api::stat *stat() const {
+    return m_stat;
   }
 
 private:

@@ -18,7 +18,8 @@
 //==============================================================================
 
 refalrts::Module::Module(
-  refalrts::Domain *domain, const char *module_name, bool& success,
+  refalrts::Domain *domain, const std::string& module_name,
+  const refalrts::api::stat *stat, bool& success,
   refalrts::LoadModuleEvent event, void *callback_data,
   refalrts::NativeModule *native
 )
@@ -33,13 +34,14 @@ refalrts::Module::Module(
   , m_unresolved_native_functions()
   , m_references()
   , m_name(module_name)
+  , m_stat(stat)
 {
   assert(event);
 
   ModuleLoadingErrorDetail detail;
   success = false;
   try {
-    Loader loader(this, module_name);
+    Loader loader(this, module_name.c_str());
     loader.enumerate_blocks();
     if (m_native) {
       load_native_identifiers();
@@ -63,6 +65,7 @@ refalrts::Module::Module(
 }
 
 refalrts::Module::~Module() {
+  api::stat_destroy(m_stat);
   while (m_funcs_table.size() > 0) {
     FuncsMap::iterator p = m_funcs_table.begin();
     RefalFunction *function = p->second;
@@ -598,7 +601,7 @@ bool refalrts::Domain::ModuleStorage::load_references(
     } else {
       bool load_success = true;
       ref_module = new Module(
-        m_domain, real_name_ref.c_str(), load_success, event, callback_data
+        m_domain, real_name_ref, ref_stat, load_success, event, callback_data
       );
       success = success && load_success;
       Stack new_stack(ref_stat, ref_module, stack);
@@ -628,12 +631,6 @@ void refalrts::Domain::ModuleStorage::unload() {
   while (! m_modules.empty()) {
     delete m_modules.front();
     m_modules.pop_front();
-  }
-
-  while (! m_module_by_stat.empty()) {
-    const api::stat *to_destroy = m_module_by_stat.begin()->first;
-    m_module_by_stat.erase(m_module_by_stat.begin());
-    api::stat_destroy(to_destroy);
   }
 }
 
@@ -716,7 +713,7 @@ bool refalrts::Domain::load_native_module(NativeModule *main_module) {
   }
 
   Module *new_module = new Module(
-    this, module_name, success, load_native_module_report_error, 0, main_module
+    this, module_name, module_stat, success, load_native_module_report_error, 0, main_module
   );
 
   Stack stack(module_stat, new_module, 0);
@@ -762,7 +759,7 @@ refalrts::Domain::load_module(
 
   bool success;
   new_module = new Module(
-    this, real_name.c_str(), success, event, callback_data
+    this, real_name, module_stat, success, event, callback_data
   );
 
   Stack stack(module_stat, new_module, 0);
