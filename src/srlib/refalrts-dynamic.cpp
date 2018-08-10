@@ -676,14 +676,15 @@ refalrts::Domain::Domain()
   /* пусто */
 }
 
-bool refalrts::Domain::load_native_module(NativeModule *main_module) {
+bool refalrts::Domain::load_native_module(
+  refalrts::NativeModule *main_module,
+  refalrts::LoadModuleEvent event, void *callback_data
+) {
   char module_name[api::cModuleNameBufferLen];
   bool success = api::get_main_module_name(module_name);
   if (! success) {
     ModuleLoadingErrorDetail detail;
-    load_native_module_report_error(
-      cModuleLoadingError_CantObtainModuleName, &detail, 0
-    );
+    event(cModuleLoadingError_CantObtainModuleName, &detail, callback_data);
 
     return false;
   }
@@ -696,20 +697,18 @@ bool refalrts::Domain::load_native_module(NativeModule *main_module) {
   }
 
   Module *new_module = new Module(
-    this, module_name, module_stat, success, load_native_module_report_error, 0, main_module
+    this, module_name, module_stat, success, event, callback_data, main_module
   );
 
   Stack stack(module_stat, new_module, 0);
   ModuleStorage new_storage(this);
   bool success_references = new_storage.load_references(
-    &stack, load_native_module_report_error, 0
+    &stack, event, callback_data
   );
   success = success && success_references;
 
   if (success) {
-    success = new_storage.find_unresolved_externals(
-      load_native_module_report_error, 0
-    );
+    success = new_storage.find_unresolved_externals(event, callback_data);
     if (success) {
       m_storage.splice(new_storage);
     }
@@ -928,73 +927,4 @@ refalrts::Domain::lookup_module_by_name(
   }
 
   return result;
-}
-
-
-void refalrts::Domain::load_native_module_report_error(
-  refalrts::ModuleLoadingError error,
-  refalrts::ModuleLoadingErrorDetail *detail,
-  void * /*callback_data*/
-) {
-  switch (error) {
-    case cModuleLoadingError_ModuleNotFound:
-      /* не может произойти в load_native_module() */
-      refalrts_switch_default_violation(error);
-
-    case cModuleLoadingError_CantObtainModuleName:
-      fprintf(stderr, "INTERNAL ERROR: can't obtain name of main executable\n");
-      exit(155);
-
-    case cModuleLoadingError_InvalidRasl:
-      fprintf(stderr, "INTERNAL ERROR: %s\n", detail->message);
-      exit(155);
-
-    case cModuleLoadingError_CantAllocMemory:
-      fprintf(
-        stderr, "INTERNAL ERROR: out of memory while loading module, %s\n",
-        detail->message
-      );
-      exit(155);
-
-    case cModuleLoadingError_CantAllocIdent:
-#ifdef IDENTS_LIMIT
-      fprintf(
-        stderr, "INTERNAL ERROR: Identifiers table overflows (max %ld)\n",
-        static_cast<unsigned long>(IDENTS_LIMIT)
-      );
-#else
-      fprintf(stderr, "INTERNAL ERROR: can't allocate identifier\n");
-#endif
-      exit(154);
-
-    case cModuleLoadingError_UnresolvedExternal:
-      fprintf(
-        stderr, "INTERNAL ERROR: unresolved external: %s#%u:%u\n",
-        detail->func_name.name,
-        detail->func_name.cookie1,
-        detail->func_name.cookie2
-      );
-      break;
-
-    case cModuleLoadingError_UnresolvedNative:
-      fprintf(
-        stderr, "INTERNAL ERROR: unresolved native: %s#%u:%u\n",
-        detail->func_name.name,
-        detail->func_name.cookie1,
-        detail->func_name.cookie2
-      );
-      break;
-
-    case cModuleLoadingError_FunctionIsRedeclared:
-      fprintf(
-        stderr, "INTERNAL ERROR: function is redeclared: %s#%u:%u\n",
-        detail->func_name.name,
-        detail->func_name.cookie1,
-        detail->func_name.cookie2
-      );
-      exit(156);
-
-    default:
-      refalrts_switch_default_violation(error);
-  }
 }

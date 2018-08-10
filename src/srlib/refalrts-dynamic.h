@@ -296,7 +296,9 @@ class Domain {
 public:
   Domain();
 
-  bool load_native_module(NativeModule *main_module);
+  bool load_native_module(
+    NativeModule *main_module, LoadModuleEvent event, void *callback_data
+  );
   Module *load_module(
     VM *vm, const char *name, LoadModuleEvent event, void *callback_data
   );
@@ -335,12 +337,6 @@ private:
   );
 
   void free_idents_table();
-
-  static void load_native_module_report_error(
-    ModuleLoadingError error,
-    ModuleLoadingErrorDetail *detail,
-    void *callback_data
-  );
 };
 
 }  // namespace refalrts

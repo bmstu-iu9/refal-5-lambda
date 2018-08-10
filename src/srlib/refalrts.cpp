@@ -816,6 +816,74 @@ void refalrts::unload_module(refalrts::VM *vm, refalrts::Module *module) {
 
 //==============================================================================
 
+static void load_native_module_report_error(
+  refalrts::ModuleLoadingError error,
+  refalrts::ModuleLoadingErrorDetail *detail,
+  void * /*callback_data*/
+) {
+  switch (error) {
+    case refalrts::cModuleLoadingError_ModuleNotFound:
+      /* не может произойти в load_native_module() */
+      refalrts_switch_default_violation(error);
+
+    case refalrts::cModuleLoadingError_CantObtainModuleName:
+      fprintf(stderr, "INTERNAL ERROR: can't obtain name of main executable\n");
+      exit(155);
+
+    case refalrts::cModuleLoadingError_InvalidRasl:
+      fprintf(stderr, "INTERNAL ERROR: %s\n", detail->message);
+      exit(155);
+
+    case refalrts::cModuleLoadingError_CantAllocMemory:
+      fprintf(
+        stderr, "INTERNAL ERROR: out of memory while loading module, %s\n",
+        detail->message
+      );
+      exit(155);
+
+    case refalrts::cModuleLoadingError_CantAllocIdent:
+#ifdef IDENTS_LIMIT
+      fprintf(
+        stderr, "INTERNAL ERROR: Identifiers table overflows (max %ld)\n",
+        static_cast<unsigned long>(IDENTS_LIMIT)
+      );
+#else
+      fprintf(stderr, "INTERNAL ERROR: can't allocate identifier\n");
+#endif
+      exit(154);
+
+    case refalrts::cModuleLoadingError_UnresolvedExternal:
+      fprintf(
+        stderr, "INTERNAL ERROR: unresolved external: %s#%u:%u\n",
+        detail->func_name.name,
+        detail->func_name.cookie1,
+        detail->func_name.cookie2
+      );
+      break;
+
+    case refalrts::cModuleLoadingError_UnresolvedNative:
+      fprintf(
+        stderr, "INTERNAL ERROR: unresolved native: %s#%u:%u\n",
+        detail->func_name.name,
+        detail->func_name.cookie1,
+        detail->func_name.cookie2
+      );
+      break;
+
+    case refalrts::cModuleLoadingError_FunctionIsRedeclared:
+      fprintf(
+        stderr, "INTERNAL ERROR: function is redeclared: %s#%u:%u\n",
+        detail->func_name.name,
+        detail->func_name.cookie1,
+        detail->func_name.cookie2
+      );
+      exit(156);
+
+    default:
+      refalrts_switch_default_violation(error);
+  }
+}
+
 int main(int argc, char **argv) {
   refalrts::Allocator allocator;
   refalrts::Profiler profiler;
@@ -837,7 +905,9 @@ int main(int argc, char **argv) {
 
   refalrts::FnResult res;
   try {
-    bool successed = domain.load_native_module(&g_module);
+    bool successed = domain.load_native_module(
+      &g_module, load_native_module_report_error, 0
+    );
 
     if (! successed) {
       domain.unload();
