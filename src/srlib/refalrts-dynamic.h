@@ -218,12 +218,6 @@ private:
   }
 };
 
-struct StatComparer {
-  bool operator() (const api::stat *left, const api::stat *right) const {
-    return api::stat_compare(left, right) < 0;
-  }
-};
-
 class Domain {
   struct AtExitListNode {
     AtExitCB callback;
@@ -264,12 +258,10 @@ class Domain {
   };
 
   class ModuleStorage {
-    typedef std::map<const api::stat*, Module*, StatComparer> ModuleByStatMap;
     typedef std::list<Module*> ModuleList;
 
     Domain *m_domain;
     ModuleList m_modules;
-    ModuleByStatMap m_module_by_stat;
 
   public:
     ModuleStorage(Domain *domain);

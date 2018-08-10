@@ -538,7 +538,6 @@ refalrts::Domain::Stack::contain(const refalrts::api::stat *stat) const {
 refalrts::Domain::ModuleStorage::ModuleStorage(refalrts::Domain *domain)
   : m_domain(domain)
   , m_modules()
-  , m_module_by_stat()
 {
   /* пусто */
 }
@@ -551,9 +550,13 @@ refalrts::Module *
 refalrts::Domain::ModuleStorage::operator[](
   const refalrts::api::stat *stat
 ) const {
-  ModuleByStatMap::const_iterator known = m_module_by_stat.find(stat);
-  if (known != m_module_by_stat.end()) {
-    return known->second;
+  ModuleList::const_iterator p = m_modules.begin();
+  while (p != m_modules.end() && api::stat_compare((*p)->stat(), stat) != 0) {
+    ++p;
+  }
+
+  if (p != m_modules.end()) {
+    return *p;
   } else {
     return 0;
   }
@@ -612,7 +615,6 @@ bool refalrts::Domain::ModuleStorage::load_references(
   }
 
   m_modules.push_back(current);
-  m_module_by_stat[stack->stat] = current;
   return success;
 }
 
@@ -641,29 +643,10 @@ void refalrts::Domain::ModuleStorage::splice(
     m_modules.end(),
     other.m_modules, other.m_modules.begin(), other.m_modules.end()
   );
-
-  for (
-    ModuleByStatMap::iterator p = other.m_module_by_stat.begin();
-    p != other.m_module_by_stat.end();
-    ++p
-  ) {
-    m_module_by_stat[p->first] = p->second;
-  }
-
-  other.m_module_by_stat.clear();
 }
 
 void refalrts::Domain::ModuleStorage::unload_module(refalrts::Module *module) {
   assert(m_domain == module->domain());
-
-  ModuleByStatMap::iterator map_pos = m_module_by_stat.begin();
-  while (map_pos != m_module_by_stat.end() && map_pos->second != module) {
-    ++map_pos;
-  }
-  assert(map_pos != m_module_by_stat.end());
-  const api::stat *stat_to_destroy = map_pos->first;
-  m_module_by_stat.erase(map_pos);
-  api::stat_destroy(stat_to_destroy);
 
   ModuleList::iterator list_pos =
     std::find(m_modules.begin(), m_modules.end(), module);
