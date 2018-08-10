@@ -70,6 +70,9 @@ inline bool operator!=(const RefalFuncName& lhs, const RefalFuncName& rhs) {
 
 class Domain;
 
+class Module;
+typedef std::list<Module*> ModuleList;
+
 class Module {
 public:
   typedef std::map<std::string, Module*> ReferenceMap;
@@ -161,6 +164,7 @@ private:
   ReferenceMap m_references;
   std::string m_name;
   const api::stat *m_stat;
+  ModuleList m_indirect_references;
 
 public:
   Module(
@@ -204,6 +208,7 @@ public:
   }
 
 private:
+  RefalFunction *lookup_function_aux(const RefalFuncName& name);
   void load_native_identifiers();
   void register_function(RefalFunction *func);
   bool find_unresolved_externals_rasl(
@@ -258,8 +263,6 @@ class Domain {
   };
 
   class ModuleStorage {
-    typedef std::list<Module*> ModuleList;
-
     Domain *m_domain;
     ModuleList m_modules;
 

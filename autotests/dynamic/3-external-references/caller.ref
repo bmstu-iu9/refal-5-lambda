@@ -1,0 +1,7 @@
+* from caller, extra-module reference
+$EXTERN Fab;
+
+$ENTRY Go {
+  = <Print <Fab 'Abra'>> : 'Bbrb'
+  = /* пусто */;
+}

@@ -35,6 +35,7 @@ refalrts::Module::Module(
   , m_references()
   , m_name(module_name)
   , m_stat(stat)
+  , m_indirect_references()
 {
   assert(event);
 
@@ -98,6 +99,21 @@ void refalrts::Module::load_native_identifiers() {
 
 refalrts::RefalFunction *
 refalrts::Module::lookup_function(const refalrts::RefalFuncName& name) {
+  RefalFunction *result = 0;
+
+  ModuleList::iterator pmod = m_indirect_references.begin();
+  while (
+    pmod != m_indirect_references.end()
+    && (result = (*pmod)->lookup_function_aux(name), result == 0)
+  ) {
+    ++pmod;
+  }
+
+  return result;
+}
+
+refalrts::RefalFunction *
+refalrts::Module::lookup_function_aux(const refalrts::RefalFuncName& name) {
   FuncsMap::iterator p = m_funcs_table.find(name);
 
   if (p != m_funcs_table.end()) {
@@ -124,6 +140,32 @@ void refalrts::Module::register_function(refalrts::RefalFunction *func) {
 bool refalrts::Module::find_unresolved_externals(
   refalrts::LoadModuleEvent event, void *callback_data
 ) {
+  m_indirect_references.push_back(this);
+  ModuleList::iterator unscanned = m_indirect_references.begin();
+
+  while (unscanned != m_indirect_references.end()) {
+    Module *to_scan = *unscanned;
+
+    for (
+      ReferenceMap::iterator p = to_scan->m_references.begin();
+      p != to_scan->m_references.end();
+      ++p
+    ) {
+      Module *next = p->second;
+      assert(next != 0);
+      ModuleList::iterator known = std::find(
+        m_indirect_references.begin(),
+        m_indirect_references.end(),
+        next
+      );
+      if (known == m_indirect_references.end()) {
+        m_indirect_references.push_back(next);
+      }
+    }
+
+    ++unscanned;
+  }
+
   return find_unresolved_externals_rasl(event, callback_data)
     && (! m_native || find_unresolved_externals_native(event, callback_data));
 }
