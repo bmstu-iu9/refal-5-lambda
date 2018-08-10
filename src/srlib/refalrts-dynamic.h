@@ -162,16 +162,12 @@ private:
   std::string m_name;
 
 public:
-  ~Module();
-
-  static Module *load_main_module(
-    Domain *domain, NativeModule *native, bool& success,
-    LoadModuleEvent event, void *callback_data
-  );
-  static Module *load_module(
+  Module(
     Domain *domain, const char *real_name, bool& success,
-    LoadModuleEvent event, void *callback_data
+    LoadModuleEvent event, void *callback_data,
+    NativeModule *native = 0
   );
+  ~Module();
 
   bool find_unresolved_externals(LoadModuleEvent event, void *callback_data);
 
@@ -203,11 +199,6 @@ public:
   }
 
 private:
-  Module(Domain *domain, NativeModule *native = 0);
-  bool initialize(
-    const char *module_name, LoadModuleEvent event, void *callback_data
-  );
-
   void load_native_identifiers();
   void register_function(RefalFunction *func);
   bool find_unresolved_externals_rasl(

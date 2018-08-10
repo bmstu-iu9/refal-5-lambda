@@ -17,7 +17,11 @@
 // Модуль
 //==============================================================================
 
-refalrts::Module::Module(Domain *domain, NativeModule *native)
+refalrts::Module::Module(
+  refalrts::Domain *domain, const char *module_name, bool& success,
+  refalrts::LoadModuleEvent event, void *callback_data,
+  refalrts::NativeModule *native
+)
   : m_unresolved_func_tables()
   , m_funcs_table()
   , m_tables()
@@ -28,35 +32,21 @@ refalrts::Module::Module(Domain *domain, NativeModule *native)
   , m_domain(domain)
   , m_unresolved_native_functions()
   , m_references()
-  , m_name()
+  , m_name(module_name)
 {
-  /* пусто */
-}
+  assert(event);
 
-refalrts::Module::~Module() {
-  while (m_funcs_table.size() > 0) {
-    FuncsMap::iterator p = m_funcs_table.begin();
-    RefalFunction *function = p->second;
-    m_funcs_table.erase(p);
-    delete function;
-  }
-}
-
-bool refalrts::Module::initialize(
-  const char *module_name, refalrts::LoadModuleEvent event, void *callback_data
-) {
-  m_name = module_name;
   ModuleLoadingErrorDetail detail;
-
+  success = false;
   try {
     Loader loader(this, module_name);
     loader.enumerate_blocks();
     if (m_native) {
       load_native_identifiers();
       alloc_global_variables();
-      return resolve_native_functions(event, callback_data);
+      success = resolve_native_functions(event, callback_data);
     } else {
-      return true;
+      success = true;
     }
   } catch (LoadModuleError& e) {
     detail.message = e.message.c_str();
@@ -70,42 +60,15 @@ bool refalrts::Module::initialize(
     detail.message = e.what();
     event(cModuleLoadingError_CantAllocMemory, &detail, callback_data);
   }
-
-  return false;
 }
 
-refalrts::Module *
-refalrts::Module::load_main_module(
-  refalrts::Domain *domain, refalrts::NativeModule *native, bool& success,
-  refalrts::LoadModuleEvent event, void *callback_data
-) {
-  assert(event);
-
-  Module *module = new Module(domain, native);
-
-  char module_name[api::cModuleNameBufferLen];
-
-  success = api::get_main_module_name(module_name);
-  if (! success) {
-    ModuleLoadingErrorDetail detail;
-    event(cModuleLoadingError_CantObtainModuleName, &detail, callback_data);
-
-    return module;
+refalrts::Module::~Module() {
+  while (m_funcs_table.size() > 0) {
+    FuncsMap::iterator p = m_funcs_table.begin();
+    RefalFunction *function = p->second;
+    m_funcs_table.erase(p);
+    delete function;
   }
-
-  success = module->initialize(module_name, event, callback_data);
-  return module;
-}
-
-refalrts::Module *
-refalrts::Module::load_module(
-  refalrts::Domain *domain, const char *real_name, bool& success,
-  refalrts::LoadModuleEvent event, void *callback_data
-) {
-  assert(event);
-  Module *module = new Module(domain);
-  success = module->initialize(real_name, event, callback_data);
-  return module;
 }
 
 
@@ -634,7 +597,7 @@ bool refalrts::Domain::ModuleStorage::load_references(
       api::stat_destroy(ref_stat);
     } else {
       bool load_success = true;
-      ref_module = Module::load_module(
+      ref_module = new Module(
         m_domain, real_name_ref.c_str(), load_success, event, callback_data
       );
       success = success && load_success;
@@ -734,18 +697,27 @@ refalrts::Domain::Domain()
 }
 
 bool refalrts::Domain::load_native_module(NativeModule *main_module) {
-  bool success;
-  Module *new_module = Module::load_main_module(
-    this, main_module, success, load_native_module_report_error, 0
-  );
+  char module_name[api::cModuleNameBufferLen];
+  bool success = api::get_main_module_name(module_name);
+  if (! success) {
+    ModuleLoadingErrorDetail detail;
+    load_native_module_report_error(
+      cModuleLoadingError_CantObtainModuleName, &detail, 0
+    );
 
-  const refalrts::api::stat *module_stat =
-    api::stat_create(new_module->name().c_str());
+    return false;
+  }
+
+  const refalrts::api::stat *module_stat = api::stat_create(module_name);
 
   if (! module_stat) {
     // TODO: сообщение об ошибке
-    return 0;
+    return false;
   }
+
+  Module *new_module = new Module(
+    this, module_name, success, load_native_module_report_error, 0, main_module
+  );
 
   Stack stack(module_stat, new_module, 0);
   ModuleStorage new_storage(this);
@@ -789,7 +761,7 @@ refalrts::Domain::load_module(
   }
 
   bool success;
-  new_module = Module::load_module(
+  new_module = new Module(
     this, real_name.c_str(), success, event, callback_data
   );
 
