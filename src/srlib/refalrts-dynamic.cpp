@@ -94,9 +94,6 @@ refalrts::Module::load_main_module(
   }
 
   success = module->initialize(module_name, event, callback_data);
-  if (success) {
-    success = module->find_unresolved_externals(event, callback_data);
-  }
   return module;
 }
 
@@ -108,9 +105,6 @@ refalrts::Module::load_module(
   assert(event);
   Module *module = new Module(domain);
   success = module->initialize(real_name, event, callback_data);
-  if (success) {
-    success = module->find_unresolved_externals(event, callback_data);
-  }
   return module;
 }
 
@@ -656,6 +650,17 @@ bool refalrts::Domain::ModuleStorage::load_references(
   return success;
 }
 
+bool refalrts::Domain::ModuleStorage::find_unresolved_externals(
+  refalrts::LoadModuleEvent event, void *callback_data
+) {
+  bool success = true;
+  for (ModuleList::iterator p = m_modules.begin(); p != m_modules.end(); ++p) {
+    bool module_success = (*p)->find_unresolved_externals(event, callback_data);
+    success = success && module_success;
+  }
+  return success;
+}
+
 void refalrts::Domain::ModuleStorage::unload() {
   while (! m_modules.empty()) {
     delete m_modules.front();
@@ -750,7 +755,12 @@ bool refalrts::Domain::load_native_module(NativeModule *main_module) {
   success = success && success_references;
 
   if (success) {
-    m_storage.splice(new_storage);
+    success = new_storage.find_unresolved_externals(
+      load_native_module_report_error, 0
+    );
+    if (success) {
+      m_storage.splice(new_storage);
+    }
   }
 
   return success;
@@ -791,7 +801,10 @@ refalrts::Domain::load_module(
   success = success && success_references;
 
   if (success) {
-    m_storage.splice(new_storage);
+    success = new_storage.find_unresolved_externals(event, callback_data);
+    if (success) {
+      m_storage.splice(new_storage);
+    }
   } else {
     new_module = 0;
   }

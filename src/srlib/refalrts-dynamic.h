@@ -173,6 +173,8 @@ public:
     LoadModuleEvent event, void *callback_data
   );
 
+  bool find_unresolved_externals(LoadModuleEvent event, void *callback_data);
+
   RefalIdentifier operator[](const IdentReference& ref) const {
     return m_native_identifiers[ref.id];
   }
@@ -208,7 +210,6 @@ private:
 
   void load_native_identifiers();
   void register_function(RefalFunction *func);
-  bool find_unresolved_externals(LoadModuleEvent event, void *callback_data);
   bool find_unresolved_externals_rasl(
     LoadModuleEvent event, void *callback_data
   );
@@ -284,6 +285,7 @@ class Domain {
     bool load_references(
       Stack *stack, LoadModuleEvent event, void *callback_data
     );
+    bool find_unresolved_externals(LoadModuleEvent event, void *callback_data);
 
     void unload();
     void splice(ModuleStorage& other);
