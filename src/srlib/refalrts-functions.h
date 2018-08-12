@@ -105,24 +105,24 @@ struct StringItem {
   UInt32 string_len;
 };
 
-union FunctionTableItem {
+struct FunctionTableItem {
   const char *func_name;
   RefalFunction *function;
 
   FunctionTableItem(const char *func_name)
-    : func_name(func_name)
+    : func_name(func_name), function(0)
   {
     /* пусто */
   }
 
   FunctionTableItem(RefalFunction *function)
-    : function(function)
+    : func_name(function->name.name), function(function)
   {
     /* пусто */
   }
 
   FunctionTableItem()
-    : func_name(0)
+    : func_name(0), function(0)
   {
     /* пусто */
   }
