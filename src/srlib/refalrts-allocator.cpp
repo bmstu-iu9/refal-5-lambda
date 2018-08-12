@@ -7,6 +7,8 @@
 
 //FROM refalrts-allocator
 #include "refalrts-allocator.h"
+//FROM refalrts-functions
+#include "refalrts-functions.h"
 
 
 //==============================================================================
@@ -29,6 +31,9 @@ bool refalrts::Allocator::alloc_node(refalrts::Iter& node) {
 
         m_free_ptr = head;
       }
+    } else if (refalrts::cDataFunction == m_free_ptr->tag) {
+      m_free_ptr->function_info->release();
+      m_free_ptr->function_info = 0;
     }
 
     node = m_free_ptr;

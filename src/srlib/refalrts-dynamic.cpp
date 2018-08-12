@@ -71,7 +71,7 @@ refalrts::Module::~Module() {
     FuncsMap::iterator p = m_funcs_table.begin();
     RefalFunction *function = p->second;
     m_funcs_table.erase(p);
-    delete function;
+    function->release();
   }
 }
 
@@ -132,7 +132,7 @@ void refalrts::Module::register_function(refalrts::RefalFunction *func) {
   if (! res.second) {
     // Если сначала удалить func, то не удастся из него извлечь имя
     RedeclarationError error(func->name);
-    delete func;
+    func->release();
     throw error;
   }
 }

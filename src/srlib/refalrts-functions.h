@@ -22,6 +22,7 @@ struct RefalFunction {
     , base_name(name.name)
     , name(base_name.c_str(), name.cookie1, name.cookie2)
     , module(0)
+    , refcounter(1)
   {
     /* пусто */
   }
@@ -29,6 +30,19 @@ struct RefalFunction {
   virtual ~RefalFunction() {
     /* пусто */
   }
+
+  void add_ref() {
+    ++refcounter;
+  }
+
+  void release() {
+    if (--refcounter == 0) {
+      delete this;
+    }
+  }
+
+private:
+  unsigned refcounter;
 };
 
 struct RefalNativeFunction: public RefalFunction {

@@ -848,6 +848,7 @@ public:
     if (alloc_node(res)) {
       res->tag = cDataFunction;
       res->function_info = fn;
+      fn->add_ref();
       return true;
     } else {
       return false;
@@ -940,6 +941,7 @@ public:
   static void reinit_svar(Iter res, Iter sample);
 
   static void reinit_char(Iter res, char ch) {
+    cleanup_node(res);
     res->tag = cDataChar;
     res->char_info = ch;
   }
@@ -949,6 +951,7 @@ public:
   }
 
   static void reinit_number(Iter res, RefalNumber num) {
+    cleanup_node(res);
     res->tag = cDataNumber;
     res->number_info = num;
   }
@@ -958,15 +961,20 @@ public:
   }
 
   static void reinit_name(Iter res, RefalFunction *func) {
+    func->add_ref();
+    cleanup_node(res);
     res->tag = cDataFunction;
     res->function_info = func;
   }
 
   static void update_name(Iter res, RefalFunction *func) {
+    func->add_ref();
+    res->function_info->release();
     res->function_info = func;
   }
 
   static void reinit_ident(Iter res, RefalIdentifier ident) {
+    cleanup_node(res);
     res->tag = cDataIdentifier;
     res->ident_info = ident;
   }
@@ -976,35 +984,43 @@ public:
   }
 
   static void reinit_open_bracket(Iter res) {
+    cleanup_node(res);
     res->tag = cDataOpenBracket;
   }
 
   static void reinit_close_bracket(Iter res) {
+    cleanup_node(res);
     res->tag = cDataCloseBracket;
   }
 
   static void reinit_open_adt(Iter res) {
+    cleanup_node(res);
     res->tag = cDataOpenADT;
   }
 
   static void reinit_close_adt(Iter res) {
+    cleanup_node(res);
     res->tag = cDataCloseADT;
   }
 
   static void reinit_open_call(Iter res) {
+    cleanup_node(res);
     res->tag = cDataOpenCall;
   }
 
   static void reinit_close_call(Iter res) {
+    cleanup_node(res);
     res->tag = cDataCloseCall;
   }
 
   static void reinit_closure_head(Iter res) {
+    cleanup_node(res);
     res->tag = cDataClosureHead;
     res->number_info = 1;
   }
 
   static void reinit_unwrapped_closure(Iter res, Iter head) {
+    cleanup_node(res);
     res->tag = cDataUnwrappedClosure;
     res->link_info = head;
   }
