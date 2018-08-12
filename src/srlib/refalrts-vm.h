@@ -82,7 +82,7 @@ public:
 private:
   struct StateRefalMachine {
     refalrts::RefalFunction *callee;
-    refalrts::Iter begin; /* нужно для icSetResArgBegin в startup_rasl */
+    refalrts::Iter begin;
     refalrts::Iter end;
     const refalrts::RASLCommand *rasl;
     refalrts::FunctionTableItem *functions;

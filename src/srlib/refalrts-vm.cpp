@@ -651,7 +651,7 @@ JUMP_FROM_SCALE:
         {
           StateRefalMachine *cur_state = states_stack_alloc();
           cur_state->callee = callee;
-          cur_state->begin = begin; /* нужно для icSetResArgBegin в startup_rasl */
+          cur_state->begin = begin;
           cur_state->end = end;
           cur_state->rasl = rasl + 2;
           cur_state->functions = functions;
@@ -671,7 +671,7 @@ JUMP_FROM_SCALE:
         {
           StateRefalMachine *prev_state = states_stack_pop();
           callee = prev_state->callee;
-          begin = prev_state->begin; /* нужно для icSetResArgBegin в startup_rasl */
+          begin = prev_state->begin;
           end = prev_state->end;
           rasl = prev_state->rasl;
           functions = prev_state->functions;

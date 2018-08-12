@@ -90,8 +90,6 @@ struct RefalCondFunctionNative: public RefalFunction {
 /*
   Для эффективной обработки на современных процессорах
   команду выровляли по размеру в 4 байта.
-  И получили ограничение на индексацию в 255.
-  Анологичное ограничение присуствует в Рефал-5.
 */
 struct RASLCommand {
   unsigned char cmd;

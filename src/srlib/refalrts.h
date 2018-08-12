@@ -378,8 +378,6 @@ const char* arg(VM *vm, unsigned int param);
 */
 void debug_print_expr(void *file, Iter first, Iter last);
 
-// Интерпретатор
-
 class SwitchDefaultViolation {
   const char *m_filename;
   int m_line;
