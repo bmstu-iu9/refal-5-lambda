@@ -420,7 +420,10 @@ refalrts::Module::Loader::read_const_table() {
   const char *next_external_name = &new_table->external_memory[0];
   for (size_t i = 0; i < fixed_part.external_count; ++i) {
     new_table->externals[i].func_name = next_external_name;
-    // TODO: нужна проверка за выход из границ
+    PARSE_ASSERT(
+      next_external_name < &*new_table->external_memory.end(),
+      "bad count of external names in CONST_TABLE"
+    );
     next_external_name += strlen(next_external_name) + 1;
   }
   m_module->m_unresolved_func_tables.push_front(new_table);
@@ -439,7 +442,10 @@ refalrts::Module::Loader::read_const_table() {
       throw AllocIdentifierError();
     }
     new_table->idents[i] = ident;
-    // TODO: нужна проверка за выход из границ
+    PARSE_ASSERT(
+      next_ident_name < &*new_table->idents_memory.end(),
+      "bad count of identifiers in CONST_TABLE"
+    );
     next_ident_name += strlen(next_ident_name) + 1;
   }
 
@@ -634,8 +640,9 @@ bool refalrts::Domain::ModuleStorage::load_references(
     const api::stat *ref_stat =
       m_domain->lookup_module_by_name(p->first, real_name_ref);
     if (! ref_stat) {
-      // TODO: сообщение об ошибке
-      fprintf(stderr, "not found %s\n", real_name_ref.c_str());
+      ModuleLoadingErrorDetail detail;
+      detail.message = p->first.c_str();
+      event(cModuleLoadingError_ModuleNotFound, &detail, callback_data);
       success = false;
       continue;
     }
@@ -734,7 +741,9 @@ bool refalrts::Domain::load_native_module(
   const refalrts::api::stat *module_stat = api::stat_create(module_name);
 
   if (! module_stat) {
-    // TODO: сообщение об ошибке
+    ModuleLoadingErrorDetail detail;
+    detail.message = module_name;
+    event(cModuleLoadingError_ModuleNotFound, &detail, callback_data);
     return false;
   }
 
@@ -771,7 +780,9 @@ refalrts::Domain::load_module(
   const refalrts::api::stat *module_stat = lookup_module_by_name(name, real_name);
 
   if (! module_stat) {
-    // TODO: сообщение об ошибке
+    ModuleLoadingErrorDetail detail;
+    detail.message = name;
+    event(cModuleLoadingError_ModuleNotFound, &detail, callback_data);
     return 0;
   }
 

@@ -823,8 +823,8 @@ static void load_native_module_report_error(
 ) {
   switch (error) {
     case refalrts::cModuleLoadingError_ModuleNotFound:
-      /* не может произойти в load_native_module() */
-      refalrts_switch_default_violation(error);
+      fprintf(stderr, "INTERNAL ERROR: can't load module %s\n", detail->message);
+      exit(155);
 
     case refalrts::cModuleLoadingError_CantObtainModuleName:
       fprintf(stderr, "INTERNAL ERROR: can't obtain name of main executable\n");
