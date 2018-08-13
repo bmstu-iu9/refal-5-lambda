@@ -2415,6 +2415,7 @@ $ENTRY Exit {
     ! refalrts::svar_left(pretcode, content_b, content_e)
     || ! refalrts::empty_seq(content_b, content_e)
     || refalrts::cDataNumber != pretcode->tag
+    || refalrts::dangerous_state(vm)
   ) {
     return refalrts::cRecognitionImpossible;
   }
@@ -3771,7 +3772,11 @@ $ENTRY LoadModule {
   unsigned module_name_len =
     refalrts::read_chars(module_name, FILENAME_MAX, content_b, content_e);
 
-  if (! refalrts::empty_seq(content_b, content_e) || module_name_len == 0) {
+  if (
+    ! refalrts::empty_seq(content_b, content_e)
+    || module_name_len == 0
+    || refalrts::dangerous_state(vm)
+  ) {
     return refalrts::cRecognitionImpossible;
   }
 
@@ -3819,6 +3824,7 @@ $ENTRY UnloadModule {
     ! refalrts::svar_right(pHandle, content_b, content_e)
     || ! refalrts::empty_seq(content_b, content_e)
     || pHandle->tag != refalrts::cDataFunction
+    || refalrts::dangerous_state(vm)
   ) {
     return refalrts::cRecognitionImpossible;
   }

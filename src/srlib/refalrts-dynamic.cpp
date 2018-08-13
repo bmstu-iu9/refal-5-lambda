@@ -818,6 +818,7 @@ refalrts::Domain::Domain()
   : m_idents_table()
   , m_at_exit_list(0)
   , m_storage(this)
+  , m_dangerous(false)
 {
   /* пусто */
 }
@@ -826,6 +827,8 @@ bool refalrts::Domain::load_native_module(
   refalrts::NativeModule *main_module,
   refalrts::LoadModuleEvent event, void *callback_data
 ) {
+  DangerousRAII dang(&m_dangerous);
+
   char module_name[api::cModuleNameBufferLen];
   bool success = api::get_main_module_name(module_name);
   if (! success) {
@@ -864,6 +867,8 @@ refalrts::Domain::load_module(
   assert(event);
   // assert(this == vm->domain());
 
+  DangerousRAII dang(&m_dangerous);
+
   ModuleStorage new_storage(this);
   Module *new_module = new_storage.load_module(name, 0, event, callback_data);
 
@@ -887,10 +892,14 @@ void refalrts::Domain::unload_module(
   refalrts::VM * /*vm*/, refalrts::Module *module
 ) {
   //assert(this == vm->domain());
+
+  DangerousRAII dang(&m_dangerous);
+
   m_storage.unload_module(module);
 }
 
 void refalrts::Domain::unload() {
+  DangerousRAII dang(&m_dangerous);
   free_idents_table();
   m_storage.unload();
 }

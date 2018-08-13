@@ -515,6 +515,11 @@ RefalFunction *load_module_rep(
 );
 bool unload_module(VM *vm, RefalFunction *module);
 
+// Особое состояние во время выполнения загрузки и выгрузки модулей
+// (во время выполнения их кода инициализации и финализации).
+// Запрещено в это время загружать другие модули и вызывать <Exit …>
+bool dangerous_state(VM *vm);
+
 
 } // namespace refalrts
 

@@ -319,6 +319,21 @@ class Domain {
   AtExitListNode *m_at_exit_list;
 
   ModuleStorage m_storage;
+  bool m_dangerous;
+
+  class DangerousRAII {
+    bool *m_dangerous;
+  public:
+    DangerousRAII(bool *dangerous)
+      : m_dangerous(dangerous)
+    {
+      *m_dangerous = true;
+    }
+
+    ~DangerousRAII() {
+      *m_dangerous = false;
+    }
+  };
 
 public:
   Domain();
@@ -352,6 +367,10 @@ public:
 
   void at_exit(AtExitCB callback, void *data);
   void perform_at_exit();
+
+  bool dangerous_state() const {
+    return m_dangerous;
+  }
 
 private:
   static const char *not_null(const char *str) {

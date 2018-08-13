@@ -851,6 +851,10 @@ bool refalrts::unload_module(
   }
 }
 
+bool refalrts::dangerous_state(refalrts::VM *vm) {
+  return vm->domain()->dangerous_state();
+}
+
 
 //==============================================================================
 
