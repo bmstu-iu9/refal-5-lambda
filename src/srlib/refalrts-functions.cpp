@@ -7,6 +7,10 @@
 #include "refalrts-vm.h"
 
 
+void refalrts::RefalFunction::deactivate() {
+  rasl = RefalEmptyFunction::run;
+}
+
 const refalrts::RASLCommand refalrts::RefalNativeFunction::run[] = {
   { refalrts::icPerformNative, 0, 0, 0 },
   { refalrts::icNextStep, 0, 0, 0 }

@@ -71,6 +71,8 @@ refalrts::Module::~Module() {
     FuncsMap::iterator p = m_funcs_table.begin();
     RefalFunction *function = p->second;
     m_funcs_table.erase(p);
+    /* TODO: продумать освобождение статических ящиков */
+    function->deactivate();
     function->release();
   }
 }

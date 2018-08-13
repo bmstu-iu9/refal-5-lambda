@@ -41,6 +41,8 @@ struct RefalFunction {
     }
   }
 
+  void deactivate();
+
 private:
   unsigned refcounter;
 };
