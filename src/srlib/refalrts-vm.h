@@ -170,8 +170,8 @@ public:
   refalrts::Iter pop_stack();
   bool empty_stack();
 
-  refalrts::FnResult run();
-  refalrts::FnResult main_loop(const RASLCommand *rasl);
+  FnResult execute_zero_arity_function(RefalFunction *func, Iter pos = 0);
+  FnResult main_loop(const RASLCommand *rasl);
   void make_dump(refalrts::Iter begin, refalrts::Iter end);
   FILE* dump_stream();
 

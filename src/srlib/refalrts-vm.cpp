@@ -167,21 +167,16 @@ refalrts::VM::free_states_stack() {
   }
 }
 
-refalrts::FnResult refalrts::VM::run() {
-  RefalFunction *go = domain()->lookup_function(0, 0, "GO");
+refalrts::FnResult refalrts::VM::execute_zero_arity_function(
+  refalrts::RefalFunction *func, refalrts::Iter pos
+) {
+  FunctionTableItem entry_point[1] = { FunctionTableItem(func) };
 
-  if (! go) {
-    go = domain()->lookup_function(0, 0, "Go");
+  if (! pos) {
+    pos = & m_last_marker;
   }
 
-  if (! go) {
-    fprintf(stderr, "INTERNAL ERROR: entry point (Go or GO) is not found\n");
-    exit(158);
-  }
-
-  FunctionTableItem entry_point[1] = { FunctionTableItem(go) };
-
-  // Формируем вызов <Go#0:0> в поле зрения
+  // Формируем вызов <func /*пусто*/> в поле зрения
   static const RASLCommand startup_rasl[] = {
     { icIssueMemory, 3, 0, 0 },
     { refalrts::icResetAllocator, 0, 0, 0 },
@@ -198,7 +193,7 @@ refalrts::FnResult refalrts::VM::run() {
   StateRefalMachine *start_state = states_stack_alloc();
 
   start_state->callee = 0;
-  start_state->begin = & m_last_marker; /* нужно для icSetResArgBegin в startup_rasl */
+  start_state->begin = pos; /* нужно для icSetResArgBegin в startup_rasl */
   start_state->end = 0;
   start_state->rasl = startup_rasl;
   start_state->functions = entry_point;
@@ -214,7 +209,12 @@ refalrts::FnResult refalrts::VM::run() {
     { icPopState, 0, 0, 0 },
   };
 
+  Iter prev_stack = m_stack_ptr;
+  Module *prev_module = m_module;
+  m_stack_ptr = 0;
   FnResult res = main_loop(set_state);
+  m_stack_ptr = prev_stack;
+  m_module = prev_module;
 
   if (res != cSuccess && res != cExit) {
     print_error_message(this, stderr, res);

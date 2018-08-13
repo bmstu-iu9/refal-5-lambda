@@ -957,7 +957,19 @@ int main(int argc, char **argv) {
     }
 
     profiler.start_profiler();
-    res = vm.run();
+
+    refalrts::RefalFunction *go = domain.lookup_function(0, 0, "GO");
+
+    if (! go) {
+      go = domain.lookup_function(0, 0, "Go");
+    }
+
+    if (! go) {
+      fprintf(stderr, "INTERNAL ERROR: entry point (Go or GO) is not found\n");
+      return 158;
+    }
+
+    res = vm.execute_zero_arity_function(go);
     fflush(stderr);
     fflush(stdout);
   } catch (refalrts::SwitchDefaultViolation& error) {
