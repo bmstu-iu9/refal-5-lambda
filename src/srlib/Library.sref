@@ -3780,8 +3780,13 @@ $ENTRY LoadModule {
     return refalrts::cRecognitionImpossible;
   }
 
+  refalrts::FnResult result;
   refalrts::RefalFunction *module =
-    refalrts::load_module_rep(vm, module_name, 0, 0);
+    refalrts::load_module_rep(vm, arg_end, module_name, 0, 0, result);
+
+  if (refalrts::cSuccess != result) {
+    return result;
+  }
 
   if (module != 0) {
     refalrts::Iter pSuccess = 0;
@@ -3829,7 +3834,13 @@ $ENTRY UnloadModule {
     return refalrts::cRecognitionImpossible;
   }
 
-  bool success = refalrts::unload_module(vm, pHandle->function_info);
+  refalrts::FnResult result;
+  bool success =
+    refalrts::unload_module(vm, arg_end, pHandle->function_info, result);
+
+  if (refalrts::cSuccess != result) {
+    return result;
+  }
 
   if (! success) {
     return refalrts::cRecognitionImpossible;

@@ -339,14 +339,15 @@ public:
   Domain();
 
   bool load_native_module(
-    NativeModule *main_module, LoadModuleEvent event, void *callback_data
+    VM *vm, NativeModule *main_module,
+    LoadModuleEvent event, void *callback_data, FnResult& result
   );
   Module *load_module(
-    VM *vm, const char *name, LoadModuleEvent event, void *callback_data
+    VM *vm, Iter pos, const char *name,
+    LoadModuleEvent event, void *callback_data, FnResult& result
   );
-  void unload_module(VM *vm, Module *module);
-
-  void unload();
+  void unload_module(VM *vm, Iter pos, Module *module, FnResult& result);
+  void unload(VM *vm, FnResult& result);
 
   size_t idents_count();
 

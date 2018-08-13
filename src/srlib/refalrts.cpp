@@ -815,36 +815,42 @@ void empty_module_loading_error_callback (
 }  // безымянное namespace
 
 refalrts::Module *refalrts::load_module(
-  refalrts::VM *vm, const char *name,
-  refalrts::LoadModuleEvent event, void *callback_data
+  refalrts::VM *vm, refalrts::Iter pos, const char *name,
+  refalrts::LoadModuleEvent event, void *callback_data,
+  refalrts::FnResult& result
 ) {
   if (! event) {
     event = empty_module_loading_error_callback;
   }
-  return vm->domain()->load_module(vm, name, event, callback_data);
+  return vm->domain()->load_module(vm, pos, name, event, callback_data, result);
 }
 
-void refalrts::unload_module(refalrts::VM *vm, refalrts::Module *module) {
-  return vm->domain()->unload_module(vm, module);
+void refalrts::unload_module(
+  refalrts::VM *vm, refalrts::Iter pos, refalrts::Module *module,
+  refalrts::FnResult& result
+) {
+  return vm->domain()->unload_module(vm, pos, module, result);
 }
 
 refalrts::RefalFunction * refalrts::load_module_rep(
-  refalrts::VM *vm, const char *name,
-  refalrts::LoadModuleEvent event, void *callback_data
+  refalrts::VM *vm, refalrts::Iter pos, const char *name,
+  refalrts::LoadModuleEvent event, void *callback_data,
+  refalrts::FnResult& result
 ) {
   if (! event) {
     event = empty_module_loading_error_callback;
   }
-  Module *module = refalrts::load_module(vm, name, event, callback_data);
+  Module *module = refalrts::load_module(vm, pos, name, event, callback_data, result);
   return module ? module->representant() : 0;
 }
 
 bool refalrts::unload_module(
-  refalrts::VM *vm, refalrts::RefalFunction *module
+  refalrts::VM *vm, refalrts::Iter pos, refalrts::RefalFunction *module,
+  refalrts::FnResult& result
 ) {
   ModuleRepresentant *rep = dynamic_cast<ModuleRepresentant*>(module);
   if (rep != 0 && rep->module != 0) {
-    refalrts::unload_module(vm, rep->module);
+    refalrts::unload_module(vm, pos, rep->module, result);
     return true;
   } else {
     return false;
@@ -948,28 +954,30 @@ int main(int argc, char **argv) {
   refalrts::FnResult res;
   try {
     bool successed = domain.load_native_module(
-      &g_module, load_native_module_report_error, 0
+      &vm, &g_module, load_native_module_report_error, 0, res
     );
 
     if (! successed) {
-      domain.unload();
+      domain.unload(&vm, res);
       return 157;
     }
 
-    profiler.start_profiler();
+    if (res == refalrts::cSuccess) {
+      profiler.start_profiler();
 
-    refalrts::RefalFunction *go = domain.lookup_function(0, 0, "GO");
+      refalrts::RefalFunction *go = domain.lookup_function(0, 0, "GO");
 
-    if (! go) {
-      go = domain.lookup_function(0, 0, "Go");
+      if (! go) {
+        go = domain.lookup_function(0, 0, "Go");
+      }
+
+      if (! go) {
+        fprintf(stderr, "INTERNAL ERROR: entry point (Go or GO) is not found\n");
+        return 158;
+      }
+
+      res = vm.execute_zero_arity_function(go);
     }
-
-    if (! go) {
-      fprintf(stderr, "INTERNAL ERROR: entry point (Go or GO) is not found\n");
-      return 158;
-    }
-
-    res = vm.execute_zero_arity_function(go);
     fflush(stderr);
     fflush(stdout);
   } catch (refalrts::SwitchDefaultViolation& error) {
@@ -983,11 +991,14 @@ int main(int argc, char **argv) {
     return 153;
   }
 
-  domain.perform_at_exit();
+  // TODO: правильный порядок финализации
   profiler.end_profiler();
+  if (res == refalrts::cSuccess) {
+    domain.perform_at_exit();
+    domain.unload(&vm, res);
+  }
   vm.free_view_field();
   allocator.free_memory();
-  domain.unload();
   vm.free_states_stack();
 
   fflush(stdout);

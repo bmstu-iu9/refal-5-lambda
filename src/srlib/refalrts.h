@@ -504,16 +504,18 @@ typedef void (*LoadModuleEvent)(
 );
 
 Module *load_module(
-  VM *vm, const char *name,
-  LoadModuleEvent event, void *callback_data
+  VM *vm, Iter pos, const char *name,
+  LoadModuleEvent event, void *callback_data,
+  FnResult& result
 );
-void unload_module(VM *vm, Module *module);
+void unload_module(VM *vm, Iter pos, Module *module, FnResult& result);
 
 RefalFunction *load_module_rep(
-  VM *vm, const char *name,
-  LoadModuleEvent event, void *callback_data
+  VM *vm, Iter pos, const char *name,
+  LoadModuleEvent event, void *callback_data,
+  FnResult& result
 );
-bool unload_module(VM *vm, RefalFunction *module);
+bool unload_module(VM *vm, Iter pos, RefalFunction *module, FnResult& result);
 
 // Особое состояние во время выполнения загрузки и выгрузки модулей
 // (во время выполнения их кода инициализации и финализации).

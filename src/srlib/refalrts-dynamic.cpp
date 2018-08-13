@@ -824,9 +824,13 @@ refalrts::Domain::Domain()
 }
 
 bool refalrts::Domain::load_native_module(
-  refalrts::NativeModule *main_module,
-  refalrts::LoadModuleEvent event, void *callback_data
+  refalrts::VM *vm, refalrts::NativeModule *main_module,
+  refalrts::LoadModuleEvent event, void *callback_data,
+  refalrts::FnResult& result
 ) {
+  //TODO unused
+  (void) vm;
+
   DangerousRAII dang(&m_dangerous);
 
   char module_name[api::cModuleNameBufferLen];
@@ -856,14 +860,20 @@ bool refalrts::Domain::load_native_module(
     }
   }
 
+  result = cSuccess;    // TODO
   return success;
 }
 
 refalrts::Module *
 refalrts::Domain::load_module(
-  refalrts::VM * /*vm*/, const char *name,
-  refalrts::LoadModuleEvent event, void *callback_data
+  refalrts::VM *vm, refalrts::Iter pos, const char *name,
+  refalrts::LoadModuleEvent event, void *callback_data,
+  refalrts::FnResult& result
 ) {
+  //TODO unused
+  (void) vm;
+  (void) pos;
+
   assert(event);
   // assert(this == vm->domain());
 
@@ -885,23 +895,34 @@ refalrts::Domain::load_module(
     }
   }
 
+  result = cSuccess;    // TODO
   return new_module;
 }
 
 void refalrts::Domain::unload_module(
-  refalrts::VM * /*vm*/, refalrts::Module *module
+  refalrts::VM *vm, refalrts::Iter pos, refalrts::Module *module,
+  refalrts::FnResult& result
 ) {
+  //TODO unused
+  (void) vm;
+  (void) pos;
+
   //assert(this == vm->domain());
 
   DangerousRAII dang(&m_dangerous);
 
   m_storage.unload_module(module);
+  result = cSuccess;    // TODO
 }
 
-void refalrts::Domain::unload() {
+void refalrts::Domain::unload(refalrts::VM *vm, refalrts::FnResult& result) {
+  //TODO unused
+  (void) vm;
+
   DangerousRAII dang(&m_dangerous);
-  free_idents_table();
   m_storage.unload();
+  free_idents_table();
+  result = cSuccess;    // TODO
 }
 
 //------------------------------------------------------------------------------
