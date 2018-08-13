@@ -2,7 +2,7 @@
 $EXTERN LoadModule, UnloadModule;
 
 $ENTRY Go {
-  = <LoadModule 'module.rasl-module'> : Success t.Handle
+  = <Print <LoadModule 'module.rasl-module'>> : Success t.Handle
   = <LoadModule 'module'> : Success t.Handle
   = <LoadModule './module.rasl-module'> : Success t.Handle
   = <LoadModule 'not-exist.rasl-module'> : Fails

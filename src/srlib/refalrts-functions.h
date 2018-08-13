@@ -169,6 +169,22 @@ struct RASLFunction: public RefalFunction {
   }
 };
 
+struct ModuleRepresentant : public RefalFunction {
+  static const UInt32 FAKE_COOKIE = static_cast<UInt32>(-1);
+
+  ModuleRepresentant(const std::string& name, Module *module)
+    : RefalFunction(
+        RefalEmptyFunction::run,
+        RefalFuncName(name.c_str(), FAKE_COOKIE, FAKE_COOKIE)
+      )
+    , module(module)
+  {
+    /* пусто */
+  }
+
+  Module *module;
+};
+
 
 } // namespace refalrts
 

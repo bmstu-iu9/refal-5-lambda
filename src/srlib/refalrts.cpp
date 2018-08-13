@@ -823,6 +823,30 @@ void refalrts::unload_module(refalrts::VM *vm, refalrts::Module *module) {
   return vm->domain()->unload_module(vm, module);
 }
 
+refalrts::RefalFunction * refalrts::load_module_rep(
+  refalrts::VM *vm, const char *name,
+  refalrts::LoadModuleEvent event, void *callback_data
+) {
+  if (! event) {
+    event = empty_module_loading_error_callback;
+  }
+  Module *module = refalrts::load_module(vm, name, event, callback_data);
+  return module ? module->representant() : 0;
+}
+
+bool refalrts::unload_module(
+  refalrts::VM *vm, refalrts::RefalFunction *module
+) {
+  ModuleRepresentant *rep = dynamic_cast<ModuleRepresentant*>(module);
+  if (rep != 0 && rep->module != 0) {
+    refalrts::unload_module(vm, rep->module);
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
 //==============================================================================
 
 static void load_native_module_report_error(

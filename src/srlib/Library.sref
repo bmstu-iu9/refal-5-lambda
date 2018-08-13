@@ -3776,7 +3776,8 @@ $ENTRY LoadModule {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::Module *module = refalrts::load_module(vm, module_name, 0, 0);
+  refalrts::RefalFunction *module =
+    refalrts::load_module_rep(vm, module_name, 0, 0);
 
   if (module != 0) {
     refalrts::Iter pSuccess = 0;
@@ -3784,13 +3785,10 @@ $ENTRY LoadModule {
 
     if (
       ! refalrts::alloc_ident(vm, pSuccess, USE_IDENT(Success))
-      || ! refalrts::alloc_number(vm, pHandle, 0)
+      || ! refalrts::alloc_name(vm, pHandle, module)
     ) {
       return refalrts::cNoMemory;
     }
-
-    pHandle->tag = refalrts::cDataFile;
-    pHandle->file_info = module;
 
     refalrts::splice_elem(arg_begin, pSuccess);
     refalrts::splice_elem(arg_begin, pHandle);
@@ -3821,14 +3819,16 @@ $ENTRY UnloadModule {
   if (
     ! refalrts::svar_right(pHandle, content_b, content_e)
     || ! refalrts::empty_seq(content_b, content_e)
-    || pHandle->tag != refalrts::cDataFile
+    || pHandle->tag != refalrts::cDataFunction
   ) {
     return refalrts::cRecognitionImpossible;
   }
 
-  // static_cast не работает на BCC 5.5.1
-  refalrts::Module *module = (refalrts::Module*) pHandle->file_info;
-  refalrts::unload_module(vm, module);
+  bool success = refalrts::unload_module(vm, pHandle->function_info);
+
+  if (! success) {
+    return refalrts::cRecognitionImpossible;
+  }
 
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;

@@ -37,6 +37,7 @@ refalrts::Module::Module(
   , m_stat(stat)
   , m_indirect_references()
   , m_aliases()
+  , m_representant(new ModuleRepresentant(module_name, this))
 {
   assert(event);
 
@@ -68,6 +69,8 @@ refalrts::Module::Module(
 }
 
 refalrts::Module::~Module() {
+  m_representant->module = 0;
+  m_representant->release();
   api::stat_destroy(m_stat);
   while (m_funcs_table.size() > 0) {
     FuncsMap::iterator p = m_funcs_table.begin();

@@ -42,3 +42,5 @@ const refalrts::RASLCommand refalrts::RefalCondFunctionRasl::run[] = {
 const refalrts::RASLCommand refalrts::RefalCondFunctionNative::run[] = {
   { refalrts::icMainLoopReturnSuccess, 0, 0, 0 }
 };
+
+const refalrts::UInt32 refalrts::ModuleRepresentant::FAKE_COOKIE;

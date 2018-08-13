@@ -166,6 +166,7 @@ private:
   const api::stat *m_stat;
   ModuleList m_indirect_references;
   std::vector<std::string> m_aliases;
+  ModuleRepresentant *m_representant;
 
 public:
   Module(
@@ -209,6 +210,10 @@ public:
   }
 
   bool has_alias(const std::string& alias) const;
+
+  ModuleRepresentant *representant() const {
+    return m_representant;
+  }
 
 private:
   RefalFunction *lookup_function_aux(const RefalFuncName& name);

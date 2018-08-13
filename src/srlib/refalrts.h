@@ -509,6 +509,12 @@ Module *load_module(
 );
 void unload_module(VM *vm, Module *module);
 
+RefalFunction *load_module_rep(
+  VM *vm, const char *name,
+  LoadModuleEvent event, void *callback_data
+);
+bool unload_module(VM *vm, RefalFunction *module);
+
 
 } // namespace refalrts
 
