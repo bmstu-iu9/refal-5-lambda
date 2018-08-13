@@ -36,10 +36,8 @@ Example {
 
 InitValues {
 %%
-  arg_begin->tag = refalrts::cDataNumber;
-  arg_begin->number_info = init_value_1;
-  arg_end->tag = refalrts::cDataNumber;
-  arg_end->number_info = init_value_2;
+  refalrts::reinit_number(arg_begin, init_value_1);
+  refalrts::reinit_number(arg_end, init_value_2);
   refalrts::splice_to_freelist_open(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
@@ -52,10 +50,8 @@ CalcHashOriginal {
 
   hashlittle2(example, strlen(example), &pc, &pb);
 
-  arg_begin->tag = refalrts::cDataNumber;
-  arg_begin->number_info = pc;
-  arg_end->tag = refalrts::cDataNumber;
-  arg_end->number_info = pb;
+  refalrts::reinit_number(arg_begin, pc);
+  refalrts::reinit_number(arg_end, pb);
   refalrts::splice_to_freelist_open(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
