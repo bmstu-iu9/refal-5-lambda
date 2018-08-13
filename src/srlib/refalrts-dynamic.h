@@ -165,6 +165,7 @@ private:
   std::string m_name;
   const api::stat *m_stat;
   ModuleList m_indirect_references;
+  std::vector<std::string> m_aliases;
 
 public:
   Module(
@@ -206,6 +207,8 @@ public:
   const api::stat *stat() const {
     return m_stat;
   }
+
+  bool has_alias(const std::string& alias) const;
 
 private:
   RefalFunction *lookup_function_aux(const RefalFuncName& name);
@@ -272,6 +275,8 @@ class Domain {
 
     Module *operator[](const api::stat *stat) const;
     RefalFunction *operator[](const RefalFuncName& name) const;
+
+    Module *find_by_alias(const std::string& name) const;
 
     bool load_references(
       Stack *stack, LoadModuleEvent event, void *callback_data

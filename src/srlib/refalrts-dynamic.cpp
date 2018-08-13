@@ -36,6 +36,7 @@ refalrts::Module::Module(
   , m_name(module_name)
   , m_stat(stat)
   , m_indirect_references()
+  , m_aliases()
 {
   assert(event);
 
@@ -51,6 +52,7 @@ refalrts::Module::Module(
     } else {
       success = true;
     }
+    m_aliases.push_back(module_name);
   } catch (LoadModuleError& e) {
     detail.message = e.message.c_str();
     event(cModuleLoadingError_InvalidRasl, &detail, callback_data);
@@ -271,6 +273,11 @@ bool refalrts::Module::resolve_native_functions(
 
   return success;
 }
+
+bool refalrts::Module::has_alias(const std::string& alias) const {
+  return std::find(m_aliases.begin(), m_aliases.end(), alias) != m_aliases.end();
+}
+
 
 //------------------------------------------------------------------------------
 // Загружаемый модуль
@@ -564,6 +571,10 @@ void refalrts::Module::Loader::enumerate_blocks() {
         register_(new RefalCondFunctionNative(table->make_name(read_asciiz())));
         break;
 
+      case cBlockTypeIncorporated:
+        m_module->m_aliases.push_back(read_asciiz());
+        break;
+
       default:
         refalrts_switch_default_violation(type);
     }
@@ -626,6 +637,17 @@ refalrts::Domain::ModuleStorage::operator[](
   return func;
 }
 
+refalrts::Module *
+refalrts::Domain::ModuleStorage::find_by_alias(const std::string& name) const {
+  ModuleList::const_iterator p = m_modules.begin();
+
+  while (p != m_modules.end() && ! (*p)->has_alias(name)) {
+    ++p;
+  }
+
+  return p != m_modules.end() ? *p : 0;
+}
+
 bool refalrts::Domain::ModuleStorage::load_references(
   refalrts::Domain::Stack *stack,
   refalrts::LoadModuleEvent event, void *callback_data
@@ -638,29 +660,36 @@ bool refalrts::Domain::ModuleStorage::load_references(
     p != current->references().end();
     ++p
   ) {
-    std::string real_name_ref;
-    const api::stat *ref_stat =
-      m_domain->lookup_module_by_name(p->first, real_name_ref);
-    if (! ref_stat) {
-      ModuleLoadingErrorDetail detail;
-      detail.message = p->first.c_str();
-      event(cModuleLoadingError_ModuleNotFound, &detail, callback_data);
-      success = false;
-      continue;
+    Module *ref_module = m_domain->m_storage.find_by_alias(p->first);
+    if (! ref_module) {
+      ref_module = find_by_alias(p->first);
     }
 
-    Module *ref_module = find_known(*stack, ref_stat);
-    if (ref_module != 0) {
-      api::stat_destroy(ref_stat);
-    } else {
-      bool load_success = true;
-      ref_module = new Module(
-        m_domain, real_name_ref, ref_stat, load_success, event, callback_data
-      );
-      success = success && load_success;
-      Stack new_stack(ref_stat, ref_module, stack);
-      bool ref_success = load_references(&new_stack, event, callback_data);
-      success = success && ref_success;
+    if (! ref_module) {
+      std::string real_name_ref;
+      const api::stat *ref_stat =
+        m_domain->lookup_module_by_name(p->first, real_name_ref);
+      if (! ref_stat) {
+        ModuleLoadingErrorDetail detail;
+        detail.message = p->first.c_str();
+        event(cModuleLoadingError_ModuleNotFound, &detail, callback_data);
+        success = false;
+        continue;
+      }
+
+      ref_module = find_known(*stack, ref_stat);
+      if (ref_module != 0) {
+        api::stat_destroy(ref_stat);
+      } else {
+        bool load_success = true;
+        ref_module = new Module(
+          m_domain, real_name_ref, ref_stat, load_success, event, callback_data
+        );
+        success = success && load_success;
+        Stack new_stack(ref_stat, ref_module, stack);
+        bool ref_success = load_references(&new_stack, event, callback_data);
+        success = success && ref_success;
+      }
     }
     p->second = ref_module;
   }
@@ -778,6 +807,12 @@ refalrts::Domain::load_module(
   assert(event);
   // assert(this == vm->domain());
 
+  Module *new_module = m_storage.find_by_alias(name);
+  if (new_module) {
+    // TODO: счётчик ссылок
+    return new_module;
+  }
+
   std::string real_name;
   const refalrts::api::stat *module_stat = lookup_module_by_name(name, real_name);
 
@@ -788,7 +823,7 @@ refalrts::Domain::load_module(
     return 0;
   }
 
-  Module *new_module = m_storage[module_stat];
+  new_module = m_storage[module_stat];
   if (new_module) {
     // TODO: счётчик ссылок
     return new_module;

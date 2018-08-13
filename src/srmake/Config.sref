@@ -22,6 +22,7 @@ $ENTRY Config-Create {
         (#TargetMode #DefaultEXE)
         (#Prelude /* пусто */)
         (#Runtime /* пусто */)
+        (#Incorporateds /* пусто */)
       ];
 }
 
@@ -274,4 +275,24 @@ $ENTRY Config-AddRuntimeFile {
   [Config e.Params-B (#Runtime e.Files) e.Params-E] e.NewFile
     = #Success
       [Config e.Params-B (#Runtime e.Files (e.NewFile)) e.Params-E];
+}
+
+/**
+  <Config-GetIncorporateds t.Config>
+    == (e.LibName)*
+*/
+$ENTRY Config-GetIncorporateds {
+  [Config e.Params-B (#Incorporateds e.LibNames) e.Params-E] = e.LibNames;
+}
+
+/**
+  <Config-AddIncorporated t.Config e.LibName>
+    = #Success t.Config
+*/
+$ENTRY Config-AddIncorporated {
+  [Config e.Params-B (#Incorporateds e.LibNames) e.Params-E] e.NewLibName
+    = #Success
+      [Config
+        e.Params-B (#Incorporateds e.LibNames (e.NewLibName)) e.Params-E
+      ];
 }

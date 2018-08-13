@@ -11,7 +11,7 @@ $EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
   Config-SetTargetSuffix, Config-SetSearchFolder, Config-SetPrefix,
   Config-AddReference, Config-SetTargetMode, Config-AddIncorporated,
   Config-SetChmodXCommand, Config-SetPrelude, Config-SetR5Mode,
-  Config-SetLogFile, Config-SetTreeOptCycles;
+  Config-SetLogFile, Config-SetTreeOptCycles, Config-SetIncorporated;
 
 /**
   <ParseCommandLine e.Arguments>
@@ -54,6 +54,7 @@ $ENTRY ParseCommandLine {
           (#ExtendedMode #None ('extended'))
           (#Log #Required ('log'))
           (#TreeOptCycles #Required ('opt-tree-cycles'))
+          (#Incorporated #Required ('incorporated'))
         )
         e.Arguments
       >
@@ -173,6 +174,11 @@ $ENTRY ParseCommandLine {
             (t.Config e.Errors) (#TreeOptCycles s.Num e.Cycles)
               = <Update
                   t.Config (e.Errors) Config-SetTreeOptCycles s.Num e.Cycles
+                >;
+
+            (t.Config e.Errors) (#Incorporated s.Num e.LibName)
+              = <Update
+                  t.Config (e.Errors) Config-AddIncorporated s.Num e.LibName
                 >;
 
             (t.Config e.Errors) t.Option

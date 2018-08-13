@@ -25,7 +25,8 @@ $EXTERN
   Config-GetReferences,
   Config-GetPrelude,
   Config-GetTargetMode,
-  Config-GetTargetFileName;
+  Config-GetTargetFileName,
+  Config-GetIncorporateds;
 
 $ENTRY Go { = <PrintVersion 'SRMake'> <Main <ArgList>>; }
 
@@ -107,6 +108,7 @@ RunSrefCompiler {
     = <MakeSearchFolderFlags t.Config> : e.SearchFolderFlags
     = <GetPrefix t.Config> : e.Prefix
     = <Config-GetReferences t.Config> : e.References
+    = <Config-GetIncorporateds t.Config> : e.IncorporatedLibs
     = <Config-GetPrelude t.Config> : e.Prelude
     = <System
         e.SrefCompiler
@@ -122,6 +124,12 @@ RunSrefCompiler {
             (e.Reference) = ' --reference="' e.Reference '"';
           }
           e.References
+        >
+        <Map
+          {
+            (e.LibName) = ' --incorporated="' e.LibName '"';
+          }
+          e.IncorporatedLibs
         >
         <Map
           {

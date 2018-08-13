@@ -1,0 +1,11 @@
+*$FROM Library
+$EXTERN LoadModule, UnloadModule;
+
+$ENTRY Go {
+  = <LoadModule 'module'> : Success t.Handle
+  = <LoadModule 'alias'> : Success t.Handle
+  = <LoadModule 'not-exist.rasl-module'> : Fails
+  = <Print <Mu Fab 'Abra'>> : 'Bbrb'
+  = <UnloadModule t.Handle> : /* пусто */
+  = /* пусто */;
+}

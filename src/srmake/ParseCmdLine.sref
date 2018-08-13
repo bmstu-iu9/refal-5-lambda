@@ -18,7 +18,8 @@ $EXTERN
   Config-SetTargetMode,
   Config-SetPrelude,
   Config-AddRuntimeFile,
-  Config-SetSourceFile;
+  Config-SetSourceFile,
+  Config-AddIncorporated;
 
 /**
   <ParseCommandLine e.Arguments>
@@ -49,6 +50,7 @@ $ENTRY ParseCommandLine {
           (#TargetMode-C #None 'C' ('compile-only'))
           (#Prelude #Required ('prelude'))
           (#Runtime #Required ('runtime'))
+          (#Incorporated #Required ('incorporated'))
         )
         e.Arguments
       >
@@ -126,6 +128,11 @@ $ENTRY ParseCommandLine {
 
             (t.Config e.Errors) (#Runtime s.Num e.File)
               = <Update t.Config (e.Errors) Config-AddRuntimeFile s.Num e.File>;
+
+            (t.Config e.Errors) (#Incorporated s.Num e.LibName)
+              = <Update
+                  t.Config (e.Errors) Config-AddIncorporated s.Num e.LibName
+                >;
 
             (t.Config e.Errors) (#FILE s.Num e.SourceFile)
               = <Update

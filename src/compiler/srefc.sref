@@ -12,7 +12,7 @@ $EXTERN Config-GetLogFile,
   Config-GetTargetFileName, Config-SetTargetFileName, Config-GetErrorFile,
   Config-GetCppCompiler, Config-GetGrammarCheck, Config-GetTargetSuffix,
   Config-GetSearchFolders, Config-GetTargetMode, Config-GetPrefix,
-  Config-GetChmodXCommand, Config-GetReferences;
+  Config-GetChmodXCommand, Config-GetReferences, Config-GetIncorporateds;
 
 //FROM Log
 $EXTERN Log-Init, Log-Final;
@@ -28,7 +28,7 @@ $EXTERN FindFiles;
 $EXTERN CompileFile, GrammarCheck;
 
 //FROM Generator-RASL
-$EXTERN PutBlockReference;
+$EXTERN PutBlockReference, PutBlockIncorporated;
 
 
 $ENTRY Go {
@@ -573,10 +573,12 @@ Link-Aux {
     = <CalcTargetFileName s.TargetMode t.Config e.Files> : e.TargetFileName
     = e.TargetFileName '.partial' : e.IntermediateName
     = <Config-GetReferences t.Config> : e.References
+    = <Config-GetIncorporateds t.Config> : e.IncorporatedLibNames
     = <PreLinkCleanupTemporary t.Config e.IntermediateName>
       <s.FnCreatePrefix e.IntermediateName>
       <AppendRASLToBinary (e.IntermediateName) e.Files>
       <AppendReferencesToBinary (e.IntermediateName) e.References>
+      <AppendIncorporatedToBinary (e.IntermediateName) e.IncorporatedLibNames>
       <PostLinkRename t.Config (e.IntermediateName) (e.TargetFileName)>;
 }
 
@@ -647,13 +649,22 @@ AppendRASLToBinary {
 
 AppendReferencesToBinary {
   (e.BinaryName) e.References
+    = <AppendSimpleBlock PutBlockReference (e.BinaryName) e.References>;
+}
+
+AppendIncorporatedToBinary {
+  (e.BinaryName) e.LibNames
+    = <AppendSimpleBlock PutBlockIncorporated (e.BinaryName) e.LibNames>;
+}
+
+AppendSimpleBlock {
+  s.FnAdder (e.BinaryName) e.BlockItems
     = <FOpen ('ab') e.BinaryName> : s.FileHandle
     = <Map
         {
-          (e.Reference)
-            = <FWriteBytes s.FileHandle <PutBlockReference e.Reference>>;
+          (e.BlockItem) = <FWriteBytes s.FileHandle <s.FnAdder e.BlockItem>>;
         }
-        e.References
+        e.BlockItems
       >
       <FClose s.FileHandle>;
 }

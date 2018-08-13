@@ -143,4 +143,5 @@ $ENTRY BlockTypeNumber{
   #Reference = 7;
   #ConditionRasl = 8;
   #ConditionNative = 9;
+  #Incorporated = 10;
 }
