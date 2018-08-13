@@ -2420,7 +2420,6 @@ $ENTRY Exit {
   }
 
   refalrts::set_return_code(vm, sign * static_cast<int>(pretcode->number_info));
-  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cExit;
 %%
 }
