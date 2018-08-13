@@ -278,8 +278,10 @@ class Domain {
 
     Module *find_by_alias(const std::string& name) const;
 
-    bool load_references(
-      Stack *stack, LoadModuleEvent event, void *callback_data
+    Module *load_module(
+      const std::string& name, Stack *stack,
+      LoadModuleEvent event, void *callback_data,
+      refalrts::NativeModule *main_module = 0
     );
     bool find_unresolved_externals(LoadModuleEvent event, void *callback_data);
 
@@ -289,7 +291,7 @@ class Domain {
     void unload_module(Module *module);
 
   private:
-    Module *find_known(const Stack& stack, const api::stat *stat) const;
+    Module *find_known(const Stack *stack, const api::stat *stat) const;
   };
 
   friend class ModuleStorage;

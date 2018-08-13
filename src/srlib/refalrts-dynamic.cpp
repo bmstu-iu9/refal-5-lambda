@@ -648,54 +648,56 @@ refalrts::Domain::ModuleStorage::find_by_alias(const std::string& name) const {
   return p != m_modules.end() ? *p : 0;
 }
 
-bool refalrts::Domain::ModuleStorage::load_references(
-  refalrts::Domain::Stack *stack,
-  refalrts::LoadModuleEvent event, void *callback_data
+refalrts::Module *refalrts::Domain::ModuleStorage::load_module(
+  const std::string& name, refalrts::Domain::Stack *stack,
+  LoadModuleEvent event, void *callback_data,
+  refalrts::NativeModule *main_module
 ) {
-  bool success = true;
-  Module *current = stack->module;
+  Module *module = m_domain->m_storage.find_by_alias(name);
+  if (! module) {
+    module = find_by_alias(name);
+  }
 
+  if (module) {
+    return module;
+  }
+
+  std::string real_name;
+  const refalrts::api::stat *stat =
+    m_domain->lookup_module_by_name(name, real_name);
+
+  if (! stat) {
+    ModuleLoadingErrorDetail detail;
+    detail.message = name.c_str();
+    event(cModuleLoadingError_ModuleNotFound, &detail, callback_data);
+    return 0;
+  }
+
+  module = find_known(stack, stat);
+  if (module) {
+    api::stat_destroy(stat);
+    return module;
+  }
+
+  bool load_success = true;
+  module = new Module(
+    m_domain, real_name, stat, load_success, event, callback_data, main_module
+  );
+
+  Stack substack(stat, module, stack);
+  bool ref_success = true;
   for (
-    Module::ReferenceMap::iterator p = current->references().begin();
-    p != current->references().end();
+    Module::ReferenceMap::iterator p = module->references().begin();
+    p != module->references().end();
     ++p
   ) {
-    Module *ref_module = m_domain->m_storage.find_by_alias(p->first);
-    if (! ref_module) {
-      ref_module = find_by_alias(p->first);
-    }
-
-    if (! ref_module) {
-      std::string real_name_ref;
-      const api::stat *ref_stat =
-        m_domain->lookup_module_by_name(p->first, real_name_ref);
-      if (! ref_stat) {
-        ModuleLoadingErrorDetail detail;
-        detail.message = p->first.c_str();
-        event(cModuleLoadingError_ModuleNotFound, &detail, callback_data);
-        success = false;
-        continue;
-      }
-
-      ref_module = find_known(*stack, ref_stat);
-      if (ref_module != 0) {
-        api::stat_destroy(ref_stat);
-      } else {
-        bool load_success = true;
-        ref_module = new Module(
-          m_domain, real_name_ref, ref_stat, load_success, event, callback_data
-        );
-        success = success && load_success;
-        Stack new_stack(ref_stat, ref_module, stack);
-        bool ref_success = load_references(&new_stack, event, callback_data);
-        success = success && ref_success;
-      }
-    }
+    Module *ref_module = load_module(p->first, &substack, event, callback_data);
+    ref_success = ref_success && ref_module != 0;
     p->second = ref_module;
   }
 
-  m_modules.push_back(current);
-  return success;
+  m_modules.push_back(module);
+  return (load_success && ref_success) ? module : 0;
 }
 
 bool refalrts::Domain::ModuleStorage::find_unresolved_externals(
@@ -738,13 +740,13 @@ void refalrts::Domain::ModuleStorage::unload_module(refalrts::Module *module) {
 
 refalrts::Module *
 refalrts::Domain::ModuleStorage::find_known(
-  const refalrts::Domain::Stack& stack, const refalrts::api::stat *stat
+  const refalrts::Domain::Stack *stack, const refalrts::api::stat *stat
 ) const {
   Module *result;
   return
-    (result = m_domain->m_storage[stat]) != 0 ? result :
-    (result = (*this)[stat]) != 0 ? result :
-    (result = stack.contain(stat)) != 0 ? result :
+    (result = m_domain->m_storage[stat], result != 0) ? result :
+    (result = (*this)[stat], result != 0) ? result :
+    stack != 0 && (result = stack->contain(stat), result != 0) ? result :
     0;
 }
 
@@ -769,31 +771,14 @@ bool refalrts::Domain::load_native_module(
     return false;
   }
 
-  const refalrts::api::stat *module_stat = api::stat_create(module_name);
-
-  if (! module_stat) {
-    ModuleLoadingErrorDetail detail;
-    detail.message = module_name;
-    event(cModuleLoadingError_ModuleNotFound, &detail, callback_data);
-    return false;
-  }
-
-  Module *new_module = m_storage[module_stat];
-  if (new_module) {
-    // TODO: счётчик ссылок
-    return new_module;
-  }
-
-  new_module = new Module(
-    this, module_name, module_stat, success, event, callback_data, main_module
-  );
-
-  Stack stack(module_stat, new_module, 0);
   ModuleStorage new_storage(this);
-  bool success_references = new_storage.load_references(
-    &stack, event, callback_data
+  Module *new_module = new_storage.load_module(
+    module_name, 0, event, callback_data, main_module
   );
-  success = success && success_references;
+
+  // TODO: счётчик ссылок new_module
+
+  success = success && (new_module != 0);
 
   if (success) {
     success = new_storage.find_unresolved_externals(event, callback_data);
@@ -813,47 +798,18 @@ refalrts::Domain::load_module(
   assert(event);
   // assert(this == vm->domain());
 
-  Module *new_module = m_storage.find_by_alias(name);
-  if (new_module) {
-    // TODO: счётчик ссылок
-    return new_module;
-  }
-
-  std::string real_name;
-  const refalrts::api::stat *module_stat = lookup_module_by_name(name, real_name);
-
-  if (! module_stat) {
-    ModuleLoadingErrorDetail detail;
-    detail.message = name;
-    event(cModuleLoadingError_ModuleNotFound, &detail, callback_data);
-    return 0;
-  }
-
-  new_module = m_storage[module_stat];
-  if (new_module) {
-    // TODO: счётчик ссылок
-    return new_module;
-  }
-
-  bool success;
-  new_module = new Module(
-    this, real_name, module_stat, success, event, callback_data
-  );
-
-  Stack stack(module_stat, new_module, 0);
   ModuleStorage new_storage(this);
-  bool success_references = new_storage.load_references(
-    &stack, event, callback_data
-  );
-  success = success && success_references;
+  Module *new_module = new_storage.load_module(name, 0, event, callback_data);
+
+  // TODO: счётчик ссылок new_module
+
+  bool success = new_module != 0;
 
   if (success) {
     success = new_storage.find_unresolved_externals(event, callback_data);
     if (success) {
       m_storage.splice(new_storage);
     }
-  } else {
-    new_module = 0;
   }
 
   return new_module;
