@@ -778,7 +778,13 @@ bool refalrts::Domain::load_native_module(
     return false;
   }
 
-  Module *new_module = new Module(
+  Module *new_module = m_storage[module_stat];
+  if (new_module) {
+    // TODO: счётчик ссылок
+    return new_module;
+  }
+
+  new_module = new Module(
     this, module_name, module_stat, success, event, callback_data, main_module
   );
 
