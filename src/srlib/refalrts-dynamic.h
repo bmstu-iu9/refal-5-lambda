@@ -167,6 +167,7 @@ private:
   ModuleList m_indirect_references;
   std::vector<std::string> m_aliases;
   ModuleRepresentant *m_representant;
+  unsigned m_refcounter;
 
 public:
   Module(
@@ -214,6 +215,16 @@ public:
   ModuleRepresentant *representant() const {
     return m_representant;
   }
+
+  unsigned refcounter() const {
+    return m_refcounter;
+  }
+
+  void add_ref() {
+    ++m_refcounter;
+  }
+
+  void del_ref();
 
 private:
   RefalFunction *lookup_function_aux(const RefalFuncName& name);
@@ -297,6 +308,7 @@ class Domain {
 
   private:
     Module *find_known(const Stack *stack, const api::stat *stat) const;
+    void gc();
   };
 
   friend class ModuleStorage;

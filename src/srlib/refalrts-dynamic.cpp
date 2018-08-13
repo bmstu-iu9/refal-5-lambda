@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <errno.h>
 #include <new>
+#include <set>
 #include <utility>
 
 #include "refalrts-dynamic.h"
@@ -38,6 +39,7 @@ refalrts::Module::Module(
   , m_indirect_references()
   , m_aliases()
   , m_representant(new ModuleRepresentant(module_name, this))
+  , m_refcounter(0)
 {
   assert(event);
 
@@ -279,6 +281,11 @@ bool refalrts::Module::resolve_native_functions(
 
 bool refalrts::Module::has_alias(const std::string& alias) const {
   return std::find(m_aliases.begin(), m_aliases.end(), alias) != m_aliases.end();
+}
+
+inline void refalrts::Module::del_ref() {
+  assert(m_refcounter > 0);
+  --m_refcounter;
 }
 
 
@@ -732,13 +739,8 @@ void refalrts::Domain::ModuleStorage::splice(
 
 void refalrts::Domain::ModuleStorage::unload_module(refalrts::Module *module) {
   assert(m_domain == module->domain());
-
-  ModuleList::iterator list_pos =
-    std::find(m_modules.begin(), m_modules.end(), module);
-  assert(list_pos != m_modules.end());
-  m_modules.erase(list_pos);
-
-  delete module;
+  module->del_ref();
+  gc();
 }
 
 refalrts::Module *
@@ -751,6 +753,65 @@ refalrts::Domain::ModuleStorage::find_known(
     (result = (*this)[stat], result != 0) ? result :
     stack != 0 && (result = stack->contain(stat), result != 0) ? result :
     0;
+}
+
+namespace {
+
+struct InSet {
+  std::set<refalrts::Module*> *m_set;
+
+  InSet(std::set<refalrts::Module*> *set)
+    : m_set(set)
+  {
+    /* пусто */
+  }
+
+  bool operator()(refalrts::Module* module) const {
+    return m_set->count(module);
+  }
+};
+
+}  // unnamed namespace
+
+void refalrts::Domain::ModuleStorage::gc() {
+  // Сборщик мусора Бейкера,
+  // Ахо, Лам, Сети, Ульман, «Книга дракона», 2-е изд., 2008
+  // Страница 582, раздел 7.6.3
+  // Множества Free и Scanned оказались не нужны
+
+  std::set<Module*> unscanned, unreached;
+
+  for (ModuleList::iterator p = m_modules.begin(); p != m_modules.end(); ++p) {
+    if ((*p)->refcounter() > 0) {
+      unscanned.insert(*p);
+    } else {
+      unreached.insert(*p);
+    }
+  }
+
+  while (! unscanned.empty()) {
+    Module *next = *unscanned.begin();
+    unscanned.erase(next);
+
+    for (
+      Module::ReferenceMap::iterator p = next->references().begin();
+      p != next->references().end();
+      ++p
+    ) {
+      if (unreached.count(p->second)) {
+        unreached.erase(p->second);
+        unscanned.insert(p->second);
+      }
+    }
+  }
+
+  // Написать с
+  // std::bind1st(std::mem_fun(&std::set<Module*>::count), &unreached)
+  // не получилось
+  ModuleList::iterator end = std::remove_if(
+    m_modules.begin(), m_modules.end(), InSet(&unreached)
+  );
+  m_modules.erase(end, m_modules.end());
 }
 
 refalrts::Domain::Domain()
@@ -779,7 +840,9 @@ bool refalrts::Domain::load_native_module(
     module_name, 0, event, callback_data, main_module
   );
 
-  // TODO: счётчик ссылок new_module
+  if (new_module) {
+    new_module->add_ref();
+  }
 
   success = success && (new_module != 0);
 
@@ -804,7 +867,9 @@ refalrts::Domain::load_module(
   ModuleStorage new_storage(this);
   Module *new_module = new_storage.load_module(name, 0, event, callback_data);
 
-  // TODO: счётчик ссылок new_module
+  if (new_module) {
+    new_module->add_ref();
+  }
 
   bool success = new_module != 0;
 

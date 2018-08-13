@@ -8,5 +8,7 @@ $ENTRY Go {
   = <LoadModule 'not-exist.rasl-module'> : Fails
   = <Print <Mu Fab 'Abra'>> : 'Bbrb'
   = <UnloadModule t.Handle> : /* пусто */
+  = <UnloadModule t.Handle> : /* пусто */
+  = <UnloadModule t.Handle> : /* пусто */
   = /* пусто */;
 }
