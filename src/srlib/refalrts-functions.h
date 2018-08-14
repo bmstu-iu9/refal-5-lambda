@@ -60,11 +60,10 @@ struct RefalNativeFunction: public RefalFunction {
 };
 
 struct RefalSwap: public RefalFunction {
-  Iter head;
-  Iter next_head;
+  Iter left_call;
 
   RefalSwap(RefalFuncName name)
-    : RefalFunction(run, name), head(), next_head()
+    : RefalFunction(run, name), left_call()
   {
     /* пусто */
   }

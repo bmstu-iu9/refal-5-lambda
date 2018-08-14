@@ -23,11 +23,11 @@ class Module;
 class VM {
   struct StateRefalMachine;
 
-  NodePtr m_left_swap_ptr;
   int m_ret_code;
   char **m_argv;
   unsigned int m_argc;
   Node m_first_marker;
+  Node m_swap_hedge;
   Node m_last_marker;
   Iter m_error_begin;
   Iter m_error_end;
@@ -176,8 +176,6 @@ public:
   FILE* dump_stream();
 
   void free_view_field();
-
-  Iter initialize_swap_head(refalrts::Iter head);
 
   static void print_seq(
     FILE *output, refalrts::Iter begin, refalrts::Iter end,
@@ -1047,12 +1045,12 @@ public:
 };
 
 inline VM::VM(Allocator *allocator, Profiler *profiler, Domain *domain)
-  : m_left_swap_ptr(& m_last_marker)
-  , m_ret_code(0)
+  : m_ret_code(0)
   , m_argv(0)
   , m_argc(0)
-  , m_first_marker(0, & m_last_marker)
-  , m_last_marker(& m_first_marker, 0)
+  , m_first_marker(0, & m_swap_hedge)
+  , m_swap_hedge(& m_first_marker, & m_last_marker)
+  , m_last_marker(& m_swap_hedge, 0)
   , m_error_begin(& m_first_marker)
   , m_error_end(& m_last_marker)
   , m_step_counter(0)
@@ -1065,7 +1063,7 @@ inline VM::VM(Allocator *allocator, Profiler *profiler, Domain *domain)
   , m_domain(domain)
   , m_module(0)
 {
-  /* пусто */
+  m_swap_hedge.tag = cDataSwapHead;
 }
 
 }  // namespace refalrts

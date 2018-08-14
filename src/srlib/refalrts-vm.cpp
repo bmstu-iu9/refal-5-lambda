@@ -18,23 +18,6 @@
 
 
 //------------------------------------------------------------------------------
-// Инициализация головного узла статического ящика
-//------------------------------------------------------------------------------
-
-refalrts::Iter refalrts::VM::initialize_swap_head(refalrts::Iter head) {
-  assert(cDataFunction == head->tag);
-  assert(RefalSwap::run == head->function_info->rasl);
-
-  RefalSwap *swap = static_cast<RefalSwap*>(head->function_info);
-  splice_elem(m_left_swap_ptr, head);
-  head->tag = cDataSwapHead;
-  swap->next_head = m_left_swap_ptr;
-
-  m_left_swap_ptr = head;
-  return m_left_swap_ptr;
-}
-
-//------------------------------------------------------------------------------
 // Прочие операции
 //------------------------------------------------------------------------------
 
@@ -173,7 +156,7 @@ refalrts::FnResult refalrts::VM::execute_zero_arity_function(
   FunctionTableItem entry_point[1] = { FunctionTableItem(func) };
 
   if (! pos) {
-    pos = & m_last_marker;
+    pos = & m_swap_hedge;
   }
 
   // Формируем вызов <func /*пусто*/> в поле зрения
@@ -300,14 +283,8 @@ void refalrts::VM::print_seq(
             continue;
 
           case refalrts::cDataSwapHead:
-            {
-              const RefalFuncName& name = begin->function_info->name;
-              fprintf(
-                output, "\n\n*Swap %s#%u:%u:\n",
-                name.name, name.cookie1, name.cookie2
-              );
-              refalrts::move_left(begin, end);
-            }
+            fprintf(output, "%c[SWAP HEDGE]", space);
+            refalrts::move_left(begin, end);
             continue;
 
           case refalrts::cDataChar:
@@ -630,7 +607,6 @@ JUMP_FROM_SCALE:
     Iter &be = context[bracket + 1];
     Iter &elem = context[bracket];
     Iter &save_pos = context[val1];
-    Iter &swap_head = save_pos;
 
     // Содержимое скобок
     Iter &res_b = context[val2];
@@ -1483,36 +1459,31 @@ JUMP_FROM_SCALE:
         MATCH_FAIL;
 
       case icFetchSwapHead:
-        {
-          assert(RefalSwap::run == elem->function_info->rasl);
-          assert(elem->function_info == callee);
-          RefalSwap *swap = static_cast<RefalSwap*>(callee);
-
-          if (! swap->head) {
-            swap->head = initialize_swap_head(elem);
-          }
-          swap_head = swap->head;
-        }
-        break;
+        refalrts_switch_default_violation(rasl->cmd);
 
       case icFetchSwapInfoBounds:
         {
-          assert(cDataSwapHead == swap_head->tag);
+          assert(RefalSwap::run == callee->rasl);
+          RefalSwap *swap = dynamic_cast<RefalSwap*>(callee);
+          assert(swap != 0);
 
-          RefalSwap *swap = static_cast<RefalSwap*>(swap_head->function_info);
-          res_b = swap_head;
-          res_e = swap->next_head;
-          move_left(res_b, res_e);
-          move_right(res_b, res_e);
+          if (swap->left_call) {
+            res_b = swap->left_call;
+            res_e = res_b->link_info;
+          } else {
+            MATCH_FAIL;
+          }
         }
         break;
 
       case icSwapSave:
         {
-          assert(cDataSwapHead == swap_head->tag);
+          assert(RefalSwap::run == callee->rasl);
+          RefalSwap *swap = dynamic_cast<RefalSwap*>(callee);
+          assert(swap != 0);
 
-          RefalSwap *swap = static_cast<RefalSwap*>(swap_head->function_info);
-          list_splice(swap->next_head, bb, be);
+          list_splice(m_swap_hedge.next, bb, be);
+          swap->left_call = bb;
         }
         break;
 
