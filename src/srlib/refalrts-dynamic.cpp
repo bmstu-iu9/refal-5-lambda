@@ -12,6 +12,8 @@
 #include "refalrts-functions.h"
 //FROM refalrts-platform-specific
 #include "refalrts-platform-specific.h"
+//FROM refalrts-vm
+#include "refalrts-vm.h"
 
 
 //==============================================================================
@@ -40,6 +42,7 @@ refalrts::Module::Module(
   , m_aliases()
   , m_representant(new ModuleRepresentant(module_name, this))
   , m_refcounter(0)
+  , m_initialized_scopes()
 {
   assert(event);
 
@@ -286,6 +289,48 @@ bool refalrts::Module::has_alias(const std::string& alias) const {
 inline void refalrts::Module::del_ref() {
   assert(m_refcounter > 0);
   --m_refcounter;
+}
+
+void refalrts::Module::initialize(
+  refalrts::VM *vm, refalrts::Iter pos, refalrts::FnResult& result
+) {
+  result = cSuccess;
+  for (
+    std::list<ConstTable>::iterator p = m_tables.begin();
+    p != m_tables.end() && result == cSuccess;
+    ++p
+  ) {
+    UInt32 cookie1 = p->cookie1;
+    UInt32 cookie2 = p->cookie2;
+    RefalFuncName init_name("INIT", cookie1, cookie2);
+    FuncsMap::iterator pfunc = m_funcs_table.find(init_name);
+    if (pfunc != m_funcs_table.end()) {
+      result = vm->execute_zero_arity_function(pfunc->second, pos);
+    }
+
+    if (result == cSuccess) {
+      m_initialized_scopes.push_front(std::make_pair(cookie1, cookie2));
+    }
+  }
+}
+
+void refalrts::Module::finalize(
+  refalrts::VM *vm, refalrts::Iter pos, refalrts::FnResult& result
+) {
+  result = cSuccess;
+  while (! m_initialized_scopes.empty() && result == cSuccess) {
+    UInt32 cookie1 = m_initialized_scopes.front().first;
+    UInt32 cookie2 = m_initialized_scopes.front().second;
+    RefalFuncName final_name("FINAL", cookie1, cookie2);
+    FuncsMap::iterator pfunc = m_funcs_table.find(final_name);
+    if (pfunc != m_funcs_table.end()) {
+      result = vm->execute_zero_arity_function(pfunc->second, pos);
+    }
+
+    if (result == cSuccess) {
+      m_initialized_scopes.pop_front();
+    }
+  }
 }
 
 
@@ -614,7 +659,10 @@ refalrts::Domain::ModuleStorage::ModuleStorage(refalrts::Domain *domain)
 }
 
 refalrts::Domain::ModuleStorage::~ModuleStorage() {
-  unload();
+  while (! m_modules.empty()) {
+    delete m_modules.front();
+    m_modules.pop_front();
+  }
 }
 
 refalrts::Module *
@@ -721,26 +769,54 @@ bool refalrts::Domain::ModuleStorage::find_unresolved_externals(
   return success;
 }
 
-void refalrts::Domain::ModuleStorage::unload() {
+void refalrts::Domain::ModuleStorage::unload(
+  refalrts::VM *vm, refalrts::FnResult& result
+) {
+  result = cSuccess;
+  for (
+    ModuleList::reverse_iterator p = m_modules.rbegin();
+    p != m_modules.rend();
+    ++p
+  ) {
+    (*p)->finalize(vm, 0, result);
+  }
+
   while (! m_modules.empty()) {
     delete m_modules.front();
     m_modules.pop_front();
   }
 }
 
-void refalrts::Domain::ModuleStorage::splice(
-  refalrts::Domain::ModuleStorage& other
+void refalrts::Domain::ModuleStorage::splice_and_init(
+  refalrts::VM *vm, refalrts::Iter pos,
+  refalrts::Domain::ModuleStorage& other, refalrts::FnResult& result
 ) {
+  Module *first_new = other.m_modules.front();
+
   m_modules.splice(
     m_modules.end(),
     other.m_modules, other.m_modules.begin(), other.m_modules.end()
   );
+
+  ModuleList::iterator p = m_modules.begin();
+  while (p != m_modules.end() && *p != first_new) {
+    ++p;
+  }
+
+  result = cSuccess;
+  while (p != m_modules.end() && result == cSuccess) {
+    (*p)->initialize(vm, pos, result);
+    ++p;
+  }
 }
 
-void refalrts::Domain::ModuleStorage::unload_module(refalrts::Module *module) {
+void refalrts::Domain::ModuleStorage::unload_module(
+  refalrts::VM *vm, refalrts::Iter pos, refalrts::Module *module,
+  refalrts::FnResult& result
+) {
   assert(m_domain == module->domain());
   module->del_ref();
-  gc();
+  gc(vm, pos, result);
 }
 
 refalrts::Module *
@@ -773,7 +849,9 @@ struct InSet {
 
 }  // unnamed namespace
 
-void refalrts::Domain::ModuleStorage::gc() {
+void refalrts::Domain::ModuleStorage::gc(
+  refalrts::VM *vm, refalrts::Iter pos, refalrts::FnResult& result
+) {
   // Сборщик мусора Бейкера,
   // Ахо, Лам, Сети, Ульман, «Книга дракона», 2-е изд., 2008
   // Страница 582, раздел 7.6.3
@@ -805,6 +883,17 @@ void refalrts::Domain::ModuleStorage::gc() {
     }
   }
 
+  result = cSuccess;
+  for (
+    ModuleList::reverse_iterator p = m_modules.rbegin();
+    p != m_modules.rend();
+    ++p
+  ) {
+    if (unreached.count(*p)) {
+      (*p)->finalize(vm, pos, result);
+    }
+  }
+
   // Написать с
   // std::bind1st(std::mem_fun(&std::set<Module*>::count), &unreached)
   // не получилось
@@ -828,14 +917,11 @@ bool refalrts::Domain::load_native_module(
   refalrts::LoadModuleEvent event, void *callback_data,
   refalrts::FnResult& result
 ) {
-  //TODO unused
-  (void) vm;
-
+  assert(this == vm->domain());
   DangerousRAII dang(&m_dangerous);
 
   char module_name[api::cModuleNameBufferLen];
-  bool success = api::get_main_module_name(module_name);
-  if (! success) {
+  if (! api::get_main_module_name(module_name)) {
     ModuleLoadingErrorDetail detail;
     event(cModuleLoadingError_CantObtainModuleName, &detail, callback_data);
 
@@ -847,21 +933,9 @@ bool refalrts::Domain::load_native_module(
     module_name, 0, event, callback_data, main_module
   );
 
-  if (new_module) {
-    new_module->add_ref();
-  }
-
-  success = success && (new_module != 0);
-
-  if (success) {
-    success = new_storage.find_unresolved_externals(event, callback_data);
-    if (success) {
-      m_storage.splice(new_storage);
-    }
-  }
-
-  result = cSuccess;    // TODO
-  return success;
+  return initialize(
+    vm, 0, new_module, new_storage, event, callback_data, result
+  );
 }
 
 refalrts::Module *
@@ -870,59 +944,72 @@ refalrts::Domain::load_module(
   refalrts::LoadModuleEvent event, void *callback_data,
   refalrts::FnResult& result
 ) {
-  //TODO unused
-  (void) vm;
-  (void) pos;
-
   assert(event);
-  // assert(this == vm->domain());
+  assert(this == vm->domain());
 
   DangerousRAII dang(&m_dangerous);
 
   ModuleStorage new_storage(this);
   Module *new_module = new_storage.load_module(name, 0, event, callback_data);
 
+  if (
+    initialize(vm, pos, new_module, new_storage, event, callback_data, result)
+  ) {
+    return new_module;
+  } else {
+    return 0;
+  }
+}
+
+bool refalrts::Domain::initialize(
+  refalrts::VM *vm, refalrts::Iter pos, refalrts::Module *new_module,
+  refalrts::Domain::ModuleStorage& new_storage,
+  refalrts::LoadModuleEvent event, void *callback_data,
+  refalrts::FnResult& result
+) {
+  result = cSuccess;
   if (new_module) {
     new_module->add_ref();
+  } else {
+    return false;
   }
 
-  bool success = new_module != 0;
-
-  if (success) {
-    success = new_storage.find_unresolved_externals(event, callback_data);
-    if (success) {
-      m_storage.splice(new_storage);
-    }
+  if (! new_storage.find_unresolved_externals(event, callback_data)) {
+    return false;
   }
 
-  result = cSuccess;    // TODO
-  return new_module;
+  m_storage.splice_and_init(vm, pos, new_storage, result);
+  if (result == cSuccess) {
+    return true;
+  }
+
+  FnResult unload_result;
+  unload_module(vm, pos, new_module, unload_result);
+  if (unload_result != cSuccess) {
+    result = unload_result;
+  }
+
+  return false;
 }
 
 void refalrts::Domain::unload_module(
   refalrts::VM *vm, refalrts::Iter pos, refalrts::Module *module,
   refalrts::FnResult& result
 ) {
-  //TODO unused
-  (void) vm;
-  (void) pos;
-
-  //assert(this == vm->domain());
+  assert(this == vm->domain());
+  assert(this == module->domain());
 
   DangerousRAII dang(&m_dangerous);
 
-  m_storage.unload_module(module);
-  result = cSuccess;    // TODO
+  m_storage.unload_module(vm, pos, module, result);
 }
 
 void refalrts::Domain::unload(refalrts::VM *vm, refalrts::FnResult& result) {
-  //TODO unused
-  (void) vm;
+  assert(this == vm->domain());
 
   DangerousRAII dang(&m_dangerous);
-  m_storage.unload();
+  m_storage.unload(vm, result);
   free_idents_table();
-  result = cSuccess;    // TODO
 }
 
 //------------------------------------------------------------------------------

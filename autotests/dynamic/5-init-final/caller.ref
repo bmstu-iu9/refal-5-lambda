@@ -1,0 +1,13 @@
+*$FROM Library
+$EXTERN LoadModule, UnloadModule;
+
+*$REFERENCE swap
+$EXTERN Swap;
+
+$ENTRY Go {
+  = <Print <LoadModule 'module'>> : Success t.Handle
+  = <Print <Swap>> : Init
+  = <Print <UnloadModule t.Handle>> : /* пусто */
+  = <Print <Swap>> : Final
+  = /* пусто */;
+}

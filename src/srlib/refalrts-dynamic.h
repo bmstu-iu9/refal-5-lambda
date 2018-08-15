@@ -168,6 +168,7 @@ private:
   std::vector<std::string> m_aliases;
   ModuleRepresentant *m_representant;
   unsigned m_refcounter;
+  std::list<std::pair<UInt32, UInt32> > m_initialized_scopes;
 
 public:
   Module(
@@ -225,6 +226,9 @@ public:
   }
 
   void del_ref();
+
+  void initialize(VM *vm, Iter pos, FnResult& result);
+  void finalize(VM *vm, Iter pos, FnResult& result);
 
 private:
   RefalFunction *lookup_function_aux(const RefalFuncName& name);
@@ -301,14 +305,16 @@ class Domain {
     );
     bool find_unresolved_externals(LoadModuleEvent event, void *callback_data);
 
-    void unload();
-    void splice(ModuleStorage& other);
+    void unload(VM *vm, FnResult& result);
+    void splice_and_init(
+      VM *vm, Iter pos, ModuleStorage& other, FnResult& result
+    );
 
-    void unload_module(Module *module);
+    void unload_module(VM *vm, Iter pos, Module *module, FnResult& result);
 
   private:
     Module *find_known(const Stack *stack, const api::stat *stat) const;
-    void gc();
+    void gc(VM *vm, Iter pos, FnResult& result);
   };
 
   friend class ModuleStorage;
@@ -374,6 +380,10 @@ public:
   }
 
 private:
+  bool initialize(
+    VM *vm, Iter pos, Module *module, ModuleStorage& new_storage,
+    LoadModuleEvent event, void *callback_data, FnResult& result
+  );
   static const char *not_null(const char *str) {
     return str ? str : "";
   }
