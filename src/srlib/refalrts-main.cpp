@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "refalrts-diagnostic-config.h"
+
 
 //FROM refalrts
 #include "refalrts.h"
