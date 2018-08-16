@@ -463,16 +463,14 @@ void refalrts::VM::make_dump(refalrts::Iter begin, refalrts::Iter end) {
   fprintf(dump_stream(), "VIEW FIELD:\n");
   print_seq(dump_stream(), & m_first_marker, & m_last_marker);
 
-#ifdef DUMP_FREE_LIST
-
-  fprintf(dump_stream(), "\nFREE LIST:\n");
-  print_seq(
-    dump_stream(),
-    m_allocator->first_marker(),
-    m_allocator->last_marker()
-  );
-
-#endif // ifdef DUMP_FREE_LIST
+  if (m_diagnostic_config->dump_free_list) {
+    fprintf(dump_stream(), "\nFREE LIST:\n");
+    print_seq(
+      dump_stream(),
+      m_allocator->first_marker(),
+      m_allocator->last_marker()
+    );
+  }
 
   fprintf(dump_stream(), "\nEnd dump\n");
   fflush(dump_stream());

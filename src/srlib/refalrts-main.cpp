@@ -111,6 +111,9 @@ int main(int argc, char **argv) {
 #ifndef DONT_PRINT_STATISTICS
   diagnostic_config.print_statistics = true;
 #endif // ifndef DONT_PRINT_STATISTICS
+#ifdef DUMP_FREE_LIST
+  diagnostic_config.dump_free_list = true;
+#endif // ifdef DUMP_FREE_LIST
 
   refalrts::Allocator allocator(&diagnostic_config);
   refalrts::Profiler profiler(&diagnostic_config);
