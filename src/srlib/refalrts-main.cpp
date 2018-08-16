@@ -114,22 +114,25 @@ int main(int argc, char **argv) {
 #ifdef DUMP_FREE_LIST
   diagnostic_config.dump_free_list = true;
 #endif // ifdef DUMP_FREE_LIST
+#ifdef ENABLE_DEBUGGER
+  diagnostic_config.enable_debugger = true;
+#endif // ifdef ENABLE_DEBUGGER
 
   refalrts::Allocator allocator(&diagnostic_config);
   refalrts::Profiler profiler(&diagnostic_config);
   refalrts::Domain domain(&diagnostic_config);
   refalrts::VM vm(&allocator, &profiler, &domain, &diagnostic_config);
 
-#ifdef ENABLE_DEBUGGER
-  int debug_arg = refalrts::debugger::find_debugger_flag(argc, argv);
-  if (debug_arg != -1) {
-    for (int i = debug_arg; i < argc; ++i) {
-      argv[i] = argv[i + 1];
+  if (diagnostic_config.enable_debugger) {
+    int debug_arg = refalrts::debugger::find_debugger_flag(argc, argv);
+    if (debug_arg != -1) {
+      for (int i = debug_arg; i < argc; ++i) {
+        argv[i] = argv[i + 1];
+      }
+      --argc;
+      vm.set_debugger_factory(refalrts::debugger::RefalDebugger::create);
     }
-    --argc;
-    vm.set_debugger_factory(refalrts::debugger::RefalDebugger::create);
   }
-#endif // ifdef ENABLE_DEBUGGER
 
   vm.set_args(argc, argv);
 
