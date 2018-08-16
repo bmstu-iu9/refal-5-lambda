@@ -2646,8 +2646,7 @@ $ENTRY Explode_Ext {
 %%
 namespace {
 
-// Пока нет возможности и смысла сделать эту переменную реентерантной
-clock_t g_time_elapsed_edge = clock();
+refalrts::GlobalRef<clock_t> g_time_elapsed_edge;
 
 }  // unnamed namespace
 %%
@@ -2665,7 +2664,7 @@ $ENTRY TimeElapsed {
 
   const double fClocksPerSec = CLOCKS_PER_SEC;
   clock_t now = clock();
-  double time_elapsed = (now - g_time_elapsed_edge) / fClocksPerSec;
+  double time_elapsed = (now - g_time_elapsed_edge.ref(vm)) / fClocksPerSec;
 
   char str_time_elapsed[
     DBL_MAX_10_EXP + 1 /* maximum digits before point */
@@ -2682,7 +2681,7 @@ $ENTRY TimeElapsed {
   }
 
   if (make_edge) {
-    g_time_elapsed_edge = now;
+    g_time_elapsed_edge.ref(vm) = now;
   }
 
   refalrts::splice_evar(arg_begin, content_b, content_e);
@@ -3847,6 +3846,9 @@ INIT {
   cookie_ns::g_correction.ref(vm) = cookie_ns::raw_step(vm) + init_and_go_steps;
   cookie_ns::g_start_step.ref(vm) = 0;
 
+  // 3. Время запуска программы для TimeElapsed
+  g_time_elapsed_edge.ref(vm) = clock();
+
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
@@ -3854,6 +3856,9 @@ INIT {
 
 FINAL {
 %%
+  // 3. Время запуска программы для TimeElapsed
+  //   (нет финализации)
+
   // 2. Точный счётчик шагов
   //   (нет финализации)
 
