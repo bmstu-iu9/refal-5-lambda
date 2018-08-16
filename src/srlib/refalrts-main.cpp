@@ -105,6 +105,9 @@ int main(int argc, char **argv) {
 #ifdef STEP_LIMIT
   diagnostic_config.step_limit = STEP_LIMIT;
 #endif // ifdef STEP_LIMIT
+#if SHOW_DEBUG
+  diagnostic_config.start_step_trace = SHOW_DEBUG;
+#endif // if SHOW_DEBUG
 
   refalrts::Allocator allocator(&diagnostic_config);
   refalrts::Profiler profiler;

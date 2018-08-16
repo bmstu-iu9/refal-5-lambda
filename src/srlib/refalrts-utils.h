@@ -24,9 +24,6 @@ void valid_linked_aux(const char *text, refalrts::Iter i) {
 }
 #endif
 
-#ifndef SHOW_DEBUG
-#define SHOW_DEBUG 0
-#endif // ifdef SHOW_DEBUG
 
 namespace {
 

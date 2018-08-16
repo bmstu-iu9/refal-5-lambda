@@ -1369,11 +1369,9 @@ JUMP_FROM_SCALE:
           m_error_begin = begin;
           m_error_end = end;
 
-#if SHOW_DEBUG
-          if (m_step_counter >= (unsigned) SHOW_DEBUG) {
+          if (m_step_counter >= m_diagnostic_config->start_step_trace) {
             make_dump(begin, end);
           }
-#endif // if SHOW_DEBUG
 
           refalrts::Iter function = next(begin);
           FnResult res;
