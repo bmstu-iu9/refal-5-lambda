@@ -515,9 +515,9 @@ void refalrts::VM::free_view_field() {
     */;
   }
 
-#ifndef DONT_PRINT_STATISTICS
-  fprintf(stderr, "Step count %d\n", m_step_counter);
-#endif // ifndef DONT_PRINT_STATISTICS
+  if (m_diagnostic_config->print_statistics) {
+    fprintf(stderr, "Step count %d\n", m_step_counter);
+  }
 }
 
 

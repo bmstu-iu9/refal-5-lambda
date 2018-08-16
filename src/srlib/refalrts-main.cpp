@@ -108,9 +108,12 @@ int main(int argc, char **argv) {
 #if SHOW_DEBUG
   diagnostic_config.start_step_trace = SHOW_DEBUG;
 #endif // if SHOW_DEBUG
+#ifndef DONT_PRINT_STATISTICS
+  diagnostic_config.print_statistics = true;
+#endif // ifndef DONT_PRINT_STATISTICS
 
   refalrts::Allocator allocator(&diagnostic_config);
-  refalrts::Profiler profiler;
+  refalrts::Profiler profiler(&diagnostic_config);
   refalrts::Domain domain(&diagnostic_config);
   refalrts::VM vm(&allocator, &profiler, &domain, &diagnostic_config);
 

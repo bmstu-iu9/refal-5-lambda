@@ -1021,12 +1021,12 @@ size_t refalrts::Domain::idents_count() {
 }
 
 void refalrts::Domain::free_idents_table() {
-#ifndef DONT_PRINT_STATISTICS
-  fprintf(
-    stderr, "Identifiers allocated: %lu\n",
-    static_cast<unsigned long>(idents_count())
-  );
-#endif // ifndef DONT_PRINT_STATISTICS
+  if (m_diagnostic_config->print_statistics) {
+    fprintf(
+      stderr, "Identifiers allocated: %lu\n",
+      static_cast<unsigned long>(idents_count())
+    );
+  }
 
   while (m_idents_table.size() > 0) {
     IdentsMap::iterator p = m_idents_table.begin();

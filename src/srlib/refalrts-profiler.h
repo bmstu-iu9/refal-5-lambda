@@ -5,6 +5,7 @@
 #include <time.h>
 
 #include "refalrts.h"
+#include "refalrts-diagnostic-config.h"
 
 
 //==============================================================================
@@ -47,18 +48,18 @@ private:
   clock_t m_counters[cCounter_TOTAL];
   clock_t m_prev_cutoff;
   State m_current_state;
+  DiagnosticConfig *m_diagnostic_config;
 
-#ifndef DONT_PRINT_STATISTICS
   struct TimeItem {
     const char *name;
     unsigned long counter;
   };
 
   static int reverse_compare(const void *left_void, const void *right_void);
-#endif // ifndef DONT_PRINT_STATISTICS
+  void print_statistics();
 
 public:
-  Profiler();
+  Profiler(DiagnosticConfig *diagnostic_config);
 
   void start_profiler();
   void end_profiler();
@@ -76,9 +77,10 @@ public:
   void stop_function();
 };
 
-inline Profiler::Profiler()
+inline Profiler::Profiler(DiagnosticConfig *diagnostic_config)
   : m_prev_cutoff(0)
   , m_current_state(cInRuntime)
+  , m_diagnostic_config(diagnostic_config)
 {
   memset(m_counters, '\0', sizeof(m_counters));
 }

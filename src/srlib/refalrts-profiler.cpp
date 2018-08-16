@@ -22,8 +22,6 @@ void refalrts::Profiler::start_profiler() {
   m_prev_cutoff = clock();
 }
 
-#ifndef DONT_PRINT_STATISTICS
-
 int refalrts::Profiler::reverse_compare(
   const void *left_void, const void *right_void
 ) {
@@ -38,8 +36,6 @@ int refalrts::Profiler::reverse_compare(
     return 0;
   }
 }
-
-#endif // ifndef DONT_PRINT_STATISTICS
 
 void refalrts::Profiler::start_generated_function() {
   clock_t now = clock();
@@ -290,8 +286,13 @@ void refalrts::Profiler::end_profiler() {
   // необходимо на случай аварийного останова, если функция сфейлилась
   // на последнем предложении с открытой e-переменной
   stop_function();
-#ifndef DONT_PRINT_STATISTICS
 
+  if (m_diagnostic_config->print_statistics) {
+    print_statistics();
+  }
+}
+
+void refalrts::Profiler::print_statistics() {
   unsigned long counters[cPerformanceCounter_COUNTERS_NUMBER];
   read_counters(counters);
 
@@ -345,8 +346,6 @@ void refalrts::Profiler::end_profiler() {
       );
     }
   }
-
-#endif // ifndef DONT_PRINT_STATISTICS
 }
 
 void refalrts::Profiler::read_counters(unsigned long counters[]) {

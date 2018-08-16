@@ -89,16 +89,16 @@ bool refalrts::Allocator::create_nodes() {
 
 void refalrts::Allocator::free_memory() {
   m_pool.free();
-#ifndef DONT_PRINT_STATISTICS
-  fprintf(
-    stderr,
-    "Memory used %d nodes, %d * %lu = %lu bytes\n",
-    m_memory_use,
-    m_memory_use,
-    static_cast<unsigned long>(sizeof(Node)),
-    static_cast<unsigned long>(m_memory_use * sizeof(Node))
-  );
-#endif // ifndef DONT_PRINT_STATISTICS
+  if (m_diagnostic_config->print_statistics) {
+    fprintf(
+      stderr,
+      "Memory used %d nodes, %d * %lu = %lu bytes\n",
+      m_memory_use,
+      m_memory_use,
+      static_cast<unsigned long>(sizeof(Node)),
+      static_cast<unsigned long>(m_memory_use * sizeof(Node))
+    );
+  }
 }
 
 refalrts::NodePtr refalrts::Allocator::Pool::alloc_node() {
