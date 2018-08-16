@@ -575,11 +575,9 @@ refalrts::FnResult refalrts::VM::main_loop(const RASLCommand *rasl) {
   Stack<const RASLCommand*> open_e_stack;
   Stack<Iter> context;
 
-#ifdef ENABLE_DEBUGGER
   std::auto_ptr<Debugger> debugger(m_create_debugger(this));
   debugger->set_context(context);
   debugger->set_string_items(strings);
-#endif // ifdef ENABLE_DEBUGGER
 
   Iter res = 0;
   Iter trash_prev = 0;
@@ -674,9 +672,7 @@ JUMP_FROM_SCALE:
           idents = descr->idents;
           numbers = descr->numbers;
           strings = descr->strings;
-#ifdef ENABLE_DEBUGGER
           debugger->set_string_items(strings);
-#endif // ifdef ENABLE_DEBUGGER
         }
         break;
 
@@ -1147,17 +1143,13 @@ JUMP_FROM_SCALE:
         break;
 
       case icVariableDebugOffset:
-#ifdef ENABLE_DEBUGGER
         debugger->insert_var(rasl);
-#endif  // ifdef ENABLE_DEBUGGER
         break;
 
       case icResetAllocator:
-#ifdef ENABLE_DEBUGGER
         if (debugger->handle_function_call(begin, end, callee) == cExit) {
           return cExit;
         }
-#endif  // ifdef ENABLE_DEBUGGER
         reset_allocator();
         break;
 
@@ -1393,11 +1385,9 @@ JUMP_FROM_SCALE:
           } else if (cDataClosure == function->tag) {
             refalrts::Iter head = function->link_info;
 
-#ifdef ENABLE_DEBUGGER
             if (debugger->handle_function_call(begin, end, 0) == cExit) {
               return cExit;
             }
-#endif  // ifdef ENABLE_DEBUGGER
 
             if (1 == head->number_info) {
               /*
@@ -1489,11 +1479,9 @@ JUMP_FROM_SCALE:
 
       case icPerformNative:
         {
-#ifdef ENABLE_DEBUGGER
           if (debugger->handle_function_call(begin, end, callee) == cExit) {
             return cExit;
           }
-#endif  // ifdef ENABLE_DEBUGGER
           RefalNativeFunction *native_callee =
             static_cast<RefalNativeFunction*>(callee);
           FnResult res = (native_callee->ptr)(this, begin, end);
