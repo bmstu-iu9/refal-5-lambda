@@ -780,10 +780,6 @@ void refalrts::SwitchDefaultViolation::print() {
 
 //==============================================================================
 
-void refalrts::at_exit(VM *vm, refalrts::AtExitCB callback, void *data) {
-  vm->domain()->at_exit(callback, data);
-}
-
 refalrts::GlobalRefBase::GlobalRefBase(size_t size)
   : m_offset(g_module.global_variables_memory)
 {
@@ -994,7 +990,6 @@ int main(int argc, char **argv) {
   // TODO: правильный порядок финализации
   profiler.end_profiler();
   if (res == refalrts::cSuccess) {
-    domain.perform_at_exit();
     domain.unload(&vm, res);
   }
   vm.free_view_field();

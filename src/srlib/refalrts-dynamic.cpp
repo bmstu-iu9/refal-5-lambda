@@ -905,7 +905,6 @@ void refalrts::Domain::ModuleStorage::gc(
 
 refalrts::Domain::Domain()
   : m_idents_table()
-  , m_at_exit_list(0)
   , m_storage(this)
   , m_dangerous(false)
 {
@@ -1067,26 +1066,6 @@ bool refalrts::Domain::register_ident(RefalIdentifier ident) {
 void refalrts::Domain::read_counters(unsigned long counters[]) {
   counters[cPerformanceCounter_IdentsAllocated] =
     static_cast<unsigned long>(idents_count());
-}
-
-void refalrts::Domain::at_exit(refalrts::AtExitCB callback, void *data) {
-  AtExitListNode *p = m_at_exit_list;
-  while (p != 0 && (p->callback != callback || p->data != data)) {
-    p = p->next;
-  }
-
-  if (p == 0) {
-    new AtExitListNode(callback, data, this);
-  }
-}
-
-void refalrts::Domain::perform_at_exit() {
-  while (m_at_exit_list != 0) {
-    AtExitListNode *current = m_at_exit_list;
-    m_at_exit_list = m_at_exit_list->next;
-    current->call(this);
-    delete current;
-  }
 }
 
 const refalrts::api::stat *

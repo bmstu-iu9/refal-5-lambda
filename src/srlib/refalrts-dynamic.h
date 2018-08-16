@@ -247,24 +247,6 @@ private:
 };
 
 class Domain {
-  struct AtExitListNode {
-    AtExitCB callback;
-    void *data;
-    AtExitListNode *next;
-
-    AtExitListNode(AtExitCB callback, void *data, Domain *domain)
-      : callback(callback), data(data), next(domain->m_at_exit_list)
-    {
-      domain->m_at_exit_list = this;
-    }
-
-    void call(Domain *domain) {
-      callback(domain, data);
-    }
-  };
-
-  friend struct AtExitListNode;
-
   struct Stack {
     const api::stat *stat;
     Module *module;
@@ -322,7 +304,6 @@ class Domain {
   typedef std::map<StringRef, RefalIdentifier> IdentsMap;
 
   IdentsMap m_idents_table;
-  AtExitListNode *m_at_exit_list;
 
   ModuleStorage m_storage;
   bool m_dangerous;
@@ -371,9 +352,6 @@ public:
   bool register_ident(RefalIdentifier ident);
 
   void read_counters(unsigned long counters[]);
-
-  void at_exit(AtExitCB callback, void *data);
-  void perform_at_exit();
 
   bool dangerous_state() const {
     return m_dangerous;

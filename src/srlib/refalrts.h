@@ -431,11 +431,6 @@ struct NativeReference {
 };
 
 
-typedef void (*AtExitCB)(Domain *domain, void *data);
-
-void at_exit(VM *vm, AtExitCB callback, void *data);
-
-
 class GlobalRefBase {
   size_t m_offset;
 
