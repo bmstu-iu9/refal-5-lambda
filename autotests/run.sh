@@ -149,63 +149,6 @@ run_test_aux_with_flags.FAILURE() {
   echo
 }
 
-run_test_aux.LEXGEN() {
-  prepare_prefix
-
-  echo Passing $1 \(lexgen\)...
-  SREF=$1
-
-  ../bin/lexgen --from=$SREF --to=_lexgen-out.sref 2>__error.txt
-  if [ $? -ge 100 ]; then
-    echo LEXGEN ON $SREF FAILS, SEE __error.txt
-    exit 1
-  fi
-  rm __error.txt
-  if [ ! -e _lexgen-out.sref ]; then
-    echo LEXGEN FAILED
-    exit 1
-  fi
-
-  ../bin/srefc-core _lexgen-out.sref -o _lexgen-out$(platform_exe_suffix) \
-    "${COMMON_SRFLAGS[@]}" $SRFLAGS_PREF 2>__error.txt
-  if [ $? -ge 100 ] || [ ! -e _lexgen-out$(platform_exe_suffix) ]; then
-    echo COMPILER ON $SREF FAILS, SEE __error.txt
-    exit 1
-  fi
-  rm __error.txt
-
-  ./_lexgen-out
-  if [ $? -gt 0 ]; then
-    echo TEST FAILED, SEE __dump.txt
-    exit 1
-  fi
-
-  rm _lexgen-out*
-  [ -e __dump.txt ] && rm __dump.txt
-  [ -e __log.txt ] && rm __log.txt
-
-  echo
-}
-
-run_test_aux.BAD-SYNTAX-LEXGEN() {
-  echo Passing $1 \(lexgen, syntax error recovering\)...
-  SREF=$1
-
-  ../bin/lexgen --from=$SREF --to=_lexgen-out.sref 2>__error.txt
-  if [ $? -ge 100 ]; then
-    echo LEXGEN ON $SREF FAILS, SEE __error.txt
-    exit 1
-  fi
-  rm __error.txt
-  if [ -e _lexgen-out.sref ]; then
-    echo LEXGEN SUCCESSED, BUT EXPECTED SYNTAX ERROR
-    exit 1
-  fi
-
-  echo "Ok! LexGen didn't crash on invalid syntax"
-  echo
-}
-
 run_test() {
   COMMON_SRFLAGS=(
     "-c $CPPLINEE"
