@@ -128,12 +128,14 @@ private:
   Domain *m_domain;
   Module *m_module;
   DiagnosticConfig *m_diagnostic_config;
+  FILE *m_dump_stream;
 
 public:
   VM(
     Allocator *allocator, Profiler *profiler, Domain *domain,
     DiagnosticConfig *diagnostic_config
   );
+  ~VM();
 
   int get_return_code() const {
     return m_ret_code;
@@ -1069,8 +1071,16 @@ inline VM::VM(
   , m_domain(domain)
   , m_module(0)
   , m_diagnostic_config(diagnostic_config)
+  , m_dump_stream(0)
 {
   m_swap_hedge.tag = cDataSwapHead;
+}
+
+inline VM::~VM() {
+  if (m_dump_stream != 0 && m_dump_stream != stderr) {
+    fclose(m_dump_stream);
+    m_dump_stream = 0;
+  }
 }
 
 }  // namespace refalrts

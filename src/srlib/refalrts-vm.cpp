@@ -477,23 +477,19 @@ void refalrts::VM::make_dump(refalrts::Iter begin, refalrts::Iter end) {
 }
 
 FILE *refalrts::VM::dump_stream() {
-  if (m_diagnostic_config->dump_file[0]) {
-    static FILE *dump_file = 0;
+  if (m_dump_stream == 0) {
+    if (m_diagnostic_config->dump_file[0]) {
+      m_dump_stream = fopen(m_diagnostic_config->dump_file, "wt");
 
-    if (dump_file == 0) {
-      // Необходимо открыть файл.
-      // Если файл не открывается, используем stderr
-      dump_file = fopen(m_diagnostic_config->dump_file, "wt");
-
-      if (dump_file == 0) {
-        dump_file = stderr;
+      if (m_dump_stream == 0) {
+        m_dump_stream = stderr;
       }
+    } else {
+      m_dump_stream = stderr;
     }
-
-    return dump_file;
-  } else {
-    return stderr;
   }
+
+  return m_dump_stream;
 }
 
 void refalrts::VM::free_view_field() {
