@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #include "refalrts.h"
+#include "refalrts-diagnostic-config.h"
 #include "refalrts-functions.h"
 #include "refalrts-utils.h"
 
@@ -140,9 +141,13 @@ private:
   Profiler *m_profiler;
   Domain *m_domain;
   Module *m_module;
+  DiagnosticConfig *m_diagnostic_config;
 
 public:
-  VM(Allocator *allocator, Profiler *profiler, Domain *domain);
+  VM(
+    Allocator *allocator, Profiler *profiler, Domain *domain,
+    DiagnosticConfig *diagnostic_config
+  );
 
   int get_return_code() const {
     return m_ret_code;
@@ -1044,7 +1049,10 @@ public:
 
 };
 
-inline VM::VM(Allocator *allocator, Profiler *profiler, Domain *domain)
+inline VM::VM(
+  Allocator *allocator, Profiler *profiler, Domain *domain,
+  DiagnosticConfig *diagnostic_config
+)
   : m_ret_code(0)
   , m_argv(0)
   , m_argc(0)
@@ -1062,6 +1070,7 @@ inline VM::VM(Allocator *allocator, Profiler *profiler, Domain *domain)
   , m_profiler(profiler)
   , m_domain(domain)
   , m_module(0)
+  , m_diagnostic_config(diagnostic_config)
 {
   m_swap_hedge.tag = cDataSwapHead;
 }

@@ -1354,11 +1354,9 @@ JUMP_FROM_SCALE:
           m_profiler->stop_function();
           ++ m_step_counter;
 
-#ifdef STEP_LIMIT
-          if (m_step_counter >= STEP_LIMIT) {
+          if (m_step_counter >= m_diagnostic_config->step_limit) {
             return cStepLimit;
           }
-#endif // ifdef STEP_LIMIT
 
           if (empty_stack()) {
             return cSuccess;    // УСПЕШНОЕ ЗАВЕРШЕНИЕ ГЛАВНОГО ЦИКЛА

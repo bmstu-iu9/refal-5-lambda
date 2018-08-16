@@ -102,11 +102,14 @@ int main(int argc, char **argv) {
 #ifdef MEMORY_LIMIT
   diagnostic_config.memory_limit = MEMORY_LIMIT;
 #endif // ifdef MEMORY_LIMIT
+#ifdef STEP_LIMIT
+  diagnostic_config.step_limit = STEP_LIMIT;
+#endif // ifdef STEP_LIMIT
 
   refalrts::Allocator allocator(&diagnostic_config);
   refalrts::Profiler profiler;
   refalrts::Domain domain(&diagnostic_config);
-  refalrts::VM vm(&allocator, &profiler, &domain);
+  refalrts::VM vm(&allocator, &profiler, &domain, &diagnostic_config);
 
 #ifdef ENABLE_DEBUGGER
   int debug_arg = refalrts::debugger::find_debugger_flag(argc, argv);
