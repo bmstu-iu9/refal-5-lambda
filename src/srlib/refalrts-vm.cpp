@@ -519,7 +519,7 @@ void refalrts::VM::free_view_field() {
 // Фальшивый отладчик
 //==============================================================================
 
-class refalrts::VM::NullDebugger: public refalrts::VM::Debugger {
+class refalrts::VM::NullDebugger: public refalrts::Debugger {
 public:
   virtual void set_context(Stack<Iter>& /*context*/) {
     /* пусто */
@@ -540,7 +540,7 @@ public:
   }
 };
 
-refalrts::VM::Debugger*
+refalrts::Debugger*
 refalrts::VM::create_null_debugger(refalrts::VM * /*vm*/) {
   return new NullDebugger;
 }

@@ -17,9 +17,12 @@
 namespace refalrts {
 
 class Allocator;
-class Profiler;
 class Domain;
 class Module;
+class Profiler;
+class VM;
+
+typedef Debugger *(*DebuggerFactory)(VM *vm);
 
 class VM {
   struct StateRefalMachine;
@@ -115,24 +118,7 @@ private:
   StateRefalMachine *states_stack_pop();
   void states_stack_push(StateRefalMachine *state);
 
-public:
-  class Debugger {
-  public:
-    virtual ~Debugger() {}
-
-    virtual void set_context(Stack<Iter>& context) = 0;
-    virtual void set_string_items(const StringItem *items) = 0;
-    virtual void insert_var(const RASLCommand *next) = 0;
-
-    virtual FnResult handle_function_call(
-      Iter begin, Iter end, RefalFunction *callee
-    ) = 0;
-
-    typedef Debugger* (*Factory)(VM *vm);
-  };
-
-private:
-  Debugger::Factory m_create_debugger;
+  DebuggerFactory m_create_debugger;
 
   class NullDebugger;
   static Debugger* create_null_debugger(VM *vm);
@@ -189,7 +175,7 @@ public:
 
   void free_states_stack();
 
-  void set_debugger_factory(Debugger::Factory debugger_factory) {
+  void set_debugger_factory(DebuggerFactory debugger_factory) {
     if (! debugger_factory) {
       debugger_factory = create_null_debugger;
     }
@@ -1046,7 +1032,19 @@ public:
   static Iter splice_evar(Iter res, Iter begin, Iter end) {
     return list_splice(res, begin, end);
   }
+};
 
+class Debugger {
+public:
+  virtual ~Debugger() {}
+
+  virtual void set_context(VM::Stack<Iter>& context) = 0;
+  virtual void set_string_items(const StringItem *items) = 0;
+  virtual void insert_var(const RASLCommand *next) = 0;
+
+  virtual FnResult handle_function_call(
+    Iter begin, Iter end, RefalFunction *callee
+  ) = 0;
 };
 
 inline VM::VM(

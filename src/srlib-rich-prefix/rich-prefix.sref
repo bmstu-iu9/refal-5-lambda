@@ -5,6 +5,7 @@
 //FROM refalrts
 //FROM refalrts-allocator
 //FROM refalrts-debugger
+//FROM refalrts-diagnostic-initializer
 //FROM refalrts-dynamic
 //FROM refalrts-functions
 //FROM refalrts-main

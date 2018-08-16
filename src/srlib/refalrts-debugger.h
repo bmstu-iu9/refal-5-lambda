@@ -72,7 +72,7 @@ public:
   void print(FILE *out = stdout);
 };
 
-class RefalDebugger: public VM::Debugger {
+class RefalDebugger: public Debugger {
   const char *m_dot;
   unsigned m_step_numb;
   unsigned m_memory_limit;
@@ -156,7 +156,7 @@ public:
     Iter begin, Iter end, RefalFunction *callee
   );
 
-  static VM::Debugger *create(VM * vm) {
+  static Debugger *create(VM * vm) {
     return new RefalDebugger(vm);
   }
 };

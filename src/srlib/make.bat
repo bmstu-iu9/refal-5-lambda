@@ -10,6 +10,7 @@ setlocal
   set RT=refalrts ^
     refalrts-allocator ^
     refalrts-debugger ^
+    refalrts-diagnostic-initializer ^
     refalrts-dynamic ^
     refalrts-functions ^
     refalrts-main ^
