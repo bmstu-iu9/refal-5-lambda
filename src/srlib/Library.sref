@@ -1593,7 +1593,7 @@ refalrts::GlobalRef<unsigned long> g_correction;
 refalrts::GlobalRef<unsigned long> g_start_step;
 
 unsigned long correction(refalrts::VM *vm) {
-  return g_correction.ref(vm) + 1;      // call of Go is not countered
+  return g_correction.ref(vm) + 1 + 2;  // call of Go and INIT is not countered
 }
 
 }  // namespace cookie_ns
@@ -3846,6 +3846,20 @@ $ENTRY UnloadModule {
     return refalrts::cRecognitionImpossible;
   }
 
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+INIT {
+%%
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+FINAL {
+%%
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
