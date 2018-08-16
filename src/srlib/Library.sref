@@ -2852,20 +2852,6 @@ RndGen::UInt RndGen::next_in_range(RndGen::UInt max) {
 
 refalrts::GlobalRef<RndGen*> g_gen;
 
-void delete_gen(refalrts::Domain *, void *void_module) {
-  refalrts::Module *module = reinterpret_cast<refalrts::Module*>(void_module);
-  delete g_gen.ref(module);
-}
-
-RndGen& gen(refalrts::VM *vm) {
-  if (g_gen.ref(vm) == 0) {
-    g_gen.ref(vm) = new RndGen();
-    refalrts::at_exit(vm, delete_gen, refalrts::current_module(vm));
-  }
-
-  return *g_gen.ref(vm);
-}
-
 bool positive_digit_arg(
   refalrts::Iter& pfunc_name, refalrts::RefalNumber& value,
   refalrts::Iter arg_begin, refalrts::Iter arg_end
@@ -2901,7 +2887,7 @@ $ENTRY Random {
     return refalrts::cRecognitionImpossible;
   }
 
-  max = gen(vm).next_in_range(max);
+  max = g_gen.ref(vm)->next_in_range(max);
 
   if (0 == max) {
     max = 1;
@@ -2910,7 +2896,7 @@ $ENTRY Random {
   refalrts::reset_allocator(vm);
   bool zero = true;
   for (size_t i = 0; i < static_cast<size_t>(max); ++i) {
-    refalrts::RefalNumber digit = gen(vm).next_value();
+    refalrts::RefalNumber digit = g_gen.ref(vm)->next_value();
     if (digit != 0 || ! zero) {
       zero = false;
 
@@ -2950,7 +2936,7 @@ $ENTRY RandomDigit {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::RefalNumber digit = gen(vm).next_in_range(max);
+  refalrts::RefalNumber digit = g_gen.ref(vm)->next_in_range(max);
 
   refalrts::reinit_number(arg_begin, digit);
   refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
@@ -3849,6 +3835,9 @@ INIT {
   // 3. Время запуска программы для TimeElapsed
   g_time_elapsed_edge.ref(vm) = clock();
 
+  // 4. Генератор случайных чисел
+  g_gen.ref(vm) = new RndGen();
+
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
@@ -3856,6 +3845,10 @@ INIT {
 
 FINAL {
 %%
+  // 4. Генератор случайных чисел
+  delete g_gen.ref(vm);
+  g_gen.ref(vm) = 0;
+
   // 3. Время запуска программы для TimeElapsed
   //   (нет финализации)
 
