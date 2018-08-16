@@ -1539,7 +1539,7 @@ $ENTRY Rp {
 namespace cookie_ns {
 
 extern unsigned long raw_step(refalrts::VM *vm);
-extern unsigned long correction(refalrts::VM *vm);
+refalrts::GlobalRef<unsigned long> g_correction;
 
 }  // namespace cookie_ns
 %%
@@ -1556,7 +1556,7 @@ $ENTRY Step {
 
   refalrts::RefalNumber step =
     static_cast<refalrts::RefalNumber>(
-      cookie_ns::raw_step(vm) - cookie_ns::correction(vm)
+      cookie_ns::raw_step(vm) - cookie_ns::g_correction.ref(vm)
     );
 
   refalrts::reinit_number(arg_begin, step);
@@ -1578,12 +1578,7 @@ unsigned long cookie_ns::raw_step(refalrts::VM *vm) {
 
 namespace cookie_ns {
 
-refalrts::GlobalRef<unsigned long> g_correction;
 refalrts::GlobalRef<unsigned long> g_start_step;
-
-unsigned long correction(refalrts::VM *vm) {
-  return g_correction.ref(vm) + 1 + 2;  // call of Go and INIT is not countered
-}
 
 }  // namespace cookie_ns
 %%
@@ -3847,6 +3842,11 @@ INIT {
     g_file_handles.ref(vm, i) = 0;      // на всякий случай
   }
 
+  // 2. Точный счётчик шагов
+  const unsigned long init_and_go_steps = 2;
+  cookie_ns::g_correction.ref(vm) = cookie_ns::raw_step(vm) + init_and_go_steps;
+  cookie_ns::g_start_step.ref(vm) = 0;
+
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
@@ -3854,6 +3854,9 @@ INIT {
 
 FINAL {
 %%
+  // 2. Точный счётчик шагов
+  //   (нет финализации)
+
   // 1. Дескрипторы файлов
   for (size_t i = 0; i < cMaxFileHandles; ++i) {
     if (g_file_handles.ref(vm, i) != 0) {
