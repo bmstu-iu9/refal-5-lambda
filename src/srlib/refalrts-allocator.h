@@ -2,6 +2,7 @@
 #define RefalRTS_ALLOCATOR_H_
 
 #include "refalrts.h"
+#include "refalrts-diagnostic-config.h"
 
 
 namespace refalrts {
@@ -37,9 +38,10 @@ class Allocator {
 
   Pool m_pool;
   unsigned m_memory_use;
+  DiagnosticConfig *m_diagnostic_config;
 
 public:
-  Allocator();
+  Allocator(DiagnosticConfig *diagnostic_config);
 
   void reset_allocator() {
     m_free_ptr = m_first_marker.next;
@@ -77,12 +79,13 @@ inline Allocator::Pool::Pool()
   /* пусто */
 }
 
-inline Allocator::Allocator()
+inline Allocator::Allocator(DiagnosticConfig *diagnostic_config)
   : m_first_marker(0, & m_last_marker)
   , m_last_marker(& m_first_marker, 0)
   , m_free_ptr(& m_last_marker)
   , m_pool()
   , m_memory_use(0)
+  , m_diagnostic_config(diagnostic_config)
 {
   /* пусто */
 }

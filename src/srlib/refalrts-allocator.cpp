@@ -65,13 +65,9 @@ refalrts::Iter refalrts::Allocator::splice_from_freelist(refalrts::Iter pos) {
 bool refalrts::Allocator::create_nodes() {
   refalrts::NodePtr new_node = m_pool.alloc_node();
 
-#ifdef MEMORY_LIMIT
-
-  if (m_memory_use >= MEMORY_LIMIT) {
+  if (m_memory_use >= m_diagnostic_config->memory_limit) {
     return false;
   }
-
-#endif // ifdef MEMORY_LIMIT
 
   if (new_node == 0) {
     return false;

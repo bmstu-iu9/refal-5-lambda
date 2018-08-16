@@ -99,8 +99,11 @@ int main(int argc, char **argv) {
 #ifdef IDENTS_LIMIT
   diagnostic_config.idents_limit = IDENTS_LIMIT;
 #endif
+#ifdef MEMORY_LIMIT
+  diagnostic_config.memory_limit = MEMORY_LIMIT;
+#endif // ifdef MEMORY_LIMIT
 
-  refalrts::Allocator allocator;
+  refalrts::Allocator allocator(&diagnostic_config);
   refalrts::Profiler profiler;
   refalrts::Domain domain(&diagnostic_config);
   refalrts::VM vm(&allocator, &profiler, &domain);
