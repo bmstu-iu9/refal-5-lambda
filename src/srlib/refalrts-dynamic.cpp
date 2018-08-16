@@ -903,10 +903,11 @@ void refalrts::Domain::ModuleStorage::gc(
   m_modules.erase(end, m_modules.end());
 }
 
-refalrts::Domain::Domain()
+refalrts::Domain::Domain(refalrts::DiagnosticConfig *diagnostic_config)
   : m_idents_table()
   , m_storage(this)
   , m_dangerous(false)
+  , m_diagnostic_config(diagnostic_config)
 {
   /* пусто */
 }
@@ -1048,11 +1049,9 @@ refalrts::Domain::lookup_ident(const char *name) {
 
 bool refalrts::Domain::register_ident(RefalIdentifier ident) {
   try {
-#ifdef IDENTS_LIMIT
-    if (idents_count() >= IDENTS_LIMIT) {
+    if (idents_count() >= m_diagnostic_config->idents_limit) {
       return false;
     }
-#endif // ifdef IDENTS_LIMIT
 
     IdentsMap::value_type new_value(StringRef(ident->name()), ident);
     std::pair<IdentsMap::iterator, bool> res = m_idents_table.insert(new_value);

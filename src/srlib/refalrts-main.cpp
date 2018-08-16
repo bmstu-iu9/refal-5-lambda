@@ -24,8 +24,12 @@ extern struct refalrts::NativeModule g_module;
 static void load_native_module_report_error(
   refalrts::ModuleLoadingError error,
   refalrts::ModuleLoadingErrorDetail *detail,
-  void * /*callback_data*/
+  void *callback_data
 ) {
+  using refalrts::DiagnosticConfig;
+  DiagnosticConfig *diagnostic_config =
+    static_cast<DiagnosticConfig*>(callback_data);
+
   switch (error) {
     case refalrts::cModuleLoadingError_ModuleNotFound:
       fprintf(stderr, "INTERNAL ERROR: can't load module %s\n", detail->message);
@@ -47,14 +51,14 @@ static void load_native_module_report_error(
       exit(155);
 
     case refalrts::cModuleLoadingError_CantAllocIdent:
-#ifdef IDENTS_LIMIT
-      fprintf(
-        stderr, "INTERNAL ERROR: Identifiers table overflows (max %ld)\n",
-        static_cast<unsigned long>(IDENTS_LIMIT)
-      );
-#else
-      fprintf(stderr, "INTERNAL ERROR: can't allocate identifier\n");
-#endif
+      if (diagnostic_config->idents_limit != DiagnosticConfig::NO_LIMIT) {
+        fprintf(
+          stderr, "INTERNAL ERROR: Identifiers table overflows (max %ld)\n",
+          diagnostic_config->idents_limit
+        );
+      } else {
+        fprintf(stderr, "INTERNAL ERROR: can't allocate identifier\n");
+      }
       exit(154);
 
     case refalrts::cModuleLoadingError_UnresolvedExternal:
@@ -90,9 +94,15 @@ static void load_native_module_report_error(
 }
 
 int main(int argc, char **argv) {
+  refalrts::DiagnosticConfig diagnostic_config;
+
+#ifdef IDENTS_LIMIT
+  diagnostic_config.idents_limit = IDENTS_LIMIT;
+#endif
+
   refalrts::Allocator allocator;
   refalrts::Profiler profiler;
-  refalrts::Domain domain;
+  refalrts::Domain domain(&diagnostic_config);
   refalrts::VM vm(&allocator, &profiler, &domain);
 
 #ifdef ENABLE_DEBUGGER
@@ -111,7 +121,7 @@ int main(int argc, char **argv) {
   refalrts::FnResult res;
   try {
     bool successed = domain.load_native_module(
-      &vm, &g_module, load_native_module_report_error, 0, res
+      &vm, &g_module, load_native_module_report_error, &diagnostic_config, res
     );
 
     if (! successed) {

@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "refalrts.h"
+#include "refalrts-diagnostic-config.h"
 #include "refalrts-functions.h"
 #include "refalrts-platform-specific.h"
 
@@ -307,6 +308,7 @@ class Domain {
 
   ModuleStorage m_storage;
   bool m_dangerous;
+  DiagnosticConfig *m_diagnostic_config;
 
   class DangerousRAII {
     bool *m_dangerous;
@@ -323,7 +325,7 @@ class Domain {
   };
 
 public:
-  Domain();
+  Domain(DiagnosticConfig *diagnostic_config);
 
   bool load_native_module(
     VM *vm, NativeModule *main_module,
