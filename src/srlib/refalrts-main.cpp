@@ -1,6 +1,7 @@
 #include <exception>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "refalrts-diagnostic-config.h"
 
@@ -117,6 +118,11 @@ int main(int argc, char **argv) {
 #ifdef ENABLE_DEBUGGER
   diagnostic_config.enable_debugger = true;
 #endif // ifdef ENABLE_DEBUGGER
+#ifdef DUMP_FILE
+  if (strlen(DUMP_FILE) < sizeof(diagnostic_config.dump_file) - 1) {
+    strcpy(diagnostic_config.dump_file, DUMP_FILE);
+  }
+#endif // ifdef DUMP_FILE
 
   refalrts::Allocator allocator(&diagnostic_config);
   refalrts::Profiler profiler(&diagnostic_config);
