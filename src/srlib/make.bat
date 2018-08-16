@@ -12,6 +12,7 @@ setlocal
     refalrts-debugger ^
     refalrts-dynamic ^
     refalrts-functions ^
+    refalrts-main ^
     refalrts-platform-specific ^
     refalrts-profiler ^
     refalrts-vm ^

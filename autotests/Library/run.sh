@@ -22,6 +22,7 @@ run_all_tests() {
     refalrts-debugger
     refalrts-dynamic
     refalrts-functions
+    refalrts-main
     refalrts-profiler
     refalrts-vm
     refalrts-platform-POSIX

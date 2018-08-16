@@ -35,7 +35,7 @@ set_scratch_flags() {
     --cpp-command-lib="$CPPLINEL"
   )
   RT=(
-    --runtime=refalrts
+    --runtime=refalrts-main
   )
 }
 
