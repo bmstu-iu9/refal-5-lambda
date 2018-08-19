@@ -233,11 +233,27 @@ void init_diagnostic_config(
   }
 #endif // ifdef DUMP_FILE
 
-  // Чтение глобальных настроек диагностики
-  read_config(config, diagnostic_suffix);
+  int delta = 0;
+  for (int i = 1; i < *argc; ++i) {
+    const char config_prefix[] = "++diagnostic+config=";
+    size_t config_prefix_len = strlen(config_prefix);
+    if (strncmp(argv[i], config_prefix, config_prefix_len) == 0) {
+      read_config(config, argv[i] + config_prefix_len);
+      delta += 1;
+    } else {
+      argv[i - delta] = argv[i];
+    }
+  }
+  *argc -= delta;
+  argv[*argc] = 0;
 
-  // Чтение локальных настроек диагностики
-  load_local_diagnostic_config(config, argv[0]);
+  if (delta == 0) {
+    // Чтение глобальных настроек диагностики
+    read_config(config, diagnostic_suffix);
+
+    // Чтение локальных настроек диагностики
+    load_local_diagnostic_config(config, argv[0]);
+  }
 }
 
 void load_local_diagnostic_config(
