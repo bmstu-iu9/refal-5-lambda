@@ -11,11 +11,6 @@ run_all_tests() {
     -D$(platform_subdir_lookup $LIBDIR)
     -D$LIBDIR/platform-POSIX
     -D$LIBDIR
-    -f-DSTEP_LIMIT=1500
-    -f-DMEMORY_LIMIT=1000
-    -f-DIDENTS_LIMIT=100
-    -f-DDUMP_FILE=\\\"__dump.txt\\\"
-    -f-DDONT_PRINT_STATISTICS
     -f-g
     refalrts
     refalrts-allocator
@@ -30,6 +25,8 @@ run_all_tests() {
     refalrts-platform-specific
     --chmod-x-command="chmod +x"
   )
+
+  DIAG="++diagnostic+config=test-diagnostics.txt"
 
   echo Precompile Library.sref
   cp $LIBDIR/Library.sref .
@@ -103,7 +100,7 @@ run_all_tests() {
 
   if [ -e Library-ReadLine-2lines ]; then
     echo Pass Library-ReadLine-2lines test...
-    ./Library-ReadLine-2lines < 2lines.txt
+    ./Library-ReadLine-2lines $DIAG < 2lines.txt
     if [ $? -gt 0 ]; then
       echo TEST FAILED, SEE __dump.txt
       exit 1
@@ -113,7 +110,7 @@ run_all_tests() {
 
   if [ -e Library-ReadLine-2lines-no-eol ]; then
     echo Pass Library-ReadLine-2lines-no-eol test...
-    ./Library-ReadLine-2lines-no-eol < 2lines-no-eol.txt
+    ./Library-ReadLine-2lines-no-eol $DIAG < 2lines-no-eol.txt
     if [ $? -gt 0 ]; then
       echo TEST FAILED, SEE __dump.txt
       exit 1
@@ -151,7 +148,7 @@ run_all_tests() {
 
   if [ -e Library-symbolic-file-handles ]; then
     echo Pass Library-symbolic-file-handles test...
-    ./Library-symbolic-file-handles < 2lines.txt > __out.txt 2>__err.txt
+    ./Library-symbolic-file-handles $DIAG < 2lines.txt > __out.txt 2>__err.txt
     if [ $? -gt 0 ]; then
       echo TEST FAILED, SEE __dump.txt
       exit 1
@@ -199,7 +196,7 @@ simple_test_ok() {
 simple_test_fail() {
   if [ -e $1 ]; then
     echo Pass simple FAIL test $1...
-    if ./$1; then
+    if ./$1 $DIAG; then
       echo TEST NOT EXPECTATIVE FAILED, SEE __dump.txt
       exit 1
     fi
@@ -209,7 +206,7 @@ simple_test_fail() {
 }
 
 run_exe() {
-  ./$1 > __out.txt
+  ./$1 $DIAG > __out.txt
   if [ $? -gt 0 ]; then
     echo TEST FAILED, SEE __dump.txt
     exit 1

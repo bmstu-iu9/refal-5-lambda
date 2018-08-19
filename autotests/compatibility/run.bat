@@ -64,6 +64,7 @@ goto :EOF
   if exist ..\..\bin\srefc-core.exe (
     set REFAL_COMPILERS=srefc_classic srefc_lambda %REFAL_COMPILERS%
     set SREFC_EXIST=1
+    set DIAG=++diagnostic+config=test-diagnostics.txt
     echo ... found srefc
     call ..\..\scripts\load-config.bat || exit /b 1
   )
@@ -81,11 +82,7 @@ goto :EOF
     -D../../src/srlib/platform-Windows ^
     -D../../src/srlib/common ^
     -D../../src/srlib ^
-    --prelude=refal5-builtins.srefi ^
-    -f-DSTEP_LIMIT=6000 ^
-    -f-DMEMORY_LIMIT=1000 ^
-    %DUMP_FILE_NAME_OPTION% ^
-    -f-DDONT_PRINT_STATISTICS
+    --prelude=refal5-builtins.srefi
 
   echo Prepare common prefix...
   if exist _test_prefix.exe-prefix erase _test_prefix.exe-prefix
@@ -281,7 +278,7 @@ goto :EOF
 :EXECUTE_OK.srefc_classic
 setlocal
   set EXE=%~n1.exe
-  echo Y| %EXE% Hello "Hello, World" "" \ > stdout.txt 2>stderr.txt
+  echo Y| %EXE% %DIAG% Hello "Hello, World" "" \ > stdout.txt 2>stderr.txt
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt or stderr.txt:
     type __dump.txt
@@ -294,7 +291,7 @@ goto :EOF
 :EXECUTE_FAIL.srefc_classic
 setlocal
   set EXE=%~n1.exe
-  echo Y| %EXE% > stdout.txt
+  echo Y| %EXE% %DIAG% > stdout.txt
   if not errorlevel 1 (
     echo THIS TEST MUST FAIL BUT DONT IT
     endlocal

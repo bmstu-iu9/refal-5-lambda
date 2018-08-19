@@ -206,7 +206,7 @@ void init_diagnostic_config(
 #endif // if SHOW_DEBUG
 
 #ifndef DONT_PRINT_STATISTICS
-  config->print_statistics = true;
+  //config->print_statistics = true;
 #endif // ifndef DONT_PRINT_STATISTICS
 
 #ifdef DUMP_FREE_LIST

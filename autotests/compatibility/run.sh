@@ -69,6 +69,7 @@ lookup_compilers() {
   if [ -e ../../bin/srefc-core ]; then
     REFAL_COMPILERS="srefc_classic srefc_lambda $REFAL_COMPILERS"
     SREFC_EXIST=1
+    DIAG="++diagnostic+config=test-diagnostics.txt"
     echo ... found srefc
     source ../../scripts/load-config.sh ../.. || return 1
     source ../../scripts/platform-specific.sh
@@ -84,10 +85,6 @@ lookup_compilers() {
       -D$LIBDIR/common
       -D$LIBDIR
       --prelude=refal5-builtins.srefi
-      -f-DSTEP_LIMIT=6000
-      -f-DMEMORY_LIMIT=1000
-      -f-DDUMP_FILE=\\\"__dump.txt\\\"
-      -f-DDONT_PRINT_STATISTICS
       -f-g
       --chmod-x-command="chmod +x"
     )
@@ -251,7 +248,8 @@ compile_srefc_classic() {
 execute_OK_srefc_classic() {
   SRC=$1
   EXE=${SRC%%.ref}$(platform_exe_suffix)
-  echo Y | ./$EXE Hello "Hello, World" "" $SEP > stdout.txt 2>stderr.txt || {
+  echo Y | ./$EXE $DIAG Hello "Hello, World" "" $SEP \
+      > stdout.txt 2>stderr.txt || {
     echo TEST FAILED, SEE __dump.txt:
     cat __dump.txt
     exit 1
@@ -261,7 +259,7 @@ execute_OK_srefc_classic() {
 execute_FAIL_srefc_classic() {
   SRC=$1
   EXE=${SRC%%.ref}$(platform_exe_suffix)
-  if echo Y | ./$EXE > stdout.txt; then
+  if echo Y | ./$EXE $DIAG > stdout.txt; then
     echo THIS TEST MUST FAIL BUT DONT IT
     exit 1
   else

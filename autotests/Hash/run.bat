@@ -20,10 +20,6 @@ setlocal
     --exesuffix=.exe ^
     -D../../src/srlib/platform-Windows ^
     -D../../src/srlib ^
-    -f-DSTEP_LIMIT=1000 ^
-    -f-DMEMORY_LIMIT=1000 ^
-    %DUMP_FILE_NAME_OPTION% ^
-    -f-DDONT_PRINT_STATISTICS ^
     refalrts ^
     refalrts-allocator ^
     refalrts-debugger ^
@@ -114,7 +110,7 @@ endlocal
 goto :EOF
 
 :RUN_EXE
-  %1 > __out.txt
+  %1 ++diagnostic+config=test-diagnostics.txt > __out.txt
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
     exit /b 1

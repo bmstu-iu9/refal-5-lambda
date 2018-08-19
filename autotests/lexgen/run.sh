@@ -42,7 +42,7 @@ run_test_aux.LEXGEN() {
   fi
   rm __error.txt
 
-  ./_lexgen-out
+  ./_lexgen-out ++diagnostic+config=test-diagnostics.txt
   if [ $? -gt 0 ]; then
     echo TEST FAILED, SEE __dump.txt
     exit 1
@@ -82,13 +82,7 @@ run_test() {
     -D$(platform_subdir_lookup $LIBDIR)
     -D$LIBDIR/platform-POSIX
     -D$LIBDIR
-    -f-DSTEP_LIMIT=1500
-    -f-DMEMORY_LIMIT=1000
-    -f-DIDENTS_LIMIT=200
-    -f-DENABLE_DEBUGGER
-    -f-DDUMP_FILE=\\\"__dump.txt\\\"
     --log=__log.txt
-    -f-DDONT_PRINT_STATISTICS
     -f-g
     --chmod-x-command="chmod +x"
   )

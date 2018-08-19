@@ -39,13 +39,7 @@ setlocal
     --prelude=test-prelude.srefi ^
     -D../../src/srlib/platform-Windows ^
     -D../../src/srlib ^
-    -f-DSTEP_LIMIT=1500 ^
-    -f-DMEMORY_LIMIT=1000 ^
-    -f-DIDENTS_LIMIT=200 ^
-    -f-DENABLE_DEBUGGER ^
-    %DUMP_FILE_NAME_OPTION% ^
-    --log=__log.txt ^
-    -f-DDONT_PRINT_STATISTICS
+    --log=__log.txt
   set SRFLAGS_PREF=--prefix=_test_prefix
   set SRFLAGS_NAT=refalrts ^
     refalrts-allocator ^
@@ -91,7 +85,7 @@ setlocal
     exit /b 1
   )
 
-  _lexgen-out.exe
+  _lexgen-out.exe ++diagnostic+config=test-diagnostics.txt
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
     exit /b 1

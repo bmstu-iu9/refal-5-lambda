@@ -68,13 +68,7 @@ setlocal
     --prelude=test-prelude.srefi ^
     -D../src/srlib/platform-Windows ^
     -D../src/srlib ^
-    -f-DSTEP_LIMIT=1500 ^
-    -f-DMEMORY_LIMIT=1000 ^
-    -f-DIDENTS_LIMIT=200 ^
-    -f-DENABLE_DEBUGGER ^
-    %DUMP_FILE_NAME_OPTION% ^
-    --log=__log.txt ^
-    -f-DDONT_PRINT_STATISTICS
+    --log=__log.txt
   set SRFLAGS_PREF=--prefix=_test_prefix
   set SRFLAGS_NAT=refalrts ^
     refalrts-allocator ^
@@ -178,7 +172,7 @@ setlocal
 
   if not exist %NATCPP% set NATCPP=
 
-  %EXE%
+  %EXE% ++diagnostic+config=test-diagnostics.txt
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
     exit /b 1
@@ -221,7 +215,7 @@ setlocal
 
   if not exist %NATCPP% set NATCPP=
 
-  %EXE%
+  %EXE% ++diagnostic+config=test-diagnostics.txt
   if not errorlevel 100 (
     echo TEST NOT EXPECTATIVE FAILED, SEE __dump.txt
     exit /b 1

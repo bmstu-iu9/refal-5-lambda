@@ -77,7 +77,7 @@ run_test_aux_with_flags() {
     NATCPP=
   fi
 
-  ./$EXE
+  ./$EXE ++diagnostic+config=test-diagnostics.txt
   if [ $? -gt 0 ]; then
     echo TEST FAILED, SEE __dump.txt
     exit 1
@@ -135,7 +135,7 @@ run_test_aux_with_flags.FAILURE() {
     NATCPP=
   fi
 
-  ./$EXE
+  ./$EXE ++diagnostic+config=test-diagnostics.txt
   if [ $? -lt 100 ]; then
     echo TEST NOT EXPECTATIVE FAILED, SEE __dump.txt
     exit 1
@@ -157,13 +157,7 @@ run_test() {
     -D$(platform_subdir_lookup $LIBDIR)
     -D$LIBDIR/platform-POSIX
     -D$LIBDIR
-    -f-DSTEP_LIMIT=1500
-    -f-DMEMORY_LIMIT=1000
-    -f-DIDENTS_LIMIT=200
-    -f-DENABLE_DEBUGGER
-    -f-DDUMP_FILE=\\\"__dump.txt\\\"
     --log=__log.txt
-    -f-DDONT_PRINT_STATISTICS
     -f-g
     --chmod-x-command="chmod +x"
   )
