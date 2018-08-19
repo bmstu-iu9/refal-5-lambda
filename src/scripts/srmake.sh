@@ -17,8 +17,20 @@ set_rich_flags() {
   RT=()
 }
 
+set_rich_debug_flags() {
+  D=(-d "$LIBDIR/rich-debug")
+  CPP=()
+  RT=()
+}
+
 set_slim_flags() {
   D=(-d "$LIBDIR/slim")
+  CPP=()
+  RT=()
+}
+
+set_slim_debug_flags() {
+  D=(-d "$LIBDIR/slim-debug")
   CPP=()
   RT=()
 }
@@ -40,7 +52,7 @@ set_scratch_flags() {
 }
 
 set_default_flags() {
-  set_slim_flags
+  set_slim_debug_flags
 }
 
 # Запуск
@@ -51,9 +63,19 @@ set_default_flags() {
       shift
       ;;
 
+    "--rich-debug")
+      set_rich_debug_flags
+      shift
+      ;;
+
     "--slim")
       shift
       set_slim_flags
+      ;;
+
+    "--slim-debug")
+      shift
+      set_slim_debug_flags
       ;;
 
     "--scratch")

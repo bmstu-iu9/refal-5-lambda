@@ -53,11 +53,27 @@ compile_rich() {
   prepare_prefix "$RICHDIR" rich "$CSOURCES $RSOURCES $RT"
 }
 
+compile_rich_debug() {
+  RICHDIR=../../srlib/rich-debug
+
+  mkdir -p $RICHDIR
+  prepare_prefix "$RICHDIR" rich-debug "$CSOURCES $RSOURCES $RTD"
+}
+
 compile_slim() {
   SLIMDIR=../../srlib/slim
 
   mkdir -p $SLIMDIR
   prepare_prefix "$SLIMDIR" slim "$CSOURCES $RT"
+
+  SREFC_FLAGS="$SREFC_FLAGS -Od-" compile_separated "$SLIMDIR" "$RSOURCES"
+}
+
+compile_slim_debug() {
+  SLIMDIR=../../srlib/slim-debug
+
+  mkdir -p $SLIMDIR
+  prepare_prefix "$SLIMDIR" slim-debug "$CSOURCES $RTD"
 
   SREFC_FLAGS="$SREFC_FLAGS -Od-" compile_separated "$SLIMDIR" "$RSOURCES"
 }
@@ -73,8 +89,6 @@ prepare_common() {
   RT="
     refalrts
     refalrts-allocator
-    refalrts-debugger
-    refalrts-diagnostic-initializer
     refalrts-dynamic
     refalrts-functions
     refalrts-main
@@ -83,6 +97,11 @@ prepare_common() {
     refalrts-vm
     refalrts-platform-specific
     refalrts-platform-POSIX
+  "
+  RTD="
+    $RT
+    refalrts-debugger
+    refalrts-diagnostic-initializer
   "
 
   mkdir -p ../../srlib/src
@@ -93,6 +112,8 @@ prepare_common() {
 
   compile_scratch
   compile_rich
+  compile_rich_debug
   compile_slim
+  compile_slim_debug
   prepare_common
 )

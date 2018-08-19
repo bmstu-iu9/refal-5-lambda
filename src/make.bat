@@ -10,7 +10,7 @@ setlocal
       -X-F-DSTEP_LIMIT=100000000 ^
       -X-F-DIDENTS_LIMIT=1000 ^
       -X-F-DENABLE_DEBUGGER
-    set DEFAULT_SCRIPT_FLAGS=--rich
+    set DEFAULT_SCRIPT_FLAGS=--rich-debug
   ) else (
     set SREFC_FLAGS_PLUS=-OCdPR
     set SRMAKE_FLAGS_PLUS=-X-OCdPR

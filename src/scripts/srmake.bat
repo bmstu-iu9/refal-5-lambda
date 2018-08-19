@@ -18,7 +18,9 @@ setlocal
   :: до первого пробела, включая этот пробел (см. ниже).
   set ARGS=%*
   if "%~1"=="--rich" goto MODE_RICH
+  if "%~1"=="--rich-debug" goto MODE_RICH_DEBUG
   if "%~1"=="--slim" goto MODE_SLIM
+  if "%~1"=="--slim-debug" goto MODE_SLIM_DEBUG
   if "%~1"=="--scratch" goto MODE_SCRATCH
   goto :MODE_DEFAULT
 
@@ -29,10 +31,24 @@ setlocal
   set RT=
   goto END_SWITCH
 
+:MODE_RICH_DEBUG
+  set ARGS=%ARGS:* =%
+  set D=-d "%LIBDIR%\rich-debug"
+  set CPP=
+  set RT=
+  goto END_SWITCH
+
 :MODE_SLIM
   set ARGS=%ARGS:* =%
-:MODE_DEFAULT
   set D=-d "%LIBDIR%\slim"
+  set CPP=
+  set RT=
+  goto END_SWITCH
+
+:MODE_SLIM_DEBUG
+  set ARGS=%ARGS:* =%
+:MODE_DEFAULT
+  set D=-d "%LIBDIR%\slim-debug"
   set CPP=
   set RT=
   goto END_SWITCH

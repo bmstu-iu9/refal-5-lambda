@@ -7,7 +7,7 @@ call ..\..\..\bin\srefc -OC -R D-G.sref -r G
 call ..\..\..\bin\srefc -OC -R E-F.sref -r F-E
 call ..\..\..\bin\srefc -OC -R F-E.sref -r E-F
 call ..\..\..\bin\srefc -OC -R G.sref
-call ..\..\..\bin\srmake --scratch -X-OC -X--markup-context caller.ref
+call ..\..\..\bin\srmake -X-OC -X--markup-context caller.ref
 caller.exe
 if errorlevel 1 (
   echo TEST FAILED!

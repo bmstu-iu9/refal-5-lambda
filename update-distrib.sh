@@ -4,7 +4,7 @@
 
 pushd distrib
 rm -rf bin scripts compiler doc docs lexgen srlib srmake editors
-cp -R ../build/{compiler,lexgen,srmake,srlib-{rich,slim}-prefix} .
+cp -R ../build/{compiler,lexgen,srmake,srlib-{rich,slim}{,-debug}-prefix} .
 mkdir bin
 cp ../src/scripts/srefc.bat bin
 cp ../src/scripts/srefc.sh bin/srefc
@@ -16,8 +16,12 @@ mkdir srlib
 cp -R ../srlib/scratch srlib/scratch
 mkdir srlib/rich
 cp ../srlib/rich/*.{rasl,froms} srlib/rich
+mkdir srlib/rich-debug
+cp ../srlib/rich-debug/*.{rasl,froms} srlib/rich-debug
 mkdir srlib/slim
 cp ../srlib/slim/*.{rasl,froms} srlib/slim
+mkdir srlib/slim-debug
+cp ../srlib/slim-debug/*.{rasl,froms} srlib/slim-debug
 mkdir srlib/common
 cp -R ../srlib/common/* srlib/common
 mkdir doc

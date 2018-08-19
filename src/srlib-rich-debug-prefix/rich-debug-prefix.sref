@@ -12,3 +12,5 @@
 //FROM refalrts-vm
 //FROM refalrts-platform-specific
 //FROM refalrts-platform-POSIX
+//FROM refalrts-debugger
+//FROM refalrts-diagnostic-initializer

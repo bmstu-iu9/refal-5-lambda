@@ -92,8 +92,6 @@ static void load_native_module_report_error(
   }
 }
 
-//FROM refalrts-diagnostic-initializer
-
 refalrts::InitDiagnosticConfig refalrts::g_init_diagnostic_config;
 
 int main(int argc, char **argv) {
