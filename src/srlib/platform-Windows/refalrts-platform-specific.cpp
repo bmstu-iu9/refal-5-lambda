@@ -43,7 +43,7 @@ refalrts::RefalNumber refalrts::api::get_ppid() {
 }
 
 struct refalrts::api::stat {
-  BY_HANDLE_FILE_INFORMATION stat;
+  BY_HANDLE_FILE_INFORMATION info;
 };
 
 const refalrts::api::stat *
@@ -63,7 +63,7 @@ refalrts::api::stat_create(const char *filename) {
   }
 
   refalrts::api::stat *api_stat = new ::refalrts::api::stat();
-  BOOL res = GetFileInformationByHandle(h, &api_stat->stat);
+  BOOL res = GetFileInformationByHandle(h, &api_stat->info);
   CloseHandle(h);
 
   if (res) {
@@ -77,17 +77,17 @@ refalrts::api::stat_create(const char *filename) {
 signed refalrts::api::stat_compare(
   const refalrts::api::stat *left, const refalrts::api::stat *right
 ) {
-  if (left->stat.dwVolumeSerialNumber < right->stat.dwVolumeSerialNumber) {
+  if (left->info.dwVolumeSerialNumber < right->info.dwVolumeSerialNumber) {
     return -1;
-  } else if (left->stat.dwVolumeSerialNumber > right->stat.dwVolumeSerialNumber) {
+  } else if (left->info.dwVolumeSerialNumber > right->info.dwVolumeSerialNumber) {
     return +1;
-  } else if (left->stat.nFileIndexHigh < right->stat.nFileIndexHigh) {
+  } else if (left->info.nFileIndexHigh < right->info.nFileIndexHigh) {
     return -1;
-  } else if (left->stat.nFileIndexHigh > right->stat.nFileIndexHigh) {
+  } else if (left->info.nFileIndexHigh > right->info.nFileIndexHigh) {
     return +1;
-  } else if (left->stat.nFileIndexLow < right->stat.nFileIndexLow) {
+  } else if (left->info.nFileIndexLow < right->info.nFileIndexLow) {
     return -1;
-  } else if (left->stat.nFileIndexLow > right->stat.nFileIndexLow) {
+  } else if (left->info.nFileIndexLow > right->info.nFileIndexLow) {
     return +1;
   } else {
     return 0;

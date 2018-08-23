@@ -843,7 +843,7 @@ struct InSet {
   }
 
   bool operator()(refalrts::Module* module) const {
-    return m_set->count(module);
+    return m_set->count(module) > 0;
   }
 };
 
