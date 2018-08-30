@@ -843,7 +843,8 @@ struct InSet {
   }
 
   bool operator()(refalrts::Module* module) const {
-    return m_set->count(module) > 0;
+    // Open Watcom не знает метода множества std::set<>::count
+    return m_set->find(module) != m_set->end();
   }
 };
 
@@ -876,7 +877,8 @@ void refalrts::Domain::ModuleStorage::gc(
       p != next->references().end();
       ++p
     ) {
-      if (unreached.count(p->second)) {
+      // Open Watcom не знает метода множества std::set<>::count
+      if (unreached.find(p->second) != unreached.end()) {
         unreached.erase(p->second);
         unscanned.insert(p->second);
       }
@@ -889,7 +891,8 @@ void refalrts::Domain::ModuleStorage::gc(
     p != m_modules.rend();
     ++p
   ) {
-    if (unreached.count(*p)) {
+    // Open Watcom не знает метода множества std::set<>::count
+    if (unreached.find(*p) != unreached.end()) {
       (*p)->finalize(vm, pos, result);
     }
   }
