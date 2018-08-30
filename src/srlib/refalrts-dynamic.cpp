@@ -401,7 +401,7 @@ std::string refalrts::Module::Loader::read_asciiz() {
 refalrts::RefalFuncName
 refalrts::Module::ConstTable::make_name(const std::string& name) const {
   char type = name[0];
-  const char *proper_name = name.data() + 1;
+  const char *proper_name = name.c_str() + 1;
 
   if (type == '#') {
     return RefalFuncName(proper_name, cookie1, cookie2);
