@@ -63,12 +63,21 @@ struct RefalFuncName {
 
 struct RefalFunction;
 
-RefalFunction *lookup_function(VM *vm, const RefalFuncName& name);
+RefalFunction *lookup_function_in_domain(VM *vm, const RefalFuncName& name);
+RefalFunction *lookup_function_in_module(
+  Module *module, const RefalFuncName& name
+);
 
-inline RefalFunction *lookup_function(
+inline RefalFunction *lookup_function_in_domain(
   VM *vm, UInt32 cookie1, UInt32 cookie2, const char *name
 ) {
-  return lookup_function(vm, RefalFuncName(name, cookie1, cookie2));
+  return lookup_function_in_domain(vm, RefalFuncName(name, cookie1, cookie2));
+}
+
+inline RefalFunction *lookup_function_in_module(
+  Module *module, UInt32 cookie1, UInt32 cookie2, const char *name
+) {
+  return lookup_function_in_module(module, RefalFuncName(name, cookie1, cookie2));
 }
 
 const RefalFuncName *function_name(const RefalFunction *func);
@@ -513,7 +522,11 @@ RefalFunction *load_module_rep(
   LoadModuleEvent event, void *callback_data,
   FnResult& result
 );
-bool unload_module(VM *vm, Iter pos, RefalFunction *module, FnResult& result);
+bool unload_module(
+  VM *vm, Iter pos, RefalFunction *module_rep, FnResult& result
+);
+
+Module *module_from_function_rep(RefalFunction *module_rep);
 
 // Особое состояние во время выполнения загрузки и выгрузки модулей
 // (во время выполнения их кода инициализации и финализации).

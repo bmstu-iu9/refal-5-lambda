@@ -88,10 +88,17 @@ $ENTRY PtrFromName {
     return refalrts::cRecognitionImpossible;
   }
 
+  const refalrts::UInt32 cookie1 = pcookie1->number_info;
+  const refalrts::UInt32 cookie2 = pcookie2->number_info;
+  const refalrts::RefalFuncName func_name_name(func_name, cookie1, cookie2);
+
+  refalrts::Module *current = refalrts::current_module(vm);
   refalrts::RefalFunction *func_ptr =
-    refalrts::lookup_function(
-      vm, pcookie1->number_info, pcookie2->number_info, func_name
-    );
+    refalrts::lookup_function_in_module(current, func_name_name);
+
+  if (! func_ptr) {
+    func_ptr = refalrts::lookup_function_in_domain(vm, func_name_name);
+  }
 
   refalrts::Iter start_garbage = arg_begin;
   if (func_ptr) {

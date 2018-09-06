@@ -696,15 +696,17 @@ refalrts::IdentReference::ref(refalrts::VM *vm) const {
 // Функции
 
 refalrts::RefalFunction *
-refalrts::lookup_function(
+refalrts::lookup_function_in_domain(
   refalrts::VM *vm, const refalrts::RefalFuncName& name
 ) {
-  RefalFunction *func = vm->module()->lookup_function(name);
-  if (! func) {
-    func = vm->domain()->lookup_function(name);
-  }
+  return vm->domain()->lookup_function(name);
+}
 
-  return func;
+refalrts::RefalFunction *
+refalrts::lookup_function_in_module(
+  refalrts::Module *module, const refalrts::RefalFuncName& name
+) {
+  return module->lookup_function(name);
 }
 
 const refalrts::RefalFuncName *refalrts::function_name(
@@ -834,16 +836,23 @@ refalrts::RefalFunction * refalrts::load_module_rep(
 }
 
 bool refalrts::unload_module(
-  refalrts::VM *vm, refalrts::Iter pos, refalrts::RefalFunction *module,
+  refalrts::VM *vm, refalrts::Iter pos, refalrts::RefalFunction *module_rep,
   refalrts::FnResult& result
 ) {
-  ModuleRepresentant *rep = dynamic_cast<ModuleRepresentant*>(module);
+  ModuleRepresentant *rep = dynamic_cast<ModuleRepresentant*>(module_rep);
   if (rep != 0 && rep->module != 0) {
     refalrts::unload_module(vm, pos, rep->module, result);
     return true;
   } else {
     return false;
   }
+}
+
+refalrts::Module *refalrts::module_from_function_rep(
+  refalrts::RefalFunction *module_rep
+) {
+  ModuleRepresentant *rep = dynamic_cast<ModuleRepresentant*>(module_rep);
+  return rep != 0 ? rep->module : 0;
 }
 
 bool refalrts::dangerous_state(refalrts::VM *vm) {
