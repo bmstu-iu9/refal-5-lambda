@@ -1,10 +1,10 @@
 *$FROM Library
-$EXTERN LoadModule, UnloadModule;
+$EXTERN Module-Load, Module-Unload;
 
 *$REFERENCE G
 
 $ENTRY Go {
-  = <LoadModule 'A-BCE'> : Success t.A
+  = <Module-Load 'A-BCE'> : Success t.A
   = <Print <Mu FuncA>> : A
   = <Print <Mu FuncB>> : B
   = <Print <Mu FuncC>> : C
@@ -12,6 +12,6 @@ $ENTRY Go {
   = <Print <Mu FuncE>> : E
   = <Print <Mu FuncF>> : F
   = <Print <Mu FuncG>> : G
-  = <UnloadModule t.A> : /* пусто */
+  = <Module-Unload t.A> : /* пусто */
   = /* пусто */;
 }

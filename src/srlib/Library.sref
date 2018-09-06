@@ -3725,13 +3725,16 @@ $ENTRY RenameFile {
 }
 
 /**
-  <LoadModule e.ModuleName>
+  <Module-Load e.ModuleName>
     == #Success s.ModuleHandle
-    == #Fails
+    == #Fails e.Errors
+
+  e.Errors ::= пусто
+  TODO: поддержка сообщений об ошибках
 */
 $LABEL Success, Fails;
 
-$ENTRY LoadModule {
+$ENTRY Module-Load {
 %%
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
@@ -3785,9 +3788,9 @@ $ENTRY LoadModule {
 }
 
 /**
-  <UnloadModule s.ModuleHandle> == []
+  <Module-Unload s.ModuleHandle> == []
 */
-$ENTRY UnloadModule {
+$ENTRY Module-Unload {
 %%
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
