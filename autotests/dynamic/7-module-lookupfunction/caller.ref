@@ -1,0 +1,35 @@
+*$FROM Library
+$EXTERN Module-Load, Module-Unload, Module-LookupFunction;
+
+$ENTRY Go {
+  = <Module-Load 'module-A'> : Success t.Module-A
+  = <Module-Load 'module-B'> : Success t.Module-B
+  = <Print <Module-LookupFunction t.Module-A Entry>> : Success s.Entry-A
+  = <Print <s.Entry-A>> : 'Module A'
+  = <Print <Module-LookupFunction t.Module-B 'Entry'>> : Success s.Entry-B
+  = <Print <s.Entry-B>> : 'Module B'
+  = <Print <Module-LookupFunction GLOBAL Entry>> : Success s.Entry-G
+  = <Print <s.Entry-G>> : 'caller'
+  = <Print <Module-LookupFunction CURRENT Entry>> : Success s.Entry-G
+  = <Print <Module-LookupFunction CURRENT-AND-GLOBAL Entry>> : Success s.Entry-G
+  = <Print <Module-LookupFunction GLOBAL Module-A-Func>> : Success s.MAF
+  = <Print <s.MAF>> : 'Module A Func'
+  = <Print <Module-LookupFunction t.Module-A Module-A-Func>> : Success s.MAF
+  = <Print <Module-LookupFunction t.Module-B Module-A-Func>> : Fails
+  = <Print <Module-LookupFunction CURRENT-AND-GLOBAL Module-A-Func>>
+  : Success s.MAF
+  = <Print <Module-LookupFunction CURRENT Module-A-Func>> : Fails
+  = <Print <Module-LookupFunction CURRENT $SCOPEID Local>> : Success s.Local
+  = <Print <s.Local>> : 'caller local'
+  = <Module-Unload t.Module-A> : /* пусто */
+  = <Module-Unload t.Module-B> : /* пусто */
+  = /* пусто */;
+}
+
+$ENTRY Entry {
+  = 'caller';
+}
+
+Local {
+  = 'caller local';
+}

@@ -4051,6 +4051,67 @@ refalrts::RefalFunction *cookie_ns::function_for_module(
 }
 %%
 
+/**
+  <Module-LookupFunction s.ModuleHandleEx e.Scope? e.Function>
+    == Success s.FunctionPtr
+    == Fails
+
+  e.Function ::= s.COMPOUND | s.CHAR+
+*/
+$ENTRY Module-LookupFunction {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  cookie_ns::HandleExType type = cookie_ns::cHandleExType_Value;
+  refalrts::Iter sModuleHandleEx = 0;
+  if (
+    ! cookie_ns::module_handle_ex_left(
+      vm, type, sModuleHandleEx, content_b, content_e
+    )
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::UInt32 cookie1 = 0, cookie2 = 0;
+  if (! cookie_ns::cookie_left(cookie1, cookie2, content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  std::vector<char> func_name_vect;
+  refalrts::Iter sFunctionName = 0;
+  if (content_b->tag == refalrts::cDataIdentifier) {
+    refalrts::svar_left(sFunctionName, content_b, content_e);
+    const char *func_name_cstr = sFunctionName->ident_info->name();
+    size_t len = strlen(func_name_cstr);
+    func_name_vect.assign(func_name_cstr, func_name_cstr + len + 1);
+  } else {
+    refalrts::FnResult res =
+      string_from_seq(func_name_vect, content_b, content_e);
+    if (res != refalrts::cSuccess) {
+      return res;
+    }
+  }
+
+  refalrts::RefalFunction *result = cookie_ns::function_for_module(
+    vm, type, &func_name_vect[0], cookie1, cookie2, sModuleHandleEx
+  );
+
+  if (result != 0) {
+    refalrts::reinit_ident(arg_begin, USE_IDENT(Success));
+    refalrts::update_name(pfunc_name, result);
+    refalrts::splice_to_freelist(vm, sModuleHandleEx, arg_end);
+  } else {
+    refalrts::reinit_ident(arg_begin, USE_IDENT(Fails));
+    refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
+  }
+
+  return refalrts::cSuccess;
+%%
+}
+
 INIT {
 %%
   // 1. Дескрипторы файлов
