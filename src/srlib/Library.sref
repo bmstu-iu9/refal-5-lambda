@@ -3830,6 +3830,117 @@ $ENTRY Module-Unload {
 %%
 }
 
+/**
+  <Module-Mu s.ModuleHandleEx e.Scope? t.Function e.Args>
+    ≈≈ <t.Function e.Args>
+
+  s.ModuleHandleEx ::= s.ModuleHandle | GLOBAL | CURRENT | CURRENT-AND-GLOBAL
+  e.Scope ::= s.NUMBER s.NUMBER
+  t.Function ::= s.FunctionName | (e.FunctionName)
+  s.FunctionName ::= s.COMPOUND
+  e.FunctionName ::= s.CHAR+
+*/
+$LABEL GLOBAL, CURRENT, CURRENT-AND-GLOBAL;
+
+$ENTRY Module-Mu {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter sModuleHandleEx = 0;
+  if (
+    ! refalrts::svar_left(sModuleHandleEx, content_b, content_e)
+    && sModuleHandleEx->tag != refalrts::cDataFunction
+    && ! refalrts::ident_term(USE_IDENT(GLOBAL), sModuleHandleEx)
+    && ! refalrts::ident_term(USE_IDENT(CURRENT), sModuleHandleEx)
+    && ! refalrts::ident_term(USE_IDENT(CURRENTm_ANDm_GLOBAL), sModuleHandleEx)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::UInt32 cookie1 = 0, cookie2 = 0;
+  if (
+    ! refalrts::empty_seq(content_b, content_e)
+    && content_b->tag == refalrts::cDataNumber
+  ) {
+    refalrts::Iter sCookie1 = 0, sCookie2 = 0;
+    if (
+      refalrts::svar_left(sCookie1, content_b, content_e)
+      && refalrts::svar_left(sCookie2, content_b, content_e)
+      && sCookie2->tag == refalrts::cDataNumber
+    ) {
+      cookie1 = sCookie1->number_info;
+      cookie2 = sCookie2->number_info;
+    } else {
+      return refalrts::cRecognitionImpossible;
+    }
+  }
+
+  std::vector<char> func_name_vect;
+  refalrts::Iter sFunctionName = 0;
+  refalrts::Iter eFunctionName_b = 0, eFunctionName_e = 0;
+  refalrts::Iter end_garbage;
+  if (
+    refalrts::svar_left(sFunctionName, content_b, content_e)
+    && sFunctionName->tag == refalrts::cDataIdentifier
+  ) {
+    const char *func_name_cstr = sFunctionName->ident_info->name();
+    size_t len = strlen(func_name_cstr);
+    func_name_vect.assign(func_name_cstr, func_name_cstr + len + 1);
+    end_garbage = sFunctionName;
+  } else if (
+    end_garbage = refalrts::brackets_left(
+      eFunctionName_b, eFunctionName_e, content_b, content_e
+    ),
+    end_garbage != 0
+  ) {
+    refalrts::FnResult res = string_from_seq(
+      func_name_vect, eFunctionName_b, eFunctionName_e
+    );
+    if (res != refalrts::cSuccess) {
+      return res;
+    }
+    end_garbage = end_garbage->link_info;
+  } else {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  const refalrts::RefalFuncName func_name(&func_name_vect[0], cookie1, cookie2);
+  refalrts::Module *current = refalrts::current_module(vm);
+
+  refalrts::RefalFunction *result = 0;
+  if (refalrts::ident_term(USE_IDENT(GLOBAL), sModuleHandleEx)) {
+    result = refalrts::lookup_function_in_domain(vm, func_name);
+  } else if (refalrts::ident_term(USE_IDENT(CURRENT), sModuleHandleEx)) {
+    result = refalrts::lookup_function_in_module(current, func_name);
+  } else if (
+    refalrts::ident_term(USE_IDENT(CURRENTm_ANDm_GLOBAL), sModuleHandleEx)
+  ) {
+    result = refalrts::lookup_function_in_module(current, func_name);
+    if (! result) {
+      result = refalrts::lookup_function_in_domain(vm, func_name);
+    }
+  } else {
+    refalrts::Module *module =
+      refalrts::module_from_function_rep(sModuleHandleEx->function_info);
+    result = refalrts::lookup_function_in_module(module, func_name);
+  }
+
+  if (! result) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::update_name(pfunc_name, result);
+  refalrts::Iter begin_garbage = sModuleHandleEx;
+  refalrts::splice_to_freelist(vm, begin_garbage, end_garbage);
+  refalrts::push_stack(vm, arg_end);
+  refalrts::push_stack(vm, arg_begin);
+  return refalrts::cSuccess;
+%%
+}
+
 INIT {
 %%
   // 1. Дескрипторы файлов
