@@ -3842,6 +3842,43 @@ $ENTRY Module-Unload {
 */
 $LABEL GLOBAL, CURRENT, CURRENT-AND-GLOBAL;
 
+%%
+namespace cookie_ns {
+
+enum HandleExType {
+  cHandleExType_Current,
+  cHandleExType_Global,
+  cHandleExType_CurrentAndGlobal,
+  cHandleExType_Value,
+};
+
+bool module_handle_ex_left(
+  refalrts::VM *vm,
+  HandleExType& type,
+  refalrts::Iter& sModuleHandleEx,
+  refalrts::Iter& content_b,
+  refalrts::Iter& content_e
+);
+
+bool cookie_left(
+  refalrts::UInt32& cookie1,
+  refalrts::UInt32& cookie2,
+  refalrts::Iter& content_b,
+  refalrts::Iter& content_e
+);
+
+refalrts::RefalFunction *function_for_module(
+  refalrts::VM *vm,
+  HandleExType type,
+  const char *func_name,
+  refalrts::UInt32 cookie1,
+  refalrts::UInt32 cookie2,
+  refalrts::Iter sModuleHandleEx
+);
+
+}  // namespace cookie_ns
+%%
+
 $ENTRY Module-Mu {
 %%
   refalrts::Iter content_b = 0;
@@ -3849,33 +3886,19 @@ $ENTRY Module-Mu {
   refalrts::Iter pfunc_name =
     refalrts::call_left(content_b, content_e, arg_begin, arg_end);
 
+  cookie_ns::HandleExType type = cookie_ns::cHandleExType_Value;
   refalrts::Iter sModuleHandleEx = 0;
   if (
-    ! refalrts::svar_left(sModuleHandleEx, content_b, content_e)
-    && sModuleHandleEx->tag != refalrts::cDataFunction
-    && ! refalrts::ident_term(USE_IDENT(GLOBAL), sModuleHandleEx)
-    && ! refalrts::ident_term(USE_IDENT(CURRENT), sModuleHandleEx)
-    && ! refalrts::ident_term(USE_IDENT(CURRENTm_ANDm_GLOBAL), sModuleHandleEx)
+    ! cookie_ns::module_handle_ex_left(
+      vm, type, sModuleHandleEx, content_b, content_e
+    )
   ) {
     return refalrts::cRecognitionImpossible;
   }
 
   refalrts::UInt32 cookie1 = 0, cookie2 = 0;
-  if (
-    ! refalrts::empty_seq(content_b, content_e)
-    && content_b->tag == refalrts::cDataNumber
-  ) {
-    refalrts::Iter sCookie1 = 0, sCookie2 = 0;
-    if (
-      refalrts::svar_left(sCookie1, content_b, content_e)
-      && refalrts::svar_left(sCookie2, content_b, content_e)
-      && sCookie2->tag == refalrts::cDataNumber
-    ) {
-      cookie1 = sCookie1->number_info;
-      cookie2 = sCookie2->number_info;
-    } else {
-      return refalrts::cRecognitionImpossible;
-    }
+  if (! cookie_ns::cookie_left(cookie1, cookie2, content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
   }
 
   std::vector<char> func_name_vect;
@@ -3907,26 +3930,9 @@ $ENTRY Module-Mu {
     return refalrts::cRecognitionImpossible;
   }
 
-  const refalrts::RefalFuncName func_name(&func_name_vect[0], cookie1, cookie2);
-  refalrts::Module *current = refalrts::current_module(vm);
-
-  refalrts::RefalFunction *result = 0;
-  if (refalrts::ident_term(USE_IDENT(GLOBAL), sModuleHandleEx)) {
-    result = refalrts::lookup_function_in_domain(vm, func_name);
-  } else if (refalrts::ident_term(USE_IDENT(CURRENT), sModuleHandleEx)) {
-    result = refalrts::lookup_function_in_module(current, func_name);
-  } else if (
-    refalrts::ident_term(USE_IDENT(CURRENTm_ANDm_GLOBAL), sModuleHandleEx)
-  ) {
-    result = refalrts::lookup_function_in_module(current, func_name);
-    if (! result) {
-      result = refalrts::lookup_function_in_domain(vm, func_name);
-    }
-  } else {
-    refalrts::Module *module =
-      refalrts::module_from_function_rep(sModuleHandleEx->function_info);
-    result = refalrts::lookup_function_in_module(module, func_name);
-  }
+  refalrts::RefalFunction *result = cookie_ns::function_for_module(
+    vm, type, &func_name_vect[0], cookie1, cookie2, sModuleHandleEx
+  );
 
   if (! result) {
     return refalrts::cRecognitionImpossible;
@@ -3940,6 +3946,110 @@ $ENTRY Module-Mu {
   return refalrts::cSuccess;
 %%
 }
+
+%%
+bool cookie_ns::module_handle_ex_left(
+  refalrts::VM *vm,
+  cookie_ns::HandleExType& type,
+  refalrts::Iter& sModuleHandleEx,
+  refalrts::Iter& content_b,
+  refalrts::Iter& content_e
+) {
+  if (
+    ! refalrts::svar_left(sModuleHandleEx, content_b, content_e)
+    && sModuleHandleEx->tag != refalrts::cDataFunction
+    && ! refalrts::ident_term(USE_IDENT(GLOBAL), sModuleHandleEx)
+    && ! refalrts::ident_term(USE_IDENT(CURRENT), sModuleHandleEx)
+    && ! refalrts::ident_term(USE_IDENT(CURRENTm_ANDm_GLOBAL), sModuleHandleEx)
+  ) {
+    return false;
+  }
+
+  if (refalrts::ident_term(USE_IDENT(GLOBAL), sModuleHandleEx)) {
+    type = cookie_ns::cHandleExType_Global;
+  } else if (refalrts::ident_term(USE_IDENT(CURRENT), sModuleHandleEx)) {
+    type = cookie_ns::cHandleExType_Current;
+  } else if (
+    refalrts::ident_term(USE_IDENT(CURRENTm_ANDm_GLOBAL), sModuleHandleEx)
+  ) {
+    type = cookie_ns::cHandleExType_CurrentAndGlobal;
+  } else {
+    type = cookie_ns::cHandleExType_Value;
+  }
+
+  return true;
+}
+
+bool cookie_ns::cookie_left(
+  refalrts::UInt32& cookie1,
+  refalrts::UInt32& cookie2,
+  refalrts::Iter& content_b,
+  refalrts::Iter& content_e
+) {
+  cookie1 = 0;
+  cookie2 = 0;
+  if (
+    ! refalrts::empty_seq(content_b, content_e)
+    && content_b->tag == refalrts::cDataNumber
+  ) {
+    refalrts::Iter sCookie1 = 0, sCookie2 = 0;
+    if (
+      refalrts::svar_left(sCookie1, content_b, content_e)
+      && refalrts::svar_left(sCookie2, content_b, content_e)
+      && sCookie2->tag == refalrts::cDataNumber
+    ) {
+      cookie1 = sCookie1->number_info;
+      cookie2 = sCookie2->number_info;
+    } else {
+      return false;
+    }
+  }
+  return true;
+}
+
+refalrts::RefalFunction *cookie_ns::function_for_module(
+  refalrts::VM *vm,
+  cookie_ns::HandleExType type,
+  const char *func_name_cstr,
+  refalrts::UInt32 cookie1,
+  refalrts::UInt32 cookie2,
+  refalrts::Iter sModuleHandleEx
+) {
+  const refalrts::RefalFuncName func_name(func_name_cstr, cookie1, cookie2);
+  refalrts::Module *current = refalrts::current_module(vm);
+  refalrts::RefalFunction *result = 0;
+
+  switch (type) {
+    case cookie_ns::cHandleExType_Global:
+      result = refalrts::lookup_function_in_domain(vm, func_name);
+      break;
+
+    case cookie_ns::cHandleExType_Current:
+      result = refalrts::lookup_function_in_module(current, func_name);
+      break;
+
+    case cookie_ns::cHandleExType_CurrentAndGlobal:
+      result = refalrts::lookup_function_in_module(current, func_name);
+      if (! result) {
+        result = refalrts::lookup_function_in_domain(vm, func_name);
+      }
+      break;
+
+    case cookie_ns::cHandleExType_Value:
+      {
+        refalrts::Module *module =
+          refalrts::module_from_function_rep(sModuleHandleEx->function_info);
+        result = refalrts::lookup_function_in_module(module, func_name);
+      }
+      break;
+
+    default:
+      refalrts_switch_default_violation(type);
+  }
+
+  return result;
+}
+%%
 
 INIT {
 %%
