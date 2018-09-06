@@ -85,7 +85,6 @@ setlocal
     Library-SymbCompare-Fail ^
     Library-Implodes-Fail ^
     Library-PtrFromName-Fail ^
-    redeclaration-fail ^
     || exit /b 1
 
   if exist Library-WriteLine.exe (
