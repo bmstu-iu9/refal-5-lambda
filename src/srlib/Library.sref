@@ -48,67 +48,14 @@ $ENTRY __FindMuPtr {
   e.FuncName ::= s.COMPOUND | s.CHAR*
 */
 $ENTRY PtrFromName {
-%%
-  refalrts::Iter content_b = 0, content_e = 0;
-  refalrts::Iter pfunc =
-    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  const char *func_name = 0;
-
-  enum { cMaxFuncName = 2000 };
-  char func_name_buffer[cMaxFuncName + 1] = { 0 };
-  unsigned read;
-
-  refalrts::Iter pcookie1 = 0, pcookie2 = 0;
-  if (
-    ! refalrts::svar_left(pcookie1, content_b, content_e)
-    || refalrts::cDataNumber != pcookie1->tag
-    || ! refalrts::svar_left(pcookie2, content_b, content_e)
-    || refalrts::cDataNumber != pcookie2->tag
-  ) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  if (refalrts::cDataIdentifier == content_b->tag) {
-    func_name = content_b->ident_info->name();
-    refalrts::move_left(content_b, content_e);
-  } else if (
-    (
-      read = refalrts::read_chars(
-        func_name_buffer, cMaxFuncName, content_b, content_e
-      )
-    ) != 0
-    && refalrts::empty_seq(content_b, content_e)
-  ) {
-    func_name_buffer[read] = '\0';
-    func_name = func_name_buffer;
-  }
-
-  if (0 == func_name) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  const refalrts::UInt32 cookie1 = pcookie1->number_info;
-  const refalrts::UInt32 cookie2 = pcookie2->number_info;
-  const refalrts::RefalFuncName func_name_name(func_name, cookie1, cookie2);
-
-  refalrts::Module *current = refalrts::current_module(vm);
-  refalrts::RefalFunction *func_ptr =
-    refalrts::lookup_function_in_module(current, func_name_name);
-
-  if (! func_ptr) {
-    func_ptr = refalrts::lookup_function_in_domain(vm, func_name_name);
-  }
-
-  refalrts::Iter start_garbage = arg_begin;
-  if (func_ptr) {
-    refalrts::reinit_name(arg_begin, func_ptr);
-    start_garbage = pfunc;
-  }
-
-  refalrts::splice_to_freelist(vm, start_garbage, arg_end);
-  return refalrts::cSuccess;
-%%
+  s.Cookie1 s.Cookie2 e.FuncName
+    = <Module-LookupFunction
+        #CURRENT-AND-GLOBAL s.Cookie1 s.Cookie2 e.FuncName
+      >
+    : {
+        #Success s.FuncPtr = s.FuncPtr;
+        #Fails = /* пусто */;
+      };
 }
 
 
