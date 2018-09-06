@@ -4058,8 +4058,29 @@ refalrts::RefalFunction *cookie_ns::function_for_module(
 
   e.Function ::= s.COMPOUND | s.CHAR+
 */
+%%
+namespace cookie_ns {
+
+refalrts::FnResult find_function(
+  refalrts::VM *vm, refalrts::Iter arg_begin, refalrts::Iter arg_end,
+  bool fail_down
+);
+
+}  // namespace cookie_ns
+%%
+
 $ENTRY Module-LookupFunction {
 %%
+  return cookie_ns::find_function(vm, arg_begin, arg_end, false);
+%%
+}
+
+%%
+
+refalrts::FnResult cookie_ns::find_function(
+  refalrts::VM *vm, refalrts::Iter arg_begin, refalrts::Iter arg_end,
+  bool fail_down
+) {
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
   refalrts::Iter pfunc_name =
@@ -4100,15 +4121,35 @@ $ENTRY Module-LookupFunction {
   );
 
   if (result != 0) {
-    refalrts::reinit_ident(arg_begin, USE_IDENT(Success));
-    refalrts::update_name(pfunc_name, result);
-    refalrts::splice_to_freelist(vm, sModuleHandleEx, arg_end);
+    if (fail_down) {
+      refalrts::reinit_name(arg_begin, result);
+      refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
+    } else {
+      refalrts::reinit_ident(arg_begin, USE_IDENT(Success));
+      refalrts::update_name(pfunc_name, result);
+      refalrts::splice_to_freelist(vm, sModuleHandleEx, arg_end);
+    }
   } else {
-    refalrts::reinit_ident(arg_begin, USE_IDENT(Fails));
-    refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
+    if (fail_down) {
+      return refalrts::cRecognitionImpossible;
+    } else {
+      refalrts::reinit_ident(arg_begin, USE_IDENT(Fails));
+      refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
+    }
   }
 
   return refalrts::cSuccess;
+}
+%%
+
+/**
+  <Module-FunctionPtr s.ModuleHandleEx e.Scope? e.Function>
+    == s.FunctionPtr
+    fail donw if not found
+*/
+$ENTRY Module-FunctionPtr {
+%%
+  return cookie_ns::find_function(vm, arg_begin, arg_end, true);
 %%
 }
 
