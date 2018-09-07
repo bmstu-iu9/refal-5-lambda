@@ -267,7 +267,7 @@ DoFindDivision {
             (<Subst-Collapse e.Image>)
             (e.FirstGroup) (e.NextSentence) e.Sentences;
 
-        e.OtherGCG
+        e.NewImage^
           = <DoFindDivision
               (e.TrivialGCG) (e.NewImage) (e.FirstGroup (e.NextSentence))
               e.Sentences

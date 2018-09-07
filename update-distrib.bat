@@ -13,7 +13,9 @@ xcopy /e /y /i ..\build\compiler compiler
 xcopy /e /y /i ..\build\lexgen lexgen
 xcopy /e /y /i ..\build\srmake srmake
 xcopy /e /y /i ..\build\srlib-rich-prefix srlib-rich-prefix
+xcopy /e /y /i ..\build\srlib-rich-debug-prefix srlib-rich-debug-prefix
 xcopy /e /y /i ..\build\srlib-slim-prefix srlib-slim-prefix
+xcopy /e /y /i ..\build\srlib-slim-debug-prefix srlib-slim-debug-prefix
 md bin
 copy ..\src\scripts\srefc.* bin
 copy ..\src\scripts\srmake.* bin
@@ -25,9 +27,15 @@ xcopy /e /i /y ..\srlib\scratch srlib\scratch
 md srlib\rich
 copy ..\srlib\rich\*.rasl srlib\rich
 copy ..\srlib\rich\*.froms srlib\rich
+md srlib\rich-debug
+copy ..\srlib\rich-debug\*.rasl srlib\rich-debug
+copy ..\srlib\rich-debug\*.froms srlib\rich-debug
 md srlib\slim
 copy ..\srlib\slim\*.rasl srlib\slim
 copy ..\srlib\slim\*.froms srlib\slim
+md srlib\slim-debug
+copy ..\srlib\slim-debug\*.rasl srlib\slim-debug
+copy ..\srlib\slim-debug\*.froms srlib\slim-debug
 xcopy /e /i /y ..\srlib\common srlib\common
 md doc
 xcopy /e /i /y ..\doc\examples doc\examples

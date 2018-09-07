@@ -20,13 +20,18 @@ setlocal
     --exesuffix=.exe ^
     -D../../src/srlib/platform-Windows ^
     -D../../src/srlib ^
-    -f-DSTEP_LIMIT=1500 ^
-    -f-DMEMORY_LIMIT=1000 ^
-    -f-DIDENTS_LIMIT=100 ^
-    %DUMP_FILE_NAME_OPTION% ^
-    -f-DDONT_PRINT_STATISTICS ^
     refalrts ^
+    refalrts-allocator ^
+    refalrts-debugger ^
+    refalrts-diagnostic-initializer ^
+    refalrts-dynamic ^
+    refalrts-functions ^
+    refalrts-main ^
+    refalrts-profiler ^
+    refalrts-vm ^
     refalrts-platform-specific
+
+  set DIAG=++diagnostic+config=test-diagnostics.txt
 
   echo Precompile Library.sref
   copy ..\..\src\srlib\Library.sref .
@@ -105,7 +110,7 @@ setlocal
 
   if exist Library-ReadLine-2lines.exe (
     echo Pass Library-ReadLine-2lines test...
-    Library-ReadLine-2lines.exe < 2lines.txt
+    Library-ReadLine-2lines.exe %DIAG% < 2lines.txt
     if errorlevel 1 (
       echo TEST FAILED, SEE __dump.txt
       exit /b 1
@@ -115,7 +120,7 @@ setlocal
 
   if exist Library-ReadLine-2lines-no-eol.exe (
     echo Pass Library-ReadLine-2lines-no-eol test...
-    Library-ReadLine-2lines-no-eol.exe < 2lines-no-eol.txt
+    Library-ReadLine-2lines-no-eol.exe %DIAG% < 2lines-no-eol.txt
     if errorlevel 1 (
       echo TEST FAILED, SEE __dump.txt
       exit /b 1
@@ -153,7 +158,7 @@ setlocal
 
   if exist Library-symbolic-file-handles.exe (
     echo Pass Library-symbolic-file-handles test...
-    Library-symbolic-file-handles.exe < 2lines.txt > __out.txt 2>__err.txt
+    Library-symbolic-file-handles.exe %DIAG% < 2lines.txt > __out.txt 2>__err.txt
     if errorlevel 1 (
       echo TEST FAILED, SEE __dump.txt
       exit /b 1
@@ -211,7 +216,7 @@ setlocal
   if {%1}=={} goto SIMPLE_TESTS_END
   if exist %1.exe (
     echo Pass simple FAIL test %1...
-    %1.exe
+    %1.exe %DIAG%
     if not errorlevel 1 (
       echo TEST NOT EXPECTATIVE FAILED, SEE __dump.txt
       exit /b 1
@@ -227,7 +232,7 @@ endlocal
 goto :EOF
 
 :RUN_EXE
-  %1 > __out.txt
+  %1 %DIAG% > __out.txt
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
     exit /b 1

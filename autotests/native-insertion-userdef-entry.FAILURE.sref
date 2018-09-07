@@ -6,7 +6,9 @@ $ENTRY Go {
 }
 
 %%
-static refalrts::FnResult func_Native(refalrts::Iter left_bracket, refalrts::Iter right_bracket) {
+static refalrts::FnResult func_Native(
+  refalrts::VM *, refalrts::Iter left_bracket, refalrts::Iter right_bracket
+) {
   using namespace refalrts;
 
   Iter func_name = left_bracket;

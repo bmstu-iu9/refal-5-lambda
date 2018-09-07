@@ -21,6 +21,8 @@ $ENTRY Config-Create {
         (#References /* пусто */)
         (#TargetMode #DefaultEXE)
         (#Prelude /* пусто */)
+        (#Runtime /* пусто */)
+        (#Incorporateds /* пусто */)
       ];
 }
 
@@ -256,4 +258,41 @@ $ENTRY Config-GetPrelude {
 $ENTRY Config-SetPrelude {
   [Config e.Params-B (#Prelude e.OldPrelude) e.Params-E] e.NewPrelude
     = #Success [Config e.Params-B (#Prelude e.NewPrelude) e.Params-E];
+}
+
+/**
+  <Config-GetRuntimeFiles t.Config> == (e.FileName)*
+*/
+$ENTRY Config-GetRuntimeFiles {
+  [Config e.Params-B (#Runtime e.Files) e.Params-E] = e.Files;
+}
+
+/**
+  <Config-AddRuntimeFile t.Config e.FileName>
+    == #Success t.Config
+*/
+$ENTRY Config-AddRuntimeFile {
+  [Config e.Params-B (#Runtime e.Files) e.Params-E] e.NewFile
+    = #Success
+      [Config e.Params-B (#Runtime e.Files (e.NewFile)) e.Params-E];
+}
+
+/**
+  <Config-GetIncorporateds t.Config>
+    == (e.LibName)*
+*/
+$ENTRY Config-GetIncorporateds {
+  [Config e.Params-B (#Incorporateds e.LibNames) e.Params-E] = e.LibNames;
+}
+
+/**
+  <Config-AddIncorporated t.Config e.LibName>
+    = #Success t.Config
+*/
+$ENTRY Config-AddIncorporated {
+  [Config e.Params-B (#Incorporateds e.LibNames) e.Params-E] e.NewLibName
+    = #Success
+      [Config
+        e.Params-B (#Incorporateds e.LibNames (e.NewLibName)) e.Params-E
+      ];
 }

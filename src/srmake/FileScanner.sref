@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN LoadFile, MapReduce, Inc, Trim, Map;
+$EXTERN Map, LoadFile, MapReduce, Inc, Trim;
 
 //FROM Library
 $EXTERN ExistFile, Chr, Add, Mul;
@@ -8,6 +8,7 @@ $EXTERN ExistFile, Chr, Add, Mul;
 $EXTERN
   Config-GetPrelude,
   Config-AddReference,
+  Config-GetTargetMode,
   Config-GetFolders,
   Config-GetPrefix,
   Config-SetPrefix;
@@ -20,9 +21,15 @@ $EXTERN UnEscapeString-SR;
 
 
 $ENTRY CreateFileList {
-  t.Config e.Unit
+  t.Config e.Units
     = <DoCreateFileList
-        t.Config () <FindFileEx t.Config #CMD-LINE e.Unit>
+        t.Config ()
+        <Map
+          {
+            (e.Unit) = <FindFileEx t.Config #CMD-LINE e.Unit>;
+          }
+          e.Units
+        >
       >;
 }
 
@@ -130,7 +137,8 @@ FindImports-Aux {
 
 FindFileEx {
   t.Config t.SrcPos e.UnitName
-    = <FindFiles (<GetFolders t.Config>) (e.UnitName)>
+    = <Config-GetTargetMode t.Config> : s.TargetMode
+    = <FindFiles s.TargetMode (<GetFolders t.Config>) (e.UnitName)>
     : {
         (#NotFound e.Unit) = (#Error t.SrcPos 'Unit ' e.Unit ' not found');
 

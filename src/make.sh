@@ -11,14 +11,8 @@ make_subdir() {
     # Максимум 40 000 000 байт (x32), 80 000 000 байт (x64)
     # SREFC_FLAGS используются только для сборки библиотек
     SREFC_FLAGS_PLUS="--markup-context --debug-info -OC"
-    SRMAKE_FLAGS_PLUS="
-      -X--markup-context -X--debug-info -X-OC
-      -X-F-DMEMORY_LIMIT=5000000
-      -X-F-DSTEP_LIMIT=100000000
-      -X-F-DIDENTS_LIMIT=1000
-      -X-F-DENABLE_DEBUGGER
-    "
-    DEFAULT_SCRIPT_FLAGS=--rich
+    SRMAKE_FLAGS_PLUS="-X--markup-context -X--debug-info -X-OC"
+    DEFAULT_SCRIPT_FLAGS=--rich-debug
   else
     SREFC_FLAGS_PLUS=-OCdPR
     SRMAKE_FLAGS_PLUS=-X-OCdPR

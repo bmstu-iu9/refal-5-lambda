@@ -250,42 +250,28 @@ ParseOptFlags {
 }
 
 ParseOptLetters {
-  // TODO: рефакторизовать как
-  // (e.Scanned) s.Flag e.Flags
-  //    , <ValidFlag s.Flag> : #True s.FlagName
-  //    = <ParseOptLetters (<Flags-Unique e.Scanned s.FlagName>) e.Flags>;
-
-  (e.Scanned) 'Q' e.Flags
-    // См. Config-GetOptPattern
-    = <ParseOptLetters (<Flags-Unique e.Scanned #OptPatternExt>) e.Flags>;
-
-  (e.Scanned) 'P' e.Flags
-    = <ParseOptLetters (<Flags-Unique e.Scanned #OptPattern>) e.Flags>;
-
-  (e.Scanned) 'R' e.Flags
-    = <ParseOptLetters (<Flags-Unique e.Scanned #OptResult>) e.Flags>;
-
-  (e.Scanned) 'd' e.Flags
-    = <ParseOptLetters (<Flags-Unique e.Scanned #OptDirect>) e.Flags>;
-
-  (e.Scanned) 'C' e.Flags
-    = <ParseOptLetters (<Flags-Unique e.Scanned #OptConditions>) e.Flags>;
-
-  (e.Scanned) 'T' e.Flags
-    = <ParseOptLetters (<Flags-Unique e.Scanned #OptTree>) e.Flags>;
-
-  (e.Scanned) 'D' e.Flags
-    = <ParseOptLetters (<Flags-Unique e.Scanned #OptTree #OptDrive>) e.Flags>;
-
-  (e.Scanned) 'I' e.Flags
-    = <ParseOptLetters (<Flags-Unique e.Scanned #OptTree #OptInline>) e.Flags>;
-
-  (e.Scanned) 'S' e.Flags
-    = <ParseOptLetters (<Flags-Unique e.Scanned #OptTree #OptSpec>) e.Flags>;
+  (e.Scanned) s.Flag e.Flags
+     , <ValidFlag s.Flag> : #True e.FlagNames
+     = <ParseOptLetters (<Flags-Unique e.Scanned e.FlagNames>) e.Flags>;
 
   (e.Scanned) /* пусто */ = #Success e.Scanned;
 
   (e.Scanned) e.Unparsed = #Fails e.Unparsed;
+}
+
+ValidFlag {
+  // См. Config-GetOptPattern
+  'Q' = #True #OptPatternExt;
+  'P' = #True #OptPattern;
+  'R' = #True #OptResult;
+  'd' = #True #OptDirect;
+  'C' = #True #OptConditions;
+  'T' = #True #OptTree;
+  'D' = #True #OptTree #OptDrive;
+  'I' = #True #OptTree #OptInline;
+  'S' = #True #OptTree #OptSpec;
+
+  s.Other = #False;
 }
 
 Flags-Unique {

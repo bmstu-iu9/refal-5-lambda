@@ -1,0 +1,7 @@
+$ENTRY Entry {
+  = 'Module A';
+}
+
+$ENTRY Module-A-Func {
+  = 'Module A Func';
+}

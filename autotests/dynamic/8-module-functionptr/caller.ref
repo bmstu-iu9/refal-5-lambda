@@ -1,0 +1,27 @@
+*$FROM Library
+$EXTERN Module-Load, Module-Unload, Module-FunctionPtr;
+
+$ENTRY Go {
+  = <Module-Load 'module-A'> : Success t.Module-A
+  = <Module-Load 'module-B'> : Success t.Module-B
+  = <Print <<Module-FunctionPtr t.Module-A Entry>>> : 'Module A'
+  = <Print <<Module-FunctionPtr t.Module-B 'Entry'>>> : 'Module B'
+  = <Print <<Module-FunctionPtr GLOBAL Entry>>> : 'caller'
+  = <Print <<Module-FunctionPtr CURRENT Entry>>> : 'caller'
+  = <Print <<Module-FunctionPtr CURRENT-AND-GLOBAL Entry>>> : 'caller'
+  = <Print <<Module-FunctionPtr GLOBAL Module-A-Func>>> : 'Module A Func'
+  = <Print <<Module-FunctionPtr t.Module-A Module-A-Func>>> : 'Module A Func'
+  = <Print <<Module-FunctionPtr CURRENT-AND-GLOBAL Module-A-Func>>> : 'Module A Func'
+  = <Print <<Module-FunctionPtr CURRENT $SCOPEID Local>>> : 'caller local'
+  = <Module-Unload t.Module-A> : /* пусто */
+  = <Module-Unload t.Module-B> : /* пусто */
+  = /* пусто */;
+}
+
+$ENTRY Entry {
+  = 'caller';
+}
+
+Local {
+  = 'caller local';
+}

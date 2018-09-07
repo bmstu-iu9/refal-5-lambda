@@ -7,14 +7,28 @@ if not exist ..\..\srlib\src\nul (
 setlocal
   set CSOURCES=Library Hash
   set RSOURCES=LibraryEx GetOpt
-  set RT=refalrts refalrts-platform-specific refalrts-platform-POSIX
+  set RT=refalrts ^
+    refalrts-allocator ^
+    refalrts-dynamic ^
+    refalrts-functions ^
+    refalrts-main ^
+    refalrts-platform-specific ^
+    refalrts-profiler ^
+    refalrts-vm ^
+    refalrts-platform-specific ^
+    refalrts-platform-POSIX
+  set RTD=%RT% ^
+    refalrts-debugger ^
+    refalrts-diagnostic-initializer
 
   copy LICENSE ..\..\srlib
   for %%s in (%CSOURCES% %RSOURCES%) do copy %%s.sref ..\..\srlib\src
 
   call :COMPILE_SCRATCH
   call :COMPILE_RICH
+  call :COMPILE_RICH_DEBUG
   call :COMPILE_SLIM
+  call :COMPILE_SLIM_DEBUG
   call :PREPARE_COMMON
 endlocal
 goto :EOF
@@ -80,6 +94,14 @@ goto :EOF
   call :PREPARE_PREFIX "%RICHDIR%" rich "%CSOURCES% %RSOURCES% %RT%"
 goto :EOF
 
+:COMPILE_RICH_DEBUG
+  set RICHDIR=..\..\srlib\rich-debug
+  mkdir %RICHDIR%\x
+  rmdir %RICHDIR%\x
+
+  call :PREPARE_PREFIX "%RICHDIR%" rich-debug "%CSOURCES% %RSOURCES% %RTD%"
+goto :EOF
+
 :COMPILE_SLIM
 setlocal
   set SLIMDIR=..\..\srlib\slim
@@ -87,6 +109,19 @@ setlocal
   rmdir %SLIMDIR%\x
 
   call :PREPARE_PREFIX "%SLIMDIR%" slim "%CSOURCES% %RT%"
+
+  set SREFC_FLAGS=%SREFC_FLAGS% -Od-
+  call :COMPILE_SEPARATED  "%SLIMDIR%" "%RSOURCES%"
+endlocal
+goto :EOF
+
+:COMPILE_SLIM_DEBUG
+setlocal
+  set SLIMDIR=..\..\srlib\slim-debug
+  mkdir %SLIMDIR%\x
+  rmdir %SLIMDIR%\x
+
+  call :PREPARE_PREFIX "%SLIMDIR%" slim-debug "%CSOURCES% %RTD%"
 
   set SREFC_FLAGS=%SREFC_FLAGS% -Od-
   call :COMPILE_SEPARATED  "%SLIMDIR%" "%RSOURCES%"

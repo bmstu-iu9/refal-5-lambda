@@ -1,0 +1,10 @@
+//REFERENCE swap
+$EXTERN Swap;
+
+INIT {
+  = <Swap #Init>;
+}
+
+FINAL {
+  = <Swap #Final>;
+}

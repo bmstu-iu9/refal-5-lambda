@@ -5,8 +5,6 @@ goto :EOF
 :MAIN
 setlocal
   call ..\scripts\load-config.bat || exit /b 1
-  set RUNTIME=../src/srlib/refalrts.cpp ^
-    ../src/srlib/platform-Windows/refalrts-platform-specific.cpp
   if {%1}=={} (
     for %%s in (*.sref *.ref) do call :RUN_TEST %%s || exit /b 1
     call :RUN_ALL_TESTS_DIR || exit /b 1
@@ -70,14 +68,18 @@ setlocal
     --prelude=test-prelude.srefi ^
     -D../src/srlib/platform-Windows ^
     -D../src/srlib ^
-    -f-DSTEP_LIMIT=1500 ^
-    -f-DMEMORY_LIMIT=1000 ^
-    -f-DIDENTS_LIMIT=200 ^
-    %DUMP_FILE_NAME_OPTION% ^
-    --log=__log.txt ^
-    -f-DDONT_PRINT_STATISTICS
+    --log=__log.txt
   set SRFLAGS_PREF=--prefix=_test_prefix
-  set SRFLAGS_NAT=refalrts refalrts-platform-specific
+  set SRFLAGS_NAT=refalrts ^
+    refalrts-allocator ^
+    refalrts-debugger ^
+    refalrts-diagnostic-initializer ^
+    refalrts-dynamic ^
+    refalrts-functions ^
+    refalrts-main ^
+    refalrts-profiler ^
+    refalrts-vm ^
+    refalrts-platform-specific
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
 endlocal
 goto :EOF
@@ -170,7 +172,7 @@ setlocal
 
   if not exist %NATCPP% set NATCPP=
 
-  %EXE%
+  %EXE% ++diagnostic+config=test-diagnostics.txt
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
     exit /b 1
@@ -213,7 +215,7 @@ setlocal
 
   if not exist %NATCPP% set NATCPP=
 
-  %EXE%
+  %EXE% ++diagnostic+config=test-diagnostics.txt
   if not errorlevel 100 (
     echo TEST NOT EXPECTATIVE FAILED, SEE __dump.txt
     exit /b 1
@@ -247,72 +249,6 @@ setlocal
     exit /b 1
   )
   echo Ok! Compiler didn't crash on invalid syntax
-  echo.
-endlocal
-goto :EOF
-
-:RUN_TEST_AUX.LEXGEN
-setlocal
-  call :PREPARE_PREFIX || exit /b 1
-
-  echo Passing %1 (lexgen)...
-  set SREF=%1
-
-  ..\bin\lexgen --from=%SREF% --to=_lexgen-out.sref 2> __error.txt
-  if errorlevel 100 (
-    echo LEXGEN ON %1 FAILS, SEE __error.txt
-    exit /b 1
-  )
-  erase __error.txt
-  if not exist _lexgen-out.sref (
-    echo LEXGEN FAILED
-    exit /b 1
-  )
-
-  ..\bin\srefc-core _lexgen-out.sref -o _lexgen-out.exe %COMMON_SRFLAGS% ^
-    %SRFLAGS_PREF% 2> __error.txt
-  if errorlevel 100 (
-    echo COMPILER ON %1 FAILS, SEE __error.txt
-    exit /b 1
-  )
-  erase __error.txt
-  if not exist _lexgen-out.rasl (
-    echo COMPILATION FAILED
-    exit /b 1
-  )
-
-  _lexgen-out.exe
-  if errorlevel 1 (
-    echo TEST FAILED, SEE __dump.txt
-    exit /b 1
-  )
-
-  erase _lexgen-out.*
-  if exist *.obj erase *.obj
-  if exist *.tds erase *.tds
-  if exist __dump.txt erase __dump.txt
-  if exist __log.txt erase __log.txt
-  echo.
-endlocal
-goto :EOF
-
-:RUN_TEST_AUX.BAD-SYNTAX-LEXGEN
-setlocal
-  echo Passing %1 (lexgen, syntax error recovering)...
-  set SREF=%1
-
-  ..\bin\lexgen --from=%SREF% --to=_lexgen-out.sref 2> __error.txt
-  if errorlevel 100 (
-    echo LEXGEN ON %1 FAILS, SEE __error.txt
-    exit /b 1
-  )
-  erase __error.txt
-  if exist _lexgen-out.sref (
-    echo LEXGEN SUCCESSED, BUT EXPECTED SYNTAX ERROR
-    exit /b 1
-  )
-
-  echo Ok! LexGen didn't crash on invalid syntax
   echo.
 endlocal
 goto :EOF

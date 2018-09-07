@@ -17,6 +17,7 @@ $EXTERN CreateFileList;
 $EXTERN
   Config-GetFolders,
   Config-GetSourceFile,
+  Config-GetRuntimeFiles,
   Config-GetSrefCompiler,
   Config-GetCppCompilerExe,
   Config-GetCppCompilerLib,
@@ -24,7 +25,8 @@ $EXTERN
   Config-GetReferences,
   Config-GetPrelude,
   Config-GetTargetMode,
-  Config-GetTargetFileName;
+  Config-GetTargetFileName,
+  Config-GetIncorporateds;
 
 $ENTRY Go { = <PrintVersion 'SRMake'> <Main <ArgList>>; }
 
@@ -56,7 +58,9 @@ MakeProject {
       >
     : e.Folders
     = <Config-GetSourceFile t.Config> : e.SourceFile
-    = <CreateFileList t.Config e.SourceFile> : t.Config^ e.Units
+    = <Config-GetRuntimeFiles t.Config> : e.RuntimeFiles
+    = <CreateFileList t.Config (e.SourceFile) e.RuntimeFiles>
+    : t.Config^ e.Units
     = <RunSrefCompiler t.Config e.Units>;
 
   #Fails e.Errors
@@ -104,6 +108,7 @@ RunSrefCompiler {
     = <MakeSearchFolderFlags t.Config> : e.SearchFolderFlags
     = <GetPrefix t.Config> : e.Prefix
     = <Config-GetReferences t.Config> : e.References
+    = <Config-GetIncorporateds t.Config> : e.IncorporatedLibs
     = <Config-GetPrelude t.Config> : e.Prelude
     = <System
         e.SrefCompiler
@@ -122,6 +127,12 @@ RunSrefCompiler {
         >
         <Map
           {
+            (e.LibName) = ' --incorporated="' e.LibName '"';
+          }
+          e.IncorporatedLibs
+        >
+        <Map
+          {
             (#Output e.Output) = ' "' e.Output '"';
             (#OutputWithNative (e.Output) e.Native) = ' "' e.Output '"';
             (#Source (s.Dialect e.Source) e.Output) = ' "' e.Source '"';
@@ -130,9 +141,13 @@ RunSrefCompiler {
           e.Units
         >
       >
-      /* TODO: уточнить после обновления System в стабильной версии */
-    : e.RetCode
-    = /* пусто */;
+    : {
+        0 = /* пусто */;
+
+        s.RetCode
+          = <WriteLine 'ERROR: srefc-core returned code ' <StrFromInt s.RetCode>>
+            <Exit 1>;
+      };
 }
 
 MakeOptionalFlag {

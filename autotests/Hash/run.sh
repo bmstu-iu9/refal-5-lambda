@@ -11,13 +11,16 @@ run_all_tests() {
     -D$(platform_subdir_lookup $LIBDIR)
     -D$LIBDIR/platform-POSIX
     -D$LIBDIR
-    -f-DSTEP_LIMIT=1000
-    -f-DMEMORY_LIMIT=1000
-    -f-DIDENTS_LIMIT=25
-    -f-DDUMP_FILE=\\\"__dump.txt\\\"
-    -f-DDONT_PRINT_STATISTICS
     -f-g
     refalrts
+    refalrts-allocator
+    refalrts-debugger
+    refalrts-diagnostic-initializer
+    refalrts-dynamic
+    refalrts-functions
+    refalrts-main
+    refalrts-profiler
+    refalrts-vm
     refalrts-platform-POSIX
     refalrts-platform-specific
     --chmod-x-command="chmod +x"
@@ -71,7 +74,7 @@ simple_test_ok() {
 }
 
 run_exe() {
-  ./$1 > __out.txt
+  ./$1 ++diagnostic-config=test-diagnostics.txt > __out.txt
   if [ $? -gt 0 ]; then
     echo TEST FAILED, SEE __dump.txt
     exit 1

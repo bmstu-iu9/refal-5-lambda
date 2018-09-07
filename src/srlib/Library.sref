@@ -12,8 +12,6 @@
 
 #include "refalrts-platform-specific.h"
 
-//FROM refalrts
-
 %%
 
 //==============================================================================
@@ -50,60 +48,14 @@ $ENTRY __FindMuPtr {
   e.FuncName ::= s.COMPOUND | s.CHAR*
 */
 $ENTRY PtrFromName {
-%%
-  refalrts::Iter content_b = 0, content_e = 0;
-  refalrts::Iter pfunc =
-    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  const char *func_name = 0;
-
-  enum { cMaxFuncName = 2000 };
-  char func_name_buffer[cMaxFuncName + 1] = { 0 };
-  unsigned read;
-
-  refalrts::Iter pcookie1 = 0, pcookie2 = 0;
-  if (
-    ! refalrts::svar_left(pcookie1, content_b, content_e)
-    || refalrts::cDataNumber != pcookie1->tag
-    || ! refalrts::svar_left(pcookie2, content_b, content_e)
-    || refalrts::cDataNumber != pcookie2->tag
-  ) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  if (refalrts::cDataIdentifier == content_b->tag) {
-    func_name = content_b->ident_info->name();
-    refalrts::move_left(content_b, content_e);
-  } else if (
-    (
-      read = refalrts::read_chars(
-        func_name_buffer, cMaxFuncName, content_b, content_e
-      )
-    ) != 0
-    && refalrts::empty_seq(content_b, content_e)
-  ) {
-    func_name_buffer[read] = '\0';
-    func_name = func_name_buffer;
-  }
-
-  if (0 == func_name) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  refalrts::RefalFunction *func_ptr =
-    refalrts::RefalFunction::lookup(
-      pcookie1->number_info, pcookie2->number_info, func_name
-    );
-
-  refalrts::Iter start_garbage = arg_begin;
-  if (func_ptr) {
-    refalrts::reinit_name(arg_begin, func_ptr);
-    start_garbage = pfunc;
-  }
-
-  refalrts::splice_to_freelist(start_garbage, arg_end);
-  return refalrts::cSuccess;
-%%
+  s.Cookie1 s.Cookie2 e.FuncName
+    = <Module-LookupFunction
+        #CURRENT-AND-GLOBAL s.Cookie1 s.Cookie2 e.FuncName
+      >
+    : {
+        #Success s.FuncPtr = s.FuncPtr;
+        #Fails = /* пусто */;
+      };
 }
 
 
@@ -116,31 +68,26 @@ $ENTRY PtrFromName {
 */
 $ENTRY Add {
   // optimization for two digits
-  s.First s.Second
-    = <__Step-Start> <Add-Digits s.First s.Second> <__Step-End>;
+  s.First s.Second = <__Step-Start> <Add-Digits s.First s.Second> <__Step-End>;
 
-  // TODO: заменить на условия!!!
   e.ArithmArg
-    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    , <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
     = <Add-Normed (e.First) e.Second> <__Step-End>;
 }
 
 NormArithmArg {
-  // TODO: заменить на условия!!!
   0 e.Second
-    = <NormNumber e.Second> : s.SecondSign e.Second^
+    , <NormNumber e.Second> : s.SecondSign e.Second^
     = (0) s.SecondSign e.Second;
 
-  // TODO: заменить на условия!!!
   s.First e.Second
-    = <Type s.First> : 'N' s.SubType s.First^
-    = <NormNumber e.Second> : s.SecondSign e.Second^
+    , <Type s.First> : 'N' s.SubType s.First^
+    , <NormNumber e.Second> : s.SecondSign e.Second^
     = ('+' s.First) s.SecondSign e.Second;
 
-  // TODO: заменить на условия!!!
   (e.First) e.Second
-    = <NormNumber e.First> : s.FirstSign e.First^
-    = <NormNumber e.Second> : s.SecondSign e.Second^
+    , <NormNumber e.First> : s.FirstSign e.First^
+    , <NormNumber e.Second> : s.SecondSign e.Second^
     = (s.FirstSign e.First) s.SecondSign e.Second;
 
   e.OtherArg = /* empty */;
@@ -156,22 +103,14 @@ NormNumber {
   0 = 0;
   0 e.Digits = <NormNumber '+' e.Digits>;
 
-  // TODO: заменить на условия!!!
-  '+' e.Digits
-    = <AllDigits e.Digits> : #True
-    = '+' e.Digits;
+  '+' e.Digits, <AllDigits e.Digits> : #True = '+' e.Digits;
 
-  '-' e.Digits
-    = <AllDigits e.Digits> : #True
-    = '-' e.Digits;
+  '-' e.Digits, <AllDigits e.Digits> : #True = '-' e.Digits;
 
-  // TODO: переписать через условия!!!
-  e.Digits
-    = <Type e.Digits>
-    : {
-        'N' s.SubType e.Digits^ = <NormNumber '+' e.Digits>;
-        s.Type s.SubType e.NotIsDigits = /* empty */;
-      };
+  e.Digits, <Type e.Digits> : 'N' s.SubType e.Digits^
+    = <NormNumber '+' e.Digits>;
+
+  e.Digits = /* empty */;
 }
 
 AllDigits {
@@ -238,13 +177,13 @@ Add-Digits {
 
   if (sum >= first) {
     pFirst->number_info = sum;
-    refalrts::splice_to_freelist(arg_begin, pFunc);
-    refalrts::splice_to_freelist(pSecond, arg_end);
+    refalrts::splice_to_freelist(vm, arg_begin, pFunc);
+    refalrts::splice_to_freelist(vm, pSecond, arg_end);
   } else {
     pFirst->number_info = 1;
     pSecond->number_info = sum;
-    refalrts::splice_to_freelist(arg_begin, pFunc);
-    refalrts::splice_to_freelist(arg_end, arg_end);
+    refalrts::splice_to_freelist(vm, arg_begin, pFunc);
+    refalrts::splice_to_freelist(vm, arg_end, arg_end);
   }
 
   return refalrts::cSuccess;
@@ -275,14 +214,14 @@ $ENTRY Arg {
 
   refalrts::Iter param_begin = 0;
   refalrts::Iter param_end = 0;
-  const char *param = refalrts::arg(param_no);
+  const char *param = refalrts::arg(vm, param_no);
 
-  if (! refalrts::alloc_string(param_begin, param_end, param)) {
+  if (! refalrts::alloc_string(vm, param_begin, param_end, param)) {
     return refalrts::cNoMemory;
   }
 
   refalrts::splice_evar(arg_begin, param_begin, param_end);
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -315,7 +254,7 @@ namespace {
 
 template <typename Conv>
 refalrts::FnResult convert(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end, Conv conv
+  refalrts::VM *vm, refalrts::Iter arg_begin, refalrts::Iter arg_end, Conv conv
 ) {
   refalrts::Iter content_b = 0, content_e = 0;
   refalrts::Iter pfunc =
@@ -334,8 +273,8 @@ refalrts::FnResult convert(
     }
   }
 
-  refalrts::splice_to_freelist(arg_begin, pfunc);
-  refalrts::splice_to_freelist(arg_end, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, pfunc);
+  refalrts::splice_to_freelist(vm, arg_end, arg_end);
 
   return refalrts::cSuccess;
 }
@@ -356,7 +295,7 @@ struct ChrConv {
 
 $ENTRY Chr {
 %%
-  return convert(arg_begin, arg_end, ChrConv());
+  return convert(vm, arg_begin, arg_end, ChrConv());
 %%
 }
 
@@ -412,10 +351,9 @@ $ENTRY Div {
     = <__Step-Start> <Divmod-Digits s.First s.Second> : (s.Div) s.Rem
     = s.Div <__Step-End>;
 
-  // TODO: заменить на условия!!!
   e.ArithmArg
-    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
-    = <Divmod-Normed (e.First) e.Second> : (e.Div) e.Mod
+    , <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    , <Divmod-Normed (e.First) e.Second> : (e.Div) e.Mod
     = e.Div <__Step-End>;
 }
 
@@ -429,10 +367,9 @@ $ENTRY Divmod {
   s.First s.Second
     = <__Step-Start> <Divmod-Digits s.First s.Second> <__Step-End>;
 
-  // TODO: заменить на условия!!!
   e.ArithmArg
-    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) s.Sign e.Second
-    = '+-' : e.Signs-B s.Sign e.Signs-E   // TODO: тут должно быть условие!!!
+    , <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) s.Sign e.Second
+    , '+-' : e.Signs-B s.Sign e.Signs-E
     = <Divmod-Normed (e.First) s.Sign e.Second> <__Step-End>;
 }
 
@@ -454,7 +391,7 @@ Divmod-Digits {
   refalrts::reinit_number(pdiv, first / second);
   refalrts::reinit_close_bracket(pright_bracket);
   refalrts::update_number(pmod, first % second);
-  refalrts::splice_to_freelist(arg_end, arg_end);
+  refalrts::splice_to_freelist(vm, arg_end, arg_end);
 
   return refalrts::cSuccess;
 %%
@@ -494,7 +431,7 @@ Divmod-Nat {
 
         refalrts::reinit_number(arg_begin, shift);
         refalrts::reinit_number(pfunc, 32 - shift);
-        refalrts::splice_to_freelist(pvalue, arg_end);
+        refalrts::splice_to_freelist(vm, pvalue, arg_end);
         return refalrts::cSuccess;
 %%
       }
@@ -531,8 +468,8 @@ Divmod-Shl {
   }
 
   if (0 == shift) {
-    refalrts::splice_to_freelist(arg_begin, pshift);
-    refalrts::splice_to_freelist(arg_end, arg_end);
+    refalrts::splice_to_freelist(vm, arg_begin, pshift);
+    refalrts::splice_to_freelist(vm, arg_end, arg_end);
     return refalrts::cSuccess;
   }
 
@@ -551,7 +488,7 @@ Divmod-Shl {
     }
   }
 
-  refalrts::splice_to_freelist(arg_begin, garbage_end);
+  refalrts::splice_to_freelist(vm, arg_begin, garbage_end);
   return refalrts::cSuccess;
 %%
 }
@@ -654,7 +591,7 @@ Divmod-GuessDigit {
   if (num_hi >= denom) {
     refalrts::reinit_number(arg_begin, 4294967295U);
     refalrts::reinit_char(pfunc, '*');
-    refalrts::splice_to_freelist(pN1, arg_end);
+    refalrts::splice_to_freelist(vm, pN1, arg_end);
     return refalrts::cSuccess;
   }
 
@@ -712,7 +649,7 @@ Divmod-GuessDigit {
 
   refalrts::reinit_number(arg_begin, quot);
   refalrts::reinit_number(pfunc, rem);
-  refalrts::splice_to_freelist(pN1, arg_end);
+  refalrts::splice_to_freelist(vm, pN1, arg_end);
 
   return refalrts::cSuccess;
 %%
@@ -738,15 +675,15 @@ $ENTRY Explode {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::reset_allocator();
+  refalrts::reset_allocator(vm);
   if (
-    ! refalrts::alloc_string(content_b, content_e, pident->ident_info->name())
+    ! refalrts::alloc_string(vm, content_b, content_e, pident->ident_info->name())
   ) {
     return refalrts::cNoMemory;
   }
 
   refalrts::splice_evar(arg_begin, content_b, content_e);
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -791,12 +728,13 @@ $LABEL stdin, stdout, stderr, stout;
 %%
 namespace {
 
-#define USE_IDENT(ident_name) (ident_ ## ident_name)
+#define USE_IDENT(ident_name) (ident_ ## ident_name.ref(vm))
 
 enum { cMaxFileHandles = 40 };
-FILE *g_file_handles[cMaxFileHandles];
+refalrts::GlobalRef<FILE*> g_file_handles(cMaxFileHandles);
 
 bool file_handle_left(
+  refalrts::VM *vm,
   refalrts::Iter& pfile_handle, refalrts::Iter& first, refalrts::Iter& last
 ) {
   return refalrts::svar_left(pfile_handle, first, last)
@@ -814,16 +752,7 @@ bool file_handle_left(
     );
 }
 
-void close_all_files_at_exit(void *) {
-  for (size_t i = 0; i < cMaxFileHandles; ++i) {
-    if (g_file_handles[i] != 0) {
-      fclose(g_file_handles[i]);
-      g_file_handles[i] = 0;    // на всякий случай
-    }
-  }
-}
-
-FILE *extract_file_handle(refalrts::Iter pfile_handle) {
+FILE *extract_file_handle(refalrts::VM *vm, refalrts::Iter pfile_handle) {
   assert(
     refalrts::cDataNumber == pfile_handle->tag
     || refalrts::cDataIdentifier == pfile_handle->tag
@@ -836,7 +765,7 @@ FILE *extract_file_handle(refalrts::Iter pfile_handle) {
       return 0;
     }
 
-    return g_file_handles[file_no];
+    return g_file_handles.ref(vm, file_no);
   } else if (refalrts::cDataIdentifier == pfile_handle->tag) {
     return
       USE_IDENT(stdin) == pfile_handle->ident_info ? stdin :
@@ -847,7 +776,7 @@ FILE *extract_file_handle(refalrts::Iter pfile_handle) {
   }
 }
 
-bool release_file_handle(refalrts::Iter pfile_handle) {
+bool release_file_handle(refalrts::VM *vm, refalrts::Iter pfile_handle) {
   if (refalrts::cDataIdentifier == pfile_handle->tag) {
     return true;
   }
@@ -856,17 +785,18 @@ bool release_file_handle(refalrts::Iter pfile_handle) {
 
   refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
 
-  assert(g_file_handles[file_no] != 0);
+  assert(g_file_handles.ref(vm, file_no) != 0);
 
-  bool successful_closed = EOF != fclose(g_file_handles[file_no]);
-  g_file_handles[file_no] = 0;
+  bool successful_closed = EOF != fclose(g_file_handles.ref(vm, file_no));
+  g_file_handles.ref(vm, file_no) = 0;
   return successful_closed;
 }
 
 bool open_handle(
+  refalrts::VM *vm,
   refalrts::RefalNumber file_no, const char *filename, const char *mode
 ) {
-  if (0 != g_file_handles[file_no]) {
+  if (0 != g_file_handles.ref(vm, file_no)) {
     return false;
   }
 
@@ -876,24 +806,24 @@ bool open_handle(
     filename = default_name;
   }
 
-  refalrts::at_exit(close_all_files_at_exit, 0);
-  return (g_file_handles[file_no] = fopen(filename, mode)) != 0;
+  return (g_file_handles.ref(vm, file_no) = fopen(filename, mode)) != 0;
 }
 
 bool reopen_handle(
+  refalrts::VM *vm,
   refalrts::Iter pfile_handle, const char *filename, const char *mode
 ) {
   assert(refalrts::cDataNumber == pfile_handle->tag);
 
   refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
 
-  if (g_file_handles[file_no] != 0) {
-    if (! release_file_handle(pfile_handle)) {
+  if (g_file_handles.ref(vm, file_no) != 0) {
+    if (! release_file_handle(vm, pfile_handle)) {
       return false;
     }
   }
 
-  return open_handle(file_no, filename, mode);
+  return open_handle(vm, file_no, filename, mode);
 }
 
 }  // unnamed namespace
@@ -911,7 +841,7 @@ Autoopen {
     ! refalrts::svar_left(pmode, content_b, content_e)
     || refalrts::cDataChar != pmode->tag
     || ('r' != pmode->char_info && 'w' != pmode->char_info)
-    || ! file_handle_left(pfile_handle, content_b, content_e)
+    || ! file_handle_left(vm, pfile_handle, content_b, content_e)
     || ! refalrts::empty_seq(content_b, content_e)
   ) {
     return refalrts::cRecognitionImpossible;
@@ -921,9 +851,9 @@ Autoopen {
   if (refalrts::cDataNumber == pfile_handle->tag) {
     refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
 
-    if (0 != file_no && 0 == g_file_handles[file_no]) {
+    if (0 != file_no && 0 == g_file_handles.ref(vm, file_no)) {
       char default_mode[] = { pmode->char_info, '\0' };
-      success = open_handle(file_no, 0, default_mode);
+      success = open_handle(vm, file_no, 0, default_mode);
     }
   }
 
@@ -931,7 +861,7 @@ Autoopen {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -945,15 +875,15 @@ Get-Aux {
   refalrts::Iter pfile_handle = 0;
 
   if (
-    ! file_handle_left(pfile_handle, content_b, content_e)
+    ! file_handle_left(vm, pfile_handle, content_b, content_e)
     || ! refalrts::empty_seq(content_b, content_e)
   ) {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::reset_allocator();
+  refalrts::reset_allocator(vm);
 
-  FILE *handle = extract_file_handle(pfile_handle);
+  FILE *handle = extract_file_handle(vm, pfile_handle);
   if (! handle) {
     return refalrts::cRecognitionImpossible;
   }
@@ -965,19 +895,19 @@ Get-Aux {
       Пользуемся тем фактом, что в данной реализации размещёные в свободной
       памяти узлы располагаются в последовательных адресах.
     */
-    if (! refalrts::alloc_char(dummy, static_cast<char>(cur_char))) {
+    if (! refalrts::alloc_char(vm, dummy, static_cast<char>(cur_char))) {
       return refalrts::cNoMemory;
     }
   }
 
   if (cur_char == EOF) {
-    if (! refalrts::alloc_number(dummy, 0UL)) {
+    if (! refalrts::alloc_number(vm, dummy, 0UL)) {
       return refalrts::cNoMemory;
     }
   }
 
-  refalrts::splice_from_freelist(arg_begin);
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_from_freelist(vm, arg_begin);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -988,8 +918,8 @@ Get-Aux {
       <Implode e.NotNameTerms> == 0 e.NotNameTerms
 */
 $ENTRY Implode {
-  // TODO: заменить на условия!!!
   s.Init e.Tail
+    // Тут нельзя записать через условия, потому что __Step-Start
     = <__Step-Start> <Type s.Init>
     : {
         'L' s.SubType s.Init^ = <DoImplode (s.Init) e.Tail> <__Step-End>;
@@ -1005,15 +935,11 @@ DoImplode {
   (e.Scanned) '_' e.Tail = <DoImplode (e.Scanned '_') e.Tail>;
   (e.Scanned) '$' e.Tail = <DoImplode (e.Scanned '$') e.Tail>;
 
-  // TODO: заменить на условия!!!
-  (e.Scanned) s.Next e.Tail
-    = <Type s.Next>
-    : {
-        'L' s.SubType s.Lettern = <DoImplode (e.Scanned s.Lettern) e.Tail>;
-        'D' s.SubType s.Digit = <DoImplode (e.Scanned s.Digit) e.Tail>;
+  (e.Scanned) s.Next e.Tail, <Type s.Next> : 'L' s.SubType s.Lettern
+    = <DoImplode (e.Scanned s.Lettern) e.Tail>;
 
-        s.Type s.SubType s.Other = <Implode_Ext e.Scanned> s.Other e.Tail;
-      };
+  (e.Scanned) s.Next e.Tail, <Type s.Next> : 'D' s.SubType s.Digit
+    = <DoImplode (e.Scanned s.Digit) e.Tail>;
 
   (e.Scanned) e.Other = <Implode_Ext e.Scanned> e.Other;
 }
@@ -1071,7 +997,7 @@ struct LowerConv {
 
 $ENTRY Lower {
 %%
-  return convert(arg_begin, arg_end, LowerConv());
+  return convert(vm, arg_begin, arg_end, LowerConv());
 %%
 }
 
@@ -1085,10 +1011,9 @@ $ENTRY Mod {
     = <__Step-Start> <Divmod-Digits s.First s.Second> : (s.Div) s.Mod
     = s.Mod <__Step-End>;
 
-  // TODO: заменить на условия!!!
   e.ArithmArg
-    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
-    = <Divmod-Normed (e.First) e.Second> : (e.Div) e.Mod
+    , <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    , <Divmod-Normed (e.First) e.Second> : (e.Div) e.Mod
     = e.Mod <__Step-End>;
 }
 
@@ -1101,9 +1026,8 @@ $ENTRY Mul {
   // optimization for two digits
   s.First s.Second = <__Step-Start> <Mul-Digits s.First s.Second> <__Step-End>;
 
-  // TODO: заменить на условия!!!
   e.ArithmArg
-    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    , <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
     = <Mul-Normed (e.First) e.Second> <__Step-End>;
 }
 
@@ -1158,10 +1082,10 @@ Mul-Digits {
   if (res_high > 0) {
     refalrts::reinit_number(arg_begin, res_high);
     refalrts::reinit_number(pFunc, res_low);
-    refalrts::splice_to_freelist(pFirst, arg_end);
+    refalrts::splice_to_freelist(vm, pFirst, arg_end);
   } else {
     refalrts::reinit_number(arg_begin, res_low);
-    refalrts::splice_to_freelist(pFunc, arg_end);
+    refalrts::splice_to_freelist(vm, pFunc, arg_end);
   }
 
   return refalrts::cSuccess;
@@ -1305,7 +1229,7 @@ $ENTRY Open {
 
   refalrts::Iter pfile_handle = 0;
   if (
-    ! file_handle_left(pfile_handle, content_b, content_e)
+    ! file_handle_left(vm, pfile_handle, content_b, content_e)
     || refalrts::cDataNumber != pfile_handle->tag
   ) {
     return refalrts::cRecognitionImpossible;
@@ -1318,11 +1242,11 @@ $ENTRY Open {
     return refalrts::cRecognitionImpossible;
   }
 
-  if (! reopen_handle(pfile_handle, filename, mode.c_str())) {
+  if (! reopen_handle(vm, pfile_handle, filename, mode.c_str())) {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -1350,7 +1274,7 @@ struct OrdConv {
 
 $ENTRY Ord {
 %%
-  return convert(arg_begin, arg_end, OrdConv());
+  return convert(vm, arg_begin, arg_end, OrdConv());
 %%
 }
 
@@ -1400,6 +1324,7 @@ enum {
 };
 
 extern refalrts::FnResult fwrite_line(
+  refalrts::VM *vm,
   refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
 );
 
@@ -1409,13 +1334,14 @@ extern refalrts::FnResult fwrite_line(
 Put-Aux {
 %%
   return cookie_ns::fwrite_line(
-    arg_begin, arg_end, cookie_ns::cFlags_Transparent
+    vm, arg_begin, arg_end, cookie_ns::cFlags_Transparent
   );
 %%
 }
 
 %%
 refalrts::FnResult cookie_ns::fwrite_line(
+  refalrts::VM *vm,
   refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
 ) {
   refalrts::Iter content_b = 0;
@@ -1424,11 +1350,11 @@ refalrts::FnResult cookie_ns::fwrite_line(
 
   refalrts::Iter pfile_handle = 0;
 
-  if (! file_handle_left(pfile_handle, content_b, content_e)) {
+  if (! file_handle_left(vm, pfile_handle, content_b, content_e)) {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = extract_file_handle(pfile_handle);
+  FILE *handle = extract_file_handle(vm, pfile_handle);
   if (! handle) {
     return refalrts::cRecognitionImpossible;
   }
@@ -1454,7 +1380,9 @@ refalrts::FnResult cookie_ns::fwrite_line(
         break;
 
       case refalrts::cDataFunction:
-        printf_res = fprintf(handle, "%s ", p->function_info->name.name);
+        printf_res = fprintf(
+          handle, "%s ", refalrts::function_name(p->function_info)->name
+        );
         break;
 
       case refalrts::cDataIdentifier:
@@ -1517,7 +1445,7 @@ refalrts::FnResult cookie_ns::fwrite_line(
     refalrts::splice_stvar(res, pfile_handle);
   }
 
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 }
 %%
@@ -1536,7 +1464,7 @@ $ENTRY Putout {
 
 Putout-Aux {
 %%
-  return cookie_ns::fwrite_line(arg_begin, arg_end, 0);
+  return cookie_ns::fwrite_line(vm, arg_begin, arg_end, 0);
 %%
 }
 
@@ -1564,9 +1492,8 @@ $ENTRY Rp {
 %%
 namespace cookie_ns {
 
-extern unsigned long raw_step();
-
-extern unsigned long g_correction;
+extern unsigned long raw_step(refalrts::VM *vm);
+refalrts::GlobalRef<unsigned long> g_correction;
 
 }  // namespace cookie_ns
 %%
@@ -1583,31 +1510,29 @@ $ENTRY Step {
 
   refalrts::RefalNumber step =
     static_cast<refalrts::RefalNumber>(
-      cookie_ns::raw_step() - cookie_ns::g_correction
+      cookie_ns::raw_step(vm) - cookie_ns::g_correction.ref(vm)
     );
 
   refalrts::reinit_number(arg_begin, step);
-  refalrts::splice_to_freelist(pfunc, arg_end);
+  refalrts::splice_to_freelist(vm, pfunc, arg_end);
 
   return refalrts::cSuccess;
 %%
 }
 
 %%
-unsigned long cookie_ns::raw_step() {
+unsigned long cookie_ns::raw_step(refalrts::VM *vm) {
   unsigned long perfomance_counters[
     refalrts::cPerformanceCounter_COUNTERS_NUMBER
   ];
 
-  refalrts::read_performance_counters(perfomance_counters);
+  refalrts::read_performance_counters(vm, perfomance_counters);
   return perfomance_counters[refalrts::cPerformanceCounter_TotalSteps];
 }
 
 namespace cookie_ns {
 
-unsigned long g_correction = 1;  // call of Go is not countered
-
-unsigned long g_start_step = 0;
+refalrts::GlobalRef<unsigned long> g_start_step;
 
 }  // namespace cookie_ns
 %%
@@ -1618,26 +1543,26 @@ unsigned long g_start_step = 0;
 */
 $ENTRY __Step-Start {
 %%
-  if (0 != cookie_ns::g_start_step) {
+  if (0 != cookie_ns::g_start_step.ref(vm)) {
     return refalrts::cRecognitionImpossible;
   }
-  cookie_ns::g_start_step = cookie_ns::raw_step();
+  cookie_ns::g_start_step.ref(vm) = cookie_ns::raw_step(vm);
 
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
 
 $ENTRY __Step-End {
 %%
-  if (0 == cookie_ns::g_start_step) {
+  if (0 == cookie_ns::g_start_step.ref(vm)) {
     return refalrts::cRecognitionImpossible;
   }
-  cookie_ns::g_correction +=
-    (cookie_ns::raw_step() - cookie_ns::g_start_step) + 1;
-  cookie_ns::g_start_step = 0;
+  cookie_ns::g_correction.ref(vm) +=
+    (cookie_ns::raw_step(vm) - cookie_ns::g_start_step.ref(vm)) + 1;
+  cookie_ns::g_start_step.ref(vm) = 0;
 
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -1650,9 +1575,8 @@ $ENTRY Sub {
   // optimization for two digits
   s.First s.Second = <Sub-Digits s.First s.Second>;
 
-  // TODO: заменить на условия!!!
   e.ArithmArg
-    = <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    , <NormArithmArg e.ArithmArg> : (e.First) e.Second
     = <Sub-Normed (e.First) e.Second>;
 }
 
@@ -1662,11 +1586,11 @@ Sub-Digits {
 
   if (first >= second) {
     refalrts::reinit_number(arg_begin, first - second);
-    refalrts::splice_to_freelist(pFunc, arg_end);
+    refalrts::splice_to_freelist(vm, pFunc, arg_end);
   } else {
     refalrts::reinit_char(arg_begin, '-');
     refalrts::reinit_number(pFunc, second - first);
-    refalrts::splice_to_freelist(pFirst, arg_end);
+    refalrts::splice_to_freelist(vm, pFirst, arg_end);
   }
 
   return refalrts::cSuccess;
@@ -1716,13 +1640,13 @@ DoSub-Nat-Nat {
 
         if (diff <= first) {
           pFirst->number_info = diff;
-          refalrts::splice_to_freelist(arg_begin, pFunc);
-          refalrts::splice_to_freelist(pSecond, arg_end);
+          refalrts::splice_to_freelist(vm, arg_begin, pFunc);
+          refalrts::splice_to_freelist(vm, pSecond, arg_end);
         } else {
           refalrts::reinit_char(pFirst, '*');
           pSecond->number_info = diff;
-          refalrts::splice_to_freelist(arg_begin, pFunc);
-          refalrts::splice_to_freelist(arg_end, arg_end);
+          refalrts::splice_to_freelist(vm, arg_begin, pFunc);
+          refalrts::splice_to_freelist(vm, arg_end, arg_end);
         }
 
         return refalrts::cSuccess;
@@ -1784,7 +1708,7 @@ $ENTRY Time {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::reset_allocator();
+  refalrts::reset_allocator(vm);
 
   time_t timer;
   time(&timer);
@@ -1795,12 +1719,12 @@ $ENTRY Time {
     *newline = '\0';
   }
 
-  if (! refalrts::alloc_string(content_b, content_e, str_time)) {
+  if (! refalrts::alloc_string(vm, content_b, content_e, str_time)) {
     return refalrts::cNoMemory;
   }
 
   refalrts::splice_evar(arg_begin, content_b, content_e);
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -1922,7 +1846,7 @@ $ENTRY Type {
 
   refalrts::reinit_char(arg_begin, type);
   refalrts::reinit_char(pfunc_name, subtype);
-  refalrts::splice_to_freelist(arg_end, arg_end);
+  refalrts::splice_to_freelist(vm, arg_end, arg_end);
 
   return refalrts::cSuccess;
 %%
@@ -1950,7 +1874,7 @@ struct UpperConv {
 
 $ENTRY Upper {
 %%
-  return convert(arg_begin, arg_end, UpperConv());
+  return convert(vm, arg_begin, arg_end, UpperConv());
 %%
 }
 
@@ -2229,7 +2153,6 @@ Xxout-Scan {
   '*' s.0 /* empty */ = /* empty */;
 }
 
-/* TODO: uncomment with conditions
 Xxout-Chars {
   (e.Scanned) s.T s.S s.Escaped e.Tail
     , ('\\\\') ('\'\'') ('""') ('((') ('))')
@@ -2253,44 +2176,6 @@ Xxout-Chars {
   (e.Scanned) 'O' s.S s.Other e.Tail
     = <Divmod-Digits <Ord s.Other> 16> : (s.Hi) s.Low
     = <Xxout-Chars (e.Scanned '\\x' <Hex s.Hi> <Hex s.Low>) <Type e.Tail>>;
-
-  (e.Scanned) 'B' s.0 (e.Inner) e.Tail = (e.Scanned) 'B' s.0 (e.Inner) e.Tail;
-
-  (e.Scanned) '*' s.0 /+* empty *+/ = (e.Scanned) '*' s.0 /+* empty *+/;
-}
-*/
-
-Xxout-Chars {
-  (e.Scanned) s.T s.S s.Char e.Tail
-    = ('\\\\') ('\'\'') ('""') ('((') ('))')
-      ('<<') ('>>') ('\nn') ('\tt') ('\rr')
-    : {
-        e.Escaped-B (s.Char e.Replace) e.Escaped-E
-          = <Xxout-Chars (e.Scanned '\\' e.Replace) <Type e.Tail>>;
-
-        e.Escaped
-          = s.T s.S s.Char
-          : {
-              'L' s.S^ s.Letter
-                = <Xxout-Chars (e.Scanned s.Letter) <Type e.Tail>>;
-
-              'D' s.S^ s.Digit
-                = <Xxout-Chars (e.Scanned s.Digit) <Type e.Tail>>;
-
-              'W' s.S^ s.Word = (e.Scanned) 'W' s.S s.Word e.Tail;
-
-              'N' s.0 s.Number = (e.Scanned) 'N' s.0 s.Number e.Tail;
-
-              'P' s.S^ s.Printable
-                = <Xxout-Chars (e.Scanned s.Printable) <Type e.Tail>>;
-
-              'O' s.S^ s.Other
-                = <Divmod-Digits <Ord s.Other> 16> : (s.Hi) s.Low
-                = <Xxout-Chars
-                    (e.Scanned '\\x' <Hex s.Hi> <Hex s.Low>) <Type e.Tail>
-                  >;
-            };
-      };
 
   (e.Scanned) 'B' s.0 (e.Inner) e.Tail = (e.Scanned) 'B' s.0 (e.Inner) e.Tail;
 
@@ -2379,21 +2264,21 @@ $ENTRY GetEnv {
     return envname_res;
   }
 
-  refalrts::reset_allocator();
+  refalrts::reset_allocator(vm);
   const char *envres = getenv(& envname[0]);
 
   if (envres != 0) {
     refalrts::Iter env_begin;
     refalrts::Iter env_end;
 
-    if (! refalrts::alloc_string(env_begin, env_end, envres)) {
+    if (! refalrts::alloc_string(vm, env_begin, env_end, envres)) {
       return refalrts::cNoMemory;
     }
 
     refalrts::splice_evar(arg_begin, env_begin, env_end);
   }
 
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -2423,10 +2308,10 @@ $ENTRY System {
 
   int ret = refalrts::api::system(&command[0]);
 
-  refalrts::reset_allocator();
+  refalrts::reset_allocator(vm);
   if (ret < 0) {
     refalrts::Iter minus = 0;
-    if (! refalrts::alloc_char(minus, '-')) {
+    if (! refalrts::alloc_char(vm, minus, '-')) {
       return refalrts::cNoMemory;
     }
 
@@ -2437,7 +2322,7 @@ $ENTRY System {
 
   refalrts::reinit_number(arg_begin, ret);
 
-  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -2468,12 +2353,12 @@ $ENTRY Exit {
     ! refalrts::svar_left(pretcode, content_b, content_e)
     || ! refalrts::empty_seq(content_b, content_e)
     || refalrts::cDataNumber != pretcode->tag
+    || refalrts::dangerous_state(vm)
   ) {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::set_return_code(sign * static_cast<int>(pretcode->number_info));
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::set_return_code(vm, sign * static_cast<int>(pretcode->number_info));
   return refalrts::cExit;
 %%
 }
@@ -2489,6 +2374,7 @@ namespace cookie_ns {
 enum CloseMode { cCloseMode_Silent, cCloseMode_Fail };
 
 extern refalrts::FnResult close(
+  refalrts::VM *vm,
   refalrts::Iter arg_begin, refalrts::Iter arg_end, CloseMode mode
 );
 
@@ -2497,12 +2383,13 @@ extern refalrts::FnResult close(
 
 $ENTRY Close {
 %%
-  return cookie_ns::close(arg_begin, arg_end, cookie_ns::cCloseMode_Silent);
+  return cookie_ns::close(vm, arg_begin, arg_end, cookie_ns::cCloseMode_Silent);
 %%
 }
 
 %%
 refalrts::FnResult cookie_ns::close(
+  refalrts::VM *vm,
   refalrts::Iter arg_begin, refalrts::Iter arg_end, CloseMode mode
 ) {
   refalrts::Iter content_b = 0;
@@ -2511,17 +2398,17 @@ refalrts::FnResult cookie_ns::close(
 
   refalrts::Iter pfile_handle = 0;
   if (
-    ! file_handle_left(pfile_handle, content_b, content_e)
+    ! file_handle_left(vm, pfile_handle, content_b, content_e)
     || ! refalrts::empty_seq(content_b, content_e)
   ) {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = extract_file_handle(pfile_handle);
+  FILE *handle = extract_file_handle(vm, pfile_handle);
   switch (mode) {
   case cookie_ns::cCloseMode_Silent:
     if (handle) {
-      if (! release_file_handle(pfile_handle)) {
+      if (! release_file_handle(vm, pfile_handle)) {
         return refalrts::cRecognitionImpossible;
       }
     }
@@ -2532,7 +2419,7 @@ refalrts::FnResult cookie_ns::close(
       return refalrts::cRecognitionImpossible;
     }
 
-    if (! release_file_handle(pfile_handle)) {
+    if (! release_file_handle(vm, pfile_handle)) {
       return refalrts::cRecognitionImpossible;
     }
     break;
@@ -2541,7 +2428,7 @@ refalrts::FnResult cookie_ns::close(
     refalrts_switch_default_violation(mode);
   }
 
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 }
 %%
@@ -2579,7 +2466,7 @@ $ENTRY ExistFile {
     refalrts::reinit_ident(ans, USE_IDENT(False));
   }
 
-  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -2604,12 +2491,12 @@ $ENTRY GetCurrentDirectory {
   }
 
   refalrts::Iter directory_b = 0, directory_e = 0;
-  if (! refalrts::alloc_string(directory_b, directory_e, directory)) {
+  if (! refalrts::alloc_string(vm, directory_b, directory_e, directory)) {
     return refalrts::cNoMemory;
   }
 
   refalrts::splice_evar(arg_begin, directory_b, directory_e);
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
 
   return refalrts::cSuccess;
 %%
@@ -2653,7 +2540,7 @@ $ENTRY RemoveFile {
   }
 
   refalrts::Iter error_b = 0, error_e = 0;
-  if (! refalrts::alloc_string(error_b, error_e, error_message)) {
+  if (! refalrts::alloc_string(vm, error_b, error_e, error_message)) {
     return refalrts::cNoMemory;
   }
 
@@ -2661,7 +2548,7 @@ $ENTRY RemoveFile {
   refalrts::reinit_open_bracket(pfunc_name);
   refalrts::reinit_close_bracket(arg_end);
   refalrts::splice_evar(arg_end, error_b, error_e);
-  refalrts::splice_to_freelist(content_b, content_e);
+  refalrts::splice_to_freelist(vm, content_b, content_e);
   refalrts::link_brackets(pfunc_name, arg_end);
   return refalrts::cSuccess;
 %%
@@ -2685,14 +2572,14 @@ $ENTRY Implode_Ext {
     return res;
   }
 
-  refalrts::RefalIdentifier ident = refalrts::ident_implode(&ident_str[0]);
+  refalrts::RefalIdentifier ident = refalrts::ident_implode(vm, &ident_str[0]);
 
   if (! ident) {
     return refalrts::cIdentTableLimit;
   }
 
   refalrts::reinit_ident(arg_begin, ident);
-  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
 
   return refalrts::cSuccess;
 %%
@@ -2713,7 +2600,7 @@ $ENTRY Explode_Ext {
 %%
 namespace {
 
-clock_t g_time_elapsed_edge = clock();
+refalrts::GlobalRef<clock_t> g_time_elapsed_edge;
 
 }  // unnamed namespace
 %%
@@ -2731,7 +2618,7 @@ $ENTRY TimeElapsed {
 
   const double fClocksPerSec = CLOCKS_PER_SEC;
   clock_t now = clock();
-  double time_elapsed = (now - g_time_elapsed_edge) / fClocksPerSec;
+  double time_elapsed = (now - g_time_elapsed_edge.ref(vm)) / fClocksPerSec;
 
   char str_time_elapsed[
     DBL_MAX_10_EXP + 1 /* maximum digits before point */
@@ -2743,16 +2630,16 @@ $ENTRY TimeElapsed {
 
   sprintf(str_time_elapsed, "%f", time_elapsed);
 
-  if (! refalrts::alloc_string(content_b, content_e, str_time_elapsed)) {
+  if (! refalrts::alloc_string(vm, content_b, content_e, str_time_elapsed)) {
     return refalrts::cNoMemory;
   }
 
   if (make_edge) {
-    g_time_elapsed_edge = now;
+    g_time_elapsed_edge.ref(vm) = now;
   }
 
   refalrts::splice_evar(arg_begin, content_b, content_e);
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -2765,9 +2652,8 @@ $ENTRY Compare {
   // optimization for two digits
   s.First s.Second = <Compare-Digits s.First s.Second>;
 
-  // TODO: заменить на условия!!!
   e.ArithmArg
-    = <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    , <NormArithmArg e.ArithmArg> : (e.First) e.Second
     = <Compare-Normed (e.First) e.Second>;
 }
 
@@ -2820,7 +2706,7 @@ Compare-Digits {
   char res = first < second ? '-' : first > second ? '+' : '0';
 
   refalrts::reinit_char(arg_begin, res);
-  refalrts::splice_to_freelist(pFunc, arg_end);
+  refalrts::splice_to_freelist(vm, pFunc, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -2918,7 +2804,7 @@ RndGen::UInt RndGen::next_in_range(RndGen::UInt max) {
   }
 }
 
-RndGen g_gen;
+refalrts::GlobalRef<RndGen*> g_gen;
 
 bool positive_digit_arg(
   refalrts::Iter& pfunc_name, refalrts::RefalNumber& value,
@@ -2955,21 +2841,21 @@ $ENTRY Random {
     return refalrts::cRecognitionImpossible;
   }
 
-  max = g_gen.next_in_range(max);
+  max = g_gen.ref(vm)->next_in_range(max);
 
   if (0 == max) {
     max = 1;
   }
 
-  refalrts::reset_allocator();
+  refalrts::reset_allocator(vm);
   bool zero = true;
   for (size_t i = 0; i < static_cast<size_t>(max); ++i) {
-    refalrts::RefalNumber digit = g_gen.next_value();
+    refalrts::RefalNumber digit = g_gen.ref(vm)->next_value();
     if (digit != 0 || ! zero) {
       zero = false;
 
       refalrts::Iter dummy = 0;
-      if (! refalrts::alloc_number(dummy, digit)) {
+      if (! refalrts::alloc_number(vm, dummy, digit)) {
         return refalrts::cNoMemory;
       }
     }
@@ -2977,13 +2863,13 @@ $ENTRY Random {
 
   if (zero) {
     refalrts::Iter dummy = 0;
-    if (! refalrts::alloc_number(dummy, 0)) {
+    if (! refalrts::alloc_number(vm, dummy, 0)) {
       return refalrts::cNoMemory;
     }
   }
 
-  refalrts::splice_from_freelist(arg_begin);
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_from_freelist(vm, arg_begin);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
 
   return refalrts::cSuccess;
 %%
@@ -3004,10 +2890,10 @@ $ENTRY RandomDigit {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::RefalNumber digit = g_gen.next_in_range(max);
+  refalrts::RefalNumber digit = g_gen.ref(vm)->next_in_range(max);
 
   refalrts::reinit_number(arg_begin, digit);
-  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
 
   return refalrts::cSuccess;
 %%
@@ -3027,7 +2913,7 @@ $ENTRY Write {
 
 Write-Aux {
 %%
-  return cookie_ns::fwrite_line(arg_begin, arg_end, cookie_ns::cFlags_NoEOL);
+  return cookie_ns::fwrite_line(vm, arg_begin, arg_end, cookie_ns::cFlags_NoEOL);
 %%
 }
 
@@ -3139,7 +3025,7 @@ $ENTRY SizeOf {
   }
 
   refalrts::reinit_number(arg_begin, result);
-  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -3152,6 +3038,7 @@ $ENTRY SizeOf {
 namespace cookie_ns {
 
 refalrts::FnResult return_pid(
+  refalrts::VM *vm,
   refalrts::RefalNumber pid, refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
 
@@ -3160,12 +3047,15 @@ refalrts::FnResult return_pid(
 
 $ENTRY GetPID {
 %%
-  return cookie_ns::return_pid(refalrts::api::get_pid(), arg_begin, arg_end);
+  return cookie_ns::return_pid(
+    vm, refalrts::api::get_pid(), arg_begin, arg_end
+  );
 %%
 }
 
 %%
 refalrts::FnResult cookie_ns::return_pid(
+  refalrts::VM *vm,
   refalrts::RefalNumber pid, refalrts::Iter arg_begin, refalrts::Iter arg_end
 ) {
   refalrts::Iter content_b = 0, content_e = 0;
@@ -3177,7 +3067,7 @@ refalrts::FnResult cookie_ns::return_pid(
   }
 
   refalrts::reinit_number(arg_begin, pid);
-  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
   return refalrts::cSuccess;
 }
 %%
@@ -3188,7 +3078,9 @@ refalrts::FnResult cookie_ns::return_pid(
 */
 $ENTRY GetPPID {
 %%
-  return cookie_ns::return_pid(refalrts::api::get_ppid(), arg_begin, arg_end);
+  return cookie_ns::return_pid(
+    vm, refalrts::api::get_ppid(), arg_begin, arg_end
+  );
 %%
 }
 
@@ -3207,7 +3099,7 @@ $ENTRY GetPPID {
 */
 $ENTRY FClose {
 %%
-  return cookie_ns::close(arg_begin, arg_end, cookie_ns::cCloseMode_Fail);
+  return cookie_ns::close(vm, arg_begin, arg_end, cookie_ns::cCloseMode_Fail);
 %%
 }
 
@@ -3241,7 +3133,7 @@ $ENTRY FReadLine {
 $ENTRY FWriteLine {
 %%
   return cookie_ns::fwrite_line(
-    arg_begin, arg_end, cookie_ns::cFlags_ReturnHandle
+    vm, arg_begin, arg_end, cookie_ns::cFlags_ReturnHandle
   );
 %%
 }
@@ -3263,7 +3155,7 @@ GetFreeHandle {
   }
 
   refalrts::RefalNumber free_file = 1;
-  while (free_file < cMaxFileHandles && g_file_handles[free_file] != 0) {
+  while (free_file < cMaxFileHandles && g_file_handles.ref(vm, free_file) != 0) {
     ++free_file;
   }
 
@@ -3272,7 +3164,7 @@ GetFreeHandle {
   }
 
   refalrts::reinit_number(arg_begin, free_file);
-  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -3337,7 +3229,7 @@ $ENTRY StrFromInt {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::reset_allocator();
+  refalrts::reset_allocator(vm);
   refalrts::Iter begin_splice = arg_begin;
 
   if (refalrts::RefalNumber num = number->number_info) {
@@ -3358,7 +3250,7 @@ $ENTRY StrFromInt {
     refalrts::Iter num_begin;
     refalrts::Iter num_end;
     bool allocated = refalrts::alloc_chars(
-      num_begin, num_end, cur_digit, unsigned(lim_digit - cur_digit)
+      vm, num_begin, num_end, cur_digit, unsigned(lim_digit - cur_digit)
     );
 
     if (! allocated) {
@@ -3371,7 +3263,7 @@ $ENTRY StrFromInt {
     begin_splice = pfunc_name;
   }
 
-  refalrts::splice_to_freelist(begin_splice, arg_end);
+  refalrts::splice_to_freelist(vm, begin_splice, arg_end);
 
   return refalrts::cSuccess;
 %%
@@ -3402,8 +3294,8 @@ $ENTRY SymbCompare {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::splice_to_freelist(arg_begin, pFunc);
-  refalrts::splice_to_freelist(pY, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, pFunc);
+  refalrts::splice_to_freelist(vm, pY, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -3471,15 +3363,18 @@ bool cookie_ns::compare(refalrts::Iter left, refalrts::Iter right) {
           refalrts::RefalFunction *fl = left->function_info;
           refalrts::RefalFunction *fr = right->function_info;
 
-          order = strcmp_char(fl->name.name, fr->name.name);
+          const refalrts::RefalFuncName *fln = refalrts::function_name(fl);
+          const refalrts::RefalFuncName *frn = refalrts::function_name(fr);
+
+          order = strcmp_char(fln->name, frn->name);
           if (order == '=') {
-            order = compare_char(fl->name.cookie1, fr->name.cookie1);
+            order = compare_char(fln->cookie1, frn->cookie1);
           }
           if (order == '=') {
-            order = compare_char(fl->name.cookie2, fr->name.cookie2);
+            order = compare_char(fln->cookie2, frn->cookie2);
           }
           if (order == '=') {
-            order = compare_char(fl->rasl, fr->rasl);
+            order = compare_char(fl, fr);
           }
         }
         break;
@@ -3518,11 +3413,11 @@ $ENTRY FWriteBytes {
 
   refalrts::Iter pfile_handle = 0;
 
-  if (! file_handle_left(pfile_handle, content_b, content_e)) {
+  if (! file_handle_left(vm, pfile_handle, content_b, content_e)) {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = extract_file_handle(pfile_handle);
+  FILE *handle = extract_file_handle(vm, pfile_handle);
   if (! handle) {
     return refalrts::cRecognitionImpossible;
   }
@@ -3550,7 +3445,7 @@ $ENTRY FWriteBytes {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -3574,7 +3469,7 @@ $ENTRY FReadBytes {
   refalrts::Iter pcount_bytes = 0;
 
   if (
-    ! file_handle_left(pfile_handle, content_b, content_e)
+    ! file_handle_left(vm, pfile_handle, content_b, content_e)
     || ! refalrts::svar_left(pcount_bytes, content_b, content_e)
     || refalrts::cDataNumber != pcount_bytes->tag
     || ! refalrts::empty_seq(content_b, content_e)
@@ -3582,9 +3477,9 @@ $ENTRY FReadBytes {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::reset_allocator();
+  refalrts::reset_allocator(vm);
 
-  FILE *handle = extract_file_handle(pfile_handle);
+  FILE *handle = extract_file_handle(vm, pfile_handle);
   if (! handle) {
     return refalrts::cRecognitionImpossible;
   }
@@ -3602,7 +3497,7 @@ $ENTRY FReadBytes {
       памяти узлы располагаются в последовательных адресах.
     */
     refalrts::RefalNumber value = cur_char & 0xFFU;
-    if (! refalrts::alloc_number(end, value)) {
+    if (! refalrts::alloc_number(vm, end, value)) {
       return refalrts::cNoMemory;
     }
 
@@ -3620,7 +3515,7 @@ $ENTRY FReadBytes {
   }
 
   refalrts::splice_evar(arg_begin, begin, end);
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -3639,13 +3534,13 @@ $ENTRY FTell {
   refalrts::Iter pfile_handle = 0;
 
   if (
-    ! file_handle_left(pfile_handle, content_b, content_e)
+    ! file_handle_left(vm, pfile_handle, content_b, content_e)
     || ! refalrts::empty_seq(content_b, content_e)
   ) {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = extract_file_handle(pfile_handle);
+  FILE *handle = extract_file_handle(vm, pfile_handle);
   if (! handle) {
     return refalrts::cRecognitionImpossible;
   }
@@ -3657,7 +3552,7 @@ $ENTRY FTell {
   }
 
   refalrts::reinit_number(arg_begin, static_cast<refalrts::RefalNumber>(pos));
-  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -3684,7 +3579,7 @@ $ENTRY FSeek {
   refalrts::Iter poffset = 0;
 
   if (
-    ! file_handle_left(pfile_handle, content_b, content_e)
+    ! file_handle_left(vm, pfile_handle, content_b, content_e)
     || ! refalrts::svar_left(porigin, content_b, content_e)
     || refalrts::cDataIdentifier != porigin->tag
     || ! refalrts::svar_left(psign, content_b, content_e)
@@ -3696,7 +3591,7 @@ $ENTRY FSeek {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = extract_file_handle(pfile_handle);
+  FILE *handle = extract_file_handle(vm, pfile_handle);
   if (! handle) {
     return refalrts::cRecognitionImpossible;
   }
@@ -3727,7 +3622,7 @@ $ENTRY FSeek {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::splice_to_freelist(arg_begin, arg_end);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }
@@ -3778,7 +3673,477 @@ $ENTRY RenameFile {
     result == 0 ? USE_IDENT(True) : USE_IDENT(False);
 
   refalrts::reinit_ident(arg_begin, i_result);
-  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+/**
+  <Module-Load e.ModuleName>
+    == #Success s.ModuleHandle
+    == #Fails e.Errors
+
+  e.Errors ::= пусто
+  TODO: поддержка сообщений об ошибках
+*/
+$LABEL Success, Fails;
+
+$ENTRY Module-Load {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  char module_name[FILENAME_MAX + 1] = { '\0' };
+  unsigned module_name_len =
+    refalrts::read_chars(module_name, FILENAME_MAX, content_b, content_e);
+
+  if (
+    ! refalrts::empty_seq(content_b, content_e)
+    || module_name_len == 0
+    || refalrts::dangerous_state(vm)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::FnResult result;
+  refalrts::RefalFunction *module =
+    refalrts::load_module_rep(vm, arg_end, module_name, 0, 0, result);
+
+  if (refalrts::cSuccess != result) {
+    return result;
+  }
+
+  if (module != 0) {
+    refalrts::Iter pSuccess = 0;
+    refalrts::Iter pHandle = 0;
+
+    if (
+      ! refalrts::alloc_ident(vm, pSuccess, USE_IDENT(Success))
+      || ! refalrts::alloc_name(vm, pHandle, module)
+    ) {
+      return refalrts::cNoMemory;
+    }
+
+    refalrts::splice_elem(arg_begin, pSuccess);
+    refalrts::splice_elem(arg_begin, pHandle);
+  } else {
+    refalrts::Iter pFails = 0;
+    if (! refalrts::alloc_ident(vm, pFails, USE_IDENT(Fails))) {
+      return refalrts::cNoMemory;
+    }
+
+    refalrts::splice_elem(arg_begin, pFails);
+  }
+
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+/**
+  <Module-Unload s.ModuleHandle> == []
+*/
+$ENTRY Module-Unload {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter pHandle = 0;
+  if (
+    ! refalrts::svar_right(pHandle, content_b, content_e)
+    || ! refalrts::empty_seq(content_b, content_e)
+    || pHandle->tag != refalrts::cDataFunction
+    || refalrts::dangerous_state(vm)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::FnResult result;
+  bool success =
+    refalrts::unload_module(vm, arg_end, pHandle->function_info, result);
+
+  if (refalrts::cSuccess != result) {
+    return result;
+  }
+
+  if (! success) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+/**
+  <Module-Mu s.ModuleHandleEx e.Scope? t.Function e.Args>
+    ≈≈ <t.Function e.Args>
+
+  s.ModuleHandleEx ::= s.ModuleHandle | GLOBAL | CURRENT | CURRENT-AND-GLOBAL
+  e.Scope ::= s.NUMBER s.NUMBER
+  t.Function ::= s.FunctionName | (e.FunctionName)
+  s.FunctionName ::= s.COMPOUND
+  e.FunctionName ::= s.CHAR+
+*/
+$LABEL GLOBAL, CURRENT, CURRENT-AND-GLOBAL;
+
+%%
+namespace cookie_ns {
+
+enum HandleExType {
+  cHandleExType_Current,
+  cHandleExType_Global,
+  cHandleExType_CurrentAndGlobal,
+  cHandleExType_Value,
+};
+
+bool module_handle_ex_left(
+  refalrts::VM *vm,
+  HandleExType& type,
+  refalrts::Iter& sModuleHandleEx,
+  refalrts::Iter& content_b,
+  refalrts::Iter& content_e
+);
+
+bool cookie_left(
+  refalrts::UInt32& cookie1,
+  refalrts::UInt32& cookie2,
+  refalrts::Iter& content_b,
+  refalrts::Iter& content_e
+);
+
+refalrts::RefalFunction *function_for_module(
+  refalrts::VM *vm,
+  HandleExType type,
+  const char *func_name,
+  refalrts::UInt32 cookie1,
+  refalrts::UInt32 cookie2,
+  refalrts::Iter sModuleHandleEx
+);
+
+}  // namespace cookie_ns
+%%
+
+$ENTRY Module-Mu {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  cookie_ns::HandleExType type = cookie_ns::cHandleExType_Value;
+  refalrts::Iter sModuleHandleEx = 0;
+  if (
+    ! cookie_ns::module_handle_ex_left(
+      vm, type, sModuleHandleEx, content_b, content_e
+    )
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::UInt32 cookie1 = 0, cookie2 = 0;
+  if (! cookie_ns::cookie_left(cookie1, cookie2, content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  std::vector<char> func_name_vect;
+  refalrts::Iter sFunctionName = 0;
+  refalrts::Iter eFunctionName_b = 0, eFunctionName_e = 0;
+  refalrts::Iter end_garbage;
+  if (
+    refalrts::svar_left(sFunctionName, content_b, content_e)
+    && sFunctionName->tag == refalrts::cDataIdentifier
+  ) {
+    const char *func_name_cstr = sFunctionName->ident_info->name();
+    size_t len = strlen(func_name_cstr);
+    func_name_vect.assign(func_name_cstr, func_name_cstr + len + 1);
+    end_garbage = sFunctionName;
+  } else if (
+    end_garbage = refalrts::brackets_left(
+      eFunctionName_b, eFunctionName_e, content_b, content_e
+    ),
+    end_garbage != 0
+  ) {
+    refalrts::FnResult res = string_from_seq(
+      func_name_vect, eFunctionName_b, eFunctionName_e
+    );
+    if (res != refalrts::cSuccess) {
+      return res;
+    }
+    end_garbage = end_garbage->link_info;
+  } else {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::RefalFunction *result = cookie_ns::function_for_module(
+    vm, type, &func_name_vect[0], cookie1, cookie2, sModuleHandleEx
+  );
+
+  if (! result) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::update_name(pfunc_name, result);
+  refalrts::Iter begin_garbage = sModuleHandleEx;
+  refalrts::splice_to_freelist(vm, begin_garbage, end_garbage);
+  refalrts::push_stack(vm, arg_end);
+  refalrts::push_stack(vm, arg_begin);
+  return refalrts::cSuccess;
+%%
+}
+
+%%
+bool cookie_ns::module_handle_ex_left(
+  refalrts::VM *vm,
+  cookie_ns::HandleExType& type,
+  refalrts::Iter& sModuleHandleEx,
+  refalrts::Iter& content_b,
+  refalrts::Iter& content_e
+) {
+  if (
+    ! refalrts::svar_left(sModuleHandleEx, content_b, content_e)
+    && sModuleHandleEx->tag != refalrts::cDataFunction
+    && ! refalrts::ident_term(USE_IDENT(GLOBAL), sModuleHandleEx)
+    && ! refalrts::ident_term(USE_IDENT(CURRENT), sModuleHandleEx)
+    && ! refalrts::ident_term(USE_IDENT(CURRENTm_ANDm_GLOBAL), sModuleHandleEx)
+  ) {
+    return false;
+  }
+
+  if (refalrts::ident_term(USE_IDENT(GLOBAL), sModuleHandleEx)) {
+    type = cookie_ns::cHandleExType_Global;
+  } else if (refalrts::ident_term(USE_IDENT(CURRENT), sModuleHandleEx)) {
+    type = cookie_ns::cHandleExType_Current;
+  } else if (
+    refalrts::ident_term(USE_IDENT(CURRENTm_ANDm_GLOBAL), sModuleHandleEx)
+  ) {
+    type = cookie_ns::cHandleExType_CurrentAndGlobal;
+  } else {
+    type = cookie_ns::cHandleExType_Value;
+  }
+
+  return true;
+}
+
+bool cookie_ns::cookie_left(
+  refalrts::UInt32& cookie1,
+  refalrts::UInt32& cookie2,
+  refalrts::Iter& content_b,
+  refalrts::Iter& content_e
+) {
+  cookie1 = 0;
+  cookie2 = 0;
+  if (
+    ! refalrts::empty_seq(content_b, content_e)
+    && content_b->tag == refalrts::cDataNumber
+  ) {
+    refalrts::Iter sCookie1 = 0, sCookie2 = 0;
+    if (
+      refalrts::svar_left(sCookie1, content_b, content_e)
+      && refalrts::svar_left(sCookie2, content_b, content_e)
+      && sCookie2->tag == refalrts::cDataNumber
+    ) {
+      cookie1 = sCookie1->number_info;
+      cookie2 = sCookie2->number_info;
+    } else {
+      return false;
+    }
+  }
+  return true;
+}
+
+refalrts::RefalFunction *cookie_ns::function_for_module(
+  refalrts::VM *vm,
+  cookie_ns::HandleExType type,
+  const char *func_name_cstr,
+  refalrts::UInt32 cookie1,
+  refalrts::UInt32 cookie2,
+  refalrts::Iter sModuleHandleEx
+) {
+  const refalrts::RefalFuncName func_name(func_name_cstr, cookie1, cookie2);
+  refalrts::Module *current = refalrts::current_module(vm);
+  refalrts::RefalFunction *result = 0;
+
+  switch (type) {
+    case cookie_ns::cHandleExType_Global:
+      result = refalrts::lookup_function_in_domain(vm, func_name);
+      break;
+
+    case cookie_ns::cHandleExType_Current:
+      result = refalrts::lookup_function_in_module(current, func_name);
+      break;
+
+    case cookie_ns::cHandleExType_CurrentAndGlobal:
+      result = refalrts::lookup_function_in_module(current, func_name);
+      if (! result) {
+        result = refalrts::lookup_function_in_domain(vm, func_name);
+      }
+      break;
+
+    case cookie_ns::cHandleExType_Value:
+      {
+        refalrts::Module *module =
+          refalrts::module_from_function_rep(sModuleHandleEx->function_info);
+        result = refalrts::lookup_function_in_module(module, func_name);
+      }
+      break;
+
+    default:
+      refalrts_switch_default_violation(type);
+  }
+
+  return result;
+}
+%%
+
+/**
+  <Module-LookupFunction s.ModuleHandleEx e.Scope? e.Function>
+    == Success s.FunctionPtr
+    == Fails
+
+  e.Function ::= s.COMPOUND | s.CHAR+
+*/
+%%
+namespace cookie_ns {
+
+refalrts::FnResult find_function(
+  refalrts::VM *vm, refalrts::Iter arg_begin, refalrts::Iter arg_end,
+  bool fail_down
+);
+
+}  // namespace cookie_ns
+%%
+
+$ENTRY Module-LookupFunction {
+%%
+  return cookie_ns::find_function(vm, arg_begin, arg_end, false);
+%%
+}
+
+%%
+
+refalrts::FnResult cookie_ns::find_function(
+  refalrts::VM *vm, refalrts::Iter arg_begin, refalrts::Iter arg_end,
+  bool fail_down
+) {
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  cookie_ns::HandleExType type = cookie_ns::cHandleExType_Value;
+  refalrts::Iter sModuleHandleEx = 0;
+  if (
+    ! cookie_ns::module_handle_ex_left(
+      vm, type, sModuleHandleEx, content_b, content_e
+    )
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::UInt32 cookie1 = 0, cookie2 = 0;
+  if (! cookie_ns::cookie_left(cookie1, cookie2, content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  std::vector<char> func_name_vect;
+  refalrts::Iter sFunctionName = 0;
+  if (content_b->tag == refalrts::cDataIdentifier) {
+    refalrts::svar_left(sFunctionName, content_b, content_e);
+    const char *func_name_cstr = sFunctionName->ident_info->name();
+    size_t len = strlen(func_name_cstr);
+    func_name_vect.assign(func_name_cstr, func_name_cstr + len + 1);
+  } else {
+    refalrts::FnResult res =
+      string_from_seq(func_name_vect, content_b, content_e);
+    if (res != refalrts::cSuccess) {
+      return res;
+    }
+  }
+
+  refalrts::RefalFunction *result = cookie_ns::function_for_module(
+    vm, type, &func_name_vect[0], cookie1, cookie2, sModuleHandleEx
+  );
+
+  if (result != 0) {
+    if (fail_down) {
+      refalrts::reinit_name(arg_begin, result);
+      refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
+    } else {
+      refalrts::reinit_ident(arg_begin, USE_IDENT(Success));
+      refalrts::update_name(pfunc_name, result);
+      refalrts::splice_to_freelist(vm, sModuleHandleEx, arg_end);
+    }
+  } else {
+    if (fail_down) {
+      return refalrts::cRecognitionImpossible;
+    } else {
+      refalrts::reinit_ident(arg_begin, USE_IDENT(Fails));
+      refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
+    }
+  }
+
+  return refalrts::cSuccess;
+}
+%%
+
+/**
+  <Module-FunctionPtr s.ModuleHandleEx e.Scope? e.Function>
+    == s.FunctionPtr
+    fail donw if not found
+*/
+$ENTRY Module-FunctionPtr {
+%%
+  return cookie_ns::find_function(vm, arg_begin, arg_end, true);
+%%
+}
+
+INIT {
+%%
+  // 1. Дескрипторы файлов
+  for (size_t i = 0; i < cMaxFileHandles; ++i) {
+    g_file_handles.ref(vm, i) = 0;      // на всякий случай
+  }
+
+  // 2. Точный счётчик шагов
+  const unsigned long init_and_go_steps = 2;
+  cookie_ns::g_correction.ref(vm) = cookie_ns::raw_step(vm) + init_and_go_steps;
+  cookie_ns::g_start_step.ref(vm) = 0;
+
+  // 3. Время запуска программы для TimeElapsed
+  g_time_elapsed_edge.ref(vm) = clock();
+
+  // 4. Генератор случайных чисел
+  g_gen.ref(vm) = new RndGen();
+
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+FINAL {
+%%
+  // 4. Генератор случайных чисел
+  delete g_gen.ref(vm);
+  g_gen.ref(vm) = 0;
+
+  // 3. Время запуска программы для TimeElapsed
+  //   (нет финализации)
+
+  // 2. Точный счётчик шагов
+  //   (нет финализации)
+
+  // 1. Дескрипторы файлов
+  for (size_t i = 0; i < cMaxFileHandles; ++i) {
+    if (g_file_handles.ref(vm, i) != 0) {
+      fclose(g_file_handles.ref(vm, i));
+      g_file_handles.ref(vm, i) = 0;    // на всякий случай
+    }
+  }
+
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }

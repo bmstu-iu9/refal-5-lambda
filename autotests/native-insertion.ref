@@ -36,7 +36,7 @@ Native2 {
 
   reinit_number(arg_begin, ++counter);
 
-  splice_to_freelist(func_ptr, arg_end);
+  splice_to_freelist(vm, func_ptr, arg_end);
   return cSuccess;
 %%
       };

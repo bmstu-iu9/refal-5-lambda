@@ -14,11 +14,25 @@ source "$DISTRDIR/scripts/platform-specific.sh"
 set_rich_flags() {
   D=(-d "$LIBDIR/rich")
   CPP=()
+  RT=()
+}
+
+set_rich_debug_flags() {
+  D=(-d "$LIBDIR/rich-debug")
+  CPP=()
+  RT=()
 }
 
 set_slim_flags() {
   D=(-d "$LIBDIR/slim")
   CPP=()
+  RT=()
+}
+
+set_slim_debug_flags() {
+  D=(-d "$LIBDIR/slim-debug")
+  CPP=()
+  RT=()
 }
 
 set_scratch_flags() {
@@ -32,10 +46,13 @@ set_scratch_flags() {
     --cpp-command-exe="$CPPLINEE"
     --cpp-command-lib="$CPPLINEL"
   )
+  RT=(
+    --runtime=refalrts-main
+  )
 }
 
 set_default_flags() {
-  set_slim_flags
+  set_slim_debug_flags
 }
 
 # Запуск
@@ -46,9 +63,19 @@ set_default_flags() {
       shift
       ;;
 
+    "--rich-debug")
+      set_rich_debug_flags
+      shift
+      ;;
+
     "--slim")
       shift
       set_slim_flags
+      ;;
+
+    "--slim-debug")
+      shift
+      set_slim_debug_flags
       ;;
 
     "--scratch")
@@ -69,5 +96,5 @@ set_default_flags() {
     "${CPP[@]}" \
     --thru=--cppflags="$CPPLINE_FLAGS"  -X--chmod-x-command="chmod +x" \
     -d "$LIBDIR/common" --prelude=refal5-builtins.srefi \
-    "${D[@]}" $*
+    "${D[@]}" "${RT[@]}" $*
 )

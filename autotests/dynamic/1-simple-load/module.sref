@@ -1,0 +1,6 @@
+$ENTRY Fab {
+  'A' e.Rest = 'B' <Fab e.Rest>;
+  'a' e.Rest = 'b' <Fab e.Rest>;
+  s.Other e.Rest = s.Other <Fab e.Rest>;
+  /* пусто */ = /* пусто */;
+}

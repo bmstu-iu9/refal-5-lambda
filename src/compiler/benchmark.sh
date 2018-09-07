@@ -19,6 +19,8 @@ fi
 echo -C>input.prj
 [ -n "$BENCH_FLAGS" ] && echo "$BENCH_FLAGS" >> input.prj
 ls *.ref *.sref >> input.prj
+echo --dir=../srlib/common>>input.prj
+echo --prelude=refal5-builtins.srefi>>input.prj
 
 echo
 echo Run "../../bin/srefc-core -C $BENCH_FLAGS *.sref" $TIMES times...

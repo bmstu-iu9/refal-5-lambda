@@ -19,7 +19,7 @@ MakeHandle {
   arg_begin->tag = refalrts::cDataFile;
   arg_begin->file_info = 0;
 
-  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
   return refalrts::cSuccess;
 %%
 }

@@ -409,7 +409,7 @@ s-переменную сразу после угловой скобки:
       ++g_next_number;
       printf("Generating next number %d\n", g_next_number);
 
-      refalrts::reinit_number(arg_begin);
+      refalrts::reinit_number(arg_begin, g_next_number);
       refalrts::splice_to_free_list(pfunc_name, arg_end);
       return refalrts::cSuccess;
     %%
