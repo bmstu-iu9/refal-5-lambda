@@ -1,5 +1,10 @@
 @echo off
 
+echo * * * * * * * * * * * * * * * * * * * * * * * * *
+echo * U P D A T E   V E R S I O N   N U M B E R !!! *
+echo *       file: src/common/Version.ref            *
+echo * * * * * * * * * * * * * * * * * * * * * * * * *
+
 pushd src
 setlocal
 set RELEASE=1
@@ -62,3 +67,8 @@ md editors
 xcopy /e /i /y ..\editors editors
 call bootstrap.bat
 popd
+
+echo * * * * * * * * * * * * * * * * * * * * * * * * *
+echo * U P D A T E   V E R S I O N   N U M B E R !!! *
+echo *       file: src/common/Version.ref            *
+echo * * * * * * * * * * * * * * * * * * * * * * * * *

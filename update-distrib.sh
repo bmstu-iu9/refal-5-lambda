@@ -1,5 +1,10 @@
 #!/bin/bash
 
+echo "* * * * * * * * * * * * * * * * * * * * * * * * *"
+echo "* U P D A T E   V E R S I O N   N U M B E R !!! *"
+echo "*       file: src/common/Version.ref            *"
+echo "* * * * * * * * * * * * * * * * * * * * * * * * *"
+
 ( cd src && RELEASE=1 ./make.sh )
 
 pushd distrib
@@ -49,3 +54,8 @@ mkdir editors
 cp -R ../editors/* editors
 ./bootstrap.sh
 popd
+
+echo "* * * * * * * * * * * * * * * * * * * * * * * * *"
+echo "* U P D A T E   V E R S I O N   N U M B E R !!! *"
+echo "*       file: src/common/Version.ref            *"
+echo "* * * * * * * * * * * * * * * * * * * * * * * * *"
