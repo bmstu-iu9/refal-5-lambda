@@ -88,7 +88,7 @@ interpretive code and in code on C++.
 The easiest way is to download `setup-refal-5-lambda-***.exe` file from the
 webpage
 
-<https://github.com/bmstu-iu9/simple-refal/releases/latest>
+<https://github.com/bmstu-iu9/refal-5-lambda/releases/latest>
 
 and just start it up. In this way archive with executable and library Refal
 modules in user profile (into folder `%APPDATA%`), the way to the catalog will
@@ -105,7 +105,7 @@ the commands `srefc`, `srefc-core`, `srmake`, `srmake-core` in it in any folder.
 
 It is possible to download and unpack `bootstrap-refal-5-lambda-***.zip` in any
 catalog from the same page
-<https://github.com/bmstu-iu9/simple-refal/releases/latest>.
+<https://github.com/bmstu-iu9/refal-5-lambda/releases/latest>.
 
 In archive there are Refal-5λ, compiled into code on C++ and glue
 interpretive code. In order to get ready executable modules from it it is
@@ -142,7 +142,7 @@ and further unwind it using procedure that was described earlier.
 
 Sources are cloned with the command
 
-    git clone https://github.com/bmstu-iu9/simple-refal
+    git clone https://github.com/bmstu-iu9/refal-5-lambda
 
 and built together as “half-compiled” distributive higher (`bootstrap.***`
 is started, `c-plus-plus.conf.***` is corrected if it is necessary etc.)
@@ -157,7 +157,7 @@ amd64 (work on big endian machines is not supported in current version).
 **It is important!** Source codes from GitHub must be downloaded only by
 cloning. Website interface allows to download files as zip-archive, but
 `bootstrap.***`  will not work in unpacked archive. `bootstrap.***` script in
-`simple-refal` repository considers that repository is connected to the folder
+`refal-5-lambda` repository considers that repository is connected to the folder
 `distrib` as sub-module and it can be initialized with `git submodule init` and
 `git submodule update` commands. In downloaded archive `distrib` folder will
 stay empty, which means that it will be impossible to bootstrap from the
