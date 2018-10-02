@@ -1573,11 +1573,11 @@ $ENTRY __Step-End {
 */
 $ENTRY Sub {
   // optimization for two digits
-  s.First s.Second = <Sub-Digits s.First s.Second>;
+  s.First s.Second = <__Step-Start> <Sub-Digits s.First s.Second> <__Step-End>;
 
   e.ArithmArg
-    , <NormArithmArg e.ArithmArg> : (e.First) e.Second
-    = <Sub-Normed (e.First) e.Second>;
+    , <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <Sub-Normed (e.First) e.Second> <__Step-End>;
 }
 
 Sub-Digits {
