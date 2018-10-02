@@ -124,6 +124,7 @@ void parse_config_line(
   set_boolean_param(print_statistics);
   set_boolean_param(dump_free_list);
   set_boolean_param(show_cookies);
+  set_boolean_param(show_hidden_steps);
 
   if (strcmp(param_name, "enable_debugger") == 0) {
     if (type == cNumber) {

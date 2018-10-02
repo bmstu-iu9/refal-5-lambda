@@ -129,6 +129,7 @@ private:
   Module *m_module;
   DiagnosticConfig *m_diagnostic_config;
   FILE *m_dump_stream;
+  bool m_hide_steps;
 
 public:
   VM(
@@ -170,18 +171,10 @@ public:
 
   void free_view_field();
 
-  static void print_seq(
-    DiagnosticConfig *config,
-    FILE *output, refalrts::Iter begin, refalrts::Iter end,
-    bool multiline = true, unsigned max_node = -1
-  );
-
   void print_seq(
     FILE *output, refalrts::Iter begin, refalrts::Iter end,
     bool multiline = true, unsigned max_node = -1
-  ) {
-    print_seq(m_diagnostic_config, output, begin, end, multiline, max_node);
-  }
+  );
 
   void free_states_stack();
 
@@ -1080,6 +1073,7 @@ inline VM::VM(
   , m_module(0)
   , m_diagnostic_config(diagnostic_config)
   , m_dump_stream(0)
+  , m_hide_steps(false)
 {
   m_swap_hedge.tag = cDataSwapHead;
 }

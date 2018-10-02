@@ -17,6 +17,7 @@ struct DiagnosticConfig {
   bool print_statistics;
   bool dump_free_list;
   bool show_cookies;
+  bool show_hidden_steps;
   DebuggerFactory debugger_factory;
   char dump_file[FILENAME_MAX];
 
@@ -30,6 +31,7 @@ struct DiagnosticConfig {
     , print_statistics(false)
     , dump_free_list(false)
     , show_cookies(true)
+    , show_hidden_steps(false)
     , debugger_factory(0)
   {
     dump_file[0] = '\0';

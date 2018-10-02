@@ -206,6 +206,8 @@ refalrts::FnResult refalrts::VM::execute_zero_arity_function(
     }
 
     make_dump(m_error_begin, m_error_end);
+    fprintf(dump_stream(), "\nEnd dump\n");
+    fflush(dump_stream());
   }
 
   return res;
@@ -234,7 +236,6 @@ void print_indent(FILE *output, int level) {
 } // unnamed namespace
 
 void refalrts::VM::print_seq(
-  refalrts::DiagnosticConfig *config,
   FILE *output, refalrts::Iter begin, refalrts::Iter end,
   bool multiline, unsigned max_node
 ) {
@@ -284,7 +285,9 @@ void refalrts::VM::print_seq(
             continue;
 
           case refalrts::cDataSwapHead:
-            fprintf(output, "%c[SWAP HEDGE]", space);
+            if (begin->next != &m_last_marker) {
+              fprintf(output, "%c[SWAP HEDGE]", space);
+            }
             refalrts::move_left(begin, end);
             continue;
 
@@ -300,13 +303,19 @@ void refalrts::VM::print_seq(
 
           case refalrts::cDataFunction:
             {
+              const char *amp = "";
+              if (begin->prev->tag != cDataOpenCall) {
+                amp = "&";
+              }
+
               const RefalFuncName& name = begin->function_info->name;
-              if (config->show_cookies) {
+              if (m_diagnostic_config->show_cookies) {
                 fprintf(
-                  output, "&%s#%u:%u ", name.name, name.cookie1, name.cookie2
+                  output, "%s%s#%u:%u ",
+                  amp, name.name, name.cookie1, name.cookie2
                 );
               } else {
-                fprintf(output, "&%s ", name.name);
+                fprintf(output, "%s%s ", amp, name.name);
               }
               refalrts::move_left(begin, end);
             }
@@ -463,9 +472,9 @@ void refalrts::VM::print_seq(
 
 void refalrts::VM::make_dump(refalrts::Iter begin, refalrts::Iter end) {
   fprintf(dump_stream(), "\nSTEP NUMBER %u\n", m_step_counter);
-  fprintf(dump_stream(), "\nERROR EXPRESSION:\n");
+  fprintf(dump_stream(), "\nPRIMARY ACTIVE EXPRESSION:\n");
   print_seq(dump_stream(), begin, end);
-  fprintf(dump_stream(), "VIEW FIELD:\n");
+  fprintf(dump_stream(), "\nVIEW FIELD:\n");
   print_seq(dump_stream(), & m_first_marker, & m_last_marker);
 
   if (m_diagnostic_config->dump_free_list) {
@@ -477,7 +486,6 @@ void refalrts::VM::make_dump(refalrts::Iter begin, refalrts::Iter end) {
     );
   }
 
-  fprintf(dump_stream(), "\nEnd dump\n");
   fflush(dump_stream());
 }
 
@@ -1364,11 +1372,27 @@ JUMP_FROM_SCALE:
           m_error_begin = begin;
           m_error_end = end;
 
+          refalrts::Iter function = next(begin);
+
           if (m_step_counter >= m_diagnostic_config->start_step_trace) {
-            make_dump(begin, end);
+            RefalFuncName *name = 0;
+            if (cDataFunction == function->tag) {
+              name = &function->function_info->name;
+            }
+
+            if (name && strcmp(name->name, "__Step-Start") == 0) {
+              m_hide_steps = true;
+            }
+
+            if (! m_hide_steps || m_diagnostic_config->show_hidden_steps) {
+              make_dump(begin, end);
+            }
+
+            if (name && strcmp(name->name, "__Step-End") == 0) {
+              m_hide_steps = false;
+            }
           }
 
-          refalrts::Iter function = next(begin);
           FnResult res;
           if (cDataFunction == function->tag) {
             callee = function->function_info;
