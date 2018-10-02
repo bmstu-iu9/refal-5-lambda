@@ -35,6 +35,8 @@ setlocal
     xcopy /e /i /y %%d %%~nxd
   )
 
+  dos2unix bin/* bootstrap.* clear.* */*.cpp */*/*.froms */*/*.srefi
+
   if exist c-plus-plus.conf.bat erase c-plus-plus.conf.bat
 
   set ARC=..\_setup\bootstrap-refal-5-lambda-%VERSION%.tar.gz
