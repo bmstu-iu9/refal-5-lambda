@@ -65,7 +65,7 @@ setlocal
   set PATH=%BINDIR%;%PATH%
   srmake-core ^
     -s srefc-core.exe ^
-    %SRMAKE_FLAGS% ^
+    -X-OC %SRMAKE_FLAGS% ^
     -X--exesuffix=.exe -X--libsuffix=.dll %CPP% ^
     --thru=--cppflags="%CPPLINE_FLAGS%" -X--chmod-x-command= ^
     -d "%LIBDIR%\common" --prelude=refal5-builtins.srefi ^

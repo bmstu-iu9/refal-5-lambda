@@ -64,7 +64,7 @@ setlocal
 :END_SWITCH
   set PATH=%BINDIR%;%PATH%
   srefc-core ^
-    %SREFC_FLAGS% ^
+    -OC %SREFC_FLAGS% ^
     --exesuffix=.exe --libsuffix=.dll %CPP% ^
     --cppflags="%CPPLINE_FLAGS%" --chmod-x-command= ^
     -d "%LIBDIR%\common" --prelude=refal5-builtins.srefi ^

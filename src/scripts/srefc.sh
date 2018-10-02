@@ -88,7 +88,7 @@ set_default_flags() {
 
   PATH=$BINDIR:$PATH
   srefc-core \
-    $SREFC_FLAGS \
+    -OC $SREFC_FLAGS \
     --exesuffix=$(platform_exe_suffix) --libsuffix=$(platform_lib_suffix) \
     "${CPP[@]}" --cppflags="$CPPLINE_FLAGS" --chmod-x-command="chmod +x" \
     -d "$LIBDIR/common" --prelude=refal5-builtins.srefi \

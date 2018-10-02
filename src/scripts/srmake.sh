@@ -91,7 +91,7 @@ set_default_flags() {
   PATH=$BINDIR:$PATH
   srmake-core \
     -s "srefc-core" \
-    $SRMAKE_FLAGS \
+    -X-OC $SRMAKE_FLAGS \
     -X--exesuffix=$(platform_exe_suffix) -X--libsuffix=$(platform_lib_suffix) \
     "${CPP[@]}" \
     --thru=--cppflags="$CPPLINE_FLAGS"  -X--chmod-x-command="chmod +x" \
