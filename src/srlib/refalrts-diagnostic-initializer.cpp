@@ -56,10 +56,6 @@ void parse_config_line(
   ) {
     type = cString;
   } else if (
-    sscanf(line, "%[-_" AZaz "] = \"%[^\"]\"", param_name, string_value) == 2
-  ) {
-    type = cString;
-  } else if (
     sscanf(line, "%[-_" AZaz "] = %li", param_name, &number_value) == 2
   ) {
     type = cNumber;
