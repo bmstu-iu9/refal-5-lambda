@@ -24,16 +24,11 @@ setlocal
   set SETUP=%SETUP%-src
 
   pushd _tmp
-  for %%f in (..\..\distrib\*) do (
-    if not {%%f}=={.gitignore} (
-      if not {%%f}=={c-plus-plus.conf.bat} (
-        copy %%f %%~nxf
-      )
-    )
-  )
-  for /d %%d in (..\..\distrib\*) do (
-    xcopy /e /i /y %%d %%~nxd
-  )
+  for %%f in (..\..\distrib\*) do copy %%f %%~nxf
+  for /d %%d in (..\..\distrib\*) do xcopy /e /i /y %%d %%~nxd
+
+  dos2unix bin/* bootstrap.* clear.* */*.cpp */*/*.froms */*/*.srefi
+  erase c-plus-plus.conf.* .gitignore
 
   if exist c-plus-plus.conf.bat erase c-plus-plus.conf.bat
 

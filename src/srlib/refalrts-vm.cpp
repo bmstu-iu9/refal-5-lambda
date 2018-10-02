@@ -234,6 +234,7 @@ void print_indent(FILE *output, int level) {
 } // unnamed namespace
 
 void refalrts::VM::print_seq(
+  refalrts::DiagnosticConfig *config,
   FILE *output, refalrts::Iter begin, refalrts::Iter end,
   bool multiline, unsigned max_node
 ) {
@@ -300,9 +301,13 @@ void refalrts::VM::print_seq(
           case refalrts::cDataFunction:
             {
               const RefalFuncName& name = begin->function_info->name;
-              fprintf(
-                output, "&%s#%u:%u ", name.name, name.cookie1, name.cookie2
-              );
+              if (config->show_cookies) {
+                fprintf(
+                  output, "&%s#%u:%u ", name.name, name.cookie1, name.cookie2
+                );
+              } else {
+                fprintf(output, "&%s ", name.name);
+              }
               refalrts::move_left(begin, end);
             }
             continue;

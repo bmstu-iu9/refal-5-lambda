@@ -127,6 +127,7 @@ void parse_config_line(
   set_number_param(start_step_trace);
   set_boolean_param(print_statistics);
   set_boolean_param(dump_free_list);
+  set_boolean_param(show_cookies);
 
   if (strcmp(param_name, "enable_debugger") == 0) {
     if (type == cNumber) {
@@ -189,6 +190,9 @@ void load_local_diagnostic_config(
 void init_diagnostic_config(
   refalrts::DiagnosticConfig *config, int *argc, char *argv[]
 ) {
+  // В диагностическом режиме по умолчанию не показываем cookies
+  config->show_cookies = false;
+
   int delta = 0;
   for (int i = 1; i < *argc; ++i) {
     const char config_prefix[] = "++diagnostic+config=";

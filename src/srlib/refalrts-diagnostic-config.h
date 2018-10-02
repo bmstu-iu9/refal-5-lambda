@@ -16,6 +16,7 @@ struct DiagnosticConfig {
   unsigned long start_step_trace;
   bool print_statistics;
   bool dump_free_list;
+  bool show_cookies;
   DebuggerFactory debugger_factory;
   char dump_file[FILENAME_MAX];
 
@@ -28,6 +29,7 @@ struct DiagnosticConfig {
     , start_step_trace(NO_LIMIT)
     , print_statistics(false)
     , dump_free_list(false)
+    , show_cookies(true)
     , debugger_factory(0)
   {
     dump_file[0] = '\0';

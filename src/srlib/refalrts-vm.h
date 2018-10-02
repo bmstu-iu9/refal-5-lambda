@@ -171,9 +171,17 @@ public:
   void free_view_field();
 
   static void print_seq(
+    DiagnosticConfig *config,
     FILE *output, refalrts::Iter begin, refalrts::Iter end,
     bool multiline = true, unsigned max_node = -1
   );
+
+  void print_seq(
+    FILE *output, refalrts::Iter begin, refalrts::Iter end,
+    bool multiline = true, unsigned max_node = -1
+  ) {
+    print_seq(m_diagnostic_config, output, begin, end, multiline, max_node);
+  }
 
   void free_states_stack();
 
