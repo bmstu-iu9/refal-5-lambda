@@ -25,6 +25,7 @@ class VariableDebugTable {
   const StringItem *m_strings;
   const RASLCommand *m_first;
   const RASLCommand *m_last;
+  VM *m_vm;
 
   std::pair<std::string, int> parse_var_name(const char *full_name);
   void variable_bounds(
@@ -32,11 +33,12 @@ class VariableDebugTable {
     char type, int offset
   );
 public:
-  VariableDebugTable()
+  VariableDebugTable(VM *vm)
     : m_context(0)
     , m_strings(0)
     , m_first(0)
     , m_last(0)
+    , m_vm(vm)
   {
     /* пусто */
   }
@@ -96,6 +98,7 @@ public:
     , m_res_begin(0)
     , m_res_end(0)
     , m_vm(vm)
+    , var_debug_table(m_vm)
   {
     /* пусто */
   }

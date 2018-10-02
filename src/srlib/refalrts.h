@@ -390,7 +390,7 @@ const char* arg(VM *vm, unsigned int param);
   для того, чтобы не включать сюда лишние заголовочные файлы
   (пусть даже и стандартные).
 */
-void debug_print_expr(void *file, Iter first, Iter last);
+void debug_print_expr(VM *vm, void *file, Iter first, Iter last);
 
 class SwitchDefaultViolation {
   const char *m_filename;

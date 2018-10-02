@@ -161,7 +161,7 @@ void refalrts::debugger::VariableDebugTable::print(FILE *out) {
     refalrts::Iter var_begin = 0;
     refalrts::Iter var_end = 0;
     variable_bounds(var_begin, var_end, var_name[0], it->bracket);
-    VM::print_seq(out, var_begin, var_end, false);
+    m_vm->print_seq(out, var_begin, var_end, false);
   }
   fprintf(
     out,
@@ -183,7 +183,7 @@ void refalrts::debugger::VariableDebugTable::print_var(
     refalrts::Iter var_begin = 0;
     refalrts::Iter var_end = 0;
     variable_bounds(var_begin, var_end, var_name[0], it->second);
-    VM::print_seq(out, var_begin, var_end, false);
+    m_vm->print_seq(out, var_begin, var_end, false);
   }
 }
 
@@ -580,7 +580,7 @@ void refalrts::debugger::RefalDebugger::debug_trace(
     print_callee_option(begin, end, trace_out);
     fprintf(trace_out, "\n");
     fprintf(trace_out, "Traced call:   ");
-    VM::print_seq(trace_out, begin, end, false);
+    m_vm->print_seq(trace_out, begin, end, false);
     fprintf(
       trace_out, "//==================================================\n"
     );
@@ -691,7 +691,7 @@ void refalrts::debugger::RefalDebugger::print_callee_option(
     callee_end = callee->link_info;
   }
 
-  VM::print_seq(out, callee, callee_end, false);
+  m_vm->print_seq(out, callee, callee_end, false);
 }
 
 void refalrts::debugger::RefalDebugger::print_arg_option(
@@ -703,12 +703,12 @@ void refalrts::debugger::RefalDebugger::print_arg_option(
   Iter callee = 0;
   tvar_left(callee, begin, end);
 
-  VM::print_seq(out, begin, end, false);
+  m_vm->print_seq(out, begin, end, false);
 }
 
 void refalrts::debugger::RefalDebugger::print_res_option(FILE *out) {
   if (m_res_begin != 0 && m_res_end != 0) {
-    VM::print_seq(out, m_res_begin->next, m_res_end->prev, false);
+    m_vm->print_seq(out, m_res_begin->next, m_res_end->prev, false);
   } else {
     fprintf(out, "[NONE]\n");
   }
@@ -834,7 +834,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       if (str_equal(strparam, s_ARG)) {
         print_arg_option(begin, end, out);
       } else if (str_equal(strparam, s_CALL)) {
-        VM::print_seq(out, begin, end, true);
+        m_vm->print_seq(out, begin, end, true);
       } else if (str_equal(strparam, s_CALLEE)) {
         print_callee_option(begin, end, out);
       } else if (str_equal(strparam, s_RES)) {

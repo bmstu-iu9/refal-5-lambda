@@ -621,9 +621,9 @@ const char* refalrts::arg(refalrts::VM *vm, unsigned int param) {
 }
 
 void refalrts::debug_print_expr(
-  void *file, refalrts::Iter first, refalrts::Iter last
+  refalrts::VM *vm, void *file, refalrts::Iter first, refalrts::Iter last
 ) {
-  refalrts::VM::print_seq(static_cast<FILE*>(file), first, last);
+  vm->print_seq(static_cast<FILE*>(file), first, last);
 }
 
 //==============================================================================
