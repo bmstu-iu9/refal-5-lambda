@@ -1384,7 +1384,12 @@ JUMP_FROM_SCALE:
               m_hide_steps = true;
             }
 
-            if (! m_hide_steps || m_diagnostic_config->show_hidden_steps) {
+            bool init_final =
+              (strcmp(name->name, "INIT") == 0 || strcmp(name->name, "FINAL") == 0)
+              && (name->cookie1 != 0 && name->cookie2 != 0);
+            bool hidden_step = m_hide_steps || init_final;
+
+            if (! hidden_step || m_diagnostic_config->show_hidden_steps) {
               make_dump(begin, end);
             }
 
