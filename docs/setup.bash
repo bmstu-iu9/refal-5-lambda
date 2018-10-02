@@ -8,7 +8,7 @@
   find ! -name c-plus-plus.conf.sh -delete
 
   echo $(date): Starting download distributive, wait few minutes...
-  DISTRIB=https://github.com/bmstu-iu9/refal-5-lambda/releases/download/$VERSION/bootstrap-refal-5-lambda-2.2.1.tar.gz
+  DISTRIB=https://github.com/bmstu-iu9/refal-5-lambda/releases/download/$VERSION/bootstrap-refal-5-lambda-$VERSION.tar.gz
   ( curl -L $DISTRIB || wget -q -O - $DISTRIB ) | tar xzf -
   chmod +x bootstrap.sh
   echo $(date): Downloading is finished
