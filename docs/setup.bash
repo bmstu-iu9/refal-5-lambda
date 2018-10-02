@@ -1,13 +1,13 @@
 #!/bin/bash
 (
   VERSION=2.2.2-2-g06f5dbb
-  echo $(date): "*** Installing Refal-5λ $VERSION ***"
-  echo $(date): 'Prepare directory ~/.local/share/refal-5-lambda'
+  echo $(date): "*** Installing Refal-5λ $VERSION ***" | cat
+  echo $(date): 'Prepare directory ~/.local/share/refal-5-lambda' | cat
   mkdir -p ~/.local/share/refal-5-lambda
   cd ~/.local/share/refal-5-lambda
   find ! -name c-plus-plus.conf.sh -delete
 
-  echo $(date): Starting download distributive, wait few minutes...
+  echo $(date): Starting download distributive, wait few minutes... | cat
   DISTRIB=https://github.com/bmstu-iu9/refal-5-lambda/releases/download/$VERSION/bootstrap-refal-5-lambda-$VERSION.tar.gz
   ( curl -L $DISTRIB || wget -q -O - $DISTRIB ) | tar xzf -
   chmod +x bootstrap.sh
