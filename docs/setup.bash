@@ -1,6 +1,6 @@
 #!/bin/bash
 (
-  VERSION=2.2.2-2-g06f5dbb
+  VERSION=2.2.3
   echo $(date): "*** Installing Refal-5λ $VERSION ***" | cat
   echo $(date): 'Prepare directory ~/.local/share/refal-5-lambda' | cat
   mkdir -p ~/.local/share/refal-5-lambda
