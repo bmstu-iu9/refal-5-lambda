@@ -51,4 +51,4 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 Shortcut=P, doc, Refal-5-lambda, "Internal documentation files", "Internal documentation files",
 Shortcut=P, editors, Refal-5-lambda, "Plugins for text editors", "Plugins for text editors",
-Shortcut=P, uninstall.vbs, Refal-5-lambda, "Uninstall Refal-5-lambda", "Uninstall Refal-5-lambda", icon.ico
+Shortcut=P, uninstall.wsf, Refal-5-lambda, "Uninstall Refal-5-lambda", "Uninstall Refal-5-lambda", icon.ico
