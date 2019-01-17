@@ -793,7 +793,7 @@ DoTokenChain-AfterCall {
         s.Mode Pattern
         <EL-AddErrorAt
           t.ErrorList t.CallPos
-          'unexpected \'<\' in pattern expression, maybe missed \'=\''
+          'unexpected \'<\' in pattern expression, probably missed \'=\''
         >
         (e.Collected (Brackets e.OptionalFuncName e.BracketTerms)) e.Tokens
       >;
@@ -810,7 +810,7 @@ DoTokenChain-AfterCall {
   t.ErrorList (e.BracketTerms) (s.Type t.Pos e.Value) e.Tokens
     = <EL-AddErrorAt
         t.ErrorList t.CallPos
-        'unexpected \'<\' in pattern expression, maybe missed \'=\''
+        'unexpected \'<\' in pattern expression, probably missed \'=\''
       >
     : t.ErrorList^
     = <EL-AddErrorAt t.ErrorList t.Pos 'Missed \'>\''> : t.ErrorList^
@@ -902,7 +902,7 @@ TokName {
   TkESwap = '$ESWAP';
   TkInclude = '$INCLUDE';
   TkScopeId = '$SCOPEID';
-  TkEOF = 'end of file';
+  TkEOF = 'end-of-file';
   TkRefal5Mode = '*$CLASSIC or *$EXTENDED';
   TkAmpersand = '\'&\'';
   TkRedefinition = '\'^\'';

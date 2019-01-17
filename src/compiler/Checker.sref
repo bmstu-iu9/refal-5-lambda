@@ -17,7 +17,7 @@ $ENTRY CheckProgram {
 }
 
 PrepareMessage {
-  #AlreadyDefined e.Name = 'Function ' e.Name ' already defined';
+  #AlreadyDefined e.Name = 'Function ' e.Name ' is already defined';
 
   #ForwardForEntry e.Name = '$FORWARD ' e.Name ' for $ENTRY ' e.Name;
 
@@ -31,7 +31,7 @@ PrepareMessage {
 
   #InvalidMode s.OldMode s.NewMode e.Index
     = 'Variables ' s.OldMode '.' e.Index ' and '
-      s.NewMode '.' e.Index ' has different modes';
+      s.NewMode '.' e.Index ' have different modes';
 
   #VariableNotFound s.Mode e.Index
     = 'Variable ' s.Mode '.' e.Index ' not found';
@@ -41,14 +41,14 @@ PrepareMessage {
 // Ошибки специализации
   #RedefineSpec e.Name = 'Specialization of function ' e.Name 'is redefined';
 
-  #MustBeHardPattern = 'Pattern of function specialization maust be hard';
+  #MustBeHardPattern = 'Pattern of function specialization must be hard';
 
   #BadSpecForFunction = 'Bad fucntion specialization';
 
   #OrphanSpec = 'Orphan function specialization';
 
   #RepVarInSpecPattern s.Mode e.Index
-    = 'Repeating Variable ' s.Mode '.' e.Index ' in specialization pattern';
+    = 'Repeated variable ' s.Mode '.' e.Index ' in specialization pattern';
 }
 
 FindErrors {

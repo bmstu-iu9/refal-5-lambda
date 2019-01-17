@@ -36,7 +36,7 @@ $ENTRY SR-StrFromToken {
   #TkCloseBracket = '")"';
   #TkComma = '","';
   #TkDirective s.Directive = '"$' <StrDirective s.Directive> '"';
-  #TkEOF = 'end of file';
+  #TkEOF = 'end-of-file';
   #TkError e.Message = 'LEXER ERROR: ' e.Message;
   #TkIdentMarker = '"#"';
   #TkName e.Name = 'Name ' e.Name;
