@@ -578,7 +578,11 @@ refalrts::FnResult refalrts::VM::main_loop(const RASLCommand *rasl) {
   Stack<const RASLCommand*> open_e_stack;
   Stack<Iter> context;
 
+#if __cplusplus >= 201103L
+  std::unique_ptr<Debugger> debugger(m_create_debugger(this));
+#else
   std::auto_ptr<Debugger> debugger(m_create_debugger(this));
+#endif
   debugger->set_context(context);
   debugger->set_string_items(strings);
 
