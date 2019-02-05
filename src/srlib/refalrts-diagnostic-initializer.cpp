@@ -227,7 +227,7 @@ void load_local_diagnostic_config(
     slash_pos = 0;
   }
 
-  const char *exe_file_name = slash_pos != '\0' ? slash_pos + 1 : argv0;
+  const char *exe_file_name = slash_pos != 0 ? slash_pos + 1 : argv0;
   char local_diagnostic_file[FILENAME_MAX + 1] = { '\0' };
   if (strlen(exe_file_name) + strlen(diagnostic_suffix) < FILENAME_MAX) {
     strcpy(local_diagnostic_file, exe_file_name);
