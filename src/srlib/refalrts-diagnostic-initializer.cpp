@@ -45,11 +45,10 @@ void parse_config_line(
   refalrts::DiagnosticConfig *config,
   const char *filename, int line_no, const char *line
 ) {
-  enum Type { cString, cNumber, cBoolean } type;
+  enum Type { cString, cNumber, cBoolean_True, cBoolean_False } type;
   char param_name[cMaxLineLen + 1] = { '\0' };
   char string_value[cMaxLineLen + 1] = { '\0' };
   long int number_value;
-  bool boolean_value;
 
   if (
     sscanf(line, "%[-_" AZaz "] = \"%[^\"]\"", param_name, string_value) == 2
@@ -64,11 +63,9 @@ void parse_config_line(
       char boolean_value_str[cMaxLineLen + 1];
       normalize_name(boolean_value_str, string_value);
       if (strcmp(boolean_value_str, "true") == 0) {
-        type = cBoolean;
-        boolean_value = true;
+        type = cBoolean_True;
       } else if (strcmp(boolean_value_str, "false") == 0) {
-        type = cBoolean;
-        boolean_value = false;
+        type = cBoolean_False;
       } else {
         type = cString;
       }
@@ -94,8 +91,10 @@ void parse_config_line(
   if (strcmp(param_name, #field) == 0) { \
     if (type == cNumber) { \
       config->field = !!number_value; \
-    } else if (type == cBoolean) { \
-      config->field = boolean_value; \
+    } else if (type == cBoolean_True) { \
+      config->field = true; \
+    } else if (type == cBoolean_False) { \
+      config->field = false; \
     } else { \
       bad_type(filename, line_no, #field, "boolean"); \
     } \
@@ -125,18 +124,11 @@ void parse_config_line(
   set_boolean_param(dump_free_list);
   set_boolean_param(show_cookies);
   set_boolean_param(show_hidden_steps);
+  set_boolean_param(enable_debugger);
 
   if (strcmp(param_name, "enable_debugger") == 0) {
-    if (type == cNumber) {
-      if (!! number_value) {
-        config->debugger_factory = refalrts::debugger::RefalDebugger::create;
-      }
-    } else if (type == cBoolean) {
-      if (boolean_value) {
-        config->debugger_factory = refalrts::debugger::RefalDebugger::create;
-      }
-    } else {
-      bad_type(filename, line_no, "enable_debugger", "boolean");
+    if (config->enable_debugger) {
+      config->debugger_factory = refalrts::debugger::RefalDebugger::create;
     }
   }
 

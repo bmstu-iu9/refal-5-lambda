@@ -18,6 +18,7 @@ struct DiagnosticConfig {
   bool dump_free_list;
   bool show_cookies;
   bool show_hidden_steps;
+  bool enable_debugger;
   DebuggerFactory debugger_factory;
   char dump_file[FILENAME_MAX];
 
