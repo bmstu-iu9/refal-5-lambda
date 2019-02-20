@@ -84,7 +84,7 @@ lookup_compilers() {
       -D$LIBDIR/platform-POSIX
       -D$LIBDIR/common
       -D$LIBDIR
-      --prelude=refal5-builtins.srefi
+      --prelude=refal5-builtins.refi
       -f-g
       --chmod-x-command="chmod +x"
     )

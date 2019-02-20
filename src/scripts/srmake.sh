@@ -95,6 +95,6 @@ set_default_flags() {
     -X--exesuffix=$(platform_exe_suffix) -X--libsuffix=$(platform_lib_suffix) \
     "${CPP[@]}" \
     --thru=--cppflags="$CPPLINE_FLAGS"  -X--chmod-x-command="chmod +x" \
-    -d "$LIBDIR/common" --prelude=refal5-builtins.srefi \
+    -d "$LIBDIR/common" --prelude=refal5-builtins.refi \
     "${D[@]}" "${RT[@]}" $*
 )

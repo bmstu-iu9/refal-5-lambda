@@ -27,7 +27,7 @@ setlocal
   for %%f in (..\..\distrib\*) do copy %%f %%~nxf
   for /d %%d in (..\..\distrib\*) do xcopy /e /i /y %%d %%~nxd
 
-  dos2unix bin/* bootstrap.* clear.* */*.cpp */*/*.froms */*/*.srefi scripts/*
+  dos2unix bin/* bootstrap.* clear.* */*.cpp */*/*.froms */*/*.refi */*/*.srefi scripts/*
   erase c-plus-plus.conf.* .gitignore
 
   if exist c-plus-plus.conf.bat erase c-plus-plus.conf.bat

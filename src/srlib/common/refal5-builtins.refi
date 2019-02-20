@@ -1,6 +1,7 @@
-//==============================================================================
-// Предобъявления и определения встроенных функций Рефала-5λ
-//==============================================================================
+*$EXTENDED;
+*===============================================================================
+*  Предобъявления и определения встроенных функций Рефала-5λ
+*===============================================================================
 
 
 /**
@@ -30,229 +31,229 @@ __Mu-Aux {
       };
 }
 
-//FROM Library
+*$FROM Library
 $EXTERN __FindMuPtr, __Step-Start, __Step-End;
 
 
-// 2. Add
+* 2. Add
 
-//FROM Library
+*$FROM Library
 $EXTERN Add;
 
 
-// 3. Arg
+* 3. Arg
 
-//FROM Library
+*$FROM Library
 $EXTERN Arg;
 
 
-// 4. Br
+* 4. Br
 
-//FROM Library
+*$FROM Library
 $EXTERN Br;
 
 
-// 5. Card
+* 5. Card
 
-//FROM Library
+*$FROM Library
 $EXTERN Card;
 
 
-// 6. Chr
+* 6. Chr
 
-//FROM Library
+*$FROM Library
 $EXTERN Chr;
 
 
-// 7. Cp
+* 7. Cp
 
-//FROM Library
+*$FROM Library
 $EXTERN Cp;
 
 
-// 8. Dg
+* 8. Dg
 
-//FROM Library
+*$FROM Library
 $EXTERN Dg;
 
 
-// 9. Dgall
+* 9. Dgall
 
-//FROM Library
+*$FROM Library
 $EXTERN Dgall;
 
 
-// 10. Div
+* 10. Div
 
-//FROM Library
+*$FROM Library
 $EXTERN Div;
 
 
-// 11. Divmod
+* 11. Divmod
 
-//FROM Library
+*$FROM Library
 $EXTERN Divmod;
 
 
-// 12. Explode
+* 12. Explode
 
-//FROM Library
+*$FROM Library
 $EXTERN Explode;
 
 
-// 13. First
+* 13. First
 
-//FROM Library
+*$FROM Library
 $EXTERN First;
 
 
-// 14. Get
+* 14. Get
 
-//FROM Library
+*$FROM Library
 $EXTERN Get;
 
 
-// 15. Implode
+* 15. Implode
 
-//FROM Library
+*$FROM Library
 $EXTERN Implode;
 
 
-// 16. Last
+* 16. Last
 
-//FROM Library
+*$FROM Library
 $EXTERN Last;
 
 
-// 17. Lenw
+* 17. Lenw
 
-//FROM Library
+*$FROM Library
 $EXTERN Lenw;
 
 
-// 18. Lower
+* 18. Lower
 
-//FROM Library
+*$FROM Library
 $EXTERN Lower;
 
 
-// 19. Mod
+* 19. Mod
 
-//FROM Library
+*$FROM Library
 $EXTERN Mod;
 
 
-// 20. Mul
+* 20. Mul
 
-//FROM Library
+*$FROM Library
 $EXTERN Mul;
 
 
-// 21. Numb
+* 21. Numb
 
-//FROM Library
+*$FROM Library
 $EXTERN Numb;
 
 
-// 22. Open
+* 22. Open
 
-//FROM Library
+*$FROM Library
 $EXTERN Open;
 
 
-// 23. Ord
+* 23. Ord
 
-//FROM Library
+*$FROM Library
 $EXTERN Ord;
 
 
-// 24. Print
+* 24. Print
 
-//FROM
+*$FROM
 $EXTERN Print;
 
 
-// 25. Prout
+* 25. Prout
 
-//FROM Library
+*$FROM Library
 $EXTERN Prout, Proud, Trout;
 
 
-// 26. Put
+* 26. Put
 
-//FROM Library
+*$FROM Library
 $EXTERN Put;
 
 
-// 27. Putout
+* 27. Putout
 
-//FROM Library
+*$FROM Library
 $EXTERN Putout;
 
 
-// 28. Rp
+* 28. Rp
 
-//FROM Library
+*$FROM Library
 $EXTERN Rp;
 
 
-// 29. Step
+* 29. Step
 
-//FROM Library
+*$FROM Library
 $EXTERN Step;
 
 
-// 30. Sub
+* 30. Sub
 
-//FROM Library
+*$FROM Library
 $EXTERN Sub;
 
 
-// 31. Symb
+* 31. Symb
 
-//FROM Library
+*$FROM Library
 $EXTERN Symb;
 
 
-// 32. Time
+* 32. Time
 
-//FROM Library
+*$FROM Library
 $EXTERN Time;
 
 
-// 33. Type
+* 33. Type
 
-//FROM Library
+*$FROM Library
 $EXTERN Type;
 
 
-// 34. Upper
+* 34. Upper
 
-//FROM Library
+*$FROM Library
 $EXTERN Upper;
 
 
-// 35. Sysfun
+* 35. Sysfun
 
-//FROM Library
+*$FROM Library
 $EXTERN Sysfun;
 
 
-// 45. Freeze
+* 45. Freeze
 
-//FROM Library
+*$FROM Library
 $EXTERN Freeze;
 
 
-// 46. Freezer
+* 46. Freezer
 
-//FROM Library
+*$FROM Library
 $EXTERN Freezer;
 
 
-// 47. Dn
+* 47. Dn
 
-//FROM Library
+*$FROM Library
 $EXTERN Dn;
 
 
@@ -281,121 +282,121 @@ Residue {
 }
 
 
-// 51. GetEnv
+* 51. GetEnv
 
-//FROM Library
+*$FROM Library
 $EXTERN GetEnv;
 
 
-// 52. System
+* 52. System
 
-//FROM Library
+*$FROM Library
 $EXTERN System;
 
 
-// 53. Exit
+* 53. Exit
 
-//FROM Library
+*$FROM Library
 $EXTERN Exit;
 
 
-// 54. Close
+* 54. Close
 
-//FROM Library
+*$FROM Library
 $EXTERN Close;
 
 
-// 55. ExistFile
+* 55. ExistFile
 
-//FROM Library
+*$FROM Library
 $EXTERN ExistFile;
 
 
-// 56. GetCurrentDirectory
+* 56. GetCurrentDirectory
 
-//FROM Library
+*$FROM Library
 $EXTERN GetCurrentDirectory;
 
 
-// 57. RemoveFile
+* 57. RemoveFile
 
-//FROM Library
+*$FROM Library
 $EXTERN RemoveFile;
 
 
-// 58. Implode_Ext
+* 58. Implode_Ext
 
-//FROM Library
+*$FROM Library
 $EXTERN Implode_Ext;
 
 
-// 59. Explode_Ext
+* 59. Explode_Ext
 
-//FROM Library
+*$FROM Library
 $EXTERN Explode_Ext;
 
 
-// 60. TimeElapsed
+* 60. TimeElapsed
 
-//FROM Library
+*$FROM Library
 $EXTERN TimeElapsed;
 
 
-// 61. Compare
+* 61. Compare
 
-//FROM Library
+*$FROM Library
 $EXTERN Compare;
 
 
-// 62. DeSysfun
+* 62. DeSysfun
 
-//FROM Library
+*$FROM Library
 $EXTERN DeSysfun;
 
 
-// 63. XMLParse
+* 63. XMLParse
 
-//FROM Library
+*$FROM Library
 $EXTERN XMLParse;
 
 
-// 64. Random
+* 64. Random
 
-//FROM Library
+*$FROM Library
 $EXTERN Random;
 
 
-// 65. RandomDigit
+* 65. RandomDigit
 
-//FROM Library
+*$FROM Library
 $EXTERN RandomDigit;
 
 
-// 66. Write
+* 66. Write
 
-//FROM Library
+*$FROM Library
 $EXTERN Write;
 
 
-// 67. ListOfBuiltin
+* 67. ListOfBuiltin
 
-//FROM Library
+*$FROM Library
 $EXTERN ListOfBuiltin;
 
 
-// 68. SizeOf
+* 68. SizeOf
 
-//FROM Library
+*$FROM Library
 $EXTERN SizeOf;
 
 
-// 69. GetPID
+* 69. GetPID
 
-//FROM Library
+*$FROM Library
 $EXTERN GetPID;
 
 
-// 71. GetPPID
+* 71. GetPPID
 
-//FROM Library
+*$FROM Library
 $EXTERN GetPPID;

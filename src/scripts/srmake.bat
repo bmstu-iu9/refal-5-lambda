@@ -68,6 +68,6 @@ setlocal
     -X-OC %SRMAKE_FLAGS% ^
     -X--exesuffix=.exe -X--libsuffix=.dll %CPP% ^
     --thru=--cppflags="%CPPLINE_FLAGS%" -X--chmod-x-command= ^
-    -d "%LIBDIR%\common" --prelude=refal5-builtins.srefi ^
+    -d "%LIBDIR%\common" --prelude=refal5-builtins.refi ^
     %D% %RT% %ARGS%
 endlocal

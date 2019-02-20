@@ -82,7 +82,7 @@ goto :EOF
     -D../../src/srlib/platform-Windows ^
     -D../../src/srlib/common ^
     -D../../src/srlib ^
-    --prelude=refal5-builtins.srefi
+    --prelude=refal5-builtins.refi
 
   echo Prepare common prefix...
   if exist _test_prefix.exe-prefix erase _test_prefix.exe-prefix

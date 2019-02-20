@@ -1,9 +1,9 @@
-//FROM Library
+*$FROM Library
 $EXTERN FOpen, FClose, FReadLine, FWriteLine, Add, Sub, IntFromStr, Arg,
   SymbCompare, FReadBytes, FWriteBytes;
 
-// Расширения библиотеки и функции, реализуемые
-// средствами самого Простого Рефала
+* Расширения библиотеки и функции, реализуемые
+* средствами самого Простого Рефала
 
 $ENTRY Apply {
   s.Fn e.Argument = <s.Fn e.Argument>;
@@ -49,8 +49,8 @@ DoMapAccum {
   t.Fn t.Acc (e.Scanned) = t.Acc e.Scanned;
 }
 
-// Function MapReduce is deprecated!!!
-// Use MapAccum instead it.
+* Function MapReduce is deprecated!!!
+* Use MapAccum instead it.
 $ENTRY MapReduce {
   t.Fn t.Acc e.Tail = <MapAccum t.Fn t.Acc e.Tail>;
 }
@@ -132,7 +132,7 @@ $ENTRY Dec {
 }
 
 $ENTRY FastIntFromStr {
-  e.Digits = <IntFromStr e.Digits> : #Success s.Number = s.Number;
+  e.Digits = <IntFromStr e.Digits> : Success s.Number = s.Number;
 }
 
 $ENTRY ArgList {
@@ -298,7 +298,7 @@ $ENTRY Min {
         s.Other = t.Y;
       };
 
-  t.First e.Tail = <Reduce Min t.First e.Tail>;
+  t.First e.Tail = <Reduce &Min t.First e.Tail>;
 }
 
 $ENTRY Max {
@@ -309,12 +309,12 @@ $ENTRY Max {
         s.Other = t.Y;
       };
 
-  t.First e.Tail = <Reduce Max t.First e.Tail>;
+  t.First e.Tail = <Reduce &Max t.First e.Tail>;
 }
 
 $ENTRY OneOf {
-  t.Sample e.Items-B t.Sample e.Items-E = #True;
-  t.Sample e.Items = #False;
+  t.Sample e.Items-B t.Sample e.Items-E = True;
+  t.Sample e.Items = False;
 }
 
 $ENTRY Unique {
