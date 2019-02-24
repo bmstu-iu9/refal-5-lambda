@@ -1,9 +1,9 @@
 $INCLUDE "LibraryEx";
 
-//FROM Error
+*$FROM Error
 $EXTERN EL-Destroy, EL-Create, EL-AddErrorAt, EL-Concat;
 
-//FROM Config
+*$FROM Config
 $EXTERN
   Config-GetPrelude,
   Config-GetR5Mode,
@@ -15,75 +15,75 @@ $EXTERN
   Config-GetGenMode,
   Config-GetOptTree;
 
-//FROM Checker
+*$FROM Checker
 $EXTERN CheckProgram;
 
-//FROM R5-Lexer
+*$FROM R5-Lexer
 $EXTERN R5-Scan;
 
-//FROM R5-Parser
+*$FROM R5-Parser
 $EXTERN R5-Parse;
 
-//FROM SR-LoadSource
+*$FROM SR-LoadSource
 $EXTERN SR-LoadSource;
 
-//FROM SR-Lexer
+*$FROM SR-Lexer
 $EXTERN SR-LexFolding;
 
-//FROM SR-Parser
+*$FROM SR-Parser
 $EXTERN SR-ParseProgram;
 
-//FROM FindFile
+*$FROM FindFile
 $EXTERN FindInclude;
 
-//FROM Desugaring
+*$FROM Desugaring
 $EXTERN Desugar;
 
-//FROM Log
+*$FROM Log
 $EXTERN Log-GetLogFunction-AST, Log-GetLogFunction-HighLevelRASL;
 
-//FROM OptTree
+*$FROM OptTree
 $EXTERN OptTree, OptTree-CleanupMarkup;
 
-//FROM HighLevelRASL
+*$FROM HighLevelRASL
 $EXTERN HighLevelRASL;
 
-//FROM LowLevelRASL
+*$FROM LowLevelRASL
 $EXTERN LowLevelRASL;
 
-//FROM Generator-RASL
+*$FROM Generator-RASL
 $EXTERN GenProgram-RASL;
 
-//FROM Generator-Native
+*$FROM Generator-Native
 $EXTERN GenProgram-Native;
 
 
 /**
   <CompileFile t.Config (s.Dialect e.SrcName) e.OutputName>
-    == #Success e.OutputName t.Native
-    == #Fails
-  s.Dialect ::= #R5 | #SR
-  t.Native ::= #NoNative | (e.NativeOutputName)
+    == Success e.OutputName t.Native
+    == Fails
+  s.Dialect ::= R5 | SR
+  t.Native ::= NoNative | (e.NativeOutputName)
 */
 $ENTRY CompileFile {
   t.Config (s.Dialect e.SrcName) e.OutputName '.rasl'=
     <Fetch
       s.Dialect e.SrcName
       <Pipe
-        (FrontEnd t.Config)
+        (&FrontEnd t.Config)
         {
           t.ErrorList e.AST =
             <Fetch
               <EL-Destroy t.ErrorList>
               {
-                #EL-NoErrors =
+                EL-NoErrors =
                   <Fetch
                     e.AST
                     <BackEnd t.Config (e.SrcName) e.OutputName>
                   >;
 
-                #EL-HasErrors =
-                  #Fails;
+                EL-HasErrors =
+                  Fails;
               }
             >;
         }
@@ -112,19 +112,19 @@ PreludeIncludeLine {
         <Config-GetPrelude t.Config>
         {
           /* пусто */ = /* пусто */;
-          e.Prelude = (#Include 1 e.Prelude);
+          e.Prelude = (Include 1 e.Prelude);
         }
       >;
 }
 
 LoadAST {
-  t.Config #R5 e.SrcName
+  t.Config R5 e.SrcName
     = <R5-Scan e.SrcName> : e.Tokens
     = <Config-GetR5Mode t.Config> : s.Mode
     = <R5-Parse <EL-Create e.SrcName> s.Mode e.Tokens> : t.ErrorList e.AST
     = t.ErrorList <PreludeIncludeLine t.Config> e.AST;
 
-  t.Config #SR e.SrcName
+  t.Config SR e.SrcName
     = <SR-LoadSource e.SrcName> : e.SrcText
     = <SR-LexFolding e.SrcText> : e.Tokens
     = <SR-ParseProgram <EL-Create e.SrcName> e.Tokens>;
@@ -135,7 +135,7 @@ ResolveIncludes {
   e.Units-B
   (
     t.ErrorList s.Dialect (e.Aliases)
-    (e.ScannedAST) e.AST-B (#Include t.SrcPos e.IncludeName) e.AST-E
+    (e.ScannedAST) e.AST-B (Include t.SrcPos e.IncludeName) e.AST-E
   )
   e.Units-E
     = <ResolveIncludes
@@ -148,7 +148,7 @@ ResolveIncludes {
             'Include file "' e.IncludeName '" is not found'
           >
           s.Dialect (e.Aliases)
-          (e.ScannedAST e.AST-B (#Include t.SrcPos e.IncludeName)) e.AST-E
+          (e.ScannedAST e.AST-B (Include t.SrcPos e.IncludeName)) e.AST-E
         )
         e.Units-E
       >;
@@ -157,7 +157,7 @@ ResolveIncludes {
   e.Units-B
   (
     t.ErrorList s.Dialect (e.Aliases)
-    (e.ScannedAST) e.AST-B (#Include t.SrcPos e.IncludeName) e.AST-E
+    (e.ScannedAST) e.AST-B (Include t.SrcPos e.IncludeName) e.AST-E
   )
   e.Units-E
     = <ResolveIncludes-CheckAlias
@@ -166,7 +166,7 @@ ResolveIncludes {
         (
           (
             t.ErrorList s.Dialect (e.Aliases)
-            (e.ScannedAST e.AST-B (#Include t.SrcPos e.IncludeName)) e.AST-E
+            (e.ScannedAST e.AST-B (Include t.SrcPos e.IncludeName)) e.AST-E
           )
         )
         (e.Units-E)
@@ -202,7 +202,7 @@ ResolveIncludes-CheckAlias {
     = <ResolveIncludes
         t.Config (e.BadIncludes)
         <Map
-          UnBracket
+          &UnBracket
           e.Groups-B
           (
             e.Units-B
@@ -231,7 +231,7 @@ ResolveIncludes-CheckValid {
   (e.Units-B)
   (t.CheckedUnit)
   (e.Units-E)
-  (e.IncludeName) # Success s.Dialect e.FullPath
+  (e.IncludeName) Success s.Dialect e.FullPath
     = <ResolveIncludes-CheckEqualAST
         t.Config (e.BadIncludes)
         (e.Units-B) (t.CheckedUnit) (e.Units-E)
@@ -244,11 +244,11 @@ ResolveIncludes-CheckValid {
   (
     (
       t.ErrorList s.Dialect (e.Aliases)
-      (e.ScannedAST (#Include t.SrcPos e.IncludeName)) e.NotScannedAST
+      (e.ScannedAST (Include t.SrcPos e.IncludeName)) e.NotScannedAST
     )
   )
   (e.Units-E)
-  (e.IncludeName) #Fails
+  (e.IncludeName) Fails
     = <ResolveIncludes
         t.Config (e.BadIncludes (e.IncludeName))
         e.Units-B
@@ -258,7 +258,7 @@ ResolveIncludes-CheckValid {
             'Include file "' e.IncludeName '" is not found'
           >
           s.Dialect (e.Aliases)
-          (e.ScannedAST (#Include t.SrcPos e.IncludeName)) e.NotScannedAST
+          (e.ScannedAST (Include t.SrcPos e.IncludeName)) e.NotScannedAST
         )
         e.Units-E
       >;
@@ -278,7 +278,7 @@ ResolveIncludes-CheckEqualAST {
     = <ResolveIncludes
         t.Config (e.BadIncludes)
         <Map
-          UnBracket
+          &UnBracket
           e.Groups-B
           (
             e.Units-B
@@ -323,46 +323,46 @@ GlueErrorListsAndASTs {
 PatchASTSrcPos {
   (e.FileName) e.AST
     = {
-        #NoPos = #NoPos;
-        s.LnNum = (#FileLine s.LnNum e.FileName);
-        (#RowCol s.Row s.Col) = (#FileRowCol (s.Row s.Col) e.FileName);
+        NoPos = NoPos;
+        s.LnNum = (FileLine s.LnNum e.FileName);
+        (RowCol s.Row s.Col) = (FileRowCol (s.Row s.Col) e.FileName);
       }
     : s.FnPatch
-    = <Map (PatchASTSrcPos-Item s.FnPatch) e.AST>;
+    = <Map (&PatchASTSrcPos-Item s.FnPatch) e.AST>;
 }
 
 PatchASTSrcPos-Item {
-  s.FnPatch (#Function t.SrcPos s.ScopeClass (e.Name) e.Body)
-    = (#Function
+  s.FnPatch (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
+    = (Function
         <s.FnPatch t.SrcPos>
         s.ScopeClass (e.Name)
         <PatchASTSrcPos-Body s.FnPatch e.Body>
       );
 
-  s.FnPatch (#Ident t.SrcPos e.Name) = (#Ident <s.FnPatch t.SrcPos> e.Name);
+  s.FnPatch (Ident t.SrcPos e.Name) = (Ident <s.FnPatch t.SrcPos> e.Name);
 
-  s.FnPatch (#NativeBlock t.SrcPos e.Name)
-    = (#NativeBlock <s.FnPatch t.SrcPos> e.Name);
+  s.FnPatch (NativeBlock t.SrcPos e.Name)
+    = (NativeBlock <s.FnPatch t.SrcPos> e.Name);
 
-  s.FnPatch (#Include t.SrcPos e.IncludeName) = /* пропускаем */;
+  s.FnPatch (Include t.SrcPos e.IncludeName) = /* пропускаем */;
 
   s.FnPatch (s.EnumSwapDeclEntry t.SrcPos s.ScopeClass e.Name)
-    , <OneOf s.EnumSwapDeclEntry #Enum #Swap #Declaration #Entry> : #True
+    , <OneOf s.EnumSwapDeclEntry Enum Swap Declaration Entry> : True
     = (s.EnumSwapDeclEntry <s.FnPatch t.SrcPos> s.ScopeClass e.Name);
 
-  s.FnPatch (#Spec t.SrcPos (e.Name) e.Pattern)
+  s.FnPatch (Spec t.SrcPos (e.Name) e.Pattern)
     = (
-        #Spec <s.FnPatch t.SrcPos> (e.Name)
+        Spec <s.FnPatch t.SrcPos> (e.Name)
         <PatchASTSrcPos-Expr s.FnPatch e.Pattern>
       );
 }
 
 PatchASTSrcPos-Body {
-  s.FnPatch #Sentences e.Sentences
-    = #Sentences <Map (PatchASTSrcPos-Sentence s.FnPatch) e.Sentences>;
+  s.FnPatch Sentences e.Sentences
+    = Sentences <Map (&PatchASTSrcPos-Sentence s.FnPatch) e.Sentences>;
 
-  s.FnPatch #NativeBody t.SrcPos e.Code
-    = #NativeBody <s.FnPatch t.SrcPos> e.Code;
+  s.FnPatch NativeBody t.SrcPos e.Code
+    = NativeBody <s.FnPatch t.SrcPos> e.Code;
 }
 
 PatchASTSrcPos-Sentence {
@@ -405,29 +405,29 @@ PatchASTSrcPos-Expr {
   s.FnPatch e.Expression
     = <Map
         {
-          (#TkVariable t.SrcPos s.Mode e.Index)
-            = (#TkVariable <s.FnPatch t.SrcPos> s.Mode e.Index);
+          (TkVariable t.SrcPos s.Mode e.Index)
+            = (TkVariable <s.FnPatch t.SrcPos> s.Mode e.Index);
 
-          (#TkNewVariable t.SrcPos s.Mode e.Index)
-            = (#TkNewVariable <s.FnPatch t.SrcPos> s.Mode e.Index);
+          (TkNewVariable t.SrcPos s.Mode e.Index)
+            = (TkNewVariable <s.FnPatch t.SrcPos> s.Mode e.Index);
 
-          (#TkName t.SrcPos e.Name) = (#TkName <s.FnPatch t.SrcPos> e.Name);
+          (TkName t.SrcPos e.Name) = (TkName <s.FnPatch t.SrcPos> e.Name);
 
-          (#Brackets e.InBrackets)
-            = (#Brackets <PatchASTSrcPos-Expr s.FnPatch e.InBrackets>);
+          (Brackets e.InBrackets)
+            = (Brackets <PatchASTSrcPos-Expr s.FnPatch e.InBrackets>);
 
-          (#ADT-Brackets t.SrcPos (e.Name) e.InBrackets)
-            = (#ADT-Brackets
+          (ADT-Brackets t.SrcPos (e.Name) e.InBrackets)
+            = (ADT-Brackets
                 <s.FnPatch t.SrcPos>
                 (e.Name)
                 <PatchASTSrcPos-Expr s.FnPatch e.InBrackets>
               );
 
-          (#CallBrackets e.InBrackets)
-            = (#CallBrackets <PatchASTSrcPos-Expr s.FnPatch e.InBrackets>);
+          (CallBrackets e.InBrackets)
+            = (CallBrackets <PatchASTSrcPos-Expr s.FnPatch e.InBrackets>);
 
-          (#Closure e.Sentences)
-            = (#Closure <PatchASTSrcPos-Body s.FnPatch e.Sentences>);
+          (Closure e.Sentences)
+            = (Closure <PatchASTSrcPos-Body s.FnPatch e.Sentences>);
 
           t.OtherTerm = t.OtherTerm;
         }
@@ -443,23 +443,23 @@ BackEnd {
     = <Config-GetConditionsMode t.Config> : s.ConditionsMode
     = <Config-GetGenMode t.Config> : s.GenMode
     = <Pipe
-        (Desugar s.MarkupContext s.ConditionsMode)
+        (&Desugar s.MarkupContext s.ConditionsMode)
         <Log-GetLogFunction-AST e.SrcName ' (after desugar)'>
         <Fetch
           <Config-GetOptTree t.Config>
           {
-            #OptTree = (OptTree t.Config);
-            #NoOpt = OptTree-CleanupMarkup;
+            OptTree = (&OptTree t.Config);
+            NoOpt = &OptTree-CleanupMarkup;
           }
         >
         <Log-GetLogFunction-AST e.SrcName ' (after tree optimization)'>
-        (HighLevelRASL s.OptPattern s.OptResult)
+        (&HighLevelRASL s.OptPattern s.OptResult)
         <Log-GetLogFunction-HighLevelRASL e.SrcName>
-        (LowLevelRASL s.GenMode s.DebugInfo (e.SrcName))
+        (&LowLevelRASL s.GenMode s.DebugInfo (e.SrcName))
         {
           t.RASLModule =
             <BackEnd-RASLModule t.RASLModule e.OutputName '.rasl'>
-            #NoNative;
+            NoNative;
 
           t.RASLModule t.NativeModule =
             <BackEnd-RASLModule t.RASLModule e.OutputName '.rasl'>
@@ -479,7 +479,7 @@ BackEnd-RASLModule {
           <SaveBytes (e.OutputName) e.ByteStream>;
       }
     >
-    #Success e.OutputName;
+    Success e.OutputName;
 }
 
 BackEnd-NativeModule {
@@ -493,15 +493,15 @@ BackEnd-NativeModule {
 
 /**
   <GrammarCheck t.Config s.Dialect e.SrcName>
-    == #Success
-    == #Fails
+    == Success
+    == Fails
 */
 $ENTRY GrammarCheck {
   t.Config s.Dialect e.SrcName
     = <LoadAST t.Config s.Dialect e.SrcName> : t.ErrorList e.AST
     = <EL-Destroy t.ErrorList>
     : {
-        #EL-NoErrors = #Success;
-        #EL-HasErrors = #Fails;
+        EL-NoErrors = Success;
+        EL-HasErrors = Fails;
       };
 }
