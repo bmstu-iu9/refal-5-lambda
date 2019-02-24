@@ -1,0 +1,66 @@
+*$FROM Escape
+$EXTERN EscapeString;
+
+*$FROM LibraryEx
+$EXTERN Map, Fetch;
+
+$ENTRY DisplayName {
+  e.Name Hash s.Cookie1 s.Cookie2 =
+    <DisplayName e.Name> '#' <Symb s.Cookie1> ':' <Symb s.Cookie2>;
+  VAR s.Mode e.Index s.Depth = s.Mode '.' e.Index '#' <Symb s.Depth> ':';
+  e.Name SUF e.Suffix = e.Name <DisplayNameSuf e.Suffix>;
+  e.Name = e.Name;
+}
+
+DisplayNameSuf {
+  s.Tag s.Num e.Suffix = s.Tag <Symb s.Num> <DisplayNameSuf e.Suffix>;
+  /* пусто */ = /* пусто */;
+}
+
+$ENTRY DisplayCName {
+  e.Name = <EscapeString <DisplayName e.Name>>;
+}
+
+$ENTRY CName {
+  e.Name Hash s.Cookie1 s.Cookie2 =
+    <CName e.Name> '_' <Symb s.Cookie1> '_' <Symb s.Cookie2>;
+  VAR s.Mode e.Index s.Depth =
+    'var_' s.Mode <CName e.Index> '_' <Symb s.Depth>;
+  e.Name SUF e.Suffix = 'gen_' <CName e.Name> '_' <CNameSuf e.Suffix>;
+  e.Name = <DecorateChars e.Name>;
+  e.Name = e.Name;
+}
+
+DecorateChars {
+  e.Name
+    = <Map
+        {
+          '-' = 'm_';
+          '_' = 'u_';
+          s.Other
+            = <Fetch
+                <AlphaNumber>
+                {
+                  e.AlNum-B s.Other e.AlNum-E = s.Other;
+                  e.AlNum = 'k' <Symb <Ord s.Other>> '_';
+                }
+              >;
+        }
+        e.Name
+      >;
+}
+
+AlphaNumber {
+  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    'abcdefghijklmnopqrstuvwxyz'
+    '0123456789';
+}
+
+CNameSuf {
+  '$' s.Num e.Suffix = 'S' <Symb s.Num> <CNameSuf e.Suffix>;
+  '\\' s.Num e.Suffix = 'L' <Symb s.Num> <CNameSuf e.Suffix>;
+  '=' s.Num e.Suffix = 'A' <Symb s.Num> <CNameSuf e.Suffix>;
+  ':' s.Num e.Suffix = 'B' <Symb s.Num> <CNameSuf e.Suffix>;
+  '?' s.Num e.Suffix = 'C' <Symb s.Num> <CNameSuf e.Suffix>;
+  /* пусто */ = /* пусто */;
+}
