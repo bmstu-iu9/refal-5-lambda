@@ -92,11 +92,8 @@ DoScan {
     = <DoScan-NativeCode (RowCol <Inc s.Line> 1) e.Lines>;
 
   t.Pos (s.StartIdent e.Line) e.Lines
-    , <Type s.StartIdent> : 'L' s.Case s.StartIdent
+    , <IsStartIdent s.StartIdent> : True
     = <DoScan-Ident t.Pos (s.StartIdent) (e.Line) e.Lines>;
-
-  t.Pos ('_' e.Line) e.Lines
-    = <DoScan-Ident t.Pos ('_') (e.Line) e.Lines>;
 
   t.Pos (s.Punctuation e.Line) e.Lines
     , <IsPunctuation s.Punctuation> : s.TokType
@@ -108,9 +105,9 @@ DoScan {
     = (TkOpenCall t.Pos /* empty */)
       <DoScan <IncCol t.Pos> (s.Var '.' e.Line) e.Lines>;
 
-  t.Pos ('<' s.StartIdent e.Line) e.Lines,
-      <Type s.StartIdent>: 'L' s.Case s.StartIdent =
-    <DoScan-Ident t.Pos ('<' s.StartIdent) (e.Line) e.Lines>;
+  t.Pos ('<' s.StartIdent e.Line) e.Lines
+    , <IsStartIdent s.StartIdent> : True
+    = <DoScan-Ident t.Pos ('<' s.StartIdent) (e.Line) e.Lines>;
 
   t.Pos ('<' s.SugarName e.Line) e.Lines
     , ('+Add') ('-Sub') ('*Mul') ('/Div') ('%Mod') ('?Residue')
@@ -145,6 +142,12 @@ DoScan {
   t.Pos (s.Other e.Line) e.Lines
     = (TkError t.Pos 'Bad character \'' s.Other '\'')
       <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
+}
+
+IsStartIdent {
+  '_' = True;
+  s.StartIdent, <Type s.StartIdent> : 'L' s.Case s.StartIdent = True;
+  s.Other = False;
 }
 
 IsVarType {

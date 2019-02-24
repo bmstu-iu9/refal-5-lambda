@@ -1,0 +1,5 @@
+$ENTRY Go {
+  = <__Call>;
+}
+
+__Call { = }
