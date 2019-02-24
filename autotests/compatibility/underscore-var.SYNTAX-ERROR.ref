@@ -1,0 +1,16 @@
+*$CLASSIC;
+
+$ENTRY StrExpr {
+  t.Term e.Expr = <StrTerm t.Term> <StrExpr e.Expr>;
+  /* empty */ = /* empty */;
+}
+
+StrTerm {
+  ('*' e.Expr) = '(' <StrExpr e.Expr> ')';
+  (Var s.Type s.Index) = s.Type '.' s.Index;
+  ('!' t.Call ':' t.Var) = '<' <StrTerm t.Call> ': ' <StrTerm t.Var> '>';
+  (Fn s.Fn (e.Conf ':' t.Var)) = '[' s.Fn <StrExpr e.Conf> ': ' <StrTerm t.Var> ']';
+  s.Symbol, <Type s.Symbol> : 'N' e._ = s.Symbol;
+  s.Symbol, <Type s.Symbol> : 'W' e._ = s.Symbol;
+  s.Symbol = '\'' s.Symbol '\' ';
+}

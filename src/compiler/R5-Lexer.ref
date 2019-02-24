@@ -28,13 +28,56 @@ $EXTERN LoadFile, Inc;
   s.VarType ::= 's' | 't' | 'e'
 */
 $ENTRY R5-Scan {
-  e.FileName = <DoScan (RowCol 1 1) <Skip-UTF-8-Bom <LoadFile e.FileName>>>;
+  e.FileName =
+    <CheckClassicTokens
+      Extended <DoScan (RowCol 1 1) <Skip-UTF-8-Bom <LoadFile e.FileName>>>
+    >;
 }
 
 Skip-UTF-8-Bom {
   ('\xEF\xBB\xBF' e.Line) e.Lines = (e.Line) e.Lines;
 
   e.Lines = e.Lines;
+}
+
+CheckClassicTokens {
+  s.Mode (TkRefal5Mode t.Pos s.NewMode) e.Tokens
+    = (TkRefal5Mode t.Pos s.NewMode) <CheckClassicTokens s.NewMode e.Tokens>;
+
+  Extended t.NextToken e.Tokens
+    = t.NextToken <CheckClassicTokens Extended e.Tokens>;
+
+  Classic (TkName t.Pos '_' e.Name) e.Tokens
+    = (TkError t.Pos 'Illegal identifier "_' e.Name '"')
+      (TkName t.Pos '_' e.Name)
+      <CheckClassicTokens Classic e.Tokens>;
+
+  Classic (TkVariable t.Pos s.Mode e.Index) e.Tokens
+    , <Type e.Index>
+    : {
+        /* идентификатор */
+        'L' s.Case e.Index^ = /* пусто */;
+
+        /* последовательность десятичных цифр */
+        'D0' e.Index^, <AllDigits e.Index> : True = /* пусто */;
+
+        s.Type s.SubType e.Index^
+          = (TkError t.Pos 'Bad variable index "' s.Mode '.' e.Index '"');
+      }
+    : e.MaybeError
+    = e.MaybeError (TkVariable t.Pos s.Mode e.Index)
+      <CheckClassicTokens Classic e.Tokens>;
+
+  Classic t.NextToken e.Tokens
+    = t.NextToken <CheckClassicTokens Classic e.Tokens>;
+
+  s.Mode /* пусто */ = /* пусто */;
+}
+
+AllDigits {
+  e.String, <Type e.String> : 'D0' s.Digit e.Tail = <AllDigits e.Tail>;
+  /* пусто */ = True;
+  e.BadString = False;
 }
 
 IncLine {
