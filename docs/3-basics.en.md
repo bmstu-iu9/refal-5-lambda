@@ -38,7 +38,7 @@ program. It sounds strange but it will make more sense.
 
 The restricted by `/*` and `*/` signs comments are _multi-line._ It means `*/`
 does not have to be on the same string that `/*`. There are not only multi-line
-comments but _single-lined._ Any strings starts from `*` sign (in the first
+comments but _single-lined._ Any string starts from `*` sign (in the first
 column) is ignored by the compiler.
 
 E.g. the next program is the same but is littered with useless comments.
@@ -132,7 +132,7 @@ library is not used.
 
 ### Interim conclusions – what have we seen in `hello.ref`
 
-Let us to conclude what we have learn by now.
+Let us to conclude what we have learned by now.
 
 * We can write comments that do not affect program running and serve as an
   explanation in the programs.
@@ -363,9 +363,9 @@ We need to clarify the process of Refal function execution now.
    when they are placed in the left part of the selected sentence. If there are
    several such sets of variables values (permutations), then it is fixed the
    one in which the leftmost e-variable takes the shortest value. If it does
-   not resolve ambiguities, then the next e-variable is considered and so one
+   not resolve ambiguities, then the next e-variable is considered and so on
    (in the next section we will look at this process in detail).
-3. The variables are replaced by their values in the right side of the selected
+3. The variables are replaced by their values on the right side of the selected
    sentence. Then the functions on the right are calculated.
 
 This process will be considered in detail and formally in the next chapter.
@@ -418,7 +418,7 @@ mathematical definitions.
 **Example 7.** Let's write the addition function of two binary numbers with
 arbitrary length. Refal functions take one argument, but here we want to transmit
 two. In the first version of the addition function, we avoided this difficulty
-by transmiting two _symbols_ to the function. Now we need to transfer two
+by transmitting two _symbols_ to the function. Now we need to transfer two
 expressions with arbitrary length. Each argument can be composed of the signs
 `'0'` and `'1'` only. So you can put any character between them, except for
 zero and one – by it you can figure out where one argument ends and another
@@ -452,7 +452,7 @@ Let's sum up:
 * The variable names syntax: `s.varname`, `e.ab123`, `s.123ab`.
 * The function sentence is executed if it is possible to select a variables
   values substitution, which converts the left side to a function argument.
-* The same substitution is also made in the right side of the sentence.
+* The same substitution is also made on the right side of the sentence.
 
 ## Structure brackets
 
@@ -496,8 +496,8 @@ the statements round and angle brackets can not overlap each other.
 
 Let us clarify our understanding of variables from a perspective of our new knowledge.
 
-* E-variables can take a arbitrary sequence _of terms,_ i.e. the e-variable value
-  can be an expression with the correct bracket structure only.
+* E-variables can take an arbitrary sequence _of terms,_ i.e. the e-variable
+  value can be an expression with the correct bracket structure only.
 * The _t-variables_ value (they are written as t.varname) can be any single
   term – both a symbol and an expression in brackets.
 
@@ -664,7 +664,7 @@ The program should print the following:
 We transferred the function arguments by separating them with some sign that
 can not appear inside the arguments (for example, `'='` in the function
 `IsEqual` or `'+'` in the `BinAdd` function) when we wanted to call the
-function with several arguments. It is better when transfering several
+function with several arguments. It is better when transferring several
 arguments we “wrap” them in the bracket terms. For example, if the function
 takes 3 arguments with a arbitrary length – let’s denote them as `e.1`, `e.2`,
 `e.3` – then they can be transferred as `(e.1) e.2 (e.3)`, `e.1 (e .2) (e.3)`,
@@ -979,7 +979,7 @@ the following sequence of actions.
 4. If it is possible to choose such values of variables in the left part of the
    current sentence that it might become the function argument, then the
    point 5 is implemented. Otherwise the following sentence is selected and
-   point 4 repeats. If there are no sentences any more, then the refal-machine
+   point 4 repeats. If there are no sentences anymore, then the refal-machine
    stops with an error "recognition impossible".
 5. The found values of variables are added to the right part of the current
    sentence. Refal-machine inserts received expression into the view field to
