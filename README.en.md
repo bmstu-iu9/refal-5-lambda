@@ -39,7 +39,7 @@ first one has priority.
     * Encapsulation:  named brackets support – abstract data types. The content
       of such brackets is available only in that compilation unit where they
       are designed.
-    * Encapsulation: static boxex. Unlike the classic Refal-5 global stack,
+    * Encapsulation: static boxes. Unlike the classic Refal-5 global stack,
       static box can be placed in the local scope which is not available from
       the outside (by the way, the bank is implemented upon such a static box
       in the `Library`).
@@ -57,7 +57,7 @@ first one has priority.
       number of elements need to be learnt and changed.
     * Classic list structure is used as far as it’s the simplest (e.g. no
       garbage collection is needed )
-    * The compiler is selfusable first of all, because the immersion in domain
+    * The compiler is self-usable first of all, because the immersion in domain
       is becoming unavoidable (it gains a better understanding and hereby
       upgrades performance quality), secondly, bootstrap technique design is
       more interesting and informative.
@@ -80,7 +80,7 @@ first one has priority.
       number of warnings.
 5. **The compiler needs to be the back end for the Module Refal compiler.**
     * The language should be expressive enough to express the Module Refal
-      tools effectively. Fot this reason, for example, there are abstract data
+      tools effectively. For this reason, for example, there are abstract data
       types and static boxes.
     * Some tools which aren’t used in the compiler can be described in the
       runtime. The thing is that they are used in Module Refal.
@@ -472,9 +472,9 @@ configurations file by default.
    See section 5 [user guide](doc/manul.pdf) for compiler using (The Manual is
    a little dated.)
 
-## Licence
+## License
 
-The compiler distributed throughout BSD licence with a reservation concerning
+The compiler distributed throughout BSD license with a reservation concerning
 the components of standard library and runtime that may be distributed in binary
 form without definition of compiler copyrighting. In absence of reservation for
 compiled programs the compiler copyright would have to be specified. It wasn't
