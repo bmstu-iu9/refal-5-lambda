@@ -36,7 +36,7 @@ The another important specialty of REFAL is pattern matching. REFAL was one of
 the first programming languages (maybe even the first), which uses this
 mechanism for data structures analyzing. The functions on REFAL make the
 analysis of its parameter by choosing one of some samples that describe the
-parameter. Another way of analyzing datas is not anticipated in this language.
+parameter. Another way of analyzing data is not anticipated in this language.
 
 Firstly, REFAL-5λ dialect is an exact comprehending set of REFAL-5\[2] dialect,
 that means that any program worked on “classical” implementation \[3] (further
@@ -96,7 +96,7 @@ be written into `PATH` variable for the current user. In order to delete Refal
 from your computer it is possible either to use “Refal-5-lambda” →
 “UninstallRefal-5-lambda” shortcut in Start menu or using “Control panel” →
 “Programs and components” or “Parameters” → “Applications” → “Apps & features”
-depending in Windows OS version.
+depending on Windows OS version.
 
 Straight after installation it is possible to start the command line and to use
 the commands `srefc`, `srefc-core`, `srmake`, `srmake-core` in it in any folder.
@@ -108,7 +108,7 @@ catalog from the same page
 <https://github.com/bmstu-iu9/refal-5-lambda/releases/latest>.
 
 In archive there are Refal-5λ, compiled into code on C++ and glue
-interpretive code. In order to get ready executable modules from it it is
+interpretive code. In order to get ready executable modules from it is
 essential to have an installed C++98 compiler on computer. It is enough to
 download `bootstrap.bat` file on Windows or `bootstrap.sh` on Linux or macOS –
 after distribution there will be new executable files in the bin subfolder.
@@ -150,7 +150,7 @@ is started, `c-plus-plus.conf.***` is corrected if it is necessary etc.)
 It is enough to have any C++98 compiler for expanding. Distribution was tested
 on BCC 5.5, Microsoft Visual C++ of different versions, GCC C++, Clang,
 OpenWatcom.  Supported operational systems: Windows XP and newer, GNU+Linux
-(distributives not older than 5 years), macOS ( I don’t now certain versions-
+(distributives not older than 5 years), macOS ( I don’t know certain versions —
 thy were tested not by me). Supported processors architectures are x386 and
 amd64 (work on big endian machines is not supported in current version).
 
@@ -248,7 +248,7 @@ It will be said about the meaning of written in `hello.ref` file in the next
    (in Russian)
 5. Sergei Yu. Skorobogatov, Andrey M. Chepovskiy.  Refal language with
    higher-order functions // Informational technologies, 2006. № 9.
-   Available in the Internet:
+   Available on the Internet:
    <https://waybackmachine.org/web/20070719175259/http://iu9.bmstu.ru/science/refal.pdf>
    (in Russian)
 
