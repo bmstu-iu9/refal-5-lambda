@@ -1,22 +1,20 @@
-//FROM LibraryEx
+**FROM LibraryEx
 $EXTERN Fetch, TermCompare, Inc, Pipe, Reduce, Map, MapReduce, DelAccumulator,
   UnBracket;
 
-//FROM Library
-$EXTERN Add, Sub;
 
 $ENTRY GST {
   (e.Pattern) (e.Result) =
     <Fetch
       (e.Pattern) (e.Result)
       <Pipe
-        TileCandidates
-        FilterOverlapped
+        &TileCandidates
+        &FilterOverlapped
         {
           e.Tiles =
             ((<Enum e.Pattern>) (<Enum e.Result>)) e.Tiles;
         }
-        (Reduce
+        (&Reduce
           {
             ((e.Pattern^) (e.Result^)) t.Tile =
               (<ReplaceTile (e.Pattern) (e.Result) t.Tile>);
@@ -34,7 +32,7 @@ Enum {
   e.Items =
     <DelAccumulator
       <MapReduce
-        { s.Num t.Item = <Inc s.Num> (#Num s.Num t.Item); }
+        { s.Num t.Item = <Inc s.Num> (Num s.Num t.Item); }
         0 e.Items
       >
     >;
@@ -44,11 +42,11 @@ DeEnum {
   e.Items =
     <Map
       {
-        (#Num s.Num t.Item) = t.Item;
+        (Num s.Num t.Item) = t.Item;
 
-        #RemovedTile = #RemovedTile;
+        RemovedTile = RemovedTile;
 
-        (#Tile e.Tile) = (#Tile e.Tile);
+        (Tile e.Tile) = (Tile e.Tile);
       }
       e.Items
     >;
@@ -150,12 +148,12 @@ ZipItems {
 }
 
 GlueTiles {
-  (s.CurIndexP s.CurIndexR #NoOverlap) e.Tail = <GlueTiles e.Tail>;
+  (s.CurIndexP s.CurIndexR NoOverlap) e.Tail = <GlueTiles e.Tail>;
 
-  (s.CurIndexP s.CurIndexR s.Weight #AsIsE) e.Tail =
+  (s.CurIndexP s.CurIndexR s.Weight AsIsE) e.Tail =
     (
       s.Weight s.CurIndexP s.CurIndexR
-      (s.CurIndexP s.CurIndexR s.Weight #AsIsE)
+      (s.CurIndexP s.CurIndexR s.Weight AsIsE)
     )
     <GlueTiles e.Tail>;
 
@@ -166,7 +164,7 @@ GlueTiles {
 }
 
 GlueNextTile {
-  (s.Weight e.Items) (s.CurIndexP s.CurIndexR #NoOverlap) e.Tail =
+  (s.Weight e.Items) (s.CurIndexP s.CurIndexR NoOverlap) e.Tail =
     <FoldTile-EEnd s.Weight e.Items>
     <GlueTiles e.Tail>;
 
@@ -185,10 +183,10 @@ GlueNextTile {
 }
 
 FoldTile-EEnd {
-  //если плитка оканчивается e-переменной, то ее нужно удалить из плитки
-  s.Weight e.Items (s.CurIndexP s.CurIndexR 3 #AsIsE) =
+  /* если плитка оканчивается e-переменной, то ее нужно удалить из плитки */
+  s.Weight e.Items (s.CurIndexP s.CurIndexR 3 AsIsE) =
     <FoldTile-EEnd <Sub s.Weight 3> e.Items>
-    (3 s.CurIndexP s.CurIndexR (s.CurIndexP s.CurIndexR 3 #AsIsE));
+    (3 s.CurIndexP s.CurIndexR (s.CurIndexP s.CurIndexR 3 AsIsE));
 
   s.Weight (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) e.Items =
     (
@@ -251,8 +249,8 @@ RejectTile {
             <Fetch
               e.Tiles
               <Pipe
-                (Map (FilterPatternPos s.CurIndexP))
-                (Map (FilterResultPos s.CurIndexR))
+                (&Map (&FilterPatternPos s.CurIndexP))
+                (&Map (&FilterResultPos s.CurIndexR))
                 { e.Tiles^ = (e.Tiles); }
               >
             >;
@@ -314,8 +312,8 @@ FilterResultPos {
 }
 
 FoldTile {
-  s.Weight (s.CurIndexP s.CurIndexR 3 #AsIsE) e.Items =
-    (3 s.CurIndexP s.CurIndexR (s.CurIndexP s.CurIndexR 3 #AsIsE))
+  s.Weight (s.CurIndexP s.CurIndexR 3 AsIsE) e.Items =
+    (3 s.CurIndexP s.CurIndexR (s.CurIndexP s.CurIndexR 3 AsIsE))
     <FoldTile <Sub s.Weight 3> e.Items>;
 
   s.Weight e.Items = <FoldTile-EEnd s.Weight e.Items>;
@@ -336,18 +334,18 @@ FoldTileW {
       (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) e.Items
     >;
 
-  // Предложение не должно выполняться
+  /* Предложение не должно выполняться */
   /* пусто */ = /* пусто */;
 }
 
 ReplaceTile {
-  (e.Pattern-B (#Num s.IndexP t.PatternItem) e.Pattern-E)
-  (e.Result-B (#Num s.IndexR t.ResultItem) e.Result-E)
+  (e.Pattern-B (Num s.IndexP t.PatternItem) e.Pattern-E)
+  (e.Result-B (Num s.IndexR t.ResultItem) e.Result-E)
   (s.IndexP s.IndexR s.Weight (e.Idents)) =
     <Modify
       (e.Idents)
-      (e.Pattern-B) ((#Num s.IndexP t.PatternItem) e.Pattern-E)
-      (e.Result-B) ((#Num s.IndexR t.ResultItem) e.Result-E)
+      (e.Pattern-B) ((Num s.IndexP t.PatternItem) e.Pattern-E)
+      (e.Result-B) ((Num s.IndexR t.ResultItem) e.Result-E)
     >;
 }
 
@@ -358,108 +356,108 @@ Modify {
     <Fetch
       <DoModify
         (e.Idents)
-        (#Tile)
+        (Tile)
         (e.PatSecond)
         (e.ResSecond)
       >
       {
-        (#RemovedTile e.PatSecond^)
-        ((#Tile e.Tile) e.ResSecond^) =
-          (e.PatFirst #RemovedTile e.PatSecond)
-          (e.ResFirst (#Tile e.Tile) e.ResSecond);
+        (RemovedTile e.PatSecond^)
+        ((Tile e.Tile) e.ResSecond^) =
+          (e.PatFirst RemovedTile e.PatSecond)
+          (e.ResFirst (Tile e.Tile) e.ResSecond);
       }
     >;
 }
 
 DoModify {
-  //избавляемся от идентификатора для е-переменных
-  (#AsIsE e.Idents)
-  (#Tile e.Tile)
-  ((#Num s.NumP (s.TypeFromPat e.InfoFromPat s.Offset)) e.PatSecond)
-  ((#Num s.NumR (s.TypeFromRes e.InfoFromRes)) e.ResSecond) =
+  /* избавляемся от идентификатора для е-переменных */
+  (AsIsE e.Idents)
+  (Tile e.Tile)
+  ((Num s.NumP (s.TypeFromPat e.InfoFromPat s.Offset)) e.PatSecond)
+  ((Num s.NumR (s.TypeFromRes e.InfoFromRes)) e.ResSecond) =
     <DoModify
       (e.Idents)
-      (#Tile e.Tile (#AsIs (s.TypeFromRes e.InfoFromRes s.Offset)))
+      (Tile e.Tile (AsIs (s.TypeFromRes e.InfoFromRes s.Offset)))
       (e.PatSecond)
       (e.ResSecond)
     >;
 
-  (#AsIs e.Idents)
-  (#Tile e.Tile)
-  ((#Num s.NumP (#LEFT-EDGE)) e.PatSecond)
-  ((#Num s.NumR (#LEFT-EDGE)) e.ResSecond) =
+  (AsIs e.Idents)
+  (Tile e.Tile)
+  ((Num s.NumP (LEFT-EDGE)) e.PatSecond)
+  ((Num s.NumR (LEFT-EDGE)) e.ResSecond) =
     <DoModify
       (e.Idents)
-      (#Tile e.Tile (#LEFT-EDGE))
+      (Tile e.Tile (LEFT-EDGE))
       (e.PatSecond)
       (e.ResSecond)
     >;
 
-  (#AsIs e.Idents)
-  (#Tile e.Tile)
-  ((#Num s.NumP (#RIGHT-EDGE)))
-  ((#Num s.NumR (#RIGHT-EDGE))) =
+  (AsIs e.Idents)
+  (Tile e.Tile)
+  ((Num s.NumP (RIGHT-EDGE)))
+  ((Num s.NumR (RIGHT-EDGE))) =
     <DoModify
       (e.Idents)
-      (#Tile e.Tile (#RIGHT-EDGE))
+      (Tile e.Tile (RIGHT-EDGE))
       ()
       ()
     >;
 
 
   (s.Ident e.Idents)
-  (#Tile e.Tile)
-  ((#Num s.NumP (s.TypeFromPat e.InfoFromPat s.Offset)) e.PatSecond)
-  ((#Num s.NumR (s.TypeFromRes e.InfoFromRes)) e.ResSecond) =
+  (Tile e.Tile)
+  ((Num s.NumP (s.TypeFromPat e.InfoFromPat s.Offset)) e.PatSecond)
+  ((Num s.NumR (s.TypeFromRes e.InfoFromRes)) e.ResSecond) =
     <DoModify
       (e.Idents)
-      (#Tile e.Tile (s.Ident (s.TypeFromRes e.InfoFromRes s.Offset)))
+      (Tile e.Tile (s.Ident (s.TypeFromRes e.InfoFromRes s.Offset)))
       (e.PatSecond)
       (e.ResSecond)
     >;
 
   ()
-  (#Tile e.Tile)
+  (Tile e.Tile)
   (e.PatSecond)
   (e.ResSecond) =
-    (#RemovedTile e.PatSecond)
-    ((#Tile e.Tile) e.ResSecond);
+    (RemovedTile e.PatSecond)
+    ((Tile e.Tile) e.ResSecond);
 }
 
-//возвращает вес перекрытия
+/* возвращает вес перекрытия */
 OverlapItem {
-  (#TkVariable 'e' e.Index s.Offset) (#TkVariable 'e' e.Index) =
-    3 #AsIsE;
+  (TkVariable 'e' e.Index s.Offset) (TkVariable 'e' e.Index) =
+    3 AsIsE;
 
   (s.AnyType e.Info s.Offset) (s.AnyType e.Info) =
-    3 #AsIs;
+    3 AsIs;
 
-  (#TkVariable s.Mode e.Index s.Offset) t.AnyItem =
-    #NoOverlap;
+  (TkVariable s.Mode e.Index s.Offset) t.AnyItem =
+    NoOverlap;
 
-  (s.AnyType e.Info s.Offset) (#TkVariable 's' e.Index) =
-    1 #HalfReuse;
+  (s.AnyType e.Info s.Offset) (TkVariable 's' e.Index) =
+    1 HalfReuse;
 
-  (s.AnyType e.Info s.Offset) (#TkVariable s.Mode e.Index) =
-    #NoOverlap;
+  (s.AnyType e.Info s.Offset) (TkVariable s.Mode e.Index) =
+    NoOverlap;
 
-  (s.Type1 e.Info1 s.Offset) (#LEFT-EDGE) =
-    #NoOverlap;
+  (s.Type1 e.Info1 s.Offset) (LEFT-EDGE) =
+    NoOverlap;
 
-  (s.Type1 e.Info1 s.Offset) (#RIGHT-EDGE) =
-    #NoOverlap;
+  (s.Type1 e.Info1 s.Offset) (RIGHT-EDGE) =
+    NoOverlap;
 
   (s.Type e.Info1 s.Offset) (s.Type e.Info2) =
-    2 #Reuse;
+    2 Reuse;
 
   (s.Type1 e.Info1 s.Offset) (s.Type2 e.Info2) =
-    1 #HalfReuse;
+    1 HalfReuse;
 
-  (#LEFT-EDGE) (#LEFT-EDGE) = 3 #AsIs;
-  (#RIGHT-EDGE) (#RIGHT-EDGE) = 3 #AsIs;
-  (#LEFT-EDGE) t.Other = #NoOverlap;
-  (#RIGHT-EDGE) t.Other = #NoOverlap;
+  (LEFT-EDGE) (LEFT-EDGE) = 3 AsIs;
+  (RIGHT-EDGE) (RIGHT-EDGE) = 3 AsIs;
+  (LEFT-EDGE) t.Other = NoOverlap;
+  (RIGHT-EDGE) t.Other = NoOverlap;
 
-  t.AnyItem '*' = #NoOverlap;
-  '*' t.AnyItem = #NoOverlap;
+  t.AnyItem '*' = NoOverlap;
+  '*' t.AnyItem = NoOverlap;
 }
