@@ -1,11 +1,8 @@
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN Map, Dec, Inc, Fetch, Pipe, Sort;
 
-//FROM HighLevelRASL-Common
+*$FROM HighLevelRASL-Common
 $EXTERN CollectStrings, IncVarOffset, PrintVar;
-
-//FROM Library
-$EXTERN Add;
 
 
 /**
@@ -19,23 +16,23 @@ $EXTERN Add;
 $ENTRY GenResult-Simple {
   s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
     = /* e.MarkedPattern не используется */
-      <GenResult s.ContextOffset MakeVarTable-Simple (e.PatternVars) e.Result>
+      <GenResult s.ContextOffset &MakeVarTable-Simple (e.PatternVars) e.Result>
     : {
         s.ContextOffset^ (e.CommonVars) /* нет команд генерации результата */ =
           s.ContextOffset
           <MakeVariableCommentTable e.CommonVars>
-          (#CmdSpliceToFreeList)
-          (#CmdNextStep);
+          (CmdSpliceToFreeList)
+          (CmdNextStep);
 
         s.ContextOffset^ (e.CommonVars) e.ResultCommands =
           s.ContextOffset
           <MakeVariableCommentTable e.CommonVars>
-          (#CmdResetAllocator)
-          (#CmdSetRes #ARG-BEGIN)
+          (CmdResetAllocator)
+          (CmdSetRes ARG-BEGIN)
           e.ResultCommands
-          (#CmdUseRes)
-          (#CmdSpliceToFreeList)
-          (#CmdNextStep);
+          (CmdUseRes)
+          (CmdSpliceToFreeList)
+          (CmdNextStep);
       };
 }
 
@@ -49,15 +46,15 @@ $ENTRY GenResult-Simple {
 $ENTRY GenResult-Condition {
   s.ContextOffset (e.PatternVars) e.CondResult
     = <GenResult
-        s.ContextOffset MakeVarTable-Conditions (e.PatternVars) e.CondResult
+        s.ContextOffset &MakeVarTable-Conditions (e.PatternVars) e.CondResult
       >
     : s.ContextOffset^ (e.CommonVars) e.ResultCommands
     = s.ContextOffset
       <MakeVariableCommentTable e.CommonVars>
-      (#CmdResetAllocator)
-      (#CmdSetRes 1)
+      (CmdResetAllocator)
+      (CmdSetRes 1)
       e.ResultCommands
-      (#CmdUseRes);
+      (CmdUseRes);
 }
 
 MakeVarTable-Simple {
@@ -74,76 +71,76 @@ GenResult {
     = <DoGenResult
         (e.PatternVars)
         (/* alloc commands */) (/* other commands */)
-        s.ContextOffset // счётчик новых элементов
+        s.ContextOffset /* счётчик новых элементов */
         <CollectStrings e.Result>
       >;
 }
 
 DoGenResult {
  (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#TkOpenCallCond s.Offset) e.Result =
+  s.Counter (TkOpenCallCond s.Offset) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdCreateElem #Allocate s.Offset #ElOpenCall))
-      ((#CmdInsertElem s.Offset) e.Commands)
+      (e.AllocCommands (CmdCreateElem Allocate s.Offset ElOpenCall))
+      ((CmdInsertElem s.Offset) e.Commands)
       s.Counter e.Result
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#TkCloseCallCond s.Offset) e.Result =
+  s.Counter (TkCloseCallCond s.Offset) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdCreateElem #Allocate s.Offset #ElCloseCall))
+      (e.AllocCommands (CmdCreateElem Allocate s.Offset ElCloseCall))
       (
-        (#CmdPushStack s.Offset)
-        (#CmdPushStack <Dec s.Offset>)
-        (#CmdInsertElem s.Offset)
+        (CmdPushStack s.Offset)
+        (CmdPushStack <Dec s.Offset>)
+        (CmdInsertElem s.Offset)
         e.Commands
       )
       s.Counter e.Result
     >;
 
-  // Создаём литералы
-  (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (#TkChar s.Value) e.Result =
+  /* Создаём литералы */
+  (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (TkChar s.Value) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElChar s.Value))
-      ((#CmdInsertElem s.Counter) e.Commands)
+      (e.AllocCommands (CmdCreateElem Allocate s.Counter ElChar s.Value))
+      ((CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.Result
     >;
 
-  (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (#TkName e.Name) e.Result =
+  (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (TkName e.Name) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElName e.Name))
-      ((#CmdInsertElem s.Counter) e.Commands)
-      <Inc s.Counter> e.Result
-    >;
-
-  (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#TkNumber s.Number) e.Result =
-    <DoGenResult
-      (e.Vars)
-      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElNumber s.Number))
-      ((#CmdInsertElem s.Counter) e.Commands)
+      (e.AllocCommands (CmdCreateElem Allocate s.Counter ElName e.Name))
+      ((CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.Result
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#TkIdentifier e.Name) e.Result =
+  s.Counter (TkNumber s.Number) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElIdent e.Name))
-      ((#CmdInsertElem s.Counter) e.Commands)
+      (e.AllocCommands (CmdCreateElem Allocate s.Counter ElNumber s.Number))
+      ((CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.Result
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#TkString e.Chars) e.Result =
+  s.Counter (TkIdentifier e.Name) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElString e.Chars))
-      ((#CmdInsertRange s.Counter) e.Commands)
+      (e.AllocCommands (CmdCreateElem Allocate s.Counter ElIdent e.Name))
+      ((CmdInsertElem s.Counter) e.Commands)
+      <Inc s.Counter> e.Result
+    >;
+
+  (e.Vars) (e.AllocCommands) (e.Commands)
+  s.Counter (TkString e.Chars) e.Result =
+    <DoGenResult
+      (e.Vars)
+      (e.AllocCommands (CmdCreateElem Allocate s.Counter ElString e.Chars))
+      ((CmdInsertRange s.Counter) e.Commands)
       <Add s.Counter 2> e.Result
     >;
 
@@ -151,40 +148,40 @@ DoGenResult {
     Обработка открывающих скобок всех трёх типов осуществляется похоже.
   */
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#Brackets e.InBrackets) e.Result =
+  s.Counter (Brackets e.InBrackets) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElOpenBracket))
-      ((#CmdInsertElem s.Counter) e.Commands)
-      <Inc s.Counter> e.InBrackets (#TkCloseBracket s.Counter) e.Result
+      (e.AllocCommands (CmdCreateElem Allocate s.Counter ElOpenBracket))
+      ((CmdInsertElem s.Counter) e.Commands)
+      <Inc s.Counter> e.InBrackets (TkCloseBracket s.Counter) e.Result
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#CallBrackets e.InBrackets) e.Result =
+  s.Counter (CallBrackets e.InBrackets) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElOpenCall))
-      ((#CmdInsertElem s.Counter) e.Commands)
-      <Inc s.Counter> e.InBrackets (#TkCloseCall s.Counter) e.Result
+      (e.AllocCommands (CmdCreateElem Allocate s.Counter ElOpenCall))
+      ((CmdInsertElem s.Counter) e.Commands)
+      <Inc s.Counter> e.InBrackets (TkCloseCall s.Counter) e.Result
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#ADT-Brackets (e.Name) e.InBrackets) e.Result =
+  s.Counter (ADT-Brackets (e.Name) e.InBrackets) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElOpenADT))
-      ((#CmdInsertElem s.Counter) e.Commands)
+      (e.AllocCommands (CmdCreateElem Allocate s.Counter ElOpenADT))
+      ((CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter>
-      (#TkName e.Name) e.InBrackets (#TkCloseADT s.Counter) e.Result
+      (TkName e.Name) e.InBrackets (TkCloseADT s.Counter) e.Result
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#ClosureBrackets e.InBrackets) e.Result
+  s.Counter (ClosureBrackets e.InBrackets) e.Result
     = <DoGenResult
         (e.Vars)
-        (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElClosureHead))
-        ((#CmdInsertElem s.Counter) e.Commands)
-        <Inc s.Counter> e.InBrackets (#TkUnwrappedClosure s.Counter) e.Result
+        (e.AllocCommands (CmdCreateElem Allocate s.Counter ElClosureHead))
+        ((CmdInsertElem s.Counter) e.Commands)
+        <Inc s.Counter> e.InBrackets (TkUnwrappedClosure s.Counter) e.Result
       >;
 
   /*
@@ -192,69 +189,69 @@ DoGenResult {
     Круглые скобки и АТД -- слинковать, угловые -- добавить в стек.
   */
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#TkCloseBracket s.OpenCounter) e.Result =
+  s.Counter (TkCloseBracket s.OpenCounter) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElCloseBracket))
+      (e.AllocCommands (CmdCreateElem Allocate s.Counter ElCloseBracket))
       (
-        (#CmdLinkBrackets s.OpenCounter s.Counter)
-        (#CmdInsertElem s.Counter)
+        (CmdLinkBrackets s.OpenCounter s.Counter)
+        (CmdInsertElem s.Counter)
         e.Commands
       )
       <Inc s.Counter> e.Result
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#TkCloseADT s.OpenCounter) e.Result =
+  s.Counter (TkCloseADT s.OpenCounter) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElCloseADT))
+      (e.AllocCommands (CmdCreateElem Allocate s.Counter ElCloseADT))
       (
-        (#CmdLinkBrackets s.OpenCounter s.Counter)
-        (#CmdInsertElem s.Counter)
+        (CmdLinkBrackets s.OpenCounter s.Counter)
+        (CmdInsertElem s.Counter)
         e.Commands
       )
       <Inc s.Counter> e.Result
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#TkCloseCall s.OpenCounter) e.Result =
+  s.Counter (TkCloseCall s.OpenCounter) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElCloseCall))
+      (e.AllocCommands (CmdCreateElem Allocate s.Counter ElCloseCall))
       (
-        (#CmdPushStack s.Counter)
-        (#CmdPushStack s.OpenCounter)
-        (#CmdInsertElem s.Counter)
+        (CmdPushStack s.Counter)
+        (CmdPushStack s.OpenCounter)
+        (CmdInsertElem s.Counter)
         e.Commands
       )
       <Inc s.Counter> e.Result
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#TkUnwrappedClosure s.HeadCounter) e.Result
+  s.Counter (TkUnwrappedClosure s.HeadCounter) e.Result
     = <DoGenResult
         (e.Vars)
         (
           e.AllocCommands
-          (#CmdCreateElem #Allocate s.Counter #ElUnwrappedClosure s.HeadCounter)
+          (CmdCreateElem Allocate s.Counter ElUnwrappedClosure s.HeadCounter)
         )
         (
-          (#CmdInsertElem s.Counter)
+          (CmdInsertElem s.Counter)
           e.Commands
-          (#CmdWrapClosure s.Counter)
+          (CmdWrapClosure s.Counter)
         )
         <Inc s.Counter> e.Result
       >;
 
-  // Обработка переменных
+  /* Обработка переменных */
   (
     e.Vars-B
     (s.Mode (e.Index) (e.ResultVars) s.NextPatternVar e.PatternVars)
     e.Vars-E
   )
   (e.AllocCommands) (e.Commands)
-  s.Counter (#TkVariable s.Mode e.Index) e.Result =
+  s.Counter (TkVariable s.Mode e.Index) e.Result =
     <DoGenResult
       (
         e.Vars-B
@@ -262,21 +259,21 @@ DoGenResult {
         e.Vars-E
       )
       (e.AllocCommands)
-      ((#CmdInsertVar s.Mode s.NextPatternVar) e.Commands)
+      ((CmdInsertVar s.Mode s.NextPatternVar) e.Commands)
       s.Counter e.Result
     >;
 
   (e.Vars-B (s.Mode (e.Index) (e.ResultVars s.Sample)) e.Vars-E)
   (e.AllocCommands) (e.Commands)
-  s.Counter (#TkVariable s.Mode e.Index) e.Result =
+  s.Counter (TkVariable s.Mode e.Index) e.Result =
     <DoGenResult
       (e.Vars-B (s.Mode (e.Index) (e.ResultVars s.Sample s.Counter)) e.Vars-E)
-      (e.AllocCommands (#CmdCopyVar s.Mode s.Counter s.Sample))
-      ((#CmdInsertVar s.Mode s.Counter) e.Commands)
+      (e.AllocCommands (CmdCopyVar s.Mode s.Counter s.Sample))
+      ((CmdInsertVar s.Mode s.Counter) e.Commands)
       <IncVarOffset s.Counter s.Mode> e.Result
     >;
 
-  // Завершение просмотра
+  /* Завершение просмотра */
   (e.Vars) (e.AllocCommands) (e.Commands) s.Counter =
     s.Counter (e.Vars) e.AllocCommands e.Commands;
 }
@@ -286,9 +283,9 @@ $ENTRY MakeVariableCommentTable {
     <Fetch
       e.Vars
       <Pipe
-        (Map ReplicateVar)
-        Sort
-        (Map MakeVariableComment)
+        (&Map &ReplicateVar)
+        &Sort
+        (&Map &MakeVariableComment)
       >
     >;
 }
@@ -305,7 +302,7 @@ ReplicateVar {
 
 MakeVariableComment {
   (s.Offset s.Mode e.Index s.Depth) =
-    (#CmdComment
-      #Offset s.Offset ': ' <PrintVar s.Mode e.Index s.Depth>
+    (CmdComment
+      Offset s.Offset ': ' <PrintVar s.Mode e.Index s.Depth>
     );
 }
