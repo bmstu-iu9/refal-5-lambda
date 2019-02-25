@@ -1,16 +1,16 @@
-//FROM Library
-$EXTERN FOpen, FClose, Putout, Time, StrFromInt;
+*$FROM Library
+$EXTERN FOpen, FClose;
 
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN Map;
 
-//FROM DisplayName
+*$FROM DisplayName
 $EXTERN DisplayName;
 
-//FROM Escape
+*$FROM Escape
 $EXTERN EscapeString;
 
-//FROM Log-AST
+*$FROM Log-AST
 $EXTERN Log-TextFromAST;
 
 
@@ -77,7 +77,7 @@ $ENTRY Log-GetLogFunction-AST {
   e.SrcName
     = <LogHandle>
     : {
-        /* none */ = ID;
+        /* none */ = &ID;
 
         s.FileHandle
           = {
@@ -106,13 +106,13 @@ $ENTRY Log-GetLogFunction-HighLevelRASL {
   e.SrcName
     = <LogHandle>
     : {
-        /* none */ = ID;
+        /* none */ = &ID;
 
         s.FileHandle
           = {
               e.RASL
                 = <Log-PutLine 'HighLevelRASL code of file ' e.SrcName ':'>
-                  <Map (PutProgramElement s.FileHandle) e.RASL>
+                  <Map (&PutProgramElement s.FileHandle) e.RASL>
                   e.RASL;
             };
       };
@@ -120,31 +120,31 @@ $ENTRY Log-GetLogFunction-HighLevelRASL {
 
 PutProgramElement {
   s.FileHandle
-  (#Function s.ScopeClass (e.Name) e.Commands)
+  (Function s.ScopeClass (e.Name) e.Commands)
     = <PutRASLFunction s.FileHandle s.ScopeClass (e.Name) e.Commands>;
 
   s.FileHandle
-  (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code)
+  (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code)
     = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: native {'>
       <PutCode s.FileHandle t.SrcPos e.Code>
       <Putout s.FileHandle '  }\n'>;
 
-  s.FileHandle (#CmdEnum s.ScopeClass e.Name)
+  s.FileHandle (CmdEnum s.ScopeClass e.Name)
     = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: enum'>;
 
-  s.FileHandle (#CmdSwap s.ScopeClass e.Name)
+  s.FileHandle (CmdSwap s.ScopeClass e.Name)
     = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: swap'>;
 
-  s.FileHandle (#CmdConditionFunc s.ScopeClass e.Name)
+  s.FileHandle (CmdConditionFunc s.ScopeClass e.Name)
     = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: condition'>;
 
-  s.FileHandle (#CmdDeclaration s.ScopeClass e.Name)
+  s.FileHandle (CmdDeclaration s.ScopeClass e.Name)
     = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: extern'>;
 
-  s.FileHandle (#CmdDefineIdent e.Name)
+  s.FileHandle (CmdDefineIdent e.Name)
     = <Putout s.FileHandle '$LABEL ' <DisplayName e.Name>>;
 
-  s.FileHandle (#CmdEmitNativeCode t.SrcPos e.Code)
+  s.FileHandle (CmdEmitNativeCode t.SrcPos e.Code)
     = <Putout s.FileHandle 'Native code:'>
       <PutCode s.FileHandle t.SrcPos e.Code>
       <Putout s.FileHandle>;
@@ -158,32 +158,32 @@ PutRASLFunction {
 }
 
 FnName {
-  #GN-Local e.Name = '  ' <DisplayName e.Name>;
-  #GN-Entry e.Name = '  $ENTRY ' <DisplayName e.Name>;
+  GN-Local e.Name = '  ' <DisplayName e.Name>;
+  GN-Entry e.Name = '  $ENTRY ' <DisplayName e.Name>;
 }
 
 PutRASLCommands {
   s.FileHandle (e.Indent) e.Commands
     = <Map
         {
-          (#CmdSentence e.SubCommands)
+          (CmdSentence e.SubCommands)
             = <Putout s.FileHandle e.Indent '(CmdSentence'>
               <PutRASLCommands s.FileHandle (e.Indent '  ') e.SubCommands>
               <Putout s.FileHandle e.Indent ')  // CmdSentence'>;
 
-          (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands)
+          (CmdOpenELoop AlgLeft s.BracketNum s.VarNumber e.SubCommands)
             = <Putout
                  s.FileHandle e.Indent '(CmdOpenELoop'
-                ' e.' <StrFromInt s.VarNumber>
-                ' <- [' <StrFromInt s.BracketNum> ']'
+                ' e.' <Symb s.VarNumber>
+                ' <- [' <Symb s.BracketNum> ']'
               >
               <PutRASLCommands s.FileHandle (e.Indent '  ') e.SubCommands>
               <Putout s.FileHandle e.Indent ')  // CmdOpenELoop'>;
 
-          (#CmdComment e.Message)
+          (CmdComment e.Message)
             = <Putout s.FileHandle e.Indent '// ' e.Message>;
 
-          // TODO: pretty print
+          /* TODO: pretty print */
           (s.Command e.Args)
             = <Putout s.FileHandle e.Indent '(' s.Command e.Args ')'>;
         }
@@ -205,14 +205,14 @@ PutCode {
 }
 
 SrcPos {
-  s.LineNumber = '#line ' <StrFromInt s.LineNumber>;
+  s.LineNumber = '#line ' <Symb s.LineNumber>;
 
-  (#FileLine s.Line e.FileName)
-    = '#line ' <StrFromInt s.Line> ' "' <EscapeString e.FileName> '"';
+  (FileLine s.Line e.FileName)
+    = '#line ' <Symb s.Line> ' "' <EscapeString e.FileName> '"';
 
-  (#RowCol s.Row s.Col) = '#line ' <StrFromInt s.Row> ':' <StrFromInt s.Col>;
+  (RowCol s.Row s.Col) = '#line ' <Symb s.Row> ':' <Symb s.Col>;
 
-  (#FileRowCol (s.Row s.Col) e.FileName)
-    = '#line ' <StrFromInt s.Row> ':' <StrFromInt s.Col>
+  (FileRowCol (s.Row s.Col) e.FileName)
+    = '#line ' <Symb s.Row> ':' <Symb s.Col>
       ' "' <EscapeString e.FileName> '"';
 }
