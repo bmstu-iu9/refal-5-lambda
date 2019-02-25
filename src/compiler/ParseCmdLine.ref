@@ -1,0 +1,255 @@
+*$FROM GetOpt
+$EXTERN GetOpt;
+
+*$FROM LibraryEx
+$EXTERN Fetch, Pipe, MapReduce, Map;
+
+*$FROM Config
+$EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
+  Config-SetOptFlags, Config-SetErrorFile, Config-SetMarkupContext,
+  Config-SetDebugInfo, Config-SetGrammarCheck, Config-SetTargetFileName,
+  Config-SetTargetSuffix, Config-SetSearchFolder, Config-SetPrefix,
+  Config-AddReference, Config-SetTargetMode, Config-AddIncorporated,
+  Config-SetChmodXCommand, Config-SetPrelude, Config-SetR5Mode,
+  Config-SetLogFile, Config-SetTreeOptCycles, Config-SetIncorporated;
+
+/**
+  <ParseCommandLine e.Arguments>
+    == Success t.Config (s.ArgNum e.File)*
+    == Fails (s.ArgNum e.ErrorMessage)
+*/
+$ENTRY ParseCommandLine {
+  e.Arguments =
+    <Fetch
+      <GetOpt
+        (
+          (CppCompiler-Exe Required 'c' ('cpp-command') ('cpp-command-exe'))
+          (CppCompiler-Lib Required ('cpp-command-lib'))
+          (CppFlag Required 'f' ('cppflag'))
+          (CppFlags Required 'F' ('cppflags'))
+          (DebugInfo None 'g' ('debug-info'))
+          (ErrorFile Required 'e' ('error-file'))
+          (GrammarCheck None ('grammar-check'))
+          (Incorporated Required ('incorporated'))
+          (MarkupContext None ('markup-context'))
+          (Opt Required 'O')
+          (Prefix Required 'p' ('prefix'))
+          (Reference Required 'r' ('reference'))
+          (RuntimeFolder Required 'D' ('runtime-dir') ('runtime-directory'))
+          (SearchFolder Required 'd' ('dir') ('directory'))
+          (TargetFileName Required 'o' ('target-file'))
+          (TargetMode-Exe None 'x' ('makeexe'))
+          (TargetMode-Lib None 'l' ('makelib'))
+          (TargetMode-R None 'R')
+          (TargetMode-C None 'C' ('compile-only'))
+          (TargetSuffix-Exe
+            Required
+            ('targsuffix') ('targetsuffix') ('targsuf')
+            ('exesuffix') ('exesuf')
+          )
+          (TargetSuffix-Lib Required ('libsuffix') ('libsuf'))
+          (ChmodXCommand Required ('chmod-x') ('chmod-x-command'))
+          (Prelude Required ('prelude'))
+          (ClassicMode None ('classic'))
+          (ExtendedMode None ('extended'))
+          (Log Required ('log'))
+          (TreeOptCycles Required ('opt-tree-cycles'))
+          (Incorporated Required ('incorporated'))
+        )
+        e.Arguments
+      >
+      <Pipe
+        {
+          (e.Errors) e.Options
+            = (<Config-Create> e.Errors) e.Options;
+        }
+        (&MapReduce
+          {
+            (t.Config e.Errors) (CppCompiler-Exe s.Num e.CppCompiler)
+              = <Update
+                  t.Config (e.Errors)
+                  &Config-SetCppCompiler s.Num EXE e.CppCompiler
+                >;
+
+            (t.Config e.Errors) (CppCompiler-Lib s.Num e.CppCompiler)
+              = <Update
+                  t.Config (e.Errors)
+                  &Config-SetCppCompiler s.Num LIB e.CppCompiler
+                >;
+
+            (t.Config e.Errors) (CppFlag s.Num e.Flag)
+              = <Update
+                  t.Config (e.Errors)
+                  &Config-SetCompilerFlags s.Num ' "' e.Flag '"'
+                >;
+
+            (t.Config e.Errors) (CppFlags s.Num e.Flags)
+              = <Update
+                  t.Config (e.Errors) &Config-SetCompilerFlags s.Num ' ' e.Flags
+                >;
+
+            (t.Config e.Errors) (DebugInfo s.Num)
+              = <Update t.Config (e.Errors) &Config-SetDebugInfo s.Num>;
+
+            (t.Config e.Errors) (ErrorFile s.Num e.FileName)
+              = <Update
+                  t.Config (e.Errors) &Config-SetErrorFile s.Num e.FileName
+                >;
+
+            (t.Config e.Errors) (GrammarCheck s.Num)
+              = <Update t.Config (e.Errors) &Config-SetGrammarCheck s.Num>;
+
+            (t.Config e.Errors) (Incorporated s.Num e.Name)
+              = <Update
+                  t.Config (e.Errors) &Config-AddIncorporated s.Num e.Name
+                >;
+
+            (t.Config e.Errors) (MarkupContext s.Num)
+              = <Update t.Config (e.Errors) &Config-SetMarkupContext s.Num>;
+
+            (t.Config e.Errors) (Opt s.Num e.Flags)
+              = <Update t.Config (e.Errors) &Config-SetOptFlags s.Num e.Flags>;
+
+            (t.Config e.Errors) (Prefix s.Num e.Prefix)
+              = <Update t.Config (e.Errors) &Config-SetPrefix s.Num e.Prefix>;
+
+            (t.Config e.Errors) (Reference s.Num e.Reference)
+              = <Update
+                  t.Config (e.Errors) &Config-AddReference s.Num e.Reference
+                >;
+
+            (t.Config e.Errors) (RuntimeFolder s.Num e.Path)
+              = <Update
+                  t.Config (e.Errors)
+                  &Config-SetCompilerFlags s.Num ' -I"' e.Path '"'
+                >
+                (SearchFolder s.Num e.Path);
+
+            (t.Config e.Errors) (TargetFileName s.Num e.FileName)
+              = <Update
+                  t.Config (e.Errors) &Config-SetTargetFileName s.Num e.FileName
+                >;
+
+            (t.Config e.Errors) (TargetMode-Exe s.Num)
+              = <Update t.Config (e.Errors) &Config-SetTargetMode s.Num EXE>;
+
+            (t.Config e.Errors) (TargetMode-Lib s.Num)
+              = <Update t.Config (e.Errors) &Config-SetTargetMode s.Num LIB>;
+
+            (t.Config e.Errors) (TargetMode-R s.Num)
+              = <Update t.Config (e.Errors) &Config-SetTargetMode s.Num R>;
+
+            (t.Config e.Errors) (TargetMode-C s.Num)
+              = <Update
+                  t.Config (e.Errors) &Config-SetTargetMode s.Num CompileOnly
+                >;
+
+            (t.Config e.Errors) (TargetSuffix-Exe s.Num e.Suffix)
+              = <Update
+                  t.Config (e.Errors) &Config-SetTargetSuffix s.Num EXE e.Suffix
+                >;
+
+            (t.Config e.Errors) (TargetSuffix-Lib s.Num e.Suffix)
+              = <Update
+                  t.Config (e.Errors) &Config-SetTargetSuffix s.Num LIB e.Suffix
+                >;
+
+            (t.Config e.Errors) (ChmodXCommand s.Num e.Command)
+              = <Update
+                  t.Config (e.Errors) &Config-SetChmodXCommand s.Num e.Command
+                >;
+
+            (t.Config e.Errors) (Prelude s.Num e.Prelude)
+              = <Update t.Config (e.Errors) &Config-SetPrelude s.Num e.Prelude>;
+
+            (t.Config e.Errors) (ClassicMode s.Num)
+              = <Update t.Config (e.Errors) &Config-SetR5Mode s.Num Classic>;
+
+            (t.Config e.Errors) (ExtendedMode s.Num)
+              = <Update t.Config (e.Errors) &Config-SetR5Mode s.Num Extended>;
+
+            (t.Config e.Errors) (Log s.Num e.LogFile)
+              = <Update t.Config (e.Errors) &Config-SetLogFile s.Num e.LogFile>;
+
+            (t.Config e.Errors) (TreeOptCycles s.Num e.Cycles)
+              = <Update
+                  t.Config (e.Errors) &Config-SetTreeOptCycles s.Num e.Cycles
+                >;
+
+            (t.Config e.Errors) (Incorporated s.Num e.LibName)
+              = <Update
+                  t.Config (e.Errors) &Config-AddIncorporated s.Num e.LibName
+                >;
+
+            (t.Config e.Errors) t.Option
+              = (t.Config e.Errors) t.Option;
+          }
+        )
+        (&MapReduce
+          {
+            (t.Config e.Errors) (SearchFolder s.Num e.Folder)
+              = (<Config-SetSearchFolder t.Config e.Folder> e.Errors);
+
+            (t.Config e.Errors) (FILE s.Num e.FileName)
+              = (t.Config e.Errors) (s.Num e.FileName);
+          }
+        )
+        {
+          (t.Config /* нет ошибок */) e.FileNames =
+            Success t.Config e.FileNames;
+
+          (t.Config e.Errors) e.FileNames =
+            Fails
+            <Map
+              {
+                (s.Pos NoRequiredParam e.Param) =
+                  (s.Pos 'option ' e.Param ' expects parameter');
+
+                (s.Pos UnknownShortOption s.Option) =
+                  (s.Pos 'unknown option -' s.Option);
+
+                (s.Pos UnknownLongOption e.Option) =
+                  (s.Pos 'unknown option --' e.Option);
+
+                /* У нас все опции с параметрами, не должно возникать */
+                /* (s.Pos UnexpectedLongOptionParam (e.Option) e.Param) = */
+
+                (s.Pos BadValue-Opt e.BadValue) =
+                  (
+                    s.Pos
+                    'option -O expects ''d'', ''C'', ''D'', ''I'', ''P'', '
+                    '''R'', ''S'', ''T'' or it''s combination, '
+                    'but got ''' e.BadValue ''
+                  );
+
+                (s.Pos EmptyErrorFileName)
+                  = (s.Pos 'option --error-file expects non-empty argument');
+
+                (s.Pos TargetModeAlreadySet)
+                  = (s.Pos
+                      'options --makeexe (-x), --makelib (-l) and -R '
+                      'must appear one time'
+                    );
+
+                (s.Pos BadValue-MustBeNumber e.Cycles)
+                  = (s.Pos 'option --tree-opt-cycles expects number parameter');
+              }
+              e.Errors
+            >;
+        }
+      >
+    >;
+}
+
+Update {
+  t.Config (e.Errors) s.Updater s.LineNum e.Option
+    = <Fetch
+        <s.Updater t.Config e.Option>
+        {
+          Success t.Config^ = (t.Config e.Errors);
+
+          Fails e.ErrorMessage
+            = (t.Config e.Errors (s.LineNum e.ErrorMessage));
+        }
+      >;
+}
