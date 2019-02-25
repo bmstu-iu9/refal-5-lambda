@@ -1,0 +1,545 @@
+*$FROM HighLevelRASL-Common
+$EXTERN Inc2, IncVarOffset, PrintVar, TextFromExpr;
+
+*$FROM LibraryEx
+$EXTERN Inc;
+
+*$FROM HighLevelRASL-Common
+$EXTERN MakeSavers;
+
+
+/**
+  <GenSubst-Simple
+    s.ContextTop e.Substitutes (e.Vars) (e.PrefixCommands)
+  >
+    == s.ContextTop (e.PatternVars) (e.MarkedPattern) e.PatternCommands
+
+  e.Substitutes ::=
+    (Junk e.Junk) t.Subst (Junk e.Junk) t.Subst ... (Junk e.Junk)
+
+  t.Subst ::= (s.SubstType s.Offset e.SubPattern)
+  s.SubType ::= S | T | E
+*/
+$ENTRY GenSubst-Simple {
+  s.ContextTop e.Substitutes (e.Vars) (e.PrefixCommands) =
+    <DoGenSubst
+      s.ContextTop e.Substitutes (e.Vars) (e.PrefixCommands)
+    >;
+}
+
+DoGenSubst {
+  /* Распознавание T-подстановки */
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk1) (T s.Num (TkChar s.Char)) (Junk e.Junk2)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B (Junk e.Junk1 (TkChar s.Char NoOffset) e.Junk2) e.Substs-E
+      (e.Vars) (e.Commands (CmdChar AlgTerm s.Num s.Char))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk1) (T s.Num (TkName e.Name)) (Junk e.Junk2)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B (Junk e.Junk1 (TkName e.Name NoOffset) e.Junk2) e.Substs-E
+      (e.Vars) (e.Commands (CmdName AlgTerm s.Num e.Name))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk1) (T s.Num (TkIdentifier e.Ident)) (Junk e.Junk2)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B (Junk e.Junk1 (TkIdentifier e.Ident NoOffset) e.Junk2) e.Substs-E
+      (e.Vars) (e.Commands (CmdIdent AlgTerm s.Num e.Ident))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk1) (T s.Num (TkNumber s.Value)) (Junk e.Junk2)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B (Junk e.Junk1 (TkNumber s.Value NoOffset) e.Junk2) e.Substs-E
+      (e.Vars) (e.Commands (CmdNumber AlgTerm s.Num s.Value))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk1) (T s.Num (Brackets e.SubRange)) (Junk e.Junk2)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      <Inc2 s.ContextOffset>
+      e.Substs-B (Junk e.Junk1 (TkOpenBracket NoOffset))
+      (E s.ContextOffset e.SubRange)
+      (Junk (TkCloseBracket NoOffset) e.Junk2) e.Substs-E
+      (e.Vars) (e.Commands (CmdBrackets AlgTerm s.Num s.ContextOffset))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk1) (T s.Num (ADT-Brackets (e.Name) e.SubRange)) (Junk e.Junk2)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      <Inc2 s.ContextOffset>
+      e.Substs-B (Junk e.Junk1 (TkOpenADT NoOffset) (TkName e.Name NoOffset))
+      (E s.ContextOffset e.SubRange)
+      (Junk (TkCloseADT NoOffset) e.Junk2) e.Substs-E
+      (e.Vars) (e.Commands (CmdADT AlgTerm s.Num s.ContextOffset e.Name))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk1) (T s.Num (TkVariable s.Mode e.Index)) (Junk e.Junk2)
+  e.Substs-E
+  (e.Vars-B (s.Mode (e.Index) e.Offsets s.SampleOffset) e.Vars-E) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B
+      (Junk e.Junk1 (TkVariable s.Mode e.Index s.Num) e.Junk2)
+      e.Substs-E
+      (
+        e.Vars-B
+        (s.Mode (e.Index) e.Offsets s.SampleOffset s.Num)
+        e.Vars-E
+      )
+      (
+        e.Commands
+        (CmdRepeated AlgTerm s.Num s.Mode s.Num s.SampleOffset)
+      )
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk1) (T s.Num (TkVariable 't' e.Index)) (Junk e.Junk2)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B
+      (Junk e.Junk1 (TkVariable 't' e.Index s.Num) e.Junk2)
+      e.Substs-E
+      (e.Vars ('t' (e.Index) s.Num)) (e.Commands)
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk1) (T s.Num (TkVariable 's' e.Index)) (Junk e.Junk2)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B
+      (Junk e.Junk1 (TkVariable 's' e.Index s.Num) e.Junk2)
+      e.Substs-E
+      (e.Vars ('s' (e.Index) s.Num))
+      (e.Commands (CmdVar AlgTerm s.Num 's' s.Num))
+    >;
+
+  /* Распознавание S-подстановки */
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk1) (S s.Num (TkChar s.Char)) (Junk e.Junk2)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B (Junk e.Junk1 (TkChar s.Char NoOffset) e.Junk2) e.Substs-E
+      (e.Vars) (e.Commands (CmdChar AlgTerm s.Num s.Char))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk1) (S s.Num (TkName e.Name)) (Junk e.Junk2)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B (Junk e.Junk1 (TkName e.Name NoOffset) e.Junk2) e.Substs-E
+      (e.Vars) (e.Commands (CmdName AlgTerm s.Num e.Name))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk1) (S s.Num (TkIdentifier e.Ident)) (Junk e.Junk2)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B (Junk e.Junk1 (TkIdentifier e.Ident NoOffset) e.Junk2) e.Substs-E
+      (e.Vars) (e.Commands (CmdIdent AlgTerm s.Num e.Ident))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk1) (S s.Num (TkNumber s.Value)) (Junk e.Junk2)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B (Junk e.Junk1 (TkNumber s.Value NoOffset) e.Junk2) e.Substs-E
+      (e.Vars) (e.Commands (CmdNumber AlgTerm s.Num s.Value))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk1) (S s.Num (TkVariable s.Mode e.Index)) (Junk e.Junk2)
+  e.Substs-E
+  (e.Vars-B (s.Mode (e.Index) e.Offsets s.SampleOffset) e.Vars-E) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B
+      (Junk e.Junk1 (TkVariable s.Mode e.Index s.Num) e.Junk2)
+      e.Substs-E
+      (
+        e.Vars-B
+        (s.Mode (e.Index) e.Offsets s.SampleOffset s.Num)
+        e.Vars-E
+      )
+      (
+        e.Commands
+        (CmdRepeated AlgTerm s.Num s.Mode s.Num s.SampleOffset)
+      )
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk1) (S s.Num (TkVariable 's' e.Index)) (Junk e.Junk2)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B
+      (Junk e.Junk1 (TkVariable 's' e.Index s.Num) e.Junk2)
+      e.Substs-E
+      (e.Vars ('s' (e.Index) s.Num)) (e.Commands)
+    >;
+
+  /* Распознавание литералов (символьных, целочисленных, имён) */
+  s.ContextOffset
+  e.Substs-B (Junk e.Junk) (E s.Num (TkChar s.Char) e.Range) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B
+      (Junk e.Junk (TkChar s.Char NoOffset)) (E s.Num e.Range)
+      e.Substs-E
+      (e.Vars) (e.Commands (CmdChar AlgLeft s.Num s.Char))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk) (E s.Num (TkNumber s.Number) e.Range)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B
+      (Junk e.Junk (TkNumber s.Number NoOffset)) (E s.Num e.Range)
+      e.Substs-E
+      (e.Vars) (e.Commands (CmdNumber AlgLeft s.Num s.Number))
+    >;
+
+  s.ContextOffset
+  e.Substs-B (Junk e.Junk) (E s.Num (TkName e.Name) e.Range) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B (Junk (TkName e.Name NoOffset)) (E s.Num e.Range) e.Substs-E
+      (e.Vars) (e.Commands (CmdName AlgLeft s.Num e.Name))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk) (E s.Num (TkIdentifier e.Name) e.Range)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B
+      (Junk e.Junk (TkIdentifier e.Name NoOffset)) (E s.Num e.Range)
+      e.Substs-E
+      (e.Vars) (e.Commands (CmdIdent AlgLeft s.Num e.Name))
+    >;
+
+  s.ContextOffset
+  e.Substs-B (E s.Num e.Range (TkChar s.Char)) (Junk e.Junk) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B
+      (E s.Num e.Range) (Junk (TkChar s.Char NoOffset) e.Junk)
+      e.Substs-E
+      (e.Vars) (e.Commands (CmdChar AlgRight s.Num s.Char))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (E s.Num e.Range (TkNumber s.Number)) (Junk e.Junk)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B
+      (E s.Num e.Range) (Junk (TkNumber s.Number NoOffset) e.Junk)
+      e.Substs-E
+      (e.Vars) (e.Commands (CmdNumber AlgRight s.Num s.Number))
+    >;
+
+  s.ContextOffset
+  e.Substs-B (E s.Num e.Range (TkName e.Name)) (Junk e.Junk) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B
+      (E s.Num e.Range) (Junk (TkName e.Name NoOffset) e.Junk)
+      e.Substs-E
+      (e.Vars) (e.Commands (CmdName AlgRight s.Num e.Name))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (E s.Num e.Range (TkIdentifier e.Name)) (Junk e.Junk)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B
+      (E s.Num e.Range) (Junk (TkIdentifier e.Name NoOffset) e.Junk)
+      e.Substs-E
+      (e.Vars) (e.Commands (CmdIdent AlgRight s.Num e.Name))
+    >;
+
+  /* Распознавание скобок */
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk) (E s.Num (Brackets e.SubRange) e.Range)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      <Inc2 s.ContextOffset>
+      e.Substs-B
+      (Junk e.Junk (TkOpenBracket NoOffset)) (E s.ContextOffset e.SubRange)
+      (Junk (TkCloseBracket NoOffset)) (E s.Num e.Range)
+      e.Substs-E
+      (e.Vars) (e.Commands (CmdBrackets AlgLeft s.Num s.ContextOffset))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (E s.Num e.Range (Brackets e.SubRange)) (Junk e.Junk)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      <Inc2 s.ContextOffset>
+      e.Substs-B
+      (E s.Num e.Range) (Junk (TkOpenBracket NoOffset))
+      (E s.ContextOffset e.SubRange) (Junk (TkCloseBracket NoOffset) e.Junk)
+      e.Substs-E
+      (e.Vars) (e.Commands (CmdBrackets AlgRight s.Num s.ContextOffset))
+    >;
+
+  /* Распознавание АТД-скобок */
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk) (E s.Num (ADT-Brackets (e.Name) e.SubRange) e.Range)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      <Inc2 s.ContextOffset>
+      e.Substs-B
+      (Junk e.Junk (TkOpenADT NoOffset) (TkName e.Name NoOffset))
+      (E s.ContextOffset e.SubRange)
+      (Junk (TkCloseADT NoOffset)) (E s.Num e.Range)
+      e.Substs-E
+      (e.Vars)
+      (e.Commands (CmdADT AlgLeft s.Num s.ContextOffset e.Name))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (E s.Num e.Range (ADT-Brackets (e.Name) e.SubRange)) (Junk e.Junk)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      <Inc2 s.ContextOffset>
+      e.Substs-B
+      (E s.Num e.Range) (Junk (TkOpenADT NoOffset) (TkName e.Name NoOffset))
+      (E s.ContextOffset e.SubRange) (Junk (TkCloseADT NoOffset) e.Junk)
+      e.Substs-E
+      (e.Vars)
+      (e.Commands (CmdADT AlgRight s.Num s.ContextOffset e.Name))
+    >;
+
+  /* Пустой диапазон */
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk1) (E s.Num /* пусто */) (Junk e.Junk2)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B (Junk e.Junk1 e.Junk2) e.Substs-E
+      (e.Vars) (e.Commands (CmdEmpty AlgLeft s.Num))
+    >;
+
+  /* Распознавание переменных */
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk) (E s.Num (TkVariable s.Mode e.Index) e.Range)
+  e.Substs-E
+  (e.Vars-B (s.Mode (e.Index) e.Offsets s.SampleOffset) e.Vars-E) (e.Commands) =
+    <DoGenSubst
+      <IncVarOffset s.ContextOffset s.Mode>
+      e.Substs-B
+      (Junk e.Junk (TkVariable s.Mode e.Index s.ContextOffset))
+      (E s.Num e.Range)
+      e.Substs-E
+      (
+        e.Vars-B
+        (s.Mode (e.Index) e.Offsets s.SampleOffset s.ContextOffset)
+        e.Vars-E
+      )
+      (
+        e.Commands
+        (CmdRepeated AlgLeft s.Num s.Mode s.ContextOffset s.SampleOffset)
+      )
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (E s.Num e.Range (TkVariable s.Mode e.Index)) (Junk e.Junk)
+  e.Substs-E
+  (e.Vars-B (s.Mode (e.Index) e.Offsets s.SampleOffset) e.Vars-E) (e.Commands) =
+    <DoGenSubst
+      <IncVarOffset s.ContextOffset s.Mode>
+      e.Substs-B
+      (E s.Num e.Range)
+      (Junk (TkVariable s.Mode e.Index s.ContextOffset) e.Junk)
+      e.Substs-E
+      (
+        e.Vars-B
+        (s.Mode (e.Index) e.Offsets s.SampleOffset s.ContextOffset)
+        e.Vars-E
+      )
+      (
+        e.Commands
+        (CmdRepeated AlgRight s.Num s.Mode s.ContextOffset s.SampleOffset)
+      )
+    >;
+
+  /* Диапазон с закрытой переменной */
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk1) (E s.Num (TkVariable 'e' e.Index)) (Junk e.Junk2)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      s.ContextOffset
+      e.Substs-B
+      (Junk e.Junk1 (TkVariable 'e' e.Index s.Num) e.Junk2)
+      e.Substs-E
+      (e.Vars ('e' (e.Index) s.Num))
+      (e.Commands
+        (CmdComment
+          ' closed ' <PrintVar 'e' e.Index> ' as range ' Offset s.Num
+        )
+      )
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk) (E s.Num (TkVariable 's' e.Index) e.Range)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      <Inc s.ContextOffset>
+      e.Substs-B
+      (Junk e.Junk (TkVariable 's' e.Index s.ContextOffset))
+      (E s.Num e.Range)
+      e.Substs-E
+      (e.Vars ('s' (e.Index) s.ContextOffset))
+      (e.Commands (CmdVar AlgLeft s.Num 's' s.ContextOffset))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (Junk e.Junk) (E s.Num (TkVariable 't' e.Index) e.Range)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      <Inc s.ContextOffset>
+      e.Substs-B
+      (Junk e.Junk (TkVariable 't' e.Index s.ContextOffset))
+      (E s.Num e.Range)
+      e.Substs-E
+      (e.Vars ('t' (e.Index) s.ContextOffset))
+      (e.Commands (CmdVar AlgLeft s.Num 't' s.ContextOffset))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (E s.Num e.Range (TkVariable 's' e.Index)) (Junk e.Junk)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      <Inc s.ContextOffset>
+      e.Substs-B
+      (E s.Num e.Range)
+      (Junk (TkVariable 's' e.Index s.ContextOffset) e.Junk)
+      e.Substs-E
+      (e.Vars ('s' (e.Index) s.ContextOffset))
+      (e.Commands (CmdVar AlgRight s.Num 's' s.ContextOffset))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (E s.Num e.Range (TkVariable 't' e.Index)) (Junk e.Junk)
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenSubst
+      <Inc s.ContextOffset>
+      e.Substs-B
+      (E s.Num e.Range)
+      (Junk (TkVariable 't' e.Index s.ContextOffset) e.Junk)
+      e.Substs-E
+      (e.Vars ('t' (e.Index) s.ContextOffset))
+      (e.Commands (CmdVar AlgRight s.Num 't' s.ContextOffset))
+    >;
+
+  /* Open e loops */
+  s.ContextOffset
+  (Junk e.Junk) (E s.Num (TkVariable 'e' e.Index) e.Range)
+  e.SubstitutesAnsJunks
+  (e.Vars) (e.Commands)
+    = s.ContextOffset : s.VarOffset
+    = (CmdOpenedE AlgLeft s.Num s.VarOffset) : t.CmdOpenedE
+    = <MakeSavers
+        <Inc2 s.ContextOffset>
+        (Junk e.Junk (TkVariable 'e' e.Index s.ContextOffset))
+        (E s.Num e.Range) e.SubstitutesAnsJunks
+      >
+    : s.ContextOffset^ (e.CmdSaves) e.SubstitutesAnsJunks^
+    = <DoGenSubst
+        s.ContextOffset e.SubstitutesAnsJunks
+        (e.Vars ('e' (e.Index) s.VarOffset))
+        (e.Commands t.CmdOpenedE e.CmdSaves)
+      >;
+
+  /* Завершение разбора. */
+  s.ContextOffset (Junk e.MarkedPattern) (e.Vars) (e.Commands) =
+    s.ContextOffset (e.Vars) (e.MarkedPattern)
+    (CmdComment <TextFromExpr e.MarkedPattern>)
+    e.Commands;
+}
