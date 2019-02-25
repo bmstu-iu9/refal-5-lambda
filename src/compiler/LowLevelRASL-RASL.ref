@@ -1,81 +1,78 @@
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN MapReduce, Inc, TermCompare, Map;
-
-//FROM Library
-$EXTERN StrFromInt;
 
 
 /**
   <LowLevelRASL-RASL s.DebugInfo s.Hash1 s.Hash2 e.Items>
     == t.RASLModule
 
-  s.DebugInfo ::= #DebugInfo | #NoDebugInfo
+  s.DebugInfo ::= DebugInfo | NoDebugInfo
   s.Hash1, s.Hash2 ::= s.NUMBER
 
-  In e.Items is used (#Function-ToRASL …) and (#Function-ToNative …)
-  instead (#Function …).
+  In e.Items is used (Function-ToRASL …) and (Function-ToNative …)
+  instead (Function …).
 */
 $ENTRY LowLevelRASL-RASL {
   s.DebugInfo s.Hash1 s.Hash2 e.Items
 
     = <MapReduce
-        ClassifyItems
+        &ClassifyItems
         (/* Области видимости функций */)
         e.Items
       >
     : (e.FuncScopeClass) e.Definitions
 
-    = <MapReduce (PrepareFunctionsRASL s.DebugInfo) 0 e.Definitions>
+    = <MapReduce (&PrepareFunctionsRASL s.DebugInfo) 0 e.Definitions>
     : s.MaxLabel e.Definitions^
 
     = (
-        (#ModuleID s.Hash1 s.Hash2)
+        (ModuleID s.Hash1 s.Hash2)
         <PrepareCommonRASL (e.FuncScopeClass) e.Definitions>
       );
 }
 
 ClassifyItems {
-  (e.FuncScopeClass) (#Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody) =
+  (e.FuncScopeClass) (Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
-    (#Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody);
+    (Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody);
 
-  (e.FuncScopeClass) (#Function-ToNative s.ScopeClass (e.Name) e.Commands) =
+  (e.FuncScopeClass) (Function-ToNative s.ScopeClass (e.Name) e.Commands) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
-    (#CmdNativeFuncDescr s.ScopeClass e.Name);
+    (CmdNativeFuncDescr s.ScopeClass e.Name);
 
-  (e.FuncScopeClass) (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
+  (e.FuncScopeClass) (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
-    (#CmdNativeFuncDescr s.ScopeClass e.Name);
+    (CmdNativeFuncDescr s.ScopeClass e.Name);
 
-  (e.FuncScopeClass) (#CmdEnum s.ScopeClass e.Name) =
+  (e.FuncScopeClass) (CmdEnum s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
-    (#CmdEnumDescr s.ScopeClass e.Name);
+    (CmdEnumDescr s.ScopeClass e.Name);
 
-  (e.FuncScopeClass) (#CmdSwap s.ScopeClass e.Name) =
+  (e.FuncScopeClass) (CmdSwap s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
-    (#CmdSwapDescr s.ScopeClass e.Name);
+    (CmdSwapDescr s.ScopeClass e.Name);
 
-  (e.FuncScopeClass) (#CmdConditionFunc-ToRASL s.ScopeClass e.Name) =
+  (e.FuncScopeClass) (CmdConditionFunc-ToRASL s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
-    (#CmdConditionFuncDecsrRasl s.ScopeClass e.Name);
+    (CmdConditionFuncDecsrRasl s.ScopeClass e.Name);
 
-  (e.FuncScopeClass) (#CmdConditionFunc-ToNative s.ScopeClass e.Name) =
+  (e.FuncScopeClass) (CmdConditionFunc-ToNative s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
-    (#CmdConditionFuncDecsrNative s.ScopeClass e.Name);
+    (CmdConditionFuncDecsrNative s.ScopeClass e.Name);
 
-  (e.FuncScopeClass) (#CmdDeclaration s.ScopeClass e.Name) =
+  (e.FuncScopeClass) (CmdDeclaration s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name)) /* skip */;
 
-  (e.FuncScopeClass) (#CmdDefineIdent e.Name) =
+  (e.FuncScopeClass) (CmdDefineIdent e.Name) =
     (e.FuncScopeClass) /* skip */;
 
-  (e.FuncScopeClass) (#CmdEmitNativeCode t.SrcPos e.Code) =
+  (e.FuncScopeClass) (CmdEmitNativeCode t.SrcPos e.Code) =
     (e.FuncScopeClass) /* skip */;
 }
 
 PrepareFunctionsRASL {
   s.DebugInfo s.NextLabel
-  (#Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody)
+  (Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody)
 
     = <RemoveDebugInfo s.DebugInfo e.FunctionBody> : e.FunctionBody^
 
@@ -87,12 +84,12 @@ PrepareFunctionsRASL {
     = <AddFunctionNameComment (e.Name) e.RASLCommands> : e.RASLCommands^
 
     = s.NextLabel
-      (#CmdInterpretFuncDescr
+      (CmdInterpretFuncDescr
         s.ScopeClass
         (e.Name)
-        (#LABEL s.NextLabel)
-        (#CmdProfileFunction)
-        (#CmdLoadConstants)
+        (LABEL s.NextLabel)
+        (CmdProfileFunction)
+        (CmdLoadConstants)
         e.RASLCommands
       );
 
@@ -100,26 +97,26 @@ PrepareFunctionsRASL {
 }
 
 RemoveDebugInfo {
-  #DebugInfo e.FunctionBody =
-    // ничего не меняем, сохраняем отладочную информацию как есть
+  DebugInfo e.FunctionBody =
+    /* ничего не меняем, сохраняем отладочную информацию как есть */
     e.FunctionBody;
 
-  #NoDebugInfo e.FunctionBody =
+  NoDebugInfo e.FunctionBody =
     <RemoveDebugInfoRec e.FunctionBody>;
 }
 
 RemoveDebugInfoRec {
-  (#CmdSentence e.SubCommands) e.Tail =
-    (#CmdSentence <RemoveDebugInfoRec e.SubCommands>) <RemoveDebugInfoRec e.Tail>;
+  (CmdSentence e.SubCommands) e.Tail =
+    (CmdSentence <RemoveDebugInfoRec e.SubCommands>) <RemoveDebugInfoRec e.Tail>;
 
-  (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) e.Tail =
-    (#CmdOpenELoop
-      #AlgLeft s.BracketNum s.VarNumber
+  (CmdOpenELoop AlgLeft s.BracketNum s.VarNumber e.SubCommands) e.Tail =
+    (CmdOpenELoop
+      AlgLeft s.BracketNum s.VarNumber
       <RemoveDebugInfoRec e.SubCommands>
     )
     <RemoveDebugInfoRec e.Tail>;
 
-  (#CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset) e.Tail =
+  (CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset) e.Tail =
     <RemoveDebugInfoRec e.Tail>;
 
   t.Command e.Tail = t.Command <RemoveDebugInfoRec e.Tail>;
@@ -129,49 +126,49 @@ RemoveDebugInfoRec {
 
 ConvertInterpretCommands {
   s.NextLabel e.Commands
-    = <MapReduce ConvertOneInterpretCommand s.NextLabel e.Commands>;
+    = <MapReduce &ConvertOneInterpretCommand s.NextLabel e.Commands>;
 }
 
 ConvertOneInterpretCommand-Simple {
-  (#CmdComment e.Text) = /* skip comment command */;
+  (CmdComment e.Text) = /* skip comment command */;
 
-  (#CmdUseRes) = /* пусто */;
+  (CmdUseRes) = /* пусто */;
 
-  (#CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset)
-    = (#CmdVariableDebugTable
-        s.Mode '.' e.Index '#' <StrFromInt s.Depth> s.Offset
+  (CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset)
+    = (CmdVariableDebugTable
+        s.Mode '.' e.Index '#' <Symb s.Depth> s.Offset
       );
 
-  (#CmdCallCondition) =
-    (#CmdPushState)
-    (#CmdNextStep);
+  (CmdCallCondition) =
+    (CmdPushState)
+    (CmdNextStep);
 
   t.Command = t.Command;
 }
 
 ConvertOneInterpretCommand {
-  s.NextLabel (#CmdSentence e.SubCommands)
+  s.NextLabel (CmdSentence e.SubCommands)
 
     = <ConvertInterpretCommands s.NextLabel e.SubCommands>
     : s.NextLabel^ e.SubCommands^
 
     = <Inc s.NextLabel>
-      (#CmdOnFailGoTo s.NextLabel)
+      (CmdOnFailGoTo s.NextLabel)
       e.SubCommands
-      (#LABEL s.NextLabel)
-      (#CmdProfilerStopSentence);
+      (LABEL s.NextLabel)
+      (CmdProfilerStopSentence);
 
 
-  s.NextLabel (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands)
+  s.NextLabel (CmdOpenELoop AlgLeft s.BracketNum s.VarNumber e.SubCommands)
 
     = <ConvertInterpretCommands s.NextLabel e.SubCommands>
     : s.NextLabel^ e.SubCommands^
 
     = s.NextLabel
-      (#CmdEPrepare s.BracketNum s.VarNumber)
-      (#CmdEStart s.BracketNum s.VarNumber)
+      (CmdEPrepare s.BracketNum s.VarNumber)
+      (CmdEStart s.BracketNum s.VarNumber)
       e.SubCommands
-      (#CmdFail);
+      (CmdFail);
 
   s.NextLabel t.Command
     = s.NextLabel <ConvertOneInterpretCommand-Simple t.Command>;
@@ -181,11 +178,11 @@ AddBacktrackStackAllocationCommand {
   e.Commands
     = <MapReduce
         {
-          s.Depth (#CmdEStart e.VarInfo) =
-            <Inc s.Depth> (#CmdEStart e.VarInfo);
+          s.Depth (CmdEStart e.VarInfo) =
+            <Inc s.Depth> (CmdEStart e.VarInfo);
 
-          s.Depth (#CmdOnFailGoTo s.Offset) =
-            <Inc s.Depth> (#CmdOnFailGoTo s.Offset);
+          s.Depth (CmdOnFailGoTo s.Offset) =
+            <Inc s.Depth> (CmdOnFailGoTo s.Offset);
 
           s.Depth t.OtherCommand = s.Depth t.OtherCommand;
         }
@@ -195,7 +192,7 @@ AddBacktrackStackAllocationCommand {
         0 e.Commands^ = e.Commands;
 
         s.Depth e.Commands^ =
-          (#CmdReserveBacktrackStack s.Depth) e.Commands;
+          (CmdReserveBacktrackStack s.Depth) e.Commands;
       };
 }
 
@@ -203,8 +200,8 @@ AddFunctionNameComment {
   (e.Name) e.RASLCommands
     = <Map
         {
-          (#CmdOnFailGoTo s.NextLabel)
-            = (#CmdOnFailGoTo s.NextLabel "Func name:" e.Name);
+          (CmdOnFailGoTo s.NextLabel)
+            = (CmdOnFailGoTo s.NextLabel "Func name:" e.Name);
 
           t.OtherCommand = t.OtherCommand;
         }
@@ -223,20 +220,20 @@ PrepareCommonRASL {
         (0 /* строки */)
         e.RASL-Commands
       >
-    : (#CmdFuncArray s.FunctionCount e.Functions)
-      (#CmdIdentArray s.IdentCount e.Idents)
-      (#CmdStringArray s.StringCount e.Strings)
+    : (CmdFuncArray s.FunctionCount e.Functions)
+      (CmdIdentArray s.IdentCount e.Idents)
+      (CmdStringArray s.StringCount e.Strings)
       e.RASL-Commands^
 
-    = (#CmdFuncArray
+    = (CmdFuncArray
         s.FunctionCount
         <SetFunctionsScopeClass (e.FuncScopeClass) e.Functions>
       )
-      (#CmdIdentArray s.IdentCount e.Idents)
-      (#CmdNumberArray 0 /* empty */)
-      (#CmdStringArray s.StringCount e.Strings)
-      (#RASL e.RASL-Commands)
-      (#Items e.Items);
+      (CmdIdentArray s.IdentCount e.Idents)
+      (CmdNumberArray 0 /* empty */)
+      (CmdStringArray s.StringCount e.Strings)
+      (RASL e.RASL-Commands)
+      (Items e.Items);
 }
 
 GlueFunctionRASLs {
@@ -244,11 +241,11 @@ GlueFunctionRASLs {
     = <MapReduce
         {
           (e.All-RASL-Commands)
-          (#CmdInterpretFuncDescr
-            s.ScopeClass (e.Name) (#LABEL s.Label) e.RASL-Commands
+          (CmdInterpretFuncDescr
+            s.ScopeClass (e.Name) (LABEL s.Label) e.RASL-Commands
           )
-            = (e.All-RASL-Commands (#LABEL s.Label) e.RASL-Commands)
-              (#CmdInterpretFuncDescr s.ScopeClass e.Name s.Label);
+            = (e.All-RASL-Commands (LABEL s.Label) e.RASL-Commands)
+              (CmdInterpretFuncDescr s.ScopeClass e.Name s.Label);
 
           (e.All-RASL-Commands) t.OtherItem
             = (e.All-RASL-Commands) t.OtherItem;
@@ -266,10 +263,10 @@ SetFunctionsScopeClass {
           (e.FuncName)
             = (e.Decls-B e.Decls-E) (s.ScopeClass e.FuncName);
 
-          // not defined — it is extern
+          /* not defined — it is extern */
           (e.Decls)
           (e.FuncName)
-            = (e.Decls) (#GN-Entry e.FuncName);
+            = (e.Decls) (GN-Entry e.FuncName);
         }
         (e.FuncScopeClass)
         e.Functions
@@ -285,220 +282,220 @@ OutlineConstants {
   (s.NextIdent e.Idents)
   (s.NextString e.Strings)
   /* пусто */ =
-    (#CmdFuncArray s.NextFunc <Map RemoveNumber e.Funcs>)
-    (#CmdIdentArray s.NextIdent <Map RemoveNumber e.Idents>)
-    (#CmdStringArray s.NextString <Map RemoveNumber e.Strings>);
+    (CmdFuncArray s.NextFunc <Map &RemoveNumber e.Funcs>)
+    (CmdIdentArray s.NextIdent <Map &RemoveNumber e.Idents>)
+    (CmdStringArray s.NextString <Map &RemoveNumber e.Strings>);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
   (e.Strings)
   e.Commands
-  (#CmdName s.Direction s.BracketNum e.Func) =
+  (CmdName s.Direction s.BracketNum e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdName s.Direction s.BracketNum s.Num);
+    (CmdName s.Direction s.BracketNum s.Num);
 
   (s.NextFunc e.Funcs) (e.Idents) (e.Strings)
   e.Commands
-  (#CmdName s.Direction s.BracketNum e.Func) =
+  (CmdName s.Direction s.BracketNum e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdName s.Direction s.BracketNum s.NextFunc);
+    (CmdName s.Direction s.BracketNum s.NextFunc);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
   (e.Strings)
   e.Commands
-  (#CmdNameSave s.Direction s.BracketNum s.SaveOffset e.Func) =
+  (CmdNameSave s.Direction s.BracketNum s.SaveOffset e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdNameSave s.Direction s.BracketNum s.SaveOffset s.Num);
+    (CmdNameSave s.Direction s.BracketNum s.SaveOffset s.Num);
 
   (s.NextFunc e.Funcs) (e.Idents) (e.Strings)
   e.Commands
-  (#CmdNameSave s.Direction s.BracketNum s.SaveOffset e.Func) =
+  (CmdNameSave s.Direction s.BracketNum s.SaveOffset e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdNameSave s.Direction s.BracketNum s.SaveOffset s.NextFunc);
+    (CmdNameSave s.Direction s.BracketNum s.SaveOffset s.NextFunc);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
   (e.Strings)
   e.Commands
-  (#CmdCreateElem s.CreateMode s.ElemNo #ElName e.Func) =
+  (CmdCreateElem s.CreateMode s.ElemNo ElName e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdCreateElem s.CreateMode s.ElemNo #ElName s.Num);
+    (CmdCreateElem s.CreateMode s.ElemNo ElName s.Num);
 
   (s.NextFunc e.Funcs) (e.Idents) (e.Strings)
   e.Commands
-  (#CmdCreateElem s.CreateMode s.ElemNo #ElName e.Func) =
+  (CmdCreateElem s.CreateMode s.ElemNo ElName e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdCreateElem s.CreateMode s.ElemNo #ElName s.NextFunc);
+    (CmdCreateElem s.CreateMode s.ElemNo ElName s.NextFunc);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
   (e.Strings)
   e.Commands
-  (#CmdADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
+  (CmdADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdADT s.Direction s.BracketNum s.InnerBrackets s.Num);
+    (CmdADT s.Direction s.BracketNum s.InnerBrackets s.Num);
 
   (s.NextFunc e.Funcs) (e.Idents) (e.Strings)
   e.Commands
-  (#CmdADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
+  (CmdADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdADT s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
+    (CmdADT s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
   (e.Strings)
   e.Commands
-  (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets e.Func) =
+  (CmdADTSave s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets s.Num);
+    (CmdADTSave s.Direction s.BracketNum s.InnerBrackets s.Num);
 
   (s.NextFunc e.Funcs) (e.Idents) (e.Strings)
   e.Commands
-  (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets e.Func) =
+  (CmdADTSave s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
+    (CmdADTSave s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
 
   (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
   (e.Strings)
   e.Commands
-  (#CmdIdent s.Direction s.BracketNum e.Ident) =
+  (CmdIdent s.Direction s.BracketNum e.Ident) =
     <OutlineConstants
       (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
       (e.Strings)
       e.Commands
     >
-    (#CmdIdent s.Direction s.BracketNum s.Num);
+    (CmdIdent s.Direction s.BracketNum s.Num);
 
   (e.Funcs) (s.NextIdent e.Idents) (e.Strings)
   e.Commands
-  (#CmdIdent s.Direction s.BracketNum e.Ident) =
+  (CmdIdent s.Direction s.BracketNum e.Ident) =
     <OutlineConstants
       (e.Funcs) (<Inc s.NextIdent> e.Idents (s.NextIdent e.Ident))
       (e.Strings)
       e.Commands
     >
-    (#CmdIdent s.Direction s.BracketNum s.NextIdent);
+    (CmdIdent s.Direction s.BracketNum s.NextIdent);
 
   (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
   (e.Strings)
   e.Commands
-  (#CmdIdentSave s.Direction s.BracketNum s.SaveOffset e.Ident) =
+  (CmdIdentSave s.Direction s.BracketNum s.SaveOffset e.Ident) =
     <OutlineConstants
       (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
       (e.Strings)
       e.Commands
     >
-    (#CmdIdentSave s.Direction s.BracketNum s.SaveOffset s.Num);
+    (CmdIdentSave s.Direction s.BracketNum s.SaveOffset s.Num);
 
   (e.Funcs) (s.NextIdent e.Idents) (e.Strings)
   e.Commands
-  (#CmdIdentSave s.Direction s.BracketNum s.SaveOffset e.Ident) =
+  (CmdIdentSave s.Direction s.BracketNum s.SaveOffset e.Ident) =
     <OutlineConstants
       (e.Funcs) (<Inc s.NextIdent> e.Idents (s.NextIdent e.Ident))
       (e.Strings)
       e.Commands
     >
-    (#CmdIdentSave s.Direction s.BracketNum s.SaveOffset s.NextIdent);
+    (CmdIdentSave s.Direction s.BracketNum s.SaveOffset s.NextIdent);
 
   (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
   (e.Strings)
   e.Commands
-  (#CmdCreateElem s.CreateMode s.ElemNo #ElIdent e.Ident) =
+  (CmdCreateElem s.CreateMode s.ElemNo ElIdent e.Ident) =
     <OutlineConstants
       (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
       (e.Strings)
       e.Commands
     >
-    (#CmdCreateElem s.CreateMode s.ElemNo #ElIdent s.Num);
+    (CmdCreateElem s.CreateMode s.ElemNo ElIdent s.Num);
 
   (e.Funcs) (s.NextIdent e.Idents) (e.Strings)
   e.Commands
-  (#CmdCreateElem s.CreateMode s.ElemNo #ElIdent e.Ident) =
+  (CmdCreateElem s.CreateMode s.ElemNo ElIdent e.Ident) =
     <OutlineConstants
       (e.Funcs) (<Inc s.NextIdent> e.Idents (s.NextIdent e.Ident))
       (e.Strings)
       e.Commands
     >
-    (#CmdCreateElem s.CreateMode s.ElemNo #ElIdent s.NextIdent);
+    (CmdCreateElem s.CreateMode s.ElemNo ElIdent s.NextIdent);
 
   (e.Funcs) (e.Idents)
   (s.NextStringId e.Strings-B (s.Id e.String) e.Strings-E)
   e.Commands
-  (#CmdCreateElem s.CreateMode s.ElemNo #ElString e.String) =
+  (CmdCreateElem s.CreateMode s.ElemNo ElString e.String) =
     <OutlineConstants
       (e.Funcs) (e.Idents)
       (s.NextStringId e.Strings-B (s.Id e.String) e.Strings-E)
       e.Commands
     >
-    (#CmdCreateElem s.CreateMode s.ElemNo #ElString s.Id);
+    (CmdCreateElem s.CreateMode s.ElemNo ElString s.Id);
 
   (e.Funcs) (e.Idents) (s.NextStringId e.Strings)
   e.Commands
-  (#CmdCreateElem s.CreateMode s.ElemNo #ElString e.String) =
+  (CmdCreateElem s.CreateMode s.ElemNo ElString e.String) =
     <OutlineConstants
       (e.Funcs) (e.Idents)
       (<Inc s.NextStringId> e.Strings (s.NextStringId e.String))
       e.Commands
     >
-    (#CmdCreateElem s.CreateMode s.ElemNo #ElString s.NextStringId);
+    (CmdCreateElem s.CreateMode s.ElemNo ElString s.NextStringId);
 
   (e.Funcs) (e.Idents)
   (s.NextStringId e.Strings-B (s.Id e.VarName) e.Strings-E)
   e.Commands
-  (#CmdVariableDebugTable e.VarName s.Offset) =
+  (CmdVariableDebugTable e.VarName s.Offset) =
     <OutlineConstants
       (e.Funcs) (e.Idents)
       (s.NextStringId e.Strings-B (s.Id e.VarName) e.Strings-E)
       e.Commands
     >
-    (#CmdVariableDebugTable s.Id s.Offset);
+    (CmdVariableDebugTable s.Id s.Offset);
 
   (e.Funcs) (e.Idents)
   (s.NextStringId e.Strings)
   e.Commands
-  (#CmdVariableDebugTable e.VarName s.Offset) =
+  (CmdVariableDebugTable e.VarName s.Offset) =
     <OutlineConstants
       (e.Funcs) (e.Idents)
       (<Inc s.NextStringId> e.Strings (s.NextStringId e.VarName))
       e.Commands
     >
-    (#CmdVariableDebugTable s.NextStringId s.Offset);
+    (CmdVariableDebugTable s.NextStringId s.Offset);
 
   (e.Funcs) (e.Idents) (e.Strings)
   e.Commands
