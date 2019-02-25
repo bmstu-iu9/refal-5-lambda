@@ -1,27 +1,27 @@
-//FROM HighLevelRASL-GenResult-Simple
+*$FROM HighLevelRASL-GenResult-Simple
 $EXTERN GenResult-Condition;
 
-//FROM HighLevelRASL-Common
+*$FROM HighLevelRASL-Common
 $EXTERN Inc2, GenInitSubst, FoldOpenELoops, PutVariableDebugTable;
 
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN Inc, Max;
 
-//FROM HighLevelRASL-GenSubst-Save
+*$FROM HighLevelRASL-GenSubst-Save
 $EXTERN GenSubst-Save;
 
 
 $ENTRY SentenceTail {
   s.StartOffsetCond
   (e.PatternVars) (e.MarkedPattern)
-  (#Condition (e.CondName) (e.CondResult) (e.CondPattern)) e.ConditionsTail
+  (Condition (e.CondName) (e.CondResult) (e.CondPattern)) e.ConditionsTail
   (e.ResultSentence)
 
     = <GenResult-Condition
         <Inc2 s.StartOffsetCond> (e.PatternVars)
-        (#TkOpenCallCond s.StartOffsetCond)
-        (#TkName e.CondName) e.CondResult
-        (#TkCloseCallCond <Inc s.StartOffsetCond>)
+        (TkOpenCallCond s.StartOffsetCond)
+        (TkName e.CondName) e.CondResult
+        (TkCloseCallCond <Inc s.StartOffsetCond>)
       >
     : s.EndOffsetCond-Res e.CondResultCommands
 
@@ -49,22 +49,22 @@ $ENTRY SentenceTail {
 
     = <Max s.EndOffsetCond-Res s.NestedStackTop> : s.StackTop
 
-    = (#CmdSentence
+    = (CmdSentence
         <FoldOpenELoops
           e.CondPatternCommands
           <PutVariableDebugTable e.PatternVars>
           e.NestedSentence
         >
       )
-      (#CmdSpliceToFreeList-Range s.StartOffsetCond <Inc s.StartOffsetCond>)
+      (CmdSpliceToFreeList-Range s.StartOffsetCond <Inc s.StartOffsetCond>)
     : e.CmdSentenceCommands
 
     = s.StackTop
       e.CondResultCommands
-      (#CmdCallCondition)
-      (#CmdProfileFunction)
+      (CmdCallCondition)
+      (CmdProfileFunction)
       e.CmdSentenceCommands
-      (#CmdFail);
+      (CmdFail);
 
   s.ContextOffset
   (e.PatternVars) (e.MarkedPattern)
