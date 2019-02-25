@@ -1,7 +1,7 @@
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN Map, MapReduce, Max, Fetch;
 
-//FROM HighLevelRASL-Common
+*$FROM HighLevelRASL-Common
 $EXTERN GenResult, GenPattern;
 
 
@@ -21,28 +21,28 @@ $ENTRY HighLevelRASL-Function-Disjoint {
         }
         e.Sentences
       >
-    : e.Sentences^ ((#CmdIssueMemory s.LastMemory) e.LastSentence)
+    : e.Sentences^ ((CmdIssueMemory s.LastMemory) e.LastSentence)
 
     = <MapReduce
         {
-          s.MaxMemory ((#CmdIssueMemory s.Memory) e.Sentence) =
+          s.MaxMemory ((CmdIssueMemory s.Memory) e.Sentence) =
             <Max s.MaxMemory s.Memory>
-            (#CmdSentence e.Sentence);
+            (CmdSentence e.Sentence);
         }
         s.LastMemory
         e.Sentences
       >
     : s.MaxMemory e.Sentences^
 
-    = (#Function
+    = (Function
         s.ScopeClass (e.Name)
-        (#CmdIssueMemory s.MaxMemory)
+        (CmdIssueMemory s.MaxMemory)
         e.Sentences
         <Fetch
           e.LastSentence
           {
-            e.Commands (#CmdOpenELoop e.OpenELoop) =
-              e.Commands (#CmdOpenELoop e.OpenELoop) (#CmdFail);
+            e.Commands (CmdOpenELoop e.OpenELoop) =
+              e.Commands (CmdOpenELoop e.OpenELoop) (CmdFail);
 
             e.LastSentence^ = e.LastSentence;
           }
