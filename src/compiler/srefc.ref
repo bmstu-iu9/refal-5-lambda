@@ -1,33 +1,32 @@
-//FROM Version
+*$FROM Version
 $EXTERN PrintVersion;
 
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN ArgList, LoadFile, Map, SaveFile, MapReduce, Inc, SaveBytes, LoadBytes;
 
-//FROM ParseCmdLine
+*$FROM ParseCmdLine
 $EXTERN ParseCommandLine;
 
-//FROM Config
+*$FROM Config
 $EXTERN Config-GetLogFile,
   Config-GetTargetFileName, Config-SetTargetFileName, Config-GetErrorFile,
   Config-GetCppCompiler, Config-GetGrammarCheck, Config-GetTargetSuffix,
   Config-GetSearchFolders, Config-GetTargetMode, Config-GetPrefix,
   Config-GetChmodXCommand, Config-GetReferences, Config-GetIncorporateds;
 
-//FROM Log
+*$FROM Log
 $EXTERN Log-Init, Log-Final;
 
-//FROM Library
-$EXTERN WriteLine, StrFromInt, Exit, Lower, System, ExistFile, FOpen,
-  FWriteBytes, FSeek, Mod, FTell, FClose, RemoveFile, RenameFile;
+*$FROM Library
+$EXTERN FOpen, FWriteBytes, FSeek, FTell, FClose, RenameFile;
 
-//FROM FindFile
+*$FROM FindFile
 $EXTERN FindFiles;
 
-//FROM Engine
+*$FROM Engine
 $EXTERN CompileFile, GrammarCheck;
 
-//FROM Generator-RASL
+*$FROM Generator-RASL
 $EXTERN PutBlockReference, PutBlockIncorporated;
 
 
@@ -43,17 +42,17 @@ Main {
 
   (e.ProgName) e.Arguments
     = <Main-SwValidCommandLine
-        #CommandLine <ParseCommandLine e.Arguments>
+        CommandLine <ParseCommandLine e.Arguments>
       >;
 }
 
 Main-SwValidCommandLine {
-  t.CommandLineSource #Success t.Config /* файлов нет */
+  t.CommandLineSource Success t.Config /* файлов нет */
     = <ReportErrors
         t.CommandLineSource t.Config (1 'no source files in command line')
       >;
 
-  t.CommandLineSource #Success t.Config e.Files
+  t.CommandLineSource Success t.Config e.Files
     = <Log-Init <Config-GetLogFile t.Config>>
       <Main-SwFoundFiles
         t.CommandLineSource t.Config
@@ -61,13 +60,13 @@ Main-SwValidCommandLine {
       >
       <Log-Final>;
 
-  t.CommandLineSource #Fails e.Errors
-    = <ReportErrors t.CommandLineSource #NoConfig e.Errors>;
+  t.CommandLineSource Fails e.Errors
+    = <ReportErrors t.CommandLineSource NoConfig e.Errors>;
 }
 
 ReportErrors {
   t.CommandLineSource t.Config e.Errors
-    = <ReportMessages (OnErrors 'Error') t.CommandLineSource t.Config e.Errors>;
+    = <ReportMessages (&OnErrors 'Error') t.CommandLineSource t.Config e.Errors>;
 }
 
 OnErrors {
@@ -79,7 +78,7 @@ OnErrors {
 ReportWarnings {
   t.CommandLineSource t.Config e.Warnings
     = <ReportMessages
-        (OnWarnings 'Warning') t.CommandLineSource t.Config e.Warnings
+        (&OnWarnings 'Warning') t.CommandLineSource t.Config e.Warnings
       >;
 }
 
@@ -92,14 +91,14 @@ ReportMessages {
     = t.CommandLineSource
     : {
         (e.ConfigFile) = e.ConfigFile ':';
-        #CommandLine = 'Command line argument ';
+        CommandLine = 'Command line argument ';
       }
     : e.Prefix
     = <Map
         {
           (s.Pos e.Message)
-            = <WriteLine
-                e.Prefix <StrFromInt s.Pos> ': ' e.Banner ': ' e.Message
+            = <Prout
+                e.Prefix <Symb s.Pos> ': ' e.Banner ': ' e.Message
               >;
         }
         e.Messages
@@ -108,33 +107,35 @@ ReportMessages {
 }
 
 CreateErrorFileMark {
-  // Вызывается также при ошибке в командной строке, когда t.Config
-  // не удалось построить, поэтому #NoConfig
-  #NoConfig = /* ничего */;
+  /*
+    Вызывается также при ошибке в командной строке, когда t.Config
+    не удалось построить, поэтому NoConfig
+  */
+  NoConfig = /* ничего */;
 
   t.Config = <CreateErrorFileMark-SwFile <Config-GetErrorFile t.Config>>;
 }
 
 CreateErrorFileMark-SwFile {
-  #NoErrorFile = /* ничего */;
-  #ErrorFile e.FileName = <SaveFile (e.FileName)>;
+  NoErrorFile = /* ничего */;
+  ErrorFile e.FileName = <SaveFile (e.FileName)>;
 }
 
 Main-SwFoundFiles {
   t.CommandLineSource t.Config
-  e.Files-B (s.Pos #NotFound e.FileName) e.Files-E
+  e.Files-B (s.Pos NotFound e.FileName) e.Files-E
     = <ReportErrors
         t.CommandLineSource t.Config
         <Map
           {
-            (s.Pos^ #NotFound e.FileName^)
+            (s.Pos^ NotFound e.FileName^)
               = (s.Pos 'file ' e.FileName ' is not found');
 
-            (s.Pos^ #Source (s.Dialect e.Source) e.Output) = /* пусто */;
-            (s.Pos^ #Output e.Output) = /* пусто */;
-            (s.Pos^ #OutputWithNative (e.Output) e.NativeOutput) = /* пусто */;
+            (s.Pos^ Source (s.Dialect e.Source) e.Output) = /* пусто */;
+            (s.Pos^ Output e.Output) = /* пусто */;
+            (s.Pos^ OutputWithNative (e.Output) e.NativeOutput) = /* пусто */;
           }
-          (s.Pos #NotFound e.FileName) e.Files-E
+          (s.Pos NotFound e.FileName) e.Files-E
         >
       >;
 
@@ -148,22 +149,22 @@ Main-SwFoundFiles {
 Main-SwRenamedTargets {
   t.CommandLineSource
   t.Config
-  e.Files-B (s.Pos #Collision e.Collision) e.Files-E
+  e.Files-B (s.Pos Collision e.Collision) e.Files-E
     = <ReportErrors
         t.CommandLineSource t.Config
         <Map
           {
-            (s.Pos^ #Collision (e.FirstTarget) e.SecondTarget)
+            (s.Pos^ Collision (e.FirstTarget) e.SecondTarget)
               = (
                   s.Pos
                   'files ' e.FirstTarget ' and ' e.SecondTarget ' have same name'
                 );
 
-            (s.Pos^ #Source (s.Dialect e.Source) e.Output) = /* пусто */;
-            (s.Pos^ #Output e.Output) = /* пусто */;
-            (s.Pos^ #OutputWithNative (e.Output) e.NativeOutput) = /* пусто */;
+            (s.Pos^ Source (s.Dialect e.Source) e.Output) = /* пусто */;
+            (s.Pos^ Output e.Output) = /* пусто */;
+            (s.Pos^ OutputWithNative (e.Output) e.NativeOutput) = /* пусто */;
           }
-          (s.Pos #Collision e.Collision) e.Files-E
+          (s.Pos Collision e.Collision) e.Files-E
         >
       >;
 
@@ -173,28 +174,28 @@ Main-SwRenamedTargets {
     = <Config-GetGrammarCheck t.Config> : s.GrammarCheck
     = s.GrammarCheck <CompileFiles t.Config s.GrammarCheck e.Files>
     : {
-        s.GrammarCheck^ e.Outputs-B #Fails e.Outputs-E
+        s.GrammarCheck^ e.Outputs-B Fails e.Outputs-E
           = <CreateErrorFileMark t.Config>
             <Exit 1>;
 
-        #NormalRun e.Outputs
+        NormalRun e.Outputs
           = <Link t.CommandLineSource t.Config e.Outputs>;
 
-        #GrammarCheck e.Outputs
-          = <WriteLine '** No syntax errors found **'>;
+        GrammarCheck e.Outputs
+          = <Prout '** No syntax errors found **'>;
       };
 }
 
-//------------------------------------------------------------------------------
+/*----------------------------------------------------------------------------*/
 
 CalcTargetFileName {
   s.TargetMode t.Config e.OutputFiles
     = <Config-GetTargetFileName t.Config>
     : {
-        #DefaultTargetFileName
-          = e.OutputFiles : (#RASL e.FirstFile) e.OtherFiles
+        DefaultTargetFileName
+          = e.OutputFiles : (RASL e.FirstFile) e.OtherFiles
           = <GetLastPartName e.FirstFile> : e.LastPartName
-          = <Lower e.LastPartName> : e.LowerBaseName '.rasl'    // assert
+          = <Lower e.LastPartName> : e.LowerBaseName '.rasl'    /* assert */
           = e.LastPartName : e.BaseName '.' s.R s.A s.S s.L
           = e.BaseName <Config-GetTargetSuffix t.Config s.TargetMode>;
 
@@ -219,49 +220,49 @@ LookupSourceFiles {
 }
 
 RenameTargets {
-  #EXE e.Files = <RenameTargets-WithCpp e.Files>;
-  #LIB e.Files = <RenameTargets-WithCpp e.Files>;
+  EXE e.Files = <RenameTargets-WithCpp e.Files>;
+  LIB e.Files = <RenameTargets-WithCpp e.Files>;
 
-  #R e.Files = <RenameTargets-Stub e.Files>;
-  #CompileOnly e.Files = <RenameTargets-Stub e.Files>;
+  R e.Files = <RenameTargets-Stub e.Files>;
+  CompileOnly e.Files = <RenameTargets-Stub e.Files>;
 }
 
 RenameTargets-Stub {
   e.Files
     = <Map
         {
-          (s.Pos #Output e.FileName)
-            = (s.Pos #Output e.FileName #NoNative);
+          (s.Pos Output e.FileName)
+            = (s.Pos Output e.FileName NoNative);
 
-          (s.Pos #OutputWithNative (e.FileName) e.NativeFileName)
-            = (s.Pos #Output e.FileName (e.NativeFileName));
+          (s.Pos OutputWithNative (e.FileName) e.NativeFileName)
+            = (s.Pos Output e.FileName (e.NativeFileName));
 
-          (s.Pos #Source (s.Dialect e.Source) e.Output)
-            = (s.Pos #Source (s.Dialect e.Source) e.Output);
+          (s.Pos Source (s.Dialect e.Source) e.Output)
+            = (s.Pos Source (s.Dialect e.Source) e.Output);
         }
         e.Files
       >;
 }
 
 RenameTargets-WithCpp {
-  e.Files = <ScanCollisions <Map GetFileName e.Files>>;
+  e.Files = <ScanCollisions <Map &GetFileName e.Files>>;
 }
 
 GetFileName {
-  (s.Pos #Output e.FileName)
+  (s.Pos Output e.FileName)
     = ((<GetBaseNameLowerCase e.FileName>)
-      (s.Pos #Output e.FileName #NoNative));
+      (s.Pos Output e.FileName NoNative));
 
-  (s.Pos #OutputWithNative (e.FileName) e.NativeFileName)
+  (s.Pos OutputWithNative (e.FileName) e.NativeFileName)
     = (
         (<GetBaseNameLowerCase e.FileName>)
-        (s.Pos #Output e.FileName (e.NativeFileName))
+        (s.Pos Output e.FileName (e.NativeFileName))
       );
 
-  (s.Pos #Source (s.Dialect e.Source) e.Output)
+  (s.Pos Source (s.Dialect e.Source) e.Output)
     = (
         (<GetBaseNameLowerCase e.Output>)
-        (s.Pos #Source (s.Dialect e.Source) e.Output)
+        (s.Pos Source (s.Dialect e.Source) e.Output)
       );
 }
 
@@ -279,14 +280,14 @@ ScanCollisions {
 }
 
 RenameLocations {
-  e.Locations-B (s.Pos1 #Output e.FirstTarget t.FirstNative)
-  e.Locations-M (s.Pos2 #Output e.SecondTarget t.SecondNative)
+  e.Locations-B (s.Pos1 Output e.FirstTarget t.FirstNative)
+  e.Locations-M (s.Pos2 Output e.SecondTarget t.SecondNative)
   e.Locations-E
-    = (s.Pos2 #Collision (e.FirstTarget) e.SecondTarget);
+    = (s.Pos2 Collision (e.FirstTarget) e.SecondTarget);
 
-  e.Locations-B (s.Pos #Output e.Target t.Native) e.Locations-E
+  e.Locations-B (s.Pos Output e.Target t.Native) e.Locations-E
     = <RenameLocations-Aux
-        1 e.Locations-B (s.Pos #Output e.Target t.Native) e.Locations-E
+        1 e.Locations-B (s.Pos Output e.Target t.Native) e.Locations-E
       >;
 
   e.Locations = <RenameLocations-Aux 0 e.Locations>;
@@ -296,17 +297,17 @@ RenameLocations-Aux {
   s.InitNumber e.Locations
     = <MapReduce
         {
-          0 (s.Pos #Source (s.Dialect e.Source) e.Output) =
-            1 (s.Pos #Source (s.Dialect e.Source) e.Output);
+          0 (s.Pos Source (s.Dialect e.Source) e.Output) =
+            1 (s.Pos Source (s.Dialect e.Source) e.Output);
 
-          s.Num (s.Pos #Source (s.Dialect e.Source) e.Output '.rasl') =
+          s.Num (s.Pos Source (s.Dialect e.Source) e.Output '.rasl') =
             <Inc s.Num>
-            (s.Pos #Source
-              (s.Dialect e.Source) e.Output '@' <StrFromInt s.Num> '.rasl'
+            (s.Pos Source
+              (s.Dialect e.Source) e.Output '@' <Symb s.Num> '.rasl'
             );
 
-          s.Num (s.Pos #Output e.Output t.Native) =
-            s.Num (s.Pos #Output e.Output t.Native);
+          s.Num (s.Pos Output e.Output t.Native) =
+            s.Num (s.Pos Output e.Output t.Native);
         }
         s.InitNumber e.Locations
       >
@@ -315,42 +316,41 @@ RenameLocations-Aux {
 }
 
 CompileFiles {
-  t.Config #NormalRun e.Files
+  t.Config NormalRun e.Files
     = <Map
         {
-          (s.Pos #Output e.OutputName #NoNative)
-            = <WriteLine '+Linking ' e.OutputName>
-              (#RASL e.OutputName);
+          (s.Pos Output e.OutputName NoNative)
+            = <Prout '+Linking ' e.OutputName>
+              (RASL e.OutputName);
 
-          (s.Pos #Output e.OutputName (e.NativeName))
-            = <WriteLine '+Linking (+ natives) ' e.OutputName>
-              (#RASL e.OutputName) (#Native e.NativeName);
+          (s.Pos Output e.OutputName (e.NativeName))
+            = <Prout '+Linking (+ natives) ' e.OutputName>
+              (RASL e.OutputName) (Native e.NativeName);
 
-          (s.Pos #Source (s.Dialect e.Source) e.OutputName)
-            = <WriteLine '*Compiling ' e.Source ':'> : /* пусто */
+          (s.Pos Source (s.Dialect e.Source) e.OutputName)
+            = <Prout '*Compiling ' e.Source ':'> : /* пусто */
             = <CompileFile t.Config (s.Dialect e.Source) e.OutputName>
             : {
-                #Success e.OutputName^ #NoNative
-                  = (#RASL e.OutputName);
+                Success e.OutputName^ NoNative = (RASL e.OutputName);
 
-                #Success e.OutputName^ (e.NativeOutputName)
-                  = <WriteLine '   ... natives generated'>
-                    (#RASL e.OutputName) (#Native e.NativeOutputName);
+                Success e.OutputName^ (e.NativeOutputName)
+                  = <Prout '   ... natives generated'>
+                    (RASL e.OutputName) (Native e.NativeOutputName);
 
-                #Fails = #Fails;
+                Fails = Fails;
               };
         }
         e.Files
       >;
 
-  t.Config #GrammarCheck e.Files
+  t.Config GrammarCheck e.Files
     = <Map
         {
-          (s.Pos #Output e.OutputName)
-            = <WriteLine '+Skipping native file ' e.OutputName> (e.OutputName);
+          (s.Pos Output e.OutputName)
+            = <Prout '+Skipping native file ' e.OutputName> (e.OutputName);
 
-          (s.Pos #Source (s.Dialect e.Source) e.OutputName)
-            = <WriteLine '*Grammar checking ' e.Source ':'>
+          (s.Pos Source (s.Dialect e.Source) e.OutputName)
+            = <Prout '*Grammar checking ' e.Source ':'>
               <GrammarCheck t.Config s.Dialect e.Source>;
         }
         e.Files
@@ -361,31 +361,31 @@ Link {
   t.CommandLineSource t.Config e.Files
     = <Config-GetTargetMode t.Config>
     : {
-        #EXE
+        EXE
           = <Link-Exe
               t.CommandLineSource t.Config
-              (<Config-GetCppCompiler t.Config #EXE>)
+              (<Config-GetCppCompiler t.Config EXE>)
               (<Config-GetPrefix t.Config>)
               e.Files
             >;
 
-        #LIB
+        LIB
           = <Link-Lib
               t.CommandLineSource t.Config
-              (<Config-GetCppCompiler t.Config #LIB>)
+              (<Config-GetCppCompiler t.Config LIB>)
               (<Config-GetPrefix t.Config>)
               e.Files
             >;
 
-        #R = <Link-R t.CommandLineSource t.Config e.Files>;
+        R = <Link-R t.CommandLineSource t.Config e.Files>;
 
-        #CompileOnly = /* ничего не делаем */;
+        CompileOnly = /* ничего не делаем */;
       };
 }
 
 Link-Exe {
   t.CommandLineSource t.Config
-  (#NoCppCompiler) (/* нет префикса */) e.Files
+  (NoCppCompiler) (/* нет префикса */) e.Files
     = <ReportErrors
         t.CommandLineSource t.Config
         (
@@ -401,7 +401,7 @@ Link-Exe {
 
   t.CommandLineSource t.Config
   (e.AnyCommandLine) (e.Prefix)
-  e.Files-B (#Native e.FileName) e.Files-E
+  e.Files-B (Native e.FileName) e.Files-E
     = <ReportErrors
         t.CommandLineSource t.Config
         (
@@ -415,10 +415,10 @@ Link-Exe {
   (e.AnyCommandLine) (e.Prefix) e.Files
     = <FindPrefix t.Config e.Prefix>
     : {
-        #Success e.PrefixFileName
+        Success e.PrefixFileName
           = <Link-WithPrefix (e.PrefixFileName) t.Config e.Files>;
 
-        #Fails e.ExpectedPrefixName
+        Fails e.ExpectedPrefixName
           = <ReportErrors
               t.CommandLineSource t.Config
               (1 'Can''t find prefix ' e.ExpectedPrefixName)
@@ -428,8 +428,8 @@ Link-Exe {
 
 Link-Lib {
   t.CommandLineSource t.Config
-  (#NoCppCompiler) (/* нет префикса */)
-  e.Files-B (#Native e.FileName) e.Files-E
+  (NoCppCompiler) (/* нет префикса */)
+  e.Files-B (Native e.FileName) e.Files-E
     = <ReportErrors
         t.CommandLineSource t.Config
         (
@@ -440,7 +440,7 @@ Link-Lib {
       >;
 
   t.CommandLineSource t.Config
-  (#NoCppCompiler) (/* нет префикса */) e.Files
+  (NoCppCompiler) (/* нет префикса */) e.Files
     = <ReportWarnings
         t.CommandLineSource t.Config
         (
@@ -457,7 +457,7 @@ Link-Lib {
 
   t.CommandLineSource t.Config
   (e.AnyCommandLine) (e.Prefix)
-  e.Files-B (#Native e.FileName) e.Files-E
+  e.Files-B (Native e.FileName) e.Files-E
     = <ReportErrors
         t.CommandLineSource t.Config
         (
@@ -471,10 +471,10 @@ Link-Lib {
   (e.AnyCommandLine) (e.Prefix) e.Files
     = <FindPrefix t.Config e.Prefix>
     : {
-        #Success e.PrefixFileName
+        Success e.PrefixFileName
           = <Link-WithPrefix (e.PrefixFileName) t.Config e.Files>;
 
-        #Fails e.ExpectedPrefixName
+        Fails e.ExpectedPrefixName
           = <ReportWarnings
               t.CommandLineSource t.Config
               (
@@ -489,7 +489,7 @@ Link-Lib {
 
 Link-R {
   t.CommandLineSource t.Config
-  e.Files-B (#Native e.FileName) e.Files-E
+  e.Files-B (Native e.FileName) e.Files-E
     = <ReportErrors
         t.CommandLineSource t.Config
         (1 'unexpected native file ' e.FileName ' while creating R module')
@@ -497,7 +497,7 @@ Link-R {
 
   t.CommandLineSource t.Config e.Files
     = <Link-Aux
-        #R
+        R
         {
           e.IntermediateName = /* ничего не делаем */;
         }
@@ -537,7 +537,7 @@ CheckReturnCode {
   t.Config s.RetCode e.Component
     = <LinkError
         t.Config
-        e.Component ' finished with return code ' <StrFromInt s.RetCode>
+        e.Component ' finished with return code ' <Symb s.RetCode>
       >;
 }
 
@@ -553,8 +553,8 @@ Link-CppCompile {
                 e.Flags
                 <Map
                   {
-                    (#RASL e.FileName) = /* пусто */;
-                    (#Native e.FileName) = ' "' e.FileName '"';
+                    (RASL e.FileName) = /* пусто */;
+                    (Native e.FileName) = ' "' e.FileName '"';
                   }
                   e.Files
                 >
@@ -586,15 +586,15 @@ PreLinkCleanupTemporary {
   t.Config e.Temporary
     = <ExistFile e.Temporary>
     : {
-        #False = /* ничего не делаем */;
+        False = /* ничего не делаем */;
 
-        #True
+        True
           = <RemoveFile e.Temporary>
           : {
-              #True ()
-                = <WriteLine 'Lost temporary file ' e.Temporary ' is removed'>;
+              True ()
+                = <Prout 'Lost temporary file ' e.Temporary ' is removed'>;
 
-              #False (e.ErrorMessage)
+              False (e.ErrorMessage)
                 = <LinkError
                     t.Config
                     'Can''t remove file ' e.Temporary ': ' e.ErrorMessage
@@ -607,8 +607,8 @@ CheckCppCompilationSuccessed {
   t.Config e.TemporaryName
     = <ExistFile e.TemporaryName>
     : {
-        #False = <LinkError t.Config 'C++ compilation is failed'>;
-        #True = /* ничего не делаем */;
+        False = <LinkError t.Config 'C++ compilation is failed'>;
+        True = /* ничего не делаем */;
       };
 }
 
@@ -621,7 +621,7 @@ EnsureAligned4096 {
 
 AlignToPage {
   s.FileHandle
-    = <FSeek s.FileHandle #END '-' 0> : /* пусто */
+    = <FSeek s.FileHandle END '-' 0> : /* пусто */
     = <Mod <FTell s.FileHandle> 4096>
     : {
         0 = /* ничего не делаем */;
@@ -637,10 +637,10 @@ AppendRASLToBinary {
     = <FOpen ('ab') e.BinaryName> : s.FileHandle
     = <Map
         {
-          (#RASL e.OutputName)
+          (RASL e.OutputName)
             = <FWriteBytes s.FileHandle <LoadBytes e.OutputName>>;
 
-          (#Native e.NativeName) = /* ничего не делаем */;
+          (Native e.NativeName) = /* ничего не делаем */;
         }
         e.Files
       >
@@ -649,12 +649,12 @@ AppendRASLToBinary {
 
 AppendReferencesToBinary {
   (e.BinaryName) e.References
-    = <AppendSimpleBlock PutBlockReference (e.BinaryName) e.References>;
+    = <AppendSimpleBlock &PutBlockReference (e.BinaryName) e.References>;
 }
 
 AppendIncorporatedToBinary {
   (e.BinaryName) e.LibNames
-    = <AppendSimpleBlock PutBlockIncorporated (e.BinaryName) e.LibNames>;
+    = <AppendSimpleBlock &PutBlockIncorporated (e.BinaryName) e.LibNames>;
 }
 
 AppendSimpleBlock {
@@ -673,26 +673,26 @@ PostLinkRename {
   t.Config (e.TemporaryName) (e.TargetFileName)
     = <ExistFile e.TargetFileName>
     : {
-        #True
+        True
           = <RemoveFile e.TargetFileName>
           : {
-              #True () = /* ничего не делаем */;
+              True () = /* ничего не делаем */;
 
-              #False (e.ErrorMessage)
+              False (e.ErrorMessage)
                 = <LinkError
                     t.Config
                     'Can''t remove file ' e.TargetFileName ', ' e.ErrorMessage
                   >;
              };
 
-        #False = /* ничего не делаем */;
+        False = /* ничего не делаем */;
       }
     : /* пусто */
     = <RenameFile (e.TemporaryName) (e.TargetFileName)>
     : {
-        #True = <WriteLine '** Compilation completed successfully **'>;
+        True = <Prout '** Compilation completed successfully **'>;
 
-        #False
+        False
           = <LinkError
               t.Config
               'Can''t rename from ' e.TemporaryName ' to ' e.TargetFileName
@@ -704,12 +704,12 @@ FindPrefix {
   t.Config e.Prefix
     = <Config-GetTargetMode t.Config>
     : {
-        #EXE = '.exe-prefix';
-        #LIB = '.lib-prefix';
+        EXE = '.exe-prefix';
+        LIB = '.lib-prefix';
       }
     : e.PrefixExt
     = <DoFindPrefix
-        (e.Prefix e.PrefixExt) (#Current) <Config-GetSearchFolders t.Config>
+        (e.Prefix e.PrefixExt) (Current) <Config-GetSearchFolders t.Config>
       >;
 }
 
@@ -718,16 +718,16 @@ DoFindPrefix {
     = <GlueNames (e.NextFolder) (e.PrefixName)> : e.PrefixFileName
     = <ExistFile e.PrefixFileName>
     : {
-        #True = #Success e.PrefixFileName;
-        #False = <DoFindPrefix (e.PrefixName) e.Folders>;
+        True = Success e.PrefixFileName;
+        False = <DoFindPrefix (e.PrefixName) e.Folders>;
       };
 
   (e.PrefixName) /* кончились папки */
-    = #Fails e.PrefixName;
+    = Fails e.PrefixName;
 }
 
 GlueNames {
-  (#Current) (e.FileName) = e.FileName;
+  (Current) (e.FileName) = e.FileName;
   (e.Folder) (e.FileName) = e.Folder '/' e.FileName;
 }
 
@@ -738,7 +738,7 @@ CopyPrefix {
 
 LinkError {
   t.Config e.Message
-    = <WriteLine 'LINK ERROR: ' e.Message>
+    = <Prout 'LINK ERROR: ' e.Message>
       <CreateErrorFileMark t.Config>
       <Exit 1>;
 }
