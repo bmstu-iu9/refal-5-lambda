@@ -1,7 +1,7 @@
-//FROM Library
-$EXTERN Div, Mod, Ord, TermCompare, Chr, Add, Mul;
+*$FROM Library
+$EXTERN TermCompare;
 
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN Fetch, Map, Reduce;
 
 OctDigit {
@@ -9,12 +9,11 @@ OctDigit {
   4 = '4'; 5 = '5'; 6 = '6'; 7 = '7';
 }
 
-//EscapeChar
 $ENTRY EscapeChar {
   '\n' = '\\n';
   '\t' = '\\t';
   '\r' = '\\r';
-  '' = '\\' '';
+  '\'' = '\\\'';
   '"' = '\\' '"';
   '\\' = '\\\\';
 
@@ -34,12 +33,14 @@ $ENTRY EscapeChar {
 }
 
 $ENTRY EscapeString {
-  e.String = <Map EscapeChar e.String>;
+  e.String = <Map &EscapeChar e.String>;
 }
 
-// Функция используется в Lexer.sref и здесь. Не очень красивое
-// её месторасположение, но если переносить в LibraryEx, то нужно расширять
-// основание степени счисления до 36.
+/*
+  Функция используется в Lexer.sref и здесь. Не очень красивое
+  её месторасположение, но если переносить в LibraryEx, то нужно расширять
+  основание степени счисления до 36.
+*/
 $ENTRY CharFromNum {
   s.Base e.Chars =
     <Chr
@@ -47,7 +48,7 @@ $ENTRY CharFromNum {
         {
           s.Accum s.Next = <Add <Mul s.Accum s.Base> s.Next>;
         }
-        0 <Map DigitFromChar e.Chars>
+        0 <Map &DigitFromChar e.Chars>
       >
     >;
 }
@@ -101,7 +102,7 @@ DoUnEscapeString-SR {
   (e.Scanned) s.SimpleChar e.Tail
     = <DoUnEscapeString-SR (e.Scanned s.SimpleChar) e.Tail>;
 
-  (e.Scanned) /* пусто */ = #Success e.Scanned;
+  (e.Scanned) /* пусто */ = Success e.Scanned;
 }
 
 DoUnEscapeString-SR-Hex {
@@ -113,7 +114,7 @@ DoUnEscapeString-SR-Hex {
       >;
 
   (e.Scanned) (e.ValidDigits) (/* пусто */) e.Tail
-    = #Fail #BadEscapeCode '\\x' <Prefix3 e.Tail>;
+    = Fail BadEscapeCode '\\x' <Prefix3 e.Tail>;
 
   (e.Scanned) (e.ValidDitits) (e.ScannedHex) e.Tail
     = <DoUnEscapeString-SR (e.Scanned <CharFromNum 16 e.ScannedHex>) e.Tail>;
@@ -138,8 +139,8 @@ DoUnEscapeString-SR-DecOct {
       >;
 
   (e.Scanned) (s.Base e.ValidDigits) (/* пусто */) e.Tail
-    // Выполняется только для десятичных констант
-    = #Fail #BadEscapeCode '\\d' <Prefix3 e.Tail>;
+    /* Выполняется только для десятичных констант */
+    = Fail BadEscapeCode '\\d' <Prefix3 e.Tail>;
 
   (e.Scanned) (s.Base e.ValidDigits) (e.ScannedNumber) e.Tail
     = <DoUnEscapeString-SR
@@ -157,25 +158,25 @@ DoUnEscapeString-SR-Escape {
     = <Fetch
         <SingularEscape s.Next>
         {
-          #Success s.Char = <DoUnEscapeString-SR (e.Scanned s.Char) e.Tail>;
-          #Fails = #Fails #BadEscapeSymbol '\\' s.Next;
+          Success s.Char = <DoUnEscapeString-SR (e.Scanned s.Char) e.Tail>;
+          Fails = Fails BadEscapeSymbol '\\' s.Next;
         }
       >;
 
   (e.Scanned) (e.Octs) /* пусто */
-    = #Fails #EOLAfterSlash;
+    = Fails EOLAfterSlash;
 }
 
 SingularEscape {
-  'r' = #Success '\r';
-  'n' = #Success '\n';
-  't' = #Success '\t';
-  'a' = #Success '\a';
-  'b' = #Success '\b';
-  'f' = #Success '\f';
-  'v' = #Success '\v';
-  '\\' = #Success '\\';
-  '' = #Success '';
-  '"' = #Success '"';
-  s.Other = #Fails;
+  'r' = Success '\r';
+  'n' = Success '\n';
+  't' = Success '\t';
+  'a' = Success '\x07';
+  'b' = Success '\x08';
+  'f' = Success '\x0C';
+  'v' = Success '\x0B';
+  '\\' = Success '\\';
+  '\'' = Success '\'';
+  '"' = Success '"';
+  s.Other = Fails;
 }
