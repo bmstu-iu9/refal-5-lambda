@@ -1,16 +1,13 @@
-//FROM Library
-$EXTERN Add;
+*$FROM LibraryEx
+$EXTERN Inc, Map, Fetch, MapReduce;
 
-//FROM LibraryEx
-$EXTERN Inc, StrFromInt, Map, Fetch, MapReduce;
-
-//FROM DisplayName
+*$FROM DisplayName
 $EXTERN DisplayName;
 
-//FROM Escape
+*$FROM Escape
 $EXTERN EscapeChar;
 
-//FROM HighLevelRASL-Condition
+*$FROM HighLevelRASL-Condition
 $EXTERN SentenceTail;
 
 
@@ -25,74 +22,73 @@ $ENTRY IncVarOffset {
 }
 
 $ENTRY PrintVar {
-  s.Mode e.Index #NoDepth = s.Mode '.' e.Index;
+  s.Mode e.Index NoDepth = s.Mode '.' e.Index;
 
-  s.Mode e.Index s.Depth = s.Mode '.' e.Index '#' <StrFromInt s.Depth>;
+  s.Mode e.Index s.Depth = s.Mode '.' e.Index '#' <Symb s.Depth>;
 }
 
 $ENTRY TextFromExpr {
   e.Expr =
     <Map
       {
-        (#TkOpenBracket s.ContextOffset) =
+        (TkOpenBracket s.ContextOffset) =
           ' (' <Offset s.ContextOffset>;
-        (#TkCloseBracket s.ContextOffset) =
+        (TkCloseBracket s.ContextOffset) =
           ' )' <Offset s.ContextOffset>;
 
-        (#TkOpenCall s.ContextOffset) =
+        (TkOpenCall s.ContextOffset) =
           ' <' <Offset s.ContextOffset>;
-        (#TkCloseCall s.ContextOffset) =
+        (TkCloseCall s.ContextOffset) =
           ' >' <Offset s.ContextOffset>;
 
-        (#TkOpenADT s.ContextOffset e.Name s.NameOffset) =
+        (TkOpenADT s.ContextOffset e.Name s.NameOffset) =
           ' [' <Offset s.ContextOffset>
           <DisplayName e.Name> <Offset s.NameOffset>;
 
-        (#TkOpenADT s.ContextOffset) =
+        (TkOpenADT s.ContextOffset) =
           ' [' <Offset s.ContextOffset>;
-        (#TkCloseADT s.ContextOffset) =
+        (TkCloseADT s.ContextOffset) =
           ' ]' <Offset s.ContextOffset>;
 
-        (#TkClosureHead s.ContextOffset)
+        (TkClosureHead s.ContextOffset)
           = ' [*]' <Offset s.ContextOffset>;
-        (#TkUnwrappedClosure s.ContextOffset)
+        (TkUnwrappedClosure s.ContextOffset)
           = ' {*}' <Offset s.ContextOffset>;
 
-        (#TkChar s.Char s.Offset) =
+        (TkChar s.Char s.Offset) =
           ' ''' <EscapeChar s.Char> '' <Offset s.Offset>;
 
-        (#TkChars e.Chars) = ' ''' e.Chars '';
+        (TkChars e.Chars) = ' ''' e.Chars '';
 
-        (#TkNumber #Cookie1 s.Offset) = ' <Cookie1>' <Offset s.Offset>;
-        (#TkNumber #Cookie2 s.Offset) = ' <Cookie2>' <Offset s.Offset>;
+        (TkNumber Cookie1 s.Offset) = ' <Cookie1>' <Offset s.Offset>;
+        (TkNumber Cookie2 s.Offset) = ' <Cookie2>' <Offset s.Offset>;
 
-        (#TkNumber s.Number s.Offset) =
-          ' ' <StrFromInt s.Number> <Offset s.Offset>;
+        (TkNumber s.Number s.Offset) = ' ' <Symb s.Number> <Offset s.Offset>;
 
-        (#TkName e.Name s.Offset) =
+        (TkName e.Name s.Offset) =
           ' & ' <DisplayName e.Name> <Offset s.Offset>;
 
-        (#TkString e.String s.Offset) =
-          '"' <Map EscapeChar e.String> '"' <Offset s.Offset>;
+        (TkString e.String s.Offset) =
+          '"' <Map &EscapeChar e.String> '"' <Offset s.Offset>;
 
-        (#TkVariable s.Mode e.Index s.Depth s.Offset) =
+        (TkVariable s.Mode e.Index s.Depth s.Offset) =
           ' ' <PrintVar s.Mode e.Index s.Depth> <Offset s.Offset>;
 
-        (#TkVariableCopy s.Mode e.Index s.Depth s.SampleOffset s.CopyOffset) =
+        (TkVariableCopy s.Mode e.Index s.Depth s.SampleOffset s.CopyOffset) =
           ' ' <PrintVar s.Mode e.Index s.Depth>
           <Offset s.SampleOffset> <Offset s.CopyOffset>;
 
-        (#TkIdentifier e.Name s.Offset) =
+        (TkIdentifier e.Name s.Offset) =
           ' # ' <SafeDisplayName e.Name> <Offset s.Offset>;
 
-        (#Tile e.SubRange) = ' Tile{' <TextFromExpr e.SubRange> ' }';
-        (#AsIs e.SubRange) = ' AsIs:' <TextFromExpr e.SubRange>;
-        (#Reuse e.SubRange) = ' Reuse:' <TextFromExpr e.SubRange>;
-        (#HalfReuse e.SubRange) = ' HalfReuse:' <TextFromExpr e.SubRange>;
+        (Tile e.SubRange) = ' Tile{' <TextFromExpr e.SubRange> ' }';
+        (AsIs e.SubRange) = ' AsIs:' <TextFromExpr e.SubRange>;
+        (Reuse e.SubRange) = ' Reuse:' <TextFromExpr e.SubRange>;
+        (HalfReuse e.SubRange) = ' HalfReuse:' <TextFromExpr e.SubRange>;
 
-        (#LEFT-EDGE) = ' [[';
-        (#RIGHT-EDGE) = ' ]]';
-        #RemovedTile = ' {REMOVED TILE}';
+        (LEFT-EDGE) = ' [[';
+        (RIGHT-EDGE) = ' ]]';
+        RemovedTile = ' {REMOVED TILE}';
       }
       <TextFromExpr-Prepare e.Expr>
     >;
@@ -114,11 +110,11 @@ SafeDisplayName {
 }
 
 TextFromExpr-Prepare {
-  (#TkChar s.Char #NoOffset) e.Tail =
-    <TextFromExpr-Prepare-Chars () (#TkChar s.Char #NoOffset) e.Tail>;
+  (TkChar s.Char NoOffset) e.Tail =
+    <TextFromExpr-Prepare-Chars () (TkChar s.Char NoOffset) e.Tail>;
 
-  (#TkOpenADT s.BracketOffset) (#TkName e.Name s.NameOffset) e.Tail =
-    (#TkOpenADT s.BracketOffset e.Name s.NameOffset)
+  (TkOpenADT s.BracketOffset) (TkName e.Name s.NameOffset) e.Tail =
+    (TkOpenADT s.BracketOffset e.Name s.NameOffset)
     <TextFromExpr-Prepare e.Tail>;
 
   t.Other e.Tail = t.Other <TextFromExpr-Prepare e.Tail>;
@@ -127,15 +123,15 @@ TextFromExpr-Prepare {
 }
 
 TextFromExpr-Prepare-Chars {
-  (e.Chars) (#TkChar s.Char #NoOffset) e.Tail =
+  (e.Chars) (TkChar s.Char NoOffset) e.Tail =
     <TextFromExpr-Prepare-Chars (e.Chars <EscapeChar s.Char>) e.Tail>;
 
-  (e.Chars) e.Tail = (#TkChars e.Chars) <TextFromExpr-Prepare e.Tail>;
+  (e.Chars) e.Tail = (TkChars e.Chars) <TextFromExpr-Prepare e.Tail>;
 }
 
 Offset {
-  #NoOffset = ;
-  s.Offset = '/' <StrFromInt s.Offset>;
+  NoOffset = ;
+  s.Offset = '/' <Symb s.Offset>;
 }
 
 /**
@@ -150,11 +146,11 @@ $ENTRY GenInitSubst {
     = <Add s.ContextTop 4> : s.4
     = <Add s.ContextTop 5> : s.5
     = s.5
-      (#Junk (#TkOpenCall s.0) (#TkName e.FuncName s.4))
-      (#E s.2 e.Pattern)
-      (#Junk (#TkCloseCall s.1))
+      (Junk (TkOpenCall s.0) (TkName e.FuncName s.4))
+      (E s.2 e.Pattern)
+      (Junk (TkCloseCall s.1))
       (
-        (#CmdCallSave #AlgLeft s.0 s.2)
+        (CmdCallSave AlgLeft s.0 s.2)
       );
 }
 
@@ -169,7 +165,7 @@ $ENTRY GenPattern {
     = <s.FnGenSubst
         s.ContextTop e.Substitutes (/* no vars */)
         (
-          (#CmdInitB0-Lite)
+          (CmdInitB0-Lite)
           e.Commands
         )
       >;
@@ -180,7 +176,7 @@ $ENTRY GenPattern {
     s.FnGenResult (e.Conditions) (e.Result)
     s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands
   >
-    == (#CmdIssueMemory s.ContextSize) e.SentenceCommands
+    == (CmdIssueMemory s.ContextSize) e.SentenceCommands
 */
 $ENTRY GenResult {
   s.FnGenResult (e.Conditions) (e.Result)
@@ -192,7 +188,7 @@ $ENTRY GenResult {
     : s.ContextCount e.SentenceTailCommands
 
     = <FoldOpenELoops
-        (#CmdIssueMemory s.ContextCount)
+        (CmdIssueMemory s.ContextCount)
         e.PatternCommands
         <PutVariableDebugTable e.PatternVars>
         e.SentenceTailCommands
@@ -200,10 +196,10 @@ $ENTRY GenResult {
 }
 
 $ENTRY FoldOpenELoops {
-  e.Commands-B (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber) e.Commands-E =
+  e.Commands-B (CmdOpenedE AlgLeft s.BracketNum s.VarNumber) e.Commands-E =
     e.Commands-B
-    (#CmdOpenELoop
-      #AlgLeft s.BracketNum s.VarNumber
+    (CmdOpenELoop
+      AlgLeft s.BracketNum s.VarNumber
       <FoldOpenELoops e.Commands-E>
     );
 
@@ -215,7 +211,7 @@ $ENTRY PutVariableDebugTable {
     <Map
       {
         (s.Mode (e.Index) s.FirstOffset e.Offsets) =
-          (#CmdVariableDebugTable s.Mode e.Index s.FirstOffset);
+          (CmdVariableDebugTable s.Mode e.Index s.FirstOffset);
       }
       e.PatternVars
     >;
@@ -227,22 +223,22 @@ $ENTRY PutVariableDebugTable {
   e.ReducedExpression — см. interfaces.md
 */
 $ENTRY CollectStrings {
-  (#TkChar s.Value1) (#TkChar s.Value2) e.Tail =
+  (TkChar s.Value1) (TkChar s.Value2) e.Tail =
     <Fetch
       <BuildString (s.Value1 s.Value2) e.Tail>
       {
-        (e.Chars) e.Tail^ = (#TkString e.Chars) <CollectStrings e.Tail>;
+        (e.Chars) e.Tail^ = (TkString e.Chars) <CollectStrings e.Tail>;
       }
     >;
 
-  (#Brackets e.InBrackets) e.Tail =
-    (#Brackets <CollectStrings e.InBrackets>) <CollectStrings e.Tail>;
+  (Brackets e.InBrackets) e.Tail =
+    (Brackets <CollectStrings e.InBrackets>) <CollectStrings e.Tail>;
 
-  (#CallBrackets e.InBrackets) e.Tail =
-    (#CallBrackets <CollectStrings e.InBrackets>) <CollectStrings e.Tail>;
+  (CallBrackets e.InBrackets) e.Tail =
+    (CallBrackets <CollectStrings e.InBrackets>) <CollectStrings e.Tail>;
 
-  (#ADT-Brackets e.InBrackets) e.Tail =
-    (#ADT-Brackets <CollectStrings e.InBrackets>) <CollectStrings e.Tail>;
+  (ADT-Brackets e.InBrackets) e.Tail =
+    (ADT-Brackets <CollectStrings e.InBrackets>) <CollectStrings e.Tail>;
 
   t.OtherTerm e.Tail = t.OtherTerm <CollectStrings e.Tail>;
 
@@ -250,7 +246,7 @@ $ENTRY CollectStrings {
 }
 
 BuildString {
-  (e.Chars) (#TkChar s.Value) e.Tail =
+  (e.Chars) (TkChar s.Value) e.Tail =
     <BuildString (e.Chars s.Value) e.Tail>;
 
   (e.Chars) e.Tail = (e.Chars) e.Tail;
@@ -264,24 +260,24 @@ $ENTRY MakeSavers {
   s.OriginContextOffset e.SubstitutesAnsJunks
     = <MapReduce
         {
-          (s.ContextOffset e.CmdSaves) (#Junk e.Junk)
-            = (s.ContextOffset e.CmdSaves) (#Junk e.Junk);
+          (s.ContextOffset e.CmdSaves) (Junk e.Junk)
+            = (s.ContextOffset e.CmdSaves) (Junk e.Junk);
 
           /* Сопоставление с пустыми подстановками не изменяет диапазоны */
-          (s.ContextOffset e.CmdSaves) (#E s.Num /* пусто */)
-            = (s.ContextOffset e.CmdSaves) (#E s.Num /* пусто */);
+          (s.ContextOffset e.CmdSaves) (E s.Num /* пусто */)
+            = (s.ContextOffset e.CmdSaves) (E s.Num /* пусто */);
 
           /* Тривиальная подстановка не изменяет диапазоны */
-          (s.ContextOffset e.CmdSaves) (#E s.Num (#TkVariable 'e' e.Index))
-            = (s.ContextOffset e.CmdSaves) (#E s.Num (#TkVariable 'e' e.Index));
+          (s.ContextOffset e.CmdSaves) (E s.Num (TkVariable 'e' e.Index))
+            = (s.ContextOffset e.CmdSaves) (E s.Num (TkVariable 'e' e.Index));
 
           /* В остальных случаях подстановки могут изменять диапазон */
-          (s.ContextOffset e.CmdSaves) (#E s.Num e.Range)
+          (s.ContextOffset e.CmdSaves) (E s.Num e.Range)
             = (
                 <Inc2 s.ContextOffset>
-                e.CmdSaves (#CmdSave s.Num s.ContextOffset)
+                e.CmdSaves (CmdSave s.Num s.ContextOffset)
               )
-              (#E s.ContextOffset e.Range);
+              (E s.ContextOffset e.Range);
 
           (s.ContextOffset e.CmdSaves) (s.S-or-T s.Num e.Range)
             = (s.ContextOffset e.CmdSaves) (s.S-or-T s.Num e.Range);
