@@ -11,7 +11,7 @@ $ENTRY Flex-TextFromToken {
   (TArrow t.Pos) = '"->"';
   (TSkip t.Pos) = '-';
   (TErrorMessage e.Message) = 'User error message "' e.Message '"';
-  (TChar t.Pos s.Char) = '' <EscapeString s.Char> '';
+  (TChar t.Pos s.Char) = '\'' <EscapeString s.Char> '\'';
   (TStartRegexp t.Pos) = '"/" (start)';
   (TEndRegexp t.Pos) = '"/" (end)';
   (TStartGroup t.Pos) = '"["';
@@ -102,7 +102,7 @@ SecondPass {
   (TQuantifier '+') = (TOneMany);
   (TInvertGroup '^') = (TInvertGroup);
   (TGroupRange '-') = (TGroupRange);
-  (TUnexpecteChar s.Char) = (TError 'Unexpected char ''' <EscapeString s.Char> '');
+  (TUnexpecteChar s.Char) = (TError 'Unexpected char \'' <EscapeString s.Char> '\'');
   (TokenError e.Message) = (TError e.Message);
   (TStateStart '<') = (TStateStart);
   (TComma ',') = (TComma);

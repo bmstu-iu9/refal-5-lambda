@@ -421,7 +421,7 @@ Link-Exe {
         Fails e.ExpectedPrefixName
           = <ReportErrors
               t.CommandLineSource t.Config
-              (1 'Can''t find prefix ' e.ExpectedPrefixName)
+              (1 'Can\'t find prefix ' e.ExpectedPrefixName)
             >;
       };
 }
@@ -479,7 +479,7 @@ Link-Lib {
               t.CommandLineSource t.Config
               (
                 1
-                'Can''t find prefix ' e.ExpectedPrefixName ', create module '
+                'Can\'t find prefix ' e.ExpectedPrefixName ', create module '
                 'without prefix (R module)'
               )
             >
@@ -597,7 +597,7 @@ PreLinkCleanupTemporary {
               False (e.ErrorMessage)
                 = <LinkError
                     t.Config
-                    'Can''t remove file ' e.Temporary ': ' e.ErrorMessage
+                    'Can\'t remove file ' e.Temporary ': ' e.ErrorMessage
                   >;
             };
       };
@@ -681,7 +681,7 @@ PostLinkRename {
               False (e.ErrorMessage)
                 = <LinkError
                     t.Config
-                    'Can''t remove file ' e.TargetFileName ', ' e.ErrorMessage
+                    'Can\'t remove file ' e.TargetFileName ', ' e.ErrorMessage
                   >;
              };
 
@@ -695,7 +695,7 @@ PostLinkRename {
         False
           = <LinkError
               t.Config
-              'Can''t rename from ' e.TemporaryName ' to ' e.TargetFileName
+              'Can\'t rename from ' e.TemporaryName ' to ' e.TargetFileName
             >;
       };
 }

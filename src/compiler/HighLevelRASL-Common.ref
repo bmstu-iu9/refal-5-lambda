@@ -56,9 +56,9 @@ $ENTRY TextFromExpr {
           = ' {*}' <Offset s.ContextOffset>;
 
         (TkChar s.Char s.Offset) =
-          ' ''' <EscapeChar s.Char> '' <Offset s.Offset>;
+          ' \'' <EscapeChar s.Char> '\'' <Offset s.Offset>;
 
-        (TkChars e.Chars) = ' ''' e.Chars '';
+        (TkChars e.Chars) = ' \'' e.Chars '\'';
 
         (TkNumber Cookie1 s.Offset) = ' <Cookie1>' <Offset s.Offset>;
         (TkNumber Cookie2 s.Offset) = ' <Cookie2>' <Offset s.Offset>;
