@@ -7,7 +7,7 @@ compile_separated() {
   ../../bin/srefc-core -C $SREFC_FLAGS $LIBS
 
   for s in $LIBS; do
-    grep '//FROM' < $s.sref > $TARGET/$s.rasl.froms
+    grep '//FROM' < $s.ref > $TARGET/$s.rasl.froms
     [ -e $s.cpp ] && mv $s.cpp $TARGET
     mv $s.rasl $TARGET
   done
@@ -107,7 +107,7 @@ prepare_common() {
   mkdir -p ../../srlib/src
   cp LICENSE ../../srlib
   for s in $CSOURCES $RSOURCES; do
-    cp $s.sref ../../srlib/src
+    cp $s.ref ../../srlib/src
   done
 
   prepare_common

@@ -22,7 +22,7 @@ setlocal
     refalrts-diagnostic-initializer
 
   copy LICENSE ..\..\srlib
-  for %%s in (%CSOURCES% %RSOURCES%) do copy %%s.sref ..\..\srlib\src
+  for %%s in (%CSOURCES% %RSOURCES%) do copy %%s.ref ..\..\srlib\src
 
   call :PREPARE_COMMON
   call :COMPILE_SCRATCH
@@ -41,7 +41,7 @@ setlocal
   ..\..\bin\srefc-core -C %SREFC_FLAGS% %LIBS%
 
   for %%s in (%LIBS%) do (
-    find "//FROM" < %%s.sref > %TARGET%\%%s.rasl.froms
+    find "//FROM" < %%s.ref > %TARGET%\%%s.rasl.froms
     if exist %%s.cpp move %%s.cpp %TARGET%
     move %%s.rasl %TARGET%
   )
