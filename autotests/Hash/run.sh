@@ -26,7 +26,7 @@ run_all_tests() {
     --chmod-x-command="chmod +x"
   )
 
-  cp $LIBDIR/Hash.sref .
+  cp $LIBDIR/Hash.ref .
   for s in $*; do
     compile $s
   done
@@ -34,7 +34,7 @@ run_all_tests() {
   simple_tests ok \
     Hash-HashLittle2-Chars
 
-  rm Hash.rasl Hash.cpp Hash.sref
+  rm Hash.rasl Hash.cpp Hash.ref
 }
 
 compile() {
@@ -42,7 +42,7 @@ compile() {
   SRC=$1
   TARGET=${SRC%%.sref}$(platform_exe_suffix)
 
-  if [ "$SRC" != "Hash.sref" ]; then
+  if [ "$SRC" != "Hash.ref" ]; then
     ../../bin/srefc-core $SRC -o $TARGET "${COMMON_SRFLAGS[@]}" \
       Hash lookup3 2>__error.txt
     if [ $? -ge 100 ] || [ ! -e $TARGET ]; then

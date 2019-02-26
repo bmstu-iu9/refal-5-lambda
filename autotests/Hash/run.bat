@@ -31,7 +31,7 @@ setlocal
     refalrts-vm ^
     refalrts-platform-specific
 
-  copy ..\..\src\srlib\Hash.sref .
+  copy ..\..\src\srlib\Hash.ref .
   for %%s in (%*) do call :COMPILE %%s || exit /b 1
 
   call :SIMPLE_TESTS OK ^
@@ -41,7 +41,7 @@ setlocal
   call :SIMPLE_TESTS FAIL ^
     || exit /b 1
 
-  erase Hash.rasl Hash.cpp Hash.sref
+  erase Hash.rasl Hash.cpp Hash.ref
 endlocal
 goto :EOF
 
@@ -51,7 +51,7 @@ setlocal
   set SRC=%1
   set TARGET=%~n1.exe
 
-  if %SRC%==Hash.sref (
+  if %SRC%==Hash.ref (
     echo ...skips
     endlocal
     goto :EOF
