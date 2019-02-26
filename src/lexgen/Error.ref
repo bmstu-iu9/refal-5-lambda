@@ -1,0 +1,10 @@
+$ENTRY ErrorAt {
+  (s.Number e.File) e.Text =
+    <Prout e.File ':' <Symb s.Number> ':ERROR: ' e.Text>
+    <Exit 1>;
+}
+
+$ENTRY WarningAt {
+  (s.Number e.File) e.Message =
+    <Prout e.File ':' <Symb s.Number> ':WARNING: ' e.Message>;
+}
