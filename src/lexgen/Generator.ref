@@ -1,7 +1,7 @@
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN Map, Fetch;
 
-//FROM Escape
+*$FROM Escape
 $EXTERN EscapeChar;
 
 
@@ -11,20 +11,20 @@ $EXTERN EscapeChar;
 
   e.Rules ::= ((e.RuleName) t.Alternative*)
   t.Alternative ::= (s.Head t.Flush t.NextState)
-  s.Head ::= #Empty | #Any | s.Char
-  t.Flush ::= #None | #Unnamed | (#Flush e.FlushName) | (#FlushError e.Message)
-  t.NextState ::= (e.NextStateName) | #Finitive
+  s.Head ::= Empty | Any | s.Char
+  t.Flush ::= None | Unnamed | (Flush e.FlushName) | (FlushError e.Message)
+  t.NextState ::= (e.NextStateName) | Finitive
 */
 $ENTRY GenerateFromDFA {
   e.Rules =
-    <Map WriteFunction e.Rules>;
+    <Map &WriteFunction e.Rules>;
 }
 
 WriteFunction {
   ((e.NextRule) e.Alternatives) =
     ()
     (e.NextRule ' {')
-    <Map WriteAlternative e.Alternatives>
+    <Map &WriteAlternative e.Alternatives>
     ('}');
 }
 
@@ -34,7 +34,7 @@ WriteAlternative {
 }
 
 WriteAlternative-Aux {
-  (s.Head #None t.NextState) =
+  (s.Head None t.NextState) =
     <Head s.Head>
     <NextState-L t.NextState>
     <NextState-R t.NextState 'e.Accum' <Head s.Head>>;
@@ -53,24 +53,24 @@ WriteAlternative-Aux {
 }
 
 Head {
-  #Empty = /* пусто */;
-  #Any = ' s.Any';
-  s.Other = ' ''' <EscapeChar s.Other> '';
+  Empty = /* пусто */;
+  Any = ' s.Any';
+  s.Other = ' \'' <EscapeChar s.Other> '\'';
 }
 
 Flush {
-  s.Head #Unnamed = /* пусто */;
-  s.Head (#Flush e.FlushName) = ' (' e.FlushName ' e.Accum' <Head s.Head> ')';
-  s.Head (#FlushError e.Message) = ' (TokenError ' '' e.Message '' ')';
+  s.Head Unnamed = /* пусто */;
+  s.Head (Flush e.FlushName) = ' (' e.FlushName ' e.Accum' <Head s.Head> ')';
+  s.Head (FlushError e.Message) = ' (TokenError \'' e.Message '\')';
 }
 
 NextState-L {
-  #Finitive = ' =';
+  Finitive = ' =';
   (e.NextStateName) = ' e.Text =';
 }
 
 NextState-R {
-  #Finitive e.NextStateAccum = /* пусто */;
+  Finitive e.NextStateAccum = /* пусто */;
   (e.NextStateName) e.NextStateAccum =
     ' <' e.NextStateName ' (' e.NextStateAccum ') e.Text>';
 }
