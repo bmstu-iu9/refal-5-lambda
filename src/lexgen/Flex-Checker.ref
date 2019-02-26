@@ -1,7 +1,7 @@
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN Map;
 
-//FROM Error
+*$FROM Error
 $EXTERN ErrorAt;
 
 
@@ -10,7 +10,7 @@ $ENTRY Flex-Check {
      <CheckUniqueNames
        <Map
          {
-           (#Subexpr t.Pos e.Name t.Regexp) =
+           (Subexpr t.Pos e.Name t.Regexp) =
              (t.Pos e.Name);
 
            t.OtherItem =
