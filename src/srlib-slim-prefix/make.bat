@@ -2,9 +2,9 @@
 setlocal
   set PREFIXFILES=%~1
   if not x"%PREFIXFILES%"==x"" (
-    if exist slim-prefix.sref erase slim-prefix.sref
+    if exist slim-prefix.ref erase slim-prefix.ref
     for %%s in (%PREFIXFILES%) do (
-      echo //FROM %%s>> slim-prefix.sref
+      echo *$FROM %%s>> slim-prefix.ref
     )
   )
 

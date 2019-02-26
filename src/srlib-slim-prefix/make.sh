@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if [ -n "$1" ]; then
-  cat /dev/null > slim-prefix.sref
+  cat /dev/null > slim-prefix.ref
   for s in $1; do
-    echo '//FROM '$s >> slim-prefix.sref
+    echo '*$FROM '$s >> slim-prefix.ref
   done
 fi
 

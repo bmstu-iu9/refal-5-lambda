@@ -110,10 +110,10 @@ prepare_common() {
     cp $s.sref ../../srlib/src
   done
 
+  prepare_common
   compile_scratch
   compile_rich
   compile_rich_debug
   compile_slim
   compile_slim_debug
-  prepare_common
 )

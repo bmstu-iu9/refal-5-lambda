@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if [ -n "$1" ]; then
-  cat /dev/null > rich-prefix.sref
+  cat /dev/null > rich-prefix.ref
   for s in $1; do
-    echo '//FROM '$s >> rich-prefix.sref
+    echo '*$FROM '$s >> rich-prefix.ref
   done
 fi
 

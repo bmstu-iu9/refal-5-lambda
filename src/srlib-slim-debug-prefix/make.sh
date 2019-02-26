@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if [ -n "$1" ]; then
-  cat /dev/null > slim-debug-prefix.sref
+  cat /dev/null > slim-debug-prefix.ref
   for s in $1; do
-    echo '//FROM '$s >> slim-debug-prefix.sref
+    echo '*$FROM '$s >> slim-debug-prefix.ref
   done
 fi
 

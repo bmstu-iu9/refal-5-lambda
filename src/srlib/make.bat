@@ -24,12 +24,12 @@ setlocal
   copy LICENSE ..\..\srlib
   for %%s in (%CSOURCES% %RSOURCES%) do copy %%s.sref ..\..\srlib\src
 
+  call :PREPARE_COMMON
   call :COMPILE_SCRATCH
   call :COMPILE_RICH
   call :COMPILE_RICH_DEBUG
   call :COMPILE_SLIM
   call :COMPILE_SLIM_DEBUG
-  call :PREPARE_COMMON
 endlocal
 goto :EOF
 
