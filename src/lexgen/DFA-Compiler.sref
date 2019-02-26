@@ -8,9 +8,9 @@ $EXTERN ErrorAt, WarningAt;
 /*==============================================================================
    Разбор начинается с правила Root,
    множество :Any: задаёт множество всех символов,
-   системная ошибка #TokenLexerInternalError-Unexpected,
-   пользовательская ошибка #TokenError,
-   неожиданный конец — #TokenLexerInternalError-UnexpectedEOF.
+   системная ошибка TokenLexerInternalError-Unexpected,
+   пользовательская ошибка TokenError,
+   неожиданный конец — TokenLexerInternalError-UnexpectedEOF.
 ==============================================================================*/
 
 //==============================================================================
@@ -348,7 +348,7 @@ DefaultCatchAnyChar {
     /* все символы обработаны пользователем, ничего не добавляем */;
 
   t.SentNamePos e.CatchedChars =
-    (#Any (#Flush '#TokenLexerInternalError-Unexpected') (t.SentNamePos 'Root'));
+    (#Any (#Flush 'TokenLexerInternalError-Unexpected') (t.SentNamePos 'Root'));
 }
 
 DefaultCatchEOF {
@@ -356,7 +356,7 @@ DefaultCatchEOF {
     /* конец текста обработан пользователем, ничего не добавляем */;
 
   #EOF-NotCatched =
-    (#Empty (#Flush '#TokenLexerInternalError-UnexpectedEOF') #Finitive);
+    (#Empty (#Flush 'TokenLexerInternalError-UnexpectedEOF') #Finitive);
 }
 
 PrepareFunctions {

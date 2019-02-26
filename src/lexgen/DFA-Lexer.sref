@@ -85,7 +85,7 @@ FilterTokens {
         (#TErrorFlush e.Message '"') = (#TErrorFlush e.Message);
         (#TNamedFlush e.FlushName) = (#TNamedFlush e.FlushName);
         (#TLiteral e.Content '') = (#TLiteral <Unescape e.Content>);
-        (#TokenError e.Message) = (#TError e.Message);
+        (TokenError e.Message) = (#TError e.Message);
         (#TPunctuation '=') = (#TEquals);
         (#TPunctuation '.') = (#TDot);
         (#TPunctuation '|') = (#TAlternative);
@@ -121,6 +121,8 @@ Unescape {
 
   /* пусто */ = /* пусто */;
 }
+
+$ENUM TokenError;
 
 /*GEN:TOKENS
   :Space: = ' \t\r'.
@@ -306,8 +308,8 @@ SetName {
   (e.Accum) 'Z' e.Text = <SetName (e.Accum 'Z') e.Text>;
   (e.Accum) '-' e.Text = <SetName (e.Accum '-') e.Text>;
   (e.Accum) '_' e.Text = <SetName (e.Accum '_') e.Text>;
-  (e.Accum) = (#TokenError 'expected end of set name, got EOF');
-  (e.Accum) e.Text = (#TokenError 'expected end of set name') <Root () e.Text>;
+  (e.Accum) = (TokenError 'expected end of set name, got EOF');
+  (e.Accum) e.Text = (TokenError 'expected end of set name') <Root () e.Text>;
 }
 
 Flush {
@@ -320,8 +322,8 @@ Flush {
 Literal {
   (e.Accum) '\\' e.Text = <Literal-Escape (e.Accum '\\') e.Text>;
   (e.Accum) '\'' e.Text = <Literal-Quote (e.Accum '\'') e.Text>;
-  (e.Accum) '\n' e.Text = (#TokenError 'Unexpected end of line at literal') <Root () e.Text>;
-  (e.Accum) = (#TokenError 'Unexpected end of file at literal');
+  (e.Accum) '\n' e.Text = (TokenError 'Unexpected end of line at literal') <Root () e.Text>;
+  (e.Accum) = (TokenError 'Unexpected end of file at literal');
   (e.Accum) s.Any e.Text = <Literal (e.Accum s.Any) e.Text>;
 }
 
@@ -482,7 +484,7 @@ ErrorFlush {
   (e.Accum) '+' e.Text = <ErrorFlush (e.Accum '+') e.Text>;
   (e.Accum) '/' e.Text = <ErrorFlush (e.Accum '/') e.Text>;
   (e.Accum) '\"' e.Text = (#TErrorFlush e.Accum '\"') <Root () e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Expected error text or double quote') <Root () e.Text>;
+  (e.Accum) e.Text = (TokenError 'Expected error text or double quote') <Root () e.Text>;
 }
 
 FlushName {
@@ -512,7 +514,7 @@ FlushName {
   (e.Accum) 'X' e.Text = <FlushNameTail (e.Accum 'X') e.Text>;
   (e.Accum) 'Y' e.Text = <FlushNameTail (e.Accum 'Y') e.Text>;
   (e.Accum) 'Z' e.Text = <FlushNameTail (e.Accum 'Z') e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Expected flush name') <Root () e.Text>;
+  (e.Accum) e.Text = (TokenError 'Expected flush name') <Root () e.Text>;
 }
 
 Literal-Escape {
@@ -522,7 +524,7 @@ Literal-Escape {
   (e.Accum) 't' e.Text = <Literal (e.Accum 't') e.Text>;
   (e.Accum) '\'' e.Text = <Literal (e.Accum '\'') e.Text>;
   (e.Accum) 'd' e.Text = <Literal-DecCode (e.Accum 'd') e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Unexpected escaped character') <Root () e.Text>;
+  (e.Accum) e.Text = (TokenError 'Unexpected escaped character') <Root () e.Text>;
 }
 
 Literal-Quote {
@@ -609,6 +611,6 @@ Literal-DecCode {
   (e.Accum) '7' e.Text = <Literal (e.Accum '7') e.Text>;
   (e.Accum) '8' e.Text = <Literal (e.Accum '8') e.Text>;
   (e.Accum) '9' e.Text = <Literal (e.Accum '9') e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Expected digits') <Root () e.Text>;
-  (e.Accum) = (#TokenError 'Unexpected end of file');
+  (e.Accum) e.Text = (TokenError 'Expected digits') <Root () e.Text>;
+  (e.Accum) = (TokenError 'Unexpected end of file');
 }

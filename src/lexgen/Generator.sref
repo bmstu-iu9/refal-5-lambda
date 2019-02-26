@@ -61,7 +61,7 @@ Head {
 Flush {
   s.Head #Unnamed = /* пусто */;
   s.Head (#Flush e.FlushName) = ' (' e.FlushName ' e.Accum' <Head s.Head> ')';
-  s.Head (#FlushError e.Message) = ' (#TokenError ' '' e.Message '' ')';
+  s.Head (#FlushError e.Message) = ' (TokenError ' '' e.Message '' ')';
 }
 
 NextState-L {

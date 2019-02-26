@@ -103,7 +103,7 @@ NormalizeToken {
 
   (#TkUnexpected e.Unexpected) = (#TkUnexpected e.Unexpected);
 
-  (#TokenError e.Message) = (#TkError e.Message);
+  (TokenError e.Message) = (#TkError e.Message);
 }
 
 ValidDirective {
@@ -174,6 +174,8 @@ CollectNativeLines-Aux {
     (#TkNativeBlock s.StartLineNumber e.Block)
     <CollectNativeLines e.Tail>;
 }
+
+$ENUM TokenError;
 
 /*GEN:TOKENS
 
@@ -390,7 +392,7 @@ Root {
 
 StartNative-Percent {
   (e.Accum) '%' e.Text = <StartNative-NewLine () e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Native inlines expects two percents') <Main () e.Text>;
+  (e.Accum) e.Text = (TokenError 'Native inlines expects two percents') <Main () e.Text>;
 }
 
 Main {
@@ -486,7 +488,7 @@ Main {
 StartNative-NewLine {
   (e.Accum) '\r' e.Text = <StartNative-NewLine () e.Text>;
   (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <Native-Begin () e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Native inlines expects new line after two percents') <Main () e.Text>;
+  (e.Accum) e.Text = (TokenError 'Native inlines expects new line after two percents') <Main () e.Text>;
 }
 
 VariableStart {
@@ -603,7 +605,7 @@ Directive {
   (e.Accum) 'X' e.Text = <DirectiveTail (e.Accum 'X') e.Text>;
   (e.Accum) 'Y' e.Text = <DirectiveTail (e.Accum 'Y') e.Text>;
   (e.Accum) 'Z' e.Text = <DirectiveTail (e.Accum 'Z') e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Expected directive name') <Main () e.Text>;
+  (e.Accum) e.Text = (TokenError 'Expected directive name') <Main () e.Text>;
 }
 
 StringLiteral-Start {
@@ -614,8 +616,8 @@ StringLiteral-Start {
 CompoundSymbol {
   (e.Accum) '\"' e.Text = (#TkCompound e.Accum '\"') <Main () e.Text>;
   (e.Accum) '\\' e.Text = <Compound-Escape (e.Accum '\\') e.Text>;
-  (e.Accum) '\n' e.Text = (#TokenError 'Unclosed quote') <Main () e.Text>;
-  (e.Accum) = (#TokenError 'Unexpected EOF in compound symbol');
+  (e.Accum) '\n' e.Text = (TokenError 'Unclosed quote') <Main () e.Text>;
+  (e.Accum) = (TokenError 'Unexpected EOF in compound symbol');
   (e.Accum) s.Any e.Text = <CompoundSymbol (e.Accum s.Any) e.Text>;
 }
 
@@ -695,7 +697,7 @@ VariableIndex {
   (e.Accum) 'Z' e.Text = <VariableIndexTail (e.Accum 'Z') e.Text>;
   (e.Accum) '_' e.Text = <VariableIndexTail (e.Accum '_') e.Text>;
   (e.Accum) '-' e.Text = <VariableIndexTail (e.Accum '-') e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Expected variable name') <Main () e.Text>;
+  (e.Accum) e.Text = (TokenError 'Expected variable name') <Main () e.Text>;
 }
 
 DirectiveTail {
@@ -731,8 +733,8 @@ DirectiveTail {
 StringLiteral {
   (e.Accum) '\\' e.Text = <StringLiteral-Escape () e.Text>;
   (e.Accum) '\'' e.Text = <StringLiteral-Quote () e.Text>;
-  (e.Accum) '\n' e.Text = (#TokenError 'Unclosed quote') <Main () e.Text>;
-  (e.Accum) = (#TokenError 'Unexpected EOF in string literal');
+  (e.Accum) '\n' e.Text = (TokenError 'Unclosed quote') <Main () e.Text>;
+  (e.Accum) = (TokenError 'Unexpected EOF in string literal');
   (e.Accum) s.Any e.Text = (#TkLiteral-Char e.Accum s.Any) <StringLiteral () e.Text>;
 }
 
@@ -759,8 +761,8 @@ Compound-Escape {
   (e.Accum) 'D' e.Text = <Compound-Escape-Dec (e.Accum 'D') e.Text>;
   (e.Accum) 'x' e.Text = <Compound-Escape-Hex (e.Accum 'x') e.Text>;
   (e.Accum) 'X' e.Text = <Compound-Escape-Hex (e.Accum 'X') e.Text>;
-  (e.Accum) '\n' e.Text = (#TokenError 'Unclosed quote') <Main () e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Unexpected escape sequence') <CompoundSymbol () e.Text>;
+  (e.Accum) '\n' e.Text = (TokenError 'Unclosed quote') <Main () e.Text>;
+  (e.Accum) e.Text = (TokenError 'Unexpected escape sequence') <CompoundSymbol () e.Text>;
 }
 
 CComment {
@@ -768,7 +770,7 @@ CComment {
   (e.Accum) '*' e.Text = <CComment-CheckEnd () e.Text>;
   (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <CComment () e.Text>;
   (e.Accum) s.Any e.Text = <CComment () e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Unexpected EOF: unclosed comment') <Main () e.Text>;
+  (e.Accum) e.Text = (TokenError 'Unexpected EOF: unclosed comment') <Main () e.Text>;
 }
 
 CppComment {
@@ -785,7 +787,7 @@ Native-CheckEnd {
 Native {
   (e.Accum) '\n' e.Text = (#TkNativeLine e.Accum '\n') <Native-Begin () e.Text>;
   (e.Accum) s.Any e.Text = <Native (e.Accum s.Any) e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Unexpected EOF: unclosed native insertion') <Main () e.Text>;
+  (e.Accum) e.Text = (TokenError 'Unexpected EOF: unclosed native insertion') <Main () e.Text>;
 }
 
 VariableIndexTail {
@@ -879,8 +881,8 @@ StringLiteral-Escape {
   (e.Accum) '7' e.Text = <StringLiteral-Escape-OCode (e.Accum '7') e.Text>;
   (e.Accum) 'x' e.Text = <StringLiteral-Escape-XCode () e.Text>;
   (e.Accum) 'X' e.Text = <StringLiteral-Escape-XCode () e.Text>;
-  (e.Accum) '\n' e.Text = (#TokenError 'Unclosed quote') <Main () e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Unexpected escape sequence') <StringLiteral () e.Text>;
+  (e.Accum) '\n' e.Text = (TokenError 'Unclosed quote') <Main () e.Text>;
+  (e.Accum) e.Text = (TokenError 'Unexpected escape sequence') <StringLiteral () e.Text>;
 }
 
 StringLiteral-Quote {
@@ -899,7 +901,7 @@ Compound-Escape-Dec {
   (e.Accum) '7' e.Text = <CompoundSymbol (e.Accum '7') e.Text>;
   (e.Accum) '8' e.Text = <CompoundSymbol (e.Accum '8') e.Text>;
   (e.Accum) '9' e.Text = <CompoundSymbol (e.Accum '9') e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Expected decimal digit') <CompoundSymbol () e.Text>;
+  (e.Accum) e.Text = (TokenError 'Expected decimal digit') <CompoundSymbol () e.Text>;
 }
 
 Compound-Escape-Hex {
@@ -925,11 +927,11 @@ Compound-Escape-Hex {
   (e.Accum) 'd' e.Text = <CompoundSymbol (e.Accum 'd') e.Text>;
   (e.Accum) 'e' e.Text = <CompoundSymbol (e.Accum 'e') e.Text>;
   (e.Accum) 'f' e.Text = <CompoundSymbol (e.Accum 'f') e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Expected hexadecimal digit') <CompoundSymbol () e.Text>;
+  (e.Accum) e.Text = (TokenError 'Expected hexadecimal digit') <CompoundSymbol () e.Text>;
 }
 
 CComment-CheckNested {
-  (e.Accum) '*' e.Text = (#TokenError 'Nested comments is disabled') <CComment () e.Text>;
+  (e.Accum) '*' e.Text = (TokenError 'Nested comments is disabled') <CComment () e.Text>;
   (e.Accum) e.Text = <CComment (e.Accum) e.Text>;
 }
 
@@ -955,7 +957,7 @@ StringLiteral-Escape-Code {
   (e.Accum) '7' e.Text = <SL-E-C1 (e.Accum '7') e.Text>;
   (e.Accum) '8' e.Text = <SL-E-C1 (e.Accum '8') e.Text>;
   (e.Accum) '9' e.Text = <SL-E-C1 (e.Accum '9') e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Expected decimal digit') <StringLiteral () e.Text>;
+  (e.Accum) e.Text = (TokenError 'Expected decimal digit') <StringLiteral () e.Text>;
 }
 
 StringLiteral-Escape-OCode {
@@ -993,7 +995,7 @@ StringLiteral-Escape-XCode {
   (e.Accum) 'd' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'd') e.Text>;
   (e.Accum) 'e' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'e') e.Text>;
   (e.Accum) 'f' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'f') e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Expected hexadecimal digit') <StringLiteral () e.Text>;
+  (e.Accum) e.Text = (TokenError 'Expected hexadecimal digit') <StringLiteral () e.Text>;
 }
 
 SL-E-C1 {

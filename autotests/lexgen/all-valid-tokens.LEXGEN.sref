@@ -6,13 +6,15 @@ CheckForErrors {
   e.Tokens =
     <CheckForErrors-Aux
       (
-        #TkUnexpected #TokenError
+        #TkUnexpected TokenError
         #TokenLexerInternalError-Unexpected
         #TokenLexerInternalError-UnexpectedEOF
       )
       e.Tokens
     >;
 }
+
+$ENUM TokenError;
 
 CheckForErrors-Aux {
   (e.ErrorTags-B s.ErrorTag e.ErrorTags-E)

@@ -57,8 +57,8 @@ $ENTRY Go {
           #From (e.From) #To (e.To) =
             <SaveFile
               (e.To)
-              ('// Automatically generated file, don''t edit!')
-              ('// Edit file ''' e.From '')
+              ('/* Automatically generated file, don\'t edit! */')
+              ('/* Edit file \'' e.From '\' */')
               ()
               ()
               <Transform (e.From) <LoadFile e.From>>

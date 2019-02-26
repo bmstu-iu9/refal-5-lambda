@@ -105,7 +105,7 @@ SecondPass {
   (#TInvertGroup '^') = (#TInvertGroup);
   (#TGroupRange '-') = (#TGroupRange);
   (#TUnexpecteChar s.Char) = (#TError 'Unexpected char ''' <EscapeString s.Char> '');
-  (#TokenError e.Message) = (#TError e.Message);
+  (TokenError e.Message) = (#TError e.Message);
   (#TStateStart '<') = (#TStateStart);
   (#TComma ',') = (#TComma);
   (#TStateEnd '>') = (#TStateEnd);
@@ -141,6 +141,8 @@ DigitFromChar {
       }
     >;
 }
+
+$ENUM TokenError;
 
 /*
  *
@@ -336,7 +338,7 @@ ReadRegexp {
   (e.Accum) '$' e.Text = (#TSpecChar e.Accum '$') <ReadRegexp () e.Text>;
   (e.Accum) '{' e.Text = <ReadInclude () e.Text>;
   (e.Accum) s.Any e.Text = (#TChar e.Accum s.Any) <ReadRegexp () e.Text>;
-  (e.Accum) = (#TokenError 'Unexpected EOF in Regexp');
+  (e.Accum) = (TokenError 'Unexpected EOF in Regexp');
 }
 
 ReadArrow {
@@ -427,7 +429,7 @@ Name {
 ErrorMessage {
   (e.Accum) '\"' e.Text = (#TErrorMessage e.Accum '\"') <Root () e.Text>;
   (e.Accum) s.Any e.Text = <ErrorMessage (e.Accum s.Any) e.Text>;
-  (e.Accum) = (#TokenError 'Unclosed error message');
+  (e.Accum) = (TokenError 'Unclosed error message');
 }
 
 EscRegexp {
@@ -452,8 +454,8 @@ EscRegexp {
   (e.Accum) '|' e.Text = (#TChar e.Accum '|') <ReadRegexp () e.Text>;
   (e.Accum) '^' e.Text = (#TChar e.Accum '^') <ReadRegexp () e.Text>;
   (e.Accum) '$' e.Text = (#TChar e.Accum '$') <ReadRegexp () e.Text>;
-  (e.Accum) s.Any e.Text = (#TokenError 'Bad escaped symbol') <ReadRegexp () e.Text>;
-  (e.Accum) = (#TokenError 'Unexpected EOF in Regexp');
+  (e.Accum) s.Any e.Text = (TokenError 'Bad escaped symbol') <ReadRegexp () e.Text>;
+  (e.Accum) = (TokenError 'Unexpected EOF in Regexp');
 }
 
 StartGroup {
@@ -488,8 +490,8 @@ ReadInclude {
   (e.Accum) 'X' e.Text = <ReadBody (e.Accum 'X') e.Text>;
   (e.Accum) 'Y' e.Text = <ReadBody (e.Accum 'Y') e.Text>;
   (e.Accum) 'Z' e.Text = <ReadBody (e.Accum 'Z') e.Text>;
-  (e.Accum) s.Any e.Text = (#TokenError 'Expected Name in Include') <ReadRegexp () e.Text>;
-  (e.Accum) = (#TokenError 'Unexpected EOF in Include');
+  (e.Accum) s.Any e.Text = (TokenError 'Expected Name in Include') <ReadRegexp () e.Text>;
+  (e.Accum) = (TokenError 'Unexpected EOF in Include');
 }
 
 EscRegexp-XCode {
@@ -535,7 +537,7 @@ ReadGroup {
   (e.Accum) '-' e.Text = (#TGroupRange e.Accum '-') <ReadGroup () e.Text>;
   (e.Accum) '\\' e.Text = <EscGroup () e.Text>;
   (e.Accum) s.Any e.Text = (#TChar e.Accum s.Any) <ReadGroup () e.Text>;
-  (e.Accum) = (#TokenError 'Unexpected EOF in Regexp');
+  (e.Accum) = (TokenError 'Unexpected EOF in Regexp');
 }
 
 ReadBody {
@@ -602,7 +604,7 @@ ReadBody {
   (e.Accum) 'Y' e.Text = <ReadBody (e.Accum 'Y') e.Text>;
   (e.Accum) 'Z' e.Text = <ReadBody (e.Accum 'Z') e.Text>;
   (e.Accum) '}' e.Text = (#TInclude e.Accum '}') <ReadRegexp () e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Unclused include') <ReadRegexp () e.Text>;
+  (e.Accum) e.Text = (TokenError 'Unclused include') <ReadRegexp () e.Text>;
 }
 
 EscRegexp-OCode-C1 {
@@ -634,8 +636,8 @@ EscGroup {
   (e.Accum) '5' e.Text = <EscGroup-OCode (e.Accum '5') e.Text>;
   (e.Accum) '6' e.Text = <EscGroup-OCode (e.Accum '6') e.Text>;
   (e.Accum) '7' e.Text = <EscGroup-OCode (e.Accum '7') e.Text>;
-  (e.Accum) s.Any e.Text = (#TokenError 'Bad escaped symbol') <ReadGroup () e.Text>;
-  (e.Accum) = (#TokenError 'Unexpected EOF in Regexp');
+  (e.Accum) s.Any e.Text = (TokenError 'Bad escaped symbol') <ReadGroup () e.Text>;
+  (e.Accum) = (TokenError 'Unexpected EOF in Regexp');
 }
 
 EscGroup-XCode {
