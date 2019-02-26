@@ -1,10 +1,10 @@
-//FROM Error
+*$FROM Error
 $EXTERN ErrorAt;
 
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN Fetch, Pipe;
 
-//FROM DFA-Lexer
+*$FROM DFA-Lexer
 $EXTERN DFA-TextFromToken;
 
 /*==============================================================================
@@ -29,15 +29,15 @@ $EXTERN DFA-TextFromToken;
 
    Зарезервированные имена Root, :Any:.
    Зарезервированные лексемы:
-     * #TokenError,
-     * #TokenLexerInternalError-Unexpected,
-     * #TokenLexerInternalError-UnexpectedEOF.
+     * TokenError,
+     * TokenLexerInternalError-Unexpected,
+     * TokenLexerInternalError-UnexpectedEOF.
 
 ==============================================================================*/
 
-//==============================================================================
-// Синтаксический разбор
-//==============================================================================
+/*==============================================================================
+   Синтаксический разбор
+==============================================================================*/
 
 /**
   <DFA-Parse t.Token*>
@@ -46,33 +46,33 @@ $EXTERN DFA-TextFromToken;
    e.LexerDefinition ::= t.Element*
 
    t.Element ::=
-       (#Set t.SrcPos (e.Name) t.SetContent*)
-     | (#Sentence t.SrcPos (e.Name) t.Alternative*)
+       (Set t.SrcPos (e.Name) t.SetContent*)
+     | (Sentence t.SrcPos (e.Name) t.Alternative*)
 
    t.SetContent ::=
-       (#Set t.SrcPos e.SetName)
-     | (#Chars e.Symbols)
+       (Set t.SrcPos e.SetName)
+     | (Chars e.Symbols)
 
    t.Alternative ::=
        (t.Head t.Flush t.NextState)
 
    t.Head ::=
-       (#Chars e.Symbols)
-     | (#Set t.SrcPos e.SetName)
-     | #Empty
+       (Chars e.Symbols)
+     | (Set t.SrcPos e.SetName)
+     | Empty
 
    t.Flush ::=
-       #Unnamed
-     | (#Flush e.FlushName)
-     | (#FlushError e.Message)
-     | #None
+       Unnamed
+     | (Flush e.FlushName)
+     | (FlushError e.Message)
+     | None
 
    t.NextState ::=
        (t.SrcPos e.NextStateName)
-     | #Finitive
+     | Finitive
 */
 $ENTRY DFA-Parse {
-  (#TEOF t.SrcPos) =
+  (TEOF t.SrcPos) =
     <ErrorAt t.SrcPos 'Illegal empty description'>;
 
   e.Tokens =
@@ -81,25 +81,25 @@ $ENTRY DFA-Parse {
 
 ParseElements {
   (e.SetNames-B (e.Name) e.SetNames-E) (e.RuleNames)
-  (#TSetName t.SrcPos e.Name) e.Tail =
+  (TSetName t.SrcPos e.Name) e.Tail =
     <ErrorAt t.SrcPos 'Set name :' e.Name ': redeclared'>;
 
   (e.SetNames) (e.RuleNames)
-  (#TSetName t.SrcPos e.Name) e.Tail =
+  (TSetName t.SrcPos e.Name) e.Tail =
     <ParseSetDescr
       (e.SetNames (e.Name)) (e.RuleNames) t.SrcPos (e.Name) e.Tail
     >;
 
   (e.SetNames) (e.RuleNames-B (e.Name) e.RuleNames-E)
-  (#TName t.SrcPos e.Name) e.Tail =
+  (TName t.SrcPos e.Name) e.Tail =
     <ErrorAt t.SrcPos 'Name ' e.Name ' redeclared'>;
 
   (e.SetNames) (e.RuleNames)
-  (#TName t.SrcPos e.Name) e.Tail =
+  (TName t.SrcPos e.Name) e.Tail =
     <ParseSentence (e.SetNames) (e.RuleNames (e.Name)) t.SrcPos (e.Name) e.Tail>;
 
   (e.SetNames) (e.RuleNames)
-  (#TEOF t.SrcPos) e.Tail =
+  (TEOF t.SrcPos) e.Tail =
     /* Ничего */;
 
   (e.SetNames) (e.RuleNames)
@@ -108,15 +108,15 @@ ParseElements {
 }
 
 ParseSetDescr {
-  (e.SetNames) (e.RuleNames) t.SetNamePos (e.Name) (#TEquals t.SrcPos) e.Tail =
+  (e.SetNames) (e.RuleNames) t.SetNamePos (e.Name) (TEquals t.SrcPos) e.Tail =
     <Fetch
       <ExtractSets () e.Tail>
       {
-        () (#TDot t.SrcPos^) e.Tail^ =
+        () (TDot t.SrcPos^) e.Tail^ =
           <ErrorAt t.SrcPos 'Set :' e.Name ': not have content'>;
 
-        (e.Body) (#TDot t.SrcPos^) e.Tail^ =
-          (#Set t.SetNamePos (e.Name) e.Body)
+        (e.Body) (TDot t.SrcPos^) e.Tail^ =
+          (Set t.SetNamePos (e.Name) e.Body)
           <ParseElements
             (e.SetNames) (e.RuleNames) e.Tail
           >;
@@ -131,26 +131,26 @@ ParseSetDescr {
 }
 
 ExtractSets {
-  (e.Found) (#TLiteral t.SrcPos e.Content) e.Tail =
+  (e.Found) (TLiteral t.SrcPos e.Content) e.Tail =
     <ExtractSets
-      (e.Found (#Chars e.Content)) e.Tail
+      (e.Found (Chars e.Content)) e.Tail
     >;
 
-  (e.Found) (#TSetName t.SrcPos e.Name) e.Tail =
+  (e.Found) (TSetName t.SrcPos e.Name) e.Tail =
     <ExtractSets
-      (e.Found (#Set t.SrcPos e.Name)) e.Tail
+      (e.Found (Set t.SrcPos e.Name)) e.Tail
     >;
 
   (e.Found) e.OtherTail = (e.Found) e.OtherTail;
 }
 
 ParseSentence {
-  (e.SetNames) (e.RuleNames) t.SentNamePos (e.Name) (#TEquals t.SrcPos) e.Tail =
+  (e.SetNames) (e.RuleNames) t.SentNamePos (e.Name) (TEquals t.SrcPos) e.Tail =
     <Fetch
       <ExtractAlternatives () e.Tail>
       {
-        (e.Body) (#TDot t.SrcPos^) e.Tail^ =
-          (#Sentence t.SentNamePos (e.Name) e.Body)
+        (e.Body) (TDot t.SrcPos^) e.Tail^ =
+          (Sentence t.SentNamePos (e.Name) e.Body)
           <ParseElements
             (e.SetNames) (e.RuleNames) e.Tail
           >;
@@ -189,14 +189,14 @@ ExtractAlternatives {
             <ExtractAlternatives-NextState t.NextToken> e.Tail;
         }
         {
-          t.BeginSrcPos t.Head #None #Finitive e.Tail^ =
+          t.BeginSrcPos t.Head None Finitive e.Tail^ =
             <ErrorAt t.BeginSrcPos 'EOF alternative must have flush'>;
 
           t.BeginSrcPos t.Head t.Flush t.NextState e.Tail^ =
             t.Head t.Flush t.NextState e.Tail;
         }
         {
-          t.Head t.Flush t.NextState (#TAlternative t.SrcPos) e.Tail^ =
+          t.Head t.Flush t.NextState (TAlternative t.SrcPos) e.Tail^ =
             <ExtractAlternatives
               (e.Found (t.Head t.Flush t.NextState)) e.Tail
             >;
@@ -209,35 +209,35 @@ ExtractAlternatives {
 }
 
 ExtractAlternatives-Head {
-  (#TLiteral t.SrcPos e.Content) =     (#Chars e.Content);
-  (#TSetName t.SrcPos e.Content) =     (#Set t.SrcPos e.Content);
+  (TLiteral t.SrcPos e.Content) =     (Chars e.Content);
+  (TSetName t.SrcPos e.Content) =     (Set t.SrcPos e.Content);
 
-  (#TFlush t.SrcPos) =                 #Empty (#TFlush t.SrcPos);
-  (#TNamedFlush t.SrcPos e.Name) =     #Empty (#TNamedFlush t.SrcPos e.Name);
-  (#TErrorFlush t.SrcPos e.Message) =  #Empty (#TErrorFlush t.SrcPos e.Message);
-  (#TName t.SrcPos e.Name) =           #Empty (#TName t.SrcPos e.Name);
-  (#TAlternative t.SrcPos e.Message) = #Empty (#TAlternative t.SrcPos e.Message);
-  (#TDot t.SrcPos) =                   #Empty (#TDot t.SrcPos);
+  (TFlush t.SrcPos) =                 Empty (TFlush t.SrcPos);
+  (TNamedFlush t.SrcPos e.Name) =     Empty (TNamedFlush t.SrcPos e.Name);
+  (TErrorFlush t.SrcPos e.Message) =  Empty (TErrorFlush t.SrcPos e.Message);
+  (TName t.SrcPos e.Name) =           Empty (TName t.SrcPos e.Name);
+  (TAlternative t.SrcPos e.Message) = Empty (TAlternative t.SrcPos e.Message);
+  (TDot t.SrcPos) =                   Empty (TDot t.SrcPos);
 
   t.Unexpected e.Tail = <UnexpectedToken t.Unexpected ' definition of state'>;
 }
 
 ExtractAlternatives-Flush {
-  (#TFlush t.SrcPos) =                #Unnamed;
-  (#TNamedFlush t.SrcPos e.Name) =    (#Flush e.Name);
-  (#TErrorFlush t.SrcPos e.Message) = (#FlushError e.Message);
+  (TFlush t.SrcPos) =                Unnamed;
+  (TNamedFlush t.SrcPos e.Name) =    (Flush e.Name);
+  (TErrorFlush t.SrcPos e.Message) = (FlushError e.Message);
 
-  (#TName t.SrcPos e.Name) =          #None (#TName t.SrcPos e.Name);
-  (#TAlternative t.SrcPos) =          #None (#TAlternative t.SrcPos);
-  (#TDot t.SrcPos) =                  #None (#TDot t.SrcPos);
+  (TName t.SrcPos e.Name) =          None (TName t.SrcPos e.Name);
+  (TAlternative t.SrcPos) =          None (TAlternative t.SrcPos);
+  (TDot t.SrcPos) =                  None (TDot t.SrcPos);
 
   t.Unexpected = <UnexpectedToken t.Unexpected 'flush or next state name'>;
 }
 
 ExtractAlternatives-NextState {
-  (#TName t.SrcPos e.Name) = (t.SrcPos e.Name);
-  (#TAlternative t.SrcPos) = #Finitive (#TAlternative t.SrcPos);
-  (#TDot t.SrcPos) =         #Finitive (#TDot t.SrcPos);
+  (TName t.SrcPos e.Name) = (t.SrcPos e.Name);
+  (TAlternative t.SrcPos) = Finitive (TAlternative t.SrcPos);
+  (TDot t.SrcPos) =         Finitive (TDot t.SrcPos);
 
   t.Unexpected =
     <UnexpectedToken t.Unexpected 'next state name or next alternative'>;
