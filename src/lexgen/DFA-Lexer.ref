@@ -1,28 +1,28 @@
-//FROM Escape
+*$FROM Escape
 $EXTERN EscapeString;
 
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN Fetch, Pipe, Map, MapReduce, Inc;
 
-//FROM Library
-$EXTERN IntFromStr, Chr;
+*$FROM Library
+$EXTERN IntFromStr;
 
 
-//==============================================================================
-// Лексический разбор
-//==============================================================================
+/*==============================================================================
+   Лексический разбор
+==============================================================================*/
 
 $ENTRY DFA-TextFromToken {
-  #TSetName e.Name = 'set name ' e.Name;
-  #TLiteral e.Text = 'literal ''' <EscapeString e.Text> '';
-  #TName e.Name = 'name ' e.Name;
-  #TNamedFlush e.Name = 'named flush ' e.Name;
-  #TEquals = '"="';
-  #TDot = '"."';
-  #TAlternative = '"|"';
-  #TFlush = 'flush';
-  #TErrorFlush e.Text = 'error flush "' e.Text '"';
-  #TEOF = 'end of file';
+  TSetName e.Name = 'set name ' e.Name;
+  TLiteral e.Text = 'literal \'' <EscapeString e.Text> '\'';
+  TName e.Name = 'name ' e.Name;
+  TNamedFlush e.Name = 'named flush ' e.Name;
+  TEquals = '"="';
+  TDot = '"."';
+  TAlternative = '"|"';
+  TFlush = 'flush';
+  TErrorFlush e.Text = 'error flush "' e.Text '"';
+  TEOF = 'end of file';
 }
 
 /**
@@ -32,28 +32,28 @@ $ENTRY DFA-TextFromToken {
   t.Token ::= (s.TokType t.SrcPos e.Info)
 
   s.TokType e.Info ::=
-      #TEquals
-    | #TDot
-    | #TAlternative
-    | #TSetName
-    | #TFlush
-    | #TErrorFlush e.Message
-    | #TNamedFlush e.TokTag
-    | #TLiteral e.Chars
-    | #TName e.Name
+      TEquals
+    | TDot
+    | TAlternative
+    | TSetName
+    | TFlush
+    | TErrorFlush e.Message
+    | TNamedFlush e.TokTag
+    | TLiteral e.Chars
+    | TName e.Name
 */
 $ENTRY DFA-Tokens {
   s.FirstLineNumber e.Lines =
     <Fetch
       e.Lines
       <Pipe
-        (Map {
+        (&Map {
           (e.Line) = e.Line '\n';
         })
-        LoTokens
-        (MapReduce
+        &LoTokens
+        (&MapReduce
           {
-            s.LineNumber (#TNewLine) = <Inc s.LineNumber>;
+            s.LineNumber (TNewLine) = <Inc s.LineNumber>;
 
             s.LineNumber (s.TokName e.Content) =
               s.LineNumber (s.TokName s.LineNumber e.Content);
@@ -61,11 +61,11 @@ $ENTRY DFA-Tokens {
           <Inc s.FirstLineNumber>
         )
         {
-          s.LineNumber e.Tokens (#EOF s.EOFLineNumber) =
-            e.Tokens (#TEOF s.EOFLineNumber);
+          s.LineNumber e.Tokens (EOF s.EOFLineNumber) =
+            e.Tokens (TEOF s.EOFLineNumber);
 
           s.LineNumber e.Tokens =
-            e.Tokens (#TEOF s.LineNumber);
+            e.Tokens (TEOF s.LineNumber);
         }
       >
     >;
@@ -79,19 +79,19 @@ FilterTokens {
   e.Tokens =
     <Map
       {
-        (#TNewLine '\n') = (#TNewLine);
-        (#TSetName e.SetName ':') = (#TSetName e.SetName);
-        (#TFlush '-') = (#TFlush);
-        (#TErrorFlush e.Message '"') = (#TErrorFlush e.Message);
-        (#TNamedFlush e.FlushName) = (#TNamedFlush e.FlushName);
-        (#TLiteral e.Content '') = (#TLiteral <Unescape e.Content>);
-        (TokenError e.Message) = (#TError e.Message);
-        (#TPunctuation '=') = (#TEquals);
-        (#TPunctuation '.') = (#TDot);
-        (#TPunctuation '|') = (#TAlternative);
-        (#TName e.Name) = (#TName e.Name);
-        (#TUnexpectedChar s.Char) = (#TError 'Unexpected character ' s.Char);
-        (#TEOF) = (#TEOF);
+        (TNewLine '\n') = (TNewLine);
+        (TSetName e.SetName ':') = (TSetName e.SetName);
+        (TFlush '-') = (TFlush);
+        (TErrorFlush e.Message '"') = (TErrorFlush e.Message);
+        (TNamedFlush e.FlushName) = (TNamedFlush e.FlushName);
+        (TLiteral e.Content '\'') = (TLiteral <Unescape e.Content>);
+        (TokenError e.Message) = (TError e.Message);
+        (TPunctuation '=') = (TEquals);
+        (TPunctuation '.') = (TDot);
+        (TPunctuation '|') = (TAlternative);
+        (TName e.Name) = (TName e.Name);
+        (TUnexpectedChar s.Char) = (TError 'Unexpected character ' s.Char);
+        (TEOF) = (TEOF);
       }
       e.Tokens
     >;
@@ -102,27 +102,25 @@ Unescape {
   '\\r' e.Tail = '\r' <Unescape e.Tail>;
   '\\\\' e.Tail = '\\' <Unescape e.Tail>;
   '\\t' e.Tail = '\t' <Unescape e.Tail>;
-  '\\''' e.Tail = '' <Unescape e.Tail>;
+  '\\\'' e.Tail = '\'' <Unescape e.Tail>;
 
   '\\d' e.Tail =
     <Fetch
       <IntFromStr e.Tail>
       {
-        #Success s.Number e.Tail^ =
+        Success s.Number e.Tail^ =
           <Chr s.Number> <Unescape e.Tail>;
 
-        // #Fails невозможен
+        /* Fails невозможен */
       }
     >;
 
-  '''' e.Tail = '' <Unescape e.Tail>;
+  '\'\'' e.Tail = '\'' <Unescape e.Tail>;
 
   s.Other e.Tail = s.Other <Unescape e.Tail>;
 
   /* пусто */ = /* пусто */;
 }
-
-$ENUM TokenError;
 
 /*GEN:TOKENS
   :Space: = ' \t\r'.
@@ -134,34 +132,34 @@ $ENUM TokenError;
 
   Root =
     :Space:         !-                                Root               |
-    '\n'            !#TNewLine                        Root               |
+    '\n'            !TNewLine                         Root               |
 
     ':'             !-                                SetName            |
     '!'             !-                                Flush              |
     '\''            !-                                Literal            |
 
-    '=.|'           !#TPunctuation                    Root               |
+    '=.|'           !TPunctuation                     Root               |
 
     :HiLetters:                                       Name               |
 
-    :Any:           !#TUnexpectedChar                 Root               |
-                    !#TEOF                                               .
+    :Any:           !TUnexpectedChar                  Root               |
+                    !TEOF                                               .
 
   SetName =
-    ':'             !#TSetName                        Root               |
+    ':'             !TSetName                         Root               |
     :NameTailSet:                                     SetName            |
                     !"expected end of set name, got EOF"                 |
                     !"expected end of set name"       Root               .
 
   Flush =
-    '-'             !#TFlush                          Root               |
+    '-'             !TFlush                           Root               |
     '"'             !-                                ErrorFlush         |
     '#'                                               FlushName          |
                                                       FlushName          .
 
   ErrorFlush =
     :ErrorFlush:                                      ErrorFlush         |
-    '"'             !#TErrorFlush                     Root               |
+    '"'             !TErrorFlush                      Root               |
                     !"Expected error text or double quote"
                                                       Root               .
 
@@ -171,7 +169,7 @@ $ENUM TokenError;
 
   FlushNameTail =
     :NameTailSet:                                     FlushNameTail      |
-                    !#TNamedFlush                     Root               .
+                    !TNamedFlush                      Root               .
 
   Literal =
     '\\'                                              Literal-Escape     |
@@ -193,11 +191,11 @@ $ENUM TokenError;
 
   Literal-Quote =
     '\''                                              Literal            |
-                    !#TLiteral                        Root               .
+                    !TLiteral                         Root               .
 
   Name =
     :NameTailSet:                                     Name               |
-                    !#TName                           Root               .
+                    !TName                            Root               .
 
 GEN:END*/
 
@@ -205,13 +203,13 @@ Root {
   (e.Accum) ' ' e.Text = <Root () e.Text>;
   (e.Accum) '\t' e.Text = <Root () e.Text>;
   (e.Accum) '\r' e.Text = <Root () e.Text>;
-  (e.Accum) '\n' e.Text = (#TNewLine e.Accum '\n') <Root () e.Text>;
+  (e.Accum) '\n' e.Text = (TNewLine e.Accum '\n') <Root () e.Text>;
   (e.Accum) ':' e.Text = <SetName () e.Text>;
   (e.Accum) '!' e.Text = <Flush () e.Text>;
   (e.Accum) '\'' e.Text = <Literal () e.Text>;
-  (e.Accum) '=' e.Text = (#TPunctuation e.Accum '=') <Root () e.Text>;
-  (e.Accum) '.' e.Text = (#TPunctuation e.Accum '.') <Root () e.Text>;
-  (e.Accum) '|' e.Text = (#TPunctuation e.Accum '|') <Root () e.Text>;
+  (e.Accum) '=' e.Text = (TPunctuation e.Accum '=') <Root () e.Text>;
+  (e.Accum) '.' e.Text = (TPunctuation e.Accum '.') <Root () e.Text>;
+  (e.Accum) '|' e.Text = (TPunctuation e.Accum '|') <Root () e.Text>;
   (e.Accum) 'A' e.Text = <Name (e.Accum 'A') e.Text>;
   (e.Accum) 'B' e.Text = <Name (e.Accum 'B') e.Text>;
   (e.Accum) 'C' e.Text = <Name (e.Accum 'C') e.Text>;
@@ -238,12 +236,12 @@ Root {
   (e.Accum) 'X' e.Text = <Name (e.Accum 'X') e.Text>;
   (e.Accum) 'Y' e.Text = <Name (e.Accum 'Y') e.Text>;
   (e.Accum) 'Z' e.Text = <Name (e.Accum 'Z') e.Text>;
-  (e.Accum) s.Any e.Text = (#TUnexpectedChar e.Accum s.Any) <Root () e.Text>;
-  (e.Accum) = (#TEOF e.Accum);
+  (e.Accum) s.Any e.Text = (TUnexpectedChar e.Accum s.Any) <Root () e.Text>;
+  (e.Accum) = (TEOF e.Accum);
 }
 
 SetName {
-  (e.Accum) ':' e.Text = (#TSetName e.Accum ':') <Root () e.Text>;
+  (e.Accum) ':' e.Text = (TSetName e.Accum ':') <Root () e.Text>;
   (e.Accum) '0' e.Text = <SetName (e.Accum '0') e.Text>;
   (e.Accum) '1' e.Text = <SetName (e.Accum '1') e.Text>;
   (e.Accum) '2' e.Text = <SetName (e.Accum '2') e.Text>;
@@ -313,7 +311,7 @@ SetName {
 }
 
 Flush {
-  (e.Accum) '-' e.Text = (#TFlush e.Accum '-') <Root () e.Text>;
+  (e.Accum) '-' e.Text = (TFlush e.Accum '-') <Root () e.Text>;
   (e.Accum) '\"' e.Text = <ErrorFlush () e.Text>;
   (e.Accum) '#' e.Text = <FlushName (e.Accum '#') e.Text>;
   (e.Accum) e.Text = <FlushName (e.Accum) e.Text>;
@@ -392,7 +390,7 @@ Name {
   (e.Accum) 'Z' e.Text = <Name (e.Accum 'Z') e.Text>;
   (e.Accum) '-' e.Text = <Name (e.Accum '-') e.Text>;
   (e.Accum) '_' e.Text = <Name (e.Accum '_') e.Text>;
-  (e.Accum) e.Text = (#TName e.Accum) <Root () e.Text>;
+  (e.Accum) e.Text = (TName e.Accum) <Root () e.Text>;
 }
 
 ErrorFlush {
@@ -483,7 +481,7 @@ ErrorFlush {
   (e.Accum) '=' e.Text = <ErrorFlush (e.Accum '=') e.Text>;
   (e.Accum) '+' e.Text = <ErrorFlush (e.Accum '+') e.Text>;
   (e.Accum) '/' e.Text = <ErrorFlush (e.Accum '/') e.Text>;
-  (e.Accum) '\"' e.Text = (#TErrorFlush e.Accum '\"') <Root () e.Text>;
+  (e.Accum) '\"' e.Text = (TErrorFlush e.Accum '\"') <Root () e.Text>;
   (e.Accum) e.Text = (TokenError 'Expected error text or double quote') <Root () e.Text>;
 }
 
@@ -529,7 +527,7 @@ Literal-Escape {
 
 Literal-Quote {
   (e.Accum) '\'' e.Text = <Literal (e.Accum '\'') e.Text>;
-  (e.Accum) e.Text = (#TLiteral e.Accum) <Root () e.Text>;
+  (e.Accum) e.Text = (TLiteral e.Accum) <Root () e.Text>;
 }
 
 FlushNameTail {
@@ -597,7 +595,7 @@ FlushNameTail {
   (e.Accum) 'Z' e.Text = <FlushNameTail (e.Accum 'Z') e.Text>;
   (e.Accum) '-' e.Text = <FlushNameTail (e.Accum '-') e.Text>;
   (e.Accum) '_' e.Text = <FlushNameTail (e.Accum '_') e.Text>;
-  (e.Accum) e.Text = (#TNamedFlush e.Accum) <Root () e.Text>;
+  (e.Accum) e.Text = (TNamedFlush e.Accum) <Root () e.Text>;
 }
 
 Literal-DecCode {
