@@ -52,8 +52,9 @@ $ENTRY GetOpt {
       >;
 }
 
+
 *$FROM Library
-$EXTERN Add;
+$EXTERN Add;    /* этот файл собирается без прелюдии */
 
 Inc { s.Num = <Add s.Num 1>; }
 
@@ -216,3 +217,7 @@ DoFoldErrors {
 
   (e.Errors) e.Options = (e.Errors) e.Options;
 }
+
+/* Для построения .froms:
+//FROM Library
+*/

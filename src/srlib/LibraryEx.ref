@@ -323,3 +323,7 @@ $ENTRY Unique {
 
   e.Uniques = e.Uniques;
 }
+
+/* Для построения .froms:
+//FROM Library
+*/
