@@ -1,19 +1,16 @@
-//FROM Version
+*$FROM Version
 $EXTERN PrintVersion;
 
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN ArgList, Map;
 
-//FROM Library
-$EXTERN WriteLine, StrFromInt, Exit, System;
-
-//FROM ParseCmdLine
+*$FROM ParseCmdLine
 $EXTERN ParseCommandLine;
 
-//FROM FileScanner
+*$FROM FileScanner
 $EXTERN CreateFileList;
 
-//FROM Config
+*$FROM Config
 $EXTERN
   Config-GetFolders,
   Config-GetSourceFile,
@@ -28,19 +25,20 @@ $EXTERN
   Config-GetTargetFileName,
   Config-GetIncorporateds;
 
+
 $ENTRY Go { = <PrintVersion 'SRMake'> <Main <ArgList>>; }
 
 Main {
   (e.Program)
-    = <WriteLine 'Usage:'>
-      <WriteLine '  srmake flags... MainFileName[.sref]'>
-      <WriteLine>
-      <WriteLine 'flags:'>
-      <WriteLine '   [-s path\\to\\srefc.exe]'>
-      <WriteLine '   -c c++compiler'>
-      <WriteLine '   {-d search-dir}'>
-      <WriteLine '   [-o target]'>
-      <WriteLine '   -X flags-for-srefc'>;
+    = <Prout 'Usage:'>
+      <Prout '  srmake flags... MainFileName[.sref]'>
+      <Prout>
+      <Prout 'flags:'>
+      <Prout '   [-s path\\to\\srefc.exe]'>
+      <Prout '   -c c++compiler'>
+      <Prout '   {-d search-dir}'>
+      <Prout '   [-o target]'>
+      <Prout '   -X flags-for-srefc'>;
 
   (e.Program) e.Arguments
     = <MakeProject
@@ -49,7 +47,7 @@ Main {
 }
 
 MakeProject {
-  #Success t.Config
+  Success t.Config
     = <Map
         {
           (s.FolderTag e.Folder) = (e.Folder);
@@ -63,13 +61,11 @@ MakeProject {
     : t.Config^ e.Units
     = <RunSrefCompiler t.Config e.Units>;
 
-  #Fails e.Errors
+  Fails e.Errors
     = <Map
         {
           (s.Pos e.Message) =
-            <WriteLine
-              'Command line argument ' <StrFromInt s.Pos> ': ' e.Message
-            >;
+            <Prout 'Command line argument ' <Symb s.Pos> ': ' e.Message>;
         }
         e.Errors
       >
@@ -77,31 +73,31 @@ MakeProject {
 }
 
 PrintSrcPos {
-  #CMD-LINE = 'command line';
-  (s.LineNum e.FileName) = e.FileName ':' <StrFromInt s.LineNum>;
+  CMD-LINE = 'command line';
+  (s.LineNum e.FileName) = e.FileName ':' <Symb s.LineNum>;
 }
 
 RunSrefCompiler {
-  t.Config e.Units-B (#Error t.SrcPos e.Message) e.Units-E
+  t.Config e.Units-B (Error t.SrcPos e.Message) e.Units-E
     = <Map
         {
-          (#Error t.SrcPos^ e.Message^) =
-            <WriteLine <PrintSrcPos t.SrcPos> ': ' e.Message>;
+          (Error t.SrcPos^ e.Message^) =
+            <Prout <PrintSrcPos t.SrcPos> ': ' e.Message>;
 
-          (#Output e.Output) = ;
-          (#OutputWithNative (e.Output) e.Native) = ;
-          (#Source (s.Dialect e.Source) e.Output) = ;
-          (#Include e.Include) = ;
+          (Output e.Output) = ;
+          (OutputWithNative (e.Output) e.Native) = ;
+          (Source (s.Dialect e.Source) e.Output) = ;
+          (Include e.Include) = ;
         }
-        (#Error t.SrcPos e.Message) e.Units-E
+        (Error t.SrcPos e.Message) e.Units-E
       >
       <Exit 1>;
 
   t.Config e.Units
     = <Config-GetSrefCompiler t.Config> : e.SrefCompiler
-    = <MakeOptionalFlag Config-GetCppCompilerExe t.Config 'cpp-command-exe'>
+    = <MakeOptionalFlag &Config-GetCppCompilerExe t.Config 'cpp-command-exe'>
     : e.CppCompilerExe
-    = <MakeOptionalFlag Config-GetCppCompilerLib t.Config 'cpp-command-lib'>
+    = <MakeOptionalFlag &Config-GetCppCompilerLib t.Config 'cpp-command-lib'>
     : e.CppCompilerLib
     = <MakeTargetModeFlag t.Config> : e.TargetModeFlag
     = <MakeTargetFileFlag t.Config> : e.TargetFileFlag
@@ -133,10 +129,10 @@ RunSrefCompiler {
         >
         <Map
           {
-            (#Output e.Output) = ' "' e.Output '"';
-            (#OutputWithNative (e.Output) e.Native) = ' "' e.Output '"';
-            (#Source (s.Dialect e.Source) e.Output) = ' "' e.Source '"';
-            (#Include e.Include) = /* пусто */;
+            (Output e.Output) = ' "' e.Output '"';
+            (OutputWithNative (e.Output) e.Native) = ' "' e.Output '"';
+            (Source (s.Dialect e.Source) e.Output) = ' "' e.Source '"';
+            (Include e.Include) = /* пусто */;
           }
           e.Units
         >
@@ -145,7 +141,7 @@ RunSrefCompiler {
         0 = /* пусто */;
 
         s.RetCode
-          = <WriteLine 'ERROR: srefc-core returned code ' <StrFromInt s.RetCode>>
+          = <Prout 'ERROR: srefc-core returned code ' <Symb s.RetCode>>
             <Exit 1>;
       };
 }
@@ -163,11 +159,11 @@ MakeTargetModeFlag {
   t.Config
     = <Config-GetTargetMode t.Config>
     : {
-        #DefaultEXE = /* пусто */;
-        #EXE = ' --makeexe';
-        #LIB = ' --makelib';
-        #R = ' -R';
-        #CompileOnly = ' --compile-only';
+        DefaultEXE = /* пусто */;
+        EXE = ' --makeexe';
+        LIB = ' --makelib';
+        R = ' -R';
+        CompileOnly = ' --compile-only';
       };
 }
 
@@ -175,7 +171,7 @@ MakeTargetFileFlag {
   t.Config
     = <Config-GetTargetFileName t.Config>
     : {
-        #DefaultTarget = /* пусто */;
+        DefaultTarget = /* пусто */;
         e.TargetFile = ' --target-file="' e.TargetFile '"';
       };
 }
@@ -184,8 +180,8 @@ MakeSearchFolderFlags {
   t.Config
     = <Map
         {
-          (#Search e.Folder) = ' --directory="' e.Folder '"';
-          (#Runtime e.Folder) = ' --runtime-directory="' e.Folder '"';
+          (Search e.Folder) = ' --directory="' e.Folder '"';
+          (Runtime e.Folder) = ' --runtime-directory="' e.Folder '"';
         }
         <Config-GetFolders t.Config>
       >;
@@ -195,7 +191,7 @@ GetPrefix {
   t.Config
     = <Config-GetPrefix t.Config>
     : {
-        #NotSet = /* пусто */;
+        NotSet = /* пусто */;
         e.Prefix = e.Prefix;
       };
 }
