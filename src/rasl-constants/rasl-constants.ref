@@ -87,25 +87,25 @@ Word-Prefix {
 
 ParseWords {
   (e.OutPrefix) e.Words-B ((e.Prefix) e.WholeWord) e.Words-E (e.WholeWord) =
-    '#' e.Prefix e.WholeWord;
+    e.Prefix e.WholeWord;
 
   (e.OutPrefix) e.Words-B ((e.Prefix) e.Word) e.Words-E (e.Word e.Tail) =
-    '#' e.Prefix e.Word ' '
+    e.Prefix e.Word ' '
     <ParseWords (e.OutPrefix) e.Words-B (e.Word) e.Words-E (e.Tail)>;
 
   (e.OutPrefix) e.Words-B ((e.Prefix) e.Word) e.Words-E (e.Init e.Word) =
     <ParseWords (e.OutPrefix) e.Words-B (e.Word) e.Words-E (e.Init)>
-    ' #' e.Prefix e.Word;
+    ' ' e.Prefix e.Word;
 
   (e.OutPrefix) e.Words (s.MaybeVarIndex e.OneWord) =
     <CheckVarIndex (e.OutPrefix) s.MaybeVarIndex> e.OneWord;
 }
 
 CheckVarIndex {
-  (e.OutPrefix) 's' = '\'s\' #' e.OutPrefix;
-  (e.OutPrefix) 't' = '\'t\' #' e.OutPrefix;
-  (e.OutPrefix) 'e' = '\'e\' #' e.OutPrefix;
-  (e.OutPrefix) s.Other = '#' e.OutPrefix s.Other;
+  (e.OutPrefix) 's' = '\'s\' ' e.OutPrefix;
+  (e.OutPrefix) 't' = '\'t\' ' e.OutPrefix;
+  (e.OutPrefix) 'e' = '\'e\' ' e.OutPrefix;
+  (e.OutPrefix) s.Other = e.OutPrefix s.Other;
 }
 
 MakeDashes {
@@ -117,9 +117,11 @@ Generate {
   (e.Source) (e.Target) Success e.Lines =
     <SaveFile
       (e.Target)
-      ('// File generated automatically from ' e.Source)
-      ('// Edit ' e.Source ' first and then run:')
-      ('// $ rasl-constants ' e.Source ' ' e.Target)
+      ('/*')
+      ('  File generated automatically from ' e.Source)
+      ('  Edit ' e.Source ' first and then run:')
+      ('  $ rasl-constants ' e.Source ' ' e.Target)
+      ('*/')
       e.Lines
     >;
 
