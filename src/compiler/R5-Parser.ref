@@ -9,12 +9,13 @@ $EXTERN EL-AddErrorAt;
   s.Mode ::= Classic | Extended
 
   t.Unit ::= t.Function | t.Extern | t.SingleDeclaration | t.Include
-    | t.NativeBlock
+    | t.NativeBlock | t.Ident
   t.Extern ::= (Declaration t.Pos GN-Entry e.Name)
   t.SingleDeclaration ::= (s.SingleDeclarationTag t.Pos s.ScopeClass e.Name)
   s.SingleDeclarationTag ::= Enum | Swap
   t.Include ::= (Include t.Pos e.Name)
   t.NativeBlock ::= (NativeBlock t.Pos e.Code)
+  t.Ident ::= (Ident t.SrcPos e.Name)
 
   t.Function ::= (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
   e.Body ::= Sentences t.Sentence* | NativeBody t.Pos e.Code
@@ -83,7 +84,7 @@ UnitStartToken {
 }
 
 NameListTags {
-  = TkExtern TkEnum TkEEnum TkSwap TkESwap;
+  = TkExtern TkEnum TkEEnum TkSwap TkESwap TkLabel
 }
 
 OneOf {
@@ -170,6 +171,10 @@ TkSwap {
 
 TkESwap {
   t.Pos e.Name = (Swap t.Pos GN-Entry e.Name);
+}
+
+TkLabel {
+  t.Pos e.Name = (Ident t.Pos e.Name);
 }
 
 NameList-DoNames {
@@ -902,6 +907,7 @@ TokName {
   TkESwap = '$ESWAP';
   TkInclude = '$INCLUDE';
   TkScopeId = '$SCOPEID';
+  TkLabel = '$LABEL';
   TkEOF = 'end-of-file';
   TkRefal5Mode = '*$CLASSIC or *$EXTENDED';
   TkAmpersand = '\'&\'';

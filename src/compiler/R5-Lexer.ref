@@ -19,6 +19,7 @@ $EXTERN LoadFile, Inc;
     TkComma, TkColon, TkAssign, TkSemicolon ~ пусто
     TkExtern, TkEntry, TkEnum, TkEEnum, TkSwap, TkESwap, TkInclude ~ пусто
     TkScopeId ~ пусто
+    TkLabel ~ пусто
     TkEOF ~ пусто
     TkError ~ char* -- сообщение об ошибке в лексике
     TkRefal5Mode ~ Classic | Extended
@@ -229,7 +230,7 @@ DoScan-BuildKeyword {
     , (TkExtern '$EXTERN') (TkExtern '$EXTRN') (TkExtern '$EXTERNAL')
       (TkEntry '$ENTRY') (TkEnum '$ENUM') (TkEEnum '$EENUM')
       (TkSwap '$SWAP') (TkESwap '$ESWAP') (TkInclude '$INCLUDE')
-      (TkScopeId '$SCOPEID')
+      (TkScopeId '$SCOPEID') (TkLabel '$LABEL')
     : e.Keywords-B (s.Tag e.KeywordChars) e.Keywords-E
     = (s.Tag t.Pos)
       <DoScan <IncCol t.Pos Len e.KeywordChars> (e.Line) e.Lines>;

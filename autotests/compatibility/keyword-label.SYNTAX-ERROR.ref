@@ -1,0 +1,5 @@
+*$CLASSIC
+
+$LABEL Label;
+
+$ENTRY Go { = }
