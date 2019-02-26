@@ -1,7 +1,7 @@
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN Fetch, Pipe, MapReduce, Map, Reduce;
 
-//FROM Error
+*$FROM Error
 $EXTERN ErrorAt, WarningAt;
 
 
@@ -13,26 +13,26 @@ $EXTERN ErrorAt, WarningAt;
    неожиданный конец — TokenLexerInternalError-UnexpectedEOF.
 ==============================================================================*/
 
-//==============================================================================
-// Генератор автомата
-//==============================================================================
+*===============================================================================
+* Генератор автомата
+*===============================================================================
 
 $ENTRY DFA-Compile {
   e.Elements =
     <Fetch
       e.Elements
       <Pipe
-        (Reduce
+        (&Reduce
           {
             ((e.Sets) (e.Rules))
-            (#Set t.SrcPos (e.Name) e.Content) =
+            (Set t.SrcPos (e.Name) e.Content) =
               (
-                (e.Sets (t.SrcPos (e.Name) #NotUsed e.Content))
+                (e.Sets (t.SrcPos (e.Name) NotUsed e.Content))
                 (e.Rules)
               );
 
             ((e.Sets) (e.Rules))
-            (#Sentence t.SrcPos (e.Name) e.Content) =
+            (Sentence t.SrcPos (e.Name) e.Content) =
               (
                 (e.Sets)
                 (e.Rules (t.SrcPos (e.Name) e.Content))
@@ -45,10 +45,10 @@ $ENTRY DFA-Compile {
             (<ResolvingSets e.Sets>)
             (e.Rules);
         }
-        SubstituteSetsToRules
+        &SubstituteSetsToRules
         /* e.Rules */
-        (Map NormalizeRule)
-        PrepareFunctions
+        (&Map &NormalizeRule)
+        &PrepareFunctions
       >
     >;
 }
@@ -65,45 +65,45 @@ ResolvingSets {
     <Fetch
       e.Sets
       <Pipe
-        (Map
+        (&Map
           {
-            (t.SrcPos (e.Name) s.Used #Any) =
-              (t.SrcPos (e.Name) s.Used #Any);
+            (t.SrcPos (e.Name) s.Used Any) =
+              (t.SrcPos (e.Name) s.Used Any);
 
             (t.SrcPos (e.Name) s.Used e.Content) =
               (t.SrcPos (e.Name) s.Used <NormalizeContent () e.Content>);
           }
         )
-        SetCheckRecursion
-        SetSubstitute
+        &SetCheckRecursion
+        &SetSubstitute
         {
-          #Changed e.Sets^ = <ResolvingSets e.Sets>;
+          Changed e.Sets^ = <ResolvingSets e.Sets>;
 
-          #NotChanged e.Sets^ = e.Sets;
+          NotChanged e.Sets^ = e.Sets;
         }
       >
     >;
 }
 
 NormalizeContent {
-  (e.Chars) (#Chars e.Symbols) e.Tail =
+  (e.Chars) (Chars e.Symbols) e.Tail =
     <NormalizeContent
       (<UniqueSet e.Chars e.Symbols>) e.Tail
     >;
 
-  (e.Chars) (#Set t.SrcPos e.Name) e.Tail =
-    (#Set t.SrcPos e.Name) <NormalizeContent (e.Chars) e.Tail>;
+  (e.Chars) (Set t.SrcPos e.Name) e.Tail =
+    (Set t.SrcPos e.Name) <NormalizeContent (e.Chars) e.Tail>;
 
-  (e.Chars) #Any e.Tail = #Any;
+  (e.Chars) Any e.Tail = Any;
 
-  (e.Chars) = (#Chars e.Chars);
+  (e.Chars) = (Chars e.Chars);
 }
 
 SetCheckRecursion {
   e.Sets-B
-  (t.SetNamePos (e.Name) s.Used e.Content-B (#Set t.SrcPos e.Name) e.Content-E)
+  (t.SetNamePos (e.Name) s.Used e.Content-B (Set t.SrcPos e.Name) e.Content-E)
   e.Sets-E =
-    // Рекурсивная зависимость множеств — не ошибка.
+    /* Рекурсивная зависимость множеств — не ошибка. */
     <WarningAt t.SrcPos 'Recursive depended set ' e.Name>
     <SetCheckRecursion
       e.Sets-B (t.SetNamePos (e.Name) s.Used e.Content-B e.Content-E) e.Sets-E
@@ -114,100 +114,100 @@ SetCheckRecursion {
 
 SetSubstitute {
   e.Sets-B
-  ( t.SetNamePos (e.Name) s.Used e.Content-B (#Set t.SrcPos 'Any') e.Content-E )
+  ( t.SetNamePos (e.Name) s.Used e.Content-B (Set t.SrcPos 'Any') e.Content-E )
   e.Sets-E =
-    #Changed e.Sets-B ( t.SetNamePos (e.Name) s.Used #Any ) e.Sets-E;
+    Changed e.Sets-B ( t.SetNamePos (e.Name) s.Used Any ) e.Sets-E;
 
   e.Sets-B
   (
     t.SetNamePos (e.Name) s.UsedOuter
-    e.Content-B (#Set t.SrcPos e.IncName) e.Content-E
+    e.Content-B (Set t.SrcPos e.IncName) e.Content-E
   )
   e.Sets-M
   ( t.IncNamePos (e.IncName) s.UsedInner e.IncContent )
   e.Sets-E =
-    #Changed
+    Changed
     e.Sets-B
     ( t.SetNamePos (e.Name) s.UsedOuter e.Content-B e.IncContent e.Content-E )
-    e.Sets-M ( t.IncNamePos (e.IncName) #Used e.IncContent ) e.Sets-E;
+    e.Sets-M ( t.IncNamePos (e.IncName) Used e.IncContent ) e.Sets-E;
 
   e.Sets-B
   ( t.IncNamePos (e.IncName) s.UsedInner e.IncContent )
   e.Sets-M
   (
     t.SetNamePos (e.Name) s.UsedOuter
-    e.Content-B (#Set t.SrcPos e.IncName) e.Content-E
+    e.Content-B (Set t.SrcPos e.IncName) e.Content-E
   )
   e.Sets-E =
-    #Changed
-    e.Sets-B ( t.IncNamePos (e.IncName) #Used e.IncContent ) e.Sets-M
+    Changed
+    e.Sets-B ( t.IncNamePos (e.IncName) Used e.IncContent ) e.Sets-M
     ( t.SetNamePos (e.Name) s.UsedOuter e.Content-B e.IncContent e.Content-E )
     e.Sets-E;
 
   e.Sets-B
   (
     t.SetNamePos (e.Name) s.Used
-    e.Content-B (#Set t.SrcPos e.IncName) e.Content-E
+    e.Content-B (Set t.SrcPos e.IncName) e.Content-E
   )
   e.Sets-E =
     <ErrorAt t.SrcPos 'set ' e.IncName ' not defined'>;
 
-  e.Sets = #NotChanged e.Sets;
+  e.Sets = NotChanged e.Sets;
 }
 
 SubstituteSetsToRules {
-  ( (t.SetNamePos (e.Name) s.Used (#Chars e.Content)) e.Sets )
+  ( (t.SetNamePos (e.Name) s.Used (Chars e.Content)) e.Sets )
   (
     e.Rules-B
     (t.SentNamePos (e.RuleName)
       e.Alternatives-B
-      ( (#Set t.SrcPos e.Name) t.Flush t.NextState )
+      ( (Set t.SrcPos e.Name) t.Flush t.NextState )
       e.Alternatives-E
     )
     e.Rules-E
   ) =
     <SubstituteSetsToRules
-      ( (t.SetNamePos (e.Name) #Used (#Chars e.Content)) e.Sets )
+      ( (t.SetNamePos (e.Name) Used (Chars e.Content)) e.Sets )
       (
         e.Rules-B
         (t.SentNamePos (e.RuleName)
           e.Alternatives-B
-          ( (#Chars e.Content) t.Flush t.NextState )
+          ( (Chars e.Content) t.Flush t.NextState )
           e.Alternatives-E
         )
         e.Rules-E
       )
     >;
 
-  ( (t.SetNamePos (e.Name) s.Used #Any) e.Sets )
+  ( (t.SetNamePos (e.Name) s.Used Any) e.Sets )
   (
     e.Rules-B
     (t.SentNamePos (e.RuleName)
       e.Alternatives-B
-      ( (#Set t.SrcPos e.Name) t.Flush t.NextState )
+      ( (Set t.SrcPos e.Name) t.Flush t.NextState )
       e.Alternatives-E
     )
     e.Rules-E
   ) =
     <SubstituteSetsToRules
-      ( (t.SetNamePos (e.Name) #Used #Any) e.Sets )
+      ( (t.SetNamePos (e.Name) Used Any) e.Sets )
       (
         e.Rules-B
         (t.SentNamePos (e.RuleName)
           e.Alternatives-B
-          ( #Any t.Flush t.NextState )
+          ( Any t.Flush t.NextState )
           e.Alternatives-E
         )
         e.Rules-E
       )
     >;
 
-  // Для первого в списке множества не найдено вхождения
-  ( (t.SetNamePos (e.Name) #NotUsed e.Content) e.Sets ) (e.Rules) =
+  /* Для первого в списке множества не найдено вхождения */
+  ( (t.SetNamePos (e.Name) NotUsed e.Content) e.Sets ) (e.Rules) =
     <WarningAt t.SetNamePos 'Set :' e.Name ': is not used'>
     <SubstituteSetsToRules (e.Sets) (e.Rules)>;
 
-  ( (t.SetNamePos (e.Name) #Used e.Content) e.Sets ) (e.Rules) =
+  ( (t.SetNamePos (e.Name) Used e.Content) e.Sets ) (e.Rules) =
     <SubstituteSetsToRules (e.Sets) (e.Rules)>;
 
   ()
@@ -215,7 +215,7 @@ SubstituteSetsToRules {
     e.Rules-B
     (t.SentNamePos (e.RuleName)
       e.Alternatives-B
-      ( (#Set t.SrcPos 'Any') t.Flush t.NextState )
+      ( (Set t.SrcPos 'Any') t.Flush t.NextState )
       e.Alternatives-E
     )
     e.Rules-E
@@ -226,7 +226,7 @@ SubstituteSetsToRules {
         e.Rules-B
         (t.SentNamePos (e.RuleName)
           e.Alternatives-B
-          ( #Any t.Flush t.NextState )
+          ( Any t.Flush t.NextState )
           e.Alternatives-E
         )
         e.Rules-E
@@ -238,7 +238,7 @@ SubstituteSetsToRules {
     e.Rules-B
     (t.SentNamePos (e.RuleName)
       e.Alternatives-B
-      ( (#Set t.SrcPos e.Name) t.Flush t.NextState )
+      ( (Set t.SrcPos e.Name) t.Flush t.NextState )
       e.Alternatives-E
     )
     e.Rules-E
@@ -249,7 +249,7 @@ SubstituteSetsToRules {
 }
 
 SetDiff {
-  (e.Set) (#Any) = ;
+  (e.Set) (Any) = ;
 
   (e.Set1-B s.Common e.Set1-E) (e.Set2-B s.Common e.Set2-E) =
     <SetDiff (e.Set1-B e.Set1-E) (e.Set2-B e.Set2-E)>;
@@ -258,27 +258,27 @@ SetDiff {
 }
 
 NormalizeAlternative {
-  (s.CatchedEOF e.CatchedChars) ((#Chars e.Alternative) t.Flush t.Next) =
+  (s.CatchedEOF e.CatchedChars) ((Chars e.Alternative) t.Flush t.Next) =
     (s.CatchedEOF <UniqueSet e.CatchedChars e.Alternative>)
     ((<SetDiff (e.Alternative) (e.CatchedChars)>) t.Flush t.Next);
 
-  (s.CatchedEOF e.CatchedChars) (#Any t.Flush t.Next) =
-    (s.CatchedEOF #Any)
-    (#Any t.Flush t.Next);
+  (s.CatchedEOF e.CatchedChars) (Any t.Flush t.Next) =
+    (s.CatchedEOF Any)
+    (Any t.Flush t.Next);
 
-  (s.CatchedEOF e.CatchedChars) (#Empty t.Flush #Finitive) =
-    (#EOF-Catched e.CatchedChars) (#Empty t.Flush #Finitive);
+  (s.CatchedEOF e.CatchedChars) (Empty t.Flush Finitive) =
+    (EOF-Catched e.CatchedChars) (Empty t.Flush Finitive);
 
-  (s.CatchedEOF e.CatchedChars) (#Empty t.Flush t.NextRule) =
-    (#EOF-Catched #Any) (#Empty t.Flush t.NextRule);
+  (s.CatchedEOF e.CatchedChars) (Empty t.Flush t.NextRule) =
+    (EOF-Catched Any) (Empty t.Flush t.NextRule);
 }
 
 SplitAlternatives {
-  t.SentNamePos (e.Name) ( #Empty t.Flush t.Next ) =
-    (#Empty t.Flush t.Next);
+  t.SentNamePos (e.Name) ( Empty t.Flush t.Next ) =
+    (Empty t.Flush t.Next);
 
-  t.SentNamePos (e.Name) ( #Any t.Flush t.Next ) =
-    (#Any t.Flush t.Next);
+  t.SentNamePos (e.Name) ( Any t.Flush t.Next ) =
+    (Any t.Flush t.Next);
 
   t.SentNamePos (e.Name) ( (/* пусто */) t.Flush t.Next ) =
     /* пусто */
@@ -297,9 +297,9 @@ NormalizeRule {
     <Fetch
       e.Alternatives
       <Pipe
-        (MapReduce
-          NormalizeAlternative
-          (#EOF-NotCatched)
+        (&MapReduce
+          &NormalizeAlternative
+          (EOF-NotCatched)
         )
         {
           (s.CatchedEOF e.CatchedChars) e.Alternatives^ =
@@ -310,7 +310,7 @@ NormalizeRule {
             <DefaultCatchAnyChar t.SentNamePos e.CatchedChars>
             <DefaultCatchEOF s.CatchedEOF>;
         }
-        (Map (SplitAlternatives t.SentNamePos (e.Name)))
+        (&Map (&SplitAlternatives t.SentNamePos (e.Name)))
         {
           e.Alternatives^ =
             (t.SentNamePos (e.Name) e.Alternatives);
@@ -320,22 +320,22 @@ NormalizeRule {
 }
 
 WarningIfUncatched {
-  t.SentNamePos e.Name #EOF-Catched #Any =
+  t.SentNamePos e.Name EOF-Catched Any =
     /* нет предупреждения */;
 
-  t.SentNamePos e.Name #EOF-Catched e.CharSet =
+  t.SentNamePos e.Name EOF-Catched e.CharSet =
     <WarningAt
       t.SentNamePos
       'In rule ' e.Name ' some chars not catched, default alternative added'
     >;
 
-  t.SentNamePos e.Name #EOF-NotCatched #Any =
+  t.SentNamePos e.Name EOF-NotCatched Any =
     <WarningAt
       t.SentNamePos
       'In rule ' e.Name ' EOF not catched, default alternative added'
     >;
 
-  t.SentNamePos e.Name #EOF-NotCatched e.CharSet =
+  t.SentNamePos e.Name EOF-NotCatched e.CharSet =
     <WarningAt
       t.SentNamePos
       'In rule ' e.Name ' some chars and EOF not catched, '
@@ -344,19 +344,19 @@ WarningIfUncatched {
 }
 
 DefaultCatchAnyChar {
-  t.SentNamePos #Any =
+  t.SentNamePos Any =
     /* все символы обработаны пользователем, ничего не добавляем */;
 
   t.SentNamePos e.CatchedChars =
-    (#Any (#Flush 'TokenLexerInternalError-Unexpected') (t.SentNamePos 'Root'));
+    (Any (Flush 'TokenLexerInternalError-Unexpected') (t.SentNamePos 'Root'));
 }
 
 DefaultCatchEOF {
-  #EOF-Catched =
+  EOF-Catched =
     /* конец текста обработан пользователем, ничего не добавляем */;
 
-  #EOF-NotCatched =
-    (#Empty (#Flush 'TokenLexerInternalError-UnexpectedEOF') #Finitive);
+  EOF-NotCatched =
+    (Empty (Flush 'TokenLexerInternalError-UnexpectedEOF') Finitive);
 }
 
 PrepareFunctions {
@@ -368,7 +368,7 @@ PrepareFunctions {
 }
 
 ExtractExpected {
-  ( t.Head t.Flush #Finitive ) = ;
+  ( t.Head t.Flush Finitive ) = ;
 
   ( t.Head t.Flush ( t.SrcPos e.NextName ) ) =
     ( t.SrcPos e.NextName );
@@ -398,8 +398,8 @@ DoPrepareFunctions {
     ((e.NextRule)
       <Map
         {
-          (t.Head t.Flush #Finitive) =
-            (t.Head t.Flush #Finitive);
+          (t.Head t.Flush Finitive) =
+            (t.Head t.Flush Finitive);
 
           (t.Head t.Flush (t.GotoPos e.NextName)) =
             (t.Head t.Flush (e.NextName));
@@ -409,7 +409,7 @@ DoPrepareFunctions {
     )
     <DoPrepareFunctions
       (e.Written (e.NextRule))
-      ( e.Expected <Map ExtractExpected e.Alternatives> )
+      ( e.Expected <Map &ExtractExpected e.Alternatives> )
       e.Rules-B e.Rules-E
     >;
 
