@@ -95,7 +95,7 @@ lookup_compilers() {
 prepare_prefix() {
   echo Prepare common prefix...
   rm -f _test_prefix.exe-prefix
-  cp $LIBDIR/Library.sref .
+  cp $LIBDIR/Library.ref .
   ../../bin/srefc-core -o _test_prefix.exe-prefix "${COMMON_SRFLAGS[@]}" \
     Library \
     refalrts \

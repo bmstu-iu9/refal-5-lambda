@@ -33,20 +33,20 @@ setlocal
 
   set DIAG=++diagnostic+config=test-diagnostics.txt
 
-  echo Precompile Library.sref
-  copy ..\..\src\srlib\Library.sref .
+  echo Precompile Library.ref
+  copy ..\..\src\srlib\Library.ref .
   ..\..\bin\srefc-core %COMMON_SRFLAGS% -C Library 2>__error.txt
   if errorlevel 100 (
-    echo COMPILER FAILS ON Library.sref, SEE __error.txt
+    echo COMPILER FAILS ON Library.ref, SEE __error.txt
     exit /b 1
   )
   rem Some C++ compilers write syntax error messages to stderr,
   rem don't erase __error.txt
-  if not exist Library.sref (
+  if not exist Library.ref (
     echo COMPILATION FAILED, MAYBE SEE __error.txt
     exit /b 1
   )
-  erase __error.txt Library.sref
+  erase __error.txt Library.ref
   echo.
 
   for %%s in (%*) do call :COMPILE %%s || exit /b 1
@@ -168,7 +168,7 @@ setlocal
     call :CLEANUP Library-symbolic-file-handles
   )
 
-  erase Library.rasl Library.cpp Library.sref
+  erase Library.rasl Library.cpp Library.ref
 endlocal
 goto :EOF
 

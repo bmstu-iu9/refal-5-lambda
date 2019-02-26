@@ -28,14 +28,14 @@ run_all_tests() {
 
   DIAG="++diagnostic+config=test-diagnostics.txt"
 
-  echo Precompile Library.sref
-  cp $LIBDIR/Library.sref .
+  echo Precompile Library.ref
+  cp $LIBDIR/Library.ref .
   ../../bin/srefc-core "${COMMON_SRFLAGS[@]}" -C Library 2>__error.txt
   if [ $? -ge 100 ] || [ ! -e Library.rasl ]; then
-    echo COMPILER FAILS ON Library.sref, SEE __error.txt
+    echo COMPILER FAILS ON Library.ref, SEE __error.txt
     exit 1
   fi
-  rm __error.txt Library.sref
+  rm __error.txt Library.ref
   echo
 
   for s in $*; do

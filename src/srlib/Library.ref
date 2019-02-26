@@ -14,15 +14,15 @@
 
 %%
 
-//==============================================================================
-// Функции стандартной библиотеки Library Простого Рефала
-// и встроенные функции Рефала-5λ
-//==============================================================================
+*===============================================================================
+*  Функции стандартной библиотеки Library Простого Рефала
+*  и встроенные функции Рефала-5λ
+*===============================================================================
 
 
-//------------------------------------------------------------------------------
-// Встроенные функции Рефала-5λ
-//------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+*  Встроенные функции Рефала-5λ
+*-------------------------------------------------------------------------------
 
 
 /*
@@ -50,11 +50,11 @@ $ENTRY __FindMuPtr {
 $ENTRY PtrFromName {
   s.Cookie1 s.Cookie2 e.FuncName
     = <Module-LookupFunction
-        #CURRENT-AND-GLOBAL s.Cookie1 s.Cookie2 e.FuncName
+        CURRENT-AND-GLOBAL s.Cookie1 s.Cookie2 e.FuncName
       >
     : {
-        #Success s.FuncPtr = s.FuncPtr;
-        #Fails = /* пусто */;
+        Success s.FuncPtr = s.FuncPtr;
+        Fails = /* пусто */;
       };
 }
 
@@ -67,7 +67,7 @@ $ENTRY PtrFromName {
   e.NormedNumber ::= '-'? s.NUMBER+
 */
 $ENTRY Add {
-  // optimization for two digits
+  /* optimization for two digits */
   s.First s.Second = <__Step-Start> <Add-Digits s.First s.Second> <__Step-End>;
 
   e.ArithmArg
@@ -103,9 +103,9 @@ NormNumber {
   0 = 0;
   0 e.Digits = <NormNumber '+' e.Digits>;
 
-  '+' e.Digits, <AllDigits e.Digits> : #True = '+' e.Digits;
+  '+' e.Digits, <AllDigits e.Digits> : True = '+' e.Digits;
 
-  '-' e.Digits, <AllDigits e.Digits> : #True = '-' e.Digits;
+  '-' e.Digits, <AllDigits e.Digits> : True = '-' e.Digits;
 
   e.Digits, <Type e.Digits> : 'N' s.SubType e.Digits^
     = <NormNumber '+' e.Digits>;
@@ -118,9 +118,9 @@ AllDigits {
 }
 
 AllDigits-SwFirst {
-  'N' s.SubType s.Digit /* empty */ = #True;
+  'N' s.SubType s.Digit /* empty */ = True;
   'N' s.SubType s.Digit e.Items = <AllDigits e.Items>;
-  s.Type s.SubType e.Expr = #False;
+  s.Type s.SubType e.Expr = False;
 }
 
 Add-Normed {
@@ -242,7 +242,7 @@ $SWAP Buried;
   5. <Card> == s.CHAR* 0?
 */
 $ENTRY Card {
-  = <__Step-Start> <Get-Aux #stdin> <__Step-End>;
+  = <__Step-Start> <Get-Aux stdin> <__Step-End>;
 }
 
 
@@ -346,7 +346,7 @@ $ENTRY Dgall {
   10. <Div t.FirstNumber e.SecondNumber> == e.NormedNumber
 */
 $ENTRY Div {
-  // optimization for two digits
+  /* optimization for two digits */
   s.First s.Second
     = <__Step-Start> <Divmod-Digits s.First s.Second> : (s.Div) s.Rem
     = s.Div <__Step-End>;
@@ -363,7 +363,7 @@ $ENTRY Div {
   e.Quotient, e.Remainder ::= e.NormedNumber
 */
 $ENTRY Divmod {
-  // optimization for two digits
+  /* optimization for two digits */
   s.First s.Second
     = <__Step-Start> <Divmod-Digits s.First s.Second> <__Step-End>;
 
@@ -714,7 +714,7 @@ DoFirst {
 $ENTRY Get {
   s.FileNo
     = <__Step-Start>
-      <Autoopen 'r' s.FileNo> <Get-Aux <ZeroHandle s.FileNo #stdin>>
+      <Autoopen 'r' s.FileNo> <Get-Aux <ZeroHandle s.FileNo stdin>>
       <__Step-End>;
 }
 
@@ -919,7 +919,7 @@ Get-Aux {
 */
 $ENTRY Implode {
   s.Init e.Tail
-    // Тут нельзя записать через условия, потому что __Step-Start
+    /* Тут нельзя записать через условия, потому что __Step-Start */
     = <__Step-Start> <Type s.Init>
     : {
         'L' s.SubType s.Init^ = <DoImplode (s.Init) e.Tail> <__Step-End>;
@@ -1006,7 +1006,7 @@ $ENTRY Lower {
   19. <Mod t.FirstNumber e.SecondNumber> == e.NormedNumber
 */
 $ENTRY Mod {
-  // optimization for two digits
+  /* optimization for two digits */
   s.First s.Second
     = <__Step-Start> <Divmod-Digits s.First s.Second> : (s.Div) s.Mod
     = s.Mod <__Step-End>;
@@ -1023,7 +1023,7 @@ $ENTRY Mod {
   20. <Mul t.FirstNumber e.SecondNumber> == e.NormedNumber
 */
 $ENTRY Mul {
-  // optimization for two digits
+  /* optimization for two digits */
   s.First s.Second = <__Step-Start> <Mul-Digits s.First s.Second> <__Step-End>;
 
   e.ArithmArg
@@ -1137,7 +1137,7 @@ $ENTRY Numb {
 }
 
 Numb-Aux {
-  e.String = <DoNumb Numb-Ok Numb-Fail () e.String>;
+  e.String = <DoNumb &Numb-Ok &Numb-Fail () e.String>;
 }
 
 DoNumb {
@@ -1284,7 +1284,7 @@ $ENTRY Ord {
 */
 $ENTRY Print {
   e.AnyExpression
-    = <__Step-Start> <Put-Aux #stdout e.AnyExpression> <__Step-End>;
+    = <__Step-Start> <Put-Aux stdout e.AnyExpression> <__Step-End>;
 }
 
 
@@ -1293,7 +1293,7 @@ $ENTRY Print {
 */
 $ENTRY Prout {
   e.AnyExpression
-    = <__Step-Start> <Putout-Aux #stdout e.AnyExpression> <__Step-End>;
+    = <__Step-Start> <Putout-Aux stdout e.AnyExpression> <__Step-End>;
 }
 
 /**
@@ -1310,7 +1310,7 @@ $ENTRY Put {
   s.FileNo e.AnyExpression
     = <__Step-Start>
       <Autoopen 'w' s.FileNo>
-      <Put-Aux <ZeroHandle s.FileNo #stderr> e.AnyExpression>
+      <Put-Aux <ZeroHandle s.FileNo stderr> e.AnyExpression>
       <__Step-End>;
 }
 
@@ -1458,7 +1458,7 @@ $ENTRY Putout {
   s.FileNo e.AnyExpression
     = <__Step-Start>
       <Autoopen 'w' s.FileNo>
-      <Putout-Aux <ZeroHandle s.FileNo #stderr> e.AnyExpression>
+      <Putout-Aux <ZeroHandle s.FileNo stderr> e.AnyExpression>
       <__Step-End>;
 }
 
@@ -1572,7 +1572,7 @@ $ENTRY __Step-End {
   30. <Sub t.FirstNumber e.SecondNumber> == e.NormedNumber
 */
 $ENTRY Sub {
-  // optimization for two digits
+  /* optimization for two digits */
   s.First s.Second = <__Step-Start> <Sub-Digits s.First s.Second> <__Step-End>;
 
   e.ArithmArg
@@ -1898,11 +1898,11 @@ Sysfun-Xxin {
   e.FileName
     = <ExistFile e.FileName>
     : {
-        #True
+        True
           = <FOpen 'r' e.FileName> : s.FileNo
-          = <Xxin-Scan s.FileNo #General ('^') <Type <Get-Aux s.FileNo>>>;
+          = <Xxin-Scan s.FileNo General ('^') <Type <Get-Aux s.FileNo>>>;
 
-        #False = /* empty */;
+        False = /* empty */;
       };
 }
 
@@ -1910,42 +1910,42 @@ Xxin-Scan {
   s.FileNo s.State (t.Stack e.Scanned) '*' s.0
     = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned) <Type <Get-Aux s.FileNo>>>;
 
-  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '\\' e.Tail
+  s.FileNo Escape ((s.State t.Stack e.Scanned)) s.T s.S '\\' e.Tail
     = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\\') <Type e.Tail>>;
 
-  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '\'' e.Tail
+  s.FileNo Escape ((s.State t.Stack e.Scanned)) s.T s.S '\'' e.Tail
     = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\'') <Type e.Tail>>;
 
-  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '\"' e.Tail
+  s.FileNo Escape ((s.State t.Stack e.Scanned)) s.T s.S '\"' e.Tail
     = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\"') <Type e.Tail>>;
 
-  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '(' e.Tail
+  s.FileNo Escape ((s.State t.Stack e.Scanned)) s.T s.S '(' e.Tail
     = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '(') <Type e.Tail>>;
 
-  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S ')' e.Tail
+  s.FileNo Escape ((s.State t.Stack e.Scanned)) s.T s.S ')' e.Tail
     = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned ')') <Type e.Tail>>;
 
-  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '<' e.Tail
+  s.FileNo Escape ((s.State t.Stack e.Scanned)) s.T s.S '<' e.Tail
     = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '<') <Type e.Tail>>;
 
-  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S '>' e.Tail
+  s.FileNo Escape ((s.State t.Stack e.Scanned)) s.T s.S '>' e.Tail
     = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '>') <Type e.Tail>>;
 
-  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S 'n' e.Tail
+  s.FileNo Escape ((s.State t.Stack e.Scanned)) s.T s.S 'n' e.Tail
     = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\n') <Type e.Tail>>;
 
-  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S 't' e.Tail
+  s.FileNo Escape ((s.State t.Stack e.Scanned)) s.T s.S 't' e.Tail
     = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\t') <Type e.Tail>>;
 
-  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S 'r' e.Tail
+  s.FileNo Escape ((s.State t.Stack e.Scanned)) s.T s.S 'r' e.Tail
     = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned '\r') <Type e.Tail>>;
 
-  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S 'x' e.Tail
+  s.FileNo Escape ((s.State t.Stack e.Scanned)) s.T s.S 'x' e.Tail
     = <Xxin-Scan
-        s.FileNo #Escape-Hex ((s.State t.Stack e.Scanned)) <Type e.Tail>
+        s.FileNo Escape-Hex ((s.State t.Stack e.Scanned)) <Type e.Tail>
       >;
 
-  s.FileNo #Escape-Hex ((s.State t.Stack e.Scanned) s.D1 s.D2) s.T s.S e.Tail
+  s.FileNo Escape-Hex ((s.State t.Stack e.Scanned) s.D1 s.D2) s.T s.S e.Tail
     = <Xxin-Scan
         s.FileNo
         s.State (t.Stack e.Scanned <Chr <Add-Digits <Mul-Digits s.D1 16> s.D2>>)
@@ -1953,14 +1953,14 @@ Xxin-Scan {
       >;
 
   s.FileNo
-  #Escape-Hex ((s.State t.Stack e.Scanned) e.Digits)
+  Escape-Hex ((s.State t.Stack e.Scanned) e.Digits)
   s.T s.S s.Char e.Tail
     = <HexDigit s.Char>
     : {
         s.Digit
           = <Xxin-Scan
               s.FileNo
-              #Escape-Hex ((s.State t.Stack e.Scanned) e.Digits s.Digit)
+              Escape-Hex ((s.State t.Stack e.Scanned) e.Digits s.Digit)
               <Type e.Tail>
             >;
 
@@ -1969,101 +1969,101 @@ Xxin-Scan {
       };
 
   s.FileNo
-  #Escape-Hex ((s.State t.Stack e.Scanned) e.Digits)
+  Escape-Hex ((s.State t.Stack e.Scanned) e.Digits)
   'N' s.0 0
     = <Sysfun-Xxin-ERROR 'Unexpected EOF in \\x...'>;
 
-  s.FileNo #Escape ((s.State t.Stack e.Scanned)) 'N' s.0 0
+  s.FileNo Escape ((s.State t.Stack e.Scanned)) 'N' s.0 0
     = <Sysfun-Xxin-ERROR 'Unexpected EOF in escape sequence'>;
 
-  s.FileNo #Escape ((s.State t.Stack e.Scanned)) s.T s.S s.Next e.Tail
+  s.FileNo Escape ((s.State t.Stack e.Scanned)) s.T s.S s.Next e.Tail
     = <Sysfun-Xxin-ERROR 'Bad escape sequence \\' s.Next>;
 
   s.FileNo s.State (t.Stack e.Scanned) s.T s.S '\\' e.Tail
-    = <Xxin-Scan s.FileNo #Escape ((s.State t.Stack e.Scanned)) <Type e.Tail>>;
+    = <Xxin-Scan s.FileNo Escape ((s.State t.Stack e.Scanned)) <Type e.Tail>>;
 
-  s.FileNo #General (t.Stack e.Scanned) s.T s.S '(' e.Tail
+  s.FileNo General (t.Stack e.Scanned) s.T s.S '(' e.Tail
     = <Xxin-Scan
-        s.FileNo #General ((#General t.Stack e.Scanned)) <Type e.Tail>
+        s.FileNo General ((General t.Stack e.Scanned)) <Type e.Tail>
       >;
 
-  s.FileNo #General ((#General t.Stack e.Scanned) e.Inner) s.T s.S ')' e.Tail
-    = <Xxin-Scan s.FileNo #General (t.Stack e.Scanned (e.Inner)) <Type e.Tail>>;
+  s.FileNo General ((General t.Stack e.Scanned) e.Inner) s.T s.S ')' e.Tail
+    = <Xxin-Scan s.FileNo General (t.Stack e.Scanned (e.Inner)) <Type e.Tail>>;
 
-  s.FileNo #General ('^' e.Scanned) s.T s.S ')' e.Tail
+  s.FileNo General ('^' e.Scanned) s.T s.S ')' e.Tail
     = <Sysfun-Xxin-ERROR 'Unbalanced )'>;
 
-  // EXIT FROM RECURSION
-  s.FileNo #General ('^' e.Scanned) 'N' s.0 0 = <FClose s.FileNo> e.Scanned;
+  /* EXIT FROM RECURSION */
+  s.FileNo General ('^' e.Scanned) 'N' s.0 0 = <FClose s.FileNo> e.Scanned;
 
-  s.FileNo #General ((#General t.Stack e.Scanned) e.Inner) 'N' s.0 0
+  s.FileNo General ((General t.Stack e.Scanned) e.Inner) 'N' s.0 0
     = <Sysfun-Xxin-ERROR 'Unbalanced ('>;
 
-  s.FileNo #General (t.Stack e.Scanned) s.S s.T '\'' e.Tail
+  s.FileNo General (t.Stack e.Scanned) s.S s.T '\'' e.Tail
     = <Xxin-Scan
-        s.FileNo #Quote ((#General t.Stack e.Scanned) '\'') <Type e.Tail>
+        s.FileNo Quote ((General t.Stack e.Scanned) '\'') <Type e.Tail>
       >;
 
-  s.FileNo #General (t.Stack e.Scanned) s.S s.T '"' e.Tail
+  s.FileNo General (t.Stack e.Scanned) s.S s.T '"' e.Tail
     = <Xxin-Scan
-        s.FileNo #Quote ((#General t.Stack e.Scanned) '"') <Type e.Tail>
+        s.FileNo Quote ((General t.Stack e.Scanned) '"') <Type e.Tail>
       >;
 
   s.FileNo
-  #Quote ((#General t.Stack e.Scanned) s.Quote e.Quotten)
+  Quote ((General t.Stack e.Scanned) s.Quote e.Quotten)
   s.S s.T s.Quote e.Tail
     = <Xxin-Scan
         s.FileNo
-        #General (t.Stack e.Scanned <Quote s.Quote e.Quotten>)
+        General (t.Stack e.Scanned <Quote s.Quote e.Quotten>)
         <Type e.Tail>
       >;
 
-  s.FileNo #Quote ((#General t.Stack e.Scanned) s.Quote e.Quotten) 'N' s.0 0
+  s.FileNo Quote ((General t.Stack e.Scanned) s.Quote e.Quotten) 'N' s.0 0
     = <Sysfun-Xxin-ERROR 'Unexpected EOF in ' s.Quote '...'>;
 
-  s.FileNo #General (t.Stack e.Scanned) 'L' s.S s.Letter e.Tail
+  s.FileNo General (t.Stack e.Scanned) 'L' s.S s.Letter e.Tail
     = <Xxin-Scan
-        s.FileNo #Word ((#General t.Stack e.Scanned) s.Letter) <Type e.Tail>
+        s.FileNo Word ((General t.Stack e.Scanned) s.Letter) <Type e.Tail>
       >;
 
-  s.FileNo #Word (t.Stack e.Scanned) 'L' s.S s.Letter e.Tail
-    = <Xxin-Scan s.FileNo #Word (t.Stack e.Scanned s.Letter) <Type e.Tail>>;
+  s.FileNo Word (t.Stack e.Scanned) 'L' s.S s.Letter e.Tail
+    = <Xxin-Scan s.FileNo Word (t.Stack e.Scanned s.Letter) <Type e.Tail>>;
 
-  s.FileNo #Word (t.Stack e.Scanned) 'D' s.0 s.Digit e.Tail
-    = <Xxin-Scan s.FileNo #Word (t.Stack e.Scanned s.Digit) <Type e.Tail>>;
+  s.FileNo Word (t.Stack e.Scanned) 'D' s.0 s.Digit e.Tail
+    = <Xxin-Scan s.FileNo Word (t.Stack e.Scanned s.Digit) <Type e.Tail>>;
 
-  s.FileNo #Word (t.Stack e.Scanned) s.T s.S '-' e.Tail
-    = <Xxin-Scan s.FileNo #Word (t.Stack e.Scanned '-') <Type e.Tail>>;
+  s.FileNo Word (t.Stack e.Scanned) s.T s.S '-' e.Tail
+    = <Xxin-Scan s.FileNo Word (t.Stack e.Scanned '-') <Type e.Tail>>;
 
-  s.FileNo #Word (t.Stack e.Scanned) s.T s.S '_' e.Tail
-    = <Xxin-Scan s.FileNo #Word (t.Stack e.Scanned '_') <Type e.Tail>>;
+  s.FileNo Word (t.Stack e.Scanned) s.T s.S '_' e.Tail
+    = <Xxin-Scan s.FileNo Word (t.Stack e.Scanned '_') <Type e.Tail>>;
 
-  s.FileNo #Word ((#General t.Stack e.Scanned) e.Word) s.T s.S ' ' e.Tail
+  s.FileNo Word ((General t.Stack e.Scanned) e.Word) s.T s.S ' ' e.Tail
     = <Xxin-Scan
-        s.FileNo #General (t.Stack e.Scanned <Implode_Ext e.Word>) <Type e.Tail>
+        s.FileNo General (t.Stack e.Scanned <Implode_Ext e.Word>) <Type e.Tail>
       >;
 
-  s.FileNo #Word (t.Stack e.Scanned) 'N' s.0 0 /* EOF */
+  s.FileNo Word (t.Stack e.Scanned) 'N' s.0 0 /* EOF */
     = <Sysfun-Xxin-ERROR 'Unexpected EOF while reading word'>;
 
-  s.FileNo #Word (t.Stack e.Scanned) s.T s.S s.Other e.Tail
+  s.FileNo Word (t.Stack e.Scanned) s.T s.S s.Other e.Tail
     = <Sysfun-Xxin-ERROR 'Unexpected "' s.Other '" while reading word'>;
 
-  s.FileNo #General (t.Stack e.Scanned) 'D' s.0 s.Digit e.Tail
+  s.FileNo General (t.Stack e.Scanned) 'D' s.0 s.Digit e.Tail
     = <Xxin-Scan
-        s.FileNo #Number ((#General t.Stack e.Scanned) s.Digit) <Type e.Tail>
+        s.FileNo Number ((General t.Stack e.Scanned) s.Digit) <Type e.Tail>
       >;
 
-  s.FileNo #Number (t.Stack e.Scanned) 'D' s.0 s.Digit e.Tail
-    = <Xxin-Scan s.FileNo #Number (t.Stack e.Scanned s.Digit) <Type e.Tail>>;
+  s.FileNo Number (t.Stack e.Scanned) 'D' s.0 s.Digit e.Tail
+    = <Xxin-Scan s.FileNo Number (t.Stack e.Scanned s.Digit) <Type e.Tail>>;
 
-  s.FileNo #Number ((#General t.Stack e.Scanned) e.Number) s.T s.S ' ' e.Tail
+  s.FileNo Number ((General t.Stack e.Scanned) e.Number) s.T s.S ' ' e.Tail
     = <Numb-Aux e.Number>
     : {
         s.OneMacroDigit
           = <Xxin-Scan
               s.FileNo
-              #General (t.Stack e.Scanned s.OneMacroDigit)
+              General (t.Stack e.Scanned s.OneMacroDigit)
               <Type e.Tail>
             >;
 
@@ -2071,14 +2071,14 @@ Xxin-Scan {
           = <Sysfun-Xxin-ERROR 'Very long macrodigit is read'>;
       };
 
-  s.FileNo #Number (t.Stack e.Scanned) 'N' s.0 0 /* EOF */
+  s.FileNo Number (t.Stack e.Scanned) 'N' s.0 0 /* EOF */
     = <Sysfun-Xxin-ERROR 'Unexpected EOF while reading macrodigit'>;
 
-  s.FileNo #Number (t.Stack e.Scanned) s.T s.S s.Other e.Tail
+  s.FileNo Number (t.Stack e.Scanned) s.T s.S s.Other e.Tail
     = <Sysfun-Xxin-ERROR 'Unexpected "' s.Other '" while reading macrodigit'>;
 
-  s.FileNo #General (t.Stack e.Scanned) s.T s.S ' ' e.Tail
-    = <Xxin-Scan s.FileNo #General (t.Stack e.Scanned) <Type e.Tail>>;
+  s.FileNo General (t.Stack e.Scanned) s.T s.S ' ' e.Tail
+    = <Xxin-Scan s.FileNo General (t.Stack e.Scanned) <Type e.Tail>>;
 
   s.FileNo s.State (t.Stack e.Scanned) s.T s.S s.Other e.Tail
     = <Xxin-Scan s.FileNo s.State (t.Stack e.Scanned s.Other) <Type e.Tail>>;
@@ -2124,11 +2124,11 @@ Xxout-Wrap {
 Xxout-Scan {
   'L' s.S s.Letter e.Tail
     = <Xxout-Chars () 'L' s.S s.Letter e.Tail> : (e.Chars) s.T s.S^ e.Tail^
-    = '' e.Chars '' <Xxout-Scan s.T s.S e.Tail>;
+    = '\'' e.Chars '\'' <Xxout-Scan s.T s.S e.Tail>;
 
   'D' s.0 s.Digit e.Tail
     = <Xxout-Chars () 'D' s.0 s.Digit e.Tail> : (e.Chars) s.T s.S e.Tail^
-    = '' e.Chars '' <Xxout-Scan s.T s.S e.Tail>;
+    = '\'' e.Chars '\'' <Xxout-Scan s.T s.S e.Tail>;
 
   'Wi' s.Word e.Tail = <Explode s.Word> ' ' <Xxout-Scan <Type e.Tail>>;
 
@@ -2141,11 +2141,11 @@ Xxout-Scan {
 
   'P' s.S s.Printable e.Tail
     = <Xxout-Chars () 'P' s.S s.Printable e.Tail> : (e.Chars) s.T s.S^ e.Tail^
-    = '' e.Chars '' <Xxout-Scan s.T s.S e.Tail>;
+    = '\'' e.Chars '\'' <Xxout-Scan s.T s.S e.Tail>;
 
   'O' s.S s.Other e.Tail
     = <Xxout-Chars () 'O' s.S s.Other e.Tail> : (e.Chars) s.T s.S^ e.Tail^
-    = '' e.Chars '' <Xxout-Scan s.T s.S e.Tail>;
+    = '\'' e.Chars '\'' <Xxout-Scan s.T s.S e.Tail>;
 
   'B' s.0 (e.Inner) e.Tail
     = '(' <Xxout-Scan <Type e.Inner>> ')' <Xxout-Scan <Type e.Tail>>;
@@ -2649,7 +2649,7 @@ $ENTRY TimeElapsed {
   61. <Compare t.FirstNumber e.SecondNumber> == '-' | '0' | '+'
 */
 $ENTRY Compare {
-  // optimization for two digits
+  /* optimization for two digits */
   s.First s.Second = <Compare-Digits s.First s.Second>;
 
   e.ArithmArg
@@ -2907,7 +2907,7 @@ $ENTRY Write {
   s.FileNo e.AnyExpression
     = <__Step-Start>
       <Autoopen 'w' s.FileNo>
-      <Write-Aux <ZeroHandle s.FileNo #stderr> e.AnyExpression>
+      <Write-Aux <ZeroHandle s.FileNo stderr> e.AnyExpression>
       <__Step-End>;
 }
 
@@ -2922,67 +2922,67 @@ Write-Aux {
   67. <ListOfBuiltin> == (s.NUMBER s.COMPOUND { regular | special })*
 */
 $ENTRY ListOfBuiltin {
-  = (1 #Mu #special)
-    (2 #Add #regular)
-    (3 #Arg #regular)
-    (4 #Br #regular)
-    (5 #Card #regular)
-    (6 #Chr #regular)
-    (7 #Cp #regular)
-    (8 #Dg #regular)
-    (9 #Dgall #regular)
-    (10 #Div #regular)
-    (11 #Divmod #regular)
-    (12 #Explode #regular)
-    (13 #First #regular)
-    (14 #Get #regular)
-    (15 #Implode #regular)
-    (16 #Last #regular)
-    (17 #Lenw #regular)
-    (18 #Lower #regular)
-    (19 #Mod #regular)
-    (20 #Mul #regular)
-    (21 #Numb #regular)
-    (22 #Open #regular)
-    (23 #Ord #regular)
-    (24 #Print #regular)
-    (25 #Prout #regular)
-    (26 #Put #regular)
-    (27 #Putout #regular)
-    (28 #Rp #regular)
-    (29 #Step #regular)
-    (30 #Sub #regular)
-    (31 #Symb #regular)
-    (32 #Time #regular)
-    (33 #Type #regular)
-    (34 #Upper #regular)
-    (35 #Sysfun #regular)
-    (45 #Freeze #regular)
-    (46 #Freezer #regular)
-    (47 #Dn #regular)
-    (48 #Up #special)
-    (49 #Ev-met #special)
-    (50 #Residue #special)
-    (51 #GetEnv #regular)
-    (52 #System #regular)
-    (53 #Exit #regular)
-    (54 #Close #regular)
-    (55 #ExistFile #regular)
-    (56 #GetCurrentDirectory #regular)
-    (57 #RemoveFile #regular)
-    (58 #Implode_Ext #regular)
-    (59 #Explode_Ext #regular)
-    (60 #TimeElapsed #regular)
-    (61 #Compare #regular)
-    (62 #DeSysfun #regular)
-    (63 #XMLParse #regular)
-    (64 #Random #regular)
-    (65 #RandomDigit #regular)
-    (66 #Write #regular)
-    (67 #ListOfBuiltin #regular)
-    (68 #SizeOf #regular)
-    (69 #GetPID #regular)
-    (71 #GetPPID #regular);
+  = (1 Mu special)
+    (2 Add regular)
+    (3 Arg regular)
+    (4 Br regular)
+    (5 Card regular)
+    (6 Chr regular)
+    (7 Cp regular)
+    (8 Dg regular)
+    (9 Dgall regular)
+    (10 Div regular)
+    (11 Divmod regular)
+    (12 Explode regular)
+    (13 First regular)
+    (14 Get regular)
+    (15 Implode regular)
+    (16 Last regular)
+    (17 Lenw regular)
+    (18 Lower regular)
+    (19 Mod regular)
+    (20 Mul regular)
+    (21 Numb regular)
+    (22 Open regular)
+    (23 Ord regular)
+    (24 Print regular)
+    (25 Prout regular)
+    (26 Put regular)
+    (27 Putout regular)
+    (28 Rp regular)
+    (29 Step regular)
+    (30 Sub regular)
+    (31 Symb regular)
+    (32 Time regular)
+    (33 Type regular)
+    (34 Upper regular)
+    (35 Sysfun regular)
+    (45 Freeze regular)
+    (46 Freezer regular)
+    (47 Dn regular)
+    (48 Up special)
+    (49 Ev-met special)
+    (50 Residue special)
+    (51 GetEnv regular)
+    (52 System regular)
+    (53 Exit regular)
+    (54 Close regular)
+    (55 ExistFile regular)
+    (56 GetCurrentDirectory regular)
+    (57 RemoveFile regular)
+    (58 Implode_Ext regular)
+    (59 Explode_Ext regular)
+    (60 TimeElapsed regular)
+    (61 Compare regular)
+    (62 DeSysfun regular)
+    (63 XMLParse regular)
+    (64 Random regular)
+    (65 RandomDigit regular)
+    (66 Write regular)
+    (67 ListOfBuiltin regular)
+    (68 SizeOf regular)
+    (69 GetPID regular)
+    (71 GetPPID regular);
 }
 
 
@@ -3086,12 +3086,12 @@ $ENTRY GetPPID {
 
 
 
-//------------------------------------------------------------------------------
-// Стандартные функции Простого Рефала
-//------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+*  Стандартные функции Простого Рефала
+*-------------------------------------------------------------------------------
 
 
-// Ввод-вывод
+* Ввод-вывод
 
 /**
   <FClose s.FileNo> == []
@@ -3174,7 +3174,7 @@ GetFreeHandle {
   <ReadLine> == s.CHAR* 0?
 */
 $ENTRY ReadLine {
-  = <Get #stdin>;
+  = <Get stdin>;
 }
 
 
@@ -3184,26 +3184,26 @@ $ENTRY ReadLine {
   Synonym for Prout
 */
 $ENTRY WriteLine {
-  e.AnyExpression = <Putout #stdout e.AnyExpression>;
+  e.AnyExpression = <Putout stdout e.AnyExpression>;
 }
 
 
-// Работа с типами символов
+* Работа с типами символов
 
 /**
   <IntFromStr s.DIGIT-CHAR* e.NotDigitExpr>
-    == #Success s.MACRODIGIT e.NotDigitExpr
+    == Success s.MACRODIGIT e.NotDigitExpr
   <IntFromStr e.NotDigitExpr>
-    == #Fails e.NotDigitExpr
+    == Fails e.NotDigitExpr
 */
 $ENTRY IntFromStr {
   e.String
     = <DoNumb
           {
-            (e.MacroDigits s.LastDigit) e.Rest = #Success s.LastDigit e.Rest;
+            (e.MacroDigits s.LastDigit) e.Rest = Success s.LastDigit e.Rest;
           }
           {
-            e.Rest = #Fails e.Rest;
+            e.Rest = Fails e.Rest;
           }
         () e.String
       >;
@@ -3399,7 +3399,7 @@ bool cookie_ns::compare(refalrts::Iter left, refalrts::Iter right) {
 %%
 
 
-// Двоичный ввод-вывод
+* Двоичный ввод-вывод
 
 /**
   <FWriteBytes s.FileNo s.Byte*> == []
@@ -3561,7 +3561,7 @@ $ENTRY FTell {
 /**
   <FSeek s.FileNo s.Origin s.Sign s.Offset> == []
 
-  s.Origin ::= #CURRENT | #BEGIN | #END
+  s.Origin ::= CURRENT | BEGIN | END
   s.Sign ::= '+' | '-'
   s.Offset ::= s.MACRODIGIT
 */
@@ -3680,8 +3680,8 @@ $ENTRY RenameFile {
 
 /**
   <Module-Load e.ModuleName>
-    == #Success s.ModuleHandle
-    == #Fails e.Errors
+    == Success s.ModuleHandle
+    == Fails e.Errors
 
   e.Errors ::= пусто
   TODO: поддержка сообщений об ошибках

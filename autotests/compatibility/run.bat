@@ -86,7 +86,7 @@ goto :EOF
 
   echo Prepare common prefix...
   if exist _test_prefix.exe-prefix erase _test_prefix.exe-prefix
-  copy ..\..\src\srlib\Library.sref .
+  copy ..\..\src\srlib\Library.ref .
   ..\..\bin\srefc-core -o _test_prefix.exe-prefix %COMMON_SRFLAGS% ^
     Library ^
     refalrts ^
