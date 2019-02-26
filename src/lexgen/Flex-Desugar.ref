@@ -1,4 +1,4 @@
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN Fetch, Pipe;
 
 /**
@@ -18,9 +18,9 @@ $ENTRY Flex-Desugar {
     <Fetch
       e.AST
       <Pipe
-        Pass-RemoveRange
-        Pass-RemoveOpt
-        Pass-RemoveOneMany
+        &Pass-RemoveRange
+        &Pass-RemoveOpt
+        &Pass-RemoveOneMany
       >
     >;
 }
