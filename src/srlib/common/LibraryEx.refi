@@ -1,14 +1,14 @@
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN Apply, Map, Reduce, Fetch, Y, MapAccum, UnBracket, DelAccumulator,
   Inc, Dec, FastIntFromStr, Pipe, Seq;
 
-// Function MapReduce is deprecated!!!
-// Use MapAccum instead it.
+* Function MapReduce is deprecated!!!
+* Use MapAccum instead it.
 
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN MapReduce;
 
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN LoadFile, SaveFile, AppendFile, LoadBytes, SaveBytes, AppendBytes,
   ArgList, TermCompare, TermCompare-T, Trim, Trim-L, Trim-R, Sort, Min, Max,
   OneOf, Unique;
