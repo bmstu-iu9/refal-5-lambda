@@ -1,8 +1,6 @@
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN Fetch, ArgList, SaveFile, LoadFile, MapReduce, Trim;
 
-//FROM Library
-$EXTERN WriteLine;
 
 $ENTRY Go {
   =
@@ -20,59 +18,56 @@ $ENTRY Go {
 
 Help {
   =
-    <WriteLine
-      'rasl-constants - generates mnemonic->opcode map from runtime header'
-    >
-    <WriteLine>
-    <WriteLine 'Usage:'>
-    <WriteLine '\trasl-constants refalrts.h Opcodes.sref'>;
+    <Prout 'rasl-constants - generates mnemonic->opcode map from runtime header'>
+    <Prout>
+    <Prout 'Usage:'>
+    <Prout '\trasl-constants refalrts.h Opcodes.sref'>;
 }
 
 Parse {
   e.Source =
     <MapReduce
       {
-        #Scan
+        Scan
         ('enum ' e.EnumName '{ /*' e.FuncName ':' e.Prefix ';' e.Words '*/') =
           <Fetch
             <SplitWords <Trim e.Words>>
             {
               e.SplittenWords =
-                (#ParseEnum (<Word-Prefix e.Prefix>) e.SplittenWords)
+                (ParseEnum (<Word-Prefix e.Prefix>) e.SplittenWords)
                 ()
                 ('$ENTRY ' <Trim e.FuncName> '{');
             }
           >;
 
-        #Scan (e.OtherLine) = #Scan;
+        Scan (e.OtherLine) = Scan;
 
-        #Scan #EOF = #Success;
+        Scan EOF = Success;
 
-        (#ParseEnum ((e.OutPrefix) e.Prefix) e.Words)
+        (ParseEnum ((e.OutPrefix) e.Prefix) e.Words)
         ('  ' e.Prefix e.Constant ' = ' e.Number ',') =
-          (#ParseEnum ((e.OutPrefix) e.Prefix) e.Words)
+          (ParseEnum ((e.OutPrefix) e.Prefix) e.Words)
           (
             '  '
             <MakeDashes <ParseWords (e.OutPrefix) e.Words (e.Constant)>>
             ' = ' e.Number ';'
           );
 
-        (#ParseEnum ((e.OutPrefix) e.Prefix) e.Words)
+        (ParseEnum ((e.OutPrefix) e.Prefix) e.Words)
         ('  /*+WORDS:' e.RawWords '*/') =
-          (#ParseEnum
+          (ParseEnum
             ((e.OutPrefix) e.Prefix)
             e.Words <SplitWords <Trim e.RawWords>>
           );
 
-        (#ParseEnum ((e.OutPrefix) e.Prefix) e.Words) ('};') =
-          #Scan ('}');
+        (ParseEnum ((e.OutPrefix) e.Prefix) e.Words) ('};') = Scan ('}');
 
-        (#ParseEnum (e.Prefix) e.Words) t.LineOrEOF = #Fails;
+        (ParseEnum (e.Prefix) e.Words) t.LineOrEOF = Fails;
 
-        #Fails t.LineOrEOF = #Fails;
+        Fails t.LineOrEOF = Fails;
       }
-      #Scan
-      <LoadFile e.Source> #EOF
+      Scan
+      <LoadFile e.Source> EOF
     >;
 }
 
@@ -119,7 +114,7 @@ MakeDashes {
 }
 
 Generate {
-  (e.Source) (e.Target) #Success e.Lines =
+  (e.Source) (e.Target) Success e.Lines =
     <SaveFile
       (e.Target)
       ('// File generated automatically from ' e.Source)
@@ -128,6 +123,6 @@ Generate {
       e.Lines
     >;
 
-  (e.Source) (e.Target) #Fails e.Lines =
-    <WriteLine 'rasl-constants: wrong file ' e.Source>;
+  (e.Source) (e.Target) Fails e.Lines =
+    <Prout 'rasl-constants: wrong file ' e.Source>;
 }
