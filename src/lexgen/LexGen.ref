@@ -2,40 +2,40 @@
   Генератор лексических анализаторов.
 */
 
-//FROM Version
+*$FROM Version
 $EXTERN PrintVersion;
 
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN ArgList, Fetch, Pipe, LoadFile, SaveFile, Map, Inc, MapReduce;
 
-//FROM ParseCmdLine
+*$FROM ParseCmdLine
 $EXTERN ParseCommandLine;
 
-//FROM DFA-Lexer
+*$FROM DFA-Lexer
 $EXTERN DFA-Tokens;
 
-//FROM DFA-Parser
+*$FROM DFA-Parser
 $EXTERN DFA-Parse;
 
-//FROM DFA-Compiler
+*$FROM DFA-Compiler
 $EXTERN DFA-Compile;
 
-//FROM Generator
+*$FROM Generator
 $EXTERN GenerateFromDFA;
 
-//FROM Error
+*$FROM Error
 $EXTERN ErrorAt;
 
-//FROM Flex-Lexer
+*$FROM Flex-Lexer
 $EXTERN Flex-Tokens;
 
-//FROM Flex-Parser
+*$FROM Flex-Parser
 $EXTERN Flex-Parse;
 
-//FROM Flex-Checker
+*$FROM Flex-Checker
 $EXTERN Flex-Check;
 
-//FROM Flex-Desugar
+*$FROM Flex-Desugar
 $EXTERN Flex-Desugar;
 
 $ENTRY Go {
@@ -48,13 +48,13 @@ $ENTRY Go {
             <ParseCommandLine e.Options>;
         }
         {
-          #InPlace e.FileName =
+          InPlace e.FileName =
             <SaveFile
               (e.FileName)
               <Transform (e.FileName) <LoadFile e.FileName>>
             >;
 
-          #From (e.From) #To (e.To) =
+          From (e.From) To (e.To) =
             <SaveFile
               (e.To)
               ('/* Automatically generated file, don\'t edit! */')
@@ -64,7 +64,7 @@ $ENTRY Go {
               <Transform (e.From) <LoadFile e.From>>
             >;
 
-          #BadCommandLine =
+          BadCommandLine =
             /* ничего не делаем, CheckOption уже вывел сообщение об ошибке */;
         }
       >
@@ -98,19 +98,19 @@ Transform {
             <Fetch
               s.Length e.Description
               <Pipe
-                DFA-Tokens
-                (Map
+                &DFA-Tokens
+                (&Map
                   {
-                    (#TError s.LineNumber e.Text) =
+                    (TError s.LineNumber e.Text) =
                       <ErrorAt (s.LineNumber e.Source) e.Text>;
 
                     (s.TokType s.LineNumber e.Info) =
                       (s.TokType (s.LineNumber e.Source) e.Info);
                   }
                 )
-                DFA-Parse
-                DFA-Compile
-                GenerateFromDFA
+                &DFA-Parse
+                &DFA-Compile
+                &GenerateFromDFA
                 {
                   e.Generated =
                     e.LinesBefore
@@ -125,10 +125,10 @@ Transform {
             <Fetch
               s.Length e.Description
               <Pipe
-                Flex-Tokens
-                (Map
+                &Flex-Tokens
+                (&Map
                   {
-                    (#TError s.LineNumber e.Text) =
+                    (TError s.LineNumber e.Text) =
                       <ErrorAt (s.LineNumber e.Source) e.Text>;
 
                     (s.TokType s.LineNumber e.Info) =
@@ -137,14 +137,14 @@ Transform {
                     t.Other = t.Other;
                   }
                 )
-                Flex-Parse
+                &Flex-Parse
                 {
                   e.AST =
                     <Flex-Check e.AST>
                     e.AST;
                 }
-                Flex-Desugar
-                Flex-Compile
+                &Flex-Desugar
+                &Flex-Compile
                 /* GenerateFromDFA */
                 {
                   e.Generated =
