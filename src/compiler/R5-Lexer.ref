@@ -95,23 +95,63 @@ IncCol {
 DoScan {
   t.Pos = (TkEOF t.Pos);
 
-  t.Pos () e.Lines = <DoScan <IncLine t.Pos> e.Lines>;
-
   t.Pos (' ' e.Line) e.Lines = <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
   t.Pos ('\t' e.Line) e.Lines = <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
   t.Pos ('\r' e.Line) e.Lines = <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
 
-  t.Pos ('$' e.Line) e.Lines = <DoScan-Keyword t.Pos (e.Line) e.Lines>;
-
-  t.Pos (s.Digit e.Line) e.Lines
-    , <Type s.Digit> : 'D0' s.Digit
-    = <DoScan-Number t.Pos (s.Digit) (e.Line) e.Lines>;
+  t.Pos () e.Lines = <DoScan <IncLine t.Pos> e.Lines>;
 
   t.Pos (s.Var '.' e.Line) e.Lines
     , <IsVarType s.Var> : True
     = <DoScan-Var t.Pos (s.Var '.') (e.Line) e.Lines>;
 
+  t.Pos (s.StartIdent e.Line) e.Lines
+    , <IsStartIdent s.StartIdent> : True
+    = <DoScan-Ident t.Pos (s.StartIdent) (e.Line) e.Lines>;
+
+  t.Pos (s.Punctuation e.Line) e.Lines
+    , <IsPunctuation s.Punctuation> : s.TokType
+    = (s.TokType t.Pos)
+      <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
+
+  (RowCol s.Line 1) ('*' e.Comment) e.Lines
+    = <DoScan (RowCol <Inc s.Line> 1) e.Lines>;
+
+  /*
+    Предложение не избыточно, поскольку иначе в вызове <s.F …> «s» будет
+    восприниматься как идентификатор, а точка за ним вызовет ошибку.
+  */
+  t.Pos ('<' s.Var '.' e.Line) e.Lines
+    , <IsVarType s.Var> : True
+    = (TkOpenCall t.Pos /* empty */)
+      <DoScan <IncCol t.Pos> (s.Var '.' e.Line) e.Lines>;
+
+  t.Pos ('<' s.StartIdent e.Line) e.Lines
+    , <IsStartIdent s.StartIdent> : True
+    = <DoScan-Ident t.Pos ('<' s.StartIdent) (e.Line) e.Lines>;
+
+  t.Pos ('$' e.Line) e.Lines = <DoScan-Keyword t.Pos (e.Line) e.Lines>;
+
+  t.Pos ('\'' e.Line) e.Lines
+    = <DoScan-Chars <IncCol t.Pos> (e.Line) e.Lines>;
+
   t.Pos ('/*' e.Line) e.Lines = <DoScan-CComment t.Pos ('/*') (e.Line) e.Lines>;
+
+  t.Pos ('\"' e.Line) e.Lines
+    = <DoScan-Compound t.Pos <IncCol t.Pos> () (e.Line) e.Lines>;
+
+  t.Pos ('[' s.StartIdent e.Line) e.Lines
+    , <Type s.StartIdent> : 'L' s.Case s.StartIdent
+    = <DoScan-Ident t.Pos ('[' s.StartIdent) (e.Line) e.Lines>;
+
+  t.Pos ('[' e.Line) e.Lines
+    = (TkOpenADT t.Pos UnnamedADT)
+      (TkError t.Pos 'Expected function name after \'[\'')
+      <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
+
+  t.Pos (s.Digit e.Line) e.Lines
+    , <Type s.Digit> : 'D0' s.Digit
+    = <DoScan-Number t.Pos (s.Digit) (e.Line) e.Lines>;
 
   (RowCol s.Line 1) ('*$CLASSIC') e.Lines
     = (TkRefal5Mode (RowCol s.Line 1) Classic)
@@ -129,33 +169,8 @@ DoScan {
     = (TkRefal5Mode (RowCol s.Line 1) Extended)
       <DoScan (RowCol <Inc s.Line> 1) e.Lines>;
 
-  (RowCol s.Line 1) ('*' e.Comment) e.Lines
-    = <DoScan (RowCol <Inc s.Line> 1) e.Lines>;
-
   (RowCol s.Line 1) ('%%') e.Lines
     = <DoScan-NativeCode (RowCol <Inc s.Line> 1) e.Lines>;
-
-  t.Pos (s.StartIdent e.Line) e.Lines
-    , <IsStartIdent s.StartIdent> : True
-    = <DoScan-Ident t.Pos (s.StartIdent) (e.Line) e.Lines>;
-
-  t.Pos (s.Punctuation e.Line) e.Lines
-    , <IsPunctuation s.Punctuation> : s.TokType
-    = (s.TokType t.Pos)
-      <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
-
-  /*
-    Предложение не избыточно, поскольку иначе в вызове <s.F …> «s» будет
-    восприниматься как идентификатор, а точка за ним вызовет ошибку.
-  */
-  t.Pos ('<' s.Var '.' e.Line) e.Lines
-    , <IsVarType s.Var> : True
-    = (TkOpenCall t.Pos /* empty */)
-      <DoScan <IncCol t.Pos> (s.Var '.' e.Line) e.Lines>;
-
-  t.Pos ('<' s.StartIdent e.Line) e.Lines
-    , <IsStartIdent s.StartIdent> : True
-    = <DoScan-Ident t.Pos ('<' s.StartIdent) (e.Line) e.Lines>;
 
   t.Pos ('<' s.SugarName e.Line) e.Lines
     , ('+Add') ('-Sub') ('*Mul') ('/Div') ('%Mod') ('?Residue')
@@ -166,21 +181,6 @@ DoScan {
   t.Pos ('<' e.Line) e.Lines
     = (TkOpenCall t.Pos /* empty */)
       <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
-
-  t.Pos ('[' s.StartIdent e.Line) e.Lines
-    , <Type s.StartIdent> : 'L' s.Case s.StartIdent
-    = <DoScan-Ident t.Pos ('[' s.StartIdent) (e.Line) e.Lines>;
-
-  t.Pos ('[' e.Line) e.Lines
-    = (TkOpenADT t.Pos UnnamedADT)
-      (TkError t.Pos 'Expected function name after \'[\'')
-      <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
-
-  t.Pos ('\'' e.Line) e.Lines
-    = <DoScan-Chars <IncCol t.Pos> (e.Line) e.Lines>;
-
-  t.Pos ('\"' e.Line) e.Lines
-    = <DoScan-Compound t.Pos <IncCol t.Pos> () (e.Line) e.Lines>;
 
   t.Pos ('\\' e.LineWithEscapes) e.Lines
     , <ScanEscape t.Pos e.LineWithEscapes>
@@ -205,10 +205,10 @@ IsVarType {
 IsPunctuation {
   s.Punct
     , ('(' TkOpenBracket) (')' TkCloseBracket)
+      (';' TkSemicolon) ('=' TkAssign) ('>' TkCloseCall)
       ('{' TkOpenBlock) ('}' TkCloseBlock)
-      ('>' TkCloseCall) (']' TkCloseADT)
-      ('&' TkAmpersand) ('^' TkRedefinition)
-      (',' TkComma) (':' TkColon) ('=' TkAssign) (';' TkSemicolon)
+      (',' TkComma) (':' TkColon) ('^' TkRedefinition)
+      (']' TkCloseADT) ('&' TkAmpersand)
     : e.Types-B (s.Punct s.TokType) e.Types-E
     = s.TokType;
 
@@ -293,8 +293,8 @@ IsIdentTail {
   s.Other
     , <Type s.Other>
     : {
-        'D0' s.Other = True;
-        'L' s.Case s.Other = True;
+        'D0' s.Other^ = True;
+        'L' s.Case s.Other^ = True;
 
         e.OtherType = False;
       }
