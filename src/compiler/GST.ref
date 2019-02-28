@@ -435,13 +435,11 @@ OverlapItem {
   (TkVariable s.Mode e.Index s.Offset) t.AnyItem =
     NoOverlap;
 
-  (Symbol s.AnyType e.Info s.Offset) (TkVariable 's' e.Index) =
-    1 HalfReuse;
-
-* TODO: Delete
+* Любой символ или любая скобка
   (s.AnyType e.Info s.Offset) (TkVariable 's' e.Index) =
     1 HalfReuse;
 
+* Любой символ или любая скобка
   (s.AnyType e.Info s.Offset) (TkVariable s.Mode e.Index) =
     NoOverlap;
 
@@ -457,11 +455,10 @@ OverlapItem {
   (Symbol s.Type1 e.Info1 s.Offset) (Symbol s.Type2 e.Info2) =
     1 HalfReuse;
 
-* TODO: Delete
+* Любые символы или скобки
   (s.Type e.Info1 s.Offset) (s.Type e.Info2) =
     2 Reuse;
 
-* TODO: Delete
   (s.Type1 e.Info1 s.Offset) (s.Type2 e.Info2) =
     1 HalfReuse;
 
