@@ -92,16 +92,18 @@
 
     e.Expression ::= t.Term*
     t.Term ::=
-        (TkChar s.Char)
-      | (TkNumber s.Number)
-      | (TkName t.SrcPos e.Name)
-      | (TkIdentifier e.Name)
+        (Symbol s.SymType e.SymInfo)
       | (Brackets e.Expression)
       | (ADT-Brackets t.SrcPos (e.ADTName) e.Expression)
       | (CallBrackets e.Expression)
       | (TkVariable t.SrcPos s.Mode e.Index)
       | (TkNewVariable t.SrcPos s.Mode e.Index)
       | (Closure e.Body)
+    s.SymType e.SymInfo ::=
+        Char s.Char
+      | Number s.Number
+      | Name t.SrcPos e.Name
+      | Identifier e.Name
     e.ADTName ::= e.Name | UnnamedADT
 
     s.Number ::= s.NUMBER | Cookie1 | Cookie2
@@ -131,10 +133,11 @@
   отсутствуют).
 * `e.Expression` — последовательность термов.
 * `t.Term` — терм. Делятся на
-  * `TkChar` — атом-символ,
-  * `TkNumber` — атом-целое число,
-  * `TkName` — атом-имя глобальной функции,
-  * `TkIdentifier` — атом-идентификатор,
+  * `Symbol` — символ (атом), они делятся на
+    * `Char` — символ-литера,
+    * `Number` — символ-целое число,
+    * `Name` — символ-имя глобальной функции,
+    * `Identifier` — символ-идентификатор,
   * `Brackets` — скобочный терм из круглых скобок. Содержит подвыражение.
   * `ADT-Brackets` — абстрактный скобочный терм, `e.Name` — имя функции,
     которая является тегом для абстрактных скобок.
@@ -200,15 +203,17 @@
 
     e.ReducedExpression ::= t.ReducedTerm*
     t.ReducedTerm ::=
-        (TkChar s.Char)
-      | (TkNumber s.Number)
-      | (TkName e.Name)
-      | (TkIdentifier e.Name)
+        (Symbol s.SymType e.SymInfo-Reduced)
       | (Brackets e.ReducedExpression)
       | (ADT-Brackets (e.Name) e.Expression)
       | (CallBrackets e.Expression)
       | (TkVariable s.Mode e.Index s.Depth)
       | (ClosureBrackets e.ClosureContent)
+    s.SymType e.SymInfo-Reduced ::=
+        Char s.Char
+      | Number s.Number
+      | Name e.Name
+      | Identifier e.Name
     e.ClosureContent ::= (TkName e.Name) t.ContextVariable*
     t.ContextVariable ::=
         (TkVariable s.ModeTS e.Index s.Depth)
@@ -468,7 +473,7 @@
     скобок сохраняются в `s.NewBracketsOffset+2`, `…+3`, для квадратных —
     вместе со скобками сохраняется смещение для идентификатора АТД. Поле
     информации каждого атома содержит смещение `s.SaveOffset`, по которому
-    должен быть сохранён указатель на этот атом.
+    должен быть сохранён указатель на этот символ.
     `CmdVarSave` и `CmdRepeatedSave` используются для сопоставления
     c t-переменными, при этом они сохраняют начало и конец переменной (отрезка
     поля зрения) в смежных ячейках контекста.
