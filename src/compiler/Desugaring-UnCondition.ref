@@ -234,7 +234,7 @@ DoPatternSteps {
 
 HardItem {
   (e.BoundEVariables) (TkIdentifier e.Compound) = True;
-  (e.BoundEVariables) (TkNumber s.Number) = True;
+  (e.BoundEVariables) (Symbol Number s.Number) = True;
   (e.BoundEVariables) (Symbol Char s.Char) = True;
   (e.BoundEVariables) (TkName e.Name) = True;
 
@@ -671,7 +671,7 @@ DoNewVarName {
 
 Symbol {
   (TkIdentifier e.Chars) = True;
-  (TkNumber s.Number) = True;
+  (Symbol Number s.Number) = True;
   (Symbol Char s.Char) = True;
   (TkName e.Name) = True;
   t.Other = False;

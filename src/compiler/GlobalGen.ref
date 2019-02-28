@@ -26,7 +26,7 @@ $ENTRY GlobalGen {
   t.Symbol ::=
       (TkIdentifier e.Name)
     | (TkName t.SrcPos e.Name)
-    | (TkNumber s.Number)
+    | (Symbol Number s.Number)
     | (Symbol Char s.HChar)
 
   t.Image ::=
@@ -76,7 +76,7 @@ IsSymbol {
   /* идентификатор, имя функции, число или литера */
   (TkIdentifier e.Name) = True;
   (TkName t.SrcPos e.Name) = True;
-  (TkNumber s.Number) = True;
+  (Symbol Number s.Number) = True;
   (Symbol Char s.HChar) = True;
 
   t.OtherTerm = False;

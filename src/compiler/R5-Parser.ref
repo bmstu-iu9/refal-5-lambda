@@ -31,7 +31,6 @@ $EXTERN EL-AddErrorAt;
   t.Term ::=
       (Symbol s.SymType e.SymInfo)
     | (TkIdentifier s.Char*)
-    | (TkNumber s.Number)
     | (TkVariable t.SrcPos s.VarType e.Index)
     | (Brackets t.Term*)
     | (CallBrackets (TkName t.SrcPos e.Function)? t.Term*)
@@ -41,6 +40,7 @@ $EXTERN EL-AddErrorAt;
     | (ADT-Brackets t.SrcPos (e.ADT-Name) t.Term*)
   s.SymType e.SymInfo ::=
       Char s.Char
+    | Number s.Number
   e.ADT-Name ::= s.CHAR* | UnnamedADT
   s.VarType ::= 's' | 't' | 'e'
 */
@@ -631,7 +631,7 @@ DoTokenChain {
         (TkMacroDigit t.Pos s.Number)
           = <DoTokenChain
               s.Mode s.Kind t.ErrorList
-              (e.Collected (TkNumber s.Number)) e.Tokens
+              (e.Collected (Symbol Number s.Number)) e.Tokens
             >;
 
         (TkChar t.Pos s.Char)
@@ -771,7 +771,7 @@ DoTokenChain {
                 t.ErrorList s.Mode t.Pos
                 '$SCOPEID is not supported in classic REFAL-5'
               >
-              (e.Collected (TkNumber Cookie1) (TkNumber Cookie2))
+              (e.Collected (Symbol Number Cookie1) (Symbol Number Cookie2))
               e.Tokens
             >;
 

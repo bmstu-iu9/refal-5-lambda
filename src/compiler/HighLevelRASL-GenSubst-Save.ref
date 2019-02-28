@@ -63,12 +63,12 @@ DoGenSubst {
 
   s.ContextOffset
   e.Substs-B
-  (Junk e.Junk1) (T s.Num (TkNumber s.Value)) (Junk e.Junk2)
+  (Junk e.Junk1) (T s.Num (Symbol Number s.Value)) (Junk e.Junk2)
   e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenSubst
       s.ContextOffset
-      e.Substs-B (Junk e.Junk1 (TkNumber s.Value s.Num) e.Junk2) e.Substs-E
+      e.Substs-B (Junk e.Junk1 (Symbol Number s.Value s.Num) e.Junk2) e.Substs-E
       (e.Vars) (e.Commands (CmdNumber AlgTerm s.Num s.Value))
     >;
 
@@ -190,12 +190,12 @@ DoGenSubst {
 
   s.ContextOffset
   e.Substs-B
-  (Junk e.Junk1) (S s.Num (TkNumber s.Value)) (Junk e.Junk2)
+  (Junk e.Junk1) (S s.Num (Symbol Number s.Value)) (Junk e.Junk2)
   e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenSubst
       s.ContextOffset
-      e.Substs-B (Junk e.Junk1 (TkNumber s.Value s.Num) e.Junk2) e.Substs-E
+      e.Substs-B (Junk e.Junk1 (Symbol Number s.Value s.Num) e.Junk2) e.Substs-E
       (e.Vars) (e.Commands (CmdNumber AlgTerm s.Num s.Value))
     >;
 
@@ -247,13 +247,13 @@ DoGenSubst {
 
   s.ContextOffset
   e.Substs-B
-  (Junk e.Junk) (E s.Num (TkNumber s.Number) e.Range)
+  (Junk e.Junk) (E s.Num (Symbol Number s.Number) e.Range)
   e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenSubst
       <Inc s.ContextOffset>
       e.Substs-B
-      (Junk e.Junk (TkNumber s.Number s.ContextOffset)) (E s.Num e.Range)
+      (Junk e.Junk (Symbol Number s.Number s.ContextOffset)) (E s.Num e.Range)
       e.Substs-E
       (e.Vars) (e.Commands (CmdNumberSave AlgLeft s.Num s.ContextOffset  s.Number))
     >;
@@ -295,13 +295,13 @@ DoGenSubst {
 
   s.ContextOffset
   e.Substs-B
-  (E s.Num e.Range (TkNumber s.Number)) (Junk e.Junk)
+  (E s.Num e.Range (Symbol Number s.Number)) (Junk e.Junk)
   e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenSubst
       <Inc s.ContextOffset>
       e.Substs-B
-      (E s.Num e.Range) (Junk (TkNumber s.Number s.ContextOffset) e.Junk)
+      (E s.Num e.Range) (Junk (Symbol Number s.Number s.ContextOffset) e.Junk)
       e.Substs-E
       (e.Vars) (e.Commands (CmdNumberSave AlgRight s.Num s.ContextOffset s.Number))
     >;

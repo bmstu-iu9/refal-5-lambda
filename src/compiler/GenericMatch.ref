@@ -105,7 +105,7 @@ IsSymbol {
   /* идентификатор, имя функции, число или литера */
   (TkIdentifier e.Name) = True;
   (TkName t.SrcPos e.Name) = True;
-  (TkNumber s.Number) = True;
+  (Symbol Number s.Number) = True;
   (Symbol Char s.HChar) = True;
 
   t.OtherTerm = False;

@@ -119,7 +119,7 @@ DoGenResult {
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (TkNumber s.Number) e.Result =
+  s.Counter (Symbol Number s.Number) e.Result =
     <DoGenResult
       (e.Vars)
       (e.AllocCommands (CmdCreateElem Allocate s.Counter ElNumber s.Number))

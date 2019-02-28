@@ -247,7 +247,10 @@ MultilineTerm-Prefix {
 }
 
 Symbol {
-  Char s.Char = '\'' <CharRep s.Char> '\''
+  Char s.Char = '\'' <CharRep s.Char> '\'';
+  Number Cookie1 = '$COOKIE1';
+  Number Cookie2 = '$COOKIE2';
+  Number s.Number = <Symb s.Number>;
 }
 
 TkName {
@@ -292,13 +295,6 @@ DoIsIdent {
   (e.Valid) /* пусто */ = True e.Valid;
 
   (e.Valid) s.Other e.Tail = False;
-}
-
-TkNumber {
-  Cookie1 = '$COOKIE1';
-  Cookie2 = '$COOKIE2';
-
-  s.Number = <Symb s.Number>;
 }
 
 CharRep {
