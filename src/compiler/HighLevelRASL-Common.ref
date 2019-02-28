@@ -78,7 +78,7 @@ $ENTRY TextFromExpr {
           ' ' <PrintVar s.Mode e.Index s.Depth>
           <Offset s.SampleOffset> <Offset s.CopyOffset>;
 
-        (TkIdentifier e.Name s.Offset) =
+        (Symbol Identifier e.Name s.Offset) =
           ' # ' <SafeDisplayName e.Name> <Offset s.Offset>;
 
         (Tile e.SubRange) = ' Tile{' <TextFromExpr e.SubRange> ' }';

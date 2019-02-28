@@ -252,10 +252,7 @@ Symbol {
   Number Cookie2 = '$COOKIE2';
   Number s.Number = <Symb s.Number>;
   Name e.Ident = '&' <DisplayName e.Ident>;
-}
-
-TkIdentifier {
-  e.Ident = <Compound <DisplayName e.Ident>>;
+  Identifier e.Ident = <Compound <DisplayName e.Ident>>;
 }
 
 Compound {

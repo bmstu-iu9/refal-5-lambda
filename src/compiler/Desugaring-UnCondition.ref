@@ -233,7 +233,7 @@ DoPatternSteps {
 }
 
 HardItem {
-  (e.BoundEVariables) (TkIdentifier e.Compound) = True;
+  (e.BoundEVariables) (Symbol Identifier e.Compound) = True;
   (e.BoundEVariables) (Symbol Number s.Number) = True;
   (e.BoundEVariables) (Symbol Char s.Char) = True;
   (e.BoundEVariables) (Symbol Name e.Name) = True;
@@ -504,9 +504,9 @@ ConditionContext {
 
 transformer_MakeVariables {
   MarkupContext ('e' e.Index)
-    = (TkIdentifier VAR 'e' e.Index) (Brackets (TkVariable 'e' e.Index));
+    = (Symbol Identifier VAR 'e' e.Index) (Brackets (TkVariable 'e' e.Index));
   MarkupContext (s.VarType e.Index)
-    = (TkIdentifier VAR s.VarType e.Index) (TkVariable s.VarType e.Index);
+    = (Symbol Identifier VAR s.VarType e.Index) (TkVariable s.VarType e.Index);
 
   NoMarkupContext ('e' e.Index) = (Brackets (TkVariable 'e' e.Index));
   NoMarkupContext (s.VarType e.Index) = (TkVariable s.VarType e.Index);
@@ -670,7 +670,7 @@ DoNewVarName {
 }
 
 Symbol {
-  (TkIdentifier e.Chars) = True;
+  (Symbol Identifier e.Chars) = True;
   (Symbol Number s.Number) = True;
   (Symbol Char s.Char) = True;
   (Symbol Name e.Name) = True;

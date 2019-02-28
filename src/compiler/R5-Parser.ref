@@ -30,7 +30,6 @@ $EXTERN EL-AddErrorAt;
   t.Pattern, t.Result ::= (t.Term*)
   t.Term ::=
       (Symbol s.SymType e.SymInfo)
-    | (TkIdentifier s.Char*)
     | (TkVariable t.SrcPos s.VarType e.Index)
     | (Brackets t.Term*)
     | (CallBrackets (Symbol Name t.SrcPos e.Function)? t.Term*)
@@ -41,6 +40,7 @@ $EXTERN EL-AddErrorAt;
       Char s.Char
     | Number s.Number
     | Name t.SrcPos s.Char*
+    | Identifier s.Char*
   e.ADT-Name ::= s.CHAR* | UnnamedADT
   s.VarType ::= 's' | 't' | 'e'
 */
@@ -619,13 +619,13 @@ DoTokenChain {
         (TkName t.Pos e.Name)
           = <DoTokenChain
               s.Mode s.Kind t.ErrorList
-              (e.Collected (TkIdentifier e.Name)) e.Tokens
+              (e.Collected (Symbol Identifier e.Name)) e.Tokens
             >;
 
         (TkCompound t.Pos e.Symbols)
           = <DoTokenChain
               s.Mode s.Kind t.ErrorList
-              (e.Collected (TkIdentifier e.Symbols)) e.Tokens
+              (e.Collected (Symbol Identifier e.Symbols)) e.Tokens
             >;
 
         (TkMacroDigit t.Pos s.Number)

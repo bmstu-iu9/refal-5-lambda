@@ -792,11 +792,11 @@ CreateContext {
     <Map
       {
         ('e' e.Index) =
-          (TkIdentifier VAR 'e' e.Index)
+          (Symbol Identifier VAR 'e' e.Index)
           (Brackets (TkVariable 'e' e.Index));
 
         (s.Mode e.Index) =
-          (TkIdentifier VAR s.Mode e.Index)
+          (Symbol Identifier VAR s.Mode e.Index)
           (TkVariable s.Mode e.Index);
       }
       e.Context

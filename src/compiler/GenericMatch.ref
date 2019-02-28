@@ -103,7 +103,7 @@ IsTerm {
 
 IsSymbol {
   /* идентификатор, имя функции, число или литера */
-  (TkIdentifier e.Name) = True;
+  (Symbol Identifier e.Name) = True;
   (Symbol Name t.SrcPos e.Name) = True;
   (Symbol Number s.Number) = True;
   (Symbol Char s.HChar) = True;

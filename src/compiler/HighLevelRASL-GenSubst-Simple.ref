@@ -53,12 +53,14 @@ DoGenSubst {
 
   s.ContextOffset
   e.Substs-B
-  (Junk e.Junk1) (T s.Num (TkIdentifier e.Ident)) (Junk e.Junk2)
+  (Junk e.Junk1) (T s.Num (Symbol Identifier e.Ident)) (Junk e.Junk2)
   e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenSubst
       s.ContextOffset
-      e.Substs-B (Junk e.Junk1 (TkIdentifier e.Ident NoOffset) e.Junk2) e.Substs-E
+      e.Substs-B
+      (Junk e.Junk1 (Symbol Identifier e.Ident NoOffset) e.Junk2)
+      e.Substs-E
       (e.Vars) (e.Commands (CmdIdent AlgTerm s.Num e.Ident))
     >;
 
@@ -175,12 +177,14 @@ DoGenSubst {
 
   s.ContextOffset
   e.Substs-B
-  (Junk e.Junk1) (S s.Num (TkIdentifier e.Ident)) (Junk e.Junk2)
+  (Junk e.Junk1) (S s.Num (Symbol Identifier e.Ident)) (Junk e.Junk2)
   e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenSubst
       s.ContextOffset
-      e.Substs-B (Junk e.Junk1 (TkIdentifier e.Ident NoOffset) e.Junk2) e.Substs-E
+      e.Substs-B
+      (Junk e.Junk1 (Symbol Identifier e.Ident NoOffset) e.Junk2)
+      e.Substs-E
       (e.Vars) (e.Commands (CmdIdent AlgTerm s.Num e.Ident))
     >;
 
@@ -269,13 +273,13 @@ DoGenSubst {
 
   s.ContextOffset
   e.Substs-B
-  (Junk e.Junk) (E s.Num (TkIdentifier e.Name) e.Range)
+  (Junk e.Junk) (E s.Num (Symbol Identifier e.Name) e.Range)
   e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenSubst
       s.ContextOffset
       e.Substs-B
-      (Junk e.Junk (TkIdentifier e.Name NoOffset)) (E s.Num e.Range)
+      (Junk e.Junk (Symbol Identifier e.Name NoOffset)) (E s.Num e.Range)
       e.Substs-E
       (e.Vars) (e.Commands (CmdIdent AlgLeft s.Num e.Name))
     >;
@@ -317,13 +321,13 @@ DoGenSubst {
 
   s.ContextOffset
   e.Substs-B
-  (E s.Num e.Range (TkIdentifier e.Name)) (Junk e.Junk)
+  (E s.Num e.Range (Symbol Identifier e.Name)) (Junk e.Junk)
   e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenSubst
       s.ContextOffset
       e.Substs-B
-      (E s.Num e.Range) (Junk (TkIdentifier e.Name NoOffset) e.Junk)
+      (E s.Num e.Range) (Junk (Symbol Identifier e.Name NoOffset) e.Junk)
       e.Substs-E
       (e.Vars) (e.Commands (CmdIdent AlgRight s.Num e.Name))
     >;

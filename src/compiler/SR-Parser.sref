@@ -434,7 +434,8 @@ DoParsePattern {
   (e.Scanned)
   (#TkIdentMarker s.LnNumMarker) (#TkName s.LnNumName e.Name) e.Tail =
     <DoParsePattern
-      t.ErrorList (e.MultiBrackets) (e.Scanned (#TkIdentifier e.Name)) e.Tail
+      t.ErrorList (e.MultiBrackets)
+      (e.Scanned (#Symbol #Identifier e.Name)) e.Tail
     >;
 
   t.ErrorList (e.MultiBrackets) (e.Scanned) (#TkIdentMarker s.LnNum) e.Tail =
@@ -446,7 +447,8 @@ DoParsePattern {
 
   t.ErrorList (e.MultiBrackets) (e.Scanned) (#TkCompound s.LnNum e.Name) e.Tail =
     <DoParsePattern
-      t.ErrorList (e.MultiBrackets) (e.Scanned (#TkIdentifier e.Name)) e.Tail
+      t.ErrorList (e.MultiBrackets)
+      (e.Scanned (#Symbol #Identifier e.Name)) e.Tail
     >;
 
   // Переменные
@@ -650,7 +652,8 @@ DoParseResult {
   (e.Scanned)
   (#TkIdentMarker s.MarkerLnNum) (#TkName s.NameLnNum e.Name) e.Tail =
     <DoParseResult
-      t.ErrorList (e.MultiBracket) (e.Scanned (#TkIdentifier e.Name)) e.Tail
+      t.ErrorList (e.MultiBracket)
+      (e.Scanned (#Symbol #Identifier e.Name)) e.Tail
     >;
 
   t.ErrorList (e.MultiBracket) (e.Scanned) (#TkIdentMarker s.LnNum) e.Tail =
@@ -661,7 +664,8 @@ DoParseResult {
 
   t.ErrorList (e.MultiBracket) (e.Scanned) (#TkCompound s.LnNum e.Name) e.Tail =
     <DoParseResult
-      t.ErrorList (e.MultiBracket) (e.Scanned (#TkIdentifier e.Name)) e.Tail
+      t.ErrorList (e.MultiBracket)
+      (e.Scanned (#Symbol #Identifier e.Name)) e.Tail
     >;
 
   // Переменные

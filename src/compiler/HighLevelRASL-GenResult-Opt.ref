@@ -172,7 +172,7 @@ CreateElemParam {
   TkOpenCall s.Offset = s.Offset ElOpenCall;
   TkCloseCall s.Offset = s.Offset ElCloseCall;
   Symbol Name e.Name s.Offset = s.Offset ElName e.Name;
-  TkIdentifier e.Name s.Offset = s.Offset ElIdent e.Name;
+  Symbol Identifier e.Name s.Offset = s.Offset ElIdent e.Name;
   TkClosureHead s.Offset = s.Offset ElClosureHead;
   TkUnwrappedClosure s.Offset = s.Offset ElUnwrappedClosure;
 }
