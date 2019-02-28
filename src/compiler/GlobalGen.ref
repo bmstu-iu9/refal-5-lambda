@@ -15,7 +15,7 @@ $ENTRY GlobalGen {
 
   e.Pattern ::= t.Term*
   t.Term ::=
-      t.Symbol
+      (Symbol s.SymType e.SymInfo)
     | (TkVariable 't' e.Index)
     | (TkVariable 's' e.Index)
     | (TkVariable 'e' e.Index)
@@ -23,11 +23,11 @@ $ENTRY GlobalGen {
     | (Brackets t.Term*)
     | (Closure t.Term*)
     | (CallBrackets t.Term*)
-  t.Symbol ::=
-      (Symbol Identifier e.Name)
-    | (Symbol Name t.SrcPos e.Name)
-    | (Symbol Number s.Number)
-    | (Symbol Char s.HChar)
+  s.SymType e.SymInfo ::=
+      Identifier e.Name
+    | Name t.SrcPos e.Name
+    | Number s.Number
+    | Char s.HChar
 
   t.Image ::=
       (K ':' s.Len ',' (t.TermImage*))
@@ -64,22 +64,12 @@ BuildImage-Terms {
 }
 
 $ENTRY BuildImage-Term {
-  t.Symbol, <IsSymbol t.Symbol> : True = t.Symbol;
+  (Symbol s.Type e.Info) = (Symbol s.Type e.Info);
   (TkVariable 't' e.Index) = (TkVariable 't');
   (TkVariable 's' e.Index) = (TkVariable 's');
 
   (ADT-Brackets t.Name e.Rest) = (ADT-Brackets t.Name <BuildImage e.Rest>);
   (Brackets e.Rest) = (Brackets <BuildImage e.Rest>);
-}
-
-IsSymbol {
-  /* идентификатор, имя функции, число или литера */
-  (Symbol Identifier e.Name) = True;
-  (Symbol Name t.SrcPos e.Name) = True;
-  (Symbol Number s.Number) = True;
-  (Symbol Char s.HChar) = True;
-
-  t.OtherTerm = False;
 }
 
 
@@ -128,7 +118,7 @@ Generalization-Pair {
 }
 
 $ENTRY Generalization-Term {
-  t.Symbol t.Symbol, <IsSymbol t.Symbol> : True = t.Symbol;
+  t.Symbol t.Symbol, t.Symbol : (Symbol s.Type e.Info) = t.Symbol;
 
   t.Term1 t.Term2
     , <IsSVarSubset t.Term1> : True
@@ -169,7 +159,7 @@ GeneralizationInPairs-Right {
 }
 
 IsSVarSubset {
-  t.Symbol, <IsSymbol t.Symbol> : True = True;
+  (Symbol s.Type e.Info) = True;
   (TkVariable 's') = True;
   (Closure e.Body) = True;
 
@@ -206,7 +196,7 @@ Collapse-Terms {
 }
 
 $ENTRY Collapse-Term {
-  t.Symbol, <IsSymbol t.Symbol> : True = t.Symbol;
+  (Symbol s.Type e.Info) = (Symbol s.Type e.Info);
   (TkVariable 't') = (TkVariable 't');
   (TkVariable 's') = (TkVariable 's');
 
@@ -270,7 +260,7 @@ CalcTermComplexity {
   (TkVariable 's') = 2;
   (TkVariable 'e') = ('-' 1);
 
-  t.Symbol, <IsSymbol t.Symbol> : True = 3;
+  (Symbol s.Type e.Info) = 3;
 
   /* Прибавляем 2, а не 3, т.к. для вложенного выражения прибавится лишняя 1 */
   (Brackets e.Terms) = <Add <CalcComplexity e.Terms> 2>;

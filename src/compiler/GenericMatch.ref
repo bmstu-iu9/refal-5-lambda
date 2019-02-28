@@ -63,7 +63,9 @@ GenericMatch-Aux {
 /* Сопоставление термов T:H */
 TermMatch {
   /* H является символом */
-  t.Symbol t.Symbol, <IsSymbol t.Symbol> : True = Clear /* нет подстановок */;
+  t.Symbol t.Symbol
+    , t.Symbol : (Symbol s.Type e.Info)
+    = Clear /* нет подстановок */;
 
   /* H является t-переменной */
   t.TVar (TkVariable 't' e.HIndex) = Clear (t.TVar':'('t' e.HIndex));
@@ -84,7 +86,7 @@ TermMatch {
 }
 
 IsSVarSubset {
-  t.Symbol, <IsSymbol t.Symbol> : True = True;
+  (Symbol s.Type e.Info) = True;
   (TkVariable 's' e.Tindex) = True;
   (Closure e.Body) = True;
 
@@ -99,14 +101,4 @@ IsTerm {
 
   /* s-, t-переменная, скобки обоих видов, символ */
   t.OtherTerm = True;
-}
-
-IsSymbol {
-  /* идентификатор, имя функции, число или литера */
-  (Symbol Identifier e.Name) = True;
-  (Symbol Name t.SrcPos e.Name) = True;
-  (Symbol Number s.Number) = True;
-  (Symbol Char s.HChar) = True;
-
-  t.OtherTerm = False;
 }

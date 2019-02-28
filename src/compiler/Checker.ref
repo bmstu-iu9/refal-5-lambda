@@ -141,13 +141,7 @@ IsHardPattern {
 }
 
 IsHardTerm {
-  (Symbol Char s.Char) = True;
-
-  (Symbol Number s.Number) = True;
-
-  (Symbol Identifier t.SrcPos e.Name) = True;
-
-  (Symbol Name t.SrcPos e.Name) = True;
+  (Symbol s.Type e.Info) = True;
 
   (TkVariable t.SrcPos 's' e.Index) = True;
 

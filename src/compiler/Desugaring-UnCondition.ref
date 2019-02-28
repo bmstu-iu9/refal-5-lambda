@@ -233,10 +233,7 @@ DoPatternSteps {
 }
 
 HardItem {
-  (e.BoundEVariables) (Symbol Identifier e.Compound) = True;
-  (e.BoundEVariables) (Symbol Number s.Number) = True;
-  (e.BoundEVariables) (Symbol Char s.Char) = True;
-  (e.BoundEVariables) (Symbol Name e.Name) = True;
+  (e.BoundEVariables) (Symbol s.Type e.Info) = True;
 
   (e.BoundEVariables) (TkVariable 's' e.Index) = True;
   (e.BoundEVariables) (TkVariable 't' e.Index) = True;
@@ -254,9 +251,8 @@ transformer_BindBrackets {
 }
 
 DoBindBrackets {
-  (t.MultiBracket e.Scanned) t.Symbol e.Tail
-    , <Symbol t.Symbol> : True
-    = <DoBindBrackets (t.MultiBracket e.Scanned t.Symbol) e.Tail>;
+  (t.MultiBracket e.Scanned) (Symbol s.Type e.Info) e.Tail
+    = <DoBindBrackets (t.MultiBracket e.Scanned (Symbol s.Type e.Info)) e.Tail>;
 
   (t.MultiBracket e.Scanned) (TkVariable s.Type e.Index) e.Tail
     = <DoBindBrackets
@@ -667,14 +663,6 @@ DoNewVarName {
 
         e.Names = ((e.NewName) e.Names) e.NewName;
       };
-}
-
-Symbol {
-  (Symbol Identifier e.Chars) = True;
-  (Symbol Number s.Number) = True;
-  (Symbol Char s.Char) = True;
-  (Symbol Name e.Name) = True;
-  t.Other = False;
 }
 
 /**
