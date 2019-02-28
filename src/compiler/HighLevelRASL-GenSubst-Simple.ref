@@ -42,12 +42,12 @@ DoGenSubst {
 
   s.ContextOffset
   e.Substs-B
-  (Junk e.Junk1) (T s.Num (TkName e.Name)) (Junk e.Junk2)
+  (Junk e.Junk1) (T s.Num (Symbol Name e.Name)) (Junk e.Junk2)
   e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenSubst
       s.ContextOffset
-      e.Substs-B (Junk e.Junk1 (TkName e.Name NoOffset) e.Junk2) e.Substs-E
+      e.Substs-B (Junk e.Junk1 (Symbol Name e.Name NoOffset) e.Junk2) e.Substs-E
       (e.Vars) (e.Commands (CmdName AlgTerm s.Num e.Name))
     >;
 
@@ -95,7 +95,8 @@ DoGenSubst {
   (e.Vars) (e.Commands) =
     <DoGenSubst
       <Inc2 s.ContextOffset>
-      e.Substs-B (Junk e.Junk1 (TkOpenADT NoOffset) (TkName e.Name NoOffset))
+      e.Substs-B
+      (Junk e.Junk1 (TkOpenADT NoOffset) (Symbol Name e.Name NoOffset))
       (E s.ContextOffset e.SubRange)
       (Junk (TkCloseADT NoOffset) e.Junk2) e.Substs-E
       (e.Vars) (e.Commands (CmdADT AlgTerm s.Num s.ContextOffset e.Name))
@@ -163,12 +164,12 @@ DoGenSubst {
 
   s.ContextOffset
   e.Substs-B
-  (Junk e.Junk1) (S s.Num (TkName e.Name)) (Junk e.Junk2)
+  (Junk e.Junk1) (S s.Num (Symbol Name e.Name)) (Junk e.Junk2)
   e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenSubst
       s.ContextOffset
-      e.Substs-B (Junk e.Junk1 (TkName e.Name NoOffset) e.Junk2) e.Substs-E
+      e.Substs-B (Junk e.Junk1 (Symbol Name e.Name NoOffset) e.Junk2) e.Substs-E
       (e.Vars) (e.Commands (CmdName AlgTerm s.Num e.Name))
     >;
 
@@ -256,11 +257,13 @@ DoGenSubst {
     >;
 
   s.ContextOffset
-  e.Substs-B (Junk e.Junk) (E s.Num (TkName e.Name) e.Range) e.Substs-E
+  e.Substs-B (Junk e.Junk) (E s.Num (Symbol Name e.Name) e.Range) e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenSubst
       s.ContextOffset
-      e.Substs-B (Junk (TkName e.Name NoOffset)) (E s.Num e.Range) e.Substs-E
+      e.Substs-B
+      (Junk (Symbol Name e.Name NoOffset)) (E s.Num e.Range)
+      e.Substs-E
       (e.Vars) (e.Commands (CmdName AlgLeft s.Num e.Name))
     >;
 
@@ -302,12 +305,12 @@ DoGenSubst {
     >;
 
   s.ContextOffset
-  e.Substs-B (E s.Num e.Range (TkName e.Name)) (Junk e.Junk) e.Substs-E
+  e.Substs-B (E s.Num e.Range (Symbol Name e.Name)) (Junk e.Junk) e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenSubst
       s.ContextOffset
       e.Substs-B
-      (E s.Num e.Range) (Junk (TkName e.Name NoOffset) e.Junk)
+      (E s.Num e.Range) (Junk (Symbol Name e.Name NoOffset) e.Junk)
       e.Substs-E
       (e.Vars) (e.Commands (CmdName AlgRight s.Num e.Name))
     >;
@@ -363,7 +366,7 @@ DoGenSubst {
     <DoGenSubst
       <Inc2 s.ContextOffset>
       e.Substs-B
-      (Junk e.Junk (TkOpenADT NoOffset) (TkName e.Name NoOffset))
+      (Junk e.Junk (TkOpenADT NoOffset) (Symbol Name e.Name NoOffset))
       (E s.ContextOffset e.SubRange)
       (Junk (TkCloseADT NoOffset)) (E s.Num e.Range)
       e.Substs-E
@@ -379,7 +382,7 @@ DoGenSubst {
     <DoGenSubst
       <Inc2 s.ContextOffset>
       e.Substs-B
-      (E s.Num e.Range) (Junk (TkOpenADT NoOffset) (TkName e.Name NoOffset))
+      (E s.Num e.Range) (Junk (TkOpenADT NoOffset) (Symbol Name e.Name NoOffset))
       (E s.ContextOffset e.SubRange) (Junk (TkCloseADT NoOffset) e.Junk)
       e.Substs-E
       (e.Vars)

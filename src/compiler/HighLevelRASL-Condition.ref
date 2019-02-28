@@ -20,7 +20,7 @@ $ENTRY SentenceTail {
     = <GenResult-Condition
         <Inc2 s.StartOffsetCond> (e.PatternVars)
         (TkOpenCallCond s.StartOffsetCond)
-        (TkName e.CondName) e.CondResult
+        (Symbol Name e.CondName) e.CondResult
         (TkCloseCallCond <Inc s.StartOffsetCond>)
       >
     : s.EndOffsetCond-Res e.CondResultCommands

@@ -105,7 +105,7 @@ MakeContinuationSentence {
   NoContinuation (e.Pattern) (e.ContArg) = /* пусто */;
 
   (e.ContName) (e.Pattern) (e.ContArg)
-    = ((e.Pattern) ((CallBrackets (TkName e.ContName) e.ContArg)));
+    = ((e.Pattern) ((CallBrackets (Symbol Name e.ContName) e.ContArg)));
 }
 
 PatternSteps {
@@ -236,7 +236,7 @@ HardItem {
   (e.BoundEVariables) (TkIdentifier e.Compound) = True;
   (e.BoundEVariables) (Symbol Number s.Number) = True;
   (e.BoundEVariables) (Symbol Char s.Char) = True;
-  (e.BoundEVariables) (TkName e.Name) = True;
+  (e.BoundEVariables) (Symbol Name e.Name) = True;
 
   (e.BoundEVariables) (TkVariable 's' e.Index) = True;
   (e.BoundEVariables) (TkVariable 't' e.Index) = True;
@@ -487,7 +487,7 @@ ConditionSubFunctions {
         (e.Pattern)
         (
           (CallBrackets
-            (TkName e.CheckFunction) e.PatternVarsAsExpr e.CondResult
+            (Symbol Name e.CheckFunction) e.PatternVarsAsExpr e.CondResult
           )
         )
       )
@@ -525,7 +525,7 @@ OpenEChain {
     = (
         (
           (e.PatternVarsAsExpr (TkVariable e.eOther))
-          ((CallBrackets (TkName e.ContName) e.T0))
+          ((CallBrackets (Symbol Name e.ContName) e.T0))
         )
       )
       /* пусто */;
@@ -544,7 +544,7 @@ OpenEChain {
     = (
         (
           (e.PatternVarsAsExpr (TkVariable e.eOther))
-          ((CallBrackets (TkName e.NextForward) e.T0))
+          ((CallBrackets (Symbol Name e.NextForward) e.T0))
         )
       )
       e.NewFunctions;
@@ -588,12 +588,12 @@ MakeOpenE-ForwardNext {
     , <Substitute e.CheckFunctionArg (e.T5-sub)> : e.CheckFuncArgSubst
     = (
         GN-Local (e.CurrentForwardName)
-        ((e.T1) ((CallBrackets (TkName e.NextName) e.T2)))
+        ((e.T1) ((CallBrackets (Symbol Name e.NextName) e.T2)))
         <MakeContinuationSentence t.ContName (e.T3) (e.T4)>
       )
       (
         GN-Local (e.NextName)
-        ((e.T5) ((CallBrackets (TkName e.CheckFunction) e.CheckFuncArgSubst)))
+        ((e.T5) ((CallBrackets (Symbol Name e.CheckFunction) e.CheckFuncArgSubst)))
         <MakeContinuationSentence t.ContName (e.T6) (e.T7)>
       );
 }
@@ -673,7 +673,7 @@ Symbol {
   (TkIdentifier e.Chars) = True;
   (Symbol Number s.Number) = True;
   (Symbol Char s.Char) = True;
-  (TkName e.Name) = True;
+  (Symbol Name e.Name) = True;
   t.Other = False;
 }
 

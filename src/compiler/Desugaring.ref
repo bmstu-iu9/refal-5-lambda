@@ -105,7 +105,7 @@ RemovePos-Expr {
         (TkNewVariable t.SrcPos s.Mode e.Index) =
           (TkNewVariable s.Mode e.Index);
 
-        (TkName t.SrcPos e.Name) = (TkName e.Name);
+        (Symbol Name t.SrcPos e.Name) = (Symbol Name e.Name);
 
         (Brackets e.InBrackets) =
           (Brackets <RemovePos-Expr e.InBrackets>);
@@ -742,7 +742,7 @@ ExtractNested-Result-Term {
           (/* нет захваченных переменных */) e.Body^
             = (Function GN-Local (e.ClosureName) e.Body)
               (e.BorrowedVars)
-              (TkName e.ClosureName);
+              (Symbol Name e.ClosureName);
 
           /* Случай функции с контекстом */
           (e.NestedBorrowedVars) Sentences e.Sentences
@@ -762,7 +762,7 @@ ExtractNested-Result-Term {
                 (&CheckBorrowed (e.ScopeVars))
                 (e.BorrowedVars) e.NestedBorrowedVars
               >
-              (ClosureBrackets (TkName e.ClosureName) e.Context);
+              (ClosureBrackets (Symbol Name e.ClosureName) e.Context);
         }
       >
     : t.Function (e.BorrowedVars^) t.ClosureTerm

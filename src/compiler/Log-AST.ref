@@ -209,7 +209,7 @@ MultilineTerm-Prefix {
             <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
             (e.Indent ']' e.Suffix);
 
-        (CallBrackets (TkName e.Function) e.Expr)
+        (CallBrackets (Symbol Name e.Function) e.Expr)
           = (e.Prefix '<' <DisplayName e.Function>)
             <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
             (e.Indent '>' e.Suffix);
@@ -219,7 +219,7 @@ MultilineTerm-Prefix {
             <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
             (e.Indent '>' e.Suffix);
 
-        (CallBrackets (ClosureBrackets (TkName e.Function) e.Context) e.Expr)
+        (CallBrackets (ClosureBrackets (Symbol Name e.Function) e.Context) e.Expr)
           = (e.Prefix '< {{' <DisplayName e.Function>)
             <Expression (e.Indent '    ') (e.Indent '    ') e.Context>
             (e.Indent '  }}')
@@ -236,7 +236,7 @@ MultilineTerm-Prefix {
             <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
             (e.Indent '*>' e.Suffix);
 
-        (ClosureBrackets (TkName e.Function) e.Expr)
+        (ClosureBrackets (Symbol Name e.Function) e.Expr)
           = (e.Prefix '{{' <DisplayName e.Function>)
             <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
             (e.Indent '}}' e.Suffix);
@@ -251,10 +251,7 @@ Symbol {
   Number Cookie1 = '$COOKIE1';
   Number Cookie2 = '$COOKIE2';
   Number s.Number = <Symb s.Number>;
-}
-
-TkName {
-  e.Ident = '&' <DisplayName e.Ident>;
+  Name e.Ident = '&' <DisplayName e.Ident>;
 }
 
 TkIdentifier {
@@ -332,9 +329,9 @@ ADT-Brackets {
 }
 
 CallBrackets {
-  (TkName e.Function) /* пусто */ = '<' <DisplayName e.Function> '>';
+  (Symbol Name e.Function) /* пусто */ = '<' <DisplayName e.Function> '>';
 
-  (TkName e.Function) e.Expr
+  (Symbol Name e.Function) e.Expr
     = '<' <DisplayName e.Function> ' ' <InlineSubexpr e.Expr> '>';
 
   (TkVariable e.Indirect) e.Expr

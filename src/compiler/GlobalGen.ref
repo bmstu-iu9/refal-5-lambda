@@ -25,7 +25,7 @@ $ENTRY GlobalGen {
     | (CallBrackets t.Term*)
   t.Symbol ::=
       (TkIdentifier e.Name)
-    | (TkName t.SrcPos e.Name)
+    | (Symbol Name t.SrcPos e.Name)
     | (Symbol Number s.Number)
     | (Symbol Char s.HChar)
 
@@ -75,7 +75,7 @@ $ENTRY BuildImage-Term {
 IsSymbol {
   /* идентификатор, имя функции, число или литера */
   (TkIdentifier e.Name) = True;
-  (TkName t.SrcPos e.Name) = True;
+  (Symbol Name t.SrcPos e.Name) = True;
   (Symbol Number s.Number) = True;
   (Symbol Char s.HChar) = True;
 

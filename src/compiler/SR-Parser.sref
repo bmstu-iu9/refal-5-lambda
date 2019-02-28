@@ -426,7 +426,8 @@ DoParsePattern {
 
   t.ErrorList (e.MultiBrackets) (e.Scanned) (#TkName s.LnNum e.Name) e.Tail =
     <DoParsePattern
-      t.ErrorList (e.MultiBrackets) (e.Scanned (#TkName s.LnNum e.Name)) e.Tail
+      t.ErrorList (e.MultiBrackets)
+      (e.Scanned (#Symbol #Name s.LnNum e.Name)) e.Tail
     >;
 
   t.ErrorList (e.MultiBrackets)
@@ -641,7 +642,8 @@ DoParseResult {
 
   t.ErrorList (e.MultiBracket) (e.Scanned) (#TkName s.LnNum e.Name) e.Tail =
     <DoParseResult
-      t.ErrorList (e.MultiBracket) (e.Scanned (#TkName s.LnNum e.Name)) e.Tail
+      t.ErrorList (e.MultiBracket)
+      (e.Scanned (#Symbol #Name s.LnNum e.Name)) e.Tail
     >;
 
   t.ErrorList (e.MultiBracket)

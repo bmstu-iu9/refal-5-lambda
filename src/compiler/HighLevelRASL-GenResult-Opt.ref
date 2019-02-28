@@ -52,7 +52,7 @@ FlatResult {
   e.Range-B (ADT-Brackets (e.Name) e.SubRange) e.Range-E
     = <FlatResult e.Range-B>
       (TkOpenADT)
-      (TkName e.Name)
+      (Symbol Name e.Name)
       <FlatResult e.SubRange>
       (TkCloseADT)
       <FlatResult e.Range-E>;
@@ -171,7 +171,7 @@ CreateElemParam {
   TkCloseADT s.Offset = s.Offset ElCloseADT;
   TkOpenCall s.Offset = s.Offset ElOpenCall;
   TkCloseCall s.Offset = s.Offset ElCloseCall;
-  TkName e.Name s.Offset = s.Offset ElName e.Name;
+  Symbol Name e.Name s.Offset = s.Offset ElName e.Name;
   TkIdentifier e.Name s.Offset = s.Offset ElIdent e.Name;
   TkClosureHead s.Offset = s.Offset ElClosureHead;
   TkUnwrappedClosure s.Offset = s.Offset ElUnwrappedClosure;

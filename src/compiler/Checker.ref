@@ -147,7 +147,7 @@ IsHardTerm {
 
   (Ident t.SrcPos e.Name) = True;
 
-  (TkName t.SrcPos e.Name) = True;
+  (Symbol Name t.SrcPos e.Name) = True;
 
   (TkVariable t.SrcPos 's' e.Index) = True;
 
@@ -490,7 +490,7 @@ FlatExpr {
         (TkNewVariable t.SrcPos s.Mode e.Index) =
           (TkNewVariable t.SrcPos s.Mode e.Index);
 
-        (TkName t.SrcPos e.Name) = (TkName t.SrcPos e.Name);
+        (Symbol Name t.SrcPos e.Name) = (Symbol Name t.SrcPos e.Name);
 
         (Brackets e.InBrackets) = <FlatExpr e.InBrackets>;
 
@@ -498,7 +498,7 @@ FlatExpr {
           <FlatExpr e.InBrackets>;
 
         (ADT-Brackets t.SrcPos (e.Name) e.InBrackets) =
-          (TkName t.SrcPos e.Name) <FlatExpr e.InBrackets>;
+          (Symbol Name t.SrcPos e.Name) <FlatExpr e.InBrackets>;
 
         (CallBrackets e.InBrackets) = <FlatExpr e.InBrackets>;
 
@@ -535,8 +535,8 @@ CheckPattern {
         (e.KnownVars) (TkNewVariable t.SrcPos s.Mode e.Index) =
           (<FixupKnownVars e.KnownVars (s.Mode e.Index)>);
 
-        (e.KnownVars) (TkName t.SrcPos e.Name) =
-          (e.KnownVars) (TkName t.SrcPos e.Name);
+        (e.KnownVars) (Symbol Name t.SrcPos e.Name) =
+          (e.KnownVars) (Symbol Name t.SrcPos e.Name);
 
         (e.KnownVars) (Error t.SrcPos s.Type e.Info) =
           (e.KnownVars) (Error t.SrcPos s.Type e.Info);
@@ -568,8 +568,8 @@ CheckResult {
           e.KnownVars (TkVariable t.SrcPos s.Mode e.Index) =
             (Error t.SrcPos VariableNotFound s.Mode e.Index);
 
-          e.KnownVars (TkName t.SrcPos e.Name) =
-            (TkName t.SrcPos e.Name);
+          e.KnownVars (Symbol Name t.SrcPos e.Name) =
+            (Symbol Name t.SrcPos e.Name);
 
           e.KnownVars (Closure e.Body) =
             <CheckFunctionBodyRec (e.KnownVars) e.Body>;
@@ -589,7 +589,7 @@ CheckValidUsings {
     (Declare t.SrcPos s.ScopeClass e.Name)
     e.DeclarationsAndErrors-E
   )
-  (TkName t.SrcPosName e.Name) e.NameRefsAndErrors =
+  (Symbol Name t.SrcPosName e.Name) e.NameRefsAndErrors =
     <CheckValidUsings
       (
         e.DeclarationsAndErrors-B
@@ -604,7 +604,7 @@ CheckValidUsings {
     (Define t.SrcPos s.ScopeClass e.Name)
     e.DeclarationsAndErrors-E
   )
-  (TkName t.SrcPosName e.Name) e.NameRefsAndErrors =
+  (Symbol Name t.SrcPosName e.Name) e.NameRefsAndErrors =
     <CheckValidUsings
       (
         e.DeclarationsAndErrors-B
@@ -615,7 +615,7 @@ CheckValidUsings {
     >;
 
   (e.DeclarationsAndErrors)
-  (TkName t.SrcPos e.Name) e.NameRefsAndErrors =
+  (Symbol Name t.SrcPos e.Name) e.NameRefsAndErrors =
     <CheckValidUsings
       (e.DeclarationsAndErrors (Error t.SrcPos NotDefined e.Name))
       e.NameRefsAndErrors

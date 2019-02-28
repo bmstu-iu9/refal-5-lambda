@@ -33,14 +33,14 @@ $EXTERN EL-AddErrorAt;
     | (TkIdentifier s.Char*)
     | (TkVariable t.SrcPos s.VarType e.Index)
     | (Brackets t.Term*)
-    | (CallBrackets (TkName t.SrcPos e.Function)? t.Term*)
-    | (TkName t.SrcPos s.Char*)
+    | (CallBrackets (Symbol Name t.SrcPos e.Function)? t.Term*)
     | (Closure Sentences t.Sentence*)
     | (TkNewVariable t.SrcPos s.VarType e.Index)
     | (ADT-Brackets t.SrcPos (e.ADT-Name) t.Term*)
   s.SymType e.SymInfo ::=
       Char s.Char
     | Number s.Number
+    | Name t.SrcPos s.Char*
   e.ADT-Name ::= s.CHAR* | UnnamedADT
   s.VarType ::= 's' | 't' | 'e'
 */
@@ -678,7 +678,7 @@ DoTokenChain {
 
         (TkOpenCall t.Pos e.FuncName)
           = <DoTokenChain-AfterCall
-              s.Mode s.Kind (e.Collected) t.Pos ((TkName t.Pos e.FuncName))
+              s.Mode s.Kind (e.Collected) t.Pos ((Symbol Name t.Pos e.FuncName))
               <TokenChain t.ErrorList s.Mode s.Kind e.Tokens>
             >;
 
@@ -716,7 +716,7 @@ DoTokenChain {
           = s.Mode e.Tokens
           : {
               Extended (TkName t.Pos^ e.Name) e.Tokens^
-                = t.ErrorList ((TkName t.Pos e.Name)) e.Tokens;
+                = t.ErrorList ((Symbol Name t.Pos e.Name)) e.Tokens;
 
               s.Mode^ e.Tokens^
                 = s.Mode

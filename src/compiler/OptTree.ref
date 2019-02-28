@@ -165,10 +165,10 @@ OptResultTerm {
     = Hot (CallBrackets e.Content e.Expr);
 
   /* Вызов оптимизируемой функции, значит терм горячий */
-  e.OptimizableFunctions s.Temp (CallBrackets (TkName e.FuncName) e.Expr)
+  e.OptimizableFunctions s.Temp (CallBrackets (Symbol Name e.FuncName) e.Expr)
     , e.OptimizableFunctions : e.Funcs-B (e.FuncName) e.Funcs-E
     = <OptResultRec (e.OptimizableFunctions) Cold e.Expr> : s.Temp^ e.Expr^
-    = Hot (CallBrackets (TkName e.FuncName) e.Expr);
+    = Hot (CallBrackets (Symbol Name e.FuncName) e.Expr);
 
   /*
     Вызов неоптимизированной функции, можем остудить, если аргумент холодный

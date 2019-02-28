@@ -411,7 +411,8 @@ PatchASTSrcPos-Expr {
           (TkNewVariable t.SrcPos s.Mode e.Index)
             = (TkNewVariable <s.FnPatch t.SrcPos> s.Mode e.Index);
 
-          (TkName t.SrcPos e.Name) = (TkName <s.FnPatch t.SrcPos> e.Name);
+          (Symbol Name t.SrcPos e.Name)
+            = (Symbol Name <s.FnPatch t.SrcPos> e.Name);
 
           (Brackets e.InBrackets)
             = (Brackets <PatchASTSrcPos-Expr s.FnPatch e.InBrackets>);

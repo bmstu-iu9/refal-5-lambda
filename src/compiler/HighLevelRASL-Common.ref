@@ -65,7 +65,7 @@ $ENTRY TextFromExpr {
 
         (Symbol Number s.Number s.Offset) = ' ' <Symb s.Number> <Offset s.Offset>;
 
-        (TkName e.Name s.Offset) =
+        (Symbol Name e.Name s.Offset) =
           ' & ' <DisplayName e.Name> <Offset s.Offset>;
 
         (TkString e.String s.Offset) =
@@ -113,7 +113,7 @@ TextFromExpr-Prepare {
   (Symbol Char s.Char NoOffset) e.Tail =
     <TextFromExpr-Prepare-Chars () (Symbol Char s.Char NoOffset) e.Tail>;
 
-  (TkOpenADT s.BracketOffset) (TkName e.Name s.NameOffset) e.Tail =
+  (TkOpenADT s.BracketOffset) (Symbol Name e.Name s.NameOffset) e.Tail =
     (TkOpenADT s.BracketOffset e.Name s.NameOffset)
     <TextFromExpr-Prepare e.Tail>;
 
@@ -146,7 +146,7 @@ $ENTRY GenInitSubst {
     = <Add s.ContextTop 4> : s.4
     = <Add s.ContextTop 5> : s.5
     = s.5
-      (Junk (TkOpenCall s.0) (TkName e.FuncName s.4))
+      (Junk (TkOpenCall s.0) (Symbol Name e.FuncName s.4))
       (E s.2 e.Pattern)
       (Junk (TkCloseCall s.1))
       (
