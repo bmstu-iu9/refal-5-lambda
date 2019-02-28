@@ -163,7 +163,7 @@ GenResult-ReinitUpdate {
 }
 
 CreateElemParam {
-  TkChar s.Char s.Offset = s.Offset ElChar s.Char;
+  Symbol Char s.Char s.Offset = s.Offset ElChar s.Char;
   TkNumber s.Number s.Offset = s.Offset ElNumber s.Number;
   TkOpenBracket s.Offset = s.Offset ElOpenBracket;
   TkCloseBracket s.Offset = s.Offset ElCloseBracket;

@@ -106,7 +106,7 @@ IsSymbol {
   (TkIdentifier e.Name) = True;
   (TkName t.SrcPos e.Name) = True;
   (TkNumber s.Number) = True;
-  (TkChar s.HChar) = True;
+  (Symbol Char s.HChar) = True;
 
   t.OtherTerm = False;
 }

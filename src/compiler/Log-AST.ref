@@ -246,6 +246,10 @@ MultilineTerm-Prefix {
       };
 }
 
+Symbol {
+  Char s.Char = '\'' <CharRep s.Char> '\''
+}
+
 TkName {
   e.Ident = '&' <DisplayName e.Ident>;
 }
@@ -295,10 +299,6 @@ TkNumber {
   Cookie2 = '$COOKIE2';
 
   s.Number = <Symb s.Number>;
-}
-
-TkChar {
-  s.Char = '\'' <CharRep s.Char> '\''
 }
 
 CharRep {

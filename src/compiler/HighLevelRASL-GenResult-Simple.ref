@@ -101,7 +101,8 @@ DoGenResult {
     >;
 
   /* Создаём литералы */
-  (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (TkChar s.Value) e.Result =
+  (e.Vars) (e.AllocCommands) (e.Commands)
+  s.Counter (Symbol Char s.Value) e.Result =
     <DoGenResult
       (e.Vars)
       (e.AllocCommands (CmdCreateElem Allocate s.Counter ElChar s.Value))

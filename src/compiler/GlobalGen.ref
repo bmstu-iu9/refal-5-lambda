@@ -27,7 +27,7 @@ $ENTRY GlobalGen {
       (TkIdentifier e.Name)
     | (TkName t.SrcPos e.Name)
     | (TkNumber s.Number)
-    | (TkChar s.HChar)
+    | (Symbol Char s.HChar)
 
   t.Image ::=
       (K ':' s.Len ',' (t.TermImage*))
@@ -77,7 +77,7 @@ IsSymbol {
   (TkIdentifier e.Name) = True;
   (TkName t.SrcPos e.Name) = True;
   (TkNumber s.Number) = True;
-  (TkChar s.HChar) = True;
+  (Symbol Char s.HChar) = True;
 
   t.OtherTerm = False;
 }

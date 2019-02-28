@@ -55,7 +55,7 @@ $ENTRY TextFromExpr {
         (TkUnwrappedClosure s.ContextOffset)
           = ' {*}' <Offset s.ContextOffset>;
 
-        (TkChar s.Char s.Offset) =
+        (Symbol Char s.Char s.Offset) =
           ' \'' <EscapeChar s.Char> '\'' <Offset s.Offset>;
 
         (TkChars e.Chars) = ' \'' e.Chars '\'';
@@ -110,8 +110,8 @@ SafeDisplayName {
 }
 
 TextFromExpr-Prepare {
-  (TkChar s.Char NoOffset) e.Tail =
-    <TextFromExpr-Prepare-Chars () (TkChar s.Char NoOffset) e.Tail>;
+  (Symbol Char s.Char NoOffset) e.Tail =
+    <TextFromExpr-Prepare-Chars () (Symbol Char s.Char NoOffset) e.Tail>;
 
   (TkOpenADT s.BracketOffset) (TkName e.Name s.NameOffset) e.Tail =
     (TkOpenADT s.BracketOffset e.Name s.NameOffset)
@@ -123,7 +123,7 @@ TextFromExpr-Prepare {
 }
 
 TextFromExpr-Prepare-Chars {
-  (e.Chars) (TkChar s.Char NoOffset) e.Tail =
+  (e.Chars) (Symbol Char s.Char NoOffset) e.Tail =
     <TextFromExpr-Prepare-Chars (e.Chars <EscapeChar s.Char>) e.Tail>;
 
   (e.Chars) e.Tail = (TkChars e.Chars) <TextFromExpr-Prepare e.Tail>;
@@ -223,7 +223,7 @@ $ENTRY PutVariableDebugTable {
   e.ReducedExpression — см. interfaces.md
 */
 $ENTRY CollectStrings {
-  (TkChar s.Value1) (TkChar s.Value2) e.Tail =
+  (Symbol Char s.Value1) (Symbol Char s.Value2) e.Tail =
     <Fetch
       <BuildString (s.Value1 s.Value2) e.Tail>
       {
@@ -246,7 +246,7 @@ $ENTRY CollectStrings {
 }
 
 BuildString {
-  (e.Chars) (TkChar s.Value) e.Tail =
+  (e.Chars) (Symbol Char s.Value) e.Tail =
     <BuildString (e.Chars s.Value) e.Tail>;
 
   (e.Chars) e.Tail = (e.Chars) e.Tail;

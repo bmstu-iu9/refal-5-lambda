@@ -31,12 +31,12 @@ DoGenSubst {
   /* Распознавание T-подстановки */
   s.ContextOffset
   e.Substs-B
-  (Junk e.Junk1) (T s.Num (TkChar s.Char)) (Junk e.Junk2)
+  (Junk e.Junk1) (T s.Num (Symbol Char s.Char)) (Junk e.Junk2)
   e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenSubst
       s.ContextOffset
-      e.Substs-B (Junk e.Junk1 (TkChar s.Char NoOffset) e.Junk2) e.Substs-E
+      e.Substs-B (Junk e.Junk1 (Symbol Char s.Char NoOffset) e.Junk2) e.Substs-E
       (e.Vars) (e.Commands (CmdChar AlgTerm s.Num s.Char))
     >;
 
@@ -150,12 +150,12 @@ DoGenSubst {
   /* Распознавание S-подстановки */
   s.ContextOffset
   e.Substs-B
-  (Junk e.Junk1) (S s.Num (TkChar s.Char)) (Junk e.Junk2)
+  (Junk e.Junk1) (S s.Num (Symbol Char s.Char)) (Junk e.Junk2)
   e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenSubst
       s.ContextOffset
-      e.Substs-B (Junk e.Junk1 (TkChar s.Char NoOffset) e.Junk2) e.Substs-E
+      e.Substs-B (Junk e.Junk1 (Symbol Char s.Char NoOffset) e.Junk2) e.Substs-E
       (e.Vars) (e.Commands (CmdChar AlgTerm s.Num s.Char))
     >;
 
@@ -228,12 +228,12 @@ DoGenSubst {
 
   /* Распознавание литералов (символьных, целочисленных, имён) */
   s.ContextOffset
-  e.Substs-B (Junk e.Junk) (E s.Num (TkChar s.Char) e.Range) e.Substs-E
+  e.Substs-B (Junk e.Junk) (E s.Num (Symbol Char s.Char) e.Range) e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenSubst
       s.ContextOffset
       e.Substs-B
-      (Junk e.Junk (TkChar s.Char NoOffset)) (E s.Num e.Range)
+      (Junk e.Junk (Symbol Char s.Char NoOffset)) (E s.Num e.Range)
       e.Substs-E
       (e.Vars) (e.Commands (CmdChar AlgLeft s.Num s.Char))
     >;
@@ -274,12 +274,12 @@ DoGenSubst {
     >;
 
   s.ContextOffset
-  e.Substs-B (E s.Num e.Range (TkChar s.Char)) (Junk e.Junk) e.Substs-E
+  e.Substs-B (E s.Num e.Range (Symbol Char s.Char)) (Junk e.Junk) e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenSubst
       s.ContextOffset
       e.Substs-B
-      (E s.Num e.Range) (Junk (TkChar s.Char NoOffset) e.Junk)
+      (E s.Num e.Range) (Junk (Symbol Char s.Char NoOffset) e.Junk)
       e.Substs-E
       (e.Vars) (e.Commands (CmdChar AlgRight s.Num s.Char))
     >;

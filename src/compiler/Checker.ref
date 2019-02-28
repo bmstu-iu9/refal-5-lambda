@@ -141,7 +141,7 @@ IsHardPattern {
 }
 
 IsHardTerm {
-  (TkChar s.Char) = True;
+  (Symbol Char s.Char) = True;
 
   (TkNumber s.Number) = True;
 
