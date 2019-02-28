@@ -145,7 +145,7 @@ IsHardTerm {
 
   (Symbol Number s.Number) = True;
 
-  (Ident t.SrcPos e.Name) = True;
+  (TkIdentifier t.SrcPos e.Name) = True;
 
   (Symbol Name t.SrcPos e.Name) = True;
 
