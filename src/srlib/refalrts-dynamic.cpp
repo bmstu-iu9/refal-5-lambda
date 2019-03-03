@@ -203,7 +203,7 @@ bool refalrts::Module::find_unresolved_externals_rasl(
         cookie2 = table->cookie2;
       } else {
         throw LoadModuleError(
-          std::string("Bad external functin name '")
+          std::string("Bad external function name '")
           + str_name + "', name must start from '*' or '#'"
         );
       }
