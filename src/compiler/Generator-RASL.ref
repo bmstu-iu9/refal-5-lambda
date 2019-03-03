@@ -207,16 +207,16 @@ GenCommand-RASL {
   (CmdNumberSave s.Direction s.BracketNumber s.SaveOffset s.Number) =
     <PutCommand (CmdNumberSave s.Direction) s.SaveOffset s.Number s.BracketNumber>;
 
-  (CmdName s.Direction s.BracketNumber s.NameId) =
+  (CmdName s.Direction s.BracketNumber s.NameId e.Name) =
     <PutCommand (CmdName s.Direction) 0 s.NameId s.BracketNumber>;
 
-  (CmdNameSave s.Direction s.BracketNumber s.SaveOffset s.NameId) =
+  (CmdNameSave s.Direction s.BracketNumber s.SaveOffset s.NameId e.Name) =
     <PutCommand (CmdNameSave s.Direction) s.SaveOffset s.NameId s.BracketNumber>;
 
-  (CmdIdent s.Direction s.BracketNumber s.NameId) =
+  (CmdIdent s.Direction s.BracketNumber s.NameId e.Name) =
     <PutCommand (CmdIdent s.Direction) 0 s.NameId s.BracketNumber>;
 
-  (CmdIdentSave s.Direction s.BracketNumber s.SaveOffset s.NameId) =
+  (CmdIdentSave s.Direction s.BracketNumber s.SaveOffset s.NameId e.Name) =
     <PutCommand
       (CmdIdentSave s.Direction) s.SaveOffset s.NameId s.BracketNumber
     >;
@@ -227,10 +227,10 @@ GenCommand-RASL {
   (CmdBracketsSave s.Direction s.Num s.NumRanges) =
     <PutCommand (CmdBracketsSave s.Direction) 0 s.NumRanges s.Num>;
 
-  (CmdADT s.Direction s.BracketNumber s.InnerBrackets s.NameId) =
+  (CmdADT s.Direction s.BracketNumber s.InnerBrackets s.NameId e.Name) =
     <PutCommand (CmdADT s.Direction) s.NameId s.InnerBrackets s.BracketNumber>;
 
-  (CmdADTSave s.Direction s.BracketNumber s.InnerBrackets s.NameId) =
+  (CmdADTSave s.Direction s.BracketNumber s.InnerBrackets s.NameId e.Name) =
     <PutCommand
       (CmdADTSave s.Direction) s.NameId s.InnerBrackets s.BracketNumber
     >;
@@ -387,11 +387,11 @@ CreateCommandTag {
 CreateCommandInfo {
   ElChar s.Char = <Ord s.Char>;
 
-  ElName s.NameId = s.NameId;
+  ElName s.NameId e.Name = s.NameId;
 
   ElNumber s.Number = s.Number;
 
-  ElIdent s.NameId = s.NameId;
+  ElIdent s.NameId e.Name = s.NameId;
 
   ElString s.StringId = s.StringId;
 

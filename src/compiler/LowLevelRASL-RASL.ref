@@ -221,25 +221,21 @@ PrepareCommonRASL {
 
     = <GlueFunctionRASLs e.Definitions> : (e.RASL-Commands) e.Items
 
-    = <OutlineConstants
-        (0 /* строки */)
-        e.RASL-Commands
-      >
+    = <OutlineStrings (0 /* строки */) e.RASL-Commands>
     : (CmdStringArray s.StringCount e.Strings)
       e.RASL-Commands^
 
     = (CmdFuncArray
-        s.FunctionCount
-        <SetFunctionsScopeClass
-          (e.FuncScopeClass) <Map &RemoveNumber e.Functions>
-        >
+        s.FunctionCount <SetFunctionsScopeClass (e.FuncScopeClass) e.Functions>
       )
       (CmdIdentArray s.IdentCount <Map &RemoveNumber e.Idents>)
       (CmdNumberArray 0 /* empty */)
-      (CmdStringArray s.StringCount e.Strings)
+      (CmdStringArray s.StringCount <Map &RemoveNumber e.Strings>)
       (RASL e.RASL-Commands)
       (Items e.Items);
 }
+
+RemoveNumber { (s.Number e.Name) = (e.Name); }
 
 GlueFunctionRASLs {
   e.Definitions
@@ -265,12 +261,12 @@ SetFunctionsScopeClass {
     = <MapReduce
         {
           (e.Decls-B (s.ScopeClass e.FuncName) e.Decls-E)
-          (e.FuncName)
+          (s.FuncId e.FuncName)
             = (e.Decls-B e.Decls-E) (s.ScopeClass e.FuncName);
 
           /* not defined — it is extern */
           (e.Decls)
-          (e.FuncName)
+          (s.FuncId e.FuncName)
             = (e.Decls) (GN-Entry e.FuncName);
         }
         (e.FuncScopeClass)
@@ -280,85 +276,14 @@ SetFunctionsScopeClass {
     = e.Functions;
 }
 
-RemoveNumber { (s.Number e.Name) = (e.Name); }
-
-OutlineConstants {
+OutlineStrings {
   (s.NextString e.Strings) /* пусто */ =
-    (CmdStringArray s.NextString <Map &RemoveNumber e.Strings>);
-
-  (e.Strings)
-  e.Commands
-  (CmdName s.Direction s.BracketNum s.Num e.Func) =
-    <OutlineConstants (e.Strings) e.Commands>
-    (CmdName s.Direction s.BracketNum s.Num);
-
-  (e.Strings)
-  e.Commands
-  (CmdNameSave s.Direction s.BracketNum s.SaveOffset s.Num e.Func) =
-    <OutlineConstants
-      (e.Strings)
-      e.Commands
-    >
-    (CmdNameSave s.Direction s.BracketNum s.SaveOffset s.Num);
-
-  (e.Strings)
-  e.Commands
-  (CmdCreateElem s.CreateMode s.ElemNo ElName s.Num e.Func) =
-    <OutlineConstants
-      (e.Strings)
-      e.Commands
-    >
-    (CmdCreateElem s.CreateMode s.ElemNo ElName s.Num);
-
-  (e.Strings)
-  e.Commands
-  (CmdADT s.Direction s.BracketNum s.InnerBrackets s.Num e.Func) =
-    <OutlineConstants
-      (e.Strings)
-      e.Commands
-    >
-    (CmdADT s.Direction s.BracketNum s.InnerBrackets s.Num);
-
-  (e.Strings)
-  e.Commands
-  (CmdADTSave s.Direction s.BracketNum s.InnerBrackets s.Num e.Func) =
-    <OutlineConstants
-      (e.Strings)
-      e.Commands
-    >
-    (CmdADTSave s.Direction s.BracketNum s.InnerBrackets s.Num);
-
-  (e.Strings)
-  e.Commands
-  (CmdIdent s.Direction s.BracketNum s.Num e.Ident) =
-    <OutlineConstants
-      (e.Strings)
-      e.Commands
-    >
-    (CmdIdent s.Direction s.BracketNum s.Num);
-
-  (e.Strings)
-  e.Commands
-  (CmdIdentSave s.Direction s.BracketNum s.SaveOffset s.Num e.Ident) =
-    <OutlineConstants
-      (e.Strings)
-      e.Commands
-    >
-    (CmdIdentSave s.Direction s.BracketNum s.SaveOffset s.Num);
-
-  (e.Strings)
-  e.Commands
-  (CmdCreateElem s.CreateMode s.ElemNo ElIdent s.Num e.Ident) =
-    <OutlineConstants
-      (e.Strings)
-      e.Commands
-    >
-    (CmdCreateElem s.CreateMode s.ElemNo ElIdent s.Num);
+    (CmdStringArray s.NextString e.Strings);
 
   (s.NextStringId e.Strings-B (s.Id e.String) e.Strings-E)
   e.Commands
   (CmdCreateElem s.CreateMode s.ElemNo ElString e.String) =
-    <OutlineConstants
+    <OutlineStrings
       (s.NextStringId e.Strings-B (s.Id e.String) e.Strings-E)
       e.Commands
     >
@@ -367,7 +292,7 @@ OutlineConstants {
   (s.NextStringId e.Strings)
   e.Commands
   (CmdCreateElem s.CreateMode s.ElemNo ElString e.String) =
-    <OutlineConstants
+    <OutlineStrings
       (<Inc s.NextStringId> e.Strings (s.NextStringId e.String))
       e.Commands
     >
@@ -376,7 +301,7 @@ OutlineConstants {
   (s.NextStringId e.Strings-B (s.Id e.VarName) e.Strings-E)
   e.Commands
   (CmdVariableDebugTable e.VarName s.Offset) =
-    <OutlineConstants
+    <OutlineStrings
       (s.NextStringId e.Strings-B (s.Id e.VarName) e.Strings-E)
       e.Commands
     >
@@ -385,15 +310,12 @@ OutlineConstants {
   (s.NextStringId e.Strings)
   e.Commands
   (CmdVariableDebugTable e.VarName s.Offset) =
-    <OutlineConstants
+    <OutlineStrings
       (<Inc s.NextStringId> e.Strings (s.NextStringId e.VarName))
       e.Commands
     >
     (CmdVariableDebugTable s.NextStringId s.Offset);
 
-  (e.Strings)
-  e.Commands
-  t.OtherCommand =
-    <OutlineConstants (e.Strings) e.Commands>
-    t.OtherCommand;
+  (e.Strings) e.Commands t.OtherCommand =
+    <OutlineStrings (e.Strings) e.Commands> t.OtherCommand;
 }

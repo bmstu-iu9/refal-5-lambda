@@ -627,8 +627,8 @@ e-переменные, распределяемые последователь�
       | CmdADT s.NewRangeOffset s.NameId
       | CmdChar s.Char
       | CmdVar s.Mode s.VarOffset
-      | CmdName s.NameId
-      | CmdIdent s.NameId
+      | CmdName s.NameId e.Name
+      | CmdIdent s.NameId e.Name
       | CmdNumber s.NUMBER
       | CmdHugeNum s.NumberId
       | CmdBracket s.NewRangeOffset
@@ -638,16 +638,16 @@ e-переменные, распределяемые последователь�
       | CmdADTSave s.NewRangeOffset s.NameId
       | CmdCharSave s.SaveOffset s.Char
       | CmdVarSave s.Mode s.VarOffset
-      | CmdNameSave s.SaveOffset s.NameId
-      | CmdIdentSave s.SaveOffset s.NameId
+      | CmdNameSave s.SaveOffset s.NameId e.Name
+      | CmdIdentSave s.SaveOffset s.NameId e.Name
       | CmdNumberSave s.SaveOffset s.NUMBER
       | CmdHugeNumSave s.SaveOffset s.NumberId
       | CmdBracketSave s.NewRangeOffset
 
     s.iCreateType e.iCreateInfo ::=
         ElChar s.Char
-      | ElName s.NameId
-      | ElIdent s.NameId
+      | ElName s.NameId e.Name
+      | ElIdent s.NameId e.Name
       | ElHugeNumber s.NumberId
       | ElNumber s.NUMBER
       | ElString s.StringId
