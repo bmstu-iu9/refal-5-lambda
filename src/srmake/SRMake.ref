@@ -140,8 +140,8 @@ RunSrefCompiler {
     : {
         0 = /* пусто */;
 
-        s.RetCode
-          = <Prout 'ERROR: srefc-core returned code ' <Symb s.RetCode>>
+        e.RetCode
+          = <Prout 'ERROR: srefc-core returned code ' <Symb e.RetCode>>
             <Exit 1>;
       };
 }
