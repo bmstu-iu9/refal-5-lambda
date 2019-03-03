@@ -253,22 +253,22 @@ GenCommand-Native {
     <PrintMatchNumberSave (e.Indent) s.Offset s.Direction s.BracketNumber s.Number>
     ;
 
-  (e.Indent) (CmdName s.Direction s.BracketNumber e.Name) =
+  (e.Indent) (CmdName s.Direction s.BracketNumber s.Num e.Name) =
     (e.Indent)
     <PrintMatchName (e.Indent) s.Direction s.BracketNumber e.Name>
     ;
 
-  (e.Indent) (CmdNameSave  s.Direction s.BracketNumber s.Offset e.Name) =
+  (e.Indent) (CmdNameSave  s.Direction s.BracketNumber s.Offset s.Num e.Name) =
     (e.Indent)
     <PrintMatchNameSave (e.Indent) s.Offset s.Direction s.BracketNumber e.Name>
     ;
 
-  (e.Indent) (CmdIdent s.Direction s.BracketNumber e.Name) =
+  (e.Indent) (CmdIdent s.Direction s.BracketNumber s.Num e.Name) =
     (e.Indent)
     <PrintMatchIdent (e.Indent) s.Direction s.BracketNumber e.Name>
     ;
 
-  (e.Indent) (CmdIdentSave s.Direction s.BracketNumber s.Offset e.Name) =
+  (e.Indent) (CmdIdentSave s.Direction s.BracketNumber s.Offset s.Num e.Name) =
     (e.Indent)
     <PrintMatchIdentSave (e.Indent) s.Offset s.Direction s.BracketNumber e.Name>
     ;
@@ -285,7 +285,7 @@ GenCommand-Native {
     <PrintMatchBracketsSave (e.Indent) s.Direction s.BracketNumber s.InnerBrackets>
     ;
 
-  (e.Indent) (CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) =
+  (e.Indent) (CmdADT s.Direction s.BracketNumber s.InnerBrackets s.Num e.Name) =
     (e.Indent)
     <PrintBracketsVarInit e.Indent s.InnerBrackets>
     <PrintMatchADT
@@ -293,7 +293,8 @@ GenCommand-Native {
     >
     ;
 
-  (e.Indent) (CmdADTSave s.Direction s.BracketNumber s.InnerBrackets e.Name) =
+  (e.Indent)
+   (CmdADTSave s.Direction s.BracketNumber s.InnerBrackets s.Num e.Name) =
     (e.Indent)
     <PrintBracketsVarInit e.Indent s.InnerBrackets>
     <PrintMatchADTSave
@@ -831,11 +832,11 @@ AllocatorFuncName {
 AllocatorFuncArgument {
   ElChar s.Char = ', \'' <EscapeChar s.Char> '\'';
 
-  ElName e.Name = ', ' <CNameAlias e.Name>;
+  ElName s.Num e.Name = ', ' <CNameAlias e.Name>;
 
   ElNumber s.Number = ', ' <Symb s.Number> 'UL';
 
-  ElIdent e.Name = ', ident_' <CName e.Name> '.ref(vm)';
+  ElIdent s.Num e.Name = ', ident_' <CName e.Name> '.ref(vm)';
 
   ElUnwrappedClosure s.HeadOffset = ', ' <ContextItem s.HeadOffset>;
 

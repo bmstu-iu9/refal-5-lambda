@@ -3,16 +3,19 @@ $EXTERN Map, MapReduce, Sort;
 
 
 /**
-  <LowLevelRASL-Native s.Hash1 s.Hash2 e.Items>
+  <LowLevelRASL-Native s.Hash1 s.Hash2 t.Tables e.Items>
     == t.NativeModule?
 
   s.Hash1, s.Hash2 ::= s.NUMBER
+
+  t.Tables ::= (t.FuncTable t.IdentTable)
+  t.FuncTable, t.IdentTable ::= (s.NextId (s.Id e.Name)*)
 
   In e.Items is used (Function-ToRASL …) and (Function-ToNative …)
   instead (Function …).
 */
 $ENTRY LowLevelRASL-Native {
-  s.Hash1 s.Hash2 e.Items
+  s.Hash1 s.Hash2 t.Tables e.Items
     = <Map (&SetCookies s.Hash1 s.Hash2) e.Items> : e.Items^
     = <MapReduce
         &ClassifyItems-Native
@@ -181,28 +184,28 @@ ConvertDirectCommands {
 }
 
 MakeRequestCommand {
-  (CmdName s.Direction s.BracketNum e.Func)
+  (CmdName s.Direction s.BracketNum s.Num e.Func)
     = (REQUEST Extern e.Func);
 
-  (CmdNameSave s.Direction s.BracketNum s.SaveOffset e.Func)
+  (CmdNameSave s.Direction s.BracketNum s.SaveOffset s.Num e.Func)
     = (REQUEST Extern e.Func);
 
-  (CmdCreateElem s.CreateMode s.ElemNo ElName e.Func)
+  (CmdCreateElem s.CreateMode s.ElemNo ElName s.Num e.Func)
     = (REQUEST Extern e.Func);
 
-  (CmdADT s.Direction s.BracketNum s.InnerBrackets e.Func)
+  (CmdADT s.Direction s.BracketNum s.InnerBrackets s.Num e.Func)
     = (REQUEST Extern e.Func);
 
-  (CmdADTSave s.Direction s.BracketNum s.InnerBrackets e.Func)
+  (CmdADTSave s.Direction s.BracketNum s.InnerBrackets s.Num e.Func)
     = (REQUEST Extern e.Func);
 
-  (CmdIdent s.Direction s.BracketNum e.Ident)
+  (CmdIdent s.Direction s.BracketNum s.Num e.Ident)
     = (REQUEST Ident e.Ident);
 
-  (CmdIdentSave s.Direction s.BracketNum s.SaveOffset e.Ident)
+  (CmdIdentSave s.Direction s.BracketNum s.SaveOffset s.Num e.Ident)
     = (REQUEST Ident e.Ident);
 
-  (CmdCreateElem s.CreateMode s.ElemNo ElIdent e.Ident)
+  (CmdCreateElem s.CreateMode s.ElemNo ElIdent s.Num e.Ident)
     = (REQUEST Ident e.Ident);
 
   t.OtherCommand = /* no request definitions */;

@@ -1,5 +1,5 @@
 *$FROM LibraryEx
-$EXTERN MapReduce, Map;
+$EXTERN MapReduce, Map, Inc;
 
 *$FROM Hash
 $EXTERN HashLittle2-Chars;
@@ -35,10 +35,17 @@ $ENTRY LowLevelRASL {
 
     = <Map (&SetScopeIDs s.Hash1 s.Hash2) e.Items> : e.Items^
 
+    = <MapReduce
+        &OutlineConstants
+        ((0 /* functions */) (0 /* idents */))
+        e.Items
+      >
+    : t.Tables e.Items^
+
     = <Map (&MarkFunctionGenMode s.GenMode) e.Items> : e.Items^
 
-    = <LowLevelRASL-RASL s.DebugInfo s.Hash1 s.Hash2 e.Items>
-      <LowLevelRASL-Native s.Hash1 s.Hash2 e.Items>;
+    = <LowLevelRASL-RASL s.DebugInfo s.Hash1 s.Hash2 t.Tables e.Items>
+      <LowLevelRASL-Native s.Hash1 s.Hash2 t.Tables e.Items>;
 }
 
 Canonize {
@@ -146,6 +153,84 @@ SetScopeIDs-Patch {
   s.Hash1 s.Hash2 Cookie1 = s.Hash1;
   s.Hash1 s.Hash2 Cookie2 = s.Hash2;
   s.Hash1 s.Hash2 s.Number = s.Number;
+}
+
+OutlineConstants {
+  t.Tables (Function s.ScopeClass (e.Name) e.Commands)
+    = <OutlineConstants-Commands t.Tables e.Commands>
+    : t.Tables^ e.Commands^
+    = t.Tables (Function s.ScopeClass (e.Name) e.Commands);
+
+  t.Tables t.OtherItem = t.Tables t.OtherItem;
+}
+
+OutlineConstants-Commands {
+  t.Tables e.Commands
+    = <MapReduce &OutlineConstants-OneCommand t.Tables e.Commands>;
+}
+
+OutlineConstants-OneCommand {
+  t.Tables (CmdName s.Direction s.BracketNum e.Func)
+    = <UpdateFuncTable t.Tables e.Func> : t.Tables^ s.Id
+    = t.Tables (CmdName s.Direction s.BracketNum s.Id e.Func);
+
+  t.Tables (CmdNameSave s.Direction s.BracketNum s.SaveOffset e.Func)
+    = <UpdateFuncTable t.Tables e.Func> : t.Tables^ s.Id
+    = t.Tables (CmdNameSave s.Direction s.BracketNum s.SaveOffset s.Id e.Func);
+
+  t.Tables (CmdCreateElem s.CreateMode s.ElemNo ElName e.Func)
+    = <UpdateFuncTable t.Tables e.Func> : t.Tables^ s.Id
+    = t.Tables (CmdCreateElem s.CreateMode s.ElemNo ElName s.Id e.Func);
+
+  t.Tables (CmdADT s.Direction s.BracketNum s.InnerBrackets e.Func)
+    = <UpdateFuncTable t.Tables e.Func> : t.Tables^ s.Id
+    = t.Tables (CmdADT s.Direction s.BracketNum s.InnerBrackets s.Id e.Func);
+
+  t.Tables (CmdADTSave s.Direction s.BracketNum s.InnerBrackets e.Func)
+    = <UpdateFuncTable t.Tables e.Func> : t.Tables^ s.Id
+    = t.Tables (CmdADTSave s.Direction s.BracketNum s.InnerBrackets s.Id e.Func);
+
+  t.Tables (CmdIdent s.Direction s.BracketNum e.Ident)
+    = <UpdateIdentTable t.Tables e.Ident> : t.Tables^ s.Id
+    = t.Tables (CmdIdent s.Direction s.BracketNum s.Id e.Ident);
+
+  t.Tables (CmdIdentSave s.Direction s.BracketNum s.SaveOffset e.Ident)
+    = <UpdateIdentTable t.Tables e.Ident> : t.Tables^ s.Id
+    = t.Tables (CmdIdentSave s.Direction s.BracketNum s.SaveOffset s.Id e.Ident);
+
+  t.Tables (CmdCreateElem s.CreateMode s.ElemNo ElIdent e.Ident)
+    = <UpdateIdentTable t.Tables e.Ident> : t.Tables^ s.Id
+    = t.Tables (CmdCreateElem s.CreateMode s.ElemNo ElIdent s.Id e.Ident);
+
+  t.Tables (CmdSentence e.Commands)
+    = <OutlineConstants-Commands t.Tables e.Commands> : t.Tables^ e.Commands^
+    = t.Tables (CmdSentence e.Commands);
+
+  t.Tables (CmdOpenELoop AlgLeft s.BracketNum s.VarNumber e.Commands)
+    = <OutlineConstants-Commands t.Tables e.Commands> : t.Tables^ e.Commands^
+    = t.Tables (CmdOpenELoop AlgLeft s.BracketNum s.VarNumber e.Commands);
+
+  t.Tables t.OtherCommand = t.Tables t.OtherCommand;
+}
+
+UpdateFuncTable {
+  (t.FuncTable t.IdentTable) e.Name
+    = <UpdateTable t.FuncTable e.Name> : t.FuncTable^ s.Id
+    = (t.FuncTable t.IdentTable) s.Id;
+}
+
+UpdateIdentTable {
+  (t.FuncTable t.IdentTable) e.Name
+    = <UpdateTable t.IdentTable e.Name> : t.IdentTable^ s.Id
+    = (t.FuncTable t.IdentTable) s.Id;
+}
+
+UpdateTable {
+  (s.NextId e.Names-B (s.Id e.Name) e.Names-E) e.Name
+    = (s.NextId e.Names-B (s.Id e.Name) e.Names-E) s.Id;
+
+  (s.NextId e.Names) e.Name
+    = (<Inc s.NextId> e.Names (s.NextId e.Name)) s.NextId;
 }
 
 MarkFunctionGenMode {
