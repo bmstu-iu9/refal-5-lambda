@@ -114,6 +114,22 @@ DoScan {
     = (s.TokType t.Pos)
       <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
 
+  (RowCol s.Line 1) ('*$CLASSIC') e.Lines
+    = (TkRefal5Mode (RowCol s.Line 1) Classic)
+      <DoScan (RowCol <Inc s.Line> 1) e.Lines>;
+
+  (RowCol s.Line 1) ('*$EXTENDED') e.Lines
+    = (TkRefal5Mode (RowCol s.Line 1) Extended)
+      <DoScan (RowCol <Inc s.Line> 1) e.Lines>;
+
+  (RowCol s.Line 1) ('*$CLASSIC;') e.Lines
+    = (TkRefal5Mode (RowCol s.Line 1) Classic)
+      <DoScan (RowCol <Inc s.Line> 1) e.Lines>;
+
+  (RowCol s.Line 1) ('*$EXTENDED;') e.Lines
+    = (TkRefal5Mode (RowCol s.Line 1) Extended)
+      <DoScan (RowCol <Inc s.Line> 1) e.Lines>;
+
   (RowCol s.Line 1) ('*' e.Comment) e.Lines
     = <DoScan (RowCol <Inc s.Line> 1) e.Lines>;
 
@@ -152,22 +168,6 @@ DoScan {
   t.Pos (s.Digit e.Line) e.Lines
     , <Type s.Digit> : 'D0' s.Digit
     = <DoScan-Number t.Pos (s.Digit) (e.Line) e.Lines>;
-
-  (RowCol s.Line 1) ('*$CLASSIC') e.Lines
-    = (TkRefal5Mode (RowCol s.Line 1) Classic)
-      <DoScan (RowCol <Inc s.Line> 1) e.Lines>;
-
-  (RowCol s.Line 1) ('*$EXTENDED') e.Lines
-    = (TkRefal5Mode (RowCol s.Line 1) Extended)
-      <DoScan (RowCol <Inc s.Line> 1) e.Lines>;
-
-  (RowCol s.Line 1) ('*$CLASSIC;') e.Lines
-    = (TkRefal5Mode (RowCol s.Line 1) Classic)
-      <DoScan (RowCol <Inc s.Line> 1) e.Lines>;
-
-  (RowCol s.Line 1) ('*$EXTENDED;') e.Lines
-    = (TkRefal5Mode (RowCol s.Line 1) Extended)
-      <DoScan (RowCol <Inc s.Line> 1) e.Lines>;
 
   (RowCol s.Line 1) ('%%') e.Lines
     = <DoScan-NativeCode (RowCol <Inc s.Line> 1) e.Lines>;
