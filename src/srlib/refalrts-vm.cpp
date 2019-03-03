@@ -571,7 +571,7 @@ refalrts::FnResult refalrts::VM::main_loop(const RASLCommand *rasl) {
   RefalFunction *callee = 0;
   Iter begin = 0;
   Iter end = 0;
-  FunctionTableItem *functions = 0;
+  const FunctionTableItem *functions = 0;
   const RefalIdentifier *idents = 0;
   const RefalNumber *numbers = 0;
   const StringItem *strings = 0;

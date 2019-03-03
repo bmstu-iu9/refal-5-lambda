@@ -142,7 +142,7 @@ struct FunctionTableItem {
 };
 
 struct RASLFunction: public RefalFunction {
-  FunctionTableItem *functions;
+  const FunctionTableItem *functions;
   const RefalIdentifier *idents;
   const RefalNumber *numbers;
   const StringItem *strings;
@@ -151,7 +151,7 @@ struct RASLFunction: public RefalFunction {
   RASLFunction(
     RefalFuncName name,
     const RASLCommand *rasl,
-    FunctionTableItem *functions,
+    const FunctionTableItem *functions,
     const RefalIdentifier *idents,
     const RefalNumber *numbers,
     const StringItem *strings,
