@@ -1,3 +1,11 @@
+Condition {
+  e.X, e.X : e.Y = e.X e.Y e.X e.Y;
+  e.X, e.X : (e.Y) e.Z = e.Y e.Z e.Y e.Z;
+  e.X, e.X : e.Y (e.Z) = e.Y e.Z e.Y e.Z;
+  e.X, e.X : e.Y e.Z (e.Z) = e.Y e.Z e.Y e.Z;
+  'abc' e.X, e.X : e.Y e.Z (e.Z) = e.Y e.Z e.Y e.Z;
+}
+
 ManyMatches {
   A e.X A = A;
   10 e.X 10 = 10;
