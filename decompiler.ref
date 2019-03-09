@@ -142,6 +142,7 @@ Disassemble {
     = <SplitByFunctions e.Code> : e.Code^
     = <MakeFunctionTable e.Code> : (e.FunctionTable) e.Code
     = <CheckupFunctionStarts e.FunctionTable (e.FunctionStarts)> : Ok
+    = <CheckupEntries e.FunctionTable (e.Entries)> : Ok
     = <ResolveFunctions e.Code (e.FunctionTable)> : e.Code^
     = (e.FunctionTable) e.Code;
 }
@@ -202,7 +203,13 @@ MakeFunctionTable {
             : (s.NameOffset s.DeclareCommand e.Name)
               (s.CodeOffset e.Command)
               e.Code^
-            = (e.Table (s.CodeOffset e.Name))
+            = s.DeclareCommand
+            : {
+                FuncName = Local;
+                EntryFuncName = Entry;
+              }
+            : s.Type
+            = (e.Table (s.CodeOffset s.Type e.Name))
               (e.FunctionCode)
         }
         () e.Code
@@ -210,12 +217,24 @@ MakeFunctionTable {
 }
 
 CheckupFunctionStarts {
-  (s.Offset e.Name) e.Table (e.Offsets-B s.Offset e.Offsets-E)
+  (s.Offset s.Type e.Name) e.Table (e.Offsets-B s.Offset e.Offsets-E)
     = <CheckupFunctionStarts e.Table (e.Offsets-B e.Offsets-E)>;
 
   /* пусто */ (/* пусто */) = Ok;
 
   e.Table (e.Offsets) = Fail;
+}
+
+CheckupEntries {
+  (s.Offset Entry e.Name) e.Table (e.Entries-B (e.Name s.Offset) e.Entries-E)
+    = <CheckupEntries e.Table (e.Entries-B e.Entries-E)>;
+
+  (s.Offset Local e.Name) e.Table (e.Entries)
+    = <CheckupEntries e.Table (e.Entries)>;
+
+  /* пусто */ (/* пусто */) = Ok;
+
+  e.Table (e.Entries) = Fail;
 }
 
 ResolveFunctions {
@@ -235,7 +254,7 @@ ResolveFunctions {
 
 ResolveFunctions-Body {
   e.Code-B (s.Offset MakeCall s.FuncOffset) e.Code-E
-  (e.Functions-B (s.FuncOffset e.Name) e.Functions-E)
+  (e.Functions-B (s.FuncOffset s.Type e.Name) e.Functions-E)
     = e.Code-B (s.Offset MakeCall e.Name)
       <ResolveFunctions-Body
         e.Code-E
