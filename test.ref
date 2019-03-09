@@ -1,3 +1,20 @@
+Block {
+  A B C e.X
+    , e.X
+    : {
+        D E F e.Y
+          , e.Y
+          : {
+              G H I e.Z = e.Z;
+              G H e.Z = e.Z;
+            };
+
+        D E e.Y = e.Y;
+      };
+
+  A B e.X = e.X;
+}
+
 Condition {
   e.X, e.X : e.Y = e.X e.Y e.X e.Y;
   e.X, e.X : (e.Y) e.Z = e.Y e.Z e.Y e.Z;
