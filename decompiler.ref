@@ -17,13 +17,9 @@ Decompile {
     : (e.ModuleName)
       (s.BytecodeSize s.EntryCount s.Externs s.Words s.FunctionStarts)
       (e.Entries) (e.Externs) (e.Words) (e.FunctionStarts) e.Bytes^
-    = <Disassemble 0 e.Bytes> : e.Code
-    = <ResolveWords (e.Words) e.Code> : e.Code^
-    = <SplitByFunctions e.Code> : e.Code^
-    = <MakeFunctionTable e.Code> : (e.FunctionTable) e.Code
-    = <CheckupFunctionStarts e.FunctionTable (e.FunctionStarts)> : Ok
-    = <ResolveFunctions e.Code (e.FunctionTable)> : e.Code^
-    = <Prout '/* Module: "' <Chr e.ModuleName> '" */'>
+    = <Disassemble (e.Words) (e.FunctionStarts) (e.Entries) e.Bytes>
+    : (e.FunctionTable) e.Code
+    = <Prout '/* Module: "' e.ModuleName '" */'>
       <Prout>
       <Map
         {
@@ -102,7 +98,7 @@ DecodeStructure {
 }
 
 ReadAsciiz {
-  e.String 0 e.Tail = (e.String) e.Tail;
+  e.String 0 e.Tail = (<Chr e.String>) e.Tail;
 }
 
 ReadDWord {
@@ -137,6 +133,17 @@ ReadEntryPoints {
 
   s.N s.1 s.2 s.3 s.4 e.Bytes
     = <MakeDWord s.1 s.2 s.3 s.4> <ReadEntryPoints <Dec s.N> e.Bytes>;
+}
+
+Disassemble {
+  (e.Words) (e.FunctionStarts) (e.Entries) e.Bytes
+    = <DecodeCommands 0 e.Bytes> : e.Code
+    = <ResolveWords (e.Words) e.Code> : e.Code^
+    = <SplitByFunctions e.Code> : e.Code^
+    = <MakeFunctionTable e.Code> : (e.FunctionTable) e.Code
+    = <CheckupFunctionStarts e.FunctionTable (e.FunctionStarts)> : Ok
+    = <ResolveFunctions e.Code (e.FunctionTable)> : e.Code^
+    = (e.FunctionTable) e.Code;
 }
 
 ResolveWords {
@@ -238,84 +245,88 @@ ResolveFunctions-Body {
   e.Code (e.Functions) = e.Code (e.Functions);
 }
 
-Disassemble {
+DecodeCommands {
   s.Offset 1 e.Name 0 e.Bytes
     = (s.Offset MakeExtern <Chr e.Name>)
-      <Disassemble <+ s.Offset 5> e.Bytes>;
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
   s.Offset 2 s.1 s.2 s.3 s.4 e.Bytes
     = (s.Offset MakeCall <MakeDWord s.1 s.2 s.3 s.4>)
-      <Disassemble <+ s.Offset 5> e.Bytes>;
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
   s.Offset 3 e.Bytes
     = (s.Offset "Alloc '('")
-      <Disassemble <Inc s.Offset> e.Bytes>;
+      <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 4 e.Bytes
     = (s.Offset "Alloc '()'")
-      <Disassemble <Inc s.Offset> e.Bytes>;
+      <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 5 e.Bytes
     = (s.Offset "Alloc ')'")
-      <Disassemble <Inc s.Offset> e.Bytes>;
+      <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 6 e.Bytes
-    = (s.Offset ClosedE) <Disassemble <Inc s.Offset> e.Bytes>;
+    = (s.Offset ClosedE) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 7 s.Char e.Bytes
     = (s.Offset MatchLeftChar s.Char <Chr s.Char>)
-      <Disassemble <+ s.Offset 2> e.Bytes>;
+      <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
   s.Offset 8 s.Char e.Bytes
     = (s.Offset MatchRightChar s.Char <Chr s.Char>)
-      <Disassemble <+ s.Offset 2> e.Bytes>;
+      <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
   s.Offset 10 e.Bytes
-    = (s.Offset MatchEmpty) <Disassemble <Inc s.Offset> e.Bytes>;
+    = (s.Offset MatchEmpty) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 13 s.1 s.2 s.3 s.4 e.Bytes
     = (s.Offset CopyTEVar <MakeDWord s.1 s.2 s.3 s.4>)
-      <Disassemble <+ s.Offset 5> e.Bytes>;
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
   s.Offset 14 s.1 s.2 s.3 s.4 e.Bytes
     = (s.Offset CopySVar <MakeDWord s.1 s.2 s.3 s.4>)
-      <Disassemble <+ s.Offset 5> e.Bytes>;
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
   s.Offset 16 e.Bytes
-    = (s.Offset OpenE-Prepare) <Disassemble <Inc s.Offset> e.Bytes>;
+    = (s.Offset OpenE-Prepare) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 17 e.Bytes
-    = (s.Offset OpenE-Prepare-Char) <Disassemble <Inc s.Offset> e.Bytes>;
+    = (s.Offset OpenE-Prepare-Char) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 18 e.Bytes
-    = (s.Offset OpenE-Prepare-Brackets) <Disassemble <Inc s.Offset> e.Bytes>;
+    = (s.Offset OpenE-Prepare-Brackets) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 19 e.Bytes
-    = (s.Offset MatchLeftBrackets) <Disassemble <Inc s.Offset> e.Bytes>;
+    = (s.Offset MatchLeftBrackets) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 20 e.Bytes
-    = (s.Offset MatchRightBrackets) <Disassemble <Inc s.Offset> e.Bytes>;
+    = (s.Offset MatchRightBrackets) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 23 s.No e.Bytes
-    = (s.Offset MatchLeftKnownTEVar s.No) <Disassemble <+ s.Offset 2> e.Bytes>;
+    = (s.Offset MatchLeftKnownTEVar s.No)
+      <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
   s.Offset 24 s.No e.Bytes
-    = (s.Offset MatchRightKnownTEVar s.No) <Disassemble <+ s.Offset 2> e.Bytes>;
+    = (s.Offset MatchRightKnownTEVar s.No)
+      <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
   s.Offset 25 s.No e.Bytes
-    = (s.Offset MatchLeftKnownSVar s.No) <Disassemble <+ s.Offset 2> e.Bytes>;
+    = (s.Offset MatchLeftKnownSVar s.No)
+      <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
   s.Offset 26 s.No e.Bytes
-    = (s.Offset MatchRightKnownSVar s.No) <Disassemble <+ s.Offset 2> e.Bytes>;
+    = (s.Offset MatchRightKnownSVar s.No)
+      <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
   s.Offset 27 e.Bytes
-    = (s.Offset MatchLeftTVar) <Disassemble <Inc s.Offset> e.Bytes>;
+    = (s.Offset MatchLeftTVar) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 28 e.Bytes
-    = (s.Offset MatchRightTVar) <Disassemble <Inc s.Offset> e.Bytes>;
+    = (s.Offset MatchRightTVar) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 29 s.Number e.Bytes
-    = (s.Offset StartResult s.Number) <Disassemble <+ s.Offset 2> e.Bytes>;
+    = (s.Offset StartResult s.Number) <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
   s.Offset 34 s.L1 s.L2 s.L3 s.L4 s.R1 s.R2 s.R3 s.R4 e.Bytes
     = (
@@ -323,110 +334,111 @@ Disassemble {
         <MakeDWord s.L1 s.L2 s.L3 s.L4>
         <MakeDWord s.R1 s.R2 s.R3 s.R4>
       )
-      <Disassemble <+ s.Offset 9> e.Bytes>;
+      <DecodeCommands <+ s.Offset 9> e.Bytes>;
 
   s.Offset 35 e.Bytes
-    = (s.Offset OpenE-Start) <Disassemble <Inc s.Offset> e.Bytes>;
+    = (s.Offset OpenE-Start) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 36 s.Char e.Bytes
-    = (s.Offset OpenE-Start-Char s.Char) <Disassemble <+ s.Offset 2> e.Bytes>;
+    = (s.Offset OpenE-Start-Char s.Char)
+      <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
   s.Offset 37 e.Bytes
     = (s.Offset OpenE-Start-Brackets)
-      <Disassemble <Inc s.Offset> e.Bytes>;
+      <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 39 s.Count e.Bytes
     = <First s.Count e.Bytes> : (e.Chars) e.Bytes^
     = (s.Offset MatchLeftChars s.Count <Chr e.Chars>)
-      <Disassemble <+ s.Offset <+ 2 s.Count>> e.Bytes>;
+      <DecodeCommands <+ s.Offset <+ 2 s.Count>> e.Bytes>;
 
   s.Offset 40 s.Count e.Bytes
     = <First s.Count e.Bytes> : (e.Chars) e.Bytes^
     = (s.Offset MatchRightChars s.Count <Chr e.Chars>)
-      <Disassemble <+ s.Offset <+ 2 s.Count>> e.Bytes>;
+      <DecodeCommands <+ s.Offset <+ 2 s.Count>> e.Bytes>;
 
   s.Offset 41 s.Count e.Bytes
     = <First s.Count e.Bytes> : (e.Chars) e.Bytes^
     = (s.Offset AllocChars s.Count <Chr e.Chars>)
-      <Disassemble <+ s.Offset <+ 2 s.Count>> e.Bytes>;
+      <DecodeCommands <+ s.Offset <+ 2 s.Count>> e.Bytes>;
 
   s.Offset 43 s.Char e.Bytes
     = (s.Offset AllocChar s.Char <Chr s.Char>)
-      <Disassemble <+ s.Offset 2> e.Bytes>;
+      <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
   s.Offset 45 s.1 s.2 s.3 s.4 e.Bytes
     = (s.Offset MoveTEVar <MakeDWord s.1 s.2 s.3 s.4>)
-      <Disassemble <+ s.Offset 5> e.Bytes>;
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
   s.Offset 46 s.1 s.2 s.3 s.4 e.Bytes
     = (s.Offset MoveSVar <MakeDWord s.1 s.2 s.3 s.4>)
-      <Disassemble <+ s.Offset 5> e.Bytes>;
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
   s.Offset 47 s.1 s.2 s.3 s.4 e.Bytes
     = (s.Offset OnFailGoTo <MakeDWord s.1 s.2 s.3 s.4>)
-      <Disassemble <+ s.Offset 5> e.Bytes>;
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
   s.Offset 48 e.Bytes
-    = (s.Offset MatchLeftSVar) <Disassemble <Inc s.Offset> e.Bytes>;
+    = (s.Offset MatchLeftSVar) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 49 e.Bytes
-    = (s.Offset MatchRightSVar) <Disassemble <Inc s.Offset> e.Bytes>;
+    = (s.Offset MatchRightSVar) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 50 e.Bytes
-    = (s.Offset NextStep) <Disassemble <Inc s.Offset> e.Bytes>;
+    = (s.Offset NextStep) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 51 s.1 s.2 s.3 s.4 e.Bytes
     = (s.Offset StartCondition-2 <MakeDWord s.1 s.2 s.3 s.4>)
-      <Disassemble <+ s.Offset 5> e.Bytes>;
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
   s.Offset 52 e.Bytes
-    = (s.Offset StartCondition-3) <Disassemble <Inc s.Offset> e.Bytes>;
+    = (s.Offset StartCondition-3) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 53 e.Bytes
-    = (s.Offset StartCondition-1) <Disassemble <Inc s.Offset> e.Bytes>;
+    = (s.Offset StartCondition-1) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 54 e.Bytes
-    = (s.Offset StartBlock) <Disassemble <Inc s.Offset> e.Bytes>;
+    = (s.Offset StartBlock) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 55 s.1 s.2 s.3 s.4 e.Bytes
     = (s.Offset MatchLeftWord <MakeDWord s.1 s.2 s.3 s.4>)
-      <Disassemble <+ s.Offset 5> e.Bytes>;
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
   s.Offset 56 s.1 s.2 s.3 s.4 e.Bytes
     = (s.Offset MatchRightWord <MakeDWord s.1 s.2 s.3 s.4>)
-      <Disassemble <+ s.Offset 5> e.Bytes>;
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
   s.Offset 57 s.1 s.2 s.3 s.4 e.Bytes
     = (s.Offset MatchLeftNumber <MakeDWord s.1 s.2 s.3 s.4>)
-      <Disassemble <+ s.Offset 5> e.Bytes>;
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
   s.Offset 58 s.1 s.2 s.3 s.4 e.Bytes
     = (s.Offset MatchRightNumber <MakeDWord s.1 s.2 s.3 s.4>)
-      <Disassemble <+ s.Offset 5> e.Bytes>;
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
   s.Offset 59 s.1 s.2 s.3 s.4 e.Bytes
     = (s.Offset AllocWord <MakeDWord s.1 s.2 s.3 s.4>)
-      <Disassemble <+ s.Offset 5> e.Bytes>;
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
   s.Offset 60 s.1 s.2 s.3 s.4 e.Bytes
     = (s.Offset AllocNumber <MakeDWord s.1 s.2 s.3 s.4>)
-      <Disassemble <+ s.Offset 5> e.Bytes>;
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
   s.Offset 100 s.1 s.2 s.3 s.4 e.Bytes
     = (s.Offset BuiltinRegular <MakeDWord s.1 s.2 s.3 s.4>)
-      <Disassemble <+ s.Offset 5> e.Bytes>;
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
   s.Offset 102 0 e.Name 0 e.Bytes
     = (s.Offset FuncName <Chr e.Name>)
-      <Disassemble <+ s.Offset <Len 102 0 e.Name>> e.Bytes>;
+      <DecodeCommands <+ s.Offset <Len 102 0 e.Name>> e.Bytes>;
 
   s.Offset 103 0 e.Name 0 e.Bytes
     = (s.Offset EntryFuncName <Chr e.Name>)
-      <Disassemble <+ s.Offset <Len 103 0 e.Name>> e.Bytes>;
+      <DecodeCommands <+ s.Offset <Len 103 0 e.Name>> e.Bytes>;
 
   s.Offset 104 0 e.Name 0 e.Bytes
     = (s.Offset ConditionFuncName <Chr e.Name>)
-      <Disassemble <+ s.Offset <Len 103 0 e.Name>> e.Bytes>;
+      <DecodeCommands <+ s.Offset <Len 103 0 e.Name>> e.Bytes>;
 
   s.Offset 105 s.L1 s.L2 s.L3 s.L4 s.R1 s.R2 s.R3 s.R4 e.Bytes
     = (
@@ -434,7 +446,7 @@ Disassemble {
         <MakeDWord s.L1 s.L2 s.L3 s.L4>
         <MakeDWord s.R1 s.R2 s.R3 s.R4>
       )
-      <Disassemble <+ s.Offset 9> e.Bytes>;
+      <DecodeCommands <+ s.Offset 9> e.Bytes>;
 
 
   s.Offset e.Bytes = (s.Offset RawBytes e.Bytes);
