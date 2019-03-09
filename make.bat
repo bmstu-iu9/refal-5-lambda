@@ -1,3 +1,4 @@
+@echo off
 refc test.ref
 call srefc -C test.ref
 if exist decompiler.exe erase decompiler.exe

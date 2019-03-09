@@ -19,6 +19,7 @@ Decompile {
       (e.Entries) (e.Externs) (e.Words) (e.FunctionStarts) e.Bytes^
     = <Disassemble (e.Words) (e.FunctionStarts) (e.Entries) e.Bytes>
     : (e.FunctionTable) e.Code
+    = <Map &AnnotateFunction e.Code> : e.Code^
     = <Prout '/* Module: "' e.ModuleName '" */'>
       <Prout>
       <Map
@@ -258,7 +259,7 @@ ResolveFunctions-Body {
     = e.Code-B (s.Offset MakeCall e.Name)
       <ResolveFunctions-Body
         e.Code-E
-        (e.Functions-B (s.FuncOffset e.Name) e.Functions-E)
+        (e.Functions-B (s.FuncOffset s.Type e.Name) e.Functions-E)
       >;
 
   e.Code (e.Functions) = e.Code (e.Functions);
@@ -274,15 +275,15 @@ DecodeCommands {
       <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
   s.Offset 3 e.Bytes
-    = (s.Offset "Alloc '('")
+    = (s.Offset AllocLeftBracket)
       <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 4 e.Bytes
-    = (s.Offset "Alloc '()'")
+    = (s.Offset AllocPairBrackets)
       <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 5 e.Bytes
-    = (s.Offset "Alloc ')'")
+    = (s.Offset AllocRightBracket)
       <DecodeCommands <Inc s.Offset> e.Bytes>;
 
   s.Offset 6 e.Bytes
@@ -467,6 +468,7 @@ DecodeCommands {
       )
       <DecodeCommands <+ s.Offset 9> e.Bytes>;
 
+  s.Offset /* пусто */ = /* пусто */;
 
   s.Offset e.Bytes = (s.Offset RawBytes e.Bytes);
 }
@@ -489,4 +491,436 @@ AllString {
       <Prout <Ord e.String> 0>
       <AllString e.Tail>;
   e.String = <Prout e.String> <Prout <Ord e.String>>;
+}
+
+AnnotateFunction {
+  (t.FuncName e.Commands) = (t.FuncName <DoAnnotate-Pattern 1 2 3 (1 2) e.Commands>);
+}
+
+DoAnnotate-Pattern {
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchLeftWord e.Word) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchLeftWord e.Word)
+      <DoAnnotate-Pattern
+        s.Top s.R <Inc s.Top>
+        (e.Pattern-B s.L (W e.Word) s.Top s.R e.Pattern-E)
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchRightWord e.Word) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchRightWord e.Word)
+      <DoAnnotate-Pattern
+        s.L s.Top <Inc s.Top>
+        (e.Pattern-B s.L s.Top (W e.Word) s.R e.Pattern-E)
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchLeftNumber s.Number) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchLeftNumber s.Number)
+      <DoAnnotate-Pattern
+        s.Top s.R <Inc s.Top>
+        (e.Pattern-B s.L (N s.Number) s.Top s.R e.Pattern-E)
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchRightNumber e.Number) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchRightNumber e.Number)
+      <DoAnnotate-Pattern
+        s.L s.Top <Inc s.Top>
+        (e.Pattern-B s.L s.Top (N e.Number) s.R e.Pattern-E)
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchLeftChar s.Code s.Char) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchLeftChar s.Code s.Char)
+      <DoAnnotate-Pattern
+        s.Top s.R <Inc s.Top>
+        (e.Pattern-B s.L (C s.Char) s.Top s.R e.Pattern-E)
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchRightChar s.Code s.Char) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchRightChar s.Code s.Char)
+      <DoAnnotate-Pattern
+        s.L s.Top <Inc s.Top>
+        (e.Pattern-B s.L s.Top (C s.Char) s.R e.Pattern-E)
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchLeftChars s.Len e.Chars) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchLeftChars s.Len e.Chars)
+      <DoAnnotate-Pattern
+        <+ s.Top 1> s.R <+ s.Len s.Top>
+        (e.Pattern-B s.L (Cc e.Chars) <Inc s.Top> s.R e.Pattern-E)
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchRightChars s.Len e.Chars) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchRightChars s.Len e.Chars)
+      <DoAnnotate-Pattern
+        s.L s.Top <+ s.Len s.Top>
+        (e.Pattern-B s.L s.Top (Cc <Rev e.Chars>) s.R e.Pattern-E)
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchLeftSVar) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchLeftSVar)
+      <DoAnnotate-Pattern
+        s.Top s.R <Inc s.Top>
+        (e.Pattern-B s.L (s s.Top '=' s.Top) s.Top s.R e.Pattern-E)
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchRightSVar) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchRightSVar)
+      <DoAnnotate-Pattern
+        s.L s.Top <+ s.Top 1>
+        (e.Pattern-B s.L s.Top (s s.Top '=' s.Top) s.R e.Pattern-E)
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchLeftTVar) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchLeftTVar)
+      <DoAnnotate-Pattern
+        <+ s.Top 1> s.R <+ s.Top 2>
+        (
+          e.Pattern-B
+          s.L (t s.Top <+ 1 s.Top> '=' s.Top <+ 1 s.Top>) <+ 1 s.Top> s.R
+          e.Pattern-E
+        )
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchRightTVar) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchRightTVar)
+      <DoAnnotate-Pattern
+        s.L s.Top <+ s.Top 2>
+        (
+          e.Pattern-B
+          s.L s.Top (t s.Top <+ 1 s.Top> '=' s.Top <+ 1 s.Top>) s.R
+          e.Pattern-E
+        )
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset OnFailGoTo s.Jump)
+  e.Commands-B (s.Jump e.Command) e.Commands-E
+    = ('* ' e.Pattern)
+      (s.Offset OnFailGoTo s.Jump)
+      <DoAnnotate-Pattern
+        s.L s.R s.Top (e.Pattern)
+        e.Commands-B
+        ('@' Restore s.L s.R s.Top (e.Pattern))
+        (s.Jump e.Command)
+        e.Commands-E
+      >;
+
+  s.L1 s.R1 s.Top1 (e.Pattern1)
+  ('@' Restore s.L2 s.R2 s.Top2 (e.Pattern2)) e.Commands
+    = ('@' Restore s.L2 s.R2 s.Top2 (e.Pattern2))
+      <DoAnnotate-Pattern
+        s.L2 s.R2 s.Top2 (e.Pattern2) e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchLeftKnownSVar s.VarNo) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchLeftKnownSVar s.VarNo)
+      <DoAnnotate-Pattern
+        s.Top s.R <Inc s.Top>
+        (e.Pattern-B s.L (s s.VarNo '=' s.Top) s.Top s.R e.Pattern-E)
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchRightKnownSVar s.VarNo) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchRightKnownSVar s.VarNo)
+      <DoAnnotate-Pattern
+        s.L s.Top <Inc s.Top>
+        (e.Pattern-B s.L s.Top (s s.VarNo '=' s.Top) s.R e.Pattern-E)
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset ClosedE) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset ClosedE)
+      <DoAnnotate-Pattern
+        s.L s.R <+ s.Top 2>
+        (e.Pattern-B s.L (e s.Top <+ s.Top 1> '=' s.Top <+ s.Top 1>) s.R e.Pattern-E)
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchLeftKnownTEVar s.VarNo) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchLeftKnownTEVar s.VarNo)
+      <DoAnnotate-Pattern
+        <+ s.Top 1> s.R <+ s.Top 2>
+        (
+          e.Pattern-B
+          s.L (te <- s.VarNo 1> s.VarNo '=' s.Top <+ s.Top 1>) <+ s.Top 1> s.R
+          e.Pattern-E
+        )
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchRightKnownTEVar s.VarNo) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchRightKnownTEVar s.VarNo)
+      <DoAnnotate-Pattern
+        s.L s.Top <+ s.Top 2>
+        (
+          e.Pattern-B
+          s.L s.Top (te <- s.VarNo 1> s.VarNo '=' s.Top <+ s.Top 1>) s.R
+          e.Pattern-E
+        )
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchLeftBrackets) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchLeftBrackets)
+      <DoAnnotate-Pattern
+        s.Top <+ s.Top 1> <+ s.Top 2>
+        (
+          e.Pattern-B
+          s.L (LB) s.Top <+ s.Top 1> (RB) <+ s.Top 1> s.R
+          e.Pattern-E
+        )
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchRightBrackets) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchRightBrackets)
+      <DoAnnotate-Pattern
+        s.L s.Top <+ s.Top 2>
+        (
+          e.Pattern-B
+          s.L s.Top (LB) s.Top <+ s.Top 1> (RB) s.R
+          e.Pattern-E
+        )
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset SetB s.NewL s.NewR) e.Commands
+    = ('* ' e.Pattern)
+      (s.Offset SetB s.NewL s.NewR)
+      <DoAnnotate-Pattern
+        s.NewL s.NewR s.Top (e.Pattern) e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset MatchEmpty) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset MatchEmpty)
+      <DoAnnotate-Pattern
+        s.L s.R s.Top (e.Pattern-B s.L (EPS) s.R e.Pattern-E) e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern)
+  (s.Offset1 OpenE-Prepare) (s.Offset2 OpenE-Start) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset1 OpenE-Prepare)
+      (s.Offset2 OpenE-Start)
+      <DoAnnotate-Pattern
+        <+ s.Top 1> s.R <+ s.Top 2>
+        (
+          e.Pattern-B
+          s.L (e s.Top <+ s.Top 1> '=' s.Top <+ s.Top 1>) <+ s.Top 1> s.R
+          e.Pattern-E
+        )
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern)
+  (s.Offset1 OpenE-Prepare-Char) (s.Offset2 OpenE-Start-Char s.Code) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset1 OpenE-Prepare-Char)
+      (s.Offset2 OpenE-Start-Char s.Code)
+      <DoAnnotate-Pattern
+        <+ s.Top 2> s.R <+ s.Top 3>
+        (
+          e.Pattern-B
+          s.L (e s.Top <+ s.Top 1> '=' s.Top <+ s.Top 1>)
+          (C <Chr s.Code>) <+ s.Top 2> s.R
+          e.Pattern-E
+        )
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern)
+  (s.Offset1 OpenE-Prepare-Brackets) (s.Offset2 OpenE-Start-Brackets) e.Commands
+    , e.Pattern : e.Pattern-B s.L s.R e.Pattern-E
+    = ('* ' e.Pattern)
+      (s.Offset1 OpenE-Prepare-Brackets)
+      (s.Offset2 OpenE-Start-Brackets)
+      <DoAnnotate-Pattern
+        <+ s.Top 2> <+ s.Top 3> <+ s.Top 4>
+        (
+          e.Pattern-B
+          s.L (e s.Top <+ s.Top 1> '=' s.Top <+ s.Top 1>)
+          (LB) <+ s.Top 2> <+ s.Top 3> (RB) <+ s.Top 3> s.R
+          e.Pattern-E
+        )
+        e.Commands
+      >;
+
+  s.L s.R s.Top (e.Pattern) (s.Offset StartResult 0) e.Commands
+    = ('!' Pattern e.Pattern)
+      (s.Offset StartResult 0)
+      <DoAnnotate-Result (e.Pattern) ('$') e.Commands>;
+
+  s.L s.R s.Top () /* нет команд */ = ('!' EndOfFunction);
+
+  s.L s.R s.Top (e.Pattern) e.Commands
+    = ('= ' s.L s.R s.Top (e.Pattern)) e.Commands;
+}
+
+Rev {
+  s.First e.Middle s.Last = s.Last <Rev e.Middle> s.First;
+  e.ZeroOrOne = e.ZeroOrOne;
+}
+
+DoAnnotate-Result {
+  (e.Pattern) (t.MB e.Result) (s.Offset AllocWord e.Word) e.Commands
+    = ('* ' t.MB e.Result)
+      (s.Offset AllocWord e.Word)
+      <DoAnnotate-Result
+        (e.Pattern) (t.MB e.Result (W e.Word)) e.Commands
+      >;
+
+  (e.Pattern) (t.MB e.Result) (s.Offset AllocNumber s.Number) e.Commands
+    = ('* ' t.MB e.Result)
+      (s.Offset AllocNumber s.Number)
+      <DoAnnotate-Result
+        (e.Pattern) (t.MB e.Result (N s.Number)) e.Commands
+      >;
+
+  (e.Pattern) (t.MB e.Result) (s.Offset AllocChar s.Code s.Char) e.Commands
+    = ('* ' t.MB e.Result)
+      (s.Offset AllocChar s.Code s.Char)
+      <DoAnnotate-Result
+        (e.Pattern) (t.MB e.Result (C s.Char)) e.Commands
+      >;
+
+  (e.Pattern) (t.MB e.Result) (s.Offset AllocChars s.Count e.Chars) e.Commands
+    = ('* ' t.MB e.Result)
+      (s.Offset AllocChars s.Count e.Chars)
+      <DoAnnotate-Result
+        (e.Pattern) (t.MB e.Result (Cc e.Chars)) e.Commands
+      >;
+
+  (e.Pattern) (t.MB e.Result) (s.Offset AllocLeftBracket) e.Commands
+    = ('* ' t.MB e.Result)
+      (s.Offset AllocLeftBracket)
+      <DoAnnotate-Result
+        (e.Pattern) ((t.MB e.Result)) e.Commands
+      >;
+
+  (e.Pattern) ((t.MB e.Result) e.Nested) (s.Offset AllocRightBracket) e.Commands
+    = ('* ' (t.MB e.Result) e.Nested)
+      (s.Offset AllocRightBracket)
+      <DoAnnotate-Result
+        (e.Pattern) (t.MB e.Result ('*' e.Nested)) e.Commands
+      >;
+
+  (e.Pattern) (t.MB e.Result) (s.Offset AllocPairBrackets) e.Commands
+    = ('* ' t.MB e.Result)
+      (s.Offset AllocPairBrackets)
+      <DoAnnotate-Result
+        (e.Pattern) (t.MB e.Result ('*')) e.Commands
+      >;
+
+  (e.Pattern) (t.MB e.Result ('*' e.Inner))
+  (s.Offset MakeCall e.Name) e.Commands
+    = ('* ' t.MB e.Result ('*' e.Inner))
+      (s.Offset MakeCall e.Name)
+      <DoAnnotate-Result
+        (e.Pattern) (t.MB e.Result ('!' (e.Name) e.Inner)) e.Commands
+      >;
+
+  (e.Pattern) (t.MB e.Result ('*' e.Inner))
+  (s.Offset MakeExtern e.Name) e.Commands
+    = ('* ' t.MB e.Result ('*' e.Inner))
+      (s.Offset MakeExtern e.Name)
+      <DoAnnotate-Result
+        (e.Pattern) (t.MB e.Result ('!' (e.Name) e.Inner)) e.Commands
+      >;
+
+  (e.Pattern) (t.MB e.Result) (s.Offset MoveSVar s.Copy) e.Commands
+    , e.Pattern : e.Pattern-B (s s.Id '=' s.Copy) e.Pattern-E
+    = ('* ' t.MB e.Result)
+      (s.Offset MoveSVar s.Copy)
+      <DoAnnotate-Result
+        (e.Pattern) (t.MB e.Result (s s.Id '=' s.Copy)) e.Commands
+      >;
+
+  (e.Pattern) (t.MB e.Result) (s.Offset MoveTEVar s.CopyR) e.Commands
+    , e.Pattern
+    : e.Pattern-B (s.Type s.IdL s.IdR '=' s.CopyL s.CopyR) e.Pattern-E
+    , t te e : e.B s.Type e.E
+    = ('* ' t.MB e.Result)
+      (s.Offset MoveTEVar s.CopyR)
+      <DoAnnotate-Result
+        (e.Pattern) (t.MB e.Result (s.Type s.IdL s.IdR '=' s.CopyL s.CopyR))
+        e.Commands
+      >;
+
+  (e.Pattern) (t.MB e.Result) (s.Offset CopySVar s.Copy) e.Commands
+    , e.Pattern : e.Pattern-B (s s.Id '=' s.Copy) e.Pattern-E
+    = ('* ' t.MB e.Result)
+      (s.Offset CopySVar s.Copy)
+      <DoAnnotate-Result
+        (e.Pattern) (t.MB e.Result (s s.Id '=' s.Copy)) e.Commands
+      >;
+
+  (e.Pattern) (t.MB e.Result) (s.Offset CopyTEVar s.CopyR) e.Commands
+    , e.Pattern
+    : e.Pattern-B (s.Type s.IdL s.IdR '=' s.CopyL s.CopyR) e.Pattern-E
+    , t te e : e.B s.Type e.E
+    = ('* ' t.MB e.Result)
+      (s.Offset CopyTEVar s.CopyR)
+      <DoAnnotate-Result
+        (e.Pattern) (t.MB e.Result (s.Type s.IdL s.IdR '=' s.CopyL s.CopyR))
+        e.Commands
+      >;
+
+  (e.Pattern) ('$' e.Result) (s.Offset NextStep) e.Commands
+    = ('!' Result e.Result)
+      (s.Offset NextStep)
+      <DoAnnotate-Pattern '***' () e.Commands>;
+
+  (e.Pattern) (t.MB e.Result) e.Commands
+    = ('= ' (e.Pattern) (t.MB e.Result)) e.Commands;
 }

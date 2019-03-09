@@ -1,6 +1,36 @@
-sXsXeY__1-sXeYsX__2 {
-  s.X s.X e.Y = 1;
-  s.X e.Y s.X = 2;
+ManyMatches {
+  A e.X A = A;
+  10 e.X 10 = 10;
+  'a' e.X 'a' = 'a';
+  'bb' e.X = e.X;
+  'ccc' e.X = e.X;
+  'dddd' e.X = e.X;
+  'eeeee' e.X = e.X;
+  e.X 'a' = e.X;
+  e.X 'bb' = e.X;
+  e.X 'ccc' = e.X;
+  e.X 'dddd' = e.X;
+  e.X 'eeeee' = e.X;
+  'abc' e.X = 'abc' e.X;
+  'abc' e.X 'abc' = 'abc' e.X;
+  e.X 'abc' = 'abc' e.X;
+  (e.X) e.Y (e.Z) = e.X (e.Y) e.Z;
+  () () () = (() ());
+  s.X e.Y s.Z = s.Z e.Y s.X;
+  t.X e.Y t.Z = t.Z e.Y t.X;
+  (t.X e.A) (e.B t.X) = e.A t.X e.B;
+  (e.A t.X) (t.X e.B) = e.A t.X e.B;
+  e.X A e.Y = e.Y A e.X;
+  e.X 10 e.Y 20 e.Z = e.Z 20 e.Y 10 e.X;
+  e.X 'a' e.Y = e.Y 'a' e.X;
+  e.X 'abc' e.Y = e.Y 'abc' e.X;
+  e.X (A e.A) e.Y = e.Y e.A e.X;
+  e.X e.X = e.X e.X e.X;
+}
+
+tXtXtY__1-tXBeYtXb__2 {
+  t.X t.X t.Y = 1;
+  t.X (e.Y t.X) = 2;
 }
 
 L10{
@@ -33,16 +63,6 @@ eX_c_eX_m_FsY__1-BeYb__2f {
         s.Y = 1;
         (e.Y) = 2;
       };
-}
-
-BeXbeXeY__1-BeXbeYeX__2 {
-  (e.X) e.X e.Y = 1;
-  (e.X) e.Y e.X = 2;
-}
-
-tXtXtY__1-tXBeYtXb__2 {
-  t.X t.X t.Y = 1;
-  t.X (e.Y t.X) = 2;
 }
 
 eXsYeZ_c_eX_m_eZ__sY-eX__30 {
@@ -186,4 +206,19 @@ eps__BXb {
 
 eps__B10b {
   = (10);
+}
+
+sXeYsX__2sXeY {
+  s.X e.Y s.X = 2 s.X e.Y;
+}
+
+sXsXeY__1sXsXeYsXeY-sXeYsX__2sXeY {
+  s.X s.X e.Y = 1 s.X s.X e.Y s.X e.Y;
+  s.X e.Y s.X = 2 s.X e.Y;
+}
+
+BeXbeXeY__eXeXeY-BeXbeYeX__eXeXeY-eXBeXb__eXeX {
+  (e.X) e.X e.Y = e.X e.X e.Y;
+  (e.X) e.Y e.X = e.X e.X e.Y;
+  e.X (e.X) = e.X e.X;
 }
