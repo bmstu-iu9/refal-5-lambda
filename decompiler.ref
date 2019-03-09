@@ -24,7 +24,7 @@ Decompile {
       <Prout>
       <Map
         {
-          (e.Function)
+          (t.Header e.Function)
             = <Map
                 {
                   (s.Offset RawBytes e.Bytes^)
@@ -34,7 +34,15 @@ Decompile {
 
                   (e.Command) = <Prout e.Command>;
                 }
-                e.Function
+                t.Header e.Function
+              >
+              <Prout>
+              <Map
+                {
+                  ('!' e.Command) = <Prout e.Command>;
+                  t.Other = /* пропускаем */;
+                }
+                ('!' t.Header) e.Function
               >
               <Prout>
         }
@@ -1071,12 +1079,14 @@ DoAnnotate-Result {
       (s.Offset1 NextStep)
       (s.Offset2 NextStep)
       ('!' WTF '2*NextSep')
+      ('!' NextSentence)
       <DoAnnotate-Pattern s.Level '***' () () e.Commands>;
 
   s.Level
   s.Top (e.Vars) ('$' e.Result) (s.Offset NextStep) e.Commands
     = ('!' Result e.Result)
       (s.Offset NextStep)
+      ('!' NextSentence)
       <DoAnnotate-Pattern s.Level '***' () () e.Commands>;
 
   s.Level s.Top (e.Vars) (t.MB e.Result) e.Commands
