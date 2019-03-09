@@ -119,15 +119,14 @@ ReadEntries {
       <ReadEntries <Dec s.N> e.Bytes>;
 }
 
-ReadExterns { s.N e.Bytes = <ReadASCIIZs s.N e.Bytes> }
-
-ReadWords {
-  s.N e.Bytes = <ReadASCIIZs s.N e.Bytes>;
-}
-
-ReadASCIIZs {
+ReadExterns {
   0 e.Bytes = (e.Bytes);
   s.N e.Name 0 e.Bytes = (<Chr e.Name>) <ReadExterns <Dec s.N> e.Bytes>;
+}
+
+ReadWords {
+  0 e.Bytes = (e.Bytes);
+  s.N e.Name 0 e.Bytes = (<Dec s.N> <Chr e.Name>) <ReadWords <Dec s.N> e.Bytes>;
 }
 
 ReadEntryPoints {
@@ -139,22 +138,29 @@ ReadEntryPoints {
 
 ResolveWords {
   (e.Words) e.Commands
-    = <Map
+    = <MapAccum
         {
-          (s.Offset s.WordCommand s.Id)
-            , MatchLeftWord MatchRightWord AllocWord : e.B s.WordCommand e.E
-            = <WordById e.Words s.Id> : e.Word
-            = (s.Offset s.WordCommand e.Word);
+          (e.Words-B (s.Id e.Word) e.Words-E)
+          (s.Offset MatchLeftWord s.Id)
+            = (e.Words-B (s.Id e.Word) e.Words-E)
+              (s.Offset MatchLeftWord e.Word);
 
-          t.Other = t.Other;
+          (e.Words-B (s.Id e.Word) e.Words-E)
+          (s.Offset MatchRightWord s.Id)
+            = (e.Words-B (s.Id e.Word) e.Words-E)
+              (s.Offset MatchRightWord e.Word);
+
+          (e.Words-B (s.Id e.Word) e.Words-E)
+          (s.Offset AllocWord s.Id)
+            = (e.Words-B (s.Id e.Word) e.Words-E)
+              (s.Offset AllocWord e.Word);
+
+          (e.Words^) t.Other = (e.Words) t.Other;
         }
-        e.Commands
-      >;
-}
-
-WordById {
-  e.Words (e.Word) 0 = e.Word;
-  e.Words (e.Word) s.No = <WordById e.Words <Dec s.No>>;
+        (e.Words) e.Commands
+      >
+    : (e.Words^) e.Commands^
+    = e.Commands;
 }
 
 MakeFunctionTable {
