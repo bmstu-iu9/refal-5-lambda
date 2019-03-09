@@ -13,19 +13,13 @@ Main {
 
 Decompile {
   e.Bytes
-    = <ReadAsciiz e.Bytes> : (e.ModuleName) e.Bytes^
-    = <ReadDWord e.Bytes> : s.DWord1 e.Bytes^
-    = <ReadDWord e.Bytes> : s.Entries e.Bytes^
-    = <ReadDWord e.Bytes> : s.Externs e.Bytes^
-    = <ReadDWord e.Bytes> : s.Words e.Bytes^
-    = <ReadDWord e.Bytes> : s.EntryPoints e.Bytes^
-    = <ReadEntries s.Entries e.Bytes> : (e.Entries) e.Bytes^
-    = <ReadExterns s.Externs e.Bytes> : (e.Externs) e.Bytes^
-    = <ReadWords s.Words e.Bytes> : (e.Words) e.Bytes^
-    = <ReadEntryPoints s.EntryPoints e.Bytes> : (e.EntryPoints) e.Bytes^
+    = <DecodeStructure e.Bytes>
+    : (e.ModuleName)
+      (s.BytecodeSize s.EntryCount s.Externs s.Words s.FunctionStarts)
+      (e.Entries) (e.Externs) (e.Words) (e.FunctionStarts) e.Bytes^
     = <Disassemble 0 e.Bytes> : e.Code
     = <ResolveWords (e.Words) e.Code> : e.Code^
-    = <MakeFunctionTable e.Code (e.EntryPoints)> : e.FunctionTable
+    = <MakeFunctionTable e.Code (e.FunctionStarts)> : e.FunctionTable
     = <ResolveFunctions e.Code (e.FunctionTable)> : e.Code^
     = <Prout '/* Module: "' <Chr e.ModuleName> '" */'>
       <Prout>
@@ -47,10 +41,10 @@ Decompile {
         e.Code
       >
       <Prout>
-      <Prout '/* ' <Symb s.DWord1> ' */'>
+      <Prout '/* Bytecode size: ' <Symb s.BytecodeSize> ' */'>
       <Prout>
 
-      <Prout '/* Entries: ' <Symb s.Entries> ' */'>
+      <Prout '/* Entries: ' <Symb s.EntryCount> ' */'>
       <Map
         {
           (e.Entry s.Offset)
@@ -78,13 +72,30 @@ Decompile {
       >
       <Prout>
 
-      <Prout '/* Entry points: ' <Symb s.EntryPoints> ' ~ ' e.EntryPoints ' */'>
+      <Prout '/* Function starts: ' <Symb s.FunctionStarts> ' ~ ' e.FunctionStarts ' */'>
       <Map
         {
           (s.Offset e.Function) = <Prout '* ' s.Offset ': ' e.Function>;
         }
         e.FunctionTable
       >
+}
+
+DecodeStructure {
+  e.Bytes
+    = <ReadAsciiz e.Bytes> : (e.ModuleName) e.Bytes^
+    = <ReadDWord e.Bytes> : s.BytecodeSize e.Bytes^
+    = <ReadDWord e.Bytes> : s.EntryCount e.Bytes^
+    = <ReadDWord e.Bytes> : s.Externs e.Bytes^
+    = <ReadDWord e.Bytes> : s.Words e.Bytes^
+    = <ReadDWord e.Bytes> : s.FunctionStarts e.Bytes^
+    = <ReadEntries s.EntryCount e.Bytes> : e.Entries (e.Bytes^)
+    = <ReadExterns s.Externs e.Bytes> : e.Externs (e.Bytes^)
+    = <ReadWords s.Words e.Bytes> : e.Words (e.Bytes^)
+    = <ReadEntryPoints s.FunctionStarts e.Bytes> : e.FunctionStarts (e.Bytes^)
+    = (e.ModuleName)
+      (s.BytecodeSize s.EntryCount s.Externs s.Words s.FunctionStarts)
+      (e.Entries) (e.Externs) (e.Words) (e.FunctionStarts) e.Bytes
 }
 
 ReadAsciiz {
@@ -101,46 +112,29 @@ MakeDWord {
 }
 
 ReadEntries {
-  s.Entries e.Bytes = <DoReadEntries s.Entries () e.Bytes>;
+  0 e.Bytes = (e.Bytes);
+
+  s.N e.Name 0 s.1 s.2 s.3 s.4 e.Bytes
+    = (<Chr e.Name> <MakeDWord s.1 s.2 s.3 s.4>)
+      <ReadEntries <Dec s.N> e.Bytes>;
 }
 
-DoReadEntries {
-  0 (e.Entries) e.Bytes = (e.Entries) e.Bytes;
-
-  s.N (e.Entries) e.Name 0 s.1 s.2 s.3 s.4 e.Bytes
-    = <DoReadEntries
-        <Dec s.N>
-        (e.Entries (<Chr e.Name> <MakeDWord s.1 s.2 s.3 s.4>))
-        e.Bytes
-      >;
-}
-
-ReadExterns {
-  s.Externs e.Bytes = <DoReadASCIIZs s.Externs () e.Bytes>;
-}
-
-DoReadASCIIZs {
-  0 (e.Externs) e.Bytes = (e.Externs) e.Bytes;
-
-  s.N (e.Externs) e.Name 0 e.Bytes
-    = <DoReadASCIIZs <Dec s.N> (e.Externs (<Chr e.Name>)) e.Bytes>;
-}
+ReadExterns { s.N e.Bytes = <ReadASCIIZs s.N e.Bytes> }
 
 ReadWords {
-  s.N e.Bytes = <DoReadASCIIZs s.N () e.Bytes>;
+  s.N e.Bytes = <ReadASCIIZs s.N e.Bytes>;
+}
+
+ReadASCIIZs {
+  0 e.Bytes = (e.Bytes);
+  s.N e.Name 0 e.Bytes = (<Chr e.Name>) <ReadExterns <Dec s.N> e.Bytes>;
 }
 
 ReadEntryPoints {
-  s.N e.Bytes = <DoReadEntryPoints s.N () e.Bytes>;
-}
+  0 e.Bytes = (e.Bytes);
 
-DoReadEntryPoints {
-  0 (e.EntryPoints) e.Bytes = (e.EntryPoints) e.Bytes;
-
-  s.N (e.EntryPoints) s.1 s.2 s.3 s.4 e.Bytes
-    = <DoReadEntryPoints
-        <Dec s.N> (e.EntryPoints <MakeDWord s.1 s.2 s.3 s.4>) e.Bytes
-      >;
+  s.N s.1 s.2 s.3 s.4 e.Bytes
+    = <MakeDWord s.1 s.2 s.3 s.4> <ReadEntryPoints <Dec s.N> e.Bytes>;
 }
 
 ResolveWords {
