@@ -19,24 +19,27 @@ Decompile {
       (e.Entries) (e.Externs) (e.Words) (e.FunctionStarts) e.Bytes^
     = <Disassemble 0 e.Bytes> : e.Code
     = <ResolveWords (e.Words) e.Code> : e.Code^
-    = <MakeFunctionTable e.Code (e.FunctionStarts)> : e.FunctionTable
+    = <SplitByFunctions e.Code> : e.Code^
+    = <MakeFunctionTable e.Code> : (e.FunctionTable) e.Code
+    = <CheckupFunctionStarts e.FunctionTable (e.FunctionStarts)> : Ok
     = <ResolveFunctions e.Code (e.FunctionTable)> : e.Code^
     = <Prout '/* Module: "' <Chr e.ModuleName> '" */'>
       <Prout>
       <Map
         {
-          (s.Offset FuncName e.Name)
-            = <Prout> <Prout s.Offset FuncName e.Name>;
+          (e.Function)
+            = <Map
+                {
+                  (s.Offset RawBytes e.Bytes^)
+                    = <Lenw e.Bytes> : s.Len e.Bytes^
+                    = <Prout s.Offset RawBytes (s.Len bytes)>
+                      <DEBUG e.Bytes>;
 
-          (s.Offset EntryFuncName e.Name)
-            = <Prout> <Prout s.Offset EntryFuncName e.Name>;
-
-          (s.Offset RawBytes e.Bytes^)
-            = <Lenw e.Bytes> : s.Len e.Bytes^
-            = <Prout s.Offset RawBytes (s.Len bytes)>
-              <DEBUG e.Bytes>;
-
-          (e.Command) = <Prout e.Command>;
+                  (e.Command) = <Prout e.Command>;
+                }
+                e.Function
+              >
+              <Prout>
         }
         e.Code
       >
@@ -163,30 +166,76 @@ ResolveWords {
     = e.Commands;
 }
 
+SplitByFunctions {
+  t.DeclareCommand e.Code
+    , <DeclareCommand t.DeclareCommand> : True
+    , e.Code
+    : {
+        e.FuncBody t.NextDeclareCommand e.Code^
+          , <DeclareCommand t.NextDeclareCommand> : True
+          = (t.DeclareCommand e.FuncBody)
+            <SplitByFunctions t.NextDeclareCommand e.Code>;
+
+        e.FuncBody = (t.DeclareCommand e.FuncBody);
+      };
+}
+
+DeclareCommand {
+  (s.Offset EntryFuncName e.Name) = True;
+  (s.Offset FuncName e.Name) = True;
+  t.Other = False t.Other;
+}
+
 MakeFunctionTable {
-  e.Code-B (s.Offset s.DeclCode e.Name) (s.EntryPoint e.Command) e.Code-E
-  (s.EntryPoint e.Points)
-    = (s.EntryPoint e.Name)
-      <MakeFunctionTable
-        e.Code-B (s.Offset s.DeclCode e.Name) (s.EntryPoint e.Command) e.Code-E
-        (e.Points)
+  e.Code
+    = <MapAccum
+        {
+          (e.Table) (e.FunctionCode)
+            = e.FunctionCode
+            : (s.NameOffset s.DeclareCommand e.Name)
+              (s.CodeOffset e.Command)
+              e.Code^
+            = (e.Table (s.CodeOffset e.Name))
+              (e.FunctionCode)
+        }
+        () e.Code
       >;
+}
 
-  e.Code () = /* пусто */;
+CheckupFunctionStarts {
+  (s.Offset e.Name) e.Table (e.Offsets-B s.Offset e.Offsets-E)
+    = <CheckupFunctionStarts e.Table (e.Offsets-B e.Offsets-E)>;
 
-  e.Code (e.Rest) = e.Code (100500 BadFunctionTable e.Rest);
+  /* пусто */ (/* пусто */) = Ok;
+
+  e.Table (e.Offsets) = Fail;
 }
 
 ResolveFunctions {
+  e.Code (e.Table)
+    = <MapAccum
+        {
+          (e.Table^) (e.Function)
+            = <ResolveFunctions-Body e.Function (e.Table)>
+            : e.Function^ (e.Table^)
+            = (e.Table) (e.Function);
+        }
+        (e.Table) e.Code
+      >
+    : (e.Table^) e.Code^
+    = e.Code;
+}
+
+ResolveFunctions-Body {
   e.Code-B (s.Offset MakeCall s.FuncOffset) e.Code-E
   (e.Functions-B (s.FuncOffset e.Name) e.Functions-E)
     = e.Code-B (s.Offset MakeCall e.Name)
-      <ResolveFunctions
+      <ResolveFunctions-Body
         e.Code-E
         (e.Functions-B (s.FuncOffset e.Name) e.Functions-E)
       >;
 
-  e.Code (e.Functions) = e.Code;
+  e.Code (e.Functions) = e.Code (e.Functions);
 }
 
 Disassemble {
