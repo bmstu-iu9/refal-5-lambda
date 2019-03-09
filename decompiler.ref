@@ -1,0 +1,412 @@
+$INCLUDE "LibraryEx";
+
+$ENTRY Go {
+  = <Main <ArgList>>;
+}
+
+Main {
+  (e.ProgName) (e.Input) e._
+    = <Decompile <LoadBytes e.Input>>;
+
+  (e.ProgName) = <Prout 'Bad command line'>;
+}
+
+Decompile {
+  e.Bytes
+    = <ReadAsciiz e.Bytes> : (e.ModuleName) e.Bytes^
+    = <ReadDWord e.Bytes> : s.DWord1 e.Bytes^
+    = <ReadDWord e.Bytes> : s.Entries e.Bytes^
+    = <ReadDWord e.Bytes> : s.Externs e.Bytes^
+    = <ReadDWord e.Bytes> : s.Words e.Bytes^
+    = <ReadDWord e.Bytes> : s.EntryPoints e.Bytes^
+    = <ReadEntries s.Entries e.Bytes> : (e.Entries) e.Bytes^
+    = <ReadExterns s.Externs e.Bytes> : (e.Externs) e.Bytes^
+    = <ReadWords s.Words e.Bytes> : (e.Words) e.Bytes^
+    = <ReadEntryPoints s.EntryPoints e.Bytes> : (e.EntryPoints) e.Bytes^
+    = <Disassemble 0 e.Bytes> : e.Code
+    = <ResolveWords (e.Words) e.Code> : e.Code^
+    = <MakeFunctionTable e.Code (e.EntryPoints)> : e.FunctionTable
+    = <ResolveFunctions e.Code (e.FunctionTable)> : e.Code^
+    = <Prout '/* Module: "' <Chr e.ModuleName> '" */'>
+      <Prout>
+      <Map
+        {
+          (s.Offset FuncName e.Name)
+            = <Prout> <Prout s.Offset FuncName e.Name>;
+
+          (s.Offset EntryFuncName e.Name)
+            = <Prout> <Prout s.Offset EntryFuncName e.Name>;
+
+          (s.Offset RawBytes e.Bytes^)
+            = <Lenw e.Bytes> : s.Len e.Bytes^
+            = <Prout s.Offset RawBytes (s.Len bytes)>
+              <DEBUG e.Bytes>;
+
+          (e.Command) = <Prout e.Command>;
+        }
+        e.Code
+      >
+      <Prout>
+      <Prout '/* ' <Symb s.DWord1> ' */'>
+      <Prout>
+
+      <Prout '/* Entries: ' <Symb s.Entries> ' */'>
+      <Map
+        {
+          (e.Entry s.Offset)
+            = <Prout '/* $ENTRY ' e.Entry ';\toffset ' <Symb s.Offset> ' */'>;
+        }
+        e.Entries
+      >
+      <Prout>
+
+      <Prout '/* Externs: ' <Symb s.Externs> ' */'>
+      <Map
+        {
+          (e.Extern) = <Prout '$EXTERN ' e.Extern ';'>;
+        }
+        e.Externs
+      >
+      <Prout>
+
+      <Prout '/* Words: ' <Symb s.Words> ' */'>
+      <Map
+        {
+          (e.Word) = <Prout '*$EENUM ' e.Word ';'>;
+        }
+        e.Words
+      >
+      <Prout>
+
+      <Prout '/* Entry points: ' <Symb s.EntryPoints> ' ~ ' e.EntryPoints ' */'>
+      <Map
+        {
+          (s.Offset e.Function) = <Prout '* ' s.Offset ': ' e.Function>;
+        }
+        e.FunctionTable
+      >
+}
+
+ReadAsciiz {
+  e.String 0 e.Tail = (e.String) e.Tail;
+}
+
+ReadDWord {
+  s.1 s.2 s.3 s.4 e.Bytes = <MakeDWord s.1 s.2 s.3 s.4> e.Bytes;
+}
+
+MakeDWord {
+  s.LastByte = s.LastByte;
+  s.LastByte e.Bytes = <+ <* <MakeDWord e.Bytes> 256> s.LastByte>;
+}
+
+ReadEntries {
+  s.Entries e.Bytes = <DoReadEntries s.Entries () e.Bytes>;
+}
+
+DoReadEntries {
+  0 (e.Entries) e.Bytes = (e.Entries) e.Bytes;
+
+  s.N (e.Entries) e.Name 0 s.1 s.2 s.3 s.4 e.Bytes
+    = <DoReadEntries
+        <Dec s.N>
+        (e.Entries (<Chr e.Name> <MakeDWord s.1 s.2 s.3 s.4>))
+        e.Bytes
+      >;
+}
+
+ReadExterns {
+  s.Externs e.Bytes = <DoReadASCIIZs s.Externs () e.Bytes>;
+}
+
+DoReadASCIIZs {
+  0 (e.Externs) e.Bytes = (e.Externs) e.Bytes;
+
+  s.N (e.Externs) e.Name 0 e.Bytes
+    = <DoReadASCIIZs <Dec s.N> (e.Externs (<Chr e.Name>)) e.Bytes>;
+}
+
+ReadWords {
+  s.N e.Bytes = <DoReadASCIIZs s.N () e.Bytes>;
+}
+
+ReadEntryPoints {
+  s.N e.Bytes = <DoReadEntryPoints s.N () e.Bytes>;
+}
+
+DoReadEntryPoints {
+  0 (e.EntryPoints) e.Bytes = (e.EntryPoints) e.Bytes;
+
+  s.N (e.EntryPoints) s.1 s.2 s.3 s.4 e.Bytes
+    = <DoReadEntryPoints
+        <Dec s.N> (e.EntryPoints <MakeDWord s.1 s.2 s.3 s.4>) e.Bytes
+      >;
+}
+
+ResolveWords {
+  (e.Words) e.Commands
+    = <Map
+        {
+          (s.Offset s.WordCommand s.Id)
+            , MatchLeftWord MatchRightWord AllocWord : e.B s.WordCommand e.E
+            = <WordById e.Words s.Id> : e.Word
+            = (s.Offset s.WordCommand e.Word);
+
+          t.Other = t.Other;
+        }
+        e.Commands
+      >;
+}
+
+WordById {
+  e.Words (e.Word) 0 = e.Word;
+  e.Words (e.Word) s.No = <WordById e.Words <Dec s.No>>;
+}
+
+MakeFunctionTable {
+  e.Code-B (s.Offset s.DeclCode e.Name) (s.EntryPoint e.Command) e.Code-E
+  (s.EntryPoint e.Points)
+    = (s.EntryPoint e.Name)
+      <MakeFunctionTable
+        e.Code-B (s.Offset s.DeclCode e.Name) (s.EntryPoint e.Command) e.Code-E
+        (e.Points)
+      >;
+
+  e.Code () = /* пусто */;
+
+  e.Code (e.Rest) = e.Code (100500 BadFunctionTable e.Rest);
+}
+
+ResolveFunctions {
+  e.Code-B (s.Offset MakeCall s.FuncOffset) e.Code-E
+  (e.Functions-B (s.FuncOffset e.Name) e.Functions-E)
+    = e.Code-B (s.Offset MakeCall e.Name)
+      <ResolveFunctions
+        e.Code-E
+        (e.Functions-B (s.FuncOffset e.Name) e.Functions-E)
+      >;
+
+  e.Code (e.Functions) = e.Code;
+}
+
+Disassemble {
+  s.Offset 1 e.Name 0 e.Bytes
+    = (s.Offset MakeExtern <Chr e.Name>)
+      <Disassemble <+ s.Offset 5> e.Bytes>;
+
+  s.Offset 2 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset MakeCall <MakeDWord s.1 s.2 s.3 s.4>)
+      <Disassemble <+ s.Offset 5> e.Bytes>;
+
+  s.Offset 3 e.Bytes
+    = (s.Offset "Alloc '('")
+      <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 4 e.Bytes
+    = (s.Offset "Alloc '()'")
+      <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 5 e.Bytes
+    = (s.Offset "Alloc ')'")
+      <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 6 e.Bytes
+    = (s.Offset ClosedE) <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 7 s.Char e.Bytes
+    = (s.Offset MatchLeftChar s.Char <Chr s.Char>)
+      <Disassemble <+ s.Offset 2> e.Bytes>;
+
+  s.Offset 8 s.Char e.Bytes
+    = (s.Offset MatchRightChar s.Char <Chr s.Char>)
+      <Disassemble <+ s.Offset 2> e.Bytes>;
+
+  s.Offset 10 e.Bytes
+    = (s.Offset MatchEmpty) <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 13 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset CopyTEVar <MakeDWord s.1 s.2 s.3 s.4>)
+      <Disassemble <+ s.Offset 5> e.Bytes>;
+
+  s.Offset 14 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset CopySVar <MakeDWord s.1 s.2 s.3 s.4>)
+      <Disassemble <+ s.Offset 5> e.Bytes>;
+
+  s.Offset 16 e.Bytes
+    = (s.Offset OpenE-Prepare) <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 17 e.Bytes
+    = (s.Offset OpenE-Prepare-Char) <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 18 e.Bytes
+    = (s.Offset OpenE-Prepare-Brackets) <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 19 e.Bytes
+    = (s.Offset MatchLeftBrackets) <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 20 e.Bytes
+    = (s.Offset MatchRightBrackets) <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 23 s.No e.Bytes
+    = (s.Offset MatchLeftKnownTEVar s.No) <Disassemble <+ s.Offset 2> e.Bytes>;
+
+  s.Offset 24 s.No e.Bytes
+    = (s.Offset MatchRightKnownTEVar s.No) <Disassemble <+ s.Offset 2> e.Bytes>;
+
+  s.Offset 25 s.No e.Bytes
+    = (s.Offset MatchLeftKnownSVar s.No) <Disassemble <+ s.Offset 2> e.Bytes>;
+
+  s.Offset 26 s.No e.Bytes
+    = (s.Offset MatchRightKnownSVar s.No) <Disassemble <+ s.Offset 2> e.Bytes>;
+
+  s.Offset 27 e.Bytes
+    = (s.Offset MatchLeftTVar) <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 28 e.Bytes
+    = (s.Offset MatchRightTVar) <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 29 s.Number e.Bytes
+    = (s.Offset StartResult s.Number) <Disassemble <+ s.Offset 2> e.Bytes>;
+
+  s.Offset 34 s.L1 s.L2 s.L3 s.L4 s.R1 s.R2 s.R3 s.R4 e.Bytes
+    = (
+        s.Offset SetB
+        <MakeDWord s.L1 s.L2 s.L3 s.L4>
+        <MakeDWord s.R1 s.R2 s.R3 s.R4>
+      )
+      <Disassemble <+ s.Offset 9> e.Bytes>;
+
+  s.Offset 35 e.Bytes
+    = (s.Offset OpenE-Start) <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 36 s.Char e.Bytes
+    = (s.Offset OpenE-Start-Char s.Char) <Disassemble <+ s.Offset 2> e.Bytes>;
+
+  s.Offset 37 e.Bytes
+    = (s.Offset OpenE-Start-Brackets)
+      <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 39 s.Count e.Bytes
+    = <First s.Count e.Bytes> : (e.Chars) e.Bytes^
+    = (s.Offset MatchLeftChars s.Count <Chr e.Chars>)
+      <Disassemble <+ s.Offset <+ 2 s.Count>> e.Bytes>;
+
+  s.Offset 40 s.Count e.Bytes
+    = <First s.Count e.Bytes> : (e.Chars) e.Bytes^
+    = (s.Offset MatchRightChars s.Count <Chr e.Chars>)
+      <Disassemble <+ s.Offset <+ 2 s.Count>> e.Bytes>;
+
+  s.Offset 41 s.Count e.Bytes
+    = <First s.Count e.Bytes> : (e.Chars) e.Bytes^
+    = (s.Offset AllocChars s.Count <Chr e.Chars>)
+      <Disassemble <+ s.Offset <+ 2 s.Count>> e.Bytes>;
+
+  s.Offset 43 s.Char e.Bytes
+    = (s.Offset AllocChar s.Char <Chr s.Char>)
+      <Disassemble <+ s.Offset 2> e.Bytes>;
+
+  s.Offset 45 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset MoveTEVar <MakeDWord s.1 s.2 s.3 s.4>)
+      <Disassemble <+ s.Offset 5> e.Bytes>;
+
+  s.Offset 46 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset MoveSVar <MakeDWord s.1 s.2 s.3 s.4>)
+      <Disassemble <+ s.Offset 5> e.Bytes>;
+
+  s.Offset 47 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset OnFailGoTo <MakeDWord s.1 s.2 s.3 s.4>)
+      <Disassemble <+ s.Offset 5> e.Bytes>;
+
+  s.Offset 48 e.Bytes
+    = (s.Offset MatchLeftSVar) <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 49 e.Bytes
+    = (s.Offset MatchRightSVar) <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 50 e.Bytes
+    = (s.Offset NextStep) <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 51 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset StartCondition-2 <MakeDWord s.1 s.2 s.3 s.4>)
+      <Disassemble <+ s.Offset 5> e.Bytes>;
+
+  s.Offset 52 e.Bytes
+    = (s.Offset StartCondition-3) <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 53 e.Bytes
+    = (s.Offset StartCondition-1) <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 54 e.Bytes
+    = (s.Offset StartBlock) <Disassemble <Inc s.Offset> e.Bytes>;
+
+  s.Offset 55 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset MatchLeftWord <MakeDWord s.1 s.2 s.3 s.4>)
+      <Disassemble <+ s.Offset 5> e.Bytes>;
+
+  s.Offset 56 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset MatchRightWord <MakeDWord s.1 s.2 s.3 s.4>)
+      <Disassemble <+ s.Offset 5> e.Bytes>;
+
+  s.Offset 57 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset MatchLeftNumber <MakeDWord s.1 s.2 s.3 s.4>)
+      <Disassemble <+ s.Offset 5> e.Bytes>;
+
+  s.Offset 58 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset MatchRightNumber <MakeDWord s.1 s.2 s.3 s.4>)
+      <Disassemble <+ s.Offset 5> e.Bytes>;
+
+  s.Offset 59 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset AllocWord <MakeDWord s.1 s.2 s.3 s.4>)
+      <Disassemble <+ s.Offset 5> e.Bytes>;
+
+  s.Offset 60 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset AllocNumber <MakeDWord s.1 s.2 s.3 s.4>)
+      <Disassemble <+ s.Offset 5> e.Bytes>;
+
+  s.Offset 100 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset BuiltinRegular <MakeDWord s.1 s.2 s.3 s.4>)
+      <Disassemble <+ s.Offset 5> e.Bytes>;
+
+  s.Offset 102 0 e.Name 0 e.Bytes
+    = (s.Offset FuncName <Chr e.Name>)
+      <Disassemble <+ s.Offset <Len 102 0 e.Name>> e.Bytes>;
+
+  s.Offset 103 0 e.Name 0 e.Bytes
+    = (s.Offset EntryFuncName <Chr e.Name>)
+      <Disassemble <+ s.Offset <Len 103 0 e.Name>> e.Bytes>;
+
+  s.Offset 104 0 e.Name 0 e.Bytes
+    = (s.Offset ConditionFuncName <Chr e.Name>)
+      <Disassemble <+ s.Offset <Len 103 0 e.Name>> e.Bytes>;
+
+  s.Offset 105 s.L1 s.L2 s.L3 s.L4 s.R1 s.R2 s.R3 s.R4 e.Bytes
+    = (
+        s.Offset BuiltinSpecial
+        <MakeDWord s.L1 s.L2 s.L3 s.L4>
+        <MakeDWord s.R1 s.R2 s.R3 s.R4>
+      )
+      <Disassemble <+ s.Offset 9> e.Bytes>;
+
+
+  s.Offset e.Bytes = (s.Offset RawBytes e.Bytes);
+}
+
+Len {
+  e.String = <Lenw e.String> : s.Len e.String^ = s.Len;
+}
+
+DEBUG {
+  e.Bytes
+    = <Prout 'all bytes\n' e.Bytes>
+      <Prout <Chr e.Bytes>>
+      <Prout 'all strings'>
+      <AllString <Chr e.Bytes>>;
+}
+
+AllString {
+  e.String '\x00' e.Tail
+    = <Prout e.String>
+      <Prout <Ord e.String> 0>
+      <AllString e.Tail>;
+  e.String = <Prout e.String> <Prout <Ord e.String>>;
+}
