@@ -1088,26 +1088,29 @@ CollectSegments {
 
 DoCollectSegments {
   s.Level (e.Indent) (Pattern s.Level e.Pattern) e.Segments
-    = (e.Indent <FormatExpr e.Pattern>)
+    = <FormatExpr (e.Indent) (e.Indent) e.Pattern>
       <DoCollectSegments s.Level (e.Indent) e.Segments>;
 
   s.Level (e.Indent)
   (StartCondition) (Result e.Result)
   (EndCondition e.Name) (Pattern s.Level e.Pattern)
   e.Segments
-    = (e.Indent '  , ' <FormatExpr e.Result> '\t/*' <FormatWord e.Name> '*/')
-      (e.Indent '  : ' <FormatExpr e.Pattern>)
+    = (e.Indent '    /*' <FormatWord e.Name> '*/')
+      <FormatExpr (e.Indent '  , ') (e.Indent '    ') e.Result>
+      <FormatExpr (e.Indent '  : ') (e.Indent '    ') e.Pattern>
       <DoCollectSegments s.Level (e.Indent) e.Segments>;
 
   s.Level (e.Indent)
   (StartCondition) (Result e.Result) (EndCondition e.Name) (StartBlock)
   e.Segments
-    = (e.Indent '  , ' <FormatExpr e.Result> '\t/*' <FormatWord e.Name> '*/')
+    = (e.Indent '    /*' <FormatWord e.Name> '*/')
+      <FormatExpr (e.Indent '  , ') (e.Indent '    ') e.Result>
       (e.Indent '  : {')
       <DoCollectSegments <Inc s.Level> (e.Indent '      ') e.Segments>;
 
   s.Level (e.Indent) (Result e.Result) (NextSentence) e.Segments
-    = (e.Indent '  = ' <FormatExpr e.Result> ';') ()
+    = <FormatExpr (e.Indent '  = ') (e.Indent '    ') e.Result ';'>
+      ()
       <DoCollectSegments s.Level (e.Indent) e.Segments>;
 
   s.Level (e.Indent '      ') (Pattern s.PatternLevel e.Pattern) e.Segments
@@ -1130,48 +1133,122 @@ DoCollectSegments {
 }
 
 FormatExpr {
-  e.Expr = <DoFormatExpr () e.Expr>;
+  (e.Prefix) (e.Indent) /* пусто */ = (e.Prefix '/*empty*/');
+  (e.Prefix) (e.Indent) /* пусто */ ';' = (e.Prefix '/*empty*/;');
+
+  (e.Prefix) (e.Indent) e.Expr
+    = <DoFormatExpr (<LIMIT>) (e.Prefix) (e.Indent) () e.Expr>;
 }
 
+LIMIT { = 60 }
+
 DoFormatExpr {
-  (e.Result) (W e.Word) e.Tail
-    = <DoFormatExpr (e.Result <FormatWord e.Word> ' ') e.Tail>;
+  (e.Limit) (e.Prefix) (e.Indent) (e.Result ' ') /* пусто */
+    = (e.Prefix e.Result);
 
-  (e.Result) (N s.Number) e.Tail
-    = <DoFormatExpr (e.Result <Symb s.Number> ' ') e.Tail>;
+  (e.Limit) (e.Prefix) (e.Indent) (e.Result) /* пусто */
+    = (e.Prefix e.Result);
 
-  (e.Result) (C e.Chars1) (C e.Chars2) e.Tail
-    = <DoFormatExpr (e.Result) (C e.Chars1 e.Chars2) e.Tail>;
+  (e.Limit) (e.Prefix) (e.Indent) (e.Result ' ') ';' = (e.Prefix e.Result ';');
 
-  (e.Result) (C e.Chars) e.Tail
-    = <DoFormatExpr (e.Result '\'' <EscapeChars e.Chars> '\' ') e.Tail>;
+  (e.Limit) (e.Prefix) (e.Indent) (e.Result) ';' = (e.Prefix e.Result ';');
 
-  (e.Result) (s s.Id '=' s.Copy) e.Tail
-    = <DoFormatExpr (e.Result 's.' <Symb s.Id> ' ') e.Tail>;
+  ('-' s.Limit) (e.Prefix) (e.Indent) (e.Result) e.Tail
+    = (e.Prefix e.Result)
+      <DoFormatExpr (<LIMIT>) (e.Indent) (e.Indent) () e.Tail>;
 
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (W e.Word) e.Tail
+    = <Lenw <FormatWord e.Word> ' '> : s.Len e.WordRep
+    = <DoFormatExpr
+        (<- s.Limit s.Len>) (e.Prefix) (e.Indent) (e.Result e.WordRep) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (N s.Number) e.Tail
+    = <Lenw <Symb s.Number> ' '> : s.Len e.NumberRep
+    = <DoFormatExpr
+        (<- s.Limit s.Len>) (e.Prefix) (e.Indent) (e.Result e.NumberRep) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (C e.Chars1) (C e.Chars2) e.Tail
+    = <DoFormatExpr
+        (s.Limit) (e.Prefix) (e.Indent) (e.Result) (C e.Chars1 e.Chars2) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result '\'') (C s.Char e.Chars) e.Tail
+    = <Lenw <EscapeChar s.Char>> : s.Len e.CharRep
+    = <DoFormatExpr
+        (<- s.Limit s.Len>) (e.Prefix) (e.Indent)
+        (e.Result e.CharRep '\'') (C e.Chars) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (C s.Char e.Chars) e.Tail
+    = <Lenw '\'' <EscapeChar s.Char> '\''> : s.Len e.CharRep
+    = <DoFormatExpr
+        (<- s.Limit s.Len>) (e.Prefix) (e.Indent)
+        (e.Result e.CharRep) (C e.Chars) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (C) e.Tail
+    = <DoFormatExpr
+        (<Dec s.Limit>) (e.Prefix) (e.Indent) (e.Result ' ') e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (s s.Id '=' s.Copy) e.Tail
+    = <Lenw 's.' <Symb s.Id> ' '> : s.Len e.VarRep
+    = <DoFormatExpr
+        (<- s.Limit s.Len>) (e.Prefix) (e.Indent) (e.Result e.VarRep) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent)
   (e.Result) (t s.IdL s.IdR '=' s.CopyL s.CopyR) e.Tail
-    = <DoFormatExpr (e.Result 't.' <Symb s.IdL> ' ') e.Tail>;
+    = <Lenw 't.' <Symb s.IdL> ' '> : s.Len e.VarRep
+    = <DoFormatExpr
+        (<- s.Limit s.Len>) (e.Prefix) (e.Indent) (e.Result e.VarRep) e.Tail
+      >;
 
+  (s.Limit) (e.Prefix) (e.Indent)
   (e.Result) (e s.IdL s.IdR '=' s.CopyL s.CopyR) e.Tail
-    = <DoFormatExpr (e.Result 'e.' <Symb s.IdL> ' ') e.Tail>;
+    = <Lenw 'e.' <Symb s.IdL> ' '> : s.Len e.VarRep
+    = <DoFormatExpr
+        (<- s.Limit s.Len>) (e.Prefix) (e.Indent) (e.Result e.VarRep) e.Tail
+      >;
 
-  (e.Result) (LB) e.Tail = <DoFormatExpr (e.Result '(') e.Tail>;
-  (e.Result ' ') (RB) e.Tail = <DoFormatExpr (e.Result) (RB) e.Tail>;
-  (e.Result) (RB) e.Tail = <DoFormatExpr (e.Result ') ') e.Tail>;
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (LB) e.Tail
+    = <DoFormatExpr
+        (<Dec s.Limit>) (e.Prefix) (e.Indent) (e.Result '(') e.Tail
+      >;
 
-  (e.Result) ('*' e.Inner) e.Tail
-    = <DoFormatExpr (e.Result) (LB) e.Inner (RB) e.Tail>;
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result ' ') (RB) e.Tail
+    = <DoFormatExpr
+        (<Inc s.Limit>) (e.Prefix) (e.Indent) (e.Result) (RB) e.Tail
+      >;
 
-  (e.Result) ('!' (e.Name) e.Inner) e.Tail
-    = <DoFormatExpr (e.Result '<' <FormatWord e.Name> ' ') e.Inner (RK) e.Tail>;
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (RB) e.Tail
+    = <DoFormatExpr
+        (<- s.Limit 2>) (e.Prefix) (e.Indent) (e.Result ') ') e.Tail
+      >;
 
-  (e.Result ' ') (RK) e.Tail = <DoFormatExpr (e.Result) (RK) e.Tail>;
-  (e.Result) (RK) e.Tail = <DoFormatExpr (e.Result '> ') e.Tail>;
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) ('*' e.Inner) e.Tail
+    = <DoFormatExpr
+        (s.Limit) (e.Prefix) (e.Indent) (e.Result) (LB) e.Inner (RB) e.Tail
+      >;
 
-  (e.Result ' ') /* пусто */ = e.Result;
-  (e.Result) /* пусто */ = e.Result;
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) ('!' (e.Name) e.Inner) e.Tail
+    = <Lenw '<' <FormatWord e.Name> ' '> : s.Len e.CallRep
+    = <DoFormatExpr
+        (<- s.Limit s.Len>) (e.Prefix) (e.Indent)
+        (e.Result e.CallRep) e.Inner (RK) e.Tail
+      >;
 
-  e.Tail = e.Tail;
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result ' ') (RK) e.Tail
+    = <DoFormatExpr
+        (<Inc s.Limit>) (e.Prefix) (e.Indent) (e.Result) (RK) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (RK) e.Tail
+    = <DoFormatExpr
+        (<- s.Limit 2>) (e.Prefix) (e.Indent) (e.Result '> ') e.Tail
+      >;
 }
 
 FormatWord {
