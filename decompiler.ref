@@ -20,7 +20,7 @@ Decompile {
     = <Disassemble
         (e.Words) (e.FunctionStarts) (e.Entries) s.BytecodeSize e.Bytes
       >
-    : (e.FunctionTable) e.Functions
+    : e.Functions
     = <Map &DecompileFunction e.Functions> : e.Functions^
     = <Prout '/* Module: "' e.ModuleName '" */'>
       <Prout>
@@ -38,43 +38,12 @@ Decompile {
         e.Functions
       >
       <Prout>
-      <Prout '/* Bytecode size: ' <Symb s.BytecodeSize> ' */'>
-      <Prout>
 
-      <Prout '/* Entries: ' <Symb s.EntryCount> ' */'>
-      <Map
-        {
-          (e.Entry s.Offset)
-            = <Prout '/* $ENTRY ' e.Entry ';\toffset ' <Symb s.Offset> ' */'>;
-        }
-        e.Entries
-      >
-      <Prout>
-
-      <Prout '/* Externs: ' <Symb s.Externs> ' */'>
       <Map
         {
           (e.Extern) = <Prout '$EXTERN ' e.Extern ';'>;
         }
         e.Externs
-      >
-      <Prout>
-
-      <Prout '/* Words: ' <Symb s.Words> ' */'>
-      <Map
-        {
-          (e.Word) = <Prout '*$EENUM ' e.Word ';'>;
-        }
-        e.Words
-      >
-      <Prout>
-
-      <Prout '/* Function starts: ' <Symb s.FunctionStarts> ' ~ ' e.FunctionStarts ' */'>
-      <Map
-        {
-          (s.Offset e.Function) = <Prout '* ' s.Offset ': ' e.Function>;
-        }
-        e.FunctionTable
       >
 }
 
@@ -142,7 +111,7 @@ Disassemble {
     = <CheckupFunctionStarts e.FunctionTable (e.FunctionStarts)> : Ok
     = <CheckupEntries e.FunctionTable (e.Entries)> : Ok
     = <ResolveFunctions e.Functions (e.FunctionTable)> : e.Functions^
-    = (e.FunctionTable) e.Functions;
+    = e.Functions;
 }
 
 ResolveWords {
