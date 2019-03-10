@@ -157,19 +157,19 @@ ResolveWords {
     = <MapAccum
         {
           (e.Words-B (s.Id e.Word) e.Words-E)
-          (s.Offset MatchLeftWord s.Id)
+          (s.Offset CSYM s.Id)
             = ((s.Id e.Word) e.Words-B e.Words-E)
-              (s.Offset MatchLeftWord e.Word);
+              (s.Offset CSYM e.Word);
 
           (e.Words-B (s.Id e.Word) e.Words-E)
-          (s.Offset MatchRightWord s.Id)
+          (s.Offset CSYMR s.Id)
             = ((s.Id e.Word) e.Words-B e.Words-E)
-              (s.Offset MatchRightWord e.Word);
+              (s.Offset CSYMR e.Word);
 
           (e.Words-B (s.Id e.Word) e.Words-E)
-          (s.Offset AllocWord s.Id)
+          (s.Offset NCS s.Id)
             = ((s.Id e.Word) e.Words-B e.Words-E)
-              (s.Offset AllocWord e.Word);
+              (s.Offset NCS e.Word);
 
           (e.Words^) t.Other = (e.Words) t.Other;
         }
@@ -194,8 +194,8 @@ SplitByFunctions {
 }
 
 DeclareCommand {
-  (s.Offset EntryFuncName e.Name) = True;
-  (s.Offset FuncName e.Name) = True;
+  (s.Offset E e.Name) = True;
+  (s.Offset L e.Name) = True;
   t.Other = False t.Other;
 }
 
@@ -203,9 +203,9 @@ MakeFunctionTable {
   (e.Externs) e.Functions
     = <MapAccum
         {
-          (e.Entries) ((s.Offset EntryFuncName e.Name) e.Body)
+          (e.Entries) ((s.Offset E e.Name) e.Body)
             = (e.Entries (e.Name))
-              ((s.Offset EntryFuncName e.Name) e.Body);
+              ((s.Offset E e.Name) e.Body);
 
           (e.Entries) (e.OtherFunction) = (e.Entries) (e.OtherFunction);
         }
@@ -230,14 +230,14 @@ MakeFunctionTable {
 AddFunctionToTable {
   ((e.ForbiddenNames-B (e.Name) e.ForbiddenNames-E) e.Table)
   (
-    (s.NameOffset FuncName e.Name)
+    (s.NameOffset L e.Name)
     (s.CodeOffset e.Command)
     e.Body
   )
     = <AddFunctionToTable
         ((e.ForbiddenNames-B (e.Name) e.ForbiddenNames-E) e.Table)
         (
-          (s.NameOffset FuncName <IncName e.Name>)
+          (s.NameOffset L <IncName e.Name>)
           (s.CodeOffset e.Command)
           e.Body
         )
@@ -251,8 +251,8 @@ AddFunctionToTable {
   )
     = s.DeclareCommand
     : {
-        FuncName = Local;
-        EntryFuncName = Entry;
+        L = Local;
+        E = Entry;
       }
     : s.Type
     = ((e.ForbiddenNames (e.Name)) e.Table (s.CodeOffset s.Type e.Name))
@@ -309,9 +309,9 @@ ResolveFunctions {
 }
 
 ResolveFunctions-Body {
-  e.Code-B (s.Offset MakeCall s.FuncOffset) e.Code-E
+  e.Code-B (s.Offset ACT1 s.FuncOffset) e.Code-E
   (e.Functions-B (s.FuncOffset s.Type e.Name) e.Functions-E)
-    = e.Code-B (s.Offset MakeCall e.Name)
+    = e.Code-B (s.Offset ACT1 e.Name)
       <ResolveFunctions-Body
         e.Code-E
         ((s.FuncOffset s.Type e.Name) e.Functions-B e.Functions-E)
@@ -321,203 +321,255 @@ ResolveFunctions-Body {
 }
 
 DecodeCommands {
+* (...) → <Extern ...>
   s.Offset 1 e.Name 0 e.Bytes
-    = (s.Offset MakeExtern <Chr e.Name>)
+    = (s.Offset ACT_EXTRN <Chr e.Name>)
       <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
+* (...) → <Function ...>
   s.Offset 2 s.1 s.2 s.3 s.4 e.Bytes
-    = (s.Offset MakeCall <MakeDWord s.1 s.2 s.3 s.4>)
+    = (s.Offset ACT1 <MakeDWord s.1 s.2 s.3 s.4>)
       <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
+* alloc (
   s.Offset 3 e.Bytes
-    = (s.Offset AllocLeftBracket)
+    = (s.Offset BL)
       <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* alloc ()
   s.Offset 4 e.Bytes
-    = (s.Offset AllocPairBrackets)
+    = (s.Offset BLR)
       <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* alloc )
   s.Offset 5 e.Bytes
-    = (s.Offset AllocRightBracket)
+    = (s.Offset BR)
       <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* match with closed e-var
   s.Offset 6 e.Bytes
-    = (s.Offset ClosedE) <DecodeCommands <Inc s.Offset> e.Bytes>;
+    = (s.Offset CL) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* left match with char
   s.Offset 7 s.Char e.Bytes
-    = (s.Offset MatchLeftChar s.Char <Chr s.Char>)
+    = (s.Offset SYM s.Char <Chr s.Char>)
       <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
+* right match with char
   s.Offset 8 s.Char e.Bytes
-    = (s.Offset MatchRightChar s.Char <Chr s.Char>)
+    = (s.Offset SYMR s.Char <Chr s.Char>)
       <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
+* match with empty range
   s.Offset 10 e.Bytes
-    = (s.Offset MatchEmpty) <DecodeCommands <Inc s.Offset> e.Bytes>;
+    = (s.Offset EMP) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* alloc copy of t- or e-var
   s.Offset 13 s.1 s.2 s.3 s.4 e.Bytes
-    = (s.Offset CopyTEVar <MakeDWord s.1 s.2 s.3 s.4>)
+    = (s.Offset MULE <MakeDWord s.1 s.2 s.3 s.4>)
       <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
+* alloc copy of s-var
   s.Offset 14 s.1 s.2 s.3 s.4 e.Bytes
-    = (s.Offset CopySVar <MakeDWord s.1 s.2 s.3 s.4>)
+    = (s.Offset MULS <MakeDWord s.1 s.2 s.3 s.4>)
       <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
+* prepare for open loop
   s.Offset 16 e.Bytes
-    = (s.Offset OpenE-Prepare) <DecodeCommands <Inc s.Offset> e.Bytes>;
+    = (s.Offset PLEN) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* prepare for open loop with char
   s.Offset 17 e.Bytes
-    = (s.Offset OpenE-Prepare-Char) <DecodeCommands <Inc s.Offset> e.Bytes>;
+    = (s.Offset PLENS) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* prepare for open loop with brackets
   s.Offset 18 e.Bytes
-    = (s.Offset OpenE-Prepare-Brackets) <DecodeCommands <Inc s.Offset> e.Bytes>;
+    = (s.Offset PLENP) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* left match of brackets
   s.Offset 19 e.Bytes
-    = (s.Offset MatchLeftBrackets) <DecodeCommands <Inc s.Offset> e.Bytes>;
+    = (s.Offset PS) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* right match of brackets
   s.Offset 20 e.Bytes
-    = (s.Offset MatchRightBrackets) <DecodeCommands <Inc s.Offset> e.Bytes>;
+    = (s.Offset PSR) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* left match of known t- or e-var
   s.Offset 23 s.No e.Bytes
-    = (s.Offset MatchLeftKnownTEVar s.No)
+    = (s.Offset OEXP s.No)
       <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
+* right match of known t- or e-var
   s.Offset 24 s.No e.Bytes
-    = (s.Offset MatchRightKnownTEVar s.No)
+    = (s.Offset OEXPR s.No)
       <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
+* left match of known s-var
   s.Offset 25 s.No e.Bytes
-    = (s.Offset MatchLeftKnownSVar s.No)
+    = (s.Offset OVSYM s.No)
       <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
+* right match of known s-var
   s.Offset 26 s.No e.Bytes
-    = (s.Offset MatchRightKnownSVar s.No)
+    = (s.Offset OVSYMR s.No)
       <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
+* left match of new t-var
   s.Offset 27 e.Bytes
-    = (s.Offset MatchLeftTVar) <DecodeCommands <Inc s.Offset> e.Bytes>;
+    = (s.Offset TERM) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* right match of new t-var
   s.Offset 28 e.Bytes
-    = (s.Offset MatchRightTVar) <DecodeCommands <Inc s.Offset> e.Bytes>;
+    = (s.Offset TERMR) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* start of building result
   s.Offset 29 s.Number e.Bytes
-    = (s.Offset StartResult s.Number) <DecodeCommands <+ s.Offset 2> e.Bytes>;
+    = (s.Offset RDY s.Number) <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
+* set boundaries
   s.Offset 34 s.L1 s.L2 s.L3 s.L4 s.R1 s.R2 s.R3 s.R4 e.Bytes
     = (
-        s.Offset SetB
+        s.Offset SETB
         <MakeDWord s.L1 s.L2 s.L3 s.L4>
         <MakeDWord s.R1 s.R2 s.R3 s.R4>
       )
       <DecodeCommands <+ s.Offset 9> e.Bytes>;
 
+* open loop
   s.Offset 35 e.Bytes
-    = (s.Offset OpenE-Start) <DecodeCommands <Inc s.Offset> e.Bytes>;
+    = (s.Offset LEN) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* open loop with char
   s.Offset 36 s.Char e.Bytes
-    = (s.Offset OpenE-Start-Char s.Char)
+    = (s.Offset LENS <Chr s.Char>)
       <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
+* open loop with brackets
   s.Offset 37 e.Bytes
-    = (s.Offset OpenE-Start-Brackets)
+    = (s.Offset LENP)
       <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* left match of char sequence
   s.Offset 39 s.Count e.Bytes
     = <First s.Count e.Bytes> : (e.Chars) e.Bytes^
-    = (s.Offset MatchLeftChars s.Count <Chr e.Chars>)
+    = (s.Offset SYMS s.Count <Chr e.Chars>)
       <DecodeCommands <+ s.Offset <+ 2 s.Count>> e.Bytes>;
 
+* right match of char sequence
   s.Offset 40 s.Count e.Bytes
     = <First s.Count e.Bytes> : (e.Chars) e.Bytes^
-    = (s.Offset MatchRightChars s.Count <Chr e.Chars>)
+    = (s.Offset SYMSR s.Count <Chr e.Chars>)
       <DecodeCommands <+ s.Offset <+ 2 s.Count>> e.Bytes>;
 
+* alloc sequence of chars
   s.Offset 41 s.Count e.Bytes
     = <First s.Count e.Bytes> : (e.Chars) e.Bytes^
-    = (s.Offset AllocChars s.Count <Chr e.Chars>)
+    = (s.Offset TEXT s.Count <Chr e.Chars>)
       <DecodeCommands <+ s.Offset <+ 2 s.Count>> e.Bytes>;
 
+* alloc char
   s.Offset 43 s.Char e.Bytes
-    = (s.Offset AllocChar s.Char <Chr s.Char>)
+    = (s.Offset NS s.Char <Chr s.Char>)
       <DecodeCommands <+ s.Offset 2> e.Bytes>;
 
+* move t- or e-var to result
   s.Offset 45 s.1 s.2 s.3 s.4 e.Bytes
-    = (s.Offset MoveTEVar <MakeDWord s.1 s.2 s.3 s.4>)
+    = (s.Offset TPLE <MakeDWord s.1 s.2 s.3 s.4>)
       <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
+* move s-var to result
   s.Offset 46 s.1 s.2 s.3 s.4 e.Bytes
-    = (s.Offset MoveSVar <MakeDWord s.1 s.2 s.3 s.4>)
+    = (s.Offset TPLS <MakeDWord s.1 s.2 s.3 s.4>)
       <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
+* on fail go to
   s.Offset 47 s.1 s.2 s.3 s.4 e.Bytes
-    = (s.Offset OnFailGoTo <MakeDWord s.1 s.2 s.3 s.4>)
+    = (s.Offset TRAN <MakeDWord s.1 s.2 s.3 s.4>)
       <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
+* left match of new s-var
   s.Offset 48 e.Bytes
-    = (s.Offset MatchLeftSVar) <DecodeCommands <Inc s.Offset> e.Bytes>;
+    = (s.Offset VSYM) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* right match of new s-var
   s.Offset 49 e.Bytes
-    = (s.Offset MatchRightSVar) <DecodeCommands <Inc s.Offset> e.Bytes>;
+    = (s.Offset VSYMR) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* result is built, next step
   s.Offset 50 e.Bytes
-    = (s.Offset NextStep) <DecodeCommands <Inc s.Offset> e.Bytes>;
+    = (s.Offset OUTEST) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* second service opcode for condition
   s.Offset 51 s.1 s.2 s.3 s.4 e.Bytes
-    = (s.Offset StartCondition-2 <MakeDWord s.1 s.2 s.3 s.4>)
+    = (s.Offset ECOND <MakeDWord s.1 s.2 s.3 s.4>)
       <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
+* third service opcode for condition
   s.Offset 52 e.Bytes
-    = (s.Offset StartCondition-3) <DecodeCommands <Inc s.Offset> e.Bytes>;
+    = (s.Offset POPVF) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* first service opcode for condition
   s.Offset 53 e.Bytes
-    = (s.Offset StartCondition-1) <DecodeCommands <Inc s.Offset> e.Bytes>;
+    = (s.Offset PUSHVF) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* service opcode for start block
   s.Offset 54 e.Bytes
-    = (s.Offset StartBlock) <DecodeCommands <Inc s.Offset> e.Bytes>;
+    = (s.Offset STLEN) <DecodeCommands <Inc s.Offset> e.Bytes>;
 
+* left match of word (compound symbol)
   s.Offset 55 s.1 s.2 s.3 s.4 e.Bytes
-    = (s.Offset MatchLeftWord <MakeDWord s.1 s.2 s.3 s.4>)
+    = (s.Offset CSYM <MakeDWord s.1 s.2 s.3 s.4>)
       <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
+* right match of word (compound symbol)
   s.Offset 56 s.1 s.2 s.3 s.4 e.Bytes
-    = (s.Offset MatchRightWord <MakeDWord s.1 s.2 s.3 s.4>)
+    = (s.Offset CSYMR <MakeDWord s.1 s.2 s.3 s.4>)
       <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
+* left match of number
   s.Offset 57 s.1 s.2 s.3 s.4 e.Bytes
-    = (s.Offset MatchLeftNumber <MakeDWord s.1 s.2 s.3 s.4>)
+    = (s.Offset NSYM <MakeDWord s.1 s.2 s.3 s.4>)
       <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
+* right match of number
   s.Offset 58 s.1 s.2 s.3 s.4 e.Bytes
-    = (s.Offset MatchRightNumber <MakeDWord s.1 s.2 s.3 s.4>)
+    = (s.Offset NSYMR <MakeDWord s.1 s.2 s.3 s.4>)
       <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
+* alloc word (compound symbol)
   s.Offset 59 s.1 s.2 s.3 s.4 e.Bytes
-    = (s.Offset AllocWord <MakeDWord s.1 s.2 s.3 s.4>)
+    = (s.Offset NCS <MakeDWord s.1 s.2 s.3 s.4>)
       <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
+* alloc number
   s.Offset 60 s.1 s.2 s.3 s.4 e.Bytes
-    = (s.Offset AllocNumber <MakeDWord s.1 s.2 s.3 s.4>)
+    = (s.Offset NNS <MakeDWord s.1 s.2 s.3 s.4>)
       <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
+* perform regular builtin function
   s.Offset 100 s.1 s.2 s.3 s.4 e.Bytes
-    = (s.Offset BuiltinRegular <MakeDWord s.1 s.2 s.3 s.4>)
+    = (s.Offset BUILT_IN <MakeDWord s.1 s.2 s.3 s.4>)
       <DecodeCommands <+ s.Offset 5> e.Bytes>;
 
+* precedes for local function body
   s.Offset 102 0 e.Name 0 e.Bytes
-    = (s.Offset FuncName <Chr e.Name>)
+    = (s.Offset L <Chr e.Name>)
       <DecodeCommands <+ s.Offset <Len 102 0 e.Name>> e.Bytes>;
 
+* precedes for entry function body
   s.Offset 103 0 e.Name 0 e.Bytes
-    = (s.Offset EntryFuncName <Chr e.Name>)
+    = (s.Offset E <Chr e.Name>)
       <DecodeCommands <+ s.Offset <Len 103 0 e.Name>> e.Bytes>;
 
+* precedes for condition pseudofunction
   s.Offset 104 0 e.Name 0 e.Bytes
-    = (s.Offset ConditionFuncName <Chr e.Name>)
+    = (s.Offset LABEL <Chr e.Name>)
       <DecodeCommands <+ s.Offset <Len 103 0 e.Name>> e.Bytes>;
 
+* perform special builtin action
   s.Offset 105 s.L1 s.L2 s.L3 s.L4 s.R1 s.R2 s.R3 s.R4 e.Bytes
     = (
-        s.Offset BuiltinSpecial
+        s.Offset BUILT_IN1
         <MakeDWord s.L1 s.L2 s.L3 s.L4>
         <MakeDWord s.R1 s.R2 s.R3 s.R4>
       )
@@ -549,15 +601,15 @@ AllString {
 }
 
 DecompileFunction {
-  (t.FuncName (s.Offset BuiltinRegular s.No)) = /* пусто */;
-  (t.FuncName (s.Offset BuiltinSpecial s.No1 s.No2)) = /* пусто */;
+  (t.FuncName (s.Offset BUILT_IN s.No)) = /* пусто */;
+  (t.FuncName (s.Offset BUILT_IN1 s.No1 s.No2)) = /* пусто */;
 
   ((s.Offset s.DeclCommand e.Name) e.Commands)
     = <Decompile-Pattern-Hole 0 3 (1) (2) () e.Commands> : e.Segments
     = s.DeclCommand
     : {
-        FuncName = /* пусто */;
-        EntryFuncName = '$ENTRY ';
+        L = /* пусто */;
+        E = '$ENTRY ';
       }
     : e.MaybeEntry
     = <CollectSegments e.Segments> : e.Lines
@@ -566,7 +618,7 @@ DecompileFunction {
 
 Decompile-Pattern-Hole {
   s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
-  (s.Offset MatchLeftWord e.Word) e.Commands
+  (s.Offset CSYM e.Word) e.Commands
     = <Decompile-Pattern-Hole
         s.Level <Inc s.Top> (e.Pattern-L (W e.Word) s.Top) (e.Pattern-R)
         (e.Vars)
@@ -574,7 +626,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
-  (s.Offset MatchRightWord e.Word) e.Commands
+  (s.Offset CSYMR e.Word) e.Commands
     = <Decompile-Pattern-Hole
         s.Level <Inc s.Top> (e.Pattern-L) (s.Top (W e.Word) e.Pattern-R)
         (e.Vars)
@@ -582,7 +634,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
-  (s.Offset MatchLeftNumber s.Number) e.Commands
+  (s.Offset NSYM s.Number) e.Commands
     = <Decompile-Pattern-Hole
         s.Level <Inc s.Top> (e.Pattern-L (N s.Number) s.Top) (e.Pattern-R)
         (e.Vars)
@@ -590,7 +642,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
-  (s.Offset MatchRightNumber e.Number) e.Commands
+  (s.Offset NSYMR e.Number) e.Commands
     = <Decompile-Pattern-Hole
         s.Level <Inc s.Top> (e.Pattern-L) (s.Top (N e.Number) e.Pattern-R)
         (e.Vars)
@@ -598,7 +650,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
-  (s.Offset MatchLeftChar s.Code s.Char) e.Commands
+  (s.Offset SYM s.Code s.Char) e.Commands
     = <Decompile-Pattern-Hole
         s.Level <Inc s.Top> (e.Pattern-L (C s.Char) s.Top) (e.Pattern-R)
         (e.Vars)
@@ -606,7 +658,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
-  (s.Offset MatchRightChar s.Code s.Char) e.Commands
+  (s.Offset SYMR s.Code s.Char) e.Commands
     = <Decompile-Pattern-Hole
         s.Level <Inc s.Top> (e.Pattern-L) (s.Top (C s.Char) e.Pattern-R)
         (e.Vars)
@@ -614,7 +666,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
-  (s.Offset MatchLeftChars s.Len e.Chars) e.Commands
+  (s.Offset SYMS s.Len e.Chars) e.Commands
     = <+ s.Len s.Top> : s.Top^
     = <- s.Top 1> : s.L^
     = <Decompile-Pattern-Hole
@@ -624,7 +676,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
-  (s.Offset MatchRightChars s.Len e.Chars) e.Commands
+  (s.Offset SYMSR s.Len e.Chars) e.Commands
     = <+ s.Len s.Top> : s.Top^
     = <- s.Top 1> : s.R^
     = <Decompile-Pattern-Hole
@@ -634,7 +686,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
-  (s.Offset MatchLeftSVar) e.Commands
+  (s.Offset VSYM) e.Commands
     = <Decompile-Pattern-Hole
         s.Level <Inc s.Top>
         (e.Pattern-L (s s.Top '=' s.Top) s.Top) (e.Pattern-R)
@@ -643,7 +695,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
-  (s.Offset MatchRightSVar) e.Commands
+  (s.Offset VSYMR) e.Commands
     = <Decompile-Pattern-Hole
         s.Level <Inc s.Top>
         (e.Pattern-L) (s.Top (s s.Top '=' s.Top) e.Pattern-R)
@@ -652,7 +704,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
-  (s.Offset MatchLeftTVar) e.Commands
+  (s.Offset TERM) e.Commands
     = s.Top <+ 1 s.Top> : s.VL s.VR
     = <Decompile-Pattern-Hole
         s.Level <+ s.Top 2>
@@ -662,7 +714,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
-  (s.Offset MatchRightTVar) e.Commands
+  (s.Offset TERMR) e.Commands
     = s.Top <+ 1 s.Top> : s.VL s.VR
     = <Decompile-Pattern-Hole
         s.Level <+ s.Top 2>
@@ -672,7 +724,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L) (e.Pattern-R) (e.Vars)
-  (s.Offset OnFailGoTo s.Jump)
+  (s.Offset TRAN s.Jump)
   e.Commands-B (s.Jump e.Command) e.Commands-E
     = <Decompile-Pattern-Hole
         s.Level s.Top (e.Pattern-L) (e.Pattern-R) (e.Vars)
@@ -698,7 +750,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
-  (s.Offset MatchLeftKnownSVar s.VarNo) e.Commands
+  (s.Offset OVSYM s.VarNo) e.Commands
     = <Decompile-Pattern-Hole
         s.Level <Inc s.Top>
         (e.Pattern-L (s s.VarNo '=' s.Top) s.Top) (e.Pattern-R)
@@ -707,7 +759,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
-  (s.Offset MatchRightKnownSVar s.VarNo) e.Commands
+  (s.Offset OVSYMR s.VarNo) e.Commands
     = <Decompile-Pattern-Hole
         s.Level <Inc s.Top>
         (e.Pattern-L) (s.Top (s s.VarNo '=' s.Top) e.Pattern-R)
@@ -716,7 +768,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L s.L) (s.R e.Pattern-R) (e.Vars)
-  (s.Offset ClosedE) e.Commands
+  (s.Offset CL) e.Commands
     = s.Top <+ s.Top 1> : s.VL s.VR
     = <Decompile-Pattern-NoHole
         s.Level <+ s.Top 2>
@@ -726,7 +778,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
-  (s.Offset MatchLeftKnownTEVar s.IdR) e.Commands
+  (s.Offset OEXP s.IdR) e.Commands
     = e.Vars : e.Vars-B (s.Type s.IdL s.IdR '=' s.VarNoL s.VarNoR) e.Vars-E
     = s.Top <+ s.Top 1> : s.VL s.VR
     = <Decompile-Pattern-Hole
@@ -737,7 +789,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
-  (s.Offset MatchRightKnownTEVar s.IdR) e.Commands
+  (s.Offset OEXPR s.IdR) e.Commands
     = e.Vars : e.Vars-B (s.Type s.IdL s.IdR '=' s.VarNoL s.VarNoR) e.Vars-E
     = s.Top <+ s.Top 1> : s.VL s.VR
     = <Decompile-Pattern-Hole
@@ -748,7 +800,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L s.L) (s.R e.Pattern-R) (e.Vars)
-  (s.Offset MatchLeftBrackets) e.Commands
+  (s.Offset PS) e.Commands
     = s.Top <+ s.Top 1> : s.LB s.RB
     = <Decompile-Pattern-Hole
         s.Level <+ s.Top 2>
@@ -758,7 +810,7 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
-  (s.Offset MatchRightBrackets) e.Commands
+  (s.Offset PSR) e.Commands
     = s.Top <+ s.Top 1> : s.LB s.RB
     = <Decompile-Pattern-Hole
         s.Level <+ s.Top 2>
@@ -768,20 +820,20 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L s.L) (s.R e.Pattern-R) (e.Vars)
-  (s.Offset SetB s.NewL s.NewR) e.Commands
+  (s.Offset SETB s.NewL s.NewR) e.Commands
     = <Decompile-Pattern-NoHole
         s.Level s.Top (e.Pattern-L (Hole s.L s.R) e.Pattern-R) (e.Vars)
-        (s.Offset SetB s.NewL s.NewR) e.Commands
+        (s.Offset SETB s.NewL s.NewR) e.Commands
       >;
 
   s.Level s.Top (e.Pattern-L s.L) (s.R e.Pattern-R) (e.Vars)
-  (s.Offset MatchEmpty) e.Commands
+  (s.Offset EMP) e.Commands
     = <Decompile-Pattern-NoHole
         s.Level s.Top (e.Pattern-L e.Pattern-R) (e.Vars) e.Commands
       >;
 
   s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
-  (s.Offset1 OpenE-Prepare) (s.Offset2 OpenE-Start) e.Commands
+  (s.Offset1 PLEN) (s.Offset2 LEN) e.Commands
     = s.Top <+ s.Top 1> : s.VL s.VR
     = <Decompile-Pattern-Hole
         s.Level <+ s.Top 2>
@@ -791,18 +843,18 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
-  (s.Offset1 OpenE-Prepare-Char) (s.Offset2 OpenE-Start-Char s.Code) e.Commands
+  (s.Offset1 PLENS) (s.Offset2 LENS s.Char) e.Commands
     = s.Top <+ s.Top 1> <+ s.Top 2>: s.VL s.VR s.CharPos
     = <Decompile-Pattern-Hole
         s.Level <+ s.Top 3>
-        (e.Pattern-L (e s.VL s.VR '=' s.VL s.VR) (C <Chr s.Code>) s.CharPos)
+        (e.Pattern-L (e s.VL s.VR '=' s.VL s.VR) (C s.Char) s.CharPos)
         (e.Pattern-R)
         (e.Vars (e s.VL s.VR '=' s.VL s.VR))
         e.Commands
       >;
 
   s.Level s.Top (e.Pattern-L s.L) (s.R e.Pattern-R) (e.Vars)
-  (s.Offset1 OpenE-Prepare-Brackets) (s.Offset2 OpenE-Start-Brackets) e.Commands
+  (s.Offset1 PLENP) (s.Offset2 LENP) e.Commands
     = s.Top <+ s.Top 1> <+ s.Top 2> <+ s.Top 3> : s.VL s.VR s.LB s.RB
     = <Decompile-Pattern-Hole
         s.Level <+ s.Top 4>
@@ -813,14 +865,14 @@ Decompile-Pattern-Hole {
       >;
 
   s.Level s.Top (e.Pattern-L) (e.Pattern-R) (e.Vars)
-  (s.Offset StartBlock) e.Commands
+  (s.Offset STLEN) e.Commands
     = (StartBlock)
       <Decompile-Pattern-Hole
         <Inc s.Level> s.Top (e.Pattern-L) (e.Pattern-R) (e.Vars) e.Commands
       >;
 
   s.Level s.Top (e.Pattern-L) (e.Pattern-R) (e.Vars)
-  (s.Offset ConditionFuncName e.BlockName) e.Commands
+  (s.Offset LABEL e.BlockName) e.Commands
     = <Decompile-Pattern-Hole
         s.Level s.Top (e.Pattern-L) (e.Pattern-R) (e.Vars) e.Commands
       >;
@@ -839,25 +891,25 @@ Rev {
 
 Decompile-Pattern-NoHole {
   s.Level s.Top (e.Pattern-L (Hole s.L s.R) e.Pattern-R) (e.Vars)
-  (s.Offset SetB s.L s.R) e.Commands
+  (s.Offset SETB s.L s.R) e.Commands
     = <Decompile-Pattern-Hole
         s.Level s.Top (e.Pattern-L s.L) (s.R e.Pattern-R) (e.Vars)
         e.Commands
       >;
 
   s.Level s.Top (e.Pattern) (e.Vars)
-  (s.Offset StartResult 0) e.Commands
+  (s.Offset RDY 0) e.Commands
     = (Pattern s.Level e.Pattern)
       <Decompile-Result s.Level s.Top (e.Vars) ('$') e.Commands>;
 
   s.Level s.Top (e.Pattern) (e.Vars)
-  (s.Offset StartCondition-1) e.Commands
+  (s.Offset PUSHVF) e.Commands
     = (Pattern s.Level e.Pattern)
       (StartCondition)
       <Decompile-Result s.Level s.Top (e.Vars) ('$') e.Commands>;
 
   s.Level s.Top (e.Pattern) (e.Vars)
-  (s.Offset OnFailGoTo s.Jump)
+  (s.Offset TRAN s.Jump)
   e.Commands-B (s.Jump e.Command) e.Commands-E
     = <Decompile-Pattern-NoHole
         s.Level s.Top (e.Pattern) (e.Vars)
@@ -883,7 +935,7 @@ Decompile-Pattern-NoHole {
       >;
 
   s.Level s.Top (e.Pattern) (e.Vars)
-  (s.Offset ConditionFuncName e.BlockName) e.Commands
+  (s.Offset LABEL e.BlockName) e.Commands
     = <Decompile-Pattern-NoHole
         s.Level s.Top (e.Pattern) (e.Vars) e.Commands
       >;
@@ -896,21 +948,21 @@ Decompile-Pattern-NoHole {
 
 Decompile-Result {
   s.Level
-  s.Top (e.Vars) (t.MB e.Result) (s.Offset AllocWord e.Word) e.Commands
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset NCS e.Word) e.Commands
     = <Decompile-Result
         s.Level
         s.Top (e.Vars) (t.MB e.Result (W e.Word)) e.Commands
       >;
 
   s.Level
-  s.Top (e.Vars) (t.MB e.Result) (s.Offset AllocNumber s.Number) e.Commands
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset NNS s.Number) e.Commands
     = <Decompile-Result
         s.Level
         s.Top (e.Vars) (t.MB e.Result (N s.Number)) e.Commands
       >;
 
   s.Level
-  s.Top (e.Vars) (t.MB e.Result) (s.Offset AllocChar s.Code s.Char) e.Commands
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset NS s.Code s.Char) e.Commands
     = <Decompile-Result
         s.Level
         s.Top (e.Vars) (t.MB e.Result (C s.Char)) e.Commands
@@ -918,14 +970,14 @@ Decompile-Result {
 
   s.Level
   s.Top (e.Vars) (t.MB e.Result)
-  (s.Offset AllocChars s.Count e.Chars) e.Commands
+  (s.Offset TEXT s.Count e.Chars) e.Commands
     = <Decompile-Result
         s.Level
         s.Top (e.Vars) (t.MB e.Result (C e.Chars)) e.Commands
       >;
 
   s.Level
-  s.Top (e.Vars) (t.MB e.Result) (s.Offset AllocLeftBracket) e.Commands
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset BL) e.Commands
     = <Decompile-Result
         s.Level
         s.Top (e.Vars) ((t.MB e.Result)) e.Commands
@@ -933,14 +985,14 @@ Decompile-Result {
 
   s.Level
   s.Top (e.Vars) ((t.MB e.Result) e.Nested)
-  (s.Offset AllocRightBracket) e.Commands
+  (s.Offset BR) e.Commands
     = <Decompile-Result
         s.Level
         s.Top (e.Vars) (t.MB e.Result ('*' e.Nested)) e.Commands
       >;
 
   s.Level
-  s.Top (e.Vars) (t.MB e.Result) (s.Offset AllocPairBrackets) e.Commands
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset BLR) e.Commands
     = <Decompile-Result
         s.Level
         s.Top (e.Vars) (t.MB e.Result ('*')) e.Commands
@@ -948,7 +1000,7 @@ Decompile-Result {
 
   s.Level
   s.Top (e.Vars) (t.MB e.Result ('*' e.Inner))
-  (s.Offset MakeCall e.Name) e.Commands
+  (s.Offset ACT1 e.Name) e.Commands
     = <Decompile-Result
         s.Level
         s.Top (e.Vars) (t.MB e.Result ('!' (e.Name) e.Inner)) e.Commands
@@ -956,14 +1008,14 @@ Decompile-Result {
 
   s.Level
   s.Top (e.Vars) (t.MB e.Result ('*' e.Inner))
-  (s.Offset MakeExtern e.Name) e.Commands
+  (s.Offset ACT_EXTRN e.Name) e.Commands
     = <Decompile-Result
         s.Level
         s.Top (e.Vars) (t.MB e.Result ('!' (e.Name) e.Inner)) e.Commands
       >;
 
   s.Level
-  s.Top (e.Vars) (t.MB e.Result) (s.Offset MoveSVar s.Copy) e.Commands
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset TPLS s.Copy) e.Commands
     , e.Vars : e.Vars-B (s s.Id '=' s.Copy) e.Vars-E
     = <Decompile-Result
         s.Level
@@ -971,7 +1023,7 @@ Decompile-Result {
       >;
 
   s.Level
-  s.Top (e.Vars) (t.MB e.Result) (s.Offset MoveTEVar s.CopyR) e.Commands
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset TPLE s.CopyR) e.Commands
     , e.Vars
     : e.Vars-B (s.Type s.IdL s.IdR '=' s.CopyL s.CopyR) e.Vars-E
     , t e : e.B s.Type e.E
@@ -982,7 +1034,7 @@ Decompile-Result {
       >;
 
   s.Level
-  s.Top (e.Vars) (t.MB e.Result) (s.Offset CopySVar s.Copy) e.Commands
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset MULS s.Copy) e.Commands
     , e.Vars : e.Vars-B (s s.Id '=' s.Copy) e.Vars-E
     = <Decompile-Result
         s.Level
@@ -990,7 +1042,7 @@ Decompile-Result {
       >;
 
   s.Level
-  s.Top (e.Vars) (t.MB e.Result) (s.Offset CopyTEVar s.CopyR) e.Commands
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset MULE s.CopyR) e.Commands
     , e.Vars
     : e.Vars-B (s.Type s.IdL s.IdR '=' s.CopyL s.CopyR) e.Vars-E
     , t e : e.B s.Type e.E
@@ -1002,9 +1054,9 @@ Decompile-Result {
 
   s.Level
   s.Top (e.Vars) ('$' e.Result)
-  (s.Offset1 StartCondition-2 s.Offset3)
-  (s.Offset2 ConditionFuncName e.Name)
-  (s.Offset3 StartCondition-3)
+  (s.Offset1 ECOND s.Offset3)
+  (s.Offset2 LABEL e.Name)
+  (s.Offset3 POPVF)
   e.Commands
     = (Result e.Result)
       (EndCondition e.Name)
@@ -1014,14 +1066,14 @@ Decompile-Result {
 
   s.Level
   s.Top (e.Vars) ('$' e.Result)
-  (s.Offset1 NextStep) (s.Offset2 NextStep) e.Commands
+  (s.Offset1 OUTEST) (s.Offset2 OUTEST) e.Commands
     = (Result e.Result)
       (NextSentence)
       (NextSentence)
       <Decompile-Pattern-NoHole s.Level '*' () () e.Commands>;
 
   s.Level
-  s.Top (e.Vars) ('$' e.Result) (s.Offset NextStep) e.Commands
+  s.Top (e.Vars) ('$' e.Result) (s.Offset OUTEST) e.Commands
     = (Result e.Result)
       (NextSentence)
       <Decompile-Pattern-NoHole s.Level '*' () () e.Commands>;
@@ -1071,7 +1123,7 @@ DoCollectSegments {
       <DoCollectSegments <Dec s.Level> (e.Indent) (EndOfFunction)>;
 
   s.Level (e.Indent) (NextSentence) e.Segments
-    = ('* unexpected NextStep command')
+    = ('* unexpected OUTEST command')
       <DoCollectSegments s.Level (e.Indent) e.Segments>;
 
   s.Level (e.Indent) e.Segments = ('* WTF!!!!') ('"' e.Indent '"') e.Segments;
