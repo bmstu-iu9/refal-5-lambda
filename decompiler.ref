@@ -14,9 +14,8 @@ Main {
 Decompile {
   e.Bytes
     = <DecodeStructure e.Bytes>
-    : (e.ModuleName)
-      (s.BytecodeSize s.EntryCount s.Externs s.Words s.FunctionStarts)
-      (e.Entries) (e.Externs) (e.Words) (e.FunctionStarts) e.Bytes^
+    : (e.ModuleName) (s.BytecodeSize s.FunctionStarts)
+      (e.Entries) (e.Externs) (e.Words) (e.FunctionStarts) e.Bytecode
     = <Disassemble
         (e.Words) (e.FunctionStarts) (e.Entries) s.BytecodeSize e.Bytes
       >
@@ -81,7 +80,7 @@ DecodeStructure {
     = <ReadWords s.Words e.Bytes> : e.Words (e.Bytes^)
     = <ReadEntryPoints s.FunctionStarts e.Bytes> : e.FunctionStarts (e.Bytes^)
     = (e.ModuleName)
-      (s.BytecodeSize s.EntryCount s.Externs s.Words s.FunctionStarts)
+      (s.BytecodeSize s.FunctionStarts)
       (e.Entries) (e.Externs) (e.Words) (e.FunctionStarts) e.Bytes
 }
 
