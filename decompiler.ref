@@ -29,7 +29,7 @@ Decompile {
           (e.Function)
             = <Map
                 {
-                  (e.Command) = <Prout e.Command>;
+                  (e.Line) = <Prout e.Line>;
                 }
                 e.Function
               >
@@ -41,10 +41,31 @@ Decompile {
 
       <Map
         {
-          (e.Extern) = <Prout '$EXTERN ' e.Extern ';'>;
+          (e.Extern) = <Prout '$EXTERN ' <FormatWord e.Extern> ';'>;
         }
-        e.Externs
+        <CleanupBuiltins
+          <Map
+            { (s.No s.Func s.Type) = (<Explode s.Func>) }
+            <ListOfBuiltin>
+            (0 "" regular) (0 "Stop$$" regular) (0 "Imp$$" regular)
+            (0 int4fab_1 regular)
+          >
+          (e.Externs)
+        >
       >
+}
+
+CleanupBuiltins {
+  e.Builtins ((e.Name) e.Externs)
+    , e.Builtins
+    : {
+        e.Builtins-B (e.Name) e.Builtins-E = /* пусто */;
+        e.Builtins^ = (e.Name)
+      }
+    : e.MaybeName
+    = e.MaybeName <CleanupBuiltins e.Builtins (e.Externs)>;
+
+  e.Builtins (/* пусто */) = /* пусто */
 }
 
 DecodeStructure {
@@ -463,8 +484,16 @@ DecompileFunction {
   (t.FuncName (s.Offset BuiltinRegular s.No)) = /* пусто */;
   (t.FuncName (s.Offset BuiltinSpecial s.No1 s.No2)) = /* пусто */;
 
-  (t.FuncName e.Commands)
-    = (t.FuncName <Decompile-Pattern-Hole 0 3 (1) (2) () e.Commands>);
+  ((s.Offset s.DeclCommand e.Name) e.Commands)
+    = <Decompile-Pattern-Hole 0 3 (1) (2) () e.Commands> : e.Segments
+    = s.DeclCommand
+    : {
+        FuncName = /* пусто */;
+        EntryFuncName = '$ENTRY ';
+      }
+    : e.MaybeEntry
+    = <CollectSegments e.Segments> : e.Lines
+    = ((e.MaybeEntry <FormatWord e.Name> ' {') e.Lines ('}'));
 }
 
 Decompile-Pattern-Hole {
@@ -756,7 +785,7 @@ Decompile-Pattern-NoHole {
   s.Level s.Top (e.Pattern) (e.Vars)
   (s.Offset StartCondition-1) e.Commands
     = (Pattern s.Level e.Pattern)
-      (StartCondition-1)
+      (StartCondition)
       <Decompile-Result s.Level s.Top (e.Vars) ('$') e.Commands>;
 
   s.Level s.Top (e.Pattern) (e.Vars)
@@ -824,7 +853,7 @@ Decompile-Result {
   (s.Offset AllocChars s.Count e.Chars) e.Commands
     = <Decompile-Result
         s.Level
-        s.Top (e.Vars) (t.MB e.Result (Cc e.Chars)) e.Commands
+        s.Top (e.Vars) (t.MB e.Result (C e.Chars)) e.Commands
       >;
 
   s.Level
@@ -910,7 +939,7 @@ Decompile-Result {
   (s.Offset3 StartCondition-3)
   e.Commands
     = (Result e.Result)
-      (StartCondition-2 e.Name)
+      (EndCondition e.Name)
       <Decompile-Pattern-Hole
         s.Level <+ s.Top 3> (<+ s.Top 1>) (<+ s.Top 2>) (e.Vars) e.Commands
       >;
@@ -931,4 +960,151 @@ Decompile-Result {
 
   s.Level s.Top (e.Vars) (t.MB e.Result) e.Commands
     = ('=C ' s.Level s.Top (e.Vars) (t.MB e.Result)) e.Commands;
+}
+
+CollectSegments {
+  e.Segments = <DoCollectSegments 0 ('  ') e.Segments>;
+}
+
+DoCollectSegments {
+  s.Level (e.Indent) (Pattern s.Level e.Pattern) e.Segments
+    = (e.Indent <FormatExpr e.Pattern>)
+      <DoCollectSegments s.Level (e.Indent) e.Segments>;
+
+  s.Level (e.Indent)
+  (StartCondition) (Result e.Result)
+  (EndCondition e.Name) (Pattern s.Level e.Pattern)
+  e.Segments
+    = (e.Indent '  , ' <FormatExpr e.Result> '\t/*' <FormatWord e.Name> '*/')
+      (e.Indent '  : ' <FormatExpr e.Pattern>)
+      <DoCollectSegments s.Level (e.Indent) e.Segments>;
+
+  s.Level (e.Indent)
+  (StartCondition) (Result e.Result) (EndCondition e.Name) (StartBlock)
+  e.Segments
+    = (e.Indent '  , ' <FormatExpr e.Result> '\t/*' <FormatWord e.Name> '*/')
+      (e.Indent '  : {')
+      <DoCollectSegments <Inc s.Level> (e.Indent '      ') e.Segments>;
+
+  s.Level (e.Indent) (Result e.Result) (NextSentence) e.Segments
+    = (e.Indent '  = ' <FormatExpr e.Result> ';') ()
+      <DoCollectSegments s.Level (e.Indent) e.Segments>;
+
+  s.Level (e.Indent '      ') (Pattern s.PatternLevel e.Pattern) e.Segments
+    = (e.Indent '    };') ()
+      <DoCollectSegments
+        <Dec s.Level> (e.Indent) (Pattern s.PatternLevel e.Pattern) e.Segments
+      >;
+
+  0 ('  ') (EndOfFunction) = /* пусто */;
+
+  s.Level (e.Indent '      ') (EndOfFunction)
+    = (e.Indent '    };')
+      <DoCollectSegments <Dec s.Level> (e.Indent) (EndOfFunction)>;
+
+  s.Level (e.Indent) e.Segments = ('* WTF!!!!') ('"' e.Indent '"') e.Segments;
+}
+
+FormatExpr {
+  e.Expr = <DoFormatExpr () e.Expr>;
+}
+
+DoFormatExpr {
+  (e.Result) (W e.Word) e.Tail
+    = <DoFormatExpr (e.Result <FormatWord e.Word> ' ') e.Tail>;
+
+  (e.Result) (N s.Number) e.Tail
+    = <DoFormatExpr (e.Result <Symb s.Number> ' ') e.Tail>;
+
+  (e.Result) (C e.Chars1) (C e.Chars2) e.Tail
+    = <DoFormatExpr (e.Result) (C e.Chars1 e.Chars2) e.Tail>;
+
+  (e.Result) (C e.Chars) e.Tail
+    = <DoFormatExpr (e.Result '\'' <EscapeChars e.Chars> '\' ') e.Tail>;
+
+  (e.Result) (s s.Id '=' s.Copy) e.Tail
+    = <DoFormatExpr (e.Result 's.' <Symb s.Id> ' ') e.Tail>;
+
+  (e.Result) (t s.IdL s.IdR '=' s.CopyL s.CopyR) e.Tail
+    = <DoFormatExpr (e.Result 't.' <Symb s.IdL> ' ') e.Tail>;
+
+  (e.Result) (e s.IdL s.IdR '=' s.CopyL s.CopyR) e.Tail
+    = <DoFormatExpr (e.Result 'e.' <Symb s.IdL> ' ') e.Tail>;
+
+  (e.Result) (LB) e.Tail = <DoFormatExpr (e.Result '(') e.Tail>;
+  (e.Result ' ') (RB) e.Tail = <DoFormatExpr (e.Result) (RB) e.Tail>;
+  (e.Result) (RB) e.Tail = <DoFormatExpr (e.Result ') ') e.Tail>;
+
+  (e.Result) ('*' e.Inner) e.Tail
+    = <DoFormatExpr (e.Result) (LB) e.Inner (RB) e.Tail>;
+
+  (e.Result) ('!' (e.Name) e.Inner) e.Tail
+    = <DoFormatExpr (e.Result '<' <FormatWord e.Name> ' ') e.Inner (RK) e.Tail>;
+
+  (e.Result ' ') (RK) e.Tail = <DoFormatExpr (e.Result) (RK) e.Tail>;
+  (e.Result) (RK) e.Tail = <DoFormatExpr (e.Result '> ') e.Tail>;
+
+  (e.Result ' ') /* пусто */ = e.Result;
+  (e.Result) /* пусто */ = e.Result;
+
+  e.Tail = e.Tail;
+}
+
+FormatWord {
+  e.Word
+    = <Type e.Word>
+    : {
+        'L' s._ s.First e.Tail = <FormatWord-Ident (s.First) <Type e.Tail>>;
+        s.Type s.SubType e.Word^ = '"' <EscapeChars e.Word> '"';
+      }
+}
+
+FormatWord-Ident {
+  (e.Ident) '*' s._ /* пусто */ = e.Ident;
+
+  (e.Prefix) 'L' s._ s.Next e.Tail
+    = <FormatWord-Ident (e.Prefix s.Next) <Type e.Tail>>;
+
+  (e.Prefix) 'D' s._ s.Next e.Tail
+    = <FormatWord-Ident (e.Prefix s.Next) <Type e.Tail>>;
+
+  (e.Prefix) s.Type s.SubType '-' e.Tail
+    = <FormatWord-Ident (e.Prefix '-') <Type e.Tail>>;
+
+  (e.Prefix) s.Type s.SubType '_' e.Tail
+    = <FormatWord-Ident (e.Prefix '_') <Type e.Tail>>;
+
+  (e.Prefix) s.Type s.SubType e.Suffix
+    = '"' <EscapeChars e.Prefix e.Suffix> '"';
+}
+
+EscapeChars {
+  e.Chars = <Map &EscapeChar e.Chars>;
+}
+
+EscapeChar {
+  '\\' = '\\\\'; '\'' = '\\\''; '\"' = '\\\"';
+
+  '\n' = '\\n'; '\t' = '\\t'; '\r' = '\\r';
+
+  '*' = <EscapeChar-Hex <Ord '*'>>;
+
+  s.Char
+    = <Ord s.Char> : s.Code
+    = <Compare 31 s.Code> <Compare s.Code 127>
+    : {
+        '--' = s.Char;
+        s.Cmp1 s.Cmp2 = <EscapeChar-Hex s.Code>;
+      }
+}
+
+EscapeChar-Hex {
+  s.Code = <Divmod s.Code 16> : (s.Hi) s.Lo = '\\x' <Hex s.Hi> <Hex s.Lo>;
+}
+
+Hex {
+  0 = '0'; 1 = '1'; 2 = '2'; 3 = '3'; 4 = '4';
+  5 = '5'; 6 = '6'; 7 = '7'; 8 = '8'; 9 = '9';
+  10 = 'A'; 11 = 'B'; 12 = 'C';
+  13 = 'D'; 14 = 'E'; 15 = 'F';
 }
