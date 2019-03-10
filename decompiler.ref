@@ -5,14 +5,12 @@ $ENTRY Go {
 }
 
 Main {
-  (e.ProgName) (e.Input) e._
-    = <Decompile <LoadBytes e.Input>>;
-
-  (e.ProgName) = <Prout 'Bad command line'>;
+  (e.ProgName) e.Sources = <Map &ProcessFile e.Sources>;
 }
 
-Decompile {
-  e.Bytes
+ProcessFile {
+  (e.InputRSLFile)
+    = <LoadBytes e.InputRSLFile> : e.Bytes
     = <DecodeStructure e.Bytes>
     : (e.ModuleName) (s.BytecodeSize s.FunctionStarts)
       (e.Entries) (e.Externs) (e.Words) (e.FunctionStarts) e.Bytecode
@@ -20,42 +18,61 @@ Decompile {
         (e.Words) (e.FunctionStarts) (e.Entries) (e.Externs)
         s.BytecodeSize e.Bytecode
       >
-    : e.Functions
-    = <Map &DecompileFunction e.Functions> : e.Functions^
-    = <Prout '/* Module: "' e.ModuleName '" */'>
-      <Prout>
+    : e.ASMFunctions
+    = <Map &DecompileFunction e.ASMFunctions> : e.RefalFunctions
+    = ('* Module: ' <FormatWord e.ModuleName>)
+      ()
       <Map
         {
-          (e.Function)
-            = <Map
-                {
-                  (e.Line) = <Prout e.Line>;
-                }
-                e.Function
-              >
-              <Prout>
+          (e.Extern) = ('$EXTERN ' <FormatWord e.Extern> ';');
         }
-        e.Functions
+        <CleanupBuiltins e.Externs>
       >
-      <Prout>
+      ()
+      <Map
+        {
+          (e.Function) = e.Function ();
+        }
+        e.RefalFunctions
+      >
+      ()
+      <Map
+        {
+          (e.ASMLines) = <Map &CommentLine e.ASMLines>;
+        }
+        e.ASMFunctions
+      >
+    : e.Lines
+    = e.InputRSLFile
+    : {
+        e.ProperName '.rsl' = e.ProperName '-decompiled.ref';
+        e.FileName = e.FileName '.decompiled.ref';
+      }
+    : e.OutputName
+    = <Prout 'Decompiled "' e.InputRSLFile '" to "' e.OutputName '"'>
+      <SaveFile (e.OutputName) e.Lines>;
+}
 
-      <Map
-        {
-          (e.Extern) = <Prout '$EXTERN ' <FormatWord e.Extern> ';'>;
-        }
-        <CleanupBuiltins
-          <Map
-            { (s.No s.Func s.Type) = (<Explode s.Func>) }
-            <ListOfBuiltin>
-            (0 "" regular) (0 "Stop$$" regular) (0 "Imp$$" regular)
-            (0 int4fab_1 regular)
-          >
-          (e.Externs)
-        >
-      >
+CommentLine {
+  (e.Line-B '\n' e.Line-E) = <CommentLine (e.Line-B '\\n' e.Line-E)>;
+  (e.Line-B '\r' e.Line-E) = <CommentLine (e.Line-B '\\r' e.Line-E)>;
+  (e.Line) = ('*' e.Line);
 }
 
 CleanupBuiltins {
+  e.Externs =
+    <CleanupBuiltins-Aux
+      <Map
+        { (s.No s.Func s.Type) = (<Explode s.Func>) }
+        <ListOfBuiltin>
+        (0 "" regular) (0 "Stop$$" regular) (0 "Imp$$" regular)
+        (0 int4fab_1 regular)
+      >
+      (e.Externs)
+    >
+}
+
+CleanupBuiltins-Aux {
   e.Builtins ((e.Name) e.Externs)
     , e.Builtins
     : {
@@ -63,7 +80,7 @@ CleanupBuiltins {
         e.Builtins^ = (e.Name)
       }
     : e.MaybeName
-    = e.MaybeName <CleanupBuiltins e.Builtins (e.Externs)>;
+    = e.MaybeName <CleanupBuiltins-Aux e.Builtins (e.Externs)>;
 
   e.Builtins (/* пусто */) = /* пусто */
 }
