@@ -17,7 +17,9 @@ Decompile {
     : (e.ModuleName)
       (s.BytecodeSize s.EntryCount s.Externs s.Words s.FunctionStarts)
       (e.Entries) (e.Externs) (e.Words) (e.FunctionStarts) e.Bytes^
-    = <Disassemble (e.Words) (e.FunctionStarts) (e.Entries) e.Bytes>
+    = <Disassemble
+        (e.Words) (e.FunctionStarts) (e.Entries) s.BytecodeSize e.Bytes
+      >
     : (e.FunctionTable) e.Code
     = <Map &AnnotateFunction e.Code> : e.Code^
     = <Prout '/* Module: "' e.ModuleName '" */'>
@@ -132,8 +134,8 @@ ReadEntryPoints {
 }
 
 Disassemble {
-  (e.Words) (e.FunctionStarts) (e.Entries) e.Bytes
-    = <DecodeCommands 0 e.Bytes> : e.Code
+  (e.Words) (e.FunctionStarts) (e.Entries) s.BytecodeSize e.Bytes
+    = <DecodeCommands 0 e.Bytes> : e.Code s.BytecodeSize
     = <ResolveWords (e.Words) e.Code> : e.Code^
     = <SplitByFunctions e.Code> : e.Code^
     = <MakeFunctionTable e.Code> : (e.FunctionTable) e.Code
@@ -463,7 +465,7 @@ DecodeCommands {
       )
       <DecodeCommands <+ s.Offset 9> e.Bytes>;
 
-  s.Offset /* пусто */ = /* пусто */;
+  s.Offset /* пусто */ = s.Offset;
 
   s.Offset e.Bytes = (s.Offset RawBytes e.Bytes);
 }
