@@ -26,7 +26,7 @@ ProcessFile {
         {
           (e.Extern) = ('$EXTERN ' <FormatWord e.Extern> ';');
         }
-        <CleanupBuiltins e.Externs>
+        <Rev <CleanupBuiltins e.Externs>>
       >
       ()
       <Map
@@ -833,7 +833,7 @@ Decompile-Pattern-Hole {
 }
 
 Rev {
-  s.First e.Middle s.Last = s.Last <Rev e.Middle> s.First;
+  t.First e.Middle t.Last = t.Last <Rev e.Middle> t.First;
   e.ZeroOrOne = e.ZeroOrOne;
 }
 
@@ -1069,6 +1069,10 @@ DoCollectSegments {
   s.Level (e.Indent '      ') (EndOfFunction)
     = (e.Indent '    };')
       <DoCollectSegments <Dec s.Level> (e.Indent) (EndOfFunction)>;
+
+  s.Level (e.Indent) (NextSentence) e.Segments
+    = ('* unexpected NextStep command')
+      <DoCollectSegments s.Level (e.Indent) e.Segments>;
 
   s.Level (e.Indent) e.Segments = ('* WTF!!!!') ('"' e.Indent '"') e.Segments;
 }
