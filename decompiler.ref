@@ -17,7 +17,8 @@ Decompile {
     : (e.ModuleName) (s.BytecodeSize s.FunctionStarts)
       (e.Entries) (e.Externs) (e.Words) (e.FunctionStarts) e.Bytecode
     = <Disassemble
-        (e.Words) (e.FunctionStarts) (e.Entries) s.BytecodeSize e.Bytes
+        (e.Words) (e.FunctionStarts) (e.Entries) (e.Externs)
+        s.BytecodeSize e.Bytecode
       >
     : e.Functions
     = <Map &DecompileFunction e.Functions> : e.Functions^
@@ -123,11 +124,11 @@ ReadEntryPoints {
 }
 
 Disassemble {
-  (e.Words) (e.FunctionStarts) (e.Entries) s.BytecodeSize e.Bytes
+  (e.Words) (e.FunctionStarts) (e.Entries) (e.Externs) s.BytecodeSize e.Bytes
     = <DecodeCommands 0 e.Bytes> : e.Code s.BytecodeSize
     = <ResolveWords (e.Words) e.Code> : e.Code^
     = <SplitByFunctions e.Code> : e.Functions
-    = <MakeFunctionTable e.Functions> : (e.FunctionTable) e.Functions
+    = <MakeFunctionTable (e.Externs) e.Functions> : (e.FunctionTable) e.Functions^
     = <CheckupFunctionStarts e.FunctionTable (e.FunctionStarts)> : Ok
     = <CheckupEntries e.FunctionTable (e.Entries)> : Ok
     = <ResolveFunctions e.Functions (e.FunctionTable)> : e.Functions^
@@ -182,25 +183,76 @@ DeclareCommand {
 }
 
 MakeFunctionTable {
-  e.Code
+  (e.Externs) e.Functions
     = <MapAccum
         {
-          (e.Table) (e.FunctionCode)
-            = e.FunctionCode
-            : (s.NameOffset s.DeclareCommand e.Name)
-              (s.CodeOffset e.Command)
-              e.Code^
-            = s.DeclareCommand
-            : {
-                FuncName = Local;
-                EntryFuncName = Entry;
-              }
-            : s.Type
-            = (e.Table (s.CodeOffset s.Type e.Name))
-              (e.FunctionCode)
+          (e.Entries) ((s.Offset EntryFuncName e.Name) e.Body)
+            = (e.Entries (e.Name))
+              ((s.Offset EntryFuncName e.Name) e.Body);
+
+          (e.Entries) (e.OtherFunction) = (e.Entries) (e.OtherFunction);
         }
-        () e.Code
+        (/* entries */)
+        e.Functions
+      >
+    : (e.Entries) e.Functions^
+    = e.Externs e.Entries : e.ForbiddenNames
+    = <MapAccum
+        &AddFunctionToTable
+        ((e.ForbiddenNames) /* function table */) e.Functions
+      >
+    : ((e.ForbiddenNames^) e.Table) e.Functions^
+    = (e.Table) e.Functions;
+}
+
+/*
+  Обфусцирующие компиляторы могут дать разным функциям одно и то же имя.
+  Поэтому при обнаружении локальных функций с одинаковыми именами,
+  их переименовываем.
+*/
+AddFunctionToTable {
+  ((e.ForbiddenNames-B (e.Name) e.ForbiddenNames-E) e.Table)
+  (
+    (s.NameOffset FuncName e.Name)
+    (s.CodeOffset e.Command)
+    e.Body
+  )
+    = <AddFunctionToTable
+        ((e.ForbiddenNames-B (e.Name) e.ForbiddenNames-E) e.Table)
+        (
+          (s.NameOffset FuncName <IncName e.Name>)
+          (s.CodeOffset e.Command)
+          e.Body
+        )
       >;
+
+  ((e.ForbiddenNames) e.Table)
+  (
+    (s.NameOffset s.DeclareCommand e.Name)
+    (s.CodeOffset e.Command)
+    e.Body
+  )
+    = s.DeclareCommand
+    : {
+        FuncName = Local;
+        EntryFuncName = Entry;
+      }
+    : s.Type
+    = ((e.ForbiddenNames (e.Name)) e.Table (s.CodeOffset s.Type e.Name))
+      (
+        (s.NameOffset s.DeclareCommand e.Name)
+        (s.CodeOffset e.Command)
+        e.Body
+      );
+}
+
+IncName {
+  e.Name s.Last
+    , '0123456789' : e.Digits-B s.Last s.Next e.Digit-E
+    = e.Name s.Next;
+
+  e.Name '9' = <IncName e.Name> '0';
+  e.Name = e.Name '0';
 }
 
 CheckupFunctionStarts {
