@@ -120,17 +120,17 @@ ResolveWords {
         {
           (e.Words-B (s.Id e.Word) e.Words-E)
           (s.Offset MatchLeftWord s.Id)
-            = (e.Words-B (s.Id e.Word) e.Words-E)
+            = ((s.Id e.Word) e.Words-B e.Words-E)
               (s.Offset MatchLeftWord e.Word);
 
           (e.Words-B (s.Id e.Word) e.Words-E)
           (s.Offset MatchRightWord s.Id)
-            = (e.Words-B (s.Id e.Word) e.Words-E)
+            = ((s.Id e.Word) e.Words-B e.Words-E)
               (s.Offset MatchRightWord e.Word);
 
           (e.Words-B (s.Id e.Word) e.Words-E)
           (s.Offset AllocWord s.Id)
-            = (e.Words-B (s.Id e.Word) e.Words-E)
+            = ((s.Id e.Word) e.Words-B e.Words-E)
               (s.Offset AllocWord e.Word);
 
           (e.Words^) t.Other = (e.Words) t.Other;
@@ -225,7 +225,7 @@ ResolveFunctions-Body {
     = e.Code-B (s.Offset MakeCall e.Name)
       <ResolveFunctions-Body
         e.Code-E
-        (e.Functions-B (s.FuncOffset s.Type e.Name) e.Functions-E)
+        ((s.FuncOffset s.Type e.Name) e.Functions-B e.Functions-E)
       >;
 
   e.Code (e.Functions) = e.Code (e.Functions);
