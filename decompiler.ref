@@ -223,9 +223,9 @@ MakeFunctionTable {
 }
 
 /*
-  Обфусцирующие компиляторы могут дать разным функциям одно и то же имя.
-  Поэтому при обнаружении локальных функций с одинаковыми именами,
-  их переименовываем.
+  При реконструировании обфусцированных имён функций те получают имена
+  вида Fnnn. Но если в файле уже существовало подобное имя, для защиты
+  от конфликта имён мы второе из них переименовываем.
 */
 AddFunctionToTable {
   ((e.ForbiddenNames-B (e.Name) e.ForbiddenNames-E) e.Table)
@@ -238,6 +238,31 @@ AddFunctionToTable {
         ((e.ForbiddenNames-B (e.Name) e.ForbiddenNames-E) e.Table)
         (
           (s.NameOffset L <IncName e.Name>)
+          (s.CodeOffset e.Command)
+          e.Body
+        )
+      >;
+
+  ((e.ForbiddenNames) e.Table)
+  (
+    (s.NameOffset L e.Name)
+    (s.CodeOffset e.Command)
+    e.Body
+  )
+    , <IsObfuscated e.Name> : True
+    = e.Body
+    : {
+        e.Body-B (s.Offset LABEL e.Label '$' e.Suf) e.Body-E
+          , <IsObfuscated e.Label> : False
+          = e.Label;
+
+        e.Body^ = 'F' <Symb s.CodeOffset>;
+      }
+    : e.NewName
+    = <AddFunctionToTable
+        ((e.ForbiddenNames) e.Table)
+        (
+          (s.NameOffset L e.NewName)
           (s.CodeOffset e.Command)
           e.Body
         )
@@ -270,6 +295,24 @@ IncName {
 
   e.Name '9' = <IncName e.Name> '0';
   e.Name = e.Name '0';
+}
+
+IsObfuscated {
+  e.Name, <Type e.Name> : 'L' s.s s.Init e.Tail = <IsObfuscated-Tail e.Tail>;
+  e.Name = True;
+}
+
+IsObfuscated-Tail {
+  e.Tail
+    = <Type e.Tail>
+    : {
+        'L' s.s s.Next e.Tail^ = <IsObfuscated-Tail e.Tail>;
+        'D' s.s s.Next e.Tail^ = <IsObfuscated-Tail e.Tail>;
+        s.t s.s '-' e.Tail^ = <IsObfuscated-Tail e.Tail>;
+        s.t s.s '_' e.Tail^ = <IsObfuscated-Tail e.Tail>;
+        '*' s.s /* пусто */ = False;
+        s.t s.s e.Tail^ = True;
+      };
 }
 
 CheckupFunctionStarts {
