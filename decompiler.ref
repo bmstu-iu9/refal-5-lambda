@@ -1138,7 +1138,7 @@ DoCollectSegments {
   (StartCondition) (Result e.Result)
   (EndCondition e.Name) (Pattern s.Level e.Pattern)
   e.Segments
-    = (e.Indent '    /*' <FormatWord e.Name> '*/')
+    = ('*' e.Indent '   ' <FormatWord e.Name>)
       <FormatExpr (e.Indent '  , ') (e.Indent '    ') e.Result>
       <FormatExpr (e.Indent '  : ') (e.Indent '    ') e.Pattern>
       <DoCollectSegments s.Level (e.Indent) e.Segments>;
@@ -1146,7 +1146,7 @@ DoCollectSegments {
   s.Level (e.Indent)
   (StartCondition) (Result e.Result) (EndCondition e.Name) (StartBlock)
   e.Segments
-    = (e.Indent '    /*' <FormatWord e.Name> '*/')
+    = ('*' e.Indent '   ' <FormatWord e.Name>)
       <FormatExpr (e.Indent '  , ') (e.Indent '    ') e.Result>
       (e.Indent '  : {')
       <DoCollectSegments <Inc s.Level> (e.Indent '      ') e.Segments>;
@@ -1330,8 +1330,6 @@ EscapeChar {
   '\\' = '\\\\'; '\'' = '\\\''; '\"' = '\\\"';
 
   '\n' = '\\n'; '\t' = '\\t'; '\r' = '\\r';
-
-  '*' = <EscapeChar-Hex <Ord '*'>>;
 
   s.Char
     = <Ord s.Char> : s.Code
