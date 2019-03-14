@@ -9,8 +9,9 @@ echo "* * * * * * * * * * * * * * * * * * * * * * * * *"
 ( cd src && RELEASE=1 ./make.sh )
 
 pushd distrib
-rm -rf bin scripts compiler doc docs lexgen srlib srmake editors
-cp -R ../build/{compiler,lexgen,srmake,srlib-{rich,slim}{,-debug}-prefix} .
+rm -rf bin scripts compiler doc docs lexgen srlib srmake editors rsl-decompiler
+cp -R ../build/{compiler,lexgen,srmake,srlib-{rich,slim}{,-debug}-prefix} \
+  rsl-decompiler .
 mkdir bin
 cp ../src/scripts/srefc.bat bin
 cp ../src/scripts/srefc.sh bin/srefc

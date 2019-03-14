@@ -28,6 +28,7 @@ setlocal
   call :MAKE_SUBDIR lexgen makeself.bat
   call :MAKE_SUBDIR compiler makeself.bat
   call :MAKE_SUBDIR nemytykh-random-program-generator make.bat
+  call :MAKE_SUBDIR rsl-decompiler make.bat
 
   goto :END
 

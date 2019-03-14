@@ -14,7 +14,7 @@ endlocal
 popd
 
 pushd distrib
-rd /q /s bin scripts compiler doc docs lexgen srlib srmake editors
+rd /q /s bin scripts compiler doc docs lexgen srlib srmake editors rsl-decompiler
 xcopy /e /y /i ..\build\compiler compiler
 xcopy /e /y /i ..\build\lexgen lexgen
 xcopy /e /y /i ..\build\srmake srmake
@@ -22,6 +22,7 @@ xcopy /e /y /i ..\build\srlib-rich-prefix srlib-rich-prefix
 xcopy /e /y /i ..\build\srlib-rich-debug-prefix srlib-rich-debug-prefix
 xcopy /e /y /i ..\build\srlib-slim-prefix srlib-slim-prefix
 xcopy /e /y /i ..\build\srlib-slim-debug-prefix srlib-slim-debug-prefix
+xcopy /e /y /i ..\build\rsl-decompiler rsl-decompiler
 md bin
 copy ..\src\scripts\srefc.* bin
 copy ..\src\scripts\srmake.* bin
