@@ -1,0 +1,1352 @@
+$INCLUDE "LibraryEx";
+
+$ENTRY Go {
+  = <Main <ArgList>>;
+}
+
+Main {
+  (e.ProgName) e.Sources = <Map &ProcessFile e.Sources>;
+}
+
+ProcessFile {
+  (e.InputRSLFile)
+    = <LoadBytes e.InputRSLFile> : e.Bytes
+    = <DecodeStructure e.Bytes>
+    : (e.ModuleName) (s.BytecodeSize s.FunctionStarts)
+      (e.Entries) (e.Externs) (e.Words) (e.FunctionStarts) e.Bytecode
+    = <Disassemble
+        (e.Words) (e.FunctionStarts) (e.Entries) (e.Externs)
+        s.BytecodeSize e.Bytecode
+      >
+    : e.ASMFunctions
+    = <Map &DecompileFunction e.ASMFunctions> : e.RefalFunctions
+    = ('* Module: ' <FormatWord e.ModuleName>)
+      ()
+      <Map
+        {
+          (e.Extern) = ('$EXTERN ' <FormatWord e.Extern> ';');
+        }
+        <Rev <CleanupBuiltins e.Externs>>
+      >
+      ()
+      <Map
+        {
+          (e.Function) = e.Function ();
+        }
+        e.RefalFunctions
+      >
+      ()
+      <Map
+        {
+          (e.ASMLines) = <Map &CommentLine e.ASMLines>;
+        }
+        e.ASMFunctions
+      >
+    : e.Lines
+    = e.InputRSLFile
+    : {
+        e.ProperName '.rsl' = e.ProperName '-decompiled.ref';
+        e.FileName = e.FileName '.decompiled.ref';
+      }
+    : e.OutputName
+    = <Prout 'Decompiled "' e.InputRSLFile '" to "' e.OutputName '"'>
+      <SaveFile (e.OutputName) e.Lines>;
+}
+
+CommentLine {
+  (e.Line-B '\n' e.Line-E) = <CommentLine (e.Line-B '\\n' e.Line-E)>;
+  (e.Line-B '\r' e.Line-E) = <CommentLine (e.Line-B '\\r' e.Line-E)>;
+  (e.Line) = ('*' e.Line);
+}
+
+CleanupBuiltins {
+  e.Externs =
+    <CleanupBuiltins-Aux
+      <Map
+        { (s.No s.Func s.Type) = (<Explode s.Func>) }
+        <ListOfBuiltin>
+        (0 "" regular) (0 "Stop$$" regular) (0 "Imp$$" regular)
+        (0 int4fab_1 regular)
+      >
+      (e.Externs)
+    >
+}
+
+CleanupBuiltins-Aux {
+  e.Builtins ((e.Name) e.Externs)
+    , e.Builtins
+    : {
+        e.Builtins-B (e.Name) e.Builtins-E = /* пусто */;
+        e.Builtins^ = (e.Name)
+      }
+    : e.MaybeName
+    = e.MaybeName <CleanupBuiltins-Aux e.Builtins (e.Externs)>;
+
+  e.Builtins (/* пусто */) = /* пусто */
+}
+
+DecodeStructure {
+  e.Bytes
+    = <ReadAsciiz e.Bytes> : (e.ModuleName) e.Bytes^
+    = <ReadDWord e.Bytes> : s.BytecodeSize e.Bytes^
+    = <ReadDWord e.Bytes> : s.EntryCount e.Bytes^
+    = <ReadDWord e.Bytes> : s.Externs e.Bytes^
+    = <ReadDWord e.Bytes> : s.Words e.Bytes^
+    = <ReadDWord e.Bytes> : s.FunctionStarts e.Bytes^
+    = <ReadEntries s.EntryCount e.Bytes> : e.Entries (e.Bytes^)
+    = <ReadExterns s.Externs e.Bytes> : e.Externs (e.Bytes^)
+    = <ReadWords s.Words e.Bytes> : e.Words (e.Bytes^)
+    = <ReadEntryPoints s.FunctionStarts e.Bytes> : e.FunctionStarts (e.Bytes^)
+    = (e.ModuleName)
+      (s.BytecodeSize s.FunctionStarts)
+      (e.Entries) (e.Externs) (e.Words) (e.FunctionStarts) e.Bytes
+}
+
+ReadAsciiz {
+  e.String 0 e.Tail = (<Chr e.String>) e.Tail;
+}
+
+ReadDWord {
+  s.1 s.2 s.3 s.4 e.Bytes = <MakeDWord s.1 s.2 s.3 s.4> e.Bytes;
+}
+
+MakeDWord {
+  s.LastByte = s.LastByte;
+  s.LastByte e.Bytes = <+ <* <MakeDWord e.Bytes> 256> s.LastByte>;
+}
+
+ReadEntries {
+  0 e.Bytes = (e.Bytes);
+
+  s.N e.Name 0 s.1 s.2 s.3 s.4 e.Bytes
+    = (<Chr e.Name> <MakeDWord s.1 s.2 s.3 s.4>)
+      <ReadEntries <Dec s.N> e.Bytes>;
+}
+
+ReadExterns {
+  0 e.Bytes = (e.Bytes);
+  s.N e.Name 0 e.Bytes = (<Chr e.Name>) <ReadExterns <Dec s.N> e.Bytes>;
+}
+
+ReadWords {
+  0 e.Bytes = (e.Bytes);
+  s.N e.Name 0 e.Bytes = (<Dec s.N> <Chr e.Name>) <ReadWords <Dec s.N> e.Bytes>;
+}
+
+ReadEntryPoints {
+  0 e.Bytes = (e.Bytes);
+
+  s.N s.1 s.2 s.3 s.4 e.Bytes
+    = <MakeDWord s.1 s.2 s.3 s.4> <ReadEntryPoints <Dec s.N> e.Bytes>;
+}
+
+Disassemble {
+  (e.Words) (e.FunctionStarts) (e.Entries) (e.Externs) s.BytecodeSize e.Bytes
+    = <DecodeCommands 0 e.Bytes> : e.Code s.BytecodeSize
+    = <ResolveWords (e.Words) e.Code> : e.Code^
+    = <SplitByFunctions e.Code> : e.Functions
+    = <MakeFunctionTable (e.Externs) e.Functions> : (e.FunctionTable) e.Functions^
+    = <CheckupFunctionStarts e.FunctionTable (e.FunctionStarts)> : Ok
+    = <CheckupEntries e.FunctionTable (e.Entries)> : Ok
+    = <ResolveFunctions e.Functions (e.FunctionTable)> : e.Functions^
+    = e.Functions;
+}
+
+ResolveWords {
+  (e.Words) e.Commands
+    = <MapAccum
+        {
+          (e.Words-B (s.Id e.Word) e.Words-E)
+          (s.Offset CSYM s.Id)
+            = ((s.Id e.Word) e.Words-B e.Words-E)
+              (s.Offset CSYM e.Word);
+
+          (e.Words-B (s.Id e.Word) e.Words-E)
+          (s.Offset CSYMR s.Id)
+            = ((s.Id e.Word) e.Words-B e.Words-E)
+              (s.Offset CSYMR e.Word);
+
+          (e.Words-B (s.Id e.Word) e.Words-E)
+          (s.Offset NCS s.Id)
+            = ((s.Id e.Word) e.Words-B e.Words-E)
+              (s.Offset NCS e.Word);
+
+          (e.Words^) t.Other = (e.Words) t.Other;
+        }
+        (e.Words) e.Commands
+      >
+    : (e.Words^) e.Commands^
+    = e.Commands;
+}
+
+SplitByFunctions {
+  t.DeclareCommand e.Code
+    , <DeclareCommand t.DeclareCommand> : True
+    , e.Code
+    : {
+        e.FuncBody t.NextDeclareCommand e.Code^
+          , <DeclareCommand t.NextDeclareCommand> : True
+          = (t.DeclareCommand e.FuncBody)
+            <SplitByFunctions t.NextDeclareCommand e.Code>;
+
+        e.FuncBody = (t.DeclareCommand e.FuncBody);
+      };
+}
+
+DeclareCommand {
+  (s.Offset E e.Name) = True;
+  (s.Offset L e.Name) = True;
+  t.Other = False t.Other;
+}
+
+MakeFunctionTable {
+  (e.Externs) e.Functions
+    = <MapAccum
+        {
+          (e.Entries) ((s.Offset E e.Name) e.Body)
+            = (e.Entries (e.Name))
+              ((s.Offset E e.Name) e.Body);
+
+          (e.Entries) (e.OtherFunction) = (e.Entries) (e.OtherFunction);
+        }
+        (/* entries */)
+        e.Functions
+      >
+    : (e.Entries) e.Functions^
+    = e.Externs e.Entries : e.ForbiddenNames
+    = <MapAccum
+        &AddFunctionToTable
+        ((e.ForbiddenNames) /* function table */) e.Functions
+      >
+    : ((e.ForbiddenNames^) e.Table) e.Functions^
+    = (e.Table) e.Functions;
+}
+
+/*
+  При реконструировании обфусцированных имён функций те получают имена
+  вида Fnnn. Но если в файле уже существовало подобное имя, для защиты
+  от конфликта имён мы второе из них переименовываем.
+*/
+AddFunctionToTable {
+  ((e.ForbiddenNames-B (e.Name) e.ForbiddenNames-E) e.Table)
+  (
+    (s.NameOffset L e.Name)
+    (s.CodeOffset e.Command)
+    e.Body
+  )
+    = <AddFunctionToTable
+        ((e.ForbiddenNames-B (e.Name) e.ForbiddenNames-E) e.Table)
+        (
+          (s.NameOffset L <IncName e.Name>)
+          (s.CodeOffset e.Command)
+          e.Body
+        )
+      >;
+
+  ((e.ForbiddenNames) e.Table)
+  (
+    (s.NameOffset L e.Name)
+    (s.CodeOffset e.Command)
+    e.Body
+  )
+    , <IsObfuscated e.Name> : True
+    = e.Body
+    : {
+        e.Body-B (s.Offset LABEL e.Label '$' e.Suf) e.Body-E
+          , <IsObfuscated e.Label> : False
+          = e.Label;
+
+        e.Body^ = 'F' <Symb s.CodeOffset>;
+      }
+    : e.NewName
+    = <AddFunctionToTable
+        ((e.ForbiddenNames) e.Table)
+        (
+          (s.NameOffset L e.NewName)
+          (s.CodeOffset e.Command)
+          e.Body
+        )
+      >;
+
+  ((e.ForbiddenNames) e.Table)
+  (
+    (s.NameOffset s.DeclareCommand e.Name)
+    (s.CodeOffset e.Command)
+    e.Body
+  )
+    = s.DeclareCommand
+    : {
+        L = Local;
+        E = Entry;
+      }
+    : s.Type
+    = ((e.ForbiddenNames (e.Name)) e.Table (s.CodeOffset s.Type e.Name))
+      (
+        (s.NameOffset s.DeclareCommand e.Name)
+        (s.CodeOffset e.Command)
+        e.Body
+      );
+}
+
+IncName {
+  e.Name s.Last
+    , '0123456789' : e.Digits-B s.Last s.Next e.Digit-E
+    = e.Name s.Next;
+
+  e.Name '9' = <IncName e.Name> '0';
+  e.Name = e.Name '0';
+}
+
+IsObfuscated {
+  e.Name, <Type e.Name> : 'L' s.s s.Init e.Tail = <IsObfuscated-Tail e.Tail>;
+  e.Name = True;
+}
+
+IsObfuscated-Tail {
+  e.Tail
+    = <Type e.Tail>
+    : {
+        'L' s.s s.Next e.Tail^ = <IsObfuscated-Tail e.Tail>;
+        'D' s.s s.Next e.Tail^ = <IsObfuscated-Tail e.Tail>;
+        s.t s.s '-' e.Tail^ = <IsObfuscated-Tail e.Tail>;
+        s.t s.s '_' e.Tail^ = <IsObfuscated-Tail e.Tail>;
+        '*' s.s /* пусто */ = False;
+        s.t s.s e.Tail^ = True;
+      };
+}
+
+CheckupFunctionStarts {
+  (s.Offset s.Type e.Name) e.Table (e.Offsets-B s.Offset e.Offsets-E)
+    = <CheckupFunctionStarts e.Table (e.Offsets-B e.Offsets-E)>;
+
+  /* пусто */ (/* пусто */) = Ok;
+
+  e.Table (e.Offsets) = Fail;
+}
+
+CheckupEntries {
+  (s.Offset Entry e.Name) e.Table (e.Entries-B (e.Name s.Offset) e.Entries-E)
+    = <CheckupEntries e.Table (e.Entries-B e.Entries-E)>;
+
+  (s.Offset Local e.Name) e.Table (e.Entries)
+    = <CheckupEntries e.Table (e.Entries)>;
+
+  /* пусто */ (/* пусто */) = Ok;
+
+  e.Table (e.Entries) = Fail;
+}
+
+ResolveFunctions {
+  e.Code (e.Table)
+    = <MapAccum
+        {
+          (e.Table^) (e.Function)
+            = <ResolveFunctions-Body e.Function (e.Table)>
+            : e.Function^ (e.Table^)
+            = (e.Table) (e.Function);
+        }
+        (e.Table) e.Code
+      >
+    : (e.Table^) e.Code^
+    = e.Code;
+}
+
+ResolveFunctions-Body {
+  e.Code-B (s.Offset ACT1 s.FuncOffset) e.Code-E
+  (e.Functions-B (s.FuncOffset s.Type e.Name) e.Functions-E)
+    = e.Code-B (s.Offset ACT1 e.Name)
+      <ResolveFunctions-Body
+        e.Code-E
+        ((s.FuncOffset s.Type e.Name) e.Functions-B e.Functions-E)
+      >;
+
+  e.Code (e.Functions) = e.Code (e.Functions);
+}
+
+DecodeCommands {
+* (...) → <Extern ...>
+  s.Offset 1 e.Name 0 e.Bytes
+    = (s.Offset ACT_EXTRN <Chr e.Name>)
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
+
+* (...) → <Function ...>
+  s.Offset 2 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset ACT1 <MakeDWord s.1 s.2 s.3 s.4>)
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
+
+* alloc (
+  s.Offset 3 e.Bytes
+    = (s.Offset BL)
+      <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* alloc ()
+  s.Offset 4 e.Bytes
+    = (s.Offset BLR)
+      <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* alloc )
+  s.Offset 5 e.Bytes
+    = (s.Offset BR)
+      <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* match with closed e-var
+  s.Offset 6 e.Bytes
+    = (s.Offset CL) <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* left match with char
+  s.Offset 7 s.Char e.Bytes
+    = (s.Offset SYM s.Char <Chr s.Char>)
+      <DecodeCommands <+ s.Offset 2> e.Bytes>;
+
+* right match with char
+  s.Offset 8 s.Char e.Bytes
+    = (s.Offset SYMR s.Char <Chr s.Char>)
+      <DecodeCommands <+ s.Offset 2> e.Bytes>;
+
+* match with empty range
+  s.Offset 10 e.Bytes
+    = (s.Offset EMP) <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* alloc copy of t- or e-var
+  s.Offset 13 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset MULE <MakeDWord s.1 s.2 s.3 s.4>)
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
+
+* alloc copy of s-var
+  s.Offset 14 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset MULS <MakeDWord s.1 s.2 s.3 s.4>)
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
+
+* prepare for open loop
+  s.Offset 16 e.Bytes
+    = (s.Offset PLEN) <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* prepare for open loop with char
+  s.Offset 17 e.Bytes
+    = (s.Offset PLENS) <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* prepare for open loop with brackets
+  s.Offset 18 e.Bytes
+    = (s.Offset PLENP) <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* left match of brackets
+  s.Offset 19 e.Bytes
+    = (s.Offset PS) <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* right match of brackets
+  s.Offset 20 e.Bytes
+    = (s.Offset PSR) <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* left match of known t- or e-var
+  s.Offset 23 s.No e.Bytes
+    = (s.Offset OEXP s.No)
+      <DecodeCommands <+ s.Offset 2> e.Bytes>;
+
+* right match of known t- or e-var
+  s.Offset 24 s.No e.Bytes
+    = (s.Offset OEXPR s.No)
+      <DecodeCommands <+ s.Offset 2> e.Bytes>;
+
+* left match of known s-var
+  s.Offset 25 s.No e.Bytes
+    = (s.Offset OVSYM s.No)
+      <DecodeCommands <+ s.Offset 2> e.Bytes>;
+
+* right match of known s-var
+  s.Offset 26 s.No e.Bytes
+    = (s.Offset OVSYMR s.No)
+      <DecodeCommands <+ s.Offset 2> e.Bytes>;
+
+* left match of new t-var
+  s.Offset 27 e.Bytes
+    = (s.Offset TERM) <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* right match of new t-var
+  s.Offset 28 e.Bytes
+    = (s.Offset TERMR) <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* start of building result
+  s.Offset 29 s.Number e.Bytes
+    = (s.Offset RDY s.Number) <DecodeCommands <+ s.Offset 2> e.Bytes>;
+
+* set boundaries
+  s.Offset 34 s.L1 s.L2 s.L3 s.L4 s.R1 s.R2 s.R3 s.R4 e.Bytes
+    = (
+        s.Offset SETB
+        <MakeDWord s.L1 s.L2 s.L3 s.L4>
+        <MakeDWord s.R1 s.R2 s.R3 s.R4>
+      )
+      <DecodeCommands <+ s.Offset 9> e.Bytes>;
+
+* open loop
+  s.Offset 35 e.Bytes
+    = (s.Offset LEN) <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* open loop with char
+  s.Offset 36 s.Char e.Bytes
+    = (s.Offset LENS <Chr s.Char>)
+      <DecodeCommands <+ s.Offset 2> e.Bytes>;
+
+* open loop with brackets
+  s.Offset 37 e.Bytes
+    = (s.Offset LENP)
+      <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* left match of char sequence
+  s.Offset 39 s.Count e.Bytes
+    = <First s.Count e.Bytes> : (e.Chars) e.Bytes^
+    = (s.Offset SYMS s.Count <Chr e.Chars>)
+      <DecodeCommands <+ s.Offset <+ 2 s.Count>> e.Bytes>;
+
+* right match of char sequence
+  s.Offset 40 s.Count e.Bytes
+    = <First s.Count e.Bytes> : (e.Chars) e.Bytes^
+    = (s.Offset SYMSR s.Count <Chr e.Chars>)
+      <DecodeCommands <+ s.Offset <+ 2 s.Count>> e.Bytes>;
+
+* alloc sequence of chars
+  s.Offset 41 s.Count e.Bytes
+    = <First s.Count e.Bytes> : (e.Chars) e.Bytes^
+    = (s.Offset TEXT s.Count <Chr e.Chars>)
+      <DecodeCommands <+ s.Offset <+ 2 s.Count>> e.Bytes>;
+
+* alloc char
+  s.Offset 43 s.Char e.Bytes
+    = (s.Offset NS s.Char <Chr s.Char>)
+      <DecodeCommands <+ s.Offset 2> e.Bytes>;
+
+* move t- or e-var to result
+  s.Offset 45 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset TPLE <MakeDWord s.1 s.2 s.3 s.4>)
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
+
+* move s-var to result
+  s.Offset 46 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset TPLS <MakeDWord s.1 s.2 s.3 s.4>)
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
+
+* on fail go to
+  s.Offset 47 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset TRAN <MakeDWord s.1 s.2 s.3 s.4>)
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
+
+* left match of new s-var
+  s.Offset 48 e.Bytes
+    = (s.Offset VSYM) <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* right match of new s-var
+  s.Offset 49 e.Bytes
+    = (s.Offset VSYMR) <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* result is built, next step
+  s.Offset 50 e.Bytes
+    = (s.Offset OUTEST) <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* second service opcode for condition
+  s.Offset 51 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset ECOND <MakeDWord s.1 s.2 s.3 s.4>)
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
+
+* third service opcode for condition
+  s.Offset 52 e.Bytes
+    = (s.Offset POPVF) <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* first service opcode for condition
+  s.Offset 53 e.Bytes
+    = (s.Offset PUSHVF) <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* service opcode for start block
+  s.Offset 54 e.Bytes
+    = (s.Offset STLEN) <DecodeCommands <Inc s.Offset> e.Bytes>;
+
+* left match of word (compound symbol)
+  s.Offset 55 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset CSYM <MakeDWord s.1 s.2 s.3 s.4>)
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
+
+* right match of word (compound symbol)
+  s.Offset 56 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset CSYMR <MakeDWord s.1 s.2 s.3 s.4>)
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
+
+* left match of number
+  s.Offset 57 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset NSYM <MakeDWord s.1 s.2 s.3 s.4>)
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
+
+* right match of number
+  s.Offset 58 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset NSYMR <MakeDWord s.1 s.2 s.3 s.4>)
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
+
+* alloc word (compound symbol)
+  s.Offset 59 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset NCS <MakeDWord s.1 s.2 s.3 s.4>)
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
+
+* alloc number
+  s.Offset 60 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset NNS <MakeDWord s.1 s.2 s.3 s.4>)
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
+
+* perform regular builtin function
+  s.Offset 100 s.1 s.2 s.3 s.4 e.Bytes
+    = (s.Offset BUILT_IN <MakeDWord s.1 s.2 s.3 s.4>)
+      <DecodeCommands <+ s.Offset 5> e.Bytes>;
+
+* precedes for local function body
+  s.Offset 102 0 e.Name 0 e.Bytes
+    = (s.Offset L <Chr e.Name>)
+      <DecodeCommands <+ s.Offset <Len 102 0 e.Name>> e.Bytes>;
+
+* precedes for entry function body
+  s.Offset 103 0 e.Name 0 e.Bytes
+    = (s.Offset E <Chr e.Name>)
+      <DecodeCommands <+ s.Offset <Len 103 0 e.Name>> e.Bytes>;
+
+* precedes for condition pseudofunction
+  s.Offset 104 0 e.Name 0 e.Bytes
+    = (s.Offset LABEL <Chr e.Name>)
+      <DecodeCommands <+ s.Offset <Len 103 0 e.Name>> e.Bytes>;
+
+* perform special builtin action
+  s.Offset 105 s.L1 s.L2 s.L3 s.L4 s.R1 s.R2 s.R3 s.R4 e.Bytes
+    = (
+        s.Offset BUILT_IN1
+        <MakeDWord s.L1 s.L2 s.L3 s.L4>
+        <MakeDWord s.R1 s.R2 s.R3 s.R4>
+      )
+      <DecodeCommands <+ s.Offset 9> e.Bytes>;
+
+  s.Offset /* пусто */ = s.Offset;
+
+  s.Offset e.Bytes = (s.Offset RawBytes e.Bytes);
+}
+
+Len {
+  e.String = <Lenw e.String> : s.Len e.String^ = s.Len;
+}
+
+DEBUG {
+  e.Bytes
+    = <Prout 'all bytes\n' e.Bytes>
+      <Prout <Chr e.Bytes>>
+      <Prout 'all strings'>
+      <AllString <Chr e.Bytes>>;
+}
+
+AllString {
+  e.String '\x00' e.Tail
+    = <Prout e.String>
+      <Prout <Ord e.String> 0>
+      <AllString e.Tail>;
+  e.String = <Prout e.String> <Prout <Ord e.String>>;
+}
+
+DecompileFunction {
+  (t.FuncName (s.Offset BUILT_IN s.No)) = /* пусто */;
+  (t.FuncName (s.Offset BUILT_IN1 s.No1 s.No2)) = /* пусто */;
+
+  ((s.Offset s.DeclCommand e.Name) e.Commands)
+    = <Decompile-Pattern-Hole 0 3 (1) (2) () e.Commands> : e.Segments
+    = s.DeclCommand
+    : {
+        L = /* пусто */;
+        E = '$ENTRY ';
+      }
+    : e.MaybeEntry
+    = <CollectSegments e.Segments> : e.Lines
+    = ((e.MaybeEntry <FormatWord e.Name> ' {') e.Lines ('}'));
+}
+
+Decompile-Pattern-Hole {
+  s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
+  (s.Offset CSYM e.Word) e.Commands
+    = <Decompile-Pattern-Hole
+        s.Level <Inc s.Top> (e.Pattern-L (W e.Word) s.Top) (e.Pattern-R)
+        (e.Vars)
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
+  (s.Offset CSYMR e.Word) e.Commands
+    = <Decompile-Pattern-Hole
+        s.Level <Inc s.Top> (e.Pattern-L) (s.Top (W e.Word) e.Pattern-R)
+        (e.Vars)
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
+  (s.Offset NSYM s.Number) e.Commands
+    = <Decompile-Pattern-Hole
+        s.Level <Inc s.Top> (e.Pattern-L (N s.Number) s.Top) (e.Pattern-R)
+        (e.Vars)
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
+  (s.Offset NSYMR e.Number) e.Commands
+    = <Decompile-Pattern-Hole
+        s.Level <Inc s.Top> (e.Pattern-L) (s.Top (N e.Number) e.Pattern-R)
+        (e.Vars)
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
+  (s.Offset SYM s.Code s.Char) e.Commands
+    = <Decompile-Pattern-Hole
+        s.Level <Inc s.Top> (e.Pattern-L (C s.Char) s.Top) (e.Pattern-R)
+        (e.Vars)
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
+  (s.Offset SYMR s.Code s.Char) e.Commands
+    = <Decompile-Pattern-Hole
+        s.Level <Inc s.Top> (e.Pattern-L) (s.Top (C s.Char) e.Pattern-R)
+        (e.Vars)
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
+  (s.Offset SYMS s.Len e.Chars) e.Commands
+    = <+ s.Len s.Top> : s.Top^
+    = <- s.Top 1> : s.L^
+    = <Decompile-Pattern-Hole
+        s.Level s.Top (e.Pattern-L (C e.Chars) s.L) (e.Pattern-R)
+        (e.Vars)
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
+  (s.Offset SYMSR s.Len e.Chars) e.Commands
+    = <+ s.Len s.Top> : s.Top^
+    = <- s.Top 1> : s.R^
+    = <Decompile-Pattern-Hole
+        s.Level s.Top (e.Pattern-L) (s.R (C <Rev e.Chars>) e.Pattern-R)
+        (e.Vars)
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
+  (s.Offset VSYM) e.Commands
+    = <Decompile-Pattern-Hole
+        s.Level <Inc s.Top>
+        (e.Pattern-L (s s.Top '=' s.Top) s.Top) (e.Pattern-R)
+        (e.Vars (s s.Top '=' s.Top))
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
+  (s.Offset VSYMR) e.Commands
+    = <Decompile-Pattern-Hole
+        s.Level <Inc s.Top>
+        (e.Pattern-L) (s.Top (s s.Top '=' s.Top) e.Pattern-R)
+        (e.Vars (s s.Top '=' s.Top))
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
+  (s.Offset TERM) e.Commands
+    = s.Top <+ 1 s.Top> : s.VL s.VR
+    = <Decompile-Pattern-Hole
+        s.Level <+ s.Top 2>
+        (e.Pattern-L (t s.VL s.VR '=' s.VL s.VR) s.VR) (e.Pattern-R)
+        (e.Vars (t s.VL s.VR '=' s.VL s.VR))
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
+  (s.Offset TERMR) e.Commands
+    = s.Top <+ 1 s.Top> : s.VL s.VR
+    = <Decompile-Pattern-Hole
+        s.Level <+ s.Top 2>
+        (e.Pattern-L) (s.VL (t s.VL s.VR '=' s.VL s.VR) e.Pattern-R)
+        (e.Vars (t s.VL s.VR '=' s.VL s.VR))
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L) (e.Pattern-R) (e.Vars)
+  (s.Offset TRAN s.Jump)
+  e.Commands-B (s.Jump e.Command) e.Commands-E
+    = <Decompile-Pattern-Hole
+        s.Level s.Top (e.Pattern-L) (e.Pattern-R) (e.Vars)
+        e.Commands-B
+        ('@' Restore-Hole s.Level s.Top (e.Pattern-L) (e.Pattern-R) (e.Vars))
+        (s.Jump e.Command)
+        e.Commands-E
+      >;
+
+  s.Level1 s.Top1 (e.Pattern-L1) (e.Pattern-R1) (e.Vars1)
+  ('@' Restore-Hole s.Level2 s.Top2 (e.Pattern-L2) (e.Pattern-R2) (e.Vars2))
+  e.Commands
+    = <Decompile-Pattern-Hole
+        s.Level2 s.Top2 (e.Pattern-L2) (e.Pattern-R2) (e.Vars2)
+        e.Commands
+      >;
+
+  s.Level1 s.Top1 (e.Pattern-L1) (e.Pattern-R1) (e.Vars1)
+  ('@' Restore-NoHole s.Level2 s.Top2 (e.Pattern2) (e.Vars2))
+  e.Commands
+    = <Decompile-Pattern-NoHole
+        s.Level2 s.Top2 (e.Pattern2) (e.Vars2) e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
+  (s.Offset OVSYM s.VarNo) e.Commands
+    = <Decompile-Pattern-Hole
+        s.Level <Inc s.Top>
+        (e.Pattern-L (s s.VarNo '=' s.Top) s.Top) (e.Pattern-R)
+        (e.Vars (s s.VarNo '=' s.Top))
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
+  (s.Offset OVSYMR s.VarNo) e.Commands
+    = <Decompile-Pattern-Hole
+        s.Level <Inc s.Top>
+        (e.Pattern-L) (s.Top (s s.VarNo '=' s.Top) e.Pattern-R)
+        (e.Vars (s s.VarNo '=' s.Top))
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L s.L) (s.R e.Pattern-R) (e.Vars)
+  (s.Offset CL) e.Commands
+    = s.Top <+ s.Top 1> : s.VL s.VR
+    = <Decompile-Pattern-NoHole
+        s.Level <+ s.Top 2>
+        (e.Pattern-L (e s.VL s.VR '=' s.VL s.VR) e.Pattern-R)
+        (e.Vars (e s.VL s.VR '=' s.VL s.VR))
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
+  (s.Offset OEXP s.IdR) e.Commands
+    = e.Vars : e.Vars-B (s.Type s.IdL s.IdR '=' s.VarNoL s.VarNoR) e.Vars-E
+    = s.Top <+ s.Top 1> : s.VL s.VR
+    = <Decompile-Pattern-Hole
+        s.Level <+ s.Top 2>
+        (e.Pattern-L (s.Type s.IdL s.IdR '=' s.VL s.VR) s.VR) (e.Pattern-R)
+        (e.Vars (s.Type s.IdL s.IdR '=' s.VL s.VR))
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
+  (s.Offset OEXPR s.IdR) e.Commands
+    = e.Vars : e.Vars-B (s.Type s.IdL s.IdR '=' s.VarNoL s.VarNoR) e.Vars-E
+    = s.Top <+ s.Top 1> : s.VL s.VR
+    = <Decompile-Pattern-Hole
+        s.Level <+ s.Top 2>
+        (e.Pattern-L) (s.VL (s.Type s.IdL s.IdR '=' s.VL s.VR) e.Pattern-R)
+        (e.Vars (s.Type s.IdL s.IdR '=' s.VL s.VR))
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L s.L) (s.R e.Pattern-R) (e.Vars)
+  (s.Offset PS) e.Commands
+    = s.Top <+ s.Top 1> : s.LB s.RB
+    = <Decompile-Pattern-Hole
+        s.Level <+ s.Top 2>
+        (e.Pattern-L (LB) s.LB) (s.RB (RB) (Hole s.RB s.R) e.Pattern-R)
+        (e.Vars)
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L) (s.R e.Pattern-R) (e.Vars)
+  (s.Offset PSR) e.Commands
+    = s.Top <+ s.Top 1> : s.LB s.RB
+    = <Decompile-Pattern-Hole
+        s.Level <+ s.Top 2>
+        (e.Pattern-L) (s.LB (LB) (Hole s.LB s.RB) (RB) e.Pattern-R)
+        (e.Vars)
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L s.L) (s.R e.Pattern-R) (e.Vars)
+  (s.Offset SETB s.NewL s.NewR) e.Commands
+    = <Decompile-Pattern-NoHole
+        s.Level s.Top (e.Pattern-L (Hole s.L s.R) e.Pattern-R) (e.Vars)
+        (s.Offset SETB s.NewL s.NewR) e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L s.L) (s.R e.Pattern-R) (e.Vars)
+  (s.Offset EMP) e.Commands
+    = <Decompile-Pattern-NoHole
+        s.Level s.Top (e.Pattern-L e.Pattern-R) (e.Vars) e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
+  (s.Offset1 PLEN) (s.Offset2 LEN) e.Commands
+    = s.Top <+ s.Top 1> : s.VL s.VR
+    = <Decompile-Pattern-Hole
+        s.Level <+ s.Top 2>
+        (e.Pattern-L (e s.VL s.VR '=' s.VL s.VR) s.VR) (e.Pattern-R)
+        (e.Vars (e s.VL s.VR '=' s.VL s.VR))
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L s.L) (e.Pattern-R) (e.Vars)
+  (s.Offset1 PLENS) (s.Offset2 LENS s.Char) e.Commands
+    = s.Top <+ s.Top 1> <+ s.Top 2>: s.VL s.VR s.CharPos
+    = <Decompile-Pattern-Hole
+        s.Level <+ s.Top 3>
+        (e.Pattern-L (e s.VL s.VR '=' s.VL s.VR) (C s.Char) s.CharPos)
+        (e.Pattern-R)
+        (e.Vars (e s.VL s.VR '=' s.VL s.VR))
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L s.L) (s.R e.Pattern-R) (e.Vars)
+  (s.Offset1 PLENP) (s.Offset2 LENP) e.Commands
+    = s.Top <+ s.Top 1> <+ s.Top 2> <+ s.Top 3> : s.VL s.VR s.LB s.RB
+    = <Decompile-Pattern-Hole
+        s.Level <+ s.Top 4>
+        (e.Pattern-L (e s.VL s.VR '=' s.VL s.VR) (LB) s.LB)
+        (s.RB (RB) (Hole s.RB s.R) e.Pattern-R)
+        (e.Vars (e s.VL s.VR '=' s.VL s.VR))
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L) (e.Pattern-R) (e.Vars)
+  (s.Offset STLEN) e.Commands
+    = (StartBlock)
+      <Decompile-Pattern-Hole
+        <Inc s.Level> s.Top (e.Pattern-L) (e.Pattern-R) (e.Vars) e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern-L) (e.Pattern-R) (e.Vars)
+  (s.Offset LABEL e.BlockName) e.Commands
+    = <Decompile-Pattern-Hole
+        s.Level s.Top (e.Pattern-L) (e.Pattern-R) (e.Vars) e.Commands
+      >;
+
+  s.Level s.Top (s.L) (s.R) () /* нет команд */ = (EndOfFunction);
+
+  s.Level s.Top (e.Pattern-L) (e.Pattern-R) (e.Vars)
+  e.Commands
+    = ('=A ' s.Level s.Top (e.Pattern-L) (e.Pattern-R) (e.Vars)) e.Commands;
+}
+
+Rev {
+  t.First e.Middle t.Last = t.Last <Rev e.Middle> t.First;
+  e.ZeroOrOne = e.ZeroOrOne;
+}
+
+Decompile-Pattern-NoHole {
+  s.Level s.Top (e.Pattern-L (Hole s.L s.R) e.Pattern-R) (e.Vars)
+  (s.Offset SETB s.L s.R) e.Commands
+    = <Decompile-Pattern-Hole
+        s.Level s.Top (e.Pattern-L s.L) (s.R e.Pattern-R) (e.Vars)
+        e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern) (e.Vars)
+  (s.Offset RDY 0) e.Commands
+    = (Pattern s.Level e.Pattern)
+      <Decompile-Result s.Level s.Top (e.Vars) ('$') e.Commands>;
+
+  s.Level s.Top (e.Pattern) (e.Vars)
+  (s.Offset PUSHVF) e.Commands
+    = (Pattern s.Level e.Pattern)
+      (StartCondition)
+      <Decompile-Result s.Level s.Top (e.Vars) ('$') e.Commands>;
+
+  s.Level s.Top (e.Pattern) (e.Vars)
+  (s.Offset TRAN s.Jump)
+  e.Commands-B (s.Jump e.Command) e.Commands-E
+    = <Decompile-Pattern-NoHole
+        s.Level s.Top (e.Pattern) (e.Vars)
+        e.Commands-B
+        ('@' Restore-NoHole s.Level s.Top (e.Pattern) (e.Vars))
+        (s.Jump e.Command)
+        e.Commands-E
+      >;
+
+  s.Level1 s.Top1 (e.Pattern1) (e.Vars1)
+  ('@' Restore-Hole s.Level2 s.Top2 (e.Pattern-L2) (e.Pattern-R2) (e.Vars2))
+  e.Commands
+    = <Decompile-Pattern-Hole
+        s.Level2 s.Top2 (e.Pattern-L2) (e.Pattern-R2) (e.Vars2)
+        e.Commands
+      >;
+
+  s.Level1 s.Top1 (e.Pattern1) (e.Vars1)
+  ('@' Restore-NoHole s.Level2 s.Top2 (e.Pattern2) (e.Vars2))
+  e.Commands
+    = <Decompile-Pattern-NoHole
+        s.Level2 s.Top2 (e.Pattern2) (e.Vars2) e.Commands
+      >;
+
+  s.Level s.Top (e.Pattern) (e.Vars)
+  (s.Offset LABEL e.BlockName) e.Commands
+    = <Decompile-Pattern-NoHole
+        s.Level s.Top (e.Pattern) (e.Vars) e.Commands
+      >;
+
+  s.Level s.Top () () /* нет комманд */ = (EndOfFunction);
+
+  s.Level s.Top (e.Pattern) (e.Vars) e.Commands
+    = ('=B ' s.Level s.Top (e.Pattern) (e.Vars)) e.Commands;
+}
+
+Decompile-Result {
+  s.Level
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset NCS e.Word) e.Commands
+    = <Decompile-Result
+        s.Level
+        s.Top (e.Vars) (t.MB e.Result (W e.Word)) e.Commands
+      >;
+
+  s.Level
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset NNS s.Number) e.Commands
+    = <Decompile-Result
+        s.Level
+        s.Top (e.Vars) (t.MB e.Result (N s.Number)) e.Commands
+      >;
+
+  s.Level
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset NS s.Code s.Char) e.Commands
+    = <Decompile-Result
+        s.Level
+        s.Top (e.Vars) (t.MB e.Result (C s.Char)) e.Commands
+      >;
+
+  s.Level
+  s.Top (e.Vars) (t.MB e.Result)
+  (s.Offset TEXT s.Count e.Chars) e.Commands
+    = <Decompile-Result
+        s.Level
+        s.Top (e.Vars) (t.MB e.Result (C e.Chars)) e.Commands
+      >;
+
+  s.Level
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset BL) e.Commands
+    = <Decompile-Result
+        s.Level
+        s.Top (e.Vars) ((t.MB e.Result)) e.Commands
+      >;
+
+  s.Level
+  s.Top (e.Vars) ((t.MB e.Result) e.Nested)
+  (s.Offset BR) e.Commands
+    = <Decompile-Result
+        s.Level
+        s.Top (e.Vars) (t.MB e.Result ('*' e.Nested)) e.Commands
+      >;
+
+  s.Level
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset BLR) e.Commands
+    = <Decompile-Result
+        s.Level
+        s.Top (e.Vars) (t.MB e.Result ('*')) e.Commands
+      >;
+
+  s.Level
+  s.Top (e.Vars) (t.MB e.Result ('*' e.Inner))
+  (s.Offset ACT1 e.Name) e.Commands
+    = <Decompile-Result
+        s.Level
+        s.Top (e.Vars) (t.MB e.Result ('!' (e.Name) e.Inner)) e.Commands
+      >;
+
+  s.Level
+  s.Top (e.Vars) (t.MB e.Result ('*' e.Inner))
+  (s.Offset ACT_EXTRN e.Name) e.Commands
+    = <Decompile-Result
+        s.Level
+        s.Top (e.Vars) (t.MB e.Result ('!' (e.Name) e.Inner)) e.Commands
+      >;
+
+  s.Level
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset TPLS s.Copy) e.Commands
+    , e.Vars : e.Vars-B (s s.Id '=' s.Copy) e.Vars-E
+    = <Decompile-Result
+        s.Level
+        s.Top (e.Vars) (t.MB e.Result (s s.Id '=' s.Copy)) e.Commands
+      >;
+
+  s.Level
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset TPLE s.CopyR) e.Commands
+    , e.Vars
+    : e.Vars-B (s.Type s.IdL s.IdR '=' s.CopyL s.CopyR) e.Vars-E
+    , t e : e.B s.Type e.E
+    = <Decompile-Result
+        s.Level
+        s.Top (e.Vars) (t.MB e.Result (s.Type s.IdL s.IdR '=' s.CopyL s.CopyR))
+        e.Commands
+      >;
+
+  s.Level
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset MULS s.Copy) e.Commands
+    , e.Vars : e.Vars-B (s s.Id '=' s.Copy) e.Vars-E
+    = <Decompile-Result
+        s.Level
+        s.Top (e.Vars) (t.MB e.Result (s s.Id '=' s.Copy)) e.Commands
+      >;
+
+  s.Level
+  s.Top (e.Vars) (t.MB e.Result) (s.Offset MULE s.CopyR) e.Commands
+    , e.Vars
+    : e.Vars-B (s.Type s.IdL s.IdR '=' s.CopyL s.CopyR) e.Vars-E
+    , t e : e.B s.Type e.E
+    = <Decompile-Result
+        s.Level
+        s.Top (e.Vars) (t.MB e.Result (s.Type s.IdL s.IdR '=' s.CopyL s.CopyR))
+        e.Commands
+      >;
+
+  s.Level
+  s.Top (e.Vars) ('$' e.Result)
+  (s.Offset1 ECOND s.Offset3)
+  (s.Offset2 LABEL e.Name)
+  (s.Offset3 POPVF)
+  e.Commands
+    = (Result e.Result)
+      (EndCondition e.Name)
+      <Decompile-Pattern-Hole
+        s.Level <+ s.Top 3> (<+ s.Top 1>) (<+ s.Top 2>) (e.Vars) e.Commands
+      >;
+
+  s.Level
+  s.Top (e.Vars) ('$' e.Result)
+  (s.Offset1 OUTEST) (s.Offset2 OUTEST) e.Commands
+    = (Result e.Result)
+      (NextSentence)
+      (NextSentence)
+      <Decompile-Pattern-NoHole s.Level '*' () () e.Commands>;
+
+  s.Level
+  s.Top (e.Vars) ('$' e.Result) (s.Offset OUTEST) e.Commands
+    = (Result e.Result)
+      (NextSentence)
+      <Decompile-Pattern-NoHole s.Level '*' () () e.Commands>;
+
+  s.Level s.Top (e.Vars) (t.MB e.Result) e.Commands
+    = ('=C ' s.Level s.Top (e.Vars) (t.MB e.Result)) e.Commands;
+}
+
+CollectSegments {
+  e.Segments = <DoCollectSegments 0 ('  ') e.Segments>;
+}
+
+DoCollectSegments {
+  s.Level (e.Indent) (Pattern s.Level e.Pattern) e.Segments
+    = <FormatExpr (e.Indent) (e.Indent) e.Pattern>
+      <DoCollectSegments s.Level (e.Indent) e.Segments>;
+
+  s.Level (e.Indent)
+  (StartCondition) (Result e.Result)
+  (EndCondition e.Name) (Pattern s.Level e.Pattern)
+  e.Segments
+    = ('*' e.Indent '   ' <FormatWord e.Name>)
+      <FormatExpr (e.Indent '  , ') (e.Indent '    ') e.Result>
+      <FormatExpr (e.Indent '  : ') (e.Indent '    ') e.Pattern>
+      <DoCollectSegments s.Level (e.Indent) e.Segments>;
+
+  s.Level (e.Indent)
+  (StartCondition) (Result e.Result) (EndCondition e.Name) (StartBlock)
+  e.Segments
+    = ('*' e.Indent '   ' <FormatWord e.Name>)
+      <FormatExpr (e.Indent '  , ') (e.Indent '    ') e.Result>
+      (e.Indent '  : {')
+      <DoCollectSegments <Inc s.Level> (e.Indent '      ') e.Segments>;
+
+  s.Level (e.Indent) (Result e.Result) (NextSentence) e.Segments
+    = <FormatExpr (e.Indent '  = ') (e.Indent '    ') e.Result ';'>
+      ()
+      <DoCollectSegments s.Level (e.Indent) e.Segments>;
+
+  s.Level (e.Indent '      ') (Pattern s.PatternLevel e.Pattern) e.Segments
+    = (e.Indent '    };') ()
+      <DoCollectSegments
+        <Dec s.Level> (e.Indent) (Pattern s.PatternLevel e.Pattern) e.Segments
+      >;
+
+  0 ('  ') (EndOfFunction) = /* пусто */;
+
+  s.Level (e.Indent '      ') (EndOfFunction)
+    = (e.Indent '    };')
+      <DoCollectSegments <Dec s.Level> (e.Indent) (EndOfFunction)>;
+
+  s.Level (e.Indent) (NextSentence) e.Segments
+    = ('* unexpected OUTEST command')
+      <DoCollectSegments s.Level (e.Indent) e.Segments>;
+
+  s.Level (e.Indent) e.Segments = ('* WTF!!!!') ('"' e.Indent '"') e.Segments;
+}
+
+FormatExpr {
+  (e.Prefix) (e.Indent) /* пусто */ = (e.Prefix '/*empty*/');
+  (e.Prefix) (e.Indent) /* пусто */ ';' = (e.Prefix '/*empty*/;');
+
+  (e.Prefix) (e.Indent) e.Expr
+    = <DoFormatExpr (<LIMIT>) (e.Prefix) (e.Indent) () e.Expr>;
+}
+
+LIMIT { = 60 }
+
+DoFormatExpr {
+  (e.Limit) (e.Prefix) (e.Indent) (e.Result ' ') /* пусто */
+    = (e.Prefix e.Result);
+
+  (e.Limit) (e.Prefix) (e.Indent) (e.Result) /* пусто */
+    = (e.Prefix e.Result);
+
+  (e.Limit) (e.Prefix) (e.Indent) (e.Result ' ') ';' = (e.Prefix e.Result ';');
+
+  (e.Limit) (e.Prefix) (e.Indent) (e.Result) ';' = (e.Prefix e.Result ';');
+
+  ('-' s.Limit) (e.Prefix) (e.Indent) (e.Result) e.Tail
+    = (e.Prefix e.Result)
+      <DoFormatExpr (<LIMIT>) (e.Indent) (e.Indent) () e.Tail>;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (W e.Word) e.Tail
+    = <Lenw <FormatWord e.Word> ' '> : s.Len e.WordRep
+    = <DoFormatExpr
+        (<- s.Limit s.Len>) (e.Prefix) (e.Indent) (e.Result e.WordRep) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (N s.Number) e.Tail
+    = <Lenw <Symb s.Number> ' '> : s.Len e.NumberRep
+    = <DoFormatExpr
+        (<- s.Limit s.Len>) (e.Prefix) (e.Indent) (e.Result e.NumberRep) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (C e.Chars1) (C e.Chars2) e.Tail
+    = <DoFormatExpr
+        (s.Limit) (e.Prefix) (e.Indent) (e.Result) (C e.Chars1 e.Chars2) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result '\'') (C s.Char e.Chars) e.Tail
+    = <Lenw <EscapeChar s.Char>> : s.Len e.CharRep
+    = <DoFormatExpr
+        (<- s.Limit s.Len>) (e.Prefix) (e.Indent)
+        (e.Result e.CharRep '\'') (C e.Chars) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (C s.Char e.Chars) e.Tail
+    = <Lenw '\'' <EscapeChar s.Char> '\''> : s.Len e.CharRep
+    = <DoFormatExpr
+        (<- s.Limit s.Len>) (e.Prefix) (e.Indent)
+        (e.Result e.CharRep) (C e.Chars) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (C) e.Tail
+    = <DoFormatExpr
+        (<Dec s.Limit>) (e.Prefix) (e.Indent) (e.Result ' ') e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (s s.Id '=' s.Copy) e.Tail
+    = <Lenw 's.' <Symb s.Id> ' '> : s.Len e.VarRep
+    = <DoFormatExpr
+        (<- s.Limit s.Len>) (e.Prefix) (e.Indent) (e.Result e.VarRep) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent)
+  (e.Result) (t s.IdL s.IdR '=' s.CopyL s.CopyR) e.Tail
+    = <Lenw 't.' <Symb s.IdL> ' '> : s.Len e.VarRep
+    = <DoFormatExpr
+        (<- s.Limit s.Len>) (e.Prefix) (e.Indent) (e.Result e.VarRep) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent)
+  (e.Result) (e s.IdL s.IdR '=' s.CopyL s.CopyR) e.Tail
+    = <Lenw 'e.' <Symb s.IdL> ' '> : s.Len e.VarRep
+    = <DoFormatExpr
+        (<- s.Limit s.Len>) (e.Prefix) (e.Indent) (e.Result e.VarRep) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (LB) e.Tail
+    = <DoFormatExpr
+        (<Dec s.Limit>) (e.Prefix) (e.Indent) (e.Result '(') e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result ' ') (RB) e.Tail
+    = <DoFormatExpr
+        (<Inc s.Limit>) (e.Prefix) (e.Indent) (e.Result) (RB) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (RB) e.Tail
+    = <DoFormatExpr
+        (<- s.Limit 2>) (e.Prefix) (e.Indent) (e.Result ') ') e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) ('*' e.Inner) e.Tail
+    = <DoFormatExpr
+        (s.Limit) (e.Prefix) (e.Indent) (e.Result) (LB) e.Inner (RB) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) ('!' (e.Name) e.Inner) e.Tail
+    = <Lenw '<' <FormatWord e.Name> ' '> : s.Len e.CallRep
+    = <DoFormatExpr
+        (<- s.Limit s.Len>) (e.Prefix) (e.Indent)
+        (e.Result e.CallRep) e.Inner (RK) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result ' ') (RK) e.Tail
+    = <DoFormatExpr
+        (<Inc s.Limit>) (e.Prefix) (e.Indent) (e.Result) (RK) e.Tail
+      >;
+
+  (s.Limit) (e.Prefix) (e.Indent) (e.Result) (RK) e.Tail
+    = <DoFormatExpr
+        (<- s.Limit 2>) (e.Prefix) (e.Indent) (e.Result '> ') e.Tail
+      >;
+}
+
+FormatWord {
+  e.Word
+    = <Type e.Word>
+    : {
+        'L' s._ s.First e.Tail = <FormatWord-Ident (s.First) <Type e.Tail>>;
+        s.Type s.SubType e.Word^ = '"' <EscapeChars e.Word> '"';
+      }
+}
+
+FormatWord-Ident {
+  (e.Ident) '*' s._ /* пусто */ = e.Ident;
+
+  (e.Prefix) 'L' s._ s.Next e.Tail
+    = <FormatWord-Ident (e.Prefix s.Next) <Type e.Tail>>;
+
+  (e.Prefix) 'D' s._ s.Next e.Tail
+    = <FormatWord-Ident (e.Prefix s.Next) <Type e.Tail>>;
+
+  (e.Prefix) s.Type s.SubType '-' e.Tail
+    = <FormatWord-Ident (e.Prefix '-') <Type e.Tail>>;
+
+  (e.Prefix) s.Type s.SubType '_' e.Tail
+    = <FormatWord-Ident (e.Prefix '_') <Type e.Tail>>;
+
+  (e.Prefix) s.Type s.SubType e.Suffix
+    = '"' <EscapeChars e.Prefix e.Suffix> '"';
+}
+
+EscapeChars {
+  e.Chars = <Map &EscapeChar e.Chars>;
+}
+
+EscapeChar {
+  '\\' = '\\\\'; '\'' = '\\\''; '\"' = '\\\"';
+
+  '\n' = '\\n'; '\t' = '\\t'; '\r' = '\\r';
+
+  s.Char
+    = <Ord s.Char> : s.Code
+    = <Compare 31 s.Code> <Compare s.Code 127>
+    : {
+        '--' = s.Char;
+        s.Cmp1 s.Cmp2 = <EscapeChar-Hex s.Code>;
+      }
+}
+
+EscapeChar-Hex {
+  s.Code = <Divmod s.Code 16> : (s.Hi) s.Lo = '\\x' <Hex s.Hi> <Hex s.Lo>;
+}
+
+Hex {
+  0 = '0'; 1 = '1'; 2 = '2'; 3 = '3'; 4 = '4';
+  5 = '5'; 6 = '6'; 7 = '7'; 8 = '8'; 9 = '9';
+  10 = 'A'; 11 = 'B'; 12 = 'C';
+  13 = 'D'; 14 = 'E'; 15 = 'F';
+}
