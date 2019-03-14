@@ -119,8 +119,8 @@ PreludeIncludeLine {
 
 LoadAST {
   t.Config R5 e.SrcName
-    = <R5-Scan e.SrcName> : e.Tokens
     = <Config-GetR5Mode t.Config> : s.Mode
+    = <R5-Scan s.Mode e.SrcName> : e.Tokens
     = <R5-Parse <EL-Create e.SrcName> s.Mode e.Tokens> : t.ErrorList e.AST
     = t.ErrorList <PreludeIncludeLine t.Config> e.AST;
 
