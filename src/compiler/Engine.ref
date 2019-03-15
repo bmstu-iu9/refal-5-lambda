@@ -40,7 +40,7 @@ $EXTERN FindInclude;
 $EXTERN Desugar;
 
 *$FROM Log
-$EXTERN Log-GetLogFunction-AST, Log-GetLogFunction-HighLevelRASL;
+$EXTERN Log-AST, Log-HighLevelRASL;
 
 *$FROM OptTree
 $EXTERN OptTree, OptTree-CleanupMarkup;
@@ -66,29 +66,15 @@ $EXTERN GenProgram-Native;
   t.Native ::= NoNative | (e.NativeOutputName)
 */
 $ENTRY CompileFile {
-  t.Config (s.Dialect e.SrcName) e.OutputName '.rasl'=
-    <Fetch
-      s.Dialect e.SrcName
-      <Pipe
-        (&FrontEnd t.Config)
-        {
-          t.ErrorList e.AST =
-            <Fetch
-              <EL-Destroy t.ErrorList>
-              {
-                EL-NoErrors =
-                  <Fetch
-                    e.AST
-                    <BackEnd t.Config (e.SrcName) e.OutputName>
-                  >;
+  t.Config (s.Dialect e.SrcName) e.OutputName '.rasl'
+    = <FrontEnd t.Config s.Dialect e.SrcName>
+    : t.ErrorList e.AST
+    = <EL-Destroy t.ErrorList>
+    : {
+        EL-NoErrors = <BackEnd t.Config (e.SrcName) (e.OutputName) e.AST>;
 
-                EL-HasErrors =
-                  Fails;
-              }
-            >;
-        }
-      >
-    >;
+        EL-HasErrors = Fails;
+      }
 }
 
 FrontEnd {
@@ -108,13 +94,11 @@ FrontEnd {
 
 PreludeIncludeLine {
   t.Config
-    = <Fetch
-        <Config-GetPrelude t.Config>
-        {
-          /* пусто */ = /* пусто */;
-          e.Prelude = (Include 1 e.Prelude);
-        }
-      >;
+    = <Config-GetPrelude t.Config>
+    : {
+        /* пусто */ = /* пусто */;
+        e.Prelude = (Include 1 e.Prelude);
+      }
 }
 
 LoadAST {
@@ -437,50 +421,45 @@ PatchASTSrcPos-Expr {
 }
 
 BackEnd {
-  t.Config (e.SrcName) e.OutputName
+  t.Config (e.SrcName) (e.OutputName) e.AST
     = <Config-GetDebugMode t.Config> : s.MarkupContext s.DebugInfo
     = <Config-GetOptPattern t.Config> : s.OptPattern
     = <Config-GetOptResult t.Config> : s.OptResult
     = <Config-GetConditionsMode t.Config> : s.ConditionsMode
     = <Config-GetGenMode t.Config> : s.GenMode
-    = <Pipe
-        (&Desugar s.MarkupContext s.ConditionsMode)
-        <Log-GetLogFunction-AST e.SrcName ' (after desugar)'>
-        <Fetch
-          <Config-GetOptTree t.Config>
-          {
-            OptTree = (&OptTree t.Config);
-            NoOpt = &OptTree-CleanupMarkup;
-          }
-        >
-        <Log-GetLogFunction-AST e.SrcName ' (after tree optimization)'>
-        (&HighLevelRASL s.OptPattern s.OptResult)
-        <Log-GetLogFunction-HighLevelRASL e.SrcName>
-        (&LowLevelRASL s.GenMode s.DebugInfo (e.SrcName))
-        {
-          t.RASLModule =
-            <BackEnd-RASLModule t.RASLModule e.OutputName '.rasl'>
-            NoNative;
+    = <Desugar s.MarkupContext s.ConditionsMode e.AST> : e.AST^
+    = <Log-AST (e.SrcName ' (after desugar)') e.AST> : e.AST^
+    = <Config-GetOptTree t.Config>
+    : {
+        OptTree = <OptTree t.Config e.AST>;
+        NoOpt = <OptTree-CleanupMarkup e.AST>;
+      }
+    : e.AST^
+    = <Log-AST (e.SrcName ' (after tree optimization)') e.AST> : e.AST^
+    = <HighLevelRASL s.OptPattern s.OptResult e.AST> : e.HighLevelRASL
+    = <Log-HighLevelRASL (e.SrcName) e.HighLevelRASL> : e.HighLevelRASL^
+    = <LowLevelRASL s.GenMode s.DebugInfo (e.SrcName) e.HighLevelRASL>
+    : {
+        t.RASLModule =
+          <BackEnd-RASLModule t.RASLModule e.OutputName '.rasl'>
+          NoNative;
 
-          t.RASLModule t.NativeModule =
-            <BackEnd-RASLModule t.RASLModule e.OutputName '.rasl'>
-            <BackEnd-NativeModule
-              t.NativeModule (e.SrcName) e.OutputName '.cpp'
-            >;
-        }
-      >;
+        t.RASLModule t.NativeModule =
+          <BackEnd-RASLModule t.RASLModule e.OutputName '.rasl'>
+          <BackEnd-NativeModule
+            t.NativeModule (e.SrcName) e.OutputName '.cpp'
+          >;
+      }
 }
 
 BackEnd-RASLModule {
-  t.RASLModule e.OutputName =
-    <Fetch
-      <GenProgram-RASL t.RASLModule>
-      {
+  t.RASLModule e.OutputName
+    = <GenProgram-RASL t.RASLModule>
+    : {
         e.ByteStream =
-          <SaveBytes (e.OutputName) e.ByteStream>;
+          <SaveBytes (e.OutputName) e.ByteStream>
+          Success e.OutputName;
       }
-    >
-    Success e.OutputName;
 }
 
 BackEnd-NativeModule {

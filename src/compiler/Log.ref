@@ -69,52 +69,40 @@ $ENTRY Log-PutLine {
 
 
 /**
-  <Log-GetLogFunction-AST e.SrcName>
-    == { e.AST = e.AST; }
-    == { e.AST = <Log... e.AST> e.AST; }
+  <Log-AST (e.Message) e.AST> == e.AST
 */
-$ENTRY Log-GetLogFunction-AST {
-  e.SrcName
+$ENTRY Log-AST {
+  (e.Message) e.AST
     = <LogHandle>
     : {
-        /* none */ = &ID;
+        /* none */ = e.AST;
 
         s.FileHandle
-          = {
-              e.AST
-                = <Log-PutLine 'AST of file ' e.SrcName ':'>
-                  <Map
-                    {
-                      (e.Line) = <Putout s.FileHandle '  ' e.Line>;
-                    }
-                    <Log-TextFromAST e.AST>
-                  >
-                  e.AST;
-            };
+          = <Log-PutLine 'AST of file ' e.Message ':'>
+            <Map
+              {
+                (e.Line) = <Putout s.FileHandle '  ' e.Line>;
+              }
+              <Log-TextFromAST e.AST>
+            >
+            e.AST;
       };
 }
 
-ID { e.Any = e.Any; }
-
 
 /**
-  <Log-GetLogFunction-HighLevelRASL e.SrcName>
-    == { e.AST = e.AST; }
-    == { e.AST = <Log... e.AST> e.AST; }
+  <Log-HighLevelRASL (e.SrcName) e.RASL> == e.RASL
 */
-$ENTRY Log-GetLogFunction-HighLevelRASL {
-  e.SrcName
+$ENTRY Log-HighLevelRASL {
+  (e.SrcName) e.RASL
     = <LogHandle>
     : {
-        /* none */ = &ID;
+        /* none */ = e.RASL;
 
         s.FileHandle
-          = {
-              e.RASL
-                = <Log-PutLine 'HighLevelRASL code of file ' e.SrcName ':'>
-                  <Map (&PutProgramElement s.FileHandle) e.RASL>
-                  e.RASL;
-            };
+          = <Log-PutLine 'HighLevelRASL code of file ' e.SrcName ':'>
+            <Map (&PutProgramElement s.FileHandle) e.RASL>
+            e.RASL;
       };
 }
 

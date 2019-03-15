@@ -10,7 +10,7 @@ $EXTERN OptTree-Drive-ExtractOptInfo, OptTree-Drive, OptTree-Drive-Finalize;
 $EXTERN OptTree-Spec-ExtractOptInfo, OptTree-Spec, OptTree-Spec-Finalize;
 
 *$FROM Log
-$EXTERN Log-PutLine, Log-GetLogFunction-AST;
+$EXTERN Log-PutLine, Log-AST;
 
 *$FROM DisplayName
 $EXTERN DisplayName;
@@ -69,7 +69,7 @@ DoOptTree {
 
   s.Cycles s.OptDrive s.OptSpec
   (e.DriveInfo) (e.SpecInfo) (e.OptimizableFunctions) e.AST
-    = <<Log-GetLogFunction-AST 'Pass ' <Symb s.Cycles>> e.AST> : e.AST^
+    = <Log-AST ('Pass ' <Symb s.Cycles>) e.AST> : e.AST^
     = e.AST : e.OriginAST
     = <OptTree-Simple (e.OptimizableFunctions) e.AST> : e.AST^
     = <OptTree-Drive s.OptDrive (e.DriveInfo) e.AST> : (e.DriveInfo^) e.AST^
