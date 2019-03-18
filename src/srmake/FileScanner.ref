@@ -49,6 +49,9 @@ DoCreateFileList {
 }
 
 FindImports {
+  t.Config Source (RSL e.NextModule) e.Output
+    = <FindImports-Aux t.Config Froms e.NextModule '.froms'>;
+
   t.Config Source (s.Dialect e.NextModule) e.Output
     = <FindImports-Aux t.Config s.Dialect e.NextModule>;
 

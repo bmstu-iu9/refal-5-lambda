@@ -1,0 +1,3 @@
+$ENTRY Go {
+  = <Putout 10 'Hello, World'>;
+}

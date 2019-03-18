@@ -112,6 +112,39 @@ LoadAST {
     = <SR-LoadSource e.SrcName> : e.SrcText
     = <SR-LexFolding e.SrcText> : e.Tokens
     = <SR-ParseProgram <EL-Create e.SrcName> e.Tokens>;
+
+  t.Config RSL e.SrcName
+    = e.SrcName : e.BaseName '.rsl'
+    = e.BaseName '-decompiled.ref' : e.DecompiledName
+    = (FileRowCol (1 1) e.DecompiledName) : t.ErrorPos
+    = <System 'rsl-decompiler ' e.SrcName>
+      <ExistFile e.DecompiledName>
+    : {
+        0 True
+          = <LoadAST t.Config R5 e.DecompiledName> : t.ErrorList e.AST
+          = <RemoveFile e.DecompiledName>
+          : {
+              True () = t.ErrorList e.AST;
+
+              False (e.Message)
+                = <EL-AddErrorAt
+                    t.ErrorList t.ErrorPos
+                    'Can\'t remove file ' e.DecompiledName ' (' e.Message ')'
+                  >;
+            };
+
+        0 False
+          = <EL-AddErrorAt
+              <EL-Create> t.ErrorPos
+              'RSL decompiler can\'t create ' e.DecompiledName
+            >;
+
+        e.RetCode s.Bool
+          = <EL-AddErrorAt
+              <EL-Create> t.ErrorPos
+              'RSL decompiler failed with retcode ' <Symb e.RetCode>
+            >;
+      }
 }
 
 ResolveIncludes {

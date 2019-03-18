@@ -18,7 +18,7 @@ $EXTERN Map;
     (OutputWithNative (e.Output) e.Native)
     (NotFound e.FileName)
 
-  s.Dialect ::= R5 | SR
+  s.Dialect ::= R5 | SR | RSL
 */
 $ENTRY FindFiles {
   s.TargetMode (e.Folders) e.Files
@@ -72,23 +72,18 @@ ExistFile-T {
   e.FileName = <ExistFile e.FileName> e.FileName;
 }
 
+SourceSuffixes { = (R5 '.ref') (SR '.sref') (RSL '.rsl') }
+
 AnalyzeFile {
-  e.FileName '.ref'
-    = <ExistFile-T e.FileName '.ref'>
+  e.FileName
+    , e.FileName : e.UnitName e.Suffix
+    , (R5 '.ref') (SR '.sref') (RSL '.rsl')
+    : e.Suffixes-B (s.Dialect e.Suffix) e.Suffixes-E
+    = <ExistFile e.FileName>
     : {
-        True e.UnitName '.ref' =
-          (Source (R5 e.UnitName '.ref') e.UnitName '.rasl');
+        True = (Source (s.Dialect e.FileName) e.UnitName '.rasl');
 
-        False e.SourceName = (NotFound e.SourceName);
-      };
-
-  e.FileName '.sref'
-    = <ExistFile-T e.FileName '.sref'>
-    : {
-        True e.UnitName '.sref' =
-          (Source (SR e.UnitName '.sref') e.UnitName '.rasl');
-
-        False e.SourceName = (NotFound e.SourceName);
+        False = (NotFound e.FileName);
       };
 
   e.FileName '.rasl'
@@ -106,26 +101,19 @@ AnalyzeFile {
       };
 
   e.FileName
-    = (<ExistFile-T e.FileName '.ref'>) (<ExistFile-T e.FileName '.sref'>)
-      (<ExistFile-T e.FileName '.rasl'>) (<ExistFile-T e.FileName '.cpp'>)
+    , <SourceSuffixes>: e.Suffixes-B (s.Dialect e.Suffix) e.Suffixes-E
+    , <ExistFile-T e.FileName e.Suffix> : True e.SourceName
+    = (Source (s.Dialect e.SourceName) e.FileName '.rasl');
+
+  e.FileName
+    = (<ExistFile-T e.FileName '.rasl'>) (<ExistFile-T e.FileName '.cpp'>)
     : {
-        (True e.R5-SourceName) (s.ResSR e.SR-SourceName)
-        (s.ResOut e.OutName) (s.ResNat e.Native)
-          = (Source (R5 e.R5-SourceName) e.OutName);
-
-        (False e.R5-SourceName) (True e.SR-SourceName)
-        (s.ResOut e.OutName) (s.ResNat e.Native)
-          = (Source (SR e.SR-SourceName) e.OutName);
-
-        (False e.R5-SourceName) (False e.SR-SourceName)
         (True e.OutName) (True e.Native)
           = (OutputWithNative (e.OutName) e.Native);
 
-        (False e.R5-SourceName) (False e.SR-SourceName)
         (True e.OutName) (False e.Native)
           = (Output e.OutName);
 
-        (False e.UnitName '.ref') (False e.UnitName '.sref')
         (False e.UnitName '.rasl') (False e.UnitName '.cpp')
           = (NotFound e.UnitName);
       };
