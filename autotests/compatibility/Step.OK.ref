@@ -5,7 +5,7 @@ $ENTRY Go {
 }
 
 Function-With-Block {
-  e.X, e.X : { e.Y = e.Y };
+  e.X, e.X : { e.Y = e.X };
 }
 
 Eq { (e.X) e.X = <Prout e.X>; }

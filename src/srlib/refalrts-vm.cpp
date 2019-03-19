@@ -1444,7 +1444,6 @@ JUMP_FROM_SCALE:
             }
 
             if (res == cSuccess) {
-              ++ m_step_counter;
               function = next(begin);
               assert(cDataFunction == function->tag);
               callee = function->function_info;
