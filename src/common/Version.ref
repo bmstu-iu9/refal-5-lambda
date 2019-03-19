@@ -1,6 +1,6 @@
 $ENTRY PrintVersion {
   e.Product
-    = <Prout e.Product ', a part of Refal-5-lambda compiler toolkit, version 2.2.5'>
+    = <Prout e.Product ', a part of Refal-5-lambda compiler toolkit, version 2.2.6'>
       <Prout 'Copyright (c) 2008-2016, Alexander Konovalov, 2016-2019, BMSTU IU9 Department'>
       <Prout 'All rights reserved.\n'>;
 }
