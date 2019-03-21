@@ -118,31 +118,8 @@ struct StringItem {
   UInt32 string_len;
 };
 
-struct FunctionTableItem {
-  const char *func_name;
-  RefalFunction *function;
-
-  FunctionTableItem(const char *func_name)
-    : func_name(func_name), function(0)
-  {
-    /* пусто */
-  }
-
-  FunctionTableItem(RefalFunction *function)
-    : func_name(function->name.name), function(function)
-  {
-    /* пусто */
-  }
-
-  FunctionTableItem()
-    : func_name(0), function(0)
-  {
-    /* пусто */
-  }
-};
-
 struct RASLFunction: public RefalFunction {
-  const FunctionTableItem *functions;
+  RefalFunction **functions;
   const RefalIdentifier *idents;
   const RefalNumber *numbers;
   const StringItem *strings;
@@ -151,7 +128,7 @@ struct RASLFunction: public RefalFunction {
   RASLFunction(
     RefalFuncName name,
     const RASLCommand *rasl,
-    const FunctionTableItem *functions,
+    RefalFunction **functions,
     const RefalIdentifier *idents,
     const RefalNumber *numbers,
     const StringItem *strings,

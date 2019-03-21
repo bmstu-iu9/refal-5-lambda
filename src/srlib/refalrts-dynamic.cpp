@@ -189,9 +189,11 @@ bool refalrts::Module::find_unresolved_externals_rasl(
 
   while (! m_unresolved_func_tables.empty()) {
     ConstTable *table = m_unresolved_func_tables.front();
-    std::vector<FunctionTableItem>& items = table->externals;
-    for (size_t i = 0; i < items.size(); ++i) {
-      const char *str_name = items[i].func_name;
+    std::vector<std::string>& items_names = table->externals_names;
+    std::vector<RefalFunction*>& items_pointers = table->externals_pointers;
+    assert(items_names.size() == items_pointers.size());
+    for (size_t i = 0; i < items_names.size(); ++i) {
+      const char *str_name = items_names[i].c_str();
       char type = *str_name;
 
       UInt32 cookie1, cookie2;
@@ -210,7 +212,7 @@ bool refalrts::Module::find_unresolved_externals_rasl(
 
       RefalFuncName name(str_name + 1, cookie1, cookie2);
       RefalFunction *function = lookup_function(name);
-      items[i].function = function;
+      items_pointers[i] = function;
       if (! function) {
         ModuleLoadingErrorDetail detail;
         detail.func_name = name;
@@ -474,7 +476,8 @@ refalrts::Module::Loader::read_const_table() {
   new_table->cookie1 = fixed_part.cookie1;
   new_table->cookie2 = fixed_part.cookie2;
 
-  new_table->externals.resize(fixed_part.external_count);
+  new_table->externals_names.resize(fixed_part.external_count);
+  new_table->externals_pointers.resize(fixed_part.external_count);
   new_table->external_memory.resize(fixed_part.external_size);
   read = fread(&new_table->external_memory[0], 1, fixed_part.external_size);
   PARSE_ASSERT(
@@ -483,7 +486,7 @@ refalrts::Module::Loader::read_const_table() {
   );
   const char *next_external_name = &new_table->external_memory[0];
   for (size_t i = 0; i < fixed_part.external_count; ++i) {
-    new_table->externals[i].func_name = next_external_name;
+    new_table->externals_names[i] = next_external_name;
     PARSE_ASSERT(
       next_external_name < &*new_table->external_memory.end(),
       "bad count of external names in CONST_TABLE"
@@ -582,7 +585,7 @@ void refalrts::Module::Loader::enumerate_blocks() {
             new RASLFunction(
               table->make_name(name),
               &table->rasl[offset],
-              &table->externals[0],
+              &table->externals_pointers[0],
               &table->idents[0],
               &table->numbers[0],
               &table->strings[0],

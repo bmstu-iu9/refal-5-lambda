@@ -89,7 +89,7 @@ private:
     refalrts::Iter begin;
     refalrts::Iter end;
     const refalrts::RASLCommand *rasl;
-    const refalrts::FunctionTableItem *functions;
+    RefalFunction **functions;
     const refalrts::RefalIdentifier *idents;
     const refalrts::RefalNumber *numbers;
     const refalrts::StringItem *strings;

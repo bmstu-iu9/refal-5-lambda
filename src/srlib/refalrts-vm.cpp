@@ -153,8 +153,6 @@ refalrts::VM::free_states_stack() {
 refalrts::FnResult refalrts::VM::execute_zero_arity_function(
   refalrts::RefalFunction *func, refalrts::Iter pos
 ) {
-  FunctionTableItem entry_point[1] = { FunctionTableItem(func) };
-
   if (! pos) {
     pos = & m_swap_hedge;
   }
@@ -179,7 +177,7 @@ refalrts::FnResult refalrts::VM::execute_zero_arity_function(
   start_state->begin = pos; /* нужно для icSetResArgBegin в startup_rasl */
   start_state->end = 0;
   start_state->rasl = startup_rasl;
-  start_state->functions = entry_point;
+  start_state->functions = &func;
   start_state->idents = 0;
   start_state->numbers = 0;
   start_state->strings = 0;
@@ -571,7 +569,7 @@ refalrts::FnResult refalrts::VM::main_loop(const RASLCommand *rasl) {
   RefalFunction *callee = 0;
   Iter begin = 0;
   Iter end = 0;
-  const FunctionTableItem *functions = 0;
+  RefalFunction **functions = 0;
   const RefalIdentifier *idents = 0;
   const RefalNumber *numbers = 0;
   const StringItem *strings = 0;
@@ -809,32 +807,32 @@ JUMP_FROM_SCALE:
         break;
 
       case icNameLeft:
-        if (! function_left(functions[val2].function, bb, be)) {
+        if (! function_left(functions[val2], bb, be)) {
           MATCH_FAIL;
         }
         break;
 
       case icNameRight:
-        if (! function_right(functions[val2].function, bb, be)) {
+        if (! function_right(functions[val2], bb, be)) {
           MATCH_FAIL;
         }
         break;
 
       case icNameTerm:
-        if (! function_term(functions[val2].function, bb)) {
+        if (! function_term(functions[val2], bb)) {
           MATCH_FAIL;
         }
         break;
 
       case icNameSaveLeft:
-        save_pos = function_left(functions[val2].function, bb, be);
+        save_pos = function_left(functions[val2], bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
       case icNameSaveRight:
-        save_pos = function_right(functions[val2].function, bb, be);
+        save_pos = function_right(functions[val2], bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
@@ -915,19 +913,19 @@ JUMP_FROM_SCALE:
         break;
 
       case icADTLeft:
-        if (! adt_left(res_b, res_e, functions[val1].function, bb, be)) {
+        if (! adt_left(res_b, res_e, functions[val1], bb, be)) {
           MATCH_FAIL;
         }
         break;
 
       case icADTRight:
-        if (! adt_right(res_b, res_e, functions[val1].function, bb, be)) {
+        if (! adt_right(res_b, res_e, functions[val1], bb, be)) {
           MATCH_FAIL;
         }
         break;
 
       case icADTTerm:
-        if (! adt_term(res_b, res_e, functions[val1].function, bb)) {
+        if (! adt_term(res_b, res_e, functions[val1], bb)) {
           MATCH_FAIL;
         }
         break;
@@ -935,7 +933,7 @@ JUMP_FROM_SCALE:
       case icADTSaveLeft:
         {
           int inner = val2;
-          const RefalFunction *tag = functions[val1].function;
+          const RefalFunction *tag = functions[val1];
           context[inner + 2] =
             adt_left(context[inner], context[inner + 1], tag, bb, be);
           if (! context[inner + 2]) {
@@ -950,7 +948,7 @@ JUMP_FROM_SCALE:
       case icADTSaveRight:
         {
           int inner = val2;
-          const RefalFunction *tag = functions[val1].function;
+          const RefalFunction *tag = functions[val1];
           context[inner + 2] =
             adt_right(context[inner], context[inner + 1], tag, bb, be);
           if (! context[inner + 2]) {
@@ -965,7 +963,7 @@ JUMP_FROM_SCALE:
       case icADTSaveTerm:
         {
           int inner = val2;
-          const RefalFunction *tag = functions[val1].function;
+          const RefalFunction *tag = functions[val1];
           context[inner + 2] =
             adt_term(context[inner], context[inner + 1], tag, bb);
           if (! context[inner + 2]) {
@@ -1210,7 +1208,7 @@ JUMP_FROM_SCALE:
         break;
 
       case icAllocateName:
-        if (! alloc_name(elem, functions[val2].function)) {
+        if (! alloc_name(elem, functions[val2])) {
           return cNoMemory;
         }
         break;
@@ -1269,7 +1267,7 @@ JUMP_FROM_SCALE:
         break;
 
       case icReinitName:
-        reinit_name(elem, functions[val2].function);
+        reinit_name(elem, functions[val2]);
         break;
 
       case icReinitNumber:
@@ -1302,7 +1300,7 @@ JUMP_FROM_SCALE:
         break;
 
       case icUpdateName:
-        update_name(elem, functions[val2].function);
+        update_name(elem, functions[val2]);
         break;
 
       case icUpdateNumber:
