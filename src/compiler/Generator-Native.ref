@@ -131,6 +131,15 @@ GenCommand-Native {
   (e.Indent) (CmdComment e.Text)
     = (e.Indent) (e.Indent '//' <FormatOffsets e.Text>);
 
+  (e.Indent) (CmdCEnum-Start e.Prefix)
+    = (e.Indent) () (e.Indent 'enum ' e.Prefix ' {');
+
+  (e.Indent) (CmdCEnum-End) = (e.Indent) (e.Indent '};') ();
+
+  (e.Indent) (CmdCEnum-Item (e.Prefix) e.Name s.Id)
+     = (e.Indent)
+       (e.Indent '  ' e.Prefix '_' <CName e.Name> ' = ' <Symb s.Id> ',');
+
   /* -------------------------------------------------------------------------*/
   /* Команды режима прямой кодогенерации */
   /* Создание глобальных объектов, общие команды */

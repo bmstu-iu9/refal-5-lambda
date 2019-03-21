@@ -15,7 +15,7 @@ $EXTERN Map, MapReduce, Sort;
   instead (Function …).
 */
 $ENTRY LowLevelRASL-Native {
-  s.Hash1 s.Hash2 t.Tables e.Items
+  s.Hash1 s.Hash2 (t.FuncTable t.IdentTable) e.Items
     = <Map (&SetCookies s.Hash1 s.Hash2) e.Items> : e.Items^
     = <MapReduce
         &ClassifyItems-Native
@@ -33,8 +33,23 @@ $ENTRY LowLevelRASL-Native {
           = <FillImplicitDeclarations e.DefinitionsRASL (e.Declarations)>
           : e.DefinitionsRASL^ (e.Declarations^)
 
-          = ((CmdCookieNS s.Hash1 s.Hash2) e.Declarations e.DefinitionsRASL);
+          = (
+              (CmdCookieNS s.Hash1 s.Hash2)
+              <PrepareTable 'efunc' t.FuncTable>
+              <PrepareTable 'eword' t.IdentTable>
+              e.Declarations
+              e.DefinitionsRASL
+            );
       };
+}
+
+PrepareTable {
+  e.Prefix (0 /* пусто */) = /* пусто */;
+
+  e.Prefix (s.Count e.Items)
+    = (CmdCEnum-Start e.Prefix)
+      <Map { (s.Id e.Name) = (CmdCEnum-Item (e.Prefix) e.Name s.Id) } e.Items>
+      (CmdCEnum-End);
 }
 
 SetCookies {
