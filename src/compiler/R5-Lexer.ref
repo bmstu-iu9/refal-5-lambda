@@ -432,9 +432,17 @@ DoHexDigit {
   /* нет образцов */ s.BadVal s.Digit = /* пусто */;
 }
 
+MakeCompound {
+  t.Pos e.Compound-B '\x00' e.Compound-E
+    = /* TODO: Выдавать предупреждение */
+      (TkCompound t.Pos e.Compound-B);
+
+  t.Pos e.Compound = (TkCompound t.Pos e.Compound);
+}
+
 DoScan-Compound {
   t.StartPos t.Pos (e.Compound) ('\"' e.Line) e.Lines
-    = (TkCompound t.StartPos e.Compound)
+    = <MakeCompound t.StartPos e.Compound>
       <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
 
   t.StartPos t.Pos (e.Compound) ('\\' e.Line) e.Lines
@@ -475,6 +483,6 @@ DoScan-Compound-HandleEscape {
 
   t.StartPos t.Pos (e.Compound) () e.Lines
     = (TkError t.Pos 'Unexpected \\ at end of compound literal')
-      (TkCompound t.StartPos e.Compound)
+      <MakeCompound t.StartPos e.Compound>
       <DoScan <IncLine t.Pos> e.Lines>;
 }

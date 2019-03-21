@@ -87,7 +87,14 @@ NormalizeToken {
   (#TkCompound '"' e.CompoundRep '"')
     // Всегда успешно, это гарантируется конечным автоматом
     = <UnEscapeString-SR e.CompoundRep> : #Success e.Compound
-    = (#TkCompound e.Compound);
+    = e.Compound
+    : {
+      e.Compound-B '\x00' e.Compound-E
+        = /* TODO: Выдавать предупреждение */
+          (#TkCompound e.Compound-B);
+
+      e.Compound^ = (#TkCompound e.Compound);
+    };
 
   (#TkName e.Name) = (#TkName e.Name);
 

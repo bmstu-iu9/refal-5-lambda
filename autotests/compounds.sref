@@ -7,8 +7,8 @@ $ENTRY Go {
     <Eq <F "Abcd""Efgh"> 4>
     <Eq <F "\1234"> 5>
     <Eq <F "\d1234"> 6>
-    /*<Eq <F "ABC\0DEF"> 7>*/ //TODO!!!
-    ;
+    <Eq <F "ABC\0DEF"> 7>
+    <Eq <F "ABC\0XYZ"> 7>;
 }
 
 Eq { s.X s.X = ; }
