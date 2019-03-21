@@ -284,6 +284,10 @@
     t.HiCommand ::=
         t.StatementCommand
       | t.SingleCommand
+      | (s.MatchCommand s.Direction s.Offset e.MatchInfo)
+      | (s.MatchSave s.Direction s.Offset e.MatchSaveInfo)
+      | (CmdCreateElem s.CreateMode s.Offset s.CreateType e.AllocInfo)
+      | (CmdCreateElem s.CreateMode s.Offset ElString e.String)
 
     t.StatementCommand ::=
         (CmdSentence e.HiCommands)
@@ -293,12 +297,10 @@
         (CmdIssueMemory s.Offset)
       | (CmdInitB0)
       | (CmdInitB0-Lite)
-      | (s.MatchCommand s.Direction s.Offset e.MatchInfo)
       | (CmdSave s.OldOffset s.NewOffset)
       | (CmdComment e.Text)
       | (CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset)
       | (CmdResetAllocator)
-      | (CmdCreateElem s.CreateMode s.Offset s.CreateType e.AllocInfo)
       | (CmdCopyVar s.Mode s.VarOffset s.SampleOffset
       | (CmdInsertElem s.Offset)
       | (CmdInsertRange s.Offset)
@@ -307,7 +309,6 @@
       | (CmdWrapClosure s.Offset)
       | (CmdPushStack s.Offset)
       | (CmdFail)
-      | (s.MatchSave s.Direction s.Offset e.MatchSaveInfo)
       | (CmdInsertTile s.BeginOffset s.EndOffset)
       | (CmdSetRes s.R-Offset)
       | (CmdTrash s.L-Offset)
@@ -319,23 +320,23 @@
       | (CmdCallCondition)
 
     s.MatchCommand e.MatchInfo ::=
-        CmdBrackets s.NewBracketsOffset
-      | CmdADT s.NewBracketsOffset e.Name
-      | CmdNumber s.Number
-      | CmdIdent e.Name
+        CmdADT s.NewBracketsOffset e.Name
+      | CmdBrackets s.NewBracketsOffset
       | CmdChar s.Char
-      | CmdName e.Name
-      | CmdRepeated s.Mode s.VarOffset s.SampleOffset
       | CmdEmpty
+      | CmdIdent e.Name
+      | CmdName e.Name
+      | CmdNumber s.Number
+      | CmdRepeated s.Mode s.VarOffset s.SampleOffset
       | CmdVar s.Mode s.VarOffset
 
     s.MatchSaveCommand e.MatchSaveInfo
-        CmdBracketsSave s.NewBracketsOffset
-      | CmdADTSave s.NewBracketsOffset e.Name
-      | CmdNumberSave s.SaveOffset s.Number
-      | CmdIdentSave s.SaveOffset e.Name
+        CmdADTSave s.NewBracketsOffset e.Name
+      | CmdBracketsSave s.NewBracketsOffset
       | CmdCharSave s.SaveOffset s.Char
+      | CmdIdentSave s.SaveOffset e.Name
       | CmdNameSave s.SaveOffset e.Name
+      | CmdNumberSave s.SaveOffset s.Number
       | CmdRepeatedSave 't' s.VarOffset s.SampleOffset
       | CmdVarSave 't' s.VarOffset
 
@@ -567,6 +568,9 @@ e-переменные, распределяемые последователь�
       | (CmdOpenedE-Start s.Direction s.RangeOffset s.VarOffset)
       | (CmdOpenedE-End s.Direction s.RangeOffset s.VarOffset)
       | (CmdCallCondition)
+      | (s.iMatchCommand s.Direction s.Offset e.iMatchInfo)
+      | (s.iMatchSaveCommand s.Direction s.Offset s.iMatchSaveInfo)
+      | (CmdCreateElem s.CreateMode s.Offset s.iCreateType e.iCreateInfo)
 
     t.NativeDeclarationCommand ::=
         (CmdExtern e.CookiedName)
@@ -578,13 +582,7 @@ e-переменные, распределяемые последователь�
       | (CmdConditionFuncDescrNative s.ScopeClass e.Name)
 
     t.InterpretCommand ::=
-        (CmdFuncArray (e.Name)*)
-      | (CmdIdentArray (e.Name)*)
-      | (CmdNumberArray s.NUMBER*)
-      | (CmdStringArray (e.String)*)
-      | (CmdInitRAA e.Name)
-      | t.InterpretArrayLines
-      | (CmdFinRAA)
+        t.InterpretArrayLines
       | (CmdIssueMemory s.Memory)
       | (CmdReserveBacktrackStack s.Depth)
       | (LABEL s.LabelId)
@@ -597,10 +595,10 @@ e-переменные, распределяемые последователь�
       | (CmdSave s.OldOffset s.NewOffset)
       | (CmdEPrepare s.RangeOffset s.VarOffset)
       | (CmdEStart s.RangeOffset s.VarOffset)
-      | (CmdEmpty s.Offset)
       | (CmdVariableDebugTable s.StringId s.Offset)
       | (CmdResetAllocator)
       | (CmdCreateElem s.CreateMode s.Offset s.iCreateType e.iCreateInfo)
+      | (CmdCreateElem s.CreateMode s.Offset ElString s.StringId)
       | (CmdCopyVar s.Mode s.VarOffset s.SampleOffset)
       | (CmdInsertElem s.Offset)
       | (CmdInsertRange s.Offset)
@@ -623,40 +621,46 @@ e-переменные, распределяемые последователь�
     s.LabelId ::= s.NUMBER
 
     s.iMatchCommand e.iMatchInfo ::=
-        CmdRepeat s.Mode s.VarOffset s.SampleOffset
-      | CmdADT s.NewRangeOffset s.NameId
-      | CmdChar s.Char
-      | CmdVar s.Mode s.VarOffset
-      | CmdName s.NameId e.Name
-      | CmdIdent s.NameId e.Name
-      | CmdNumber s.NUMBER
-      | CmdHugeNum s.NumberId
+        CmdADT s.NewRangeOffset s.NameId e.Name
       | CmdBracket s.NewRangeOffset
+      | CmdChar s.Char
+      | CmdEmpty
+      | CmdIdent s.NameId e.Name
+      | CmdName s.NameId e.Name
+      | CmdNumber s.NUMBER
+      | CmdRepeat s.Mode s.VarOffset s.SampleOffset
+      | CmdVar s.Mode s.VarOffset
 
     s.iMatchSaveCommand e.iMatchSaveInfo ::=
-        CmdRepeatedSave s.Mode s.VarOffset s.SampleOffset
-      | CmdADTSave s.NewRangeOffset s.NameId
-      | CmdCharSave s.SaveOffset s.Char
-      | CmdVarSave s.Mode s.VarOffset
-      | CmdNameSave s.SaveOffset s.NameId e.Name
-      | CmdIdentSave s.SaveOffset s.NameId e.Name
-      | CmdNumberSave s.SaveOffset s.NUMBER
-      | CmdHugeNumSave s.SaveOffset s.NumberId
+        CmdADTSave s.NewRangeOffset s.NameId e.Name
       | CmdBracketSave s.NewRangeOffset
+      | CmdCharSave s.SaveOffset s.Char
+      | CmdIdentSave s.SaveOffset s.NameId e.Name
+      | CmdNameSave s.SaveOffset s.NameId e.Name
+      | CmdNumberSave s.SaveOffset s.NUMBER
+      | CmdRepeatedSave s.Mode s.VarOffset s.SampleOffset
+      | CmdVarSave s.Mode s.VarOffset
 
     s.iCreateType e.iCreateInfo ::=
         ElChar s.Char
       | ElName s.NameId e.Name
       | ElIdent s.NameId e.Name
-      | ElHugeNumber s.NumberId
       | ElNumber s.NUMBER
-      | ElString s.StringId
       | ElOpenADT | ElCloseADT
       | ElOpenBracket | ElCloseBracket
       | ElOpenCall | ElCloseCall
       | ElClosureHead
       | ElUnwrappedClosure s.HeadOffset
 
+* `(s.LiteralArray t.LiteralItem*)` — массив литеральных значений. Поскольку
+  массивы команд в качестве аргументов могут использовать только 8-битные
+  целые, для аргуметов других типов описываются массивы, а в интерпретируемых
+  командах используются индексы массивов. `s.LiteralArray t.LiteralItem`:
+  * `CmdFuncArray e.Name` — массив указателей на функции,
+  * `CmdIdentArray e.Name` — массив идентификаторов,
+  * `CmdNumberArray s.NUMBER` — массив больших (>255) чисел,
+    сейчас не используется,
+  * `CmdStringArray e.String` — массив строк.
 * `e.RASL` — последовательность элементарных команд. Каждая из них отображается
   в команду интерпретируемого кода.
 * `e.NativeRASL` — последовательность элементарных команд. Каждая из них
@@ -696,17 +700,7 @@ e-переменные, распределяемые последователь�
     идентификатором `s.NameId e.Name`, идентификатор не используется, добавлен
     для универсальности.
 * `t.InterpretCommand` — команды режима интерпретации:
-  * `(s.LiteralArray t.LiteralItem*)` — массив литеральных значений. Поскольку
-    массивы команд в качестве аргументов могут использовать только 8-битные
-    целые, для аргуметов других типов описываются массивы, а в интерпретируемых
-    командах используются индексы массивов. `s.LiteralArray t.LiteralItem`:
-    * `CmdFuncArray e.Name` — массив указателей на функции,
-    * `CmdIdentArray e.Name` — массив идентификаторов,
-    * `CmdNumberArray s.NUMBER` — массив больших (>255) чисел,
-    * `CmdStringArray e.String` — массив строк.
-  * `(CmdInitRAA e.Name)` — заголовок массива интерпретируемых команд.
   * `t.InterpretArrayLines` — команды, генерирующие строчки массива.
-  * `(CmdFinRAA)` — последняя строка массива и закрывающая фигурная скобка.
   * `(CmdIssueMemory s.Memory)` — резервирование памяти для указателей на узлы.
   * `(CmdReserveBacktrackStack s.Depth)` — резервирование стека для переходов
     по ошибкам сопоставления. Команды инициализации цикла по открытым
@@ -720,9 +714,6 @@ e-переменные, распределяемые последователь�
   команды сопоставления запускают _откат._
   * `(s.iMatchCommand s.Direction s.Offset e.iMatchInfo)`.
     При неудаче сопоставления эти команды запускают _откат._
-    Отдельное замечание: `CmdNum` соответствует числу, влезающему в 8 бит,
-    её аргумент записывается непосредственно в массив. `CmdHugeNum` ссылается
-    на число в массиве `numbers` по индексу.
   * `s.iMatchSaveCommand` → `s.iMatchCommand` × `s.MatchSave`.
   * `CmdEPrepare` и `CmdEStart` в генерируемом коде всегда располагаются
     рядом (но заменить их одной командой нельзя). Интерпретатор, обнаружив…
@@ -737,8 +728,6 @@ e-переменные, распределяемые последователь�
   * `(CmdiVariableDebugTable s.StringId s.Offset)` → `CmdVariableDebugTable`.
     Человекочитаемое имя хранится в таблице строк.
   * `(CmdCreateElem s.CreateMode s.Offset s.iAllocType e.iAllocInfo)`.
-    Оговорка о `ElNumber` и `ElHugeNumber` та же,
-    что и для `CmdNum` и `CmdHugeNum`.
   * `(CmdOnFailGoTo s.LabelId "Func name:" e.CookiedName)` — кладёт на стек
     откатов адрес команды, с которой начинается следующее предложение.
     Смещение этой команды задаётся именем метки,
