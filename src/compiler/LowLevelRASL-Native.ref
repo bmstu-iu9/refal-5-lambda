@@ -158,12 +158,14 @@ PrepareFunctionsRASL {
   (Function-ToNative (e.Name) e.Body)
     = (CmdFnStart e.Name)
       (CmdProfileFunction)
+      (CmdLoadConstants)
       <ConvertDirectCommands e.Body>
       (CmdFnEnd)
       (CmdNativeFuncDescr e.Name);
 
   (CmdNativeFunction (e.Name) t.SrcPos e.Code)
     = (CmdFnStart e.Name)
+      (CmdLoadConstants)
       (CmdEmitNativeCode t.SrcPos e.Code)
       (CmdFnEnd)
       (CmdNativeFuncDescr e.Name);

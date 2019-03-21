@@ -99,8 +99,12 @@ PrintBracketsVarInit {
     ;
 }
 
-CNameAlias {
-  e.RegularName = 'ref_' <CName e.RegularName> '.ref(vm)';
+FunctionImage {
+  e.Name = 'functions[efunc_' <CName e.Name> ']';
+}
+
+IdentifierImage {
+  e.Name = 'identifiers[eword_' <CName e.Name> ']';
 }
 
 BaseCName {
@@ -206,6 +210,12 @@ GenCommand-Native {
   (e.Indent) (CmdProfileFunction) =
     (e.Indent)
     (e.Indent 'refalrts::this_is_generated_function(vm);');
+
+  (e.Indent) (CmdLoadConstants)
+    = (e.Indent)
+      ('  refalrts::RefalFunction **functions;')
+      ('  const refalrts::RefalIdentifier *identifiers;')
+      ('  refalrts::load_constants(arg_begin, &functions, &identifiers);');
 
   (e.Indent) (CmdIssueMemory s.Number) =
     (e.Indent)
@@ -583,7 +593,7 @@ PrintMatchName {
   (e.Indent) s.Direction s.BracketNumber e.Name =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
-      ('function') <CNameAlias e.Name>
+      ('function') <FunctionImage e.Name>
     >;
 }
 
@@ -591,7 +601,7 @@ PrintMatchNameSave {
   (e.Indent) s.Offset s.Direction s.BracketNumber e.Name =
     <PrintMatchSave
       (e.Indent) s.Offset s.Direction s.BracketNumber
-      ('function') <CNameAlias e.Name>
+      ('function') <FunctionImage e.Name>
     >;
 }
 
@@ -599,7 +609,7 @@ PrintMatchIdent {
   (e.Indent) s.Direction s.BracketNumber e.Name =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
-      ('ident') ' ident_' <CName e.Name> '.ref(vm)'
+      ('ident') <IdentifierImage e.Name>
     >;
 }
 
@@ -607,7 +617,7 @@ PrintMatchIdentSave {
   (e.Indent) s.Offset s.Direction s.BracketNumber e.Name =
     <PrintMatchSave
       (e.Indent) s.Offset s.Direction s.BracketNumber
-      ('ident') ' ident_' <CName e.Name> '.ref(vm)'
+      ('ident') <IdentifierImage e.Name>
     >;
 }
 
@@ -641,7 +651,7 @@ PrintMatchADT {
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
       ('adt')
-      <ContextRange s.InnerNum> ', ' <CNameAlias e.Name>
+      <ContextRange s.InnerNum> ', ' <FunctionImage e.Name>
     >;
 }
 
@@ -651,7 +661,7 @@ PrintMatchADTSave {
       <ContextItem <Add s.InnerNum 2>> ' = '
       'refalrts::adt_term('
       <ContextRange s.InnerNum> ', '
-      <CNameAlias e.Name> ', '
+      <FunctionImage e.Name> ', '
       <ContextItem s.Offset> ');'
     )
     (e.Indent 'if( ! ' <ContextItem <Add s.InnerNum 2>> ' )')
@@ -662,7 +672,7 @@ PrintMatchADTSave {
       (e.Indent) <Add 2 s.InnerNum> s.Direction s.BracketNumber
       ('adt')
       <ContextRange s.InnerNum> ', '
-      <CNameAlias e.Name>
+      <FunctionImage e.Name>
     >
     (
       e.Indent
@@ -841,11 +851,11 @@ AllocatorFuncName {
 AllocatorFuncArgument {
   ElChar s.Char = ', \'' <EscapeChar s.Char> '\'';
 
-  ElName s.Num e.Name = ', ' <CNameAlias e.Name>;
+  ElName s.Num e.Name = ', ' <FunctionImage e.Name>;
 
   ElNumber s.Number = ', ' <Symb s.Number> 'UL';
 
-  ElIdent s.Num e.Name = ', ident_' <CName e.Name> '.ref(vm)';
+  ElIdent s.Num e.Name = ', ' <IdentifierImage e.Name>;
 
   ElUnwrappedClosure s.HeadOffset = ', ' <ContextItem s.HeadOffset>;
 
