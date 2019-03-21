@@ -17,8 +17,8 @@ Mu {
 }
 
 __Mu-Aux {
-  '+' = Add; '/' = Div; '%' = Mod; '*' = Mul; '?' = Residue; '-' = Sub;
-  "+" = Add; "/" = Div; "%" = Mod; "*" = Mul; "?" = Residue; "-" = Sub;
+  '+' = &Add; '/' = &Div; '%' = &Mod; '*' = &Mul; '?' = &Residue; '-' = &Sub;
+  "+" = &Add; "/" = &Div; "%" = &Mod; "*" = &Mul; "?" = &Residue; "-" = &Sub;
 
   t.Function
     = <Type t.Function>
