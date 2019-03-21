@@ -25,8 +25,6 @@ namespace refalrts {
 // инициализация:
 //   X x = { ... };
 struct NativeModule {
-  IdentReference *list_idents;
-  unsigned int next_ident_id;
   ExternalReference *list_externals;
   unsigned int next_external_id;
   size_t global_variables_memory;
@@ -157,7 +155,6 @@ private:
   std::list<ConstTable*> m_unresolved_func_tables;
   FuncsMap m_funcs_table;
   std::list<ConstTable> m_tables;
-  std::vector<RefalIdentifier> m_native_identifiers;
   std::vector<RefalFunction*> m_native_externals;
   NativeModule *m_native;
   std::vector<char> m_global_variables;
@@ -181,10 +178,6 @@ public:
   ~Module();
 
   bool find_unresolved_externals(LoadModuleEvent event, void *callback_data);
-
-  RefalIdentifier operator[](const IdentReference& ref) const {
-    return m_native_identifiers[ref.id];
-  }
 
   RefalFunction *lookup_function(const RefalFuncName& name);
 
@@ -234,7 +227,6 @@ public:
 
 private:
   RefalFunction *lookup_function_aux(const RefalFuncName& name);
-  void load_native_identifiers();
   void register_function(RefalFunction *func);
   bool find_unresolved_externals_rasl(
     LoadModuleEvent event, void *callback_data

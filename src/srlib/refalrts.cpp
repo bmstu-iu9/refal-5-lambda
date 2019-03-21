@@ -21,7 +21,7 @@
 //FROM refalrts-platform-specific
 #include "refalrts-platform-specific.h"
 
-struct refalrts::NativeModule g_module = { 0, 0, 0, 0, 0, 0 };
+struct refalrts::NativeModule g_module = { 0, 0, 0, 0 };
 
 namespace refalrts {
 
@@ -693,19 +693,6 @@ refalrts::RefalIdentifier refalrts::ident_implode(
   refalrts::VM *vm, const char *name
 ) {
   return ident_implode(vm->domain(), name);
-}
-
-refalrts::IdentReference::IdentReference(const char *name)
-  : name(name)
-  , next(g_module.list_idents)
-  , id(g_module.next_ident_id++)
-{
-  g_module.list_idents = this;
-}
-
-refalrts::RefalIdentifier
-refalrts::IdentReference::ref(refalrts::VM *vm) const {
-  return (*vm->module())[*this];
 }
 
 //------------------------------------------------------------------------------

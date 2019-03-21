@@ -29,7 +29,6 @@ refalrts::Module::Module(
   : m_unresolved_func_tables()
   , m_funcs_table()
   , m_tables()
-  , m_native_identifiers()
   , m_native_externals()
   , m_native(native)
   , m_global_variables()
@@ -52,7 +51,6 @@ refalrts::Module::Module(
     Loader loader(this, module_name.c_str());
     loader.enumerate_blocks();
     if (m_native) {
-      load_native_identifiers();
       alloc_global_variables();
       success = resolve_native_functions(event, callback_data);
     } else {
@@ -87,23 +85,6 @@ refalrts::Module::~Module() {
   }
 }
 
-
-//------------------------------------------------------------------------------
-// Идентификаторы
-//------------------------------------------------------------------------------
-
-void refalrts::Module::load_native_identifiers() {
-  m_native_identifiers.resize(m_native->next_ident_id);
-
-  for (IdentReference *p = m_native->list_idents; p != 0; p = p->next) {
-    assert(p->id < m_native->next_ident_id);
-    RefalIdentifier ident = ident_implode(m_domain, p->name);
-    if (! ident) {
-      throw AllocIdentifierError();
-    }
-    m_native_identifiers[p->id] = ident;
-  }
-}
 
 //------------------------------------------------------------------------------
 // Функции

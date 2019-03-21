@@ -113,16 +113,6 @@ inline RefalIdentifier ident_implode(Domain *domain, const char *name) {
 
 RefalIdentifier ident_implode(VM *vm, const char *name);
 
-struct IdentReference {
-  const char *const name;
-  IdentReference *const next;
-  unsigned int const id;
-
-  IdentReference(const char *name);
-
-  RefalIdentifier ref(VM *vm) const;
-};
-
 struct Node {
   NodePtr prev;
   NodePtr next;
