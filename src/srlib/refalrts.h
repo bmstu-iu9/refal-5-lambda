@@ -161,6 +161,12 @@ extern void use(Iter&);
 
 void zeros(Iter context[], int size);
 
+void load_constants(
+  Iter arg_begin,
+  RefalFunction ***functions,
+  const RefalIdentifier **identifiers
+);
+
 // Операции реинициализации
 
 extern void reinit_svar(Iter res, Iter sample);

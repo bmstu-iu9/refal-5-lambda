@@ -46,6 +46,23 @@ void refalrts::zeros(refalrts::Iter context[], int size){
   }
 }
 
+void refalrts::load_constants(
+  refalrts::Iter arg_begin,
+  refalrts::RefalFunction ***functions,
+  const refalrts::RefalIdentifier **identifiers
+) {
+  Iter callee = arg_begin->next;
+  assert(callee->tag == cDataFunction);
+
+  RefalFunction *func = callee->function_info;
+  assert(func->rasl == RefalNativeFunction::run);
+
+  RefalNativeFunction *nat_func = static_cast<RefalNativeFunction*>(func);
+
+  *functions = nat_func->functions;
+  *identifiers = nat_func->idents;
+}
+
 void refalrts::use_counter(unsigned&) {
   /* Ничего не делаем. Эта функция добавляется, чтобы подавить предупреждение
   компилятора о том, что переменная не используется */;

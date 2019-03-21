@@ -49,9 +49,18 @@ private:
 
 struct RefalNativeFunction: public RefalFunction {
   RefalFunctionPtr ptr;
+  RefalFunction **functions;
+  const RefalIdentifier *idents;
 
-  RefalNativeFunction(RefalFunctionPtr ptr, RefalFuncName name)
+  RefalNativeFunction(
+    RefalFunctionPtr ptr,
+    RefalFunction **functions,
+    const RefalIdentifier *idents,
+    RefalFuncName name
+  )
     : RefalFunction(run, name), ptr(ptr)
+    , functions(functions)
+    , idents(idents)
   {
     /* пусто */
   }

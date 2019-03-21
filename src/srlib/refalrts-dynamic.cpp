@@ -599,7 +599,12 @@ void refalrts::Module::Loader::enumerate_blocks() {
         {
           PARSE_ASSERT(table != 0, "CONST_TABLE must precede any function");
           RefalNativeFunction *func =
-            new RefalNativeFunction(0, table->make_name(read_asciiz()));
+            new RefalNativeFunction(
+              0, /* указатель на нативный код */
+              &table->externals_pointers[0],
+              &table->idents[0],
+              table->make_name(read_asciiz())
+            );
           register_(func);
           m_module->m_unresolved_native_functions.push_back(func);
         }
