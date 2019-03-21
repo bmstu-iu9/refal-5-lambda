@@ -117,10 +117,6 @@ NameAndCookies {
     '"' <DisplayCName e.Name> '", ' <Symb s.Cookie1> 'U, ' <Symb s.Cookie2> 'U';
 }
 
-MakeRefalName {
-  e.Name = 'refalrts::RefalFuncName(' <NameAndCookies e.Name> ')';
-}
-
 FormatOffsets {
   e.Chars Offset s.Offset e.Text
     = e.Chars <Symb s.Offset> <FormatOffsets e.Text>;
@@ -150,18 +146,11 @@ GenCommand-Native {
 
   (e.Indent) (CmdDefineIdent e.Name) =
     (e.Indent)
-    (
-      'static const refalrts::IdentReference ident_' <CName e.Name>
-      '("' <DisplayCName e.Name> '");'
-    );
+    /* ничего не генерируем */;
 
   (e.Indent) (CmdExtern e.Name) =
     (e.Indent)
-    (
-      'static refalrts::ExternalReference ref_' <BaseCName e.Name> '('
-      <NameAndCookies e.Name>
-      ');'
-    );
+    /* ничего не генерируем */;
 
   (e.Indent) (CmdCookieNS s.Cookie1 s.Cookie2)
     = (e.Indent)
