@@ -536,9 +536,8 @@ e-переменные, распределяемые последователь�
       (
         (ModuleID s.Cookie1 s.Cookie2)
         (CmdFuncArray s.FunctionCount (s.ScopeClass e.FuncName)*)
-        (CmdIdentArray s.IdentCount (e.IdentName)*)
-        (CmdNumberArray s.NumberCount s.NUMBER*)
-        (CmdStringArray s.StringCount (s.CHAR*)*)
+        (CmdIdentArray s.IdentCount (s.IdentID e.IdentName)*)
+        (CmdStringArray s.StringCount (s.StringID s.CHAR*)*)
         (RASL e.RASL)
         (Items t.DeclarationCommand*)
       )
@@ -658,8 +657,6 @@ e-переменные, распределяемые последователь�
   командах используются индексы массивов. `s.LiteralArray t.LiteralItem`:
   * `CmdFuncArray e.Name` — массив указателей на функции,
   * `CmdIdentArray e.Name` — массив идентификаторов,
-  * `CmdNumberArray s.NUMBER` — массив больших (>255) чисел,
-    сейчас не используется,
   * `CmdStringArray e.String` — массив строк.
 * `e.RASL` — последовательность элементарных команд. Каждая из них отображается
   в команду интерпретируемого кода.

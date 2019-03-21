@@ -228,14 +228,11 @@ PrepareCommonRASL {
     = (CmdFuncArray
         s.FunctionCount <SetFunctionsScopeClass (e.FuncScopeClass) e.Functions>
       )
-      (CmdIdentArray s.IdentCount <Map &RemoveNumber e.Idents>)
-      (CmdNumberArray 0 /* empty */)
-      (CmdStringArray s.StringCount <Map &RemoveNumber e.Strings>)
+      (CmdIdentArray s.IdentCount e.Idents)
+      (CmdStringArray s.StringCount e.Strings)
       (RASL e.RASL-Commands)
       (Items e.Items);
 }
-
-RemoveNumber { (s.Number e.Name) = (e.Name); }
 
 GlueFunctionRASLs {
   e.Definitions
