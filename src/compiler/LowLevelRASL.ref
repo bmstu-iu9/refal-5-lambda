@@ -161,6 +161,10 @@ OutlineConstants {
     : t.Tables^ e.Commands^
     = t.Tables (Function s.ScopeClass (e.Name) e.Commands);
 
+  t.Tables (CmdDefineIdent e.Name)
+    = <UpdateIdentTable t.Tables e.Name> : t.Tables^ s.Id
+    = t.Tables (CmdDefineIdent e.Name);
+
   t.Tables t.OtherItem = t.Tables t.OtherItem;
 }
 
