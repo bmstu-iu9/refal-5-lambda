@@ -29,7 +29,6 @@ refalrts::Module::Module(
   : m_unresolved_func_tables()
   , m_funcs_table()
   , m_tables()
-  , m_native_externals()
   , m_native(native)
   , m_global_variables()
   , m_domain(domain)
@@ -159,8 +158,7 @@ bool refalrts::Module::find_unresolved_externals(
     ++unscanned;
   }
 
-  return find_unresolved_externals_rasl(event, callback_data)
-    && (! m_native || find_unresolved_externals_native(event, callback_data));
+  return find_unresolved_externals_rasl(event, callback_data);
 }
 
 bool refalrts::Module::find_unresolved_externals_rasl(
@@ -203,32 +201,6 @@ bool refalrts::Module::find_unresolved_externals_rasl(
     }
 
     m_unresolved_func_tables.pop_front();
-  }
-
-  return success;
-}
-
-bool refalrts::Module::find_unresolved_externals_native(
-  refalrts::LoadModuleEvent event, void *callback_data
-) {
-  bool success = true;
-
-  m_native_externals.resize(m_native->next_external_id);
-  for (
-    const ExternalReference *er = m_native->list_externals;
-    er != 0;
-    er = er->next
-  ) {
-    RefalFuncName name(er->name, er->cookie1, er->cookie2);
-    RefalFunction *function = lookup_function(name);
-    assert(er->id < m_native->next_external_id);
-    m_native_externals[er->id] = function;
-    if (! function) {
-      ModuleLoadingErrorDetail detail;
-      detail.func_name = name;
-      event(cModuleLoadingError_UnresolvedExternal, &detail, callback_data);
-      success = false;
-    }
   }
 
   return success;

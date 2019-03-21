@@ -21,7 +21,7 @@
 //FROM refalrts-platform-specific
 #include "refalrts-platform-specific.h"
 
-struct refalrts::NativeModule g_module = { 0, 0, 0, 0 };
+struct refalrts::NativeModule g_module = { 0, 0 };
 
 namespace refalrts {
 
@@ -719,23 +719,6 @@ const refalrts::RefalFuncName *refalrts::function_name(
   return &func->name;
 }
 
-
-refalrts::ExternalReference::ExternalReference(
-  const char *name, refalrts::UInt32 cookie1, refalrts::UInt32 cookie2
-)
-  : name(name)
-  , next(g_module.list_externals)
-  , cookie1(cookie1)
-  , cookie2(cookie2)
-  , id(g_module.next_external_id++)
-{
-  g_module.list_externals = this;
-}
-
-refalrts::RefalFunction *
-refalrts::ExternalReference::ref(refalrts::VM *vm) const {
-  return (*vm->module())[*this];
-}
 
 //------------------------------------------------------------------------------
 

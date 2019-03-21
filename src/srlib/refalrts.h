@@ -135,18 +135,6 @@ struct Node {
   }
 };
 
-struct ExternalReference {
-  const char *const name;
-  const ExternalReference *next;
-  const UInt32 cookie1;
-  const UInt32 cookie2;
-  const unsigned int id;
-
-  ExternalReference(const char *name, UInt32 cookie1, UInt32 cookie2);
-
-  RefalFunction *ref(VM *vm) const;
-};
-
 extern void use(Iter&);
 
 void zeros(Iter context[], int size);
