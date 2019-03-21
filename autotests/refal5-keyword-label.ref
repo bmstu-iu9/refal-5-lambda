@@ -6,7 +6,7 @@ $ENTRY Go {
   (void) arg_end;
 
   refalrts::RefalIdentifier mingled = refalrts::ident_implode(vm, "_-x");
-  if (mingled != ident_u_m_x.ref(vm)) {
+  if (mingled != identifiers[eword_u_m_x]) {
     return refalrts::cRecognitionImpossible;
   }
 

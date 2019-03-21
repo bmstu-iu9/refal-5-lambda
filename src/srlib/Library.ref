@@ -728,13 +728,13 @@ $LABEL stdin, stdout, stderr, stout;
 %%
 namespace {
 
-#define USE_IDENT(ident_name) (ident_ ## ident_name.ref(vm))
+#define USE_IDENT(ident_name) (identifiers[eword_ ## ident_name])
 
 enum { cMaxFileHandles = 40 };
 refalrts::GlobalRef<FILE*> g_file_handles(cMaxFileHandles);
 
 bool file_handle_left(
-  refalrts::VM *vm,
+  const refalrts::RefalIdentifier *identifiers,
   refalrts::Iter& pfile_handle, refalrts::Iter& first, refalrts::Iter& last
 ) {
   return refalrts::svar_left(pfile_handle, first, last)
@@ -752,7 +752,10 @@ bool file_handle_left(
     );
 }
 
-FILE *extract_file_handle(refalrts::VM *vm, refalrts::Iter pfile_handle) {
+FILE *extract_file_handle(
+  refalrts::VM *vm, const refalrts::RefalIdentifier *identifiers,
+  refalrts::Iter pfile_handle
+) {
   assert(
     refalrts::cDataNumber == pfile_handle->tag
     || refalrts::cDataIdentifier == pfile_handle->tag
@@ -841,7 +844,7 @@ Autoopen {
     ! refalrts::svar_left(pmode, content_b, content_e)
     || refalrts::cDataChar != pmode->tag
     || ('r' != pmode->char_info && 'w' != pmode->char_info)
-    || ! file_handle_left(vm, pfile_handle, content_b, content_e)
+    || ! file_handle_left(identifiers, pfile_handle, content_b, content_e)
     || ! refalrts::empty_seq(content_b, content_e)
   ) {
     return refalrts::cRecognitionImpossible;
@@ -875,7 +878,7 @@ Get-Aux {
   refalrts::Iter pfile_handle = 0;
 
   if (
-    ! file_handle_left(vm, pfile_handle, content_b, content_e)
+    ! file_handle_left(identifiers, pfile_handle, content_b, content_e)
     || ! refalrts::empty_seq(content_b, content_e)
   ) {
     return refalrts::cRecognitionImpossible;
@@ -883,7 +886,7 @@ Get-Aux {
 
   refalrts::reset_allocator(vm);
 
-  FILE *handle = extract_file_handle(vm, pfile_handle);
+  FILE *handle = extract_file_handle(vm, identifiers, pfile_handle);
   if (! handle) {
     return refalrts::cRecognitionImpossible;
   }
@@ -1229,7 +1232,7 @@ $ENTRY Open {
 
   refalrts::Iter pfile_handle = 0;
   if (
-    ! file_handle_left(vm, pfile_handle, content_b, content_e)
+    ! file_handle_left(identifiers, pfile_handle, content_b, content_e)
     || refalrts::cDataNumber != pfile_handle->tag
   ) {
     return refalrts::cRecognitionImpossible;
@@ -1324,7 +1327,7 @@ enum {
 };
 
 extern refalrts::FnResult fwrite_line(
-  refalrts::VM *vm,
+  refalrts::VM *vm, const refalrts::RefalIdentifier *identifiers,
   refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
 );
 
@@ -1334,14 +1337,14 @@ extern refalrts::FnResult fwrite_line(
 Put-Aux {
 %%
   return cookie_ns::fwrite_line(
-    vm, arg_begin, arg_end, cookie_ns::cFlags_Transparent
+    vm, identifiers, arg_begin, arg_end, cookie_ns::cFlags_Transparent
   );
 %%
 }
 
 %%
 refalrts::FnResult cookie_ns::fwrite_line(
-  refalrts::VM *vm,
+  refalrts::VM *vm, const refalrts::RefalIdentifier *identifiers,
   refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
 ) {
   refalrts::Iter content_b = 0;
@@ -1350,11 +1353,11 @@ refalrts::FnResult cookie_ns::fwrite_line(
 
   refalrts::Iter pfile_handle = 0;
 
-  if (! file_handle_left(vm, pfile_handle, content_b, content_e)) {
+  if (! file_handle_left(identifiers, pfile_handle, content_b, content_e)) {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = extract_file_handle(vm, pfile_handle);
+  FILE *handle = extract_file_handle(vm, identifiers, pfile_handle);
   if (! handle) {
     return refalrts::cRecognitionImpossible;
   }
@@ -1464,7 +1467,7 @@ $ENTRY Putout {
 
 Putout-Aux {
 %%
-  return cookie_ns::fwrite_line(vm, arg_begin, arg_end, 0);
+  return cookie_ns::fwrite_line(vm, identifiers, arg_begin, arg_end, 0);
 %%
 }
 
@@ -2374,7 +2377,7 @@ namespace cookie_ns {
 enum CloseMode { cCloseMode_Silent, cCloseMode_Fail };
 
 extern refalrts::FnResult close(
-  refalrts::VM *vm,
+  refalrts::VM *vm, const refalrts::RefalIdentifier *identifiers,
   refalrts::Iter arg_begin, refalrts::Iter arg_end, CloseMode mode
 );
 
@@ -2383,13 +2386,15 @@ extern refalrts::FnResult close(
 
 $ENTRY Close {
 %%
-  return cookie_ns::close(vm, arg_begin, arg_end, cookie_ns::cCloseMode_Silent);
+  return cookie_ns::close(
+    vm, identifiers, arg_begin, arg_end, cookie_ns::cCloseMode_Silent
+  );
 %%
 }
 
 %%
 refalrts::FnResult cookie_ns::close(
-  refalrts::VM *vm,
+  refalrts::VM *vm, const refalrts::RefalIdentifier *identifiers,
   refalrts::Iter arg_begin, refalrts::Iter arg_end, CloseMode mode
 ) {
   refalrts::Iter content_b = 0;
@@ -2398,13 +2403,13 @@ refalrts::FnResult cookie_ns::close(
 
   refalrts::Iter pfile_handle = 0;
   if (
-    ! file_handle_left(vm, pfile_handle, content_b, content_e)
+    ! file_handle_left(identifiers, pfile_handle, content_b, content_e)
     || ! refalrts::empty_seq(content_b, content_e)
   ) {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = extract_file_handle(vm, pfile_handle);
+  FILE *handle = extract_file_handle(vm, identifiers, pfile_handle);
   switch (mode) {
   case cookie_ns::cCloseMode_Silent:
     if (handle) {
@@ -2913,7 +2918,9 @@ $ENTRY Write {
 
 Write-Aux {
 %%
-  return cookie_ns::fwrite_line(vm, arg_begin, arg_end, cookie_ns::cFlags_NoEOL);
+  return cookie_ns::fwrite_line(
+    vm, identifiers, arg_begin, arg_end, cookie_ns::cFlags_NoEOL
+  );
 %%
 }
 
@@ -3099,7 +3106,9 @@ $ENTRY GetPPID {
 */
 $ENTRY FClose {
 %%
-  return cookie_ns::close(vm, arg_begin, arg_end, cookie_ns::cCloseMode_Fail);
+  return cookie_ns::close(
+    vm, identifiers, arg_begin, arg_end, cookie_ns::cCloseMode_Fail
+  );
 %%
 }
 
@@ -3133,7 +3142,7 @@ $ENTRY FReadLine {
 $ENTRY FWriteLine {
 %%
   return cookie_ns::fwrite_line(
-    vm, arg_begin, arg_end, cookie_ns::cFlags_ReturnHandle
+    vm, identifiers, arg_begin, arg_end, cookie_ns::cFlags_ReturnHandle
   );
 %%
 }
@@ -3413,11 +3422,11 @@ $ENTRY FWriteBytes {
 
   refalrts::Iter pfile_handle = 0;
 
-  if (! file_handle_left(vm, pfile_handle, content_b, content_e)) {
+  if (! file_handle_left(identifiers, pfile_handle, content_b, content_e)) {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = extract_file_handle(vm, pfile_handle);
+  FILE *handle = extract_file_handle(vm, identifiers, pfile_handle);
   if (! handle) {
     return refalrts::cRecognitionImpossible;
   }
@@ -3469,7 +3478,7 @@ $ENTRY FReadBytes {
   refalrts::Iter pcount_bytes = 0;
 
   if (
-    ! file_handle_left(vm, pfile_handle, content_b, content_e)
+    ! file_handle_left(identifiers, pfile_handle, content_b, content_e)
     || ! refalrts::svar_left(pcount_bytes, content_b, content_e)
     || refalrts::cDataNumber != pcount_bytes->tag
     || ! refalrts::empty_seq(content_b, content_e)
@@ -3479,7 +3488,7 @@ $ENTRY FReadBytes {
 
   refalrts::reset_allocator(vm);
 
-  FILE *handle = extract_file_handle(vm, pfile_handle);
+  FILE *handle = extract_file_handle(vm, identifiers, pfile_handle);
   if (! handle) {
     return refalrts::cRecognitionImpossible;
   }
@@ -3534,13 +3543,13 @@ $ENTRY FTell {
   refalrts::Iter pfile_handle = 0;
 
   if (
-    ! file_handle_left(vm, pfile_handle, content_b, content_e)
+    ! file_handle_left(identifiers, pfile_handle, content_b, content_e)
     || ! refalrts::empty_seq(content_b, content_e)
   ) {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = extract_file_handle(vm, pfile_handle);
+  FILE *handle = extract_file_handle(vm, identifiers, pfile_handle);
   if (! handle) {
     return refalrts::cRecognitionImpossible;
   }
@@ -3579,7 +3588,7 @@ $ENTRY FSeek {
   refalrts::Iter poffset = 0;
 
   if (
-    ! file_handle_left(vm, pfile_handle, content_b, content_e)
+    ! file_handle_left(identifiers, pfile_handle, content_b, content_e)
     || ! refalrts::svar_left(porigin, content_b, content_e)
     || refalrts::cDataIdentifier != porigin->tag
     || ! refalrts::svar_left(psign, content_b, content_e)
@@ -3591,7 +3600,7 @@ $ENTRY FSeek {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = extract_file_handle(vm, pfile_handle);
+  FILE *handle = extract_file_handle(vm, identifiers, pfile_handle);
   if (! handle) {
     return refalrts::cRecognitionImpossible;
   }
@@ -3800,7 +3809,7 @@ enum HandleExType {
 };
 
 bool module_handle_ex_left(
-  refalrts::VM *vm,
+  const refalrts::RefalIdentifier *identifiers,
   HandleExType& type,
   refalrts::Iter& sModuleHandleEx,
   refalrts::Iter& content_b,
@@ -3837,7 +3846,7 @@ $ENTRY Module-Mu {
   refalrts::Iter sModuleHandleEx = 0;
   if (
     ! cookie_ns::module_handle_ex_left(
-      vm, type, sModuleHandleEx, content_b, content_e
+      identifiers, type, sModuleHandleEx, content_b, content_e
     )
   ) {
     return refalrts::cRecognitionImpossible;
@@ -3896,7 +3905,7 @@ $ENTRY Module-Mu {
 
 %%
 bool cookie_ns::module_handle_ex_left(
-  refalrts::VM *vm,
+  const refalrts::RefalIdentifier *identifiers,
   cookie_ns::HandleExType& type,
   refalrts::Iter& sModuleHandleEx,
   refalrts::Iter& content_b,
@@ -4009,7 +4018,8 @@ refalrts::RefalFunction *cookie_ns::function_for_module(
 namespace cookie_ns {
 
 refalrts::FnResult find_function(
-  refalrts::VM *vm, refalrts::Iter arg_begin, refalrts::Iter arg_end,
+  refalrts::VM *vm, const refalrts::RefalIdentifier *identifiers,
+  refalrts::Iter arg_begin, refalrts::Iter arg_end,
   bool fail_down
 );
 
@@ -4018,14 +4028,15 @@ refalrts::FnResult find_function(
 
 $ENTRY Module-LookupFunction {
 %%
-  return cookie_ns::find_function(vm, arg_begin, arg_end, false);
+  return cookie_ns::find_function(vm, identifiers, arg_begin, arg_end, false);
 %%
 }
 
 %%
 
 refalrts::FnResult cookie_ns::find_function(
-  refalrts::VM *vm, refalrts::Iter arg_begin, refalrts::Iter arg_end,
+  refalrts::VM *vm, const refalrts::RefalIdentifier *identifiers,
+  refalrts::Iter arg_begin, refalrts::Iter arg_end,
   bool fail_down
 ) {
   refalrts::Iter content_b = 0;
@@ -4037,7 +4048,7 @@ refalrts::FnResult cookie_ns::find_function(
   refalrts::Iter sModuleHandleEx = 0;
   if (
     ! cookie_ns::module_handle_ex_left(
-      vm, type, sModuleHandleEx, content_b, content_e
+      identifiers, type, sModuleHandleEx, content_b, content_e
     )
   ) {
     return refalrts::cRecognitionImpossible;
@@ -4096,7 +4107,7 @@ refalrts::FnResult cookie_ns::find_function(
 */
 $ENTRY Module-FunctionPtr {
 %%
-  return cookie_ns::find_function(vm, arg_begin, arg_end, true);
+  return cookie_ns::find_function(vm, identifiers, arg_begin, arg_end, true);
 %%
 }
 
