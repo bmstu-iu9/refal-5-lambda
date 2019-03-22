@@ -25,7 +25,7 @@ $ENTRY LowLevelRASL-Native {
           = (
               (CmdCookieNS s.Hash1 s.Hash2)
               <PrepareTable 'efunc' t.FuncTable>
-              <PrepareTable 'eword' t.IdentTable>
+              <PrepareTable 'ident' t.IdentTable>
               e.DefinitionsRASL
             );
       };

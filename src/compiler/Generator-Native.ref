@@ -104,7 +104,7 @@ FunctionImage {
 }
 
 IdentifierImage {
-  e.Name = 'identifiers[eword_' <CName e.Name> ']';
+  e.Name = 'identifiers[ident_' <CName e.Name> ']';
 }
 
 BaseCName {

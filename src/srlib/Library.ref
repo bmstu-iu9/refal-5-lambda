@@ -728,7 +728,7 @@ $LABEL stdin, stdout, stderr, stout;
 %%
 namespace {
 
-#define USE_IDENT(ident_name) (identifiers[eword_ ## ident_name])
+#define USE_IDENT(ident_name) (identifiers[ident_ ## ident_name])
 
 enum { cMaxFileHandles = 40 };
 refalrts::GlobalRef<FILE*> g_file_handles(cMaxFileHandles);

@@ -13,9 +13,9 @@ Native {
   Iter func_name = arg_begin;
   move_left(func_name, arg_end);
 
-  reinit_ident(arg_begin, identifiers[eword_Hello]);
-  reinit_ident(func_name, identifiers[eword_Hello]);
-  reinit_ident(arg_end, identifiers[eword_Hello]);
+  reinit_ident(arg_begin, identifiers[ident_Hello]);
+  reinit_ident(func_name, identifiers[ident_Hello]);
+  reinit_ident(arg_end, identifiers[ident_Hello]);
 
   return cSuccess;
 %%
