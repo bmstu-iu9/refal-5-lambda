@@ -1,0 +1,20 @@
+$ENTRY Go {
+  = <Check <MakeCall>>
+}
+
+MakeCall {
+%%
+  arg_begin->next->function_info = functions[efunc_CalledFromNative];
+  refalrts::push_stack(vm, arg_end);
+  refalrts::push_stack(vm, arg_begin);
+  return refalrts::cSuccess;
+%%
+}
+
+CalledFromNative {
+  = Ok
+}
+
+Check {
+  Ok =
+}

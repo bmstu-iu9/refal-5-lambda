@@ -1,5 +1,5 @@
 *$FROM LibraryEx
-$EXTERN MapReduce, Map, Inc;
+$EXTERN MapReduce, Map, OneOf, Inc;
 
 *$FROM Hash
 $EXTERN HashLittle2-Chars;
@@ -157,15 +157,26 @@ SetScopeIDs-Patch {
 
 OutlineConstants {
   t.Tables (Function s.ScopeClass (e.Name) e.Commands)
+    = <UpdateFuncTable t.Tables e.Name> : t.Tables^ s.Id
     = <OutlineConstants-Commands t.Tables e.Commands>
     : t.Tables^ e.Commands^
     = t.Tables (Function s.ScopeClass (e.Name) e.Commands);
+
+  t.Tables (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code)
+    = <UpdateFuncTable t.Tables e.Name> : t.Tables^ s.Id
+    = t.Tables (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
+
+  t.Tables (s.Definition s.ScopeClass e.Name)
+    , <OneOf s.Definition CmdEnum CmdSwap CmdConditionFunc CmdDeclaration> : True
+    = <UpdateFuncTable t.Tables e.Name> : t.Tables^ s.Id
+    = t.Tables (s.Definition s.ScopeClass e.Name);
 
   t.Tables (CmdDefineIdent e.Name)
     = <UpdateIdentTable t.Tables e.Name> : t.Tables^ s.Id
     = t.Tables;
 
-  t.Tables t.OtherItem = t.Tables t.OtherItem;
+  t.Tables (CmdEmitNativeCode t.SrcPos e.Code)
+    = t.Tables (CmdEmitNativeCode t.SrcPos e.Code);
 }
 
 OutlineConstants-Commands {
