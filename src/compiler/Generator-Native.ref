@@ -144,14 +144,6 @@ GenCommand-Native {
   /* Команды режима прямой кодогенерации */
   /* Создание глобальных объектов, общие команды */
 
-  (e.Indent) (CmdDefineIdent e.Name) =
-    (e.Indent)
-    /* ничего не генерируем */;
-
-  (e.Indent) (CmdExtern e.Name) =
-    (e.Indent)
-    /* ничего не генерируем */;
-
   (e.Indent) (CmdCookieNS s.Cookie1 s.Cookie2)
     = (e.Indent)
       ('#define cookie_ns cookie_ns_' <Symb s.Cookie1> '_' <Symb s.Cookie2>);

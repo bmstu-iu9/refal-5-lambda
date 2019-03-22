@@ -16,28 +16,16 @@ $EXTERN Map, MapReduce, Sort;
 */
 $ENTRY LowLevelRASL-Native {
   s.Hash1 s.Hash2 (t.FuncTable t.IdentTable) e.Items
-    = <Map (&SetCookies s.Hash1 s.Hash2) e.Items> : e.Items^
-    = <MapReduce
-        &ClassifyItems-Native
-        (/* объявления для генерации RASL’а */)
-        e.Items
-      >
+    = <Map (&SetCookies s.Hash1 s.Hash2) e.Items>
     : {
-        (e.Declarations) /* нет нативных определений */
-          = /* нет нативного RASL’а */;
+        /* нет нативных определений */ = /* нет нативного RASL’а */;
 
-        (e.Declarations) e.Definitions
-
+        e.Definitions
           = <Map &PrepareFunctionsRASL e.Definitions> : e.DefinitionsRASL
-
-          = <FillImplicitDeclarations e.DefinitionsRASL (e.Declarations)>
-          : e.DefinitionsRASL^ (e.Declarations^)
-
           = (
               (CmdCookieNS s.Hash1 s.Hash2)
               <PrepareTable 'efunc' t.FuncTable>
               <PrepareTable 'eword' t.IdentTable>
-              e.Declarations
               e.DefinitionsRASL
             );
       };
@@ -55,10 +43,7 @@ PrepareTable {
 SetCookies {
   s.Hash1 s.Hash2
   (Function-ToRASL s.ScopeClass (e.Name) e.Commands) =
-    (Function-ToRASL
-      (<MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>)
-      e.Commands
-    );
+    /* пропускаем */;
 
   s.Hash1 s.Hash2
   (Function-ToNative s.ScopeClass (e.Name) e.Commands) =
@@ -75,30 +60,21 @@ SetCookies {
     );
 
   s.Hash1 s.Hash2 (CmdEnum s.ScopeClass e.Name) =
-    (CmdEnum <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>);
+    /* пропускаем */;
 
   s.Hash1 s.Hash2 (CmdSwap s.ScopeClass e.Name) =
-    (CmdSwap <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>);
+    /* пропускаем */;
 
   s.Hash1 s.Hash2
   (CmdConditionFunc-ToRASL s.ScopeClass e.Name) =
-    (CmdConditionFunc-ToRASL
-      <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>
-    );
+    /* пропускаем */;
 
   s.Hash1 s.Hash2
   (CmdConditionFunc-ToNative s.ScopeClass e.Name) =
-    (CmdConditionFunc-ToNative
-      <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>
-    );
+    /* пропускаем */;
 
   s.Hash1 s.Hash2 (CmdDeclaration s.ScopeClass e.Name) =
-    (CmdDeclaration
-      <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>
-    );
-
-  s.Hash1 s.Hash2 (CmdDefineIdent e.Name) =
-    (CmdDefineIdent e.Name);
+    /* пропускаем */;
 
   s.Hash1 s.Hash2 (CmdEmitNativeCode t.SrcPos e.Code) =
     (CmdEmitNativeCode t.SrcPos e.Code);
@@ -107,51 +83,6 @@ SetCookies {
 MingleName {
   GN-Entry e.Name s.Hash1 s.Hash2 = e.Name Hash 0 0;
   GN-Local e.Name s.Hash1 s.Hash2 = e.Name Hash s.Hash1 s.Hash2;
-}
-
-ClassifyItems-Native {
-  (e.Declarations)
-  (Function-ToRASL (e.Name) e.Commands) =
-    (e.Declarations (CmdExtern e.Name));
-
-  (e.Declarations)
-  (Function-ToNative (e.Name) e.Body) =
-    (e.Declarations (CmdExtern e.Name))
-    (Function-ToNative (e.Name) e.Body);
-
-  (e.Declarations)
-  (CmdNativeFunction (e.Name) t.SrcPos e.Code) =
-    (e.Declarations (CmdExtern e.Name))
-    (CmdNativeFunction (e.Name) t.SrcPos e.Code);
-
-  (e.Declarations)
-  (CmdEnum e.Name) =
-    (e.Declarations (CmdExtern e.Name));
-
-  (e.Declarations)
-  (CmdSwap e.Name) =
-    (e.Declarations (CmdExtern e.Name));
-
-  (e.Declarations)
-  (CmdConditionFunc-ToRASL e.Name) =
-    (e.Declarations (CmdExtern e.Name));
-
-  (e.Declarations)
-  (CmdConditionFunc-ToNative e.Name) =
-    (e.Declarations (CmdExtern e.Name));
-
-  (e.Declarations)
-  (CmdDeclaration e.Name) =
-    (e.Declarations (CmdExtern e.Name));
-
-  (e.Declarations)
-  (CmdDefineIdent e.Name) =
-    (e.Declarations (CmdDefineIdent e.Name));
-
-  (e.Declarations)
-  (CmdEmitNativeCode t.SrcPos e.Code) =
-    (e.Declarations)
-    (CmdEmitNativeCode t.SrcPos e.Code);
 }
 
 PrepareFunctionsRASL {
@@ -194,66 +125,7 @@ ConvertDirectCommands {
       <ConvertDirectCommands e.Tail>;
 
   t.Command e.Tail
-    = <MakeRequestCommand t.Command> t.Command
-      <ConvertDirectCommands e.Tail>;
+    = t.Command <ConvertDirectCommands e.Tail>;
 
   /* пусто */ = /* пусто */;
-}
-
-MakeRequestCommand {
-  (CmdName s.Direction s.BracketNum s.Num e.Func)
-    = (REQUEST Extern e.Func);
-
-  (CmdNameSave s.Direction s.BracketNum s.SaveOffset s.Num e.Func)
-    = (REQUEST Extern e.Func);
-
-  (CmdCreateElem s.CreateMode s.ElemNo ElName s.Num e.Func)
-    = (REQUEST Extern e.Func);
-
-  (CmdADT s.Direction s.BracketNum s.InnerBrackets s.Num e.Func)
-    = (REQUEST Extern e.Func);
-
-  (CmdADTSave s.Direction s.BracketNum s.InnerBrackets s.Num e.Func)
-    = (REQUEST Extern e.Func);
-
-  (CmdIdent s.Direction s.BracketNum s.Num e.Ident)
-    = (REQUEST Ident e.Ident);
-
-  (CmdIdentSave s.Direction s.BracketNum s.SaveOffset s.Num e.Ident)
-    = (REQUEST Ident e.Ident);
-
-  (CmdCreateElem s.CreateMode s.ElemNo ElIdent s.Num e.Ident)
-    = (REQUEST Ident e.Ident);
-
-  t.OtherCommand = /* no request definitions */;
-}
-
-FillImplicitDeclarations {
-  e.RASL-B (REQUEST s.Type e.Name) e.RASL-E (e.Definitions)
-    = e.RASL-B
-      <FillImplicitDeclarations
-        e.RASL-E (<AddDefinition (s.Type e.Name) e.Definitions>)
-      >;
-
-  e.RASL (e.Definitions) = e.RASL (<UniqSorted <Sort e.Definitions>>);
-}
-
-AddDefinition {
-  (Extern e.Name) e.Defs-B (CmdExtern e.Name Hash s.Hash1 s.Hash2) e.Defs-E
-    =  (CmdExtern e.Name Hash s.Hash1 s.Hash2)e.Defs-B e.Defs-E;
-
-  (Extern e.Name) e.Defs = (CmdExtern e.Name Hash 0 0) e.Defs;
-
-
-  (Ident e.Name) e.Defs-B (CmdDefineIdent e.Name) e.Defs-E
-    = (CmdDefineIdent e.Name) e.Defs-B e.Defs-E;
-
-  (Ident e.Name) e.Defs = (CmdDefineIdent e.Name) e.Defs;
-}
-
-UniqSorted {
-  e.Uniqs t.Repeated t.Repeated e.NotScanned =
-    e.Uniqs <UniqSorted t.Repeated e.NotScanned>;
-
-  e.Uniqs = e.Uniqs;
 }

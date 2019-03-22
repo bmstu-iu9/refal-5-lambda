@@ -163,7 +163,7 @@ OutlineConstants {
 
   t.Tables (CmdDefineIdent e.Name)
     = <UpdateIdentTable t.Tables e.Name> : t.Tables^ s.Id
-    = t.Tables (CmdDefineIdent e.Name);
+    = t.Tables;
 
   t.Tables t.OtherItem = t.Tables t.OtherItem;
 }

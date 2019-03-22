@@ -68,9 +68,6 @@ ClassifyItems {
   (e.FuncScopeClass) (CmdDeclaration s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name)) /* skip */;
 
-  (e.FuncScopeClass) (CmdDefineIdent e.Name) =
-    (e.FuncScopeClass) /* skip */;
-
   (e.FuncScopeClass) (CmdEmitNativeCode t.SrcPos e.Code) =
     (e.FuncScopeClass) /* skip */;
 }
