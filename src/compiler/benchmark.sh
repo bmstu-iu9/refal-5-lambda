@@ -23,7 +23,7 @@ echo --dir=../srlib/common>>input.prj
 echo --prelude=refal5-builtins.refi>>input.prj
 
 echo
-echo Run "../../bin/srefc-core -C $BENCH_FLAGS *.sref" $TIMES times...
+echo Run "../../bin/srefc-core -C $BENCH_FLAGS \*.ref \*.sref" $TIMES times...
 
 for ((i = 1; i <= "$TIMES"; ++i)); do
   echo $i

@@ -26,7 +26,7 @@ echo --dir=../srlib/common>>input.prj
 echo --prelude=refal5-builtins.refi>>input.prj
 
 echo.
-echo Run "..\..\bin\srefc-core -C %BENCH_FLAGS% *.sref" %TIMES% times...
+echo Run "..\..\bin\srefc-core -C %BENCH_FLAGS% *.ref *.sref" %TIMES% times...
 
 for /L %%i in (1, 1, %TIMES%) do (
   echo %%i
