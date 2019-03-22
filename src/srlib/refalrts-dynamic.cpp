@@ -132,6 +132,11 @@ void refalrts::Module::register_function(refalrts::RefalFunction *func) {
 bool refalrts::Module::find_unresolved_externals(
   refalrts::LoadModuleEvent event, void *callback_data
 ) {
+  collect_indirect_references();
+  return find_unresolved_externals_rasl(event, callback_data);
+}
+
+void refalrts::Module::collect_indirect_references() {
   m_indirect_references.push_back(this);
   ModuleList::iterator unscanned = m_indirect_references.begin();
 
@@ -157,8 +162,6 @@ bool refalrts::Module::find_unresolved_externals(
 
     ++unscanned;
   }
-
-  return find_unresolved_externals_rasl(event, callback_data);
 }
 
 bool refalrts::Module::find_unresolved_externals_rasl(

@@ -221,6 +221,7 @@ public:
 private:
   RefalFunction *lookup_function_aux(const RefalFuncName& name);
   void register_function(RefalFunction *func);
+  void collect_indirect_references();
   bool find_unresolved_externals_rasl(
     LoadModuleEvent event, void *callback_data
   );
