@@ -10,13 +10,24 @@ setlocal
   if not exist _setup\nul mkdir _setup
   if not exist _tmp\nul mkdir _tmp
 
-  call :MAKE_SRC
+  call :MAKE_SRC || exit /b 1
   call :MAKE_WINSETUP || exit /b 1
 endlocal
 goto :EOF
 
 :MAKE_SRC
 setlocal
+  rem Тест на наличие dos2unix
+  echo Test > test.txt
+  echo Test >> test.txt
+  copy test.txt test.d2u
+  dos2unix test.d2u
+  fc /b test.txt test.d2u && (
+    echo Add dos2unix and tar to PATH!
+    exit /b 1
+  )
+  erase test.txt test.d2u
+
   pushd ..\distrib
   call clear.bat
   popd
