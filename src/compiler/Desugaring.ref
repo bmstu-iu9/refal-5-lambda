@@ -23,7 +23,7 @@ $ENTRY Desugar {
             Conditions-Transform = (&Pass-UnCondition s.MarkupContext);
           }
         >
-        &Pass-RemoveRedudandElements
+        &Pass-FoldEnums
       >
     >;
 }
@@ -812,32 +812,8 @@ CreateContext {
     >;
 }
 
-Pass-RemoveRedudandElements {
-  /*
-    Функция принимает абстрактное синтаксическое дерево
-    и формирует новое с устранением избыточных элементов
-  */
+Pass-FoldEnums {
   e.AST
-
-    /*
-      Подчищаем $EXTERN’ы и $IDENT’ы только при отсутствии нативных вставок
-    */
-    = <CalcSelectiveSaver e.AST> : s.FnSelectiveSaver e.AST^
-
-    = <Map
-        {
-          (Ident e.Name) = <s.FnSelectiveSaver Ident e.Name>;
-
-          (Declaration s.ScopeClass e.Name)
-            = <s.FnSelectiveSaver Declaration s.ScopeClass e.Name>;
-
-          t.OtherItem = t.OtherItem;
-        }
-        e.AST
-      >
-    : e.AST^
-
-    /* Folding enums */
     = <Map
         {
           (Function s.ScopeClass (e.Name) Sentences /* пусто */) =
@@ -847,26 +823,4 @@ Pass-RemoveRedudandElements {
         }
         e.AST
       >;
-}
-
-CalcSelectiveSaver {
-  e.AST-B (NativeBlock t.SrcPos e.Code) e.AST-E
-    = &SelectiveSaver-Save
-      e.AST-B (NativeBlock t.SrcPos e.Code) e.AST-E;
-
-  e.AST-B (Function s.ScopeClass (e.Name) NativeBody e.Code) e.AST-E
-    = &SelectiveSaver-Save
-      e.AST-B (Function s.ScopeClass (e.Name) NativeBody e.Code) e.AST-E;
-
-  e.AST^ = &SelectiveSaver-Skip e.AST;
-}
-
-SelectiveSaver-Save {
-  Ident e.Name = (Ident e.Name);
-  Declaration s.ScopeClass e.Name = (Declaration s.ScopeClass e.Name);
-}
-
-SelectiveSaver-Skip {
-  Ident e.Name = /* skip */;
-  Declaration s.ScopeClass e.Name = /* skip */;
 }

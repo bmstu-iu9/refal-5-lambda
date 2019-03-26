@@ -35,8 +35,10 @@ $ENTRY LowLevelRASL {
 
     = <Map (&SetScopeIDs s.Hash1 s.Hash2) e.Items> : e.Items^
 
+    = <SelectConstantsOutliner e.Items> : s.OutlineConstants e.Items^
+
     = <MapReduce
-        &OutlineConstants
+        s.OutlineConstants
         ((0 /* functions */) (0 /* idents */))
         e.Items
       >
@@ -155,11 +157,24 @@ SetScopeIDs-Patch {
   s.Hash1 s.Hash2 s.Number = s.Number;
 }
 
-OutlineConstants {
+SelectConstantsOutliner {
+  e.Items-B (NativeBlock t.SrcPos e.Code) e.Items-E
+    = &OutlineConstants-WithNative
+      e.Items-B (NativeBlock t.SrcPos e.Code) e.Items-E;
+
+  e.Items-B (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) e.Items-E
+    = &OutlineConstants-WithNative
+      e.Items-B
+      (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code)
+      e.Items-E;
+
+  e.Items^ = &OutlineConstants-RASLOnly e.Items;
+}
+
+OutlineConstants-WithNative {
   t.Tables (Function s.ScopeClass (e.Name) e.Commands)
     = <UpdateFuncTable t.Tables e.Name> : t.Tables^ s.Id
-    = <OutlineConstants-Commands t.Tables e.Commands>
-    : t.Tables^ e.Commands^
+    = <OutlineConstants-Commands t.Tables e.Commands> : t.Tables^ e.Commands^
     = t.Tables (Function s.ScopeClass (e.Name) e.Commands);
 
   t.Tables (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code)
@@ -177,6 +192,16 @@ OutlineConstants {
 
   t.Tables (CmdEmitNativeCode t.SrcPos e.Code)
     = t.Tables (CmdEmitNativeCode t.SrcPos e.Code);
+}
+
+OutlineConstants-RASLOnly {
+  t.Tables (Function s.ScopeClass (e.Name) e.Commands)
+    = <OutlineConstants-Commands t.Tables e.Commands> : t.Tables^ e.Commands^
+    = t.Tables (Function s.ScopeClass (e.Name) e.Commands);
+
+  t.Tables (CmdDefineIdent e.Name) = t.Tables /* пропускаем */;
+
+  t.Tables t.OtherItem = t.Tables t.OtherItem;
 }
 
 OutlineConstants-Commands {
