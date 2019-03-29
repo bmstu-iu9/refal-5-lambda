@@ -2,10 +2,10 @@
 #define RefalRTS_PROFILER_H_
 
 #include <string.h>     // memset
-#include <time.h>
 
 #include "refalrts.h"
 #include "refalrts-diagnostic-config.h"
+#include "refalrts-platform-specific.h"
 
 
 //==============================================================================
@@ -47,6 +47,11 @@ class Profiler {
   double m_prev_cutoff;
   State m_current_state;
   DiagnosticConfig *m_diagnostic_config;
+  api::ClockNs *m_clock;
+
+  double clock() const {
+    return api::clock_ns(m_clock);
+  }
 
   struct TimeItem {
     const char *name;
@@ -58,6 +63,9 @@ class Profiler {
 
 public:
   Profiler(DiagnosticConfig *diagnostic_config);
+  ~Profiler() {
+    free_clock_ns(m_clock);
+  }
 
   void start_profiler();
   void end_profiler();
@@ -79,6 +87,7 @@ inline Profiler::Profiler(DiagnosticConfig *diagnostic_config)
   : m_prev_cutoff(0)
   , m_current_state(cInRuntime)
   , m_diagnostic_config(diagnostic_config)
+  , m_clock(api::init_clock_ns())
 {
   memset(m_counters, '\0', sizeof(m_counters));
 }

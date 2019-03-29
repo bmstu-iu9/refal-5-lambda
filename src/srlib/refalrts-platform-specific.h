@@ -35,6 +35,11 @@ bool is_single_file_name(const char *name);
 
 extern const char *default_lib_extension;
 
+struct ClockNs;
+ClockNs *init_clock_ns();
+double clock_ns(ClockNs *clk);
+void free_clock_ns(ClockNs *clk);
+
 } // namespace api
 
 } // namespace refalrts

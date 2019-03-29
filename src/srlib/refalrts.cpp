@@ -605,7 +605,7 @@ void refalrts::this_is_generated_function(refalrts::VM *vm) {
 }
 
 double refalrts::ticks_per_second() {
-  return CLOCKS_PER_SEC;
+  return 1e9;
 }
 
 void refalrts::read_performance_counters(

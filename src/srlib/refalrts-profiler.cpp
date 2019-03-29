@@ -332,7 +332,7 @@ void refalrts::Profiler::print_statistics() {
 
   qsort(items, nItems, sizeof(items[0]), reverse_compare);
 
-  const double cfSECS_PER_CLOCK = 1.0 / CLOCKS_PER_SEC;
+  const double cfSECS_PER_CLOCK = 1e-9;
   double total = counters[refalrts::cPerformanceCounter_TotalTime];
 
   for (size_t i = 0; i < nItems; ++i) {

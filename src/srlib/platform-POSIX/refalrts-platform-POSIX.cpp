@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "refalrts-platform-specific.h"
@@ -82,3 +83,26 @@ bool refalrts::api::is_single_file_name(const char *name) {
 }
 
 const char *refalrts::api::default_lib_extension = ".so";
+
+struct refalrts::api::ClockNs {
+  struct timespec start_of_program;
+};
+
+refalrts::api::ClockNs *refalrts::api::init_clock_ns() {
+  ClockNs *res = new ClockNs;
+  clock_gettime(CLOCK_REALTIME, &res->start_of_program);
+  return res;
+}
+
+double refalrts::api::clock_ns(refalrts::api::ClockNs *clk) {
+  struct timespec now;
+  struct timespec start = clk->start_of_program;
+
+  clock_gettime(CLOCK_REALTIME, &now);
+
+  return (now.tv_sec - start.tv_sec) * 1.0e9 + (now.tv_nsec - start.tv_nsec);
+}
+
+void refalrts::api::free_clock_ns(refalrts::api::ClockNs *clk) {
+  delete clk;
+}

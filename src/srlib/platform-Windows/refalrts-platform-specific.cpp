@@ -1,6 +1,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <windows.h>
 
 #include "refalrts-platform-specific.h"
@@ -118,3 +119,15 @@ bool refalrts::api::is_single_file_name(const char *name) {
 }
 
 const char *refalrts::api::default_lib_extension = ".dll";
+
+refalrts::api::ClockNs *refalrts::api::init_clock_ns() {
+  return 0;
+}
+
+double refalrts::api::clock_ns(refalrts::api::ClockNs *) {
+  return clock() * 1e9 / CLOCKS_PER_SEC;
+}
+
+void refalrts::api::free_clock_ns(refalrts::api::ClockNs *) {
+  /* ничего не делаем */
+}
