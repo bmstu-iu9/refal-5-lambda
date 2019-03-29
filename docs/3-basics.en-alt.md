@@ -121,7 +121,7 @@ and `'1'`, so that it is possible to put any symbol between them, except zero
 and one – using it it will be possible to define the end of one argument and
 the beginning of another argument. We will use the `'+'` symbol for clarity.
 
-Note. _Later we will know about really easie, effective and general way of
+Note. _Later we will know about really easy, effective and general way of
 arguments division._
 
     BinAdd {
@@ -496,7 +496,7 @@ return a value, since it makes a recursive call to the function complete before
 the next recursive call. This means that if a recursive call in the right part
 of the sentence is performed last in the view field, unfinished calculations
 will not accumulate. In fact, instead of the recursion (nested contexts) the
-cycle will occure.
+cycle will occur.
 
 **Example 13.** Will we illustrate this with a simple example considering the
 process of calculating the function Fab, replacing all characters `'a'` to the
@@ -581,7 +581,7 @@ At this stage Refal-machine will execute the first sentence of the function
 In this case Refal-machine will also execute the function of `Fab`, but the
 first sentence is not appropriate (it is impossible to identify an expression
 that starts with `'a'`, with an empty expression), and the second too (it’s
-impossible to identify an expression that starts with an epty symbol). But the
+impossible to identify an expression that starts with an empty symbol). But the
 third sentence matches (an empty left part is successfully identified with an
 empty argument). And Refal-machine will replace the function call `<Fab>` with
 an empty right part of the third sentence:
