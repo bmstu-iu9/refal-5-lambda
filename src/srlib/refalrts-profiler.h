@@ -15,7 +15,6 @@
 namespace refalrts {
 
 class Profiler {
-public:
   enum State {
     cInRuntime,
     cInRuntimeCopy,
@@ -29,7 +28,6 @@ public:
     cInResultCopy
   };
 
-private:
   enum BaseCounter {
     cCounter_RuntimeTime,
     cCounter_NativeTime,
