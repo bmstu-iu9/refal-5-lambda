@@ -1029,9 +1029,8 @@ bool refalrts::Domain::register_ident(RefalIdentifier ident) {
   }
 }
 
-void refalrts::Domain::read_counters(unsigned long counters[]) {
-  counters[cPerformanceCounter_IdentsAllocated] =
-    static_cast<unsigned long>(idents_count());
+void refalrts::Domain::read_counters(double counters[]) {
+  counters[cPerformanceCounter_IdentsAllocated] = idents_count();
 }
 
 const refalrts::api::stat *

@@ -65,7 +65,7 @@ public:
     return & m_last_marker;
   }
 
-  void read_counters(unsigned long counters[]);
+  void read_counters(double counters[]);
 
 private:
   bool create_nodes();

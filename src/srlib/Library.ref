@@ -1525,12 +1525,14 @@ $ENTRY Step {
 
 %%
 unsigned long cookie_ns::raw_step(refalrts::VM *vm) {
-  unsigned long perfomance_counters[
+  double perfomance_counters[
     refalrts::cPerformanceCounter_COUNTERS_NUMBER
   ];
 
   refalrts::read_performance_counters(vm, perfomance_counters);
-  return perfomance_counters[refalrts::cPerformanceCounter_TotalSteps];
+  return static_cast<unsigned long>(
+    perfomance_counters[refalrts::cPerformanceCounter_TotalSteps]
+  );
 }
 
 namespace cookie_ns {

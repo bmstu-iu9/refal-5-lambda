@@ -185,7 +185,7 @@ public:
     m_create_debugger = debugger_factory;
   }
 
-  void read_counters(unsigned long counters[]);
+  void read_counters(double counters[]);
 
   Allocator *allocator() const {
     return m_allocator;

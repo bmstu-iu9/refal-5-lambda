@@ -337,7 +337,7 @@ public:
   RefalIdentifier lookup_ident(const char *name);
   bool register_ident(RefalIdentifier ident);
 
-  void read_counters(unsigned long counters[]);
+  void read_counters(double counters[]);
 
   bool dangerous_state() const {
     return m_dangerous;

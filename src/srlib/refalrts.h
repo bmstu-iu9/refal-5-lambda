@@ -351,8 +351,8 @@ enum PerformanceCounters {
   cPerformanceCounter_COUNTERS_NUMBER
 };
 
-extern unsigned long ticks_per_second();
-extern void read_performance_counters(VM *vm, unsigned long counters[]);
+extern double ticks_per_second();
+extern void read_performance_counters(VM *vm, double counters[]);
 
 // Прочие функции
 

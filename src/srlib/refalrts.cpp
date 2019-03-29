@@ -604,12 +604,12 @@ void refalrts::this_is_generated_function(refalrts::VM *vm) {
   vm->profiler()->start_generated_function();
 }
 
-unsigned long refalrts::ticks_per_second() {
+double refalrts::ticks_per_second() {
   return CLOCKS_PER_SEC;
 }
 
 void refalrts::read_performance_counters(
-  refalrts::VM *vm, unsigned long counters[]
+  refalrts::VM *vm, double counters[]
 ) {
   vm->profiler()->read_counters(counters);
   vm->read_counters(counters);

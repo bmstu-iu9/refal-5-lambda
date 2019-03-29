@@ -43,14 +43,14 @@ class Profiler {
     cCounter_TOTAL
   };
 
-  clock_t m_counters[cCounter_TOTAL];
-  clock_t m_prev_cutoff;
+  double m_counters[cCounter_TOTAL];
+  double m_prev_cutoff;
   State m_current_state;
   DiagnosticConfig *m_diagnostic_config;
 
   struct TimeItem {
     const char *name;
-    unsigned long counter;
+    double counter;
   };
 
   static int reverse_compare(const void *left_void, const void *right_void);
@@ -61,7 +61,7 @@ public:
 
   void start_profiler();
   void end_profiler();
-  void read_counters(unsigned long counters[]);
+  void read_counters(double counters[]);
 
   void start_generated_function();
   void stop_sentence();

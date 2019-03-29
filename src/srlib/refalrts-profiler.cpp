@@ -38,7 +38,7 @@ int refalrts::Profiler::reverse_compare(
 }
 
 void refalrts::Profiler::start_generated_function() {
-  clock_t now = clock();
+  double now = clock();
   refalrts_profiler_assert_eq(m_current_state, cInRuntime);
   m_counters[cCounter_RuntimeTime] += (now - m_prev_cutoff);
   m_prev_cutoff = now;
@@ -46,7 +46,7 @@ void refalrts::Profiler::start_generated_function() {
 }
 
 void refalrts::Profiler::stop_sentence() {
-  clock_t now = clock();
+  double now = clock();
   BaseCounter counter;
 
   switch (m_current_state) {
@@ -68,7 +68,7 @@ void refalrts::Profiler::stop_sentence() {
 }
 
 void refalrts::Profiler::start_e_loop() {
-  clock_t now = clock();
+  double now = clock();
   BaseCounter counter;
 
   switch (m_current_state) {
@@ -90,7 +90,7 @@ void refalrts::Profiler::start_e_loop() {
 }
 
 void refalrts::Profiler::start_repeated_evar() {
-  clock_t now = clock();
+  double now = clock();
   State next;
   BaseCounter counter;
 
@@ -115,7 +115,7 @@ void refalrts::Profiler::start_repeated_evar() {
 }
 
 void refalrts::Profiler::start_repeated_tvar() {
-  clock_t now = clock();
+  double now = clock();
   State next;
   BaseCounter counter;
 
@@ -140,7 +140,7 @@ void refalrts::Profiler::start_repeated_tvar() {
 }
 
 void refalrts::Profiler::stop_repeated() {
-  clock_t now = clock();
+  double now = clock();
   State next;
   BaseCounter counter;
 
@@ -175,7 +175,7 @@ void refalrts::Profiler::stop_repeated() {
 }
 
 void refalrts::Profiler::start_result() {
-  clock_t now = clock();
+  double now = clock();
   State next = cInResultLinear;
   BaseCounter counter;
 
@@ -203,7 +203,7 @@ void refalrts::Profiler::start_result() {
 }
 
 void refalrts::Profiler::start_copy() {
-  clock_t now = clock();
+  double now = clock();
   State next;
   BaseCounter counter;
 
@@ -228,7 +228,7 @@ void refalrts::Profiler::start_copy() {
 }
 
 void refalrts::Profiler::stop_copy() {
-  clock_t now = clock();
+  double now = clock();
   State next;
   BaseCounter counter;
 
@@ -253,7 +253,7 @@ void refalrts::Profiler::stop_copy() {
 }
 
 void refalrts::Profiler::stop_function() {
-  clock_t now = clock();
+  double now = clock();
   BaseCounter counter;
 
   switch (m_current_state) {
@@ -293,7 +293,7 @@ void refalrts::Profiler::end_profiler() {
 }
 
 void refalrts::Profiler::print_statistics() {
-  unsigned long counters[cPerformanceCounter_COUNTERS_NUMBER];
+  double counters[cPerformanceCounter_COUNTERS_NUMBER];
   read_counters(counters);
 
   TimeItem items[] = {
@@ -327,16 +327,16 @@ void refalrts::Profiler::print_statistics() {
   enum { nItems = sizeof(items) / sizeof(items[0]) };
 
   for (size_t i = 0; i < nItems; ++i) {
-    items[i].counter = counters[items[i].counter];
+    items[i].counter = counters[(int) items[i].counter];
   }
 
   qsort(items, nItems, sizeof(items[0]), reverse_compare);
 
   const double cfSECS_PER_CLOCK = 1.0 / CLOCKS_PER_SEC;
-  unsigned long total = counters[refalrts::cPerformanceCounter_TotalTime];
+  double total = counters[refalrts::cPerformanceCounter_TotalTime];
 
   for (size_t i = 0; i < nItems; ++i) {
-    unsigned long value = items[i].counter;
+    double value = items[i].counter;
 
     if (value > 0) {
       double percent = (total != 0) ? 100.0 * value / total : 0.0;
@@ -348,24 +348,24 @@ void refalrts::Profiler::print_statistics() {
   }
 }
 
-void refalrts::Profiler::read_counters(unsigned long counters[]) {
-  clock_t basic_runtime_time = m_counters[cCounter_RuntimeTime];
-  clock_t basic_native_time = m_counters[cCounter_NativeTime];
-  clock_t basic_linear_pattern_time = m_counters[cCounter_LinearPatternTime];
-  clock_t basic_repeated_evar_outside_ecycle =
+void refalrts::Profiler::read_counters(double counters[]) {
+  double basic_runtime_time = m_counters[cCounter_RuntimeTime];
+  double basic_native_time = m_counters[cCounter_NativeTime];
+  double basic_linear_pattern_time = m_counters[cCounter_LinearPatternTime];
+  double basic_repeated_evar_outside_ecycle =
     m_counters[cCounter_RepeatedEvarOutsideECycle];
-  clock_t basic_repeated_tvar_outside_ecycle =
+  double basic_repeated_tvar_outside_ecycle =
     m_counters[cCounter_RepeatedTvarOutsideECycle];
-  clock_t basic_repeated_evar_inside_ecycle =
+  double basic_repeated_evar_inside_ecycle =
     m_counters[cCounter_RepeatedEvarInsideECycle];
-  clock_t basic_repeated_tvar_inside_ecycle =
+  double basic_repeated_tvar_inside_ecycle =
     m_counters[cCounter_RepeatedTvarInsideECycle];
-  clock_t basic_context_copy_time = m_counters[cCounter_ContextCopyTime];
-  clock_t basic_ecycle_clear_time = m_counters[cCounter_ECycleClearTime];
-  clock_t basic_linear_result_time = m_counters[cCounter_LinearResultTime];
-  clock_t basic_tevar_copy_time = m_counters[cCounter_TEvarCopyTime];
+  double basic_context_copy_time = m_counters[cCounter_ContextCopyTime];
+  double basic_ecycle_clear_time = m_counters[cCounter_ECycleClearTime];
+  double basic_linear_result_time = m_counters[cCounter_LinearResultTime];
+  double basic_tevar_copy_time = m_counters[cCounter_TEvarCopyTime];
 
-  clock_t full_time =
+  double full_time =
     basic_runtime_time
     + basic_native_time
     + basic_linear_pattern_time
@@ -378,7 +378,7 @@ void refalrts::Profiler::read_counters(unsigned long counters[]) {
     + basic_linear_result_time
     + basic_tevar_copy_time;
 
-  clock_t total_pattern_match_time =
+  double total_pattern_match_time =
     basic_linear_pattern_time
     + basic_repeated_evar_outside_ecycle
     + basic_repeated_tvar_outside_ecycle
@@ -386,18 +386,18 @@ void refalrts::Profiler::read_counters(unsigned long counters[]) {
     + basic_repeated_tvar_inside_ecycle
     + basic_ecycle_clear_time;
 
-  clock_t total_building_result_time =
+  double total_building_result_time =
     basic_linear_result_time + basic_tevar_copy_time;
 
-  clock_t builtin_time =
+  double builtin_time =
     basic_runtime_time + basic_native_time + basic_context_copy_time;
 
-  clock_t total_e_loop =
+  double total_e_loop =
     + basic_repeated_evar_inside_ecycle
     + basic_repeated_tvar_inside_ecycle
     + basic_ecycle_clear_time;
 
-  clock_t linear_refal_time =
+  double linear_refal_time =
     basic_linear_pattern_time + basic_linear_result_time;
 
   counters[cPerformanceCounter_TotalTime] = full_time;
