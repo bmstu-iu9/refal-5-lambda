@@ -112,7 +112,7 @@ Despite the fact that a compiler as a tutorial has been used for a long time
 (approx. since 2009), I’ve build up the apparent aim just recently when I
 realized that’s it’s quite difficult for students to work with the current
 language and the compiler. It may be considered that the commitments starting
-from Aprill 2015 were all oriented towards this aim.
+from April 2015 were all oriented towards this aim.
 
 At the moment the initial objective (minimal Refal compiler in imperative code)
 is outdated, the code will be gradually cleared from its remainder.
@@ -259,7 +259,7 @@ the declarations and `e.Tokens3` – after reading the body of the procedure.
 Refal-5λ makes it possible not to use this numbering. If in the example we put
 the sign `^`after the variable name, this variable will hide the homonym linked
 before. In this example it will be considered new (not repeated) and in the
-remainder of the sentence the variable with this name will be alredy linked
+remainder of the sentence the variable with this name will be already linked
 with a new value (if later it won’t be hidden again). The previous example will
 look like this:
 

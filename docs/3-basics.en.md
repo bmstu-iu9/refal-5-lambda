@@ -894,7 +894,7 @@ and `SyntaxError e.Message`.
 
 Refal-5λ as the classic REFAL-5 allows the usage of arbitrary character strings
 as identifiers. This string must be enclosed in double quotes:
-`"This is one symbol:-)"`. Practicaly they are rarely used, but they can be
+`"This is one symbol:-)"`. Practically they are rarely used, but they can be
 useful, when you want to use the combination of signs as a
 characteristic-identifier, which cannot be written without quotation marks. For
 example, `"*="`, `"C++"`, `"=0?"` etc.  The words can be written in quotation
@@ -913,7 +913,7 @@ chain of letters and composed character.
 
 Escape sequence look like sign `\`, followed by one or more other signs. All of
 them make up one character (if it is written into single quotes), or one of
-characters in compound symbol. In Refal-5λ followind escape sequence are
+characters in compound symbol. In Refal-5λ following escape sequence are
 permissible:
 * `\'` — single quote, `'`,
 * `\"` — double quotation mark, `"`,
