@@ -434,7 +434,7 @@ DoHexDigit {
 
 MakeCompound {
   t.Pos e.Compound-B '\x00' e.Compound-E
-    = /* TODO: Выдавать предупреждение */
+    = (TkWarning t.Pos 'Zero byte in compound symbol')
       (TkCompound t.Pos e.Compound-B);
 
   t.Pos e.Compound = (TkCompound t.Pos e.Compound);

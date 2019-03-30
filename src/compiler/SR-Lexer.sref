@@ -90,7 +90,7 @@ NormalizeToken {
     = e.Compound
     : {
       e.Compound-B '\x00' e.Compound-E
-        = /* TODO: Выдавать предупреждение */
+        = (#TkWarning 'Zero byte in compound symbol')
           (#TkCompound e.Compound-B);
 
       e.Compound^ = (#TkCompound e.Compound);
