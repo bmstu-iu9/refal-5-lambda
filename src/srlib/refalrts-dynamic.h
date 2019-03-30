@@ -298,6 +298,8 @@ class Domain {
   bool m_dangerous;
   DiagnosticConfig *m_diagnostic_config;
 
+  std::vector<RefalFunction*> m_allocated_functions;
+
   class DangerousRAII {
     bool *m_dangerous;
   public:
@@ -351,6 +353,7 @@ public:
     const std::string& module_name, Module *module
   ) {
     ModuleRepresentant *res = new ModuleRepresentant(module_name, module);
+    m_allocated_functions.push_back(res);
     return res;
   }
 
@@ -366,6 +369,7 @@ public:
     RefalFunction *res = new RASLFunction(
       name, rasl, functions, idents, numbers, strings, filename
     );
+    m_allocated_functions.push_back(res);
     return res;
   }
 
@@ -375,26 +379,31 @@ public:
     RefalFuncName name
   ) {
     RefalNativeFunction *res = new RefalNativeFunction(functions, idents, name);
+    m_allocated_functions.push_back(res);
     return res;
   }
 
   RefalFunction *new_empty_function(RefalFuncName name) {
     RefalFunction *res = new RefalEmptyFunction(name);
+    m_allocated_functions.push_back(res);
     return res;
   }
 
   RefalFunction *new_swap(RefalFuncName name) {
     RefalFunction *res = new RefalSwap(name);
+    m_allocated_functions.push_back(res);
     return res;
   }
 
   RefalFunction *new_cond_func_rasl(RefalFuncName name) {
     RefalFunction *res = new RefalCondFunctionRasl(name);
+    m_allocated_functions.push_back(res);
     return res;
   }
 
   RefalFunction *new_cond_func_nat(RefalFuncName name) {
     RefalFunction *res = new RefalCondFunctionNative(name);
+    m_allocated_functions.push_back(res);
     return res;
   }
 

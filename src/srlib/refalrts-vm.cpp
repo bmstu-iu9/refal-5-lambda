@@ -1961,8 +1961,6 @@ bool refalrts::VM::alloc_string(
 }
 
 void refalrts::VM::reinit_svar(refalrts::Iter res, refalrts::Iter sample) {
-  cleanup_node(res);
-
   res->tag = sample->tag;
 
   switch(sample->tag) {
@@ -1976,7 +1974,6 @@ void refalrts::VM::reinit_svar(refalrts::Iter res, refalrts::Iter sample) {
 
     case refalrts::cDataFunction:
       res->function_info = sample->function_info;
-      res->function_info->add_ref();
       break;
 
     case refalrts::cDataIdentifier:

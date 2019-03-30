@@ -588,15 +588,6 @@ refalrts::Iter refalrts::wrap_closure(refalrts::Iter closure) {
   return next(closure);
 }
 
-void refalrts::cleanup_node(refalrts::Iter node) {
-  if (node->tag == refalrts::cDataFunction) {
-    node->function_info->release();
-
-    node->tag = refalrts::cDataIllegal;
-    node->function_info = 0;
-  }
-}
-
 //------------------------------------------------------------------------------
 // Средства профилирования
 

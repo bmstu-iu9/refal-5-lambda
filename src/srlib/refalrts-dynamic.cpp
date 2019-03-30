@@ -72,7 +72,6 @@ refalrts::Module::Module(
 
 refalrts::Module::~Module() {
   m_representant->module = 0;
-  m_representant->release();
   api::stat_destroy(m_stat);
   while (m_funcs_table.size() > 0) {
     FuncsMap::iterator p = m_funcs_table.begin();
@@ -80,7 +79,6 @@ refalrts::Module::~Module() {
     m_funcs_table.erase(p);
     /* TODO: продумать освобождение статических ящиков */
     function->deactivate();
-    function->release();
   }
 }
 
@@ -122,10 +120,7 @@ void refalrts::Module::register_function(refalrts::RefalFunction *func) {
   FuncsMap::value_type new_value(func->name, func);
   std::pair<FuncsMap::iterator, bool> res = m_funcs_table.insert(new_value);
   if (! res.second) {
-    // Если сначала удалить func, то не удастся из него извлечь имя
-    RedeclarationError error(func->name);
-    func->release();
-    throw error;
+    throw RedeclarationError(func->name);
   }
 }
 
@@ -874,6 +869,7 @@ refalrts::Domain::Domain(refalrts::DiagnosticConfig *diagnostic_config)
   , m_storage(this)
   , m_dangerous(false)
   , m_diagnostic_config(diagnostic_config)
+  , m_allocated_functions()
 {
   /* пусто */
 }
@@ -976,6 +972,10 @@ void refalrts::Domain::unload(refalrts::VM *vm, refalrts::FnResult& result) {
   DangerousRAII dang(&m_dangerous);
   m_storage.unload(vm, result);
   free_idents_table();
+
+  for (size_t i = 0; i < m_allocated_functions.size(); ++i) {
+    delete m_allocated_functions[i];
+  }
 }
 
 //------------------------------------------------------------------------------

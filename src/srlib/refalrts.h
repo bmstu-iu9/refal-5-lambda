@@ -318,8 +318,6 @@ extern Iter splice_from_freelist(VM *vm, Iter pos);
 Iter unwrap_closure(Iter closure); // Развернуть замыкание
 Iter wrap_closure(Iter closure); // Свернуть замыкание
 
-extern void cleanup_node(Iter node);
-
 // Профилирование
 
 extern void this_is_generated_function(VM *vm);
