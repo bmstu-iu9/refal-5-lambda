@@ -38,7 +38,7 @@ refalrts::Module::Module(
   , m_stat(stat)
   , m_indirect_references()
   , m_aliases()
-  , m_representant(new ModuleRepresentant(module_name, this))
+  , m_representant(domain->new_module_representant(module_name, this))
   , m_refcounter(0)
   , m_initialized_scopes()
 {
@@ -538,7 +538,7 @@ void refalrts::Module::Loader::enumerate_blocks() {
           PARSE_ASSERT(read == 1, "can't read offset in REFAL_FUNCTION");
 
           register_(
-            new RASLFunction(
+            domain()->new_RASL_function(
               table->make_name(name),
               &table->rasl[offset],
               &table->externals_pointers[0],
@@ -555,8 +555,7 @@ void refalrts::Module::Loader::enumerate_blocks() {
         {
           PARSE_ASSERT(table != 0, "CONST_TABLE must precede any function");
           RefalNativeFunction *func =
-            new RefalNativeFunction(
-              0, /* указатель на нативный код */
+            domain()->new_native_function(
               &table->externals_pointers[0],
               &table->idents[0],
               table->make_name(read_asciiz())
@@ -568,12 +567,12 @@ void refalrts::Module::Loader::enumerate_blocks() {
 
       case cBlockTypeEmptyFunction:
         PARSE_ASSERT(table != 0, "CONST_TABLE must precede any function");
-        register_(new RefalEmptyFunction(table->make_name(read_asciiz())));
+        register_(domain()->new_empty_function(table->make_name(read_asciiz())));
         break;
 
       case cBlockTypeSwap:
         PARSE_ASSERT(table != 0, "CONST_TABLE must precede any function");
-        register_(new RefalSwap(table->make_name(read_asciiz())));
+        register_(domain()->new_swap(table->make_name(read_asciiz())));
         break;
 
       case cBlockTypeReference:
@@ -582,12 +581,12 @@ void refalrts::Module::Loader::enumerate_blocks() {
 
       case cBlockTypeConditionRasl:
         PARSE_ASSERT(table != 0, "CONST_TABLE must precede any function");
-        register_(new RefalCondFunctionRasl(table->make_name(read_asciiz())));
+        register_(domain()->new_cond_func_rasl(table->make_name(read_asciiz())));
         break;
 
       case cBlockTypeConditionNative:
         PARSE_ASSERT(table != 0, "CONST_TABLE must precede any function");
-        register_(new RefalCondFunctionNative(table->make_name(read_asciiz())));
+        register_(domain()->new_cond_func_nat(table->make_name(read_asciiz())));
         break;
 
       case cBlockTypeIncorporated:

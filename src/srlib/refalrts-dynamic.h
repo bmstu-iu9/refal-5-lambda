@@ -136,6 +136,10 @@ private:
       return ::fread(ptr, size, count, m_stream);
     }
 
+    Domain *domain() const {
+      return m_module->domain();
+    }
+
     bool seek_rasl_signature();
     std::string read_asciiz();
     void read_start_block(size_t datalen);
@@ -341,6 +345,57 @@ public:
 
   bool dangerous_state() const {
     return m_dangerous;
+  }
+
+  ModuleRepresentant *new_module_representant(
+    const std::string& module_name, Module *module
+  ) {
+    ModuleRepresentant *res = new ModuleRepresentant(module_name, module);
+    return res;
+  }
+
+  RefalFunction *new_RASL_function(
+    RefalFuncName name,
+    const RASLCommand *rasl,
+    RefalFunction **functions,
+    const RefalIdentifier *idents,
+    const RefalNumber *numbers,
+    const StringItem *strings,
+    const char *filename
+  ) {
+    RefalFunction *res = new RASLFunction(
+      name, rasl, functions, idents, numbers, strings, filename
+    );
+    return res;
+  }
+
+  RefalNativeFunction *new_native_function(
+    RefalFunction **functions,
+    const RefalIdentifier *idents,
+    RefalFuncName name
+  ) {
+    RefalNativeFunction *res = new RefalNativeFunction(functions, idents, name);
+    return res;
+  }
+
+  RefalFunction *new_empty_function(RefalFuncName name) {
+    RefalFunction *res = new RefalEmptyFunction(name);
+    return res;
+  }
+
+  RefalFunction *new_swap(RefalFuncName name) {
+    RefalFunction *res = new RefalSwap(name);
+    return res;
+  }
+
+  RefalFunction *new_cond_func_rasl(RefalFuncName name) {
+    RefalFunction *res = new RefalCondFunctionRasl(name);
+    return res;
+  }
+
+  RefalFunction *new_cond_func_nat(RefalFuncName name) {
+    RefalFunction *res = new RefalCondFunctionNative(name);
+    return res;
   }
 
 private:

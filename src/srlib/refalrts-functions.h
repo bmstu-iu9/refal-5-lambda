@@ -53,12 +53,12 @@ struct RefalNativeFunction: public RefalFunction {
   const RefalIdentifier *idents;
 
   RefalNativeFunction(
-    RefalFunctionPtr ptr,
     RefalFunction **functions,
     const RefalIdentifier *idents,
     RefalFuncName name
   )
-    : RefalFunction(run, name), ptr(ptr)
+    : RefalFunction(run, name)
+    , ptr(0)
     , functions(functions)
     , idents(idents)
   {
