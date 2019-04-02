@@ -1,7 +1,0 @@
-Test {
-  e.Begin (e.Inner) e.End (e.Left 'X' e.Inner) = ;
-}
-
-$ENTRY Go {
-  = <Test ('er') ('super') ('super') ('abba' 'X' 'super')>;
-}

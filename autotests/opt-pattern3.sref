@@ -1,140 +1,70 @@
-/*
-  Данный автотест аккумулирует ошибки, обнаруженные в ходе разработки
-  оптимизации совместного сопоставления с образцом.
-*/
+WriteFunctions {
+  () () = 1;
 
-CreateErrorFileMark {
-  #NoErrorFile = /* ничего */;
-  (#ErrorFile e.FileName) = <SaveFile (e.FileName)>;
+  () () () = 2;
+
+  () (#X) = 3;
 }
 
-SaveFile {
-  ('error.txt') = ;
+Eq { s.X s.X = ; }
+
+Go1 {
+  =
+    <Eq 1 <WriteFunctions () ()>>
+    <Eq 2 <WriteFunctions () () ()>>
+    <Eq 3 <WriteFunctions () (#X)>>;
 }
 
-//----
+//------------------------------------------------------------------------------
 
-DoGetFileName {
-  e.FileName '/' = ;
-  e.FileName '\\' = ;
-  e.FileName s.Last = ;
-  = ;
+Go2 {
+  = <{ 2 ('ABC') ('C@xyz') = ; } <Test2 ('ABC') ('ABC@xyz')>>;
 }
 
-//----
-
-Link {
-  #NoCppCompiler e.Files =
-    /* ничего не делаем */;
-
-  (e.CommandLine) e.Files = ;
+Test2 {
+  (e.Rep ) (e.Rep 'A' e.Rest) = 1 (e.Rep) (e.Rest);
+  (e.Var1) ('AB' e.Var2     ) = 2 (e.Var1) (e.Var2);
 }
 
-//----
+//------------------------------------------------------------------------------
 
-Main-SwRenamedTargets-lambda {
-  (s.Pos #Collision (e.FirstTarget) e.SecondTarget) = ;
-
-  (s.Pos #Source (e.Source) e.Output) = ;
-
-  (s.Pos #Output e.Output) = ;
+Go3 {
+  = <{ 1 2 3 = ; } <F #A #B #C>>;
 }
 
-//----
-
-RenameLocations-Aux-lambda {
-  0 (s.Pos #Source (e.Source) e.Output) = ;
-
-  s.Num (s.Pos #Source (e.Source) e.Output '.cpp') = ;
-
-  s.Num (s.Pos #Output e.Output) = ;
+F {
+  #A #B #C = 1 2 3;
+  #A #B #C = 1 2 3;
 }
 
-//----
+//------------------------------------------------------------------------------
 
-ReportErrors {
-  #CommandLine t.ErrorFile e.Errors =
-    <Map
-      {
-        (s.Pos e.Message) =
-          <WriteLine
-            'Command line argument ' <StrFromInt s.Pos> ': Error: ' e.Message
-          >;
-      }
-      e.Errors
-    >
-    <CreateErrorFileMark t.ErrorFile>
-    <Exit 1>;
-
-  (e.ConfigFile) t.ErrorFile e.Errors =
-    <Map
-      {
-        (s.Pos e.Message) =
-          <WriteLine
-            e.ConfigFile ':' <StrFromInt s.Pos> ': Error: ' e.Message
-          >;
-      }
-      e.Errors
-    >
-    <CreateErrorFileMark t.ErrorFile>
-    <Exit 1>;
+Go4 {
+  = <Eq 2 <Test4 [Go 7]>>;
 }
 
-Map {
-  s.Lambda (1 'hello') (2 'world') =
-    <
-      {
-        [WriteLine 'Command line argument 3: Error: hi'] = ;
-        [WriteLine 'file.txt:3: Error: hi'] = ;
-      }
-      <s.Lambda (3 'hi')>
-    >;
+Test4 {
+  (#Go s.X) = 0;
+  (Go s.X) = 1;
+  [Go s.X] = 2;
+  t.Other = 3;
 }
 
-StrFromInt { 3 = '3'; }
-Exit { 1 = ; }
-WriteLine { e.Text = [WriteLine e.Text]; }
+//------------------------------------------------------------------------------
 
-//----
-
-ScanCollisions {
-  ((e.BaseName) e.Locations1)
-  e.Files-B ((e.BaseName) e.Locations2) e.Files-E = ;
-
-  ((e.BaseName) e.Locations) e.Files = ;
-
-  /* пусто */ = /* всё */;
+Go5 {
+   = <Test5 () 'A'> : 1
+   = <Test5 () 'B'> : 2
+   = ;
 }
 
-//----
+Test5 {
+  () 'A' = 1;
+  () 'B' = 2;
+}
+
+//------------------------------------------------------------------------------
 
 $ENTRY Go {
-  =
-    <CreateErrorFileMark #NoErrorFile>
-    <CreateErrorFileMark (#ErrorFile 'error.txt')>
-    //----
-    <DoGetFileName 'test/'>
-    <DoGetFileName 'test\\'>
-    <DoGetFileName 'test'>
-    <DoGetFileName>
-    //----
-    <Link #NoCppCompiler 'files'>
-    <Link ('command line') 'files'>
-    //----
-    <Main-SwRenamedTargets-lambda (1 #Collision ('first target') 'second target')>
-    <Main-SwRenamedTargets-lambda (1 #Source ('source') 'output')>
-    <Main-SwRenamedTargets-lambda (1 #Output 'output')>
-    //----
-    <RenameLocations-Aux-lambda 0 (1 #Source ('source') 'output')>
-    <RenameLocations-Aux-lambda 1 (2 #Source ('source') 'output.cpp')>
-    <RenameLocations-Aux-lambda 2 (3 #Output 'output')>
-    //----
-    <ReportErrors #CommandLine #NoErrorFile (1 'hello') (2 'world')>
-    <ReportErrors ('file.txt') #NoErrorFile (1 'hello') (2 'world')>
-    //----
-    <ScanCollisions
-      (('base name') 'loc1') 'files-b' (('base name') 'loc2') 'files-e'
-    >
-    <ScanCollisions (('base name') 'loc') 'files'>
-    <ScanCollisions>;
+  = <Go1> <Go2> <Go3> <Go4> <Go5>;
 }

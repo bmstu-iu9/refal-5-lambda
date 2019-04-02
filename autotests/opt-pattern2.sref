@@ -1,47 +1,140 @@
-ProcessOptionalFinalizers {
-  s.HasMissedRequireds
-  t.hErrorList t.Collected (s.Num #Required-NotUsed e.Name)
-  e.Tail t.EOG-Handler t.EOG-SrcPos =
-    ;
+/*
+  Данный автотест аккумулирует ошибки, обнаруженные в ходе разработки
+  оптимизации совместного сопоставления с образцом.
+*/
 
-  s.HasMissedRequireds
-  t.hErrorList t.Collected (s.Num #Used e.Name)
-  e.Tail t.EOG-Handler t.EOG-SrcPos =
-    ;
-
-  s.HasMissedRequireds
-  t.hErrorList t.Collected (s.Num (#Optional) e.Name)
-  e.Tail t.EOG-Handler t.EOG-SrcPos =
-    ;
-
-  s.HasMissedRequireds
-  t.hErrorList t.Collected (s.Num (#Optional t.FnOptionalHandler) e.Name)
-  e.Tail t.EOG-Handler t.EOG-SrcPos =
-    ;
-
-  #NoMissedRequireds
-  t.hErrorList t.Collected t.EOG-Handler t.EOG-SrcPos =
-    ;
-
-  #FoundMissedRequireds
-  t.hErrorList t.Collected t.EOG-Handler t.EOG-SrcPos =
-    ;
+CreateErrorFileMark {
+  #NoErrorFile = /* ничего */;
+  (#ErrorFile e.FileName) = <SaveFile (e.FileName)>;
 }
+
+SaveFile {
+  ('error.txt') = ;
+}
+
+//----
+
+DoGetFileName {
+  e.FileName '/' = ;
+  e.FileName '\\' = ;
+  e.FileName s.Last = ;
+  = ;
+}
+
+//----
+
+Link {
+  #NoCppCompiler e.Files =
+    /* ничего не делаем */;
+
+  (e.CommandLine) e.Files = ;
+}
+
+//----
+
+Main-SwRenamedTargets-lambda {
+  (s.Pos #Collision (e.FirstTarget) e.SecondTarget) = ;
+
+  (s.Pos #Source (e.Source) e.Output) = ;
+
+  (s.Pos #Output e.Output) = ;
+}
+
+//----
+
+RenameLocations-Aux-lambda {
+  0 (s.Pos #Source (e.Source) e.Output) = ;
+
+  s.Num (s.Pos #Source (e.Source) e.Output '.cpp') = ;
+
+  s.Num (s.Pos #Output e.Output) = ;
+}
+
+//----
+
+ReportErrors {
+  #CommandLine t.ErrorFile e.Errors =
+    <Map
+      {
+        (s.Pos e.Message) =
+          <WriteLine
+            'Command line argument ' <StrFromInt s.Pos> ': Error: ' e.Message
+          >;
+      }
+      e.Errors
+    >
+    <CreateErrorFileMark t.ErrorFile>
+    <Exit 1>;
+
+  (e.ConfigFile) t.ErrorFile e.Errors =
+    <Map
+      {
+        (s.Pos e.Message) =
+          <WriteLine
+            e.ConfigFile ':' <StrFromInt s.Pos> ': Error: ' e.Message
+          >;
+      }
+      e.Errors
+    >
+    <CreateErrorFileMark t.ErrorFile>
+    <Exit 1>;
+}
+
+Map {
+  s.Lambda (1 'hello') (2 'world') =
+    <
+      {
+        [WriteLine 'Command line argument 3: Error: hi'] = ;
+        [WriteLine 'file.txt:3: Error: hi'] = ;
+      }
+      <s.Lambda (3 'hi')>
+    >;
+}
+
+StrFromInt { 3 = '3'; }
+Exit { 1 = ; }
+WriteLine { e.Text = [WriteLine e.Text]; }
+
+//----
+
+ScanCollisions {
+  ((e.BaseName) e.Locations1)
+  e.Files-B ((e.BaseName) e.Locations2) e.Files-E = ;
+
+  ((e.BaseName) e.Locations) e.Files = ;
+
+  /* пусто */ = /* всё */;
+}
+
+//----
 
 $ENTRY Go {
   =
-    <ProcessOptionalFinalizers
-      '***' ('#' #Required-NotUsed 'name') 't**'
+    <CreateErrorFileMark #NoErrorFile>
+    <CreateErrorFileMark (#ErrorFile 'error.txt')>
+    //----
+    <DoGetFileName 'test/'>
+    <DoGetFileName 'test\\'>
+    <DoGetFileName 'test'>
+    <DoGetFileName>
+    //----
+    <Link #NoCppCompiler 'files'>
+    <Link ('command line') 'files'>
+    //----
+    <Main-SwRenamedTargets-lambda (1 #Collision ('first target') 'second target')>
+    <Main-SwRenamedTargets-lambda (1 #Source ('source') 'output')>
+    <Main-SwRenamedTargets-lambda (1 #Output 'output')>
+    //----
+    <RenameLocations-Aux-lambda 0 (1 #Source ('source') 'output')>
+    <RenameLocations-Aux-lambda 1 (2 #Source ('source') 'output.cpp')>
+    <RenameLocations-Aux-lambda 2 (3 #Output 'output')>
+    //----
+    <ReportErrors #CommandLine #NoErrorFile (1 'hello') (2 'world')>
+    <ReportErrors ('file.txt') #NoErrorFile (1 'hello') (2 'world')>
+    //----
+    <ScanCollisions
+      (('base name') 'loc1') 'files-b' (('base name') 'loc2') 'files-e'
     >
-    <ProcessOptionalFinalizers
-      '***' ('#' #Used 'name') 't**'
-    >
-    <ProcessOptionalFinalizers
-      '***' ('#' (#Optional) 'name') 't**'
-    >
-    <ProcessOptionalFinalizers
-      '***' ('#' (#Optional '@') 'name') 't**'
-    >
-    <ProcessOptionalFinalizers #NoMissedRequireds '****'>
-    <ProcessOptionalFinalizers #FoundMissedRequireds '****'>;
+    <ScanCollisions (('base name') 'loc') 'files'>
+    <ScanCollisions>;
 }

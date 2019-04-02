@@ -1,3 +1,6 @@
+$ENTRY Go { = <Go1> <Go2>; }
+
+
 TestB {
   (#X s.Var) = ;
   (#Y s.Var) = ;
@@ -12,7 +15,7 @@ TestA {
   #Z = ;
 }
 
-$ENTRY Go {
+Go1 {
   =
     <TestB (#X 1)>
     <TestB (#Y 1)>
@@ -20,4 +23,53 @@ $ENTRY Go {
     <TestA [TestA #X 1]>
     <TestA [TestA #Y 1]>
     <TestA #Z>;
+}
+
+
+ProcessOptionalFinalizers {
+  s.HasMissedRequireds
+  t.hErrorList t.Collected (s.Num #Required-NotUsed e.Name)
+  e.Tail t.EOG-Handler t.EOG-SrcPos =
+    ;
+
+  s.HasMissedRequireds
+  t.hErrorList t.Collected (s.Num #Used e.Name)
+  e.Tail t.EOG-Handler t.EOG-SrcPos =
+    ;
+
+  s.HasMissedRequireds
+  t.hErrorList t.Collected (s.Num (#Optional) e.Name)
+  e.Tail t.EOG-Handler t.EOG-SrcPos =
+    ;
+
+  s.HasMissedRequireds
+  t.hErrorList t.Collected (s.Num (#Optional t.FnOptionalHandler) e.Name)
+  e.Tail t.EOG-Handler t.EOG-SrcPos =
+    ;
+
+  #NoMissedRequireds
+  t.hErrorList t.Collected t.EOG-Handler t.EOG-SrcPos =
+    ;
+
+  #FoundMissedRequireds
+  t.hErrorList t.Collected t.EOG-Handler t.EOG-SrcPos =
+    ;
+}
+
+Go2 {
+  =
+    <ProcessOptionalFinalizers
+      '***' ('#' #Required-NotUsed 'name') 't**'
+    >
+    <ProcessOptionalFinalizers
+      '***' ('#' #Used 'name') 't**'
+    >
+    <ProcessOptionalFinalizers
+      '***' ('#' (#Optional) 'name') 't**'
+    >
+    <ProcessOptionalFinalizers
+      '***' ('#' (#Optional '@') 'name') 't**'
+    >
+    <ProcessOptionalFinalizers #NoMissedRequireds '****'>
+    <ProcessOptionalFinalizers #FoundMissedRequireds '****'>;
 }

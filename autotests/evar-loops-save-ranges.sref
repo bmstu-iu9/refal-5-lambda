@@ -1,9 +1,0 @@
-$ENTRY Test {
-  (e.1 'X' e.2) e.2 'Y' e.3 = ;
-}
-
-$ENTRY Go {
-  = <Test ('a' 'X' 'b') 'b' 'Y' 'c'>;
-}
-
-//FROM refalrts

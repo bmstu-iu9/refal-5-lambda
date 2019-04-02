@@ -1,0 +1,76 @@
+// CONDITIONS
+
+$ENTRY Go { = <Go1> <Go2> <Go3>; }
+
+
+// conditions-adt.sref
+
+Go1 {
+  = <Eq C1 <Test1 [Go A B1 C1 D1]>>
+    <Eq 0 <Test1 [Go A B1 D1]>>;
+}
+
+Eq { s.X s.X = ; }
+
+A { e.Any = #False; }
+
+B1 {
+  [Go e.Any] () = #True;
+  e.Other = #False;
+}
+
+C1 {
+  [Go A B1] (D1) = #True;
+  e.Other = #False;
+}
+
+D1 {
+  [Go] (e.Any) = #True;
+  e.Other = #False;
+}
+
+Test1 {
+  [Go e.Opened s.F e.Closed] , <s.F [Go e.Opened] (e.Closed)> : #True = s.F;
+  e.Other = 0;
+}
+
+
+// conditions-closures.sref
+
+Go2 {
+  = <Eq C2 <Test2 A B2 C2 D2>>
+    <Eq 0 <Test2 A B2 D2>>;
+}
+
+B2 {
+  (e.Any) () = #True;
+  e.Other = #False;
+}
+
+C2 {
+  (A B2) (D2) = #True;
+  e.Other = #False;
+}
+
+D2 {
+  () (e.Any) = #True;
+  e.Other = #False;
+}
+
+Test2 {
+  e.Opened s.F e.Closed , <{=<s.F (e.Opened) (e.Closed)>;}> : #True = s.F;
+  e.Other = 0;
+}
+
+
+// conditions-indirect.sref
+
+Go3 {
+  = <Eq C2 <Test3 A B2 C2 D2>>
+    <Eq 0 <Test3 A B2 D2>>;
+}
+
+Test3 {
+  e.Opened s.F e.Closed, <s.F (e.Opened) (e.Closed)> : #True = s.F;
+  e.Other = 0;
+}

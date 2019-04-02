@@ -1,0 +1,84 @@
+$ENTRY Go { = <Go1> <Go2> <Go3> <Go4> <Go5> <Go6>; }
+
+
+// evar-loops-in-empty-subexpr.sref
+
+WithE {
+  (e.Prefix e.Suffix) e.Prefixes-B (e.Prefix) e.Suffix = ;
+}
+
+Go1 {
+  =
+    <WithE ('prefix') ('prefix')>
+    <WithE () ()>;
+}
+
+
+// evar-loops-nested.sref
+
+Test1 {
+  e.Begin (e.Inner) e.End (e.Left 'X' e.Inner) = ;
+}
+
+Go2 {
+  = <Test1 ('er') ('super') ('super') ('abba' 'X' 'super')>;
+}
+
+
+// evar-loops-nested-ADT.sref
+
+Test2 {
+  [Test2 e.Begin (e.Inner) e.End [Test2 e.Left 'X' e.Inner]] = ;
+}
+
+Go3 {
+  = <Test2 [Test2 ('er') ('super') ('super') [Test2 'abba' 'X' 'super']]>;
+}
+
+
+// evar-loops-save-ranges.sref
+
+Test3 {
+  (e.1 'X' e.2) e.2 'Y' e.3 = ;
+}
+
+Go4 {
+  = <Test3 ('a' 'X' 'b') 'b' 'Y' 'c'>;
+}
+
+
+// evar-loops-simple.sref
+
+Eq {
+	e.X (e.X) = ;
+}
+
+Test4 {
+	e.X 'd' e.Y = e.X e.Y;
+}
+
+Go5 {
+	= <Eq <Test4 'abcdef'> ('abcef')>;
+}
+
+
+// evar-loops-two-loops.sref
+
+VarSetDifference {
+  ( e.Set1-B t.Common e.Set1-E ) ( e.Set2-B t.Common e.Set2-E ) =
+    e.Set1-B <VarSetDifference (e.Set1-E) ( e.Set2-B e.Set2-E )>;
+
+  ( e.Set1 ) ( e.Set2 ) = e.Set1;
+}
+
+Go6 {
+  =
+    <VarSetDifference
+     ((1 'tFn' 1 )
+      (2 'tFn' 1 )
+      (1 'tNext' 1 )
+      (1 'eTail' 1 ))
+     ((1 'tFn' 1 )
+      (1 'tNext' 1 )
+      (1 'eTail' 1 ))>;
+}
