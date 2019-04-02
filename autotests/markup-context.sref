@@ -1,3 +1,0 @@
-$ENTRY Go {
-  e.Name-With-Dashes = <{ = e.Name-With-Dashes; }>;
-}
