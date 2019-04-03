@@ -124,11 +124,13 @@ SaveBytes-Handle {
 }
 
 $ENTRY Inc {
-  s.Num = <Add s.Num 1>;
+  e.Num = <Add 1 e.Num>;
 }
 
 $ENTRY Dec {
+* Оптимизация для одной макроцифры
   s.Num = <Sub s.Num 1>;
+  e.Num = <Sub (e.Num) 1>;
 }
 
 $ENTRY FastIntFromStr {
