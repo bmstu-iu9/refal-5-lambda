@@ -5,6 +5,14 @@ $EXTERN FOpen, FClose, FReadLine, FWriteLine, Add, Sub, IntFromStr, Arg,
 * Расширения библиотеки и функции, реализуемые
 * средствами самого Простого Рефала
 
+/**
+  <Apply t.Closure e.Arg> == e.Res
+
+  t.Closure ::=
+      s.FUNCTION
+    | (t.Closure e.Bounded)
+  e.Arg, e.Res, e.Bounded ::= e.AnyExpr
+*/
 $ENTRY Apply {
   s.Fn e.Argument = <s.Fn e.Argument>;
 
@@ -12,12 +20,25 @@ $ENTRY Apply {
     = <Apply t.Closure e.Bounded e.Argument>;
 }
 
+
+/**
+  <Map t.Closure t.Item*> == e.ItemRes*
+
+  <Apply t.Closure t.Item> == e.ItemRes
+*/
 $ENTRY Map {
   t.Fn t.Next e.Tail = <Apply t.Fn t.Next> <Map t.Fn e.Tail>;
 
   t.Fn = ;
 }
 
+
+/**
+  <Reduce t.Closure t.Accum t.Item*> == t.Accum′
+
+  <Apply t.Closure t.Accum t.Item> == t.Accum′
+  t.Accum′ ::= t.Accum
+*/
 $ENTRY Reduce {
   t.Fn t.Acc t.Next e.Tail
     = <Reduce
@@ -35,6 +56,12 @@ $ENTRY Y {
   s.Y-Func = { e.Arg = <<s.Y-Func <Y s.Y-Func>> e.Arg>; };
 }
 
+/**
+  <MapAccum t.Closure t.Accum t.Item*> == t.Accum′ e.ItemRes*
+
+  <Apply t.Closure t.Accum t.Item> == t.Accum′ e.ItemRes
+  t.Accum′ ::= t.Accum
+*/
 $ENTRY MapAccum {
   t.Fn t.Acc e.Tail = <DoMapAccum t.Fn t.Acc () e.Tail>;
 }
@@ -59,6 +86,9 @@ $ENTRY UnBracket {
   (e.Expr) = e.Expr;
 }
 
+/**
+  <DelAccumulator t.Accum e.AnyExpr> == e.AnyExpr
+*/
 $ENTRY DelAccumulator {
   t.Acc e.Tail = e.Tail;
 }
@@ -123,6 +153,10 @@ SaveBytes-Handle {
       <FClose s.FileHandle>;
 }
 
+/**
+  <Inc e.LongNumber> == e.LongNumber
+  <Dec e.LongNumber> == e.LongNumber
+*/
 $ENTRY Inc {
   e.Num = <Add 1 e.Num>;
 }
@@ -137,6 +171,10 @@ $ENTRY FastIntFromStr {
   e.Digits = <IntFromStr e.Digits> : Success s.Number = s.Number;
 }
 
+/**
+  <ArgList> == (e.Arg)+
+  e.Arg ::= s.CHAR*
+*/
 $ENTRY ArgList {
   = <DoArgList 0>;
 }
@@ -228,6 +266,11 @@ Lexicon-T-Aux {
       (e.ScannedRight t.NextRight e.Right);
 }
 
+/**
+  <Trim s.CHAR*> == s.CHAR*
+  <Trim-L s.CHAR*> == s.CHAR*
+  <Trim-R s.CHAR*> == s.CHAR*
+*/
 $ENTRY Trim {
   e.Line = <Trim-L <Trim-R e.Line>>;
 }
@@ -314,11 +357,17 @@ $ENTRY Max {
   t.First e.Tail = <Reduce &Max t.First e.Tail>;
 }
 
+/**
+  <OneOf t.Elem e.SampleElems> == True | False
+*/
 $ENTRY OneOf {
   t.Sample e.Items-B t.Sample e.Items-E = True;
   t.Sample e.Items = False;
 }
 
+/**
+  <Unique t.Item*> == t.Item*
+*/
 $ENTRY Unique {
   e.Uniques t.Repeated e.Items-B t.Repeated e.Items-E
     = e.Uniques <Unique e.Items-B t.Repeated e.Items-E>;
