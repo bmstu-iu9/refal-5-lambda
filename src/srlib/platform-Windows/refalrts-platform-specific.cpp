@@ -120,6 +120,8 @@ bool refalrts::api::is_single_file_name(const char *name) {
 
 const char *refalrts::api::default_lib_extension = ".dll";
 
+#if defined(REFAL_5_LAMBDA_USE_WINDOWS_9X)
+
 refalrts::api::ClockNs *refalrts::api::init_clock_ns() {
   return 0;
 }
@@ -131,3 +133,44 @@ double refalrts::api::clock_ns(refalrts::api::ClockNs *) {
 void refalrts::api::free_clock_ns(refalrts::api::ClockNs *) {
   /* ничего не делаем */
 }
+
+#else /* defined(REFAL_5_LAMBDA_USE_WINDOWS_9X) */
+
+struct refalrts::api::ClockNs {
+  ULARGE_INTEGER start_of_program;
+};
+
+refalrts::api::ClockNs *refalrts::api::init_clock_ns() {
+  ClockNs *res = new ClockNs;
+  GetSystemTimeAsFileTime((LPFILETIME) &res->start_of_program);
+  return res;
+}
+
+double refalrts::api::clock_ns(refalrts::api::ClockNs *clk) {
+  ULARGE_INTEGER now;
+  ULARGE_INTEGER start = clk->start_of_program;
+
+  GetSystemTimeAsFileTime((LPFILETIME) &now);
+
+#if defined(REFAL_5_LAMBDA_COMPILER_DONT_SUPPORT_64)
+
+  double hi_diff =
+    (now.u.LowPart >= start.u.LowPart)
+    ? (now.u.HighPart - start.u.HighPart)
+    : (now.u.HighPart - start.u.HighPart - 1);
+  double low_diff = now.u.LowPart - start.u.LowPart;
+
+  return (hi_diff * 4294967296 + low_diff) * 100;
+
+#else /* defined(REFAL_5_LAMBDA_COMPILER_DONT_SUPPORT_64) */
+
+  return (now.QuadPart - start.QuadPart) * 100.0;
+
+#endif /* defined(REFAL_5_LAMBDA_COMPILER_DONT_SUPPORT_64) */
+}
+
+void refalrts::api::free_clock_ns(refalrts::api::ClockNs *clk) {
+  delete clk;
+}
+
+#endif /* defined(REFAL_5_LAMBDA_USE_WINDOWS_9X) */
