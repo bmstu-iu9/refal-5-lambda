@@ -341,7 +341,7 @@ void refalrts::Profiler::print_statistics() {
     if (value > 0) {
       double percent = (total != 0) ? 100.0 * value / total : 0.0;
       fprintf(
-        stderr, "%s: %.3f seconds (%.1f %%).\n",
+        stderr, "%s: %.5f seconds (%.1f %%).\n",
         items[i].name, value * cfSECS_PER_CLOCK, percent
       );
     }
