@@ -137,20 +137,25 @@ void refalrts::api::free_clock_ns(refalrts::api::ClockNs *) {
 #else /* defined(REFAL_5_LAMBDA_USE_WINDOWS_9X) */
 
 struct refalrts::api::ClockNs {
-  ULARGE_INTEGER start_of_program;
+  LARGE_INTEGER start_of_program;
+  double frequency_in_ns;
 };
 
 refalrts::api::ClockNs *refalrts::api::init_clock_ns() {
+  LARGE_INTEGER frequency;
+  QueryPerformanceFrequency(&frequency);
+
   ClockNs *res = new ClockNs;
-  GetSystemTimeAsFileTime((LPFILETIME) &res->start_of_program);
+  QueryPerformanceCounter(&res->start_of_program);
+  res->frequency_in_ns = 1.0e9 / frequency.QuadPart;
   return res;
 }
 
 double refalrts::api::clock_ns(refalrts::api::ClockNs *clk) {
-  ULARGE_INTEGER now;
-  ULARGE_INTEGER start = clk->start_of_program;
+  LARGE_INTEGER now;
+  LARGE_INTEGER start = clk->start_of_program;
 
-  GetSystemTimeAsFileTime((LPFILETIME) &now);
+  QueryPerformanceCounter(&now);
 
 #if defined(REFAL_5_LAMBDA_COMPILER_DONT_SUPPORT_64)
 
@@ -160,11 +165,11 @@ double refalrts::api::clock_ns(refalrts::api::ClockNs *clk) {
     : (now.u.HighPart - start.u.HighPart - 1);
   double low_diff = now.u.LowPart - start.u.LowPart;
 
-  return (hi_diff * 4294967296 + low_diff) * 100;
+  return (hi_diff * 4294967296 + low_diff) * clk->frequency_in_ns;
 
 #else /* defined(REFAL_5_LAMBDA_COMPILER_DONT_SUPPORT_64) */
 
-  return (now.QuadPart - start.QuadPart) * 100.0;
+  return (now.QuadPart - start.QuadPart) * clk->frequency_in_ns;
 
 #endif /* defined(REFAL_5_LAMBDA_COMPILER_DONT_SUPPORT_64) */
 }
