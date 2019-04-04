@@ -120,21 +120,8 @@ bool refalrts::api::is_single_file_name(const char *name) {
 
 const char *refalrts::api::default_lib_extension = ".dll";
 
-#if defined(REFAL_5_LAMBDA_USE_WINDOWS_9X)
 
-refalrts::api::ClockNs *refalrts::api::init_clock_ns() {
-  return 0;
-}
-
-double refalrts::api::clock_ns(refalrts::api::ClockNs *) {
-  return clock() * 1e9 / CLOCKS_PER_SEC;
-}
-
-void refalrts::api::free_clock_ns(refalrts::api::ClockNs *) {
-  /* ничего не делаем */
-}
-
-#else /* defined(REFAL_5_LAMBDA_USE_WINDOWS_9X) */
+#if defined(REFAL_5_LAMBDA_USE_QPC)
 
 struct refalrts::api::ClockNs {
   LARGE_INTEGER start_of_program;
@@ -178,4 +165,18 @@ void refalrts::api::free_clock_ns(refalrts::api::ClockNs *clk) {
   delete clk;
 }
 
-#endif /* defined(REFAL_5_LAMBDA_USE_WINDOWS_9X) */
+#else /* defined(REFAL_5_LAMBDA_USE_QPC) */
+
+refalrts::api::ClockNs *refalrts::api::init_clock_ns() {
+  return 0;
+}
+
+double refalrts::api::clock_ns(refalrts::api::ClockNs *) {
+  return clock() * 1e9 / CLOCKS_PER_SEC;
+}
+
+void refalrts::api::free_clock_ns(refalrts::api::ClockNs *) {
+  /* ничего не делаем */
+}
+
+#endif /* defined(REFAL_5_LAMBDA_USE_QPC) */
