@@ -17,7 +17,7 @@ all, the usage of special data structure – object expression. The most FL use
 single linked lists – the sequences of elements, in which only left side is
 accessed for direct elaboration. In other words, it is possible to make only
 such operations as looking on the first element, cutting off the first element,
-making the new list by adding an element in the beginning of the starting list.
+making the new list by adding an element at the beginning of the starting list.
 
 It is possible to derive the last element only by sequential truncation of the
 first element until the sequence won’t be empty – the last truncated element is
@@ -67,7 +67,7 @@ Refal-5λ syntax sugar is assignments and blocks, and, as it will be seen
 further, they are expressed with nested functions. These and other kinds of
 “sugar” will be told about later.
 
-Thirdly, actual implementation of Refal-5λ is not locked in contrast to a lot
+Thirdly, the actual implementation of Refal-5λ is not locked in contrast to a lot
 of other REFAL implementations. It means that  programmer is not constrained
 with some “embedded” language functions, embedded interface with C++ language
 allow the programmer to implement and use functionality in their programs on
@@ -107,9 +107,9 @@ It is possible to download and unpack `bootstrap-refal-5-lambda-***.zip` in any
 catalog from the same page
 <https://github.com/bmstu-iu9/refal-5-lambda/releases/latest>.
 
-In archive there are Refal-5λ, compiled into code on C++ and glue
+In the archive there are Refal-5λ, compiled into code on C++ and glue
 interpretive code. In order to get ready executable modules from it is
-essential to have an installed C++98 compiler on computer. It is enough to
+essential to have an installed C++98 compiler on a computer. It is enough to
 download `bootstrap.bat` file on Windows or `bootstrap.sh` on Linux or macOS –
 after distribution there will be new executable files in the bin subfolder.
 
@@ -127,7 +127,7 @@ one of them if your compiler is mentioned there). The second start is to put
 all together.
 
 Note. _On unix-like platforms (Linux, macOS)  bootstrap.sh also makes
-configured c-plus-plus.conf.sh file , but GCC C++ call is already written in
+configured c-plus-plus.conf.sh file, but GCC C++ call is already written in
 it automatically. If you want, you can change it on, for example, Clang._
 
 The content of this “half-compiled” archive is available as an archive on
@@ -151,7 +151,7 @@ It is enough to have any C++98 compiler for expanding. Distribution was tested
 on BCC 5.5, Microsoft Visual C++ of different versions, GCC C++, Clang,
 OpenWatcom.  Supported operational systems: Windows XP and newer, GNU+Linux
 (distributives not older than 5 years), macOS ( I don’t know certain versions —
-thy were tested not by me). Supported processors architectures are x386 and
+they were not tested by me). Supported processors architectures are x386 and
 amd64 (work on big endian machines is not supported in current version).
 
 **It is important!** Source codes from GitHub must be downloaded only by
@@ -167,7 +167,7 @@ sources. Probably, it will be corrected in the next versions.
 
 There are configuration files in distributive, which imply syntax highlighting
 for different text editors. If you installed REFAL on Windows, using
-automatic setup («setup.exe»), folder with configuration files is accessed
+automatic setup («setup.exe»), a folder with configuration files are accessed
 through the Start menu: “Refal-5 lambda” → “Plugins for text editors”. In all
 other cases (half-compiled archive, cloned repositories) files of texts
 editors configuration are available in `editors` subfolder.
@@ -179,7 +179,7 @@ colouring of expanded Simple Refal syntax is supported, and, probably, only for
 non-actual version.
 
 For Simple Refal there is a plugin for IDEA, that provides colouring of syntax
-errors and autocompletion, it is available on link:
+errors and autocompletion, it is available at the following link:
 
 <https://github.com/bmstu-iu9/simple-refal-plugin>
 
@@ -190,13 +190,13 @@ on the link <http://www.refal.net/~belous/refscite.htm>.
 
 ### Simple program compilation
 
-Open your favorite text editor and write the following text in it:
+Open your favourite text editor and write the following text in it:
 
     $ENTRY Go {
       = <Prout 'Hello, World!'>;
     }
 
-and save it with name `hello.ref`. After that open command line in the folder
+and save it with the name `hello.ref`. After that open command line in the folder
 with this file and write the following command:
 
     srefc hello.ref
