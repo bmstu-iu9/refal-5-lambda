@@ -88,8 +88,6 @@ prepare_common() {
   RSOURCES="LibraryEx GetOpt"
   RT="
     refalrts
-    refalrts-allocator
-    refalrts-dynamic
     refalrts-functions
     refalrts-main
     refalrts-platform-specific

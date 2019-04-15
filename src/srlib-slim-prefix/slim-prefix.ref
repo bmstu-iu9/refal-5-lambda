@@ -1,7 +1,6 @@
 *$FROM Library
 *$FROM Hash
 *$FROM refalrts
-*$FROM refalrts-allocator
 *$FROM refalrts-dynamic
 *$FROM refalrts-functions
 *$FROM refalrts-main

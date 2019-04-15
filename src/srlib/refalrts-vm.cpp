@@ -5,8 +5,6 @@
 #include "refalrts-commands.h"
 #include "refalrts-utils.h"
 
-//FROM refalrts-allocator
-#include "refalrts-allocator.h"
 //FROM refalrts-dynamic
 #include "refalrts-dynamic.h"
 //FROM refalrts-functions
@@ -477,11 +475,7 @@ void refalrts::VM::make_dump(refalrts::Iter begin, refalrts::Iter end) {
 
   if (m_diagnostic_config->dump_free_list) {
     fprintf(dump_stream(), "\nFREE LIST:\n");
-    print_seq(
-      dump_stream(),
-      m_allocator->first_marker(),
-      m_allocator->last_marker()
-    );
+    print_seq(dump_stream(), & m_begin_free_list, & m_end_free_list);
   }
 
   fflush(dump_stream());
@@ -509,7 +503,7 @@ void refalrts::VM::free_view_field() {
 
   if (begin != end) {
     end = end->prev;
-    m_allocator->splice_to_freelist(begin, end);
+    splice_to_freelist(begin, end);
   } else {
     /*
       Поле зрения пустое -- его не нужно освобождать.
@@ -558,11 +552,44 @@ refalrts::VM::create_null_debugger(refalrts::VM * /*vm*/) {
 
 void refalrts::VM::reset_allocator() {
   profiler()->start_result();
-  allocator()->reset_allocator();
+  reset_allocator_aux();
 }
 
 bool refalrts::VM::alloc_node(Iter& res) {
-  return allocator()->alloc_node(res);
+  if ((m_free_ptr == & m_end_free_list) && ! create_nodes()) {
+    return false;
+  } else {
+    if (refalrts::cDataClosure == m_free_ptr->tag) {
+      refalrts::Iter head = m_free_ptr->link_info;
+      -- head->number_info;
+
+      if (0 == head->number_info) {
+        unwrap_closure(m_free_ptr);
+        // теперь перед m_free_ptr находится "развёрнутое" замыкание
+        m_free_ptr->tag = refalrts::cDataClosureHead;
+        m_free_ptr->number_info = 407193; // :-)
+
+        m_free_ptr = head;
+      }
+    }
+
+    res = m_free_ptr;
+    m_free_ptr = next(m_free_ptr);
+    res->tag = refalrts::cDataIllegal;
+    return true;
+  }
+}
+
+bool refalrts::VM::create_nodes() {
+  Iter begin, end;
+  if (m_domain->alloc_nodes(begin, end)) {
+    weld(m_end_free_list.prev, begin);
+    weld(end, & m_end_free_list);
+    m_free_ptr = begin;
+    return true;
+  } else {
+    return false;
+  }
 }
 
 refalrts::FnResult refalrts::VM::main_loop(const RASLCommand *rasl) {
@@ -1344,11 +1371,11 @@ JUMP_FROM_SCALE:
         break;
 
       case icSpliceToFreeList:
-        splice_to_freelist(this, begin, end);
+        splice_to_freelist(begin, end);
         break;
 
       case icSpliceToFreeList_Range:
-        splice_to_freelist(this, context[val1], context[val2]);
+        splice_to_freelist(context[val1], context[val2]);
         break;
 
       case icMainLoopReturnSuccess:
@@ -1424,8 +1451,8 @@ JUMP_FROM_SCALE:
               unwrap_closure(function);
               function->tag = cDataClosureHead;
               function->number_info = 73501505; // :-)
-              splice_to_freelist(this, function, function);
-              splice_to_freelist(this, head, head);
+              splice_to_freelist(function, function);
+              splice_to_freelist(head, head);
               res = cSuccess;
             } else {
               refalrts::Iter begin_argument = next(function);
@@ -1436,7 +1463,7 @@ JUMP_FROM_SCALE:
                 res = cNoMemory;
               } else {
                 list_splice(begin_argument, closure_b, closure_e);
-                splice_to_freelist(this, function, function);
+                splice_to_freelist(function, function);
                 res = cSuccess;
               }
             }
@@ -1772,7 +1799,10 @@ bool refalrts::VM::repeated_evar_right(
   while (
     // порядок перечисления условий важен
     ! empty_seq(evar_b_sample, cur_sample)
-    && ! (empty_seq(copy_first, current) || ! VM::equal_nodes(current, cur_sample))
+    && ! (
+      empty_seq(copy_first, current)
+      || ! VM::equal_nodes(current, cur_sample)
+    )
   ) {
     move_right(copy_first, current);
     move_right(evar_b_sample, cur_sample);
@@ -1838,7 +1868,7 @@ bool refalrts::VM::copy_node(refalrts::Iter& res, refalrts::Iter sample) {
       return alloc_close_adt(res);
 
     case refalrts::cDataClosure: {
-      bool allocated = allocator()->alloc_node(res);
+      bool allocated = alloc_node(res);
       if (allocated) {
         res->tag = refalrts::cDataClosure;
         refalrts::Iter head = sample->link_info;
@@ -1851,7 +1881,7 @@ bool refalrts::VM::copy_node(refalrts::Iter& res, refalrts::Iter sample) {
     }
 
     case refalrts::cDataFile: {
-      bool allocated = allocator()->alloc_node(res);
+      bool allocated = alloc_node(res);
       if (allocated) {
         res->tag = refalrts::cDataFile;
         res->file_info = sample->file_info;
@@ -1879,7 +1909,7 @@ bool refalrts::VM::copy_nonempty_evar(
   refalrts::Iter res = 0;
   refalrts::Iter bracket_stack = 0;
 
-  refalrts::Iter prev_res_begin = prev(allocator()->free_ptr());
+  refalrts::Iter prev_res_begin = prev(m_free_ptr);
 
   while (! refalrts::empty_seq(evar_b_sample, evar_e_sample)) {
     if (! copy_node(res, evar_b_sample)) {
@@ -1920,7 +1950,7 @@ bool refalrts::VM::alloc_chars(
     res_e = 0;
     return true;
   } else {
-    refalrts::Iter before_begin_seq = prev(allocator()->free_ptr());
+    refalrts::Iter before_begin_seq = prev(m_free_ptr);
     refalrts::Iter end_seq = 0;
 
     for (unsigned i = 0; i < buflen; ++ i) {
@@ -1944,7 +1974,7 @@ bool refalrts::VM::alloc_string(
     res_e = 0;
     return true;
   } else {
-    refalrts::Iter before_begin_seq = prev(allocator()->free_ptr());
+    refalrts::Iter before_begin_seq = prev(m_free_ptr);
     refalrts::Iter end_seq = 0;
 
     for (const char *p = string; *p != '\0'; ++ p) {
@@ -1997,5 +2027,20 @@ void refalrts::VM::reinit_svar(refalrts::Iter res, refalrts::Iter sample) {
     */
     default:
       refalrts_switch_default_violation(sample->tag);
+  }
+}
+
+void refalrts::VM::splice_to_freelist(
+  refalrts::Iter begin, refalrts::Iter end
+) {
+  reset_allocator_aux();
+  list_splice(m_free_ptr, begin, end);
+}
+
+refalrts::Iter refalrts::VM::splice_from_freelist(refalrts::Iter pos) {
+  if (m_free_ptr != m_begin_free_list.next) {
+    return list_splice(pos, m_begin_free_list.next, m_free_ptr->prev);
+  } else {
+    return pos;
   }
 }

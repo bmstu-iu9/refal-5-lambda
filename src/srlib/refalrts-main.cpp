@@ -8,8 +8,6 @@
 
 //FROM refalrts
 #include "refalrts.h"
-//FROM refalrts-allocator
-#include "refalrts-allocator.h"
 //FROM refalrts-dynamic
 #include "refalrts-dynamic.h"
 //FROM refalrts-profiler
@@ -101,10 +99,9 @@ int main(int argc, char **argv) {
     refalrts::g_init_diagnostic_config(&diagnostic_config, &argc, argv);
   }
 
-  refalrts::Allocator allocator(&diagnostic_config);
   refalrts::Profiler profiler(&diagnostic_config);
   refalrts::Domain domain(&diagnostic_config);
-  refalrts::VM vm(&allocator, &profiler, &domain, &diagnostic_config);
+  refalrts::VM vm(&profiler, &domain, &diagnostic_config);
 
   vm.set_debugger_factory(diagnostic_config.debugger_factory);
   vm.set_args(argc, argv);
@@ -155,7 +152,6 @@ int main(int argc, char **argv) {
     domain.unload(&vm, res);
   }
   vm.free_view_field();
-  allocator.free_memory();
   vm.free_states_stack();
 
   fflush(stdout);

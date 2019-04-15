@@ -21,7 +21,6 @@ setlocal
     -D../../src/srlib/platform-Windows ^
     -D../../src/srlib ^
     refalrts ^
-    refalrts-allocator ^
     refalrts-debugger ^
     refalrts-diagnostic-initializer ^
     refalrts-dynamic ^

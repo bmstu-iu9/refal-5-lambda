@@ -3,7 +3,6 @@
 *$FROM LibraryEx
 *$FROM GetOpt
 *$FROM refalrts
-*$FROM refalrts-allocator
 *$FROM refalrts-dynamic
 *$FROM refalrts-functions
 *$FROM refalrts-main

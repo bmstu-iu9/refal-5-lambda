@@ -13,7 +13,6 @@ run_all_tests() {
     -D$LIBDIR
     -f-g
     refalrts
-    refalrts-allocator
     refalrts-debugger
     refalrts-diagnostic-initializer
     refalrts-dynamic

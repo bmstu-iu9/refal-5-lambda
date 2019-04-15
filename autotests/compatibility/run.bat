@@ -90,7 +90,6 @@ goto :EOF
   ..\..\bin\srefc-core -o _test_prefix.exe-prefix %COMMON_SRFLAGS% ^
     Library ^
     refalrts ^
-    refalrts-allocator ^
     refalrts-debugger ^
     refalrts-diagnostic-initializer ^
     refalrts-dynamic ^

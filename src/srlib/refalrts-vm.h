@@ -16,7 +16,6 @@
 
 namespace refalrts {
 
-class Allocator;
 class Domain;
 class Module;
 class Profiler;
@@ -33,8 +32,11 @@ class VM {
   Node m_first_marker;
   Node m_swap_hedge;
   Node m_last_marker;
+  Node m_begin_free_list;
+  Node m_end_free_list;
   Iter m_error_begin;
   Iter m_error_end;
+  Iter m_free_ptr;
   unsigned m_step_counter;
   NodePtr m_stack_ptr;
   StateRefalMachine *m_private_state_stack_free;
@@ -123,7 +125,6 @@ private:
   class NullDebugger;
   static Debugger* create_null_debugger(VM *vm);
 
-  Allocator *m_allocator;
   Profiler *m_profiler;
   Domain *m_domain;
   Module *m_module;
@@ -132,10 +133,7 @@ private:
   bool m_hide_steps;
 
 public:
-  VM(
-    Allocator *allocator, Profiler *profiler, Domain *domain,
-    DiagnosticConfig *diagnostic_config
-  );
+  VM(Profiler *profiler, Domain *domain, DiagnosticConfig *diagnostic_config);
   ~VM();
 
   int get_return_code() const {
@@ -186,10 +184,6 @@ public:
   }
 
   void read_counters(double counters[]);
-
-  Allocator *allocator() const {
-    return m_allocator;
-  }
 
   Profiler *profiler() const {
     return m_profiler;
@@ -768,6 +762,10 @@ public:
 
 private:
 
+  void reset_allocator_aux() {
+    m_free_ptr = m_begin_free_list.next;
+  }
+
   bool copy_nonempty_evar(
     Iter& evar_res_b, Iter& evar_res_e, Iter evar_b_sample, Iter evar_e_sample
   );
@@ -812,7 +810,13 @@ public:
 
 private:
 
+  static void weld(Iter left, Iter right) {
+    left->next = right;
+    right->prev = left;
+  }
+
   bool alloc_node(Iter& res);
+  bool create_nodes();
 
 public:
 
@@ -1019,6 +1023,9 @@ public:
   static Iter splice_evar(Iter res, Iter begin, Iter end) {
     return list_splice(res, begin, end);
   }
+
+  void splice_to_freelist(Iter begin, Iter end);
+  Iter splice_from_freelist(Iter pos);
 };
 
 class Debugger {
@@ -1035,7 +1042,7 @@ public:
 };
 
 inline VM::VM(
-  Allocator *allocator, Profiler *profiler, Domain *domain,
+  Profiler *profiler, Domain *domain,
   DiagnosticConfig *diagnostic_config
 )
   : m_ret_code(0)
@@ -1044,14 +1051,16 @@ inline VM::VM(
   , m_first_marker(0, & m_swap_hedge)
   , m_swap_hedge(& m_first_marker, & m_last_marker)
   , m_last_marker(& m_swap_hedge, 0)
+  , m_begin_free_list(0, & m_end_free_list)
+  , m_end_free_list(& m_begin_free_list, 0)
   , m_error_begin(& m_first_marker)
   , m_error_end(& m_last_marker)
+  , m_free_ptr(& m_end_free_list)
   , m_step_counter(0)
   , m_stack_ptr(0)
   , m_private_state_stack_free(0)
   , m_private_state_stack_stack(0)
   , m_create_debugger(create_null_debugger)
-  , m_allocator(allocator)
   , m_profiler(profiler)
   , m_domain(domain)
   , m_module(0)

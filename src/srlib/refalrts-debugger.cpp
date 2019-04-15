@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-//FROM refalrts-allocator
-#include "refalrts-allocator.h"
+//FROM refalrts-dynamic
+#include "refalrts-dynamic.h"
 //FROM refalrts-vm
 #include "refalrts-vm.h"
 
@@ -519,7 +519,7 @@ void refalrts::debugger::close_out(FILE *out) {
 //  Класс отладчика
 
 bool refalrts::debugger::RefalDebugger::mem_cond() {
-  bool res = m_vm->allocator()->memory_use() > m_memory_limit;
+  bool res = m_vm->domain()->memory_use() > m_memory_limit;
   if (res) {
     m_memory_limit = -1;
     printf("stopped on memory overflow\n");

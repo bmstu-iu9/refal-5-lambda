@@ -7,8 +7,6 @@
 #include "refalrts-commands.h"
 #include "refalrts-utils.h"
 
-//FROM refalrts-allocator
-#include "refalrts-allocator.h"
 //FROM refalrts-dynamic
 #include "refalrts-dynamic.h"
 //FROM refalrts-functions
@@ -525,7 +523,7 @@ refalrts::Iter refalrts::splice_evar(
 void refalrts::splice_to_freelist(
   refalrts::VM *vm, refalrts::Iter begin, refalrts::Iter end
 ) {
-  vm->allocator()->splice_to_freelist(begin, end);
+  vm->splice_to_freelist(begin, end);
 }
 
 extern void refalrts::splice_to_freelist_open(
@@ -539,7 +537,7 @@ extern void refalrts::splice_to_freelist_open(
 refalrts::Iter refalrts::splice_from_freelist(
   refalrts::VM *vm, refalrts::Iter pos
 ) {
-  return vm->allocator()->splice_from_freelist(pos);
+  return vm->splice_from_freelist(pos);
 }
 
 /*
@@ -604,7 +602,6 @@ void refalrts::read_performance_counters(
 ) {
   vm->profiler()->read_counters(counters);
   vm->read_counters(counters);
-  vm->allocator()->read_counters(counters);
   vm->domain()->read_counters(counters);
 }
 

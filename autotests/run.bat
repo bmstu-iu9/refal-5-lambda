@@ -71,7 +71,6 @@ setlocal
     --log=__log.txt
   set SRFLAGS_PREF=--prefix=_test_prefix
   set SRFLAGS_NAT=refalrts ^
-    refalrts-allocator ^
     refalrts-debugger ^
     refalrts-diagnostic-initializer ^
     refalrts-dynamic ^

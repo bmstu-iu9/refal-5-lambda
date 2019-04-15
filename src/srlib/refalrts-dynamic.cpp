@@ -870,6 +870,8 @@ refalrts::Domain::Domain(refalrts::DiagnosticConfig *diagnostic_config)
   , m_dangerous(false)
   , m_diagnostic_config(diagnostic_config)
   , m_allocated_functions()
+  , m_chunks(0)
+  , m_memory_use(0)
 {
   /* пусто */
 }
@@ -921,6 +923,32 @@ refalrts::Domain::load_module(
   } else {
     return 0;
   }
+}
+
+bool refalrts::Domain::alloc_nodes(refalrts::Iter& begin, refalrts::Iter& end) {
+  if (m_memory_use + Chunk::cSize >= m_diagnostic_config->memory_limit) {
+    return false;
+  }
+
+  Chunk *new_chunk = new (std::nothrow) Chunk(m_chunks);
+  if (! new_chunk) {
+    return false;
+  }
+
+  m_memory_use += Chunk::cSize;
+
+  m_chunks = new_chunk;
+  new_chunk->elems[0].tag = cDataIllegal;
+  for (size_t i = 1; i < Chunk::cSize; ++i) {
+    new_chunk->elems[i].tag = cDataIllegal;
+    new_chunk->elems[i].prev = &new_chunk->elems[i - 1];
+    new_chunk->elems[i - 1].next = &new_chunk->elems[i];
+  }
+
+  begin = &new_chunk->elems[0];
+  end = &new_chunk->elems[Chunk::cSize - 1];
+
+  return true;
 }
 
 bool refalrts::Domain::initialize(
@@ -976,6 +1004,8 @@ void refalrts::Domain::unload(refalrts::VM *vm, refalrts::FnResult& result) {
   for (size_t i = 0; i < m_allocated_functions.size(); ++i) {
     delete m_allocated_functions[i];
   }
+
+  free_nodes();
 }
 
 //------------------------------------------------------------------------------
@@ -1029,6 +1059,7 @@ bool refalrts::Domain::register_ident(RefalIdentifier ident) {
 }
 
 void refalrts::Domain::read_counters(double counters[]) {
+  counters[cPerformanceCounter_HeapSize] = memory_use() * double(sizeof(Node));
   counters[cPerformanceCounter_IdentsAllocated] = idents_count();
 }
 
@@ -1107,4 +1138,23 @@ refalrts::Domain::lookup_module_by_name(
   }
 
   return result;
+}
+
+void refalrts::Domain::free_nodes() {
+  if (m_diagnostic_config->print_statistics) {
+    fprintf(
+      stderr,
+      "Memory used %d nodes, %d * %lu = %lu bytes\n",
+      m_memory_use,
+      m_memory_use,
+      static_cast<unsigned long>(sizeof(Node)),
+      static_cast<unsigned long>(m_memory_use * sizeof(Node))
+    );
+  }
+
+  while (m_chunks != 0) {
+    Chunk *next = m_chunks->next;
+    delete m_chunks;
+    m_chunks = next;
+  }
 }

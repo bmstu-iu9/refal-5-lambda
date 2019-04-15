@@ -164,7 +164,6 @@ run_test() {
   SRFLAGS_PREF=--prefix=_test_prefix
   SRFLAGS_NAT="
     refalrts
-    refalrts-allocator
     refalrts-debugger
     refalrts-diagnostic-initializer
     refalrts-dynamic

@@ -290,6 +290,18 @@ class Domain {
 
   friend class ModuleStorage;
 
+  struct Chunk {
+    enum { cSize = 1000 };
+    Node elems[cSize];
+    Chunk *next;
+
+    Chunk(Chunk *next)
+      : next(next)
+    {
+      /* пусто */
+    }
+  };
+
   typedef std::map<StringRef, RefalIdentifier> IdentsMap;
 
   IdentsMap m_idents_table;
@@ -299,6 +311,9 @@ class Domain {
   DiagnosticConfig *m_diagnostic_config;
 
   std::vector<RefalFunction*> m_allocated_functions;
+
+  Chunk *m_chunks;
+  size_t m_memory_use;
 
   class DangerousRAII {
     bool *m_dangerous;
@@ -407,6 +422,12 @@ public:
     return res;
   }
 
+  bool alloc_nodes(Iter& begin, Iter& end);
+
+  size_t memory_use() const {
+    return m_memory_use;
+  }
+
 private:
   bool initialize(
     VM *vm, Iter pos, Module *module, ModuleStorage& new_storage,
@@ -422,6 +443,7 @@ private:
   );
 
   void free_idents_table();
+  void free_nodes();
 };
 
 }  // namespace refalrts

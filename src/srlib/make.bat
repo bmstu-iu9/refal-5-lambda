@@ -8,7 +8,6 @@ setlocal
   set CSOURCES=Library Hash
   set RSOURCES=LibraryEx GetOpt
   set RT=refalrts ^
-    refalrts-allocator ^
     refalrts-dynamic ^
     refalrts-functions ^
     refalrts-main ^
