@@ -78,7 +78,7 @@ texts on REFAL (e.g. native insertions). Surely, C++ compiler is essential for
 compilation of such programs, but if you do not use native insertions,
 compiler C++ might not be installed.
 
-The actual implementation can compilate the programs both in intermediate
+The actual implementation can compile the programs both in intermediate
 interpretive code and in code on C++.
 
 ## Installation and startup
@@ -127,7 +127,7 @@ one of them if your compiler is mentioned there). The second start is to put
 all together.
 
 Note. _On unix-like platforms (Linux, macOS)  bootstrap.sh also makes
-configured c-plus-plus.conf.sh file , but GCCC++ call is already written in
+configured c-plus-plus.conf.sh file , but GCC C++ call is already written in
 it automatically. If you want, you can change it on, for example, Clang._
 
 The content of this “half-compiled” archive is available as an archive on
@@ -178,7 +178,7 @@ some other text editors (Code::Blocks, Kate, Notepad++, SublimeText 3) only
 colouring of expanded Simple Refal syntax is supported, and, probably, only for
 non-actual version.
 
-For Simple Refal there is a plagin for IDEA, that provides colouring of syntax
+For Simple Refal there is a plugin for IDEA, that provides colouring of syntax
 errors and autocompletion, it is available on link:
 
 <https://github.com/bmstu-iu9/simple-refal-plugin>

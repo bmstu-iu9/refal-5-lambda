@@ -31,7 +31,7 @@ previous chapter: strings starting from `/*` and ending at `*/` were added.
 These are _comments._ Any text between `/*` and `*/` is ignored by the compiler
 and is used to clarify the program idea.
 
-There where added comments in this program, line numbering (for convenience of
+There were added comments in this program, line numbering (for convenience of
 a quick reference from the manual text) and the word `/*empty*/`, which
 emphasize readers attention to the fact there is nothing at that place of the
 program. It sounds strange but it will make more sense.
@@ -738,7 +738,7 @@ in Refal a long number like 10000000000000000000000 is represented as
     10000000000000000000000 = 542×(2³²)² + 434162106×2³² + 2990538752
 
 moreover the radix is not 10, but 2³². To write negative numbers
-literal `'-'` should be put in the beginning of the macrodogit chain, at
+literal `'-'` should be put in the beginning of the macrodigit chain, at
 the beginning of a positive number can be written optional sign `'+'`.
 
 That means that in the general case numbers are chains of terms of arbitrary
@@ -747,7 +747,7 @@ character (fit one macrodigit).
 
 Functions `Add`, `Sub`, `Mul`, `Div`, `Mod`, `Divmod` and `Compare` receive two
 numbers. If the first one is a small positive (macrodigit), then it is written
-as a macrodogit too. Otherwise the first argument is written as a bracket term.
+as a macrodigit too. Otherwise the first argument is written as a bracket term.
 The second argument is written after the first.
 
 Function Divmod returns quotient in brackets and remainder.
@@ -1305,7 +1305,7 @@ and stack could be added we will be considering later.) While pattern and
 result expressions exist only in source code like left and right parts of
 sentences. The reason for this is that there were variables. Pattern expression
 is template describing multiple object expressions. Result expression is
-template from which active expression is builded.
+template from which active expression is built.
 
 > *Translation to English of this hunk of this paper is prepared by*
 > **Anastasia Dudkina <anastasia.vlad2014@yandex.ru>** _at 2018-02-08_
