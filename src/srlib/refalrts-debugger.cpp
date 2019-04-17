@@ -87,7 +87,7 @@ refalrts::debugger::VariableDebugTable::parse_var_name(
 void refalrts::debugger::VariableDebugTable::variable_bounds(
   refalrts::Iter& var_begin, refalrts::Iter& var_end, char type, int offset
 ) {
-  var_begin = (*m_context)[offset];
+  var_begin = m_context[offset];
   switch (type) {
     case 's':
       var_end = var_begin;
@@ -102,7 +102,7 @@ void refalrts::debugger::VariableDebugTable::variable_bounds(
       break;
 
     case 'e':
-      var_end = (*m_context)[offset + 1];
+      var_end = m_context[offset + 1];
       break;
 
     default:
@@ -193,10 +193,8 @@ void refalrts::debugger::VariableDebugTable::set_string_items(
   m_strings = items;
 }
 
-void refalrts::debugger::VariableDebugTable::set_context(
-  VM::Stack<Iter> &cont
-) {
-  m_context = &cont;
+void refalrts::debugger::VariableDebugTable::set_context(Iter *context) {
+  m_context = context;
 }
 
 //=============================================================================

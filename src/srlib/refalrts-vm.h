@@ -43,6 +43,17 @@ class VM {
   StateRefalMachine *m_private_state_stack_stack;
 
 public:
+  struct StackState {
+    size_t top;
+    size_t bottom;
+
+    StackState(size_t top = 0, size_t bottom = 0)
+      : top(top), bottom(bottom)
+    {
+      /* пусто */
+    }
+  };
+
   template <typename T>
   class Stack {
     // Запрет копирования
@@ -50,40 +61,48 @@ public:
     Stack& operator=(const Stack<T> &obj);
 
   public:
-    Stack()
-      :m_memory(new T[1]), m_size(0), m_capacity(1)
+    Stack(const char *name)
+      : m_memory(0)
+      , m_bottom(0)
+      , m_top(0)
+      , m_capacity(0)
+      , m_name(name)
     {
       /* пусто */
     }
 
     ~Stack() {
-      delete[] m_memory;
+      free(m_memory);
     }
 
-    T& operator[](size_t offset) {
-      return m_memory[offset];
+    T* reserve(size_t size);
+
+    void push_state(StackState& state) {
+      state.top = m_top;
+      state.bottom = m_bottom;
+      m_bottom = m_top;
     }
 
-    void reserve(size_t size);
-
-    void swap(Stack<T>& other) {
-      swap(m_memory, other.m_memory);
-      swap(m_size, other.m_size);
-      swap(m_capacity, other.m_capacity);
+    T* pop_state(StackState state) {
+      m_top = state.top;
+      m_bottom = state.bottom;
+      return m_memory + m_bottom;
     }
 
   private:
     T *m_memory;
-    size_t m_size;
+    size_t m_bottom;
+    size_t m_top;
     size_t m_capacity;
+    const char *m_name;
 
-    template <typename U>
-    static void swap(U& x, U& y) {
-      U old_x = x;
-      x = y;
-      y = old_x;
+    size_t max(size_t x, size_t y) {
+      return (x > y ? x : y);
     }
   };
+
+  Stack<const RASLCommand*> m_open_e_stack;
+  Stack<Iter> m_context;
 
 private:
   struct StateRefalMachine {
@@ -95,10 +114,8 @@ private:
     const refalrts::RefalIdentifier *idents;
     const refalrts::RefalNumber *numbers;
     const refalrts::StringItem *strings;
-
-    Stack<const refalrts::RASLCommand*> open_e_stack;
-    Stack<refalrts::Iter> context;
-
+    StackState open_e_stack_state;
+    StackState context_state;
     refalrts::Iter res;
     refalrts::Iter trash_prev;
     int stack_top;
@@ -121,6 +138,7 @@ private:
   void states_stack_push(StateRefalMachine *state);
 
   DebuggerFactory m_create_debugger;
+  Debugger *m_debugger;
 
   class NullDebugger;
   static Debugger* create_null_debugger(VM *vm);
@@ -1032,7 +1050,7 @@ class Debugger {
 public:
   virtual ~Debugger() {}
 
-  virtual void set_context(VM::Stack<Iter>& context) = 0;
+  virtual void set_context(Iter *context) = 0;
   virtual void set_string_items(const StringItem *items) = 0;
   virtual void insert_var(const RASLCommand *next) = 0;
 
@@ -1058,9 +1076,12 @@ inline VM::VM(
   , m_free_ptr(& m_end_free_list)
   , m_step_counter(0)
   , m_stack_ptr(0)
+  , m_open_e_stack("m_open_e_stack")
+  , m_context("m_context")
   , m_private_state_stack_free(0)
   , m_private_state_stack_stack(0)
   , m_create_debugger(create_null_debugger)
+  , m_debugger(0)
   , m_profiler(profiler)
   , m_domain(domain)
   , m_module(0)
@@ -1072,6 +1093,8 @@ inline VM::VM(
 }
 
 inline VM::~VM() {
+  delete m_debugger;
+
   if (m_dump_stream != 0 && m_dump_stream != stderr) {
     fclose(m_dump_stream);
     m_dump_stream = 0;

@@ -21,7 +21,7 @@ namespace debugger {
 extern const char *const s_STEP;
 
 class VariableDebugTable {
-  VM::Stack<Iter> *m_context;
+  Iter *m_context;
   const StringItem *m_strings;
   const RASLCommand *m_first;
   const RASLCommand *m_last;
@@ -48,7 +48,7 @@ public:
   void print(FILE *out);
   void print_var(const char *var_name, FILE *out);
   void set_string_items(const StringItem *items);
-  void set_context(VM::Stack<Iter>& cont);
+  void set_context(Iter *cont);
 };
 
 class TracedFunctionTable {
@@ -143,7 +143,7 @@ public:
   static int parse2hex (unsigned char *in);
   static bool quotation_mark_parse(char *from, char *out);
 
-  virtual void set_context(VM::Stack<Iter>& context) {
+  virtual void set_context(Iter *context) {
     var_debug_table.set_context(context);
   }
 

@@ -32,19 +32,22 @@ const char* refalrts::VM::arg(unsigned int param) {
 //==============================================================================
 
 template <typename T>
-void refalrts::VM::Stack<T>::reserve(size_t size) {
+T* refalrts::VM::Stack<T>::reserve(size_t size) {
   assert (size > 0);
+  m_top = size + m_bottom;
 
-  if (m_capacity < size) {
-    T *new_memory = new T[size];
-    delete[] m_memory;
-    m_memory = new_memory;
-    m_capacity = size;
+  if (m_top > m_capacity) {
+    m_capacity = max(m_top, 2 * m_capacity);
+    T* new_memory = static_cast<T*>(realloc(m_memory, sizeof(T) * m_capacity));
+
+    if (new_memory) {
+      m_memory = new_memory;
+    } else {
+      return 0;
+    }
   }
-  m_size = size;
-  for (size_t i = 0; i < m_size; ++i) {
-    m_memory[i] = T();
-  }
+
+  return m_memory + m_bottom;
 }
 
 refalrts::Iter refalrts::VM::pop_stack() {
@@ -151,6 +154,10 @@ refalrts::VM::free_states_stack() {
 refalrts::FnResult refalrts::VM::execute_zero_arity_function(
   refalrts::RefalFunction *func, refalrts::Iter pos
 ) {
+  if (! m_debugger) {
+    m_debugger = m_create_debugger(this);
+  }
+
   if (! pos) {
     pos = & m_swap_hedge;
   }
@@ -522,7 +529,7 @@ void refalrts::VM::free_view_field() {
 
 class refalrts::VM::NullDebugger: public refalrts::Debugger {
 public:
-  virtual void set_context(Stack<Iter>& /*context*/) {
+  virtual void set_context(Iter* /*context*/) {
     /* пусто */
   }
 
@@ -600,16 +607,13 @@ refalrts::FnResult refalrts::VM::main_loop(const RASLCommand *rasl) {
   const RefalIdentifier *idents = 0;
   const RefalNumber *numbers = 0;
   const StringItem *strings = 0;
-  Stack<const RASLCommand*> open_e_stack;
-  Stack<Iter> context;
 
-#if __cplusplus >= 201103L
-  std::unique_ptr<Debugger> debugger(m_create_debugger(this));
-#else
-  std::auto_ptr<Debugger> debugger(m_create_debugger(this));
-#endif
-  debugger->set_context(context);
-  debugger->set_string_items(strings);
+  const RASLCommand **open_e_stack = m_open_e_stack.reserve(1);
+  Iter *context = m_context.reserve(1);
+
+  if (open_e_stack == 0 || context == 0) {
+    return cNoMemory;
+  }
 
   Iter res = 0;
   Iter trash_prev = 0;
@@ -664,8 +668,8 @@ JUMP_FROM_SCALE:
           cur_state->idents = idents;
           cur_state->numbers = numbers;
           cur_state->strings = strings;
-          cur_state->open_e_stack.swap(open_e_stack);
-          cur_state->context.swap(context);
+          m_open_e_stack.push_state(cur_state->open_e_stack_state);
+          m_context.push_state(cur_state->context_state);
           cur_state->res = res;
           cur_state->trash_prev = trash_prev;
           cur_state->stack_top = stack_top;
@@ -684,12 +688,16 @@ JUMP_FROM_SCALE:
           idents = prev_state->idents;
           numbers = prev_state->numbers;
           strings = prev_state->strings;
-          open_e_stack.swap(prev_state->open_e_stack);
-          context.swap(prev_state->context);
+          open_e_stack =
+            m_open_e_stack.pop_state(prev_state->open_e_stack_state);
+          context = m_context.pop_state(prev_state->context_state);
           res = prev_state->res;
           trash_prev = prev_state->trash_prev;
           stack_top = prev_state->stack_top;
           states_stack_free(prev_state);
+
+          m_debugger->set_context(context);
+          m_debugger->set_string_items(strings);
         }
         continue;  // пропускаем ++rasl в конце
 
@@ -704,16 +712,23 @@ JUMP_FROM_SCALE:
           idents = descr->idents;
           numbers = descr->numbers;
           strings = descr->strings;
-          debugger->set_string_items(strings);
+          m_debugger->set_string_items(strings);
         }
         break;
 
       case icIssueMemory:
-        context.reserve(val1);
+        context = m_context.reserve(val1);
+        if (context == 0) {
+          return cNoMemory;
+        }
+        m_debugger->set_context(context);
         break;
 
       case icReserveBacktrackStack:
-        open_e_stack.reserve(val1);
+        open_e_stack = m_open_e_stack.reserve(val1);
+        if (open_e_stack == 0) {
+          return cNoMemory;
+        }
         break;
 
       case icOnFailGoTo:
@@ -1175,11 +1190,11 @@ JUMP_FROM_SCALE:
         break;
 
       case icVariableDebugOffset:
-        debugger->insert_var(rasl);
+        m_debugger->insert_var(rasl);
         break;
 
       case icResetAllocator:
-        if (debugger->handle_function_call(begin, end, callee) == cExit) {
+        if (m_debugger->handle_function_call(begin, end, callee) == cExit) {
           return cExit;
         }
         reset_allocator();
@@ -1435,7 +1450,7 @@ JUMP_FROM_SCALE:
           } else if (cDataClosure == function->tag) {
             refalrts::Iter head = function->link_info;
 
-            if (debugger->handle_function_call(begin, end, 0) == cExit) {
+            if (m_debugger->handle_function_call(begin, end, 0) == cExit) {
               return cExit;
             }
 
@@ -1528,7 +1543,7 @@ JUMP_FROM_SCALE:
 
       case icPerformNative:
         {
-          if (debugger->handle_function_call(begin, end, callee) == cExit) {
+          if (m_debugger->handle_function_call(begin, end, callee) == cExit) {
             return cExit;
           }
           RefalNativeFunction *native_callee =

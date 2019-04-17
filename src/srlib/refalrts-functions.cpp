@@ -29,6 +29,7 @@ const refalrts::RASLCommand refalrts::RefalNativeFunction::run[] = {
 const refalrts::RASLCommand refalrts::RefalSwap::run[] = {
   { refalrts::icProfileFunction, 0, 0, 0 },
   { refalrts::icIssueMemory, 10, 0, 0 },
+  { refalrts::icReserveBacktrackStack, 1, 0, 0, },
   // [0] и [1] — угловые скобки
   { refalrts::icInitB0_Lite, 0, 0, 0 },
   // [2] — начало аргумента, [3] — конец аргумента, [4] — имя функции
