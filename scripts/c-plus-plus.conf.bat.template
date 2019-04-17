@@ -31,7 +31,8 @@ rem Примечание. Разрядность (32 или 64) дистрибу
 rem одинаковой.
 :: set PATH=%PATH%;C:\Program Files\MinGW\bin
 :: set PATH=%PATH%;C:\Program Files\LLVM\bin
-:: set CPPLINEE=clang++ -Wall -g -o
+:: set CPPLINEE=clang++ -target i686-pc-windows-gnu -Wall -g -o
+:: set CPPLINEE=clang++ -target x86_64-pc-windows-gnu -Wall -g -o
 
 rem Если ваш компилятор C++ отсутствует в списке ниже, впишите его сами:
 :: set PATH=%PATH%;…
