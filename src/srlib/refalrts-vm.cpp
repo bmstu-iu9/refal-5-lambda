@@ -702,7 +702,7 @@ JUMP_FROM_SCALE:
         continue;  // пропускаем ++rasl в конце
 
       case icProfileFunction:
-        this_is_generated_function(this);
+        profiler()->start_generated_function();
         break;
 
       case icLoadConstants:
@@ -736,7 +736,7 @@ JUMP_FROM_SCALE:
         break;
 
       case icProfilerStopSentence:
-        stop_sentence(this);
+        profiler()->stop_sentence();
         break;
 
       case icInitB0:
@@ -1172,7 +1172,7 @@ JUMP_FROM_SCALE:
         res_b = 0;
         res_e = 0;
         open_e_stack[stack_top++] = ++rasl;
-        start_e_loop(this);
+        profiler()->start_e_loop();
         break;
 
       case icEStart:
