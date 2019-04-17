@@ -424,6 +424,21 @@ bool refalrts::alloc_string(
   return vm->alloc_string(res_b, res_e, string);
 }
 
+refalrts::FnResult refalrts::checked_alloc(
+  refalrts::VM *vm, refalrts::CheckedAllocFn function, void *data
+) {
+  jmp_buf on_memory_fail;
+  jmp_buf *old = vm->reset_memory_fail(&on_memory_fail);
+  if (setjmp(on_memory_fail)) {
+    vm->reset_memory_fail(old);
+    return cNoMemory;
+  }
+
+  FnResult res = function(vm, data);
+  vm->reset_memory_fail(old);
+  return res;
+}
+
 void refalrts::push_stack(refalrts::VM *vm, refalrts::Iter call_bracket) {
   vm->push_stack(call_bracket);
 }
@@ -732,10 +747,14 @@ refalrts::NativeReference::NativeReference(
 //==============================================================================
 
 refalrts::FnResult refalrts::recursive_call_main_loop(refalrts::VM *vm) {
+  jmp_buf *old = vm->reset_memory_fail(0);
+
   const  refalrts::RASLCommand rasl[] = {
     { refalrts::icNextStep, 0, 0, 0 },
   };
-  return vm->main_loop(rasl);
+  FnResult res = vm->main_loop(rasl);
+  vm->reset_memory_fail(old);
+  return res;
 }
 
 

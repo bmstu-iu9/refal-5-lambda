@@ -2,6 +2,7 @@
 #define RefalRTS_VM_H_
 
 #include <assert.h>
+#include <setjmp.h>
 #include <stdio.h>
 
 #include "refalrts.h"
@@ -149,6 +150,8 @@ private:
   DiagnosticConfig *m_diagnostic_config;
   FILE *m_dump_stream;
   bool m_hide_steps;
+
+  jmp_buf *m_memory_fail;
 
 public:
   VM(Profiler *profiler, Domain *domain, DiagnosticConfig *diagnostic_config);
@@ -834,6 +837,11 @@ private:
   }
 
   bool alloc_node(Iter& res);
+  void ensure_memory() {
+    if ((m_free_ptr == & m_end_free_list) && ! create_nodes()) {
+      longjmp (*m_memory_fail, 1);
+    }
+  }
   bool create_nodes();
 
 public:
@@ -940,6 +948,12 @@ public:
   );
 
   bool alloc_string(Iter& res_b, Iter& res_e, const char *string);
+
+  jmp_buf* reset_memory_fail(jmp_buf *new_buf) {
+    jmp_buf *old = m_memory_fail;
+    m_memory_fail = new_buf;
+    return old;
+  }
 
   void push_stack(Iter call_bracket) {
     call_bracket->link_info = m_stack_ptr;
@@ -1088,6 +1102,7 @@ inline VM::VM(
   , m_diagnostic_config(diagnostic_config)
   , m_dump_stream(0)
   , m_hide_steps(false)
+  , m_memory_fail(0)
 {
   m_swap_hedge.tag = cDataSwapHead;
 }

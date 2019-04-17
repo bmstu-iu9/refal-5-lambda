@@ -80,6 +80,7 @@ public:
   void start_result();
   void start_copy();
   void stop_copy();
+  void stop_allocation_abnormal();
   void stop_function();
 };
 

@@ -305,6 +305,9 @@ extern bool alloc_chars(
 );
 extern bool alloc_string(VM *vm, Iter& res_b, Iter& res_e, const char *string);
 
+typedef FnResult (*CheckedAllocFn)(VM *vm, void *data);
+extern FnResult checked_alloc(VM *vm, CheckedAllocFn fn, void *data);
+
 extern void push_stack(VM *vm, Iter call_bracket);
 extern void link_brackets(Iter left, Iter right);
 

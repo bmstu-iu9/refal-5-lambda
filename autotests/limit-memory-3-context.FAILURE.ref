@@ -1,0 +1,11 @@
+* CONDITIONS
+
+$ENTRY Go {
+  /* пусто */
+  = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' : e.X
+  = <Loop { = e.X }>;
+}
+
+Loop {
+  s.Fn = <s.Fn> <Loop s.Fn>;
+}

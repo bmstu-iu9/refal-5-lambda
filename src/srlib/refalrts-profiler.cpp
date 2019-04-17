@@ -252,6 +252,36 @@ void refalrts::Profiler::stop_copy() {
   m_current_state = next;
 }
 
+void refalrts::Profiler::stop_allocation_abnormal() {
+  double now = clock();
+  State next;
+  BaseCounter counter;
+
+  switch (m_current_state) {
+    case cInRuntimeCopy:
+      next = cInRuntime;
+      counter = cCounter_ContextCopyTime;
+      break;
+
+    case cInResultLinear:
+      next = cInResultLinear;
+      counter = cCounter_LinearResultTime;
+      break;
+
+    case cInResultCopy:
+      next = cInResultLinear;
+      counter = cCounter_TEvarCopyTime;
+      break;
+
+    default:
+      refalrts_switch_default_violation(m_current_state);
+  }
+
+  m_counters[counter] += (now - m_prev_cutoff);
+  m_prev_cutoff = now;
+  m_current_state = next;
+}
+
 void refalrts::Profiler::stop_function() {
   double now = clock();
   BaseCounter counter;

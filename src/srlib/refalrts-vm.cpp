@@ -563,28 +563,26 @@ void refalrts::VM::reset_allocator() {
 }
 
 bool refalrts::VM::alloc_node(Iter& res) {
-  if ((m_free_ptr == & m_end_free_list) && ! create_nodes()) {
-    return false;
-  } else {
-    if (refalrts::cDataClosure == m_free_ptr->tag) {
-      refalrts::Iter head = m_free_ptr->link_info;
-      -- head->number_info;
+  ensure_memory();
 
-      if (0 == head->number_info) {
-        unwrap_closure(m_free_ptr);
-        // теперь перед m_free_ptr находится "развёрнутое" замыкание
-        m_free_ptr->tag = refalrts::cDataClosureHead;
-        m_free_ptr->number_info = 407193; // :-)
+  if (refalrts::cDataClosure == m_free_ptr->tag) {
+    refalrts::Iter head = m_free_ptr->link_info;
+    -- head->number_info;
 
-        m_free_ptr = head;
-      }
+    if (0 == head->number_info) {
+      unwrap_closure(m_free_ptr);
+      // теперь перед m_free_ptr находится "развёрнутое" замыкание
+      m_free_ptr->tag = refalrts::cDataClosureHead;
+      m_free_ptr->number_info = 407193; // :-)
+
+      m_free_ptr = head;
     }
-
-    res = m_free_ptr;
-    m_free_ptr = next(m_free_ptr);
-    res->tag = refalrts::cDataIllegal;
-    return true;
   }
+
+  res = m_free_ptr;
+  m_free_ptr = next(m_free_ptr);
+  res->tag = refalrts::cDataIllegal;
+  return true;
 }
 
 bool refalrts::VM::create_nodes() {
@@ -612,6 +610,13 @@ refalrts::FnResult refalrts::VM::main_loop(const RASLCommand *rasl) {
   Iter *context = m_context.reserve(1);
 
   if (open_e_stack == 0 || context == 0) {
+    return cNoMemory;
+  }
+
+  jmp_buf memory_fail;
+  m_memory_fail = &memory_fail;
+  if (setjmp(*m_memory_fail)) {
+    profiler()->stop_allocation_abnormal();
     return cNoMemory;
   }
 
