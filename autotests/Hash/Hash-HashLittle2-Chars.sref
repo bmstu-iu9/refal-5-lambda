@@ -23,11 +23,7 @@ Example {
 %%
   refalrts::Iter str_b = 0, str_e = 0;
   refalrts::reset_allocator(vm);
-
-  if (! refalrts::alloc_string(vm, str_b, str_e, example)) {
-    return refalrts::cNoMemory;
-  }
-
+  refalrts::alloc_string(vm, str_b, str_e, example);
   refalrts::splice_evar(arg_begin, str_b, str_e);
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;

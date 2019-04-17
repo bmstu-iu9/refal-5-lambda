@@ -215,11 +215,7 @@ $ENTRY Arg {
   refalrts::Iter param_begin = 0;
   refalrts::Iter param_end = 0;
   const char *param = refalrts::arg(vm, param_no);
-
-  if (! refalrts::alloc_string(vm, param_begin, param_end, param)) {
-    return refalrts::cNoMemory;
-  }
-
+  refalrts::alloc_string(vm, param_begin, param_end, param);
   refalrts::splice_evar(arg_begin, param_begin, param_end);
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
@@ -676,12 +672,7 @@ $ENTRY Explode {
   }
 
   refalrts::reset_allocator(vm);
-  if (
-    ! refalrts::alloc_string(vm, content_b, content_e, pident->ident_info->name())
-  ) {
-    return refalrts::cNoMemory;
-  }
-
+  refalrts::alloc_string(vm, content_b, content_e, pident->ident_info->name());
   refalrts::splice_evar(arg_begin, content_b, content_e);
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
@@ -898,15 +889,11 @@ Get-Aux {
       Пользуемся тем фактом, что в данной реализации размещёные в свободной
       памяти узлы располагаются в последовательных адресах.
     */
-    if (! refalrts::alloc_char(vm, dummy, static_cast<char>(cur_char))) {
-      return refalrts::cNoMemory;
-    }
+    refalrts::alloc_char(vm, dummy, static_cast<char>(cur_char));
   }
 
   if (cur_char == EOF) {
-    if (! refalrts::alloc_number(vm, dummy, 0UL)) {
-      return refalrts::cNoMemory;
-    }
+    refalrts::alloc_number(vm, dummy, 0UL);
   }
 
   refalrts::splice_from_freelist(vm, arg_begin);
@@ -1724,10 +1711,7 @@ $ENTRY Time {
     *newline = '\0';
   }
 
-  if (! refalrts::alloc_string(vm, content_b, content_e, str_time)) {
-    return refalrts::cNoMemory;
-  }
-
+  refalrts::alloc_string(vm, content_b, content_e, str_time);
   refalrts::splice_evar(arg_begin, content_b, content_e);
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
@@ -2276,10 +2260,7 @@ $ENTRY GetEnv {
     refalrts::Iter env_begin;
     refalrts::Iter env_end;
 
-    if (! refalrts::alloc_string(vm, env_begin, env_end, envres)) {
-      return refalrts::cNoMemory;
-    }
-
+    refalrts::alloc_string(vm, env_begin, env_end, envres);
     refalrts::splice_evar(arg_begin, env_begin, env_end);
   }
 
@@ -2316,10 +2297,7 @@ $ENTRY System {
   refalrts::reset_allocator(vm);
   if (ret < 0) {
     refalrts::Iter minus = 0;
-    if (! refalrts::alloc_char(vm, minus, '-')) {
-      return refalrts::cNoMemory;
-    }
-
+    refalrts::alloc_char(vm, minus, '-');
     refalrts::splice_elem(arg_begin, minus);
 
     ret = -ret;
@@ -2498,10 +2476,7 @@ $ENTRY GetCurrentDirectory {
   }
 
   refalrts::Iter directory_b = 0, directory_e = 0;
-  if (! refalrts::alloc_string(vm, directory_b, directory_e, directory)) {
-    return refalrts::cNoMemory;
-  }
-
+  refalrts::alloc_string(vm, directory_b, directory_e, directory);
   refalrts::splice_evar(arg_begin, directory_b, directory_e);
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
 
@@ -2547,10 +2522,7 @@ $ENTRY RemoveFile {
   }
 
   refalrts::Iter error_b = 0, error_e = 0;
-  if (! refalrts::alloc_string(vm, error_b, error_e, error_message)) {
-    return refalrts::cNoMemory;
-  }
-
+  refalrts::alloc_string(vm, error_b, error_e, error_message);
   refalrts::reinit_ident(arg_begin, i_result);
   refalrts::reinit_open_bracket(pfunc_name);
   refalrts::reinit_close_bracket(arg_end);
@@ -2637,9 +2609,7 @@ $ENTRY TimeElapsed {
 
   sprintf(str_time_elapsed, "%f", time_elapsed);
 
-  if (! refalrts::alloc_string(vm, content_b, content_e, str_time_elapsed)) {
-    return refalrts::cNoMemory;
-  }
+  refalrts::alloc_string(vm, content_b, content_e, str_time_elapsed);
 
   if (make_edge) {
     g_time_elapsed_edge.ref(vm) = now;
@@ -2862,17 +2832,13 @@ $ENTRY Random {
       zero = false;
 
       refalrts::Iter dummy = 0;
-      if (! refalrts::alloc_number(vm, dummy, digit)) {
-        return refalrts::cNoMemory;
-      }
+      refalrts::alloc_number(vm, dummy, digit);
     }
   }
 
   if (zero) {
     refalrts::Iter dummy = 0;
-    if (! refalrts::alloc_number(vm, dummy, 0)) {
-      return refalrts::cNoMemory;
-    }
+    refalrts::alloc_number(vm, dummy, 0);
   }
 
   refalrts::splice_from_freelist(vm, arg_begin);
@@ -3260,13 +3226,9 @@ $ENTRY StrFromInt {
 
     refalrts::Iter num_begin;
     refalrts::Iter num_end;
-    bool allocated = refalrts::alloc_chars(
+    refalrts::alloc_chars(
       vm, num_begin, num_end, cur_digit, unsigned(lim_digit - cur_digit)
     );
-
-    if (! allocated) {
-      return refalrts::cNoMemory;
-    }
 
     refalrts::splice_evar(arg_begin, num_begin, num_end);
   } else {
@@ -3508,9 +3470,7 @@ $ENTRY FReadBytes {
       памяти узлы располагаются в последовательных адресах.
     */
     refalrts::RefalNumber value = cur_char & 0xFFU;
-    if (! refalrts::alloc_number(vm, end, value)) {
-      return refalrts::cNoMemory;
-    }
+    refalrts::alloc_number(vm, end, value);
 
     if (begin == 0) {
       begin = end;
@@ -3729,21 +3689,13 @@ $ENTRY Module-Load {
     refalrts::Iter pSuccess = 0;
     refalrts::Iter pHandle = 0;
 
-    if (
-      ! refalrts::alloc_ident(vm, pSuccess, USE_IDENT(Success))
-      || ! refalrts::alloc_name(vm, pHandle, module)
-    ) {
-      return refalrts::cNoMemory;
-    }
-
+    refalrts::alloc_ident(vm, pSuccess, USE_IDENT(Success));
+    refalrts::alloc_name(vm, pHandle, module);
     refalrts::splice_elem(arg_begin, pSuccess);
     refalrts::splice_elem(arg_begin, pHandle);
   } else {
     refalrts::Iter pFails = 0;
-    if (! refalrts::alloc_ident(vm, pFails, USE_IDENT(Fails))) {
-      return refalrts::cNoMemory;
-    }
-
+    refalrts::alloc_ident(vm, pFails, USE_IDENT(Fails));
     refalrts::splice_elem(arg_begin, pFails);
   }
 

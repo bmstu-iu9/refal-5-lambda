@@ -326,102 +326,102 @@ void refalrts::reset_allocator(refalrts::VM *vm) {
   vm->reset_allocator();
 }
 
-bool refalrts::copy_evar(
+void refalrts::copy_evar(
   refalrts::VM *vm, refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
 ) {
-  return vm->copy_evar(evar_res_b, evar_res_e, evar_b_sample, evar_e_sample);
+  vm->copy_evar(evar_res_b, evar_res_e, evar_b_sample, evar_e_sample);
 }
 
-bool refalrts::copy_stvar(
+void refalrts::copy_stvar(
   refalrts::VM *vm, refalrts::Iter& stvar_res, refalrts::Iter stvar_sample
 ) {
-  return vm->copy_stvar(stvar_res, stvar_sample);
+  vm->copy_stvar(stvar_res, stvar_sample);
 }
 
-bool refalrts::alloc_copy_evar(
+void refalrts::alloc_copy_evar(
   refalrts::VM *vm, refalrts::Iter& res,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
 ) {
-  return vm->alloc_copy_evar(res, evar_b_sample, evar_e_sample);
+  vm->alloc_copy_evar(res, evar_b_sample, evar_e_sample);
 }
 
-bool refalrts::alloc_copy_svar_(
+void refalrts::alloc_copy_svar_(
   refalrts::VM *vm, refalrts::Iter& svar_res, refalrts::Iter svar_sample
 ) {
-  return vm->copy_node(svar_res, svar_sample);
+  vm->copy_node(svar_res, svar_sample);
 }
 
 
-bool refalrts::alloc_char(refalrts::VM *vm, refalrts::Iter& res, char ch) {
-  return vm->alloc_char(res, ch);
+void refalrts::alloc_char(refalrts::VM *vm, refalrts::Iter& res, char ch) {
+  vm->alloc_char(res, ch);
 }
 
-bool refalrts::alloc_number(
+void refalrts::alloc_number(
   refalrts::VM *vm, refalrts::Iter& res, refalrts::RefalNumber num
 ) {
-  return vm->alloc_number(res, num);
+  vm->alloc_number(res, num);
 }
 
-bool refalrts::alloc_name(
+void refalrts::alloc_name(
   refalrts::VM *vm, refalrts::Iter& res, refalrts::RefalFunction *fn
 ) {
-  return vm->alloc_name(res, fn);
+  vm->alloc_name(res, fn);
 }
 
-bool refalrts::alloc_ident(
+void refalrts::alloc_ident(
   refalrts::VM *vm, refalrts::Iter& res, refalrts::RefalIdentifier ident
 ) {
-  return vm->alloc_ident(res, ident);
+  vm->alloc_ident(res, ident);
 }
 
-bool refalrts::alloc_open_adt(refalrts::VM *vm, refalrts::Iter& res) {
-  return vm->alloc_open_adt(res);
+void refalrts::alloc_open_adt(refalrts::VM *vm, refalrts::Iter& res) {
+  vm->alloc_open_adt(res);
 }
 
-bool refalrts::alloc_close_adt(refalrts::VM *vm, refalrts::Iter& res) {
-  return vm->alloc_close_adt(res);
+void refalrts::alloc_close_adt(refalrts::VM *vm, refalrts::Iter& res) {
+  vm->alloc_close_adt(res);
 }
 
-bool refalrts::alloc_open_bracket(refalrts::VM *vm, refalrts::Iter& res) {
-  return vm->alloc_open_bracket(res);
+void refalrts::alloc_open_bracket(refalrts::VM *vm, refalrts::Iter& res) {
+  vm->alloc_open_bracket(res);
 }
 
-bool refalrts::alloc_close_bracket(refalrts::VM *vm, refalrts::Iter& res) {
-  return vm->alloc_close_bracket(res);
+void refalrts::alloc_close_bracket(refalrts::VM *vm, refalrts::Iter& res) {
+  vm->alloc_close_bracket(res);
 }
 
-bool refalrts::alloc_open_call(refalrts::VM *vm, refalrts::Iter& res) {
-  return vm->alloc_open_call(res);
+void refalrts::alloc_open_call(refalrts::VM *vm, refalrts::Iter& res) {
+  vm->alloc_open_call(res);
 }
 
-bool refalrts::alloc_close_call(refalrts::VM *vm, refalrts::Iter& res) {
-  return vm->alloc_close_call(res);
+void refalrts::alloc_close_call(refalrts::VM *vm, refalrts::Iter& res) {
+  vm->alloc_close_call(res);
 }
 
-bool refalrts::alloc_closure_head(refalrts::VM *vm, refalrts::Iter& res) {
-  return vm->alloc_closure_head(res);
+void refalrts::alloc_closure_head(refalrts::VM *vm, refalrts::Iter& res) {
+  vm->alloc_closure_head(res);
 }
 
-bool refalrts::alloc_unwrapped_closure(
+void refalrts::alloc_unwrapped_closure(
   refalrts::VM *vm, refalrts::Iter& res, refalrts::Iter head
 ) {
-  return vm->alloc_unwrapped_closure(res, head);
+  vm->alloc_unwrapped_closure(res, head);
 }
 
-bool refalrts::alloc_chars(
+void refalrts::alloc_chars(
   refalrts::VM *vm,
   refalrts::Iter& res_b, refalrts::Iter& res_e,
   const char buffer[], unsigned buflen
 ) {
-  return vm->alloc_chars(res_b, res_e, buffer, buflen);
+  vm->alloc_chars(res_b, res_e, buffer, buflen);
 }
 
-bool refalrts::alloc_string(
+void refalrts::alloc_string(
   refalrts::VM *vm,
   refalrts::Iter& res_b, refalrts::Iter& res_e, const char *string
 ) {
-  return vm->alloc_string(res_b, res_e, string);
+  vm->alloc_string(res_b, res_e, string);
 }
 
 refalrts::FnResult refalrts::checked_alloc(

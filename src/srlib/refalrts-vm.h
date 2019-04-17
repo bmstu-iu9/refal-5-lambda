@@ -779,7 +779,7 @@ public:
   // Операции построения результата
 
   void reset_allocator();
-  bool copy_node(Iter& res, Iter sample);
+  void copy_node(Iter& res, Iter sample);
 
 private:
 
@@ -787,45 +787,41 @@ private:
     m_free_ptr = m_begin_free_list.next;
   }
 
-  bool copy_nonempty_evar(
+  void copy_nonempty_evar(
     Iter& evar_res_b, Iter& evar_res_e, Iter evar_b_sample, Iter evar_e_sample
   );
 
 public:
 
-  bool copy_evar(
+  void copy_evar(
     Iter& evar_res_b, Iter& evar_res_e,
     Iter evar_b_sample, Iter evar_e_sample
   ) {
     if (empty_seq(evar_b_sample, evar_e_sample)) {
       evar_res_b = 0;
       evar_res_e = 0;
-      return true;
     } else {
-      return copy_nonempty_evar(
-        evar_res_b, evar_res_e, evar_b_sample, evar_e_sample
-      );
+      copy_nonempty_evar(evar_res_b, evar_res_e, evar_b_sample, evar_e_sample);
     }
   }
 
-  bool copy_stvar(Iter& stvar_res, Iter stvar_sample) {
+  void copy_stvar(Iter& stvar_res, Iter stvar_sample) {
     if (is_open_bracket(stvar_sample)) {
       Iter end_of_sample = stvar_sample->link_info;
       Iter end_of_res;
-      return copy_evar(stvar_res, end_of_res, stvar_sample, end_of_sample);
+      copy_evar(stvar_res, end_of_res, stvar_sample, end_of_sample);
     } else {
-      return copy_node(stvar_res, stvar_sample);
+      copy_node(stvar_res, stvar_sample);
     }
   }
 
   // TODO: а нафига она нужна?
-  bool alloc_copy_evar(Iter& res, Iter evar_b_sample, Iter evar_e_sample) {
+  void alloc_copy_evar(Iter& res, Iter evar_b_sample, Iter evar_e_sample) {
     if (empty_seq(evar_b_sample, evar_e_sample)) {
       res = 0;
-      return true;
     } else {
       Iter res_e = 0;
-      return copy_nonempty_evar(res, res_e, evar_b_sample, evar_e_sample);
+      copy_nonempty_evar(res, res_e, evar_b_sample, evar_e_sample);
     }
   }
 
@@ -836,7 +832,7 @@ private:
     right->prev = left;
   }
 
-  bool alloc_node(Iter& res);
+  void alloc_node(Iter& res);
   void ensure_memory() {
     if ((m_free_ptr == & m_end_free_list) && ! create_nodes()) {
       longjmp (*m_memory_fail, 1);
@@ -846,108 +842,80 @@ private:
 
 public:
 
-  bool alloc_char(Iter& res, char ch) {
-    if (alloc_node(res)) {
-      res->tag = cDataChar;
-      res->char_info = ch;
-      return true;
-    } else {
-      return false;
-    }
+  void alloc_char(Iter& res, char ch) {
+    alloc_node(res);
+    res->tag = cDataChar;
+    res->char_info = ch;
   }
 
-  bool alloc_number(Iter& res, RefalNumber num) {
-    if (alloc_node(res)) {
-      res->tag = cDataNumber;
-      res->number_info = num;
-      return true;
-    } else {
-      return false;
-    }
+  void alloc_number(Iter& res, RefalNumber num) {
+    alloc_node(res);
+    res->tag = cDataNumber;
+    res->number_info = num;
   }
 
-  bool alloc_name(Iter& res, RefalFunction *fn) {
-    if (alloc_node(res)) {
-      res->tag = cDataFunction;
-      res->function_info = fn;
-      return true;
-    } else {
-      return false;
-    }
+  void alloc_name(Iter& res, RefalFunction *fn) {
+    alloc_node(res);
+    res->tag = cDataFunction;
+    res->function_info = fn;
   }
 
-  bool alloc_ident(Iter& res, RefalIdentifier ident) {
-    if (alloc_node(res)) {
-      res->tag = cDataIdentifier;
-      res->ident_info = ident;
-      return true;
-    } else {
-      return false;
-    }
+  void alloc_ident(Iter& res, RefalIdentifier ident) {
+    alloc_node(res);
+    res->tag = cDataIdentifier;
+    res->ident_info = ident;
   }
 
 private:
 
-  bool alloc_some_bracket(Iter& res, DataTag tag) {
-    if (alloc_node(res)) {
-      res->tag = tag;
-      return true;
-    } else {
-      return false;
-    }
-  }
+  void alloc_some_bracket(Iter& res, DataTag tag) {
+    alloc_node(res);
+    res->tag = tag;
+}
 
 public:
 
-  bool alloc_open_adt(Iter& res) {
-    return alloc_some_bracket(res, cDataOpenADT);
+  void alloc_open_adt(Iter& res) {
+    alloc_some_bracket(res, cDataOpenADT);
   }
 
-  bool alloc_close_adt(Iter& res) {
-    return alloc_some_bracket(res, cDataCloseADT);
+  void alloc_close_adt(Iter& res) {
+    alloc_some_bracket(res, cDataCloseADT);
   }
 
-  bool alloc_open_bracket(Iter& res) {
-    return alloc_some_bracket(res, cDataOpenBracket);
+  void alloc_open_bracket(Iter& res) {
+    alloc_some_bracket(res, cDataOpenBracket);
   }
 
-  bool alloc_close_bracket(Iter& res) {
-    return alloc_some_bracket(res, cDataCloseBracket);
+  void alloc_close_bracket(Iter& res) {
+    alloc_some_bracket(res, cDataCloseBracket);
   }
 
-  bool alloc_open_call(Iter& res) {
-    return alloc_some_bracket(res, cDataOpenCall);
+  void alloc_open_call(Iter& res) {
+    alloc_some_bracket(res, cDataOpenCall);
   }
 
-  bool alloc_close_call(Iter& res) {
-    return alloc_some_bracket(res, cDataCloseCall);
+  void alloc_close_call(Iter& res) {
+    alloc_some_bracket(res, cDataCloseCall);
   }
 
-  bool alloc_closure_head(Iter& res) {
-    if (alloc_node(res)) {
-      res->tag = cDataClosureHead;
-      res->number_info = 1;
-      return true;
-    } else {
-      return false;
-    }
+  void alloc_closure_head(Iter& res) {
+    alloc_node(res);
+    res->tag = cDataClosureHead;
+    res->number_info = 1;
   }
 
-  bool alloc_unwrapped_closure(Iter& res, Iter head) {
-    if (alloc_node(res)) {
-      res->tag = cDataUnwrappedClosure;
-      res->link_info = head;
-      return true;
-    } else {
-      return false;
-    }
+  void alloc_unwrapped_closure(Iter& res, Iter head) {
+    alloc_node(res);
+    res->tag = cDataUnwrappedClosure;
+    res->link_info = head;
   }
 
-  bool alloc_chars(
+  void alloc_chars(
     Iter& res_b, Iter& res_e, const char buffer[], unsigned buflen
   );
 
-  bool alloc_string(Iter& res_b, Iter& res_e, const char *string);
+  void alloc_string(Iter& res_b, Iter& res_e, const char *string);
 
   jmp_buf* reset_memory_fail(jmp_buf *new_buf) {
     jmp_buf *old = m_memory_fail;

@@ -398,18 +398,16 @@ GenCommand-Native {
   (e.Indent) (CmdCopyVar 'e' s.Target s.Sample) =
     (e.Indent)
     (e.Indent
-      'if (! refalrts::copy_evar(vm, ' <ContextRange s.Target> ', '
-      <ContextRange s.Sample> '))'
-    )
-    (e.Indent '  return refalrts::cNoMemory;');
+      'refalrts::copy_evar(vm, ' <ContextRange s.Target> ', '
+      <ContextRange s.Sample> ');'
+    );
 
   (e.Indent) (CmdCopyVar s.Mode s.Target s.Sample) =
     (e.Indent)
     (e.Indent
-      'if (! refalrts::copy_stvar(vm, ' <ContextItem s.Target> ', '
-      <ContextItem s.Sample> '))'
-    )
-    (e.Indent '  return refalrts::cNoMemory;');
+      'refalrts::copy_stvar(vm, ' <ContextItem s.Target> ', '
+      <ContextItem s.Sample> ');'
+    );
 
   (e.Indent) (CmdReinitSVar s.Offset s.Sample) =
     (e.Indent)
@@ -422,11 +420,10 @@ GenCommand-Native {
   (e.Indent) (CmdCreateElem Allocate s.ElemNumber ElString e.String) =
     (e.Indent)
     (e.Indent
-      'if( ! refalrts::alloc_chars( vm, '
+      'refalrts::alloc_chars(vm, '
       <ContextItem s.ElemNumber> ', ' <ContextItem <Inc s.ElemNumber>> ', '
-      <PrintString e.String> ' ) )'
-    )
-    (e.Indent '  return refalrts::cNoMemory;');
+      <PrintString e.String> ');'
+    );
 
   (e.Indent) (CmdCreateElem s.CreateMode s.ElemNumber e.ElemInfo) =
     (e.Indent)
@@ -790,18 +787,17 @@ PrintMatchSave-VM {
 PrintCreateElem {
   (e.Indent) Allocate s.ElemNumber s.ElementType e.Info =
     (e.Indent
-      'if( ! refalrts::alloc_' <AllocatorFuncName s.ElementType> '( vm, '
+      'refalrts::alloc_' <AllocatorFuncName s.ElementType> '(vm, '
       <ContextItem s.ElemNumber> <AllocatorFuncArgument s.ElementType e.Info>
-      ' ) )'
-    )
-    (e.Indent '  return refalrts::cNoMemory;');
+      ');'
+    );
 
   (e.Indent) s.CreateMode s.ElemNumber s.ElementType e.Info =
     (e.Indent
       'refalrts::' <AllocatorMode s.CreateMode> '_'
-      <AllocatorFuncName s.ElementType> '( '
+      <AllocatorFuncName s.ElementType> '('
       <ContextItem s.ElemNumber> <AllocatorFuncArgument s.ElementType e.Info>
-      ' );'
+      ');'
     );
 }
 

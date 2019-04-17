@@ -562,7 +562,7 @@ void refalrts::VM::reset_allocator() {
   reset_allocator_aux();
 }
 
-bool refalrts::VM::alloc_node(Iter& res) {
+void refalrts::VM::alloc_node(Iter& res) {
   ensure_memory();
 
   if (refalrts::cDataClosure == m_free_ptr->tag) {
@@ -582,7 +582,6 @@ bool refalrts::VM::alloc_node(Iter& res) {
   res = m_free_ptr;
   m_free_ptr = next(m_free_ptr);
   res->tag = refalrts::cDataIllegal;
-  return true;
 }
 
 bool refalrts::VM::create_nodes() {
@@ -1223,14 +1222,10 @@ JUMP_FROM_SCALE:
         {
           unsigned int target = val1;
           unsigned int sample = val2;
-          if (
-            ! copy_evar(
-              context[target], context[target + 1],
-              context[sample], context[sample + 1]
-            )
-          ) {
-            return cNoMemory;
-          }
+          copy_evar(
+            context[target], context[target + 1],
+            context[sample], context[sample + 1]
+          );
         }
         break;
 
@@ -1238,9 +1233,7 @@ JUMP_FROM_SCALE:
         {
           unsigned int target = val1;
           unsigned int sample = val2;
-          if (! copy_stvar(context[target], context[sample])) {
-            return cNoMemory;
-          }
+          copy_stvar(context[target], context[sample]);
         }
         break;
 
@@ -1249,64 +1242,40 @@ JUMP_FROM_SCALE:
         break;
 
       case icAllocateChar:
-        if (! alloc_char(elem, static_cast<char>(val2))) {
-          return cNoMemory;
-        }
+        alloc_char(elem, static_cast<char>(val2));
         break;
 
       case icAllocateName:
-        if (! alloc_name(elem, functions[val2])) {
-          return cNoMemory;
-        }
+        alloc_name(elem, functions[val2]);
         break;
 
       case icAllocateNumber:
-        if (! alloc_number(elem, static_cast<RefalNumber>(val2))) {
-          return cNoMemory;
-        }
+        alloc_number(elem, static_cast<RefalNumber>(val2));
         break;
 
       case icAllocateHugeNumber:
-        if (! alloc_number(elem, numbers[val2])) {
-          return cNoMemory;
-        }
+        alloc_number(elem, numbers[val2]);
         break;
 
       case icAllocateIdent:
-        if (! alloc_ident(elem, idents[val2])) {
-          return cNoMemory;
-        }
+        alloc_ident(elem, idents[val2]);
         break;
 
       case icAllocateBracket:
         assert(val2 <= ibCloseCall);
-        if (! alloc_some_bracket(elem, bracket_tag[val2])) {
-          return cNoMemory;
-        }
+        alloc_some_bracket(elem, bracket_tag[val2]);
         break;
 
       case icAllocateString:
-        {
-          if (
-            ! alloc_chars(
-              bb, be, strings[val2].string, strings[val2].string_len
-            )
-          ) {
-            return cNoMemory;
-          }
-        }
+        alloc_chars(bb, be, strings[val2].string, strings[val2].string_len);
         break;
 
       case icAllocateClosureHead:
-        if (! alloc_closure_head(elem)) {
-          return cNoMemory;
-        }
+        alloc_closure_head(elem);
         break;
 
       case icAllocateUnwrappedClosure:
-        if (! alloc_unwrapped_closure(elem, context[val2])) {
-          return cNoMemory;
-        }
+        alloc_unwrapped_closure(elem, context[val2]);
         break;
 
       case icReinitChar:
@@ -1479,13 +1448,10 @@ JUMP_FROM_SCALE:
               refalrts::Iter closure_b = 0;
               refalrts::Iter closure_e = 0;
 
-              if (! copy_evar(closure_b, closure_e, next(head), prev(head))) {
-                res = cNoMemory;
-              } else {
-                list_splice(begin_argument, closure_b, closure_e);
-                splice_to_freelist(function, function);
-                res = cSuccess;
-              }
+              copy_evar(closure_b, closure_e, next(head), prev(head));
+              list_splice(begin_argument, closure_b, closure_e);
+              splice_to_freelist(function, function);
+              res = cSuccess;
             }
 
             if (res == cSuccess) {
@@ -1861,55 +1827,55 @@ bool refalrts::VM::repeated_evar_right(
   }
 }
 
-bool refalrts::VM::copy_node(refalrts::Iter& res, refalrts::Iter sample) {
+void refalrts::VM::copy_node(refalrts::Iter& res, refalrts::Iter sample) {
   switch(sample->tag) {
     case refalrts::cDataChar:
-      return alloc_char(res, sample->char_info);
+      alloc_char(res, sample->char_info);
+      break;
 
     case refalrts::cDataNumber:
-      return alloc_number(res, sample->number_info);
+      alloc_number(res, sample->number_info);
+      break;
 
     case refalrts::cDataFunction:
-      return alloc_name(res, sample->function_info);
+      alloc_name(res, sample->function_info);
+      break;
 
     case refalrts::cDataIdentifier:
-      return alloc_ident(res, sample->ident_info);
+      alloc_ident(res, sample->ident_info);
+      break;
 
     case refalrts::cDataOpenBracket:
-      return alloc_open_bracket(res);
+      alloc_open_bracket(res);
+      break;
 
     case refalrts::cDataCloseBracket:
-      return alloc_close_bracket(res);
+      alloc_close_bracket(res);
+      break;
 
     case refalrts::cDataOpenADT:
-      return alloc_open_adt(res);
+      alloc_open_adt(res);
+      break;
 
     case refalrts::cDataCloseADT:
-      return alloc_close_adt(res);
+      alloc_close_adt(res);
+      break;
 
-    case refalrts::cDataClosure: {
-      bool allocated = alloc_node(res);
-      if (allocated) {
+    case refalrts::cDataClosure:
+      {
+        alloc_node(res);
         res->tag = refalrts::cDataClosure;
         refalrts::Iter head = sample->link_info;
         res->link_info = head;
         ++ (head->number_info);
-        return true;
-      } else {
-        return false;
       }
-    }
+      break;
 
-    case refalrts::cDataFile: {
-      bool allocated = alloc_node(res);
-      if (allocated) {
-        res->tag = refalrts::cDataFile;
-        res->file_info = sample->file_info;
-        return true;
-      } else {
-        return false;
-      }
-    }
+    case refalrts::cDataFile:
+      alloc_node(res);
+      res->tag = refalrts::cDataFile;
+      res->file_info = sample->file_info;
+      break;
 
     /*
       Копируем только объектное выражение -- никаких вызовов функций
@@ -1920,7 +1886,7 @@ bool refalrts::VM::copy_node(refalrts::Iter& res, refalrts::Iter sample) {
   }
 }
 
-bool refalrts::VM::copy_nonempty_evar(
+void refalrts::VM::copy_nonempty_evar(
   refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
 ) {
@@ -1932,10 +1898,7 @@ bool refalrts::VM::copy_nonempty_evar(
   refalrts::Iter prev_res_begin = prev(m_free_ptr);
 
   while (! refalrts::empty_seq(evar_b_sample, evar_e_sample)) {
-    if (! copy_node(res, evar_b_sample)) {
-      profiler()->stop_copy();
-      return false;
-    }
+    copy_node(res, evar_b_sample);
 
     if (is_open_bracket(res)) {
       res->link_info = bracket_stack;
@@ -1957,56 +1920,44 @@ bool refalrts::VM::copy_nonempty_evar(
   evar_res_e = res;
 
   profiler()->stop_copy();
-
-  return true;
 }
 
-bool refalrts::VM::alloc_chars(
+void refalrts::VM::alloc_chars(
   refalrts::Iter& res_b, refalrts::Iter& res_e,
   const char buffer[], unsigned buflen
 ) {
   if (buflen == 0) {
     res_b = 0;
     res_e = 0;
-    return true;
   } else {
     refalrts::Iter before_begin_seq = prev(m_free_ptr);
     refalrts::Iter end_seq = 0;
 
     for (unsigned i = 0; i < buflen; ++ i) {
-      if (! alloc_char(end_seq, buffer[i])) {
-        return false;
-      }
+      alloc_char(end_seq, buffer[i]);
     }
 
     res_b = next(before_begin_seq);
     res_e = end_seq;
-
-    return true;
   }
 }
 
-bool refalrts::VM::alloc_string(
+void refalrts::VM::alloc_string(
   refalrts::Iter& res_b, refalrts::Iter& res_e, const char *string
 ) {
   if (*string == '\0') {
     res_b = 0;
     res_e = 0;
-    return true;
   } else {
     refalrts::Iter before_begin_seq = prev(m_free_ptr);
     refalrts::Iter end_seq = 0;
 
     for (const char *p = string; *p != '\0'; ++ p) {
-      if (! alloc_char(end_seq, *p)) {
-        return false;
-      }
+      alloc_char(end_seq, *p);
     }
 
     res_b = next(before_begin_seq);
     res_e = end_seq;
-
-    return true;
   }
 }
 

@@ -267,25 +267,25 @@ extern unsigned read_chars(
 
 extern void reset_allocator(VM *vm);
 
-extern bool copy_evar(
+extern void copy_evar(
   VM *vm, Iter& evar_res_b, Iter& evar_res_e,
   Iter evar_b_sample, Iter evar_e_sample
 );
 
-extern bool copy_stvar(VM *vm, Iter& stvar_res, Iter stvar_sample);
+extern void copy_stvar(VM *vm, Iter& stvar_res, Iter stvar_sample);
 
-extern bool alloc_char(VM *vm, Iter& res, char ch);
-extern bool alloc_number(VM *vm, Iter& res, RefalNumber num);
-extern bool alloc_name(VM *vm, Iter& res, RefalFunction *func);
-extern bool alloc_ident(VM *vm, Iter& res, RefalIdentifier ident);
-extern bool alloc_open_adt(VM *vm, Iter& res);
-extern bool alloc_close_adt(VM *vm, Iter& res);
-extern bool alloc_open_bracket(VM *vm, Iter& res);
-extern bool alloc_close_bracket(VM *vm, Iter& res);
-extern bool alloc_open_call(VM *vm, Iter& res);
-extern bool alloc_close_call(VM *vm, Iter& res);
-extern bool alloc_closure_head(VM *vm, Iter& res);
-extern bool alloc_unwrapped_closure(VM *vm, Iter& res, Iter head);
+extern void alloc_char(VM *vm, Iter& res, char ch);
+extern void alloc_number(VM *vm, Iter& res, RefalNumber num);
+extern void alloc_name(VM *vm, Iter& res, RefalFunction *func);
+extern void alloc_ident(VM *vm, Iter& res, RefalIdentifier ident);
+extern void alloc_open_adt(VM *vm, Iter& res);
+extern void alloc_close_adt(VM *vm, Iter& res);
+extern void alloc_open_bracket(VM *vm, Iter& res);
+extern void alloc_close_bracket(VM *vm, Iter& res);
+extern void alloc_open_call(VM *vm, Iter& res);
+extern void alloc_close_call(VM *vm, Iter& res);
+extern void alloc_closure_head(VM *vm, Iter& res);
+extern void alloc_unwrapped_closure(VM *vm, Iter& res, Iter head);
 
 #ifndef alloc_copy_svar
 #define alloc_copy_svar alloc_copy_svar_
@@ -295,15 +295,15 @@ extern bool alloc_unwrapped_closure(VM *vm, Iter& res, Iter head);
 #define alloc_copy_tvar copy_stvar
 #endif
 
-extern bool alloc_copy_evar(
+extern void alloc_copy_evar(
   VM *vm, Iter& res, Iter evar_b_sample, Iter evar_e_sample
 );
-extern bool alloc_copy_svar_(VM *vm, Iter& svar_res, Iter svar_sample);
+extern void alloc_copy_svar_(VM *vm, Iter& svar_res, Iter svar_sample);
 
-extern bool alloc_chars(
+extern void alloc_chars(
   VM *vm, Iter& res_b, Iter& res_e, const char buffer[], unsigned buflen
 );
-extern bool alloc_string(VM *vm, Iter& res_b, Iter& res_e, const char *string);
+extern void alloc_string(VM *vm, Iter& res_b, Iter& res_e, const char *string);
 
 typedef FnResult (*CheckedAllocFn)(VM *vm, void *data);
 extern FnResult checked_alloc(VM *vm, CheckedAllocFn fn, void *data);
