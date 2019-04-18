@@ -574,8 +574,8 @@ refalrts::Iter refalrts::unwrap_closure(refalrts::Iter closure) {
   assert(head != head->prev);
   assert(head != head->next);
 
-  link_adjacent(before_closure, head);
-  link_adjacent(end_of_closure, closure);
+  weld(before_closure, head);
+  weld(end_of_closure, closure);
 
   closure->tag = refalrts::cDataUnwrappedClosure;
 
@@ -593,8 +593,8 @@ refalrts::Iter refalrts::wrap_closure(refalrts::Iter closure) {
   assert(head != head->prev);
   assert(head != head->next);
 
-  link_adjacent(before_closure, closure);
-  link_adjacent(end_of_closure, head);
+  weld(before_closure, closure);
+  weld(end_of_closure, head);
 
   closure->tag = refalrts::cDataClosure;
 

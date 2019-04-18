@@ -827,11 +827,6 @@ public:
 
 private:
 
-  static void weld(Iter left, Iter right) {
-    left->next = right;
-    right->prev = left;
-  }
-
   void alloc_node(Iter& res);
   void ensure_memory() {
     if ((m_free_ptr == & m_end_free_list) && ! create_nodes()) {

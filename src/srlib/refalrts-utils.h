@@ -16,14 +16,9 @@ inline bool is_close_bracket(refalrts::Iter node) {
     || (refalrts::cDataCloseADT == node->tag);
 }
 
-void link_adjacent(refalrts::Iter left, refalrts::Iter right) {
-  if (left != 0) {
-    left->next = right;
-  }
-
-  if (right != 0) {
-    right->prev = left;
-  }
+inline void weld(refalrts::Iter left, refalrts::Iter right) {
+  left->next = right;
+  right->prev = left;
 }
 
 refalrts::Iter list_splice(
@@ -40,9 +35,9 @@ refalrts::Iter list_splice(
     refalrts::Iter prev_begin = begin->prev;
     refalrts::Iter next_end = end->next;
 
-    link_adjacent(prev_res, begin);
-    link_adjacent(end, res);
-    link_adjacent(prev_begin, next_end);
+    weld(prev_res, begin);
+    weld(end, res);
+    weld(prev_begin, next_end);
   }
 
   return begin;
