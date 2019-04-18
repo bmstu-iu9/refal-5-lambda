@@ -567,19 +567,19 @@ refalrts::Iter refalrts::splice_from_freelist(
 refalrts::Iter refalrts::unwrap_closure(refalrts::Iter closure) {
   assert(closure->tag == refalrts::cDataClosure);
 
-  refalrts::Iter before_closure = prev(closure);
+  refalrts::Iter before_closure = closure->prev;
   refalrts::Iter head = closure->link_info;
-  refalrts::Iter end_of_closure = prev(head);
+  refalrts::Iter end_of_closure = head->prev;
 
-  assert(head != prev(head));
-  assert(head != next(head));
+  assert(head != head->prev);
+  assert(head != head->next);
 
   link_adjacent(before_closure, head);
   link_adjacent(end_of_closure, closure);
 
   closure->tag = refalrts::cDataUnwrappedClosure;
 
-  return prev(head);
+  return head->prev;
 }
 
 // Свернуть замыкание
@@ -587,18 +587,18 @@ refalrts::Iter refalrts::wrap_closure(refalrts::Iter closure) {
   assert(closure->tag == refalrts::cDataUnwrappedClosure);
 
   refalrts::Iter head = closure->link_info;
-  refalrts::Iter before_closure = prev(head);
-  refalrts::Iter end_of_closure = prev(closure);
+  refalrts::Iter before_closure = head->prev;
+  refalrts::Iter end_of_closure = closure->prev;
 
-  assert(head != prev(head));
-  assert(head != next(head));
+  assert(head != head->prev);
+  assert(head != head->next);
 
   link_adjacent(before_closure, closure);
   link_adjacent(end_of_closure, head);
 
   closure->tag = refalrts::cDataClosure;
 
-  return next(closure);
+  return closure->next;
 }
 
 //------------------------------------------------------------------------------
