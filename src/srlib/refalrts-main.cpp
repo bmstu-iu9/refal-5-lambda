@@ -153,6 +153,7 @@ int main(int argc, char **argv) {
   }
   vm.free_view_field();
   vm.free_states_stack();
+  domain.free_domain_memory();
 
   fflush(stdout);
 

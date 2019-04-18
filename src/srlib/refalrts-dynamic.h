@@ -343,6 +343,8 @@ public:
   void unload_module(VM *vm, Iter pos, Module *module, FnResult& result);
   void unload(VM *vm, FnResult& result);
 
+  void free_domain_memory();
+
   size_t idents_count();
 
   RefalFunction *lookup_function(const RefalFuncName& name) {

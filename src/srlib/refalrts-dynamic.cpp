@@ -999,6 +999,9 @@ void refalrts::Domain::unload(refalrts::VM *vm, refalrts::FnResult& result) {
 
   DangerousRAII dang(&m_dangerous);
   m_storage.unload(vm, result);
+}
+
+void refalrts::Domain::free_domain_memory() {
   free_idents_table();
 
   for (size_t i = 0; i < m_allocated_functions.size(); ++i) {
