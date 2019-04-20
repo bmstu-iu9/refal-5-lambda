@@ -752,6 +752,7 @@ refalrts::FnResult refalrts::recursive_call_main_loop(refalrts::VM *vm) {
   const  refalrts::RASLCommand rasl[] = {
     { refalrts::icPushState, 0, 0, 0 },
     { refalrts::icNextStep, 0, 0, 0 },
+    { refalrts::icMainLoopReturnSuccess, 0, 0, 0 }
   };
   FnResult res = vm->main_loop(rasl);
   vm->reset_memory_fail(old);
