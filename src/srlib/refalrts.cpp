@@ -750,6 +750,7 @@ refalrts::FnResult refalrts::recursive_call_main_loop(refalrts::VM *vm) {
   jmp_buf *old = vm->reset_memory_fail(0);
 
   const  refalrts::RASLCommand rasl[] = {
+    { refalrts::icPushState, 0, 0, 0 },
     { refalrts::icNextStep, 0, 0, 0 },
   };
   FnResult res = vm->main_loop(rasl);

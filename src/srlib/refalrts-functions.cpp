@@ -71,6 +71,7 @@ const refalrts::RASLCommand refalrts::RefalCondFunctionRasl::run[] = {
 };
 
 const refalrts::RASLCommand refalrts::RefalCondFunctionNative::run[] = {
+  { refalrts::icPopState, 0, 0, 0 },
   { refalrts::icMainLoopReturnSuccess, 0, 0, 0 }
 };
 
