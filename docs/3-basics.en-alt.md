@@ -118,7 +118,7 @@ them. In the first variant off add option we avoided this complexity by
 expressing function into two symbols. Now we should pass two expressions of
 undefined length. Each of arguments can consist only of symbols such as `'0'`
 and `'1'`, so that it is possible to put any symbol between them, except zero
-and one – using it it will be possible to define the end of one argument and
+and one – using it is will be possible to define the end of one argument and
 the beginning of another argument. We will use the `'+'` symbol for clarity.
 
 Note. _Later we will know about really easy, effective and general way of
