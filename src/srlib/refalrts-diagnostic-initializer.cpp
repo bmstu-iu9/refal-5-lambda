@@ -228,7 +228,16 @@ void load_local_diagnostic_config(
   }
 }
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#endif  /* defined(__GNUC__) */
+
 int initializer =
   ((refalrts::g_init_diagnostic_config = init_diagnostic_config), 0);
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif  /* defined(__GNUC__) */
 
 }  // unnamed namespace
