@@ -1147,9 +1147,9 @@ void refalrts::Domain::free_nodes() {
   if (m_diagnostic_config->print_statistics) {
     fprintf(
       stderr,
-      "Memory used %d nodes, %d * %lu = %lu bytes\n",
-      m_memory_use,
-      m_memory_use,
+      "Memory used %lu nodes, %lu * %lu = %lu bytes\n",
+      static_cast<unsigned long>(m_memory_use),
+      static_cast<unsigned long>(m_memory_use),
       static_cast<unsigned long>(sizeof(Node)),
       static_cast<unsigned long>(m_memory_use * sizeof(Node))
     );
