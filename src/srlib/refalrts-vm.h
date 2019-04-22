@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <setjmp.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "refalrts.h"
 #include "refalrts-diagnostic-config.h"
