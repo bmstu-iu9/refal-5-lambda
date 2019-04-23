@@ -23,6 +23,7 @@ $ENTRY Desugar {
             Conditions-Transform = (&Pass-UnCondition s.MarkupContext);
           }
         >
+        &Pass-CleanupRedudandExterns
         &Pass-FoldEnums
       >
     >;
@@ -810,6 +811,51 @@ CreateContext {
       }
       e.Context
     >;
+}
+
+Pass-CleanupRedudandExterns {
+  /*
+    Проход Checker проверил корректность использования $FORWARD’ов
+    и $EXTERN’ов, поэтому здесь мы их упрощаем не взирая на область
+    видимости.
+  */
+
+  e.AST
+    = <MapAccum
+       {
+         (e.DefinedFunctions)
+         (Function s.ScopeClass (e.Name) e.Body)
+           = (e.DefinedFunctions (e.Name))
+             (Function s.ScopeClass (e.Name) e.Body);
+
+         (e.DefinedFunctions) (Enum s.ScopeClass e.Name)
+           = (e.DefinedFunctions (e.Name)) (Enum s.ScopeClass e.Name);
+
+         (e.DefinedFunctions) (Swap s.ScopeClass e.Name)
+           = (e.DefinedFunctions (e.Name)) (Swap s.ScopeClass e.Name);
+
+         (e.DefinedFunctions) (Declaration s.ScopeClass e.Name)
+           = (e.DefinedFunctions) (Declaration s.ScopeClass e.Name);
+
+         (e.DefinedFunctions) (Ident e.Name)
+           = (e.DefinedFunctions) (Ident e.Name);
+
+         (e.DefinedFunctions) (NativeBlock t.SrcPos e.Code)
+           = (e.DefinedFunctions) (NativeBlock t.SrcPos e.Code);
+       }
+       (/* defined functions */)
+       e.AST
+      >
+    : (e.DefinedFunctions) e.AST^
+    = <Map (&FilterDeclarations e.DefinedFunctions) e.AST>;
+}
+
+FilterDeclarations {
+  e.DefinedFunctions-B (e.Name) e.DefinedFunctions-E
+  (Declaration s.ScopeClass e.Name)
+    = /* пусто */;
+
+  e.DefinedFunctions t.OtherItem = t.OtherItem;
 }
 
 Pass-FoldEnums {

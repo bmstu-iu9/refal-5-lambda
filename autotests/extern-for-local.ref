@@ -1,0 +1,5 @@
+$EXTERN Local;
+
+$ENTRY Go { = <Local> }
+
+Local { = }
