@@ -96,6 +96,7 @@ run_test_aux_with_flags() {
   fi
 
   rm $RASL $NATCPP $EXE
+  rm -rf ${SREF%.*}.partial.dSYM
   [ -e __dump.txt ] && rm __dump.txt
   [ -e __log.txt ] && rm __log.txt
 
@@ -224,3 +225,4 @@ else
 fi
 
 [ -e _test_prefix.exe-prefix ] && rm _test_prefix.exe-prefix
+rm -rf _test_prefix.exe-prefix.partial.dSYM
