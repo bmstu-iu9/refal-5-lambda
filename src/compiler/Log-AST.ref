@@ -43,6 +43,8 @@ Element {
   (Ident e.Name) = ('$LABEL ' <DisplayName e.Name> ';');
 
   (NativeBlock t.SrcPos e.Code) = ('%% native block %%');
+
+  (Spec (e.Name) e.Pattern) = ('$SPEC ' <DisplayName e.Name> ' ' <InlineExpr e.Pattern> ';');
 }
 
 

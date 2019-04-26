@@ -82,7 +82,7 @@ DoProgram {
 }
 
 UnitStartToken {
-  = <NameListTags> TkEntry TkName TkSemicolon TkInclude TkNativeCode;
+  = <NameListTags> TkEntry TkName TkSemicolon TkInclude TkNativeCode TkSpec;
 }
 
 NameListTags {
@@ -97,7 +97,8 @@ OneOf {
 /*
   Unit = SPECIAL-COMMENT | Keyword NameList | Include | Function.
   Keyword = "$EXTERN" | "$ENUM" | "$EENUM" | "$SWAP"
-            | "$ESWAP" | "$INLINE" | "$DRIVE".
+            | "$ESWAP" | "$INLINE" | "$DRIVE"
+            | "$SPEC".
 
   <Unit t.ErrorList s.Mode e.Tokens> == t.ErrorList (t.ErrorUnit*) e.Tokens
 */
@@ -124,6 +125,8 @@ Unit {
           = t.ErrorList ((NativeBlock t.Pos e.Lines)) e.Tokens;
 
         (TkSemicolon t.Pos) = t.ErrorList (/* игнорируем */) e.Tokens;
+
+        (TkSpec t.Pos) = <Specialization t.ErrorList s.Mode t.Pos e.Tokens>;
 
         (s.Type t.Pos e.Value)
           , <OneOf s.Type TkEntry TkName>: True
@@ -190,6 +193,10 @@ TkInline {
 
 TkDrive {
   t.Pos e.Name = (Drive t.Pos GN-Local e.Name)
+}
+
+TkSpec {
+  t.Pos (e.Name) e.Pattern = (Spec t.Pos (e.Name) e.Pattern);
 }
 
 NameList-DoNames {
@@ -268,6 +275,38 @@ Include {
           = <UnexpectedToken t.ErrorList t.Unexpected1 'compound symbol'>
             (/* no include */) t.Unexpected1 t.Unexpected2 e.Tokens;
       };
+}
+/*
+  Specialization = $SPEC NAME Pattern
+
+  <Specialization t.ErrorList s.Mode s.Tag e.Tokens>
+    == t.ErrorList (t.SpecUnit) e.Tokens
+
+  t.SpecUnit = (Spec (e.Name) e.Pattern)
+
+*/
+
+Specialization {
+  t.ErrorList s.Mode t.Pos (TkName t.NamePos e.Name) e.Tokens
+    = <Pattern t.ErrorList s.Mode e.Tokens>
+    : t.ErrorList^ (e.Pattern)  e.Tokens^
+    = <Expect t.ErrorList TkSemicolon ('missed semicolon') e.Tokens>
+    : t.ErrorList^ e.Tokens^
+    = t.ErrorList ((Spec t.Pos (e.Name) e.Pattern)) e.Tokens;
+
+  t.ErrorList s.Mode t.Pos t.Unexpected e.Tokens
+    = <UnexpectedToken t.ErrorList t.Unexpected 'function name'>
+      (/* ничего не генерируем */) e.Tokens;
+}
+
+
+Expect {
+  t.ErrorList s.Expected (e.ExpectedText) (s.Expected t.SrcPos) e.Tokens
+    = t.ErrorList e.Tokens;
+
+  t.ErrorList s.Expected (e.ExpectedText) t.Unexpected e.Tokens
+    = <UnexpectedToken t.ErrorList t.Unexpected e.ExpectedText>
+      t.Unexpected e.Tokens;
 }
 
 /*
@@ -940,4 +979,5 @@ TokName {
   TkAmpersand = '\'&\'';
   TkRedefinition = '\'^\'';
   TkNativeCode = 'native code insertion';
+  TkSpec = '$SPEC';
 }
