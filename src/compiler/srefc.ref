@@ -526,18 +526,18 @@ Chmod-X-Prefix {
 
         e.ChmodXCommand
           = <System e.ChmodXCommand ' "' e.IntermediateName '"'>
-          : s.RetCode
-          = <CheckReturnCode t.Config s.RetCode 'chmod'>;
+          : e.RetCode
+          = <CheckReturnCode t.Config (e.RetCode) 'chmod'>;
       };
 }
 
 CheckReturnCode {
-  t.Config 0 e.Component = /* пусто */;
+  t.Config (0) e.Component = /* пусто */;
 
-  t.Config s.RetCode e.Component
+  t.Config (e.RetCode) e.Component
     = <LinkError
         t.Config
-        e.Component ' finished with return code ' <Symb s.RetCode>
+        e.Component ' finished with return code ' <Symb e.RetCode>
       >;
 }
 
@@ -559,8 +559,8 @@ Link-CppCompile {
                   e.Files
                 >
               >
-            : s.RetCode
-            = <CheckReturnCode t.Config s.RetCode 'C++ compiler'>
+            : e.RetCode
+            = <CheckReturnCode t.Config (e.RetCode) 'C++ compiler'>
               <CheckCppCompilationSuccessed t.Config e.IntermediateName>
               <EnsureAligned4096 e.IntermediateName>;
         }
