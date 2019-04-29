@@ -731,7 +731,7 @@ bool refalrts::Domain::ModuleStorage::find_unresolved_externals(
 }
 
 void refalrts::Domain::ModuleStorage::unload(
-  refalrts::VM *vm, refalrts::FnResult& result
+  refalrts::VM *vm, refalrts::Iter pos, refalrts::FnResult& result
 ) {
   result = cSuccess;
   for (
@@ -739,7 +739,7 @@ void refalrts::Domain::ModuleStorage::unload(
     p != m_modules.rend();
     ++p
   ) {
-    (*p)->finalize(vm, 0, result);
+    (*p)->finalize(vm, pos, result);
   }
 
   while (! m_modules.empty()) {
@@ -951,10 +951,12 @@ bool refalrts::Domain::initialize(
   if (new_module) {
     new_module->add_ref();
   } else {
+    new_storage.unload(vm, 0, result);
     return false;
   }
 
   if (! new_storage.find_unresolved_externals(event, callback_data)) {
+    new_storage.unload(vm, 0, result);
     return false;
   }
 
@@ -964,7 +966,7 @@ bool refalrts::Domain::initialize(
   }
 
   FnResult unload_result;
-  unload_module(vm, pos, new_module, unload_result);
+  new_storage.unload(vm, 0, unload_result);
   if (unload_result != cSuccess) {
     result = unload_result;
   }
@@ -984,11 +986,13 @@ void refalrts::Domain::unload_module(
   m_storage.unload_module(vm, pos, module, result);
 }
 
-void refalrts::Domain::unload(refalrts::VM *vm, refalrts::FnResult& result) {
+void refalrts::Domain::unload(
+  refalrts::VM *vm, refalrts::Iter pos, refalrts::FnResult& result
+) {
   assert(this == vm->domain());
 
   DangerousRAII dang(&m_dangerous);
-  m_storage.unload(vm, result);
+  m_storage.unload(vm, pos, result);
 }
 
 void refalrts::Domain::free_domain_memory() {

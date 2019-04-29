@@ -277,7 +277,7 @@ class Domain {
     );
     bool find_unresolved_externals(LoadModuleEvent event, void *callback_data);
 
-    void unload(VM *vm, FnResult& result);
+    void unload(VM *vm, Iter pos, FnResult& result);
     void splice_and_init(
       VM *vm, Iter pos, ModuleStorage& other, FnResult& result
     );
@@ -342,7 +342,10 @@ public:
     LoadModuleEvent event, void *callback_data, FnResult& result
   );
   void unload_module(VM *vm, Iter pos, Module *module, FnResult& result);
-  void unload(VM *vm, FnResult& result);
+  void unload(VM *vm, FnResult& result) {
+    unload(vm, 0, result);
+  }
+  void unload(VM *vm, Iter pos, FnResult& result);
 
   void free_domain_memory();
 
