@@ -153,6 +153,10 @@ struct ModuleRepresentant : public RefalFunction {
     /* пусто */
   }
 
+  ~ModuleRepresentant() {
+    module = 0;
+  }
+
   Module *module;
 };
 

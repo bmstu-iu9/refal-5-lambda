@@ -148,8 +148,10 @@ int main(int argc, char **argv) {
 
   // TODO: правильный порядок финализации
   profiler.end_profiler();
+  refalrts::FnResult res_unload;
+  domain.unload(&vm, res_unload);
   if (res == refalrts::cSuccess) {
-    domain.unload(&vm, res);
+    res = res_unload;
   }
   vm.free_view_field();
   vm.free_states_stack();

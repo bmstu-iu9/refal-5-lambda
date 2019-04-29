@@ -221,6 +221,7 @@ public:
 
   void initialize(VM *vm, Iter pos, FnResult& result);
   void finalize(VM *vm, Iter pos, FnResult& result);
+  void deactivate();
 
 private:
   RefalFunction *lookup_function_aux(const RefalFuncName& name);
