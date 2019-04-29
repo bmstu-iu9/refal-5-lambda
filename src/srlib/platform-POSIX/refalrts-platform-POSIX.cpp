@@ -84,13 +84,25 @@ bool refalrts::api::is_single_file_name(const char *name) {
 
 const char *refalrts::api::default_lib_extension = ".so";
 
+
+#ifndef REFAL_5_LAMBDA_SKIP_GETTIME
+#define REFAL_5_LAMBDA_SKIP_GETTIME 0
+#endif  /* ifdef REFAL_5_LAMBDA_SKIP_GETTIME */
+
+
 struct refalrts::api::ClockNs {
   struct timespec start_of_program;
+#if REFAL_5_LAMBDA_SKIP_GETTIME
+  struct timespec now;
+#endif /* REFAL_5_LAMBDA_SKIP_GETTIME */
 };
 
 refalrts::api::ClockNs *refalrts::api::init_clock_ns() {
   ClockNs *res = new ClockNs;
   clock_gettime(CLOCK_REALTIME, &res->start_of_program);
+#if REFAL_5_LAMBDA_SKIP_GETTIME
+  memcpy(&res->now, &res->start_of_program, sizeof(res->now));
+#endif  /* REFAL_5_LAMBDA_SKIP_GETTIME */
   return res;
 }
 
@@ -98,7 +110,16 @@ double refalrts::api::clock_ns(refalrts::api::ClockNs *clk) {
   struct timespec now;
   struct timespec start = clk->start_of_program;
 
+#if REFAL_5_LAMBDA_SKIP_GETTIME
+  static long skip = 0;
+
+  if (skip++ % REFAL_5_LAMBDA_SKIP_GETTIME == 0) {
+    clock_gettime(CLOCK_REALTIME, &clk->now);
+  }
+  memcpy(&now, &clk->now, sizeof(now));
+#else  /* REFAL_5_LAMBDA_SKIP_GETTIME */
   clock_gettime(CLOCK_REALTIME, &now);
+#endif  /* REFAL_5_LAMBDA_SKIP_GETTIME */
 
   return (now.tv_sec - start.tv_sec) * 1.0e9 + (now.tv_nsec - start.tv_nsec);
 }
