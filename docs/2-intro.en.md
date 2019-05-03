@@ -190,7 +190,7 @@ on the link <http://www.refal.net/~belous/refscite.htm>.
 
 ### Simple program compilation
 
-Open your favourite text editor and write the following text in it:
+Open your favorite text editor and write the following text in it:
 
     $ENTRY Go {
       = <Prout 'Hello, World!'>;
