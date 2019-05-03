@@ -207,7 +207,7 @@ Let’s make our new knowledge about variables more concrete.
 **Example 9.** Let’s make Pushkin’s genealogy as an expression on Refal. Each
 person of genealogy will be mapped to the brackets term, which contains the
 person’s name and two terms: mother and father. And if the ancestor is known,
-it is displayed the same way, otherwise, sign `'?'` will be used. So, each 
+it is displayed the same way, otherwise, sign `'?'` will be used. So, each
 person can be matched with the pattern
 
     (e.Name t.Father t.Mother)
@@ -407,7 +407,7 @@ Now functions `IsEqual` and  `BinAdd` can be written the following way:
 > This section has alternative translations [one](3-basics.en.md), **two**.
 
 Earlier we said that functions in the right part of the sentence after
-substitution of variables are somehow evaluated. Now it’s time to specify that 
+substitution of variables are somehow evaluated. Now it’s time to specify that
 precisely because without this it is impossible to write efficient programs and
 to debug programs in Refal-5λ.
 
