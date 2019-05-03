@@ -77,7 +77,7 @@ was called Refal-5λ.
    Collected papers of functional programming language Refal, vol I
    // edited by A. P. Nemytykh. — Pereslavl-Zalessky:
    Publisher «Sbornik», 2014, 194 p. — ISBN 978-5-9905410-1-6 — page 120.
-   Available in Internet: <http://refal.botik.ru/library/refal2014_issue-I.pdf>
+   Available on the Internet: <http://refal.botik.ru/library/refal2014_issue-I.pdf>
    (in Russian)
 
 > _Translation to English of this paper is prepared by_

@@ -22,7 +22,7 @@ Variables are written as variable type (`s`, `t`, `e`), after which goes the
 sign `.` (“dot”) and variable name-set of letters and numbers. The variable
 name often called a variable index.
 
-If variable is found in the expression not once, it is named as iterated
+If a variable is found in the expression not once, it is named as iterated
 variable and all her instances must have the same value.
 
 Let’s examine some expressions with variables:
@@ -112,7 +112,7 @@ part of the line is also a palindrome. Any other line can’t be a palindrome.
 
 The definition of functions on FL can often be read as mathematical definitions.
 
-**Example 8.** We right an add option for two binary integers of undefined
+**Example 8.** We write an add option for two binary integers of undefined
 length. Functions on Refal commit one argument, but here we want to pass two of
 them. In the first variant off add option we avoided this complexity by
 expressing function into two symbols. Now we should pass two expressions of
@@ -143,7 +143,7 @@ argument.
 
 Let’s summarize:
 
-* In the left and right parts of sentence can be variables – expressions
+* In the left and right parts of the sentence can be variables – expressions
   fragments which can be changed on undefined values in accordance with their
   type.
 * S-variables can be changed on any symbol.
@@ -152,7 +152,7 @@ Let’s summarize:
 * That function sentence is conducted, for the left part of which it is
   possible to fund such value substitution, which thunks the left part into
   function argument.
-* The same substitution is made into the right part of expression.
+* The same substitution is made into the right part of the expression.
 
 > *Translation to English of this hunk of paper is prepared by*
 > **Yarullina Diana <190471@list.ru>** _at 2018-01-17_
@@ -172,7 +172,7 @@ can work with text document like with file: transport it from one folder to
 another, copy, delete, not thinking about whether there are text, tables,
 pictures etc. in it. On defined hierarchy level it does not matter.
 
-In order to work with expression as with one object in Refal, it is put in
+In order to work with an expression as with one object in Refal, it is put in
 brackets, which are called _structure brackets._ Such object is called _bracket
 term,_ it can be a part of another expression, which can also be in brackets.
 In this way hierarchically nested data are built. Symbols, which we examined
@@ -180,9 +180,9 @@ previously, are also terms.  So, the expression on Refal consists of terms,
 each of which can be either a symbol or a brackets term, which has another
 Rrefal expression in it.
 
-As distinct to round, _structure_ brackets, angle brackets of function call in
+As distinct to round, _structure_ brackets, angle brackets of a function call in
 the right parts of sentences are called _evaluation brackets,_ _activation
-brackets_ and _function call brackets_ (all this phrases are synonyms).
+brackets_ and _function call brackets_ (all these phrases are synonyms).
 
 **Example 8.** Expression
 
@@ -200,15 +200,15 @@ part of the sentence circle and angle brackets mustn’t overlap on each other.
 Let’s make our new knowledge about variables more concrete.
 
 * E-variables can commit indoubt sequence _of terms,_ so the value of
-  e-variable can be only expression with the right brackets structure.
+  e-variable can only be an expression with the right brackets structure.
 * The value of _t-variables_ (written as `t.varname`) can be any single term –
   not only symbol, but also an expression in brackets.
 
 **Example 9.** Let’s make Pushkin’s genealogy as an expression on Refal. Each
-person of genealogy will be imaged as brackets term, which contains the
-person’s name and two terms: mother and father. And if the foregoer is known,
-it is imagined as the same person, if there is not any, then on their place
-will be sign `'?'`. So, each person can be matched with the pattern
+person of genealogy will be mapped to the brackets term, which contains the
+person’s name and two terms: mother and father. And if the ancestor is known,
+it is displayed the same way, otherwise, sign `'?'` will be used. So, each
+person can be matched with the pattern
 
     (e.Name t.Father t.Mother)
 
@@ -407,8 +407,8 @@ Now functions `IsEqual` and  `BinAdd` can be written the following way:
 > This section has alternative translations [one](3-basics.en.md), **two**.
 
 Earlier we said that functions in the right part of the sentence after
-substitution of variables are somehow evaluated. Now it’s time to specify how
-exactly, because without this it is impossible to write efficient programs and
+substitution of variables are somehow evaluated. Now it’s time to specify that
+precisely because without this it is impossible to write efficient programs and
 to debug programs in Refal-5λ.
 
 It is said that the program on Refal is performed by the _abstract
@@ -436,7 +436,7 @@ following sequence of actions:
    the machine selects the first function clause.
 4. If it is possible to select such values of the variables in the left part of
    the current sentence, that it will appeal to the argument of the function,
-   step 5 will be implemented. Otherwise the following sentence will be chosen
+   step 5 will be implemented. Otherwise, the following sentence will be chosen
    and step 4 will be repeated. If there are no more sentences, the Refal
    machine will stop with an error “recognition impossible“.
 5. The retrieved values of variables are substituted to the right part of the
@@ -464,7 +464,7 @@ Notes.
    least one sentence. Refal-5λ supports – the call of such a function leads to
    an error of impossible recognition.
 2. Current implementation at the time of creation of the program cannot check,
-   if the function `GO` or `Go` is written in the program of not. In this case,
+   if the function `GO` or `Go` is written in the program or not. In this case,
    you will create a program that by running displays an error message and
    terminates.  Perhaps this will be fixed in the next version.
 
@@ -664,7 +664,7 @@ will develop quite differently:
 Here, unencumbered calls `F` are accumulated, and they accumulate until the
 function `Rec2` ceases to call itself recursively.
 
-Similarly it turns out with nested calls of functions. Recursion in the
+Similarly, it turns out with nested calls of functions. Recursion in the
 function `Rec3` is tail:
 
     Rec3 {
@@ -708,7 +708,7 @@ Recursion in the function of `Rec4` is not tail:
     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     f-res
 
-Text above doesn’t meat that the tail recursion is always good, and the not
+Text above doesn’t mean that the tail recursion is always good, and the not
 tail recursion is always bad. It is just important to understand that in the
 first case the process is cyclic, the view field at each iteration returns
 to a similar state, and in the second case it grows.
