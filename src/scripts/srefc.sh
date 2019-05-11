@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Получаем путь к папке bin
-BINDIR=$(dirname $0)
+BINDIR="$(dirname "$0")"
 
 # Получаем путь к дистрибутиву
-DISTRDIR="$(dirname $BINDIR)"
+DISTRDIR="$(dirname "$BINDIR")"
 
 # Путь к папке srlib
 LIBDIR="$DISTRDIR/srlib"
