@@ -1,0 +1,6 @@
+Go { = ; }
+
+$ENTRY Foo, Go, Bar;
+
+Bar { = ; }
+

@@ -112,7 +112,7 @@ Unit {
           : {
               t.ErrorList^ (e.Units) e.Tokens^
                 = <ClassicError
-                    t.ErrorList s.Mode t.Pos <TokName s.Tag> ' is a extension'
+                    t.ErrorList s.Mode t.Pos <TokName s.Tag> ' is an extension'
                   >
                   (e.Units) e.Tokens;
             };
@@ -178,6 +178,11 @@ TkESwap {
 TkLabel {
   t.Pos e.Name = (Ident t.Pos e.Name);
 }
+
+TkEntryL {
+  t.Pos e.Name = (Entry t.Pos GN-Entry e.Name)
+}
+
 
 NameList-DoNames {
   t.ErrorList s.Tag (e.Units)
@@ -258,12 +263,21 @@ Include {
 }
 
 /*
-  Function = ["$ENTRY"] NAME Block.
+  Function = ["$ENTRY"] NAME Block | "$ENTRY" NameList.
 
   <Function t.ErrorList s.Mode e.Tokens>
     == t.ErrorList (t.FunctionUnit?) e.Tokens
 */
 Function {
+   t.ErrorList s.Mode
+   (TkEntry t.EntryPos) (TkName t.NamePos e.Name) (s.Punctuation t.PunctPos) e.Tokens
+     , <OneOf s.Punctuation TkComma TkSemicolon> : True =
+       <NameList
+         <ClassicError t.ErrorList s.Mode t.EntryPos 'Entry list is an extension'>
+         TkEntryL (TkName t.NamePos e.Name) (s.Punctuation t.PunctPos) e.Tokens
+       >;
+
+
   t.ErrorList s.Mode (TkEntry t.EntryPos) (TkName t.NamePos e.Name) e.Tokens
     = <Function-AfterBlock
         t.EntryPos (e.Name) GN-Entry <Block t.ErrorList s.Mode e.Tokens>
