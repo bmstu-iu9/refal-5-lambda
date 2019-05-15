@@ -1372,10 +1372,6 @@ JUMP_FROM_SCALE:
           m_profiler->stop_function();
           ++ m_step_counter;
 
-          if (m_step_counter >= m_diagnostic_config->step_limit) {
-            return cStepLimit;
-          }
-
           if (empty_stack()) {
             return cSuccess;    // УСПЕШНОЕ ЗАВЕРШЕНИЕ ГЛАВНОГО ЦИКЛА
           }
@@ -1386,6 +1382,10 @@ JUMP_FROM_SCALE:
 
           m_error_begin = begin;
           m_error_end = end;
+
+          if (m_step_counter >= m_diagnostic_config->step_limit) {
+            return cStepLimit;
+          }
 
           refalrts::Iter function = next(begin);
 
