@@ -147,7 +147,7 @@ OptResult {
 
 OptResultRec {
   (e.OptimizableFunctions) s.Temp e.Result
-    = <MapReduce (&OptResultTerm e.OptimizableFunctions) Cold e.Result>;
+    = <MapReduce (&OptResultTerm e.OptimizableFunctions) s.Temp e.Result>;
 }
 
 OptResultTerm {
