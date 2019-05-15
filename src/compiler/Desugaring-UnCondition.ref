@@ -596,7 +596,13 @@ MakeOpenE-ForwardNext {
       );
 }
 
-ExtractVariables {
+
+/**
+  <ExtractVariables e.Sentences> == e.Variables
+
+  e.Variables ::= (s.Mode e.Index s.Depth)*
+*/
+$ENTRY ExtractVariables {
   e.Sentences = <Unique <ExtractVariables-Sentences e.Sentences>>;
 }
 
@@ -635,7 +641,11 @@ ExtractVariables-Expr {
 }
 
 
-NewVarName {
+/**
+  <NewVarName (e.Variables) s.Mode e.Prefix s.Depth (e.Suffix)>
+    == (e.Variables^) s.Mode e.NewIndex
+*/
+$ENTRY NewVarName {
   (e.Names-B (e.Prefix e.Suffix s.Depth) e.Names-E) e.Prefix s.Depth (e.Suffix)
     = <DoNewVarName
         ((e.Prefix e.Suffix s.Depth) e.Names-B e.Names-E)
