@@ -1,3 +1,5 @@
+$INCLUDE "LibraryEx";
+
 /**
   <R5-Transform s.MarkupContext t.Unit*> == t.Unit*
 
@@ -5,7 +7,7 @@
 */
 $ENTRY Pass-UnCondition {
   s.MarkupContext e.Units
-    = <Map (Transform-Unit s.MarkupContext) e.Units>;
+    = <Map (&Transform-Unit s.MarkupContext) e.Units>;
 }
 
 Transform-Unit {
@@ -214,7 +216,7 @@ DoPatternSteps {
              >
              (
                <Map
-                 transformer_BindBrackets
+                 &BindBrackets
                  <T1 t.UsedVariables e.HolesAndItems>
                  <T2 t.UsedVariables e.HolesAndItems>
                  <T3 t.UsedVariables e.HolesAndItems>
@@ -228,7 +230,7 @@ DoPatternSteps {
 
            /* Конец разбора */
            e.OnlyItems
-             = (<transformer_BindBrackets <T0 e.OnlyItems>>);
+             = (<BindBrackets <T0 e.OnlyItems>>);
       };
 }
 
@@ -246,7 +248,7 @@ HardItem {
   (e.BoundEVariables) (ADT-Brackets (e.Name) e.Pattern) = False;
 }
 
-transformer_BindBrackets {
+BindBrackets {
   (e.Expr) = (<DoBindBrackets ('$') e.Expr>);
 }
 
@@ -493,12 +495,12 @@ ConditionSubFunctions {
 ConditionContext {
   s.MarkupContext e.Pattern
     = <Map
-        (transformer_MakeVariables s.MarkupContext)
+        (&MakeVariables s.MarkupContext)
         <Unique <ExtractVariables-Expr e.Pattern>>
       >;
 }
 
-transformer_MakeVariables {
+MakeVariables {
   MarkupContext ('e' e.Index)
     = (Symbol Identifier VAR 'e' e.Index) (Brackets (TkVariable 'e' e.Index));
   MarkupContext (s.VarType e.Index)
@@ -598,13 +600,6 @@ ExtractVariables {
   e.Sentences = <Unique <ExtractVariables-Sentences e.Sentences>>;
 }
 
-Unique {
-  e.Items-B t.Item e.Items-M t.Item e.Items-E
-    = e.Items-B <Unique e.Items-M t.Item e.Items-E>;
-
-  e.UniqueItems = e.UniqueItems;
-}
-
 ExtractVariables-Sentences {
   ((e.Pattern) e.Tail) e.Sentences
     = <ExtractVariables-Expr e.Pattern>
@@ -663,24 +658,4 @@ DoNewVarName {
 
         e.Names = ((e.NewName) e.Names) e.NewName;
       };
-}
-
-/**
-  <Apply t.Function e.Arg> == e.Res
-  t.Function ::= s.FuncName | (t.Function e.Bounded)
-*/
-Apply {
-  s.FuncName e.Arg = <Mu s.FuncName e.Arg>;
-
-  (t.Function e.Bounded) e.Arg = <Apply t.Function e.Bounded e.Arg>;
-}
-
-/**
-  <Map t.Function t.Item*> == <Apply t.Function t.Item>*
-*/
-Map {
-  t.Function t.NextItem e.Items
-    = <Apply t.Function t.NextItem> <Map t.Function e.Items>;
-
-  t.Function /* пусто */ = /* пусто */;
 }
