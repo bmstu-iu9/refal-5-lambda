@@ -13,6 +13,10 @@ $EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
   Config-SetChmodXCommand, Config-SetPrelude, Config-SetR5Mode,
   Config-SetLogFile, Config-SetTreeOptCycles, Config-SetIncorporated;
 
+*$FROM Version
+$EXTERN PrintVersion;
+
+
 /**
   <ParseCommandLine e.Arguments>
     == Success t.Config (s.ArgNum e.File)*
@@ -55,6 +59,8 @@ $ENTRY ParseCommandLine {
           (Log Required ('log'))
           (TreeOptCycles Required ('opt-tree-cycles'))
           (Incorporated Required ('incorporated'))
+          (Help None ('help'))
+          (Version None ('version'))
         )
         e.Arguments
       >
@@ -181,6 +187,11 @@ $ENTRY ParseCommandLine {
                   t.Config (e.Errors) &Config-AddIncorporated s.Num e.LibName
                 >;
 
+            (t.Config e.Errors) (Help s.Num) = <PrintHelp> (t.Config e.Errors);
+
+            (t.Config e.Errors) (Version s.Num)
+              = <PrintVersion 'Srefc'> (t.Config e.Errors);
+
             (t.Config e.Errors) t.Option
               = (t.Config e.Errors) t.Option;
           }
@@ -252,4 +263,87 @@ Update {
             = (t.Config e.Errors (s.LineNum e.ErrorMessage));
         }
       >;
+}
+
+PrintHelp {
+  = <Prout
+'srefc-core flags... filenames...\n'
+'srefc-core @flag-list-file.txt\n'
+'\n'
+'-c, --cpp-command, --cpp-command-exe command-line\n'
+'        C++ command line prefix for building executable module\n'
+'--cpp-command-lib command-line\n'
+'        C++ command line prefix for building library module\n'
+'-f, --cpp-flag flag\n'
+'        Additional flag for C++ compiler, quoted in command line\n'
+'-F, --cpp-flags flags\n'
+'        Additional flags for C++ compiler, don\'t quoted in command line\n'
+'-g, --debug-info\n'
+'        Information of variable table for step-by-step debugger\n'
+'-e, --error-file filename\n'
+'        Compiler creates empty file with this name if compilation failed\n'
+'--grammar-check\n'
+'        Dont compile sources, only syntax (w/o semantic) check for sources\n'
+'--incorporated filename\n'
+'        Marks that a module with the name is statically linked to this module\n'
+'--markup-context\n'
+'        Save catched variable names in closure content\n'
+'-O keys[change]\n'
+'        Optimization keys:\n'
+'          -OP - conjoint pattern optimization\n'
+'          -OQ - extended conjoint pattern optimization\n'
+'          -OR - building result optimization\n'
+'          -Od - use direct code generation instead interpretation code,\n'
+'                compile functions to C++ instead RASL\n'
+'          -OT - tree optimization (expands direct calls for closures)\n'
+'          -OD - drive functions with $DRIVE, inline functions with $INLINE\n'
+'          -OI - inline functions with $DRIVE and $INLINE\n'
+'          -OS - specialize functions with $SPEC\n'
+'        Flags D, I, S implicitly contain T\n'
+'        Change key mode (optional):\n'
+'          -O...+ - set the flags with previous setted\n'
+'          -O...- - reject the flags from previous setted\n'
+'          -O...= - assign the flags, previous setted will be skipped\n'
+'-p, --prefix prefix-name\n'
+'        set prefix file name\n'
+'-r, --reference reference-name\n'
+'        Compiled module depends from the reference\n'
+'-D, --runtime-dir, --runtime-directory dir\n'
+'        Add the directory to search list and include list for C++ compiler\n'
+'-d, --dir, --directory dir\n'
+'        Add the directory to search list\n'
+'-o, --target-file target-file-name\n'
+'        Name of target file\n'
+'-x, --makeexe\n'
+'        Compile to executable file\n'
+'-l, --makelib\n'
+'        Compile to library file (with or w/o native code)\n'
+'-R      Compile to library RASL module (w/o native code)\n'
+'-C, --compile-only\n'
+'        Compile sources w/o linking\n'
+'--targsuffix, --targetsuffix, --targsuf, --exesuffix, --exesuf suffix\n'
+'        Suffix for executable file (for example, .exe)\n'
+'--libsuffix, --libsuf suffix\n'
+'        Suffix for library file (for example, .dll or .so)\n'
+'--chmod-x, --chmod-x-command command\n'
+'        Must be empty on Windws, "chmod +x" on POSIX\n'
+'--prelude filename.refi\n'
+'        Prelude file with builtin functions declarations\n'
+'--classic, --extended\n'
+'        Switch Refal-5-lambda syntax analyzer to full compatibility\n'
+'        with classic Refal-5 or not. Default is --extended\n'
+'--log logfile.log\n'
+'        Logs compilation process. Compiler writes to log syntax tree\n'
+'        after desugaring, after tree optimization, high-leve RASL\n'
+'--opt-tree-cycles number\n'
+'        Max number of tree optimization passes\n'
+'--help  Print this help\n'
+'--version\n'
+'        Print version\n'
+'\n'
+'Long keys with params may be used with equation:\n'
+'--tmp-dir dirname or --tmp-dir=dirname\n'
+'\n'
+'Each line of arg-list-file.txt is interpreted as independed key\n'
+    >;
 }

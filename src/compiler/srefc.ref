@@ -1,6 +1,3 @@
-*$FROM Version
-$EXTERN PrintVersion;
-
 *$FROM LibraryEx
 $EXTERN ArgList, LoadFile, Map, SaveFile, MapReduce, Inc, SaveBytes, LoadBytes;
 
@@ -31,7 +28,7 @@ $EXTERN PutBlockReference, PutBlockIncorporated;
 
 
 $ENTRY Go {
-  = <PrintVersion 'Srefc'> <Main <ArgList>>;
+  = <Main <ArgList>>;
 }
 
 Main {
