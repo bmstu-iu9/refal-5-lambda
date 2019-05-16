@@ -11,7 +11,8 @@ $EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
   Config-SetTargetSuffix, Config-SetSearchFolder, Config-SetPrefix,
   Config-AddReference, Config-SetTargetMode, Config-AddIncorporated,
   Config-SetChmodXCommand, Config-SetPrelude, Config-SetR5Mode,
-  Config-SetLogFile, Config-SetTreeOptCycles, Config-SetIncorporated;
+  Config-SetLogFile, Config-SetTreeOptCycles, Config-SetIncorporated,
+  Config-KeepRasls, Config-TempDir, Config-RenameExistRasls;
 
 *$FROM Version
 $EXTERN PrintVersion;
@@ -61,6 +62,12 @@ $ENTRY ParseCommandLine {
           (Incorporated Required ('incorporated'))
           (Help None ('help'))
           (Version None ('version'))
+          (KeepRasls None ('keep-rasl') ('keep-rasls'))
+          (DontKeepRasls None ('dont-keep-rasl') ('dont-keep-rasls'))
+          (TempDir Required ('tmp-dir') ('temp-dir'))
+          (REF5RSL-Env None ('ref5rsl'))
+          (RenameExistRasls ('rename-exist-rasls'))
+          (DontRenameExistRasls ('dont-rename-exist-rasls'))
         )
         e.Arguments
       >
@@ -192,6 +199,24 @@ $ENTRY ParseCommandLine {
             (t.Config e.Errors) (Version s.Num)
               = <PrintVersion 'Srefc'> (t.Config e.Errors);
 
+            (t.Config e.Errors) (KeepRasls s.Num)
+              = <Update t.Config (e.Errors) &Config-KeepRasls True>;
+
+            (t.Config e.Errors) (DontKeepRasls s.Num)
+              = <Update t.Config (e.Errors) &Config-KeepRasls False>;
+
+            (t.Config e.Errors) (TempDir s.Num e.Name)
+              = <Update t.Config (e.Errors) &Config-TempDir e.Name>;
+
+            (t.Config e.Errors) (REF5RSL-Env s.Num)
+              = (t.Config e.Errors) (REF5RSL-Env s.Num);
+
+            (t.Config e.Errors) (RenameExistRasls s.Num)
+              = <Update t.Config (e.Errors) &Config-RenameExistRasls True>;
+
+            (t.Config e.Errors) (DontRenameExistRasls s.Num)
+              = <Update t.Config (e.Errors) &Config-RenameExistRasls False>;
+
             (t.Config e.Errors) t.Option
               = (t.Config e.Errors) t.Option;
           }
@@ -200,6 +225,9 @@ $ENTRY ParseCommandLine {
           {
             (t.Config e.Errors) (SearchFolder s.Num e.Folder)
               = (<Config-SetSearchFolder t.Config e.Folder> e.Errors);
+
+            (t.Config e.Errors) (REF5RSL-Env s.Num)
+              = (<Config-SetSearchFolder t.Config REF5RSL> e.Errors);
 
             (t.Config e.Errors) (FILE s.Num e.FileName)
               = (t.Config e.Errors) (s.Num e.FileName);
@@ -340,6 +368,15 @@ PrintHelp {
 '--help  Print this help\n'
 '--version\n'
 '        Print version\n'
+'--keep-rasl, --keep-rasls, --dont-keep-rasl, --dont-keep-rasls\n'
+'        Save or don\'t save temporary .rasl after compilation\n'
+'--tmp-dir, --temp-dir directory\n'
+'        Directory for intermediate .rasl files, current is default\n'
+'--ref5rsl\n'
+'        Use environment variable REF5RSL as search path\n'
+'--rename-exist-rasls, --dont-rename-exist-rasls\n'
+'        If tmp-dir already contain file with name that being produced\n'
+'        new file use new name\n'
 '\n'
 'Long keys with params may be used with equation:\n'
 '--tmp-dir dirname or --tmp-dir=dirname\n'

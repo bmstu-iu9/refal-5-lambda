@@ -32,6 +32,9 @@ $ENTRY Config-Create {
         (Refal5Mode Extended)
         (LogFile /* пусто */)
         (TreeOptCycles 100)
+        (KeepRasls True)
+        (TempDir /* пусто */)
+        (RenameExistRasls False)
       ];
 }
 
@@ -472,6 +475,10 @@ $ENTRY Config-GetSearchFolders {
   <Config-SetSearchFolder t.Config e.Folder> == t.Config
 */
 $ENTRY Config-SetSearchFolder {
+  [Config e.Params-B (Folders e.Folders) e.Params-E] REF5RSL
+      /* TODO: реализовать чтение переменной */
+    = [Config e.Params-B (Folders e.Folders) e.Params-E];
+
   [Config e.Params-B (Folders e.Folders) e.Params-E] e.NewFolder
     = [Config e.Params-B (Folders e.Folders (e.NewFolder)) e.Params-E];
 }
@@ -667,4 +674,28 @@ $ENTRY Config-SetTreeOptCycles {
 
         e.OtherResult = Fails BadValue-MustBeNumber e.NewCycles;
       };
+}
+
+/**
+  <Config-KeepRasls t.Config s.Bool> == Success t.Config
+*/
+$ENTRY Config-KeepRasls {
+  [Config e.Params-B (KeepRasls s.OldValue) e.Params-E] s.NewValue
+    = [Config e.Params-B (KeepRasls s.NewValue) e.Params-E];
+}
+
+/**
+  <Config-TempDir t.Config e.DirName> == Success t.Config
+*/
+$ENTRY Config-TempDir {
+  [Config e.Params-B (TempDir e.OldDirName) e.Params-E] e.NewDirName
+    = [Config e.Params-B (TempDir e.NewDirName) e.Params-E];
+}
+
+/**
+  <Config-RenameExistRasls t.Config s.Bool> == Success t.Config
+*/
+$ENTRY Config-RenameExistRasls {
+  [Config e.Params-B (RenameExistRasls s.OldValue) e.Params-E] s.NewValue
+    = [Config e.Params-B (RenameExistRasls s.NewValue) e.Params-E];
 }
