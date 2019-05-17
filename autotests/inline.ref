@@ -1,0 +1,5 @@
+Go { = ; }
+
+Bar { =; }
+
+$INLINE Bar;
