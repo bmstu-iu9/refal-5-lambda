@@ -36,6 +36,10 @@ Element {
   (Declaration GN-Entry e.Name) = ('$EXTERN ' <DisplayName e.Name> ';');
   (Declaration GN-Local e.Name) = ('$FORWARD ' <DisplayName e.Name> ';');
 
+  (Inline e.Name) = ('$INLINE ' <DisplayName e.Name> ';');
+
+  (Drive e.Name) = ('$DRIVE ' <DisplayName e.Name> ';');
+
   (Ident e.Name) = ('$LABEL ' <DisplayName e.Name> ';');
 
   (NativeBlock t.SrcPos e.Code) = ('%% native block %%');
