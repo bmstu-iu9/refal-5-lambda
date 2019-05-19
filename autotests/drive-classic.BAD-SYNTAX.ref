@@ -1,0 +1,7 @@
+*$CLASSIC
+
+Go { = ; }
+
+Bar { =; }
+
+$DRIVE Bar;
