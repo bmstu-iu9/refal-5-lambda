@@ -86,7 +86,7 @@ UnitStartToken {
 }
 
 NameListTags {
-  = TkExtern TkEnum TkEEnum TkSwap TkESwap TkLabel TkInline TkDrive
+  = TkExtern TkEnum TkEEnum TkSwap TkESwap TkLabel
 }
 
 OneOf {
@@ -96,8 +96,7 @@ OneOf {
 
 /*
   Unit = SPECIAL-COMMENT | Keyword NameList | Include | Function.
-  Keyword = "$EXTERN" | "$ENUM" | "$EENUM" | "$SWAP"
-            | "$ESWAP" | "$INLINE" | "$DRIVE".
+  Keyword = "$EXTERN" | "$ENUM" | "$EENUM" | "$SWAP" | "$ESWAP".
 
   <Unit t.ErrorList s.Mode e.Tokens> == t.ErrorList (t.ErrorUnit*) e.Tokens
 */
@@ -182,14 +181,6 @@ TkLabel {
 
 TkEntryL {
   t.Pos e.Name = (Entry t.Pos GN-Entry e.Name)
-}
-
-TkInline {
-  t.Pos e.Name =
-}
-
-TkDrive {
-  t.Pos e.Name =
 }
 
 
@@ -934,8 +925,6 @@ TokName {
   TkInclude = '$INCLUDE';
   TkScopeId = '$SCOPEID';
   TkLabel = '$LABEL';
-  TkInline = '$INLINE';
-  TkDrive = '$DRIVE';
   TkEOF = 'end-of-file';
   TkRefal5Mode = '*$CLASSIC or *$EXTENDED';
   TkAmpersand = '\'&\'';

@@ -1,7 +1,0 @@
-*$CLASSIC
-
-Go { = ; }
-
-Bar { =; }
-
-$INLINE Bar;
