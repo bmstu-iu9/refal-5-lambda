@@ -7,6 +7,9 @@
 ## Компилятор Clang:
 # CPPLINEE='clang++ -Wall -g -o'
 
+## Компилятор Zapcc:
+# CPPLINEE='/home/username/zapcc-build/bin/zapcc++ -Wall -g -o'
+
 ## Если ваш компилятор C++ отсутствует в списке ниже, впишите его сами:
 # PATH=$PATH:…
 # CPPLINEE=…
