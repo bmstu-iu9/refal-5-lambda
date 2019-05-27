@@ -1,3 +1,6 @@
+$INCLUDE "LibraryEx";
+
+
 /**
   <OptTree-Drive-ExtractOptInfo s.OptDrive e.AST>
     == (e.DriveInfo) e.AST
@@ -7,7 +10,7 @@
   e.DriveFuncNames ::= (e.FuncName)*
 */
 $ENTRY OptTree-Drive-ExtractOptInfo {
-  s.OptDrive e.AST = ((/* no names */) /* no info */) e.AST;
+  s.OptDrive e.AST = <GetDrivenFunctions e.AST>
 }
 
 /**
@@ -21,5 +24,44 @@ $ENTRY OptTree-Drive {
   <OptTree-Drive-Finalize s.OptDrive (e.DriveInfo) e.AST> == e.AST^
 */
 $ENTRY OptTree-Drive-Finalize {
-  s.OptDrive ((/* no names */) /* no info */) e.AST = e.AST;
+  s.OptDrive ((e.Names) e.Info) e.AST = e.AST;
+}
+
+GetDrivenFunctions {
+  e.AST
+
+    /* Выносим все Drive и Inline из дерева */
+    = <MapAccum
+        {
+          (e.Optimizable) (Drive e.Name) = (e.Optimizable (Drive e.Name));
+          (e.Optimizable) (Inline e.Name) = (e.Optimizable (Inline e.Name));
+          (e.Optimizable) t.Other = (e.Optimizable) t.Other;
+        }
+        () e.AST
+      >
+    : (e.OptNames) e.AST^
+
+    /*
+      Выделяем тела оптимизируемых функций,
+      копировать несколько имён в e.OptimizableNames не страшно
+
+      Используем MapAccum не смотря на то, что достаточно Map:
+      избегаем копирования дерева
+    */
+    = <MapAccum
+        {
+          (e.OptFunctions)
+          (Function s.ScopeClass (e.Name) e.Body)
+            , e.OptNames : e.B (s.Label e.Name) e.E
+            = (e.OptFunctions (s.Label (e.Name) e.Body))
+              (Function s.ScopeClass (e.Name) e.Body);
+
+          (e.OptFunctions) t.Other = (e.OptFunctions) t.Other;
+        }
+        () e.AST
+      >
+    : (e.OptFunctions) e.AST^
+
+    = ((<Map { (s.Label e.Name) = (e.Name) } e.OptNames>) e.OptFunctions)
+      e.AST;
 }

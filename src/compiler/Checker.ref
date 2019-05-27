@@ -1,5 +1,5 @@
 *$FROM LibraryEx
-$EXTERN Reduce, Fetch, Pipe, MapReduce, Map;
+$EXTERN Reduce, Fetch, Pipe, MapReduce, Map, OneOf;
 
 *$FROM Error
 $EXTERN EL-AddErrorAt;
@@ -37,6 +37,10 @@ PrepareMessage {
     = 'Variable ' s.Mode '.' e.Index ' not found';
 
   DanglingEntry e.Name = '$ENTRY ' e.Name '; declaration for missed function';
+
+  DanglingInline e.Name = '$INLINE ' e.Name '; inline label for missed function';
+
+  DanglingDrive e.Name = '$DRIVE ' e.Name '; drive label for missed function';
 
   /* Ошибки специализации */
   RedefineSpec e.Name = 'Specialization of function ' e.Name 'is redefined';
@@ -279,6 +283,12 @@ SeparateDefines {
           (e.Declarations) (Entry t.SrcPos GN-Entry e.Name) =
             (e.Declarations (Entry t.SrcPos e.Name));
 
+          (e.Declarations) (Inline t.SrcPos s.ScopeClass e.Name) =
+            (e.Declarations (Inline t.SrcPos e.Name));
+
+          (e.Declarations) (Drive t.SrcPos s.ScopeClass e.Name) =
+            (e.Declarations (Drive t.SrcPos e.Name));
+
           /* определения идентификаторов игнорируем */
           (e.Declarations) (Ident t.SrcPos e.Name) =
             (e.Declarations);
@@ -300,9 +310,56 @@ CheckDeclarations {
         &FindInvalidEntry
         &CleanupValidForwards
         &FindInvalidForwards
+        &CleanupValidDriveInline
+        &FindInvalidDriveInline
         &CheckRedefinitions
       >
     >;
+}
+
+InlineDriveErrors {
+    Inline = DanglingInline;
+    Drive = DanglingDrive;
+}
+
+CleanupValidDriveInline {
+    e.Declarations-B
+    (s.Label t.SrcPosEntry e.Name)
+    e.Declarations-M
+    (Define t.SrcPosDefine s.ScopeClass e.Name)
+    e.Declarations-E, <OneOf s.Label Inline Drive>: True
+      = <CleanupValidDriveInline
+          e.Declarations-B e.Declarations-M
+          (Define t.SrcPosDefine s.ScopeClass e.Name)
+          e.Declarations-E
+        >;
+
+    e.Declarations-B
+    (Define t.SrcPosDefine s.ScopeClass e.Name)
+    e.Declarations-M
+    (s.Label t.SrcPosEntry e.Name)
+    e.Declarations-E, <OneOf s.Label Inline Drive>: True
+      = <CleanupValidDriveInline
+          e.Declarations-B e.Declarations-M
+          (Define t.SrcPosDefine s.ScopeClass e.Name)
+          e.Declarations-E
+        >;
+
+    e.Declarations = e.Declarations;
+}
+
+FindInvalidDriveInline {
+    e.Declarations
+      = <Map
+        {
+          (s.Label t.SrcPos e.Name), <OneOf s.Label Inline Drive>: True =
+            (Error t.SrcPos <InlineDriveErrors s.Label> e.Name);
+
+          t.Other = t.Other
+        }
+
+        e.Declarations
+      >;
 }
 
 CleanupValidEntry {

@@ -11,6 +11,7 @@ $ENTRY Desugar {
       <Pipe
         &Pass-RemovePos
         &Pass-AttachEntries
+        &Pass-RemoveRedundantDriveInline
         &Pass-EnumerateVariables
         &Pass-NameNestedFuncs
         &Pass-RemoveBlocksAndAssigns
@@ -161,6 +162,11 @@ Pass-AttachEntries {
     = (s.EnumSwapDeclaration s.ScopeClass e.Name)
       <Pass-AttachEntries e.Items>;
 
+  (s.DriveInline s.ScopeClass e.Name) e.Items
+    , <OneOf s.DriveInline Inline Drive> : True
+    = (s.DriveInline e.Name)
+      <Pass-AttachEntries e.Items>;
+
   (Ident e.Name) e.Items = (Ident e.Name) <Pass-AttachEntries e.Items>;
 
   (NativeBlock t.SrcPos e.Code) e.Items
@@ -170,6 +176,20 @@ Pass-AttachEntries {
     = (Spec (e.Name) e.Pattern) <Pass-AttachEntries e.Items>;
 
   /* empty */ = /* empty */;
+}
+
+Pass-RemoveRedundantDriveInline {
+    e.B (s.Label e.FuncName) e.M (s.Label e.FuncName) e.E
+      , <OneOf s.Label Drive Inline> : True
+      = <Pass-RemoveRedundantDriveInline e.B (s.Label e.FuncName) e.M e.E>;
+
+    e.B (Drive e.FuncName) e.M (Inline e.FuncName) e.E
+      = <Pass-RemoveRedundantDriveInline e.B (Drive e.FuncName) e.M e.E>;
+
+    e.B (Inline e.FuncName) e.M (Drive e.FuncName) e.E
+      = <Pass-RemoveRedundantDriveInline e.B e.M (Drive e.FuncName) e.E>;
+
+    e.AST = e.AST;
 }
 
 Pass-EnumerateVariables {
@@ -546,8 +566,12 @@ Pass-FlatNestedFuncs {
       {
         (Function s.ScopeClass (e.Name) e.Body)
           = <ExtractNested s.MarkupContext e.Body> : (e.NestedFuncs) e.Body^
-          = e.NestedFuncs
-            (Function s.ScopeClass (e.Name) e.Body);
+          = <Map {
+              t.Nf, t.Nf : (Function s.NfScopeClass (e.NfName) e.NfBody)
+                = (Drive e.NfName) t.Nf
+              }
+              e.NestedFuncs
+            > (Function s.ScopeClass (e.Name) e.Body);
 
         t.OtherProgramElement = t.OtherProgramElement;
       }
@@ -833,6 +857,12 @@ Pass-CleanupRedudandExterns {
 
          (e.DefinedFunctions) (Swap s.ScopeClass e.Name)
            = (e.DefinedFunctions (e.Name)) (Swap s.ScopeClass e.Name);
+
+         (e.DefinedFunctions) (Inline e.Name)
+           = (e.DefinedFunctions (e.Name)) (Inline e.Name);
+
+         (e.DefinedFunctions) (Drive e.Name)
+           = (e.DefinedFunctions (e.Name)) (Drive e.Name);
 
          (e.DefinedFunctions) (Declaration s.ScopeClass e.Name)
            = (e.DefinedFunctions) (Declaration s.ScopeClass e.Name);

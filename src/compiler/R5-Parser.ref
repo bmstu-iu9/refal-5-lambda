@@ -185,13 +185,12 @@ TkEntryL {
 }
 
 TkInline {
-  t.Pos e.Name =
+  t.Pos e.Name = (Inline t.Pos GN-Local e.Name)
 }
 
 TkDrive {
-  t.Pos e.Name =
+  t.Pos e.Name = (Drive t.Pos GN-Local e.Name)
 }
-
 
 NameList-DoNames {
   t.ErrorList s.Tag (e.Units)
