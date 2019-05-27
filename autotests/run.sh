@@ -53,7 +53,7 @@ run_test_all_modes() {
     echo "Special conditions tests is passed"
   fi
 
-  if grep 'CONDITIONS' $1 > /dev/null; then
+  if grep 'TREE' $1 > /dev/null; then
     echo "Pass special conditions tests:"
     SRFLAGS_PLUS="$SRFLAGS_PLUS_INIT"
     SRFLAGS=-OT $2 $1
