@@ -789,7 +789,7 @@ decimal record.
 
 **Example 13.** A function to compute the factorial. Recall that the factorial
 of N (denoted N!, read “n factorial”) is the product of all numbers from 0 to N
-inclusive. I. e. N! = 1×2×...×(N−1)×N. It is Considered that 0! = 1.
+inclusive. I. e. N! = 1×2×...×(N−1)×N. It is considered that 0! = 1.
 
 One can notice that N! = 1×2×...×(N−1)×N = (1×2×...×(N−1))×N = (N−1)!×N.
 At the same, 1! = (1-1)!×1 = 0!×1 = 1×1 = 1. We can use it to write a function.
@@ -862,7 +862,7 @@ You will have to learn the meaning of each number in relation to each function.
 It is possible to return a sequence of characters. For example, in the first
 case it should return `'Success' (e.Configuration)` in the second -
 `'File not found'`, in the third one – `'Syntax error' (e.ErrorMessage)`.
-Text springs talk for themselves, it becomes easy to understand the program.
+Text strings talk for themselves, it becomes easy to understand the program.
 But this solution also has a disadvantage – strings – expressions of arbitrary
 length. When the function returns different data of arbitrary length, for
 example, the configuration or the error message, they must be separated by
@@ -873,7 +873,7 @@ To distinguish is needed the only one. Should we cut till the first letter?
 Then instead of `'Success' (e.Configuration)` we will write
 `'S' e.Configuration`, instead of `'File not found'` will write `'F'` instead
 of `'Syntax error (e.ErrorMessage)` write `'S' e.ErrorMessage`.  But what’s
-then the difference between the first and the second case? They both begin with
+then the difference between the first and the last case? They both begin with
 the sign `'S'`, which may be followed by the expression of arbitrary length.
 The shortening till the first letter did not succeed – we have to choose some
 other letters. But then appears the same problem as with the numbers – single
@@ -911,7 +911,7 @@ single quote or composed character that containing double quote. But that's not
 true. We can use _escape sequences_ (special marking for some symbols) in a
 chain of letters and composed character.
 
-Escape sequence look like sign `\`, followed by one or more other signs. All of
+Escape sequence looks like sign `\`, followed by one or more other signs. All of
 them make up one character (if it is written into single quotes), or one of
 characters in compound symbol. In Refal-5λ following escape sequence are
 permissible:
