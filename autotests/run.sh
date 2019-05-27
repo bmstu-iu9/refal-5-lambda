@@ -52,6 +52,18 @@ run_test_all_modes() {
     SRFLAGS=-OCdPR $2 $1
     echo "Special conditions tests is passed"
   fi
+
+  if grep 'CONDITIONS' $1 > /dev/null; then
+    echo "Pass special conditions tests:"
+    SRFLAGS_PLUS="$SRFLAGS_PLUS_INIT"
+    SRFLAGS=-OT $2 $1
+    SRFLAGS=-OD $2 $1
+    SRFLAGS=-OI $2 $1
+    SRFLAGS=-OS $2 $1
+    SRFLAGS="-OS --markup-context" $2 $1
+    SRFLAGS="-ODS --markup-context" $2 $1
+    echo "Special tree tests is passed"
+  fi
 }
 
 run_test_aux() {

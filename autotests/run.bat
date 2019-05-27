@@ -139,6 +139,25 @@ setlocal
     call :%2 %1 || exit /b 1
     echo Special conditions tests is passed
   )
+
+  find "TREE" %1 > NUL
+  if not errorlevel 1 (
+    echo Pass special conditions tests:
+    set SRFLAGS_PLUS=%SRFLAGS_PLUS_INIT%
+    set SRFLAGS=-OT
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OD
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OI
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OS
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OS --markup-context
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-ODS --markup-context
+    call :%2 %1 || exit /b 1
+    echo Special tree tests is passed
+  )
 endlocal
 ::goto :EOF
 exit /b 0
