@@ -85,6 +85,7 @@
         <word name="$EASTEREGG"/>
         <word name="$INCLUDE"/>
         <word name="$SCOPEID"/>
+        <word name="$SPEC"/>
       </keywords>
       <keywords region="simpleRefalSymbol">
         <symb name="="/>

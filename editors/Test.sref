@@ -18,6 +18,8 @@ $SWAP LocalVariable;
 $ESWAP GlobalVariable;
 $LABEL Success, Fails;  // Устаревшее ключевое слово, но надо поддерживать
 
+$SPEC Spec e.STATIC (e.dynamic);
+
 $XETERN Broken; // А вот подсветка ошибки
 
 $ENTRY CreateEncapsulated {

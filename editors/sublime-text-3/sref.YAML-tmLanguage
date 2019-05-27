@@ -9,7 +9,7 @@ patterns:
 - {include: '#comments'}
 - comment: keywords
   name: keyword.other.sref
-  match: '\$ENTRY|\$SWAP|\$ESWAP|\$EXTERN|\$FORWARD|\$LABEL|\$ENUM|\$EENUM|\$EASTEREGG|\$INCLUDE'
+  match: '\$ENTRY|\$SWAP|\$ESWAP|\$EXTERN|\$FORWARD|\$LABEL|\$ENUM|\$EENUM|\$EASTEREGG|\$INCLUDE|\$SPEC'
 
 - comment: broken keyword
   name: invalid.illegal.sref

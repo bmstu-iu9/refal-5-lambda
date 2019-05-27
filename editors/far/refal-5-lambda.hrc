@@ -81,6 +81,9 @@
         <word name="$ESWAP"/>
         <word name="$INCLUDE"/>
         <word name="$SCOPEID"/>
+        <word name="$DRIVE"/>
+        <word name="$INLINE"/>
+        <word name="$SPEC"/>
       </keywords>
       <keywords region="refal5LambdaSymbol">
         <symb name="="/>

@@ -26,6 +26,10 @@ $EENUM entry-enum;
 $SWAP swap;
 $ESWAP entry-swap;
 
+$DRIVE Drive;
+$INLINE Inline;
+$SPEC e.STATIC (e.dynamic);
+
 %%
 void f() {
   // Вставка кода на C++

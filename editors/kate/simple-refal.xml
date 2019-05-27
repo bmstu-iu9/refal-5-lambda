@@ -25,6 +25,7 @@
       <item> $EENUM </item>
       <item> $EASTEREGG </item>
       <item> $INCLUDE </item>
+      <item> $SPEC </item>
     </list>
     <contexts>
       <context attribute="Normal Text" lineEndContext="#stay" name="Normal">
