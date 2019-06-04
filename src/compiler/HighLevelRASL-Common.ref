@@ -257,7 +257,7 @@ BuildString {
     == s.ContextOffset (e.CmdSaves) e.SubstitutesAnsJunks
 */
 $ENTRY MakeSavers {
-  s.OriginContextOffset e.SubstitutesAnsJunks
+  s.OriginContextOffset e.SubstitutesAndJunks
     = <MapReduce
         {
           (s.ContextOffset e.CmdSaves) (Junk e.Junk)
@@ -283,8 +283,8 @@ $ENTRY MakeSavers {
             = (s.ContextOffset e.CmdSaves) (s.S-or-T s.Num e.Range);
         }
         (s.OriginContextOffset /* CmdSave's */)
-        e.SubstitutesAnsJunks
+        e.SubstitutesAndJunks
       >
-    : (s.ContextOffset^ e.CmdSaves) e.SubstitutesAnsJunks^
-    = s.ContextOffset (e.CmdSaves) e.SubstitutesAnsJunks;
+    : (s.ContextOffset^ e.CmdSaves) e.SubstitutesAndJunks^
+    = s.ContextOffset (e.CmdSaves) e.SubstitutesAndJunks;
 }
