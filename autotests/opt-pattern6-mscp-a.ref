@@ -1,65 +1,18 @@
-SubstituteNewRestriction {
-    (assign t.par ((s.sort s.type t.name))) t.PRTC
-    , weval var : e.1 s.sort e.2
-    , <LessGenericPattern t.par (s.sort s.type t.name)> : 
-        {'F' = <AddAssignments t.PRTC (assign (s.sort s.type t.name)(t.par))>;
-         'T',
-        <FreshIndex 'par'<Explode s.type>'_ind'> : t.newparname 
-            = 
-                <SubstituteNewRestrictionAux (assign t.par ((par s.type t.newparname)))
-			<AddAssignments t.PRTC (assign (s.sort s.type t.name)((par s.type t.newparname)))> 
-                >;
-        };
-    (assign t.par (e.Val)) t.PRTC
-    , <GetPRTCAsgs t.PRTC> : e.Asgs
-    , <GenerateNewParameterAssignments (e.Asgs)()<IterateSubstitute (e.Asgs) e.Val>> : 
-        { (e.Asgs)(e.Val)
-            = <SubstituteNewRestrictionAux (assign t.par (e.Val)) t.PRTC>;
-        (e.newasgmnts)(e.NewVal)
-            = <SubstituteNewRestrictionAux (assign t.par (e.NewVal))
-                <ReplacePRTCAsgs t.PRTC e.newasgmnts> 
-            >;    
-        };
-}
-
-$ENUM LessGenericPattern, AddAssignments, FreshIndex, Explode;
-
-GetPRTCAsgs {
-  e.X = (assign (var e Res) ('B'))
-}
-
-GenerateNewParameterAssignments {
-  e.X
-    = ((assign (var e Res) ('B')) (assign (var e X) ((par e 1))))
+$ENTRY Go {
+  /* empty */
+    , (var e X) 'A' : e.Val
+    , (assign (var e Res) ('B')) : e.Asgs
+    , ((assign (var e Res) ('B')) (assign (var e X) ((par e 1))))
       ((par e 1) 'A')
+    : {
+        (e.Asgs) (e.Val) = <{}>;
+
+        (e.newasgmnts) (e.NewVal) = <ReplacePRTCAsgs e.newasgmnts>
+       };
 }
-
-IterateSubstitute { e.X = e.X }
-
-SubstituteNewRestrictionAux { e.X = }
 
 ReplacePRTCAsgs {
-  (
-    ((New (Desired)) (Grammar) (Negative) (Numeric) (Generic))
-    ()
-    ((assign (var e Res) ('B')))
-    ((Delayed))
-    ('T')
-  )
   (assign (var e Res) ('B'))
   (assign (var e X) ((par e 1)))
     = /* Ok */
-}
-
-$ENTRY Go {
-  = <SubstituteNewRestriction
-      (assign (par e X) ((var e X) 'A'))
-      (
-        ((New (Desired)) (Grammar) (Negative) (Numeric) (Generic))
-        ()
-        ((assign (var e Res) ('B')))
-        ((Delayed))
-        ('T')
-      )
-    >;
 }
