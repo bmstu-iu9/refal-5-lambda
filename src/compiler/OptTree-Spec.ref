@@ -1,25 +1,877 @@
+
+*$FROM LibraryEx
+$EXTERN MapAccum, Fetch, Pipe, Map, Inc;
+
+*$FROM Desugaring-UnCondition
+$EXTERN ExtractVariables, ExtractVariables-Expr, NewVarName;
+
+*$FROM GenericMatch
+$EXTERN GenericMatch;
+
 /**
   <OptTree-Spec-ExtractOptInfo s.OptSpec e.AST>
-    == (e.SpecInfo) e.AST
+    == (e.SpecInfo) e.AST^
 
   s.OptSpec ::= OptSpec | NoOpt
   e.SpecInfo ::= (e.SpecFuncNames) e.SpecInfo-Specific
   e.SpecFuncNames ::= (e.FuncName)*
+  e.SpecInfo-Specific ::= t.FunctionInfo*
+  t.FunctionInfo ::= ((e.Name) (e.Pattern) (e.Body) s.NextCounter)
 */
 $ENTRY OptTree-Spec-ExtractOptInfo {
-  s.OptSpec e.AST = ((/* no names */) /* no info */) e.AST;
+  s.OptSpec e.AST
+    = <Fetch
+        ((/* no names */) /* no info */) e.AST
+        <Pipe
+          (&MapAccum
+            {
+              ((e.Names) e.Info) (Spec t.Name e.Pattern)
+                = ((e.Names t.Name) e.Info (t.Name (e.Pattern)));
+
+              ((e.Names) e.Info) t.Other = ((e.Names) e.Info) t.Other;
+            }
+          )
+          (&MapAccum
+            {
+              ((e.Names) e.Info-B (t.Name (e.Pattern)) e.Info-E)
+              (Function s.ScopeClass t.Name Sentences e.Body)
+                = ((e.Names) e.Info-B (t.Name (e.Pattern) (e.Body) 1) e.Info-E)
+                  (Function s.ScopeClass t.Name Sentences e.Body);
+
+               ((e.Names) e.Info) t.Other = ((e.Names) e.Info) t.Other;
+            }
+          )
+        >
+      >;
 }
 
 /**
-  <OptTree-Spec s.OptSpec (e.SpecInfo) e.AST> == (e.SpecInfo^) e.AST^
+  <OptTree-Spec s.OptSpec (e.SpecInfo) e.AST>
+    == (e.SpecInfo^) e.AST^
+
+  s.OptSpec ::= OptSpec | NoOpt
+  e.SpecInfo ::= (e.SpecFuncNames) e.SpecInfo-Specific
+  e.SpecFuncNames ::= (e.FuncName)*
+  e.SpecInfo-Specific ::= t.FunctionInfo*
+  t.FunctionInfo ::= ((e.Name) (e.Pattern) (e.Body) s.NextCounter t.Signature*)
+  t.Signature ::= ((e.Name SUF '@' e.SpecFuncName) t.StaticVarVals*)
+  t.StaticVarVals ::= (e.Expression)
 */
 $ENTRY OptTree-Spec {
-  s.OptSpec (e.SpecInfo) e.AST = (e.SpecInfo) e.AST;
+  NoOpt (e.SpecInfo) e.AST = (e.SpecInfo) e.AST;
+
+  OptSpec ((/* no names */) /* no info */) e.AST = e.AST;
+
+  OptSpec ((e.Names) e.SpecInfo) e.AST
+    = <MapAccum &SpecUnit (e.SpecInfo (/* new functions */)) e.AST>
+    : (e.SpecInfo^ (e.NewFunctions)) e.AST^
+    = ((e.Names) e.SpecInfo) e.AST e.NewFunctions;
+}
+
+SpecUnit {
+  (e.SpecInfo (e.NewFunctions))
+  (Function s.ScopeClass t.Name Sentences e.Sentences)
+    = <MapAccum
+        &SpecSentence
+        (e.SpecInfo (e.NewFunctions))
+        e.Sentences
+      >
+    : (e.SpecInfo^ (e.NewFunctions^)) e.Sentences^
+    = (e.SpecInfo (e.NewFunctions))
+      (Function s.ScopeClass t.Name Sentences e.Sentences);
+
+  (e.SpecInfo (e.NewFunctions)) t.Other = (e.SpecInfo (e.NewFunctions)) t.Other;
+}
+
+/**
+  <SpecSentence (e.SpecInfo (e.NewFunctions)) t.Sentence
+    == (e.SpecInfo^ (e.NewFunctions^) t.Sentence^
+
+  t.Sentence ::= ((e.Pattern) e.Conditions (e.Result))
+
+  Функция ищет в правой части предложения вызовы специализируемых функций
+  и пытается выполнить специализацию для него
+*/
+SpecSentence {
+  (e.SpecInfo (e.NewFunctions))
+  ((e.Pattern) e.Conditions (e.Result))
+    = <MapAccum
+        {
+          (e.SpecInfo (e.NewFunctions))
+          (Condition (e.Name) (e.ConditionResult) (e.ConditionPattern))
+            = <SpecResult (e.SpecInfo (e.NewFunctions)) e.ConditionResult>
+            : (e.SpecInfo^ (e.NewFunctions^)) e.ConditionResult^
+            = (e.SpecInfo (e.NewFunctions))
+              (Condition (e.Name) (e.ConditionResult) (e.ConditionPattern));
+        }
+        (e.SpecInfo (e.NewFunctions))
+        e.Conditions
+      >
+    : (e.SpecInfo^ (e.NewFunctions^)) e.Conditions^
+    = <SpecResult (e.SpecInfo (e.NewFunctions)) e.Result>
+    : (e.SpecInfo^ (e.NewFunctions^)) e.Result^
+    = (e.SpecInfo (e.NewFunctions)) ((e.Pattern) e.Conditions (e.Result));
+}
+
+
+/**
+  <SpecResult (e.SpecInfo (e.NewFunctions)) e.Results>
+    == (e.SpecInfo^ (e.NewFunctions^)) e.Result^
+
+  Функция разбирает результирующее выражение, ищет в нем вызовы специализируемых
+  функций и пытается выполнить специализацию для него
+*/
+SpecResult {
+  (e.SpecInfo (e.NewFunctions)) /* empty */
+    = (e.SpecInfo (e.NewFunctions)) /* empty */ ;
+
+  (e.SpecInfo (e.NewFunctions)) e.Result
+    = <MapAccum
+        {
+          (e.Info (e.NewFuncs)) t.Result-T
+            = <SpecTerm (e.Info (e.NewFuncs)) t.Result-T>;
+        }
+        (e.SpecInfo (e.NewFunctions))
+        e.Result
+      >;
+}
+
+/**
+  <SpecTerm (e.SpecInfo (e.NewFunctions)) t.Term>
+    == (e.SpecInfo^ (e.NewFunctions^)) t.Term^
+
+  Функция ищет в терме вызовы специализируемых функций
+  и пытается выполнить специализацию для него
+*/
+SpecTerm {
+  (e.SpecInfo-B ((e.Name) e.Info) e.SpecInfo-E (e.NewFunctions))
+  (CallBrackets (Symbol Name e.Name) e.Expression)
+    , <IsColdArg e.Expression> : True
+    = <SpecCall (e.Name) e.Info (e.Expression)>
+    : (e.Info^) t.NewCall e.NewFunction
+    = (e.SpecInfo-B ((e.Name) e.Info) e.SpecInfo-E (e.NewFunctions e.NewFunction))
+      t.NewCall;
+
+  (e.SpecInfo (e.NewFunctions)) (CallBrackets (Symbol Name e.Name) e.Expression)
+    = <SpecResult (e.SpecInfo (e.NewFunctions)) e.Expression>
+    : (e.SpecInfo^ (e.NewFunctions^)) e.Expression^
+    = (e.SpecInfo (e.NewFunctions)) (CallBrackets (Symbol Name e.Name) e.Expression);
+
+  (e.SpecInfo (e.NewFunctions)) (ClosureBrackects e.ClosureContent)
+    = <SpecResult (e.SpecInfo (e.NewFunctions)) e.ClosureContent>
+    : (e.SpecInfo^ (e.NewFunctions^)) e.ClosureContent^
+    = (e.SpecInfo (e.NewFunctions)) (ClosureBrackets e.ClosureContent);
+
+  (e.SpecInfo (e.NewFunctions)) (Brackets e.Expression)
+    = <SpecResult (e.SpecInfo (e.NewFunctions)) e.Expression>
+    : (e.SpecInfo^ (e.NewFunctions^)) e.Expresssion^
+    = (e.SpecInfo (e.NewFunctions)) (Brackets e.Expression);
+
+  (e.SpecInfo (e.NewFunctions)) (ADT-Brackets (e.Name) e.Expression)
+    = <SpecResult (e.SpecInfo (e.NewFunctions)) e.Expression>
+    : (e.SpecInfo^ (e.NewFunctions^)) e.Expression^
+    = (e.SpecInfo (e.NewFunctions)) (ADT-Brackets (e.Name) e.Expression);
+
+  (e.SpecInfo (e.NewFunctions)) t.Other
+   = (e.SpecInfo (e.NewFunctions)) t.Other;
+}
+
+/**
+  <SpecCall (e.Name) (e.SpecPattern) (e.Body)
+    s.CurrentNumber e.Signatures (e.Argument)
+  >
+    == ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures t.NewSignature)
+        t.NewCall t.NewFunction
+
+  Функция пытается выполнить специализацию для заданного вызова:
+  # ищет среди сигнатур готовых специализированных функций похожую
+    * если сигнатура найдена, заменяем исходный вызов на вызов найденной функции
+    * если сигнатура не найдена выполняем специализацию для аргументов вызова
+      # сопоставляем аргумент с образцом специализации
+      # получаем список переменных из выражений, соответствующих статическим
+        параметрам специализации
+      # проверяем этот список на конфликты в объявлении исходной функции,
+        генерируем для конфликтов новые имена
+      # выполняем замену конфликтных имён на новые в результате сопоставления
+      # подготавливаем подстановки для новой специализированной функции:
+        * вместо выражений из образца:
+            * соответствующим статическим параметрам:
+               - переменные с безопасными именами из подстановки
+            * соответствующим динамическим параметрам:
+               - без изменений
+            * если параметр был обозначен, как e-переменная,
+              оборачиваем выражение в скобки
+        * вместо переменных из результата:
+            * соответствующим статическим параметрам:
+               - значение с безопасными именами из подстановки
+            * соответствующим динамическим параметрам:
+               - без изменений
+        * вместо условий:
+            * разбиваем условия на результат и обрататываем аналогично
+      # ???
+      # формируем новый вызов
+      # формируем определение новой специализированной функции
+  # возвращает e.Info с новой сигнатурой,
+    новый вызов
+    определение новой специализированной функции
+*/
+SpecCall {
+  (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures (e.Argument)
+    = <Spec-FindInSignatures (e.SpecPattern) (e.Argument) e.Signatures>
+    : {
+        Found (e.SpecSuffix) e.SpecializedFuncArgument
+          = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
+            (
+              ColdCallBrackets (Symbol Name e.Name SUF e.SpecSuffix)
+              e.SpecializedFuncArgument
+            )
+            /* no new functions */;
+
+        NotFound
+          = <GenericMatch (e.Argument) (e.SpecPattern)>
+          : Clear e.GenericMatches
+          = <Spec-ExtractVarsForStaticsMatch e.GenericMatches>
+          : (e.VarsFromMatch)
+          = <Spec-CreateNewNamesForConflictVars
+              (e.Body) s.NextNumber e.VarsFromMatch
+            >
+          : ((e.VarsFromBody) e.NameReplaces)
+          = <Spec-SolveStaticVarNameConflicts (e.GenericMatches) e.NameReplaces>
+          : e.RenamedGenericMatches
+          = <Spec-PrepareFactArgSubstitution
+              (e.SpecPattern) (e.RenamedGenericMatches) e.Body
+            >
+          : e.SentencesWithSubstitutions
+          = <Spec-CreateSpecializedFuncCall e.GenericMatches>
+          : e.SpecializedFuncArgument
+          = <Spec-PrepareSpecializedFuncBody e.SentencesWithSubstitutions>
+          : (e.SpecializedFuncBody)
+          = (
+              (e.SpecPattern) (e.Body) <Inc s.NextNumber>
+              e.Signatures
+              (
+                (e.Name SUF '@' s.NextNumber)
+                <Spec-PrepareSignature e.RenamedGenericMatches>
+              )
+            )
+            (
+              ColdCallBrackets (Symbol Name e.Name SUF '@' s.NextNumber)
+              e.SpecializedFuncArgument
+            )
+            (
+              Function GN-Local (e.Name SUF '@' s.NextNumber)
+              Sentences e.SpecializedFuncBody
+            )
+    };
+}
+
+Spec-PrepareSignature {
+  e.GenericSpecFactMatches
+    = <MapAccum
+        {
+          (e.Signature) (e.Val ':' t.Var)
+            = <IsSpecStaticVar t.Var>
+            : {
+                True = (e.Signature (e.Val));
+
+                False = (e.Signature);
+              };
+        }
+        (/* empty signature */)
+        e.GenericSpecFactMatches
+      >
+    : (e.Signature)
+    = <Spec-RenameSignatureVars e.Signature>;
+}
+
+Spec-RenameSignatureVars {
+  e.Signature = <Spec-RenameSignatureVars-Aux 1 1 1 (/* empty */) e.Signature>;
+}
+
+Spec-RenameSignatureVars-Aux {
+  s.sNum s.tNum s.eNum (e.Renames-B (e.Index ':' e.NewIndex) e.Renames-E)
+  (TkVariable e.Index) e.Signature-Tail
+    = (TkVariable e.NewIndex)
+      <Spec-RenameSignatureVars-Aux
+        s.sNum s.tNum s.eNum (e.Renames-B (e.Index ':' e.NewIndex) e.Renames-E)
+        e.Signature-Tail
+      >;
+
+  s.sNum s.tNum s.eNum (e.Renames) (TkVariable 's' e.Index) e.Signature-Tail
+    = (TkVariable 'sS' s.sNum)
+      <Spec-RenameSignatureVars-Aux
+        <Inc s.sNum> s.tNum s.eNum (e.Renames ('s' e.Index ':' 'sS' s.sNum))
+        e.Signature-Tail
+      >;
+
+  s.sNum s.tNum s.eNum (e.Renames) (TkVariable 't' e.Index) e.Signature-Tail
+    = (TkVariable 'tT' s.tNum)
+      <Spec-RenameSignatureVars-Aux
+        s.sNum <Inc s.tNum> s.eNum (e.Renames ('t' e.Index ':' 'tT' s.tNum))
+        e.Signature-Tail
+      >;
+
+  s.sNum s.tNum s.eNum (e.Renames) (TkVariable 'e' e.Index) e.Signature-Tail
+    = (TkVariable 'eE' s.eNum)
+      <Spec-RenameSignatureVars-Aux
+        s.sNum s.tNum <Inc s.eNum> (e.Renames ('e' e.Index ':' 'eE' s.eNum))
+        e.Signature-Tail
+      >;
+
+  s.sNum s.tNum s.eNum (e.Renames) (Brackets e.Expression) e.Signature-Tail
+    = (
+        Brackets
+        <Spec-RenameSignatureVars-Aux
+          s.sNum s.tNum s.eNum (e.Renames) e.Expression
+        >
+      )
+      <Spec-RenameSignatureVars-Aux
+        s.sNum s.tNum s.eNum (e.Renames) e.Signature-Tail
+      >;
+
+  s.sNum s.tNum s.eNum (e.Renames) (ADT-Brackets (e.Name )e.Expression)
+  e.Signature-Tail
+    = (
+        ADT-Brackets (e.Name)
+        <Spec-RenameSignatureVars-Aux
+          s.sNum s.tNum s.eNum (e.Renames) e.Expression
+        >
+      )
+      <Spec-RenameSignatureVars-Aux
+        s.sNum s.tNum s.eNum (e.Renames) e.Signature-Tail
+      >;
+
+  s.sNum s.tNum s.eNum (e.Renames) (CallBrackets e.Expression)
+  e.Signature-Tail
+    = (
+        CallBrackets
+        <Spec-RenameSignatureVars-Aux
+          s.sNum s.tNum s.eNum (e.Renames) e.Expression
+        >
+      )
+      <Spec-RenameSignatureVars-Aux
+        s.sNum s.tNum s.eNum (e.Renames) e.Signature-Tail
+      >;
+
+  s.sNum s.tNum s.eNum (e.Renames) (ClosureBrackets e.ClosureContent)
+  e.Signature-Tail
+    = (
+        ClosureBrackets
+        <Spec-RenameSignatureVars-Aux
+          s.sNum s.tNum s.eNum (e.Renames) e.ClosureContent
+        >
+      )
+      <Spec-RenameSignatureVars-Aux
+        s.sNum s.tNum s.eNum (e.Renames) e.Signature-Tail
+      >;
+
+  s.sNum s.tNum s.eNum (e.Renames) (Symbol e.SymbInfo) e.Signature-Tail
+    = (Symbol e.SymbInfo)
+      <Spec-RenameSignatureVars-Aux
+        s.sNum s.tNum s.eNum (e.Renames) e.Signature-Tail
+      >;
+
+  s.sNum s.tNum s.eNum (e.Renames) (TkName e.Name) e.Signature-Tail
+    = (TkName e.Name)
+      <Spec-RenameSignatureVars-Aux
+        s.sNum s.tNum s.eNum (e.Renames) e.Signature-Tail
+      >;
+
+  s.sNum s.tNum s.eNum (e.Renames) (e.Expression) e.Signature-Tail
+    = (
+        <Spec-RenameSignatureVars-Aux
+          s.sNum s.tNum s.eNum (e.Renames) e.Expression
+        >
+      )
+      <Spec-RenameSignatureVars-Aux
+        s.sNum s.tNum s.eNum (e.Renames) e.Signature-Tail
+      >;
+
+  s.sNum s.tNum s.eNum (e.Renames) /* empty */ = /* empty */;
+
+}
+
+Spec-FindInSignatures {
+  (e.SpecPattern) (e.Argument)
+  ((e.Name SUF e.SpecSuffix) e.SpecializedFuncSignature) e.Signatures
+    , <Spec-DoesMeetSignature
+        (e.SpecPattern) (e.Argument) e.SpecializedFuncSignature
+      >
+    : True e.SpecializedFuncArgument
+    = Found (e.SpecSuffix) e.SpecializedFuncArgument;
+
+  (e.SpecPattern) (e.Argument) t.Signature e.Signatures-Tail
+    = <Spec-FindInSignatures (e.SpecPattern) (e.Argument) e.Signatures-Tail>;
+
+  (e.SpecPattern) (e.Argument)
+    = NotFound;
+}
+
+Spec-DoesMeetSignature {
+  (e.SpecPattern) (e.Argument) e.SignatureToCompare
+    = <GenericMatch (e.Argument) (e.SpecPattern)>
+    : Clear e.GenericMatches
+    = <Spec-PrepareSignature e.GenericMatches>
+    : e.Signature
+    = <Eq (e.Signature) (e.SignatureToCompare)>
+    : {
+        True = True <Spec-CreateSpecializedFuncCall e.GenericMatches>;
+
+        False = False;
+      };
+}
+
+Spec-ExtractVarsForStaticsMatch {
+  e.Vars
+    = <MapAccum
+        {
+          (e.VarsFromMatch) (e.Val ':' t.Var)
+            = <IsSpecStaticVar t.Var>
+            : {
+                True = (e.VarsFromMatch <ExtractVariables-Expr e.Val>);
+
+                False = (e.VarsFromMatch);
+              };
+        }
+        ()
+        e.Vars
+      >;
+}
+
+Spec-CreateNewNamesForConflictVars {
+  (e.Body) s.NextNumber e.VarsFromMatch
+    = <MapAccum
+        {
+          (
+            (e.VarsFromBody-B (s.Mode e.Index s.Depth1) e.VarsFromBody-E)
+            e.NameReplaces
+          )
+          (s.Mode e.Index s.Depth2)
+            = <NewVarName
+                (e.VarsFromBody-B (s.Mode e.Index s.Depth1) e.VarsFromBody-E)
+                s.Mode e.Index s.Depth2 (/* empty suffix */)
+              >
+            : (e.Vars) e.NewVarName
+            = (
+                (e.VarsFromBody-B (s.Mode e.Index s.Depth1) e.VarsFromBody-E)
+                e.NameReplaces
+                ((s.Mode e.Index s.Depth2) (e.NewVarName))
+              );
+
+          ((e.VarsFromBody) e.NameReplaces) t.OtherVar
+            = ((e.VarsFromBody) e.NameReplaces);
+        }
+        ((<ExtractVariables e.Body>) /* empty old-new call variables name */)
+        e.VarsFromMatch
+      >;
+}
+
+Spec-SolveStaticVarNameConflicts {
+  (e.GenericMatches) /* empty */ = e.GenericMatches /* empty */;
+
+  (e.GenericMatches) e.NameReplaces
+    = <Map
+        {
+          (e.Val ':' t.Var)
+            = <IsSpecStaticVar t.Var>
+            : {
+                True
+                  = (
+                      <MapAccum &Spec-RenameArgStaticVars (e.Val) e.NameReplaces>
+                      ':' t.Var
+                    );
+
+                False = (e.Val ':' t.Var);
+              };
+        }
+        e.GenericMatches
+      >;
+}
+
+Spec-RenameArgStaticVars {
+  (e.Expr) ((e.OldVarName) (e.NewVarName))
+    = <MapAccum
+        {
+          ((e.OldVarName) (e.NewVarName)) (TkVariable e.OldVarName)
+            = ((e.OldVarName) (e.NewVarName)) (TkVariable e.NewVarName);
+
+          ((e.OldVarName) (e.NewVarName)) (Brackets e.Expression)
+            = ((e.OldVarName) (e.NewVarName))
+              (
+                Brackets
+                <Spec-RenameArgStaticVars
+                  (e.Expression) ((e.OldVarName) (e.NewVarName))
+                >
+              );
+
+          ((e.OldVarName) (e.NewVarName)) (ColdCallBrackets e.Expression)
+            = ((e.OldVarName) (e.NewVarName))
+              (
+                ColdCallBrackets
+                <Spec-RenameArgStaticVars
+                  (e.Expression) ((e.OldVarName) (e.NewVarName))
+                >
+              );
+
+          ((e.OldVarName) (e.NewVarName)) (ADT-Brackets t.Name e.Expression)
+            = ((e.OldVarName) (e.NewVarName))
+              (
+                ADT-Brackets t.Name
+                <Spec-RenameArgStaticVars
+                  (e.Expression) ((e.OldVarName) (e.NewVarName))
+                >
+              );
+
+          ((e.OldVarName) (e.NewVarName)) (ClosureBrackets e.ClosureContent)
+            = ((e.OldVarName) (e.NewVarName))
+              (
+                ClosureBrackets
+                <Spec-RenameArgStaticVars
+                  (e.ClosureContent) ((e.OldVarName) (e.NewVarName))
+                >
+              );
+
+           ((e.OldVarName) (e.NewVarName)) t.Other
+             = ((e.OldVarName) (e.NewVarName)) t.Other;
+        }
+        ((e.OldVarName) (e.NewVarName))
+        e.Expr
+      >
+    : ((e.OldVarName) (e.NewVarName)) e.Expr^
+    = e.Expr;
+}
+
+Spec-CreateSpecializedFuncCall {
+  e.GenericMatches
+    = <MapAccum
+        {
+          (e.Vars) (e.Val ':' t.Var)
+          , <IsSpecStaticVar t.Var>
+          : True
+          = (e.Vars <WrapEVar <ExtractVariables-Expr e.Val>>);
+
+          (e.Vars) (e.Val ':' ('e' e.Index)) = (e.Vars (Brackets e.Val));
+
+          (e.Vars) (e.Val ':' t.Var) = (e.Vars e.Val);
+        }
+        ()
+        e.GenericMatches
+      >
+    : (e.NewCall)
+    = <FindAndFormatVarTerm e.NewCall>;
+}
+
+FindAndFormatVarTerm {
+  e.Expr = <Map &FindAndFormatVarTerm-Aux e.Expr>;
+}
+
+FindAndFormatVarTerm-Aux {
+  (TkVariable e.Index) = (TkVariable e.Index);
+
+  ('e' e.Index) = (TkVariable 'e' e.Index);
+
+  ('s' e.Index) = (TkVariable 's' e.Index);
+
+  ('t' e.Index) = (TkVariable 't' e.Index);
+
+  (Symbol e.SymInfo) = (Symbol e.SymInfo);
+
+  (Brackets e.Expression) = (Brackets <FindAndFormatVarTerm e.Expression>);
+
+  (ADT-Brackets (e.Name) e.Expression)
+    = (ADT-Brackets (e.Name) <FindAndFormatVarTerm e.Expression>);
+
+  (CallBrackets e.Expression)
+     = (CallBrackets <FindAndFormatVarTerm e.Expression>);
+
+  (ClosureBrackets e.ClosureContent)
+    = (ClosureBrackets <FindAndFormatVarTerm e.ClosureContent>);
+}
+Spec-PrepareFactArgSubstitution {
+  (e.SpecPattern) (e.RenamedGenericSpecFactMatches) e.Body
+    = <MapAccum
+        {
+          (e.SpecPattern) ((e.SentencePattern) e.Conditions (e.SentenceResult))
+            = <GenericMatch (e.SentencePattern) (e.SpecPattern)>
+            : Clear e.GenericSpecSentenceMatches
+            = <MapAccum
+                {
+                  (e.Pattern) (e.Val ':' ('e' e.Index))
+                    = (<FindReplace-Expr (e.Pattern) (e.Val) (Brackets e.Val)>);
+
+                  (e.Pattern) (e.Val ':' t.Var) = (e.Pattern);
+                }
+                (e.SentencePattern)
+                e.GenericSpecSentenceMatches
+              >
+            : (e.SentencePattern^)
+            = (e.SpecPattern)
+              ((e.SentencePattern) e.Conditions (e.SentenceResult));
+        }
+        (e.SpecPattern)
+        e.Body
+      >
+    : (e.SpecPattern) e.Body^
+    = <MapAccum
+        {
+          ((e.SpecPattern) (e.RenamedGenericSpecFactMatches) (e.SentencesMatches))
+          ((e.SentencePattern) e.Conditions (e.SentenceResult))
+            = <GenericMatch (e.SentencePattern) (e.SpecPattern)>
+            : Clear e.GenericSpecSentenceMatches
+            = <MapGenericMatches
+                (e.RenamedGenericSpecFactMatches) (e.GenericSpecSentenceMatches)
+              >
+            : e.GenericFactSentenceMatches
+            = (
+                (e.SpecPattern) (e.RenamedGenericSpecFactMatches)
+                (
+                  e.SentencesMatches
+                  (
+                    e.GenericFactSentenceMatches
+                    ((e.SentencePattern) e.Conditions (e.SentenceResult))
+                  )
+                )
+              )
+        }
+        ((e.SpecPattern) (e.RenamedGenericSpecFactMatches) (/* for result */))
+        e.Body
+      >
+    : (
+        (e.SpecPattern) (e.RenamedGenericSpecFactMatches)
+        (e.FactSentencesMatches)
+      )
+    = e.FactSentencesMatches;
+}
+
+MapGenericMatches {
+  (e.GenericSpecFactMatches) (e.GenericSpecSentenceMatches)
+    = <MapAccum
+        {
+          (
+            (
+              e.GenericSpecFactMatches-B (e.FactVal ':' t.SpecVar)
+              e.GenericSpecFactMatches-E
+            )
+            (e.MappedMatches)
+          )
+          (e.SentenceVal ':' t.SpecVar)
+            , <IsSpecStaticVar t.SpecVar>
+            : True
+            = (
+                (
+                  e.GenericSpecFactMatches-B (e.FactVal ':' t.SpecVar)
+                  e.GenericSpecFactMatches-E
+                )
+                (e.MappedMatches (e.FactVal ':' e.SentenceVal))
+              );
+
+          ((e.GenericSpecFactMatches) (e.MappedMatches))
+          (e.SentenceVal ':' t.SpecVar)
+            = ((e.GenericSpecFactMatches) (e.MappedMatches));
+        }
+        ((e.GenericSpecFactMatches) (/* for result */))
+        e.GenericSpecSentenceMatches
+      >
+    : ((e.GenericSpecFactMatches) (e.ResultMatches))
+    = e.ResultMatches;
+}
+
+Spec-PrepareSpecializedFuncBody {
+  e.RenamedFactSentenceMatches
+    = <MapAccum
+        {
+          (e.PreparedBody)
+          (e.Substitutions ((e.SentencePattern) e.Conditions (e.SentenceResult)))
+            = (
+                e.PreparedBody
+                (
+                  (<Spec-PreparePattern (e.Substitutions) e.SentencePattern>)
+                  <Spec-PrepareConditions (e.Substitutions) e.Conditions>
+                  (<Spec-PrepareResult (e.Substitutions) e.SentenceResult>)
+                )
+              );
+        }
+        (/* for result */)
+        e.RenamedFactSentenceMatches
+      >;
+}
+
+Spec-PreparePattern {
+  (e.Substitutions) /* empty */
+    = /* empty */;
+
+  (e.Substitutions) e.Pattern
+    = <MapAccum
+        {
+          (e.Pattern) (e.Val ':' e.Val) = (e.Pattern);
+
+          (e.Pattern) (e.ReplaceToVal ':' ('e' e.Index))
+            = (
+                <FindReplace-Expr (e.Pattern) (('e' e.Index))
+                  (Brackets <ExtractVariables-Expr e.ReplaceToVal>)
+                >
+              );
+
+          (e.Pattern) (e.ReplaceToVal ':' t.ReplaceVar)
+            = (
+                <FindReplace-Expr
+                  (e.Pattern) (t.ReplaceVar)
+                  <ExtractVariables-Expr e.ReplaceToVal>
+                >
+              );
+        }
+        (e.Pattern)
+        e.Substitutions
+      >
+    : (e.Pattern^)
+    = <FindAndFormatVarTerm e.Pattern>;
+}
+
+Spec-PrepareConditions {
+  (e.Substitutions) /* empty */
+    = /* empty */;
+
+  (e.Substitutions) e.Conditions
+    = <MapAccum
+        {
+          (e.Substitutions)
+          (Condition (e.Name) (e.ConditionResult) (e.ConditionPattern))
+            = (
+                Condition (e.Name)
+                (<Spec-PrepareResult (e.Substitutions) e.ConditionResult>)
+                (<Spec-PreparePattern (e.Substitutions) e.ConditionPattern>)
+              );
+        }
+        (e.Substitutions)
+        e.Conditions
+      >
+    : (e.Substitutions) e.Conditions^
+    = e.Conditions;
+}
+
+Spec-PrepareResult {
+  (e.Substitutions) /* empty */
+    = /* empty */;
+
+  (e.Substitutions) e.Result
+    = <MapAccum
+        {
+          (e.Result) (e.Val ':' e.Val) = (e.Result);
+
+          (e.Result)
+*          пока считаем, что правая часть подстановок - переменные
+          (e.ReplaceToVal ':' t.ReplaceVar)
+            = (<FindReplace-Expr (e.Result) (t.ReplaceVar) e.ReplaceToVal>);
+        }
+        (e.Result)
+        e.Substitutions
+      >
+    : (e.Result^)
+    = e.Result;
 }
 
 /**
   <OptTree-Spec-Finalize s.OptSpec (e.SpecInfo) e.AST> == e.AST^
 */
 $ENTRY OptTree-Spec-Finalize {
-  s.OptSpec ((/* no names */) /* no info */) e.AST = e.AST;
+  s.OptSpec (e.SpecInfo) e.AST
+    = e.AST;
+}
+
+/*
+  Вспомогательные функции модуля
+*/
+
+Eq {
+ (e.X) (e.X) = True;
+
+ (e.X) (e.Y) = False;
+}
+
+SVarIsInSet {
+  (e.Set-B s.Var e.Set-E) s.Var = True;
+
+  (e.Set) s.Var = False;
+}
+
+IsSpecStaticVar {
+  (s.Mode s.FirstSymbol e.Index s.Depth)
+    = <SVarIsInSet ('ABCDEFGHIJKLMNOPQRSTUVWXYZ') s.FirstSymbol>;
+}
+
+WrapEVar {
+  ('e' e.Index) e.Tail  = (Brackets ('e' e.Index)) <WrapEVar e.Tail>;
+
+  t.Other e.Tail = t.Other <WrapEVar e.Tail>;
+
+  /* empty */ = /* empty */;
+}
+
+IsColdArg {
+  e.Argument
+   = <MapAccum
+       {
+         False t.Any = False;
+
+         True (CallBrackets e.Expression) = False;
+
+         True (ClosureBrackects e.ClosureContent) = <IsColdArg e.ClosureContent>;
+
+         True (Brackets e.Expression) = <IsColdArg e.Expression>;
+
+         True (ADT-Brackets (e.Name) e.Expression) = <IsColdArg e.Expression>;
+
+         True t.Other = True;
+
+       }
+       True
+       e.Argument
+     >;
+}
+
+FindReplace-Expr {
+  (/* empty */) (e.LookFor) e.ReplaceVal = /* empty */;
+
+  (e.LookAt) (/* empty */) e.ReplaceVal = e.LookAt;
+
+  (e.LookAt) (e.LookAt) e.ReplaceVal = e.ReplaceVal;
+
+  ((Symbol e.SymInfo)) (e.LookFor) e.ReplaceVal = (Symbol e.SymInfo);
+
+  ((Brackets e.Expression)) (e.LookFor) e.ReplaceVal
+    = (Brackets <FindReplace-Expr (e.Expression) (e.LookFor) e.ReplaceVal>);
+
+  ((ADT-Brackets (e.Name) e.Expression)) (e.LookFor) e.ReplaceVal
+    = (
+        ADT-Brackets (e.Name)
+        <FindReplace-Expr (e.Expression) (e.LookFor) e.ReplaceVal>
+      );
+
+  ((CallBrackets e.Expression)) (e.LookFor) e.ReplaceVal
+    = (CallBrackets <FindReplace-Expr (e.Expression) (e.LookFor) e.ReplaceVal>);
+
+  ((TkVariable e.Index)) (e.LookFor) e.ReplaceVal = (TkVariable e.Index);
+
+  ((ClosureBrackets e.ClosureContent)) (e.LookFor) e.ReplaceVal
+    = (
+        ClosureBrackets
+        <FindReplace-Expr (e.ClosureContent) (e.LookFor) e.ReplaceVal>
+      );
+
+  (e.LookAt-B e.LookFor e.LookAt-E) (e.LookFor) e.ReplaceVal
+    = <FindReplace-Expr (e.LookAt-B) (e.LookFor) e.ReplaceVal>
+      e.ReplaceVal <FindReplace-Expr (e.LookAt-E) (e.LookFor) e.ReplaceVal>;
+
+  (e.LookAt) (e.LookFor) e.ReplaceVal
+    = <MapAccum
+        {
+          ((e.LookFor) e.ReplaceVal) t.LookAt-Term
+            = ((e.LookFor) e.ReplaceVal)
+              <FindReplace-Expr (t.LookAt-Term) (e.LookFor) e.ReplaceVal>;
+        }
+        ((e.LookFor) e.ReplaceVal)
+        e.LookAt
+      >
+    : ((e.LookFor) e.ReplaceVal) e.ModifyedLookAt
+    = e.ModifyedLookAt;
 }

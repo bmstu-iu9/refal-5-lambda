@@ -1,6 +1,9 @@
 *$FROM LibraryEx
 $EXTERN Fetch;
 
+*$FROM Library
+$EXTERN IntFromStr;
+
 
 /*
   Внутреннее представление:
@@ -659,7 +662,7 @@ $ENTRY Config-GetTreeOptCycles {
 */
 $ENTRY Config-SetTreeOptCycles {
   [Config e.Params-B (TreeOptCycles s.OldCycles) e.Params-E] e.NewCycles
-    = <Numb e.NewCycles>
+    = <IntFromStr e.NewCycles>
     : {
         Success s.NewCycles e.UnmatchedChars , e.UnmatchedChars : /* empty */
           = Success

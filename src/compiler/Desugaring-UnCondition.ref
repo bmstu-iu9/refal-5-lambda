@@ -624,7 +624,7 @@ ExtractVariables-Tail {
   (e.Result) = <ExtractVariables-Expr e.Result>;
 }
 
-ExtractVariables-Expr {
+$ENTRY ExtractVariables-Expr {
   (TkVariable s.VarType e.Index) e.Terms
     = (s.VarType e.Index) <ExtractVariables-Expr e.Terms>;
 

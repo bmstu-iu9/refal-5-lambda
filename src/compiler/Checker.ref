@@ -4,6 +4,12 @@ $EXTERN Reduce, Fetch, Pipe, MapReduce, Map, OneOf;
 *$FROM Error
 $EXTERN EL-AddErrorAt;
 
+*$FROM GenericMatch
+$EXTERN GenericMatch;
+
+*$FROM Desugaring
+$EXTERN RemovePos-Expr;
+
 $ENTRY CheckProgram {
   t.ErrorList e.AST
     = <Reduce
@@ -45,9 +51,10 @@ PrepareMessage {
   /* Ошибки специализации */
   RedefineSpec e.Name = 'Specialization of function ' e.Name 'is redefined';
 
-  MustBeHardPattern = 'Pattern of function specialization must be hard';
+  MustBeHardPattern e.Name
+    = 'Pattern of function specialization for ' e.Name ' must be hard';
 
-  BadSpecForFunction = 'Bad fucntion specialization';
+  BadSpecForFunction e.Name = 'Bad function specialization for ' e.Name;
 
   OrphanSpec e.FuncName = 'Orphan function specialization for ' e.FuncName;
 
@@ -104,7 +111,7 @@ CheckSpecs-Formats {
                     e.Errors = e.Errors;
                   };
 
-                False = (Error t.SrcPos MustBeHardPattern);
+                False = (Error t.SrcPos MustBeHardPattern e.Name);
               };
 
           t.Other = t.Other;
@@ -205,7 +212,7 @@ CheckSpecs-Functions {
 
         False =
           e.AST-B
-          (Error t.SrcPos1 BadSpecForFunction)
+          (Error t.SrcPos1 BadSpecForFunction e.Name)
           e.AST-M
           (Function t.SrcPos2 s.ScopeClass (e.Name) e.Body)
           e.AST-E;
@@ -227,7 +234,7 @@ CheckSpecs-Functions {
           e.AST-B
           (Function t.SrcPos1 s.ScopeClass (e.Name) e.Body)
           e.AST-M
-          (Error t.SrcPos2 BadSpecForFunction)
+          (Error t.SrcPos2 BadSpecForFunction e.Name)
           e.AST-E;
       }
     : e.AST
@@ -241,9 +248,25 @@ CheckSpecs-Functions {
   e.AST = e.AST;
 }
 
-*=== будет дорабатываться после завершения задачи (#156)
 ValidBodyForSpec {
-  (e.Pattern) e.Body = True;
+  t.Pattern Sentences e.Sentences
+    = <Reduce (&ValidBodyForSpec-CheckSentensePattern t.Pattern) True e.Sentences>;
+
+  t.Pattern NativeBody e.Code = False;
+}
+
+ValidBodyForSpec-CheckSentensePattern {
+  (e.SpecPattern) True ((e.SentencePattern) e.OtherSentenceConstruction)
+    = <GenericMatch (<RemovePos-Expr e.SentencePattern>) (<RemovePos-Expr e.SpecPattern>)>
+    : {
+*       TODO сделать проверку соответствия типов переменных
+        Clear e.Vars = True;
+        Contracted e.Vars = False;
+        Failure = False;
+        Undefined = False;
+    };
+
+  t.SpecPattern False e.Anything = False;
 }
 
 CheckSpecs-SeparateErrors {
