@@ -1,5 +1,4 @@
-*$FROM LibraryEx
-$EXTERN ArgList, LoadFile, Map, SaveFile, MapReduce, Inc, SaveBytes, LoadBytes;
+$INCLUDE "LibraryEx";
 
 *$FROM ParseCmdLine
 $EXTERN ParseCommandLine;

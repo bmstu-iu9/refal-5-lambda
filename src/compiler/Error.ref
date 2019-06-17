@@ -1,5 +1,5 @@
-*$FROM LibraryEx
-$EXTERN Map, Sort;
+$INCLUDE "LibraryEx";
+
 
 /**
   Внутренний формат:

@@ -1,5 +1,4 @@
-*$FROM LibraryEx
-$EXTERN Map;
+$INCLUDE "LibraryEx";
 
 *$FROM HighLevelRASL-DisjointFunc
 $EXTERN HighLevelRASL-Function-Disjoint;

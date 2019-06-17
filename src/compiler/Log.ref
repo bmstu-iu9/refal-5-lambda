@@ -1,8 +1,7 @@
 *$FROM Library
 $EXTERN FOpen, FClose;
 
-*$FROM LibraryEx
-$EXTERN Map;
+$INCLUDE "LibraryEx";
 
 *$FROM DisplayName
 $EXTERN DisplayName;

@@ -1,5 +1,5 @@
-//FROM LibraryEx
-$EXTERN Fetch, Map, LoadFile;
+$INCLUDE "LibraryEx";
+
 
 $ENTRY SR-LoadSource {
   e.FileName =

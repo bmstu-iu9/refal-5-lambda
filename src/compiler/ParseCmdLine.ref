@@ -1,8 +1,7 @@
 *$FROM GetOpt
 $EXTERN GetOpt;
 
-*$FROM LibraryEx
-$EXTERN Fetch, Pipe, MapReduce, Map;
+$INCLUDE "LibraryEx";
 
 *$FROM Config
 $EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,

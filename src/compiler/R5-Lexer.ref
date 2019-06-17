@@ -1,5 +1,5 @@
-*$FROM LibraryEx
-$EXTERN LoadFile, Inc;
+$INCLUDE "LibraryEx";
+
 
 /**
   <Scan e.SourceFile> == t.Token*

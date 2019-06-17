@@ -1,5 +1,4 @@
-//FROM LibraryEx
-$EXTERN FastIntFromStr, Trim-R, Map, Fetch, Inc, Pipe, MapReduce, DelAccumulator;
+$INCLUDE "LibraryEx";
 
 //FROM Library
 $EXTERN Chr, StrFromInt;

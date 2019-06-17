@@ -1,8 +1,8 @@
 *$FROM Escape
 $EXTERN EscapeString;
 
-*$FROM LibraryEx
-$EXTERN Map, Fetch;
+$INCLUDE "LibraryEx";
+
 
 $ENTRY DisplayName {
   e.Name Hash s.Cookie1 s.Cookie2 =

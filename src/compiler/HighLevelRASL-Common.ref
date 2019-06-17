@@ -1,5 +1,4 @@
-*$FROM LibraryEx
-$EXTERN Inc, Map, Fetch, MapReduce;
+$INCLUDE "LibraryEx";
 
 *$FROM DisplayName
 $EXTERN DisplayName;

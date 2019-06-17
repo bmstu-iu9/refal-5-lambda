@@ -1,6 +1,4 @@
-**FROM LibraryEx
-$EXTERN Fetch, TermCompare, Inc, Pipe, Reduce, Map, MapReduce, DelAccumulator,
-  UnBracket;
+$INCLUDE "LibraryEx";
 
 
 $ENTRY GST {
