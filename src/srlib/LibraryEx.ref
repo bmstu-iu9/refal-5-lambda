@@ -1,97 +1,30 @@
+$INCLUDE "LibraryEx";
+
 *$FROM Library
 $EXTERN FOpen, FClose, FReadLine, FWriteLine, Add, Sub, IntFromStr, Arg,
   SymbCompare, FReadBytes, FWriteBytes;
 
-* Расширения библиотеки и функции, реализуемые
-* средствами самого Простого Рефала
+$ENTRY Apply;
 
-/**
-  <Apply t.Closure e.Arg> == e.Res
+$ENTRY Map;
 
-  t.Closure ::=
-      s.FUNCTION
-    | (t.Closure e.Bounded)
-  e.Arg, e.Res, e.Bounded ::= e.AnyExpr
-*/
-$ENTRY Apply {
-  s.Fn e.Argument = <s.Fn e.Argument>;
+$ENTRY Reduce;
 
-  (t.Closure e.Bounded) e.Argument
-    = <Apply t.Closure e.Bounded e.Argument>;
-}
-
-
-/**
-  <Map t.Closure t.Item*> == e.ItemRes*
-
-  <Apply t.Closure t.Item> == e.ItemRes
-*/
-$ENTRY Map {
-  t.Fn t.Next e.Tail = <Apply t.Fn t.Next> <Map t.Fn e.Tail>;
-
-  t.Fn = ;
-}
-
-
-/**
-  <Reduce t.Closure t.Accum t.Item*> == t.Accum′
-
-  <Apply t.Closure t.Accum t.Item> == t.Accum′
-  t.Accum′ ::= t.Accum
-*/
-$ENTRY Reduce {
-  t.Fn t.Acc t.Next e.Tail
-    = <Reduce
-        t.Fn <Apply t.Fn t.Acc t.Next> e.Tail
-      >;
-
-  t.Fn t.Acc = t.Acc;
-}
-
-$ENTRY Fetch {
-  e.Argument t.Function = <Apply t.Function e.Argument>;
-}
+$ENTRY Fetch;
 
 $ENTRY Y {
   s.Y-Func = { e.Arg = <<s.Y-Func <Y s.Y-Func>> e.Arg>; };
 }
 
-/**
-  <MapAccum t.Closure t.Accum t.Item*> == t.Accum′ e.ItemRes*
-
-  <Apply t.Closure t.Accum t.Item> == t.Accum′ e.ItemRes
-  t.Accum′ ::= t.Accum
-*/
-$ENTRY MapAccum {
-  t.Fn t.Acc e.Tail = <DoMapAccum t.Fn t.Acc () e.Tail>;
-}
-
-DoMapAccum {
-  t.Fn t.Acc (e.Scanned) t.Next e.Tail
-    = <Apply t.Fn t.Acc t.Next> : t.Acc^ e.StepScanned
-    = <DoMapAccum
-        t.Fn t.Acc (e.Scanned e.StepScanned) e.Tail
-      >;
-
-  t.Fn t.Acc (e.Scanned) = t.Acc e.Scanned;
-}
+$ENTRY MapAccum;
 
 * Function MapReduce is deprecated!!!
 * Use MapAccum instead it.
-$ENTRY MapReduce {
-  t.Fn t.Acc e.Tail = <MapAccum t.Fn t.Acc e.Tail>;
-}
+$ENTRY MapReduce;
 
-$ENTRY UnBracket {
-  (e.Expr) = e.Expr;
-}
+$ENTRY UnBracket;
 
-/**
-  <DelAccumulator t.Accum e.AnyExpr> == e.AnyExpr
-*/
-$ENTRY DelAccumulator {
-  t.Acc e.Tail = e.Tail;
-}
+$ENTRY DelAccumulator;
 
 $ENTRY LoadFile {
   e.FileName = <DoLoadFile <FReadLine <FOpen 'r' e.FileName>>>;
@@ -153,19 +86,8 @@ SaveBytes-Handle {
       <FClose s.FileHandle>;
 }
 
-/**
-  <Inc e.LongNumber> == e.LongNumber
-  <Dec e.LongNumber> == e.LongNumber
-*/
-$ENTRY Inc {
-  e.Num = <Add 1 e.Num>;
-}
-
-$ENTRY Dec {
-* Оптимизация для одной макроцифры
-  s.Num = <Sub s.Num 1>;
-  e.Num = <Sub (e.Num) 1>;
-}
+$ENTRY Inc;
+$ENTRY Dec;
 
 $ENTRY FastIntFromStr {
   e.Digits = <IntFromStr e.Digits> : Success s.Number = s.Number;
@@ -291,28 +213,8 @@ $ENTRY Trim-R {
   e.Line = e.Line;
 }
 
-/**
-  <Pipe s.F1 s.F2 ... s.Fn> == s.Compose
 
-  <s.Compose e.X> == <s.Fn ... <s.F2 <s.F1 e.X>>...>
-
-  Seq (deprecated) is synonim for Pipe
-*/
-$ENTRY Pipe {
-  t.Func = t.Func;
-
-  t.Func e.Funcs
-    = {
-        e.Arg = <Fetch <Apply t.Func e.Arg> <Pipe e.Funcs>>;
-      };
-
-  /* пусто */ = { e.Arg = e.Arg; };
-}
-
-/**
-  Seq is deprecated, use Pipe
-*/
-$ENTRY Seq { e.Funcs = <Pipe e.Funcs>; }
+$ENTRY Pipe, Seq;
 
 $ENTRY Sort {
   /* пусто */ = /* пусто */;
