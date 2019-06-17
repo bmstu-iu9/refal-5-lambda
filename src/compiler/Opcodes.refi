@@ -1,7 +1,7 @@
 /*
   File generated automatically from ../srlib/refalrts-commands.h
   Edit ../srlib/refalrts-commands.h first and then run:
-  $ rasl-constants ../srlib/refalrts-commands.h Opcodes.ref
+  $ rasl-constants ../srlib/refalrts-commands.h Opcodes.refi
 */
 
 $ENTRY NumberFromOpcode{
