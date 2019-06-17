@@ -18,7 +18,8 @@ $EXTERN LoadFile, Inc;
     TkOpenCall, TkOpenADT ~ char* -- имя функции
     TkComma, TkColon, TkAssign, TkSemicolon ~ пусто
     TkExtern, TkEntry, TkEnum, TkEEnum, TkSwap,
-    TkESwap, TkInclude, TkInline, TkDrive ~ пусто
+    TkESwap, TkInclude, TkInline, TkDrive,
+    TkSpec ~ пусто
     TkScopeId ~ пусто
     TkLabel ~ пусто
     TkEOF ~ пусто
@@ -233,6 +234,7 @@ DoScan-BuildKeyword {
       (TkSwap '$SWAP') (TkESwap '$ESWAP') (TkInclude '$INCLUDE')
       (TkScopeId '$SCOPEID') (TkLabel '$LABEL')
       (TkInline '$INLINE') (TkDrive '$DRIVE')
+      (TkSpec '$SPEC')
     : e.Keywords-B (s.Tag e.KeywordChars) e.Keywords-E
     = (s.Tag t.Pos)
       <DoScan <IncCol t.Pos Len e.KeywordChars> (e.Line) e.Lines>;

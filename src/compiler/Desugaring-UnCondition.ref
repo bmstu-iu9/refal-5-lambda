@@ -19,7 +19,7 @@ Transform-Unit {
   s.MarkupContext (NativeBlock t.SrcPos e.Code) = (NativeBlock t.SrcPos e.Code);
 
   s.MarkupContext (Spec (e.Name) e.Pattern)
-    = /* удаляем узлы #Spec, полноценная оптимизация будет в задаче (#126) */;
+    = (Spec (e.Name) e.Pattern);
 
   s.MarkupContext (s.EnumSwapDeclaration s.ScopeClass e.Name)
     = (s.EnumSwapDeclaration s.ScopeClass e.Name);

@@ -196,11 +196,16 @@ Pass-EnumerateVariables {
   e.AST =
     <Map
       {
-        (Function s.ScopeClass (e.Name) e.Body) =
-          (Function
-            s.ScopeClass (e.Name)
-            <EnumerateVars-Body 1 (/* переменные */) e.Body>
-          );
+        (Spec t.Name e.Pattern)
+          = <EnumerateVars-Expr 0 (/* переменные */) e.Pattern>
+          : t.ScopeVars e.EnumeratedPattern
+          = (Spec t.Name e.EnumeratedPattern);
+
+        (Function s.ScopeClass (e.Name) e.Body)
+          = (Function
+              s.ScopeClass (e.Name)
+              <EnumerateVars-Body 1 (/* переменные */) e.Body>
+            );
 
         t.OtherProgramElement = t.OtherProgramElement;
       }
@@ -872,6 +877,9 @@ Pass-CleanupRedudandExterns {
 
          (e.DefinedFunctions) (NativeBlock t.SrcPos e.Code)
            = (e.DefinedFunctions) (NativeBlock t.SrcPos e.Code);
+
+         (e.DefinedFunctions) (Spec t.SrcPos t.Name e.Pattern)
+           = (e.DefinedFunctions) (Spec t.SrcPos t.Name e.Pattern)
        }
        (/* defined functions */)
        e.AST

@@ -49,7 +49,7 @@ PrepareMessage {
 
   BadSpecForFunction = 'Bad fucntion specialization';
 
-  OrphanSpec = 'Orphan function specialization';
+  OrphanSpec e.FuncName = 'Orphan function specialization for ' e.FuncName;
 
   RepVarInSpecPattern s.Mode e.Index
     = 'Repeated variable ' s.Mode '.' e.Index ' in specialization pattern';

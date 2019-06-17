@@ -1,0 +1,7 @@
+$SPEC F (e.X) e.y;
+
+$ENTRY Go { = <F ('ab') 'cd'> }
+
+F {
+  (e.X) e.Y = e.X e.Y;
+}
