@@ -16,14 +16,14 @@ $EXTERN Log-Init, Log-Final;
 *$FROM Error
 $EXTERN PrintErr;
 
-*$FROM Library
-$EXTERN FOpen, FWriteBytes, FSeek, FTell, FClose, RenameFile;
-
 *$FROM FindFile
 $EXTERN FindFiles;
 
 *$FROM Engine
 $EXTERN CompileFile, GrammarCheck;
+
+*$FROM Library
+$EXTERN FOpen, FClose, FSeek, FTell, FWriteBytes, RenameFile;
 
 *$FROM Generator-RASL
 $EXTERN PutBlockReference, PutBlockIncorporated;
@@ -96,9 +96,7 @@ ReportMessages {
     = <Map
         {
           (s.Pos e.Message)
-            = <PrintErr
-                e.Prefix <Symb s.Pos> ': ' e.Banner ': ' e.Message
-              >;
+            = <PrintErr e.Prefix <Symb s.Pos> ': ' e.Banner ': ' e.Message>;
         }
         e.Messages
       >
