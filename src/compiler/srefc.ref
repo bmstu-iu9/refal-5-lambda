@@ -689,7 +689,7 @@ PostLinkRename {
     : /* пусто */
     = <RenameFile (e.TemporaryName) (e.TargetFileName)>
     : {
-        True = <Prout '** Compilation completed successfully **'>;
+        True = <Prout '** Compilation succeeded **'>;
 
         False
           = <LinkError
