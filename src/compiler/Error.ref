@@ -46,6 +46,10 @@ $ENTRY EL-Concat {
     = [ErrorList (e.FileName-L) e.Errors-L e.Errors-R];
 }
 
+$ENTRY PrintErr {
+  e.Message = <Putout stderr e.Message>;
+}
+
 $ENTRY EL-Destroy {
   [ErrorList (e.FileName)] = EL-NoErrors;
 
@@ -53,15 +57,15 @@ $ENTRY EL-Destroy {
     <Map
       {
         (NoPos e.Message) =
-          <Prout '  ERROR: ' e.Message>;
+          <PrintErr '  ERROR: ' e.Message>;
 
         ((FileLine s.LineNumber e.FileName^) e.Message) =
-          <Prout
+          <PrintErr
             e.FileName ':' <Symb s.LineNumber> ':ERROR: ' e.Message
           >;
 
         ((FileRowCol (s.Row s.Col) e.FileName^) e.Message)
-          = <Prout
+          = <PrintErr
               e.FileName ':' <Symb s.Row> ':' <Symb s.Col>
               ':' e.Message
             >;

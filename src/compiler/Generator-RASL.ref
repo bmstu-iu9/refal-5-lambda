@@ -3,6 +3,9 @@ $INCLUDE "LibraryEx";
 *$FROM DisplayName
 $EXTERN DisplayName;
 
+*$FROM Error
+$EXTERN PrintErr;
+
 $INCLUDE "Opcodes";
 
 $DRIVE NumberFromOpcode, NumberFromBracket, BlockTypeNumber;
@@ -451,14 +454,14 @@ ResolveLabeledDestinations {
             <ResolveLabeledDestinations (e.Labels) e.UnscannedRASL>;
 
         s.Other
-          = <Prout
+          = <PrintErr
               'Compilation failure in function ' <DisplayName e.FuncName> ':'
             >
-            <Prout
+            <PrintErr
               '  this function try jump over ' <Symb s.RelativeJump>
               ' commands, but maximum jump length is 65535.'
             >
-            <Prout '  Compilation aborted.'>
+            <PrintErr '  Compilation aborted.'>
             <Exit 1>;
       };
 
