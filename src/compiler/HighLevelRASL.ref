@@ -36,71 +36,71 @@ $EXTERN GenResult-Opt;
     | (CmdOpenELoop AlgLeft s.BracketNum s.VarNumber t.HiRASLCommand*)
 */
 $ENTRY HighLevelRASL {
-  s.Joint s.OptResult e.ProgramElements =
-    <Map
-      {
-        (Function s.ScopeClass (e.Name) Sentences e.Sentences) =
-          <Map
-            {
-              ((e.Pattern) e.Conditions (e.Result))
-                = <Map
-                    {
-                      (Condition (e.Name^) (e.Result^) (e.Pattern^))
-                        = (CmdConditionFunc GN-Local e.Name);
-                    }
-                    e.Conditions
-                  >;
-            }
-            e.Sentences
-          >
-          <HighLevelRASL-Function
-            <GenSentenceFunc s.Joint>
-            <GenResultFuncs s.OptResult>
-            s.ScopeClass (e.Name) e.Sentences
-          >;
+  s.Joint s.OptResult e.ProgramElements
+    = <Map
+        {
+          (Function s.ScopeClass (e.Name) Sentences e.Sentences) =
+            <Map
+              {
+                ((e.Pattern) e.Conditions (e.Result))
+                  = <Map
+                      {
+                        (Condition (e.Name^) (e.Result^) (e.Pattern^))
+                          = (CmdConditionFunc GN-Local e.Name);
+                      }
+                      e.Conditions
+                    >;
+              }
+              e.Sentences
+            >
+            <HighLevelRASL-Function
+              <GenSentenceFunc s.Joint>
+              <GenResultFuncs s.OptResult>
+              s.ScopeClass (e.Name) e.Sentences
+            >;
 
-        (Function s.ScopeClass (e.Name) NativeBody t.SrcPos e.Code) =
-          (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
+          (Function s.ScopeClass (e.Name) NativeBody t.SrcPos e.Code) =
+            (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
 
-        (Enum s.ScopeClass e.Name) =
-          (CmdEnum s.ScopeClass e.Name);
+          (Enum s.ScopeClass e.Name) =
+            (CmdEnum s.ScopeClass e.Name);
 
-        (Swap s.ScopeClass e.Name) =
-          (CmdSwap s.ScopeClass e.Name);
+          (Swap s.ScopeClass e.Name) =
+            (CmdSwap s.ScopeClass e.Name);
 
-        (Declaration s.ScopeClass e.Name) =
-          (CmdDeclaration s.ScopeClass e.Name);
+          (Declaration s.ScopeClass e.Name) =
+            (CmdDeclaration s.ScopeClass e.Name);
 
-        (Ident e.Name) = (CmdDefineIdent e.Name);
+          (Ident e.Name) = (CmdDefineIdent e.Name);
 
-        (NativeBlock t.SrcPos e.Code) =
-          (CmdEmitNativeCode t.SrcPos e.Code);
+          (NativeBlock t.SrcPos e.Code) =
+            (CmdEmitNativeCode t.SrcPos e.Code);
 
-        (Spec t.Name e.Pattern) = ;
-      }
-      e.ProgramElements
-    >;
+          (Spec t.Name e.Pattern) = ;
+        }
+        e.ProgramElements
+      >;
 }
 
 HighLevelRASL-Function {
   s.FnGenFunction s.FnGenSubst s.FnGenResult
-  s.ScopeClass (e.Name) /* нет предложений */ =
-    (CmdEnum s.ScopeClass e.Name);
+  s.ScopeClass (e.Name) /* нет предложений */
+    = (CmdEnum s.ScopeClass e.Name);
 
   s.FnGenFunction s.FnGenSubst s.FnGenResult
-  s.ScopeClass (e.Name) t.OneSentence =
+  s.ScopeClass (e.Name) t.OneSentence
     /* Нет смысла вызывать оптимизацию совместного сопоставления с образцом */
-    <HighLevelRASL-Function-Disjoint
-      s.FnGenSubst s.FnGenResult
-      s.ScopeClass (e.Name) t.OneSentence
-    >;
+    = <HighLevelRASL-Function-Disjoint
+        s.FnGenSubst s.FnGenResult
+        s.ScopeClass (e.Name) t.OneSentence
+      >;
 
   s.FnGenFunction s.FnGenSubst s.FnGenResult
-  s.ScopeClass (e.Name) e.Sentences =
-    <s.FnGenFunction
-      s.FnGenSubst s.FnGenResult
-      s.ScopeClass (e.Name) e.Sentences
-    >;
+  s.ScopeClass (e.Name) e.Sentences
+    = <s.FnGenFunction
+        s.FnGenSubst s.FnGenResult
+        s.ScopeClass (e.Name) e.Sentences
+      >;
 }
 
 GenSentenceFunc {
