@@ -4,7 +4,7 @@ compile_separated() {
   TARGET="$1"
   LIBS="$2"
 
-  ../../bin/srefc-core -C $SREFC_FLAGS $LIBS
+  ../../bin/srefc-core -C $SREFC_FLAGS $LIBS -d common
 
   for s in $LIBS; do
     grep '//FROM' < $s.ref > $TARGET/$s.rasl.froms

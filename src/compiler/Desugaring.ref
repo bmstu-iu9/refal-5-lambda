@@ -202,7 +202,10 @@ Pass-EnumerateVariables {
           = (Spec t.Name e.EnumeratedPattern);
 
         (Function s.ScopeClass (e.Name) e.Body)
-          = (Function s.ScopeClass (e.Name) <EnumerateVars-Body 1 (/* переменные */) e.Body>);
+          = (Function
+              s.ScopeClass (e.Name)
+              <EnumerateVars-Body 1 (/* переменные */) e.Body>
+            );
 
         t.OtherProgramElement = t.OtherProgramElement;
       }

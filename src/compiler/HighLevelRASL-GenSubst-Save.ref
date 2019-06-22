@@ -1,5 +1,4 @@
-*$FROM LibraryEx
-$EXTERN Inc;
+$INCLUDE "LibraryEx";
 
 *$FROM HighLevelRASL-Common
 $EXTERN Inc2, PrintVar, MakeSavers, TextFromExpr;

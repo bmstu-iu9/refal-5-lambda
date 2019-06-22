@@ -1,5 +1,4 @@
-*$FROM LibraryEx
-$EXTERN Inc, Map, Fetch, MapReduce;
+$INCLUDE "LibraryEx";
 
 *$FROM DisplayName
 $EXTERN DisplayName;
@@ -257,7 +256,7 @@ BuildString {
     == s.ContextOffset (e.CmdSaves) e.SubstitutesAnsJunks
 */
 $ENTRY MakeSavers {
-  s.OriginContextOffset e.SubstitutesAnsJunks
+  s.OriginContextOffset e.SubstitutesAndJunks
     = <MapReduce
         {
           (s.ContextOffset e.CmdSaves) (Junk e.Junk)
@@ -267,9 +266,18 @@ $ENTRY MakeSavers {
           (s.ContextOffset e.CmdSaves) (E s.Num /* пусто */)
             = (s.ContextOffset e.CmdSaves) (E s.Num /* пусто */);
 
-          /* Тривиальная подстановка не изменяет диапазоны */
-          (s.ContextOffset e.CmdSaves) (E s.Num (TkVariable 'e' e.Index))
-            = (s.ContextOffset e.CmdSaves) (E s.Num (TkVariable 'e' e.Index));
+          /*
+            Не раскомментировывать код ниже!!! Он ошибочный!!!
+
+            В подстановке E.num → e.Var переменная может быть повторной,
+            и её сопоставление диапазон изменяет. Анализировать на повторность
+            довольно сложно, поэтому пока проще отключить эту оптимизацию.
+            Дабы не возникало соблазна её добавить, код не удалён,
+            а оставлен закомментированным.
+          */
+*!!       /* Тривиальная подстановка не изменяет диапазоны */
+*!!       (s.ContextOffset e.CmdSaves) (E s.Num (TkVariable 'e' e.Index))
+*!!         = (s.ContextOffset e.CmdSaves) (E s.Num (TkVariable 'e' e.Index));
 
           /* В остальных случаях подстановки могут изменять диапазон */
           (s.ContextOffset e.CmdSaves) (E s.Num e.Range)
@@ -283,8 +291,8 @@ $ENTRY MakeSavers {
             = (s.ContextOffset e.CmdSaves) (s.S-or-T s.Num e.Range);
         }
         (s.OriginContextOffset /* CmdSave's */)
-        e.SubstitutesAnsJunks
+        e.SubstitutesAndJunks
       >
-    : (s.ContextOffset^ e.CmdSaves) e.SubstitutesAnsJunks^
-    = s.ContextOffset (e.CmdSaves) e.SubstitutesAnsJunks;
+    : (s.ContextOffset^ e.CmdSaves) e.SubstitutesAndJunks^
+    = s.ContextOffset (e.CmdSaves) e.SubstitutesAndJunks;
 }

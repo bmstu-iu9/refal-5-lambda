@@ -4,8 +4,7 @@ $EXTERN GenResult-Condition;
 *$FROM HighLevelRASL-Common
 $EXTERN Inc2, GenInitSubst, FoldOpenELoops, PutVariableDebugTable;
 
-*$FROM LibraryEx
-$EXTERN Inc, Max;
+$INCLUDE "LibraryEx";
 
 *$FROM HighLevelRASL-GenSubst-Save
 $EXTERN GenSubst-Save;

@@ -1,5 +1,4 @@
-*$FROM LibraryEx
-$EXTERN MapReduce, Map, OneOf, Inc;
+$INCLUDE "LibraryEx";
 
 *$FROM Hash
 $EXTERN HashLittle2-Chars;

@@ -1,5 +1,4 @@
-*$FROM LibraryEx
-$EXTERN Map;
+$INCLUDE "LibraryEx";
 
 *$FROM HighLevelRASL-DisjointFunc
 $EXTERN HighLevelRASL-Function-Disjoint;
@@ -37,71 +36,128 @@ $EXTERN GenResult-Opt;
     | (CmdOpenELoop AlgLeft s.BracketNum s.VarNumber t.HiRASLCommand*)
 */
 $ENTRY HighLevelRASL {
-  s.Joint s.OptResult e.ProgramElements =
-    <Map
-      {
-        (Function s.ScopeClass (e.Name) Sentences e.Sentences) =
-          <Map
-            {
-              ((e.Pattern) e.Conditions (e.Result))
-                = <Map
-                    {
-                      (Condition (e.Name^) (e.Result^) (e.Pattern^))
-                        = (CmdConditionFunc GN-Local e.Name);
-                    }
-                    e.Conditions
-                  >;
-            }
-            e.Sentences
-          >
-          <HighLevelRASL-Function
-            <GenSentenceFunc s.Joint>
-            <GenResultFuncs s.OptResult>
-            s.ScopeClass (e.Name) e.Sentences
-          >;
+  s.Joint s.OptResult e.ProgramElements
+    = <Map
+        {
+          (Function s.ScopeClass (e.Name) Sentences e.Sentences)
+            = <HighLevelRASL-Function
+                s.Joint s.OptResult s.ScopeClass (e.Name) e.Sentences
+              >;
 
-        (Function s.ScopeClass (e.Name) NativeBody t.SrcPos e.Code) =
-          (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
+          (Function s.ScopeClass (e.Name) NativeBody t.SrcPos e.Code) =
+            (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
 
-        (Enum s.ScopeClass e.Name) =
-          (CmdEnum s.ScopeClass e.Name);
+          (Enum s.ScopeClass e.Name) =
+            (CmdEnum s.ScopeClass e.Name);
 
-        (Swap s.ScopeClass e.Name) =
-          (CmdSwap s.ScopeClass e.Name);
+          (Swap s.ScopeClass e.Name) =
+            (CmdSwap s.ScopeClass e.Name);
 
-        (Declaration s.ScopeClass e.Name) =
-          (CmdDeclaration s.ScopeClass e.Name);
+          (Declaration s.ScopeClass e.Name) =
+            (CmdDeclaration s.ScopeClass e.Name);
 
-        (Ident e.Name) = (CmdDefineIdent e.Name);
+          (Ident e.Name) = (CmdDefineIdent e.Name);
 
-        (NativeBlock t.SrcPos e.Code) =
-          (CmdEmitNativeCode t.SrcPos e.Code);
+          (NativeBlock t.SrcPos e.Code) =
+            (CmdEmitNativeCode t.SrcPos e.Code);
 
-        (Spec t.Name e.Pattern) = ;
-      }
-      e.ProgramElements
-    >;
+          (Spec t.Name e.Pattern) = ;
+        }
+        e.ProgramElements
+      >;
 }
 
 HighLevelRASL-Function {
+  s.Joint s.OptResult s.ScopeClass (e.Name) e.Sentences
+
+    /*
+      Исправляем суффиксы функций-условий.
+
+      Имена этим функциям даются в процессе рассахаривания, но оптимизаторы
+      уровня дерева функции с условиями могут дублировать. Оптимизатор
+      прогонки создаёт функции Func*1, Func*2…, содержащие предложения
+      начиная с i-го, оптимизатор специализации создаёт специализированные
+      варианты, где вместо статических параметров подставлены актуальные
+      значения.
+
+      Поэтому имена условий уже не соответствуют именам тех функций,
+      в которых они находятся. Теоретическая проблема здесь: рассогласованность,
+      практическая: создаются дубликаты функций и программа не работает.
+
+      TODO: текущая реализация является костылём. Правильнее рассахаривателем
+      сохранять для функций-условий только суффиксы, а здесь их объединять
+      с актуальным именем.
+    */
+    = <MapAccum
+        {
+          (e.CondNames)
+          ((e.Pattern) e.Conditions (e.Result))
+            = <MapAccum
+                {
+                  (e.CondNames^)
+                  (Condition (e.CondName) (e.Result^) (e.Pattern^))
+                    = <FixupName (e.Name) e.CondName> : e.CondName^
+                    = (e.CondNames (e.CondName))
+                      (Condition (e.CondName) (e.Result) (e.Pattern))
+                }
+                (/* имена функций условий */)
+                e.Conditions
+              >
+            : (e.SentenceCondNames) e.Conditions^
+            = (e.CondNames e.SentenceCondNames)
+              ((e.Pattern) e.Conditions (e.Result));
+        }
+        (/* имена функций условий */)
+        e.Sentences
+      >
+    : (e.CondNames) e.Sentences^
+
+    = <Map
+        {
+          (e.CondName) = (CmdConditionFunc GN-Local e.CondName);
+        }
+        e.CondNames
+      >
+      <HighLevelRASL-Function-Aux
+        <GenSentenceFunc s.Joint>
+        <GenResultFuncs s.OptResult>
+        s.ScopeClass (e.Name) e.Sentences
+      >;
+}
+
+FixupName {
+  (e.Name SUF e.Suf) e.Name SUF e.CondSuf
+    = e.Name SUF <FixupName-Suf (e.Suf) e.CondSuf>;
+
+  (e.Name) e.Name SUF e.CondSuf = e.Name SUF e.CondSuf;
+}
+
+FixupName-Suf {
+  (s.Tag s.Num e.Suf) s.Tag s.Num e.CondSuf
+    = s.Tag s.Num <FixupName-Suf (e.Suf) e.CondSuf>;
+
+  (e.Suf) e.CondSuf = e.Suf e.CondSuf;
+}
+
+HighLevelRASL-Function-Aux {
   s.FnGenFunction s.FnGenSubst s.FnGenResult
-  s.ScopeClass (e.Name) /* нет предложений */ =
-    (CmdEnum s.ScopeClass e.Name);
+  s.ScopeClass (e.Name) /* нет предложений */
+    = (CmdEnum s.ScopeClass e.Name);
 
   s.FnGenFunction s.FnGenSubst s.FnGenResult
-  s.ScopeClass (e.Name) t.OneSentence =
+  s.ScopeClass (e.Name) t.OneSentence
     /* Нет смысла вызывать оптимизацию совместного сопоставления с образцом */
-    <HighLevelRASL-Function-Disjoint
-      s.FnGenSubst s.FnGenResult
-      s.ScopeClass (e.Name) t.OneSentence
-    >;
+    = <HighLevelRASL-Function-Disjoint
+        s.FnGenSubst s.FnGenResult
+        s.ScopeClass (e.Name) t.OneSentence
+      >;
 
   s.FnGenFunction s.FnGenSubst s.FnGenResult
-  s.ScopeClass (e.Name) e.Sentences =
-    <s.FnGenFunction
-      s.FnGenSubst s.FnGenResult
-      s.ScopeClass (e.Name) e.Sentences
-    >;
+  s.ScopeClass (e.Name) e.Sentences
+    = <s.FnGenFunction
+        s.FnGenSubst s.FnGenResult
+        s.ScopeClass (e.Name) e.Sentences
+      >;
 }
 
 GenSentenceFunc {

@@ -1,5 +1,4 @@
-*$FROM LibraryEx
-$EXTERN Fetch, Map, MapReduce, Inc;
+$INCLUDE "LibraryEx";
 
 *$FROM GST
 $EXTERN GST;

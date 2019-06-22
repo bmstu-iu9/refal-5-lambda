@@ -1,8 +1,4 @@
-*$FROM Version
-$EXTERN PrintVersion;
-
-*$FROM LibraryEx
-$EXTERN ArgList, LoadFile, Map, SaveFile, MapReduce, Inc, SaveBytes, LoadBytes;
+$INCLUDE "LibraryEx";
 
 *$FROM ParseCmdLine
 $EXTERN ParseCommandLine;
@@ -17,8 +13,8 @@ $EXTERN Config-GetLogFile,
 *$FROM Log
 $EXTERN Log-Init, Log-Final;
 
-*$FROM Library
-$EXTERN FOpen, FWriteBytes, FSeek, FTell, FClose, RenameFile;
+*$FROM Error
+$EXTERN PrintErr;
 
 *$FROM FindFile
 $EXTERN FindFiles;
@@ -26,12 +22,15 @@ $EXTERN FindFiles;
 *$FROM Engine
 $EXTERN CompileFile, GrammarCheck;
 
+*$FROM Library
+$EXTERN FOpen, FClose, FSeek, FTell, FWriteBytes, RenameFile;
+
 *$FROM Generator-RASL
 $EXTERN PutBlockReference, PutBlockIncorporated;
 
 
 $ENTRY Go {
-  = <PrintVersion 'Srefc'> <Main <ArgList>>;
+  = <Main <ArgList>>;
 }
 
 Main {
@@ -97,9 +96,7 @@ ReportMessages {
     = <Map
         {
           (s.Pos e.Message)
-            = <Prout
-                e.Prefix <Symb s.Pos> ': ' e.Banner ': ' e.Message
-              >;
+            = <PrintErr e.Prefix <Symb s.Pos> ': ' e.Banner ': ' e.Message>;
         }
         e.Messages
       >
@@ -592,7 +589,7 @@ PreLinkCleanupTemporary {
           = <RemoveFile e.Temporary>
           : {
               True ()
-                = <Prout 'Lost temporary file ' e.Temporary ' is removed'>;
+                = <PrintErr 'Lost temporary file ' e.Temporary ' is removed'>;
 
               False (e.ErrorMessage)
                 = <LinkError
@@ -690,7 +687,7 @@ PostLinkRename {
     : /* пусто */
     = <RenameFile (e.TemporaryName) (e.TargetFileName)>
     : {
-        True = <Prout '** Compilation completed successfully **'>;
+        True = <Prout '** Compilation succeeded **'>;
 
         False
           = <LinkError
@@ -738,7 +735,7 @@ CopyPrefix {
 
 LinkError {
   t.Config e.Message
-    = <Prout 'LINK ERROR: ' e.Message>
+    = <PrintErr 'LINK ERROR: ' e.Message>
       <CreateErrorFileMark t.Config>
       <Exit 1>;
 }

@@ -1,5 +1,4 @@
-*$FROM LibraryEx
-$EXTERN MapReduce, Inc, TermCompare, Map;
+$INCLUDE "LibraryEx";
 
 
 /**

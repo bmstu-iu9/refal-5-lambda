@@ -1,5 +1,4 @@
-*$FROM LibraryEx
-$EXTERN Map, Dec, Inc, Fetch, Pipe, Sort;
+$INCLUDE "LibraryEx";
 
 *$FROM HighLevelRASL-Common
 $EXTERN CollectStrings, IncVarOffset, PrintVar;

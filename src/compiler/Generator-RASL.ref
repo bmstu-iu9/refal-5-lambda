@@ -1,12 +1,14 @@
-*$FROM LibraryEx
-$EXTERN Map, UnBracket, Fetch, MapReduce, Inc, TermCompare;
+$INCLUDE "LibraryEx";
 
 *$FROM DisplayName
 $EXTERN DisplayName;
 
-*$FROM Opcodes
-$EXTERN NumberFromOpcode, NumberFromBracket, BlockTypeNumber;
+*$FROM Error
+$EXTERN PrintErr;
 
+$INCLUDE "Opcodes";
+
+$DRIVE NumberFromOpcode, NumberFromBracket, BlockTypeNumber;
 
 $ENTRY GenProgram-RASL {
   (
@@ -89,13 +91,19 @@ BytesFromStringList {
     >;
 }
 
+$INLINE BytesFromString;
+
 BytesFromString {
   e.String = <Ord e.String>;
 }
 
+$INLINE Asciiz;
+
 Asciiz {
   e.String = <BytesFromString e.String> 0;
 }
+
+$INLINE PutBlock;
 
 PutBlock {
   s.Type e.Bytes =
@@ -115,6 +123,8 @@ PutWordLE {
     = <Divmod s.Value 256> : (s.ValueHigh) s.ValueLow
     = <PutWordLE e.Bytes s.ValueLow s.ValueHigh>;
 }
+
+$DRIVE NameWithSign-Bytes;
 
 NameWithSign-Bytes {
   GN-Entry e.Name = <Asciiz '*' <DisplayName e.Name>>;
@@ -354,6 +364,8 @@ GenCommand-RASL {
     <PutCommand CmdFail>;
 }
 
+$INLINE PutCommand;
+
 PutCommand {
   s.Symbolic = (<NumberFromOpcode s.Symbolic> 0 0 0);
 
@@ -372,6 +384,8 @@ PutCommand {
       };
 }
 
+$DRIVE CreateCommandTag;
+
 CreateCommandTag {
   ElOpenBracket = ElBracket;
   ElOpenADT = ElBracket;
@@ -382,6 +396,8 @@ CreateCommandTag {
 
   s.Other = s.Other;
 }
+
+$DRIVE CreateCommandInfo;
 
 CreateCommandInfo {
   ElChar s.Char = <Ord s.Char>;
@@ -438,14 +454,14 @@ ResolveLabeledDestinations {
             <ResolveLabeledDestinations (e.Labels) e.UnscannedRASL>;
 
         s.Other
-          = <Prout
+          = <PrintErr
               'Compilation failure in function ' <DisplayName e.FuncName> ':'
             >
-            <Prout
+            <PrintErr
               '  this function try jump over ' <Symb s.RelativeJump>
               ' commands, but maximum jump length is 65535.'
             >
-            <Prout '  Compilation aborted.'>
+            <PrintErr '  Compilation aborted.'>
             <Exit 1>;
       };
 

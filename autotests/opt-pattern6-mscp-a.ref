@@ -1,0 +1,18 @@
+$ENTRY Go {
+  /* empty */
+    , (var e X) 'A' : e.Val
+    , (assign (var e Res) ('B')) : e.Asgs
+    , ((assign (var e Res) ('B')) (assign (var e X) ((par e 1))))
+      ((par e 1) 'A')
+    : {
+        (e.Asgs) (e.Val) = <{}>;
+
+        (e.newasgmnts) (e.NewVal) = <ReplacePRTCAsgs e.newasgmnts>
+       };
+}
+
+ReplacePRTCAsgs {
+  (assign (var e Res) ('B'))
+  (assign (var e X) ((par e 1)))
+    = /* Ok */
+}

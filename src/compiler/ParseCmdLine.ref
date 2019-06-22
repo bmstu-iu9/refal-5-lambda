@@ -1,8 +1,7 @@
 *$FROM GetOpt
 $EXTERN GetOpt;
 
-*$FROM LibraryEx
-$EXTERN Fetch, Pipe, MapReduce, Map;
+$INCLUDE "LibraryEx";
 
 *$FROM Config
 $EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
@@ -11,7 +10,12 @@ $EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
   Config-SetTargetSuffix, Config-SetSearchFolder, Config-SetPrefix,
   Config-AddReference, Config-SetTargetMode, Config-AddIncorporated,
   Config-SetChmodXCommand, Config-SetPrelude, Config-SetR5Mode,
-  Config-SetLogFile, Config-SetTreeOptCycles, Config-SetIncorporated;
+  Config-SetLogFile, Config-SetTreeOptCycles, Config-SetIncorporated,
+  Config-KeepRasls, Config-TempDir, Config-RenameExistRasls;
+
+*$FROM Version
+$EXTERN PrintVersion;
+
 
 /**
   <ParseCommandLine e.Arguments>
@@ -55,6 +59,14 @@ $ENTRY ParseCommandLine {
           (Log Required ('log'))
           (TreeOptCycles Required ('opt-tree-cycles'))
           (Incorporated Required ('incorporated'))
+          (Help None ('help'))
+          (Version None ('version'))
+          (KeepRasls None ('keep-rasl') ('keep-rasls'))
+          (DontKeepRasls None ('dont-keep-rasl') ('dont-keep-rasls'))
+          (TempDir Required ('tmp-dir') ('temp-dir'))
+          (REF5RSL-Env None ('ref5rsl'))
+          (RenameExistRasls ('rename-exist-rasls'))
+          (DontRenameExistRasls ('dont-rename-exist-rasls'))
         )
         e.Arguments
       >
@@ -181,6 +193,29 @@ $ENTRY ParseCommandLine {
                   t.Config (e.Errors) &Config-AddIncorporated s.Num e.LibName
                 >;
 
+            (t.Config e.Errors) (Help s.Num) = <PrintHelp> (t.Config e.Errors);
+
+            (t.Config e.Errors) (Version s.Num)
+              = <PrintVersion 'Srefc'> (t.Config e.Errors);
+
+            (t.Config e.Errors) (KeepRasls s.Num)
+              = <Update t.Config (e.Errors) &Config-KeepRasls True>;
+
+            (t.Config e.Errors) (DontKeepRasls s.Num)
+              = <Update t.Config (e.Errors) &Config-KeepRasls False>;
+
+            (t.Config e.Errors) (TempDir s.Num e.Name)
+              = <Update t.Config (e.Errors) &Config-TempDir e.Name>;
+
+            (t.Config e.Errors) (REF5RSL-Env s.Num)
+              = (t.Config e.Errors) (REF5RSL-Env s.Num);
+
+            (t.Config e.Errors) (RenameExistRasls s.Num)
+              = <Update t.Config (e.Errors) &Config-RenameExistRasls True>;
+
+            (t.Config e.Errors) (DontRenameExistRasls s.Num)
+              = <Update t.Config (e.Errors) &Config-RenameExistRasls False>;
+
             (t.Config e.Errors) t.Option
               = (t.Config e.Errors) t.Option;
           }
@@ -189,6 +224,9 @@ $ENTRY ParseCommandLine {
           {
             (t.Config e.Errors) (SearchFolder s.Num e.Folder)
               = (<Config-SetSearchFolder t.Config e.Folder> e.Errors);
+
+            (t.Config e.Errors) (REF5RSL-Env s.Num)
+              = (<Config-SetSearchFolder t.Config REF5RSL> e.Errors);
 
             (t.Config e.Errors) (FILE s.Num e.FileName)
               = (t.Config e.Errors) (s.Num e.FileName);
@@ -252,4 +290,96 @@ Update {
             = (t.Config e.Errors (s.LineNum e.ErrorMessage));
         }
       >;
+}
+
+PrintHelp {
+  = <Prout
+'srefc-core flags... filenames...\n'
+'srefc-core @flag-list-file.txt\n'
+'\n'
+'-c, --cpp-command, --cpp-command-exe command-line\n'
+'        C++ command line prefix for building executable module\n'
+'--cpp-command-lib command-line\n'
+'        C++ command line prefix for building library module\n'
+'-f, --cpp-flag flag\n'
+'        Additional flag for C++ compiler, quoted in command line\n'
+'-F, --cpp-flags flags\n'
+'        Additional flags for C++ compiler, don\'t quoted in command line\n'
+'-g, --debug-info\n'
+'        Information of variable table for step-by-step debugger\n'
+'-e, --error-file filename\n'
+'        Compiler creates empty file with this name if compilation failed\n'
+'--grammar-check\n'
+'        Dont compile sources, only syntax (w/o semantic) check for sources\n'
+'--incorporated filename\n'
+'        Marks that a module with the name is statically linked to this module\n'
+'--markup-context\n'
+'        Save catched variable names in closure content\n'
+'-O keys[change]\n'
+'        Optimization keys:\n'
+'          -OP - conjoint pattern optimization\n'
+'          -OQ - extended conjoint pattern optimization\n'
+'          -OR - building result optimization\n'
+'          -Od - use direct code generation instead interpretation code,\n'
+'                compile functions to C++ instead RASL\n'
+'          -OT - tree optimization (expands direct calls for closures)\n'
+'          -OD - drive functions with $DRIVE, inline functions with $INLINE\n'
+'          -OI - inline functions with $DRIVE and $INLINE\n'
+'          -OS - specialize functions with $SPEC\n'
+'        Flags D, I, S implicitly contain T\n'
+'        Change key mode (optional):\n'
+'          -O...+ - set the flags with previous setted\n'
+'          -O...- - reject the flags from previous setted\n'
+'          -O...= - assign the flags, previous setted will be skipped\n'
+'-p, --prefix prefix-name\n'
+'        set prefix file name\n'
+'-r, --reference reference-name\n'
+'        Compiled module depends from the reference\n'
+'-D, --runtime-dir, --runtime-directory dir\n'
+'        Add the directory to search list and include list for C++ compiler\n'
+'-d, --dir, --directory dir\n'
+'        Add the directory to search list\n'
+'-o, --target-file target-file-name\n'
+'        Name of target file\n'
+'-x, --makeexe\n'
+'        Compile to executable file\n'
+'-l, --makelib\n'
+'        Compile to library file (with or w/o native code)\n'
+'-R      Compile to library RASL module (w/o native code)\n'
+'-C, --compile-only\n'
+'        Compile sources w/o linking\n'
+'--targsuffix, --targetsuffix, --targsuf, --exesuffix, --exesuf suffix\n'
+'        Suffix for executable file (for example, .exe)\n'
+'--libsuffix, --libsuf suffix\n'
+'        Suffix for library file (for example, .dll or .so)\n'
+'--chmod-x, --chmod-x-command command\n'
+'        Must be empty on Windws, "chmod +x" on POSIX\n'
+'--prelude filename.refi\n'
+'        Prelude file with builtin functions declarations\n'
+'--classic, --extended\n'
+'        Switch Refal-5-lambda syntax analyzer to full compatibility\n'
+'        with classic Refal-5 or not. Default is --extended\n'
+'--log logfile.log\n'
+'        Logs compilation process. Compiler writes to log syntax tree\n'
+'        after desugaring, after tree optimization, high-leve RASL\n'
+'--opt-tree-cycles number\n'
+'        Max number of tree optimization passes\n'
+'--help  Print this help\n'
+'--version\n'
+'        Print version\n'
+'--keep-rasl, --keep-rasls, --dont-keep-rasl, --dont-keep-rasls\n'
+'        Save or don\'t save temporary .rasl after compilation\n'
+'--tmp-dir, --temp-dir directory\n'
+'        Directory for intermediate .rasl files, current is default\n'
+'--ref5rsl\n'
+'        Use environment variable REF5RSL as search path\n'
+'--rename-exist-rasls, --dont-rename-exist-rasls\n'
+'        If tmp-dir already contain file with name that being produced\n'
+'        new file use new name\n'
+'\n'
+'Long keys with params may be used with equation:\n'
+'--tmp-dir dirname or --tmp-dir=dirname\n'
+'\n'
+'Each line of arg-list-file.txt is interpreted as independed key\n'
+    >;
 }

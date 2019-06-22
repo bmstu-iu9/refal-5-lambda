@@ -1,5 +1,4 @@
-*$FROM LibraryEx
-$EXTERN Map, Trim-R;
+$INCLUDE "LibraryEx";
 
 *$FROM DisplayName
 $EXTERN DisplayName;

@@ -1,12 +1,167 @@
-*$FROM LibraryEx
-$EXTERN Apply, Map, Reduce, Fetch, Y, MapAccum, UnBracket, DelAccumulator,
-  Inc, Dec, FastIntFromStr, Pipe, Seq;
+* Расширения библиотеки и функции, реализуемые
+* средствами самого Простого Рефала
+
+/**
+  <Apply t.Closure e.Arg> == e.Res
+
+  t.Closure ::=
+      s.FUNCTION
+    | (t.Closure e.Bounded)
+  e.Arg, e.Res, e.Bounded ::= e.AnyExpr
+*/
+Apply {
+  s.Fn e.Argument = <s.Fn e.Argument>;
+
+  (t.Closure e.Bounded) e.Argument
+    = <Apply t.Closure e.Bounded e.Argument>;
+}
+
+$INLINE Apply;
+
+
+/**
+  <Map t.Closure t.Item*> == e.ItemRes*
+
+  <Apply t.Closure t.Item> == e.ItemRes
+*/
+Map {
+  t.Fn t.Next e.Tail = <Apply t.Fn t.Next> <Map t.Fn e.Tail>;
+
+  t.Fn = ;
+}
+
+$SPEC Map t.FUNC e.items;
+
+
+/**
+  <Reduce t.Closure t.Accum t.Item*> == t.Accum′
+
+  <Apply t.Closure t.Accum t.Item> == t.Accum′
+  t.Accum′ ::= t.Accum
+*/
+Reduce {
+  t.Fn t.Acc t.Next e.Tail
+    = <Reduce
+        t.Fn <Apply t.Fn t.Acc t.Next> e.Tail
+      >;
+
+  t.Fn t.Acc = t.Acc;
+}
+
+$SPEC Reduce t.FUNC t.accum e.items;
+
+
+Fetch {
+  e.Argument t.Function = <Apply t.Function e.Argument>;
+}
+
+$INLINE Fetch;
+
+
+/**
+  <MapAccum t.Closure t.Accum t.Item*> == t.Accum′ e.ItemRes*
+
+  <Apply t.Closure t.Accum t.Item> == t.Accum′ e.ItemRes
+  t.Accum′ ::= t.Accum
+*/
+MapAccum {
+  t.Fn t.Acc e.Tail = <DoMapAccum t.Fn t.Acc () e.Tail>;
+}
+
+$SPEC MapAccum t.FUNC t.accum e.items;
+
+DoMapAccum {
+  t.Fn t.Acc (e.Scanned) t.Next e.Tail
+    = <DoMapAccum-Aux
+        t.Fn (e.Scanned) (<Apply t.Fn t.Acc t.Next>) e.Tail
+      >;
+
+  t.Fn t.Acc (e.Scanned) = t.Acc e.Scanned;
+}
+
+$SPEC DoMapAccum t.FUNC t.acc (e.scanned) e.items;
+
+DoMapAccum-Aux {
+    t.Fn (e.Scanned) (t.Acc^ e.StepScanned) e.Tail
+    = <DoMapAccum
+        t.Fn t.Acc (e.Scanned e.StepScanned) e.Tail
+      >;
+}
+
+$SPEC DoMapAccum-Aux t.FUNC (e.scanned) (t.acc e.step-scanned) e.items;
+
 
 * Function MapReduce is deprecated!!!
 * Use MapAccum instead it.
+MapReduce {
+  t.Fn t.Acc e.Tail = <MapAccum t.Fn t.Acc e.Tail>;
+}
+
+$INLINE MapReduce;
+
+
+UnBracket {
+  (e.Expr) = e.Expr;
+}
+
+$DRIVE UnBracket;
+
+
+/**
+  <DelAccumulator t.Accum e.AnyExpr> == e.AnyExpr
+*/
+DelAccumulator {
+  t.Acc e.Tail = e.Tail;
+}
+
+$DRIVE DelAccumulator;
+
+
+/**
+  <Inc e.LongNumber> == e.LongNumber
+  <Dec e.LongNumber> == e.LongNumber
+*/
+Inc {
+  e.Num = <Add 1 e.Num>;
+}
+
+Dec {
+* Оптимизация для одной макроцифры
+  s.Num = <Sub s.Num 1>;
+  e.Num = <Sub (e.Num) 1>;
+}
+
+$INLINE Inc, Dec;
+
+
+/**
+  <Pipe s.F1 s.F2 ... s.Fn> == s.Compose
+
+  <s.Compose e.X> == <s.Fn ... <s.F2 <s.F1 e.X>>...>
+
+  Seq (deprecated) is synonim for Pipe
+*/
+Pipe {
+  t.Func = t.Func;
+
+  t.Func e.Funcs
+    = {
+        e.Arg = <Fetch <Apply t.Func e.Arg> <Pipe e.Funcs>>;
+      };
+
+  /* пусто */ = { e.Arg = e.Arg; };
+}
+
+/**
+  Seq is deprecated, use Pipe
+*/
+Seq { e.Funcs = <Pipe e.Funcs>; }
+
+$INLINE Pipe, Seq;
+
 
 *$FROM LibraryEx
-$EXTERN MapReduce;
+$EXTERN Y, FastIntFromStr, Pipe, Seq;
 
 *$FROM LibraryEx
 $EXTERN LoadFile, SaveFile, AppendFile, LoadBytes, SaveBytes, AppendBytes,

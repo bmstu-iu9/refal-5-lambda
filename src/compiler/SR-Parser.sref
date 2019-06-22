@@ -1,5 +1,4 @@
-//FROM LibraryEx
-$EXTERN Fetch, Map;
+$INCLUDE "LibraryEx";
 
 //FROM Error
 $EXTERN EL-AddErrorAt;

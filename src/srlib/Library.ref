@@ -85,6 +85,16 @@ NormArithmArg {
     , <NormNumber e.Second> : s.SecondSign e.Second^
     = ('+' s.First) s.SecondSign e.Second;
 
+  '+' s.First e.Second
+    , <Type s.First> : 'N' s.SubType s.First^
+    , <NormNumber e.Second> : s.SecondSign e.Second^
+    = ('+' s.First) s.SecondSign e.Second;
+
+  '-' s.First e.Second
+    , <Type s.First> : 'N' s.SubType s.First^
+    , <NormNumber e.Second> : s.SecondSign e.Second^
+    = ('-' s.First) s.SecondSign e.Second;
+
   (e.First) e.Second
     , <NormNumber e.First> : s.FirstSign e.First^
     , <NormNumber e.Second> : s.SecondSign e.Second^

@@ -1,5 +1,4 @@
-*$FROM LibraryEx
-$EXTERN Reduce, Fetch, Pipe, MapReduce, Map, OneOf;
+$INCLUDE "LibraryEx";
 
 *$FROM Error
 $EXTERN EL-AddErrorAt;

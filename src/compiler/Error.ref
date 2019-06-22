@@ -1,5 +1,5 @@
-*$FROM LibraryEx
-$EXTERN Map, Sort;
+$INCLUDE "LibraryEx";
+
 
 /**
   Внутренний формат:
@@ -46,25 +46,24 @@ $ENTRY EL-Concat {
     = [ErrorList (e.FileName-L) e.Errors-L e.Errors-R];
 }
 
+$ENTRY PrintErr {
+  e.Message = <Putout stderr e.Message>;
+}
+
 $ENTRY EL-Destroy {
   [ErrorList (e.FileName)] = EL-NoErrors;
 
   [ErrorList (e.FileName) e.Errors] =
     <Map
       {
-        (NoPos e.Message) =
-          <Prout '  ERROR: ' e.Message>;
+        (NoPos e.Message)
+          = <PrintErr '  ERROR: ' e.Message>;
 
-        ((FileLine s.LineNumber e.FileName^) e.Message) =
-          <Prout
-            e.FileName ':' <Symb s.LineNumber> ':ERROR: ' e.Message
-          >;
+        ((FileLine s.LineNumber e.FileName^) e.Message)
+          = <PrintErr e.FileName ':' <Symb s.LineNumber> ':ERROR: ' e.Message>;
 
         ((FileRowCol (s.Row s.Col) e.FileName^) e.Message)
-          = <Prout
-              e.FileName ':' <Symb s.Row> ':' <Symb s.Col>
-              ':' e.Message
-            >;
+          = <PrintErr e.FileName ':' <Symb s.Row> ':' <Symb s.Col> ':' e.Message>;
       }
       <Sort e.Errors>
     >
