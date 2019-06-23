@@ -60,7 +60,8 @@ $ENTRY OptTree-Spec-ExtractOptInfo {
 $ENTRY OptTree-Spec {
   NoOpt (e.SpecInfo) e.AST = (e.SpecInfo) e.AST;
 
-  OptSpec ((/* no names */) /* no info */) e.AST = e.AST;
+  OptSpec ((/* no names */) /* no info */) e.AST
+    = ((/* no names */) /* no info */) e.AST;
 
   OptSpec ((e.Names) e.SpecInfo) e.AST
     = <MapAccum &SpecUnit (e.SpecInfo (/* new functions */)) e.AST>
@@ -242,7 +243,7 @@ SpecCall {
               (e.SpecPattern) (e.RenamedGenericMatches) e.Body
             >
           : e.SentencesWithSubstitutions
-          = <Spec-CreateSpecializedFuncCall e.GenericMatches>
+          = <Spec-CreateSpecializedFuncCall (e.SpecPattern) e.GenericMatches>
           : e.SpecializedFuncArgument
           = <Spec-PrepareSpecializedFuncBody e.SentencesWithSubstitutions>
           : (e.SpecializedFuncBody)
@@ -415,7 +416,9 @@ Spec-DoesMeetSignature {
     : e.Signature
     = <Eq (e.Signature) (e.SignatureToCompare)>
     : {
-        True = True <Spec-CreateSpecializedFuncCall e.GenericMatches>;
+        True
+          = True
+            <Spec-CreateSpecializedFuncCall (e.SpecPattern) e.GenericMatches>;
 
         False = False;
       };
@@ -542,19 +545,23 @@ Spec-RenameArgStaticVars {
 }
 
 Spec-CreateSpecializedFuncCall {
-  e.GenericMatches
+  (e.Pattern) e.GenericMatches
     = <MapAccum
         {
-          (e.Vars) (e.Val ':' t.Var)
-          , <IsSpecStaticVar t.Var>
+          t.Pattern (e.Val ':' (e.Var))
+          , <IsSpecStaticVar (e.Var)>
           : True
-          = (e.Vars <WrapEVar <ExtractVariables-Expr e.Val>>);
+          = (
+              <FindReplace-Expr
+                t.Pattern ((TkVariable e.Var))
+                <FindAndFormatVarTerm <WrapEVar <ExtractVariables-Expr e.Val>>>
+              >
+            );
 
-          (e.Vars) (e.Val ':' ('e' e.Index)) = (e.Vars (Brackets e.Val));
-
-          (e.Vars) (e.Val ':' t.Var) = (e.Vars e.Val);
+          t.Pattern (e.Val ':' (e.Var))
+            = (<FindReplace-Expr t.Pattern ((TkVariable e.Var)) e.Val>);
         }
-        ()
+        (e.Pattern)
         e.GenericMatches
       >
     : (e.NewCall)
@@ -584,34 +591,15 @@ FindAndFormatVarTerm-Aux {
   (CallBrackets e.Expression)
      = (CallBrackets <FindAndFormatVarTerm e.Expression>);
 
+  (ColdCallBrackets e.Expression)
+     = (ColdCallBrackets <FindAndFormatVarTerm e.Expression>);
+
   (ClosureBrackets e.ClosureContent)
     = (ClosureBrackets <FindAndFormatVarTerm e.ClosureContent>);
 }
+
 Spec-PrepareFactArgSubstitution {
   (e.SpecPattern) (e.RenamedGenericSpecFactMatches) e.Body
-    = <MapAccum
-        {
-          (e.SpecPattern) ((e.SentencePattern) e.Conditions (e.SentenceResult))
-            = <GenericMatch (e.SentencePattern) (e.SpecPattern)>
-            : Clear e.GenericSpecSentenceMatches
-            = <MapAccum
-                {
-                  (e.Pattern) (e.Val ':' ('e' e.Index))
-                    = (<FindReplace-Expr (e.Pattern) (e.Val) (Brackets e.Val)>);
-
-                  (e.Pattern) (e.Val ':' t.Var) = (e.Pattern);
-                }
-                (e.SentencePattern)
-                e.GenericSpecSentenceMatches
-              >
-            : (e.SentencePattern^)
-            = (e.SpecPattern)
-              ((e.SentencePattern) e.Conditions (e.SentenceResult));
-        }
-        (e.SpecPattern)
-        e.Body
-      >
-    : (e.SpecPattern) e.Body^
     = <MapAccum
         {
           ((e.SpecPattern) (e.RenamedGenericSpecFactMatches) (e.SentencesMatches))
@@ -697,26 +685,14 @@ Spec-PrepareSpecializedFuncBody {
 }
 
 Spec-PreparePattern {
-  (e.Substitutions) /* empty */
-    = /* empty */;
-
   (e.Substitutions) e.Pattern
     = <MapAccum
         {
-          (e.Pattern) (e.Val ':' e.Val) = (e.Pattern);
-
-          (e.Pattern) (e.ReplaceToVal ':' ('e' e.Index))
-            = (
-                <FindReplace-Expr (e.Pattern) (('e' e.Index))
-                  (Brackets <ExtractVariables-Expr e.ReplaceToVal>)
-                >
-              );
-
           (e.Pattern) (e.ReplaceToVal ':' t.ReplaceVar)
             = (
                 <FindReplace-Expr
                   (e.Pattern) (t.ReplaceVar)
-                  <ExtractVariables-Expr e.ReplaceToVal>
+                  <WrapEVar <ExtractVariables-Expr e.ReplaceToVal>>
                 >
               );
         }
@@ -800,6 +776,9 @@ IsSpecStaticVar {
 }
 
 WrapEVar {
+  (TkVariable 'e' e.Index) e.Tail
+    = (Brackets (TkVariable 'e' e.Index)) <WrapEVar e.Tail>;
+
   ('e' e.Index) e.Tail  = (Brackets ('e' e.Index)) <WrapEVar e.Tail>;
 
   t.Other e.Tail = t.Other <WrapEVar e.Tail>;
