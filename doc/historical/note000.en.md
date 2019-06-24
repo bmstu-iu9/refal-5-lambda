@@ -16,7 +16,7 @@ same-named local functions of different translation units by comparison in
 equality (use of the same-named variables) are unequal to each other (in
 contrast to Refal-2 and Refal-7, in which the equality of two names is defined
 by their names). There are no built-in functions, all functions that are used
-in the program either declared in the current translation unit or appears to be
+in the program either declared in the current translation unit or appear to be
 external. Such useful extensions as abstract data types are not implied.
 Existing subset of Refal is the basic Refal.
 
@@ -126,7 +126,7 @@ a named set consists of the name of the set, the equal sign and enumeration of
 the sets included in it. The declaration of a set, like the sentence of an
 automaton, ends with a period. The content of the set is the union of the sets
 listed to the right of the sign equals. Therefore recursive dependence of sets
-is admissible. Named sets allow not only to reduce the description of
+is admissible. Named sets allow not only reducing the description of
 sentences, but also to increase the clarity of the program.
 
 Also there is a special named set `:Any:`, which includes all possible symbols.
@@ -336,12 +336,12 @@ receiving the source text, creates and use another ADT – a symbol stream
 calculating the numbers of strings.
 
 In simplifying the working with defined sets of symbols purposes (for example,
-the tail of name symbols – leters, figures, `-`, `_`, `?`, `!`), the symbols
+the tail of name symbols – letters, figures, `-`, `_`, `?`, `!`), the symbols
 stream class have methods for extracting the sequence of symbols from some set.
 The symbol stream class itself includes the file descriptor and read file
 string-by-string, as if it needed.
 
-Such architecture decision (scanner class on demand reads the lexems, symbol
+Such architecture decision (scanner class on demand reads the lexemes, symbol
 stream class on demand reads the following file strings), what differs from the
 first three methods, never fully occupy memory with the file and lexical parse.
 That’s why Modular Refal could quite easy (without calculation of lost time)
@@ -372,28 +372,28 @@ will be sufficient enough.
 The second variant too well enough, because it’s let us cut the source code
 short, putting out the general search code within set to the separate function.
 But method isn’t sufficient: as we can recognize by a row of functions, sets
-every time require reload, because the sets to handler functions is not
+every time require reload, because the sets to handler functions are not
 transmitted.
 
-An method with lexical analisator generator could be mixed up with method of
+A method with lexical analyzer generator could be mixed up with method of
 lexical analysis within Modular Refal – with using the same format of
-transfer table describing, it’s possible to create code, which reads lexems
+transfer table describing, it’s possible to create code, which reads lexemes
 from file sequentially. That’s why there possible to unite advantages of both
-methods: the high-leveled lexem description and memory economy.
+methods: the high-leveled lexeme description and memory economy.
 
 ## \[3] Compiler features.
-In this laboratory work while I were constructing compiler I check out for
+In this laboratory work while I was constructing compiler I check out for
 myself some new tricks. In particular, had been used triple-leveled simplified
 parsing algorithm and independent generation of different code elements. For
 generation of separate sentences under construction was abstract algorithm
-(for each sentence) like an imperative commands sequence. Later this algorithm
+(for each sentence) like an imperative command sequence. Later this algorithm
 transformed yet to code, and the separate commands were generating almost
 independent one of other.
 
 The compiler itself left unfinished for the ready product, but as for the
 prototype it’s good enough. From several possibilities, which were ought to be
 realized or remake: is standard library catalogs support – into the present
-version all the file pathes is setting or as absolute, or as relative from the
+version all the file paths is setting or as absolute, or as relative from the
 present folder; the choosing possibility of C like compiler – within present
 version program calls program `call_cpp_compiler`, which appears to be the
 .bat-like into the present folder; the support of arithmetics at least at the
@@ -414,7 +414,7 @@ Shortly about numbers. The integers doesn’t interpretates as macrodigits of
 some limitless by length number, because of library functions Add and Sub have
 format `<s.Func s.Num1 s.Num2> == s.Res`, means that it supports only twin atomic
 argument (which must be the numbers) and return integer result as single
-symbol. If only numbers could be interpretated as macrodigits, the library
+symbol. If only numbers could be interpreted as macrodigits, the library
 functions will be working with rows of numbers. By the way, all the arithmetic
 within this dialect is limited only with two functions Add and Sub. For
 transforming the number <---> string separate primitive functions used. The
@@ -436,7 +436,7 @@ corresponds with the meaning of translation unit – the relic, which at first
 appeared on Fortran (language was able to support the separate translation, at
 expense of what on Fortran was written a lot of libraries, some of which in
 still in use nowadays) and after saved within C and C++.) divide on two
-classes: local and entry-functions. Those classes corresponds functions with
+classes: local and entry-functions. Those classes correspond functions with
 static and external configuration of C/C++ languages.
 
 > _Mazdaywik, 2018-01-18:_ yes, previous paragraph has very ugly language,
@@ -445,7 +445,7 @@ static and external configuration of C/C++ languages.
 
 For the access to functions from the different translation unit using `$EXTERN`
 directive, which corresponds with same memory class with the same name in
-C/C++. In REFAL programing often in use the symbol names, which have sense of
+C/C++. In REFAL programming often in use the symbol names, which have sense of
 flags and tags, instead of callable functions. Many (but not REFAL-2 and Simple
 Refal) have built-in support the symbol names – atoms of corresponding type is
 nominated as identifiers or tags (in literature I met the different
@@ -516,7 +516,7 @@ undefined.
 
 Within language strangely enough, was no place for the global variables: I’ve
 got used to program on REFAL without them, that’s why compiler complication
-with useless remedy I didn’t done. In case of sudden need, I able to write on C
+with useless remedy I didn’t do. In case of sudden need, I able to write on C
 stack support.
 
 ## (3.2) Several words about regular functions.
@@ -540,12 +540,12 @@ example with program based on C), then practical using of them will be
 complicated – they extremely insufficient. That’s why language need primitive
 functions, executing primitive operations.
 
-Within actual compiler accepted the following model. Inputting the built-in
-functions to language are ideologically disgusting  for me, because the functions are related
-to user-level definitions, but execute language-level actions.
+Within actual compiler accepted the following model. Inputing the built-in
+functions to language is ideologically disgusting for me, because the functions
+is related to user-level definitions, but execute language-level actions.
 Besides for the built-in functions executes special rules, for instance, they
 don’t need to introduce. That’s why I made the primitive operations as external
-– as in C like language – there are too absent built-in functions. Because of
+– as in C like language – there is too absent built-in functions. Because of
 being the primitive operations (those, that impossible create with REFAL
 sources) is external, than exactly user too able to write a him/herself
 primitive functions based on C++ language and it too will be external.
@@ -607,7 +607,7 @@ regular).
 
     ResultTerm = PatternTerm | '<' | '>' .
 
-And describe such state machine will be much easier (in REFAL it is surprisingly
+And describe such state machine will be much easyer (in REFAL it is surprisingly
 easy to write state machine programs). After finishing the pattern and result
 analysis it is possible to separately check the brackets balance in them. In
 program I went much further: in separate procedure I took out the variables
@@ -623,22 +623,22 @@ functions generation, which ends with failure, with the different memory
 classes, the non-empty function beginning, sentence processing code, function
 finishing). The separate element generation was fully independent one of other,
 which I got to consider while I was creating the output files. The exception
-was only symbol table, which consists of functions names – for the fact check,
+was only symbol table, which consist of functions names – for the fact check,
 that all names are ought to be represented before the first executing. About
 generation I will tell later.
 
 As it has appeared, this syntax analysis dividing to the three ways (which were
-carried out only by separate sentences, not by the whole transmission length)
+carried out only by separate sentences, not by the whole transmition length)
 drastically simplified the compiler structure. Such driving to the state machine
 became possible in order with the fact, that terms, from which consists left
-and right sentence parts, can’t include dividers (corresponding, ‘=’ and ‘;’).
+and right sentences parts, can’t include dividers (corresponding, ‘=’ and ‘;’).
 If only that dialect could support such nameless or local functions as terms
 ( which includes within sentences, dividing with assistance of ’=’ and ’;’),
-then such driving of context-free grammar to regular would be impossible.
+then such driving of context-free grammar to regular would be imposible.
 
 To sum it up, practice show, that dividing on two ways the free context syntax
 and context relations is very useful – the compiler structure became easyer.
-At paired brackets relations check we could don’t care about unexpected lexems,
+At paired brackets relations check we could don’t care about unexpected lexemes,
 at variables presence check – about brackets paired relations.
 
  In that case independent-context syntax check, which easy to formalize, could
@@ -650,7 +650,7 @@ context relations check and construct abstract syntax representation.
 
 The virtual REFAL-machine was created at classical scheme with point of view
 usage. Point of view is the double-linked node list, each of which represents
-the atom, or this or that bracket (one from `(`, `)`, `<`, `>`). Nodes include
+the atom, or this or that bracket (one from `(`, `)`, `<`, `>`). Nodes includes
 links to the neighbor-nodes, type field and info field, which is union of
 several fields with different types. Numbers-nodes in info-field include
 `unsigned long`, symbol-nodes – `char`, function-nodes includes function
@@ -658,7 +658,7 @@ pointer and `const char` pointer, including function name. Nodes, which
 corresponds to structural brackets, includes the linked brackets relations.
 Call brackets pointers situated in calls stack in that order, in which they got
 to execute. If function call is replacing with active expression with the
-different evaluation brackets, then evaluation brackets will be put on top
+different evaluation brackets, then evaluation brackets will be putted on top
 of stack in proper order – so realizing saving stack invariant. For
 implementation of the stack is used info field in brackets nodes (as in REFAL
 2).
@@ -698,7 +698,7 @@ The executing of sentence processor passes through three phases:
    For the memory optimization there in use the double-linked list of free
    nodes. All the operations, giving memory (copying the variables or
    constructing new nodes), creates own argument within that list. Later the
-   list parts with rebuilded elements transmit into the field of view. Such
+   list parts with rebuilded elements transmits into the field of view. Such
    strategy provides consistency of both lists at raising a message
    `refalrts::cNoMemory` – created elements remain in free blocks list,
    argument doesn’t change.
@@ -709,7 +709,7 @@ Sentences generation proceed in two stages: from the very beginning by
 intermediate representation creates processor based on abstract imperative
 language (means, that sentence transforms to the sequence of procession
 commands), and then processor rebuilds from abstract imperative representation
-to C++, and the separate commands trasmitting practically independently one of
+to C++, and the separate commands trasmiting practically independently one of
 other. The last two phases operations: giving new memory and result fabrication
 realizing not so difficult, but the pattern recognition is very interesting.
 
@@ -1254,7 +1254,7 @@ compiler mistakes. Here is a list of deficiencies.
   re-initializing them.
 * (7) As we look at the RTS implementation, we can see that the code
   recognition of individual atoms, pairs of parentheses, repeated variables are
-  largely similar to functions `***_left` and `***_right`, which are similar
+  largely similar with functions `***_left` and `***_right`, which are similar
   as twins-brothers. In principle, the compiler instead of calling functions
   code inserting could insert the operators representing the function body.
   Although this would lead to a sharp increase in the volume of the generated
@@ -1262,7 +1262,7 @@ compiler mistakes. Here is a list of deficiencies.
 * (8) There is no optimization. Due to the fact that certain statements are
   generated independently from each other, the same operation (in the case that
   a function has a specific format of the argument – what happens almost every
-  time) is executed repeatedly. The ineffectiveness of this can be seen if you
+  time) are executed repeatedly. The ineffectiveness of this can be seen if you
   look at the automaton code of lexical analyzer in `Lexer.sref` and `Lexer.cpp`
   files. Long shot, that the same calculations will be compiled by a C++
   compiler – during recognition it is called an external function (see
