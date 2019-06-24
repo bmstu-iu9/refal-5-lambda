@@ -540,12 +540,12 @@ example with program based on C), then practical using of them will be
 complicated – they extremely insufficient. That’s why language need primitive
 functions, executing primitive operations.
 
-Within actual compiler accepted the following model. Inputing the built-in
-functions to language is ideologically disgusting for me, because the functions
-is related to user-level definitions, but execute language-level actions.
+Within actual compiler accepted the following model. Inputting the built-in
+functions to language are ideologically disgusting  for me, because the functions are related
+to user-level definitions, but execute language-level actions.
 Besides for the built-in functions executes special rules, for instance, they
 don’t need to introduce. That’s why I made the primitive operations as external
-– as in C like language – there is too absent built-in functions. Because of
+– as in C like language – there are too absent built-in functions. Because of
 being the primitive operations (those, that impossible create with REFAL
 sources) is external, than exactly user too able to write a him/herself
 primitive functions based on C++ language and it too will be external.
@@ -607,7 +607,7 @@ regular).
 
     ResultTerm = PatternTerm | '<' | '>' .
 
-And describe such state machine will be much easyer (in REFAL it is surprisingly
+And describe such state machine will be much easier (in REFAL it is surprisingly
 easy to write state machine programs). After finishing the pattern and result
 analysis it is possible to separately check the brackets balance in them. In
 program I went much further: in separate procedure I took out the variables
@@ -623,18 +623,18 @@ functions generation, which ends with failure, with the different memory
 classes, the non-empty function beginning, sentence processing code, function
 finishing). The separate element generation was fully independent one of other,
 which I got to consider while I was creating the output files. The exception
-was only symbol table, which consist of functions names – for the fact check,
+was only symbol table, which consists of functions names – for the fact check,
 that all names are ought to be represented before the first executing. About
 generation I will tell later.
 
 As it has appeared, this syntax analysis dividing to the three ways (which were
-carried out only by separate sentences, not by the whole transmition length)
+carried out only by separate sentences, not by the whole transmission length)
 drastically simplified the compiler structure. Such driving to the state machine
 became possible in order with the fact, that terms, from which consists left
-and right sentences parts, can’t include dividers (corresponding, ‘=’ and ‘;’).
+and right sentence parts, can’t include dividers (corresponding, ‘=’ and ‘;’).
 If only that dialect could support such nameless or local functions as terms
 ( which includes within sentences, dividing with assistance of ’=’ and ’;’),
-then such driving of context-free grammar to regular would be imposible.
+then such driving of context-free grammar to regular would be impossible.
 
 To sum it up, practice show, that dividing on two ways the free context syntax
 and context relations is very useful – the compiler structure became easyer.
@@ -650,7 +650,7 @@ context relations check and construct abstract syntax representation.
 
 The virtual REFAL-machine was created at classical scheme with point of view
 usage. Point of view is the double-linked node list, each of which represents
-the atom, or this or that bracket (one from `(`, `)`, `<`, `>`). Nodes includes
+the atom, or this or that bracket (one from `(`, `)`, `<`, `>`). Nodes include
 links to the neighbor-nodes, type field and info field, which is union of
 several fields with different types. Numbers-nodes in info-field include
 `unsigned long`, symbol-nodes – `char`, function-nodes includes function
@@ -658,7 +658,7 @@ pointer and `const char` pointer, including function name. Nodes, which
 corresponds to structural brackets, includes the linked brackets relations.
 Call brackets pointers situated in calls stack in that order, in which they got
 to execute. If function call is replacing with active expression with the
-different evaluation brackets, then evaluation brackets will be putted on top
+different evaluation brackets, then evaluation brackets will be put on top
 of stack in proper order – so realizing saving stack invariant. For
 implementation of the stack is used info field in brackets nodes (as in REFAL
 2).
@@ -698,7 +698,7 @@ The executing of sentence processor passes through three phases:
    For the memory optimization there in use the double-linked list of free
    nodes. All the operations, giving memory (copying the variables or
    constructing new nodes), creates own argument within that list. Later the
-   list parts with rebuilded elements transmits into the field of view. Such
+   list parts with rebuilded elements transmit into the field of view. Such
    strategy provides consistency of both lists at raising a message
    `refalrts::cNoMemory` – created elements remain in free blocks list,
    argument doesn’t change.
@@ -709,7 +709,7 @@ Sentences generation proceed in two stages: from the very beginning by
 intermediate representation creates processor based on abstract imperative
 language (means, that sentence transforms to the sequence of procession
 commands), and then processor rebuilds from abstract imperative representation
-to C++, and the separate commands trasmiting practically independently one of
+to C++, and the separate commands trasmitting practically independently one of
 other. The last two phases operations: giving new memory and result fabrication
 realizing not so difficult, but the pattern recognition is very interesting.
 
@@ -1254,7 +1254,7 @@ compiler mistakes. Here is a list of deficiencies.
   re-initializing them.
 * (7) As we look at the RTS implementation, we can see that the code
   recognition of individual atoms, pairs of parentheses, repeated variables are
-  largely similar with functions `***_left` and `***_right`, which are similar
+  largely similar to functions `***_left` and `***_right`, which are similar
   as twins-brothers. In principle, the compiler instead of calling functions
   code inserting could insert the operators representing the function body.
   Although this would lead to a sharp increase in the volume of the generated
@@ -1262,7 +1262,7 @@ compiler mistakes. Here is a list of deficiencies.
 * (8) There is no optimization. Due to the fact that certain statements are
   generated independently from each other, the same operation (in the case that
   a function has a specific format of the argument – what happens almost every
-  time) are executed repeatedly. The ineffectiveness of this can be seen if you
+  time) is executed repeatedly. The ineffectiveness of this can be seen if you
   look at the automaton code of lexical analyzer in `Lexer.sref` and `Lexer.cpp`
   files. Long shot, that the same calculations will be compiled by a C++
   compiler – during recognition it is called an external function (see
