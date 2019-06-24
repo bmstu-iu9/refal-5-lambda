@@ -121,7 +121,7 @@ runs.  Another example are researches in the field of automatic program
 conversion and verification (e.g. by supercompilation). In this case, an
 interesting math function is written in Refal. It is fed to the tool (e.g
 Refal-5 supercompiler SCP4 (\[1], \[2], \[3])) and then the conversion result or
-the function analysis are examined. Researches in the field of tools
+the function analysis are examined. Researches in the field of tool
 development is one of the most important Refal application today._
 
 The function `Prout` is one of the functions that is included in the language
@@ -156,7 +156,7 @@ Let us to conclude what we have learned by now.
   this argument subset.
 * “An empty value” is written as an empty place. It is written a comment
   `/* empty */` usually.
-* The printable characters sequence is written in quotation marks:
+* The printable character sequence is written in quotation marks:
  `'Hello, World!'`.
 * The function `F` call with an argument arg is written as `<F arg>`.
 
@@ -855,7 +855,7 @@ return macrodigit `1` and data, in the second one – only macrodigit `2` and in
 the third one – number `3` and the error message. The function results can be
 distinguished, but the main disadvantage of such decision is that the numbers
 don’t talk for themselves. The programmer has to remember that number `3` for
-this functions indicates a syntax error, and number `2` indicates the absence
+these functions indicates a syntax error, and number `2` indicates the absence
 of the file, no other way. What if there are more of such kind of functions?
 You will have to learn the meaning of each number in relation to each function.
 
@@ -909,7 +909,7 @@ identical to the words without quotes – `"Success"`, `"SyntaxError"`.
 At first glance, that it was impossible to write a character that represents
 single quote or composed character that containing double quote. But that's not
 true. We can use _escape sequences_ (special marking for some symbols) in a
-chain of letters and composed character.
+chain of letters and composed characters.
 
 Escape sequence looks like sign `\`, followed by one or more other signs. All of
 them make up one character (if it is written into single quotes), or one of
