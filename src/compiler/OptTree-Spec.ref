@@ -202,43 +202,52 @@ SpecCall {
           = <Spec-PrepareSignature e.GenericMatches>
           : e.Signature
 
-          = <Spec-PrepareNewCall (e.SpecPattern) e.GenericMatches>
-          : (e.SpecializedFuncArgument)
-
-          = <Spec-FindInSignatures (e.Signature) e.Signatures>
+          = <Spec-IsTrivialSignature e.Signature>
           : {
-              Found e.SpecSuffix
+              True
                 = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
-                  (
-                    ColdCallBrackets (Symbol Name e.Name SUF e.SpecSuffix)
-                    e.SpecializedFuncArgument
-                  )
+                  (ColdCallBrackets (Symbol Name e.Name) e.Argument)
                   /* no new functions */;
 
-              NotFound
-                = <Spec-RenameGenericMatch
-                    (e.SpecPattern) (e.GenericMatches) s.NextNumber
-                    (<ExtractVariables e.Body>)
-                  >
-                : (e.RenamedGenericMatches)
+              False
+                = <Spec-PrepareNewCall (e.SpecPattern) e.GenericMatches>
+                : (e.SpecializedFuncArgument)
 
-                = <Spec-PrepareSpecializedFuncBody
-                    (e.SpecPattern) (e.RenamedGenericMatches) e.Body
-                  >
-                : (e.SpecializedFuncBody)
+                = <Spec-FindInSignatures (e.Signature) e.Signatures>
+                : {
+                    Found e.SpecSuffix
+                      = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
+                        (
+                          ColdCallBrackets (Symbol Name e.Name SUF e.SpecSuffix)
+                          e.SpecializedFuncArgument
+                        )
+                        /* no new functions */;
 
-                = (
-                    (e.SpecPattern) (e.Body) <Inc s.NextNumber>
-                    e.Signatures ((e.Name SUF '@' s.NextNumber) e.Signature)
-                  )
-                  (
-                    ColdCallBrackets (Symbol Name e.Name SUF '@' s.NextNumber)
-                    e.SpecializedFuncArgument
-                  )
-                  (
-                    Function GN-Local (e.Name SUF '@' s.NextNumber)
-                    Sentences e.SpecializedFuncBody
-                  );
+                    NotFound
+                      = <Spec-RenameGenericMatch
+                          (e.SpecPattern) (e.GenericMatches) s.NextNumber
+                          (<ExtractVariables e.Body>)
+                        >
+                      : (e.RenamedGenericMatches)
+
+                      = <Spec-PrepareSpecializedFuncBody
+                          (e.SpecPattern) (e.RenamedGenericMatches) e.Body
+                        >
+                      : (e.SpecializedFuncBody)
+
+                      = (
+                          (e.SpecPattern) (e.Body) <Inc s.NextNumber>
+                          e.Signatures ((e.Name SUF '@' s.NextNumber) e.Signature)
+                        )
+                        (
+                          ColdCallBrackets (Symbol Name e.Name SUF '@' s.NextNumber)
+                          e.SpecializedFuncArgument
+                        )
+                        (
+                          Function GN-Local (e.Name SUF '@' s.NextNumber)
+                          Sentences e.SpecializedFuncBody
+                        );
+                  };
             };
 
         s.OtherResult e.ResultInfo
@@ -290,8 +299,7 @@ Spec-RenameSignatureVars {
                 >
               );
 
-          ((e.Renames) (e.UsedVars) e.NSignature)
-          ('s' e.Index s.Depth)
+          ((e.Renames) (e.UsedVars) e.NSignature) ('s' e.Index s.Depth)
             = <NewVarName (e.UsedVars) 'sS' s.Depth (/* empty suffix */)>
             : (e.UsedVars^) e.NewIndex
             = (
@@ -302,8 +310,7 @@ Spec-RenameSignatureVars {
                 >
               );
 
-          ((e.Renames) (e.UsedVars) e.NSignature)
-          ('t' e.Index s.Depth)
+          ((e.Renames) (e.UsedVars) e.NSignature) ('t' e.Index s.Depth)
             = <NewVarName (e.UsedVars) 'tT' s.Depth (/* empty suffix */)>
             : (e.UsedVars^) e.NewIndex
             = (
@@ -314,8 +321,7 @@ Spec-RenameSignatureVars {
                 >
               );
 
-          ((e.Renames) (e.UsedVars) e.NSignature)
-          ('e' e.Index s.Depth)
+          ((e.Renames) (e.UsedVars) e.NSignature) ('e' e.Index s.Depth)
             = <NewVarName (e.UsedVars) 'eE' s.Depth (/* empty suffix */)>
             : (e.UsedVars^) e.NewIndex
             = (
@@ -340,6 +346,26 @@ Spec-FindInSignatures {
 
   (e.Signature) e.Signatures
     = NotFound;
+}
+
+/**
+  <Spec-IsTrivialSignature e.Signature>
+
+  e.Signature ::= (e.Expression)*
+*/
+Spec-IsTrivialSignature {
+  e.Signature
+    = <MapAccum
+        {
+          False t.Any = False;
+
+          True ((TkVariable e.VarName)) = True;
+
+          True t.OtherExpression = False;
+        }
+        True
+        e.Signature
+      >;
 }
 
 Spec-PrepareNewCall {
