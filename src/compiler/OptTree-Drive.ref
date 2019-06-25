@@ -1,6 +1,12 @@
 $INCLUDE "LibraryEx";
 
 
+*FROM Desugaring-UnCondition
+$EXTERN ExtractVariables;
+
+*FROM GenericMatch
+$EXTERN Solve;
+
 /**
   <OptTree-Drive-ExtractOptInfo s.OptDrive e.AST>
     == (e.DriveInfo) e.AST
@@ -10,14 +16,16 @@ $INCLUDE "LibraryEx";
   e.DriveFuncNames ::= (e.FuncName)*
 */
 $ENTRY OptTree-Drive-ExtractOptInfo {
-  s.OptDrive e.AST = <GetDrivenFunctions e.AST>
+  s.OptDrive e.AST = <GetDrivenFunctions e.AST>;
 }
 
 /**
   <OptTree-Drive s.OptDrive (e.DriveInfo) e.AST> == (e.DriveInfo^) e.AST^
 */
 $ENTRY OptTree-Drive {
-  s.OptDrive (e.DriveInfo) e.AST = (e.DriveInfo) e.AST;
+  NoOpt (e.DriveInfo) e.AST = (e.DriveInfo) e.AST ;
+  s.Opt (e.DriveInfo) e.AST
+    = <DriveInlineOptimizerTick (e.DriveInfo) e.AST s.Opt>;
 }
 
 /**
@@ -25,6 +33,24 @@ $ENTRY OptTree-Drive {
 */
 $ENTRY OptTree-Drive-Finalize {
   s.OptDrive ((e.Names) e.Info) e.AST = e.AST;
+}
+
+/* Функция генерирует имена остаточных прогоняемых функций */
+
+GenRemainderFuncNames {
+    (e.Name) (e.Sentences) =
+      <MapAccum
+       {
+          ((e.NewName SUF e.Suffix) (e.Names) s.N) t.A =
+            ((e.Name) (e.Names (e.Name '*' s.N)) <Add s.N 1>);
+
+          ((e.NewName) (e.Names) s.N) t.A =
+            ((e.Name)(e.Names (e.Name SUF '*' s.N)) <Add s.N 1>);
+       }
+       ((e.Name) () 1)
+       e.Sentences
+      > : ((e.Name^) (e.Names) t.N)
+       = e.Names
 }
 
 GetDrivenFunctions {
@@ -50,18 +76,619 @@ GetDrivenFunctions {
     */
     = <MapAccum
         {
-          (e.OptFunctions)
+          ((e.OptFunctions) (e.RemNames))
           (Function s.ScopeClass (e.Name) e.Body)
             , e.OptNames : e.B (s.Label e.Name) e.E
-            = (e.OptFunctions (s.Label (e.Name) e.Body))
+            , e.Body : Sentences e.Sentences
+            = ((e.OptFunctions (s.Label s.ScopeClass (e.Name) e.Body))
+              (e.RemNames <GenRemainderFuncNames (e.Name) (e.Sentences)>))
               (Function s.ScopeClass (e.Name) e.Body);
 
-          (e.OptFunctions) t.Other = (e.OptFunctions) t.Other;
+          (e.OptInfo) t.Other
+            = (e.OptInfo) t.Other;
         }
-        () e.AST
+        (() ()) e.AST
       >
-    : (e.OptFunctions) e.AST^
+    : ((e.OptFunctions) (e.RemNames)) e.AST^
 
-    = ((<Map { (s.Label e.Name) = (e.Name) } e.OptNames>) e.OptFunctions)
-      e.AST;
+    = ((<Map { (s.Label e.Name ) = (e.Name) } e.OptNames> e.RemNames)
+       e.OptFunctions)
+       e.AST;
 }
+
+OptSwitch {
+  OptDrive = &DriveSentence;
+  OptInline = &InlineSentence
+}
+
+/* Осуществляет прогонку или оптимизацию в зависимости от ключа */
+
+DriveInlineOptimizerTick {
+  ((e.OptNames) e.OptFunctions) e.AST s.Opt
+    = <OptSwitch s.Opt> : s.OptF
+    = ((e.OptNames) e.OptFunctions)
+      <Map
+        {
+          (Function s.ScopeClass (e.Name) e.Body)
+            = <OptimizeF
+                (Function s.ScopeClass (e.Name) e.Body)
+                ((e.OptNames) e.OptFunctions)
+                s.OptF
+              >;
+
+          e.Other = e.Other
+        }
+        e.AST
+      >: e.AST^
+    = <DistinctFuncs e.AST>
+}
+
+DistinctFuncs {
+  e.B
+  (Function s.ScopeClass (e.Name) e.Body1)
+  e.M
+  (Function s.ScopeClass (e.Name) e.Body2)
+  e.E
+  = <DistinctFuncs
+      e.B (Function s.ScopeClass (e.Name) e.Body1) e.M e.E
+    >;
+
+  e.Other = e.Other
+}
+
+IsPassiveCall {
+  e.Expr
+    = <MapAccum
+        {
+           True t.Term = <IsPassiveCall-Aux t.Term>;
+           False t.Term = False;
+        }
+        True
+        e.Expr
+      >
+
+}
+
+IsPassiveCall-Aux {
+  (Brackets e.Expr) = <IsPassiveCall e.Expr>;
+  (ADT-Brackets e.Expr) = <IsPassiveCall e.Expr>;
+  (CallBrackets e.Expr) = False;
+  (ColdCallBrackets e.Expr) = False;
+  (ClosureBrackets e.Expr) = False;
+  t.Other = True;
+}
+
+IsLexpr {
+  e.Expr
+  = <IsLexpr-Aux e.Expr ()> : ((e.Vars) t.Res)
+  = t.Res
+}
+
+IsLexpr-Aux {
+  e.B (TkVariable 'e' e.Index1)
+  e.M (TkVariable 'e' e.Index2)
+  e.E (e.ETVars)
+    = (() False);
+
+  e.Expr (e.ETVars)
+    = <MapAccum
+        {
+          ((e.Vars) True) t.Term = <IsLexpr-Term t.Term (e.Vars)>;
+          ((e.Vars) False) t.Term = (() False);
+        }
+        ((e.ETVars) True)
+        e.Expr
+      >;
+}
+
+IsLexpr-Term {
+    t.Term (e.B t.Term e.E)
+      , t.Term : (TkVariable 't' e.Index)
+      = (() False);
+
+    t.Term (e.B t.Term e.E)
+      , t.Term : (TkVariable 'e' e.Index)
+      = (() False);
+
+    (Brackets e.Expr) (e.ETVars) = <IsLexpr-Aux e.Expr (e.ETVars)>;
+
+    (ADT-Brackets e.Expr) (e.ETVars) = <IsLexpr-Aux e.Expr (e.ETVars)>;
+
+    t.Term (e.ETVars) = ((e.ETVars t.Term) True);
+}
+
+/*
+  Осуществляет попытку прогонки или встраивания в функции
+  <OptimizeF t.Function (t.DriveInfo) s.OptSentence> == t.Function*
+
+  Возвращает модифицированную функцию
+  и порожденные из прогонки или встраивания
+*/
+
+OptimizeF {
+  (Function s.ScopeClass (e.Name) Sentences e.Sentences)
+  ((e.OptNames) e.OptFunctions) s.OptSentence
+    = <MapAccum
+        {
+          ((e.SntAcc) (e.FunAcc)) t.Sentence =
+            <s.OptSentence
+              t.Sentence
+              ((e.OptNames) e.OptFunctions)
+            >
+            : {
+                e.Result t.Func
+                , t.Func: (Function e.X)
+                  = ((e.SntAcc e.Result) (e.FunAcc t.Func));
+
+                e.Result = ((e.SntAcc e.Result) (e.FunAcc))
+              }
+        }
+        ((/*sentences*/) (/*functions*/))
+        e.Sentences
+      > : ((e.Sentences^) (e.Functions))
+    = (Function s.ScopeClass (e.Name) Sentences e.Sentences) e.Functions;
+
+  e.Other = e.Other;
+}
+
+/*
+   Осуществляет попытку встраивания отдельного предложения
+   <InlineSentence t.Sentence (t.InlineInfo)>
+   == t.Sentence* t.Func?
+*/
+
+InlineSentence {
+  ((e.Left) (e.Right)) t.InlineInfo
+     , <FindInlineCall t.InlineInfo e.Right> : t.Res e.Expr
+     , <OneOf t.Res None>: False
+     = <InlineSentence-Aux ((e.Left) (e.Right)) t.Res e.Expr t.InlineInfo>;
+
+  t.Sentence ((e.OptNames) e.Left) = t.Sentence
+}
+
+/* Осуществляет попытку прогонки отдельного предложения вида pattern = expr
+   <DriveSentence t.Sentence (t.DriveInfo)>
+    == t.Sentence* t.Func?
+*/
+
+DriveSentence {
+  ((e.Left) (e.Right)) t.DriveInfo
+     , <FindDriveCall t.DriveInfo e.Right> : t.Res e.Expr
+     , <OneOf t.Res None>: False
+     = <DriveSentence-Aux ((e.Left) (e.Right)) t.Res e.Expr t.DriveInfo>;
+
+  ((e.Left) (e.Right)) t.InlineInfo
+     , <FindInlineCall t.InlineInfo e.Right> : t.Res e.Expr
+     , <OneOf t.Res None>: False
+     = <InlineSentence-Aux ((e.Left) (e.Right)) t.Res e.Expr t.InlineInfo>;
+
+  t.Sentence ((e.OptNames) e.Left) = t.Sentence
+}
+
+/*
+  <InlineSentence-Aux ((e.Left) (e.Right)) t.Call e.Expr t.InlineInfo>
+    = t.Sentence t.Func?
+*/
+
+InlineSentence-Aux {
+
+  /* Встраивание */
+
+  ((e.Left) (e.Right))
+  (CallBrackets (Symbol Name e.Name) e.Args) e.Expr
+  t.InlineInfo
+    , <FindInlineInfo t.InlineInfo e.Name>
+    : Success t.InlinedF
+    , t.InlinedF
+    : (Inline s.ScopeClass (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+    /* Попытка оптимизации, только если вызов пассивный */
+    , <IsPassiveCall e.Args>: True
+    = <Solve
+        (<ExtractVariables ((e.Left e.Right) ())>)
+        ((e.Args) ':' (e.LS))
+      >
+      : e.Solution
+      , e.Solution : {
+
+          /*
+            В случае решения без сужений просто применяем замены
+          */
+          Success (() (e.Assigns))
+            = <ApplySolutions
+                ((e.Left) (e.Expr)) (e.RS) ((() (e.Assigns))) t.InlinedF
+              >
+              : e.Sentences
+            = e.Sentences;
+
+          /*
+            В случае неудачи нужно заменить прогоняемый вызов
+            на вызов остаточной функции
+          */
+          Failure
+            = <CreateRemainderDrivenFunc
+                s.ScopeClass (e.Name) e.Rest
+              >
+              : t.newFunc
+              , t.newFunc
+              : (Function s.Sc1 (e.NewName) e.Body)
+            = <ApplyContractions
+                e.Expr
+                (((TkVariable 'e' DRIVEN 0)
+                ':'
+                (CallBrackets (Symbol Name e.NewName) e.Args)))
+                WithWarmup
+              >
+              : e.S
+            = ((e.Left) (e.S)) t.newFunc;
+
+          /*
+            Замена вызова на холодный
+            При Undefined или решением с сужениями
+          */
+          e.Other
+            = <ApplyContractions
+                e.Expr
+                (((TkVariable 'e' DRIVEN 0)
+                ':'
+                (ColdCallBrackets (Symbol Name e.Name) e.Args)))
+              >
+              : e.S
+            = ((e.Left) (e.S));
+      };
+
+  ((e.Left) (e.Right)) e.Tail = ((e.Left) (e.Right))
+}
+
+/*
+  <DriveSentence-Aux ((e.Left) (e.Right)) t.Call e.Expr t.DriveInfo>
+    = t.Sentence* t.Func?
+*/
+
+DriveSentence-Aux {
+
+  /* Прогонка */
+  ((e.Left) (e.Right))
+  (CallBrackets (Symbol Name e.Name) e.Args) e.Expr
+  t.DriveInfo
+
+    /* Поиск информации для прогонки */
+    , <FindDriveInfo t.DriveInfo e.Name>
+    : Success t.DrivenF
+    , t.DrivenF
+    : (Drive s.ScopeClass (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+
+    /* Проверка, является ли левая чать L-выражением*/
+    , <IsLexpr e.Left>
+    : s.IsLexpr
+
+    /* Попытка оптимизации, только если вызов пассивный */
+    , <IsPassiveCall e.Args>: True
+    = <Solve
+        (<ExtractVariables ((e.Left e.Right) ())>)
+        ((e.Args) ':' (e.LS))
+      >
+      : e.Solution
+      , e.Solution : {
+
+        /*
+          В случае решения без сужений просто применяем замены
+        */
+        Success (() (e.Assigns))
+          = <ApplySolutions
+              ((e.Left) (e.Expr)) (e.RS) ((() (e.Assigns))) t.DrivenF
+            >
+            : e.Sentences
+            = e.Sentences;
+
+        /*
+           В случае "грязного" решения добавляем вызов остаточной
+           прогоняемой функции (Только при L-выражении)
+        */
+        Success e.M
+          , s.IsLexpr : True
+          = <ApplySolutions
+              ((e.Left) (e.Expr)) (e.RS) (e.M) t.DrivenF
+            >
+            : e.Sentences
+          = <CreateRemainderDrivenFunc
+              s.ScopeClass (e.Name) e.Rest
+            >
+            : t.newFunc
+            , t.newFunc : (Function s.Sc1 (e.NewName) e.Body)
+          = <ApplyContractions
+              e.Expr
+              (((TkVariable 'e' DRIVEN 0)
+              ':'
+              (CallBrackets (Symbol Name e.NewName) e.Args)))
+              WithWarmup
+            >
+            : e.S
+          = e.Sentences ((e.Left) (e.S)) (Function s.Sc1 (e.NewName) e.Body);
+
+        /*
+          В случае неудачи нужно заменить прогоняемый вызов
+          на вызов остаточной функции
+        */
+        Failure
+          = <CreateRemainderDrivenFunc
+              s.ScopeClass (e.Name) e.Rest
+            >
+            : t.newFunc
+            , t.newFunc : (Function s.Sc1 (e.NewName) e.Body)
+          = <ApplyContractions
+              e.Expr
+              (((TkVariable 'e' DRIVEN 0)
+              ':'
+              (CallBrackets (Symbol Name e.NewName) e.Args)))
+              WithWarmup
+            >
+            : e.S
+          = ((e.Left) (e.S)) (Function s.Sc1 (e.NewName) e.Body);
+
+        /*
+          Замена вызова на холодный
+
+          Undefined или левая часть не-L-выражение
+        */
+        e.Other
+          = <ApplyContractions
+              e.Expr
+              (((TkVariable 'e' DRIVEN 0)
+              ':'
+              (ColdCallBrackets (Symbol Name e.Name) e.Args)))
+            >
+            : e.S
+          = ((e.Left) (e.S));
+    };
+
+  ((e.Left) (e.Right)) e.Other = ((e.Left) (e.Right))
+}
+
+DropLeft {
+  e.List 0 =  e.List;
+  t.Head e.Tail s.N = <DropLeft e.Tail <Sub s.N 1>>
+}
+
+/*
+  <FindInlineInfo t.InlineInfo e.Name == Success t.InlineInfo | Failure
+  t.InlineInfo := (Inline s.ScopeClass (e.Name) e.Body
+*/
+
+FindInlineInfo {
+  t.InlineInfo e.Name
+    , t.InlineInfo
+    : ((e.B1 (e.Name) e.E1) e.B2 (Inline s.ScopeClass (e.Name) e.Body) e.E2)
+    = Success (Inline s.ScopeClass (e.Name) e.Body);
+
+  t.InlineInfo e.Name = Failure;
+}
+
+/*
+  <FindDrivenInfo t.DriveInfo e.Name> == Success t.DriveInfo | Failure
+  t.DriveInfo := (Drive s.ScopeClass (e.Name) e.Body)
+*/
+
+FindDriveInfo {
+
+  t.DriveInfo e.Name
+    , e.Name : e.Prefix SUF e.Suffix '*' s.N
+    , t.DriveInfo
+    : ((e.B1 (e.Prefix) e.E1) e.B2
+      (Drive s.ScopeClass (e.Prefix) Sentences e.Sentences) e.E2)
+    = Success
+      (Drive s.ScopeClass (e.Name) Sentences <DropLeft e.Sentences s.N>);
+
+  t.DriveInfo e.Name
+    , t.DriveInfo
+    : ((e.B1 (e.Name) e.E1) e.B2 (Drive s.ScopeClass (e.Name) e.Body) e.E2)
+    = Success (Drive s.ScopeClass (e.Name) e.Body);
+
+  t.DriveInfo e.Name = Failure;
+}
+
+/*
+  <FindDriveCall t.DriveInfo e.Expr> == t.Found e.Expr
+
+  t.Found ::= None | (CallBrackets e.Arg)
+*/
+
+FindDriveCall {
+  t.DriveInfo e.Expr =
+    <FindOptimizedCall (t.DriveInfo &FindDriveInfo) e.Expr>
+}
+
+/*
+  <FindInlineCall t.InlineInfo e.Expr> == t.Found e.Expr
+
+  t.Found ::= None | (CallBrackets e.Arg)
+*/
+
+FindInlineCall {
+  t.InlineInfo e.Expr =
+    <FindOptimizedCall (t.InlineInfo &FindInlineInfo) e.Expr>
+}
+
+FindOptimizedCall {
+  (t.DriveInfo s.Filter) e.Expr
+    = <MapAccum (&FindOptimizedCall-Term (t.DriveInfo s.Filter)) None e.Expr>;
+
+  t.DriveInfo t.Found e.Expr = t.Found e.Expr;
+}
+
+FindOptimizedCall-Term {
+  (t.DriveInfo s.Filter) None (Brackets e.Expr)
+    = <FindOptimizedCall (t.DriveInfo s.Filter) e.Expr> : t.Found e.Expr^
+    = t.Found (Brackets e.Expr);
+
+  (t.DriveInfo s.Filter) None (ADT-Brackets (e.Name) e.Expr)
+    = <FindOptimizedCall (t.DriveInfo s.Filter) e.Expr> : t.Found e.Expr^
+    = t.Found (ADT-Brackeys (e.Name) e.Expr);
+
+  (t.DriveInfo s.Filter) None (CallBrackets (Symbol Name e.Name) e.Expr)
+    , <s.Filter t.DriveInfo e.Name> : Success t.Info
+    = <FindOptimizedCall (t.DriveInfo s.Filter) e.Expr>
+    : {
+        None e.Expr^
+          = (CallBrackets (Symbol Name e.Name) e.Expr)
+            (TkVariable 'e' DRIVEN 0);
+
+        t.Found e.Expr^
+          = t.Found (CallBrackets (Symbol Name e.Name) e.Expr);
+      };
+
+  (t.DriveInfo s.Filter) None (CallBrackets t.F e.Expr)
+    = <FindOptimizedCall (t.DriveInfo s.Filter) e.Expr>: t.Found e.Expr^
+    = t.Found (CallBrackets t.F e.Expr);
+
+  (t.DriveInfo s.Filter) t.Found t.AnyTerm = t.Found t.AnyTerm;
+}
+
+/*
+  <ApplySolutions
+    ((e.Left) (e.Right)) (e.LS) (e.Solutions) t.FunctionInfo
+  > == t.Sentence* t.FunctionInfo
+*/
+
+ApplySolutions {
+
+  ((e.Left) (e.Right)) (e.RS) (e.Solutions) t.FunctionInfo
+
+  = <Map
+      {
+        t.S
+          = <ApplySolution
+             ((e.Left) (e.Right)) (e.RS) t.S
+            >
+      }
+      e.Solutions
+    >
+}
+
+/*
+  <ApplySolution
+    ((e.Left) (e.Right)) (e.LS) (e.Contrs) (e.Assigns)
+  > == t.Sentence
+*/
+
+ApplySolution {
+  ((e.Left) (e.Right)) (e.RS) ((e.Contrs) (e.Assigns))
+    = <ApplyAssigns e.RS (e.Assigns)>: e.CallReplacer
+    = e.Contrs ((TkVariable 'e' DRIVEN 0) ':' e.CallReplacer): e.Contrs^
+    = ((<ApplyContractions e.Left (e.Contrs)>)
+       (<ApplyContractions e.Right (e.Contrs)>));
+}
+
+/*
+  <ApplyAssigns (e.Expr) (e.Assigns)> == e.Expr^
+*/
+
+ApplyAssigns {
+  e.Expr (e.Assigns)
+    = <Map
+        {
+          t.T = <ApplyAssigns-Term t.T (e.Assigns)>
+        }
+        e.Expr
+      >
+}
+
+ApplyAssigns-Term {
+  (Brackets e.Expr) (e.Assigns) = (Brackets <ApplyAssigns e.Expr (e.Assigns)>);
+
+  (CallBrackets e.Args) (e.Assigns)
+    = (CallBrackets <ApplyAssigns e.Args (e.Assigns)>);
+
+  (ColdCallBrackets e.Args) (e.Assigns)
+    = (ColdCallBrackets <ApplyAssigns e.Args (e.Assigns)>);
+
+  (ClosureBrackets e.Args) (e.Assigns)
+    = (ClosureBrackets <ApplyAssigns e.Args (e.Assigns)>);
+
+  (ADT-Brackets (e.Name) e.Expr) (e.Assigns)
+    = (ADT-Brackets (e.Name) <ApplyAssigns e.Expr (e.Assigns)>);
+
+  t.T (e.B (e.Asgn ':' t.T) e.E)
+    = <ApplyAssigns e.Asgn (e.B (e.Asgn ':' t.T) e.E)>;
+
+  t.T (e.Assigns) = t.T;
+}
+
+/*
+  <ApplyContractions (e.Expr) (e.Contrs) WithWarmup? == e.Expr^
+*/
+ApplyContractions {
+  e.Expr (e.Contrs)
+    = <Map
+        {
+          t.T = <ApplyContractions-Term t.T (e.Contrs)>
+        }
+        e.Expr
+      >;
+
+  e.Expr (e.Contrs) WithWarmup
+    = <Map
+        {
+          t.T = <ApplyContractions-Term-Warmup t.T (e.Contrs)>
+        }
+        e.Expr
+      >
+}
+
+ApplyContractions-Term-Warmup {
+  (Brackets e.Expr) (e.Contrs) = (Brackets <ApplyContractions e.Expr (e.Contrs)>);
+
+  (CallBrackets e.Args) (e.Contrs)
+    = (CallBrackets <ApplyContractions e.Args (e.Contrs)>);
+
+  (ColdCallBrackets e.Args) (e.Contrs)
+    = (CallBrackets <ApplyContractions e.Args (e.Contrs)>);
+
+  (ClosureBrackets e.Args) (e.Contrs)
+    = (ClosureBrackets <ApplyContractions e.Args (e.Contrs)>);
+
+  (ADT-Brackets (e.Name) e.Expr) (e.Contrs)
+    = (ADT-Brackets (e.Name) <ApplyContractions e.Expr (e.Contrs)>);
+
+  t.Term (e.B (t.Term ':' e.Contr) e.E)
+    = <ApplyContractions e.Contr (e.B (t.Term ':' e.Contr) e.E)>;
+
+  t.T (e.Contrs) = t.T
+}
+
+ApplyContractions-Term {
+  (Brackets e.Expr) (e.Contrs) = (Brackets <ApplyContractions e.Expr (e.Contrs)>);
+
+  (CallBrackets e.Args) (e.Contrs)
+    = (CallBrackets <ApplyContractions e.Args (e.Contrs)>);
+
+  (ColdCallBrackets e.Args) (e.Contrs)
+    = (ColdCallBrackets <ApplyContractions e.Args (e.Contrs)>);
+
+  (ClosureBrackets e.Args) (e.Contrs)
+    = (ClosureBrackets <ApplyContractions e.Args (e.Contrs)>);
+
+  (ADT-Brackets (e.Name) e.Expr) (e.Contrs)
+    = (ADT-Brackets (e.Name) <ApplyContractions e.Expr (e.Contrs)>);
+
+  t.Term (e.B (t.Term ':' e.Contr) e.E)
+    = <ApplyContractions e.Contr (e.B (t.Term ':' e.Contr) e.E)>;
+
+  t.T (e.Contrs) = t.T
+}
+
+/*
+  <CreateRemainderDrivenFunc s.ScopeClass (e.Name) e.Sentences>
+    == t.Function
+*/
+
+CreateRemainderDrivenFunc {
+  s.ScopeClass (e.Name SUF e.Suffixes '*' s.N) e.Sentences =
+    (Function s.ScopeClass (e.Name SUF e.Suffixes '*' <Add s.N 1>) Sentences e.Sentences);
+
+  s.ScopeClass (e.Name SUF e.Suffixes) e.Sentences =
+    (Function s.ScopeClass (e.Name SUF e.Suffixes '*' 1) Sentences e.Sentences);
+
+  s.ScopeClass (e.Name) e.Sentences =
+    (Function s.ScopeClass (e.Name SUF '*' 1) Sentences e.Sentences)
+}
+
