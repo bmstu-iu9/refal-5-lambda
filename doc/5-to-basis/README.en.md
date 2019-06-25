@@ -7,7 +7,7 @@ Refal-5. Here, by the subset of the Refal-5 Reference Refal, we mean language
 Refal-5, from which only two constructions are excluded: conditions and blocks.
 
 Formally, a subset of the Basis Refal (as defined in the textbook to language)
-also should not include a stack and a metafunctions, but here the task
+also should not include a stack and a metafunction, but here the task
 emulation of these means by means of the Basic Refal is not put.
 
 **Results:**
