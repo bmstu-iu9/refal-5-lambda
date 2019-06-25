@@ -473,11 +473,11 @@ Spec-PreparePattern {
   (e.Substitutions) e.Pattern
     = <MapAccum
         {
-          (e.Pattern) (e.ReplaceToVal ':' t.ReplaceVar)
+          (e.NPattern) (e.ReplaceToVal ':' t.ReplaceVar)
             = (
                 <FindReplace-Expr
-                  (e.Pattern) (t.ReplaceVar)
-                  <WrapEVar <ExtractVariables-Expr e.ReplaceToVal>>
+                  (e.NPattern) (t.ReplaceVar)
+                  <FindAndFormatVarTerm <WrapEVar <ExtractVariables-Expr e.ReplaceToVal>>>
                 >
               );
         }
@@ -485,7 +485,7 @@ Spec-PreparePattern {
         e.Substitutions
       >
     : (e.Pattern^)
-    = <FindAndFormatVarTerm e.Pattern>;
+    = e.Pattern;
 }
 
 Spec-PrepareConditions {
@@ -511,10 +511,8 @@ Spec-PrepareResult {
   (e.Substitutions) e.Result
     = <MapAccum
         {
-          (e.Result) (e.Val ':' e.Val) = (e.Result);
-
-          (e.Result) (e.ReplaceToVal ':' t.ReplaceVar)
-            = (<FindReplace-Expr (e.Result) (t.ReplaceVar) e.ReplaceToVal>);
+          (e.NResult) (e.ReplaceToVal ':' t.ReplaceVar)
+            = (<FindReplace-Expr (e.NResult) (t.ReplaceVar) e.ReplaceToVal>);
         }
         (e.Result)
         e.Substitutions
