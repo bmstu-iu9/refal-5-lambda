@@ -268,110 +268,69 @@ Spec-PrepareSignature {
 }
 
 Spec-RenameSignatureVars {
-  (e.Signature) = <Spec-RenameSignatureVars-Aux 1 1 1 (/* empty */) e.Signature>;
-}
+  (e.Signature)
+    = <Map
+        {
+          (e.SignaturePart) = <ExtractVariables-Expr e.SignaturePart>;
+        }
+        e.Signature
+      >
+    : e.VarsFromSignature
+    = <MapAccum
+        {
+          (
+            (e.Renames-B (e.Index ':' e.NewIndex) e.Renames-E)
+            (e.UsedVars) e.NSignature
+          )
+          (e.Index)
+            = (
+                (e.Renames-B (e.Index ':' e.NewIndex) e.Renames-E) (e.UsedVars)
+                <FindReplace-ExprList
+                  (e.NSignature) ((TkVariable e.Index)) (TkVariable e.NewIndex)
+                >
+              );
 
-Spec-RenameSignatureVars-Aux {
-  s.sNum s.tNum s.eNum (e.Renames-B (e.Index ':' e.NewIndex) e.Renames-E)
-  (TkVariable e.Index) e.Signature-Tail
-    = (TkVariable e.NewIndex)
-      <Spec-RenameSignatureVars-Aux
-        s.sNum s.tNum s.eNum (e.Renames-B (e.Index ':' e.NewIndex) e.Renames-E)
-        e.Signature-Tail
-      >;
+          ((e.Renames) (e.UsedVars) e.NSignature)
+          ('s' e.Index s.Depth)
+            = <NewVarName (e.UsedVars) 'sS' s.Depth (/* empty suffix */)>
+            : (e.UsedVars^) e.NewIndex
+            = (
+                (e.Renames ('s' e.Index s.Depth ':' e.NewIndex)) (e.UsedVars)
+                <FindReplace-ExprList
+                  (e.NSignature) ((TkVariable 's' e.Index s.Depth))
+                  (TkVariable e.NewIndex)
+                >
+              );
 
-  s.sNum s.tNum s.eNum (e.Renames) (TkVariable 's' e.Index) e.Signature-Tail
-    = (TkVariable 'sS' s.sNum)
-      <Spec-RenameSignatureVars-Aux
-        <Inc s.sNum> s.tNum s.eNum (e.Renames ('s' e.Index ':' 'sS' s.sNum))
-        e.Signature-Tail
-      >;
+          ((e.Renames) (e.UsedVars) e.NSignature)
+          ('t' e.Index s.Depth)
+            = <NewVarName (e.UsedVars) 'tT' s.Depth (/* empty suffix */)>
+            : (e.UsedVars^) e.NewIndex
+            = (
+                (e.Renames ('t' e.Index s.Depth ':' e.NewIndex)) (e.UsedVars)
+                <FindReplace-ExprList
+                  (e.NSignature) ((TkVariable 't' e.Index s.Depth))
+                  (TkVariable e.NewIndex)
+                >
+              );
 
-  s.sNum s.tNum s.eNum (e.Renames) (TkVariable 't' e.Index) e.Signature-Tail
-    = (TkVariable 'tT' s.tNum)
-      <Spec-RenameSignatureVars-Aux
-        s.sNum <Inc s.tNum> s.eNum (e.Renames ('t' e.Index ':' 'tT' s.tNum))
-        e.Signature-Tail
-      >;
-
-  s.sNum s.tNum s.eNum (e.Renames) (TkVariable 'e' e.Index) e.Signature-Tail
-    = (TkVariable 'eE' s.eNum)
-      <Spec-RenameSignatureVars-Aux
-        s.sNum s.tNum <Inc s.eNum> (e.Renames ('e' e.Index ':' 'eE' s.eNum))
-        e.Signature-Tail
-      >;
-
-  s.sNum s.tNum s.eNum (e.Renames) (Brackets e.Expression) e.Signature-Tail
-    = (
-        Brackets
-        <Spec-RenameSignatureVars-Aux
-          s.sNum s.tNum s.eNum (e.Renames) e.Expression
-        >
-      )
-      <Spec-RenameSignatureVars-Aux
-        s.sNum s.tNum s.eNum (e.Renames) e.Signature-Tail
-      >;
-
-  s.sNum s.tNum s.eNum (e.Renames) (ADT-Brackets (e.Name )e.Expression)
-  e.Signature-Tail
-    = (
-        ADT-Brackets (e.Name)
-        <Spec-RenameSignatureVars-Aux
-          s.sNum s.tNum s.eNum (e.Renames) e.Expression
-        >
-      )
-      <Spec-RenameSignatureVars-Aux
-        s.sNum s.tNum s.eNum (e.Renames) e.Signature-Tail
-      >;
-
-  s.sNum s.tNum s.eNum (e.Renames) (CallBrackets e.Expression)
-  e.Signature-Tail
-    = (
-        CallBrackets
-        <Spec-RenameSignatureVars-Aux
-          s.sNum s.tNum s.eNum (e.Renames) e.Expression
-        >
-      )
-      <Spec-RenameSignatureVars-Aux
-        s.sNum s.tNum s.eNum (e.Renames) e.Signature-Tail
-      >;
-
-  s.sNum s.tNum s.eNum (e.Renames) (ClosureBrackets e.ClosureContent)
-  e.Signature-Tail
-    = (
-        ClosureBrackets
-        <Spec-RenameSignatureVars-Aux
-          s.sNum s.tNum s.eNum (e.Renames) e.ClosureContent
-        >
-      )
-      <Spec-RenameSignatureVars-Aux
-        s.sNum s.tNum s.eNum (e.Renames) e.Signature-Tail
-      >;
-
-  s.sNum s.tNum s.eNum (e.Renames) (Symbol e.SymbInfo) e.Signature-Tail
-    = (Symbol e.SymbInfo)
-      <Spec-RenameSignatureVars-Aux
-        s.sNum s.tNum s.eNum (e.Renames) e.Signature-Tail
-      >;
-
-  s.sNum s.tNum s.eNum (e.Renames) (TkName e.Name) e.Signature-Tail
-    = (TkName e.Name)
-      <Spec-RenameSignatureVars-Aux
-        s.sNum s.tNum s.eNum (e.Renames) e.Signature-Tail
-      >;
-
-  s.sNum s.tNum s.eNum (e.Renames) (e.Expression) e.Signature-Tail
-    = (
-        <Spec-RenameSignatureVars-Aux
-          s.sNum s.tNum s.eNum (e.Renames) e.Expression
-        >
-      )
-      <Spec-RenameSignatureVars-Aux
-        s.sNum s.tNum s.eNum (e.Renames) e.Signature-Tail
-      >;
-
-  s.sNum s.tNum s.eNum (e.Renames) /* empty */ = /* empty */;
-
+          ((e.Renames) (e.UsedVars) e.NSignature)
+          ('e' e.Index s.Depth)
+            = <NewVarName (e.UsedVars) 'eE' s.Depth (/* empty suffix */)>
+            : (e.UsedVars^) e.NewIndex
+            = (
+                (e.Renames ('e' e.Index s.Depth ':' e.NewIndex)) (e.UsedVars)
+                <FindReplace-ExprList
+                  (e.NSignature) ((TkVariable 'e' e.Index s.Depth))
+                  (TkVariable e.NewIndex)
+                >
+              );
+        }
+        ((/* renames pair */) (e.VarsFromSignature) e.Signature)
+        e.VarsFromSignature
+      >
+    : (t.Renames t.UsedVars e.NnSignature)
+    = e.NnSignature;
 }
 
 Spec-FindInSignatures {
@@ -657,6 +616,26 @@ MapGenericMatches {
     = e.ResultMatches;
 }
 
+/**
+  <FindReplace-Expr (e.LookAtExprList) (e.LookFor) e.ReplaceVal>
+
+  e.LookAtExprList ::= (e.Expression)*
+*/
+FindReplace-ExprList {
+  (e.LookAtExprList) (e.LookFor) e.ReplaceVal
+    = <Map
+        {
+          (e.LookAt) = (<FindReplace-Expr (e.LookAt) (e.LookFor) e.ReplaceVal>);
+        }
+        e.LookAtExprList
+      >;
+}
+
+/**
+  <FindReplace-Expr (e.LookAt) (e.LookFor) e.ReplaceVal>
+
+  e.LookAt ::= e.Expression
+*/
 FindReplace-Expr {
   (/* empty */) (e.LookFor) e.ReplaceVal = /* empty */;
 
