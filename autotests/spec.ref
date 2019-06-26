@@ -1,7 +1,71 @@
-$SPEC F (e.X) e.y;
 
-$ENTRY Go { = <F ('ab') 'cd'> }
+*$FROM LibraryEx
+$EXTERN Apply, Print;
 
-F {
-  (e.X) e.Y = e.X e.Y;
+$SPEC Replace (e.FROM) (e.TO) e.items;
+
+Replace {
+  (e.f) (e.t) e.f e.Tail = e.t <Replace (e.f) (e.t) e.Tail>;
+  (e.f) (e.t) t.X e.Tail = t.X <Replace (e.f) (e.t) e.Tail>;
+  (e.f) (e.t) /* empty */ = /* emprty */;
+}
+
+Foo-Replace {
+  s.1 s.2 e.X = <Replace (s.1 s.2) (s.2 s.1) e.X>;
+}
+
+
+$SPEC MA t.FUNC t.accum e.items;
+$SPEC DoMA t.FUNC t.acc (e.scanned) e.items;
+$SPEC DoMA-Aux t.FUNC (e.scanned) (t.acc e.step-scanned) e.items;
+
+MA {
+  t.Fn t.Acc e.Tail = <DoMA t.Fn t.Acc () e.Tail>;
+}
+
+DoMA {
+  t.Fn t.Acc (e.Scanned) t.Next e.Tail
+    = <DoMA-Aux
+        t.Fn (e.Scanned) (<Apply t.Fn t.Acc t.Next>) e.Tail
+      >;
+
+  t.Fn t.Acc (e.Scanned) = t.Acc e.Scanned;
+}
+
+DoMA-Aux {
+    t.Fn (e.Scanned) (t.Acc^ e.StepScanned) e.Tail
+    = <DoMA
+        t.Fn t.Acc (e.Scanned e.StepScanned) e.Tail
+      >;
+}
+
+$SPEC M t.FUNC e.items;
+
+M {
+  t.Fn t.Next e.Tail = <Apply t.Fn t.Next> <M t.Fn e.Tail>;
+
+  t.Fn = ;
+}
+
+Bar {
+  e.X = e.X;
+}
+
+Three {
+  = '111';
+}
+
+G {
+  = '666';
+}
+
+Call {
+  (e.Tail) t.Table
+    =
+    <Print <M (&Bar (e.Tail) t.Table <G>) t.Table (1) ('two') (Three)>>
+    <MA (&Bar (e.Tail) t.Table) (/* empty */) (e.Tail) (<G>) (1) ('two') (Three)>;
+}
+
+$ENTRY Go {
+  = <Foo-Replace 1 5 2 2 1 1 3 3> <Print <Call ('TAIL') ('TABLE')>>;
 }

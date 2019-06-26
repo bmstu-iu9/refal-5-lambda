@@ -715,28 +715,6 @@ FindReplace-Expr {
 
   (e.LookAt) (e.LookAt) e.ReplaceVal = e.ReplaceVal;
 
-  ((Symbol e.SymInfo)) (e.LookFor) e.ReplaceVal = (Symbol e.SymInfo);
-
-  ((Brackets e.Expression)) (e.LookFor) e.ReplaceVal
-    = (Brackets <FindReplace-Expr (e.Expression) (e.LookFor) e.ReplaceVal>);
-
-  ((ADT-Brackets (e.Name) e.Expression)) (e.LookFor) e.ReplaceVal
-    = (
-        ADT-Brackets (e.Name)
-        <FindReplace-Expr (e.Expression) (e.LookFor) e.ReplaceVal>
-      );
-
-  ((CallBrackets e.Expression)) (e.LookFor) e.ReplaceVal
-    = (CallBrackets <FindReplace-Expr (e.Expression) (e.LookFor) e.ReplaceVal>);
-
-  ((TkVariable e.Index)) (e.LookFor) e.ReplaceVal = (TkVariable e.Index);
-
-  ((ClosureBrackets e.ClosureContent)) (e.LookFor) e.ReplaceVal
-    = (
-        ClosureBrackets
-        <FindReplace-Expr (e.ClosureContent) (e.LookFor) e.ReplaceVal>
-      );
-
   (e.LookAt-B e.LookFor e.LookAt-E) (e.LookFor) e.ReplaceVal
     = <FindReplace-Expr (e.LookAt-B) (e.LookFor) e.ReplaceVal>
       e.ReplaceVal <FindReplace-Expr (e.LookAt-E) (e.LookFor) e.ReplaceVal>;
@@ -746,11 +724,33 @@ FindReplace-Expr {
         {
           ((e.LookFor) e.ReplaceVal) t.LookAt-Term
             = ((e.LookFor) e.ReplaceVal)
-              <FindReplace-Expr (t.LookAt-Term) (e.LookFor) e.ReplaceVal>;
+              <FindReplace-Term t.LookAt-Term (e.LookFor) e.ReplaceVal>;
         }
         ((e.LookFor) e.ReplaceVal)
         e.LookAt
       >
     : ((e.LookFor) e.ReplaceVal) e.ModifyedLookAt
     = e.ModifyedLookAt;
+}
+
+FindReplace-Term {
+  (Brackets e.Expression) (e.LookFor) e.ReplaceVal
+    = (Brackets <FindReplace-Expr (e.Expression) (e.LookFor) e.ReplaceVal>);
+
+  (ADT-Brackets (e.Name) e.Expression) (e.LookFor) e.ReplaceVal
+    = (
+        ADT-Brackets (e.Name)
+        <FindReplace-Expr (e.Expression) (e.LookFor) e.ReplaceVal>
+      );
+
+  (CallBrackets e.Expression) (e.LookFor) e.ReplaceVal
+    = (CallBrackets <FindReplace-Expr (e.Expression) (e.LookFor) e.ReplaceVal>);
+
+  (ClosureBrackets e.ClosureContent) (e.LookFor) e.ReplaceVal
+    = (
+        ClosureBrackets
+        <FindReplace-Expr (e.ClosureContent) (e.LookFor) e.ReplaceVal>
+      );
+
+  t.OtherTerm (e.LookFor) e.ReplaceVal = t.OtherTerm;
 }
