@@ -102,7 +102,7 @@ top-level declarations, as well as the samples and the results of each
 sentence, without taking into account the pairing of the brackets and the
 correctness of the declaration of the variables, then the brackets pairings are
 checked separately for each sentence action, then the correctness of the use of
-the variables is checked; only after this is generated the result code in C
+the variables are checked; only after this is generated the result code in C
 ++), then we have two ways:
 
 1. Implement a regular syntactical analyzer (similar to Modular Refal), i.e.
@@ -156,7 +156,7 @@ that pointers to a function and pointers to string literals cannot
 automatically be converted to `(void *)` (the former cannot in principle, the
 latter can only be cast to `(const void *)`). An explicit cast of types in the
 C-style was added. In addition, the array of commands became a static constant,
-instead of the `alloc_ptr1` / `alloc_ptr2` pointers, an allox array
+instead of the `alloc_ptr1` / `alloc_ptr2` pointers, an alloc array
 `[2 * sizeof (raa) / sizeof (raa [0])]` was introduced. The size of the array
 is allocated with a margin (because for each command, no more than two
 distributions are required, and some do not need distributions at all). Because
@@ -736,7 +736,7 @@ identity, but at the same time has one drawback – impossibility without
 Recursive calls consistently overlook the entire view field (or the entire list
 free blocks). The classical implementation of an abstract refal machine on
 lists It is iterative and does not use recursive calls (recursive calls
-functions provides the structure of the view field), which is an advantage -
+functions provide the structure of the view field), which is an advantage -
 there are no stack overflow errors (but at the same time memory overflow errors
 are possible).
 
@@ -752,7 +752,7 @@ the unfolded. In this implementation, the roll-up operations are focused on
 viewing the view field from left to right (in the direction of the next link).
 
 When unfolded, the head node and the following list of the contents of the
-closure are broken and placed in front of the closure node. In this case, the
+closure is broken and placed in front of the closure node. In this case, the
 closure changes its type from the usual to the expanded (from `cDataClosure` to
 `cDataUnwrappedClosure`), keeping a link to the head in `link_info`. Unfolding
 feature (`unwrap_closure`) takes an iterator (a pointer to the node) of the
@@ -778,7 +778,7 @@ allocate memory from the pool and periodically to release unnecessary memory to
 copy the view field, distributing it from the new pool, and the old one after
 the copy is released. The possibility of linearizing such shared constructions,
 (in this way not only the contents of closures, but also the contents of the
-structur (and ATD-) brackets) will allow you to copy the view field using the
+structural (and ATD-) brackets) will allow you to copy the view field using the
 line view. Such cleaning can be performed on a counter (when performing N
 machine steps) or by the volume of the view field and the list of free blocks
 (you need to be able to track the size of expressions).

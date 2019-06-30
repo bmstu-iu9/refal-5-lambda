@@ -253,7 +253,7 @@ foregoer branch as characters string like `'MFFM…'` – where `'M'` means
 
 For example, `'F'` – father, `'FF'` – grandfather on father’s line, `'MM'` –
 grandmother on mother’s line, `'FM'`- grandmother on father’s line, `'FMM'` -
-greatgrandmother on grandmother on father’s line, empty expression – the
+great-grandmother on grandmother on father’s line, empty expression – the
 person.
 
     FindAncestor {
