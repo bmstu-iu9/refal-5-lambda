@@ -8,7 +8,7 @@ article, we will look at this issue in a more formal way.
 
 The term _Basic Refal_ is commonly referred to a Refal semantic subset, which
 function sentences consist of two parts, the variables can be s-, t- or e-
-typed (there is no Refal-2 qualifiers) and symbol types include only literal
+typed (there are no Refal-2 qualifiers) and symbol types include only literal
 characters, numbers and words.
 
 The Basic Refal subset is semantic. That means that a specific syntax form of
@@ -18,7 +18,7 @@ syntax). But these listed expressive means exist in the language.
 
 # Hello, World! Program
 
-In the [previous chapter](2-intro.en.md) we managed to compile and to run a
+In the [previous chapter](2-intro.en.md), we managed to compile and to run a
 program [`hello.ref`](hello.ref), which printed out a string “Hello, World!”.
 Let us learn how to read and understand its source code.
 
@@ -33,7 +33,7 @@ and is used to clarify the program idea.
 
 There were added comments in this program, line numbering (for convenience of
 a quick reference from the manual text) and the word `/*empty*/`, which
-emphasize readers attention to the fact there is nothing at that place of the
+emphasizes readers attention to the fact there is nothing at that place of the
 program. It sounds strange but it will make more sense.
 
 The restricted by `/*` and `*/` signs comments are _multi-line._ It means `*/`
@@ -79,16 +79,16 @@ a single function definition named `Go` or `GO`. The program execution process
 is the function `Go` (or `GO`) with an empty argument computation.
 
 Hieroglyphic `$ENTRY` will be clarified in the next sections. Just need to know
-that the key word `$ENTRY` must precede the `Go` (or `GO`) program entry point.
+that the keyword `$ENTRY` must precede the `Go` (or `GO`) program entry point.
 
 There is a single function Go _sentence_ in the second string. A sentence is a
-rule, which define how to put up the function value on an arguments subset. A
+rule, which defines how to put up the function value on an argument subset. A
 function can consist of several sentences, each ends with a `;` sign (a
 semicolon).  A semicolon may not be used at the end of the last sentence.
 
-Any sentence consist of two parts – _the left part, a pattern_, which describes
+Any sentence consists of two parts – _the left part, a pattern_, which describes
 a value subset of the function argument on which the sentence is applied. And
-_the right part, a result_ that describe the function value on the subset. The
+_the right part, a result_ that describes the function value on the subset. The
 left and the right parts are divided by `=` (equality) sign.
 
 Note. _In the future we will consider the extended Refal syntax in which
@@ -97,7 +97,7 @@ sentence syntax will be more complicated._
 The sentence in the program `hello.ref` means that it can be applied on an
 empty function argument only (there is nothing before the equality). The `/*
 empty */` comment stresses the fact. The right side describes the `Go` function
-definition with empty argument as the result of the `Prout` function computing.
+definition with an empty argument as the result of the `Prout` function computing.
 A sequence of signs `Hello, World!` is transferred to it. A function call on
 Refal is written with angle brackets `<` and `>`. The function name has to be
 placed after the opening brace.
@@ -108,7 +108,7 @@ is why it is called.
 
 Almost all Refal programs are written actually for these side effects. After
 the function `Go` (or `GO`) computing the result is discarded and the program is
-completed. User sees only what was displayed on the screen by the function
+completed. The user sees only what was displayed on the screen by the function
 `Prout`, recorded to files or transferred “out” of the computing process by
 other ways.
 
@@ -116,7 +116,7 @@ Note. _There are exceptions. On the one hand, these are automated tests
 (autotests) – programs that launch the testing function, check its result and
 are finalized. If this verification is successful the program is just
 completed. In another case the program termites by a fail-safe.  The tests run
-environment can distinguish this two cases and inform the user unsuccessful
+environment can distinguish these two cases and inform the user unsuccessful
 runs.  Another example are researches in the field of automatic program
 conversion and verification (e.g. by supercompilation). In this case, an
 interesting math function is written in Refal. It is fed to the tool (e.g
@@ -132,7 +132,7 @@ library is not used.
 
 ### Interim conclusions – what have we seen in `hello.ref`
 
-Let us to conclude what we have learned by now.
+Let us conclude what we have learned by now.
 
 * We can write comments that do not affect program running and serve as an
   explanation in the programs.
@@ -140,7 +140,7 @@ Let us to conclude what we have learned by now.
 * A single-lined comment is a string where the first sign is `*`. The remaining
   signs may be any type.
 * A multi-lined comment can be situated in any place in the program (e.g next
-  to a meaningless non-space character). The comment begin with the signs `/*`
+  to a meaningless non-space character). The comment begins with the signs `/*`
   and ends with the signs `*/`.
 * A Refal program is a function set.
 * A program running starts with a “starting” function `Go` or `GO` call with an
@@ -148,7 +148,7 @@ Let us to conclude what we have learned by now.
 * Before the starting function name should be the keyword `$ENTRY`.
 * A Refal function is written as the function name, followed by curly braces
   with one or several sentences.
-* A sentence consist of two parts: the left – “a pattern” and the right – “the
+* A sentence consists of two parts: the left – “a pattern” and the right – “the
   result”.
 * The left side defines the arguments value subset on which the sentence is
   applied.
@@ -391,7 +391,7 @@ The second sentence is applicable to any argument containing an equality sign.
 Both sentences are obviously applicable for the arguments of the `'ab = ab'`
 form. The first has the same expressions before and after the `'='` sign. The
 second, because it has the equality sign. As stated, the preceding sentences
-has priority over the following ones, therefore the first sentence will process
+have priority over the following ones, therefore the first sentence will process
 cases of equal “halves”, and the second will receive the rest (unequal).
 
 If both statements are interchanged, the result of the function (on its
@@ -448,7 +448,7 @@ Let's sum up:
   expressions fragments, which can be replaced by arbitrary values according to
   their type.
 * S-variables can be replaced by any character.
-* E-variables can be replaced by a arbitrary expression.
+* E-variables can be replaced by an arbitrary expression.
 * The variable names syntax: `s.varname`, `e.ab123`, `s.123ab`.
 * The function sentence is executed if it is possible to select a variables
   values substitution, which converts the left side to a function argument.
@@ -747,7 +747,7 @@ character (fit one macrodigit).
 
 Functions `Add`, `Sub`, `Mul`, `Div`, `Mod`, `Divmod` and `Compare` receive two
 numbers. If the first one is a small positive (macrodigit), then it is written
-as a macrodigit too. Otherwise the first argument is written as a bracket term.
+as a macrodigit too. Otherwise, the first argument is written as a bracket term.
 The second argument is written after the first.
 
 Function Divmod returns quotient in brackets and remainder.
@@ -758,7 +758,7 @@ the second.
 
 Function `Numb` takes a string. If the string starts with an optional sign and
 decimal digits, the function returns the number represented by these numbers.
-Otherwise (if the argument don’t begin with a decimal number) the function
+Otherwise, (if the argument doesn’t begin with a decimal number) the function
 returns `0`.
 
 Function `Symb` the inverse or the function `Numb`, converts a number to
@@ -826,7 +826,7 @@ split into parts)
 
 # Other types of symbols: words
 
-While programing on Refal the user often has a necessity to mark different
+While programming on Refal the user often has a necessity to mark different
 types of objects or conditions: it is possible for a function to end
 successfully or not. State machine can possibly have different conditions.
 A program can manipulate different types of objects (representation of tokens
@@ -978,14 +978,14 @@ the following sequence of actions.
    Refal, the machine selects the first sentence of the function.
 4. If it is possible to choose such values of variables in the left part of the
    current sentence that it might become the function argument, then the
-   point 5 is implemented. Otherwise the following sentence is selected and
+   point 5 is implemented. Otherwise, the following sentence is selected and
    point 4 repeats. If there are no sentences anymore, then the refal-machine
    stops with an error "recognition impossible".
 5. The found values of variables are added to the right part of the current
    sentence. Refal-machine inserts received expression into the view field to
    the place of the primary active subexpression.
 6. If there are activation brackets in the view field, then the refal-machine
-   executes the following step – returns to the point 1. Otherwise the
+   executes the following step – returns to the point 1. Otherwise, the
    refal-machine correctly comes to the end.
 
 Initial contents of a view field is the `GO` function call with an empty
