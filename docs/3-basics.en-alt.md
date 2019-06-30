@@ -379,7 +379,7 @@ If N arguments are expressed in function, it is enough to put in brackets only
 N-1 arguments.
 
 In the next chapter we will see that putting arguments in brackets instead of
-divider signs not only easier (it is not necessarily to create a divider sign),
+divider signs not only easier (it is not necessari to create a divider sign),
 but also more effective from the point of time spent on program realization.
 
 Now functions `IsEqual` and  `BinAdd` can be written the following way:

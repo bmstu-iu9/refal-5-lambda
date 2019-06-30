@@ -22,7 +22,7 @@ first one has priority.
    * Сonsequence: support for all built-in functions with official
      implementation, including their undocumented semantics.
 2. **The language and the compiler for everyday coding.**
-    * Syntax extensions should allow to write more expressive code with no harm
+    * Syntax extensions should allow writing more expressive code with no harm
       to efficiency (e.g. assignment syntax instead of conditions as
       assignments).
     * Efficient optimization on different levels (syntax tree transformation,
@@ -43,7 +43,7 @@ first one has priority.
       static box can be placed in the local scope which is not available from
       the outside (by the way, the bank is implemented upon such a static box
       in the `Library`).
-    * `SRMake` utility that allows to monitor dependency between the source
+    * `SRMake` utility that allows monitoring dependency between the source
       codes.
     * Target file compilation – executable system file. No other interpreter is
       needed for running.
@@ -92,7 +92,7 @@ first one has priority.
 codes in imperative language (exactly-C++). Programming convenience and the
 purity, clearness and maintainability of the code didn’t have priority. That’s
 why such artifacts as the pre-announcement necessity, empty functions instead
-of identifiers and not well written `Library.cpp` appeared. The consequence of
+of identifiers and not well-written `Library.cpp` appeared. The consequence of
 the objective was that each language entity is compiled in equivalent
 environment. C++: `$EXTERN` and `$FORWARD` – into function declarations,
 functions – into function definitions, empty functions-into function with the
@@ -109,7 +109,7 @@ The objective to provide the maximum portability has never been declared but it
 was implied.
 
 Despite the fact that a compiler as a tutorial has been used for a long time
-(approx. since 2009), I’ve build up the apparent aim just recently when I
+(approx. since 2009), I’ve built up the apparent aim just recently when I
 realized that’s it’s quite difficult for students to work with the current
 language and the compiler. It may be considered that the commitments starting
 from April 2015 were all oriented towards this aim.
@@ -303,11 +303,11 @@ value using `<Dgall>`.
 
 #### Empty functions
 
-Unlike Classic Refal-5, the language allows create empty functions not
+Unlike Classic Refal-5, the language allows creating empty functions not
 containing any sentence. Their call always ends up emergency program
 stopping. In an earlier version of the language (when it still was Simple
 Refal) empty functions quite often were used as identifiers, that’s why the
-syntax sugar was added to write them – the key word `$ENUM` for a local function
+syntax sugar was added to write them – the keyword `$ENUM` for a local function
 and `$EENUM` for the entry:
 
     /* entry */
@@ -335,7 +335,7 @@ created (in other files this local function couldn’t be referred to by the
 name). In other translation unit this term can be referred to only as
 t-variable.
 
-For such function-tag call `$ENUM` key word is preferred.
+For such function-tag call `$ENUM` keyword is preferred.
 
     $ENUM SymTable;
 
@@ -377,8 +377,8 @@ extension – a set of primitive nested functions can be extended only be
 modifying the interpreter.
 
 Unlike it, the Refal-5λ implementation is opened  -new capabilities can be added
-in the language (networking,data bases) without changing the initial
-implementation. The language allow native insertions – code insertion in C++
+in the language (networking, databases) without changing the initial
+implementation. The language allows native insertions – code insertion in C++
 language. It looks like this:
 
     %%
@@ -421,7 +421,7 @@ and output and so on.
 
 ### Inclusion of the files
 
-Language support `$INCLUDE` key word allowing to include the another text file
+Language support `$INCLUDE` keyword allowing to include the another text file
 content in the current entity (it must've `.refi` extension). File name in the
 form of composite characters in quotation marks shall be situated after key
 word.
@@ -457,13 +457,13 @@ installation above will be the same.
 
 ### Installation on UNIX-like (Linux, macOS, Cygwin, MinGW)
 
-Installation similar to Windows installation except that GCC specify in the
+Installation similar to Windows installation except that GCC specifies in the
 configurations file by default.
 
 1. Start the bootstrap.sh  for compiler building. GCC compiler building and
    running all tests  will be implemented. For passing tests use `bootstrap.sh
    --no-tests`. In both cases `c-plus-plus.conf.sh`, configuration file will be
-   created in witch  will be specify GCC by default.
+   created in which  will be specify GCC by default.
 2. If you want to use another C++ compiler edit `c-plus-plus.conf.sh` file and
    if necessary restart the build.
 3. Add appeared directory `bin` to the directory list an environment variable
