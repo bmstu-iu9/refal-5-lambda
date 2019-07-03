@@ -82,13 +82,30 @@ DoMapAccum {
 $SPEC DoMapAccum t.FUNC t.acc (e.scanned) e.items;
 
 DoMapAccum-Aux {
-    t.Fn (e.Scanned) (t.Acc^ e.StepScanned) e.Tail
+    t.Fn (e.Scanned) (t.Acc e.StepScanned) e.Tail
     = <DoMapAccum
         t.Fn t.Acc (e.Scanned e.StepScanned) e.Tail
       >;
 }
 
-$SPEC DoMapAccum-Aux t.FUNC (e.scanned) (t.acc e.step-scanned) e.items;
+/*
+  Шаблон для DoMapAccum-Aux должнен быть именно такой.
+  Эта функция вызывается в общем случае как
+  (после специализации):
+
+  <DoMapAccum t.Fn (e.Scanned) (<F t.Acc t.Next>) e.Tail>
+
+  Такой вызов не соответствует очевидному шаблону
+
+  t.F (e.s) (t.a e.ss) e.i
+
+  поскольку во вторых скобках <F …>. Приходится использовать
+  шаблон
+
+  t.F (e.s) (t.a-and-ss) e.i
+*/
+
+$SPEC DoMapAccum-Aux t.FUNC (e.scanned) (t.acc-and-step-scanned) e.items;
 
 
 * Function MapReduce is deprecated!!!
