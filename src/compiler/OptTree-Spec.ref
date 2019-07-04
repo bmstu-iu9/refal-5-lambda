@@ -165,7 +165,7 @@ SpecTerm {
 
   (e.SpecInfo (e.NewFunctions)) (Brackets e.Expression)
     = <SpecResult (e.SpecInfo (e.NewFunctions)) e.Expression>
-    : (e.SpecInfo^ (e.NewFunctions^)) e.Expresssion^
+    : (e.SpecInfo^ (e.NewFunctions^)) e.Expression^
     = (e.SpecInfo (e.NewFunctions)) (Brackets e.Expression);
 
   (e.SpecInfo (e.NewFunctions)) (ADT-Brackets (e.Name) e.Expression)

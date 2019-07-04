@@ -137,7 +137,7 @@ IsHardPattern {
   (TkVariable t.SrcPos1 'e' e.Index) = True;
 
   (TkVariable t.SrcPos1 'e' e.Index1) e.Pattern-M
-  (TkVariable t.SrcPos2 'e' e.Index2)
+  (TkVariable t.SrcPos2 'e' e.Index2) e.Pattern-E
     = False;
 
   (Brackets e.PatternPart1) e.PatternPart2
