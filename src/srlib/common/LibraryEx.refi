@@ -102,10 +102,10 @@ DoMapAccum-Aux {
   поскольку во вторых скобках <F …>. Приходится использовать
   шаблон
 
-  t.F (e.s) (t.a-and-ss) e.i
+  t.F (e.s) (e.a-and-ss) e.i
 */
 
-$SPEC DoMapAccum-Aux t.FUNC (e.scanned) (t.acc-and-step-scanned) e.items;
+$SPEC DoMapAccum-Aux t.FUNC (e.scanned) (e.acc-and-step-scanned) e.items;
 
 
 * Function MapReduce is deprecated!!!
