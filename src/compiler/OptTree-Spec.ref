@@ -386,12 +386,26 @@ Spec-PrepareCallOrPattern {
     = <WrapEVar e.VarsFromStaticParams>
       <Map
         {
-          (e.Val ':' (TkVariable 'e' e.Index)) = (Brackets e.Val);
+          (e.Val ':' (TkVariable 'e' e.Index)) = (GhostBrackets e.Val);
 
           (e.Val ':' t.Var) = e.Val;
         }
         e.DynamicMatches
-      >;
+      >
+    : e.Expression
+    = <MapAccum
+        {
+          True (GhostBrackets e.Expr) = True (Brackets e.Expr);
+
+          False (GhostBrackets e.Expr) = True e.Expr;
+
+          s.Flag t.Other = s.Flag t.Other;
+        }
+        False
+        e.Expression
+      >
+    : s.Flag e.Expression^
+    = e.Expression;
 }
 
 Spec-RenameGenericMatch {
