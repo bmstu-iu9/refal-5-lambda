@@ -1,3 +1,4 @@
+/* TREE */
 ComposeVars-Debug {
   (e.Substitute-B (e.Name) e.Substitute-E)
   (e.Vars-B (e.Name) e.Vars-E) =

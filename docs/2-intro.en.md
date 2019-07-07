@@ -70,7 +70,7 @@ further, they are expressed with nested functions. These and other kinds of
 Thirdly, the actual implementation of Refal-5λ is not locked in contrast to a lot
 of other REFAL implementations. It means that  programmer is not constrained
 with some “embedded” language functions, embedded interface with C++ language
-allow the programmer to implement and use functionality in their programs on
+allows the programmer to implement and use functionality in their programs on
 Refal, that absent in standard library – work with networks, with databases,
 windows interface and so on. As well as C/C++ languages allow using
 code insertion on assembler, Refal-5λ allows code insertions on C++ in source

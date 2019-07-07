@@ -1,3 +1,10 @@
+$INCLUDE "LibraryEx";
+
+
+*FROM Desugaring-UnCondition
+$EXTERN NewVarName;
+$EXTERN ExtractVariables;
+
 /*
   <GenericMatch (e.Pattern) (e.LPattern)>
     == Clear (e.Val ':' t.Var)*
@@ -13,9 +20,35 @@
   t.Var ::= (s.VarType e.Index)
   s.VarType ::= 's' | 't' | 'e'
 */
+*
+*$ENTRY GenericMatch {
+*  (e.Pattern) (e.LPattern)
+*     = <GenericMatch-Aux (e.Pattern) (e.LPattern) (/* Substitutions */) >;
+*}
+
+FormatAssigns {
+  e.Assigns =
+    <Map
+      {
+        (e.Left ':' (TkVariable e.Index))
+          = (e.Left ':' (e.Index))
+      }
+      e.Assigns
+    >
+}
+
 $ENTRY GenericMatch {
   (e.Pattern) (e.LPattern)
-    = <GenericMatch-Aux (e.Pattern) (e.LPattern) (/* Substitutions */) >;
+    = <Solve
+       (<ExtractVariables ((e.Pattern e.LPattern) (/* пусто */)) >)
+       ((e.Pattern) ':' (e.LPattern))
+      >
+      : {
+          Success (() (e.Assigns)) = Clear <FormatAssigns e.Assigns>;
+          Failure = Failure;
+          Undefined = Undefined;
+          e.Other = Undefined;
+        }
 }
 
 /*
@@ -93,6 +126,446 @@ IsSVarSubset {
   t.OtherTerm = False;
 }
 
+/*
+  <Solve (e.UsedVars) t.Equation>
+    == Success t.Result* | Undefined | Failure
+
+    t.Contr ::= (t.Var ':' e.Val)
+    t.Equation ::= ((e.Expr) ':' (e.LExpr))
+    t.Assign ::= (e.Val ':' t.Var)
+    t.Result ::= ((t.Contr*) (t.Assign*))*
+*/
+
+$ENTRY Solve {
+    (e.UsedVars) ((e.Expr) ':' (e.Lexpr))
+      = <Solve-Aux (e.UsedVars) () ((e.Expr) ':' (e.Lexpr)) ()>
+      : {
+        = Failure;
+        e.B Undefined e.A = Undefined;
+        e.Other = Success <CombineResults () e.Other>
+      };
+}
+
+/* Преобразует формат результата функции Solve-Aux к формату Solve */
+
+CombineResults {
+  (e.Solutions) Success (e.Contrs) (e.Assigns) e.Rest
+    = <CombineResults (e.Solutions ((e.Contrs) (e.Assigns))) e.Rest>;
+  (e.Solutions) /* пусто */ = e.Solutions
+}
+
+Eq {
+  (e.X) (s.X) = True;
+  e.Other = False
+}
+
+/*
+  Проверка наличия повторных переменных в присваиваниях
+  <HasRepeatedVarsAssigns (t.Assign*) (t.Rvar*)>
+    == True | False
+*/
+
+HasRepeatedVarsAssigns {
+  (e.B (e.Expr ':' t.Var) e.M) (e.L t.Var e.R) = True;
+  (e.Lexpr) (e.RVars) = False
+}
+
+/* Постобработка результатов решения уравнений
+
+    <Solution-PostProcess Success (t.Contraction*) (t.Assign*)>
+      == Success (t.Contraction*) (t.Assign*) | Undefined
+*/
+
+Solution-PostProcess {
+
+  /*
+    Если есть непротиворечивые присваивания вида:
+    (s.A <- v.B) и (s.C <- v.B) то добавляется сужение (s.C -> v.A)
+    и второе присваивание удаляется
+  */
+
+  (e.Contractions) (e.Assigns)
+    , e.Assigns
+      : e.B
+        ((TkVariable 's' e.Index1) ':' (TkVariable e.HIndex))
+        e.M
+        ((TkVariable 's' e.Index2) ':' (TkVariable e.HIndex))
+        e.E
+    = <Solution-PostProcess
+        <AddContraction
+          ((TkVariable 's' e.Index2) ':' (TkVariable 's' e.Index1))
+          (e.Contractions)
+          (e.B ((TkVariable 's' e.Index1) ':' (TkVariable e.HIndex)) e.M e.E)
+        >
+      >;
+
+  /*
+    Если есть присваивания вида:
+    (s.A <- v.B) и (X <- v.B) то добавляем сужение (v.A -> X)
+    и удаляем первое присваивание
+  */
+
+  (e.Contractions) (e.Assigns)
+    , e.Assigns
+      : e.B
+        ((TkVariable 's' e.PIndex) ':' (TkVariable e.HIndex))
+        e.M
+        ((Symbol s.Type e.Info) ':' (TkVariable e.HIndex))
+        e.E
+    = <Solution-PostProcess
+        <AddContraction
+          ((TkVariable 's' e.PIndex) ':' (Symbol s.Type e.Info))
+          (e.Contractions)
+          (e.B ((Symbol s.Type e.Info) ':' (TkVariable e.HIndex)) e.M e.E)
+        >
+      >;
+
+  (e.Contractions) (e.Assigns)
+    , e.Assigns
+      : e.B
+        ((Symbol s.Type e.Info) ':' (TkVariable e.HIndex))
+        e.M
+        ((TkVariable 's' e.PIndex) ':' (TkVariable e.HIndex))
+        e.E
+    = <Solution-PostProcess
+        <AddContraction
+          ((TkVariable 's' e.PIndex) ':' (Symbol s.Type e.Info))
+          (e.Contractions)
+          (e.B ((Symbol s.Type e.Info) ':' (TkVariable e.HIndex)) e.M e.E)
+        >
+      >;
+
+  /*
+     Если есть непротиворечивые присваивания вида:
+     (X <- v.A) (X <- v.A) то удаляем одно из них
+  */
+
+  (e.Contractions) (e.Assigns)
+    , e.Assigns
+      : e.B
+        ((Symbol s.Type e.Info) ':' (TkVariable e.HIndex))
+        e.M
+        ((Symbol s.Type e.Info) ':' (TkVariable e.HIndex))
+        e.E
+    = <Solution-PostProcess
+        (e.Contractions)
+        (e.B ((Symbol s.Type e.Info) ':' (TkVariable e.HIndex)) e.M e.E)
+      >;
+
+  /*
+    Если есть противоречивые присваивания вида:
+    (X <- s.A) и (Y <- s.A) то ничего не возвращаем
+  */
+
+  (e.Contractions) (e.Assigns)
+    , e.Assigns
+      : e.B
+        ((Symbol e.Info1) ':' (TkVariable e.HIndex))
+        e.M
+        ((Symbol e.Info2) ':' (TkVariable e.HIndex))
+        e.E
+      = ;
+
+  /*
+    если есть идентичные присваивания, то удалаяем их
+  */
+  (e.Contractions) (e.Assigns)
+    , e.Assigns
+    : e.B (e.C ':' e.C) e.E
+    = <Solution-PostProcess (e.Contractions) (e.B e.E)>;
+
+  /*
+    если есть идентичные сужения, то удаляем их
+  */
+
+  (e.Contractions) (e.Assigns)
+    , e.Contractions
+    : e.B (e.C ':' e.C) e.E
+    = <Solution-PostProcess (e.B e.E) (e.Assigns)>;
+
+
+  (e.Contractions) (e.Assigns)
+    , e.Assigns
+      : e.B
+        (e.Expr1 ':' (TkVariable e.HIndex))
+        e.M
+        (e.Expr2 ':' (TkVariable e.HIndex))
+        e.E
+    = Undefined;
+
+
+
+  (e.Contractions) (e.Assigns) = Success (e.Contractions) (e.Assigns)
+}
+
+/*
+  <Solve-Aux (e.UsedVars) (t.Contr*) t.Equation* (t.Assign*)>
+    == t.Result*
+
+    t.Contr ::= (t.Var ':' e.Val)
+    t.Equation ::= ((e.Expr) ':' (e.LExpr))
+    t.Assign ::= (e.Val ':' t.Var)
+    t.Result ::= Success ((t.Contr*) (t.Assign*)) | Undefined
+*/
+
+Solve-Aux {
+  /* В начале системы уравнение вида T E : Lt Le  */
+  (e.UsedVars) (e.Contrs) ((t.Pt e.Pe) ':' (t.Ht e.He)) e.Equations (e.Assigns)
+    , <IsTerm t.Ht> : True
+    , <IsTerm t.Pt> : True
+    = <Solve-TermEquation
+        (e.UsedVars)
+        t.Pt t.Ht
+        (e.Contrs) ((e.Pe) ':' (e.He)) e.Equations (e.Assigns)
+      > : {
+        Success e.PRTC = <Solve-Aux e.PRTC>;
+        Failure =
+      };
+
+  /* В начале системы уравнение вида E T: Le Lt */
+  (e.UsedVars) (e.Contrs) ((e.Pe t.Pt) ':' (e.He t.Ht)) e.Equations (e.Assigns)
+    , <IsTerm t.Ht> : True
+    , <IsTerm t.Pt> : True
+    = <Solve-TermEquation
+        (e.UsedVars)
+        t.Pt t.Ht
+        (e.Contrs) ((e.Pe) ':' (e.He)) e.Equations (e.Assigns)
+      > : {
+        Success e.PRTC = <Solve-Aux e.PRTC>;
+        Failure =
+      };
+
+  /* Уравнения вида e.x E : Lt Le
+     Разделяем на две независимые системы
+     e.x -> empty
+     e.x -> t.N e.N+1
+  */
+  (e.UsedVars) (e.Contrs) ((t.Pt e.Pe) ':' (t.Ht e.He))
+  e.Equations (e.Assigns)
+    , <IsTerm t.Ht> : True
+    , t.Pt : (TkVariable 'e' e.Index)
+    = <NewVarName (e.UsedVars) 't' 0 ()> : (e.UsedVars^) 't' e.tIdx
+    = <NewVarName (e.UsedVars) 'e' 0 ()> : (e.UsedVars^) 'e' e.eIdx
+    = <AddContraction
+        (t.Pt ':' )
+        (e.Contrs)
+        ((e.Pe) ':' (t.Ht e.He)) e.Equations
+        (e.Assigns)
+      > : e.Branch1
+    = <AddContraction
+        (t.Pt ':' (TkVariable 't' e.tIdx) (TkVariable 'e' e.eIdx))
+        (e.Contrs)
+        ((t.Pt e.Pe) ':' (t.Ht e.He)) e.Equations
+        (e.Assigns)
+      >: e.Branch2
+    = <Solve-Aux
+        (e.UsedVars)
+        e.Branch1
+      >
+      <Solve-Aux
+        (e.UsedVars)
+        e.Branch2
+      >;
+
+  /* Уравнения вида E e.x : Le Lt
+     Разделяем на две независимые системы
+     e.x -> empty
+     e.x -> e.N+1 t.N
+  */
+  (e.UsedVars) (e.Contrs) ((e.Pe t.Pt) ':' (e.He t.Ht))
+  e.Equations (e.Assigns)
+    , <IsTerm t.Ht> : True
+    , t.Pt : (TkVariable 'e' e.Index)
+      = <NewVarName (e.UsedVars) 't' 0 ()> : (e.UsedVars^) 't' e.tIdx
+      = <NewVarName (e.UsedVars) 'e' 0 ()> : (e.UsedVars^) 'e' e.eIdx
+      = <AddContraction
+          (t.Pt ':' )
+          (e.Contrs)
+          ((e.Pe) ':' (e.He t.Ht)) e.Equations
+          (e.Assigns)
+        > : e.Branch1
+      = <AddContraction
+          (t.Pt ':' (TkVariable 'e' e.eIdx) (TkVariable 't' e.tIdx))
+          (e.Contrs)
+          ((e.Pe t.Pt) ':' (e.He t.Ht)) e.Equations
+          (e.Assigns)
+        >: e.Branch2
+      = <Solve-Aux
+          (e.UsedVars)
+          e.Branch1
+        >
+
+        <Solve-Aux
+          (e.UsedVars)
+          e.Branch2
+        >;
+
+  /* Если уравнение имеет вид Expr: e.x, добавляем присванивание
+     вида Expr <- e.x */
+  (e.UsedVars) (e.Contrs) ((e.Pe) ':' ((TkVariable 'e' e.Idx)))
+  e.Equations (e.Assigns)
+    = <Solve-Aux
+        (e.UsedVars)
+        (e.Contrs)
+        e.Equations
+        (e.Assigns (e.Pe ':' (TkVariable 'e' e.Idx)))
+      >;
+
+  /* Если уравнение имеет вид empty: Lt Le, ничего не возвращаем */
+  (e.UsedVars) (e.Contrs) (() ':' (t.Ht e.He)) e.Equations (e.Assigns)
+    , <IsTerm t.Ht>: True = ;
+
+  /* Если уравнение имеет вид e.i* : empty, возвращаем результат,
+     предварительно добавив пустые сужения
+  */
+  (e.UsedVars) (e.Contrs) ((e.Pt) ':' ()) e.Equations (e.Assigns)
+    , <IsFreeVariableSeq e.Pt> : True
+    , <Map
+        {
+            t.Free = (t.Free ':' )
+        }
+        e.Pt
+      > : e.NewContrs
+    = <Solve-Aux
+        (e.UsedVars)
+        <AddContractions
+          (e.NewContrs)
+          (e.Contrs)
+          e.Equations
+          (e.Assigns)
+        >
+      >;
+
+  (e.UsedVars) (e.Contrs) (() ':' ()) e.Equations (e.Assigns) =
+    <Solve-Aux (e.UsedVars) (e.Contrs) e.Equations (e.Assigns)>;
+
+  (e.UsedVars) (e.Contrs) (e.Assigns) = <Solution-PostProcess (e.Contrs) (e.Assigns)>;
+
+  e.Other = Undefined
+}
+
+
+/*
+  Решает уравнение вида P:H для термов
+
+  <Solve-TermEquation (e.UsedVars) t.Symbol1 t.Symbol2 e.PRTC>
+    == t.Result
+
+    t.Result ::= Success t.PRTC | Failure
+    e.PRTC :: = (t.Contrs*) t.Equations* (t.Assigns*)
+
+    PRTC - partially resolved term clash
+*/
+
+Solve-TermEquation {
+  /* H является символом */
+  (e.UsedVars) t.Symbol t.Symbol e.PRTC
+    , t.Symbol : (Symbol s.Type e.Info)
+    = Success (e.UsedVars) e.PRTC
+  /* нет подстановок, нет сужений */;
+
+  /* P - символ, H - s-переменная */
+  (e.UsedVars) t.Symbol t.Svar (e.Contrs) e.Equations (e.Assigns)
+    , t.Symbol t.Svar
+    : (Symbol s.Type e.Info) (TkVariable 's' e.Hindex)
+    = Success
+      (e.UsedVars)
+      (e.Contrs) e.Equations
+      (e.Assigns (t.Symbol ':' t.Svar));
+
+  /* P - s-переменная, H - s-переменная */
+  (e.UsedVars) t.PSvar t.HSvar (e.Contrs) e.Equations (e.Assigns)
+    , t.PSvar t.HSvar
+    : (TkVariable 's' e.Pindex) (TkVariable 's' e.Hindex)
+    = Success
+      (e.UsedVars)
+      (e.Contrs)
+      e.Equations
+      (e.Assigns (t.PSvar ':' t.HSvar));
+
+
+  /* P - s-переменная, H - символ */
+  (e.UsedVars) t.Svar t.Symbol (e.Contrs) e.Equations (e.Assigns)
+    , t.Svar : (TkVariable 's' e.Pindex)
+    , <IsSVarSubset t.Symbol> : True
+    = Success
+      (e.UsedVars)
+      <AddContraction
+        (t.Svar ':' t.Symbol)
+        (e.Contrs)
+        e.Equations
+        (e.Assigns)
+      >;
+
+  /* P - терм, H - t-переменная */
+  (e.UsedVars) t.PVar t.HVar (e.Contrs) e.Equations (e.Assigns)
+    , t.HVar: (TkVariable 't' e.Tindex)
+    = Success
+      (e.UsedVars)
+      (e.Contrs)
+      e.Equations
+      (e.Assigns (t.PVar':'(TkVariable 't' e.Tindex)));
+
+  /* P - t-переменная, H - скобочный терм */
+  (e.UsedVars) t.PTvar (Brackets e.HBody) (e.Contrs) e.Equations (e.Assigns)
+    , t.PTvar : (TkVariable 't' e.Pindex)
+    = <NewVarName (e.UsedVars) 'e' 0 ()>
+      : t.NewVars e.NewIndex
+      = Success
+        t.NewVars
+        <AddContraction
+          (t.PTvar ':' (Brackets (TkVariable 'e' e.NewIndex)))
+          (e.Contrs)
+          e.Equations (((TkVariable 'e' e.NewIndex)) ':' (e.HBody))
+          (e.Assigns)
+        >;
+
+  /* P - t-переменная, H - символ */
+  (e.UsedVars) t.PTvar t.Symbol (e.Contrs) e.Equations (e.Assigns)
+    , t.PTvar t.Symbol
+    : (TkVariable 't' e.Pindex) (Symbol s.Type e.Info)
+    = Success
+      (e.UsedVars)
+      <AddContraction
+        (t.PTvar ':' t.Symbol)
+        (e.Contrs)
+        e.Equations
+        (e.Assigns)
+      >;
+
+  /* P - t-переменная, H - s-переменная */
+  (e.UsedVars) t.PTvar t.HSvar (e.Contrs) e.Equations (e.Assigns)
+    , t.PTvar t.HSvar
+    : (TkVariable 't' e.Pindex) (TkVariable 's' e.Hindex)
+    = Success
+      (e.UsedVars)
+      <AddContraction
+        (t.PTvar ':' t.HSvar)
+        (e.Contrs)
+        e.Equations
+        (e.Assigns)
+      >;
+
+  /* H является (H′) */
+  (e.UsedVars)
+  (Brackets e.TBody)(Brackets e.HBody)
+  (e.Contrs) e.Equations (e.Assigns)
+    = Success
+      (e.UsedVars)
+      (e.Contrs) e.Equations ((e.TBody) ':' (e.HBody))
+      (e.Assigns);
+
+  /* H является [H′] */
+  (e.UsedVars)
+  (ADT-Brackets (e.Name) e.TBody)(ADT-Brackets (e.Name) e.HBody)
+  (e.Contrs) e.Equations (e.Assigns)
+    = Success
+      (e.UsedVars)
+      (e.Contrs) e.Equations ((e.TBody) ':' (e.HBody)) (e.Assigns);
+
+  e.Other = Failure
+}
+
 IsTerm {
   (TkVariable 'e' e.Index) = False;
 
@@ -101,4 +574,114 @@ IsTerm {
 
   /* s-, t-переменная, скобки обоих видов, символ */
   t.OtherTerm = True;
+}
+
+/*
+  Добавление нескольких сужений к PRTC
+
+  <AddContractions (t.toAdd*) (t.Contraction*) t.Equation* (t.Assign*)>
+    == PRTC
+*/
+
+AddContractions {
+   (t.toAdd e.Rem) (e.Contractions) e.Equations (e.Assigns) =
+     <AddContractions
+        (e.Rem)
+        <AddContraction
+          t.toAdd
+          (e.Contractions)
+          e.Equations
+          (e.Assigns)
+        >
+     >;
+
+   () e.PRTC = e.PRTC;
+}
+
+/*
+  Добавление сужения к PRTC
+
+  <AddContraction t.toAdd (t.Contraction*) t.Equation* (t.Assign*)>
+   == PRTC
+*/
+AddContraction {
+  t.toAdd (e.Contractions) e.Equations (e.Assigns) =
+    (e.Contractions t.toAdd)
+    <ApplyContraction t.toAdd e.Equations (e.Assigns)>
+}
+
+
+/*
+  Применение сужения к PRTC
+
+  <ApplyContraction t.Contraction t.Equation* (t.Assign*)>
+    == t.Equation* (t.Assign*)
+*/
+
+ApplyContraction {
+  t.Contraction e.Equations (e.Assigns) =
+    <Map
+      (&ApplyContraction-toEquation t.Contraction)
+      e.Equations
+    >
+    (<Map
+      (&ApplyContraction-toAssign t.Contraction)
+      e.Assigns
+     >)
+
+}
+
+/*
+  Применение сужения к присваиванию
+
+  <ApplyContraction-toAssign t.Contraction t.Assign == t.Assign
+*/
+
+ApplyContraction-toAssign {
+   t.Contraction (e.M ':' t.Rval) = (<ApplyContraction-toExpr t.Contraction e.M> ':' t.Rval);
+}
+
+/*
+   Применение сужения к уравнению
+
+   <ApplyContraction-toEquation t.Contraction t.Equation> == t.Equation
+*/
+
+ApplyContraction-toEquation {
+   t.Contraction ((e.Expr) ':' (e.Lexpr)) =
+     ((<ApplyContraction-toExpr t.Contraction e.Expr>) ':'
+     (<ApplyContraction-toExpr t.Contraction e.Lexpr>))
+}
+
+/*
+    Применение сужения к выражению
+
+    <ApplyContraction-toExpr t.Contraction e.Expr> == e.Expr
+*/
+
+ApplyContraction-toExpr {
+   (t.Var ':' e.Lval) e.B t.Var e.E =
+     <ApplyContraction-toExpr (t.Var ':' e.Lval) e.B>
+     e.Lval
+     <ApplyContraction-toExpr (t.Var ':' e.Lval) e.E>;
+
+   t.Contraction e.B (Brackets e.M) e.E =
+     <ApplyContraction-toExpr t.Contraction e.B>
+     (Brackets <ApplyContraction-toExpr t.Contraction e.M>)
+     <ApplyContraction-toExpr t.Contraction e.E>;
+
+   t.Contraction e.B (ADT-Brackets e.M) e.E =
+     <ApplyContraction-toExpr t.Contraction e.B>
+     (ADT-Brackets <ApplyContraction-toExpr t.Contraction e.M>)
+     <ApplyContraction-toExpr t.Contraction e.E>;
+
+   t.Contraction e.Expr = e.Expr
+}
+
+/* Проверка на последовательность свободных переменных */
+
+IsFreeVariableSeq {
+   = True;
+   (TkVariable 'e' e.Idx) e.Rem = <IsFreeVariableSeq e.Rem>;
+   t.Other e.Rem = False
 }

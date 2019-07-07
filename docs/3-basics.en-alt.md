@@ -2,7 +2,7 @@
 
 > This section has alternative translations [one](3-basics.en.md), **two**.
 
-It was said earlier, that the left part determines arguments definitions
+It was said earlier, that the left part determines argument definitions
 subset, with which this sentence can be used. But now we have examined only
 subsets cases that consist of one element.
 
@@ -122,7 +122,7 @@ and one – using it is will be possible to define the end of one argument and
 the beginning of another argument. We will use the `'+'` symbol for clarity.
 
 Note. _Later we will know about really easy, effective and general way of
-arguments division._
+argument division._
 
     BinAdd {
       e.Num1 '0' '+' e.Num2 '0' = <BinAdd e.Num1 '+' e.Num2> '0';
@@ -253,7 +253,7 @@ foregoer branch as characters string like `'MFFM…'` – where `'M'` means
 
 For example, `'F'` – father, `'FF'` – grandfather on father’s line, `'MM'` –
 grandmother on mother’s line, `'FM'`- grandmother on father’s line, `'FMM'` -
-greatgrandmother on grandmother on father’s line, empty expression – the
+great-grandmother on grandmother on father’s line, empty expression – the
 person.
 
     FindAncestor {
@@ -379,7 +379,7 @@ If N arguments are expressed in function, it is enough to put in brackets only
 N-1 arguments.
 
 In the next chapter we will see that putting arguments in brackets instead of
-divider signs not only easier (it is not necessarily to create a divider sign),
+divider signs not only easier (it is not necessari to create a divider sign),
 but also more effective from the point of time spent on program realization.
 
 Now functions `IsEqual` and  `BinAdd` can be written the following way:
@@ -429,7 +429,7 @@ following sequence of actions:
    activation: there must be a function name. If it’s not there (the language
    allows you to write such a program), the Refal machine will stop with an
    error “recognition impossible”.
-3. Refal machine finds a function name in programs fields. The function can be
+3. Refal machine finds a function name in program fields. The function can be
    written not only on Refal, but also built in. If the function is built in,
    Refal-machine transfers control to the procedure in the native code, that
    implements the logic of the function. If the function is written on Refal,

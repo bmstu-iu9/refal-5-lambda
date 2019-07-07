@@ -1,4 +1,5 @@
 // CONDITIONS
+/* TREE */
 
 $ENTRY Go { = <Go1> <Go2> <Go3>; }
 

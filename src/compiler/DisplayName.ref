@@ -62,6 +62,7 @@ CNameSuf {
   '=' s.Num e.Suffix = 'A' <Symb s.Num> <CNameSuf e.Suffix>;
   ':' s.Num e.Suffix = 'B' <Symb s.Num> <CNameSuf e.Suffix>;
   '?' s.Num e.Suffix = 'C' <Symb s.Num> <CNameSuf e.Suffix>;
+  '*' s.Num e.Suffix = 'D' <Symb s.Num> <CNameSuf e.Suffix>;
   '@' s.Num e.Suffix = 'Z' <Symb s.Num> <CNameSuf e.Suffix>;
   /* пусто */ = /* пусто */;
 }
