@@ -1,0 +1,5 @@
+$SPEC F t.X t.Y e.z;
+
+F {
+  t.A t.A e.1 = t.A;
+}

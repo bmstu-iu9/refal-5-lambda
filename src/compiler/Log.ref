@@ -135,6 +135,10 @@ PutProgramElement {
     = <Putout s.FileHandle 'Native code:'>
       <PutCode s.FileHandle t.SrcPos e.Code>
       <Putout s.FileHandle>;
+
+  s.FileHandle (Spec (e.Name) e.Pattern)
+    = <Putout s.FileHandle '$SPEC ' <DisplayName e.Name>>
+      <PutRASLCommands s.FileHandle ('  ') e.Pattern>
 }
 
 PutRASLFunction {

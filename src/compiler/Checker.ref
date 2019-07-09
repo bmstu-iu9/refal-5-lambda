@@ -3,6 +3,15 @@ $INCLUDE "LibraryEx";
 *$FROM Error
 $EXTERN EL-AddErrorAt;
 
+*$FROM GenericMatch
+$EXTERN GenericMatch;
+
+*$FROM Desugaring
+$EXTERN RemovePos-Expr;
+
+*$FROM Desugaring-UnCondition
+$EXTERN ExtractVariables-Expr;
+
 $ENTRY CheckProgram {
   t.ErrorList e.AST
     = <Reduce
@@ -42,16 +51,25 @@ PrepareMessage {
   DanglingDrive e.Name = '$DRIVE ' e.Name '; drive label for missed function';
 
   /* Ошибки специализации */
-  RedefineSpec e.Name = 'Specialization of function ' e.Name 'is redefined';
+  RedefineSpec e.FnName = 'Specialization of function ' e.FnName 'is redefined';
 
-  MustBeHardPattern = 'Pattern of function specialization must be hard';
+  MustBeHardPattern e.FnName
+    = 'Pattern of function specialization for ' e.FnName ' must be hard';
 
-  BadSpecForFunction = 'Bad fucntion specialization';
+  BadSpecForFunction e.FnName = 'Bad function specialization for ' e.FnName;
 
-  OrphanSpec e.FuncName = 'Orphan function specialization for ' e.FuncName;
+  OrphanSpec e.FnName = 'Orphan function specialization for ' e.FnName;
 
   RepVarInSpecPattern s.Mode e.Index
     = 'Repeated variable ' s.Mode '.' e.Index ' in specialization pattern';
+
+  SpecStaticParamTypeMismatching (s.Mode e.Index) e.FnName
+    = 'Type mismatching of static parameter 's.Mode '.' e.Index
+      ' in specialization of function ' e.FnName;
+
+  SpecStaticParamRepeatingVars (s.Mode e.Index) e.FnName
+    = 'Repeating variables match static parameter ' s.Mode '.' e.Index
+      ' in specialization of function ' e.FnName;
 }
 
 FindErrors {
@@ -103,7 +121,7 @@ CheckSpecs-Formats {
                     e.Errors = e.Errors;
                   };
 
-                False = (Error t.SrcPos MustBeHardPattern);
+                False = (Error t.SrcPos MustBeHardPattern e.Name);
               };
 
           t.Other = t.Other;
@@ -119,7 +137,7 @@ IsHardPattern {
   (TkVariable t.SrcPos1 'e' e.Index) = True;
 
   (TkVariable t.SrcPos1 'e' e.Index1) e.Pattern-M
-  (TkVariable t.SrcPos2 'e' e.Index2)
+  (TkVariable t.SrcPos2 'e' e.Index2) e.Pattern-E
     = False;
 
   (Brackets e.PatternPart1) e.PatternPart2
@@ -202,9 +220,15 @@ CheckSpecs-Functions {
           (Function t.SrcPos2 s.ScopeClass (e.Name) e.Body)
           e.AST-E;
 
-        False =
+        False e.Messages =
           e.AST-B
-          (Error t.SrcPos1 BadSpecForFunction)
+          (Error t.SrcPos1 BadSpecForFunction e.Name)
+          <Map
+            {
+              (e.Message) = (Error t.SrcPos2 e.Message e.Name);
+            }
+            e.Messages
+          >
           e.AST-M
           (Function t.SrcPos2 s.ScopeClass (e.Name) e.Body)
           e.AST-E;
@@ -222,11 +246,17 @@ CheckSpecs-Functions {
           (Function t.SrcPos1 s.ScopeClass (e.Name) e.Body)
           e.AST-M e.AST-E;
 
-        False =
+        False e.Messages =
           e.AST-B
           (Function t.SrcPos1 s.ScopeClass (e.Name) e.Body)
           e.AST-M
-          (Error t.SrcPos2 BadSpecForFunction)
+          (Error t.SrcPos2 BadSpecForFunction e.Name)
+          <Map
+            {
+              (e.Message) = (Error t.SrcPos2 e.Message e.Name);
+            }
+            e.Messages
+          >
           e.AST-E;
       }
     : e.AST
@@ -240,9 +270,96 @@ CheckSpecs-Functions {
   e.AST = e.AST;
 }
 
-*=== будет дорабатываться после завершения задачи (#156)
 ValidBodyForSpec {
-  (e.Pattern) e.Body = True;
+  t.Pattern Sentences e.Sentences
+    = <Reduce
+        (&ValidBodyForSpec-CheckSentensePattern t.Pattern)
+        (True /* for messages */) e.Sentences
+      >
+    : (s.BoolResult e.Messages)
+    = s.BoolResult e.Messages;
+
+  t.Pattern NativeBody e.Code = False;
+}
+
+ValidBodyForSpec-CheckSentensePattern {
+  (e.SpecPattern) (True e.Messages) ((e.SentencePattern) e.OtherSentenceConstruction)
+    = <GenericMatch
+        (<RemovePos-Expr e.SentencePattern>) (<RemovePos-Expr e.SpecPattern>)
+      >
+    : {
+        Clear e.Vars
+          = <Reduce
+              {
+                (True (e.NMessages) e.ExtractedVars) (e.Val ':' t.Var)
+                  , <IsSpecStaticVar t.Var>
+                  : True
+                  = <CheckSpec-VarTypeMatching (e.Val) t.Var>
+                  : {
+                      True
+                        = <CheckSpec-RepeatingVarInStaticParams
+                            True e.ExtractedVars <ExtractVariables-Expr e.Val>
+                          >
+                        : {
+                            True e.ExtractedVars^
+                              = (True (e.NMessages) e.ExtractedVars);
+
+                            False e.ExtractedVars^
+                              = (
+                                  False
+                                  (e.NMessages (SpecStaticParamRepeatingVars t.Var))
+                                  e.ExtractedVars
+                                );
+                          };
+
+                      False
+                        = (
+                            False
+                            (e.NMessages (SpecStaticParamTypeMismatching t.Var))
+                            e.ExtractedVars
+                          );
+                  };
+
+                (s.Other (e.NMessages) e.ExtractedVars)  (e.Val ':' t.Var)
+                  = (s.Other (e.NMessages) e.ExtractedVars);
+              }
+              (True (/* for messages */) /* for extracted vars */)
+              e.Vars
+            >
+          : (s.BoolResult (e.Messages^) e.ExtractedVars)
+          = (s.BoolResult e.Messages);
+        Contracted e.Vars = (False e.Messages);
+        Failure = (False e.Messages);
+        Undefined = (False e.Messages);
+    };
+
+  t.SpecPattern (False e.Messages) e.Anything = (False e.Messages);
+}
+
+CheckSpec-VarTypeMatching {
+  ((TkVariable s.Mode e.Val)) (s.Mode e.Var) = True;
+
+  (e.Val) (e.Var) = False;
+}
+
+CheckSpec-RepeatingVarInStaticParams {
+  True e.ExtractedVars-B (e.Var) e.ExtractedVars-M (e.Var) e.ExtractedVars-E
+    = False e.ExtractedVars-B (e.Var) e.ExtractedVars-M e.ExtractedVars-E;
+
+  True e.ExtractedVars = True e.ExtractedVars;
+
+  False e.ExtractedVars = False e.ExtractedVars;
+}
+
+SVar-IsInSet {
+  (e.Set-B s.Var e.Set-E) s.Var = True;
+
+  (e.Set) s.Var = False;
+}
+
+IsSpecStaticVar {
+  (s.Mode s.FirstSymbol e.Index)
+    = <SVar-IsInSet ('ABCDEFGHIJKLMNOPQRSTUVWXYZ') s.FirstSymbol>;
 }
 
 CheckSpecs-SeparateErrors {

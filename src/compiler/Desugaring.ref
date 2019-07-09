@@ -97,7 +97,7 @@ RemovePos-Blocks {
       >;
 }
 
-RemovePos-Expr {
+$ENTRY RemovePos-Expr {
   e.Expr =
     <Map
       {
