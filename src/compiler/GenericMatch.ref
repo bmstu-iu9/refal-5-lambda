@@ -436,6 +436,10 @@ Solve-Aux {
   (e.UsedVars) (e.Contrs) (() ':' (t.Ht e.He)) e.Equations (e.Assigns)
     , <IsTerm t.Ht>: True = ;
 
+  /* Если уравнение имеет вид empty: Le Lt, ничего не возвращаем */
+  (e.UsedVars) (e.Contrs) (() ':' (e.He t.Ht)) e.Equations (e.Assigns)
+    , <IsTerm t.Ht>: True = ;
+
   /* Если уравнение имеет вид e.i* : empty, возвращаем результат,
      предварительно добавив пустые сужения
   */
