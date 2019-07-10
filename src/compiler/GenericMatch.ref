@@ -545,6 +545,20 @@ Solve-TermEquation {
           (e.Assigns)
         >;
 
+  /* P - t-переменная, H - скобочный терм */
+  (e.UsedVars) t.PTvar (ADT-Brackets (e.Name) e.HBody) (e.Contrs) e.Equations (e.Assigns)
+    , t.PTvar : (TkVariable 't' e.Pindex)
+    = <NewVarName (e.UsedVars) 'e' 0 ()>
+      : t.NewVars 'e' e.NewIndex
+      = Success
+        t.NewVars
+        <AddContraction
+          (t.PTvar ':' (ADT-Brackets (e.Name) (TkVariable 'e' e.NewIndex)))
+          (e.Contrs)
+          e.Equations (((TkVariable 'e' e.NewIndex)) ':' (e.HBody))
+          (e.Assigns)
+        >;
+
   /* P - t-переменная, H - символ */
   (e.UsedVars) t.PTvar t.Symbol (e.Contrs) e.Equations (e.Assigns)
     , t.PTvar t.Symbol
