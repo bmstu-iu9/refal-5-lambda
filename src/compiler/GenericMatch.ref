@@ -535,7 +535,7 @@ Solve-TermEquation {
   (e.UsedVars) t.PTvar (Brackets e.HBody) (e.Contrs) e.Equations (e.Assigns)
     , t.PTvar : (TkVariable 't' e.Pindex)
     = <NewVarName (e.UsedVars) 'e' 0 ()>
-      : t.NewVars e.NewIndex
+      : t.NewVars 'e' e.NewIndex
       = Success
         t.NewVars
         <AddContraction
