@@ -271,8 +271,15 @@ Solution-PostProcess {
   */
   (e.Contractions) (e.Assigns)
     , e.Assigns
-    : e.B (e.C ':' e.C) e.E
-    = <Solution-PostProcess (e.Contractions) (e.B e.E)>;
+    : e.B
+      (e.Expr ':' (TkVariable e.HIndex))
+      e.M
+      (e.Expr ':' (TkVariable e.HIndex))
+      e.E
+    = <Solution-PostProcess
+        (e.B (e.Expr ':' (TkVariable e.HIndex)) e.M e.E)
+        (e.Assigns)
+      >;
 
   /*
     если есть идентичные сужения, то удаляем их
@@ -280,8 +287,15 @@ Solution-PostProcess {
 
   (e.Contractions) (e.Assigns)
     , e.Contractions
-    : e.B (e.C ':' e.C) e.E
-    = <Solution-PostProcess (e.B e.E) (e.Assigns)>;
+    : e.B
+      (e.Expr ':' (TkVariable e.HIndex))
+      e.M
+      (e.Expr ':' (TkVariable e.HIndex))
+      e.E
+    = <Solution-PostProcess
+        (e.Contractions)
+        (e.B (e.Expr ':' (TkVariable e.HIndex)) e.M e.E)
+      >;
 
 
   (e.Contractions) (e.Assigns)
