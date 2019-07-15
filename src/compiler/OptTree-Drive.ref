@@ -471,7 +471,8 @@ FindInlineInfo {
 FindDriveInfo {
 
   t.DriveInfo e.Name
-    , e.Name : e.Prefix SUF e.Suffix '*' s.N
+    , e.Name : e.Prefix '*' s.N
+    , <CutSUF e.Prefix> : e.Prefix^
     , t.DriveInfo
     : ((e.B1 (e.Prefix) e.E1) e.B2
       (Drive s.ScopeClass (e.Prefix) Sentences e.Sentences) e.E2)
@@ -485,6 +486,14 @@ FindDriveInfo {
 
   t.DriveInfo e.Name = Failure;
 }
+
+$DRIVE CutSUF;
+
+CutSUF {
+  e.Prefix SUF = e.Prefix;
+  e.Prefix = e.Prefix;
+}
+
 
 /*
   <FindDriveCall t.DriveInfo e.Expr> == t.Found e.Expr

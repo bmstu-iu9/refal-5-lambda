@@ -1,0 +1,9 @@
+* TREE
+
+$ENTRY Go {
+  = <{ A = 1; B = 2; C = 3 } B> : 2 = ;
+
+  B = 4;
+}
+
+$DRIVE Go;
