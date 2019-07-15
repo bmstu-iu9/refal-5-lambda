@@ -1,0 +1,12 @@
+* TREE
+
+$ENTRY Go {
+  e.X = <Eq { = e.X } X>;
+}
+
+$SPEC Eq t.STAT t.dyn;
+
+Eq {
+  t.X t.X = True;
+  t.X t.Y = False;
+}

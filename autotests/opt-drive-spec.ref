@@ -1,0 +1,26 @@
+* TREE
+
+$ENTRY Go {
+  = <F X> : False False
+  = <F ()> : False False
+  =
+}
+
+$ENTRY F {
+  s.X = <EqS s.X { = s.X }> <EqD s.X { = s.X }>;
+  t.X = <EqS t.X { = t.X }> <EqD t.X { = t.X }>;
+}
+
+$SPEC EqS t.x t.Y;
+
+EqS {
+  t.X t.X = True;
+  t.X t.Y = False;
+}
+
+$DRIVE EqD;
+
+EqD {
+  t.X t.X = True;
+  t.X t.Y = False;
+}
