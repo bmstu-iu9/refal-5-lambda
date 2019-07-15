@@ -608,7 +608,7 @@ ApplyAssigns-Term {
     = (ADT-Brackets (e.Name) <ApplyAssigns e.Expr (e.Assigns)>);
 
   t.T (e.B (e.Asgn ':' t.T) e.E)
-    = <ApplyAssigns e.Asgn (e.B (e.Asgn ':' t.T) e.E)>;
+    =  e.Asgn;
 
   t.T (e.Assigns) = t.T;
 }
