@@ -1,0 +1,14 @@
+* TREE
+
+$ENTRY Go { = <Lookup fact <fact>> }
+
+fact {
+  = (fact DUP (0) '=' if (DROP (1)) else (DUP (1) '-' fact '*'));
+}
+
+$INLINE Lookup;
+
+Lookup {
+  s.Func (s.Func e.Code) e.Program = e.Code;
+  s.Func (s.OtherFunc e.Code) e.Program = <Lookup s.Func e.Program>;
+}

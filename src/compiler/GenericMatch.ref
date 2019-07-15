@@ -671,8 +671,7 @@ ApplyContraction-toAssign {
 
 ApplyContraction-toEquation {
    t.Contraction ((e.Expr) ':' (e.Lexpr)) =
-     ((<ApplyContraction-toExpr t.Contraction e.Expr>) ':'
-     (<ApplyContraction-toExpr t.Contraction e.Lexpr>))
+     ((<ApplyContraction-toExpr t.Contraction e.Expr>) ':' (e.Lexpr))
 }
 
 /*
