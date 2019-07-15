@@ -474,14 +474,19 @@ FindDriveInfo {
     , e.Name : e.Prefix '*' s.N
     , <CutSUF e.Prefix> : e.Prefix^
     , t.DriveInfo
-    : ((e.B1 (e.Prefix) e.E1) e.B2
-      (Drive s.ScopeClass (e.Prefix) Sentences e.Sentences) e.E2)
+    : (
+        (e.B1 (e.Prefix) e.E1)
+        e.B2 (Drive s.ScopeClass (e.Prefix) Sentences e.Sentences) e.E2
+      )
     = Success
       (Drive s.ScopeClass (e.Name) Sentences <DropLeft e.Sentences s.N>);
 
   t.DriveInfo e.Name
     , t.DriveInfo
-    : ((e.B1 (e.Name) e.E1) e.B2 (Drive s.ScopeClass (e.Name) e.Body) e.E2)
+    : (
+        (e.B1 (e.Name) e.E1)
+        e.B2 (Drive s.ScopeClass (e.Name) e.Body) e.E2
+      )
     = Success (Drive s.ScopeClass (e.Name) e.Body);
 
   t.DriveInfo e.Name = Failure;
