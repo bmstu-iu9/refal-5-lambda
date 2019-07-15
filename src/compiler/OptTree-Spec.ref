@@ -42,7 +42,14 @@ $ENTRY OptTree-Spec-ExtractOptInfo {
             }
           )
         >
-      >;
+      >
+    : ((e.Names) e.Info) e.AST^
+    = s.OptSpec
+    : {
+        NoOpt = ((/* нет имён */) /* нет инфы */) e.AST;
+
+        s.OptSpec^ = ((e.Names) e.Info) e.AST;
+      }
 }
 
 /**

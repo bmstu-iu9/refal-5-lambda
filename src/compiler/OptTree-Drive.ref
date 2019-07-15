@@ -16,7 +16,15 @@ $EXTERN Solve;
   e.DriveFuncNames ::= (e.FuncName)*
 */
 $ENTRY OptTree-Drive-ExtractOptInfo {
-  s.OptDrive e.AST = <GetDrivenFunctions e.AST>;
+  s.OptDrive e.AST
+    = <GetDrivenFunctions e.AST>
+    : ((e.Names) e.Info) e.AST^
+    = s.OptDrive
+    : {
+        NoOpt = ((/* нет имён */) /* нет инфы */) e.AST;
+
+        s.OptDrive^ = ((e.Names) e.Info) e.AST;
+      }
 }
 
 /**
