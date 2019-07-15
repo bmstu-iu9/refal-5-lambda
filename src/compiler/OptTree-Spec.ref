@@ -621,9 +621,9 @@ IsSpecStaticVar {
 
 WrapEVar {
   (TkVariable 'e' e.Index) e.Tail
-    = (Brackets (TkVariable 'e' e.Index)) <WrapEVar e.Tail>;
+    = (GhostBrackets (TkVariable 'e' e.Index)) <WrapEVar e.Tail>;
 
-  ('e' e.Index) e.Tail  = (Brackets ('e' e.Index)) <WrapEVar e.Tail>;
+  ('e' e.Index) e.Tail  = (GhostBrackets ('e' e.Index)) <WrapEVar e.Tail>;
 
   t.Other e.Tail = t.Other <WrapEVar e.Tail>;
 
