@@ -152,9 +152,10 @@ IsPassiveCall {
 IsPassiveCall-Aux {
   (Brackets e.Expr) = <IsPassiveCall e.Expr>;
   (ADT-Brackets e.Expr) = <IsPassiveCall e.Expr>;
+
   (CallBrackets e.Expr) = False;
   (ColdCallBrackets e.Expr) = False;
-  (ClosureBrackets e.Expr) = False;
+
   t.Other = True;
 }
 

@@ -122,6 +122,7 @@ IsSVarSubset {
   (Symbol s.Type e.Info) = True;
   (TkVariable 's' e.Tindex) = True;
   (Closure e.Body) = True;
+  (ClosureBrackets e.Context) = True;
 
   t.OtherTerm = False;
 }
@@ -307,6 +308,12 @@ Solution-PostProcess {
         e.E
     = Undefined;
 
+  /*
+    Здесь намеренно не рассмотрены случаи вида
+    {{ &F\1 … }} ← var && s.X ← var,
+    поскольку они приводят к бессмысленным сужениям вида
+    s.X → {{ &F\1 … }}
+  */
 
 
   (e.Contractions) (e.Assigns) = Success (e.Contractions) (e.Assigns)
@@ -480,8 +487,8 @@ Solve-TermEquation {
 
   /* P - символ, H - s-переменная */
   (e.UsedVars) t.Symbol t.Svar (e.Contrs) e.Equations (e.Assigns)
-    , t.Symbol t.Svar
-    : (Symbol s.Type e.Info) (TkVariable 's' e.Hindex)
+    , <IsSVarSubset t.Symbol> : True
+    , t.Svar : (TkVariable 's' e.Hindex)
     = Success
       (e.UsedVars)
       (e.Contrs) e.Equations

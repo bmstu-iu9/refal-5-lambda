@@ -1,0 +1,14 @@
+* TREE
+
+$ENTRY Go {
+  e.X = <S { = e.X }> <D { = e.X }> <I { = e.X }>;
+}
+
+$SPEC S s.X;
+S { s.X = s.X }
+
+$DRIVE D;
+D { s.X = s.X }
+
+$INLINE I;
+I { s.X = s.X }
