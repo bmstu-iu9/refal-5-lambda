@@ -585,6 +585,7 @@ IsTerm {
 
   /* Рассматриваем для оптимизаций встраивания, прогонки и специализации */
   (CallBrackets e.Nested) = False;
+  (ColdCallBrackets e.Nested) = False;
 
   /* s-, t-переменная, скобки обоих видов, символ */
   t.OtherTerm = True;
