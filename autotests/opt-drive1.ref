@@ -1,0 +1,11 @@
+* TREE
+
+$ENTRY Go {
+  e.X = <F (e.X)>;
+}
+
+$DRIVE F;
+
+F {
+  e.X = e.X;
+}
