@@ -548,6 +548,15 @@ FindOptimizedCall-Term {
     = t.Found (ADT-Brackeys (e.Name) e.Expr);
 
   (t.DriveInfo s.Filter) None (CallBrackets (Symbol Name e.Name) e.Expr)
+    , <IsPassiveCall e.Expr> : True
+    , <s.Filter t.DriveInfo e.Name> : Success t.Info
+    = (CallBrackets (Symbol Name e.Name) e.Expr)
+      (TkVariable 'e' DRIVEN 0);
+
+* TODO: раскомментировать код ниже, когда будет реализовываться поддрежка
+* TODO: активных аргументов функций
+/*
+  (t.DriveInfo s.Filter) None (CallBrackets (Symbol Name e.Name) e.Expr)
     , <s.Filter t.DriveInfo e.Name> : Success t.Info
     = <FindOptimizedCall (t.DriveInfo s.Filter) e.Expr>
     : {
@@ -558,6 +567,7 @@ FindOptimizedCall-Term {
         t.Found e.Expr^
           = t.Found (CallBrackets (Symbol Name e.Name) e.Expr);
       };
+*/
 
   (t.DriveInfo s.Filter) None (CallBrackets t.F e.Expr)
     = <FindOptimizedCall (t.DriveInfo s.Filter) e.Expr>: t.Found e.Expr^
