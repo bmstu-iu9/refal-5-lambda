@@ -444,25 +444,22 @@ Solve-Aux {
      предварительно добавив пустые сужения
   */
   (e.UsedVars) (e.Contrs) ((e.Pt) ':' ()) e.Equations (e.Assigns)
-    , <IsFreeVariableSeq e.Pt> : True
-    , <Map
-        {
-            t.Free = (t.Free ':' )
-        }
-        e.Pt
-      > : e.NewContrs
-    = <Solve-Aux
-        (e.UsedVars)
-        <AddContractions
-          (e.NewContrs)
-          (e.Contrs)
-          e.Equations
-          (e.Assigns)
-        >
-      >;
+    , <IsFreeVariableSeq e.Pt>
+    : {
+        True
+          = <Map { t.Free = (t.Free ':' ) } e.Pt> : e.NewContrs
+          = <Solve-Aux
+              (e.UsedVars)
+              <AddContractions
+                (e.NewContrs)
+                (e.Contrs)
+                e.Equations
+                (e.Assigns)
+              >
+            >;
 
-  (e.UsedVars) (e.Contrs) (() ':' ()) e.Equations (e.Assigns) =
-    <Solve-Aux (e.UsedVars) (e.Contrs) e.Equations (e.Assigns)>;
+        False = /* нет решений */;
+      };
 
   (e.UsedVars) (e.Contrs) (e.Assigns) = <Solution-PostProcess (e.Contrs) (e.Assigns)>;
 
