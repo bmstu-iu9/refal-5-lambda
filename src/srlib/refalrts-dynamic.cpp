@@ -1057,7 +1057,7 @@ bool refalrts::Domain::register_ident(RefalIdentifier ident) {
 
 void refalrts::Domain::read_counters(double counters[]) {
   counters[cPerformanceCounter_HeapSize] = memory_use() * double(sizeof(Node));
-  counters[cPerformanceCounter_IdentsAllocated] = idents_count();
+  counters[cPerformanceCounter_IdentsAllocated] = double(idents_count());
 }
 
 const refalrts::api::stat *
