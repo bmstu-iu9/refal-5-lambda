@@ -1,4 +1,4 @@
 memory-limit = 5000000
 step-limit = 1000000000
-idents-limit = 10000
+idents-limit = 2000
 enable-debugger = false
