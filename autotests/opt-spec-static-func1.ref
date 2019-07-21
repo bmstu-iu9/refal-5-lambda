@@ -1,0 +1,15 @@
+* TREE
+
+$ENTRY Go {
+  = <DATA 'abc'> :
+  = <SF 'def' (<DATA 'pqr'>)> : 'abcdefabc'
+  = ;
+}
+
+$SWAP DATA;
+
+$SPEC SF e.dyn (e.STAT);
+
+SF {
+  e.Dyn (e.Stat) = e.Stat e.Dyn e.Stat;
+}

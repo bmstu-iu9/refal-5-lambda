@@ -1,6 +1,6 @@
 
 *$FROM LibraryEx
-$EXTERN MapAccum, Fetch, Pipe, Map, Inc;
+$EXTERN MapAccum, Fetch, Pipe, Map, Inc, Reduce;
 
 *$FROM Desugaring-UnCondition
 $EXTERN ExtractVariables, ExtractVariables-Expr, NewVarName;
@@ -206,6 +206,8 @@ SpecCall {
     = <GenericMatch-Wrapper (e.Argument) (e.SpecPattern)>
     : {
         Clear (e.StaticMatches) (e.DynamicMatches)
+          , <IsActiveMatches e.StaticMatches> : False
+
           = <Spec-PrepareSignature e.StaticMatches>
           : e.Signature
 
@@ -274,6 +276,38 @@ SpecCall {
             (ColdCallBrackets (Symbol Name e.Name) e.Argument)
             /* no new functions */;
       };
+}
+
+IsActiveMatches {
+  e.StaticMatches
+    = <Reduce
+        {
+          True t.Match = True;
+
+          False (e.Val ':' (TkVariable e.Var)) = <IsActiveExpr e.Val>;
+        }
+        False
+        e.StaticMatches
+      >;
+}
+
+IsActiveExpr {
+  e.Expr
+    = <Reduce
+        {
+          True t.Term = True;
+
+          False (CallBrackets e.Expr^) = True;
+          False (ColdCallBrackets e.Expr^) = True;
+
+          False (Brackets e.Expr^) = <IsActiveExpr e.Expr>;
+          False (ADT-Brackets (e.Name) e.Expr) = <IsActiveExpr e.Expr>;
+
+          False t.OtherTerm = False;
+        }
+        False
+        e.Expr
+      >;
 }
 
 IsSoundBody {
