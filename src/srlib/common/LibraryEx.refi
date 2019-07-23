@@ -178,7 +178,7 @@ $INLINE Pipe, Seq;
 
 
 *$FROM LibraryEx
-$EXTERN Y, FastIntFromStr, Pipe, Seq;
+$EXTERN Y, FastIntFromStr;
 
 *$FROM LibraryEx
 $EXTERN LoadFile, SaveFile, AppendFile, LoadBytes, SaveBytes, AppendBytes,
