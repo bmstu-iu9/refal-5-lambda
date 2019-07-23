@@ -2,11 +2,11 @@
   Генератор лексических анализаторов.
 */
 
+$INCLUDE "LibraryEx";
+
+
 *$FROM Version
 $EXTERN PrintVersion;
-
-*$FROM LibraryEx
-$EXTERN ArgList, Fetch, Pipe, LoadFile, SaveFile, Map, Inc, MapReduce;
 
 *$FROM ParseCmdLine
 $EXTERN ParseCommandLine;
@@ -39,130 +39,88 @@ $EXTERN Flex-Check;
 $EXTERN Flex-Desugar;
 
 $ENTRY Go {
-  = <PrintVersion 'LexGen'>
-    <Fetch
-      <ArgList>
-      <Pipe
-        {
-          (e.ProgName) e.Options =
-            <ParseCommandLine e.Options>;
-        }
-        {
-          InPlace e.FileName =
-            <SaveFile
-              (e.FileName)
-              <Transform (e.FileName) <LoadFile e.FileName>>
-            >;
+  = <PrintVersion 'LexGen'> : /* пусто */
+  = <ArgList> : (e.ProgName) e.Options
+  = <ParseCommandLine e.Options>
+  : {
+      InPlace e.FileName
+        = <SaveFile
+            (e.FileName)
+            <Transform (e.FileName) <LoadFile e.FileName>>
+          >;
 
-          From (e.From) To (e.To) =
-            <SaveFile
-              (e.To)
-              ('/* Automatically generated file, don\'t edit! */')
-              ('/* Edit file \'' e.From '\' */')
-              ()
-              ()
-              <Transform (e.From) <LoadFile e.From>>
-            >;
+      From (e.From) To (e.To)
+         = <SaveFile
+            (e.To)
+            ('/* Automatically generated file, don\'t edit! */')
+            ('/* Edit file \'' e.From '\' */')
+            ()
+            ()
+            <Transform (e.From) <LoadFile e.From>>
+          >;
 
-          BadCommandLine =
-            /* ничего не делаем, CheckOption уже вывел сообщение об ошибке */;
-        }
-      >
-    >;
+      BadCommandLine =
+        /* ничего не делаем, CheckOption уже вывел сообщение об ошибке */;
+    }
 }
 
 Transform {
-  (e.Source) e.Lines =
-    <Fetch
-      e.Lines
-      <Pipe
-        {
-          e.LinesBefore ('/*GEN:' e.GenMode) e.DescriptionAndTail =
-            (<Length-T e.LinesBefore ('/*GEN:' e.GenMode)>)
-            (e.GenMode)
-            e.DescriptionAndTail;
+  (e.Source) e.Lines
+    = <SplitSource (e.Source) e.Lines>
+    : s.Length (e.LinesBefore) (e.GenMode) e.Description
+    = <GetTranslator s.Length (e.Source) e.GenMode> : t.Translator
+    = e.LinesBefore
+      ('/*GEN:' e.GenMode)
+      e.Description
+      ('GEN:END*/')
+      <Apply t.Translator s.Length e.Description>
+}
 
-          e.Other = <ErrorAt (1 e.Source) 'Lexer description not found'>;
-        }
-        {
-          (s.Length e.LinesBefore) (e.GenMode)
-          e.Description ('GEN:END*/') e.Deleted =
-            (s.Length e.LinesBefore) (e.GenMode) e.Description;
+SplitSource {
+  (e.Source)
+  e.LinesBefore ('/*GEN:' e.GenMode) e.Description ('GEN:END*/') e.Skipped
+    = <Lenw e.LinesBefore> : s.Length e.LinesBefore^
+    = <Inc s.Length> (e.LinesBefore) (e.GenMode) e.Description;
 
-          (s.Length e.LinesBefore) (e.GenMode)
-           e.Other =
-             <ErrorAt (s.Length e.Source) 'End of description not found'>;
-        }
-        {
-          (s.Length e.LinesBefore) ('TOKENS') e.Description =
-            <Fetch
-              s.Length e.Description
-              <Pipe
-                &DFA-Tokens
-                (&Map
-                  {
-                    (TError s.LineNumber e.Text) =
-                      <ErrorAt (s.LineNumber e.Source) e.Text>;
+  (e.Source)
+  e.LinesBefore ('/*GEN:' e.GenMode) e.DescriptionAndTail
+    = <Lenw e.LinesBefore ('/*GEN:' e.GenMode)> : s.CommentPos e.LinesBefore^
+    = <ErrorAt (s.CommentPos e.Source) 'End of description not found'>;
 
-                    (s.TokType s.LineNumber e.Info) =
-                      (s.TokType (s.LineNumber e.Source) e.Info);
-                  }
-                )
-                &DFA-Parse
-                &DFA-Compile
-                &GenerateFromDFA
-                {
-                  e.Generated =
-                    e.LinesBefore
-                    e.Description
-                    ('GEN:END*/')
-                    e.Generated;
-                }
-              >
-            >;
+  (e.Source) e.Lines = <ErrorAt (1 e.Source) 'Lexer description not found'>;
+}
 
-          (s.Length e.LinesBefore) ('FLEX') e.Description =
-            <Fetch
-              s.Length e.Description
-              <Pipe
-                &Flex-Tokens
-                (&Map
-                  {
-                    (TError s.LineNumber e.Text) =
-                      <ErrorAt (s.LineNumber e.Source) e.Text>;
+GetTranslator {
+  s.Length (e.Source) 'TOKENS' = <GetDFATranslator e.Source>;
+  s.Length (e.Source) 'FLEX' = <GetFlexTranslator e.Source>;
+  s.Length (e.Source) e.OtherGenMode
+    = <ErrorAt (s.Length e.Source) 'Unknown generation mode ' e.OtherGenMode>;
+}
 
-                    (s.TokType s.LineNumber e.Info) =
-                      (s.TokType (s.LineNumber e.Source) e.Info);
-
-                    t.Other = t.Other;
-                  }
-                )
-                &Flex-Parse
-                {
-                  e.AST =
-                    <Flex-Check e.AST>
-                    e.AST;
-                }
-                &Flex-Desugar
-                &Flex-Compile
-                /* GenerateFromDFA */
-                {
-                  e.Generated =
-                    e.LinesBefore
-                    e.Description
-                    ('GEN:END*/')
-                    e.Generated;
-                }
-              >
-            >;
-
-          (s.Length e.LinesBefore) (e.OtherGenMode) e.Description =
-            <ErrorAt
-              (s.Length e.Source) 'Unknown generation mode ' e.OtherGenMode
-            >;
-        }
+GetDFATranslator {
+  e.Source
+    = <Pipe
+        &DFA-Tokens
+        (&FillSourceToTokens (e.Source))
+        &DFA-Parse
+        &DFA-Compile
+        &GenerateFromDFA
       >
-    >;
+}
+
+GetFlexTranslator {
+  e.Source
+    = <Pipe
+        &Flex-Tokens
+        (&FillSourceToTokens (e.Source))
+        &Flex-Parse
+        {
+          e.AST = <Flex-Check e.AST> e.AST;
+        }
+        &Flex-Desugar
+        &Flex-Compile
+        /* GenerateFromDFA */
+      >
 }
 
 Flex-Compile {
@@ -170,12 +128,14 @@ Flex-Compile {
     /* пусто */;
 }
 
-Length-T {
-  e.Lines =
-    <MapReduce
-      {
-        s.Next (e.Line) = <Inc s.Next> (e.Line);
-      }
-      0 e.Lines
-    >;
+FillSourceToTokens {
+  (e.Source) e.Tokens = <Map (&FillSourceToToken e.Source) e.Tokens>
+}
+
+FillSourceToToken {
+  e.Source (TError s.LineNumber e.Text)
+    = <ErrorAt (s.LineNumber e.Source) e.Text>;
+
+  e.Source (s.TokType s.LineNumber e.Info)
+    = (s.TokType (s.LineNumber e.Source) e.Info);
 }
