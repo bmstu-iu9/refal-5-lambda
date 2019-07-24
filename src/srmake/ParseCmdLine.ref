@@ -55,8 +55,8 @@ $ENTRY ParseCommandLine {
           (Prelude Required ('prelude'))
           (Runtime Required ('runtime'))
           (Incorporated Required ('incorporated'))
-          (Help None ('help'))
-          (Version None ('version'))
+          (Help None 'h?' ('help'))
+          (Version None 'v' ('version'))
         )
         e.Arguments
       >

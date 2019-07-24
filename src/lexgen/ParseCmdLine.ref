@@ -19,8 +19,8 @@ $ENTRY ParseCommandLine {
         (
           (From Required 'f' ('from'))
           (To Required 'o' ('to'))
-          (Help None ('help'))
-          (Version None ('version'))
+          (Help None 'h?' ('help'))
+          (Version None 'v' ('version'))
         )
         e.Options
       >
