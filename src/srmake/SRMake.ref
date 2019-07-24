@@ -1,11 +1,8 @@
-*$FROM Version
-$EXTERN PrintVersion;
-
 *$FROM LibraryEx
 $EXTERN ArgList, Map;
 
 *$FROM ParseCmdLine
-$EXTERN ParseCommandLine;
+$EXTERN PrintHelp, ParseCommandLine;
 
 *$FROM FileScanner
 $EXTERN CreateFileList;
@@ -26,19 +23,10 @@ $EXTERN
   Config-GetIncorporateds;
 
 
-$ENTRY Go { = <PrintVersion 'SRMake'> <Main <ArgList>>; }
+$ENTRY Go { = <Main <ArgList>>; }
 
 Main {
-  (e.Program)
-    = <Prout 'Usage:'>
-      <Prout '  srmake flags... MainFileName[.sref]'>
-      <Prout>
-      <Prout 'flags:'>
-      <Prout '   [-s path\\to\\srefc.exe]'>
-      <Prout '   -c c++compiler'>
-      <Prout '   {-d search-dir}'>
-      <Prout '   [-o target]'>
-      <Prout '   -X flags-for-srefc'>;
+  (e.Program) = <PrintHelp>;
 
   (e.Program) e.Arguments
     = <MakeProject

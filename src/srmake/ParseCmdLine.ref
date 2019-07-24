@@ -21,6 +21,10 @@ $EXTERN
   Config-SetSourceFile,
   Config-AddIncorporated;
 
+*$FROM Version
+$EXTERN PrintVersion;
+
+
 /**
   <ParseCommandLine e.Arguments>
     == Success t.Config
@@ -41,7 +45,7 @@ $ENTRY ParseCommandLine {
           (Reference Required 'r' ('reference'))
           (RuntimeFolder Required 'D' ('runtime-dir') ('runtime-directory'))
           (SearchFolder Required 'd' ('dir') ('directory'))
-          (SrefCompiler Required 's' ('sref-command'))
+          (SrefCompiler Required 's' ('sref-command') ('srefc-command'))
           (SrefCompilerOption Required 'X' ('thru') ('through'))
           (TargetFileName Required 'o' ('target-file'))
           (TargetMode-Exe None 'x' ('makeexe'))
@@ -51,6 +55,8 @@ $ENTRY ParseCommandLine {
           (Prelude Required ('prelude'))
           (Runtime Required ('runtime'))
           (Incorporated Required ('incorporated'))
+          (Help None ('help'))
+          (Version None ('version'))
         )
         e.Arguments
       >
@@ -139,6 +145,11 @@ $ENTRY ParseCommandLine {
                   t.Config (e.Errors) &Config-SetSourceFile s.Num e.SourceFile
                 >;
 
+            (t.Config e.Errors) (Help s.Num) = <PrintHelp> (t.Config e.Errors);
+
+            (t.Config e.Errors) (Version s.Num)
+              = <PrintVersion 'SRMake'> (t.Config e.Errors);
+
             (t.Config e.Errors) t.Option
               = (t.Config e.Errors) t.Option;
           }
@@ -208,4 +219,46 @@ Update {
             = (t.Config e.Errors (s.LineNum e.ErrorMessage));
         }
       >;
+}
+
+$ENTRY PrintHelp {
+  = <Prout
+'  srmake flags... MainFileName[.ref]\n'
+'\n'
+'flags:\n'
+'-c, --cpp-command, --cpp-command-exe command-line\n'
+'        C++ command line prefix for building executable module\n'
+'--cpp-command-lib command-line\n'
+'        C++ command line prefix for building library module\n'
+'-p, --prefix prefix-name\n'
+'        set prefix file name\n'
+'-r, --reference reference-name\n'
+'        Compiled module depends from the reference\n'
+'-D, --runtime-dir, --runtime-directory dir\n'
+'        Add the directory to search list and include list for C++ compiler\n'
+'-d, --dir, --directory dir\n'
+'        Add the directory to search list\n'
+'-s, --sref-command, --srefc-command command-line\n'
+'        srefc command line prefix for run Refal-5-Lambda compiler\n'
+'-X, --thru, --through srefc-command\n'
+'        Additional flags for srefc compiler, don\'t quoted in command line\n'
+'-o, --target-file target-file-name\n'
+'        Name of target file\n'
+'-x, --makeexe\n'
+'        Compile to executable file\n'
+'-l, --makelib\n'
+'        Compile to library file (with or w/o native code)\n'
+'-R      Compile to library RASL module (w/o native code)\n'
+'-C, --compile-only\n'
+'        Compile sources w/o linking\n'
+'--prelude filename.refi\n'
+'        Prelude file with builtin functions declarations\n'
+'--runtime filename.ref\n'
+'        Auxiliary files -- search roots\n'
+'--incorporated filename\n'
+'        Marks that a module with the name is statically linked to this module\n'
+'--help  Print this help\n'
+'--version\n'
+'        Print version\n'
+    >;
 }
