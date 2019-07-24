@@ -58,9 +58,6 @@ $ENTRY Go {
             ()
             <Transform (e.From) <LoadFile e.From>>
           >;
-
-      BadCommandLine =
-        /* ничего не делаем, CheckOption уже вывел сообщение об ошибке */;
     }
 }
 

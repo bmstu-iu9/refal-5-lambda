@@ -1,5 +1,5 @@
-*$FROM LibraryEx
-$EXTERN Fetch, Map;
+$INCLUDE "LibraryEx";
+
 
 *$FROM GetOpt
 $EXTERN GetOpt;
@@ -9,41 +9,38 @@ $EXTERN GetOpt;
   <ParseCommandLine (e.Option)*>
     == InPlace e.FileName
     == From (e.FromFileName) To (e.ToFileName)
-    == BadCommandLine
 */
 $ENTRY ParseCommandLine {
-  e.Options =
-    <Fetch
-      <GetOpt
+  e.Options
+    = <GetOpt
         (
           (From Required 'f' ('from'))
           (To Required 'o' ('to'))
         )
         e.Options
       >
-      {
+    : {
         () (FILE s.Pos e.FileName) =
           InPlace e.FileName;
 
-        () e.Begin (From s.PosFrom e.From) e.End =
-          <Fetch
-            e.Begin e.End {
+        () e.Begin (From s.PosFrom e.From) e.End
+          = e.Begin e.End
+          : {
               (To s.PosTo e.To) =
                 From (e.From) To (e.To);
 
               e.Other =
                 <FormatError s.PosFrom 'expected argument --to'>
-                <Help>;
-            }
-          >;
+                <HelpOnError>;
+            };
 
         () e.Begin (To s.Pos e.To) e.End =
           <FormatError s.Pos 'exptected argument --from'>
-          <Help>;
+          <HelpOnError>;
 
         () e.AnyOther =
           <Prout 'Command line error: unrecognized command line'>
-          <Help>;
+          <HelpOnError>;
 
         (e.Errors) e.AnyOther =
           <Map
@@ -59,9 +56,8 @@ $ENTRY ParseCommandLine {
             }
             e.Errors
           >
-          <Help>;
+          <HelpOnError>;
       }
-    >;
 }
 
 
@@ -70,13 +66,13 @@ FormatError {
     <Prout 'Command line argument ' <Symb s.Pos> ': ' e.Message>;
 }
 
-Help {
+HelpOnError {
   =
-    BadCommandLine
     <Prout 'Use:'>
     <Prout '    lexgen filename.sref - for rewritting file\n'>
     <Prout '    lexgen --from=file1.sref --to=file2.sref - for writting '
                'to other target\n'>
     <Prout '    --from, -f - source file'>
-    <Prout '    --to, -o - target file'>;
+    <Prout '    --to, -o - target file'>
+    <Exit 1>
 }
