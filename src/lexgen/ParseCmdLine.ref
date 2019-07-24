@@ -4,6 +4,9 @@ $INCLUDE "LibraryEx";
 *$FROM GetOpt
 $EXTERN GetOpt;
 
+*$FROM Version
+$EXTERN PrintVersion;
+
 
 /**
   <ParseCommandLine (e.Option)*>
@@ -16,7 +19,21 @@ $ENTRY ParseCommandLine {
         (
           (From Required 'f' ('from'))
           (To Required 'o' ('to'))
+          (Help None ('help'))
+          (Version None ('version'))
         )
+        e.Options
+      >
+    : (e.Errors) e.Options^
+    = (e.Errors)
+      <Map
+        {
+          (Help s.Num) = <Help> <Exit 0>;
+
+          (Version s.Num) = (Version s.Num) <PrintVersion 'LexGen'>;
+
+          t.Other = t.Other;
+        }
         e.Options
       >
     : {
@@ -24,7 +41,7 @@ $ENTRY ParseCommandLine {
           InPlace e.FileName;
 
         () e.Begin (From s.PosFrom e.From) e.End
-          = e.Begin e.End
+          = <SkipVersion e.Begin e.End>
           : {
               (To s.PosTo e.To) =
                 From (e.From) To (e.To);
@@ -37,6 +54,10 @@ $ENTRY ParseCommandLine {
         () e.Begin (To s.Pos e.To) e.End =
           <FormatError s.Pos 'exptected argument --from'>
           <HelpOnError>;
+
+        () (Version s.Num) e.VersionFlags
+          , <SkipVersion e.VersionFlags> : /* пусто */
+          = <Exit 0>;
 
         () e.AnyOther =
           <Prout 'Command line error: unrecognized command line'>
@@ -60,13 +81,19 @@ $ENTRY ParseCommandLine {
       }
 }
 
+SkipVersion {
+  e.Options-B (Version s.Num) e.Options-E = <SkipVersion e.Options-B e.Options-E>;
+
+  e.Options = e.Options;
+}
+
 
 FormatError {
   s.Pos e.Message =
     <Prout 'Command line argument ' <Symb s.Pos> ': ' e.Message>;
 }
 
-HelpOnError {
+Help {
   =
     <Prout 'Use:'>
     <Prout '    lexgen filename.sref - for rewritting file\n'>
@@ -74,5 +101,10 @@ HelpOnError {
                'to other target\n'>
     <Prout '    --from, -f - source file'>
     <Prout '    --to, -o - target file'>
-    <Exit 1>
+    <Prout '    --help - print this help'>
+    <Prout '    --version - print version'>
+}
+
+HelpOnError {
+  = <Help> <Exit 1>
 }

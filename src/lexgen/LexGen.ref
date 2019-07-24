@@ -5,9 +5,6 @@
 $INCLUDE "LibraryEx";
 
 
-*$FROM Version
-$EXTERN PrintVersion;
-
 *$FROM ParseCmdLine
 $EXTERN ParseCommandLine;
 
@@ -39,7 +36,6 @@ $EXTERN Flex-Check;
 $EXTERN Flex-Desugar;
 
 $ENTRY Go {
-  = <PrintVersion 'LexGen'> : /* пусто */
   = <ArgList> : (e.ProgName) e.Options
   = <ParseCommandLine e.Options>
   : {
