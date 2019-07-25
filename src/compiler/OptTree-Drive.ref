@@ -88,7 +88,7 @@ GetDrivenFunctions {
           (Function s.ScopeClass (e.Name) e.Body)
             , e.OptNames : e.B (s.Label e.Name) e.E
             , e.Body : Sentences e.Sentences
-            = ((e.OptFunctions (s.Label s.ScopeClass (e.Name) e.Body))
+            = ((e.OptFunctions (s.Label s.ScopeClass (e.Name) { = e.Body}))
               (e.RemNames <GenRemainderFuncNames (e.Name) (e.Sentences)>))
               (Function s.ScopeClass (e.Name) e.Body);
 
@@ -466,8 +466,8 @@ DropLeft {
 FindInlineInfo {
   t.InlineInfo e.Name
     , t.InlineInfo
-    : ((e.B1 (e.Name) e.E1) e.B2 (Inline s.ScopeClass (e.Name) e.Body) e.E2)
-    = Success (Inline s.ScopeClass (e.Name) e.Body);
+    : ((e.B1 (e.Name) e.E1) e.B2 (Inline s.ScopeClass (e.Name) s.Body) e.E2)
+    = Success (Inline s.ScopeClass (e.Name) <s.Body>);
 
   t.InlineInfo e.Name = Failure;
 }
@@ -485,8 +485,9 @@ FindDriveInfo {
     , t.DriveInfo
     : (
         (e.B1 (e.Prefix) e.E1)
-        e.B2 (Drive s.ScopeClass (e.Prefix) Sentences e.Sentences) e.E2
+        e.B2 (Drive s.ScopeClass (e.Prefix) s.Body) e.E2
       )
+    = <s.Body> : Sentences e.Sentences
     = Success
       (Drive s.ScopeClass (e.Name) Sentences <DropLeft e.Sentences s.N>);
 
@@ -494,9 +495,9 @@ FindDriveInfo {
     , t.DriveInfo
     : (
         (e.B1 (e.Name) e.E1)
-        e.B2 (Drive s.ScopeClass (e.Name) e.Body) e.E2
+        e.B2 (Drive s.ScopeClass (e.Name) s.Body) e.E2
       )
-    = Success (Drive s.ScopeClass (e.Name) e.Body);
+    = Success (Drive s.ScopeClass (e.Name) <s.Body>);
 
   t.DriveInfo e.Name = Failure;
 }
