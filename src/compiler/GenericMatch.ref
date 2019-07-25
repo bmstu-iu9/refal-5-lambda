@@ -278,8 +278,8 @@ Solution-PostProcess {
       (e.Expr ':' (TkVariable e.HIndex))
       e.E
     = <Solution-PostProcess
+        (e.Contractions)
         (e.B (e.Expr ':' (TkVariable e.HIndex)) e.M e.E)
-        (e.Assigns)
       >;
 
   /*
