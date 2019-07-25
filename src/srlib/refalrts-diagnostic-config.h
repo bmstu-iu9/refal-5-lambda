@@ -33,6 +33,7 @@ struct DiagnosticConfig {
     , dump_free_list(false)
     , show_cookies(true)
     , show_hidden_steps(false)
+    , enable_debugger(false)
     , debugger_factory(0)
   {
     dump_file[0] = '\0';
