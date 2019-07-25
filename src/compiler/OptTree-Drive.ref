@@ -517,8 +517,10 @@ CutSUF {
 */
 
 FindDriveCall {
-  t.DriveInfo e.Expr =
-    <FindOptimizedCall (t.DriveInfo &FindDriveInfo) e.Expr>
+  t.DriveInfo e.Expr
+    = <FindOptimizedCall &FindDriveInfo t.DriveInfo e.Expr>
+    : (t.DriveInfo^ t.Found) e.Expr^
+    = t.Found e.Expr
 }
 
 /*
@@ -528,53 +530,58 @@ FindDriveCall {
 */
 
 FindInlineCall {
-  t.InlineInfo e.Expr =
-    <FindOptimizedCall (t.InlineInfo &FindInlineInfo) e.Expr>
+  t.InlineInfo e.Expr
+    = <FindOptimizedCall &FindInlineInfo t.InlineInfo e.Expr>
+    : (t.InlineInfo^ t.Found) e.Expr^
+    = t.Found e.Expr
 }
 
 FindOptimizedCall {
-  (t.DriveInfo s.Filter) e.Expr
-    = <MapAccum (&FindOptimizedCall-Term (t.DriveInfo s.Filter)) None e.Expr>;
-
-  t.DriveInfo t.Found e.Expr = t.Found e.Expr;
+  s.Filter t.DriveInfo e.Expr
+    = <MapAccum (&FindOptimizedCall-Term s.Filter) (t.DriveInfo None) e.Expr>;
 }
 
 FindOptimizedCall-Term {
-  (t.DriveInfo s.Filter) None (Brackets e.Expr)
-    = <FindOptimizedCall (t.DriveInfo s.Filter) e.Expr> : t.Found e.Expr^
-    = t.Found (Brackets e.Expr);
+  s.Filter (t.DriveInfo None) (Brackets e.Expr)
+    = <FindOptimizedCall s.Filter t.DriveInfo e.Expr>
+    : (t.DriveInfo^ t.Found) e.Expr^
+    = (t.DriveInfo t.Found) (Brackets e.Expr);
 
-  (t.DriveInfo s.Filter) None (ADT-Brackets (e.Name) e.Expr)
-    = <FindOptimizedCall (t.DriveInfo s.Filter) e.Expr> : t.Found e.Expr^
-    = t.Found (ADT-Brackeys (e.Name) e.Expr);
+  s.Filter (t.DriveInfo None) (ADT-Brackets (e.Name) e.Expr)
+    = <FindOptimizedCall s.Filter t.DriveInfo e.Expr>
+    : (t.DriveInfo^ t.Found) e.Expr^
+    = (t.DriveInfo t.Found)
+      (ADT-Brackeys (e.Name) e.Expr);
 
-  (t.DriveInfo s.Filter) None (CallBrackets (Symbol Name e.Name) e.Expr)
+  s.Filter (t.DriveInfo None) (CallBrackets (Symbol Name e.Name) e.Expr)
     , <IsPassiveCall e.Expr> : True
     , <s.Filter t.DriveInfo e.Name> : Success t.Info
-    = (CallBrackets (Symbol Name e.Name) e.Expr)
+    = (t.DriveInfo (CallBrackets (Symbol Name e.Name) e.Expr))
       (TkVariable 'e' DRIVEN 0);
 
 * TODO: раскомментировать код ниже, когда будет реализовываться поддрежка
 * TODO: активных аргументов функций
 /*
-  (t.DriveInfo s.Filter) None (CallBrackets (Symbol Name e.Name) e.Expr)
+  s.Filter (t.DriveInfo None) (CallBrackets (Symbol Name e.Name) e.Expr)
     , <s.Filter t.DriveInfo e.Name> : Success t.Info
-    = <FindOptimizedCall (t.DriveInfo s.Filter) e.Expr>
+    = <FindOptimizedCall s.Filter t.DriveInfo e.Expr>
     : {
-        None e.Expr^
-          = (CallBrackets (Symbol Name e.Name) e.Expr)
+        (t.DriveInfo^ None) e.Expr^
+          = (t.DriveInfo (CallBrackets (Symbol Name e.Name) e.Expr))
             (TkVariable 'e' DRIVEN 0);
 
-        t.Found e.Expr^
-          = t.Found (CallBrackets (Symbol Name e.Name) e.Expr);
+        (t.DriveInfo t.Found) e.Expr^
+          = (t.DriveInfo t.Found) (CallBrackets (Symbol Name e.Name) e.Expr);
       };
 */
 
-  (t.DriveInfo s.Filter) None (CallBrackets t.F e.Expr)
-    = <FindOptimizedCall (t.DriveInfo s.Filter) e.Expr>: t.Found e.Expr^
-    = t.Found (CallBrackets t.F e.Expr);
+  s.Filter (t.DriveInfo None) (CallBrackets t.F e.Expr)
+    = <FindOptimizedCall s.Filter t.DriveInfo e.Expr>
+    : (t.DriveInfo^ t.Found) e.Expr^
+    = (t.DriveInfo t.Found) (CallBrackets t.F e.Expr);
 
-  (t.DriveInfo s.Filter) t.Found t.AnyTerm = t.Found t.AnyTerm;
+  s.Filter (t.DriveInfo t.Found) t.AnyTerm
+    = (t.DriveInfo t.Found) t.AnyTerm;
 }
 
 /*
