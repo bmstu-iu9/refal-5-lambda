@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <utility>
+#include <vector>
 
 #include "refalrts-profiler.h"
 
@@ -360,7 +362,7 @@ void refalrts::Profiler::print_statistics() {
     items[i].counter = counters[(int) items[i].counter];
   }
 
-  qsort(items, nItems, sizeof(items[0]), reverse_compare);
+  std::qsort(items, nItems, sizeof(items[0]), reverse_compare);
 
   const double cfSECS_PER_CLOCK = 1e-9;
   double total = counters[refalrts::cPerformanceCounter_TotalTime];
@@ -376,7 +378,59 @@ void refalrts::Profiler::print_statistics() {
       );
     }
   }
+
+  if (m_diagnostic_config->enable_profiler) {
+    print_profile(FuncItemValue::TIME, "_profile_time.txt");
+    print_profile(FuncItemValue::COUNT, "_profile_count.txt");
+  }
 }
+
+void refalrts::Profiler::print_profile(int counter, const char *name) {
+  FILE *profile = fopen(name, "w");
+  typedef std::vector< std::pair<double, FuncItemKey> > FunctionMetricVector;
+  FunctionMetricVector function_times;
+  double fn_total = 0;
+
+  for (
+    FunctionMetricTable::const_iterator p = m_function_items.begin();
+    p != m_function_items.end();
+    ++p
+  ) {
+    double value = p->second.values[counter];
+    function_times.push_back(std::make_pair(value, p->first));
+    fn_total += value;
+  }
+
+  std::sort(function_times.begin(), function_times.end());
+
+  double pareto = 0;
+  for (
+    FunctionMetricVector::reverse_iterator p = function_times.rbegin();
+    p < function_times.rend() && p->first > 0.0;
+    ++p
+  ) {
+    pareto += p->first;
+    fprintf(
+      profile, "%s%s -> %.1f (%.2f %%, += %.2f %%)\n",
+      (p->second.unwrap ? "<unwrap closure>: " : ""),
+      p->second.func_name, p->first, 100.0 * p->first / fn_total,
+      100.0 * pareto / fn_total
+    );
+  }
+
+  fclose(profile);
+}
+
+void refalrts::Profiler::add_profile_metric(const FuncItemKey& function) {
+  double step = clock();
+  FuncItemValue& value = m_function_items[m_current_function];
+  value.values[FuncItemValue::TIME] +=
+    (step - m_current_function_start) / 1e6;
+  value.values[FuncItemValue::COUNT] += 1;
+  m_current_function_start = step;
+  m_current_function = function;
+}
+
 
 void refalrts::Profiler::read_counters(double counters[]) {
   double basic_runtime_time = m_counters[cCounter_RuntimeTime];

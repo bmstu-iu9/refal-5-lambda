@@ -616,6 +616,8 @@ refalrts::FnResult refalrts::VM::main_loop(const RASLCommand *rasl) {
     return cNoMemory;
   }
 
+  profiler()->init_function_count();
+
   Iter res = 0;
   Iter trash_prev = 0;
   unsigned int index;
@@ -1421,6 +1423,12 @@ JUMP_FROM_SCALE:
           } else if (cDataClosure == function->tag) {
             refalrts::Iter head = function->link_info;
 
+            if (m_diagnostic_config->enable_profiler) {
+              profiler()->add_profile_metric_unwrap(
+                head->next->function_info->name.name
+              );
+            }
+
             if (m_debugger->handle_function_call(begin, end, 0) == cExit) {
               return cExit;
             }
@@ -1463,6 +1471,11 @@ JUMP_FROM_SCALE:
           if (res != cSuccess) {
             return res;
           }
+
+          if (m_diagnostic_config->enable_profiler) {
+            profiler()->add_profile_metric_call(callee->name.name);
+          }
+
           rasl = callee->rasl;
           m_module = callee->module;
           stack_top = 0;

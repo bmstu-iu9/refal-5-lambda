@@ -125,6 +125,7 @@ void parse_config_line(
   set_boolean_param(show_cookies);
   set_boolean_param(show_hidden_steps);
   set_boolean_param(enable_debugger);
+  set_boolean_param(enable_profiler);
 
   if (strcmp(param_name, "enable_debugger") == 0) {
     if (config->enable_debugger) {

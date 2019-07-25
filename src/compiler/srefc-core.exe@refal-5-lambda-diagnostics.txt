@@ -1,1 +1,2 @@
 print-statistics = true
+enable-profiler = false

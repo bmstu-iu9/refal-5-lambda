@@ -19,6 +19,7 @@ struct DiagnosticConfig {
   bool show_cookies;
   bool show_hidden_steps;
   bool enable_debugger;
+  bool enable_profiler;
   DebuggerFactory debugger_factory;
   char dump_file[FILENAME_MAX];
 
@@ -34,6 +35,7 @@ struct DiagnosticConfig {
     , show_cookies(true)
     , show_hidden_steps(false)
     , enable_debugger(false)
+    , enable_profiler(false)
     , debugger_factory(0)
   {
     dump_file[0] = '\0';
