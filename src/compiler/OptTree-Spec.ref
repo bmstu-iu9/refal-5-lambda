@@ -358,7 +358,7 @@ FindClosuresInPatterns-Term {
 Spec-PrepareSignature {
   e.StaticMatches
     = <Spec-RenameSignatureVars
-        <MapAccum
+        <Reduce
           {
             (e.Signature) (e.Val ':' t.Var) = (e.Signature (e.Val));
           }
@@ -377,7 +377,7 @@ Spec-RenameSignatureVars {
         e.Signature
       >
     : e.VarsFromSignature
-    = <MapAccum
+    = <Reduce
         {
           (
             (e.Renames-B (e.Index ':' e.NewIndex) e.Renames-E)
@@ -447,7 +447,7 @@ Spec-FindInSignatures {
 */
 Spec-IsTrivialSignature {
   e.Signature
-    = <MapAccum
+    = <Reduce
         {
           False t.Any = False;
 
@@ -463,7 +463,7 @@ Spec-IsTrivialSignature {
 Spec-PrepareCallOrPattern {
   (e.StaticMatches) (e.DynamicMatches) e.Pattern
 *   extract set of vars from static param values
-    = <MapAccum
+    = <Reduce
         {
           (e.ExtractedVars) (e.Val ':' t.Var)
             = (
@@ -506,7 +506,7 @@ Spec-PrepareCallOrPattern {
 Spec-RenameGenericMatch {
   (e.SpecPattern) (e.StaticMatches) (e.DynamicMatches)
   s.NextNumber (e.VarsFromBody)
-    = <MapAccum
+    = <Reduce
         {
           (e.VarsFromMatch) (e.Val ':' t.Var)
             = (e.VarsFromMatch <ExtractVariables-Expr e.Val>);
@@ -516,7 +516,7 @@ Spec-RenameGenericMatch {
       >
     : (e.VarsFromMatch)
 
-    = <MapAccum
+    = <Reduce
         {
           ((e.NStaticMatches) (e.NDynamicMatches))
           (e.CurrentVarName)
@@ -544,7 +544,7 @@ Spec-RenameGenericMatch {
 
 Spec-PrepareSpecializedFuncBody {
   (e.SpecPattern) (e.StaticMatches) (e.DynamicMatches) e.Body
-    = <MapAccum
+    = <Reduce
         {
           (e.PreparedBody) ((e.SentencePattern) e.Conditions (e.SentenceResult))
             = <GenericMatch-Wrapper (e.SentencePattern) (e.SpecPattern)>
@@ -591,7 +591,7 @@ Spec-PrepareSpecializedFuncBody {
 
 Spec-PrepareConditions {
   (e.StaticSubstitutions) (e.DynamicMatches) e.Conditions
-    = <MapAccum
+    = <Reduce
         {
           (e.StaticSubstitutions)
           (Condition (e.Name) (e.ConditionResult) (e.ConditionPattern))
@@ -615,7 +615,7 @@ Spec-PrepareConditions {
 
 Spec-PrepareResult {
   (e.StaticSubstitutions) e.Result
-    = <MapAccum
+    = <Reduce
         {
           (e.NResult) (e.ReplaceToVal ':' t.ReplaceVar)
             = (<FindReplace-Expr (e.NResult) (t.ReplaceVar) e.ReplaceToVal>);
@@ -712,7 +712,7 @@ GenericMatch-Wrapper {
 
 IsColdArg {
   e.Argument
-   = <MapAccum
+   = <Reduce
        {
          False t.Any = False;
 
@@ -764,7 +764,7 @@ FindAndFormatVarTerm-Aux {
 
 MapGenericMatches {
   (e.ArgStaticMatches) (e.SentenceStaticMatches)
-    = <MapAccum
+    = <Reduce
         {
           (
             (e.ArgStaticMatches-B (e.ArgVal ':' t.SpecVar) e.ArgStaticMatches-E)

@@ -146,7 +146,7 @@ DistinctFuncs {
 
 IsPassiveCall {
   e.Expr
-    = <MapAccum
+    = <Reduce
         {
            True t.Term = <IsPassiveCall-Aux t.Term>;
            False t.Term = False;
@@ -180,7 +180,7 @@ IsLexpr-Aux {
     = (() False);
 
   e.Expr (e.ETVars)
-    = <MapAccum
+    = <Reduce
         {
           ((e.Vars) True) t.Term = <IsLexpr-Term t.Term (e.Vars)>;
           ((e.Vars) False) t.Term = (() False);
@@ -217,7 +217,7 @@ IsLexpr-Term {
 OptimizeF {
   (Function s.ScopeClass (e.Name) Sentences e.Sentences)
   ((e.OptNames) e.OptFunctions) s.OptSentence
-    = <MapAccum
+    = <Reduce
         {
           ((e.SntAcc) (e.FunAcc)) t.Sentence =
             <s.OptSentence
