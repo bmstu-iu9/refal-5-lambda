@@ -169,41 +169,36 @@ IsPassiveCall-Aux {
 
 IsLexpr {
   e.Expr
-  = <IsLexpr-Aux e.Expr ()> : ((e.Vars) t.Res)
-  = t.Res
+    , <IsLexpr-Aux e.Expr>
+    : {
+        e.Res-B OpenE e.Res-E = False;
+        e.Res-B (s.Mode e.Index) e.Res-M (s.Mode e.Index) e.Res-E = False;
+        e.Other = True;
+      }
 }
 
-IsLexpr-Aux {
-  e.B (TkVariable 'e' e.Index1)
-  e.M (TkVariable 'e' e.Index2)
-  e.E (e.ETVars)
-    = (() False);
+/*
+  <IsLexpr-Aux e.Expr> == t.IsLexpr-Aux-Item*
 
-  e.Expr (e.ETVars)
-    = <Reduce
+  t.IsLexpr-Aux-Item ::= OpenE | ('e' e.Index) | ('t' e.Index)
+*/
+IsLexpr-Aux {
+  e.Expr-B (TkVariable 'e' e.Index1) e.Expr-M (TkVariable 'e' e.Index2) e.Expr-E
+    = OpenE;
+
+  e.Expr
+    = <Map
         {
-          ((e.Vars) True) t.Term = <IsLexpr-Term t.Term (e.Vars)>;
-          ((e.Vars) False) t.Term = (() False);
+          (TkVariable 'e' e.Index) = ('e' e.Index);
+          (TkVariable 't' e.Index) = ('t' e.Index);
+
+          (Brackets e.InBrackets) = <IsLexpr-Aux e.InBrackets>;
+          (ADT-Brackets (e.Name) e.InBrackets) = <IsLexpr-Aux e.InBrackets>;
+
+          t.Other = /* пропускаем */;
         }
-        ((e.ETVars) True)
         e.Expr
       >;
-}
-
-IsLexpr-Term {
-    t.Term (e.B t.Term e.E)
-      , t.Term : (TkVariable 't' e.Index)
-      = (() False);
-
-    t.Term (e.B t.Term e.E)
-      , t.Term : (TkVariable 'e' e.Index)
-      = (() False);
-
-    (Brackets e.Expr) (e.ETVars) = <IsLexpr-Aux e.Expr (e.ETVars)>;
-
-    (ADT-Brackets e.Expr) (e.ETVars) = <IsLexpr-Aux e.Expr (e.ETVars)>;
-
-    t.Term (e.ETVars) = ((e.ETVars t.Term) True);
 }
 
 /*
