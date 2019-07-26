@@ -280,71 +280,9 @@ DriveSentence {
 */
 
 InlineSentence-Aux {
-
   /* Встраивание */
-
-  ((e.Left) (e.Right))
-  (CallBrackets (Symbol Name e.Name) e.Args) e.Expr
-  t.InlineInfo
-    , <FindInlineInfo t.InlineInfo e.Name>
-    : Success t.InlinedF
-    , t.InlinedF
-    : (Inline s.ScopeClass (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
-    /* Попытка оптимизации, только если вызов пассивный */
-    , <IsPassiveCall e.Args>: True
-    = <Solve
-        (<ExtractVariables ((e.Left e.Right) ())>)
-        ((e.Args) ':' (e.LS))
-      >
-      : e.Solution
-      , e.Solution : {
-
-          /*
-            В случае решения без сужений просто применяем замены
-          */
-          Success (() (e.Assigns))
-            = <ApplySolutions
-                ((e.Left) (e.Expr)) (e.RS) ((() (e.Assigns))) t.InlinedF
-              >
-              : e.Sentences
-            = e.Sentences;
-
-          /*
-            В случае неудачи нужно заменить прогоняемый вызов
-            на вызов остаточной функции
-          */
-          Failure
-            = <CreateRemainderDrivenFunc
-                s.ScopeClass (e.Name) e.Rest
-              >
-              : t.newFunc
-              , t.newFunc
-              : (Function s.Sc1 (e.NewName) e.Body)
-            = <ApplyContractions
-                e.Expr
-                (((TkVariable 'e' DRIVEN 0)
-                ':'
-                (CallBrackets (Symbol Name e.NewName) e.Args)))
-              >
-              : e.S
-            = ((e.Left) (e.S)) t.newFunc;
-
-          /*
-            Замена вызова на холодный
-            При Undefined или решением с сужениями
-          */
-          e.Other
-            = <ApplyContractions
-                e.Expr
-                (((TkVariable 'e' DRIVEN 0)
-                ':'
-                (ColdCallBrackets (Symbol Name e.Name) e.Args)))
-              >
-              : e.S
-            = ((e.Left) (e.S));
-      };
-
-  ((e.Left) (e.Right)) e.Tail = ((e.Left) (e.Right))
+  ((e.Left) (e.Right)) t.Res e.Expr t.DriveInfo
+    = <OptSentence-Aux Inline ((e.Left) (e.Right)) t.Res e.Expr t.DriveInfo>;
 }
 
 /*
@@ -353,24 +291,23 @@ InlineSentence-Aux {
 */
 
 DriveSentence-Aux {
-
   /* Прогонка */
+  ((e.Left) (e.Right)) t.Res e.Expr t.DriveInfo
+    = <OptSentence-Aux Drive ((e.Left) (e.Right)) t.Res e.Expr t.DriveInfo>;
+}
+
+OptSentence-Aux {
+  s.Mode
   ((e.Left) (e.Right))
   (CallBrackets (Symbol Name e.Name) e.Args) e.Expr
   t.DriveInfo
 
     /* Поиск информации для прогонки */
-    , <FindDriveInfo t.DriveInfo e.Name>
-    : Success t.DrivenF
-    , t.DrivenF
-    : (Drive s.ScopeClass (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
-
-    /* Проверка, является ли левая чать L-выражением*/
-    , <IsLexpr e.Left>
-    : s.IsLexpr
+    , <FindOptInfo s.Mode t.DriveInfo e.Name>
+    : Success (s.Mode s.ScopeClass (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
 
     /* Попытка оптимизации, только если вызов пассивный */
-    , <IsPassiveCall e.Args>: True
+    , <IsPassiveCall e.Args> : True
     = <Solve
         (<ExtractVariables ((e.Left e.Right) ())>)
         ((e.Args) ':' (e.LS))
@@ -383,21 +320,20 @@ DriveSentence-Aux {
         */
         Success (() (e.Assigns))
           = <ApplySolutions
-              ((e.Left) (e.Expr)) (e.RS) ((() (e.Assigns))) t.DrivenF
+              ((e.Left) (e.Expr)) (e.RS) ((() (e.Assigns)))
             >
-            : e.Sentences
-            = e.Sentences;
+          : e.Sentences
+          = e.Sentences;
 
         /*
            В случае "грязного" решения добавляем вызов остаточной
            прогоняемой функции (Только при L-выражении)
         */
         Success e.M
-          , s.IsLexpr : True
-          = <ApplySolutions
-              ((e.Left) (e.Expr)) (e.RS) (e.M) t.DrivenF
-            >
-            : e.Sentences
+          , s.Mode : Drive
+          /* Проверка, является ли левая часть L-выражением*/
+          , <IsLexpr e.Left> : True
+          = <ApplySolutions ((e.Left) (e.Expr)) (e.RS) (e.M)> : e.Sentences
           = <CreateRemainderDrivenFunc
               s.ScopeClass (e.Name) e.Rest
             >
@@ -429,7 +365,7 @@ DriveSentence-Aux {
               (CallBrackets (Symbol Name e.NewName) e.Args)))
             >
             : e.S
-          = ((e.Left) (e.S)) (Function s.Sc1 (e.NewName) e.Body);
+          = ((e.Left) (e.S)) t.newFunc;
 
         /*
           Замена вызова на холодный
@@ -447,6 +383,7 @@ DriveSentence-Aux {
           = ((e.Left) (e.S));
     };
 
+  s.Mode
   ((e.Left) (e.Right)) e.Other = ((e.Left) (e.Right))
 }
 
@@ -461,24 +398,7 @@ DropLeft {
 */
 
 FindInlineInfo {
-  t.InlineInfo e.Name
-    , e.Name : e.Prefix '*' s.N
-    , <CutSUF e.Prefix> : e.Prefix^
-    , t.InlineInfo
-    : (
-        (e.B1 (e.Prefix) e.E1)
-        e.B2 (Inline s.ScopeClass (e.Prefix) s.Body) e.E2
-      )
-    = <s.Body> : Sentences e.Sentences
-    = Success
-      (Inline s.ScopeClass (e.Name) Sentences <DropLeft e.Sentences s.N>);
-
-  t.InlineInfo e.Name
-    , t.InlineInfo
-    : ((e.B1 (e.Name) e.E1) e.B2 (Inline s.ScopeClass (e.Name) s.Body) e.E2)
-    = Success (Inline s.ScopeClass (e.Name) <s.Body>);
-
-  t.InlineInfo e.Name = Failure;
+  t.InlineInfo e.Name = <FindOptInfo Inline t.InlineInfo e.Name>;
 }
 
 /*
@@ -487,27 +407,33 @@ FindInlineInfo {
 */
 
 FindDriveInfo {
+  t.DriveInfo e.Name = <FindOptInfo Drive t.DriveInfo e.Name>
+}
 
+FindOptInfo {
+  s.Mode
   t.DriveInfo e.Name
     , e.Name : e.Prefix '*' s.N
     , <CutSUF e.Prefix> : e.Prefix^
     , t.DriveInfo
     : (
         (e.B1 (e.Prefix) e.E1)
-        e.B2 (Drive s.ScopeClass (e.Prefix) s.Body) e.E2
+        e.B2 (s.Mode s.ScopeClass (e.Prefix) s.Body) e.E2
       )
     = <s.Body> : Sentences e.Sentences
     = Success
-      (Drive s.ScopeClass (e.Name) Sentences <DropLeft e.Sentences s.N>);
+      (s.Mode s.ScopeClass (e.Name) Sentences <DropLeft e.Sentences s.N>);
 
+  s.Mode
   t.DriveInfo e.Name
     , t.DriveInfo
     : (
         (e.B1 (e.Name) e.E1)
-        e.B2 (Drive s.ScopeClass (e.Name) s.Body) e.E2
+        e.B2 (s.Mode s.ScopeClass (e.Name) s.Body) e.E2
       )
-    = Success (Drive s.ScopeClass (e.Name) <s.Body>);
+    = Success (s.Mode s.ScopeClass (e.Name) <s.Body>);
 
+  s.Mode
   t.DriveInfo e.Name = Failure;
 }
 
@@ -595,13 +521,13 @@ FindOptimizedCall-Term {
 
 /*
   <ApplySolutions
-    ((e.Left) (e.Right)) (e.LS) (e.Solutions) t.FunctionInfo
+    ((e.Left) (e.Right)) (e.LS) (e.Solutions)
   > == t.Sentence* t.FunctionInfo
 */
 
 ApplySolutions {
 
-  ((e.Left) (e.Right)) (e.RS) (e.Solutions) t.FunctionInfo
+  ((e.Left) (e.Right)) (e.RS) (e.Solutions)
 
   = <Map
       {
