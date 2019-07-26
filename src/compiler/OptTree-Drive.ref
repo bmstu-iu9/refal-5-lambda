@@ -325,7 +325,6 @@ InlineSentence-Aux {
                 (((TkVariable 'e' DRIVEN 0)
                 ':'
                 (CallBrackets (Symbol Name e.NewName) e.Args)))
-                WithWarmup
               >
               : e.S
             = ((e.Left) (e.S)) t.newFunc;
@@ -409,7 +408,6 @@ DriveSentence-Aux {
               (((TkVariable 'e' DRIVEN 0)
               ':'
               (CallBrackets (Symbol Name e.NewName) e.Args)))
-              WithWarmup
             >
             : e.S
           = e.Sentences ((e.Left) (e.S)) (Function s.Sc1 (e.NewName) e.Body);
@@ -429,7 +427,6 @@ DriveSentence-Aux {
               (((TkVariable 'e' DRIVEN 0)
               ':'
               (CallBrackets (Symbol Name e.NewName) e.Args)))
-              WithWarmup
             >
             : e.S
           = ((e.Left) (e.S)) (Function s.Sc1 (e.NewName) e.Body);
@@ -655,7 +652,7 @@ ApplyAssigns-Term {
 }
 
 /*
-  <ApplyContractions (e.Expr) (e.Contrs) WithWarmup? == e.Expr^
+  <ApplyContractions (e.Expr) (e.Contrs) == e.Expr^
 */
 ApplyContractions {
   e.Expr (e.Contrs)
@@ -665,35 +662,6 @@ ApplyContractions {
         }
         e.Expr
       >;
-
-  e.Expr (e.Contrs) WithWarmup
-    = <Map
-        {
-          t.T = <ApplyContractions-Term-Warmup t.T (e.Contrs)>
-        }
-        e.Expr
-      >
-}
-
-ApplyContractions-Term-Warmup {
-  (Brackets e.Expr) (e.Contrs) = (Brackets <ApplyContractions e.Expr (e.Contrs)>);
-
-  (CallBrackets e.Args) (e.Contrs)
-    = (CallBrackets <ApplyContractions e.Args (e.Contrs)>);
-
-  (ColdCallBrackets e.Args) (e.Contrs)
-    = (CallBrackets <ApplyContractions e.Args (e.Contrs)>);
-
-  (ClosureBrackets e.Args) (e.Contrs)
-    = (ClosureBrackets <ApplyContractions e.Args (e.Contrs)>);
-
-  (ADT-Brackets (e.Name) e.Expr) (e.Contrs)
-    = (ADT-Brackets (e.Name) <ApplyContractions e.Expr (e.Contrs)>);
-
-  t.Term (e.B (t.Term ':' e.Contr) e.E)
-    = <ApplyContractions e.Contr (e.B (t.Term ':' e.Contr) e.E)>;
-
-  t.T (e.Contrs) = t.T
 }
 
 ApplyContractions-Term {
@@ -702,8 +670,15 @@ ApplyContractions-Term {
   (CallBrackets e.Args) (e.Contrs)
     = (CallBrackets <ApplyContractions e.Args (e.Contrs)>);
 
-  (ColdCallBrackets e.Args) (e.Contrs)
-    = (ColdCallBrackets <ApplyContractions e.Args (e.Contrs)>);
+  (ColdCallBrackets e.OriginArgs) (e.Contrs)
+    = <ApplyContractions e.OriginArgs (e.Contrs)>
+    : {
+*        Содержимое холодных скобок не изменилось, оставляем их холодными
+        e.OriginArgs = (ColdCallBrackets e.OriginArgs);
+
+*       Содержимое обновилось, оттаиваем скобки
+        e.ChangedArgs = (CallBrackets e.ChangedArgs);
+      };
 
   (ClosureBrackets e.Args) (e.Contrs)
     = (ClosureBrackets <ApplyContractions e.Args (e.Contrs)>);
