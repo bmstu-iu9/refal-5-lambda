@@ -462,6 +462,18 @@ DropLeft {
 
 FindInlineInfo {
   t.InlineInfo e.Name
+    , e.Name : e.Prefix '*' s.N
+    , <CutSUF e.Prefix> : e.Prefix^
+    , t.InlineInfo
+    : (
+        (e.B1 (e.Prefix) e.E1)
+        e.B2 (Inline s.ScopeClass (e.Prefix) s.Body) e.E2
+      )
+    = <s.Body> : Sentences e.Sentences
+    = Success
+      (Inline s.ScopeClass (e.Name) Sentences <DropLeft e.Sentences s.N>);
+
+  t.InlineInfo e.Name
     , t.InlineInfo
     : ((e.B1 (e.Name) e.E1) e.B2 (Inline s.ScopeClass (e.Name) s.Body) e.E2)
     = Success (Inline s.ScopeClass (e.Name) <s.Body>);
