@@ -345,7 +345,7 @@ OptSentence-MakeSubstitutions {
     : e.Solution
 
     = <OptSentence-MakeSubstitutions-Aux
-        (e.RS) s.Mode s.ScopeClass (e.Name) (e.Rest) (e.Args)
+        (e.RS) s.Mode (e.Name) (e.Rest) (e.Args)
         e.Solution
       >;
 
@@ -364,7 +364,7 @@ OptSentence-MakeSubstitutions-Aux {
   /*
     В случае решения без сужений просто применяем замены
   */
-  (e.RS) s.Mode s.ScopeClass (e.Name) (e.Rest) (e.Args)
+  (e.RS) s.Mode (e.Name) (e.Rest) (e.Args)
   Success (() (e.Assigns))
     = ((e.RS) (() (e.Assigns)) (/* нет новых функций */));
 
@@ -372,12 +372,10 @@ OptSentence-MakeSubstitutions-Aux {
      В случае "грязного" решения добавляем вызов остаточной
      прогоняемой функции (Только при L-выражении)
   */
-  (e.RS) s.Mode s.ScopeClass (e.Name) (e.Rest) (e.Args)
+  (e.RS) s.Mode (e.Name) (e.Rest) (e.Args)
   Success e.M
     , s.Mode : Drive
-    = <CreateRemainderDrivenFunc
-        s.ScopeClass (e.Name) e.Rest
-      >
+    = <CreateRemainderDrivenFunc (e.Name) e.Rest>
     : t.newFunc
     , t.newFunc : (Function s.Sc1 (e.NewName) e.Body)
     = ((e.RS) e.M (/* нет новых функций */))
@@ -391,11 +389,9 @@ OptSentence-MakeSubstitutions-Aux {
     В случае неудачи нужно заменить прогоняемый вызов
     на вызов остаточной функции
   */
-  (e.RS) s.Mode s.ScopeClass (e.Name) (e.Rest) (e.Args)
+  (e.RS) s.Mode (e.Name) (e.Rest) (e.Args)
   Failure
-    = <CreateRemainderDrivenFunc
-        s.ScopeClass (e.Name) e.Rest
-      >
+    = <CreateRemainderDrivenFunc (e.Name) e.Rest>
     : t.newFunc
     , t.newFunc : (Function s.Sc1 (e.NewName) e.Body)
     = (
@@ -409,7 +405,7 @@ OptSentence-MakeSubstitutions-Aux {
 
     Undefined или левая часть не-L-выражение
   */
-  (e.RS) s.Mode s.ScopeClass (e.Name) (e.Rest) (e.Args)
+  (e.RS) s.Mode (e.Name) (e.Rest) (e.Args)
   e.Other
     = (
         ((ColdCallBrackets (Symbol Name e.Name) e.Args))
@@ -662,18 +658,18 @@ ApplyContractions-Term {
 }
 
 /*
-  <CreateRemainderDrivenFunc s.ScopeClass (e.Name) e.Sentences>
+  <CreateRemainderDrivenFunc (e.Name) e.Sentences>
     == t.Function
 */
 
 CreateRemainderDrivenFunc {
-  s.ScopeClass (e.Name SUF e.Suffixes '*' s.N) e.Sentences =
-    (Function s.ScopeClass (e.Name SUF e.Suffixes '*' <Add s.N 1>) Sentences e.Sentences);
+  (e.Name SUF e.Suffixes '*' s.N) e.Sentences =
+    (Function GN-Local (e.Name SUF e.Suffixes '*' <Add s.N 1>) Sentences e.Sentences);
 
-  s.ScopeClass (e.Name SUF e.Suffixes) e.Sentences =
-    (Function s.ScopeClass (e.Name SUF e.Suffixes '*' 1) Sentences e.Sentences);
+  (e.Name SUF e.Suffixes) e.Sentences =
+    (Function GN-Local (e.Name SUF e.Suffixes '*' 1) Sentences e.Sentences);
 
-  s.ScopeClass (e.Name) e.Sentences =
-    (Function s.ScopeClass (e.Name SUF '*' 1) Sentences e.Sentences)
+  (e.Name) e.Sentences =
+    (Function GN-Local (e.Name SUF '*' 1) Sentences e.Sentences)
 }
 
