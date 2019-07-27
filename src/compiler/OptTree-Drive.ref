@@ -238,9 +238,9 @@ OptimizeF {
 
 InlineSentence {
   ((e.Left) (e.Right)) t.InlineInfo
-     , <FindInlineCall t.InlineInfo e.Right> : t.Res e.Expr
+     , <FindInlineCall t.InlineInfo e.Right> : t.Res e.Right^
      , <OneOf t.Res None>: False
-     = <InlineSentence-Aux ((e.Left) (e.Right)) t.Res e.Expr t.InlineInfo>;
+     = <InlineSentence-Aux ((e.Left) (e.Right)) t.Res t.InlineInfo>;
 
   t.Sentence ((e.OptNames) e.Left) = () t.Sentence
 }
@@ -252,14 +252,14 @@ InlineSentence {
 
 DriveSentence {
   ((e.Left) (e.Right)) t.DriveInfo
-     , <FindDriveCall t.DriveInfo e.Right> : t.Res e.Expr
+     , <FindDriveCall t.DriveInfo e.Right> : t.Res e.Right^
      , <OneOf t.Res None>: False
-     = <DriveSentence-Aux ((e.Left) (e.Right)) t.Res e.Expr t.DriveInfo>;
+     = <DriveSentence-Aux ((e.Left) (e.Right)) t.Res t.DriveInfo>;
 
   ((e.Left) (e.Right)) t.InlineInfo
-     , <FindInlineCall t.InlineInfo e.Right> : t.Res e.Expr
+     , <FindInlineCall t.InlineInfo e.Right> : t.Res e.Right^
      , <OneOf t.Res None>: False
-     = <InlineSentence-Aux ((e.Left) (e.Right)) t.Res e.Expr t.InlineInfo>;
+     = <InlineSentence-Aux ((e.Left) (e.Right)) t.Res t.InlineInfo>;
 
   t.Sentence ((e.OptNames) e.Left) = () t.Sentence
 }
@@ -271,62 +271,100 @@ DriveSentence {
 
 InlineSentence-Aux {
   /* Встраивание */
-  ((e.Left) (e.Right)) t.Res e.Expr t.DriveInfo
-    = <OptSentence-Aux Inline ((e.Left) (e.Right)) t.Res e.Expr t.DriveInfo>;
+  ((e.Left) (e.Right)) t.Res t.DriveInfo
+    = <OptSentence-Aux Inline ((e.Left) (e.Right)) t.Res t.DriveInfo>;
 }
 
 /*
-  <DriveSentence-Aux ((e.Left) (e.Right)) t.Call e.Expr t.DriveInfo>
+  <DriveSentence-Aux ((e.Left) (e.Right)) t.Call t.DriveInfo>
     = (t.Func?) t.Sentence*
 */
 
 DriveSentence-Aux {
   /* Прогонка */
-  ((e.Left) (e.Right)) t.Res e.Expr t.DriveInfo
-    = <OptSentence-Aux Drive ((e.Left) (e.Right)) t.Res e.Expr t.DriveInfo>;
+  ((e.Left) (e.Right)) t.Res t.DriveInfo
+    = <OptSentence-Aux Drive ((e.Left) (e.Right)) t.Res t.DriveInfo>;
 }
 
 OptSentence-Aux {
   s.Mode
   ((e.Left) (e.Right))
-  (CallBrackets (Symbol Name e.Name) e.Args) e.Expr
+  (CallBrackets (Symbol Name e.Name) e.Args)
   t.DriveInfo
 
     /* Поиск информации для прогонки */
-    , <FindOptInfo s.Mode t.DriveInfo e.Name>
-    : Success (s.Mode s.ScopeClass (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+    = <FindOptInfo s.Mode t.DriveInfo e.Name>
+    : Success t.FunctionForDrive
 
-    /* Попытка оптимизации, только если вызов пассивный */
-    , <IsPassiveCall e.Args> : True
-    = <Solve
-        (<ExtractVariables ((e.Left e.Right) ())>)
-        ((e.Args) ':' (e.LS))
-      >
-    : e.Solution
     = <OptSentence-MakeSubstitutions
-        (e.RS) s.Mode (e.Left) s.ScopeClass (e.Name) (e.Rest) (e.Args)
-        e.Solution
+        s.Mode ((e.Left) (e.Right)) (e.Args) t.FunctionForDrive
       >
     : e.SolutionPacks
     = <MapAccum
         {
           (e.NewFunctions) ((e.RS^) e.Solutions^ (e.NewFunction))
             = (e.NewFunctions e.NewFunction)
-              <ApplySolutions ((e.Left) (e.Expr)) (e.RS) e.Solutions>;
+              <ApplySolutions ((e.Left) (e.Right)) (e.RS) e.Solutions>;
         }
         (/* new functions */)
         e.SolutionPacks
       >;
-
-  s.Mode
-  ((e.Left) (e.Right)) e.Other = () ((e.Left) (e.Right))
 }
 
 OptSentence-MakeSubstitutions {
+  s.Mode
+  ((e.Left) (e.Expr)) (e.Args)
+  (s.Mode s.ScopeClass (e.Name) Sentences e.Body)
+
+    /* Активные вызовы игнорируем */
+    , <IsPassiveCall e.Args> : False
+
+    = (
+        /* TODO: исправить */
+        ((CallBrackets (Symbol Name e.Name) e.Args))
+        ((/* нет присваиваний */) (/* нет сужений */))
+        (/* нет новых функций */)
+      );
+
+  s.Mode
+  ((e.Left) (e.Expr)) (e.Args)
+  (s.Mode s.ScopeClass (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+
+    /* Если левая часть не L-выражение, допускаем только встраивание */
+    = <IsLexpr e.Left>
+    : {
+        True = s.Mode;
+        False = Inline;
+      }
+    : s.Mode^
+
+    = <Solve
+        (<ExtractVariables ((e.Left) (e.Expr))>)
+        ((e.Args) ':' (e.LS))
+      >
+    : e.Solution
+
+    = <OptSentence-MakeSubstitutions-Aux
+        (e.RS) s.Mode s.ScopeClass (e.Name) (e.Rest) (e.Args)
+        e.Solution
+      >;
+
+  s.Mode
+  ((e.Left) (e.Expr)) (e.Args)
+  (s.Mode s.ScopeClass (e.Name) Sentences e.Body)
+    = (
+        /* TODO: исправить */
+        ((CallBrackets (Symbol Name e.Name) e.Args))
+        ((/* нет присваиваний */) (/* нет сужений */))
+        (/* нет новых функций */)
+      );
+}
+
+OptSentence-MakeSubstitutions-Aux {
   /*
     В случае решения без сужений просто применяем замены
   */
-  (e.RS) s.Mode (e.Left) s.ScopeClass (e.Name) (e.Rest) (e.Args)
+  (e.RS) s.Mode s.ScopeClass (e.Name) (e.Rest) (e.Args)
   Success (() (e.Assigns))
     = ((e.RS) (() (e.Assigns)) (/* нет новых функций */));
 
@@ -334,11 +372,9 @@ OptSentence-MakeSubstitutions {
      В случае "грязного" решения добавляем вызов остаточной
      прогоняемой функции (Только при L-выражении)
   */
-  (e.RS) s.Mode (e.Left) s.ScopeClass (e.Name) (e.Rest) (e.Args)
+  (e.RS) s.Mode s.ScopeClass (e.Name) (e.Rest) (e.Args)
   Success e.M
     , s.Mode : Drive
-    /* Проверка, является ли левая часть L-выражением*/
-    , <IsLexpr e.Left> : True
     = <CreateRemainderDrivenFunc
         s.ScopeClass (e.Name) e.Rest
       >
@@ -355,7 +391,7 @@ OptSentence-MakeSubstitutions {
     В случае неудачи нужно заменить прогоняемый вызов
     на вызов остаточной функции
   */
-  (e.RS) s.Mode (e.Left) s.ScopeClass (e.Name) (e.Rest) (e.Args)
+  (e.RS) s.Mode s.ScopeClass (e.Name) (e.Rest) (e.Args)
   Failure
     = <CreateRemainderDrivenFunc
         s.ScopeClass (e.Name) e.Rest
@@ -373,7 +409,7 @@ OptSentence-MakeSubstitutions {
 
     Undefined или левая часть не-L-выражение
   */
-  (e.RS) s.Mode (e.Left) s.ScopeClass (e.Name) (e.Rest) (e.Args)
+  (e.RS) s.Mode s.ScopeClass (e.Name) (e.Rest) (e.Args)
   e.Other
     = (
         ((ColdCallBrackets (Symbol Name e.Name) e.Args))
