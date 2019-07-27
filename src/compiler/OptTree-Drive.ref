@@ -214,18 +214,13 @@ OptimizeF {
   ((e.OptNames) e.OptFunctions) s.OptSentence
     = <Reduce
         {
-          ((e.SntAcc) (e.FunAcc)) t.Sentence =
-            <s.OptSentence
-              t.Sentence
-              ((e.OptNames) e.OptFunctions)
-            >
-            : {
-                e.Result t.Func
-                , t.Func: (Function e.X)
-                  = ((e.SntAcc e.Result) (e.FunAcc t.Func));
-
-                e.Result = ((e.SntAcc e.Result) (e.FunAcc))
-              }
+          ((e.SntAcc) (e.FunAcc)) t.Sentence
+            = <s.OptSentence
+                t.Sentence
+                ((e.OptNames) e.OptFunctions)
+              >
+            : (e.NewFunctions) e.NewSentences
+            = ((e.SntAcc e.NewSentences) (e.FunAcc e.NewFunctions));
         }
         ((/*sentences*/) (/*functions*/))
         e.Sentences
@@ -238,7 +233,7 @@ OptimizeF {
 /*
    Осуществляет попытку встраивания отдельного предложения
    <InlineSentence t.Sentence (t.InlineInfo)>
-   == t.Sentence* t.Func?
+   == (t.Func?) t.Sentence*
 */
 
 InlineSentence {
@@ -247,12 +242,12 @@ InlineSentence {
      , <OneOf t.Res None>: False
      = <InlineSentence-Aux ((e.Left) (e.Right)) t.Res e.Expr t.InlineInfo>;
 
-  t.Sentence ((e.OptNames) e.Left) = t.Sentence
+  t.Sentence ((e.OptNames) e.Left) = () t.Sentence
 }
 
 /* Осуществляет попытку прогонки отдельного предложения вида pattern = expr
    <DriveSentence t.Sentence (t.DriveInfo)>
-    == t.Sentence* t.Func?
+    == (t.Func?) t.Sentence*
 */
 
 DriveSentence {
@@ -266,12 +261,12 @@ DriveSentence {
      , <OneOf t.Res None>: False
      = <InlineSentence-Aux ((e.Left) (e.Right)) t.Res e.Expr t.InlineInfo>;
 
-  t.Sentence ((e.OptNames) e.Left) = t.Sentence
+  t.Sentence ((e.OptNames) e.Left) = () t.Sentence
 }
 
 /*
   <InlineSentence-Aux ((e.Left) (e.Right)) t.Call e.Expr t.InlineInfo>
-    = t.Sentence t.Func?
+    = (t.Func?) t.Sentence
 */
 
 InlineSentence-Aux {
@@ -282,7 +277,7 @@ InlineSentence-Aux {
 
 /*
   <DriveSentence-Aux ((e.Left) (e.Right)) t.Call e.Expr t.DriveInfo>
-    = t.Sentence* t.Func?
+    = (t.Func?) t.Sentence*
 */
 
 DriveSentence-Aux {
@@ -307,79 +302,84 @@ OptSentence-Aux {
         (<ExtractVariables ((e.Left e.Right) ())>)
         ((e.Args) ':' (e.LS))
       >
-      : e.Solution
-      , e.Solution : {
-
-        /*
-          В случае решения без сужений просто применяем замены
-        */
-        Success (() (e.Assigns))
-          = <ApplySolutions
-              ((e.Left) (e.Expr)) (e.RS) ((() (e.Assigns)))
-            >
-          : e.Sentences
-          = e.Sentences;
-
-        /*
-           В случае "грязного" решения добавляем вызов остаточной
-           прогоняемой функции (Только при L-выражении)
-        */
-        Success e.M
-          , s.Mode : Drive
-          /* Проверка, является ли левая часть L-выражением*/
-          , <IsLexpr e.Left> : True
-          = <ApplySolutions ((e.Left) (e.Expr)) (e.RS) (e.M)> : e.Sentences
-          = <CreateRemainderDrivenFunc
-              s.ScopeClass (e.Name) e.Rest
-            >
-            : t.newFunc
-            , t.newFunc : (Function s.Sc1 (e.NewName) e.Body)
-          = <ApplyContractions
-              e.Expr
-              (((TkVariable 'e' DRIVEN 0)
-              ':'
-              (CallBrackets (Symbol Name e.NewName) e.Args)))
-            >
-            : e.S
-          = e.Sentences ((e.Left) (e.S)) (Function s.Sc1 (e.NewName) e.Body);
-
-        /*
-          В случае неудачи нужно заменить прогоняемый вызов
-          на вызов остаточной функции
-        */
-        Failure
-          = <CreateRemainderDrivenFunc
-              s.ScopeClass (e.Name) e.Rest
-            >
-            : t.newFunc
-            , t.newFunc : (Function s.Sc1 (e.NewName) e.Body)
-          = <ApplyContractions
-              e.Expr
-              (((TkVariable 'e' DRIVEN 0)
-              ':'
-              (CallBrackets (Symbol Name e.NewName) e.Args)))
-            >
-            : e.S
-          = ((e.Left) (e.S)) t.newFunc;
-
-        /*
-          Замена вызова на холодный
-
-          Undefined или левая часть не-L-выражение
-        */
-        e.Other
-          = <ApplyContractions
-              e.Expr
-              (((TkVariable 'e' DRIVEN 0)
-              ':'
-              (ColdCallBrackets (Symbol Name e.Name) e.Args)))
-            >
-            : e.S
-          = ((e.Left) (e.S));
-    };
+    : e.Solution
+    = <OptSentence-MakeSubstitutions
+        (e.RS) s.Mode (e.Left) s.ScopeClass (e.Name) (e.Rest) (e.Args)
+        e.Solution
+      >
+    : e.SolutionPacks
+    = <MapAccum
+        {
+          (e.NewFunctions) ((e.RS^) e.Solutions^ (e.NewFunction))
+            = (e.NewFunctions e.NewFunction)
+              <ApplySolutions ((e.Left) (e.Expr)) (e.RS) e.Solutions>;
+        }
+        (/* new functions */)
+        e.SolutionPacks
+      >;
 
   s.Mode
-  ((e.Left) (e.Right)) e.Other = ((e.Left) (e.Right))
+  ((e.Left) (e.Right)) e.Other = () ((e.Left) (e.Right))
+}
+
+OptSentence-MakeSubstitutions {
+  /*
+    В случае решения без сужений просто применяем замены
+  */
+  (e.RS) s.Mode (e.Left) s.ScopeClass (e.Name) (e.Rest) (e.Args)
+  Success (() (e.Assigns))
+    = ((e.RS) (() (e.Assigns)) (/* нет новых функций */));
+
+  /*
+     В случае "грязного" решения добавляем вызов остаточной
+     прогоняемой функции (Только при L-выражении)
+  */
+  (e.RS) s.Mode (e.Left) s.ScopeClass (e.Name) (e.Rest) (e.Args)
+  Success e.M
+    , s.Mode : Drive
+    /* Проверка, является ли левая часть L-выражением*/
+    , <IsLexpr e.Left> : True
+    = <CreateRemainderDrivenFunc
+        s.ScopeClass (e.Name) e.Rest
+      >
+    : t.newFunc
+    , t.newFunc : (Function s.Sc1 (e.NewName) e.Body)
+    = ((e.RS) e.M (/* нет новых функций */))
+      (
+        ((CallBrackets (Symbol Name e.NewName) e.Args))
+        ((/* нет присваиваний */) (/* нет сужений */))
+        (t.newFunc)
+      );
+
+  /*
+    В случае неудачи нужно заменить прогоняемый вызов
+    на вызов остаточной функции
+  */
+  (e.RS) s.Mode (e.Left) s.ScopeClass (e.Name) (e.Rest) (e.Args)
+  Failure
+    = <CreateRemainderDrivenFunc
+        s.ScopeClass (e.Name) e.Rest
+      >
+    : t.newFunc
+    , t.newFunc : (Function s.Sc1 (e.NewName) e.Body)
+    = (
+        ((CallBrackets (Symbol Name e.NewName) e.Args))
+        ((/* нет присваиваний */) (/* нет сужений */))
+        (t.newFunc)
+      );
+
+  /*
+    Замена вызова на холодный
+
+    Undefined или левая часть не-L-выражение
+  */
+  (e.RS) s.Mode (e.Left) s.ScopeClass (e.Name) (e.Rest) (e.Args)
+  e.Other
+    = (
+        ((ColdCallBrackets (Symbol Name e.Name) e.Args))
+        ((/* нет присваиваний */) (/* нет сужений */))
+        (/* нет новых функций */)
+      );
 }
 
 DropLeft {
@@ -522,7 +522,7 @@ FindOptimizedCall-Term {
 
 ApplySolutions {
 
-  ((e.Left) (e.Right)) (e.RS) (e.Solutions)
+  ((e.Left) (e.Right)) (e.RS) e.Solutions
 
   = <Map
       {
