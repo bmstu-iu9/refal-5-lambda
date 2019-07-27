@@ -320,8 +320,7 @@ OptSentence-MakeSubstitutions {
     , <IsPassiveCall e.Args> : False
 
     = (
-        /* TODO: исправить */
-        ((CallBrackets (Symbol Name e.Name) e.Args))
+        ((ColdCallBrackets (Symbol Name e.Name) e.Args))
         ((/* нет присваиваний */) (/* нет сужений */))
         (/* нет новых функций */)
       );
@@ -353,8 +352,7 @@ OptSentence-MakeSubstitutions {
   ((e.Left) (e.Expr)) (e.Args)
   (s.Mode s.ScopeClass (e.Name) Sentences e.Body)
     = (
-        /* TODO: исправить */
-        ((CallBrackets (Symbol Name e.Name) e.Args))
+        ((ColdCallBrackets (Symbol Name e.Name) e.Args))
         ((/* нет присваиваний */) (/* нет сужений */))
         (/* нет новых функций */)
       );
