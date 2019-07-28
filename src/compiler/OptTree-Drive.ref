@@ -293,8 +293,7 @@ OptSentence-Aux {
   t.DriveInfo
 
     /* Поиск информации для прогонки */
-    = <FindOptInfo s.Mode t.DriveInfo e.Name>
-    : Success t.FunctionForDrive
+    = <FindOptInfo t.DriveInfo e.Name> : Success t.FunctionForDrive
 
     = <OptSentence-MakeSubstitutions
         s.Mode ((e.Left) (e.Right)) (e.Args) t.FunctionForDrive
@@ -314,7 +313,7 @@ OptSentence-Aux {
 OptSentence-MakeSubstitutions {
   s.Mode
   ((e.Left) (e.Expr)) (e.Args)
-  (s.Mode s.ScopeClass (e.Name) Sentences e.Body)
+  (s.FuncMode s.ScopeClass (e.Name) Sentences e.Body)
 
     /* Активные вызовы игнорируем */
     , <IsPassiveCall e.Args> : False
@@ -327,7 +326,7 @@ OptSentence-MakeSubstitutions {
 
   s.Mode
   ((e.Left) (e.Expr)) (e.Args)
-  (s.Mode s.ScopeClass (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+  (s.FuncMode s.ScopeClass (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
 
     /* Если левая часть не L-выражение, допускаем только встраивание */
     = <IsLexpr e.Left>
@@ -343,6 +342,8 @@ OptSentence-MakeSubstitutions {
       >
     : e.Solution
 
+    = <DecreaseMode s.Mode s.FuncMode> : s.Mode^
+
     = <OptSentence-MakeSubstitutions-Aux
         (e.RS) s.Mode (e.Name) (e.Rest) (e.Args)
         e.Solution
@@ -350,12 +351,17 @@ OptSentence-MakeSubstitutions {
 
   s.Mode
   ((e.Left) (e.Expr)) (e.Args)
-  (s.Mode s.ScopeClass (e.Name) Sentences e.Body)
+  (s.FuncMode s.ScopeClass (e.Name) Sentences e.Body)
     = (
         ((ColdCallBrackets (Symbol Name e.Name) e.Args))
         ((/* нет присваиваний */) (/* нет сужений */))
         (/* нет новых функций */)
       );
+}
+
+DecreaseMode {
+  Inline s.Mode = Inline;
+  Drive s.Mode = s.Mode;
 }
 
 OptSentence-MakeSubstitutions-Aux {
@@ -423,7 +429,7 @@ DropLeft {
 */
 
 FindInlineInfo {
-  t.InlineInfo e.Name = <FindOptInfo Inline t.InlineInfo e.Name>;
+  t.InlineInfo e.Name = <FindOptInfo t.InlineInfo e.Name>;
 }
 
 /*
@@ -432,11 +438,10 @@ FindInlineInfo {
 */
 
 FindDriveInfo {
-  t.DriveInfo e.Name = <FindOptInfo Drive t.DriveInfo e.Name>
+  t.DriveInfo e.Name = <FindOptInfo t.DriveInfo e.Name>
 }
 
 FindOptInfo {
-  s.Mode
   t.DriveInfo e.Name
     , e.Name : e.Prefix '*' s.N
     , <CutSUF e.Prefix> : e.Prefix^
@@ -449,7 +454,6 @@ FindOptInfo {
     = Success
       (s.Mode s.ScopeClass (e.Name) Sentences <DropLeft e.Sentences s.N>);
 
-  s.Mode
   t.DriveInfo e.Name
     , t.DriveInfo
     : (
@@ -458,7 +462,6 @@ FindOptInfo {
       )
     = Success (s.Mode s.ScopeClass (e.Name) <s.Body>);
 
-  s.Mode
   t.DriveInfo e.Name = Failure;
 }
 
