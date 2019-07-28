@@ -105,8 +105,8 @@ GetDrivenFunctions {
 }
 
 OptSwitch {
-  OptDrive = &DriveSentence;
-  OptInline = &InlineSentence
+  OptDrive = Drive;
+  OptInline = Inline;
 }
 
 /* Осуществляет прогонку или оптимизацию в зависимости от ключа */
@@ -203,7 +203,7 @@ IsLexpr-Aux {
 
 /*
   Осуществляет попытку прогонки или встраивания в функции
-  <OptimizeF t.Function (t.DriveInfo) s.OptSentence> == t.Function*
+  <OptimizeF t.Function (t.DriveInfo) s.Mode> == t.Function*
 
   Возвращает модифицированную функцию
   и порожденные из прогонки или встраивания
@@ -211,13 +211,14 @@ IsLexpr-Aux {
 
 OptimizeF {
   (Function s.ScopeClass (e.Name) Sentences e.Sentences)
-  ((e.OptNames) e.OptFunctions) s.OptSentence
+  ((e.OptNames) e.OptFunctions) s.Mode
     = <Reduce
         {
           ((e.SntAcc) (e.FunAcc)) t.Sentence
-            = <s.OptSentence
+            = <OptSentence
                 t.Sentence
                 ((e.OptNames) e.OptFunctions)
+                s.Mode
               >
             : (e.NewFunctions) e.NewSentences
             = ((e.SntAcc e.NewSentences) (e.FunAcc e.NewFunctions));
@@ -231,59 +232,17 @@ OptimizeF {
 }
 
 /*
-   Осуществляет попытку встраивания отдельного предложения
-   <InlineSentence t.Sentence (t.InlineInfo)>
+   <OptSentence t.Sentence t.DriveInfo s.Mode>
    == (t.Func?) t.Sentence*
 */
 
-InlineSentence {
-  ((e.Left) (e.Right)) t.InlineInfo
-     , <FindInlineCall t.InlineInfo e.Right> : t.Res e.Right^
+OptSentence {
+  ((e.Left) (e.Right)) t.DriveInfo s.Mode
+     , <FindOptCall t.DriveInfo e.Right> : t.Res e.Right^
      , <OneOf t.Res None>: False
-     = <InlineSentence-Aux ((e.Left) (e.Right)) t.Res t.InlineInfo>;
+     = <OptSentence-Aux s.Mode ((e.Left) (e.Right)) t.Res t.DriveInfo>;
 
-  t.Sentence ((e.OptNames) e.Left) = () t.Sentence
-}
-
-/* Осуществляет попытку прогонки отдельного предложения вида pattern = expr
-   <DriveSentence t.Sentence (t.DriveInfo)>
-    == (t.Func?) t.Sentence*
-*/
-
-DriveSentence {
-  ((e.Left) (e.Right)) t.DriveInfo
-     , <FindDriveCall t.DriveInfo e.Right> : t.Res e.Right^
-     , <OneOf t.Res None>: False
-     = <DriveSentence-Aux ((e.Left) (e.Right)) t.Res t.DriveInfo>;
-
-  ((e.Left) (e.Right)) t.InlineInfo
-     , <FindInlineCall t.InlineInfo e.Right> : t.Res e.Right^
-     , <OneOf t.Res None>: False
-     = <InlineSentence-Aux ((e.Left) (e.Right)) t.Res t.InlineInfo>;
-
-  t.Sentence ((e.OptNames) e.Left) = () t.Sentence
-}
-
-/*
-  <InlineSentence-Aux ((e.Left) (e.Right)) t.Call e.Expr t.InlineInfo>
-    = (t.Func?) t.Sentence
-*/
-
-InlineSentence-Aux {
-  /* Встраивание */
-  ((e.Left) (e.Right)) t.Res t.DriveInfo
-    = <OptSentence-Aux Inline ((e.Left) (e.Right)) t.Res t.DriveInfo>;
-}
-
-/*
-  <DriveSentence-Aux ((e.Left) (e.Right)) t.Call t.DriveInfo>
-    = (t.Func?) t.Sentence*
-*/
-
-DriveSentence-Aux {
-  /* Прогонка */
-  ((e.Left) (e.Right)) t.Res t.DriveInfo
-    = <OptSentence-Aux Drive ((e.Left) (e.Right)) t.Res t.DriveInfo>;
+  t.Sentence ((e.OptNames) e.Left) s.Mode = () t.Sentence
 }
 
 OptSentence-Aux {
@@ -424,22 +383,9 @@ DropLeft {
 }
 
 /*
-  <FindInlineInfo t.InlineInfo e.Name == Success t.InlineInfo | Failure
-  t.InlineInfo := (Inline s.ScopeClass (e.Name) e.Body
+  <FindOptInfo t.DriveInfo e.Name> == Success t.Function | Failure
+  t.Function := (Drive s.ScopeClass (e.Name) e.Body)
 */
-
-FindInlineInfo {
-  t.InlineInfo e.Name = <FindOptInfo t.InlineInfo e.Name>;
-}
-
-/*
-  <FindDrivenInfo t.DriveInfo e.Name> == Success t.DriveInfo | Failure
-  t.DriveInfo := (Drive s.ScopeClass (e.Name) e.Body)
-*/
-
-FindDriveInfo {
-  t.DriveInfo e.Name = <FindOptInfo t.DriveInfo e.Name>
-}
 
 FindOptInfo {
   t.DriveInfo e.Name
@@ -472,62 +418,48 @@ CutSUF {
   e.Prefix = e.Prefix;
 }
 
-
 /*
-  <FindDriveCall t.DriveInfo e.Expr> == t.Found e.Expr
+  <FindOptCall t.InlineInfo e.Expr> == t.Found e.Expr
 
   t.Found ::= None | (CallBrackets e.Arg)
 */
 
-FindDriveCall {
-  t.DriveInfo e.Expr
-    = <FindOptimizedCall &FindDriveInfo t.DriveInfo e.Expr>
-    : (t.DriveInfo^ t.Found) e.Expr^
-    = t.Found e.Expr
-}
-
-/*
-  <FindInlineCall t.InlineInfo e.Expr> == t.Found e.Expr
-
-  t.Found ::= None | (CallBrackets e.Arg)
-*/
-
-FindInlineCall {
+FindOptCall {
   t.InlineInfo e.Expr
-    = <FindOptimizedCall &FindInlineInfo t.InlineInfo e.Expr>
+    = <FindOptimizedCall t.InlineInfo e.Expr>
     : (t.InlineInfo^ t.Found) e.Expr^
     = t.Found e.Expr
 }
 
 FindOptimizedCall {
-  s.Filter t.DriveInfo e.Expr
-    = <MapAccum (&FindOptimizedCall-Term s.Filter) (t.DriveInfo None) e.Expr>;
+  t.DriveInfo e.Expr
+    = <MapAccum &FindOptimizedCall-Term (t.DriveInfo None) e.Expr>;
 }
 
 FindOptimizedCall-Term {
-  s.Filter (t.DriveInfo None) (Brackets e.Expr)
-    = <FindOptimizedCall s.Filter t.DriveInfo e.Expr>
+  (t.DriveInfo None) (Brackets e.Expr)
+    = <FindOptimizedCall t.DriveInfo e.Expr>
     : (t.DriveInfo^ t.Found) e.Expr^
     = (t.DriveInfo t.Found) (Brackets e.Expr);
 
-  s.Filter (t.DriveInfo None) (ADT-Brackets (e.Name) e.Expr)
-    = <FindOptimizedCall s.Filter t.DriveInfo e.Expr>
+  (t.DriveInfo None) (ADT-Brackets (e.Name) e.Expr)
+    = <FindOptimizedCall t.DriveInfo e.Expr>
     : (t.DriveInfo^ t.Found) e.Expr^
     = (t.DriveInfo t.Found)
       (ADT-Brackets (e.Name) e.Expr);
 
-  s.Filter (t.DriveInfo None) (CallBrackets (Symbol Name e.Name) e.Expr)
+  (t.DriveInfo None) (CallBrackets (Symbol Name e.Name) e.Expr)
     , <IsPassiveCall e.Expr> : True
-    , <s.Filter t.DriveInfo e.Name> : Success t.Info
+    , <FindOptInfo t.DriveInfo e.Name> : Success t.Info
     = (t.DriveInfo (CallBrackets (Symbol Name e.Name) e.Expr))
       (TkVariable 'e' DRIVEN 0);
 
 * TODO: раскомментировать код ниже, когда будет реализовываться поддрежка
 * TODO: активных аргументов функций
 /*
-  s.Filter (t.DriveInfo None) (CallBrackets (Symbol Name e.Name) e.Expr)
-    , <s.Filter t.DriveInfo e.Name> : Success t.Info
-    = <FindOptimizedCall s.Filter t.DriveInfo e.Expr>
+  (t.DriveInfo None) (CallBrackets (Symbol Name e.Name) e.Expr)
+    , <FindOptInfo t.DriveInfo e.Name> : Success t.Info
+    = <FindOptimizedCall t.DriveInfo e.Expr>
     : {
         (t.DriveInfo^ None) e.Expr^
           = (t.DriveInfo (CallBrackets (Symbol Name e.Name) e.Expr))
@@ -538,12 +470,12 @@ FindOptimizedCall-Term {
       };
 */
 
-  s.Filter (t.DriveInfo None) (CallBrackets t.F e.Expr)
-    = <FindOptimizedCall s.Filter t.DriveInfo e.Expr>
+  (t.DriveInfo None) (CallBrackets t.F e.Expr)
+    = <FindOptimizedCall t.DriveInfo e.Expr>
     : (t.DriveInfo^ t.Found) e.Expr^
     = (t.DriveInfo t.Found) (CallBrackets t.F e.Expr);
 
-  s.Filter (t.DriveInfo t.Found) t.AnyTerm
+  (t.DriveInfo t.Found) t.AnyTerm
     = (t.DriveInfo t.Found) t.AnyTerm;
 }
 
