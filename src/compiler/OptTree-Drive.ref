@@ -113,7 +113,7 @@ OptSwitch {
 
 DriveInlineOptimizerTick {
   ((e.OptNames) e.OptFunctions) e.AST s.Opt
-    = <OptSwitch s.Opt> : s.OptF
+    = <OptSwitch s.Opt> : s.Mode
     = ((e.OptNames) e.OptFunctions)
       <Map
         {
@@ -121,7 +121,7 @@ DriveInlineOptimizerTick {
             = <OptimizeF
                 (Function s.ScopeClass (e.Name) e.Body)
                 ((e.OptNames) e.OptFunctions)
-                s.OptF
+                s.Mode
               >;
 
           e.Other = e.Other
@@ -238,7 +238,7 @@ OptimizeF {
 
 OptSentence {
   ((e.Left) (e.Right)) t.DriveInfo s.Mode
-     , <FindOptCall t.DriveInfo e.Right> : t.Res e.Right^
+     , <FindOptimizedCall t.DriveInfo e.Right> : t.Res e.Right^
      , <OneOf t.Res None>: False
      = <OptSentence-Aux s.Mode ((e.Left) (e.Right)) t.Res t.DriveInfo>;
 
@@ -419,64 +419,69 @@ CutSUF {
 }
 
 /*
-  <FindOptCall t.InlineInfo e.Expr> == t.Found e.Expr
+  <FindOptimizedCall t.InlineInfo e.Expr> == t.Found e.Expr
 
   t.Found ::= None | (CallBrackets e.Arg)
 */
 
-FindOptCall {
-  t.InlineInfo e.Expr
-    = <FindOptimizedCall t.InlineInfo e.Expr>
-    : (t.InlineInfo^ t.Found) e.Expr^
+FindOptimizedCall {
+  ((e.OptFuncNames) e.OptFuncBodies) e.Expr
+    = <FindOptimizedCall-Aux (e.OptFuncNames) e.Expr>
+    : (e.OptFuncNames^ t.Found) e.Expr^
     = t.Found e.Expr
 }
 
-FindOptimizedCall {
-  t.DriveInfo e.Expr
-    = <MapAccum &FindOptimizedCall-Term (t.DriveInfo None) e.Expr>;
+FindOptimizedCall-Aux {
+  (e.OptFuncNames) e.Expr
+    = <MapAccum &FindOptimizedCall-Term (e.OptFuncNames None) e.Expr>;
 }
 
 FindOptimizedCall-Term {
-  (t.DriveInfo None) (Brackets e.Expr)
-    = <FindOptimizedCall t.DriveInfo e.Expr>
-    : (t.DriveInfo^ t.Found) e.Expr^
-    = (t.DriveInfo t.Found) (Brackets e.Expr);
+  (e.OptFuncNames None) (Brackets e.Expr)
+    = <FindOptimizedCall-Aux (e.OptFuncNames) e.Expr>
+    : (e.OptFuncNames^ t.Found) e.Expr^
+    = (e.OptFuncNames t.Found) (Brackets e.Expr);
 
-  (t.DriveInfo None) (ADT-Brackets (e.Name) e.Expr)
-    = <FindOptimizedCall t.DriveInfo e.Expr>
-    : (t.DriveInfo^ t.Found) e.Expr^
-    = (t.DriveInfo t.Found)
+  (e.OptFuncNames None) (ADT-Brackets (e.Name) e.Expr)
+    = <FindOptimizedCall-Aux (e.OptFuncNames) e.Expr>
+    : (e.OptFuncNames^ t.Found) e.Expr^
+    = (e.OptFuncNames t.Found)
       (ADT-Brackets (e.Name) e.Expr);
 
-  (t.DriveInfo None) (CallBrackets (Symbol Name e.Name) e.Expr)
+  (e.OptFuncNames-B (e.Name) e.OptFuncNames-E None)
+  (CallBrackets (Symbol Name e.Name) e.Expr)
     , <IsPassiveCall e.Expr> : True
-    , <FindOptInfo t.DriveInfo e.Name> : Success t.Info
-    = (t.DriveInfo (CallBrackets (Symbol Name e.Name) e.Expr))
+    = (
+        e.OptFuncNames-B (e.Name) e.OptFuncNames-E
+        (CallBrackets (Symbol Name e.Name) e.Expr)
+      )
       (TkVariable 'e' DRIVEN 0);
 
 * TODO: раскомментировать код ниже, когда будет реализовываться поддрежка
 * TODO: активных аргументов функций
 /*
-  (t.DriveInfo None) (CallBrackets (Symbol Name e.Name) e.Expr)
+  (e.OptFuncNames-B (e.Name) e.OptFuncNames-E None)
+  (CallBrackets (Symbol Name e.Name) e.Expr)
     , <FindOptInfo t.DriveInfo e.Name> : Success t.Info
-    = <FindOptimizedCall t.DriveInfo e.Expr>
+    = e.OptFuncNames-B (e.Name) e.OptFuncNames-E : e.OptFuncNames
+    = <FindOptimizedCall-Aux (e.OptFuncNames) e.Expr>
     : {
-        (t.DriveInfo^ None) e.Expr^
-          = (t.DriveInfo (CallBrackets (Symbol Name e.Name) e.Expr))
+        (e.OptFuncNames^ None) e.Expr^
+          = (e.OptFuncNames (CallBrackets (Symbol Name e.Name) e.Expr))
             (TkVariable 'e' DRIVEN 0);
 
-        (t.DriveInfo t.Found) e.Expr^
-          = (t.DriveInfo t.Found) (CallBrackets (Symbol Name e.Name) e.Expr);
+        (e.OptFuncNames^ t.Found) e.Expr^
+          = (e.OptFuncNames t.Found) (CallBrackets (Symbol Name e.Name) e.Expr);
       };
 */
 
-  (t.DriveInfo None) (CallBrackets t.F e.Expr)
-    = <FindOptimizedCall t.DriveInfo e.Expr>
-    : (t.DriveInfo^ t.Found) e.Expr^
-    = (t.DriveInfo t.Found) (CallBrackets t.F e.Expr);
+  (e.OptFuncNames None) (CallBrackets t.F e.Expr)
+    = <FindOptimizedCall-Aux (e.OptFuncNames) e.Expr>
+    : (e.OptFuncNames^ t.Found) e.Expr^
+    = (e.OptFuncNames t.Found) (CallBrackets t.F e.Expr);
 
-  (t.DriveInfo t.Found) t.AnyTerm
-    = (t.DriveInfo t.Found) t.AnyTerm;
+  (e.OptFuncNames t.Found) t.AnyTerm
+    = (e.OptFuncNames t.Found) t.AnyTerm;
 }
 
 /*
