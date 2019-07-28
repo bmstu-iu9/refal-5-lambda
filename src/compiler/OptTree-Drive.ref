@@ -203,7 +203,7 @@ IsLexpr-Aux {
 
 /*
   Осуществляет попытку прогонки или встраивания в функции
-  <OptimizeF t.Function (t.DriveInfo) s.Mode> == t.Function*
+  <OptimizeF t.Function t.DriveInfo s.Mode> == t.Function*
 
   Возвращает модифицированную функцию
   и порожденные из прогонки или встраивания
@@ -211,15 +211,11 @@ IsLexpr-Aux {
 
 OptimizeF {
   (Function s.ScopeClass (e.Name) Sentences e.Sentences)
-  ((e.OptNames) e.OptFunctions) s.Mode
+  t.OptInfo s.Mode
     = <Reduce
         {
           ((e.SntAcc) (e.FunAcc)) t.Sentence
-            = <OptSentence
-                t.Sentence
-                ((e.OptNames) e.OptFunctions)
-                s.Mode
-              >
+            = <OptSentence t.Sentence t.OptInfo s.Mode>
             : (e.NewFunctions) e.NewSentences
             = ((e.SntAcc e.NewSentences) (e.FunAcc e.NewFunctions));
         }
@@ -237,10 +233,11 @@ OptimizeF {
 */
 
 OptSentence {
-  ((e.Left) (e.Right)) t.DriveInfo s.Mode
-     , <FindOptimizedCall t.DriveInfo e.Right> : t.Res e.Right^
+  /* Оптимизируем только предложения вида Pat = Res */
+  ((e.Left) (e.Right)) ((e.OptFuncNames) e.OptFuncs) s.Mode
+     , <FindOptimizedCall (e.OptFuncNames) e.Right> : t.Res e.Right^
      , <OneOf t.Res None>: False
-     = <OptSentence-Aux s.Mode ((e.Left) (e.Right)) t.Res t.DriveInfo>;
+     = <OptSentence-Aux s.Mode ((e.Left) (e.Right)) t.Res e.OptFuncs>;
 
   t.Sentence ((e.OptNames) e.Left) s.Mode = () t.Sentence
 }
@@ -249,10 +246,10 @@ OptSentence-Aux {
   s.Mode
   ((e.Left) (e.Right))
   (CallBrackets (Symbol Name e.Name) e.Args)
-  t.DriveInfo
+  e.OptFuncs
 
     /* Поиск информации для прогонки */
-    = <FindOptInfo t.DriveInfo e.Name> : Success t.FunctionForDrive
+    = <FindOptInfo e.OptFuncs (e.Name)> : t.FunctionForDrive
 
     = <OptSentence-MakeSubstitutions
         s.Mode ((e.Left) (e.Right)) (e.Args) t.FunctionForDrive
@@ -383,32 +380,22 @@ DropLeft {
 }
 
 /*
-  <FindOptInfo t.DriveInfo e.Name> == Success t.Function | Failure
-  t.Function := (Drive s.ScopeClass (e.Name) e.Body)
+  <FindOptInfo e.OptFuncs (e.Name)> == t.Function
+  t.Function ::= (Drive s.ScopeClass (e.Name) e.Body)
 */
 
 FindOptInfo {
-  t.DriveInfo e.Name
+  e.OptFuncs (e.Name)
     , e.Name : e.Prefix '*' s.N
     , <CutSUF e.Prefix> : e.Prefix^
-    , t.DriveInfo
-    : (
-        (e.B1 (e.Prefix) e.E1)
-        e.B2 (s.Mode s.ScopeClass (e.Prefix) s.Body) e.E2
-      )
+    = e.OptFuncs : e.B2 (s.Mode s.ScopeClass (e.Prefix) s.Body) e.E2
     = <s.Body> : Sentences e.Sentences
-    = Success
-      (s.Mode s.ScopeClass (e.Name) Sentences <DropLeft e.Sentences s.N>);
+    = (s.Mode s.ScopeClass (e.Name) Sentences <DropLeft e.Sentences s.N>);
 
-  t.DriveInfo e.Name
-    , t.DriveInfo
-    : (
-        (e.B1 (e.Name) e.E1)
-        e.B2 (s.Mode s.ScopeClass (e.Name) s.Body) e.E2
-      )
-    = Success (s.Mode s.ScopeClass (e.Name) <s.Body>);
-
-  t.DriveInfo e.Name = Failure;
+  e.OptFuncs (e.Name)
+    = e.OptFuncs
+    : e.B2 (s.Mode s.ScopeClass (e.Name) s.Body) e.E2
+    = (s.Mode s.ScopeClass (e.Name) <s.Body>);
 }
 
 $DRIVE CutSUF;
@@ -419,13 +406,13 @@ CutSUF {
 }
 
 /*
-  <FindOptimizedCall t.InlineInfo e.Expr> == t.Found e.Expr
+  <FindOptimizedCall (e.OptFuncNames) e.Expr> == t.Found e.Expr
 
   t.Found ::= None | (CallBrackets e.Arg)
 */
 
 FindOptimizedCall {
-  ((e.OptFuncNames) e.OptFuncBodies) e.Expr
+  (e.OptFuncNames) e.Expr
     = <FindOptimizedCall-Aux (e.OptFuncNames) e.Expr>
     : (e.OptFuncNames^ t.Found) e.Expr^
     = t.Found e.Expr
