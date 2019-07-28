@@ -112,20 +112,20 @@ OptSwitch {
 /* Осуществляет прогонку или оптимизацию в зависимости от ключа */
 
 DriveInlineOptimizerTick {
-  ((e.OptNames) e.OptFunctions) e.AST s.Opt
+  t.OptInfo e.AST s.Opt
     = <OptSwitch s.Opt> : s.Mode
-    = ((e.OptNames) e.OptFunctions)
-      <Map
+    = <MapAccum
         {
-          (Function s.ScopeClass (e.Name) e.Body)
+          t.OptInfo^ (Function s.ScopeClass (e.Name) e.Body)
             = <OptimizeF
                 (Function s.ScopeClass (e.Name) e.Body)
-                ((e.OptNames) e.OptFunctions)
+                t.OptInfo
                 s.Mode
               >;
 
-          e.Other = e.Other
+          t.OptInfo^ t.Other = t.OptInfo t.Other
         }
+        t.OptInfo
         e.AST
       >: e.AST^
     = <DistinctFuncs e.AST>
@@ -214,32 +214,39 @@ OptimizeF {
   t.OptInfo s.Mode
     = <Reduce
         {
-          ((e.SntAcc) (e.FunAcc)) t.Sentence
+          (t.OptInfo^ (e.SntAcc) (e.FunAcc)) t.Sentence
             = <OptSentence t.Sentence t.OptInfo s.Mode>
-            : (e.NewFunctions) e.NewSentences
-            = ((e.SntAcc e.NewSentences) (e.FunAcc e.NewFunctions));
+            : t.OptInfo^ (e.NewFunctions) e.NewSentences
+            = (t.OptInfo (e.SntAcc e.NewSentences) (e.FunAcc e.NewFunctions));
         }
-        ((/*sentences*/) (/*functions*/))
+        (t.OptInfo (/*sentences*/) (/*functions*/))
         e.Sentences
-      > : ((e.Sentences^) (e.Functions))
-    = (Function s.ScopeClass (e.Name) Sentences e.Sentences) e.Functions;
-
-  e.Other = e.Other;
+      >
+    : (t.OptInfo (e.Sentences^) (e.Functions))
+    = t.OptInfo
+      (Function s.ScopeClass (e.Name) Sentences e.Sentences) e.Functions;
 }
 
 /*
-   <OptSentence t.Sentence t.DriveInfo s.Mode>
-   == (t.Func?) t.Sentence*
+   <OptSentence t.Sentence t.OptInfo s.Mode>
+   == t.OptInfo (t.Func?) t.Sentence*
 */
 
 OptSentence {
   /* Оптимизируем только предложения вида Pat = Res */
   ((e.Left) (e.Right)) ((e.OptFuncNames) e.OptFuncs) s.Mode
-     , <FindOptimizedCall (e.OptFuncNames) e.Right> : t.Res e.Right^
-     , <OneOf t.Res None>: False
-     = <OptSentence-Aux s.Mode ((e.Left) (e.Right)) t.Res e.OptFuncs>;
+     = <FindOptimizedCall (e.OptFuncNames) e.Right>
+     : {
+         (e.OptFuncNames^ None) e.Right^
+           = ((e.OptFuncNames) e.OptFuncs) () ((e.Left) (e.Right));
 
-  t.Sentence ((e.OptNames) e.Left) s.Mode = () t.Sentence
+         (e.OptFuncNames^ t.Call) e.Right^
+           = <OptSentence-Aux s.Mode ((e.Left) (e.Right)) t.Call e.OptFuncs>
+           : (e.OptFuncs^) (e.NewFunctions) e.NewSentences
+           = ((e.OptFuncNames) e.OptFuncs) (e.NewFunctions) e.NewSentences
+       };
+
+  t.Sentence t.OptInfo s.Mode = t.OptInfo () t.Sentence
 }
 
 OptSentence-Aux {
@@ -249,13 +256,14 @@ OptSentence-Aux {
   e.OptFuncs
 
     /* Поиск информации для прогонки */
-    = <FindOptInfo e.OptFuncs (e.Name)> : t.FunctionForDrive
+    = <FindOptInfo e.OptFuncs (e.Name)> : e.OptFuncs t.FunctionForDrive
 
     = <OptSentence-MakeSubstitutions
         s.Mode ((e.Left) (e.Right)) (e.Args) t.FunctionForDrive
       >
     : e.SolutionPacks
-    = <MapAccum
+    = (e.OptFuncs)
+      <MapAccum
         {
           (e.NewFunctions) ((e.RS^) e.Solutions^ (e.NewFunction))
             = (e.NewFunctions e.NewFunction)
@@ -380,22 +388,26 @@ DropLeft {
 }
 
 /*
-  <FindOptInfo e.OptFuncs (e.Name)> == t.Function
+  <FindOptInfo e.OptFuncs (e.Name)> == e.OptFuncs t.Function
   t.Function ::= (Drive s.ScopeClass (e.Name) e.Body)
 */
-
 FindOptInfo {
   e.OptFuncs (e.Name)
-    , e.Name : e.Prefix '*' s.N
-    , <CutSUF e.Prefix> : e.Prefix^
-    = e.OptFuncs : e.B2 (s.Mode s.ScopeClass (e.Prefix) s.Body) e.E2
-    = <s.Body> : Sentences e.Sentences
-    = (s.Mode s.ScopeClass (e.Name) Sentences <DropLeft e.Sentences s.N>);
+    = e.Name
+    : {
+        e.Prefix '*' s.N = <CutSUF e.Prefix> s.N;
+        e.Name^ = e.Name 0;
+      }
+    : e.LookupName s.Drop
+    = <FindOptInfo-Aux e.OptFuncs (e.Name) (e.LookupName) s.Drop>;
+}
 
-  e.OptFuncs (e.Name)
-    = e.OptFuncs
-    : e.B2 (s.Mode s.ScopeClass (e.Name) s.Body) e.E2
-    = (s.Mode s.ScopeClass (e.Name) <s.Body>);
+FindOptInfo-Aux {
+  e.OptFuncs-B (s.Mode s.ScopeClass (e.LookupName) s.Body) e.OptFuncs-E
+  (e.Name) (e.LookupName) s.Drop
+    = <s.Body> : Sentences e.Sentences
+    = e.OptFuncs-B (s.Mode s.ScopeClass (e.LookupName) s.Body) e.OptFuncs-E
+      (s.Mode s.ScopeClass (e.Name) Sentences <DropLeft e.Sentences s.Drop>);
 }
 
 $DRIVE CutSUF;
@@ -406,31 +418,25 @@ CutSUF {
 }
 
 /*
-  <FindOptimizedCall (e.OptFuncNames) e.Expr> == t.Found e.Expr
+  <FindOptimizedCall (e.OptFuncNames) e.Expr>
+    == (e.OptFuncNames t.Found) e.Expr
 
   t.Found ::= None | (CallBrackets e.Arg)
 */
 
 FindOptimizedCall {
   (e.OptFuncNames) e.Expr
-    = <FindOptimizedCall-Aux (e.OptFuncNames) e.Expr>
-    : (e.OptFuncNames^ t.Found) e.Expr^
-    = t.Found e.Expr
-}
-
-FindOptimizedCall-Aux {
-  (e.OptFuncNames) e.Expr
     = <MapAccum &FindOptimizedCall-Term (e.OptFuncNames None) e.Expr>;
 }
 
 FindOptimizedCall-Term {
   (e.OptFuncNames None) (Brackets e.Expr)
-    = <FindOptimizedCall-Aux (e.OptFuncNames) e.Expr>
+    = <FindOptimizedCall (e.OptFuncNames) e.Expr>
     : (e.OptFuncNames^ t.Found) e.Expr^
     = (e.OptFuncNames t.Found) (Brackets e.Expr);
 
   (e.OptFuncNames None) (ADT-Brackets (e.Name) e.Expr)
-    = <FindOptimizedCall-Aux (e.OptFuncNames) e.Expr>
+    = <FindOptimizedCall (e.OptFuncNames) e.Expr>
     : (e.OptFuncNames^ t.Found) e.Expr^
     = (e.OptFuncNames t.Found)
       (ADT-Brackets (e.Name) e.Expr);
@@ -451,7 +457,7 @@ FindOptimizedCall-Term {
   (CallBrackets (Symbol Name e.Name) e.Expr)
     , <FindOptInfo t.DriveInfo e.Name> : Success t.Info
     = e.OptFuncNames-B (e.Name) e.OptFuncNames-E : e.OptFuncNames
-    = <FindOptimizedCall-Aux (e.OptFuncNames) e.Expr>
+    = <FindOptimizedCall (e.OptFuncNames) e.Expr>
     : {
         (e.OptFuncNames^ None) e.Expr^
           = (e.OptFuncNames (CallBrackets (Symbol Name e.Name) e.Expr))
@@ -463,7 +469,7 @@ FindOptimizedCall-Term {
 */
 
   (e.OptFuncNames None) (CallBrackets t.F e.Expr)
-    = <FindOptimizedCall-Aux (e.OptFuncNames) e.Expr>
+    = <FindOptimizedCall (e.OptFuncNames) e.Expr>
     : (e.OptFuncNames^ t.Found) e.Expr^
     = (e.OptFuncNames t.Found) (CallBrackets t.F e.Expr);
 
