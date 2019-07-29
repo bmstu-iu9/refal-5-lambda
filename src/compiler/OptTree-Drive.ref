@@ -551,7 +551,7 @@ FindOptimizedCall-Term {
     = <FindOptimizedCall s.Filter t.DriveInfo e.Expr>
     : (t.DriveInfo^ t.Found) e.Expr^
     = (t.DriveInfo t.Found)
-      (ADT-Brackeys (e.Name) e.Expr);
+      (ADT-Brackets (e.Name) e.Expr);
 
   s.Filter (t.DriveInfo None) (CallBrackets (Symbol Name e.Name) e.Expr)
     , <IsPassiveCall e.Expr> : True

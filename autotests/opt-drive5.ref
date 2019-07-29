@@ -1,0 +1,14 @@
+* TREE
+
+$ENTRY Go {
+  e.X = [Go <F B e.X>];
+}
+
+$DRIVE F;
+
+F {
+  A e.Z = e.Z;
+  B e.Z = e.Z e.Z;
+  C e.Z = e.Z e.Z e.Z;
+  e.Any = ;
+}
