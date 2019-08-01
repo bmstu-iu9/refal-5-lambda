@@ -48,7 +48,10 @@ Reduce {
   t.Fn t.Acc = t.Acc;
 }
 
-$SPEC Reduce t.FUNC t.accum e.items;
+/*
+  По поводу формата шаблона см. комментарий к MapAccum ниже по тексту.
+*/
+$SPEC Reduce t.FUNC e.accum-and-items;
 
 
 Fetch {
