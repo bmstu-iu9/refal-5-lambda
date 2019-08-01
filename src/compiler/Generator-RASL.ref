@@ -373,14 +373,15 @@ PutCommand {
     = <PutCommand (s.Symbolic) s.Arg1 s.Arg2 s.Arg3>;
 
   (e.Symbolic) s.Arg1 s.Arg2 s.Arg3
+    = <NumberFromOpcode e.Symbolic> : s.OpCode
     = <Divmod s.Arg1 256> <Divmod s.Arg2 256> <Divmod s.Arg3 256>
     : {
         (0) s.LoArg1 (0) s.LoArg2 (0) s.LoArg3
-          = (<NumberFromOpcode e.Symbolic> s.LoArg1 s.LoArg2 s.LoArg3);
+          = (s.OpCode s.LoArg1 s.LoArg2 s.LoArg3);
 
         (s.HiArg1) s.LoArg1 (s.HiArg2) s.LoArg2 (s.HiArg3) s.LoArg3
           = <PutCommand (CmdScale) s.HiArg1 s.HiArg2 s.HiArg3>
-            (<NumberFromOpcode e.Symbolic> s.LoArg1 s.LoArg2 s.LoArg3);
+            (s.OpCode s.LoArg1 s.LoArg2 s.LoArg3);
       };
 }
 
