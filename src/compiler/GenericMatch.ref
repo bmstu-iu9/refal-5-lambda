@@ -500,13 +500,14 @@ Solve-TermEquation {
   (e.UsedVars) t.PTvar t.HSvar (e.Contrs) e.Equations (e.Assigns)
     , t.PTvar t.HSvar
     : (TkVariable 't' e.Pindex) (TkVariable 's' e.Hindex)
+    = <NewVarName (e.UsedVars) 's' e.Hindex ()> : (e.UsedVars^) 's' e.sIdx
     = Success
       (e.UsedVars)
       <AddContraction
-        (t.PTvar ':' t.HSvar)
+        (t.PTvar ':' (TkVariable 's' e.sIdx))
         (e.Contrs)
         e.Equations
-        (e.Assigns)
+        (e.Assigns ((TkVariable 's' e.sIdx) ':' t.HSvar))
       >;
 
   /* H является (H′) */
