@@ -1,9 +1,8 @@
 $INCLUDE "LibraryEx";
 
+*$FROM Desugaring-UnCondition
+$EXTERN ExtractVariables, NewVarName;
 
-*FROM Desugaring-UnCondition
-$EXTERN NewVarName;
-$EXTERN ExtractVariables;
 
 /*
   <GenericMatch (e.Pattern) (e.LPattern)>
@@ -20,11 +19,6 @@ $EXTERN ExtractVariables;
   t.Var ::= (s.VarType e.Index)
   s.VarType ::= 's' | 't' | 'e'
 */
-*
-*$ENTRY GenericMatch {
-*  (e.Pattern) (e.LPattern)
-*     = <GenericMatch-Aux (e.Pattern) (e.LPattern) (/* Substitutions */) >;
-*}
 
 FormatAssigns {
   e.Assigns =
@@ -49,73 +43,6 @@ $ENTRY GenericMatch {
           Undefined = Undefined;
           e.Other = Undefined;
         }
-}
-
-/*
-  Сопоставляем P:H
-    P - выражение общего вида
-    H - жесткий образец, который имеет вид:
-      "t.1 … t.N e.X t.M … t.K″" или "t.1 … t.N"
-*/
-GenericMatch-Aux {
-  (t.Pt e.Pe) (t.Ht e.He) (e.Substs)
-    , <IsTerm t.Ht> : True /* H начинается на t */
-    , <IsTerm t.Pt> : True /* P начинается на t */
-    = <TermMatch t.Pt t.Ht>
-    : {
-        Clear e.TermSubsts
-          = <GenericMatch-Aux (e.Pe) (e.He) (e.Substs e.TermSubsts)>;
-
-        Failure = Failure;
-        Undefined = Undefined;
-        /* Contracted пока не поддерживаем */
-      };
-
-  (e.Pe t.Pt) (e.He t.Ht) (e.Substs)
-    , <IsTerm t.Ht> : True /* H заканчивается на t */
-    , <IsTerm t.Pt> : True /* P заканчивается на t */
-    = <TermMatch t.Pt t.Ht>
-    : {
-        Clear e.TermSubsts
-          = <GenericMatch-Aux (e.Pe) (e.He) (e.Substs e.TermSubsts)>;
-
-        Failure = Failure;
-        Undefined = Undefined;
-        /* Contracted пока не поддерживаем */
-      };
-
-  /* H пустое выражение, тогда P пустое выражение */
-  () () (e.Substs) = Clear e.Substs;
-
-  (e.P) ((TkVariable 'e' e.Index)) (e.Substs) /* H состоит из e-переменной */
-    = Clear e.Substs (e.P ':' ('e' e.Index));
-
-  e.Else = Undefined;
-}
-
-/* Сопоставление термов T:H */
-TermMatch {
-  /* H является символом */
-  t.Symbol t.Symbol
-    , t.Symbol : (Symbol s.Type e.Info)
-    = Clear /* нет подстановок */;
-
-  /* H является t-переменной */
-  t.TVar (TkVariable 't' e.HIndex) = Clear (t.TVar':'('t' e.HIndex));
-
-  /* H является s-переменной */
-  t.SVar (TkVariable 's' e.HIndex), <IsSVarSubset t.SVar> : True
-    = Clear (t.SVar':'('s' e.HIndex));
-
-  /* H является (H′) */
-  (Brackets e.TBody)(Brackets e.HBody)
-    = <GenericMatch (e.TBody)(e.HBody)>;
-
-  /* H является [H′] */
-  (ADT-Brackets (e.Name) e.TBody)(ADT-Brackets (e.Name) e.HBody)
-    = <GenericMatch (e.TBody)(e.HBody)>;
-
-  t.T t.H = Failure;
 }
 
 IsSVarSubset {

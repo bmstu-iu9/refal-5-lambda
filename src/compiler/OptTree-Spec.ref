@@ -1,12 +1,11 @@
-
-*$FROM LibraryEx
-$EXTERN MapAccum, Fetch, Pipe, Map, Inc, Reduce;
+$INCLUDE "LibraryEx";
 
 *$FROM Desugaring-UnCondition
 $EXTERN ExtractVariables, ExtractVariables-Expr, NewVarName;
 
 *$FROM GenericMatch
 $EXTERN GenericMatch;
+
 
 /**
   <OptTree-Spec-ExtractOptInfo s.OptSpec e.AST>
