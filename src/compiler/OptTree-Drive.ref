@@ -290,7 +290,7 @@ OptSentence-MakeSubstitutions {
 
   s.Mode
   ((e.Left) (e.Expr)) (e.Args)
-  (s.FuncMode s.ScopeClass (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+  (s.FuncMode s.ScopeClass (e.Name) Sentences e.Body)
 
     /* Если левая часть не L-выражение, допускаем только встраивание */
     = <IsLexpr e.Left>
@@ -300,27 +300,14 @@ OptSentence-MakeSubstitutions {
       }
     : s.Mode^
 
-    = <Solve
-        (<ExtractVariables ((e.Left) (e.Expr))>)
-        ((e.Args) ':' (e.LS))
-      >
-    : e.Solution
-
+    = <ExtractVariables ((e.Left) (e.Expr))> : e.SentenceVars
     = <DecreaseMode s.Mode s.FuncMode> : s.Mode^
 
-    = <OptSentence-MakeSubstitutions-Aux
-        (e.RS) s.Mode (e.Name) (e.Rest) (e.Args)
-        e.Solution
+    = <DoOptSentence-MakeSubstitutions
+        s.Mode (e.SentenceVars) (e.Args)
+        (/* substitutions */)
+        (s.ScopeClass (e.Name) Sentences e.Body)
       >;
-
-  s.Mode
-  ((e.Left) (e.Expr)) (e.Args)
-  (s.FuncMode s.ScopeClass (e.Name) Sentences e.Body)
-    = (
-        ((ColdCallBrackets (Symbol Name e.Name) e.Args))
-        ((/* нет присваиваний */) (/* нет сужений */))
-        (/* нет новых функций */)
-      );
 }
 
 DecreaseMode {
@@ -328,57 +315,84 @@ DecreaseMode {
   Drive s.Mode = s.Mode;
 }
 
-OptSentence-MakeSubstitutions-Aux {
+DoOptSentence-MakeSubstitutions {
+  s.Mode (e.SentenceVars) (e.Args)
+  (e.Substitutions)
+  (s.ScopeClass (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+    = <Solve (e.SentenceVars) ((e.Args) ':' (e.LS))> : e.Solution
+    = <DoOptSentence-MakeSubstitutions-Aux
+        s.Mode (e.SentenceVars) (e.Args) (e.Substitutions) (e.RS)
+        e.Solution
+        (s.ScopeClass (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+      >;
+
+  s.Mode (e.SentenceVars) (e.Args)
+  (e.Substitutions)
+  (s.ScopeClass (e.Name) Sentences e.Body)
+    = e.Substitutions
+      (
+        ((ColdCallBrackets (Symbol Name e.Name) e.Args))
+        ((/* нет присваиваний */) (/* нет сужений */))
+        (
+          (Function s.ScopeClass (e.Name) Sentences e.Body)
+        )
+      );
+}
+
+DoOptSentence-MakeSubstitutions-Aux {
   /*
     В случае решения без сужений просто применяем замены
   */
-  (e.RS) s.Mode (e.Name) (e.Rest) (e.Args)
+  s.Mode (e.SentenceVars) (e.Args) (e.Substitutions) (e.RS)
   Success (() (e.Assigns))
-    = ((e.RS) (() (e.Assigns)) (/* нет новых функций */));
+  t.RestFunction
+    = e.Substitutions
+      ((e.RS) (() (e.Assigns)) (/* нет новых функций */));
 
   /*
      В случае "грязного" решения добавляем вызов остаточной
      прогоняемой функции (Только при L-выражении)
   */
-  (e.RS) s.Mode (e.Name) (e.Rest) (e.Args)
+  s.Mode (e.SentenceVars) (e.Args) (e.Substitutions) (e.RS)
   Success e.M
+  (s.ScopeClass (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
     , s.Mode : Drive
-    = <CreateRemainderDrivenFunc (e.Name) e.Rest>
-    : t.newFunc
-    , t.newFunc : (Function s.Sc1 (e.NewName) e.Body)
-    = ((e.RS) e.M (/* нет новых функций */))
-      (
-        ((CallBrackets (Symbol Name e.NewName) e.Args))
-        ((/* нет присваиваний */) (/* нет сужений */))
-        (t.newFunc)
-      );
+    = <DoOptSentence-MakeSubstitutions
+        s.Mode (e.SentenceVars) (e.Args)
+        (
+          e.Substitutions
+          ((e.RS) e.M (/* нет новых функций */))
+        )
+        (GN-Local (<RemainderFuncIncName e.Name>) Sentences e.Rest)
+      >;
 
   /*
     В случае неудачи нужно заменить прогоняемый вызов
     на вызов остаточной функции
   */
-  (e.RS) s.Mode (e.Name) (e.Rest) (e.Args)
+  s.Mode (e.SentenceVars) (e.Args) (e.Substitutions) (e.RS)
   Failure
-    = <CreateRemainderDrivenFunc (e.Name) e.Rest>
-    : t.newFunc
-    , t.newFunc : (Function s.Sc1 (e.NewName) e.Body)
-    = (
-        ((CallBrackets (Symbol Name e.NewName) e.Args))
-        ((/* нет присваиваний */) (/* нет сужений */))
-        (t.newFunc)
-      );
+  (s.ScopeClass (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+    = <DoOptSentence-MakeSubstitutions
+        s.Mode (e.SentenceVars) (e.Args) (e.Substitutions)
+        (GN-Local (<RemainderFuncIncName e.Name>) Sentences e.Rest)
+      >;
 
   /*
     Замена вызова на холодный
 
     Undefined или левая часть не-L-выражение
   */
-  (e.RS) s.Mode (e.Name) (e.Rest) (e.Args)
+  s.Mode (e.SentenceVars) (e.Args) (e.Substitutions) (e.RS)
   e.Other
-    = (
+  (s.ScopeClass (e.Name) Sentences e.Body)
+    = e.Substitutions
+      (
         ((ColdCallBrackets (Symbol Name e.Name) e.Args))
         ((/* нет присваиваний */) (/* нет сужений */))
-        (/* нет новых функций */)
+        (
+          (Function s.ScopeClass (e.Name) Sentences e.Body)
+        )
       );
 }
 
@@ -575,18 +589,13 @@ ApplyContractions-Term {
 }
 
 /*
-  <CreateRemainderDrivenFunc (e.Name) e.Sentences>
-    == t.Function
+  <RemainderFuncIncName e.Name> == e.Name
 */
 
-CreateRemainderDrivenFunc {
-  (e.Name SUF e.Suffixes '*' s.N) e.Sentences =
-    (Function GN-Local (e.Name SUF e.Suffixes '*' <Add s.N 1>) Sentences e.Sentences);
+RemainderFuncIncName {
+  e.Name SUF e.Suffixes '*' s.N = e.Name SUF e.Suffixes '*' <Add s.N 1>;
 
-  (e.Name SUF e.Suffixes) e.Sentences =
-    (Function GN-Local (e.Name SUF e.Suffixes '*' 1) Sentences e.Sentences);
+  e.Name SUF e.Suffixes = e.Name SUF e.Suffixes '*' 1;
 
-  (e.Name) e.Sentences =
-    (Function GN-Local (e.Name SUF '*' 1) Sentences e.Sentences)
+  e.Name = e.Name SUF '*' 1;
 }
-
