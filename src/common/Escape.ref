@@ -1,8 +1,8 @@
+$INCLUDE "LibraryEx";
+
 *$FROM Library
 $EXTERN TermCompare;
 
-*$FROM LibraryEx
-$EXTERN Fetch, Map, Reduce;
 
 OctDigit {
   0 = '0'; 1 = '1'; 2 = '2'; 3 = '3';
@@ -17,10 +17,9 @@ $ENTRY EscapeChar {
   '"' = '\\' '"';
   '\\' = '\\\\';
 
-  s.Other =
-    <Fetch
-      <TermCompare s.Other ' '> <Ord s.Other>
-      {
+  s.Other
+    = <TermCompare s.Other ' '> <Ord s.Other>
+    : {
         '<' s.Code =
           '\\'
           <OctDigit <Div s.Code 64>>
@@ -28,9 +27,10 @@ $ENTRY EscapeChar {
           <OctDigit <Mod s.Code 8>>;
 
         s.Compare s.Code = s.Other;
-      }
-    >;
+      };
 }
+
+$DRIVE EscapeChar;
 
 $ENTRY EscapeString {
   e.String = <Map &EscapeChar e.String>;
@@ -54,17 +54,15 @@ $ENTRY CharFromNum {
 }
 
 DigitFromChar {
-  s.Char =
-    <Fetch
-      (0 '0') (1 '1') (2 '2') (3 '3')
+  s.Char
+    = (0 '0') (1 '1') (2 '2') (3 '3')
       (4 '4') (5 '5') (6 '6') (7 '7')
       (8 '8') (9 '9') (10 'Aa') (11 'Bb')
       (12 'Cc') (13 'Dd') (14 'Ee') (15 'Ff')
-      {
+    : {
         e.Assoc-B (s.Digit e.Vars-B s.Char e.Vars-E) e.Assoc-E =
           s.Digit;
-      }
-    >;
+      };
 }
 
 $ENTRY UnEscapeString-SR {
@@ -155,13 +153,11 @@ DoUnEscapeString-SR-Escape {
       >;
 
   (e.Scanned) (e.Octs) s.Next e.Tail
-    = <Fetch
-        <SingularEscape s.Next>
-        {
-          Success s.Char = <DoUnEscapeString-SR (e.Scanned s.Char) e.Tail>;
-          Fails = Fails BadEscapeSymbol '\\' s.Next;
-        }
-      >;
+    = <SingularEscape s.Next>
+    : {
+        Success s.Char = <DoUnEscapeString-SR (e.Scanned s.Char) e.Tail>;
+        Fails = Fails BadEscapeSymbol '\\' s.Next;
+      };
 
   (e.Scanned) (e.Octs) /* пусто */
     = Fails EOLAfterSlash;
