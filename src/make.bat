@@ -7,8 +7,8 @@ setlocal
     set SRMAKE_FLAGS_PLUS=-X--markup-context -X--debug-info -X-OC
     set DEFAULT_SCRIPT_FLAGS=--rich-debug
   ) else (
-    set SREFC_FLAGS_PLUS=-OCdPR
-    set SRMAKE_FLAGS_PLUS=-X-OCdPR
+    set SREFC_FLAGS_PLUS=-OCdDPRS
+    set SRMAKE_FLAGS_PLUS=-X-OCdDPRS
     set DEFAULT_SCRIPT_FLAGS=--scratch
   )
 
