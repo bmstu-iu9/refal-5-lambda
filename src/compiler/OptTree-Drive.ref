@@ -89,8 +89,14 @@ GetDrivenFunctions {
           (Function s.ScopeClass (e.Name) e.Body)
             , e.OptNames : e.B (s.Label e.Name) e.E
             , e.Body : Sentences e.Sentences
-            = ((e.OptFunctions (s.Label s.ScopeClass (e.Name) { = e.Body}))
-              (e.RemNames <GenRemainderFuncNames (e.Name) (e.Sentences)>))
+            = (
+                (e.OptFunctions (s.Label s.ScopeClass (e.Name) { = e.Body}))
+                (
+                  e.RemNames
+                  (e.Name)
+                  <GenRemainderFuncNames (e.Name) (e.Sentences)>
+                )
+              )
               (Function s.ScopeClass (e.Name) e.Body);
 
           (e.OptInfo) t.Other
@@ -98,11 +104,9 @@ GetDrivenFunctions {
         }
         (() ()) e.AST
       >
-    : ((e.OptFunctions) (e.RemNames)) e.AST^
+    : ((e.OptFunctions) (e.DrivenNames)) e.AST^
 
-    = ((<Map { (s.Label e.Name ) = (e.Name) } e.OptNames> e.RemNames)
-       e.OptFunctions)
-       e.AST;
+    = ((e.DrivenNames) e.OptFunctions) e.AST;
 }
 
 OptSwitch {
@@ -117,9 +121,9 @@ DriveInlineOptimizerTick {
     = <OptSwitch s.Opt> : s.Mode
     = <MapAccum
         {
-          t.OptInfo^ (Function s.ScopeClass (e.Name) e.Body)
+          t.OptInfo^ (Function s.ScopeClass (e.Name) Sentences e.Sentences)
             = <OptimizeF
-                (Function s.ScopeClass (e.Name) e.Body)
+                (Function s.ScopeClass (e.Name) Sentences e.Sentences)
                 t.OptInfo
                 s.Mode
               >;
