@@ -443,19 +443,6 @@ FindOptimizedCall-Term {
 
   (e.OptFuncNames-B (e.Name) e.OptFuncNames-E None)
   (CallBrackets (Symbol Name e.Name) e.Expr)
-    , <IsPassiveCall e.Expr> : True
-    = (
-        e.OptFuncNames-B (e.Name) e.OptFuncNames-E
-        (CallBrackets (Symbol Name e.Name) e.Expr)
-      )
-      (TkVariable 'e' DRIVEN 0);
-
-* TODO: раскомментировать код ниже, когда будет реализовываться поддрежка
-* TODO: активных аргументов функций
-/*
-  (e.OptFuncNames-B (e.Name) e.OptFuncNames-E None)
-  (CallBrackets (Symbol Name e.Name) e.Expr)
-    , <FindOptInfo t.DriveInfo e.Name> : Success t.Info
     = e.OptFuncNames-B (e.Name) e.OptFuncNames-E : e.OptFuncNames
     = <FindOptimizedCall (e.OptFuncNames) e.Expr>
     : {
@@ -466,7 +453,6 @@ FindOptimizedCall-Term {
         (e.OptFuncNames^ t.Found) e.Expr^
           = (e.OptFuncNames t.Found) (CallBrackets (Symbol Name e.Name) e.Expr);
       };
-*/
 
   (e.OptFuncNames None) (CallBrackets t.F e.Expr)
     = <FindOptimizedCall (e.OptFuncNames) e.Expr>
