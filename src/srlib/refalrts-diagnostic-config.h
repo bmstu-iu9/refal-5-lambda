@@ -29,7 +29,7 @@ struct DiagnosticConfig {
     : idents_limit(NO_LIMIT)
     , memory_limit(NO_LIMIT)
     , step_limit(0)
-    , start_step_trace(NO_LIMIT)
+    , start_step_trace(0)
     , print_statistics(false)
     , dump_free_list(false)
     , show_cookies(true)

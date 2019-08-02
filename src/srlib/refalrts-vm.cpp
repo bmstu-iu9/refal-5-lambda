@@ -1394,7 +1394,10 @@ JUMP_FROM_SCALE:
 
           refalrts::Iter function = next(begin);
 
-          if (m_step_counter >= m_diagnostic_config->start_step_trace) {
+          if (
+            m_diagnostic_config->start_step_trace
+            && m_step_counter >= m_diagnostic_config->start_step_trace
+          ) {
             RefalFuncName *name = 0;
             if (cDataFunction == function->tag) {
               name = &function->function_info->name;
