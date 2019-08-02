@@ -28,7 +28,7 @@ struct DiagnosticConfig {
   DiagnosticConfig()
     : idents_limit(NO_LIMIT)
     , memory_limit(NO_LIMIT)
-    , step_limit(NO_LIMIT)
+    , step_limit(0)
     , start_step_trace(NO_LIMIT)
     , print_statistics(false)
     , dump_free_list(false)

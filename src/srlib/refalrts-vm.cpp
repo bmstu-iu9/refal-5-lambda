@@ -1385,7 +1385,10 @@ JUMP_FROM_SCALE:
           m_error_begin = begin;
           m_error_end = end;
 
-          if (m_step_counter >= m_diagnostic_config->step_limit) {
+          if (
+            m_diagnostic_config->step_limit
+            && m_step_counter >= m_diagnostic_config->step_limit
+          ) {
             return cStepLimit;
           }
 
