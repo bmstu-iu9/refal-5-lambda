@@ -6,7 +6,27 @@ $EXTERN Chr, StrFromInt;
 //FROM Escape
 $EXTERN EscapeChar, EscapeString, CharFromNum, UnEscapeString-SR;
 
-$ENTRY SR-LexFolding {
+$ENTRY SR-Scan {
+  e.SrcName = <LexFolding <LoadSource e.SrcName>>;
+}
+
+LoadSource {
+  e.FileName
+    = <Map
+        {
+          (e.Line) = e.Line '\n';
+        }
+        <LoadFile e.FileName>
+      >
+    : {
+        // Игнорируем метку порядка байт для UTF-8
+        '\xEF\xBB\xBF' e.Content = e.Content;
+
+        e.Content = e.Content;
+      };
+}
+
+LexFolding {
   e.SourceText =
     <NormalizeTokens
       <Root () e.SourceText>

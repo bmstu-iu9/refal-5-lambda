@@ -24,11 +24,8 @@ $EXTERN R5-Scan;
 *$FROM R5-Parser
 $EXTERN R5-Parse;
 
-*$FROM SR-LoadSource
-$EXTERN SR-LoadSource;
-
 *$FROM SR-Lexer
-$EXTERN SR-LexFolding;
+$EXTERN SR-Scan;
 
 *$FROM SR-Parser
 $EXTERN SR-ParseProgram;
@@ -129,8 +126,7 @@ LoadAST {
     = t.ErrorList <PreludeIncludeLine t.Config> e.AST;
 
   t.Config SR e.SrcName
-    = <SR-LoadSource e.SrcName> : e.SrcText
-    = <SR-LexFolding e.SrcText> : e.Tokens
+    = <SR-Scan e.SrcName> : e.Tokens
     = <DisplayLexerWarnings (e.SrcName) e.Tokens> : e.Tokens^
     = <SR-ParseProgram <EL-Create e.SrcName> e.Tokens>;
 
