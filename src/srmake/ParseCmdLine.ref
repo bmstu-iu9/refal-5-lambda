@@ -247,15 +247,13 @@ CheckRequiredOptions {
 
 Update {
   t.Config (e.Errors) s.Updater s.LineNum e.Option
-    = <Fetch
-        <s.Updater t.Config e.Option>
-        {
-          Success t.Config^ = (t.Config e.Errors);
+    = <s.Updater t.Config e.Option>
+    : {
+        Success t.Config^ = (t.Config e.Errors);
 
-          Fails e.ErrorMessage
-            = (t.Config e.Errors (s.LineNum e.ErrorMessage));
-        }
-      >;
+        Fails e.ErrorMessage
+          = (t.Config e.Errors (s.LineNum e.ErrorMessage));
+      }
 }
 
 $ENTRY PrintHelp {
