@@ -65,8 +65,12 @@ $ENTRY ParseCommandLine {
           (DontKeepRasls None ('dont-keep-rasl') ('dont-keep-rasls'))
           (TempDir Required ('tmp-dir') ('temp-dir'))
           (REF5RSL-Env None ('ref5rsl'))
-          (OverwriteExistRasls None ('overwrite-exist-rasls'))
-          (DontOverwriteExistRasls None ('dont-overwrite-exist-rasls'))
+          (OverwriteExistRasls None
+            ('overwrite-exist-rasls') ('overwrite-exist-rasl')
+          )
+          (DontOverwriteExistRasls None
+            ('dont-overwrite-exist-rasls') ('dont-overwrite-exist-rasl')
+          )
         )
         e.Arguments
       >
