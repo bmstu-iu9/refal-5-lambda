@@ -681,7 +681,7 @@ $ENTRY Config-SetTreeOptCycles {
 */
 $ENTRY Config-KeepRasls {
   [Config e.Params-B (KeepRasls s.OldValue) e.Params-E] s.NewValue
-    = [Config e.Params-B (KeepRasls s.NewValue) e.Params-E];
+    = Success [Config e.Params-B (KeepRasls s.NewValue) e.Params-E];
 }
 
 /**
@@ -689,7 +689,7 @@ $ENTRY Config-KeepRasls {
 */
 $ENTRY Config-TempDir {
   [Config e.Params-B (TempDir e.OldDirName) e.Params-E] e.NewDirName
-    = [Config e.Params-B (TempDir e.NewDirName) e.Params-E];
+    = Success [Config e.Params-B (TempDir e.NewDirName) e.Params-E];
 }
 
 /**
@@ -697,5 +697,5 @@ $ENTRY Config-TempDir {
 */
 $ENTRY Config-RenameExistRasls {
   [Config e.Params-B (RenameExistRasls s.OldValue) e.Params-E] s.NewValue
-    = [Config e.Params-B (RenameExistRasls s.NewValue) e.Params-E];
+    = Success [Config e.Params-B (RenameExistRasls s.NewValue) e.Params-E];
 }
