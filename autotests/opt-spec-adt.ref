@@ -1,0 +1,11 @@
+* TREE
+
+$ENTRY Go {
+  = <Test [Go 'ABC'] 'def'>;
+}
+
+$SPEC Test [Go e.STAT] e.dyn;
+
+Test {
+  [Go e.Stat] e.Dyn = e.Stat e.Dyn;
+}

@@ -156,6 +156,22 @@ IsHardPattern {
         False = False;
       };
 
+  (ADT-Brackets t.SrcPos (e.Name) e.PatternPart1) e.PatternPart2
+    = <IsHardPattern e.PatternPart1>
+    : {
+        True = <IsHardPattern e.PatternPart2>;
+
+        False = False;
+      };
+
+  e.PatternPart1 (ADT-Brackets t.SrcPos (e.Name) e.PatternPart2)
+    = <IsHardPattern e.PatternPart1>
+    : {
+        True = <IsHardPattern e.PatternPart2>;
+
+        False = False;
+      };
+
   t.Term e.Pattern-E, <IsHardTerm t.Term> : True = <IsHardPattern e.Pattern-E>;
 
   e.Pattern-B t.Term, <IsHardTerm t.Term> : True = <IsHardPattern e.Pattern-B>;
