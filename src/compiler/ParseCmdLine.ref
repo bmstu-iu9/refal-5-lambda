@@ -154,7 +154,9 @@ $ENTRY ParseCommandLine {
             (t.Config e.Errors) (TargetMode-C s.Num)
               = <Update
                   t.Config (e.Errors) &Config-SetTargetMode s.Num CompileOnly
-                >;
+                >
+              : (t.Config^ e.Errors^)
+              = <Update t.Config (e.Errors) &Config-KeepRasls s.Num True>;
 
             (t.Config e.Errors) (TargetSuffix-Exe s.Num e.Suffix)
               = <Update
