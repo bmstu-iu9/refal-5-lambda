@@ -11,7 +11,7 @@ $EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
   Config-AddReference, Config-SetTargetMode, Config-AddIncorporated,
   Config-SetChmodXCommand, Config-SetPrelude, Config-SetR5Mode,
   Config-SetLogFile, Config-SetTreeOptCycles, Config-SetIncorporated,
-  Config-KeepRasls, Config-TempDir, Config-RenameExistRasls;
+  Config-KeepRasls, Config-TempDir, Config-OverwriteExistRasls;
 
 *$FROM Version
 $EXTERN PrintVersion;
@@ -65,8 +65,8 @@ $ENTRY ParseCommandLine {
           (DontKeepRasls None ('dont-keep-rasl') ('dont-keep-rasls'))
           (TempDir Required ('tmp-dir') ('temp-dir'))
           (REF5RSL-Env None ('ref5rsl'))
-          (RenameExistRasls None ('rename-exist-rasls'))
-          (DontRenameExistRasls None ('dont-rename-exist-rasls'))
+          (OverwriteExistRasls None ('overwrite-exist-rasls'))
+          (DontOverwriteExistRasls None ('dont-overwrite-exist-rasls'))
         )
         e.Arguments
       >
@@ -210,11 +210,15 @@ $ENTRY ParseCommandLine {
             (t.Config e.Errors) (REF5RSL-Env s.Num)
               = (t.Config e.Errors) (REF5RSL-Env s.Num);
 
-            (t.Config e.Errors) (RenameExistRasls s.Num)
-              = <Update t.Config (e.Errors) &Config-RenameExistRasls s.Num True>;
+            (t.Config e.Errors) (OverwriteExistRasls s.Num)
+              = <Update
+                  t.Config (e.Errors) &Config-OverwriteExistRasls s.Num True
+                >;
 
-            (t.Config e.Errors) (DontRenameExistRasls s.Num)
-              = <Update t.Config (e.Errors) &Config-RenameExistRasls s.Num False>;
+            (t.Config e.Errors) (DontOverwriteExistRasls s.Num)
+              = <Update
+                  t.Config (e.Errors) &Config-OverwriteExistRasls s.Num False
+                >;
 
             (t.Config e.Errors) t.Option
               = (t.Config e.Errors) t.Option;
@@ -373,7 +377,7 @@ PrintHelp {
 '        Directory for intermediate .rasl files, current is default\n'
 '--ref5rsl\n'
 '        Use environment variable REF5RSL as search path\n'
-'--rename-exist-rasls, --dont-rename-exist-rasls\n'
+'--overwrite-exist-rasls, --dont-overwrite-exist-rasls\n'
 '        If tmp-dir already contain file with name that being produced\n'
 '        new file use new name\n'
 '\n'

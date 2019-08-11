@@ -34,7 +34,7 @@ $ENTRY Config-Create {
         (TreeOptCycles 100)
         (KeepRasls True)
         (TempDir /* пусто */)
-        (RenameExistRasls False)
+        (OverwriteExistRasls False)
       ];
 }
 
@@ -693,9 +693,9 @@ $ENTRY Config-TempDir {
 }
 
 /**
-  <Config-RenameExistRasls t.Config s.Bool> == Success t.Config
+  <Config-OverwriteExistRasls t.Config s.Bool> == Success t.Config
 */
-$ENTRY Config-RenameExistRasls {
-  [Config e.Params-B (RenameExistRasls s.OldValue) e.Params-E] s.NewValue
-    = Success [Config e.Params-B (RenameExistRasls s.NewValue) e.Params-E];
+$ENTRY Config-OverwriteExistRasls {
+  [Config e.Params-B (OverwriteExistRasls s.OldValue) e.Params-E] s.NewValue
+    = Success [Config e.Params-B (OverwriteExistRasls s.NewValue) e.Params-E];
 }
