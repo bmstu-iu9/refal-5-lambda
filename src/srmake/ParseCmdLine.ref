@@ -295,5 +295,15 @@ $ENTRY PrintHelp {
 '--help  Print this help\n'
 '--version\n'
 '        Print version\n'
+'--keep-rasl, --keep-rasls, --dont-keep-rasl, --dont-keep-rasls\n'
+'        Save or don\'t save temporary .rasl after compilation\n'
+'--tmp-dir, --temp-dir directory\n'
+'        Directory for intermediate .rasl files, current is default\n'
+'--ref5rsl\n'
+'        Use environment variable REF5RSL as search path\n'
+'--overwrite-exist-rasls, --dont-overwrite-exist-rasls,\n'
+'--overwrite-exist-rasl, --dont-overwrite-exist-rasl\n'
+'        If tmp-dir already contain file with name that being produced\n'
+'        new file use new name\n'
     >;
 }
