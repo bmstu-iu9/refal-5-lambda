@@ -1,0 +1,4 @@
+$ENTRY Go { e.X = }
+
+$SPEC Go e.STAT;
+$DRIVE Go;
