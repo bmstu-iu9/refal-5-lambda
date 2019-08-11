@@ -23,7 +23,7 @@ $ENTRY Config-Create {
         (Prelude /* пусто */)
         (Runtime /* пусто */)
         (Incorporateds /* пусто */)
-        (KeepRasls True)
+        (KeepRasls False)
         (TempDir /* пусто */)
         (OverwriteExistRasls False)
       ];

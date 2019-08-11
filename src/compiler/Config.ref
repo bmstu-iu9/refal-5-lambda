@@ -32,7 +32,7 @@ $ENTRY Config-Create {
         (Refal5Mode Extended)
         (LogFile /* пусто */)
         (TreeOptCycles 100)
-        (KeepRasls True)
+        (KeepRasls False)
         (TempDir /* пусто */)
         (OverwriteExistRasls False)
       ];
