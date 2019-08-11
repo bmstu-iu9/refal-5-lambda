@@ -20,7 +20,10 @@ $EXTERN
   Config-GetPrelude,
   Config-GetTargetMode,
   Config-GetTargetFileName,
-  Config-GetIncorporateds;
+  Config-GetIncorporateds,
+  Config-GetKeepRasls,
+  Config-GetTempDir,
+  Config-GetOverwriteExistRasls;
 
 
 $ENTRY Go { = <Main <ArgList>>; }
@@ -94,6 +97,12 @@ RunSrefCompiler {
     = <Config-GetReferences t.Config> : e.References
     = <Config-GetIncorporateds t.Config> : e.IncorporatedLibs
     = <Config-GetPrelude t.Config> : e.Prelude
+    = <MakeBoolFlag <Config-GetKeepRasls t.Config> 'keep-rasls'> : e.KeepRasls
+    = <Config-GetTempDir t.Config> : e.TempDir
+    = <MakeBoolFlag
+        <Config-GetOverwriteExistRasls t.Config> 'overwrite-exist-rasls'
+      >
+    : e.OverwriteExistRasls
     = <System
         e.SrefCompiler
         e.TargetModeFlag
@@ -115,6 +124,9 @@ RunSrefCompiler {
           }
           e.IncorporatedLibs
         >
+        e.KeepRasls
+        ' --temp-dir="' e.TempDir '"'
+        e.OverwriteExistRasls
         <Map
           {
             (Output e.Output) = ' "' e.Output '"';
@@ -173,6 +185,11 @@ MakeSearchFolderFlags {
         }
         <Config-GetFolders t.Config>
       >;
+}
+
+MakeBoolFlag {
+  True e.FlagName = ' --' e.FlagName;
+  False e.FlagName = ' --dont-' e.FlagName;
 }
 
 GetPrefix {

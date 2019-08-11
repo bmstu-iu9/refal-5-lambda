@@ -23,6 +23,9 @@ $ENTRY Config-Create {
         (Prelude /* пусто */)
         (Runtime /* пусто */)
         (Incorporateds /* пусто */)
+        (KeepRasls True)
+        (TempDir /* пусто */)
+        (OverwriteExistRasls False)
       ];
 }
 
@@ -89,6 +92,9 @@ $ENTRY Config-AddFolder {
   [Config e.Params-B (Folders e.Folders) e.Params-E] Runtime e.Path
     = Success
       [Config e.Params-B (Folders e.Folders (Runtime e.Path)) e.Params-E];
+
+  /* TODO: реализовать --ref5rsl */
+  t.Config REF5RSL = Success t.Config;
 }
 
 /**
@@ -295,4 +301,48 @@ $ENTRY Config-AddIncorporated {
       [Config
         e.Params-B (Incorporateds e.LibNames (e.NewLibName)) e.Params-E
       ];
+}
+
+/**
+  <Config-GetKeepRasls t.Config> == s.Bool
+*/
+$ENTRY Config-GetKeepRasls {
+  [Config e.Params-B (KeepRasls s.Value) e.Params-E] = s.Value;
+}
+
+/**
+  <Config-SetKeepRasls t.Config s.Bool> == Success t.Config
+*/
+$ENTRY Config-SetKeepRasls {
+  [Config e.Params-B (KeepRasls s.OldValue) e.Params-E] s.NewValue
+    = Success [Config e.Params-B (KeepRasls s.NewValue) e.Params-E];
+}
+
+/**
+  <Config-GetTempDir t.Config> == e.DirName
+*/
+$ENTRY Config-GetTempDir {
+  [Config e.Params-B (TempDir e.DirName) e.Params-E] = e.DirName;
+}
+
+/**
+  <Config-SetTempDir t.Config e.DirName> == Success t.Config
+*/
+$ENTRY Config-SetTempDir {
+  [Config e.Params-B (TempDir e.OldDirName) e.Params-E] e.NewDirName
+    = Success [Config e.Params-B (TempDir e.NewDirName) e.Params-E];
+}
+
+/**
+  <Config-GetOverwriteExistRasls t.Config> == s.Bool
+*/
+$ENTRY Config-GetOverwriteExistRasls {
+  [Config e.Params-B (OverwriteExistRasls s.Value) e.Params-E] = s.Value;
+}
+/**
+  <Config-SetOverwriteExistRasls t.Config s.Bool> == Success t.Config
+*/
+$ENTRY Config-SetOverwriteExistRasls {
+  [Config e.Params-B (OverwriteExistRasls s.OldValue) e.Params-E] s.NewValue
+    = Success [Config e.Params-B (OverwriteExistRasls s.NewValue) e.Params-E];
 }
