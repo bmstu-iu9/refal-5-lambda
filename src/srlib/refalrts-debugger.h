@@ -158,11 +158,9 @@ public:
   virtual refalrts::FnResult handle_function_call(
     Iter begin, Iter end, RefalFunction *callee
   );
-
-  static Debugger *create(VM * vm) {
-    return new RefalDebugger(vm);
-  }
 };
+
+Debugger *create_debugger(VM *vm);
 
 int find_debugger_flag(int argc, char **argv);
 

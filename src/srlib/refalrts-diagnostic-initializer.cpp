@@ -5,7 +5,19 @@
 #include "refalrts-diagnostic-config.h"
 
 //FROM refalrts-debugger
-#include "refalrts-debugger.h"
+/*
+  Не используем #include "refalrts-debugger.h" ради снижения времени
+  компиляции. В refalrts-debugger.h используются большие и тяжёлые
+  заголовки STL, а нам нужна только функция-конструктор.
+*/
+namespace refalrts {
+namespace debugger {
+
+Debugger *create_debugger(VM *vm);
+
+}  // namespace debugger
+}  // namespace refalrts
+
 //FROM refalrts-platform-specific
 #include "refalrts-platform-specific.h"
 
@@ -129,7 +141,7 @@ void parse_config_line(
 
   if (strcmp(param_name, "enable_debugger") == 0) {
     if (config->enable_debugger) {
-      config->debugger_factory = refalrts::debugger::RefalDebugger::create;
+      config->debugger_factory = refalrts::debugger::create_debugger;
     }
   }
 

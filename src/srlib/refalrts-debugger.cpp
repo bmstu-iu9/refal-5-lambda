@@ -880,6 +880,10 @@ refalrts::debugger::RefalDebugger::handle_function_call(
   return refalrts::cSuccess;
 }
 
+refalrts::Debugger *refalrts::debugger::create_debugger(refalrts::VM *vm) {
+  return new RefalDebugger(vm);
+}
+
 int refalrts::debugger::find_debugger_flag(int argc, char **argv) {
   int i = 1;
   while (i < argc && ! str_equal(argv[i], "++enable+debugger++")) {
