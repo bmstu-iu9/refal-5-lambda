@@ -70,6 +70,7 @@ void refalrts::api::stat_destroy(const refalrts::api::stat *stat) {
   delete stat;
 }
 
+const char *refalrts::api::platform = "POSIX";
 const char refalrts::api::path_env_separator = ':';
 const char *const refalrts::api::directory_separators = "/";
 

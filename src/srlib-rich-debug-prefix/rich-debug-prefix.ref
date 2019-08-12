@@ -2,6 +2,7 @@
 *$FROM Hash
 *$FROM LibraryEx
 *$FROM GetOpt
+*$FROM Platform
 *$FROM refalrts
 *$FROM refalrts-dynamic
 *$FROM refalrts-functions

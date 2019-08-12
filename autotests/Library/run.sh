@@ -59,7 +59,8 @@ run_all_tests() {
     Library-FTell \
     Library-FSeek \
     Library-PtrFromName \
-    Library-Sysfun-2
+    Library-Sysfun-2 \
+    Library-Platform
 
   simple_tests fail \
     Library-Math-Fail \

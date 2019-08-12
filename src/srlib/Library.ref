@@ -4075,6 +4075,100 @@ $ENTRY Module-FunctionPtr {
 %%
 }
 
+
+/**
+  <Platform> == Windows | POSIX
+*/
+$ENTRY Platform {
+%%
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  if (! refalrts::empty_seq(content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::RefalIdentifier platform =
+    refalrts::ident_implode(vm, refalrts::api::platform);
+
+  if (! platform) {
+    return refalrts::cIdentTableLimit;
+  }
+
+  refalrts::reinit_ident(arg_begin, platform);
+  refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
+
+  return refalrts::cSuccess;
+%%
+}
+
+
+/*
+  <DirectorySeparators> == s.CHAR+
+*/
+DirectorySeparators {
+%%
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  if (! refalrts::empty_seq(content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::reset_allocator(vm);
+  refalrts::alloc_string(
+    vm, content_b, content_e, refalrts::api::directory_separators
+  );
+  refalrts::splice_evar(arg_begin, content_b, content_e);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
+  <DirectorySeparator> == s.CHAR
+*/
+$ENTRY DirectorySeparator {
+  = <DirectorySeparators> : s.Default e.Other = s.Default;
+}
+
+
+/**
+  <IsDirectorySeparator s.CHAR> == True | False
+*/
+$ENTRY IsDirectorySeparator {
+  s.Char
+    , <DirectorySeparators>
+    : {
+        e.Separators-B s.Char e.Separators-E = True;
+        e.Separators = False;
+      }
+}
+
+
+/**
+  <PathSeparator> == s.CHAR
+*/
+$ENTRY PathSeparator {
+%%
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  if (! refalrts::empty_seq(content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::reinit_char(arg_begin, refalrts::api::path_env_separator);
+  refalrts::splice_to_freelist(vm, pfunc_name, arg_end);
+
+  return refalrts::cSuccess;
+%%
+}
+
+
 INIT {
 %%
   // 1. Дескрипторы файлов

@@ -6,7 +6,7 @@ if not exist ..\..\srlib\src\nul (
 
 setlocal
   set CSOURCES=Library Hash
-  set RSOURCES=LibraryEx GetOpt
+  set RSOURCES=LibraryEx GetOpt Platform
   set RT=refalrts ^
     refalrts-dynamic ^
     refalrts-functions ^

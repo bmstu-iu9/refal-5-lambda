@@ -1,0 +1,28 @@
+//FROM Library
+$EXTERN Platform, DirectorySeparator, IsDirectorySeparator, PathSeparator,
+  GetPID, GetPPID;
+
+$ENTRY Go {
+  = <Test-Platform> <Test-Hack>;
+}
+
+Test-Platform {
+  = <Platform>
+    <DirectorySeparator>
+    <IsDirectorySeparator '*'>
+    <IsDirectorySeparator '/'>
+    <IsDirectorySeparator '\\'>
+    <PathSeparator>
+  : {
+      #Windows '\\' #False #True #True  ';' = ;
+      #POSIX   '/'  #False #True #False ':' = ;
+    };
+}
+
+Test-Hack {
+  = <GetPID> <GetPPID>
+  : {
+      s.Same s.Same = <Platform> : #Windows = ;
+      s.PID s.PPID = <Platform> : #POSIX = ;
+    };
+}

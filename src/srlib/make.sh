@@ -85,7 +85,7 @@ prepare_common() {
 
 (
   CSOURCES="Library Hash"
-  RSOURCES="LibraryEx GetOpt"
+  RSOURCES="LibraryEx GetOpt Platform"
   RT="
     refalrts
     refalrts-dynamic
