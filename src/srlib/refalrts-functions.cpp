@@ -1,11 +1,6 @@
 #include "refalrts-functions.h"
 #include "refalrts-commands.h"
 
-//FROM refalrts-dynamic
-#include "refalrts-dynamic.h"
-//FROM refalrts-vm
-#include "refalrts-vm.h"
-
 
 void refalrts::RefalFunction::deactivate() {
   rasl = RefalEmptyFunction::run;
