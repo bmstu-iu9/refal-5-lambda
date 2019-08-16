@@ -719,6 +719,10 @@ DoFindPrefix {
         False = <DoFindPrefix (e.PrefixName) e.Folders>;
       };
 
+  /* В переменной среды REF5RSL префикс не ищем */
+  (e.PrefixName) REF5RSL e.Folders
+    = <DoFindPrefix (e.PrefixName) e.Folders>;
+
   (e.PrefixName) /* кончились папки */
     = Fails e.PrefixName;
 }

@@ -1,10 +1,17 @@
 *$FROM LibraryEx
 $EXTERN Map;
 
+*$FROM Platform
+$EXTERN PathSeparator;
+
 
 /**
   <FindFiles s.TargetMode (e.Folders) e.Files>
     == t.FoundFile*
+
+  e.Folders ::= t.Folder*
+  t.Folder ::= (s.CHAR*) | REF5RSL
+  e.Files ::= (s.CHAR*)*
 
   s.TargetMode ::=
       DefaultEXE   -- subdir 'exe'
@@ -44,12 +51,33 @@ $ENTRY FindFiles {
                       = <AnalyzeFile e.Folder '/' e.Subdir '/' e.FileName>
                         <AnalyzeFile e.Folder '/' e.FileName>;
                   }
-                  e.Folders
+                  <ExpandREF5RSL e.Folders>
                 >
               >;
         }
         e.Files
       >;
+}
+
+ExpandREF5RSL {
+  e.Folders-B REF5RSL e.Folders-E
+    = <SplitPath <PathSeparator> <GetEnv 'REF5RSL'>> : e.REF5RSL
+    = e.Folders-B e.REF5RSL <ExpandREF5RSL e.Folders-E>;
+
+  e.Folders = e.Folders;
+}
+
+SplitPath {
+  s.Sep e.Path-B s.Sep e.Path-E
+    = <SplitPath-BracketNotEmtyItem e.Path-B>
+      <SplitPath s.Sep e.Path-E>;
+
+  s.Sep e.Path = <SplitPath-BracketNotEmtyItem e.Path>;
+}
+
+SplitPath-BracketNotEmtyItem {
+  /* пусто */ = /* пропускаем */;
+  e.PathEntry = (e.PathEntry);
 }
 
 AnalyzeFile-CheckNotFound {
@@ -132,7 +160,7 @@ $ENTRY FindInclude {
         {
           (e.Folder) = <AnalyzeInclude e.Folder '/' e.FileName>;
         }
-        e.Folders
+        <ExpandREF5RSL e.Folders>
       >
     : {
         e.Variants-B (Success s.Dialect e.FullPath) e.Variants-E

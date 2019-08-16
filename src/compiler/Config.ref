@@ -476,8 +476,7 @@ $ENTRY Config-GetSearchFolders {
 */
 $ENTRY Config-SetSearchFolder {
   [Config e.Params-B (Folders e.Folders) e.Params-E] REF5RSL
-      /* TODO: реализовать чтение переменной */
-    = [Config e.Params-B (Folders e.Folders) e.Params-E];
+    = [Config e.Params-B (Folders e.Folders REF5RSL) e.Params-E];
 
   [Config e.Params-B (Folders e.Folders) e.Params-E] e.NewFolder
     = [Config e.Params-B (Folders e.Folders (e.NewFolder)) e.Params-E];

@@ -93,8 +93,9 @@ $ENTRY Config-AddFolder {
     = Success
       [Config e.Params-B (Folders e.Folders (Runtime e.Path)) e.Params-E];
 
-  /* TODO: реализовать --ref5rsl */
-  t.Config REF5RSL = Success t.Config;
+  [Config e.Params-B (Folders e.Folders) e.Params-E] REF5RSL
+    = Success
+      [Config e.Params-B (Folders e.Folders REF5RSL) e.Params-E];
 }
 
 /**

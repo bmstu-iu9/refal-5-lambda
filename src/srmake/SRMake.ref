@@ -39,13 +39,6 @@ Main {
 
 MakeProject {
   Success t.Config
-    = <Map
-        {
-          (s.FolderTag e.Folder) = (e.Folder);
-        }
-        <Config-GetFolders t.Config>
-      >
-    : e.Folders
     = <Config-GetSourceFile t.Config> : e.SourceFile
     = <Config-GetRuntimeFiles t.Config> : e.RuntimeFiles
     = <CreateFileList t.Config (e.SourceFile) e.RuntimeFiles>
@@ -182,6 +175,7 @@ MakeSearchFolderFlags {
         {
           (Search e.Folder) = ' --directory="' e.Folder '"';
           (Runtime e.Folder) = ' --runtime-directory="' e.Folder '"';
+          REF5RSL = ' --ref5rsl';
         }
         <Config-GetFolders t.Config>
       >;
