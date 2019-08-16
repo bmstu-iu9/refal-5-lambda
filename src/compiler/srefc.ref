@@ -142,7 +142,7 @@ Main-SwFoundFiles {
   t.CommandLineSource t.Config e.Files
     = <Main-SwRenamedTargets
         t.CommandLineSource t.Config
-        <RenameTargets <Config-GetTargetMode t.Config> e.Files>
+        <RenameTargets e.Files>
       >;
 }
 
@@ -220,31 +220,6 @@ LookupSourceFiles {
 }
 
 RenameTargets {
-  EXE e.Files = <RenameTargets-WithCpp e.Files>;
-  LIB e.Files = <RenameTargets-WithCpp e.Files>;
-
-  R e.Files = <RenameTargets-Stub e.Files>;
-  CompileOnly e.Files = <RenameTargets-Stub e.Files>;
-}
-
-RenameTargets-Stub {
-  e.Files
-    = <Map
-        {
-          (s.Pos Output e.FileName)
-            = (s.Pos Output e.FileName NoNative);
-
-          (s.Pos OutputWithNative (e.FileName) e.NativeFileName)
-            = (s.Pos Output e.FileName (e.NativeFileName));
-
-          (s.Pos Source (s.Dialect e.Source) e.Output)
-            = (s.Pos Source (s.Dialect e.Source) e.Output);
-        }
-        e.Files
-      >;
-}
-
-RenameTargets-WithCpp {
   e.Files = <ScanCollisions <Map &GetFileName e.Files>>;
 }
 
@@ -264,7 +239,7 @@ GetFileName {
   (s.Pos Source (s.Dialect e.Source) e.Output)
     = (
         (<GetBaseNameLowerCase e.Output>)
-        (s.Pos Source (s.Dialect e.Source) e.Output)
+        (s.Pos Source (s.Dialect e.Source) <GetBaseName e.Output>)
       );
 }
 
