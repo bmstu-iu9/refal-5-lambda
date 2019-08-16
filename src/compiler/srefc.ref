@@ -142,8 +142,7 @@ Main-SwFoundFiles {
 
   t.CommandLineSource t.Config e.Files
     = <Main-SwRenamedTargets
-        t.CommandLineSource t.Config
-        <RenameTargets t.Config e.Files>
+        t.CommandLineSource t.Config <RenameTargets t.Config e.Files>
       >;
 }
 
@@ -227,26 +226,23 @@ RenameTargets {
 }
 
 GetFileName {
-  e.TempDir
-  (s.Pos Output e.FileName)
+  e.TempDir (s.Pos Output e.FileName)
     = (
-        (<GetBaseNameLowerCase e.FileName>)
+        (<GetBaseNameLowerCaseNoExt e.FileName>)
         (s.Pos Output e.FileName NoNative)
       );
 
-  e.TempDir
-  (s.Pos OutputWithNative (e.FileName) e.NativeFileName)
+  e.TempDir (s.Pos OutputWithNative (e.FileName) e.NativeFileName)
     = (
-        (<GetBaseNameLowerCase e.FileName>)
+        (<GetBaseNameLowerCaseNoExt e.FileName>)
         (s.Pos Output e.FileName (e.NativeFileName))
       );
 
-  e.TempDir
-  (s.Pos Source (s.Dialect e.Source) e.Output)
+  e.TempDir (s.Pos Source (s.Dialect e.Source) e.Output)
     = <GetBaseName e.Output> : e.Output^
     = <GlueNames (e.TempDir) (e.Output)> : e.Output^
     = (
-        (<GetBaseNameLowerCase e.Output>)
+        (<GetBaseNameLowerCaseNoExt e.Output>)
         (s.Pos Source (s.Dialect e.Source) e.Output)
       );
 }
@@ -732,7 +728,7 @@ LinkError {
       <Exit 1>;
 }
 
-GetBaseNameLowerCase {
+GetBaseNameLowerCaseNoExt {
   e.FileName '.rasl' = <Lower <GetBaseName e.FileName>>;
 }
 
