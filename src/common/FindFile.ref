@@ -2,7 +2,11 @@
 $EXTERN Map;
 
 *$FROM Platform
-$EXTERN PathSeparator;
+$EXTERN DirectorySeparator, PathSeparator;
+
+
+$INLINE DS;
+DS { = <DirectorySeparator> }
 
 
 /**
@@ -43,13 +47,13 @@ $ENTRY FindFiles {
           (e.FileName)
             = <AnalyzeFile-CheckNotFound
                 (e.FileName)
-                <AnalyzeFile e.Subdir '/' e.FileName>
+                <AnalyzeFile e.Subdir <DS> e.FileName>
                 <AnalyzeFile e.FileName>
                 <Map
                   {
                     (e.Folder)
-                      = <AnalyzeFile e.Folder '/' e.Subdir '/' e.FileName>
-                        <AnalyzeFile e.Folder '/' e.FileName>;
+                      = <AnalyzeFile e.Folder <DS> e.Subdir <DS> e.FileName>
+                        <AnalyzeFile e.Folder <DS> e.FileName>;
                   }
                   <ExpandREF5RSL e.Folders>
                 >
@@ -158,7 +162,7 @@ $ENTRY FindInclude {
     = <AnalyzeInclude e.FileName>
       <Map
         {
-          (e.Folder) = <AnalyzeInclude e.Folder '/' e.FileName>;
+          (e.Folder) = <AnalyzeInclude e.Folder <DS> e.FileName>;
         }
         <ExpandREF5RSL e.Folders>
       >
