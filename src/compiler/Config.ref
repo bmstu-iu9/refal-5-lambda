@@ -684,9 +684,22 @@ $ENTRY Config-KeepRasls {
 }
 
 /**
-  <Config-TempDir t.Config e.DirName> == Success t.Config
+  <Config-GetTempDir t.Config> == e.TempDir
+  e.TempDir ::= Current | s.CHAR+
 */
-$ENTRY Config-TempDir {
+$ENTRY Config-GetTempDir {
+  [Config e.Params-B (TempDir e.DirName) e.Params-E]
+    , e.DirName
+    : {
+        /* пусто */ = Current;
+        e.DirName^ = e.DirName;
+      }
+}
+
+/**
+  <Config-SetTempDir t.Config e.DirName> == Success t.Config
+*/
+$ENTRY Config-SetTempDir {
   [Config e.Params-B (TempDir e.OldDirName) e.Params-E] e.NewDirName
     = Success [Config e.Params-B (TempDir e.NewDirName) e.Params-E];
 }
