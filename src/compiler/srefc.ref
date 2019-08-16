@@ -28,6 +28,9 @@ $EXTERN FOpen, FClose, FSeek, FTell, FWriteBytes, RenameFile;
 *$FROM Generator-RASL
 $EXTERN PutBlockReference, PutBlockIncorporated;
 
+*$FROM Platform
+$EXTERN DirectorySeparator, IsDirectorySeparator;
+
 
 $ENTRY Go {
   = <Main <ArgList>>;
@@ -191,7 +194,7 @@ CalcTargetFileName {
     : {
         DefaultTargetFileName
           = e.OutputFiles : (RASL e.FirstFile) e.OtherFiles
-          = <GetLastPartName e.FirstFile> : e.LastPartName
+          = <GetBaseName e.FirstFile> : e.LastPartName
           = <Lower e.LastPartName> : e.LowerBaseName '.rasl'    /* assert */
           = e.LastPartName : e.BaseName '.' s.R s.A s.S s.L
           = e.BaseName <Config-GetTargetSuffix t.Config s.TargetMode>;
@@ -247,8 +250,10 @@ RenameTargets-WithCpp {
 
 GetFileName {
   (s.Pos Output e.FileName)
-    = ((<GetBaseNameLowerCase e.FileName>)
-      (s.Pos Output e.FileName NoNative));
+    = (
+        (<GetBaseNameLowerCase e.FileName>)
+        (s.Pos Output e.FileName NoNative)
+      );
 
   (s.Pos OutputWithNative (e.FileName) e.NativeFileName)
     = (
@@ -729,7 +734,7 @@ DoFindPrefix {
 
 GlueNames {
   (Current) (e.FileName) = e.FileName;
-  (e.Folder) (e.FileName) = e.Folder '/' e.FileName;
+  (e.Folder) (e.FileName) = e.Folder <DirectorySeparator> e.FileName;
 }
 
 CopyPrefix {
@@ -745,16 +750,13 @@ LinkError {
 }
 
 GetBaseNameLowerCase {
-  e.FileName '.rasl' = <Lower <GetLastPartName e.FileName>>;
+  e.FileName '.rasl' = <Lower <GetBaseName e.FileName>>;
 }
 
-GetLastPartName {
-  e.FileName = <DoGetFileName e.FileName>;
-}
+GetBaseName {
+  e.Folder s.Sep e.RestOfPath
+    , <IsDirectorySeparator s.Sep> : True
+    = <GetBaseName e.RestOfPath>;
 
-DoGetFileName {
-  e.FileName '/' = ;
-  e.FileName '\\' = ;
-  e.FileName s.Last = <DoGetFileName e.FileName> s.Last;
-  = ;
+  e.BaseName = e.BaseName;
 }
