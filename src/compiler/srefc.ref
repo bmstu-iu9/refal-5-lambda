@@ -278,17 +278,17 @@ RenameLocations-Aux {
   s.InitNumber e.Locations
     = <MapReduce
         {
-          0 (s.Pos Source (s.Dialect e.Source) e.Output) =
-            1 (s.Pos Source (s.Dialect e.Source) e.Output);
+          0 (s.Pos Source (s.Dialect e.Source) e.Output)
+            = 1 (s.Pos Source (s.Dialect e.Source) e.Output);
 
-          s.Num (s.Pos Source (s.Dialect e.Source) e.Output '.rasl') =
-            <Inc s.Num>
-            (s.Pos Source
-              (s.Dialect e.Source) e.Output '@' <Symb s.Num> '.rasl'
-            );
+          s.Num (s.Pos Source (s.Dialect e.Source) e.Output '.rasl')
+            = <Inc s.Num>
+              (s.Pos Source
+                (s.Dialect e.Source) e.Output '@' <Symb s.Num> '.rasl'
+              );
 
-          s.Num (s.Pos Output e.Output t.Native) =
-            s.Num (s.Pos Output e.Output t.Native);
+          s.Num (s.Pos Output e.Output t.Native)
+            = s.Num (s.Pos Output e.Output t.Native);
         }
         s.InitNumber e.Locations
       >
