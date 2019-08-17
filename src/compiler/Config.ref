@@ -34,7 +34,7 @@ $ENTRY Config-Create {
         (TreeOptCycles 100)
         (KeepRasls False)
         (TempDir /* пусто */)
-        (OverwriteExistRasls False)
+        (OverwriteExistRasls True)
       ];
 }
 
@@ -712,9 +712,16 @@ $ENTRY Config-SetTempDir {
 }
 
 /**
-  <Config-OverwriteExistRasls t.Config s.Bool> == Success t.Config
+  <Config-GetOverwriteExistRasls t.Config> == s.Bool
 */
-$ENTRY Config-OverwriteExistRasls {
+$ENTRY Config-GetOverwriteExistRasls {
+  [Config e.Params-B (OverwriteExistRasls s.Value) e.Params-E] = s.Value
+}
+
+/**
+  <Config-SetOverwriteExistRasls t.Config s.Bool> == Success t.Config
+*/
+$ENTRY Config-SetOverwriteExistRasls {
   [Config e.Params-B (OverwriteExistRasls s.OldValue) e.Params-E] s.NewValue
     = Success [Config e.Params-B (OverwriteExistRasls s.NewValue) e.Params-E];
 }

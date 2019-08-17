@@ -11,7 +11,7 @@ $EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
   Config-AddReference, Config-SetTargetMode, Config-AddIncorporated,
   Config-SetChmodXCommand, Config-SetPrelude, Config-SetR5Mode,
   Config-SetLogFile, Config-SetTreeOptCycles, Config-SetIncorporated,
-  Config-SetKeepRasls, Config-SetTempDir, Config-OverwriteExistRasls;
+  Config-SetKeepRasls, Config-SetTempDir, Config-SetOverwriteExistRasls;
 
 *$FROM Version
 $EXTERN PrintVersion;
@@ -218,12 +218,12 @@ $ENTRY ParseCommandLine {
 
             (t.Config e.Errors) (OverwriteExistRasls s.Num)
               = <Update
-                  t.Config (e.Errors) &Config-OverwriteExistRasls s.Num True
+                  t.Config (e.Errors) &Config-SetOverwriteExistRasls s.Num True
                 >;
 
             (t.Config e.Errors) (DontOverwriteExistRasls s.Num)
               = <Update
-                  t.Config (e.Errors) &Config-OverwriteExistRasls s.Num False
+                  t.Config (e.Errors) &Config-SetOverwriteExistRasls s.Num False
                 >;
 
             (t.Config e.Errors) t.Option

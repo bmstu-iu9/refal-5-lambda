@@ -9,7 +9,7 @@ $EXTERN Config-GetLogFile,
   Config-GetCppCompiler, Config-GetGrammarCheck, Config-GetTargetSuffix,
   Config-GetSearchFolders, Config-GetTargetMode, Config-GetPrefix,
   Config-GetChmodXCommand, Config-GetReferences, Config-GetIncorporateds,
-  Config-GetTempDir, Config-GetKeepRasls;
+  Config-GetTempDir, Config-GetKeepRasls, Config-GetOverwriteExistRasls;
 
 *$FROM Log
 $EXTERN Log-Init, Log-Final;
@@ -222,7 +222,7 @@ LookupSourceFiles {
 RenameTargets {
   t.Config e.Files
     = <Config-GetTempDir t.Config> : e.TempDir
-    = <ScanCollisions <Map (&GetFileName e.TempDir) e.Files>>;
+    = <ScanCollisions t.Config <Map (&GetFileName e.TempDir) e.Files>>;
 }
 
 GetFileName {
@@ -248,44 +248,52 @@ GetFileName {
 }
 
 ScanCollisions {
+  t.Config
   ((e.BaseName) e.Locations1)
   e.Files-B ((e.BaseName) e.Locations2) e.Files-E
     = <ScanCollisions
+        t.Config
         e.Files-B ((e.BaseName) e.Locations1 e.Locations2) e.Files-E
       >;
 
+  t.Config
   ((e.BaseName) e.Locations) e.Files
-    = <RenameLocations e.Locations> <ScanCollisions e.Files>;
+    = <RenameLocations t.Config e.Locations> <ScanCollisions t.Config e.Files>;
 
-  /* пусто */ = /* всё */;
+  t.Config /* нет файлов */ = /* всё */;
 }
 
 RenameLocations {
+  t.Config
   e.Locations-B (s.Pos1 Output e.FirstTarget t.FirstNative)
   e.Locations-M (s.Pos2 Output e.SecondTarget t.SecondNative)
   e.Locations-E
     = (s.Pos2 Collision (e.FirstTarget) e.SecondTarget);
 
+  t.Config
   e.Locations-B (s.Pos Output e.Target t.Native) e.Locations-E
     = <RenameLocations-Aux
-        1 e.Locations-B (s.Pos Output e.Target t.Native) e.Locations-E
+        t.Config 1 e.Locations-B (s.Pos Output e.Target t.Native) e.Locations-E
       >;
 
-  e.Locations = <RenameLocations-Aux 0 e.Locations>;
+  t.Config e.Locations = <RenameLocations-Aux t.Config 0 e.Locations>;
 }
 
 RenameLocations-Aux {
-  s.InitNumber e.Locations
+  t.Config s.InitNumber e.Locations
+    = <Config-GetOverwriteExistRasls t.Config> : s.Overwrite
     = <MapReduce
         {
-          0 (s.Pos Source (s.Dialect e.Source) e.Output)
-            = 1 (s.Pos Source (s.Dialect e.Source) e.Output);
+          s.Num (s.Pos Source (s.Dialect e.Source) e.Output '.rasl')
+            , s.Overwrite : False
+            = <FindFreeName s.Num e.Output> : s.Num^ e.NewName
+            = <Inc s.Num>
+              (s.Pos Source (s.Dialect e.Source) e.NewName '.rasl');
 
           s.Num (s.Pos Source (s.Dialect e.Source) e.Output '.rasl')
+            = <AddNumSuffix s.Num e.Output> : e.NewName
             = <Inc s.Num>
-              (s.Pos Source
-                (s.Dialect e.Source) e.Output '@' <Symb s.Num> '.rasl'
-              );
+              (s.Pos Source (s.Dialect e.Source) e.NewName '.rasl');
 
           s.Num (s.Pos Output e.Output t.Native)
             = s.Num (s.Pos Output e.Output t.Native);
@@ -294,6 +302,24 @@ RenameLocations-Aux {
       >
     : s.Num e.NewLocations
     = e.NewLocations;
+}
+
+$INLINE AddNumSuffix;
+
+AddNumSuffix {
+  0 e.Output = e.Output;
+  s.Num e.Output = e.Output '@' <Symb s.Num>;
+}
+
+FindFreeName {
+  s.Num e.Output
+    = <AddNumSuffix s.Num e.Output> : e.NewName
+    = <ExistFile e.NewName '.rasl'> <ExistFile e.NewName '.cpp'>
+    : {
+        e._B True e._E = <FindFreeName <Inc s.Num> e.Output>;
+
+        False False = s.Num e.NewName;
+      }
 }
 
 CompileFiles {
