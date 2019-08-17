@@ -9,7 +9,7 @@ $EXTERN Config-GetLogFile,
   Config-GetCppCompiler, Config-GetGrammarCheck, Config-GetTargetSuffix,
   Config-GetSearchFolders, Config-GetTargetMode, Config-GetPrefix,
   Config-GetChmodXCommand, Config-GetReferences, Config-GetIncorporateds,
-  Config-GetTempDir;
+  Config-GetTempDir, Config-GetKeepRasls;
 
 *$FROM Log
 $EXTERN Log-Init, Log-Final;
@@ -193,7 +193,7 @@ CalcTargetFileName {
     = <Config-GetTargetFileName t.Config>
     : {
         DefaultTargetFileName
-          = e.OutputFiles : (RASL e.FirstFile) e.OtherFiles
+          = e.OutputFiles : (RASL s.Origin e.FirstFile) e.OtherFiles
           = <GetBaseName e.FirstFile> : e.LastPartName
           = <Lower e.LastPartName> : e.LowerBaseName '.rasl'    /* assert */
           = e.LastPartName : e.BaseName '.' s.R s.A s.S s.L
@@ -302,21 +302,22 @@ CompileFiles {
         {
           (s.Pos Output e.OutputName NoNative)
             = <Prout '+Linking ' e.OutputName>
-              (RASL e.OutputName);
+              (RASL Given e.OutputName);
 
           (s.Pos Output e.OutputName (e.NativeName))
             = <Prout '+Linking (+ natives) ' e.OutputName>
-              (RASL e.OutputName) (Native e.NativeName);
+              (RASL Given e.OutputName) (Native Given e.NativeName);
 
           (s.Pos Source (s.Dialect e.Source) e.OutputName)
             = <Prout '*Compiling ' e.Source ':'> : /* пусто */
             = <CompileFile t.Config (s.Dialect e.Source) e.OutputName>
             : {
-                Success e.OutputName^ NoNative = (RASL e.OutputName);
+                Success e.OutputName^ NoNative = (RASL Generated e.OutputName);
 
                 Success e.OutputName^ (e.NativeOutputName)
                   = <Prout '   ... natives generated'>
-                    (RASL e.OutputName) (Native e.NativeOutputName);
+                    (RASL Generated e.OutputName)
+                    (Native Generated e.NativeOutputName);
 
                 Fails = Fails;
               };
@@ -534,8 +535,8 @@ Link-CppCompile {
                 e.Flags
                 <Map
                   {
-                    (RASL e.FileName) = /* пусто */;
-                    (Native e.FileName) = ' "' e.FileName '"';
+                    (RASL s.Origin e.FileName) = /* пусто */;
+                    (Native s.Origin e.FileName) = ' "' e.FileName '"';
                   }
                   e.Files
                 >
@@ -560,7 +561,8 @@ Link-Aux {
       <AppendRASLToBinary (e.IntermediateName) e.Files>
       <AppendReferencesToBinary (e.IntermediateName) e.References>
       <AppendIncorporatedToBinary (e.IntermediateName) e.IncorporatedLibNames>
-      <PostLinkRename t.Config (e.IntermediateName) (e.TargetFileName)>;
+      <PostLinkRename t.Config (e.IntermediateName) (e.TargetFileName)>
+      <CleanupIntermediateFiles t.Config e.Files>
 }
 
 PreLinkCleanupTemporary {
@@ -618,10 +620,10 @@ AppendRASLToBinary {
     = <FOpen ('ab') e.BinaryName> : s.FileHandle
     = <Map
         {
-          (RASL e.OutputName)
+          (RASL s.Origin e.OutputName)
             = <FWriteBytes s.FileHandle <LoadBytes e.OutputName>>;
 
-          (Native e.NativeName) = /* ничего не делаем */;
+          (Native s.Origin e.NativeName) = /* ничего не делаем */;
         }
         e.Files
       >
@@ -654,17 +656,7 @@ PostLinkRename {
   t.Config (e.TemporaryName) (e.TargetFileName)
     = <ExistFile e.TargetFileName>
     : {
-        True
-          = <RemoveFile e.TargetFileName>
-          : {
-              True () = /* ничего не делаем */;
-
-              False (e.ErrorMessage)
-                = <LinkError
-                    t.Config
-                    'Can\'t remove file ' e.TargetFileName ', ' e.ErrorMessage
-                  >;
-             };
+        True = <CheckedRemoveFile t.Config e.TargetFileName>;
 
         False = /* ничего не делаем */;
       }
@@ -679,6 +671,35 @@ PostLinkRename {
               'Can\'t rename from ' e.TemporaryName ' to ' e.TargetFileName
             >;
       };
+}
+
+CheckedRemoveFile {
+  t.Config e.FileName
+    = <RemoveFile e.FileName>
+    : {
+        True () = /* ничего не делаем */;
+
+        False (e.ErrorMessage)
+          = <LinkError
+              t.Config 'Can\'t remove file ' e.FileName ', ' e.ErrorMessage
+            >;
+       };
+}
+
+CleanupIntermediateFiles {
+  t.Config e.Files, <Config-GetKeepRasls t.Config> : True
+    = /* ничего не делаем */;
+
+  t.Config e.Files
+    = <Map
+        {
+          (s.FileType Given e.FileName) = /* пропускаем, он был до нас */;
+
+          (s.FileType Generated e.FileName)
+            = <CheckedRemoveFile t.Config e.FileName>;
+        }
+        e.Files
+      >;
 }
 
 FindPrefix {

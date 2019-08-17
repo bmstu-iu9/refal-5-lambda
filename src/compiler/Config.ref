@@ -676,9 +676,16 @@ $ENTRY Config-SetTreeOptCycles {
 }
 
 /**
-  <Config-KeepRasls t.Config s.Bool> == Success t.Config
+  <Config-GetKeepRasls t.Config> == s.Bool
 */
-$ENTRY Config-KeepRasls {
+$ENTRY Config-GetKeepRasls {
+  [Config e.Params-B (KeepRasls s.Value) e.Params-E] = s.Value;
+}
+
+/**
+  <Config-SetKeepRasls t.Config s.Bool> == Success t.Config
+*/
+$ENTRY Config-SetKeepRasls {
   [Config e.Params-B (KeepRasls s.OldValue) e.Params-E] s.NewValue
     = Success [Config e.Params-B (KeepRasls s.NewValue) e.Params-E];
 }

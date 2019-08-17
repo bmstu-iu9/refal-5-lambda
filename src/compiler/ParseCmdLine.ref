@@ -11,7 +11,7 @@ $EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
   Config-AddReference, Config-SetTargetMode, Config-AddIncorporated,
   Config-SetChmodXCommand, Config-SetPrelude, Config-SetR5Mode,
   Config-SetLogFile, Config-SetTreeOptCycles, Config-SetIncorporated,
-  Config-KeepRasls, Config-SetTempDir, Config-OverwriteExistRasls;
+  Config-SetKeepRasls, Config-SetTempDir, Config-OverwriteExistRasls;
 
 *$FROM Version
 $EXTERN PrintVersion;
@@ -160,7 +160,7 @@ $ENTRY ParseCommandLine {
                   t.Config (e.Errors) &Config-SetTargetMode s.Num CompileOnly
                 >
               : (t.Config^ e.Errors^)
-              = <Update t.Config (e.Errors) &Config-KeepRasls s.Num True>;
+              = <Update t.Config (e.Errors) &Config-SetKeepRasls s.Num True>;
 
             (t.Config e.Errors) (TargetSuffix-Exe s.Num e.Suffix)
               = <Update
@@ -205,10 +205,10 @@ $ENTRY ParseCommandLine {
               = <PrintVersion 'Srefc'> (t.Config e.Errors);
 
             (t.Config e.Errors) (KeepRasls s.Num)
-              = <Update t.Config (e.Errors) &Config-KeepRasls s.Num True>;
+              = <Update t.Config (e.Errors) &Config-SetKeepRasls s.Num True>;
 
             (t.Config e.Errors) (DontKeepRasls s.Num)
-              = <Update t.Config (e.Errors) &Config-KeepRasls s.Num False>;
+              = <Update t.Config (e.Errors) &Config-SetKeepRasls s.Num False>;
 
             (t.Config e.Errors) (TempDir s.Num e.Name)
               = <Update t.Config (e.Errors) &Config-SetTempDir s.Num e.Name>;
