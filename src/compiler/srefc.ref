@@ -188,8 +188,7 @@ Main-SwRenamedTargets {
                 );
 
             (s.Pos^ Source (s.Dialect e.Source) e.Output) = /* пусто */;
-            (s.Pos^ Output e.Output) = /* пусто */;
-            (s.Pos^ OutputWithNative (e.Output) e.NativeOutput) = /* пусто */;
+            (s.Pos^ Output e.Output t.Native) = /* пусто */;
           }
           (s.Pos Collision e.Collision) e.Files-E
         >
