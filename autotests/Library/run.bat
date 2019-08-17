@@ -178,7 +178,8 @@ setlocal
   set SRC=%1
   set TARGET=%~n1.exe
 
-  ..\..\bin\srefc-core %SRC% -o %TARGET% %COMMON_SRFLAGS% Library 2>__error.txt
+  ..\..\bin\srefc-core --keep-rasls %SRC% -o %TARGET% %COMMON_SRFLAGS% ^
+    Library 2>__error.txt
   if errorlevel 100 (
     echo COMPILER FAILS ON %SRC%, SEE __error.txt
     exit /b 1

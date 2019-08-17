@@ -46,7 +46,8 @@ setlocal
   )
   if not exist ..\..\build\%DIR%\nul mkdir ..\..\build\%DIR%
   if exist ..\..\build\%DIR%\*.* erase /Q ..\..\build\%DIR%\*.*
-  call %PATH_TO_SREFC%\bin\srmake %SCRIPT_FLAGS% -d ..\common %MAINSRC% -o %TARGET%.exe
+  call %PATH_TO_SREFC%\bin\srmake ^
+    %SCRIPT_FLAGS% --keep-rasls -d ..\common %MAINSRC% -o %TARGET%.exe
   move %TARGET%.exe ..\..\bin
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds

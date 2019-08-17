@@ -1,6 +1,6 @@
 @echo off
 erase *.rasl-module *.rasl *.exe
-call ..\..\..\bin\srmake -X-OC -X--markup-context caller.ref
+call ..\..\..\bin\srmake --keep-rasls -X-OC -X--markup-context caller.ref
 caller.exe
 if not errorlevel 1 (
   echo TEST FAILED! Program must be fail!

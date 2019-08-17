@@ -249,7 +249,7 @@ setlocal
   set SRC=%1
   set TARGET=%~n1.exe
 
-  ..\..\bin\srefc-core %SRC% -o %TARGET% %COMMON_SRFLAGS% ^
+  ..\..\bin\srefc-core --keep-rasls %SRC% -o %TARGET% %COMMON_SRFLAGS% ^
     --prefix=_test_prefix external 2>__error.txt
   if errorlevel 100 (
     echo COMPILER FAILS ON %SRC%, SEE __error.txt

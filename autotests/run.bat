@@ -177,7 +177,7 @@ setlocal
   set EXE=%~n1.exe
 
   ..\bin\srefc-core %SREF% -o %EXE% %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
-    2> __error.txt
+    --keep-rasls 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
@@ -220,7 +220,7 @@ setlocal
   set EXE=%~n1.exe
 
   ..\bin\srefc-core %SREF% -o %EXE% %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
-    2> __error.txt
+    --keep-rasls 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1

@@ -229,7 +229,7 @@ compile_srefc_common() {
   FLAGS_EX=$2
 
   ../../bin/srefc-core $SRC -o $TARGET "${COMMON_SRFLAGS[@]}" $FLAGS_EX \
-    --prefix=_test_prefix external 2>__error.txt
+    --prefix=_test_prefix external --keep-rasls 2>__error.txt
   if [ $? -ge 100 ]; then
     echo COMPILER FAILS ON $SRC, SEE __error.txt
     exit 1

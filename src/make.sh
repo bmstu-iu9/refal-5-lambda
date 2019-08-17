@@ -57,7 +57,8 @@ make_subdir() {
       export CPPLINE_FLAGS="$CPPLINE_FLAGS"
       export SRMAKE_FLAGS="$SRMAKE_FLAGS $SRMAKE_FLAGS_PLUS"
 
-      $PATH_TO_SREFC/bin/srmake $SCRIPT_FLAGS -d ../common $MAINSRC -o$TARGET
+      $PATH_TO_SREFC/bin/srmake \
+        $SCRIPT_FLAGS --keep-rasls -d ../common $MAINSRC -o$TARGET
     )
     mv $TARGET ../../bin/$TARGET$(platform_exe_suffix)
 

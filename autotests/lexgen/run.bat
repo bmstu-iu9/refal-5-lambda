@@ -72,7 +72,7 @@ setlocal
     exit /b 1
   )
 
-  ..\..\bin\srefc-core _lexgen-out.sref -o _lexgen-out.exe %COMMON_SRFLAGS% ^
+  ..\..\bin\srefc-core --keep-rasls _lexgen-out.sref -o _lexgen-out.exe %COMMON_SRFLAGS% ^
     %SRFLAGS_PREF% 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt

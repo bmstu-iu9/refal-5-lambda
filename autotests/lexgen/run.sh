@@ -35,7 +35,7 @@ run_test_aux.LEXGEN() {
   fi
 
   ../../bin/srefc-core _lexgen-out.sref -o _lexgen-out$(platform_exe_suffix) \
-    "${COMMON_SRFLAGS[@]}" $SRFLAGS_PREF 2>__error.txt
+    "${COMMON_SRFLAGS[@]}" $SRFLAGS_PREF --keep-rasls 2>__error.txt
   if [ $? -ge 100 ] || [ ! -e _lexgen-out$(platform_exe_suffix) ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit 1

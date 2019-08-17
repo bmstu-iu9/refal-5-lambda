@@ -77,7 +77,7 @@ run_test_aux_with_flags() {
   NATCPP=${SREF%.*}.cpp
   EXE=${SREF%.*}$(platform_exe_suffix)
 
-  ../bin/srefc-core $SREF -o $EXE "${COMMON_SRFLAGS[@]}" \
+  ../bin/srefc-core --keep-rasls $SREF -o $EXE "${COMMON_SRFLAGS[@]}" \
     $SRFLAGS $SRFLAGS_PLUS 2>__error.txt
   if [ $? -ge 100 ] || [ ! -e $EXE ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
@@ -136,7 +136,7 @@ run_test_aux_with_flags.FAILURE() {
   NATCPP=${SREF%.*}.cpp
   EXE=${SREF%.*}$(platform_exe_suffix)
 
-  ../bin/srefc-core $SREF -o $EXE "${COMMON_SRFLAGS[@]}" \
+  ../bin/srefc-core --keep-rasls $SREF -o $EXE "${COMMON_SRFLAGS[@]}" \
     $SRFLAGS $SRFLAGS_PLUS 2>__error.txt
   if [ $? -ge 100 ] || [ ! -e $EXE ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt

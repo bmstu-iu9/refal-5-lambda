@@ -165,7 +165,7 @@ compile() {
   SRC=$1
   TARGET=${SRC%%.sref}$(platform_exe_suffix)
 
-  ../../bin/srefc-core $SRC -o $TARGET "${COMMON_SRFLAGS[@]}" \
+  ../../bin/srefc-core --keep-rasls $SRC -o $TARGET "${COMMON_SRFLAGS[@]}" \
     Library 2>__error.txt
   if [ $? -ge 100 ] || [ ! -e $TARGET ]; then
     echo COMPILER FAILS ON $SRC, SEE __error.txt

@@ -56,7 +56,7 @@ setlocal
     goto :EOF
   )
 
-  ..\..\bin\srefc-core %SRC% -o %TARGET% %COMMON_SRFLAGS% Hash lookup3 ^
+  ..\..\bin\srefc-core --keep-rasls %SRC% -o %TARGET% %COMMON_SRFLAGS% Hash lookup3 ^
     2>__error.txt
   if errorlevel 100 (
     echo COMPILER FAILS ON %SRC%, SEE __error.txt

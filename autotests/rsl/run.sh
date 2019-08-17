@@ -1,6 +1,6 @@
 #!/bin/bash
 
-../../bin/srefc hello.rsl
+../../bin/srefc --keep-rasls hello.rsl
 if [ ! -e hello ]; then
   echo COMPILING hello.rsl TO hello.exe FAILS!
   exit 1
