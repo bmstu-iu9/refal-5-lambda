@@ -1,5 +1,5 @@
 #!/bin/bash
-source ../../scripts/load-config.sh .. || exit 1
+source ../../scripts/load-config.sh ../.. || exit 1
 source ../../scripts/platform-specific.sh
 
 LIBDIR=../../src/srlib
@@ -100,8 +100,10 @@ run_test() {
     refalrts-platform-specific
   "
   SREF=$1
-  SUFFIX=`echo ${SREF%.*} | sed 's/[^.]*\(\.[^.]*\)*/\1/'`
-  run_test_aux$SUFFIX $1
+  if [ -e "$SREF" ]; then
+    SUFFIX=`echo ${SREF%.*} | sed 's/[^.]*\(\.[^.]*\)*/\1/'`
+    run_test_aux$SUFFIX $1
+  fi
 }
 
 if [ -z "$1" ]; then
