@@ -141,9 +141,36 @@ Main-SwFoundFiles {
       >;
 
   t.CommandLineSource t.Config e.Files
+    = <CorrectTargetFileName t.Config e.Files> : t.Config^
     = <Main-SwRenamedTargets
         t.CommandLineSource t.Config <RenameTargets t.Config e.Files>
       >;
+}
+
+CorrectTargetFileName {
+  t.Config t.FirstFile e.Files
+    , <Config-GetTargetFileName t.Config>
+    : {
+        DefaultTargetFileName
+          = t.FirstFile
+          : {
+              (s.Pos Source (s.Dialect e.Source) e.Output) = e.Output;
+              (s.Pos Output e.Output) = e.Output;
+              (s.Pos OutputWithNative (e.Output) e.NativeOutput) = e.Output
+            }
+          : e.Output
+
+          = <GetBaseName e.Output> : e.LastPartName
+          = <Lower e.LastPartName> : e.LowerBaseName '.rasl'    /* assert */
+          = e.LastPartName : e.BaseName '.' s.R s.A s.S s.L
+          = FromFirstFile e.BaseName;
+
+        e.TargetFileName = FromCommandLine e.TargetFileName;
+      }
+    : s.Origin e.TargetFileName
+    = <Config-SetTargetFileName t.Config s.Origin e.TargetFileName>
+    : Success t.Config^
+    = t.Config;
 }
 
 Main-SwRenamedTargets {
@@ -192,14 +219,10 @@ CalcTargetFileName {
   s.TargetMode t.Config e.OutputFiles
     = <Config-GetTargetFileName t.Config>
     : {
-        DefaultTargetFileName
-          = e.OutputFiles : (RASL s.Origin e.FirstFile) e.OtherFiles
-          = <GetBaseName e.FirstFile> : e.LastPartName
-          = <Lower e.LastPartName> : e.LowerBaseName '.rasl'    /* assert */
-          = e.LastPartName : e.BaseName '.' s.R s.A s.S s.L
+        FromFirstFile e.BaseName
           = e.BaseName <Config-GetTargetSuffix t.Config s.TargetMode>;
 
-        e.TargetFileName = e.TargetFileName;
+        FromCommandLine e.TargetFileName = e.TargetFileName;
       };
 }
 
