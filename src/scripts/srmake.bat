@@ -57,7 +57,8 @@ setlocal
   set ARGS=%ARGS:* =%
   call "%DISTRDIR%\scripts\load-config.bat" || exit /b 1
   set D=-D "%LIBDIR%\scratch\platform-Windows" -D "%LIBDIR%\scratch"
-  set CPP=--cpp-command-exe="%CPPLINEE%" --cpp-command-lib="%CPPLINEL%"
+  set CPP=--cpp-command-exe="%CPPLINEE%" --cpp-command-lib="%CPPLINEL%" ^
+    --cpp-command-exe-suf="%CPPLINEESUF%" --cpp-command-lib-suf="%CPPLINELSUF%"
   set RT=--runtime=refalrts-main
   goto END_SWITCH
 

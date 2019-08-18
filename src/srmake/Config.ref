@@ -26,6 +26,8 @@ $ENTRY Config-Create {
         (KeepRasls False)
         (TempDir /* пусто */)
         (OverwriteExistRasls False)
+        (CppCompilerExeSuf /* пусто */)
+        (CppCompilerLibSuf /* пусто */)
       ];
 }
 
@@ -346,4 +348,44 @@ $ENTRY Config-GetOverwriteExistRasls {
 $ENTRY Config-SetOverwriteExistRasls {
   [Config e.Params-B (OverwriteExistRasls s.OldValue) e.Params-E] s.NewValue
     = Success [Config e.Params-B (OverwriteExistRasls s.NewValue) e.Params-E];
+}
+
+/**
+  <Config-GetCppCompilerExeSuf t.Config>
+    == e.CppCompilerExeSuf
+*/
+$ENTRY Config-GetCppCompilerExeSuf {
+  [Config e.Params-B (CppCompilerExeSuf e.CppCompilerExeSuf) e.Params-E]
+    = e.CppCompilerExeSuf;
+}
+
+/**
+  <Config-SetCppCompilerExeSuf t.Config e.CppCompilerExeSuf>
+    == Success t.Config
+*/
+$ENTRY Config-SetCppCompilerExeSuf {
+  [Config e.Params-B (CppCompilerExeSuf e.OldCppCompilerExeSuf) e.Params-E]
+  e.CppCompilerExeSuf
+    = Success
+      [Config e.Params-B (CppCompilerExeSuf e.CppCompilerExeSuf) e.Params-E];
+}
+
+/**
+  <Config-GetCppCompilerLibSuf t.Config>
+    == e.CppCompilerLibSuf
+*/
+$ENTRY Config-GetCppCompilerLibSuf {
+  [Config e.Params-B (CppCompilerLibSuf e.CppCompilerLibSuf) e.Params-E]
+    = e.CppCompilerLibSuf;
+}
+
+/**
+  <Config-SetCppCompilerLibSuf t.Config e.CppCompilerLibSuf>
+    == Success t.Config
+*/
+$ENTRY Config-SetCppCompilerLibSuf {
+  [Config e.Params-B (CppCompilerLibSuf e.OldCppCompilerLibSuf) e.Params-E]
+  e.CppCompilerLibSuf
+    = Success
+      [Config e.Params-B (CppCompilerLibSuf e.CppCompilerLibSuf) e.Params-E];
 }

@@ -22,7 +22,9 @@ $EXTERN
   Config-AddIncorporated,
   Config-SetKeepRasls,
   Config-SetTempDir,
-  Config-SetOverwriteExistRasls;
+  Config-SetOverwriteExistRasls,
+  Config-SetCppCompilerExeSuf,
+  Config-SetCppCompilerLibSuf;
 
 *$FROM Version
 $EXTERN PrintVersion;
@@ -70,6 +72,8 @@ $ENTRY ParseCommandLine {
           (DontOverwriteExistRasls None
             ('dont-overwrite-exist-rasls') ('dont-overwrite-exist-rasl')
           )
+          (CppCompilerExeSuf Required ('cpp-command-exe-suf'))
+          (CppCompilerLibSuf Required ('cpp-command-lib-suf'))
         )
         e.Arguments
       >
@@ -185,6 +189,18 @@ $ENTRY ParseCommandLine {
             (t.Config e.Errors) (DontOverwriteExistRasls s.Num)
               = <Update
                   t.Config (e.Errors) &Config-SetOverwriteExistRasls s.Num False
+                >;
+
+            (t.Config e.Errors) (CppCompilerExeSuf s.Num e.CppCompilerExeSuf)
+              = <Update
+                  t.Config (e.Errors)
+                  &Config-SetCppCompilerExeSuf s.Num e.CppCompilerExeSuf
+                >;
+
+            (t.Config e.Errors) (CppCompilerLibSuf s.Num e.CppCompilerLibSuf)
+              = <Update
+                  t.Config (e.Errors)
+                  &Config-SetCppCompilerLibSuf s.Num e.CppCompilerLibSuf
                 >;
 
             (t.Config e.Errors) t.Option

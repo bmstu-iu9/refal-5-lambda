@@ -15,7 +15,12 @@ $ENUM Config;
 $ENTRY Config-Create {
   /* пусто */
     = [Config
-        (CppCompiler NoCppCompilerExe NoCppCompilerLib)
+        (CppCompiler
+          NoCppCompilerExe NoCppCompilerLib
+          /* флаги */
+          (/* конец командной строки для exe */)
+          (/* конец командной строки для библиотек */)
+        )
         (Optimize /* пусто */)
         (ErrorFile /* пусто */)
         (DebugMode NoMarkupContext NoDebugInfo)
@@ -41,14 +46,16 @@ $ENTRY Config-Create {
 /**
   <Config-GetCppCompiler t.Config s.CompilerVariant>
     == NoCppCompiler
-    == (e.CppCompiler) e.Flags
+    == (e.CppCompiler) e.Flags (e.CommandLineSuffix)
 
   s.CompileVariant ::= EXE | LIB
 */
 $ENTRY Config-GetCppCompiler {
   [Config
     e.Params-B
-   (CppCompiler NoCppCompilerExe t.CppCompilerLib e.Flags)
+    (CppCompiler
+      NoCppCompilerExe t.CppCompilerLib e.Flags (e.ExeSuf) (e.LibSuf)
+    )
     e.Params-E
   ]
   EXE
@@ -56,15 +63,19 @@ $ENTRY Config-GetCppCompiler {
 
   [Config
     e.Params-B
-    (CppCompiler (e.CppCompilerExe) t.CppCompilerLib e.Flags)
+    (CppCompiler
+      (e.CppCompilerExe) t.CppCompilerLib e.Flags (e.ExeSuf) (e.LibSuf)
+    )
     e.Params-E
   ]
   EXE
-    = (e.CppCompilerExe) e.Flags;
+    = (e.CppCompilerExe) e.Flags (e.ExeSuf);
 
   [Config
     e.Params-B
-    (CppCompiler t.CppCompilerExe NoCppCompilerLib e.Flags)
+    (CppCompiler
+      t.CppCompilerExe NoCppCompilerLib e.Flags (e.ExeSuf) (e.LibSuf)
+    )
     e.Params-E
   ]
   LIB
@@ -72,11 +83,13 @@ $ENTRY Config-GetCppCompiler {
 
   [Config
     e.Params-B
-    (CppCompiler t.CppCompilerExe (e.CppCompilerLib) e.Flags)
+    (CppCompiler
+      t.CppCompilerExe (e.CppCompilerLib) e.Flags (e.ExeSuf) (e.LibSuf)
+    )
     e.Params-E
   ]
   LIB
-    = (e.CppCompilerLib) e.Flags;
+    = (e.CppCompilerLib) e.Flags (e.LibSuf);
 }
 
 /**
@@ -110,14 +123,60 @@ $ENTRY Config-SetCppCompiler {
 }
 
 /**
+  <Config-SetCppCompilerSuf t.Config s.CompileVariant e.CppCompilerSuf>
+    == Success t.Config
+*/
+$ENTRY Config-SetCppCompilerSuf {
+  [Config
+    e.Params-B
+    (CppCompiler
+      t.CppCompilerExe t.CppCompilerLib e.Flags (e.OldExeSuf) (e.LibSuf)
+    )
+    e.Params-E
+  ]
+  EXE e.ExeSuf
+    = Success
+      [Config
+        e.Params-B
+        (CppCompiler
+           t.CppCompilerExe t.CppCompilerLib e.Flags (e.ExeSuf) (e.LibSuf)
+        )
+        e.Params-E
+      ];
+
+  [Config
+    e.Params-B
+    (CppCompiler
+      t.CppCompilerExe t.CppCompilerLib e.Flags (e.ExeSuf) (e.OldLibSuf)
+    )
+    e.Params-E
+  ]
+  LIB e.LibSuf
+    = Success
+      [Config
+        e.Params-B
+        (CppCompiler
+           t.CppCompilerExe t.CppCompilerLib e.Flags (e.ExeSuf) (e.LibSuf)
+        )
+        e.Params-E
+      ];
+}
+
+/**
   <Config-SetCompilerFlags t.Config e.Flags> == Success t.Config
 */
 $ENTRY Config-SetCompilerFlags {
-  [Config e.Params-B (CppCompiler t.CppCompiler e.Flags) e.Params-E]
+  [Config
+    e.Params-B
+    (CppCompiler t.CppCompiler e.Flags (e.ExeSuf) (e.LibSuf))
+    e.Params-E
+  ]
   e.NewFlags
     = Success
       [Config
-        e.Params-B (CppCompiler t.CppCompiler e.Flags e.NewFlags) e.Params-E
+        e.Params-B
+        (CppCompiler t.CppCompiler e.Flags e.NewFlags (e.ExeSuf) (e.LibSuf))
+        e.Params-E
       ];
 }
 

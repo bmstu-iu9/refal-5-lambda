@@ -23,7 +23,9 @@ $EXTERN
   Config-GetIncorporateds,
   Config-GetKeepRasls,
   Config-GetTempDir,
-  Config-GetOverwriteExistRasls;
+  Config-GetOverwriteExistRasls,
+  Config-GetCppCompilerExeSuf,
+  Config-GetCppCompilerLibSuf;
 
 
 $ENTRY Go { = <Main <ArgList>>; }
@@ -96,6 +98,14 @@ RunSrefCompiler {
         <Config-GetOverwriteExistRasls t.Config> 'overwrite-exist-rasls'
       >
     : e.OverwriteExistRasls
+    = <MakeOptionalFlag
+        &Config-GetCppCompilerExeSuf t.Config 'cpp-command-exe-suf'
+      >
+    : e.CppCompilerExeSuf
+    = <MakeOptionalFlag
+        &Config-GetCppCompilerLibSuf t.Config 'cpp-command-lib-suf'
+      >
+    : e.CppCompilerLibSuf
     = <System
         e.SrefCompiler
         e.TargetModeFlag
@@ -120,6 +130,8 @@ RunSrefCompiler {
         e.KeepRasls
         ' --temp-dir="' e.TempDir '"'
         e.OverwriteExistRasls
+        e.CppCompilerExeSuf
+        e.CppCompilerLibSuf
         <Map
           {
             (Output e.Output) = ' "' e.Output '"';

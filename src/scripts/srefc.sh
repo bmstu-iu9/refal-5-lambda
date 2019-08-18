@@ -46,6 +46,8 @@ set_scratch_flags() {
   CPP=(
     --cpp-command-exe="$CPPLINEE"
     --cpp-command-lib="$CPPLINEL"
+    --cpp-command-exe-suf="$CPPLINEESUF"
+    --cpp-command-lib-suf="$CPPLINELSUF"
   )
 }
 

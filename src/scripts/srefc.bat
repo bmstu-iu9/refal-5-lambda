@@ -58,7 +58,8 @@ setlocal
   call "%DISTRDIR%\scripts\load-config.bat" || exit /b 1
   set D=-D "%LIBDIR%\scratch\platform-Windows" -D "%LIBDIR%\scratch"
   set PREFIX=
-  set CPP=--cpp-command-exe="%CPPLINEE%" --cpp-command-lib="%CPPLINEL%"
+  set CPP=--cpp-command-exe="%CPPLINEE%" --cpp-command-lib="%CPPLINEL%" ^
+    --cpp-command-exe-suf="%CPPLINEESUF%" --cpp-command-lib-suf="%CPPLINELSUF%"
   goto END_SWITCH
 
 :END_SWITCH

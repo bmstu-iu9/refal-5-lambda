@@ -426,8 +426,10 @@ Link-Exe {
       >;
 
   t.CommandLineSource t.Config
-  ((e.CommandLine) e.Flags) (/* нет префикса */) e.Files
-    = <Link-CppCompile t.Config ((e.CommandLine) e.Flags) e.Files>;
+  ((e.CommandLine) e.Flags (e.CommandLineSuf)) (/* нет префикса */) e.Files
+    = <Link-CppCompile
+        t.Config ((e.CommandLine) e.Flags (e.CommandLineSuf)) e.Files
+      >;
 
   t.CommandLineSource t.Config
   (e.AnyCommandLine) (e.Prefix)
@@ -482,8 +484,10 @@ Link-Lib {
       <Link-R t.CommandLineSource t.Config e.Files>;
 
   t.CommandLineSource t.Config
-  ((e.CommandLine) e.Flags) (/* нет префикса */) e.Files
-    = <Link-CppCompile t.Config ((e.CommandLine) e.Flags) e.Files>;
+  ((e.CommandLine) e.Flags (e.CommandLineSuf)) (/* нет префикса */) e.Files
+    = <Link-CppCompile
+        t.Config ((e.CommandLine) e.Flags (e.CommandLineSuf)) e.Files
+      >;
 
   t.CommandLineSource t.Config
   (e.AnyCommandLine) (e.Prefix)
@@ -572,7 +576,13 @@ CheckReturnCode {
 }
 
 Link-CppCompile {
-  t.Config ((e.CommandLine) e.Flags) e.Files
+  t.Config ((e.CommandLine) e.Flags (e.CommandLineSuf)) e.Files
+    = e.CommandLineSuf
+    : {
+        /* пусто */ = /* пусто */;
+        e.CommandLineSuf^ = ' "' e.CommandLineSuf '"';
+      }
+    : e.CommandLineSuf^
     = <Link-Aux
         <Config-GetTargetMode t.Config>
         {
@@ -588,6 +598,7 @@ Link-CppCompile {
                   }
                   e.Files
                 >
+                e.CommandLineSuf
               >
             : e.RetCode
             = <CheckReturnCode t.Config (e.RetCode) 'C++ compiler'>
