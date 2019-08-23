@@ -100,6 +100,7 @@ goto :EOF
     refalrts-main ^
     refalrts-profiler ^
     refalrts-vm ^
+    refalrts-vm-api ^
     refalrts-platform-specific 2>__error.txt
   if not exist _test_prefix.exe-prefix (
     echo CAN'T CREATE COMMON PREFIX, SEE __error.txt

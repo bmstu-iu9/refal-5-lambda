@@ -52,6 +52,7 @@ setlocal
     refalrts-main ^
     refalrts-profiler ^
     refalrts-vm ^
+    refalrts-vm-api ^
     refalrts-platform-specific
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
 endlocal

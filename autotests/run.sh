@@ -187,6 +187,7 @@ run_test() {
     refalrts-main
     refalrts-profiler
     refalrts-vm
+    refalrts-vm-api
     refalrts-platform-POSIX
     refalrts-platform-specific
   "

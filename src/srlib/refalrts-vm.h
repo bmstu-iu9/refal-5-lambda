@@ -10,6 +10,8 @@
 #include "refalrts-diagnostic-config.h"
 #include "refalrts-functions.h"
 #include "refalrts-utils.h"
+#include "refalrts-vm-api.h"
+#include "refalrts-vm-base.h"
 
 
 //==============================================================================
@@ -25,7 +27,7 @@ class VM;
 
 typedef Debugger *(*DebuggerFactory)(VM *vm);
 
-class VM {
+class VM : public VMbase {
   struct StateRefalMachine;
 
   int m_ret_code;
@@ -155,7 +157,10 @@ private:
   jmp_buf *m_memory_fail;
 
 public:
-  VM(Profiler *profiler, Domain *domain, DiagnosticConfig *diagnostic_config);
+  VM(
+    const VMapi *api, Profiler *profiler, Domain *domain,
+    DiagnosticConfig *diagnostic_config
+  );
   ~VM();
 
   int get_return_code() const {
@@ -1038,10 +1043,11 @@ public:
 };
 
 inline VM::VM(
-  Profiler *profiler, Domain *domain,
+  const VMapi *api, Profiler *profiler, Domain *domain,
   DiagnosticConfig *diagnostic_config
 )
-  : m_ret_code(0)
+  : VMbase(api)
+  , m_ret_code(0)
   , m_argv(0)
   , m_argc(0)
   , m_first_marker(0, & m_swap_hedge)

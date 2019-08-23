@@ -94,6 +94,7 @@ prepare_common() {
     refalrts-platform-specific
     refalrts-profiler
     refalrts-vm
+    refalrts-vm-api
     refalrts-platform-specific
     refalrts-platform-POSIX
   "

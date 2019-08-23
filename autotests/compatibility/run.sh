@@ -109,6 +109,7 @@ prepare_prefix() {
     refalrts-main \
     refalrts-profiler \
     refalrts-vm \
+    refalrts-vm-api \
     refalrts-platform-POSIX \
     refalrts-platform-specific \
     2>__error.txt

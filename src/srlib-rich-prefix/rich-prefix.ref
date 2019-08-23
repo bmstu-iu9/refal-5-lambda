@@ -10,5 +10,6 @@
 *$FROM refalrts-platform-specific
 *$FROM refalrts-profiler
 *$FROM refalrts-vm
+*$FROM refalrts-vm-api
 *$FROM refalrts-platform-specific
 *$FROM refalrts-platform-POSIX

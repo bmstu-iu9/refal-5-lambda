@@ -16,6 +16,9 @@
 //FROM refalrts-vm
 #include "refalrts-vm.h"
 
+//FROM refalrts-vm-api
+#include "refalrts-vm-api.h"
+
 //FROM refalrts-platform-specific
 #include "refalrts-platform-specific.h"
 

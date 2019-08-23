@@ -31,6 +31,7 @@ setlocal
     refalrts-main ^
     refalrts-profiler ^
     refalrts-vm ^
+    refalrts-vm-api ^
     refalrts-platform-specific
 
   set DIAG=++diagnostic+config=test-diagnostics.txt

@@ -92,6 +92,13 @@ static void load_native_module_report_error(
 
 refalrts::InitDiagnosticConfig refalrts::g_init_diagnostic_config;
 
+namespace {
+
+const refalrts::VMapi api = {
+};
+
+}  // unnamed namespace
+
 int main(int argc, char **argv) {
   refalrts::DiagnosticConfig diagnostic_config;
 
@@ -101,7 +108,7 @@ int main(int argc, char **argv) {
 
   refalrts::Profiler profiler(&diagnostic_config);
   refalrts::Domain domain(&diagnostic_config);
-  refalrts::VM vm(&profiler, &domain, &diagnostic_config);
+  refalrts::VM vm(&api, &profiler, &domain, &diagnostic_config);
 
   vm.set_debugger_factory(diagnostic_config.debugger_factory);
   vm.set_args(argc, argv);

@@ -31,6 +31,7 @@ setlocal
     refalrts-main ^
     refalrts-profiler ^
     refalrts-vm ^
+    refalrts-vm-api ^
     refalrts-platform-specific
 
   copy ..\..\src\srlib\Hash.ref .
