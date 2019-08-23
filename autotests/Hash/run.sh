@@ -6,7 +6,10 @@ LIBDIR=../../src/srlib
 
 run_all_tests() {
   COMMON_SRFLAGS=(
-    "-c $CPPLINEE"
+    --cpp-command-exe="$CPPLINEE"
+    --cpp-command-lib="$CPPLINEL"
+    --cpp-command-exe-suf="$CPPLINEESUF"
+    --cpp-command-lib-suf="$CPPLINELSUF"
     --exesuffix=$(platform_exe_suffix)
     -D$(platform_subdir_lookup $LIBDIR)
     -D$LIBDIR/platform-POSIX

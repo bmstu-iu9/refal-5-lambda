@@ -76,7 +76,10 @@ lookup_compilers() {
 
     LIBDIR=../../src/srlib
     COMMON_SRFLAGS=(
-      "-c $CPPLINEE"
+      --cpp-command-exe="$CPPLINEE"
+      --cpp-command-lib="$CPPLINEL"
+      --cpp-command-exe-suf="$CPPLINEESUF"
+      --cpp-command-lib-suf="$CPPLINELSUF"
       -OC
       --markup-context
       --exesuffix=$(platform_exe_suffix)

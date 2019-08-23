@@ -63,7 +63,10 @@ goto :EOF
 :RUN_TEST
 setlocal
   set COMMON_SRFLAGS= ^
-    -c "%CPPLINEE%" ^
+    --cpp-command-exe="%CPPLINEE%" ^
+    --cpp-command-lib="%CPPLINEL%" ^
+    --cpp-command-exe-suf="%CPPLINEESUF%" ^
+    --cpp-command-lib-suf="%CPPLINELSUF%" ^
     --exesuffix=.exe ^
     --prelude=test-prelude.srefi ^
     -D../src/srlib/platform-Windows ^

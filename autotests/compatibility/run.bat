@@ -77,7 +77,10 @@ goto :EOF
   set COMMON_SRFLAGS= ^
     -OC ^
     --markup-context ^
-    -c "%CPPLINEE%" ^
+    --cpp-command-exe="%CPPLINEE%" ^
+    --cpp-command-lib="%CPPLINEL%" ^
+    --cpp-command-exe-suf="%CPPLINEESUF%" ^
+    --cpp-command-lib-suf="%CPPLINELSUF%" ^
     --exesuffix=.exe ^
     -D../../src/srlib/platform-Windows ^
     -D../../src/srlib/common ^

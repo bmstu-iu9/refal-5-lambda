@@ -164,7 +164,10 @@ run_test_aux_with_flags.FAILURE() {
 
 run_test() {
   COMMON_SRFLAGS=(
-    "-c $CPPLINEE"
+    --cpp-command-exe="$CPPLINEE"
+    --cpp-command-lib="$CPPLINEL"
+    --cpp-command-exe-suf="$CPPLINEESUF"
+    --cpp-command-lib-suf="$CPPLINELSUF"
     --exesuffix=$(platform_exe_suffix)
     --prelude=test-prelude.srefi
     -D$(platform_subdir_lookup $LIBDIR)

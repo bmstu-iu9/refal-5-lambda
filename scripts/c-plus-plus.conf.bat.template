@@ -9,20 +9,32 @@ rem ниже. Убедитесь, что в ней задан правильны
 :: call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
 rem Не забудьте раскомментировать и эту строку
 :: set CPPLINEE=cl /EHcs /W3 /wd4996 /Fe
+:: set CPPLINEESUF=
+:: set CPPLINEL=cl /EHcs /W3 /wd4996 /LD /Fe
+:: set CPPLINELSUF=
 
 rem Если вы используете компилятор Borland C++ Compiler 5.5
 :: set PATH=%PATH%;C:\Borland\BCC55\bin
 :: set CPPLINEE=bcc32 -IC:\Borland\BCC55\Include -LC:\Borland\BCC55\Lib -w -e
+:: set CPPLINEESUF=
+:: set CPPLINEL=bcc32 -IC:\Borland\BCC55\Include -LC:\Borland\BCC55\Lib -w -tWD -e
+:: set CPPLINELSUF=
 
 rem Если вы используете компилятор MinGW (MinGW builds), установите в строке ниже
 rem правильный путь до каталога bin дистрибутива MinGW.
 :: set PATH=%PATH%;C:\Program Files\MinGW\bin
 :: set CPPLINEE=g++ -Wall -g -o
+:: set CPPLINEESUF=
+:: set CPPLINEL=g++ -Wall -g -shared -Wl,--enable-stdcall-fixup -o
+:: set CPPLINELSUF=
 
 rem Если вы используете компилятор Watcom, проверьте, что установлен правильный
 rem путь к файлу owsetenv.bat
 :: call C:\WATCOM\owsetenv.bat
 :: set CPPLINEE=cl -nologo -W3 -passwopts:-wcd=13 -Fe
+:: set CPPLINEESUF=
+:: set CPPLINEL=cl -nologo -W3 -passwopts:-wcd=13  -LD-Fe
+:: set CPPLINELSUF=
 
 rem Если вы используете компилятор Clang, раскомментируйте все три строчки ниже
 rem и установите в первых двух строчках правильный путь к каталогам bin
@@ -33,7 +45,14 @@ rem одинаковой.
 :: set PATH=%PATH%;C:\Program Files\LLVM\bin
 :: set CPPLINEE=clang++ -target i686-pc-windows-gnu -Wall -g -o
 :: set CPPLINEE=clang++ -target x86_64-pc-windows-gnu -Wall -g -o
+:: set CPPLINEESUF=
+:: set CPPLINEL=clang++ -target i686-pc-windows-gnu -Wall -g -shared -Wl,--enable-stdcall-fixup -o
+:: set CPPLINEL=clang++ -target x86_64-pc-windows-gnu -Wall -g -shared -Wl,--enable-stdcall-fixup -o
+:: set CPPLINELSUF=
 
 rem Если ваш компилятор C++ отсутствует в списке ниже, впишите его сами:
 :: set PATH=%PATH%;…
 :: set CPPLINEE=…
+:: set CPPLINEESUF=…
+:: set CPPLINEL=…
+:: set CPPLINELSUF=…

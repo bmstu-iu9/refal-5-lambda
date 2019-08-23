@@ -3,20 +3,35 @@
 
 ## Компилятор GNU C++
 # CPPLINEE='g++ -Wall -g -o'
+# CPPLINEESUF='-ldl'
+# CPPLINEL='g++ -shared -fpic -Wall -g -o'
+# CPPLINELSUF=''
 
 ## Компилятор Clang:
 # CPPLINEE='clang++ -Wall -g -o'
+# CPPLINEESUF='-ldl'
+# CPPLINEL='clang++ -shared -fpic -Wall -g -o'
+# CPPLINELSUF=''
 
 ## Компилятор Zapcc:
 # CPPLINEE='/home/username/zapcc-build/bin/zapcc++ -Wall -g -o'
+# CPPLINEESUF='-ldl'
+# CPPLINEL='c/home/username/zapcc-build/bin/zapcc++ -shared -fpic -Wall -g -o'
+# CPPLINELSUF=''
 
 ## Если ваш компилятор C++ отсутствует в списке ниже, впишите его сами:
 # PATH=$PATH:…
 # CPPLINEE=…
+# CPPLINEESUF=…
+# CPPLINEL=…
+# CPPLINELSUF=…
 
 echo>/dev/null
 
 ## По умолчанию используем GNU C++:
 if [ -z "$CPPLINEE" ]; then
   CPPLINEE='g++ -Wall -g -o'
+  CPPLINEESUF='-ldl'
+  CPPLINEL='g++ -shared -fpic -g -Wall -o'
+  CPPLINELSUF=''
 fi
