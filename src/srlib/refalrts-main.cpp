@@ -108,11 +108,11 @@ int main(int argc, char **argv) {
 
   refalrts::FnResult res;
   try {
-    bool successed = domain.load_native_module(
+    bool succeeded = domain.load_native_module(
       &vm, &g_module, load_native_module_report_error, &diagnostic_config, res
     );
 
-    if (! successed) {
+    if (! succeeded) {
       domain.unload(&vm, res);
       return 157;
     }
