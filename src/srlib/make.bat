@@ -57,7 +57,7 @@ goto :EOF
 
   call :COMPILE_SEPARATED  "%SCRATCHDIR%" "%CSOURCES% %RSOURCES%"
 
-  for /d %%d in (platform-*) do (
+  for /d %%d in (platform-* exe) do (
     if not exist %SCRATCHDIR%\%%d\NUL (
       mkdir %SCRATCHDIR%\%%d
     )
