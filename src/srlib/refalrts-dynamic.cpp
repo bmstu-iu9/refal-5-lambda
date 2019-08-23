@@ -7,6 +7,7 @@
 
 #include "refalrts-dynamic.h"
 #include "refalrts-commands.h"
+#include "refalrts-native-module.h"
 
 //FROM refalrts-functions
 #include "refalrts-functions.h"

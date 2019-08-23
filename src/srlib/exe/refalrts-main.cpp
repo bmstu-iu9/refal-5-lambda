@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "refalrts-diagnostic-config.h"
+#include "refalrts-native-module.h"
 
 
 //FROM refalrts
@@ -15,8 +16,6 @@
 //FROM refalrts-vm
 #include "refalrts-vm.h"
 
-
-extern struct refalrts::NativeModule g_module;
 
 static void load_native_module_report_error(
   refalrts::ModuleLoadingError error,

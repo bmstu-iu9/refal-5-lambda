@@ -12,6 +12,7 @@
 #include "refalrts.h"
 #include "refalrts-diagnostic-config.h"
 #include "refalrts-functions.h"
+#include "refalrts-native-module.h"
 #include "refalrts-platform-specific.h"
 
 
@@ -20,14 +21,6 @@
 //==============================================================================
 
 namespace refalrts {
-
-// Использовать class, public и private нельзя — требуется статическая
-// инициализация:
-//   X x = { ... };
-struct NativeModule {
-  size_t global_variables_memory;
-  NativeReference *native_references;
-};
 
 struct StringRef {
   explicit StringRef(const char *str = "")
