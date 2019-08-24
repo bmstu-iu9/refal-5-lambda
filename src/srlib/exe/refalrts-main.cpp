@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "refalrts-commands.h"
 #include "refalrts-diagnostic-config.h"
 #include "refalrts-native-module.h"
 
@@ -174,6 +175,29 @@ void profiler_start_e_loop(refalrts::VM *vm) {
   vm->profiler()->start_e_loop();
 }
 
+const char *vm_arg(refalrts::VM *vm, int param) {
+  return vm->arg(param);
+}
+
+refalrts::FnResult vm_main_loop(refalrts::VM *vm) {
+  jmp_buf *old = vm->reset_memory_fail(0);
+
+  const  refalrts::RASLCommand rasl[] = {
+    { refalrts::icPushState, 0, 0, 0 },
+    { refalrts::icNextStep, 0, 0, 0 },
+    { refalrts::icMainLoopReturnSuccess, 0, 0, 0 }
+  };
+  refalrts::FnResult res = vm->main_loop(rasl);
+  vm->reset_memory_fail(old);
+  return res;
+}
+
+void vm_print_seq(
+  refalrts::VM *vm, void *file, refalrts::Iter first, refalrts::Iter last
+) {
+  vm->print_seq(static_cast<FILE*>(file), first, last);
+}
+
 bool vm_repeated_stvar_term(
   refalrts::VM *vm, refalrts::Iter stvar_sample, refalrts::Iter pos
 ) {
@@ -319,6 +343,16 @@ void vm_alloc_string(
   vm->alloc_string(res_b, res_e, string);
 }
 
+void vm_splice_to_freelist(
+  refalrts::VM *vm, refalrts::Iter begin, refalrts::Iter end
+) {
+  vm->splice_to_freelist(begin, end);
+}
+
+refalrts::Iter vm_splice_from_freelist(refalrts::VM *vm, refalrts::Iter pos) {
+  return vm->splice_from_freelist(pos);
+}
+
 refalrts::FnResult vm_checked_alloc(
   refalrts::VM *vm, refalrts::CheckedAllocFn function, void *data
 ) {
@@ -346,6 +380,14 @@ bool vm_dangerous_state(refalrts::VM *vm) {
   return vm->domain()->dangerous_state();
 }
 
+void vm_push_stack(refalrts::VM *vm, refalrts::Iter call_bracket) {
+  vm->push_stack(call_bracket);
+}
+
+void vm_set_return_code(refalrts::VM *vm, int code) {
+  vm->set_return_code(code);
+}
+
 const refalrts::VMapi api = {
   lookup_function_in_domain,
   lookup_function_in_module,
@@ -359,6 +401,9 @@ const refalrts::VMapi api = {
   profiler_start_generated_function,
   profiler_stop_sentence,
   profiler_start_e_loop,
+  vm_arg,
+  vm_main_loop,
+  vm_print_seq,
   vm_repeated_stvar_term,
   vm_repeated_stvar_left,
   vm_repeated_stvar_right,
@@ -383,10 +428,14 @@ const refalrts::VMapi api = {
   vm_alloc_unwrapped_closure,
   vm_alloc_chars,
   vm_alloc_string,
+  vm_splice_to_freelist,
+  vm_splice_from_freelist,
   vm_checked_alloc,
   vm_ref_ptr,
   vm_current_module,
   vm_dangerous_state,
+  vm_push_stack,
+  vm_set_return_code,
 };
 
 }  // unnamed namespace

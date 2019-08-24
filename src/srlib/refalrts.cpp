@@ -8,8 +8,6 @@
 #include "refalrts-functions.h"
 #include "refalrts-native-module.h"
 #include "refalrts-utils.h"
-
-//FROM refalrts-vm
 #include "refalrts-vm.h"
 
 //FROM refalrts-vm-api
@@ -432,7 +430,7 @@ refalrts::FnResult refalrts::checked_alloc(
 }
 
 void refalrts::push_stack(refalrts::VM *vm, refalrts::Iter call_bracket) {
-  vm->push_stack(call_bracket);
+  get_api(vm)->push_stack(vm, call_bracket);
 }
 
 void refalrts::link_brackets(Iter left, Iter right) {
@@ -571,7 +569,7 @@ refalrts::Iter refalrts::splice_evar(
 void refalrts::splice_to_freelist(
   refalrts::VM *vm, refalrts::Iter begin, refalrts::Iter end
 ) {
-  vm->splice_to_freelist(begin, end);
+  get_api(vm)->splice_to_freelist(vm, begin, end);
 }
 
 extern void refalrts::splice_to_freelist_open(
@@ -585,7 +583,7 @@ extern void refalrts::splice_to_freelist_open(
 refalrts::Iter refalrts::splice_from_freelist(
   refalrts::VM *vm, refalrts::Iter pos
 ) {
-  return vm->splice_from_freelist(pos);
+  return get_api(vm)->splice_from_freelist(vm, pos);
 }
 
 /*
@@ -664,17 +662,17 @@ void refalrts::start_e_loop(refalrts::VM *vm) {
 // Прочие операции
 
 void refalrts::set_return_code(refalrts::VM *vm, int code) {
-  vm->set_return_code(code);
+  get_api(vm)->set_return_code(vm, code);
 }
 
 const char* refalrts::arg(refalrts::VM *vm, unsigned int param) {
-  return vm->arg(param);
+  return get_api(vm)->arg(vm, param);
 }
 
 void refalrts::debug_print_expr(
   refalrts::VM *vm, void *file, refalrts::Iter first, refalrts::Iter last
 ) {
-  vm->print_seq(static_cast<FILE*>(file), first, last);
+  get_api(vm)->print_seq(vm, file, first, last);
 }
 
 //==============================================================================
@@ -741,16 +739,7 @@ refalrts::NativeReference::NativeReference(
 //==============================================================================
 
 refalrts::FnResult refalrts::recursive_call_main_loop(refalrts::VM *vm) {
-  jmp_buf *old = vm->reset_memory_fail(0);
-
-  const  refalrts::RASLCommand rasl[] = {
-    { refalrts::icPushState, 0, 0, 0 },
-    { refalrts::icNextStep, 0, 0, 0 },
-    { refalrts::icMainLoopReturnSuccess, 0, 0, 0 }
-  };
-  FnResult res = vm->main_loop(rasl);
-  vm->reset_memory_fail(old);
-  return res;
+  return get_api(vm)->main_loop(vm);
 }
 
 

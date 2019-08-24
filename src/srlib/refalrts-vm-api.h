@@ -39,6 +39,10 @@ struct VMapi {
   void (*stop_sentence)(VM *vm);
   void (*start_e_loop)(VM *vm);
 
+  const char *(*arg)(VM *vm, int param);
+  FnResult (*main_loop)(VM *vm);
+  void (*print_seq)(VM *vm, void *file, Iter first, Iter last);
+
   bool (*repeated_stvar_term)(VM *vm, Iter stvar_sample, Iter pos);
   Iter (*repeated_stvar_left)(
     VM *vm, Iter& stvar, Iter stvar_sample, Iter& first, Iter& last
@@ -85,10 +89,14 @@ struct VMapi {
     VM *vm, Iter& res_b, Iter& res_e, const char buffer[], unsigned buflen
   );
   void (*alloc_string)(VM *vm, Iter& res_b, Iter& res_e, const char *string);
+  void (*splice_to_freelist)(VM *vm, Iter begin, Iter end);
+  Iter (*splice_from_freelist)(VM *vm, Iter pos);
   FnResult (*checked_alloc)(VM *vm, CheckedAllocFn function, void *data);
   void *(*ref_ptr)(VM *vm, size_t offset);
   Module *(*current_module)(VM *vm);
   bool (*dangerous_state)(VM *vm);
+  void (*push_stack)(VM *vm, Iter call_bracket);
+  void (*set_return_code)(VM *vm, int code);
 };
 
 const struct VMapi *get_api(VM *vm);
