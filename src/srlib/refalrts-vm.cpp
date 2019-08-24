@@ -1611,6 +1611,7 @@ bool refalrts::VM::equal_nodes(refalrts::Iter node1, refalrts::Iter node2) {
       */
       default:
         refalrts_switch_default_violation(node1->tag);
+        return false;       /* подавляет предупреждение компилятора */
     }
     // Все ветви в case завершаются либо return, либо throw.
   }

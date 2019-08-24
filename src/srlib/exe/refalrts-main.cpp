@@ -141,9 +141,6 @@ int main(int argc, char **argv) {
     }
     fflush(stderr);
     fflush(stdout);
-  } catch (refalrts::SwitchDefaultViolation& error) {
-    error.print();
-    exit(151);
   } catch (std::exception& e) {
     fprintf(stderr, "INTERNAL ERROR: std::exception %s\n", e.what());
     return 152;

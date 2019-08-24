@@ -777,6 +777,7 @@ FILE *extract_file_handle(
       USE_IDENT(stderr) == pfile_handle->ident_info ? stderr : stdout;
   } else {
     refalrts_switch_default_violation(pfile_handle->tag);
+    return 0;   // предупреждение компилятора
   }
 }
 
@@ -3373,6 +3374,7 @@ bool cookie_ns::compare(refalrts::Iter left, refalrts::Iter right) {
 
       default:
         refalrts_switch_default_violation(left->tag);
+        assert(false);  // предупреждение компилятора
     }
   }
 

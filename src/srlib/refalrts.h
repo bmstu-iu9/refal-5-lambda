@@ -377,33 +377,14 @@ const char* arg(VM *vm, unsigned int param);
 */
 void debug_print_expr(VM *vm, void *file, Iter first, Iter last);
 
-class SwitchDefaultViolation {
-  const char *m_filename;
-  int m_line;
-  long m_bad_switch_value;
-  const char *m_bad_expr;
 
-public:
-  SwitchDefaultViolation(
-    const char *filename,
-    int line,
-    long bad_switch_value,
-    const char *bad_expr
-  )
-    : m_filename(filename)
-    , m_line(line)
-    , m_bad_switch_value(bad_switch_value)
-    , m_bad_expr(bad_expr)
-  {
-    /* пусто */
-  }
-
-  void print();
-};
+void switch_default_violation_impl(
+  const char *filename, int line_no, long bad_switch_value, const char *bad_expr
+);
 
 #define refalrts_switch_default_violation(bad_switch_value) \
   ( \
-    throw ::refalrts::SwitchDefaultViolation( \
+    ::refalrts::switch_default_violation_impl( \
       __FILE__, __LINE__, (bad_switch_value), #bad_switch_value \
     ) \
   )

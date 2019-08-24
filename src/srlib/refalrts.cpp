@@ -766,11 +766,14 @@ refalrts::FnResult refalrts::recursive_call_main_loop(refalrts::VM *vm) {
 
 //==============================================================================
 
-void refalrts::SwitchDefaultViolation::print() {
+void refalrts::switch_default_violation_impl(
+  const char *filename, int line_no, long bad_switch_value, const char *bad_expr
+) {
   fprintf(
     stderr, "%s:%d:INTERNAL ERROR: switch value %s == %ld not handled\n",
-    m_filename, m_line, m_bad_expr, m_bad_switch_value
+    filename, line_no, bad_expr, bad_switch_value
   );
+  exit(151);
 }
 
 //==============================================================================

@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <utility>
@@ -63,6 +64,7 @@ void refalrts::Profiler::stop_sentence() {
 
     default:
       refalrts_switch_default_violation(m_current_state);
+      assert(false);    // предупреждение компилятора
   }
 
   m_counters[counter] += (now - m_prev_cutoff);
@@ -85,6 +87,7 @@ void refalrts::Profiler::start_e_loop() {
 
     default:
       refalrts_switch_default_violation(m_current_state);
+      assert(false);    // предупреждение компилятора
   }
 
   m_counters[counter] += (now - m_prev_cutoff);
@@ -110,6 +113,7 @@ void refalrts::Profiler::start_repeated_evar() {
 
     default:
       refalrts_switch_default_violation(m_current_state);
+      assert(false);    // предупреждение компилятора
   }
 
   m_counters[counter] += (now - m_prev_cutoff);
@@ -135,6 +139,7 @@ void refalrts::Profiler::start_repeated_tvar() {
 
     default:
       refalrts_switch_default_violation(m_current_state);
+      assert(false);    // предупреждение компилятора
   }
 
   m_counters[counter] += (now - m_prev_cutoff);
@@ -170,6 +175,7 @@ void refalrts::Profiler::stop_repeated() {
 
     default:
       refalrts_switch_default_violation(m_current_state);
+      assert(false);    // предупреждение компилятора
   }
 
   m_counters[counter] += (now - m_prev_cutoff);
@@ -198,6 +204,7 @@ void refalrts::Profiler::start_result() {
 
     default:
       refalrts_switch_default_violation(m_current_state);
+      assert(false);    // предупреждение компилятора
   }
 
   m_counters[counter] += (now - m_prev_cutoff);
@@ -223,6 +230,7 @@ void refalrts::Profiler::start_copy() {
 
     default:
       refalrts_switch_default_violation(m_current_state);
+      assert(false);    // предупреждение компилятора
   }
 
   m_counters[counter] += (now - m_prev_cutoff);
@@ -248,6 +256,7 @@ void refalrts::Profiler::stop_copy() {
 
     default:
       refalrts_switch_default_violation(m_current_state);
+      assert(false);    // предупреждение компилятора
   }
 
   m_counters[counter] += (now - m_prev_cutoff);
@@ -278,6 +287,7 @@ void refalrts::Profiler::stop_allocation_abnormal() {
 
     default:
       refalrts_switch_default_violation(m_current_state);
+      assert(false);    // предупреждение компилятора
   }
 
   m_counters[counter] += (now - m_prev_cutoff);
@@ -308,6 +318,7 @@ void refalrts::Profiler::stop_function() {
 
     default:
       refalrts_switch_default_violation(m_current_state);
+      assert(false);    // предупреждение компилятора
   }
 
   m_counters[counter] += (now - m_prev_cutoff);
