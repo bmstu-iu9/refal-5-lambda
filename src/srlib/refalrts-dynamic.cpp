@@ -1010,6 +1010,44 @@ void refalrts::Domain::free_domain_memory() {
 // Идентификаторы
 //------------------------------------------------------------------------------
 
+refalrts::RefalIdentDescr::RefalIdentDescr(const char *name)
+  : m_name(0)
+{
+  size_t length = strlen(name);
+  m_name = static_cast<char*>(memcpy(new char[length + 1], name, length + 1));
+}
+
+refalrts::RefalIdentDescr::~RefalIdentDescr() {
+  delete[] m_name;
+}
+
+refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
+  refalrts::Domain *domain, const char *name
+) {
+  if (! name) {
+    name = "";
+  }
+
+  RefalIdentifier res = domain->lookup_ident(name);
+  if (! res) {
+    try {
+      res = new RefalIdentDescr(name);
+      bool allocated = domain->register_ident(res);
+
+      if (! allocated) {
+        delete res;
+        res = 0;
+      }
+    } catch (std::bad_alloc&) {
+      if (res) {
+        delete res;
+        res = 0;
+      }
+    }
+  }
+  return res;
+}
+
 size_t refalrts::Domain::idents_count() {
   return m_idents_table.size();
 }
