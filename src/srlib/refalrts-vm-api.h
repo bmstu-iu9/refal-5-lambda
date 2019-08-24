@@ -59,6 +59,33 @@ struct VMapi {
     Iter& first, Iter& last
   );
 
+  void (*reset_allocator)(VM *vm);
+  void (*copy_evar)(
+    VM *vm, Iter& evar_res_b, Iter& evar_res_e,
+    Iter evar_b_sample, Iter evar_e_sample
+  );
+  void (*copy_stvar)(VM *vm, Iter& stvar_res, Iter stvar_sample);
+  void (*alloc_copy_evar)(
+    VM *vm, Iter& res, Iter evar_b_sample, Iter evar_e_sample
+  );
+  void (*alloc_copy_svar)(VM *vm, Iter& svar_res, Iter svar_sample);
+  void (*alloc_char)(VM *vm, Iter& res, char ch);
+  void (*alloc_number)(VM *vm, Iter& res, RefalNumber num);
+  void (*alloc_name)(VM *vm, Iter& res, RefalFunction *func);
+  void (*alloc_ident)(VM *vm, Iter& res, RefalIdentifier ident);
+  void (*alloc_open_adt)(VM *vm, Iter& res);
+  void (*alloc_close_adt)(VM *vm, Iter& res);
+  void (*alloc_open_bracket)(VM *vm, Iter& res);
+  void (*alloc_close_bracket)(VM *vm, Iter& res);
+  void (*alloc_open_call)(VM *vm, Iter& res);
+  void (*alloc_close_call)(VM *vm, Iter& res);
+  void (*alloc_closure_head)(VM *vm, Iter& res);
+  void (*alloc_unwrapped_closure)(VM *vm, Iter& res, Iter head);
+  void (*alloc_chars)(
+    VM *vm, Iter& res_b, Iter& res_e, const char buffer[], unsigned buflen
+  );
+  void (*alloc_string)(VM *vm, Iter& res_b, Iter& res_e, const char *string);
+  FnResult (*checked_alloc)(VM *vm, CheckedAllocFn function, void *data);
   void *(*ref_ptr)(VM *vm, size_t offset);
   Module *(*current_module)(VM *vm);
   bool (*dangerous_state)(VM *vm);

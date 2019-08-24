@@ -324,90 +324,90 @@ unsigned refalrts::read_chars(
 // Операции построения результата
 
 void refalrts::reset_allocator(refalrts::VM *vm) {
-  vm->reset_allocator();
+  get_api(vm)->reset_allocator(vm);
 }
 
 void refalrts::copy_evar(
   refalrts::VM *vm, refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
 ) {
-  vm->copy_evar(evar_res_b, evar_res_e, evar_b_sample, evar_e_sample);
+  get_api(vm)->copy_evar(vm, evar_res_b, evar_res_e, evar_b_sample, evar_e_sample);
 }
 
 void refalrts::copy_stvar(
   refalrts::VM *vm, refalrts::Iter& stvar_res, refalrts::Iter stvar_sample
 ) {
-  vm->copy_stvar(stvar_res, stvar_sample);
+  get_api(vm)->copy_stvar(vm, stvar_res, stvar_sample);
 }
 
 void refalrts::alloc_copy_evar(
   refalrts::VM *vm, refalrts::Iter& res,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
 ) {
-  vm->alloc_copy_evar(res, evar_b_sample, evar_e_sample);
+  get_api(vm)->alloc_copy_evar(vm, res, evar_b_sample, evar_e_sample);
 }
 
 void refalrts::alloc_copy_svar_(
   refalrts::VM *vm, refalrts::Iter& svar_res, refalrts::Iter svar_sample
 ) {
-  vm->copy_node(svar_res, svar_sample);
+  get_api(vm)->alloc_copy_svar(vm, svar_res, svar_sample);
 }
 
 
 void refalrts::alloc_char(refalrts::VM *vm, refalrts::Iter& res, char ch) {
-  vm->alloc_char(res, ch);
+  get_api(vm)->alloc_char(vm, res, ch);
 }
 
 void refalrts::alloc_number(
   refalrts::VM *vm, refalrts::Iter& res, refalrts::RefalNumber num
 ) {
-  vm->alloc_number(res, num);
+  get_api(vm)->alloc_number(vm, res, num);
 }
 
 void refalrts::alloc_name(
   refalrts::VM *vm, refalrts::Iter& res, refalrts::RefalFunction *fn
 ) {
-  vm->alloc_name(res, fn);
+  get_api(vm)->alloc_name(vm, res, fn);
 }
 
 void refalrts::alloc_ident(
   refalrts::VM *vm, refalrts::Iter& res, refalrts::RefalIdentifier ident
 ) {
-  vm->alloc_ident(res, ident);
+  get_api(vm)->alloc_ident(vm, res, ident);
 }
 
 void refalrts::alloc_open_adt(refalrts::VM *vm, refalrts::Iter& res) {
-  vm->alloc_open_adt(res);
+  get_api(vm)->alloc_open_adt(vm, res);
 }
 
 void refalrts::alloc_close_adt(refalrts::VM *vm, refalrts::Iter& res) {
-  vm->alloc_close_adt(res);
+  get_api(vm)->alloc_close_adt(vm, res);
 }
 
 void refalrts::alloc_open_bracket(refalrts::VM *vm, refalrts::Iter& res) {
-  vm->alloc_open_bracket(res);
+  get_api(vm)->alloc_open_bracket(vm, res);
 }
 
 void refalrts::alloc_close_bracket(refalrts::VM *vm, refalrts::Iter& res) {
-  vm->alloc_close_bracket(res);
+  get_api(vm)->alloc_close_bracket(vm, res);
 }
 
 void refalrts::alloc_open_call(refalrts::VM *vm, refalrts::Iter& res) {
-  vm->alloc_open_call(res);
+  get_api(vm)->alloc_open_call(vm, res);
 }
 
 void refalrts::alloc_close_call(refalrts::VM *vm, refalrts::Iter& res) {
-  vm->alloc_close_call(res);
+  get_api(vm)->alloc_close_call(vm, res);
 }
 
 void refalrts::alloc_closure_head(refalrts::VM *vm, refalrts::Iter& res) {
-  vm->alloc_closure_head(res);
+  get_api(vm)->alloc_closure_head(vm, res);
 }
 
 void refalrts::alloc_unwrapped_closure(
   refalrts::VM *vm, refalrts::Iter& res, refalrts::Iter head
 ) {
-  vm->alloc_unwrapped_closure(res, head);
+  get_api(vm)->alloc_unwrapped_closure(vm, res, head);
 }
 
 void refalrts::alloc_chars(
@@ -415,29 +415,20 @@ void refalrts::alloc_chars(
   refalrts::Iter& res_b, refalrts::Iter& res_e,
   const char buffer[], unsigned buflen
 ) {
-  vm->alloc_chars(res_b, res_e, buffer, buflen);
+  get_api(vm)->alloc_chars(vm, res_b, res_e, buffer, buflen);
 }
 
 void refalrts::alloc_string(
   refalrts::VM *vm,
   refalrts::Iter& res_b, refalrts::Iter& res_e, const char *string
 ) {
-  vm->alloc_string(res_b, res_e, string);
+  get_api(vm)->alloc_string(vm, res_b, res_e, string);
 }
 
 refalrts::FnResult refalrts::checked_alloc(
   refalrts::VM *vm, refalrts::CheckedAllocFn function, void *data
 ) {
-  jmp_buf on_memory_fail;
-  jmp_buf *old = vm->reset_memory_fail(&on_memory_fail);
-  if (setjmp(on_memory_fail)) {
-    vm->reset_memory_fail(old);
-    return cNoMemory;
-  }
-
-  FnResult res = function(vm, data);
-  vm->reset_memory_fail(old);
-  return res;
+  return get_api(vm)->checked_alloc(vm, function, data);
 }
 
 void refalrts::push_stack(refalrts::VM *vm, refalrts::Iter call_bracket) {
@@ -449,7 +440,48 @@ void refalrts::link_brackets(Iter left, Iter right) {
 }
 
 void refalrts::reinit_svar(refalrts::Iter res, refalrts::Iter sample) {
-  return VM::reinit_svar(res, sample);
+  // КОД СКОПИРОВАН ИЗ refalrts-vm.cpp!!!
+  // Так сделано ради возможности собрать .dll-ку без refalrts-vm.cpp,
+  // см. задачу #170.
+
+  // TODO: отрефакторить как-нибудь когда-нибудь
+  res->tag = sample->tag;
+
+  switch(sample->tag) {
+    case refalrts::cDataChar:
+      res->char_info = sample->char_info;
+      break;
+
+    case refalrts::cDataNumber:
+      res->number_info = sample->number_info;
+      break;
+
+    case refalrts::cDataFunction:
+      res->function_info = sample->function_info;
+      break;
+
+    case refalrts::cDataIdentifier:
+      res->ident_info = sample->ident_info;
+      break;
+
+    case refalrts::cDataClosure: {
+      res->tag = refalrts::cDataClosure;
+      refalrts::Iter head = sample->link_info;
+      res->link_info = head;
+      ++ (head->number_info);
+    }
+    break;
+
+    case refalrts::cDataFile:
+      res->file_info = sample->file_info;
+      break;
+
+    /*
+      Копируем только атом, скобок быть не должно.
+    */
+    default:
+      refalrts_switch_default_violation(sample->tag);
+  }
 }
 
 void refalrts::reinit_char(refalrts::Iter res, char ch) {

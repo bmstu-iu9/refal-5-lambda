@@ -218,6 +218,122 @@ bool vm_repeated_evar_right(
   );
 }
 
+void vm_reset_allocator(refalrts::VM *vm) {
+  vm->reset_allocator();
+}
+
+void vm_copy_evar(
+  refalrts::VM *vm, refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
+  refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
+) {
+  vm->copy_evar(evar_res_b, evar_res_e, evar_b_sample, evar_e_sample);
+}
+
+void vm_copy_stvar(
+  refalrts::VM *vm, refalrts::Iter& stvar_res, refalrts::Iter stvar_sample
+) {
+  vm->copy_stvar(stvar_res, stvar_sample);
+}
+
+void vm_alloc_copy_evar(
+  refalrts::VM *vm, refalrts::Iter& res,
+  refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
+) {
+  vm->alloc_copy_evar(res, evar_b_sample, evar_e_sample);
+}
+
+void vm_alloc_copy_svar(
+  refalrts::VM *vm, refalrts::Iter& svar_res, refalrts::Iter svar_sample
+) {
+  vm->copy_node(svar_res, svar_sample);
+}
+
+void vm_alloc_char(refalrts::VM *vm, refalrts::Iter& res, char ch) {
+  vm->alloc_char(res, ch);
+}
+
+void vm_alloc_number(
+  refalrts::VM *vm, refalrts::Iter& res, refalrts::RefalNumber num
+) {
+  vm->alloc_number(res, num);
+}
+
+void vm_alloc_name(
+  refalrts::VM *vm, refalrts::Iter& res, refalrts::RefalFunction *fn
+) {
+  vm->alloc_name(res, fn);
+}
+
+void vm_alloc_ident(
+  refalrts::VM *vm, refalrts::Iter& res, refalrts::RefalIdentifier ident
+) {
+  vm->alloc_ident(res, ident);
+}
+
+void vm_alloc_open_adt(refalrts::VM *vm, refalrts::Iter& res) {
+  vm->alloc_open_adt(res);
+}
+
+void vm_alloc_close_adt(refalrts::VM *vm, refalrts::Iter& res) {
+  vm->alloc_close_adt(res);
+}
+
+void vm_alloc_open_bracket(refalrts::VM *vm, refalrts::Iter& res) {
+  vm->alloc_open_bracket(res);
+}
+
+void vm_alloc_close_bracket(refalrts::VM *vm, refalrts::Iter& res) {
+  vm->alloc_close_bracket(res);
+}
+
+void vm_alloc_open_call(refalrts::VM *vm, refalrts::Iter& res) {
+  vm->alloc_open_call(res);
+}
+
+void vm_alloc_close_call(refalrts::VM *vm, refalrts::Iter& res) {
+  vm->alloc_close_call(res);
+}
+
+void vm_alloc_closure_head(refalrts::VM *vm, refalrts::Iter& res) {
+  vm->alloc_closure_head(res);
+}
+
+void vm_alloc_unwrapped_closure(
+  refalrts::VM *vm, refalrts::Iter& res, refalrts::Iter head
+) {
+  vm->alloc_unwrapped_closure(res, head);
+}
+
+void vm_alloc_chars(
+  refalrts::VM *vm,
+  refalrts::Iter& res_b, refalrts::Iter& res_e,
+  const char buffer[], unsigned buflen
+) {
+  vm->alloc_chars(res_b, res_e, buffer, buflen);
+}
+
+void vm_alloc_string(
+  refalrts::VM *vm,
+  refalrts::Iter& res_b, refalrts::Iter& res_e, const char *string
+) {
+  vm->alloc_string(res_b, res_e, string);
+}
+
+refalrts::FnResult vm_checked_alloc(
+  refalrts::VM *vm, refalrts::CheckedAllocFn function, void *data
+) {
+  jmp_buf on_memory_fail;
+  jmp_buf *old = vm->reset_memory_fail(&on_memory_fail);
+  if (setjmp(on_memory_fail)) {
+    vm->reset_memory_fail(old);
+    return refalrts::cNoMemory;
+  }
+
+  refalrts::FnResult res = function(vm, data);
+  vm->reset_memory_fail(old);
+  return res;
+}
+
 void *vm_ref_ptr(refalrts::VM *vm, size_t offset) {
   return vm->module()->global_variable(offset);
 }
@@ -248,6 +364,26 @@ const refalrts::VMapi api = {
   vm_repeated_stvar_right,
   vm_repeated_evar_left,
   vm_repeated_evar_right,
+  vm_reset_allocator,
+  vm_copy_evar,
+  vm_copy_stvar,
+  vm_alloc_copy_evar,
+  vm_alloc_copy_svar,
+  vm_alloc_char,
+  vm_alloc_number,
+  vm_alloc_name,
+  vm_alloc_ident,
+  vm_alloc_open_adt,
+  vm_alloc_close_adt,
+  vm_alloc_open_bracket,
+  vm_alloc_close_bracket,
+  vm_alloc_open_call,
+  vm_alloc_close_call,
+  vm_alloc_closure_head,
+  vm_alloc_unwrapped_closure,
+  vm_alloc_chars,
+  vm_alloc_string,
+  vm_checked_alloc,
   vm_ref_ptr,
   vm_current_module,
   vm_dangerous_state,
