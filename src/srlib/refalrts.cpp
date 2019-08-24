@@ -11,8 +11,6 @@
 
 //FROM refalrts-dynamic
 #include "refalrts-dynamic.h"
-//FROM refalrts-profiler
-#include "refalrts-profiler.h"
 //FROM refalrts-vm
 #include "refalrts-vm.h"
 
@@ -608,7 +606,7 @@ refalrts::Iter refalrts::wrap_closure(refalrts::Iter closure) {
 // Средства профилирования
 
 void refalrts::this_is_generated_function(refalrts::VM *vm) {
-  vm->profiler()->start_generated_function();
+  get_api(vm)->start_generated_function(vm);
 }
 
 double refalrts::ticks_per_second() {
@@ -618,17 +616,15 @@ double refalrts::ticks_per_second() {
 void refalrts::read_performance_counters(
   refalrts::VM *vm, double counters[]
 ) {
-  vm->profiler()->read_counters(counters);
-  vm->read_counters(counters);
-  vm->domain()->read_counters(counters);
+  get_api(vm)->read_performance_counters(vm, counters);
 }
 
 void refalrts::stop_sentence(refalrts::VM *vm) {
-  vm->profiler()->stop_sentence();
+  get_api(vm)->stop_sentence(vm);
 }
 
 void refalrts::start_e_loop(refalrts::VM *vm) {
-  vm->profiler()->start_e_loop();
+  get_api(vm)->start_e_loop(vm);
 }
 
 //------------------------------------------------------------------------------

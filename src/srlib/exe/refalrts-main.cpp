@@ -113,9 +113,31 @@ refalrts::Module *module_from_function_rep(refalrts::RefalFunction *module_rep) 
   return rep != 0 ? rep->module : 0;
 }
 
+void read_counters(refalrts::VM *vm, double counters[]) {
+  vm->profiler()->read_counters(counters);
+  vm->read_counters(counters);
+  vm->domain()->read_counters(counters);
+}
+
+void profiler_start_generated_function(refalrts::VM *vm) {
+  vm->profiler()->start_generated_function();
+}
+
+void profiler_stop_sentence(refalrts::VM *vm) {
+  vm->profiler()->stop_sentence();
+}
+
+void profiler_start_e_loop(refalrts::VM *vm) {
+  vm->profiler()->start_e_loop();
+}
+
 const refalrts::VMapi api = {
   unload_module_rep,
   module_from_function_rep,
+  read_counters,
+  profiler_start_generated_function,
+  profiler_stop_sentence,
+  profiler_start_e_loop,
 };
 
 }  // unnamed namespace

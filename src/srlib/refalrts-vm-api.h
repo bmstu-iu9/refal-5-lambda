@@ -14,6 +14,12 @@ struct VMapi {
   );
 
   Module *(*module_from_function_rep)(RefalFunction *module_rep);
+
+  void (*read_performance_counters)(VM *vm, double counters[]);
+
+  void (*start_generated_function)(VM *vm);
+  void (*stop_sentence)(VM *vm);
+  void (*start_e_loop)(VM *vm);
 };
 
 const struct VMapi *get_api(VM *vm);
