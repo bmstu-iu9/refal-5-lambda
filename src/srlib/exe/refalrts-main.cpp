@@ -93,6 +93,45 @@ refalrts::InitDiagnosticConfig refalrts::g_init_diagnostic_config;
 
 namespace {
 
+refalrts::RefalFunction * lookup_function_in_domain(
+  refalrts::VM *vm, const refalrts::RefalFuncName& name
+) {
+  return vm->domain()->lookup_function(name);
+}
+
+refalrts::RefalFunction * lookup_function_in_module(
+  refalrts::Module *module, const refalrts::RefalFuncName& name
+) {
+  return module->lookup_function(name);
+}
+
+refalrts::Module * load_module_mod(
+  refalrts::VM *vm, refalrts::Iter pos, const char *name,
+  refalrts::LoadModuleEvent event, void *callback_data,
+  refalrts::FnResult& result
+) {
+  assert(event != 0);
+  return vm->domain()->load_module(vm, pos, name, event, callback_data, result);
+}
+
+refalrts::RefalFunction * load_module_rep(
+  refalrts::VM *vm, refalrts::Iter pos, const char *name,
+  refalrts::LoadModuleEvent event, void *callback_data,
+  refalrts::FnResult& result
+) {
+  assert(event != 0);
+  refalrts::Module *module =
+    load_module_mod(vm, pos, name, event, callback_data, result);
+  return module ? module->representant() : 0;
+}
+
+void unload_module_mod(
+  refalrts::VM *vm, refalrts::Iter pos, refalrts::Module *module,
+  refalrts::FnResult& result
+) {
+  return vm->domain()->unload_module(vm, pos, module, result);
+}
+
 bool unload_module_rep(
   refalrts::VM *vm, refalrts::Iter pos, refalrts::RefalFunction *module_rep,
   refalrts::FnResult& result
@@ -113,6 +152,10 @@ refalrts::Module *module_from_function_rep(refalrts::RefalFunction *module_rep) 
   return rep != 0 ? rep->module : 0;
 }
 
+refalrts::RefalIdentifier ident_implode_(refalrts::VM *vm, const char *name) {
+  return ident_implode(vm->domain(), name);
+}
+
 void read_counters(refalrts::VM *vm, double counters[]) {
   vm->profiler()->read_counters(counters);
   vm->read_counters(counters);
@@ -131,13 +174,34 @@ void profiler_start_e_loop(refalrts::VM *vm) {
   vm->profiler()->start_e_loop();
 }
 
+void *vm_ref_ptr(refalrts::VM *vm, size_t offset) {
+  return vm->module()->global_variable(offset);
+}
+
+refalrts::Module *vm_current_module(refalrts::VM *vm) {
+  return vm->module();
+}
+
+bool vm_dangerous_state(refalrts::VM *vm) {
+  return vm->domain()->dangerous_state();
+}
+
 const refalrts::VMapi api = {
+  lookup_function_in_domain,
+  lookup_function_in_module,
+  load_module_mod,
+  load_module_rep,
+  unload_module_mod,
   unload_module_rep,
   module_from_function_rep,
+  ident_implode_,
   read_counters,
   profiler_start_generated_function,
   profiler_stop_sentence,
   profiler_start_e_loop,
+  vm_ref_ptr,
+  vm_current_module,
+  vm_dangerous_state,
 };
 
 }  // unnamed namespace

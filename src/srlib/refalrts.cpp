@@ -9,8 +9,6 @@
 #include "refalrts-native-module.h"
 #include "refalrts-utils.h"
 
-//FROM refalrts-dynamic
-#include "refalrts-dynamic.h"
 //FROM refalrts-vm
 #include "refalrts-vm.h"
 
@@ -656,7 +654,7 @@ void refalrts::debug_print_expr(
 refalrts::RefalIdentifier refalrts::ident_implode(
   refalrts::VM *vm, const char *name
 ) {
-  return ident_implode(vm->domain(), name);
+  return get_api(vm)->ident_implode(vm, name);
 }
 
 //------------------------------------------------------------------------------
@@ -667,14 +665,15 @@ refalrts::RefalFunction *
 refalrts::lookup_function_in_domain(
   refalrts::VM *vm, const refalrts::RefalFuncName& name
 ) {
-  return vm->domain()->lookup_function(name);
+  return get_api(vm)->lookup_function_in_domain(vm, name);
 }
 
 refalrts::RefalFunction *
 refalrts::lookup_function_in_module(
+  refalrts::VM *vm,
   refalrts::Module *module, const refalrts::RefalFuncName& name
 ) {
-  return module->lookup_function(name);
+  return get_api(vm)->lookup_function_in_module(module, name);
 }
 
 const refalrts::RefalFuncName *refalrts::function_name(
@@ -742,11 +741,11 @@ refalrts::GlobalRefBase::GlobalRefBase(size_t size)
 }
 
 void *refalrts::GlobalRefBase::ptr(refalrts::VM *vm) {
-  return vm->module()->global_variable(m_offset);
+  return get_api(vm)->ref_ptr(vm, m_offset);
 }
 
 refalrts::Module *refalrts::current_module(refalrts::VM *vm) {
-  return vm->module();
+  return get_api(vm)->current_module(vm);
 }
 
 namespace {
@@ -769,14 +768,14 @@ refalrts::Module *refalrts::load_module(
   if (! event) {
     event = empty_module_loading_error_callback;
   }
-  return vm->domain()->load_module(vm, pos, name, event, callback_data, result);
+  return get_api(vm)->load_module(vm, pos, name, event, callback_data, result);
 }
 
 void refalrts::unload_module(
   refalrts::VM *vm, refalrts::Iter pos, refalrts::Module *module,
   refalrts::FnResult& result
 ) {
-  return vm->domain()->unload_module(vm, pos, module, result);
+  return get_api(vm)->unload_module(vm, pos, module, result);
 }
 
 refalrts::RefalFunction * refalrts::load_module_rep(
@@ -787,8 +786,9 @@ refalrts::RefalFunction * refalrts::load_module_rep(
   if (! event) {
     event = empty_module_loading_error_callback;
   }
-  Module *module = refalrts::load_module(vm, pos, name, event, callback_data, result);
-  return module ? module->representant() : 0;
+  return get_api(vm)->load_module_rep(
+    vm, pos, name, event, callback_data, result
+  );
 }
 
 bool refalrts::unload_module(
@@ -805,5 +805,5 @@ refalrts::Module *refalrts::module_from_function_rep(
 }
 
 bool refalrts::dangerous_state(refalrts::VM *vm) {
-  return vm->domain()->dangerous_state();
+  return get_api(vm)->dangerous_state(vm);
 }

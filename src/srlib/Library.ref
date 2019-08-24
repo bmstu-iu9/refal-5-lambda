@@ -3947,11 +3947,11 @@ refalrts::RefalFunction *cookie_ns::function_for_module(
       break;
 
     case cookie_ns::cHandleExType_Current:
-      result = refalrts::lookup_function_in_module(current, func_name);
+      result = refalrts::lookup_function_in_module(vm, current, func_name);
       break;
 
     case cookie_ns::cHandleExType_CurrentAndGlobal:
-      result = refalrts::lookup_function_in_module(current, func_name);
+      result = refalrts::lookup_function_in_module(vm, current, func_name);
       if (! result) {
         result = refalrts::lookup_function_in_domain(vm, func_name);
       }
@@ -3961,7 +3961,7 @@ refalrts::RefalFunction *cookie_ns::function_for_module(
       {
         refalrts::Module *module =
           refalrts::module_from_function_rep(vm, sModuleHandleEx->function_info);
-        result = refalrts::lookup_function_in_module(module, func_name);
+        result = refalrts::lookup_function_in_module(vm, module, func_name);
       }
       break;
 

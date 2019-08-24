@@ -65,7 +65,7 @@ struct RefalFunction;
 
 RefalFunction *lookup_function_in_domain(VM *vm, const RefalFuncName& name);
 RefalFunction *lookup_function_in_module(
-  Module *module, const RefalFuncName& name
+  VM *vm, Module *module, const RefalFuncName& name
 );
 
 inline RefalFunction *lookup_function_in_domain(
@@ -75,9 +75,11 @@ inline RefalFunction *lookup_function_in_domain(
 }
 
 inline RefalFunction *lookup_function_in_module(
-  Module *module, UInt32 cookie1, UInt32 cookie2, const char *name
+  VM *vm, Module *module, UInt32 cookie1, UInt32 cookie2, const char *name
 ) {
-  return lookup_function_in_module(module, RefalFuncName(name, cookie1, cookie2));
+  return lookup_function_in_module(
+    vm, module, RefalFuncName(name, cookie1, cookie2)
+  );
 }
 
 const RefalFuncName *function_name(const RefalFunction *func);
