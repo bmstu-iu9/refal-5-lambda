@@ -747,11 +747,7 @@ refalrts::GlobalRefBase::GlobalRefBase(size_t size)
 }
 
 void *refalrts::GlobalRefBase::ptr(refalrts::VM *vm) {
-  return ptr(vm->module());
-}
-
-void *refalrts::GlobalRefBase::ptr(refalrts::Module *module) {
-  return module->global_variable(m_offset);
+  return vm->module()->global_variable(m_offset);
 }
 
 refalrts::Module *refalrts::current_module(refalrts::VM *vm) {

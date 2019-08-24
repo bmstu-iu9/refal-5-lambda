@@ -416,7 +416,6 @@ protected:
   GlobalRefBase(size_t size);
 
   void *ptr(VM *vm);
-  void *ptr(Module *module);
 };
 
 template <typename T>
@@ -439,9 +438,6 @@ public:
 
   T& ref(VM *vm, size_t index = 0) {
     return static_cast<T*>(ptr(vm))[index];
-  }
-  T& ref(Module *module, size_t index = 0) {
-    return static_cast<T*>(ptr(module))[index];
   }
 };
 
