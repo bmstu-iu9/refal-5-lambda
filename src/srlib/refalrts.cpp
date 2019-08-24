@@ -5,13 +5,12 @@
 
 #include "refalrts.h"
 #include "refalrts-commands.h"
+#include "refalrts-functions.h"
 #include "refalrts-native-module.h"
 #include "refalrts-utils.h"
 
 //FROM refalrts-dynamic
 #include "refalrts-dynamic.h"
-//FROM refalrts-functions
-#include "refalrts-functions.h"
 //FROM refalrts-profiler
 #include "refalrts-profiler.h"
 //FROM refalrts-vm
@@ -57,7 +56,7 @@ void refalrts::load_constants(
   assert(callee->tag == cDataFunction);
 
   RefalFunction *func = callee->function_info;
-  assert(func->rasl == RefalNativeFunction::run);
+  assert(func->rasl[0].cmd == refalrts::icPerformNative);
 
   RefalNativeFunction *nat_func = static_cast<RefalNativeFunction*>(func);
 
@@ -800,20 +799,13 @@ bool refalrts::unload_module(
   refalrts::VM *vm, refalrts::Iter pos, refalrts::RefalFunction *module_rep,
   refalrts::FnResult& result
 ) {
-  ModuleRepresentant *rep = dynamic_cast<ModuleRepresentant*>(module_rep);
-  if (rep != 0 && rep->module != 0) {
-    refalrts::unload_module(vm, pos, rep->module, result);
-    return true;
-  } else {
-    return false;
-  }
+  return get_api(vm)->unload_module_rep(vm, pos, module_rep, result);
 }
 
 refalrts::Module *refalrts::module_from_function_rep(
-  refalrts::RefalFunction *module_rep
+  refalrts::VM *vm, refalrts::RefalFunction *module_rep
 ) {
-  ModuleRepresentant *rep = dynamic_cast<ModuleRepresentant*>(module_rep);
-  return rep != 0 ? rep->module : 0;
+  return get_api(vm)->module_from_function_rep(module_rep);
 }
 
 bool refalrts::dangerous_state(refalrts::VM *vm) {

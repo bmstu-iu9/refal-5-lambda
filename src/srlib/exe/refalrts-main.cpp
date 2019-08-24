@@ -93,7 +93,29 @@ refalrts::InitDiagnosticConfig refalrts::g_init_diagnostic_config;
 
 namespace {
 
+bool unload_module_rep(
+  refalrts::VM *vm, refalrts::Iter pos, refalrts::RefalFunction *module_rep,
+  refalrts::FnResult& result
+) {
+  refalrts::ModuleRepresentant *rep =
+    dynamic_cast<refalrts::ModuleRepresentant*>(module_rep);
+  if (rep != 0 && rep->module != 0) {
+    refalrts::unload_module(vm, pos, rep->module, result);
+    return true;
+  } else {
+    return false;
+  }
+}
+
+refalrts::Module *module_from_function_rep(refalrts::RefalFunction *module_rep) {
+  refalrts::ModuleRepresentant *rep =
+    dynamic_cast<refalrts::ModuleRepresentant*>(module_rep);
+  return rep != 0 ? rep->module : 0;
+}
+
 const refalrts::VMapi api = {
+  unload_module_rep,
+  module_from_function_rep,
 };
 
 }  // unnamed namespace

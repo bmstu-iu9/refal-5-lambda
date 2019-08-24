@@ -3960,7 +3960,7 @@ refalrts::RefalFunction *cookie_ns::function_for_module(
     case cookie_ns::cHandleExType_Value:
       {
         refalrts::Module *module =
-          refalrts::module_from_function_rep(sModuleHandleEx->function_info);
+          refalrts::module_from_function_rep(vm, sModuleHandleEx->function_info);
         result = refalrts::lookup_function_in_module(module, func_name);
       }
       break;

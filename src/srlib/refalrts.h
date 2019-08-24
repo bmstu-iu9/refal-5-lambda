@@ -488,7 +488,7 @@ bool unload_module(
   VM *vm, Iter pos, RefalFunction *module_rep, FnResult& result
 );
 
-Module *module_from_function_rep(RefalFunction *module_rep);
+Module *module_from_function_rep(VM *vm, RefalFunction *module_rep);
 
 // Особое состояние во время выполнения загрузки и выгрузки модулей
 // (во время выполнения их кода инициализации и финализации).
