@@ -39,6 +39,26 @@ struct VMapi {
   void (*stop_sentence)(VM *vm);
   void (*start_e_loop)(VM *vm);
 
+  bool (*repeated_stvar_term)(VM *vm, Iter stvar_sample, Iter pos);
+  Iter (*repeated_stvar_left)(
+    VM *vm, Iter& stvar, Iter stvar_sample, Iter& first, Iter& last
+  );
+  Iter (*repeated_stvar_right)(
+    VM *vm, Iter& stvar, Iter stvar_sample, Iter& first, Iter& last
+  );
+  bool (*repeated_evar_left)(
+    VM *vm,
+    Iter& evar_b, Iter& evar_e,
+    Iter evar_b_sample, Iter evar_e_sample,
+    Iter& first, Iter& last
+  );
+  bool (*repeated_evar_right)(
+    VM *vm,
+    Iter& evar_b, Iter& evar_e,
+    Iter evar_b_sample, Iter evar_e_sample,
+    Iter& first, Iter& last
+  );
+
   void *(*ref_ptr)(VM *vm, size_t offset);
   Module *(*current_module)(VM *vm);
   bool (*dangerous_state)(VM *vm);

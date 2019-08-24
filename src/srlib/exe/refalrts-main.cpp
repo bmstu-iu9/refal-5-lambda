@@ -174,6 +174,50 @@ void profiler_start_e_loop(refalrts::VM *vm) {
   vm->profiler()->start_e_loop();
 }
 
+bool vm_repeated_stvar_term(
+  refalrts::VM *vm, refalrts::Iter stvar_sample, refalrts::Iter pos
+) {
+  return vm->repeated_stvar_term(stvar_sample, pos);
+}
+
+refalrts::Iter vm_repeated_stvar_left(
+  refalrts::VM *vm,
+  refalrts::Iter& stvar, refalrts::Iter stvar_sample,
+  refalrts::Iter& first, refalrts::Iter& last
+) {
+  return vm->repeated_stvar_left(stvar, stvar_sample, first, last);
+}
+
+refalrts::Iter vm_repeated_stvar_right(
+  refalrts::VM *vm,
+  refalrts::Iter& stvar, refalrts::Iter stvar_sample,
+  refalrts::Iter& first, refalrts::Iter& last
+) {
+  return vm->repeated_stvar_right(stvar, stvar_sample, first, last);
+}
+
+bool vm_repeated_evar_left(
+  refalrts::VM *vm,
+  refalrts::Iter& evar_b, refalrts::Iter& evar_e,
+  refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
+  refalrts::Iter& first, refalrts::Iter& last
+) {
+  return vm->repeated_evar_left(
+    evar_b, evar_e, evar_b_sample, evar_e_sample, first, last
+  );
+}
+
+bool vm_repeated_evar_right(
+  refalrts::VM *vm,
+  refalrts::Iter& evar_b, refalrts::Iter& evar_e,
+  refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
+  refalrts::Iter& first, refalrts::Iter& last
+) {
+  return vm->repeated_evar_right(
+    evar_b, evar_e, evar_b_sample, evar_e_sample, first, last
+  );
+}
+
 void *vm_ref_ptr(refalrts::VM *vm, size_t offset) {
   return vm->module()->global_variable(offset);
 }
@@ -199,6 +243,11 @@ const refalrts::VMapi api = {
   profiler_start_generated_function,
   profiler_stop_sentence,
   profiler_start_e_loop,
+  vm_repeated_stvar_term,
+  vm_repeated_stvar_left,
+  vm_repeated_stvar_right,
+  vm_repeated_evar_left,
+  vm_repeated_evar_right,
   vm_ref_ptr,
   vm_current_module,
   vm_dangerous_state,

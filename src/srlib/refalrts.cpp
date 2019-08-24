@@ -255,7 +255,7 @@ refalrts::Iter refalrts::tvar_right(
 bool refalrts::repeated_stvar_term(
   refalrts::VM *vm, refalrts::Iter stvar_sample, refalrts::Iter pos
 ) {
-  return vm->repeated_stvar_term(stvar_sample, pos);
+  return get_api(vm)->repeated_stvar_term(vm, stvar_sample, pos);
 }
 
 refalrts::Iter refalrts::repeated_stvar_left(
@@ -263,7 +263,7 @@ refalrts::Iter refalrts::repeated_stvar_left(
   refalrts::Iter& stvar, refalrts::Iter stvar_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
-  return vm->repeated_stvar_left(stvar, stvar_sample, first, last);
+  return get_api(vm)->repeated_stvar_left(vm, stvar, stvar_sample, first, last);
 }
 
 refalrts::Iter refalrts::repeated_stvar_right(
@@ -271,7 +271,9 @@ refalrts::Iter refalrts::repeated_stvar_right(
   refalrts::Iter& stvar, refalrts::Iter stvar_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
-  return vm->repeated_stvar_right(stvar, stvar_sample, first, last);
+  return get_api(vm)->repeated_stvar_right(
+    vm, stvar, stvar_sample, first, last
+  );
 }
 
 bool refalrts::repeated_evar_left(
@@ -280,8 +282,8 @@ bool refalrts::repeated_evar_left(
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
-  return vm->repeated_evar_left(
-    evar_b, evar_e, evar_b_sample, evar_e_sample, first, last
+  return get_api(vm)->repeated_evar_left(
+    vm, evar_b, evar_e, evar_b_sample, evar_e_sample, first, last
   );
 }
 
@@ -291,8 +293,8 @@ bool refalrts::repeated_evar_right(
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
-  return vm->repeated_evar_right(
-    evar_b, evar_e, evar_b_sample, evar_e_sample, first, last
+  return get_api(vm)->repeated_evar_right(
+    vm, evar_b, evar_e, evar_b_sample, evar_e_sample, first, last
   );
 }
 
