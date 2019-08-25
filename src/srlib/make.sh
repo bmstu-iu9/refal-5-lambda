@@ -20,11 +20,12 @@ compile_scratch() {
 
   compile_separated "$SCRATCHDIR" "$CSOURCES $RSOURCES"
 
-  for d in platform-* exe; do
+  for d in platform-* exe platform-*/lib; do
     if [ -d $d ]; then
       mkdir -p $SCRATCHDIR/$d
       cp $d/*.cpp $SCRATCHDIR/$d
       cp $d/*.rasl $SCRATCHDIR/$d
+      cp $d/*.def $SCRATCHDIR/$d
     fi
   done
 }

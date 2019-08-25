@@ -8,6 +8,8 @@
 
 namespace refalrts {
 
+struct NativeModule;
+
 namespace api {
 
 enum { cModuleNameBufferLen = FILENAME_MAX + 1 };
@@ -40,6 +42,14 @@ struct ClockNs;
 ClockNs *init_clock_ns();
 double clock_ns(ClockNs *clk);
 void free_clock_ns(ClockNs *clk);
+
+void *load_os_module(
+  const char *filename,
+  NativeModule **native_module,
+  LoadModuleEvent event, void *callback_data
+);
+
+void unload_os_module(void *module);
 
 } // namespace api
 

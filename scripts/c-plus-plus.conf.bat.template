@@ -1,5 +1,7 @@
 @echo off
 
+set DEFFILE=%~dp0srlib\scratch\platform-Windows\lib\refalrts-main.def
+
 rem Раскомментируте групппу строчек ниже в зависимости от используемого
 rem компилятора C++
 
@@ -11,7 +13,7 @@ rem Не забудьте раскомментировать и эту стро�
 :: set CPPLINEE=cl /EHcs /W3 /wd4996 /Fe
 :: set CPPLINEESUF=
 :: set CPPLINEL=cl /EHcs /W3 /wd4996 /LD /Fe
-:: set CPPLINELSUF=
+:: set CPPLINELSUF="%DEFFILE%"
 
 rem Если вы используете компилятор Borland C++ Compiler 5.5
 :: set PATH=%PATH%;C:\Borland\BCC55\bin
@@ -26,7 +28,7 @@ rem правильный путь до каталога bin дистрибути
 :: set CPPLINEE=g++ -Wall -g -o
 :: set CPPLINEESUF=
 :: set CPPLINEL=g++ -Wall -g -shared -Wl,--enable-stdcall-fixup -o
-:: set CPPLINELSUF=
+:: set CPPLINELSUF="%DEFFILE%"
 
 rem Если вы используете компилятор Watcom, проверьте, что установлен правильный
 rem путь к файлу owsetenv.bat
@@ -34,7 +36,7 @@ rem путь к файлу owsetenv.bat
 :: set CPPLINEE=cl -nologo -W3 -passwopts:-wcd=13 -Fe
 :: set CPPLINEESUF=
 :: set CPPLINEL=cl -nologo -W3 -passwopts:-wcd=13  -LD-Fe
-:: set CPPLINELSUF=
+:: set CPPLINELSUF="%DEFFILE%"
 
 rem Если вы используете компилятор Clang, раскомментируйте все три строчки ниже
 rem и установите в первых двух строчках правильный путь к каталогам bin
@@ -48,7 +50,7 @@ rem одинаковой.
 :: set CPPLINEESUF=
 :: set CPPLINEL=clang++ -target i686-pc-windows-gnu -Wall -g -shared -Wl,--enable-stdcall-fixup -o
 :: set CPPLINEL=clang++ -target x86_64-pc-windows-gnu -Wall -g -shared -Wl,--enable-stdcall-fixup -o
-:: set CPPLINELSUF=
+:: set CPPLINELSUF="%DEFFILE%"
 
 rem Если ваш компилятор C++ отсутствует в списке ниже, впишите его сами:
 :: set PATH=%PATH%;…

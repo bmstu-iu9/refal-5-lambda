@@ -58,12 +58,13 @@ goto :EOF
 
   call :COMPILE_SEPARATED  "%SCRATCHDIR%" "%CSOURCES% %RSOURCES%"
 
-  for /d %%d in (platform-* exe) do (
+  for /d %%d in (platform-* exe platform-Windows\lib platform-POSIX\lib) do (
     if not exist %SCRATCHDIR%\%%d\NUL (
       mkdir %SCRATCHDIR%\%%d
     )
     copy %%d\*.cpp %SCRATCHDIR%\%%d
     copy %%d\*.rasl %SCRATCHDIR%\%%d
+    if exist %%d\*.def copy %%d\*.def %SCRATCHDIR%\%%d
   )
 goto :EOF
 

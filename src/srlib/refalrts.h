@@ -454,15 +454,19 @@ enum ModuleLoadingError {
   cModuleLoadingError_UnresolvedExternal,
   cModuleLoadingError_UnresolvedNative,
   cModuleLoadingError_FunctionIsRedeclared,
+  cModuleLoadingError_CantLoadNativeModule,
+  cModuleLoadingError_NativeModuleEntryPointNotFound,
 };
 
 struct ModuleLoadingErrorDetail {
   const char *message;
   RefalFuncName func_name;
+  const char *module_name;
 
   ModuleLoadingErrorDetail()
     : message("")
     , func_name(RefalFuncName("", 0, 0))
+    , module_name("")
   {
     /* пусто */
   }

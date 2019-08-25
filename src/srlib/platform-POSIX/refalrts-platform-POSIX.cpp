@@ -1,3 +1,4 @@
+#include <dlfcn.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -127,4 +128,40 @@ double refalrts::api::clock_ns(refalrts::api::ClockNs *clk) {
 
 void refalrts::api::free_clock_ns(refalrts::api::ClockNs *clk) {
   delete clk;
+}
+
+void *refalrts::api::load_os_module(
+  const char *filename,
+  refalrts::NativeModule **native_module,
+  refalrts::LoadModuleEvent event, void *callback_data
+) {
+  void *module;
+  void *pvar;
+  ModuleLoadingErrorDetail detail;
+  detail.module_name = filename;
+
+  module = dlopen(filename, RTLD_NOW);
+  if (! module) {
+    detail.message = dlerror();
+    event(cModuleLoadingError_CantLoadNativeModule, &detail, callback_data);
+    return 0;
+  }
+
+  pvar = dlsym(module, "g_module");
+  if (! pvar) {
+    detail.message = dlerror();
+    detail.func_name.name = "g_module";
+    event(
+      cModuleLoadingError_NativeModuleEntryPointNotFound,
+      &detail, callback_data
+    );
+    return 0;
+  }
+
+  *native_module = static_cast<refalrts::NativeModule *>(pvar);
+  return module;
+}
+
+void refalrts::api::unload_os_module(void *module) {
+  dlclose(module);
 }

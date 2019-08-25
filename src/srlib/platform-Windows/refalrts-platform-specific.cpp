@@ -181,3 +181,71 @@ void refalrts::api::free_clock_ns(refalrts::api::ClockNs *) {
 }
 
 #endif /* defined(REFAL_5_LAMBDA_USE_QPC) */
+
+
+extern "C" {
+
+typedef struct refalrts::NativeModule *
+(WINAPI *EntryPointFunction)(void);
+
+}
+
+namespace {
+
+void format_last_error(LPVOID *msg_buffer) {
+    DWORD dwErr = GetLastError();
+
+    FormatMessage(
+      FORMAT_MESSAGE_ALLOCATE_BUFFER
+      | FORMAT_MESSAGE_FROM_SYSTEM
+      | FORMAT_MESSAGE_IGNORE_INSERTS,
+      NULL, dwErr,
+      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+      (LPTSTR) &msg_buffer,
+      0, NULL
+    );
+}
+
+}  // unnamed namespace
+
+void *refalrts::api::load_os_module(
+  const char *filename,
+  refalrts::NativeModule **native_module,
+  refalrts::LoadModuleEvent event, void *callback_data
+) {
+  HMODULE hModule;
+  EntryPointFunction func;
+  ModuleLoadingErrorDetail detail;
+  LPVOID msg_buffer;
+  detail.module_name = filename;
+
+  hModule = LoadLibraryEx(filename, NULL, 0);
+  if (! hModule) {
+    format_last_error(&msg_buffer);
+    detail.message = (const char *) msg_buffer;
+    event(cModuleLoadingError_CantLoadNativeModule, &detail, callback_data);
+    LocalFree(msg_buffer);
+    return 0;
+  }
+
+  func = (EntryPointFunction) GetProcAddress(hModule, "RefalModuleEntryPoint");
+  if (! func) {
+    format_last_error(&msg_buffer);
+    detail.message = (const char *) msg_buffer;
+    detail.func_name.name = "RefalModuleEntryPoint";
+    event(
+      cModuleLoadingError_NativeModuleEntryPointNotFound,
+      &detail, callback_data
+    );
+    LocalFree(msg_buffer);
+    FreeLibrary(hModule);
+    return 0;
+  }
+
+  *native_module = func();
+  return (void*) hModule;
+}
+
+void refalrts::api::unload_os_module(void *module) {
+  FreeLibrary((HMODULE) module);
+}

@@ -1,0 +1,17 @@
+$ENTRY Fab {
+%%
+  for (refalrts::Iter p = arg_begin; p != arg_end; p = p->next) {
+    if (p->tag == refalrts::cDataChar) {
+      switch(p->char_info) {
+        case 'A': p->char_info = 'B'; break;
+        case 'a': p->char_info = 'b'; break;
+        default: /* ничего не делаем */; break;
+      }
+    }
+  }
+
+  refalrts::splice_to_freelist(vm, arg_begin, arg_begin->next);
+  refalrts::splice_to_freelist(vm, arg_end, arg_end);
+  return refalrts::cSuccess;
+%%
+}

@@ -85,6 +85,24 @@ static void load_native_module_report_error(
       );
       exit(156);
 
+    case refalrts::cModuleLoadingError_CantLoadNativeModule:
+      fprintf(
+        stderr, "INTERNAL ERROR: can't load native module %s (error: %s)",
+        detail->module_name,
+        detail->message
+      );
+      break;
+
+    case refalrts::cModuleLoadingError_NativeModuleEntryPointNotFound:
+      fprintf(
+        stderr,
+        "INTERNAL ERROR: entry point %s in module %s not found (error: %s)",
+        detail->func_name.name,
+        detail->module_name,
+        detail->message
+      );
+      break;
+
     default:
       refalrts_switch_default_violation(error);
   }

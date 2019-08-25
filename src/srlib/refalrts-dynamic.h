@@ -151,6 +151,7 @@ private:
   FuncsMap m_funcs_table;
   std::list<ConstTable> m_tables;
   NativeModule *m_native;
+  void *m_os_module;
   std::vector<char> m_global_variables;
   Domain *m_domain;
   NativeList m_unresolved_native_functions;
@@ -227,6 +228,7 @@ private:
   void alloc_global_variables() {
     m_global_variables.assign(m_native->global_variables_memory, '\0');
   }
+  bool load_os_module(LoadModuleEvent event, void *callback_data);
 };
 
 class Domain {

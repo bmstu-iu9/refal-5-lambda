@@ -31,6 +31,7 @@ refalrts::Module::Module(
   , m_funcs_table()
   , m_tables()
   , m_native(native)
+  , m_os_module(0)
   , m_global_variables()
   , m_domain(domain)
   , m_unresolved_native_functions()
@@ -50,6 +51,13 @@ refalrts::Module::Module(
   try {
     Loader loader(this, module_name.c_str());
     loader.enumerate_blocks();
+
+    if (! m_unresolved_native_functions.empty() && ! m_native) {
+      if (! load_os_module(event, callback_data)) {
+        return;
+      }
+    }
+
     if (m_native) {
       alloc_global_variables();
       success = resolve_native_functions(event, callback_data);
@@ -229,6 +237,16 @@ bool refalrts::Module::resolve_native_functions(
   return success;
 }
 
+bool refalrts::Module::load_os_module(
+  refalrts::LoadModuleEvent event, void *callback_data
+) {
+  m_os_module = refalrts::api::load_os_module(
+    m_name.c_str(), &m_native, event, callback_data
+  );
+
+  return m_os_module != 0;
+}
+
 bool refalrts::Module::has_alias(const std::string& alias) const {
   return std::find(m_aliases.begin(), m_aliases.end(), alias) != m_aliases.end();
 }
@@ -287,6 +305,12 @@ void refalrts::Module::deactivate() {
     m_funcs_table.erase(p);
     /* TODO: продумать освобождение статических ящиков */
     function->deactivate();
+  }
+
+  if (m_os_module) {
+    refalrts::api::unload_os_module(m_os_module);
+    m_os_module = 0;
+    m_native = 0;
   }
 }
 
