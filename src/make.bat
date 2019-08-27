@@ -23,6 +23,7 @@ setlocal
   call :MAKE_SUBDIR compiler makeself-s.bat
   call :MAKE_SUBDIR lexgen makeself-s.bat
   call :MAKE_SUBDIR srmake make-s.bat
+  call :MAKE_SUBDIR srlib-hash make.bat
   call :MAKE_SUBDIR srlib make.bat
   call :MAKE_SUBDIR srmake make.bat
   call :MAKE_SUBDIR lexgen makeself.bat

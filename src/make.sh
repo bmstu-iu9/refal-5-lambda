@@ -26,6 +26,7 @@ make_subdir() {
     make_subdir compiler makeself-s.sh
     make_subdir lexgen makeself-s.sh
     make_subdir srmake make-s.sh
+    make_subdir srlib-hash make.sh
     (
       export SREFC_FLAGS="$SREFC_FLAGS $SREFC_FLAGS_PLUS"
       make_subdir srlib make.sh
