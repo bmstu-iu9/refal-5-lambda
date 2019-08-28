@@ -31,7 +31,9 @@ Private Sub AddBinDirToPath(Env)
   Path = WshEnvUser(Env)
   DecoratedPath = Decorate(Path)
 
-  If Not InStr(1, DecoratedPath, DecoratedBinDir, vbTextCompare) > 0 Then
+  If Path = "" Then
+    WshEnvUser(Env) = BinDir
+  ElseIf Not InStr(1, DecoratedPath, DecoratedBinDir, vbTextCompare) > 0 Then
     WshEnvUser(Env) = Path & ";" & BinDir
   End If
 End Sub
@@ -55,8 +57,12 @@ Private Sub Install
 End Sub
 
 Private Function UnDecorate(Text)
-  Text = Left(Text, Len(Text) - 1)      'Skip right ";"
-  Text = Right(Text, Len(Text) - 1)     'Skip left ";"
+  If Len(Text) >= 2 Then
+    Text = Left(Text, Len(Text) - 1)      'Skip right ";"
+    Text = Right(Text, Len(Text) - 1)     'Skip left ";"
+  ElseIf Text = ";" Then
+    Text = ""
+  End If
   UnDecorate = Text
 End Function
 
@@ -66,7 +72,11 @@ Private Sub RemoveBinDirFromPath(Env)
   Path = Decorate(Path)
   Path = Replace(Path, DecoratedBinDir, ";", 1, -1, vbTextCompare)
   Path = UnDecorate(Path)
-  WshEnvUser(Env) = Path
+  If Path <> "" Then
+    WshEnvUser(Env) = Path
+  Else
+    WshEnvUser.Remove(Env)
+  End If
 End Sub
 
 Private Sub UnInstall
