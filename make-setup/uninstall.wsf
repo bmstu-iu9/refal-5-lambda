@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <job id="installer">
-  <script language="VBScript" src="constants.vbs"></script>
+  <script language="VBScript" src="constants.vbs"/>
   <script language="VBScript">
 <![CDATA[
 Option Explicit
 Dim WshShell, WshEnvUser, WshNamedArgs
-Dim Path, InstallDir, BinDir, DecoratedPath, DecoratedBinDir, FSO
+Dim InstallDir, FSO, BinDir, DecoratedBinDir
 
 Const CUninstallKey = _
   "HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\Refal-5-lambda"
+
+Private Function Decorate(Text)
+  Decorate = ";" & Text & ";"
+End Function
 
 Private Sub Init
   Set WshShell = CreateObject("WScript.Shell")
@@ -16,20 +20,24 @@ Private Sub Init
   Set WshNamedArgs = WScript.Arguments.Named
   Set FSO = CreateObject("Scripting.FileSystemObject")
 
-  Path = WshEnvUser("PATH")
   InstallDir = FSO.GetParentFolderName(WScript.ScriptFullName)
   BinDir = InstallDir & "\bin"
 
-  DecoratedPath = ";" & Path & ";"
-  DecoratedBinDir = ";" & BinDir & ";"
+  DecoratedBinDir = Decorate(BinDir)
+End Sub
+
+Private Sub AddBinDirToPath(Env)
+  Dim Path, DecoratedPath
+  Path = WshEnvUser(Env)
+  DecoratedPath = Decorate(Path)
+
+  If Not InStr(1, DecoratedPath, DecoratedBinDir, vbTextCompare) > 0 Then
+    WshEnvUser(Env) = Path & ";" & BinDir
+  End If
 End Sub
 
 Private Sub Install
-  Dim Size
-
-  If Not InStr(1, DecoratedPath, DecoratedBinDir, vbTextCompare) > 0 Then
-    WshEnvUser("PATH") = Path & ";" & BinDir
-  End If
+  AddBinDirToPath "PATH"
 
   WshShell.RegWrite CUninstallKey & "\DisplayIcon", _
     InstallDir & "\icon.ico", "REG_SZ"
@@ -46,13 +54,23 @@ Private Sub Install
   WScript.Echo("Successfully installed")
 End Sub
 
+Private Function UnDecorate(Text)
+  Text = Left(Text, Len(Text) - 1)      'Skip right ";"
+  Text = Right(Text, Len(Text) - 1)     'Skip left ";"
+  UnDecorate = Text
+End Function
+
+Private Sub RemoveBinDirFromPath(Env)
+  Dim Path
+  Path = WshEnvUser(Env)
+  Path = Decorate(Path)
+  Path = Replace(Path, DecoratedBinDir, ";", 1, -1, vbTextCompare)
+  Path = UnDecorate(Path)
+  WshEnvUser(Env) = Path
+End Sub
+
 Private Sub UnInstall
-  Path = DecoratedPath
-  BinDir = DecoratedBinDir
-  Path = Replace(Path, BinDir, ";", 1, -1, vbTextCompare)
-  Path = Left(Path, Len(Path) - 1)      'Skip right ";"
-  Path = Right(Path, Len(Path) - 1)     'Skip left ";"
-  WshEnvUser("PATH") = Path
+  RemoveBinDirFromPath "PATH"
 
   WshShell.CurrentDirectory = InstallDir & "\.."
   FSO.DeleteFolder InstallDir, True
