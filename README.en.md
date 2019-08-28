@@ -433,12 +433,16 @@ word.
 ## Installation
 
 Compiler can be installed into the system by downloading from
-[simple-refal-distrib.git][1] repository, or [simple-refal.git][1]. Executable
+[simple-refal-distrib.git][1] repository, or [refal-5-lambda.git][1]. Executable
 file of compiler will be available to you in the first case (half-compiled like
 C++ source code), full source code in the second case. In both cases, the
 installation above will be the same.
 
-### Windows Installation
+### Windows Installation from Installer
+
+Download [latest version][6] of Installer and run it.
+
+### Windows Installation from Sources
 
 1. Start `bootstrap.bat`. Script will create the `c-plus-plus.conf.bat` file in
    which proposed to mention the C++ compiler used.
@@ -449,11 +453,10 @@ installation above will be the same.
    default, the complete set of automatic tests it may take several dozen
    minutes (according to machine and C++ compiler). For starting without tests
    perform a `bootstrap.bat --no-tests`.
-4. Add appeared directory `bin` to the directory list an environment variable
-   `PATH`.
+4. Add appeared directory `bin` to the directory list an environment variables
+   `PATH` and `RL_MODULE_PATH`.
 5. You can use `srmake` or `srefc` commands compiling programs on Simple Refal.
-   See section 5 [user guide](doc/manul.pdf) for compiler using (The Manual is
-   a little dated.)
+   See section 5 [user guide][7] for compiler using.
 
 ### Installation on UNIX-like (Linux, macOS, Cygwin, MinGW)
 
@@ -466,11 +469,10 @@ configurations file by default.
    created in which  will be specify GCC by default.
 2. If you want to use another C++ compiler edit `c-plus-plus.conf.sh` file and
    if necessary restart the build.
-3. Add appeared directory `bin` to the directory list an environment variable
-   `PATH`.
+3. Add appeared directory `bin` to the directory list an environment variables
+   `PATH` and `RL_MODULE_PATH`.
 4. You can use `srmake` or `srefc` commands compiling programs on simple Refal.
-   See section 5 [user guide](doc/manul.pdf) for compiler using (The Manual is
-   a little dated.)
+   See section 5 [user guide][7] for compiler using.
 
 ## License
 
@@ -483,8 +485,10 @@ rational.
 > _Translation to English of this hunk of README.md is prepared by_
 > **Anastasia Dudkina <anastasia.vlad2014@yandex.ru>** _at 2018-02-08_
 
-[1]: https://github.com/Mazdaywik/simple-refal-distrib.git
-[2]: https://github.com/Mazdaywik/simple-refal.git
+[1]: https://github.com/bmstui-iu9/simple-refal-distrib.git
+[2]: https://github.com/bmstui-iu9/refal-5-lambda.git
 [3]: http://www.botik.ru/pub/local/scp/refal5/
 [4]: doc/historical/note000.txt
 [5]: http://refal.net/~belous/refal2-r.htm
+[6]: https://github.com/bmstu-iu9/refal-5-lambda/releases/latest
+[7]: https://bmstu-iu9.github.io/refal-5-lambda/
