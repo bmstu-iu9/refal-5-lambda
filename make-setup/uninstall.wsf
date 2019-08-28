@@ -40,6 +40,7 @@ End Sub
 
 Private Sub Install
   AddBinDirToPath "PATH"
+  AddBinDirToPath "RL_MODULE_PATH"
 
   WshShell.RegWrite CUninstallKey & "\DisplayIcon", _
     InstallDir & "\icon.ico", "REG_SZ"
@@ -81,6 +82,7 @@ End Sub
 
 Private Sub UnInstall
   RemoveBinDirFromPath "PATH"
+  RemoveBinDirFromPath "RL_MODULE_PATH"
 
   WshShell.CurrentDirectory = InstallDir & "\.."
   FSO.DeleteFolder InstallDir, True
