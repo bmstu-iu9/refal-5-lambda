@@ -146,7 +146,7 @@ setlocal
 
   find "TREE" %1 > NUL
   if not errorlevel 1 (
-    echo Pass special conditions tests:
+    echo Pass special tree tests:
     set SRFLAGS_PLUS=%SRFLAGS_PLUS_INIT%
     set SRFLAGS=-OT
     call :%2 %1 || exit /b 1
@@ -266,7 +266,7 @@ setlocal
   )
   erase __error.txt
   if exist %RASL% (
-    echo COMPILATION SUCCESSED, BUT EXPECTED SYNTAX ERROR
+    echo COMPILATION SUCCEEDED, BUT EXPECTED SYNTAX ERROR
     erase %RASL%
     exit /b 1
   )

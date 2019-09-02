@@ -54,7 +54,7 @@ run_test_all_modes() {
   fi
 
   if grep 'TREE' $1 > /dev/null; then
-    echo "Pass special conditions tests:"
+    echo "Pass special tree tests:"
     SRFLAGS_PLUS="$SRFLAGS_PLUS_INIT"
     SRFLAGS=-OT $2 $1
     SRFLAGS=-OD $2 $1
@@ -116,7 +116,7 @@ run_test_aux.BAD-SYNTAX() {
   fi
   rm __error.txt
   if [ -e $RASL ]; then
-    echo COMPILATION SUCCESSED, BUT EXPECTED SYNTAX ERROR
+    echo COMPILATION SUCCEEDED, BUT EXPECTED SYNTAX ERROR
     rm $RASL
     exit 1
   fi
