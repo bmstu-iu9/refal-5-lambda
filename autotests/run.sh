@@ -4,10 +4,13 @@ source ../scripts/platform-specific.sh
 
 LIBDIR=../src/srlib
 
+INT=_int_test$(platform_exe_suffix)
+
 # Подавление предупреждений плагина
 COMMON_SRFLAGS=()
 SRFLAGS=
 SRFLAGS_NAT=
+SRFLAGS_NAT_LIB=
 SRFLAGS_PREF=
 CPPLINEE=${CPPLINEE}
 CPPLINEL=${CPPLINEL}
@@ -25,14 +28,16 @@ prepare_prefix() {
       fi
     echo
   fi
+  if [[ ! -e _test_prefix.lib-prefix ]]; then
+    cat /dev/null > _test_prefix.lib-prefix
+  fi
 }
 
 run_test_all_modes() {
   if ! grep '%%' $1 > /dev/null; then
-    prepare_prefix
     SRFLAGS_PLUS_INIT="$SRFLAGS_PREF"
   else
-    SRFLAGS_PLUS_INIT="$SRFLAGS_NAT"
+    SRFLAGS_PLUS_INIT="$SRFLAGS_NAT_LIB"
   fi
 
   SRFLAGS_PLUS="$SRFLAGS_PLUS_INIT"
@@ -41,7 +46,7 @@ run_test_all_modes() {
   SRFLAGS=-OP $2 $1
   SRFLAGS=-OR $2 $1
   SRFLAGS=-OPR $2 $1
-  SRFLAGS_PLUS="$SRFLAGS_NAT"
+  SRFLAGS_PLUS="$SRFLAGS_NAT_LIB"
   SRFLAGS=-Od $2 $1
   SRFLAGS=-OdP $2 $1
   SRFLAGS=-OdR $2 $1
@@ -55,7 +60,7 @@ run_test_all_modes() {
     SRFLAGS=-OCP $2 $1
     SRFLAGS=-OCR $2 $1
     SRFLAGS=-OCPR $2 $1
-    SRFLAGS_PLUS="$SRFLAGS_NAT"
+    SRFLAGS_PLUS="$SRFLAGS_NAT_LIB"
     SRFLAGS=-OCd $2 $1
     SRFLAGS=-OCdP $2 $1
     SRFLAGS=-OCdR $2 $1
@@ -76,7 +81,24 @@ run_test_all_modes() {
   fi
 }
 
+prepare_int_test() {
+  SRC=$1
+  REFERENCE=${SRC%.*}
+
+  prepare_prefix
+
+  ../bin/srefc-core no-entry-go.FAILURE.sref -o ${INT} \
+    "${COMMON_SRFLAGS[@]}" ${SRFLAGS_PREF} \
+    --reference=${REFERENCE} >__out.txt 2>__error.txt
+  if [[ $? -ge 100 ]] || [[ ! -e ${INT} ]]; then
+    echo COMPILER ON no-entry-go.FAILURE.sref FAILS, SEE __error.txt
+    exit 1
+  fi
+  rm __out.txt __error.txt
+}
+
 run_test_aux() {
+  prepare_int_test $1
   run_test_all_modes $1 run_test_aux_with_flags
 }
 
@@ -85,11 +107,12 @@ run_test_aux_with_flags() {
   SREF=$1
   RASL=${SREF%.*}.rasl
   NATCPP=${SREF%.*}.cpp
-  EXE=${SREF%.*}$(platform_exe_suffix)
+  LIBR=${SREF%.*}.rasl-module
+  LIBN=${SREF%.*}$(platform_lib_suffix)
 
-  ../bin/srefc-core --keep-rasls ${SREF} -o ${EXE} "${COMMON_SRFLAGS[@]}" \
+  ../bin/srefc-core --keep-rasls ${SREF} --makelib "${COMMON_SRFLAGS[@]}" \
     ${SRFLAGS} ${SRFLAGS_PLUS} 2>__error.txt
-  if [[ $? -ge 100 ]] || [[ ! -e ${EXE} ]]; then
+  if [[ $? -ge 100 ]] || [[ ! -e ${LIBR} ]] && [[ ! -e ${LIBN} ]]; then
     echo COMPILER ON ${SREF} FAILS, SEE __error.txt
     exit 1
   fi
@@ -99,16 +122,14 @@ run_test_aux_with_flags() {
     NATCPP=
   fi
 
-  ./${EXE} ++diagnostic+config=test-diagnostics.txt
+  ./${INT} ++diagnostic+config=test-diagnostics.txt
   if [[ $? -gt 0 ]]; then
     echo TEST FAILED, SEE __dump.txt
     exit 1
   fi
 
-  rm ${RASL} ${NATCPP} ${EXE}
+  rm -f ${RASL} ${NATCPP} ${LIBR} ${LIBN} __dump.txt __log.txt
   rm -rf ${SREF%.*}.partial.dSYM
-  [[ -e __dump.txt ]] && rm __dump.txt
-  [[ -e __log.txt ]] && rm __log.txt
 
   echo
 }
@@ -136,6 +157,7 @@ run_test_aux.BAD-SYNTAX() {
 }
 
 run_test_aux.FAILURE() {
+  prepare_int_test $1
   run_test_all_modes $1 run_test_aux_with_flags.FAILURE
 }
 
@@ -144,11 +166,12 @@ run_test_aux_with_flags.FAILURE() {
   SREF=$1
   RASL=${SREF%.*}.rasl
   NATCPP=${SREF%.*}.cpp
-  EXE=${SREF%.*}$(platform_exe_suffix)
+  LIBR=${SREF%.*}.rasl-module
+  LIBN=${SREF%.*}$(platform_lib_suffix)
 
-  ../bin/srefc-core --keep-rasls ${SREF} -o ${EXE} "${COMMON_SRFLAGS[@]}" \
+  ../bin/srefc-core --keep-rasls ${SREF} --makelib "${COMMON_SRFLAGS[@]}" \
     ${SRFLAGS} ${SRFLAGS_PLUS} 2>__error.txt
-  if [[ $? -ge 100 ]] || [[ ! -e ${EXE} ]]; then
+  if [[ $? -ge 100 ]] || [[ ! -e ${LIBR} ]] && [[ ! -e ${LIBN} ]]; then
     echo COMPILER ON ${SREF} FAILS, SEE __error.txt
     exit 1
   fi
@@ -158,15 +181,13 @@ run_test_aux_with_flags.FAILURE() {
     NATCPP=
   fi
 
-  ./${EXE} ++diagnostic+config=test-diagnostics.txt
+  ./${INT} ++diagnostic+config=test-diagnostics.txt
   if [[ $? -lt 100 ]]; then
     echo TEST NOT EXPECTATIVE FAILED, SEE __dump.txt
     exit 1
   fi
 
-  rm ${RASL} ${NATCPP} ${EXE}
-  [[ -e __dump.txt ]] && rm __dump.txt
-  [[ -e __log.txt ]] && rm __log.txt
+  rm -f ${RASL} ${NATCPP} ${LIBR} ${LIBN} __dump.txt __log.txt
 
   echo "Ok! This failure was normal and expected"
   echo
@@ -180,6 +201,7 @@ run_test() {
     --cpp-command-exe-suf="$CPPLINEESUF"
     --cpp-command-lib-suf="$CPPLINELSUF"
     --exesuffix=$(platform_exe_suffix)
+    --libsuffix=$(platform_lib_suffix)
     --prelude=test-prelude.srefi
     -D$PLATFORM_SUBDIR
     -D$LIBDIR/platform-POSIX
@@ -198,6 +220,13 @@ run_test() {
     refalrts-main
     refalrts-profiler
     refalrts-vm
+    refalrts-vm-api
+    refalrts-platform-POSIX
+    refalrts-platform-specific
+  "
+  SRFLAGS_NAT_LIB="
+    refalrts
+    refalrts-main
     refalrts-vm-api
     refalrts-platform-POSIX
     refalrts-platform-specific
@@ -240,4 +269,6 @@ else
 fi
 
 [[ -e _test_prefix.exe-prefix ]] && rm _test_prefix.exe-prefix
+[[ -e _test_prefix.lib-prefix ]] && rm _test_prefix.lib-prefix
+[[ -e ${INT} ]] && rm ${INT}
 rm -rf _test_prefix.exe-prefix.partial.dSYM

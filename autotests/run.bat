@@ -15,7 +15,8 @@ setlocal
       for %%s in (%*) do call :RUN_TEST %%s || exit /b 1
     )
   )
-  if exist _test_prefix.exe-prefix erase _test_prefix.exe-prefix
+  if exist _test_prefix.*-prefix erase _test_prefix.*-prefix
+  if exist _int_test.exe erase _int_test.exe
 endlocal
 goto :EOF
 
@@ -32,6 +33,9 @@ goto :EOF
     if exist *.obj erase *.obj
     if exist *.tds erase *.tds
     echo.
+  )
+  if not exist _test_prefix.lib-prefix (
+    copy nul _test_prefix.lib-prefix
   )
   exit /b 0
 goto :EOF
@@ -68,6 +72,7 @@ setlocal
     --cpp-command-exe-suf="%CPPLINEESUF%" ^
     --cpp-command-lib-suf="%CPPLINELSUF%" ^
     --exesuffix=.exe ^
+    --libsuffix=.dll ^
     --prelude=test-prelude.srefi ^
     -D../src/srlib/platform-Windows ^
     -D../src/srlib ^
@@ -83,6 +88,10 @@ setlocal
     refalrts-vm ^
     refalrts-vm-api ^
     refalrts-platform-specific
+  set SRFLAGS_NAT_LIB=refalrts ^
+    refalrts-main ^
+    refalrts-vm-api ^
+    refalrts-platform-specific
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
 endlocal
 goto :EOF
@@ -91,10 +100,9 @@ goto :EOF
 setlocal
   find "%%" %1 > NUL
   if errorlevel 1 (
-    call :PREPARE_PREFIX || exit /b 1
     set SRFLAGS_PLUS_INIT=%SRFLAGS_PREF%
   ) else (
-    set SRFLAGS_PLUS_INIT=%SRFLAGS_NAT%
+    set SRFLAGS_PLUS_INIT=%SRFLAGS_NAT_LIB%
   )
 
   set SRFLAGS_PLUS=%SRFLAGS_PLUS_INIT%
@@ -108,7 +116,7 @@ setlocal
   call :%2 %1 || exit /b 1
   set SRFLAGS=-OPR
   call :%2 %1 || exit /b 1
-  set SRFLAGS_PLUS=%SRFLAGS_NAT%
+  set SRFLAGS_PLUS=%SRFLAGS_NAT_LIB%
   set SRFLAGS=-Od
   call :%2 %1 || exit /b 1
   set SRFLAGS=-OdP
@@ -132,7 +140,7 @@ setlocal
     call :%2 %1 || exit /b 1
     set SRFLAGS=-OCPR
     call :%2 %1 || exit /b 1
-    set SRFLAGS_PLUS=%SRFLAGS_NAT%
+    set SRFLAGS_PLUS=%SRFLAGS_NAT_LIB%
     set SRFLAGS=-OCd
     call :%2 %1 || exit /b 1
     set SRFLAGS=-OCdP
@@ -166,8 +174,30 @@ endlocal
 ::goto :EOF
 exit /b 0
 
+:PREPARE_INT_TEST
+setlocal
+  set REFERENCE=%~n1
+
+  call :PREPARE_PREFIX || exit /b 1
+
+  ..\bin\srefc-core no-entry-go.FAILURE.sref -o _int_test.exe ^
+    %COMMON_SRFLAGS% %SRFLAGS_PREF% ^
+    --reference=%REFERENCE% >__out.txt 2> __error.txt
+  if errorlevel 100 (
+    echo COMPILER ON no-entry-go.FAILURE.sref FAILS, SEE __error.txt
+    exit /b 1
+  )
+  if not exist _int_test.exe (
+    echo COMPILATION FAILED, SEE __error.txt
+    exit /b 1
+  )
+  erase __out.txt __error.txt
+endlocal
+goto :EOF
+
 :RUN_TEST_AUX
 setlocal
+  call :PREPARE_INT_TEST %~n1 || exit /b 1
   call :RUN_TEST_ALL_MODES %1 RUN_TEST_AUX_WITH_FLAGS || exit /b 1
 endlocal
 goto :EOF
@@ -178,29 +208,31 @@ setlocal
   set SREF=%1
   set RASL=%~n1.rasl
   set NATCPP=%~n1.cpp
-  set EXE=%~n1.exe
+  set LIBR=%~n1.rasl-module
+  set LIBN=%~n1.dll
 
-  ..\bin\srefc-core %SREF% -o %EXE% %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
+  ..\bin\srefc-core %SREF% --makelib %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
     --keep-rasls 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
   )
-  if not exist %EXE% (
-    echo COMPILATION FAILED
+  if not exist %LIBR% if not exist %LIBN% (
+    echo COMPILATION FAILED, SEE __error.txt
     exit /b 1
   )
   erase __error.txt
 
   if not exist %NATCPP% set NATCPP=
 
-  %EXE% ++diagnostic+config=test-diagnostics.txt
+  _int_test.exe ++diagnostic+config=test-diagnostics.txt
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
     exit /b 1
   )
 
-  erase %RASL% %NATCPP% %EXE%
+  erase %RASL% %NATCPP% %LIBR%
+  if exist %LIBN% erase %LIBN%
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt
@@ -211,6 +243,7 @@ goto :EOF
 
 :RUN_TEST_AUX.FAILURE
 setlocal
+  call :PREPARE_INT_TEST %~n1 || exit /b 1
   call :RUN_TEST_ALL_MODES %1 RUN_TEST_AUX_WITH_FLAGS.FAILURE || exit /b 1
 endlocal
 goto :EOF
@@ -221,15 +254,16 @@ setlocal
   set SREF=%1
   set RASL=%~n1.rasl
   set NATCPP=%~n1.cpp
-  set EXE=%~n1.exe
+  set LIBR=%~n1.rasl-module
+  set LIBN=%~n1.dll
 
-  ..\bin\srefc-core %SREF% -o %EXE% %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
+  ..\bin\srefc-core %SREF% --makelib %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
     --keep-rasls 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
   )
-  if not exist %EXE% (
+  if not exist %LIBR% if not exist %LIBN% (
     echo COMPILATION FAILED
     exit /b 1
   )
@@ -237,13 +271,14 @@ setlocal
 
   if not exist %NATCPP% set NATCPP=
 
-  %EXE% ++diagnostic+config=test-diagnostics.txt
+  _int_test.exe ++diagnostic+config=test-diagnostics.txt
   if not errorlevel 100 (
     echo TEST NOT EXPECTATIVE FAILED, SEE __dump.txt
     exit /b 1
   )
 
-  erase %RASL% %NATCPP% %EXE%
+  erase %RASL% %NATCPP% %LIBR%
+  if exist %LIBN% erase %LIBN%
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt
