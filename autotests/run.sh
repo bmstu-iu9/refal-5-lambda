@@ -124,12 +124,12 @@ run_test_aux.BAD-SYNTAX() {
     echo COMPILER ON ${SREF} FAILS, SEE __error.txt
     exit 1
   fi
-  rm __error.txt
   if [[ -e ${RASL} ]]; then
     echo COMPILATION SUCCEEDED, BUT EXPECTED SYNTAX ERROR
     rm ${RASL}
     exit 1
   fi
+  rm __error.txt
 
   echo "Ok! Compiler didn't crash on invalid syntax"
   echo

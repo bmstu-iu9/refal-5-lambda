@@ -186,11 +186,11 @@ setlocal
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
   )
-  erase __error.txt
   if not exist %EXE% (
     echo COMPILATION FAILED
     exit /b 1
   )
+  erase __error.txt
 
   if not exist %NATCPP% set NATCPP=
 
@@ -229,11 +229,11 @@ setlocal
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
   )
-  erase __error.txt
   if not exist %EXE% (
     echo COMPILATION FAILED
     exit /b 1
   )
+  erase __error.txt
 
   if not exist %NATCPP% set NATCPP=
 
@@ -264,12 +264,12 @@ setlocal
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
   )
-  erase __error.txt
   if exist %RASL% (
     echo COMPILATION SUCCEEDED, BUT EXPECTED SYNTAX ERROR
     erase %RASL%
     exit /b 1
   )
+  erase __error.txt
   echo Ok! Compiler didn't crash on invalid syntax
   echo.
 endlocal
