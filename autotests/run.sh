@@ -4,12 +4,22 @@ source ../scripts/platform-specific.sh
 
 LIBDIR=../src/srlib
 
+# Подавление предупреждений плагина
+COMMON_SRFLAGS=()
+SRFLAGS=
+SRFLAGS_NAT=
+SRFLAGS_PREF=
+CPPLINEE=${CPPLINEE}
+CPPLINEL=${CPPLINEL}
+CPPLINEESUF=${CPPLINEESUF}
+CPPLINELSUF=${CPPLINELSUF}
+
 prepare_prefix() {
-  if [ ! -e _test_prefix.exe-prefix ]; then
+  if [[ ! -e _test_prefix.exe-prefix ]]; then
     echo Prepare common prefix...
     ../bin/srefc-core -o _test_prefix.exe-prefix \
-      "${COMMON_SRFLAGS[@]}" $SRFLAGS_NAT 2>__error.txt
-      if [ $? -ge 100 ] || [ ! -e _test_prefix.exe-prefix ]; then
+      "${COMMON_SRFLAGS[@]}" ${SRFLAGS_NAT} 2>__error.txt
+      if [[ $? -ge 100 ]] || [[ ! -e _test_prefix.exe-prefix ]]; then
         echo "CAN'T CREATE COMMON PREFIX, SEE __error.txt"
         exit 1
       fi
@@ -71,34 +81,34 @@ run_test_aux() {
 }
 
 run_test_aux_with_flags() {
-  echo Passing $1 \(flags $SRFLAGS\)...
+  echo Passing $1 \(flags ${SRFLAGS}\)...
   SREF=$1
   RASL=${SREF%.*}.rasl
   NATCPP=${SREF%.*}.cpp
   EXE=${SREF%.*}$(platform_exe_suffix)
 
-  ../bin/srefc-core --keep-rasls $SREF -o $EXE "${COMMON_SRFLAGS[@]}" \
-    $SRFLAGS $SRFLAGS_PLUS 2>__error.txt
-  if [ $? -ge 100 ] || [ ! -e $EXE ]; then
-    echo COMPILER ON $SREF FAILS, SEE __error.txt
+  ../bin/srefc-core --keep-rasls ${SREF} -o ${EXE} "${COMMON_SRFLAGS[@]}" \
+    ${SRFLAGS} ${SRFLAGS_PLUS} 2>__error.txt
+  if [[ $? -ge 100 ]] || [[ ! -e ${EXE} ]]; then
+    echo COMPILER ON ${SREF} FAILS, SEE __error.txt
     exit 1
   fi
   rm __error.txt
 
-  if [ ! -e $NATCPP ]; then
+  if [[ ! -e ${NATCPP} ]]; then
     NATCPP=
   fi
 
-  ./$EXE ++diagnostic+config=test-diagnostics.txt
-  if [ $? -gt 0 ]; then
+  ./${EXE} ++diagnostic+config=test-diagnostics.txt
+  if [[ $? -gt 0 ]]; then
     echo TEST FAILED, SEE __dump.txt
     exit 1
   fi
 
-  rm $RASL $NATCPP $EXE
+  rm ${RASL} ${NATCPP} ${EXE}
   rm -rf ${SREF%.*}.partial.dSYM
-  [ -e __dump.txt ] && rm __dump.txt
-  [ -e __log.txt ] && rm __log.txt
+  [[ -e __dump.txt ]] && rm __dump.txt
+  [[ -e __log.txt ]] && rm __log.txt
 
   echo
 }
@@ -109,15 +119,15 @@ run_test_aux.BAD-SYNTAX() {
   RASL=${SREF%.*}.rasl
   EXE=${SREF%.*}$(platform_exe_suffix)
 
-  ../bin/srefc-core --prelude=test-prelude.srefi -C $SRFLAGS $SREF 2>__error.txt
-  if [ $? -ge 100 ]; then
-    echo COMPILER ON $SREF FAILS, SEE __error.txt
+  ../bin/srefc-core --prelude=test-prelude.srefi -C ${SRFLAGS} ${SREF} 2>__error.txt
+  if [[ $? -ge 100 ]]; then
+    echo COMPILER ON ${SREF} FAILS, SEE __error.txt
     exit 1
   fi
   rm __error.txt
-  if [ -e $RASL ]; then
+  if [[ -e ${RASL} ]]; then
     echo COMPILATION SUCCEEDED, BUT EXPECTED SYNTAX ERROR
-    rm $RASL
+    rm ${RASL}
     exit 1
   fi
 
@@ -130,39 +140,40 @@ run_test_aux.FAILURE() {
 }
 
 run_test_aux_with_flags.FAILURE() {
-  echo Passing $1 \(expecting failure, flags $SRFLAGS\)...
+  echo Passing $1 \(expecting failure, flags ${SRFLAGS}\)...
   SREF=$1
   RASL=${SREF%.*}.rasl
   NATCPP=${SREF%.*}.cpp
   EXE=${SREF%.*}$(platform_exe_suffix)
 
-  ../bin/srefc-core --keep-rasls $SREF -o $EXE "${COMMON_SRFLAGS[@]}" \
-    $SRFLAGS $SRFLAGS_PLUS 2>__error.txt
-  if [ $? -ge 100 ] || [ ! -e $EXE ]; then
-    echo COMPILER ON $SREF FAILS, SEE __error.txt
+  ../bin/srefc-core --keep-rasls ${SREF} -o ${EXE} "${COMMON_SRFLAGS[@]}" \
+    ${SRFLAGS} ${SRFLAGS_PLUS} 2>__error.txt
+  if [[ $? -ge 100 ]] || [[ ! -e ${EXE} ]]; then
+    echo COMPILER ON ${SREF} FAILS, SEE __error.txt
     exit 1
   fi
   rm __error.txt
 
-  if [ ! -e $NATCPP ]; then
+  if [[ ! -e ${NATCPP} ]]; then
     NATCPP=
   fi
 
-  ./$EXE ++diagnostic+config=test-diagnostics.txt
-  if [ $? -lt 100 ]; then
+  ./${EXE} ++diagnostic+config=test-diagnostics.txt
+  if [[ $? -lt 100 ]]; then
     echo TEST NOT EXPECTATIVE FAILED, SEE __dump.txt
     exit 1
   fi
 
-  rm $RASL $NATCPP $EXE
-  [ -e __dump.txt ] && rm __dump.txt
-  [ -e __log.txt ] && rm __log.txt
+  rm ${RASL} ${NATCPP} ${EXE}
+  [[ -e __dump.txt ]] && rm __dump.txt
+  [[ -e __log.txt ]] && rm __log.txt
 
   echo "Ok! This failure was normal and expected"
   echo
 }
 
 run_test() {
+  PLATFORM_SUBDIR=$(platform_subdir_lookup ${LIBDIR})
   COMMON_SRFLAGS=(
     --cpp-command-exe="$CPPLINEE"
     --cpp-command-lib="$CPPLINEL"
@@ -170,7 +181,7 @@ run_test() {
     --cpp-command-lib-suf="$CPPLINELSUF"
     --exesuffix=$(platform_exe_suffix)
     --prelude=test-prelude.srefi
-    -D$(platform_subdir_lookup $LIBDIR)
+    -D$PLATFORM_SUBDIR
     -D$LIBDIR/platform-POSIX
     -D$LIBDIR
     --log=__log.txt
@@ -193,15 +204,15 @@ run_test() {
   "
   SREF=$1
   SUFFIX=`echo ${SREF%.*} | sed 's/[^.]*\(\.[^.]*\)*/\1/'`
-  run_test_aux$SUFFIX $1
+  run_test_aux${SUFFIX} $1
 }
 
 run_test_dir() {
   DIR=$(dirname $1)
-  echo Passing special test in dir $DIR
-  cd $DIR
+  echo Passing special test in dir ${DIR}
+  cd ${DIR}
   ./run.sh
-  if [ $? -gt 0 ]; then
+  if [[ $? -gt 0 ]]; then
     echo TEST FAILED
     cd ..
     exit 1
@@ -211,22 +222,22 @@ run_test_dir() {
 
 run_all_dir_tests() {
   for d in */run.sh; do
-    run_test_dir $d
+    run_test_dir ${d}
   done
 }
 
-if [ -z "$1" ]; then
+if [[ -z "$1" ]]; then
   for s in *.sref *.ref; do
-    run_test $s
+    run_test ${s}
   done
   run_all_dir_tests
-elif [ "$1" = "--dir" ]; then
+elif [[ "$1" = "--dir" ]]; then
   run_all_dir_tests
 else
   for s in $*; do
-    run_test $s
+    run_test ${s}
   done
 fi
 
-[ -e _test_prefix.exe-prefix ] && rm _test_prefix.exe-prefix
+[[ -e _test_prefix.exe-prefix ]] && rm _test_prefix.exe-prefix
 rm -rf _test_prefix.exe-prefix.partial.dSYM
