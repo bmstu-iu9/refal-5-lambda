@@ -64,22 +64,37 @@ compile_rich_debug() {
   prepare_prefix "$RICHDIR" rich-debug "$CSOURCES $RSOURCES $RTD"
 }
 
+make_reference_rasl() {
+  TARGET_FILE="$1/$2.rasl"
+  REFERENCE="$2"
+
+  cat /dev/null > ${TARGET_FILE}
+  ../../bin/srefc-core -R \
+    --target-file="$TARGET_FILE" \
+    --reference="$REFERENCE" \
+    "$TARGET_FILE"
+}
+
 compile_slim() {
   SLIMDIR=../../srlib/slim
+  CSOURCES=Library
 
   mkdir -p ${SLIMDIR}
   prepare_prefix "$SLIMDIR" slim "$CSOURCES $RT"
 
   SREFC_FLAGS="$SREFC_FLAGS -Od-" compile_separated "$SLIMDIR" "$RSOURCES"
+  make_reference_rasl "$SLIMDIR" Hash
 }
 
 compile_slim_debug() {
   SLIMDIR=../../srlib/slim-debug
+  CSOURCES=Library
 
   mkdir -p ${SLIMDIR}
   prepare_prefix "$SLIMDIR" slim-debug "$CSOURCES $RTD"
 
   SREFC_FLAGS="$SREFC_FLAGS -Od-" compile_separated "$SLIMDIR" "$RSOURCES"
+  make_reference_rasl "$SLIMDIR" Hash
 }
 
 prepare_common() {

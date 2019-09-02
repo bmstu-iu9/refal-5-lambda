@@ -103,9 +103,23 @@ goto :EOF
   call :PREPARE_PREFIX "%RICHDIR%" rich-debug "%CSOURCES% %RSOURCES% %RTD%"
 goto :EOF
 
+:MAKE_REFERENCE_RASL
+setlocal
+  set TARGET_FILE="%~1\%~2.rasl"
+  set REFERENCE="%~2"
+
+  copy nul "%TARGET_FILE%"
+  ..\..\bin\srefc-core -R ^
+    --target-file="%TARGET_FILE%" ^
+    --reference="%REFERENCE%" ^
+    "%TARGET_FILE%"
+endlocal
+goto :EOF
+
 :COMPILE_SLIM
 setlocal
   set SLIMDIR=..\..\srlib\slim
+  set CSOURCES=Library
   mkdir %SLIMDIR%\x
   rmdir %SLIMDIR%\x
 
@@ -113,12 +127,14 @@ setlocal
 
   set SREFC_FLAGS=%SREFC_FLAGS% -Od-
   call :COMPILE_SEPARATED  "%SLIMDIR%" "%RSOURCES%"
+  call :MAKE_REFERENCE_RASL "%SLIMDIR%" Hash
 endlocal
 goto :EOF
 
 :COMPILE_SLIM_DEBUG
 setlocal
   set SLIMDIR=..\..\srlib\slim-debug
+  set CSOURCES=Library
   mkdir %SLIMDIR%\x
   rmdir %SLIMDIR%\x
 
@@ -126,6 +142,7 @@ setlocal
 
   set SREFC_FLAGS=%SREFC_FLAGS% -Od-
   call :COMPILE_SEPARATED  "%SLIMDIR%" "%RSOURCES%"
+  call :MAKE_REFERENCE_RASL "%SLIMDIR%" Hash
 endlocal
 goto :EOF
 

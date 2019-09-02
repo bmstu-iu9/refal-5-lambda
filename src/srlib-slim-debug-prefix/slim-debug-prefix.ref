@@ -1,5 +1,4 @@
 *$FROM Library
-*$FROM Hash
 *$FROM refalrts
 *$FROM refalrts-dynamic
 *$FROM refalrts-functions
