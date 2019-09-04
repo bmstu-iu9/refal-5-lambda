@@ -30,7 +30,6 @@ typedef struct Node *Iter;
 
 enum DataTag {
   cDataIllegal = 0,
-  cDataSwapHead,
   cDataChar,
   cDataNumber,
   cDataFunction,
