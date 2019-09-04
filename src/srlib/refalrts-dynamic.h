@@ -311,6 +311,9 @@ class Domain {
   Chunk *m_chunks;
   size_t m_memory_use;
 
+  Node m_global_free_begin;
+  Node m_global_free_end;
+
   class DangerousRAII {
     bool *m_dangerous;
   public:
@@ -424,6 +427,7 @@ public:
   }
 
   bool alloc_nodes(Iter& begin, Iter& end);
+  void free_nodes(Iter begin, Iter end);
 
   size_t memory_use() const {
     return m_memory_use;

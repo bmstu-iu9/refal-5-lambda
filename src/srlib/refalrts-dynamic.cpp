@@ -8,6 +8,7 @@
 #include "refalrts-dynamic.h"
 #include "refalrts-commands.h"
 #include "refalrts-native-module.h"
+#include "refalrts-utils.h"
 
 //FROM refalrts-functions
 #include "refalrts-functions.h"
@@ -887,6 +888,8 @@ refalrts::Domain::Domain(refalrts::DiagnosticConfig *diagnostic_config)
   , m_allocated_functions()
   , m_chunks(0)
   , m_memory_use(0)
+  , m_global_free_begin(0, &m_global_free_end)
+  , m_global_free_end(&m_global_free_begin, 0)
 {
   /* пусто */
 }
@@ -941,6 +944,20 @@ refalrts::Domain::load_module(
 }
 
 bool refalrts::Domain::alloc_nodes(refalrts::Iter& begin, refalrts::Iter& end) {
+  if (m_global_free_begin.next != &m_global_free_end) {
+    begin = m_global_free_begin.next;
+    end = begin;
+
+    size_t portion = 1;
+    while (portion < Chunk::cSize && end->next != &m_global_free_end) {
+      ++portion;
+      end = end->next;
+    }
+
+    weld(&m_global_free_begin, end->next);
+    return true;
+  }
+
   if (m_memory_use + Chunk::cSize >= m_diagnostic_config->memory_limit) {
     return false;
   }
@@ -964,6 +981,33 @@ bool refalrts::Domain::alloc_nodes(refalrts::Iter& begin, refalrts::Iter& end) {
   end = &new_chunk->elems[Chunk::cSize - 1];
 
   return true;
+}
+
+void refalrts::Domain::free_nodes(refalrts::Iter begin, refalrts::Iter end) {
+  assert(begin != 0);
+  assert(end != 0);
+  assert(begin->prev != end);
+  assert(begin != end->next);
+
+  end->next = 0;
+  for (Iter p = begin; p != 0; p = p->next) {
+    if (cDataClosure == p->tag) {
+      refalrts::Iter head = p->link_info;
+      -- head->number_info;
+
+      if (0 == head->number_info) {
+        unwrap_closure(p);
+        // теперь перед p находится «развёрнутое» замыкание
+        p->tag = cDataIllegal;
+        p = head;
+      }
+    }
+    p->tag = cDataIllegal;
+    p->file_info = 0;
+  }
+
+  weld(end, m_global_free_begin.next);
+  weld(&m_global_free_begin, begin);
 }
 
 bool refalrts::Domain::initialize(
