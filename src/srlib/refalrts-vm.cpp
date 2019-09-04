@@ -507,12 +507,11 @@ FILE *refalrts::VM::dump_stream() {
 void refalrts::VM::free_view_field() {
   splice_to_freelist_open(this, &m_first_marker, &m_swap_hedge);
   splice_to_freelist_open(this, &m_swap_hedge, &m_last_marker);
-  /*
-    TODO: по-хорошему, вся выделенная память должна передаваться домену,
-    TODO: но это как-нибудь потом. При освобождении памяти нужно будет обойти
-    TODO: поле зрения и статические ящики и развернуть все замыкания.
-    TODO: Либо деактивацию замыканий нужно реализовать в домене.
-  */
+
+  if (m_begin_free_list.next != &m_end_free_list) {
+    m_domain->free_nodes(m_begin_free_list.next, m_end_free_list.prev);
+    weld(&m_begin_free_list, &m_end_free_list);
+  }
 
   if (m_diagnostic_config->print_statistics) {
     fprintf(stderr, "Step count %d\n", m_step_counter);
