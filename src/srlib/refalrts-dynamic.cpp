@@ -3,6 +3,7 @@
 #include <errno.h>
 #include <new>
 #include <set>
+#include <typeinfo>
 #include <utility>
 
 #include "refalrts-dynamic.h"
@@ -320,6 +321,69 @@ void refalrts::Module::deactivate() {
     refalrts::api::unload_os_module(m_os_module);
     m_os_module = 0;
     m_native = 0;
+  }
+}
+
+void refalrts::Module::make_dump(refalrts::VM *vm) {
+  FILE *dump_stream = vm->dump_stream();
+
+  fprintf(
+    dump_stream,
+    "      functions: %lu\n"
+    "      const tables (scopes): %lu\n"
+    "      global variables size: %lu\n"
+    "      references: %lu\n"
+    "      aliases: %lu\n",
+    (unsigned long) m_funcs_table.size(),
+    (unsigned long) m_tables.size(),
+    (unsigned long) m_global_variables.size(),
+    (unsigned long) m_references.size(),
+    (unsigned long) m_aliases.size()
+  );
+
+  fprintf(dump_stream, "\n      FUNCTIONS:\n");
+  int count = 0;
+  for (
+    FuncsMap::const_iterator p = m_funcs_table.begin();
+    p != m_funcs_table.end();
+    ++p
+  ) {
+    const RefalFuncName& name = p->first;
+    fprintf(
+      dump_stream,
+      "%10d. %s (%u:%u) - %s\n",
+      ++count, name.name, name.cookie1, name.cookie2, typeid(*p->second).name()
+    );
+  }
+
+  fprintf(dump_stream, "\n      SCOPES:\n");
+  count = 0;
+  for (
+    std::list<ConstTable>::const_iterator p = m_tables.begin();
+    p != m_tables.end();
+    ++p
+  ) {
+    fprintf(dump_stream, "%10d. %u:%u\n", ++count, p->cookie1, p->cookie2);
+  }
+
+  fprintf(dump_stream, "\n      REFERENCES:\n");
+  count = 0;
+  for (
+    ReferenceMap::const_iterator p = m_references.begin();
+    p != m_references.end();
+    ++p
+  ) {
+    fprintf(dump_stream, "%10d. %s\n", ++count, p->first.c_str());
+  }
+
+  fprintf(dump_stream, "\n      ALIASES:\n");
+  count = 0;
+  for (
+    std::vector<std::string>::const_iterator p = m_aliases.begin();
+    p != m_aliases.end();
+    ++p
+  ) {
+    fprintf(dump_stream, "%10d. %s\n", ++count, p->c_str());
   }
 }
 
@@ -815,6 +879,18 @@ void refalrts::Domain::ModuleStorage::unload_module(
   gc(vm, pos, result);
 }
 
+void refalrts::Domain::ModuleStorage::make_dump(refalrts::VM *vm) {
+  FILE *dump_stream = vm->dump_stream();
+
+  int count = 0;
+  for (
+    ModuleList::const_iterator p = m_modules.begin(); p != m_modules.end(); ++p
+  ) {
+    fprintf(dump_stream, "%4d. %s\n", ++count, (*p)->name().c_str());
+    (*p)->make_dump(vm);
+  }
+}
+
 refalrts::Module *
 refalrts::Domain::ModuleStorage::find_known(
   const refalrts::Domain::Stack *stack, const refalrts::api::stat *stat
@@ -1025,8 +1101,24 @@ void refalrts::Domain::swap_save(refalrts::Iter begin, refalrts::Iter end) {
 }
 
 void refalrts::Domain::make_dump(refalrts::VM *vm) {
-  fprintf(vm->dump_stream(), "\nDOMAIN (SWAPS):\n");
-  vm->print_seq(vm->dump_stream(), &m_swap_begin, &m_swap_end);
+  FILE *dump_stream = vm->dump_stream();
+  fprintf(dump_stream, "\nDOMAIN CONTENT:\n");
+
+  fprintf(dump_stream, "\nSWAPS:\n");
+  vm->print_seq(dump_stream, &m_swap_begin, &m_swap_end);
+
+  fprintf(dump_stream, "\nIDENTIFIERS:\n");
+  int count = 0;
+  for (
+    IdentsMap::const_iterator p = m_idents_table.begin();
+    p != m_idents_table.end();
+    ++p
+  ) {
+    fprintf(dump_stream, "%4d. %s\n", ++count, p->second->name());
+  }
+
+  fprintf(dump_stream, "\nMODULES:\n");
+  m_storage.make_dump(vm);
 }
 
 bool refalrts::Domain::initialize(

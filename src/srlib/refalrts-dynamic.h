@@ -217,6 +217,8 @@ public:
   void finalize(VM *vm, Iter pos, FnResult& result);
   void deactivate();
 
+  void make_dump(VM *vm);
+
 private:
   RefalFunction *lookup_function_aux(const RefalFuncName& name);
   void register_function(RefalFunction *func);
@@ -278,6 +280,8 @@ class Domain {
     );
 
     void unload_module(VM *vm, Iter pos, Module *module, FnResult& result);
+
+    void make_dump(VM *vm);
 
   private:
     Module *find_known(const Stack *stack, const api::stat *stat) const;
