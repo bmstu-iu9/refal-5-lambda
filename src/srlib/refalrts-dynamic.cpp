@@ -304,7 +304,15 @@ void refalrts::Module::deactivate() {
     FuncsMap::iterator p = m_funcs_table.begin();
     RefalFunction *function = p->second;
     m_funcs_table.erase(p);
-    /* TODO: продумать освобождение статических ящиков */
+    if (RefalSwap *swap = dynamic_cast<RefalSwap *>(function)) {
+      if (swap->left_call != 0) {
+        Iter left_call = swap->left_call;
+        Iter right_call = left_call->link_info;
+
+        weld(left_call->prev, right_call->next);
+        m_domain->free_nodes(left_call, right_call);
+      }
+    }
     function->deactivate();
   }
 
@@ -890,6 +898,8 @@ refalrts::Domain::Domain(refalrts::DiagnosticConfig *diagnostic_config)
   , m_memory_use(0)
   , m_global_free_begin(0, &m_global_free_end)
   , m_global_free_end(&m_global_free_begin, 0)
+  , m_swap_begin(0, &m_swap_end)
+  , m_swap_end(&m_swap_begin, 0)
 {
   /* пусто */
 }
@@ -1008,6 +1018,15 @@ void refalrts::Domain::free_nodes(refalrts::Iter begin, refalrts::Iter end) {
 
   weld(end, m_global_free_begin.next);
   weld(&m_global_free_begin, begin);
+}
+
+void refalrts::Domain::swap_save(refalrts::Iter begin, refalrts::Iter end) {
+  list_splice(m_swap_begin.next, begin, end);
+}
+
+void refalrts::Domain::make_dump(refalrts::VM *vm) {
+  fprintf(vm->dump_stream(), "\nDOMAIN (SWAPS):\n");
+  vm->print_seq(vm->dump_stream(), &m_swap_begin, &m_swap_end);
 }
 
 bool refalrts::Domain::initialize(

@@ -314,6 +314,9 @@ class Domain {
   Node m_global_free_begin;
   Node m_global_free_end;
 
+  Node m_swap_begin;
+  Node m_swap_end;
+
   class DangerousRAII {
     bool *m_dangerous;
   public:
@@ -428,6 +431,9 @@ public:
 
   bool alloc_nodes(Iter& begin, Iter& end);
   void free_nodes(Iter begin, Iter end);
+  void swap_save(Iter begin, Iter end);
+
+  void make_dump(VM *vm);
 
   size_t memory_use() const {
     return m_memory_use;

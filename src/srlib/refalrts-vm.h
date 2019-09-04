@@ -34,7 +34,6 @@ class VM : public VMbase {
   char **m_argv;
   unsigned int m_argc;
   Node m_first_marker;
-  Node m_swap_hedge;
   Node m_last_marker;
   Node m_begin_free_list;
   Node m_end_free_list;
@@ -1050,9 +1049,8 @@ inline VM::VM(
   , m_ret_code(0)
   , m_argv(0)
   , m_argc(0)
-  , m_first_marker(0, & m_swap_hedge)
-  , m_swap_hedge(& m_first_marker, & m_last_marker)
-  , m_last_marker(& m_swap_hedge, 0)
+  , m_first_marker(0, & m_last_marker)
+  , m_last_marker(& m_first_marker, 0)
   , m_begin_free_list(0, & m_end_free_list)
   , m_end_free_list(& m_begin_free_list, 0)
   , m_error_begin(& m_first_marker)
@@ -1074,7 +1072,7 @@ inline VM::VM(
   , m_hide_steps(false)
   , m_memory_fail(0)
 {
-  m_swap_hedge.tag = cDataSwapHead;
+  /* пусто */
 }
 
 inline VM::~VM() {

@@ -159,7 +159,7 @@ refalrts::FnResult refalrts::VM::execute_zero_arity_function(
   }
 
   if (! pos) {
-    pos = & m_swap_hedge;
+    pos = & m_last_marker;
   }
 
   // Формируем вызов <func /*пусто*/> в поле зрения
@@ -283,13 +283,6 @@ void refalrts::VM::print_seq(
               state = cStateFinish;
             } else {
               fprintf(output, "%c[NONE]", space);
-            }
-            refalrts::move_left(begin, end);
-            continue;
-
-          case refalrts::cDataSwapHead:
-            if (begin->next != &m_last_marker) {
-              fprintf(output, "%c[SWAP HEDGE]", space);
             }
             refalrts::move_left(begin, end);
             continue;
@@ -485,6 +478,8 @@ void refalrts::VM::make_dump(refalrts::Iter begin, refalrts::Iter end) {
     print_seq(dump_stream(), & m_begin_free_list, & m_end_free_list);
   }
 
+  m_domain->make_dump(this);
+
   fflush(dump_stream());
 }
 
@@ -505,8 +500,7 @@ FILE *refalrts::VM::dump_stream() {
 }
 
 void refalrts::VM::free_view_field() {
-  splice_to_freelist_open(this, &m_first_marker, &m_swap_hedge);
-  splice_to_freelist_open(this, &m_swap_hedge, &m_last_marker);
+  splice_to_freelist_open(this, &m_first_marker, &m_last_marker);
 
   if (m_begin_free_list.next != &m_end_free_list) {
     m_domain->free_nodes(m_begin_free_list.next, m_end_free_list.prev);
@@ -1522,7 +1516,7 @@ JUMP_FROM_SCALE:
           RefalSwap *swap = dynamic_cast<RefalSwap*>(callee);
           assert(swap != 0);
 
-          list_splice(m_swap_hedge.next, bb, be);
+          m_domain->swap_save(bb, be);
           swap->left_call = bb;
         }
         break;
