@@ -363,7 +363,10 @@ void refalrts::Module::make_dump(refalrts::VM *vm) {
     p != m_tables.end();
     ++p
   ) {
-    fprintf(dump_stream, "%10d. %u:%u\n", ++count, p->cookie1, p->cookie2);
+    fprintf(
+      dump_stream, "%10d. %u:%u - %s\n",
+      ++count, p->cookie1, p->cookie2, p->unit_name.c_str()
+    );
   }
 
   fprintf(dump_stream, "\n      REFERENCES:\n");
@@ -641,7 +644,7 @@ void refalrts::Module::Loader::enumerate_blocks() {
               &table->idents[0],
               &table->numbers[0],
               &table->strings[0],
-              "filename.sref"
+              table->unit_name.c_str()
             )
           );
         }
@@ -687,6 +690,11 @@ void refalrts::Module::Loader::enumerate_blocks() {
 
       case cBlockTypeIncorporated:
         m_module->m_aliases.push_back(read_asciiz());
+        break;
+
+      case cBlockTypeUnitName:
+        PARSE_ASSERT(table != 0, "CONST_TABLE must precede unit name block");
+        table->unit_name = read_asciiz();
         break;
 
       default:

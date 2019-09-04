@@ -524,6 +524,7 @@ e-переменные, распределяемые последователь�
     t.RASLModule ::=
       (
         (ModuleID s.Cookie1 s.Cookie2)
+        (UnitName e.SrcName)
         (CmdFuncArray s.FunctionCount (s.ScopeClass e.FuncName)*)
         (CmdIdentArray s.IdentCount (s.IdentID e.IdentName)*)
         (CmdStringArray s.StringCount (s.StringID s.CHAR*)*)
@@ -532,6 +533,7 @@ e-переменные, распределяемые последователь�
       )
 
     t.NativeModule ::= (e.NativeRASL)
+    e.SrcName ::= s.CHAR*
 
     e.RASL ::= t.InterpretCommand*
     e.NativeRASL ::= { t.NativeDeclarationCommand | t.DirectCommand }*
@@ -641,6 +643,7 @@ e-переменные, распределяемые последователь�
       | ElClosureHead
       | ElUnwrappedClosure s.HeadOffset
 
+* `(UnitName e.SrcName)` — имя исходного файла.
 * `(s.LiteralArray t.LiteralItem*)` — массив литеральных значений. Поскольку
   массивы команд в качестве аргументов могут использовать только 8-битные
   целые, для аргуметов других типов описываются массивы, а в интерпретируемых

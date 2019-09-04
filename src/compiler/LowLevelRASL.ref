@@ -27,7 +27,8 @@ $ENTRY LowLevelRASL {
     = <MapReduce
         &CalcDigest
         /* Числа выбраны случайно: hexdump /dev/urandom */
-        (<HashLittle2-Chars 4001567069 291363191 <Canonize e.SrcName>>)
+        (4001567069 291363191)
+        (UnitName <Canonize e.SrcName>)
         e.ProgramElements
       >
     : (s.Hash1 s.Hash2) e.Items
@@ -55,6 +56,10 @@ Canonize {
 }
 
 CalcDigest {
+  (s.Hash1 s.Hash2) (UnitName e.SrcName) =
+    (<HashLittle2-Chars s.Hash1 s.Hash2 e.SrcName>)
+    (UnitName e.SrcName);
+
   (s.Hash1 s.Hash2) (Function s.ScopeClass (e.Name) e.Commands) =
     (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'R'>)
     (Function s.ScopeClass (e.Name) e.Commands);
@@ -171,6 +176,8 @@ SelectConstantsOutliner {
 }
 
 OutlineConstants-WithNative {
+  t.Tables (UnitName e.SrcName) = t.Tables (UnitName e.SrcName);
+
   t.Tables (Function s.ScopeClass (e.Name) e.Commands)
     = <UpdateFuncTable t.Tables e.Name> : t.Tables^ s.Id
     = <OutlineConstants-Commands t.Tables e.Commands> : t.Tables^ e.Commands^

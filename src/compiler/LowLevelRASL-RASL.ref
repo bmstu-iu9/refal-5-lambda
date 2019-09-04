@@ -36,6 +36,9 @@ $ENTRY LowLevelRASL-RASL {
 }
 
 ClassifyItems {
+  (e.FuncScopeClass) (UnitName e.SrcName) =
+    (e.FuncScopeClass) (UnitName e.SrcName);
+
   (e.FuncScopeClass) (Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
     (Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody);

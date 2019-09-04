@@ -146,4 +146,5 @@ $ENTRY BlockTypeNumber{
   ConditionRasl = 8;
   ConditionNative = 9;
   Incorporated = 10;
+  UnitName = 11;
 }

@@ -132,6 +132,9 @@ NameWithSign-Bytes {
 }
 
 GenCommand-Globals {
+  e.Labels (UnitName e.SrcName) =
+    <PutBlock UnitName <Asciiz e.SrcName>>;
+
   e.Labels (CmdEnumDescr s.ScopeClass e.Name) =
     <PutBlock EmptyFunction <NameWithSign-Bytes s.ScopeClass e.Name>>;
 

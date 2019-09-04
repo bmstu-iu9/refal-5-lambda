@@ -40,6 +40,8 @@ PrepareTable {
 }
 
 SetCookies {
+  s.Hash1 s.Hash2 (UnitName e.SrcName) = /* пропускаем */;
+
   s.Hash1 s.Hash2
   (Function-ToRASL s.ScopeClass (e.Name) e.Commands) =
     /* пропускаем */;

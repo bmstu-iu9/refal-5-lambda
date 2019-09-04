@@ -71,6 +71,7 @@ private:
   struct ConstTable {
     UInt32 cookie1;
     UInt32 cookie2;
+    std::string unit_name;
     std::vector<std::string> externals_names;
     std::vector<RefalFunction*> externals_pointers;
     std::vector<RefalIdentifier> idents;

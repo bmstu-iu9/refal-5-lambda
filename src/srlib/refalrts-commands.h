@@ -150,6 +150,7 @@ enum BlockType { /*BlockTypeNumber:cBlockType;*/
   cBlockTypeConditionRasl = 8,
   cBlockTypeConditionNative = 9,
   cBlockTypeIncorporated = 10,
+  cBlockTypeUnitName = 11,
 };
 
 } // namespace refalrts
