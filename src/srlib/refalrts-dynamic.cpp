@@ -349,10 +349,11 @@ void refalrts::Module::make_dump(refalrts::VM *vm) {
     ++p
   ) {
     const RefalFuncName& name = p->first;
+    const RefalFunction* func = p->second;
     fprintf(
       dump_stream,
       "%10d. %s (%u:%u) - %s\n",
-      ++count, name.name, name.cookie1, name.cookie2, typeid(*p->second).name()
+      ++count, name.name, name.cookie1, name.cookie2, typeid(*func).name()
     );
   }
 
