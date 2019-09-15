@@ -24,7 +24,7 @@ setlocal
   call :MAKE_SUBDIR lexgen makeself-s.bat
   call :MAKE_SUBDIR srmake make-s.bat
   call :MAKE_SUBDIR srlib make.bat
-  call :MAKE_SUBDIR srlib-hash make.bat
+  call :MAKE_SUBDIR srlib-dynamic make.bat
   call :MAKE_SUBDIR srmake make.bat
   call :MAKE_SUBDIR lexgen makeself.bat
   call :MAKE_SUBDIR compiler makeself.bat
@@ -45,11 +45,14 @@ setlocal
   if {%SCRIPT_FLAGS%}=={} (
     set SCRIPT_FLAGS=%DEFAULT_SCRIPT_FLAGS%
   )
+  if {%TARGET_SUFFIX%}=={} (
+    set TARGET_SUFFIX=.exe
+  )
   if not exist ..\..\build\%DIR%\nul mkdir ..\..\build\%DIR%
   if exist ..\..\build\%DIR%\*.* erase /Q ..\..\build\%DIR%\*.*
   call %PATH_TO_SREFC%\bin\srmake ^
-    %SCRIPT_FLAGS% --keep-rasls -d ..\common %MAINSRC% -o %TARGET%.exe
-  move %TARGET%.exe ..\..\bin
+    %SCRIPT_FLAGS% --keep-rasls -d ..\common %MAINSRC% -o %TARGET%%TARGET_SUFFIX%
+  move %TARGET%%TARGET_SUFFIX% ..\..\bin
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   move *.rasl ..\..\build\%DIR% >NUL

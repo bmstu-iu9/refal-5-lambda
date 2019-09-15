@@ -8,6 +8,7 @@ make_subdir() {
 
 RELEASE=${RELEASE:-}
 SCRIPT_FLAGS=${SCRIPT_FLAGS:-}
+TARGET_SUFFIX=${TARGET_SUFFIX:-}
 
 (
   if [[ -z "$RELEASE" ]]; then
@@ -56,6 +57,10 @@ SCRIPT_FLAGS=${SCRIPT_FLAGS:-}
 
     source ${PATH_TO_SREFC}/scripts/platform-specific.sh
 
+    if [[ -z "$TARGET_SUFFIX" ]]; then
+      TARGET_SUFFIX=$(platform_exe_suffix)
+    fi
+
     mkdir -p ${PATH_TO_SREFC}/bin
     (
       export CPPLINE_FLAGS="$CPPLINE_FLAGS"
@@ -64,7 +69,7 @@ SCRIPT_FLAGS=${SCRIPT_FLAGS:-}
       ${PATH_TO_SREFC}/bin/srmake \
         ${SCRIPT_FLAGS} --keep-rasls -d ../common ${MAINSRC} -o${TARGET}
     )
-    mv ${TARGET} ../../bin/${TARGET}$(platform_exe_suffix)
+    mv ${TARGET} ../../bin/${TARGET}${TARGET_SUFFIX}
 
     mkdir -p ../../build/${DIR}
     rm -f ../../build/${DIR}/*
