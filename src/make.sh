@@ -3,11 +3,14 @@
 make_subdir() {
   DIR=$1
   MAKE=$2
-  (cd $DIR && source $MAKE)
+  (cd ${DIR} && source ${MAKE})
 }
 
+RELEASE=${RELEASE:-}
+SCRIPT_FLAGS=${SCRIPT_FLAGS:-}
+
 (
-  if [ -z "$RELEASE" ]; then
+  if [[ -z "$RELEASE" ]]; then
     # Максимум 40 000 000 байт (x32), 80 000 000 байт (x64)
     # SREFC_FLAGS используются только для сборки библиотек
     SREFC_FLAGS_PLUS="--markup-context --debug-info -OC"
@@ -19,7 +22,7 @@ make_subdir() {
     DEFAULT_SCRIPT_FLAGS=--scratch
   fi
 
-  if [ -z "$1" ]; then
+  if [[ -z "$1" ]]; then
     mkdir -p ../bin
     make_subdir scripts install-scripts.sh
     make_subdir rasl-constants make.sh
@@ -43,32 +46,32 @@ make_subdir() {
     CPPLINE_FLAGS=$4
     PATH_TO_SREFC=$5
 
-    if [ -z "$PATH_TO_SREFC" ]; then
+    if [[ -z "$PATH_TO_SREFC" ]]; then
       PATH_TO_SREFC=../..
     fi
 
-    if [ -z "$SCRIPT_FLAGS" ]; then
-      SCRIPT_FLAGS=$DEFAULT_SCRIPT_FLAGS
+    if [[ -z "$SCRIPT_FLAGS" ]]; then
+      SCRIPT_FLAGS=${DEFAULT_SCRIPT_FLAGS}
     fi
 
-    source $PATH_TO_SREFC/scripts/platform-specific.sh
+    source ${PATH_TO_SREFC}/scripts/platform-specific.sh
 
-    mkdir -p $PATH_TO_SREFC/bin
+    mkdir -p ${PATH_TO_SREFC}/bin
     (
       export CPPLINE_FLAGS="$CPPLINE_FLAGS"
       export SRMAKE_FLAGS="$SRMAKE_FLAGS $SRMAKE_FLAGS_PLUS"
 
-      $PATH_TO_SREFC/bin/srmake \
-        $SCRIPT_FLAGS --keep-rasls -d ../common $MAINSRC -o$TARGET
+      ${PATH_TO_SREFC}/bin/srmake \
+        ${SCRIPT_FLAGS} --keep-rasls -d ../common ${MAINSRC} -o${TARGET}
     )
-    mv $TARGET ../../bin/$TARGET$(platform_exe_suffix)
+    mv ${TARGET} ../../bin/${TARGET}$(platform_exe_suffix)
 
-    mkdir -p ../../build/$DIR
-    rm -f ../../build/$DIR/*
+    mkdir -p ../../build/${DIR}
+    rm -f ../../build/${DIR}/*
     find . ../common \
       \( -name '*.rasl' -o -name '*.cpp' \) \
-      -exec mv '{}' ../../build/$DIR \;
-    cp $PATH_TO_SREFC/srlib/scratch/*.rasl ../../build/$DIR
-    cp $PATH_TO_SREFC/srlib/scratch/*.cpp ../../build/$DIR
+      -exec mv '{}' ../../build/${DIR} \;
+    cp ${PATH_TO_SREFC}/srlib/scratch/*.rasl ../../build/${DIR}
+    cp ${PATH_TO_SREFC}/srlib/scratch/*.cpp ../../build/${DIR}
   fi
 )
