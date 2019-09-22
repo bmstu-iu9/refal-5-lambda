@@ -28,7 +28,9 @@ compile_scratch() {
       mkdir -p ${SCRATCHDIR}/${d}
       cp ${d}/*.cpp ${SCRATCHDIR}/${d}
       cp ${d}/*.rasl ${SCRATCHDIR}/${d}
-      cp ${d}/*.def ${SCRATCHDIR}/${d}
+      for f in ${d}/*.def; do
+        [[ -e ${f} ]] && cp ${f} ${SCRATCHDIR}/${d}
+      done
     fi
   done
 }
