@@ -2638,11 +2638,12 @@ $ENTRY TimeElapsed {
 */
 $ENTRY Compare {
   /* optimization for two digits */
-  s.First s.Second = <Compare-Digits s.First s.Second>;
+  s.First s.Second
+    = <__Step-Start> <Compare-Digits s.First s.Second> <__Step-End>;
 
   e.ArithmArg
-    , <NormArithmArg e.ArithmArg> : (e.First) e.Second
-    = <Compare-Normed (e.First) e.Second>;
+    , <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <Compare-Normed (e.First) e.Second> <__Step-End>;
 }
 
 Compare-Normed {

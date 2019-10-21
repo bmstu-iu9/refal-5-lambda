@@ -1,0 +1,16 @@
+$ENTRY Go {
+  /* пусто */
+    = <Eq <Compare 10 20> '-'>
+      <Eq <Step> 4>
+      <Eq <Compare 20 10> '+'>
+      <Eq <Step> 10>
+      <Eq <Compare 10 10> '0'>
+      <Eq <Step> 16>
+
+      <Eq <Compare (10 20) 10 20 30> '-'>
+      <Eq <Step> 22>
+      <Eq <Compare (10 20) 10 10 10> '-'>
+      <Eq <Step> 28>
+}
+
+Eq { s.X s.X = <Prout s.X> }
