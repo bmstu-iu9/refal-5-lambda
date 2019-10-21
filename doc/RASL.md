@@ -181,7 +181,7 @@
 
 Блок `INCORPORATED` содержит псевдоним для текущего модуля.
 
-## Блок UNIT_NAME=10
+## Блок UNIT_NAME=11
 
     UNIT_NAME :: ASCIIZ
 
