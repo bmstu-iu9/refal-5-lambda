@@ -1,5 +1,5 @@
 #!/bin/bash
 (
-  cd ../srlib
+  cd ../lib
   ./make.sh
 )

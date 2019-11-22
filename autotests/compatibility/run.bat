@@ -82,14 +82,14 @@ goto :EOF
     --cpp-command-exe-suf="%CPPLINEESUF%" ^
     --cpp-command-lib-suf="%CPPLINELSUF%" ^
     --exesuffix=.exe ^
-    -D../../src/srlib/platform-Windows ^
-    -D../../src/srlib/common ^
-    -D../../src/srlib ^
+    -D../../src/lib/platform-Windows ^
+    -D../../src/lib/common ^
+    -D../../src/lib ^
     --prelude=refal5-builtins.refi
 
   echo Prepare common prefix...
   if exist _test_prefix.exe-prefix erase _test_prefix.exe-prefix
-  copy ..\..\src\srlib\Library.ref .
+  copy ..\..\src\lib\Library.ref .
   ..\..\bin\srefc-core -o _test_prefix.exe-prefix %COMMON_SRFLAGS% ^
     Library ^
     refalrts ^

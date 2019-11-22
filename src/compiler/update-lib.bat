@@ -1,3 +1,3 @@
-@pushd ..\srlib
+@pushd ..\lib
 @call make.bat
 @popd

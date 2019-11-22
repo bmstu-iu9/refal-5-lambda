@@ -7,4 +7,4 @@ if [ -n "$1" ]; then
   done
 fi
 
-SCRIPT_FLAGS=--scratch ../make.sh srlib-rich-prefix rich-prefix rich-prefix
+SCRIPT_FLAGS=--scratch ../make.sh lib-rich-prefix rich-prefix rich-prefix

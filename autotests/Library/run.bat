@@ -21,8 +21,8 @@ setlocal
     --cpp-command-exe-suf="%CPPLINEESUF%" ^
     --cpp-command-lib-suf="%CPPLINELSUF%" ^
     --exesuffix=.exe ^
-    -D../../src/srlib/platform-Windows ^
-    -D../../src/srlib ^
+    -D../../src/lib/platform-Windows ^
+    -D../../src/lib ^
     refalrts ^
     refalrts-debugger ^
     refalrts-diagnostic-initializer ^
@@ -37,7 +37,7 @@ setlocal
   set DIAG=++diagnostic+config=test-diagnostics.txt
 
   echo Precompile Library.ref
-  copy ..\..\src\srlib\Library.ref .
+  copy ..\..\src\lib\Library.ref .
   ..\..\bin\srefc-core %COMMON_SRFLAGS% -C Library 2>__error.txt
   if errorlevel 100 (
     echo COMPILER FAILS ON Library.ref, SEE __error.txt

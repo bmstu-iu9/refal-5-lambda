@@ -40,7 +40,7 @@ prepare_prefix() {
   PREFIX="$2"
   LIBS="$3"
 
-  ( cd ../srlib-${PREFIX}-prefix && ./make.sh "$LIBS" )
+  ( cd ../lib-${PREFIX}-prefix && ./make.sh "$LIBS" )
 
   mv ../../bin/${PREFIX}-prefix* ${TARGET}/${PREFIX}.exe-prefix
   # Префикс не должен быть исполнимым

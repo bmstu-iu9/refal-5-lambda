@@ -18,7 +18,7 @@ all-win:
 	bootstrap.bat --no-tests
 
 libs-win:
-	cd src\srlib && make.bat
+	cd src\lib && make.bat
 
 compiler-makeself-win:
 	cd src\compiler && makeself.bat
@@ -43,7 +43,7 @@ all-posix:
 	./bootstrap.sh --no-tests
 
 libs-posix:
-	cd src/srlib && ./make.sh
+	cd src/lib && ./make.sh
 
 compiler-makeself-posix:
 	cd src/compiler && ./makeself.sh

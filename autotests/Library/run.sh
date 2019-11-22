@@ -2,7 +2,7 @@
 source ../../scripts/load-config.sh ../.. || return 1
 source ../../scripts/platform-specific.sh
 
-LIBDIR=../../src/srlib
+LIBDIR=../../src/lib
 
 run_all_tests() {
   COMMON_SRFLAGS=(

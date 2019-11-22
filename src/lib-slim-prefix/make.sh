@@ -7,5 +7,5 @@ if [ -n "$1" ]; then
   done
 fi
 
-SCRIPT_FLAGS=--scratch ../make.sh srlib-slim-prefix slim-prefix slim-prefix
-rm -f ../../build/srlib-slim-prefix/{LibraryEx,GetOpt}.*
+SCRIPT_FLAGS=--scratch ../make.sh lib-slim-prefix slim-prefix slim-prefix
+rm -f ../../build/lib-slim-prefix/{LibraryEx,GetOpt}.*

@@ -74,7 +74,7 @@ setlocal
   set PREFIX=%~2
   set LIBS=%~3
 
-  pushd ..\srlib-%PREFIX%-prefix
+  pushd ..\lib-%PREFIX%-prefix
   call make.bat "%LIBS%"
   popd
   move ..\..\bin\%PREFIX%-prefix.exe %TARGET%\%PREFIX%.exe-prefix

@@ -21,8 +21,8 @@ setlocal
     --cpp-command-exe-suf="%CPPLINEESUF%" ^
     --cpp-command-lib-suf="%CPPLINELSUF%" ^
     --exesuffix=.exe ^
-    -D../../src/srlib/platform-Windows ^
-    -D../../src/srlib ^
+    -D../../src/lib/platform-Windows ^
+    -D../../src/lib ^
     refalrts ^
     refalrts-debugger ^
     refalrts-diagnostic-initializer ^
@@ -34,7 +34,7 @@ setlocal
     refalrts-vm-api ^
     refalrts-platform-specific
 
-  copy ..\..\src\srlib\Hash.ref .
+  copy ..\..\src\lib\Hash.ref .
   for %%s in (%*) do call :COMPILE %%s || exit /b 1
 
   call :SIMPLE_TESTS OK ^

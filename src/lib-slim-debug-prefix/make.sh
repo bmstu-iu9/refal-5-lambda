@@ -8,5 +8,5 @@ if [ -n "$1" ]; then
 fi
 
 SCRIPT_FLAGS=--scratch ../make.sh \
-  srlib-slim-debug-prefix slim-debug-prefix slim-debug-prefix
-rm -f ../../build/srlib-slim-debug-prefix/{LibraryEx,GetOpt}.*
+  lib-slim-debug-prefix slim-debug-prefix slim-debug-prefix
+rm -f ../../build/lib-slim-debug-prefix/{LibraryEx,GetOpt}.*

@@ -2,7 +2,7 @@
 source ../scripts/load-config.sh .. || exit 1
 source ../scripts/platform-specific.sh
 
-LIBDIR=../src/srlib
+LIBDIR=../src/lib
 
 INT=_int_test$(platform_exe_suffix)
 

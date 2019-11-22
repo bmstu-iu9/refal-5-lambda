@@ -9,7 +9,7 @@ setlocal
   )
 
   set SCRIPT_FLAGS=--scratch
-  call ..\make.bat srlib-slim-prefix slim-prefix slim-prefix
-  erase ..\..\build\srlib-slim-prefix\LibraryEx.*
-  erase ..\..\build\srlib-slim-prefix\GetOpt.*
+  call ..\make.bat lib-slim-prefix slim-prefix slim-prefix
+  erase ..\..\build\lib-slim-prefix\LibraryEx.*
+  erase ..\..\build\lib-slim-prefix\GetOpt.*
 endlocal

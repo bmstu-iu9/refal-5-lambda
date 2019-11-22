@@ -23,8 +23,8 @@ setlocal
   call :MAKE_SUBDIR compiler makeself-s.bat
   call :MAKE_SUBDIR lexgen makeself-s.bat
   call :MAKE_SUBDIR srmake make-s.bat
-  call :MAKE_SUBDIR srlib make.bat
-  call :MAKE_SUBDIR srlib-dynamic make.bat
+  call :MAKE_SUBDIR lib make.bat
+  call :MAKE_SUBDIR lib-dynamic make.bat
   call :MAKE_SUBDIR srmake make.bat
   call :MAKE_SUBDIR lexgen makeself.bat
   call :MAKE_SUBDIR compiler makeself.bat
@@ -59,6 +59,9 @@ setlocal
   if exist *.cpp move *.cpp ..\..\build\%DIR% >NUL
   if exist ..\common\*.rasl move ..\common\*.rasl ..\..\build\%DIR% >NUL
   if exist ..\common\*.cpp move ..\common\*.cpp ..\..\build\%DIR% >NUL
+  copy %PATH_TO_SREFC%\lib\scratch\*.rasl ..\..\build\%DIR% >NUL
+  copy %PATH_TO_SREFC%\lib\scratch\*.cpp ..\..\build\%DIR% >NUL
+  rem TODO: удалить после обновления дистрбутива
   copy %PATH_TO_SREFC%\srlib\scratch\*.rasl ..\..\build\%DIR% >NUL
   copy %PATH_TO_SREFC%\srlib\scratch\*.cpp ..\..\build\%DIR% >NUL
 

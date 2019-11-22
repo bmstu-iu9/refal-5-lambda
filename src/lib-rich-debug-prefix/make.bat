@@ -9,5 +9,5 @@ setlocal
   )
 
   set SCRIPT_FLAGS=--scratch
-  call ..\make.bat srlib-rich-debug-prefix rich-debug-prefix rich-debug-prefix
+  call ..\make.bat lib-rich-debug-prefix rich-debug-prefix rich-debug-prefix
 endlocal

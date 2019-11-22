@@ -74,8 +74,8 @@ setlocal
     --exesuffix=.exe ^
     --libsuffix=.dll ^
     --prelude=test-prelude.srefi ^
-    -D../src/srlib/platform-Windows ^
-    -D../src/srlib ^
+    -D../src/lib/platform-Windows ^
+    -D../src/lib ^
     --log=__log.txt
   set SRFLAGS_PREF=--prefix=_test_prefix
   set SRFLAGS_NAT=refalrts ^

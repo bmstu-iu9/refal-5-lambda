@@ -8,4 +8,4 @@ if [ -n "$1" ]; then
 fi
 
 SCRIPT_FLAGS=--scratch ../make.sh \
-  srlib-rich-debug-prefix rich-debug-prefix rich-debug-prefix
+  lib-rich-debug-prefix rich-debug-prefix rich-debug-prefix

@@ -74,7 +74,7 @@ lookup_compilers() {
     source ../../scripts/load-config.sh ../.. || return 1
     source ../../scripts/platform-specific.sh
 
-    LIBDIR=../../src/srlib
+    LIBDIR=../../src/lib
     COMMON_SRFLAGS=(
       --cpp-command-exe="$CPPLINEE"
       --cpp-command-lib="$CPPLINEL"

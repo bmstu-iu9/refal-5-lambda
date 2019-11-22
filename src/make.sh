@@ -32,9 +32,9 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     make_subdir srmake make-s.sh
     (
       export SREFC_FLAGS="$SREFC_FLAGS $SREFC_FLAGS_PLUS"
-      make_subdir srlib make.sh
+      make_subdir lib make.sh
     )
-    make_subdir srlib-dynamic make.sh
+    make_subdir lib-dynamic make.sh
     make_subdir srmake make.sh
     make_subdir lexgen makeself.sh
     make_subdir compiler makeself.sh
@@ -76,7 +76,7 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     find . ../common \
       \( -name '*.rasl' -o -name '*.cpp' \) \
       -exec mv '{}' ../../build/${DIR} \;
-    cp ${PATH_TO_SREFC}/srlib/scratch/*.rasl ../../build/${DIR}
-    cp ${PATH_TO_SREFC}/srlib/scratch/*.cpp ../../build/${DIR}
+    cp ${PATH_TO_SREFC}/{sr,}lib/scratch/*.rasl ../../build/${DIR}
+    cp ${PATH_TO_SREFC}/{sr,}lib/scratch/*.cpp ../../build/${DIR}
   fi
 )
