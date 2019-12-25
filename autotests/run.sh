@@ -87,11 +87,11 @@ prepare_int_test() {
 
   prepare_prefix
 
-  ../bin/srefc-core no-entry-go.FAILURE.sref -o ${INT} \
+  ../bin/srefc-core --no-sources -o ${INT} \
     "${COMMON_SRFLAGS[@]}" ${SRFLAGS_PREF} \
     --reference=${REFERENCE} >__out.txt 2>__error.txt
   if [[ $? -ge 100 ]] || [[ ! -e ${INT} ]]; then
-    echo COMPILER ON no-entry-go.FAILURE.sref FAILS, SEE __error.txt
+    echo COMPILER FAILS ON CREATING ${INT}, SEE __error.txt
     exit 1
   fi
   rm __out.txt __error.txt

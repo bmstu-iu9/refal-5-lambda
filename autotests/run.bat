@@ -180,11 +180,11 @@ setlocal
 
   call :PREPARE_PREFIX || exit /b 1
 
-  ..\bin\srefc-core no-entry-go.FAILURE.sref -o _int_test.exe ^
+  ..\bin\srefc-core --no-sources -o _int_test.exe ^
     %COMMON_SRFLAGS% %SRFLAGS_PREF% ^
     --reference=%REFERENCE% >__out.txt 2> __error.txt
   if errorlevel 100 (
-    echo COMPILER ON no-entry-go.FAILURE.sref FAILS, SEE __error.txt
+    echo COMPILER FAILS ON CREATING _int_test.exe, SEE __error.txt
     exit /b 1
   )
   if not exist _int_test.exe (
