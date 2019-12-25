@@ -31,7 +31,7 @@ $ENTRY GenProgram-RASL {
 
     = <Assemble e.RASL> : s.RaslLength (e.LabelOffsets) e.RASLAsWords
 
-    = <PutBlock Start <BytesFromString 'RASLCODE'>>
+    = <PutBlockStart>
       <PutBlock
         ConstTable
         <PutWordLE s.Cookie1>
@@ -470,6 +470,10 @@ ResolveLabeledDestinations {
       };
 
   (e.Labels) e.ReadyRASL = e.ReadyRASL;
+}
+
+$ENTRY PutBlockStart {
+  = <PutBlock Start <BytesFromString 'RASLCODE'>>
 }
 
 $ENTRY PutBlockReference {

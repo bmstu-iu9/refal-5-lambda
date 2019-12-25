@@ -12,7 +12,7 @@ $EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
   Config-SetChmodXCommand, Config-SetPrelude, Config-SetR5Mode,
   Config-SetLogFile, Config-SetTreeOptCycles, Config-SetIncorporated,
   Config-SetKeepRasls, Config-SetTempDir, Config-SetOverwriteExistRasls,
-  Config-SetCppCompilerSuf;
+  Config-SetCppCompilerSuf, Config-SetNoSources;
 
 *$FROM Version
 $EXTERN PrintVersion;
@@ -74,6 +74,7 @@ $ENTRY ParseCommandLine {
           )
           (CppCompilerSuf-Exe Required ('cpp-command-exe-suf'))
           (CppCompilerSuf-Lib Required ('cpp-command-lib-suf'))
+          (NoSources None ('no-sources'))
         )
         e.Arguments
       >
@@ -241,6 +242,9 @@ $ENTRY ParseCommandLine {
                   &Config-SetCppCompilerSuf s.Num LIB e.CppCompilerSuf
                 >;
 
+            (t.Config e.Errors) (NoSources s.Num)
+              = <Update t.Config (e.Errors) &Config-SetNoSources s.Num True>;
+
             (t.Config e.Errors) t.Option
               = (t.Config e.Errors) t.Option;
           }
@@ -399,6 +403,8 @@ PrintHelp {
 '--overwrite-exist-rasl, --dont-overwrite-exist-rasl\n'
 '        If tmp-dir already contain file with name that being produced\n'
 '        new file use new name\n'
+'--no-sources\n'
+'        Don\'t show error when there are no sources in command line\n'
 '\n'
 'Long keys with params may be used with equation:\n'
 '--tmp-dir dirname or --tmp-dir=dirname\n'

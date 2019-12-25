@@ -40,6 +40,7 @@ $ENTRY Config-Create {
         (KeepRasls False)
         (TempDir /* пусто */)
         (OverwriteExistRasls True)
+        (NoSources False)
       ];
 }
 
@@ -783,4 +784,19 @@ $ENTRY Config-GetOverwriteExistRasls {
 $ENTRY Config-SetOverwriteExistRasls {
   [Config e.Params-B (OverwriteExistRasls s.OldValue) e.Params-E] s.NewValue
     = Success [Config e.Params-B (OverwriteExistRasls s.NewValue) e.Params-E];
+}
+
+/**
+  <Config-GetNoSources t.Config> == s.Bool
+*/
+$ENTRY Config-GetNoSources {
+  [Config e.Params-B (NoSources s.Value) e.Params-E] = s.Value
+}
+
+/**
+  <Config-SetNoSources t.Config s.Bool> == Success t.Config
+*/
+$ENTRY Config-SetNoSources {
+  [Config e.Params-B (NoSources s.OldValue) e.Params-E] s.NewValue
+    = Success [Config e.Params-B (NoSources s.NewValue) e.Params-E];
 }

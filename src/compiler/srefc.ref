@@ -9,7 +9,8 @@ $EXTERN Config-GetLogFile,
   Config-GetCppCompiler, Config-GetGrammarCheck, Config-GetTargetSuffix,
   Config-GetSearchFolders, Config-GetTargetMode, Config-GetPrefix,
   Config-GetChmodXCommand, Config-GetReferences, Config-GetIncorporateds,
-  Config-GetTempDir, Config-GetKeepRasls, Config-GetOverwriteExistRasls;
+  Config-GetTempDir, Config-GetKeepRasls, Config-GetOverwriteExistRasls,
+  Config-GetNoSources;
 
 *$FROM Log
 $EXTERN Log-Init, Log-Final;
@@ -27,7 +28,7 @@ $EXTERN CompileFile, GrammarCheck;
 $EXTERN FOpen, FClose, FSeek, FTell, FWriteBytes, RenameFile;
 
 *$FROM Generator-RASL
-$EXTERN PutBlockReference, PutBlockIncorporated;
+$EXTERN PutBlockStart, PutBlockReference, PutBlockIncorporated;
 
 *$FROM Platform
 $EXTERN DirectorySeparator, IsDirectorySeparator;
@@ -51,6 +52,7 @@ Main {
 
 Main-SwValidCommandLine {
   t.CommandLineSource Success t.Config /* файлов нет */
+    , <Config-GetNoSources t.Config> : False
     = <ReportErrors
         t.CommandLineSource t.Config (1 'no source files in command line')
       >;
@@ -141,14 +143,14 @@ Main-SwFoundFiles {
       >;
 
   t.CommandLineSource t.Config e.Files
-    = <CorrectTargetFileName t.Config e.Files> : t.Config^
+    = <CorrectTargetFileName t.CommandLineSource t.Config e.Files> : t.Config^
     = <Main-SwRenamedTargets
         t.CommandLineSource t.Config <RenameTargets t.Config e.Files>
       >;
 }
 
 CorrectTargetFileName {
-  t.Config t.FirstFile e.Files
+  t.CommandLineSource t.Config t.FirstFile e.Files
     , <Config-GetTargetFileName t.Config>
     : {
         DefaultTargetFileName
@@ -171,6 +173,21 @@ CorrectTargetFileName {
     = <Config-SetTargetFileName t.Config s.Origin e.TargetFileName>
     : Success t.Config^
     = t.Config;
+
+  t.CommandLineSource t.Config /* no files */
+    , <Config-GetTargetFileName t.Config>
+    : {
+        DefaultTargetFileName
+          = <ReportErrors
+              t.CommandLineSource t.Config
+              (1 'Option --no-sources require option -o (--target-file)')
+            >;
+
+        e.TargetFileName
+          = <Config-SetTargetFileName t.Config FromCommandLine e.TargetFileName>
+          : Success t.Config^
+          = t.Config;
+      };
 }
 
 Main-SwRenamedTargets {
@@ -675,6 +692,9 @@ AlignToPage {
 }
 
 AppendRASLToBinary {
+  (e.BinaryName) /* no files */
+    = <AppendSimpleBlock &PutBlockStart (e.BinaryName) ()>;
+
   (e.BinaryName) e.Files
     = <FOpen ('ab') e.BinaryName> : s.FileHandle
     = <Map
