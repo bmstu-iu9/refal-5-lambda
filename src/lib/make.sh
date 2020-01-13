@@ -104,6 +104,15 @@ prepare_common() {
   cp -R common/* ../../srlib/common
 }
 
+compile_references() {
+  mkdir -p ../../lib/references
+
+  for s in ${CSOURCES} ${RSOURCES}; do
+    ../../bin/srefc-core --no-sources -R \
+      -o ../../lib/references/${s}.rasl --reference=${s}
+  done
+}
+
 (
   CSOURCES="Library Hash"
   RSOURCES="LibraryEx GetOpt Platform"
@@ -126,6 +135,7 @@ prepare_common() {
   "
 
   mkdir -p ../../srlib/src
+
   cp LICENSE ../../srlib
   for s in ${CSOURCES} ${RSOURCES}; do
     cp ${s}.ref ../../srlib/src
@@ -133,6 +143,7 @@ prepare_common() {
 
   prepare_common
   compile_scratch
+  compile_references
   compile_rich
   compile_rich_debug
   compile_slim

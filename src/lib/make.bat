@@ -4,6 +4,10 @@ if not exist ..\..\srlib\src\nul (
   mkdir ..\..\srlib\src
 )
 
+if not exist ..\..\lib\nul (
+  mkdir ..\..\lib
+)
+
 setlocal
   set CSOURCES=Library Hash
   set RSOURCES=LibraryEx GetOpt Platform
@@ -26,6 +30,7 @@ setlocal
 
   call :PREPARE_COMMON
   call :COMPILE_SCRATCH
+  call :COMPILE_REFERENCES
   call :COMPILE_RICH
   call :COMPILE_RICH_DEBUG
   call :COMPILE_SLIM
@@ -148,4 +153,15 @@ goto :EOF
 
 :PREPARE_COMMON
   xcopy /e /i /y common ..\..\srlib\common
+goto :EOF
+
+:COMPILE_REFERENCES
+setlocal
+  mkdir ..\..\lib\references
+
+  for %%s in (%CSOURCES% %RSOURCES%) do (
+    ..\..\bin\srefc-core --no-sources -R ^
+       -o ..\..\lib\references\%%s.rasl --reference=%%s
+  )
+endlocal
 goto :EOF

@@ -1,5 +1,6 @@
 /bin
 /build
+/lib
 /srlib
 c-plus-plus.conf.bat
 c-plus-plus.conf.sh
