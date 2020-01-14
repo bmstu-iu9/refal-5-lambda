@@ -43,6 +43,9 @@ setlocal
   set TARGET="%~1"
   set LIBS=%~2
 
+  mkdir %TARGET%\x
+  rmdir %TARGET%\x
+
   ..\..\bin\srefc-core -C %SREFC_FLAGS% %LIBS% -d common
 
   for %%s in (%LIBS%) do (
@@ -70,6 +73,32 @@ goto :EOF
     copy %%d\*.cpp %SCRATCHDIR%\%%d
     copy %%d\*.rasl %SCRATCHDIR%\%%d
     if exist %%d\*.def copy %%d\*.def %SCRATCHDIR%\%%d
+  )
+
+
+  set SCRATCHDIR=..\..\lib\scratch
+  call :COMPILE_SEPARATED "%SCRATCHDIR%\exe" "%RSOURCES%"
+  mkdir %SCRATCHDIR%\debug\exe\x
+  rmdir %SCRATCHDIR%\debug\exe\x
+
+  set SCRATCHDIR=..\..\lib\scratch-rt
+  call :COMPILE_SEPARATED "%SCRATCHDIR%\exe" "%CSOURCES%"
+
+  for /d %%d in (. platform-* exe platform-Windows\lib platform-POSIX\lib) do (
+    if not exist %SCRATCHDIR%\%%d\NUL (
+      mkdir %SCRATCHDIR%\%%d
+    )
+    copy %%d\*.h %SCRATCHDIR%\%%d
+    copy %%d\*.cpp %SCRATCHDIR%\%%d
+    if exist %%d\*.def copy %%d\*.def %SCRATCHDIR%\%%d
+  )
+
+  for /F %%c in ('dir /b /s %SCRATCHDIR%\*.cpp') do (
+    if not exist %%~dpnc.rasl copy nul %%~dpnc.rasl
+  )
+
+  for %%d in (diagnostic-initializer debugger) do (
+    move ..\..\lib\scratch-rt\refalrts-%%d.* ..\..\lib\scratch\debug\exe
   )
 goto :EOF
 

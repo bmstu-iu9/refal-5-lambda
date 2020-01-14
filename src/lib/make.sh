@@ -7,6 +7,8 @@ compile_separated() {
   TARGET="$1"
   LIBS="$2"
 
+  mkdir -p ${TARGET}
+
   ../../bin/srefc-core -C ${SREFC_FLAGS} ${LIBS} -d common
 
   for s in ${LIBS}; do
@@ -32,6 +34,33 @@ compile_scratch() {
         [[ -e ${f} ]] && cp ${f} ${SCRATCHDIR}/${d}
       done
     fi
+  done
+
+
+  SCRATCHDIR=../../lib/scratch
+  compile_separated "$SCRATCHDIR/exe" "$RSOURCES"
+  mkdir -p ${SCRATCHDIR}/debug/exe
+
+  SCRATCHDIR=../../lib/scratch-rt
+  compile_separated "$SCRATCHDIR/exe" "$CSOURCES"
+
+  for d in . platform-* exe platform-*/lib; do
+    if [[ -d ${d} ]]; then
+      mkdir -p ${SCRATCHDIR}/${d}
+      cp ${d}/*.cpp ${SCRATCHDIR}/${d}
+      for f in ${d}/*.{h,def}; do
+        [[ -e ${f} ]] && cp ${f} ${SCRATCHDIR}/${d}
+      done
+    fi
+  done
+
+  find "$SCRATCHDIR" -name '*.cpp' | while read cpp; do
+    RASL="${cpp%.cpp}.rasl"
+    [ -e "$RASL" ] || : > ${cpp%.cpp}.rasl
+  done
+
+  for d in diagnostic-initializer debugger; do
+    mv ../../lib/scratch-rt/refalrts-${d}.* ../../lib/scratch/debug/exe
   done
 }
 
