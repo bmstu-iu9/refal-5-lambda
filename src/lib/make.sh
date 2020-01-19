@@ -9,12 +9,14 @@ compile_separated() {
 
   mkdir -p ${TARGET}
 
-  ../../bin/srefc-core -C ${SREFC_FLAGS} ${LIBS} -d common
-
   for s in ${LIBS}; do
+    ../../bin/srefc-core -C ${SREFC_FLAGS} ${s} -d common
+    ../../bin/srefc-core --no-sources -R -o inco.bin --incorporated=${s}
     grep '//FROM' < ${s}.ref > ${TARGET}/${s}.rasl.froms
     [[ -e ${s}.cpp ]] && mv ${s}.cpp ${TARGET}
+    cat inco.bin >> ${s}.rasl
     mv ${s}.rasl ${TARGET}
+    rm inco.bin
   done
 }
 

@@ -46,12 +46,13 @@ setlocal
   mkdir %TARGET%\x
   rmdir %TARGET%\x
 
-  ..\..\bin\srefc-core -C %SREFC_FLAGS% %LIBS% -d common
-
   for %%s in (%LIBS%) do (
+    ..\..\bin\srefc-core -C %SREFC_FLAGS% %%s -d common
+    ..\..\bin\srefc-core --no-sources -R -o inco.bin --incorporated=%%~ns
     find "//FROM" < %%s.ref > %TARGET%\%%s.rasl.froms
     if exist %%s.cpp move %%s.cpp %TARGET%
-    move %%s.rasl %TARGET%
+    copy /b %%s.rasl+inco.bin %TARGET%\%%s.rasl
+    erase %%s.rasl inco.bin
   )
 endlocal
 goto :EOF
