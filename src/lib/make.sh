@@ -48,7 +48,7 @@ compile_scratch() {
     if [[ -d ${d} ]]; then
       mkdir -p ${SCRATCHDIR}/${d}
       cp ${d}/*.cpp ${SCRATCHDIR}/${d}
-      for f in ${d}/*.{h,def}; do
+      for f in ${d}/*.h ${d}/*.def; do
         [[ -e ${f} ]] && cp ${f} ${SCRATCHDIR}/${d}
       done
     fi
