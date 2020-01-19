@@ -81,11 +81,26 @@ prepare_prefix() {
   done
 }
 
+prepare_prefix_new() {
+  PREFIX="$1"
+  LIBS="$2"
+
+  ( cd ../lib-${PREFIX}-prefix && ./make.sh "$LIBS" )
+
+  mv ../../bin/${PREFIX}-prefix* ../../lib/${PREFIX}.exe-prefix
+  # Префикс не должен быть исполнимым
+  chmod -x ../../lib/${PREFIX}.exe-prefix
+}
+
 compile_rich() {
   RICHDIR=../../srlib/rich
 
   mkdir -p ${RICHDIR}
   prepare_prefix "$RICHDIR" rich "$CSOURCES $RSOURCES $RT"
+
+
+  prepare_prefix_new rich "$CSOURCES $RSOURCES $RT"
+  prepare_prefix_new rich-debug "$CSOURCES $RSOURCES $RTD"
 }
 
 compile_rich_debug() {
@@ -115,6 +130,15 @@ compile_slim() {
 
   SREFC_FLAGS="$SREFC_FLAGS -Od-" compile_separated "$SLIMDIR" "$RSOURCES"
   make_reference_rasl "$SLIMDIR" Hash
+
+
+  SLIMDIR=../../lib/slim
+
+  mkdir -p ${SLIMDIR}/exe
+  prepare_prefix_new slim "$CSOURCES $RT"
+  prepare_prefix_new slim-debug "$CSOURCES $RTD"
+
+  SREFC_FLAGS="$SREFC_FLAGS -Od-" compile_separated "$SLIMDIR/exe" "$RSOURCES"
 }
 
 compile_slim_debug() {

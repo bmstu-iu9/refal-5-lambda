@@ -121,12 +121,28 @@ setlocal
 endlocal
 goto :EOF
 
+:PREPARE_PREFIX_NEW
+setlocal
+  set PREFIX=%~1
+  set LIBS=%~2
+
+  pushd ..\lib-%PREFIX%-prefix
+  call make.bat "%LIBS%"
+  popd
+  move ..\..\bin\%PREFIX%-prefix.exe ..\..\lib\%PREFIX%.exe-prefix
+endlocal
+goto :EOF
+
 :COMPILE_RICH
   set RICHDIR=..\..\srlib\rich
   mkdir %RICHDIR%\x
   rmdir %RICHDIR%\x
 
   call :PREPARE_PREFIX "%RICHDIR%" rich "%CSOURCES% %RSOURCES% %RT%"
+
+
+  call :PREPARE_PREFIX_NEW rich "%CSOURCES% %RSOURCES% %RT%"
+  call :PREPARE_PREFIX_NEW rich-debug "%CSOURCES% %RSOURCES% %RTD%"
 goto :EOF
 
 :COMPILE_RICH_DEBUG
@@ -162,6 +178,17 @@ setlocal
   set SREFC_FLAGS=%SREFC_FLAGS% -Od-
   call :COMPILE_SEPARATED  "%SLIMDIR%" "%RSOURCES%"
   call :MAKE_REFERENCE_RASL "%SLIMDIR%" Hash
+
+
+  set SLIMDIR=..\..\lib\slim
+  mkdir %SLIMDIR%\exe\x
+  rmdir %SLIMDIR%\exe\x
+
+  call :PREPARE_PREFIX_NEW slim "%CSOURCES% %RT%"
+  call :PREPARE_PREFIX_NEW slim-debug "%CSOURCES% %RTD%"
+
+  set SREFC_FLAGS=%SREFC_FLAGS% -Od-
+  call :COMPILE_SEPARATED "%SLIMDIR%\exe" "%RSOURCES%"
 endlocal
 goto :EOF
 
