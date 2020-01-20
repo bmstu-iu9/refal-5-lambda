@@ -9,6 +9,14 @@ DISTRDIR="$(dirname "$BINDIR")"
 # Путь к папке srlib
 LIBDIR="$DISTRDIR/srlib"
 
+# Подавлене предупреждений плагина
+CPPLINEE=${CPPLINEE}
+CPPLINEL=${CPPLINEL}
+CPPLINEESUF=${CPPLINEESUF}
+CPPLINELSUF=${CPPLINELSUF}
+CPPLINE_FLAGS=${CPPLINE_FLAGS}
+SREFC_FLAGS=${SREFC_FLAGS}
+
 source "$DISTRDIR/scripts/platform-specific.sh"
 
 set_rich_flags() {
@@ -88,11 +96,11 @@ set_default_flags() {
       ;;
   esac
 
-  PATH=$BINDIR:$PATH
+  PATH=${BINDIR}:$PATH
   srefc-core \
-    -OC $SREFC_FLAGS \
+    -OC ${SREFC_FLAGS} \
     --exesuffix=$(platform_exe_suffix) --libsuffix=$(platform_lib_suffix) \
     "${CPP[@]}" --cppflags="$CPPLINE_FLAGS" --chmod-x-command="chmod +x" \
     -d "$LIBDIR/common" --prelude=refal5-builtins.refi \
-    $PREFIX "${D[@]}" $*
+    ${PREFIX} "${D[@]}" $*
 )

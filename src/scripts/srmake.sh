@@ -9,6 +9,14 @@ DISTRDIR="$(dirname "$BINDIR")"
 # Путь к папке srlib
 LIBDIR="$DISTRDIR/srlib"
 
+# Подавлене предупреждений плагина
+CPPLINEE=${CPPLINEE}
+CPPLINEL=${CPPLINEL}
+CPPLINEESUF=${CPPLINEESUF}
+CPPLINELSUF=${CPPLINELSUF}
+CPPLINE_FLAGS=${CPPLINE_FLAGS}
+SRMAKE_FLAGS=${SRMAKE_FLAGS}
+
 source "$DISTRDIR/scripts/platform-specific.sh"
 
 set_rich_flags() {
@@ -90,10 +98,10 @@ set_default_flags() {
       ;;
   esac
 
-  PATH=$BINDIR:$PATH
+  PATH=${BINDIR}:$PATH
   srmake-core \
     -s "srefc-core" \
-    -X-OC $SRMAKE_FLAGS \
+    -X-OC ${SRMAKE_FLAGS} \
     -X--exesuffix=$(platform_exe_suffix) -X--libsuffix=$(platform_lib_suffix) \
     "${CPP[@]}" \
     --thru=--cppflags="$CPPLINE_FLAGS"  -X--chmod-x-command="chmod +x" \
