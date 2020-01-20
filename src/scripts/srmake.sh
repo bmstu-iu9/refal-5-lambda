@@ -17,6 +17,7 @@ CPPLINELSUF=${CPPLINELSUF}
 CPPLINE_FLAGS=${CPPLINE_FLAGS}
 SRMAKE_FLAGS=${SRMAKE_FLAGS}
 
+# shellcheck disable=SC1090
 source "$DISTRDIR/scripts/platform-specific.sh"
 
 set_rich_flags() {
@@ -44,6 +45,7 @@ set_slim_debug_flags() {
 }
 
 set_scratch_flags() {
+  # shellcheck disable=SC1090
   source "$DISTRDIR/scripts/load-config.sh" "$DISTRDIR" || exit 1
   D=(
     -D "$(platform_subdir_lookup "$LIBDIR/scratch")"
@@ -51,13 +53,13 @@ set_scratch_flags() {
     -D "$LIBDIR/scratch"
   )
   CPP=(
-    --cpp-command-exe="$CPPLINEE"
-    --cpp-command-lib="$CPPLINEL"
-    --cpp-command-exe-suf="$CPPLINEESUF"
-    --cpp-command-lib-suf="$CPPLINELSUF"
+    "--cpp-command-exe=$CPPLINEE"
+    "--cpp-command-lib=$CPPLINEL"
+    "--cpp-command-exe-suf=$CPPLINEESUF"
+    "--cpp-command-lib-suf=$CPPLINELSUF"
   )
   RT=(
-    --runtime=refalrts-main
+    "--runtime=refalrts-main"
   )
 }
 
@@ -99,12 +101,13 @@ set_default_flags() {
   esac
 
   PATH=${BINDIR}:$PATH
+  # shellcheck disable=SC2086
   srmake-core \
     -s "srefc-core" \
     -X-OC ${SRMAKE_FLAGS} \
-    -X--exesuffix=$(platform_exe_suffix) -X--libsuffix=$(platform_lib_suffix) \
+    "-X--exesuffix=$(platform_exe_suffix)" "-X--libsuffix=$(platform_lib_suffix)" \
     "${CPP[@]}" \
     --thru=--cppflags="$CPPLINE_FLAGS"  -X--chmod-x-command="chmod +x" \
     -d "$LIBDIR/common" --prelude=refal5-builtins.refi \
-    "${D[@]}" "${RT[@]}" $*
+    "${D[@]}" "${RT[@]}" "$@"
 )
