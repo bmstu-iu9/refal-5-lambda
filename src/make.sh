@@ -34,6 +34,7 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
       export SREFC_FLAGS="$SREFC_FLAGS $SREFC_FLAGS_PLUS"
       make_subdir lib make.sh
     )
+    make_subdir lib-rich-prefix-lib make.sh
     make_subdir lib-dynamic make.sh
     make_subdir srmake make.sh
     make_subdir lexgen makeself.sh
