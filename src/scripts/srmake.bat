@@ -8,8 +8,8 @@ set BINDIR=%BINDIR:~0,-1%
 for %%d in ("%BINDIR%") do set DISTRDIR=%%~dpd
 set DISTRDIR=%DISTRDIR:~0,-1%
 
-:: Путь к папке srlib
-set LIBDIR=%DISTRDIR%\srlib
+:: Путь к папке lib
+set LIBDIR=%DISTRDIR%\lib
 
 :: Запуск
 setlocal
@@ -17,52 +17,50 @@ setlocal
   :: Подстановка %ARGS:* =% убирает из переменной среды префикс
   :: до первого пробела, включая этот пробел (см. ниже).
   set ARGS=%*
-  if "%~1"=="--rich" goto MODE_RICH
-  if "%~1"=="--rich-debug" goto MODE_RICH_DEBUG
-  if "%~1"=="--slim" goto MODE_SLIM
-  if "%~1"=="--slim-debug" goto MODE_SLIM_DEBUG
-  if "%~1"=="--scratch" goto MODE_SCRATCH
-  goto :MODE_DEFAULT
 
-:MODE_RICH
+  set PREFIX=slim
+  set BIND=AUTO
+  set DEBUG=FALSE
+
+:LOOP
+  :: Если написать set VAR=val & goto NEXT, то в конец VAR добавится пробел.
+  :: Поэтому знак & приходится писать слитно.
+  if "%~1"=="--slim" ( set PREFIX=slim& goto NEXT )
+  if "%~1"=="--rich" ( set PREFIX=rich& goto NEXT )
+  if "%~1"=="--scratch" ( set PREFIX=scratch& goto NEXT )
+
+  if "%~1"=="--auto" ( set BIND=AUTO& goto NEXT )
+  if "%~1"=="--static" ( set BIND=STATIC& goto NEXT )
+  if "%~1"=="--dynamic" ( set BIND=DYNAMIC& goto NEXT )
+
+  if "%~1"=="--debug" ( set DEBUG=TRUE& goto NEXT )
+  if "%~1"=="--no-debug" ( set DEBUG=FALSE& goto NEXT )
+
+  :: TODO: удалить после обновления стабильной версии
+  if "%~1"=="--rich-debug" ( set PREFIX=rich& set DEBUG=TRUE& goto NEXT )
+  if "%~1"=="--slim-debug" ( set PREFIX=rich& set DEBUG=TRUE& goto NEXT )
+
+  goto EXIT_LOOP
+
+:NEXT
   set ARGS=%ARGS:* =%
-  set D=-d "%LIBDIR%\rich"
-  set CPP=
-  set RT=
-  goto END_SWITCH
+  shift
+  goto LOOP
 
-:MODE_RICH_DEBUG
-  set ARGS=%ARGS:* =%
-  set D=-d "%LIBDIR%\rich-debug"
-  set CPP=
-  set RT=
-  goto END_SWITCH
+:EXIT_LOOP
 
-:MODE_SLIM
-  set ARGS=%ARGS:* =%
-  set D=-d "%LIBDIR%\slim"
-  set CPP=
-  set RT=
-  goto END_SWITCH
+  set D=
+  if "%DEBUG%"=="TRUE" set D=-d "%LIBDIR%\%PREFIX%\debug"
+  if "%BIND%"=="AUTO" set D=%D% -d "%LIBDIR%\%PREFIX%"
+  if "%BIND%"=="STATIC" set D=%D% -d "%LIBDIR%\%PREFIX%\exe"
+  set D=%D% -D "%LIBDIR%\%PREFIX%-rt" -d "%LIBDIR%\references"
 
-:MODE_SLIM_DEBUG
-  set ARGS=%ARGS:* =%
-:MODE_DEFAULT
-  set D=-d "%LIBDIR%\slim-debug"
-  set CPP=
-  set RT=
-  goto END_SWITCH
+  if not "%PREFIX%"=="scratch" (
+    call :INIT_PREFIXED
+  ) else (
+    call :INIT_SCRATCH
+  )
 
-:MODE_SCRATCH
-  set ARGS=%ARGS:* =%
-  call "%DISTRDIR%\scripts\load-config.bat" || exit /b 1
-  set D=-D "%LIBDIR%\scratch\platform-Windows" -D "%LIBDIR%\scratch"
-  set CPP=--cpp-command-exe="%CPPLINEE%" --cpp-command-lib="%CPPLINEL%" ^
-    --cpp-command-exe-suf="%CPPLINEESUF%" --cpp-command-lib-suf="%CPPLINELSUF%"
-  set RT=--runtime=refalrts-main
-  goto END_SWITCH
-
-:END_SWITCH
   set PATH=%BINDIR%;%PATH%
   srmake-core ^
     -s srefc-core.exe ^
@@ -70,5 +68,26 @@ setlocal
     -X--exesuffix=.exe -X--libsuffix=.dll %CPP% ^
     --thru=--cppflags="%CPPLINE_FLAGS%" -X--chmod-x-command= ^
     -d "%LIBDIR%\common" --prelude=refal5-builtins.refi ^
-    %D% %RT% %ARGS%
+    %PREFIX% %D% -d "%LIBDIR%" %RT% %ARGS%
 endlocal
+
+:INIT_PREFIXED
+  set CPP=
+  set RT=
+  if "%DEBUG%"=="TRUE" (
+    set PREFIX=--prefix=%PREFIX%-debug
+  ) else (
+    set PREFIX=--prefix=%PREFIX%
+  )
+goto :EOF
+
+:INIT_SCRATCH
+  set PREFIX=
+  call "%DISTRDIR%\scripts\load-config.bat" || exit /b 1
+  set D=-D "%LIBDIR%\scratch-rt\platform-Windows" %D%
+  set CPP=--cpp-command-exe="%CPPLINEE%" ^
+    --cpp-command-lib="%CPPLINEL%" ^
+    --cpp-command-exe-suf="%CPPLINEESUF%" ^
+    --cpp-command-lib-suf="%CPPLINELSUF%"
+  set RT=--runtime=refalrts-main
+goto :EOF

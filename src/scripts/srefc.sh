@@ -6,8 +6,8 @@ BINDIR="$(dirname "$0")"
 # Получаем путь к дистрибутиву
 DISTRDIR="$(dirname "$BINDIR")"
 
-# Путь к папке srlib
-LIBDIR="$DISTRDIR/srlib"
+# Путь к папке lib
+LIBDIR="$DISTRDIR/lib"
 
 # Подавлене предупреждений плагина
 CPPLINEE=${CPPLINEE}
@@ -20,83 +20,63 @@ SREFC_FLAGS=${SREFC_FLAGS}
 # shellcheck disable=SC1090
 source "$DISTRDIR/scripts/platform-specific.sh"
 
-set_rich_flags() {
-  D=(-d "$LIBDIR/rich")
-  PREFIX=--prefix=rich
-  CPP=()
-}
-
-set_rich_debug_flags() {
-  D=(-d "$LIBDIR/rich-debug")
-  PREFIX=--prefix=rich-debug
-  CPP=()
-}
-
-set_slim_flags() {
-  D=(-d "$LIBDIR/slim")
-  PREFIX=--prefix=slim
-  CPP=()
-}
-
-set_slim_debug_flags() {
-  D=(-d "$LIBDIR/slim-debug")
-  PREFIX=--prefix=slim-debug
-  CPP=()
-}
-
-set_scratch_flags() {
-  # shellcheck disable=SC1090
-  source "$DISTRDIR/scripts/load-config.sh" "$DISTRDIR" || exit 1
-  D=(
-    -D "$(platform_subdir_lookup "$LIBDIR/scratch")"
-    -D "$LIBDIR/scratch/platform-POSIX"
-    -D "$LIBDIR/scratch"
-  )
-  PREFIX=
-  CPP=(
-    "--cpp-command-exe=$CPPLINEE"
-    "--cpp-command-lib=$CPPLINEL"
-    "--cpp-command-exe-suf=$CPPLINEESUF"
-    "--cpp-command-lib-suf=$CPPLINELSUF"
-  )
-}
-
-set_default_flags() {
-  set_slim_debug_flags
-}
-
 # Запуск
-(
-  case "$1" in
-    "--rich")
-      shift
-      set_rich_flags
-      ;;
+main() {
+  PREFIX=slim
+  BIND=AUTO
+  DEBUG=false
 
-    "--rich-debug")
-      shift
-      set_rich_debug_flags
-      ;;
+  NEXT=true
+  while $NEXT; do
+    case "$1" in
+      "--slim") PREFIX=slim; shift ;;
+      "--rich") PREFIX=rich; shift ;;
+      "--scratch") PREFIX=scratch; shift ;;
 
-    "--slim")
-      shift
-      set_slim_flags
-      ;;
+      "--auto") BIND=AUTO; shift ;;
+      "--static") BIND=STATIC; shift ;;
+      "--dynamic") BIND=DYNAMIC; shift ;;
 
-    "--slim-debug")
-      shift
-      set_slim_debug_flags
-      ;;
+      "--debug") DEBUG=true; shift ;;
+      "--no-debug") DEBUG=false; shift ;;
 
-    "--scratch")
-      shift
-      set_scratch_flags
-      ;;
+      # TODO: удалить после обновления стабильной версии
+      "--rich-debug") PREFIX=rich; DEBUG=true; shift ;;
+      "--slim-debug") PREFIX=slim; DEBUG=true; shift ;;
 
-    *)
-      set_default_flags
-      ;;
-  esac
+      *) NEXT=false ;;
+    esac
+  done
+
+  D=()
+  "$DEBUG" && D=(-d "$LIBDIR/$PREFIX/debug" "${D[@]}")
+  [ "$BIND" = AUTO ] && D=("${D[@]}" -d "$LIBDIR/$PREFIX")
+  [ "$BIND" = STATIC ] && D=("${D[@]}" -d "$LIBDIR/$PREFIX/exe")
+  D=("${D[@]}" -D "$LIBDIR/${PREFIX}-rt" -d "$LIBDIR/references")
+
+  if [[ "$PREFIX" != scratch ]]; then
+    CPP=()
+    if "$DEBUG"; then
+      PREFIX=--prefix="$PREFIX"-debug
+    else
+      PREFIX=--prefix="$PREFIX"
+    fi
+  else
+    # shellcheck disable=SC1090
+    source "$DISTRDIR/scripts/load-config.sh" "$DISTRDIR" || exit 1
+    D=(
+      -D "$(platform_subdir_lookup "$LIBDIR/scratch-rt")"
+      -D "$LIBDIR/scratch-rt/platform-POSIX"
+      "${D[@]}"
+    )
+    PREFIX=
+    CPP=(
+      "--cpp-command-exe=$CPPLINEE"
+      "--cpp-command-lib=$CPPLINEL"
+      "--cpp-command-exe-suf=$CPPLINEESUF"
+      "--cpp-command-lib-suf=$CPPLINELSUF"
+    )
+  fi
 
   PATH=${BINDIR}:$PATH
   # shellcheck disable=SC2086
@@ -105,5 +85,7 @@ set_default_flags() {
     "--exesuffix=$(platform_exe_suffix)" "--libsuffix=$(platform_lib_suffix)" \
     "${CPP[@]}" --cppflags="$CPPLINE_FLAGS" --chmod-x-command="chmod +x" \
     -d "$LIBDIR/common" --prelude=refal5-builtins.refi \
-    ${PREFIX} "${D[@]}" "$@"
-)
+    ${PREFIX} "${D[@]}" -d "$LIBDIR" "$@"
+}
+
+( main "$@" )
