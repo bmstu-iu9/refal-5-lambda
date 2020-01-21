@@ -146,7 +146,7 @@ AnalyzeFile {
         (True e.OutName) (False e.Native)
           = (Output e.OutName);
 
-        (False e.UnitName '.rasl') (False e.UnitName '.cpp')
+        (False e.UnitName '.rasl') (s.Result e.UnitName '.cpp')
           = (NotFound e.UnitName);
       };
 }
