@@ -157,6 +157,8 @@ compile_slim_debug() {
 prepare_common() {
   mkdir -p ../../srlib/common
   cp -R common/* ../../srlib/common
+  mkdir -p ../../lib/common
+  cp -R common/* ../../lib/common
 }
 
 compile_references() {

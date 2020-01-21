@@ -210,6 +210,7 @@ goto :EOF
 
 :PREPARE_COMMON
   xcopy /e /i /y common ..\..\srlib\common
+  xcopy /e /i /y common ..\..\lib\common
 goto :EOF
 
 :COMPILE_REFERENCES
