@@ -1,11 +1,7 @@
 @echo off
-if not exist ..\..\srlib\src\nul (
-  mkdir ..\..\srlib
-  mkdir ..\..\srlib\src
-)
-
 if not exist ..\..\lib\nul (
   mkdir ..\..\lib
+  mkdir ..\..\lib\src
 )
 
 setlocal
@@ -25,16 +21,14 @@ setlocal
     refalrts-debugger ^
     refalrts-diagnostic-initializer
 
-  copy LICENSE ..\..\srlib
-  for %%s in (%CSOURCES% %RSOURCES%) do copy %%s.ref ..\..\srlib\src
+  copy LICENSE ..\..\lib
+  for %%s in (%CSOURCES% %RSOURCES%) do copy %%s.ref ..\..\lib\src
 
   call :PREPARE_COMMON
   call :COMPILE_SCRATCH
   call :COMPILE_REFERENCES
   call :COMPILE_RICH
-  call :COMPILE_RICH_DEBUG
   call :COMPILE_SLIM
-  call :COMPILE_SLIM_DEBUG
 endlocal
 goto :EOF
 
@@ -58,25 +52,6 @@ endlocal
 goto :EOF
 
 :COMPILE_SCRATCH
-  set SCRATCHDIR=..\..\srlib\scratch
-  mkdir %SCRATCHDIR%\x
-  rmdir %SCRATCHDIR%\x
-  copy *.h %SCRATCHDIR%
-  copy *.cpp %SCRATCHDIR%
-  copy *.rasl %SCRATCHDIR%
-
-  call :COMPILE_SEPARATED  "%SCRATCHDIR%" "%CSOURCES% %RSOURCES%"
-
-  for /d %%d in (platform-* exe platform-Windows\lib platform-POSIX\lib) do (
-    if not exist %SCRATCHDIR%\%%d\NUL (
-      mkdir %SCRATCHDIR%\%%d
-    )
-    copy %%d\*.cpp %SCRATCHDIR%\%%d
-    copy %%d\*.rasl %SCRATCHDIR%\%%d
-    if exist %%d\*.def copy %%d\*.def %SCRATCHDIR%\%%d
-  )
-
-
   set SCRATCHDIR=..\..\lib\scratch
   call :COMPILE_SEPARATED "%SCRATCHDIR%\exe" "%RSOURCES%"
   mkdir %SCRATCHDIR%\debug\exe\x
@@ -105,25 +80,6 @@ goto :EOF
 
 :PREPARE_PREFIX
 setlocal
-  set TARGET="%~1"
-  set PREFIX=%~2
-  set LIBS=%~3
-
-  pushd ..\lib-%PREFIX%-prefix
-  call make.bat "%LIBS%"
-  popd
-  move ..\..\bin\%PREFIX%-prefix.exe %TARGET%\%PREFIX%.exe-prefix
-
-  for %%s in (%LIBS%) do (
-    copy NUL %TARGET%\%%s.rasl
-    echo //PREFIX %PREFIX%> %TARGET%\%%s.rasl.froms
-    if exist %%s.obj erase %%s.obj
-  )
-endlocal
-goto :EOF
-
-:PREPARE_PREFIX_NEW
-setlocal
   set PREFIX=%~1
   set LIBS=%~2
 
@@ -135,81 +91,25 @@ endlocal
 goto :EOF
 
 :COMPILE_RICH
-  set RICHDIR=..\..\srlib\rich
-  mkdir %RICHDIR%\x
-  rmdir %RICHDIR%\x
-
-  call :PREPARE_PREFIX "%RICHDIR%" rich "%CSOURCES% %RSOURCES% %RT%"
-
-
-  call :PREPARE_PREFIX_NEW rich "%CSOURCES% %RSOURCES% %RT%"
-  call :PREPARE_PREFIX_NEW rich-debug "%CSOURCES% %RSOURCES% %RTD%"
-goto :EOF
-
-:COMPILE_RICH_DEBUG
-  set RICHDIR=..\..\srlib\rich-debug
-  mkdir %RICHDIR%\x
-  rmdir %RICHDIR%\x
-
-  call :PREPARE_PREFIX "%RICHDIR%" rich-debug "%CSOURCES% %RSOURCES% %RTD%"
-goto :EOF
-
-:MAKE_REFERENCE_RASL
-setlocal
-  set TARGET_FILE="%~1\%~2.rasl"
-  set REFERENCE="%~2"
-
-  copy nul "%TARGET_FILE%"
-  ..\..\bin\srefc-core -R ^
-    --target-file="%TARGET_FILE%" ^
-    --reference="%REFERENCE%" ^
-    "%TARGET_FILE%"
-endlocal
+  call :PREPARE_PREFIX rich "%CSOURCES% %RSOURCES% %RT%"
+  call :PREPARE_PREFIX rich-debug "%CSOURCES% %RSOURCES% %RTD%"
 goto :EOF
 
 :COMPILE_SLIM
 setlocal
-  set SLIMDIR=..\..\srlib\slim
-  set CSOURCES=Library
-  mkdir %SLIMDIR%\x
-  rmdir %SLIMDIR%\x
-
-  call :PREPARE_PREFIX "%SLIMDIR%" slim "%CSOURCES% %RT%"
-
-  set SREFC_FLAGS=%SREFC_FLAGS% -Od-
-  call :COMPILE_SEPARATED  "%SLIMDIR%" "%RSOURCES%"
-  call :MAKE_REFERENCE_RASL "%SLIMDIR%" Hash
-
-
   set SLIMDIR=..\..\lib\slim
   mkdir %SLIMDIR%\exe\x
   rmdir %SLIMDIR%\exe\x
 
-  call :PREPARE_PREFIX_NEW slim "%CSOURCES% %RT%"
-  call :PREPARE_PREFIX_NEW slim-debug "%CSOURCES% %RTD%"
+  call :PREPARE_PREFIX slim "%CSOURCES% %RT%"
+  call :PREPARE_PREFIX slim-debug "%CSOURCES% %RTD%"
 
   set SREFC_FLAGS=%SREFC_FLAGS% -Od-
   call :COMPILE_SEPARATED "%SLIMDIR%\exe" "%RSOURCES%"
 endlocal
 goto :EOF
 
-:COMPILE_SLIM_DEBUG
-setlocal
-  set SLIMDIR=..\..\srlib\slim-debug
-  set CSOURCES=Library
-  mkdir %SLIMDIR%\x
-  rmdir %SLIMDIR%\x
-
-  call :PREPARE_PREFIX "%SLIMDIR%" slim-debug "%CSOURCES% %RTD%"
-
-  set SREFC_FLAGS=%SREFC_FLAGS% -Od-
-  call :COMPILE_SEPARATED  "%SLIMDIR%" "%RSOURCES%"
-  call :MAKE_REFERENCE_RASL "%SLIMDIR%" Hash
-endlocal
-goto :EOF
-
 :PREPARE_COMMON
-  xcopy /e /i /y common ..\..\srlib\common
   xcopy /e /i /y common ..\..\lib\common
 goto :EOF
 
