@@ -77,7 +77,10 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     find . ../common \
       \( -name '*.rasl' -o -name '*.cpp' \) \
       -exec mv '{}' ../../build/${DIR} \;
-    cp ${PATH_TO_SREFC}/{sr,}lib/scratch/*.rasl ../../build/${DIR}
-    cp ${PATH_TO_SREFC}/{sr,}lib/scratch/*.cpp ../../build/${DIR}
+    cp ${PATH_TO_SREFC}/lib/scratch{{/debug,,-rt}/exe,-rt}/*.{rasl,cpp} \
+      ../../build/${DIR}
+
+    cp ${PATH_TO_SREFC}/srlib/scratch/*.rasl ../../build/${DIR}
+    cp ${PATH_TO_SREFC}/srlib/scratch/*.cpp ../../build/${DIR}
   fi
 )

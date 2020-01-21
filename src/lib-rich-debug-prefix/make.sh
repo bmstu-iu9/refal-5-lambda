@@ -7,5 +7,5 @@ if [ -n "$1" ]; then
   done
 fi
 
-SCRIPT_FLAGS=--scratch ../make.sh \
+SCRIPT_FLAGS="--scratch --debug" ../make.sh \
   lib-rich-debug-prefix rich-debug-prefix rich-debug-prefix

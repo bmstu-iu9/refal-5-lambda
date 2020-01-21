@@ -40,13 +40,13 @@ setlocal
   set MAINSRC=%~n3
   set CPPLINE_FLAGS=%~4
   set PATH_TO_SREFC=%5
-  if {%PATH_TO_SREFC%}=={} (
+  if "%PATH_TO_SREFC%"=="" (
     set PATH_TO_SREFC=..\..
   )
-  if {%SCRIPT_FLAGS%}=={} (
+  if "%SCRIPT_FLAGS%"=="" (
     set SCRIPT_FLAGS=%DEFAULT_SCRIPT_FLAGS%
   )
-  if {%TARGET_SUFFIX%}=={} (
+  if "%TARGET_SUFFIX%"=="" (
     set TARGET_SUFFIX=.exe
   )
   if not exist ..\..\build\%DIR%\nul mkdir ..\..\build\%DIR%
@@ -60,8 +60,10 @@ setlocal
   if exist *.cpp move *.cpp ..\..\build\%DIR% >NUL
   if exist ..\common\*.rasl move ..\common\*.rasl ..\..\build\%DIR% >NUL
   if exist ..\common\*.cpp move ..\common\*.cpp ..\..\build\%DIR% >NUL
-  copy %PATH_TO_SREFC%\lib\scratch\*.rasl ..\..\build\%DIR% >NUL
-  copy %PATH_TO_SREFC%\lib\scratch\*.cpp ..\..\build\%DIR% >NUL
+  for %%d in (\debug\exe \exe -rt\exe -rt) do (
+    copy %PATH_TO_SREFC%\lib\scratch%%d\*.rasl ..\..\build\%DIR% >NUL
+    copy %PATH_TO_SREFC%\lib\scratch%%d\*.cpp ..\..\build\%DIR% >NUL
+  )
   rem TODO: удалить после обновления дистрбутива
   copy %PATH_TO_SREFC%\srlib\scratch\*.rasl ..\..\build\%DIR% >NUL
   copy %PATH_TO_SREFC%\srlib\scratch\*.cpp ..\..\build\%DIR% >NUL

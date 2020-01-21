@@ -8,7 +8,7 @@ setlocal
     )
   )
 
-  set SCRIPT_FLAGS=--scratch
+  set SCRIPT_FLAGS=--scratch --debug
   call ..\make.bat lib-slim-debug-prefix slim-debug-prefix slim-debug-prefix
   erase ..\..\build\lib-slim-debug-prefix\LibraryEx.*
   erase ..\..\build\lib-slim-debug-prefix\GetOpt.*

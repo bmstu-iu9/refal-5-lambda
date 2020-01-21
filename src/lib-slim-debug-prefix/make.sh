@@ -7,6 +7,6 @@ if [ -n "$1" ]; then
   done
 fi
 
-SCRIPT_FLAGS=--scratch ../make.sh \
+SCRIPT_FLAGS="--scratch --debug" ../make.sh \
   lib-slim-debug-prefix slim-debug-prefix slim-debug-prefix
 rm -f ../../build/lib-slim-debug-prefix/{LibraryEx,GetOpt}.*
