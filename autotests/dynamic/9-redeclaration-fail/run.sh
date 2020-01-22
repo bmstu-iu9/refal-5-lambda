@@ -5,7 +5,9 @@ rm -f *.rasl-module *.rasl caller
 ./caller
 if [ $? -eq 0 ]; then
   echo TEST FAILED! Program must be fail!
+  exit 1
 else
   echo Test OK! This failure is normal and expected!
   rm -f *.rasl-module *.rasl caller
+  exit 0
 fi

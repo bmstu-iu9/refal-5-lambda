@@ -6,6 +6,7 @@ rm -f *.rasl-module *.rasl caller *.so
 ./caller
 if [ $? -gt 0 ]; then
   echo TEST FAILED!
+  exit 1
 else
   echo Test OK!
   rm -f *.rasl-module *.rasl caller *.so *.cpp
