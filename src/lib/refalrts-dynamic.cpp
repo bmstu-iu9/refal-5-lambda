@@ -817,9 +817,13 @@ refalrts::Module *refalrts::Domain::ModuleStorage::load_module(
     p != module->references().end();
     ++p
   ) {
-    Module *ref_module = load_module(p->first, &substack, event, callback_data);
-    ref_success = ref_success && ref_module != 0;
-    p->second = ref_module;
+    if (module->has_alias(p->first)) {
+      p->second = module;
+    } else {
+      Module *ref_module = load_module(p->first, &substack, event, callback_data);
+      ref_success = ref_success && ref_module != 0;
+      p->second = ref_module;
+    }
   }
 
   m_modules.push_back(module);
