@@ -7,15 +7,16 @@ compile_separated() {
   TARGET="$1"
   LIBS="$2"
 
-  mkdir -p ${TARGET}
+  mkdir -p "$TARGET"
 
   for s in ${LIBS}; do
-    ../../bin/srefc-core -C ${SREFC_FLAGS} ${s} -d common
-    ../../bin/srefc-core --no-sources -R -o inco.bin --incorporated=${s}
-    grep '//FROM' < ${s}.ref > ${TARGET}/${s}.rasl.froms
-    [[ -e ${s}.cpp ]] && mv ${s}.cpp ${TARGET}
-    cat inco.bin >> ${s}.rasl
-    mv ${s}.rasl ${TARGET}
+    # shellcheck disable=SC2086
+    ../../bin/srefc-core -C ${SREFC_FLAGS} "$s" -d common
+    ../../bin/srefc-core --no-sources -R -o inco.bin --incorporated="$s"
+    grep '//FROM' < "$s".ref > "$TARGET/$s".rasl.froms
+    [[ -e "$s".cpp ]] && mv "$s".cpp "$TARGET"
+    cat inco.bin >> "$s".rasl
+    mv "$s".rasl "$TARGET"
     rm inco.bin
   done
 }
@@ -23,24 +24,24 @@ compile_separated() {
 compile_scratch() {
   SCRATCHDIR=../../lib/scratch
   compile_separated "$SCRATCHDIR/exe" "$RSOURCES"
-  mkdir -p ${SCRATCHDIR}/debug/exe
+  mkdir -p "$SCRATCHDIR"/debug/exe
 
   SCRATCHDIR=../../lib/scratch-rt
   compile_separated "$SCRATCHDIR/exe" "$CSOURCES"
 
   for d in . platform-* exe platform-*/lib; do
-    if [[ -d ${d} ]]; then
-      mkdir -p ${SCRATCHDIR}/${d}
-      cp ${d}/*.cpp ${SCRATCHDIR}/${d}
-      for f in ${d}/*.h ${d}/*.def; do
-        [[ -e ${f} ]] && cp ${f} ${SCRATCHDIR}/${d}
+    if [[ -d "$d" ]]; then
+      mkdir -p "$SCRATCHDIR/$d"
+      cp "$d"/*.cpp "$SCRATCHDIR/$d"
+      for f in "$d"/*.h "$d"/*.def; do
+        [[ -e "$f" ]] && cp "$f" "$SCRATCHDIR/$d"
       done
     fi
   done
 
-  find "$SCRATCHDIR" -name '*.cpp' | while read cpp; do
+  find "$SCRATCHDIR" -name '*.cpp' | while read -r cpp; do
     RASL="${cpp%.cpp}.rasl"
-    [ -e "$RASL" ] || : > ${cpp%.cpp}.rasl
+    [ -e "$RASL" ] || : > "${cpp%.cpp}.rasl"
   done
 
   for d in diagnostic-initializer debugger; do
@@ -64,7 +65,7 @@ compile_references() {
 
   for s in ${CSOURCES} ${RSOURCES}; do
     ../../bin/srefc-core --no-sources -R \
-      -o ../../lib/references/${s}.rasl --reference=${s}
+      -o ../../lib/references/"$s".rasl --reference="$s"
   done
 }
 
@@ -76,7 +77,7 @@ compile_references() {
 
   cp LICENSE ../../lib
   for s in ${CSOURCES} ${RSOURCES}; do
-    cp ${s}.ref ../../lib/src
+    cp "$s".ref ../../lib/src
   done
 
   prepare_common

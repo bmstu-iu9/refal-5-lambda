@@ -3,7 +3,7 @@
 make_subdir() {
   DIR=$1
   MAKE=$2
-  (cd ${DIR} && source ${MAKE})
+  (cd "$DIR" && source "$MAKE")
 }
 
 RELEASE=${RELEASE:-}
@@ -68,19 +68,19 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
       export SRMAKE_FLAGS="$SRMAKE_FLAGS $SRMAKE_FLAGS_PLUS"
 
       ${PATH_TO_SREFC}/bin/srmake \
-        ${SCRIPT_FLAGS} --keep-rasls -d ../common ${MAINSRC} -o${TARGET}
+        ${SCRIPT_FLAGS} --keep-rasls -d ../common "$MAINSRC" -o"$TARGET"
     )
-    mv ${TARGET} ../../bin/${TARGET}${TARGET_SUFFIX}
+    mv "$TARGET" "../../bin/$TARGET$TARGET_SUFFIX"
 
-    mkdir -p ../../build/${DIR}
-    rm -f ../../build/${DIR}/*
+    mkdir -p "../../build/$DIR"
+    rm -f "../../build/$DIR/"*
     find . ../common \
       \( -name '*.rasl' -o -name '*.cpp' \) \
-      -exec mv '{}' ../../build/${DIR} \;
+      -exec mv '{}' "../../build/$DIR" \;
     cp ${PATH_TO_SREFC}/lib/scratch{{/debug,,-rt}/exe,-rt}/*.{rasl,cpp} \
-      ../../build/${DIR}
+      "../../build/$DIR"
 
-    cp ${PATH_TO_SREFC}/srlib/scratch/*.rasl ../../build/${DIR}
-    cp ${PATH_TO_SREFC}/srlib/scratch/*.cpp ../../build/${DIR}
+    cp "$PATH_TO_SREFC/srlib/scratch/"*.rasl "../../build/$DIR"
+    cp "$PATH_TO_SREFC/srlib/scratch/"*.cpp "../../build/$DIR"
   fi
 )
