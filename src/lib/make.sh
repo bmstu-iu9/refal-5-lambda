@@ -48,30 +48,9 @@ compile_scratch() {
   done
 }
 
-prepare_prefix() {
-  PREFIX="$1"
-  LIBS="$2"
-
-  ( cd ../lib-${PREFIX}-prefix && ./make.sh "$LIBS" )
-
-  mv ../../bin/${PREFIX}-prefix* ../../lib/${PREFIX}.exe-prefix
-  # Префикс не должен быть исполнимым
-  chmod -x ../../lib/${PREFIX}.exe-prefix
-}
-
-compile_rich() {
-  #prepare_prefix rich "$CSOURCES $RSOURCES $RT"
-  #prepare_prefix rich-debug "$CSOURCES $RSOURCES $RTD"
-  :
-}
-
 compile_slim() {
   SLIMDIR=../../lib/slim
-
   mkdir -p ${SLIMDIR}/exe
-  #prepare_prefix slim "$CSOURCES $RT"
-  #prepare_prefix slim-debug "$CSOURCES $RTD"
-
   SREFC_FLAGS="$SREFC_FLAGS -Od-" compile_separated "$SLIMDIR/exe" "$RSOURCES"
 }
 
@@ -92,23 +71,6 @@ compile_references() {
 (
   CSOURCES="Library Hash"
   RSOURCES="LibraryEx GetOpt Platform"
-  RT="
-    refalrts
-    refalrts-dynamic
-    refalrts-functions
-    refalrts-main
-    refalrts-platform-specific
-    refalrts-profiler
-    refalrts-vm
-    refalrts-vm-api
-    refalrts-platform-specific
-    refalrts-platform-POSIX
-  "
-  RTD="
-    $RT
-    refalrts-debugger
-    refalrts-diagnostic-initializer
-  "
 
   mkdir -p ../../lib/src
 
@@ -120,6 +82,5 @@ compile_references() {
   prepare_common
   compile_scratch
   compile_references
-  compile_rich
   compile_slim
 )
