@@ -60,16 +60,17 @@ prepare_prefix() {
 }
 
 compile_rich() {
-  prepare_prefix rich "$CSOURCES $RSOURCES $RT"
-  prepare_prefix rich-debug "$CSOURCES $RSOURCES $RTD"
+  #prepare_prefix rich "$CSOURCES $RSOURCES $RT"
+  #prepare_prefix rich-debug "$CSOURCES $RSOURCES $RTD"
+  :
 }
 
 compile_slim() {
   SLIMDIR=../../lib/slim
 
   mkdir -p ${SLIMDIR}/exe
-  prepare_prefix slim "$CSOURCES $RT"
-  prepare_prefix slim-debug "$CSOURCES $RTD"
+  #prepare_prefix slim "$CSOURCES $RT"
+  #prepare_prefix slim-debug "$CSOURCES $RTD"
 
   SREFC_FLAGS="$SREFC_FLAGS -Od-" compile_separated "$SLIMDIR/exe" "$RSOURCES"
 }

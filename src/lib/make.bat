@@ -91,8 +91,8 @@ endlocal
 goto :EOF
 
 :COMPILE_RICH
-  call :PREPARE_PREFIX rich "%CSOURCES% %RSOURCES% %RT%"
-  call :PREPARE_PREFIX rich-debug "%CSOURCES% %RSOURCES% %RTD%"
+  ::call :PREPARE_PREFIX rich "%CSOURCES% %RSOURCES% %RT%"
+  ::call :PREPARE_PREFIX rich-debug "%CSOURCES% %RSOURCES% %RTD%"
 goto :EOF
 
 :COMPILE_SLIM
@@ -101,8 +101,8 @@ setlocal
   mkdir %SLIMDIR%\exe\x
   rmdir %SLIMDIR%\exe\x
 
-  call :PREPARE_PREFIX slim "%CSOURCES% %RT%"
-  call :PREPARE_PREFIX slim-debug "%CSOURCES% %RTD%"
+  ::call :PREPARE_PREFIX slim "%CSOURCES% %RT%"
+  ::call :PREPARE_PREFIX slim-debug "%CSOURCES% %RTD%"
 
   set SREFC_FLAGS=%SREFC_FLAGS% -Od-
   call :COMPILE_SEPARATED "%SLIMDIR%\exe" "%RSOURCES%"
