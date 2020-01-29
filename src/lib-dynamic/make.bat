@@ -4,6 +4,6 @@ setlocal
   set SRMAKE_FLAGS=%SRMAKE_FLAGS% --makelib
   set TARGET_SUFFIX=.dll
   for %%l in (Hash Library GetOpt LibraryEx Platform) do (
-    call ..\make.bat lib-dynamic %%l %%l
+    call ..\make.bat lib-dynamic %%l ..\lib\%%l
   )
 endlocal
