@@ -9,28 +9,19 @@ echo "* * * * * * * * * * * * * * * * * * * * * * * * *"
 ( cd src && RELEASE=1 ./make.sh )
 
 pushd distrib || exit
-rm -rf bin scripts compiler doc docs lexgen srlib srmake editors rsl-decompiler
-cp -R ../build/{compiler,lexgen,srmake,srlib-{rich,slim}{,-debug}-prefix} \
-  rsl-decompiler .
+rm -rf bin scripts compiler doc docs lexgen lib srmake editors rsl-decompiler
+rm -f lib-prefixes/*.ref*
+cp -R ../build/{compiler,lexgen,srmake,rsl-decompiler} .
 mkdir bin
-cp ../src/scripts/srefc.bat bin
-cp ../src/scripts/srefc.sh bin/srefc
-cp ../src/scripts/srmake.bat bin
-cp ../src/scripts/srmake.sh bin/srmake
+cp ../src/scripts/srefc-srmake.bat bin/srefc.bat
+cp ../src/scripts/srefc-srmake.sh bin/srefc
+cp ../src/scripts/srefc-srmake.bat bin/srmake.bat
+cp ../src/scripts/srefc-srmake.sh bin/srmake
 mkdir scripts
 cp ../scripts/* scripts
-mkdir srlib
-cp -R ../srlib/scratch srlib/scratch
-mkdir srlib/rich
-cp ../srlib/rich/*.{rasl,froms} srlib/rich
-mkdir srlib/rich-debug
-cp ../srlib/rich-debug/*.{rasl,froms} srlib/rich-debug
-mkdir srlib/slim
-cp ../srlib/slim/*.{rasl,froms} srlib/slim
-mkdir srlib/slim-debug
-cp ../srlib/slim-debug/*.{rasl,froms} srlib/slim-debug
-mkdir srlib/common
-cp -R ../srlib/common/* srlib/common
+cp -R ../lib lib
+rm -f lib/*.*-prefix
+cp ../src/lib-prefixes/*.ref* lib-prefixes
 mkdir doc
 cp -R ../doc/examples doc/examples
 cp ../doc/*.pdf doc
