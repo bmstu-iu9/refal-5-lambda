@@ -21,6 +21,8 @@ setlocal
   set PREFIX=slim
   set BIND=AUTO
   set DEBUG=FALSE
+  set BAT=%~nx0
+  set MODE=%~n0
 
 :LOOP
   :: Если написать set VAR=val & goto NEXT, то в конец VAR добавится пробел.
@@ -62,14 +64,14 @@ setlocal
   )
 
   set PATH=%BINDIR%;%PATH%
-  if "%~n0"=="srefc" (
+  if "%MODE%"=="srefc" (
     srefc-core ^
       -OC %SREFC_FLAGS% ^
       --exesuffix=.exe --libsuffix=.dll %CPP% ^
       --cppflags="%CPPLINE_FLAGS%" --chmod-x-command= ^
       -d "%LIBDIR%\common" --prelude=refal5-builtins.refi ^
       %PREFIX% %D% -d "%LIBDIR%" %ARGS%
-  ) else if "%~n0"=="srmake" (
+  ) else if "%MODE%"=="srmake" (
     srmake-core ^
       -s srefc-core.exe ^
       -X-OC %SRMAKE_FLAGS% ^
@@ -78,7 +80,7 @@ setlocal
       -d "%LIBDIR%\common" --prelude=refal5-builtins.refi ^
       %PREFIX% %D% -d "%LIBDIR%" %RT% %ARGS%
   ) else (
-    echo BAD SCRIPT NAME %~nx0, expected srefc.bat or srmake.bat
+    echo BAD SCRIPT NAME %BAT%, expected srefc.bat or srmake.bat
   )
 endlocal
 

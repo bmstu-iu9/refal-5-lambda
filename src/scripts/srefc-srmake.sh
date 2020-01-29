@@ -26,6 +26,7 @@ main() {
   PREFIX=slim
   BIND=AUTO
   DEBUG=false
+  MODE="$(basename "$0")"
 
   NEXT=true
   while $NEXT; do
@@ -84,7 +85,7 @@ main() {
   fi
 
   PATH=${BINDIR}:$PATH
-  if [ "$(basename "$0")" = "srefc" ]; then
+  if [ "$MODE" = "srefc" ]; then
     # shellcheck disable=SC2086
     srefc-core \
       -OC ${SREFC_FLAGS} \
@@ -92,7 +93,7 @@ main() {
       "${CPP[@]}" --cppflags="$CPPLINE_FLAGS" --chmod-x-command="chmod +x" \
       -d "$LIBDIR/common" --prelude=refal5-builtins.refi \
       ${PREFIX} "${D[@]}" -d "$LIBDIR" "$@"
-  elif [ "$(basename "$0")" = "srmake" ]; then
+  elif [ "$MODE" = "srmake" ]; then
     # shellcheck disable=SC2086
     srmake-core \
       -s "srefc-core" \
@@ -103,7 +104,7 @@ main() {
       -d "$LIBDIR/common" --prelude=refal5-builtins.refi \
       ${PREFIX} "${D[@]}" -d "$LIBDIR" "${RT[@]}" "$@"
   else
-    echo BAD SCRIPT NAME $(basename "$0"), expected srefc or srmake
+    echo BAD SCRIPT NAME "$MODE", expected srefc or srmake
   fi
 }
 
