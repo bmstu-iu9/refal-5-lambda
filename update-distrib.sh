@@ -8,7 +8,7 @@ echo "* * * * * * * * * * * * * * * * * * * * * * * * *"
 
 ( cd src && RELEASE=1 ./make.sh )
 
-pushd distrib
+pushd distrib || exit
 rm -rf bin scripts compiler doc docs lexgen srlib srmake editors rsl-decompiler
 cp -R ../build/{compiler,lexgen,srmake,srlib-{rich,slim}{,-debug}-prefix} \
   rsl-decompiler .
@@ -46,16 +46,16 @@ cp ../doc/historical/*.doc doc/historical
 mkdir doc/historical/Drogunov
 cp ../doc/historical/Drogunov/*.pdf doc/historical/Drogunov
 mkdir docs
-cp ..\docs\*.md docs
-cp ..\docs\*.ref docs
-cp ..\docs\*.yml docs
+cp ../docs/*.md docs
+cp ../docs/*.ref docs
+cp ../docs/*.yml docs
 cp ../LICENSE .
 cp ../README.md .
 cp ../README.en.md .
 mkdir editors
 cp -R ../editors/* editors
 ./bootstrap.sh
-popd
+popd || exit
 
 echo "* * * * * * * * * * * * * * * * * * * * * * * * *"
 echo "* U P D A T E   V E R S I O N   N U M B E R !!! *"
