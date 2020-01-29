@@ -16,6 +16,7 @@ CPPLINEESUF=${CPPLINEESUF}
 CPPLINELSUF=${CPPLINELSUF}
 CPPLINE_FLAGS=${CPPLINE_FLAGS}
 SREFC_FLAGS=${SREFC_FLAGS}
+SRMAKE_FLAGS=${SRMAKE_FLAGS}
 
 # shellcheck disable=SC1090
 source "$DISTRDIR/scripts/platform-specific.sh"
@@ -56,6 +57,7 @@ main() {
 
   if [[ "$PREFIX" != scratch ]]; then
     CPP=()
+    RT=()
     if "$DEBUG"; then
       PREFIX=--prefix="$PREFIX"-debug
     else
@@ -76,16 +78,33 @@ main() {
       "--cpp-command-exe-suf=$CPPLINEESUF"
       "--cpp-command-lib-suf=$CPPLINELSUF"
     )
+    RT=(
+      "--runtime=refalrts-main"
+    )
   fi
 
   PATH=${BINDIR}:$PATH
-  # shellcheck disable=SC2086
-  srefc-core \
-    -OC ${SREFC_FLAGS} \
-    "--exesuffix=$(platform_exe_suffix)" "--libsuffix=$(platform_lib_suffix)" \
-    "${CPP[@]}" --cppflags="$CPPLINE_FLAGS" --chmod-x-command="chmod +x" \
-    -d "$LIBDIR/common" --prelude=refal5-builtins.refi \
-    ${PREFIX} "${D[@]}" -d "$LIBDIR" "$@"
+  if [ "$(basename "$0")" = "srefc" ]; then
+    # shellcheck disable=SC2086
+    srefc-core \
+      -OC ${SREFC_FLAGS} \
+      "--exesuffix=$(platform_exe_suffix)" "--libsuffix=$(platform_lib_suffix)" \
+      "${CPP[@]}" --cppflags="$CPPLINE_FLAGS" --chmod-x-command="chmod +x" \
+      -d "$LIBDIR/common" --prelude=refal5-builtins.refi \
+      ${PREFIX} "${D[@]}" -d "$LIBDIR" "$@"
+  elif [ "$(basename "$0")" = "srmake" ]; then
+    # shellcheck disable=SC2086
+    srmake-core \
+      -s "srefc-core" \
+      -X-OC ${SRMAKE_FLAGS} \
+      "-X--exesuffix=$(platform_exe_suffix)" "-X--libsuffix=$(platform_lib_suffix)" \
+      "${CPP[@]}" \
+      --thru=--cppflags="$CPPLINE_FLAGS"  -X--chmod-x-command="chmod +x" \
+      -d "$LIBDIR/common" --prelude=refal5-builtins.refi \
+      ${PREFIX} "${D[@]}" -d "$LIBDIR" "${RT[@]}" "$@"
+  else
+    echo BAD SCRIPT NAME $(basename "$0"), expected srefc or srmake
+  fi
 }
 
 ( main "$@" )

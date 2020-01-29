@@ -62,16 +62,29 @@ setlocal
   )
 
   set PATH=%BINDIR%;%PATH%
-  srefc-core ^
-    -OC %SREFC_FLAGS% ^
-    --exesuffix=.exe --libsuffix=.dll %CPP% ^
-    --cppflags="%CPPLINE_FLAGS%" --chmod-x-command= ^
-    -d "%LIBDIR%\common" --prelude=refal5-builtins.refi ^
-    %PREFIX% %D% -d "%LIBDIR%" %ARGS%
+  if "%~n0"=="srefc" (
+    srefc-core ^
+      -OC %SREFC_FLAGS% ^
+      --exesuffix=.exe --libsuffix=.dll %CPP% ^
+      --cppflags="%CPPLINE_FLAGS%" --chmod-x-command= ^
+      -d "%LIBDIR%\common" --prelude=refal5-builtins.refi ^
+      %PREFIX% %D% -d "%LIBDIR%" %ARGS%
+  ) else if "%~n0"=="srmake" (
+    srmake-core ^
+      -s srefc-core.exe ^
+      -X-OC %SRMAKE_FLAGS% ^
+      -X--exesuffix=.exe -X--libsuffix=.dll %CPP% ^
+      --thru=--cppflags="%CPPLINE_FLAGS%" -X--chmod-x-command= ^
+      -d "%LIBDIR%\common" --prelude=refal5-builtins.refi ^
+      %PREFIX% %D% -d "%LIBDIR%" %RT% %ARGS%
+  ) else (
+    echo BAD SCRIPT NAME %~nx0, expected srefc.bat or srmake.bat
+  )
 endlocal
 
 :INIT_PREFIXED
   set CPP=
+  set RT=
   if "%DEBUG%"=="TRUE" (
     set PREFIX=--prefix=%PREFIX%-debug
   ) else (
@@ -87,4 +100,5 @@ goto :EOF
     --cpp-command-lib="%CPPLINEL%" ^
     --cpp-command-exe-suf="%CPPLINEESUF%" ^
     --cpp-command-lib-suf="%CPPLINELSUF%"
+  set RT=--runtime=refalrts-main
 goto :EOF
