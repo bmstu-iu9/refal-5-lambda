@@ -1,3 +1,3 @@
 #!/bin/bash
-cp srefc.sh ../../bin/srefc
-cp srmake.sh ../../bin/srmake
+cp srefc-srmake.sh ../../bin/srefc
+cp srefc-srmake.sh ../../bin/srmake
