@@ -41,9 +41,7 @@ setlocal
   dos2unix bin/*
   dos2unix bootstrap.*
   dos2unix clear.*
-  dos2unix */*.cpp
-  dos2unix */*/*.froms
-  dos2unix */*/*.refi
+  for /F %%f in ('dir /b/s *.cpp *.froms *.ref *.refi') do dos2unix %%f
   dos2unix scripts/*
 
   erase c-plus-plus.conf.* .gitignore
@@ -74,9 +72,10 @@ setlocal
   pushd _tmp
 
   xcopy /e /i /y ..\..\distrib\bin bin
-  xcopy /e /i /y ..\..\distrib\srlib srlib
+  xcopy /e /i /y ..\..\distrib\lib lib
   xcopy /e /i /y ..\..\distrib\scripts scripts
   xcopy /e /i /y ..\..\distrib\doc doc
+  xcopy /e /i /y ..\..\distrib\docs docs
   xcopy /e /i /y ..\..\distrib\editors editors
   copy ..\..\distrib\README.md .
   copy ..\..\distrib\LICENSE .
