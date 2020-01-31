@@ -38,10 +38,6 @@ setlocal
   if "%~1"=="--debug" ( set DEBUG=TRUE& goto NEXT )
   if "%~1"=="--no-debug" ( set DEBUG=FALSE& goto NEXT )
 
-  :: TODO: удалить после обновления стабильной версии
-  if "%~1"=="--rich-debug" ( set PREFIX=rich& set DEBUG=TRUE& goto NEXT )
-  if "%~1"=="--slim-debug" ( set PREFIX=rich& set DEBUG=TRUE& goto NEXT )
-
   goto EXIT_LOOP
 
 :NEXT

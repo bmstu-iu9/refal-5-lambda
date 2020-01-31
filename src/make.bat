@@ -5,7 +5,7 @@ setlocal
     rem SREFC_FLAGS используются только для сборки библиотек
     set SREFC_FLAGS_PLUS=--markup-context --debug-info -OC
     set SRMAKE_FLAGS_PLUS=-X--markup-context -X--debug-info -X-OC
-    set DEFAULT_SCRIPT_FLAGS=--rich-debug
+    set DEFAULT_SCRIPT_FLAGS=--rich --debug
   ) else (
     set SREFC_FLAGS_PLUS=-OCdDPRS
     set SRMAKE_FLAGS_PLUS=-X-OCdDPRS
@@ -64,9 +64,6 @@ setlocal
     copy %PATH_TO_SREFC%\lib\scratch%%d\*.rasl ..\..\build\%DIR% >NUL
     copy %PATH_TO_SREFC%\lib\scratch%%d\*.cpp ..\..\build\%DIR% >NUL
   )
-  rem TODO: удалить после обновления дистрбутива
-  copy %PATH_TO_SREFC%\srlib\scratch\*.rasl ..\..\build\%DIR% >NUL
-  copy %PATH_TO_SREFC%\srlib\scratch\*.cpp ..\..\build\%DIR% >NUL
 
 :END
 endlocal

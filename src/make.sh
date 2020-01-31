@@ -16,7 +16,7 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     # SREFC_FLAGS используются только для сборки библиотек
     SREFC_FLAGS_PLUS="--markup-context --debug-info -OC"
     SRMAKE_FLAGS_PLUS="-X--markup-context -X--debug-info -X-OC"
-    DEFAULT_SCRIPT_FLAGS=--rich-debug
+    DEFAULT_SCRIPT_FLAGS="--rich --debug"
   else
     SREFC_FLAGS_PLUS=-OCdPR
     SRMAKE_FLAGS_PLUS=-X-OCdPR
@@ -53,7 +53,7 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     fi
 
     if [[ -z "$SCRIPT_FLAGS" ]]; then
-      SCRIPT_FLAGS=${DEFAULT_SCRIPT_FLAGS}
+      SCRIPT_FLAGS="${DEFAULT_SCRIPT_FLAGS}"
     fi
 
     source ${PATH_TO_SREFC}/scripts/platform-specific.sh
@@ -79,8 +79,5 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
       -exec mv '{}' "../../build/$DIR" \;
     cp ${PATH_TO_SREFC}/lib/scratch{{/debug,,-rt}/exe,-rt}/*.{rasl,cpp} \
       "../../build/$DIR"
-
-    cp "$PATH_TO_SREFC/srlib/scratch/"*.rasl "../../build/$DIR"
-    cp "$PATH_TO_SREFC/srlib/scratch/"*.cpp "../../build/$DIR"
   fi
 )

@@ -42,10 +42,6 @@ main() {
       "--debug") DEBUG=true; shift ;;
       "--no-debug") DEBUG=false; shift ;;
 
-      # TODO: удалить после обновления стабильной версии
-      "--rich-debug") PREFIX=rich; DEBUG=true; shift ;;
-      "--slim-debug") PREFIX=slim; DEBUG=true; shift ;;
-
       *) NEXT=false ;;
     esac
   done
