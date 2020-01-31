@@ -23,11 +23,11 @@ compile_separated() {
 
 compile_scratch() {
   SCRATCHDIR=../../lib/scratch
-  compile_separated "$SCRATCHDIR/exe" "$RSOURCES"
+  compile_separated "$SCRATCHDIR/exe" "LibraryEx Hash GetOpt"
   mkdir -p "$SCRATCHDIR"/debug/exe
 
   SCRATCHDIR=../../lib/scratch-rt
-  compile_separated "$SCRATCHDIR/exe" "$CSOURCES"
+  compile_separated "$SCRATCHDIR/exe" "Library Platform"
 
   for d in . platform-* exe platform-*/lib; do
     if [[ -d "$d" ]]; then
@@ -52,7 +52,8 @@ compile_scratch() {
 compile_slim() {
   SLIMDIR=../../lib/slim
   mkdir -p ${SLIMDIR}/exe
-  SREFC_FLAGS="$SREFC_FLAGS -Od-" compile_separated "$SLIMDIR/exe" "$RSOURCES"
+  SREFC_FLAGS="$SREFC_FLAGS -Od-" \
+    compile_separated "$SLIMDIR/exe" "LibraryEx GetOpt"
 }
 
 prepare_common() {
@@ -63,20 +64,19 @@ prepare_common() {
 compile_references() {
   mkdir -p ../../lib/references
 
-  for s in ${CSOURCES} ${RSOURCES}; do
+  for s in ${LIBRARIES}; do
     ../../bin/srefc-core --no-sources -R \
       -o ../../lib/references/"$s".rasl --reference="$s"
   done
 }
 
 (
-  CSOURCES="Library Hash"
-  RSOURCES="LibraryEx GetOpt Platform"
+  LIBRARIES="Library Hash LibraryEx GetOpt Platform"
 
   mkdir -p ../../lib/src
 
   cp LICENSE ../../lib
-  for s in ${CSOURCES} ${RSOURCES}; do
+  for s in ${LIBRARIES}; do
     cp "$s".ref ../../lib/src
   done
 

@@ -5,11 +5,10 @@ if not exist ..\..\lib\nul (
 )
 
 setlocal
-  set CSOURCES=Library Hash
-  set RSOURCES=LibraryEx GetOpt Platform
+  set LIBRARIES=Library Hash LibraryEx GetOpt Platform
 
   copy LICENSE ..\..\lib
-  for %%s in (%CSOURCES% %RSOURCES%) do copy %%s.ref ..\..\lib\src
+  for %%s in (%LIBRARIES%) do copy %%s.ref ..\..\lib\src
 
   call :PREPARE_COMMON
   call :COMPILE_SCRATCH
@@ -39,12 +38,12 @@ goto :EOF
 
 :COMPILE_SCRATCH
   set SCRATCHDIR=..\..\lib\scratch
-  call :COMPILE_SEPARATED "%SCRATCHDIR%\exe" "%RSOURCES%"
+  call :COMPILE_SEPARATED "%SCRATCHDIR%\exe" "LibraryEx Hash GetOpt"
   mkdir %SCRATCHDIR%\debug\exe\x
   rmdir %SCRATCHDIR%\debug\exe\x
 
   set SCRATCHDIR=..\..\lib\scratch-rt
-  call :COMPILE_SEPARATED "%SCRATCHDIR%\exe" "%CSOURCES%"
+  call :COMPILE_SEPARATED "%SCRATCHDIR%\exe" "Library Platform"
 
   for /d %%d in (. platform-* exe platform-Windows\lib platform-POSIX\lib) do (
     if not exist %SCRATCHDIR%\%%d\NUL (
@@ -71,7 +70,7 @@ setlocal
   rmdir %SLIMDIR%\exe\x
 
   set SREFC_FLAGS=%SREFC_FLAGS% -Od-
-  call :COMPILE_SEPARATED "%SLIMDIR%\exe" "%RSOURCES%"
+  call :COMPILE_SEPARATED "%SLIMDIR%\exe" "LibraryEx GetOpt"
 endlocal
 goto :EOF
 
@@ -83,7 +82,7 @@ goto :EOF
 setlocal
   mkdir ..\..\lib\references
 
-  for %%s in (%CSOURCES% %RSOURCES%) do (
+  for %%s in (%LIBRARIES%) do (
     ..\..\bin\srefc-core --no-sources -R ^
        -o ..\..\lib\references\%%s.rasl --reference=%%s
   )
