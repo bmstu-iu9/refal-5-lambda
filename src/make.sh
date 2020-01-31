@@ -18,8 +18,8 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     SRMAKE_FLAGS_PLUS="-X--markup-context -X--debug-info -X-OC"
     DEFAULT_SCRIPT_FLAGS="--rich --debug"
   else
-    SREFC_FLAGS_PLUS=-OCdPR
-    SRMAKE_FLAGS_PLUS=-X-OCdPR
+    SREFC_FLAGS_PLUS=-OCdDPRS
+    SRMAKE_FLAGS_PLUS=-X-OCdDPRS
     DEFAULT_SCRIPT_FLAGS=--scratch
   fi
 
