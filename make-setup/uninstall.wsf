@@ -5,7 +5,7 @@
 <![CDATA[
 Option Explicit
 Dim WshShell, WshEnvUser, WshNamedArgs
-Dim InstallDir, FSO, BinDir, DecoratedBinDir
+Dim InstallDir, FSO, BinDir, LibDir
 
 Const CUninstallKey = _
   "HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\Refal-5-lambda"
@@ -22,25 +22,25 @@ Private Sub Init
 
   InstallDir = FSO.GetParentFolderName(WScript.ScriptFullName)
   BinDir = InstallDir & "\bin"
-
-  DecoratedBinDir = Decorate(BinDir)
+  LibDir = InstallDir & "\lib"
 End Sub
 
-Private Sub AddBinDirToPath(Env)
-  Dim Path, DecoratedPath
+Private Sub AddDirToPath(Env, Dir)
+  Dim Path, DecoratedPath, DecoratedDir
   Path = WshEnvUser(Env)
   DecoratedPath = Decorate(Path)
+  DecoratedDir = Decorate(Dir)
 
   If Path = "" Then
-    WshEnvUser(Env) = BinDir
-  ElseIf Not InStr(1, DecoratedPath, DecoratedBinDir, vbTextCompare) > 0 Then
+    WshEnvUser(Env) = Dir
+  ElseIf Not InStr(1, DecoratedPath, DecoratedDir, vbTextCompare) > 0 Then
     WshEnvUser(Env) = Path & ";" & BinDir
   End If
 End Sub
 
 Private Sub Install
-  AddBinDirToPath "PATH"
-  AddBinDirToPath "RL_MODULE_PATH"
+  AddDirToPath "PATH", BinDir
+  AddDirToPath "RL_MODULE_PATH", LibDir
 
   WshShell.RegWrite CUninstallKey & "\DisplayIcon", _
     InstallDir & "\icon.ico", "REG_SZ"
@@ -67,11 +67,12 @@ Private Function UnDecorate(Text)
   UnDecorate = Text
 End Function
 
-Private Sub RemoveBinDirFromPath(Env)
-  Dim Path
+Private Sub RemoveDirFromPath(Env, Dir)
+  Dim Path, DecoratedDir
+  DecoratedDir = Decorate(Dir)
   Path = WshEnvUser(Env)
   Path = Decorate(Path)
-  Path = Replace(Path, DecoratedBinDir, ";", 1, -1, vbTextCompare)
+  Path = Replace(Path, DecoratedDir, ";", 1, -1, vbTextCompare)
   Path = UnDecorate(Path)
   If Path <> "" Then
     WshEnvUser(Env) = Path
@@ -81,8 +82,8 @@ Private Sub RemoveBinDirFromPath(Env)
 End Sub
 
 Private Sub UnInstall
-  RemoveBinDirFromPath "PATH"
-  RemoveBinDirFromPath "RL_MODULE_PATH"
+  RemoveDirFromPath "PATH", BinDir
+  RemoveDirFromPath "RL_MODULE_PATH", LibDir
 
   WshShell.CurrentDirectory = InstallDir & "\.."
   FSO.DeleteFolder InstallDir, True
