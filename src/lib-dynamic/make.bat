@@ -6,4 +6,5 @@ setlocal
   for %%l in (Hash Library GetOpt LibraryEx Platform) do (
     call ..\make.bat lib-dynamic %%l ..\lib\%%l
   )
+  move ..\..\bin\*.dll ..\..\lib
 endlocal

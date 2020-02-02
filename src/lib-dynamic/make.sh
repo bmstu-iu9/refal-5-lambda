@@ -8,3 +8,5 @@ export TARGET_SUFFIX=$(platform_lib_suffix)
 for l in Hash Library GetOpt LibraryEx Platform; do
   ../make.sh lib-dynamic ${l} ../lib/${l}
 done
+
+mv ../../bin/*$(platform_lib_suffix) ../../lib
