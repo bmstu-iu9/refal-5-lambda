@@ -187,39 +187,6 @@ const char diagnostic_suffix[] = "@refal-5-lambda-diagnostics.txt";
 
 void load_local_diagnostic_config(
   refalrts::DiagnosticConfig *config, char *argv0
-);
-
-void init_diagnostic_config_aux(
-  refalrts::DiagnosticConfig *config, int *argc, char *argv[]
-) {
-  // В диагностическом режиме по умолчанию не показываем cookies
-  config->show_cookies = false;
-
-  int delta = 0;
-  for (int i = 1; i < *argc; ++i) {
-    const char config_prefix[] = "++diagnostic+config=";
-    size_t config_prefix_len = strlen(config_prefix);
-    if (strncmp(argv[i], config_prefix, config_prefix_len) == 0) {
-      read_config(config, argv[i] + config_prefix_len);
-      delta += 1;
-    } else {
-      argv[i - delta] = argv[i];
-    }
-  }
-  *argc -= delta;
-  argv[*argc] = 0;
-
-  if (delta == 0) {
-    // Чтение глобальных настроек диагностики
-    read_config(config, diagnostic_suffix);
-
-    // Чтение локальных настроек диагностики
-    load_local_diagnostic_config(config, argv[0]);
-  }
-}
-
-void load_local_diagnostic_config(
-  refalrts::DiagnosticConfig *config, char *argv0
 ) {
   const char *slash_pos = 0;
   for (const char *p = argv0; *p != '\0'; ++p) {
@@ -247,5 +214,28 @@ void load_local_diagnostic_config(
 void refalrts::init_diagnostic_config(
   refalrts::DiagnosticConfig *config, int *argc, char *argv[]
 ) {
-  init_diagnostic_config_aux(config, argc, argv);
+  // В диагностическом режиме по умолчанию не показываем cookies
+  config->show_cookies = false;
+
+  int delta = 0;
+  for (int i = 1; i < *argc; ++i) {
+    const char config_prefix[] = "++diagnostic+config=";
+    size_t config_prefix_len = strlen(config_prefix);
+    if (strncmp(argv[i], config_prefix, config_prefix_len) == 0) {
+      read_config(config, argv[i] + config_prefix_len);
+      delta += 1;
+    } else {
+      argv[i - delta] = argv[i];
+    }
+  }
+  *argc -= delta;
+  argv[*argc] = 0;
+
+  if (delta == 0) {
+    // Чтение глобальных настроек диагностики
+    read_config(config, diagnostic_suffix);
+
+    // Чтение локальных настроек диагностики
+    load_local_diagnostic_config(config, argv[0]);
+  }
 }
