@@ -39,13 +39,13 @@ goto :EOF
 :COMPILE_SCRATCH
   set SCRATCHDIR=..\..\lib\scratch
   call :COMPILE_SEPARATED "%SCRATCHDIR%\exe" "LibraryEx Hash GetOpt"
-  mkdir %SCRATCHDIR%\debug\exe\x
-  rmdir %SCRATCHDIR%\debug\exe\x
 
   set SCRATCHDIR=..\..\lib\scratch-rt
   call :COMPILE_SEPARATED "%SCRATCHDIR%\exe" "Library Platform"
 
-  for /d %%d in (. platform-* exe platform-Windows\lib platform-POSIX\lib) do (
+  for /d %%d in ( ^
+    . platform-* exe platform-Windows\lib platform-POSIX\lib debug ^
+  ) do (
     if not exist %SCRATCHDIR%\%%d\NUL (
       mkdir %SCRATCHDIR%\%%d
     )
@@ -56,10 +56,6 @@ goto :EOF
 
   for /F %%c in ('dir /b /s %SCRATCHDIR%\*.cpp') do (
     if not exist %%~dpnc.rasl copy nul %%~dpnc.rasl
-  )
-
-  for %%d in (diagnostic-initializer debugger) do (
-    move ..\..\lib\scratch-rt\refalrts-%%d.* ..\..\lib\scratch\debug\exe
   )
 goto :EOF
 

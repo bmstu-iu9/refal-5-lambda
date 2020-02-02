@@ -84,6 +84,7 @@ run_test() {
     --prelude=test-prelude.srefi
     -D$(platform_subdir_lookup $LIBDIR)
     -D$LIBDIR/platform-POSIX
+    -D$LIBDIR/debug
     -D$LIBDIR
     --log=__log.txt
     -f-g

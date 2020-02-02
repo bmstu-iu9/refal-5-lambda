@@ -24,12 +24,11 @@ compile_separated() {
 compile_scratch() {
   SCRATCHDIR=../../lib/scratch
   compile_separated "$SCRATCHDIR/exe" "LibraryEx Hash GetOpt"
-  mkdir -p "$SCRATCHDIR"/debug/exe
 
   SCRATCHDIR=../../lib/scratch-rt
   compile_separated "$SCRATCHDIR/exe" "Library Platform"
 
-  for d in . platform-* exe platform-*/lib; do
+  for d in . platform-* exe platform-*/lib debug; do
     if [[ -d "$d" ]]; then
       mkdir -p "$SCRATCHDIR/$d"
       cp "$d"/*.cpp "$SCRATCHDIR/$d"
@@ -42,10 +41,6 @@ compile_scratch() {
   find "$SCRATCHDIR" -name '*.cpp' | while read -r cpp; do
     RASL="${cpp%.cpp}.rasl"
     [ -e "$RASL" ] || : > "${cpp%.cpp}.rasl"
-  done
-
-  for d in diagnostic-initializer debugger; do
-    mv ../../lib/scratch-rt/refalrts-${d}.* ../../lib/scratch/debug/exe
   done
 }
 

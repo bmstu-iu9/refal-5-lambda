@@ -205,6 +205,7 @@ run_test() {
     --prelude=test-prelude.srefi
     -D$PLATFORM_SUBDIR
     -D$LIBDIR/platform-POSIX
+    -D$LIBDIR/debug
     -D$LIBDIR
     --log=__log.txt
     -f-g

@@ -41,6 +41,7 @@ setlocal
     --exesuffix=.exe ^
     --prelude=test-prelude.srefi ^
     -D../../src/lib/platform-Windows ^
+    -D../../src/lib/debug ^
     -D../../src/lib ^
     --log=__log.txt
   set SRFLAGS_PREF=--prefix=_test_prefix

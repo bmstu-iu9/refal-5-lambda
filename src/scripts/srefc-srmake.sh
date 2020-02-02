@@ -47,7 +47,7 @@ main() {
   done
 
   D=()
-  "$DEBUG" && D=(-d "$LIBDIR/$PREFIX/debug" "${D[@]}")
+  "$DEBUG" && D=(-D "$LIBDIR/$PREFIX-rt/debug" "${D[@]}")
   [ "$BIND" = AUTO ] && D=("${D[@]}" -d "$LIBDIR/$PREFIX")
   [ "$BIND" = STATIC ] && D=("${D[@]}" -d "$LIBDIR/$PREFIX/exe")
   D=("${D[@]}" -D "$LIBDIR/${PREFIX}-rt" -d "$LIBDIR/references")

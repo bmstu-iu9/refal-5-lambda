@@ -86,6 +86,7 @@ lookup_compilers() {
       -D$(platform_subdir_lookup $LIBDIR)
       -D$LIBDIR/platform-POSIX
       -D$LIBDIR/common
+      -D$LIBDIR/debug
       -D$LIBDIR
       --prelude=refal5-builtins.refi
       -f-g

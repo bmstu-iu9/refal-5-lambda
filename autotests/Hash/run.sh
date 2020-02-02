@@ -13,6 +13,7 @@ run_all_tests() {
     --exesuffix=$(platform_exe_suffix)
     -D$(platform_subdir_lookup $LIBDIR)
     -D$LIBDIR/platform-POSIX
+    -D$LIBDIR/debug
     -D$LIBDIR
     -f-g
     refalrts

@@ -84,6 +84,7 @@ goto :EOF
     --exesuffix=.exe ^
     -D../../src/lib/platform-Windows ^
     -D../../src/lib/common ^
+    -D../../src/lib/debug ^
     -D../../src/lib ^
     --prelude=refal5-builtins.refi
 
