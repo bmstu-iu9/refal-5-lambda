@@ -4,12 +4,13 @@
 #include <string.h>
 
 #include "refalrts-commands.h"
-#include "refalrts-diagnostic-config.h"
 #include "refalrts-native-module.h"
 
 
 //FROM refalrts
 #include "refalrts.h"
+//FROM refalrts-diagnostic-initializer
+#include "refalrts-diagnostic-config.h"
 //FROM refalrts-dynamic
 #include "refalrts-dynamic.h"
 //FROM refalrts-profiler
@@ -107,8 +108,6 @@ static void load_native_module_report_error(
       refalrts_switch_default_violation(error);
   }
 }
-
-refalrts::InitDiagnosticConfig refalrts::g_init_diagnostic_config;
 
 namespace {
 
@@ -461,9 +460,7 @@ const refalrts::VMapi api = {
 int main(int argc, char **argv) {
   refalrts::DiagnosticConfig diagnostic_config;
 
-  if (refalrts::g_init_diagnostic_config) {
-    refalrts::g_init_diagnostic_config(&diagnostic_config, &argc, argv);
-  }
+  refalrts::init_diagnostic_config(&diagnostic_config, &argc, argv);
 
   refalrts::Profiler profiler(&diagnostic_config);
   refalrts::Domain domain(&diagnostic_config);

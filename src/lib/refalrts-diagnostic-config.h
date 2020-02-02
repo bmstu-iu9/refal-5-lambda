@@ -42,11 +42,9 @@ struct DiagnosticConfig {
   }
 };
 
-typedef void (*InitDiagnosticConfig)(
+void init_diagnostic_config(
   DiagnosticConfig *config, int *argc, char *argv[]
 );
-
-extern InitDiagnosticConfig g_init_diagnostic_config;
 
 } // namespace refalrts
 

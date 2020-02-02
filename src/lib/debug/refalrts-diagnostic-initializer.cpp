@@ -189,7 +189,7 @@ void load_local_diagnostic_config(
   refalrts::DiagnosticConfig *config, char *argv0
 );
 
-void init_diagnostic_config(
+void init_diagnostic_config_aux(
   refalrts::DiagnosticConfig *config, int *argc, char *argv[]
 ) {
   // В диагностическом режиме по умолчанию не показываем cookies
@@ -241,16 +241,11 @@ void load_local_diagnostic_config(
   }
 }
 
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#endif  /* defined(__GNUC__) */
-
-int initializer =
-  ((refalrts::g_init_diagnostic_config = init_diagnostic_config), 0);
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif  /* defined(__GNUC__) */
-
 }  // unnamed namespace
+
+
+void refalrts::init_diagnostic_config(
+  refalrts::DiagnosticConfig *config, int *argc, char *argv[]
+) {
+  init_diagnostic_config_aux(config, argc, argv);
+}
