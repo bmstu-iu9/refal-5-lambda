@@ -607,8 +607,8 @@ refalrts::Module::Loader::read_const_table() {
 void refalrts::Module::Loader::enumerate_blocks() {
   ConstTable *table = 0;
 
-  bool successed = seek_rasl_signature();
-  if (! successed) {
+  bool succeeded = seek_rasl_signature();
+  if (! succeeded) {
     throw LoadModuleError("can't find signature in executable\n");
   }
 
@@ -1323,9 +1323,9 @@ refalrts::Domain::lookup_module_by_name(
   std::list<std::string> directories;
 
   char exe_file_directory[api::cModuleNameBufferLen];
-  bool main_module_successed = api::get_main_module_name(exe_file_directory);
+  bool main_module_succeeded = api::get_main_module_name(exe_file_directory);
 
-  if (main_module_successed) {
+  if (main_module_succeeded) {
     // Да, тут квадратичная сложность, но здесь это не критично
     size_t len = strlen(exe_file_directory);
     while (
@@ -1348,7 +1348,7 @@ refalrts::Domain::lookup_module_by_name(
       }
       if (! next_dir.empty()) {
         if (! api::is_directory_ended_to_separator(next_dir.c_str())) {
-          next_dir += *api::directory_separators;
+          next_dir += api::directory_separators[0];
         }
         directories.push_back(next_dir);
       }
