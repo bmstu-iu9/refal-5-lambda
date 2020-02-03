@@ -1344,7 +1344,7 @@ refalrts::Domain::lookup_module_by_name(
       sep = path.find(api::path_env_separator);
       std::string next_dir = path.substr(0, sep);
       if (sep != std::string::npos) {
-        path = path.substr(sep);
+        path = path.substr(sep+1);
       }
       if (! next_dir.empty()) {
         if (! api::is_directory_ended_to_separator(next_dir.c_str())) {
