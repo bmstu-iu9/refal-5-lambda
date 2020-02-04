@@ -65,6 +65,25 @@ compile_references() {
   done
 }
 
+compile_prefixes() {
+  ( cd ../lib-prefixes && ./make.sh )
+}
+
+compile_dynamic() {
+  source ../../scripts/platform-specific.sh
+  rm -rf tmp
+  mkdir -p tmp
+  (
+    cd tmp && for l in ${LIBRARIES}; do
+      cp ../"$l".ref .
+      ../../../bin/srmake --scratch --makelib \
+        -o ../../../lib/"$l$(platform_lib_suffix)" "$l".ref
+        rm -- "$l".ref
+    done
+  )
+  rm -rf tmp
+}
+
 (
   LIBRARIES="Library Hash LibraryEx GetOpt Platform"
 
@@ -79,4 +98,6 @@ compile_references() {
   compile_scratch
   compile_references
   compile_slim
+  compile_prefixes
+  compile_dynamic
 )

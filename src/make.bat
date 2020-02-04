@@ -24,8 +24,6 @@ setlocal
   call :MAKE_SUBDIR lexgen makeself-s.bat
   call :MAKE_SUBDIR srmake make-s.bat
   call :MAKE_SUBDIR lib make.bat
-  call :MAKE_SUBDIR lib-prefixes make.bat
-  call :MAKE_SUBDIR lib-dynamic make.bat
   call :MAKE_SUBDIR srmake make.bat
   call :MAKE_SUBDIR lexgen makeself.bat
   call :MAKE_SUBDIR compiler makeself.bat

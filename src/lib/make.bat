@@ -14,6 +14,8 @@ setlocal
   call :COMPILE_SCRATCH
   call :COMPILE_REFERENCES
   call :COMPILE_SLIM
+  call :COMPILE_PREFIXES
+  call :COMPILE_DYNAMIC
 endlocal
 goto :EOF
 
@@ -82,5 +84,27 @@ setlocal
     ..\..\bin\srefc-core --no-sources -R ^
        -o ..\..\lib\references\%%s.rasl --reference=%%s
   )
+endlocal
+goto :EOF
+
+:COMPILE_PREFIXES
+  pushd ..\lib-prefixes
+  call make.bat
+  popd
+goto :EOF
+
+:COMPILE_DYNAMIC
+setlocal
+  if exist tmp\nul rd /s /q tmp
+  mkdir tmp
+  pushd tmp
+  for %%l in (%LIBRARIES%) do (
+    copy ..\%%l.ref .
+    call ..\..\..\bin\srmake --scratch --makelib -o ..\..\..\lib\%%l.dll %%l.ref
+    erase %%l.ref
+  )
+  popd
+  rd /s /q tmp
+  if exist ..\..\lib\*.tds erase ..\..\lib\*.tds
 endlocal
 goto :EOF
