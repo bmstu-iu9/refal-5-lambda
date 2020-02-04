@@ -3,4 +3,3 @@
 *$FROM LibraryEx
 *$FROM GetOpt
 *$FROM Platform
-*$FROM refalrts-diagnostic-initializer
