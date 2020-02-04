@@ -28,7 +28,7 @@ md scripts
 copy ..\scripts\* scripts
 xcopy /e /y /i ..\lib lib
 erase lib\*.*-prefix
-copy ..\src\lib-prefixes\*.ref* lib-prefixes
+copy ..\src\lib\prefixes\*.ref* lib-prefixes
 md doc
 xcopy /e /i /y ..\doc\examples doc\examples
 copy ..\doc\*.pdf doc

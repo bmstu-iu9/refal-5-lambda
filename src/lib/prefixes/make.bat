@@ -16,7 +16,7 @@ goto :EOF
 goto :EOF
 
 :MAIN
-set ROOT=..\..
+set ROOT=..\..\..
 
 call :MAKE_PREFIXES CALL_SRMAKE ""
 call :MAKE_PREFIXES CALL_SRMAKE_DEBUG "-debug"

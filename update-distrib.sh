@@ -21,7 +21,7 @@ mkdir scripts
 cp ../scripts/* scripts
 cp -R ../lib lib
 rm -f lib/*.*-prefix
-cp ../src/lib-prefixes/*.ref* lib-prefixes
+cp ../src/lib/prefixes/*.ref* lib-prefixes
 mkdir doc
 cp -R ../doc/examples doc/examples
 cp ../doc/*.pdf doc

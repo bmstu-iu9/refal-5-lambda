@@ -88,7 +88,7 @@ endlocal
 goto :EOF
 
 :COMPILE_PREFIXES
-  pushd ..\lib-prefixes
+  pushd prefixes
   call make.bat
   popd
 goto :EOF

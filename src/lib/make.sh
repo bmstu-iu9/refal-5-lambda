@@ -66,7 +66,7 @@ compile_references() {
 }
 
 compile_prefixes() {
-  ( cd ../lib-prefixes && ./make.sh )
+  ( cd prefixes && ./make.sh )
 }
 
 compile_dynamic() {

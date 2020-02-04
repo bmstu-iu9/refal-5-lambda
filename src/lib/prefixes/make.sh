@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ROOT=../..
+ROOT=../../..
 
 call_srmake() { "$ROOT"/bin/srmake --scratch --static "$@"; }
 call_srmake_debug() { "$ROOT"/bin/srmake --scratch --static --debug "$@"; }
