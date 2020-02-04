@@ -12,7 +12,7 @@ make_prefixes() {
   mv ../../bin/slim${DEBUG}* ../../lib/slim${DEBUG}.exe-prefix
 
   SRMAKE_FLAGS="${SRMAKE_FLAGS} --makelib" \
-    ../make.sh lib-prefixes rich-debug rich${DEBUG}-prefix-lib
+    ../make.sh lib-prefixes rich${DEBUG} rich${DEBUG}-prefix-lib
   mv ../../bin/rich${DEBUG}* ../../lib/rich${DEBUG}.lib-prefix
 }
 
