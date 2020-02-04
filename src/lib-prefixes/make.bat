@@ -7,19 +7,21 @@ setlocal
   set SCRIPT_FLAGS=--scratch --static --debug
   set DEBUG=-debug
   call :MAKE_PREFIXES
+
+  if exist *.obj erase *.obj
+  if exist ..\..\lib\*.tds erase ..\..\lib\*.tds
 endlocal
 goto :EOF
 
 :MAKE_PREFIXES
 setlocal
-  call ..\make.bat lib-prefixes rich%DEBUG% rich-prefix-exe
-  move ..\..\bin\rich%DEBUG%.exe ..\..\lib\rich%DEBUG%.exe-prefix
+  call ..\..\bin\srmake %SCRIPT_FLAGS% rich-prefix-exe ^
+    -o ..\..\lib\rich%DEBUG%.exe-prefix
 
-  call ..\make.bat lib-prefixes slim%DEBUG% slim-prefix-exe
-  move ..\..\bin\slim%DEBUG%.exe ..\..\lib\slim%DEBUG%.exe-prefix
+  call ..\..\bin\srmake %SCRIPT_FLAGS% slim-prefix-exe ^
+    -o ..\..\lib\slim%DEBUG%.exe-prefix
 
-  set SRMAKE_FLAGS=%SRMAKE_FLAGS% --makelib
-  call ..\make.bat lib-prefixes rich%DEBUG% rich-prefix-lib
-  move ..\..\bin\rich%DEBUG%.exe ..\..\lib\rich%DEBUG%.lib-prefix
+  call ..\..\bin\srmake %SCRIPT_FLAGS% --makelib rich-prefix-lib ^
+    -o ..\..\lib\rich%DEBUG%.lib-prefix
 endlocal
 goto :EOF
