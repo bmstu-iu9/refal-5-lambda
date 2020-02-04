@@ -1,20 +1,16 @@
 #!/bin/bash
 
-SRMAKE_FLAGS=${SRMAKE_FLAGS}
+ROOT=../..
+
+call_srmake() { "$ROOT"/bin/srmake --scratch --static "$@"; }
+call_srmake_debug() { "$ROOT"/bin/srmake --scratch --static --debug "$@"; }
 
 make_prefixes() {
-  DEBUG=$1
-
-  ../../bin/srmake ${SCRIPT_FLAGS} rich-prefix-exe \
-    -o ../../lib/rich"$DEBUG".exe-prefix
-
-  ../../bin/srmake ${SCRIPT_FLAGS}  slim-prefix-exe \
-    -o ../../lib/slim"$DEBUG".exe-prefix
-
-  ../../bin/srmake ${SCRIPT_FLAGS} --makelib rich-prefix-lib \
-    -o ../../lib/rich"$DEBUG".lib-prefix
+  "$1" rich-prefix-exe -o "$ROOT"/lib/rich"$2".exe-prefix
+  "$1" slim-prefix-exe -o "$ROOT"/lib/slim"$2".exe-prefix
+  "$1" --makelib rich-prefix-lib -o "$ROOT"/lib/rich"$2".lib-prefix
 }
 
-SCRIPT_FLAGS="--scratch --static" make_prefixes ""
-SCRIPT_FLAGS="--scratch --static --debug" make_prefixes "-debug"
-chmod -x ../../lib/*.*-prefix
+make_prefixes call_srmake ""
+make_prefixes call_srmake_debug "-debug"
+chmod -x "$ROOT"/lib/*.*-prefix
