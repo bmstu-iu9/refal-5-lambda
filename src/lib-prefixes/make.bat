@@ -12,14 +12,14 @@ goto :EOF
 
 :MAKE_PREFIXES
 setlocal
-  call ..\make.bat lib-prefixes rich%DEBUG% rich%DEBUG%-prefix-exe
+  call ..\make.bat lib-prefixes rich%DEBUG% rich-prefix-exe
   move ..\..\bin\rich%DEBUG%.exe ..\..\lib\rich%DEBUG%.exe-prefix
 
-  call ..\make.bat lib-prefixes slim%DEBUG% slim%DEBUG%-prefix-exe
+  call ..\make.bat lib-prefixes slim%DEBUG% slim-prefix-exe
   move ..\..\bin\slim%DEBUG%.exe ..\..\lib\slim%DEBUG%.exe-prefix
 
   set SRMAKE_FLAGS=%SRMAKE_FLAGS% --makelib
-  call ..\make.bat lib-prefixes rich%DEBUG% rich%DEBUG%-prefix-lib
+  call ..\make.bat lib-prefixes rich%DEBUG% rich-prefix-lib
   move ..\..\bin\rich%DEBUG%.exe ..\..\lib\rich%DEBUG%.lib-prefix
 endlocal
 goto :EOF
