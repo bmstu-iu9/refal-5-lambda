@@ -199,6 +199,7 @@ public:
   }
 
   bool has_alias(const std::string& alias) const;
+  bool with_stat(const api::stat *stat) const;
 
   ModuleRepresentant *representant() const {
     return m_representant;
@@ -263,10 +264,15 @@ class Domain {
     ModuleStorage(Domain *domain);
     ~ModuleStorage();
 
-    Module *operator[](const api::stat *stat) const;
+    template <typename Attr>
+    Module *find_by_attr(
+      Attr attr, bool (Module::*attr_checker)(Attr attr) const
+    ) const;
+
+    Module *find(const api::stat *stat) const;
     RefalFunction *operator[](const RefalFuncName& name) const;
 
-    Module *find_by_alias(const std::string& name) const;
+    Module *find(const std::string& alias) const;
 
     Module *load_module(
       const std::string& name, Stack *stack,

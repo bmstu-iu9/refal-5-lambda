@@ -253,6 +253,10 @@ bool refalrts::Module::has_alias(const std::string& alias) const {
   return std::find(m_aliases.begin(), m_aliases.end(), alias) != m_aliases.end();
 }
 
+bool refalrts::Module::with_stat(const refalrts::api::stat *stat) const {
+  return api::stat_compare(m_stat, stat) == 0;
+}
+
 inline void refalrts::Module::del_ref() {
   assert(m_refcounter > 0);
   --m_refcounter;
@@ -733,20 +737,24 @@ refalrts::Domain::ModuleStorage::~ModuleStorage() {
   }
 }
 
-refalrts::Module *
-refalrts::Domain::ModuleStorage::operator[](
-  const refalrts::api::stat *stat
+template <typename Attr>
+refalrts::Module *refalrts::Domain::ModuleStorage::find_by_attr(
+  Attr attr, bool (refalrts::Module::*attr_checker)(Attr attr) const
 ) const {
   ModuleList::const_iterator p = m_modules.begin();
-  while (p != m_modules.end() && api::stat_compare((*p)->stat(), stat) != 0) {
+
+  while (p != m_modules.end() && ! ((*p)->*attr_checker)(attr)) {
     ++p;
   }
 
-  if (p != m_modules.end()) {
-    return *p;
-  } else {
-    return 0;
-  }
+  return p != m_modules.end() ? *p : 0;
+}
+
+refalrts::Module *
+refalrts::Domain::ModuleStorage::find(
+  const refalrts::api::stat *stat
+) const {
+  return find_by_attr(stat, &Module::with_stat);
 }
 
 refalrts::RefalFunction *
@@ -764,14 +772,8 @@ refalrts::Domain::ModuleStorage::operator[](
 }
 
 refalrts::Module *
-refalrts::Domain::ModuleStorage::find_by_alias(const std::string& name) const {
-  ModuleList::const_iterator p = m_modules.begin();
-
-  while (p != m_modules.end() && ! (*p)->has_alias(name)) {
-    ++p;
-  }
-
-  return p != m_modules.end() ? *p : 0;
+refalrts::Domain::ModuleStorage::find(const std::string& alias) const {
+  return find_by_attr<const std::string&>(alias, &Module::has_alias);
 }
 
 refalrts::Module *refalrts::Domain::ModuleStorage::load_module(
@@ -779,9 +781,9 @@ refalrts::Module *refalrts::Domain::ModuleStorage::load_module(
   LoadModuleEvent event, void *callback_data,
   refalrts::NativeModule *main_module
 ) {
-  Module *module = m_domain->m_storage.find_by_alias(name);
+  Module *module = m_domain->m_storage.find(name);
   if (! module) {
-    module = find_by_alias(name);
+    module = find(name);
   }
 
   if (module) {
@@ -910,8 +912,8 @@ refalrts::Domain::ModuleStorage::find_known(
 ) const {
   Module *result;
   return
-    (result = m_domain->m_storage[stat], result != 0) ? result :
-    (result = (*this)[stat], result != 0) ? result :
+    (result = m_domain->m_storage.find(stat), result != 0) ? result :
+    (result = find(stat), result != 0) ? result :
     stack != 0 && (result = stack->contain(stat), result != 0) ? result :
     0;
 }
