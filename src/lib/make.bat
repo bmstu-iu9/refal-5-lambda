@@ -78,7 +78,7 @@ goto :EOF
 
 :COMPILE_REFERENCES
 setlocal
-  mkdir ..\..\lib\references
+  if not exist ..\..\lib\references\nul mkdir ..\..\lib\references
 
   for %%s in (%LIBRARIES%) do (
     ..\..\bin\srefc-core --no-sources -R ^
