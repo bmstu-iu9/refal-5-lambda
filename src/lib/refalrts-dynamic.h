@@ -254,6 +254,7 @@ class Domain {
     }
 
     Module *contain(const api::stat *stat) const;
+    Module *contain(const std::string& alias) const;
   };
 
   class ModuleStorage {
@@ -292,6 +293,7 @@ class Domain {
 
   private:
     Module *find_known(const Stack *stack, const api::stat *stat) const;
+    Module *find_known(const Stack *stack, const std::string& alias) const;
     void gc(VM *vm, Iter pos, FnResult& result);
   };
 

@@ -723,6 +723,16 @@ refalrts::Domain::Stack::contain(const refalrts::api::stat *stat) const {
   return node != 0 ? node->module : 0;
 }
 
+refalrts::Module *
+refalrts::Domain::Stack::contain(const std::string& alias) const {
+  const Stack *node = this;
+  while (node != 0 && ! node->module->has_alias(alias)) {
+    node = node->next;
+  }
+
+  return node != 0 ? node->module : 0;
+}
+
 refalrts::Domain::ModuleStorage::ModuleStorage(refalrts::Domain *domain)
   : m_domain(domain)
   , m_modules()
@@ -781,11 +791,7 @@ refalrts::Module *refalrts::Domain::ModuleStorage::load_module(
   LoadModuleEvent event, void *callback_data,
   refalrts::NativeModule *main_module
 ) {
-  Module *module = m_domain->m_storage.find(name);
-  if (! module) {
-    module = find(name);
-  }
-
+  Module *module = find_known(stack, name);
   if (module) {
     return module;
   }
@@ -915,6 +921,18 @@ refalrts::Domain::ModuleStorage::find_known(
     (result = m_domain->m_storage.find(stat), result != 0) ? result :
     (result = find(stat), result != 0) ? result :
     stack != 0 && (result = stack->contain(stat), result != 0) ? result :
+    0;
+}
+
+refalrts::Module *
+refalrts::Domain::ModuleStorage::find_known(
+  const refalrts::Domain::Stack *stack, const std::string& alias
+) const {
+  Module *result;
+  return
+    (result = m_domain->m_storage.find(alias), result != 0) ? result :
+    (result = find(alias), result != 0) ? result :
+    stack != 0 && (result = stack->contain(alias), result != 0) ? result :
     0;
 }
 
