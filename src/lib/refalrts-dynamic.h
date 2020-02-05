@@ -237,18 +237,11 @@ private:
 
 class Domain {
   struct Stack {
-    const api::stat *stat;
     Module *module;
     const Stack *next;
 
-    Stack()
-      : stat(0), module(0), next(0)
-    {
-      /* пусто */
-    }
-
-    Stack(const api::stat *stat, Module *module, const Stack *next)
-      : stat(stat), module(module), next(next)
+    Stack(Module *module, const Stack *next)
+      : module(module), next(next)
     {
       /* пусто */
     }

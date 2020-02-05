@@ -775,7 +775,7 @@ refalrts::Module *refalrts::Domain::ModuleStorage::load_module(
     m_domain, real_name, stat, load_success, event, callback_data, main_module
   );
 
-  Stack substack(stat, module, stack);
+  Stack substack(module, stack);
   bool ref_success = true;
   for (
     Module::ReferenceMap::iterator p = module->references().begin();
