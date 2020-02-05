@@ -713,26 +713,6 @@ void refalrts::Module::Loader::enumerate_blocks() {
 // Домен
 //==============================================================================
 
-refalrts::Module *
-refalrts::Domain::Stack::contain(const refalrts::api::stat *stat) const {
-  const Stack *node = this;
-  while (node != 0 && api::stat_compare(node->stat, stat) != 0) {
-    node = node->next;
-  }
-
-  return node != 0 ? node->module : 0;
-}
-
-refalrts::Module *
-refalrts::Domain::Stack::contain(const std::string& alias) const {
-  const Stack *node = this;
-  while (node != 0 && ! node->module->has_alias(alias)) {
-    node = node->next;
-  }
-
-  return node != 0 ? node->module : 0;
-}
-
 refalrts::Domain::ModuleStorage::ModuleStorage(refalrts::Domain *domain)
   : m_domain(domain)
   , m_modules()
@@ -745,26 +725,6 @@ refalrts::Domain::ModuleStorage::~ModuleStorage() {
     delete m_modules.front();
     m_modules.pop_front();
   }
-}
-
-template <typename Attr>
-refalrts::Module *refalrts::Domain::ModuleStorage::find_by_attr(
-  Attr attr, bool (refalrts::Module::*attr_checker)(Attr attr) const
-) const {
-  ModuleList::const_iterator p = m_modules.begin();
-
-  while (p != m_modules.end() && ! ((*p)->*attr_checker)(attr)) {
-    ++p;
-  }
-
-  return p != m_modules.end() ? *p : 0;
-}
-
-refalrts::Module *
-refalrts::Domain::ModuleStorage::find(
-  const refalrts::api::stat *stat
-) const {
-  return find_by_attr(stat, &Module::with_stat);
 }
 
 refalrts::RefalFunction *
@@ -781,17 +741,14 @@ refalrts::Domain::ModuleStorage::operator[](
   return func;
 }
 
-refalrts::Module *
-refalrts::Domain::ModuleStorage::find(const std::string& alias) const {
-  return find_by_attr<const std::string&>(alias, &Module::has_alias);
-}
-
 refalrts::Module *refalrts::Domain::ModuleStorage::load_module(
   const std::string& name, refalrts::Domain::Stack *stack,
   LoadModuleEvent event, void *callback_data,
   refalrts::NativeModule *main_module
 ) {
-  Module *module = find_known(stack, name);
+  // Без явной подсказки <const std::string&> тип не выводится
+  Module *module =
+     find_known<const std::string&>(stack, name, &Module::has_alias);
   if (module) {
     return module;
   }
@@ -807,7 +764,7 @@ refalrts::Module *refalrts::Domain::ModuleStorage::load_module(
     return 0;
   }
 
-  module = find_known(stack, stat);
+  module = find_known(stack, stat, &Module::with_stat);
   if (module) {
     api::stat_destroy(stat);
     return module;
@@ -910,30 +867,6 @@ void refalrts::Domain::ModuleStorage::make_dump(refalrts::VM *vm) {
     fprintf(dump_stream, "%4d. %s\n", ++count, (*p)->name().c_str());
     (*p)->make_dump(vm);
   }
-}
-
-refalrts::Module *
-refalrts::Domain::ModuleStorage::find_known(
-  const refalrts::Domain::Stack *stack, const refalrts::api::stat *stat
-) const {
-  Module *result;
-  return
-    (result = m_domain->m_storage.find(stat), result != 0) ? result :
-    (result = find(stat), result != 0) ? result :
-    stack != 0 && (result = stack->contain(stat), result != 0) ? result :
-    0;
-}
-
-refalrts::Module *
-refalrts::Domain::ModuleStorage::find_known(
-  const refalrts::Domain::Stack *stack, const std::string& alias
-) const {
-  Module *result;
-  return
-    (result = m_domain->m_storage.find(alias), result != 0) ? result :
-    (result = find(alias), result != 0) ? result :
-    stack != 0 && (result = stack->contain(alias), result != 0) ? result :
-    0;
 }
 
 void refalrts::Domain::ModuleStorage::gc(

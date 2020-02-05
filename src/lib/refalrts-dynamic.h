@@ -253,8 +253,8 @@ class Domain {
       /* пусто */
     }
 
-    Module *contain(const api::stat *stat) const;
-    Module *contain(const std::string& alias) const;
+    template <typename Attr>
+    Module *contain(Attr attr, bool (Module::*test)(Attr attr) const) const;
   };
 
   class ModuleStorage {
@@ -265,15 +265,7 @@ class Domain {
     ModuleStorage(Domain *domain);
     ~ModuleStorage();
 
-    template <typename Attr>
-    Module *find_by_attr(
-      Attr attr, bool (Module::*attr_checker)(Attr attr) const
-    ) const;
-
-    Module *find(const api::stat *stat) const;
     RefalFunction *operator[](const RefalFuncName& name) const;
-
-    Module *find(const std::string& alias) const;
 
     Module *load_module(
       const std::string& name, Stack *stack,
@@ -292,8 +284,16 @@ class Domain {
     void make_dump(VM *vm);
 
   private:
-    Module *find_known(const Stack *stack, const api::stat *stat) const;
-    Module *find_known(const Stack *stack, const std::string& alias) const;
+    // Если эту функцию назвать find, компилятор BCC 5.5.1 будет выдавать
+    // ошибки. Поэтому используем более длинное имя find_by_attr.
+    template <typename Attr>
+    Module *find_by_attr(Attr attr, bool (Module::*test)(Attr attr) const) const;
+
+    template <typename Attr>
+    Module *find_known(
+      const Stack *stack, Attr attr, bool (Module::*test)(Attr attr) const
+    ) const;
+
     void gc(VM *vm, Iter pos, FnResult& result);
   };
 
@@ -469,6 +469,46 @@ private:
   void free_idents_table();
   void free_nodes();
 };
+
+
+template <typename Attr>
+Module*
+Domain::Stack::contain(Attr attr, bool (Module::*test)(Attr attr) const) const {
+  const Stack *node = this;
+  while (node != 0 && ! (node->module->*test)(attr)) {
+    node = node->next;
+  }
+
+  return node != 0 ? node->module : 0;
+}
+
+template <typename Attr>
+Module*
+Domain::ModuleStorage::find_by_attr(
+  Attr attr, bool (refalrts::Module::*test)(Attr attr) const
+) const {
+  ModuleList::const_iterator p = m_modules.begin();
+
+  while (p != m_modules.end() && ! ((*p)->*test)(attr)) {
+    ++p;
+  }
+
+  return p != m_modules.end() ? *p : 0;
+}
+
+template <typename Attr>
+Module*
+Domain::ModuleStorage::find_known(
+  const Domain::Stack *stack, Attr attr, bool (Module::*test)(Attr attr) const
+) const {
+  Module *res;
+  return
+    // Без явной подсказки <Attr> тип не выводится
+    (res = m_domain->m_storage.find_by_attr<Attr>(attr, test), res != 0) ? res :
+    (res = find_by_attr<Attr>(attr, test), res != 0) ? res :
+    stack != 0 && (res = stack->contain<Attr>(attr, test), res != 0) ? res :
+    0;
+}
 
 }  // namespace refalrts
 
