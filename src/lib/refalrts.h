@@ -379,6 +379,10 @@ const char* arg(VM *vm, unsigned int param);
 void debug_print_expr(VM *vm, void *file, Iter first, Iter last);
 
 
+/* Без этого атрибута GNU C++ выдаёт много предупреждений */
+#if defined(__GNUC__)
+__attribute__((noreturn))
+#endif
 void switch_default_violation_impl(
   const char *filename, int line_no, long bad_switch_value, const char *bad_expr
 );
