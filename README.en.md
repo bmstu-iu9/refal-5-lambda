@@ -433,7 +433,7 @@ word.
 ## Installation
 
 Compiler can be installed into the system by downloading from
-[simple-refal-distrib.git][1] repository, or [refal-5-lambda.git][1]. Executable
+[simple-refal-distrib.git][1] repository, or [refal-5-lambda.git][2]. Executable
 file of compiler will be available to you in the first case (half-compiled like
 C++ source code), full source code in the second case. In both cases, the
 installation above will be the same.
@@ -485,8 +485,8 @@ rational.
 > _Translation to English of this hunk of README.md is prepared by_
 > **Anastasia Dudkina <anastasia.vlad2014@yandex.ru>** _at 2018-02-08_
 
-[1]: https://github.com/bmstui-iu9/simple-refal-distrib.git
-[2]: https://github.com/bmstui-iu9/refal-5-lambda.git
+[1]: https://github.com/bmstu-iu9/simple-refal-distrib.git
+[2]: https://github.com/bmstu-iu9/refal-5-lambda.git
 [3]: http://www.botik.ru/pub/local/scp/refal5/
 [4]: doc/historical/note000.txt
 [5]: http://refal.net/~belous/refal2-r.htm
