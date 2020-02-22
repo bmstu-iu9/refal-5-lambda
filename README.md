@@ -486,8 +486,8 @@ s-переменную сразу после угловой скобки:
 оговорки для скомпилированных программ пришлось бы указывать копирайт самого
 компилятора, что неразумно.
 
-[1]: https://github.com/bmstui-iu9/simple-refal-distrib.git
-[2]: https://github.com/bmstui-iu9/refal-5-lambda.git
+[1]: https://github.com/bmstu-iu9/simple-refal-distrib.git
+[2]: https://github.com/bmstu-iu9/refal-5-lambda.git
 [3]: http://www.botik.ru/pub/local/scp/refal5/
 [4]: doc/historical/note000.txt
 [5]: http://refal.net/~belous/refal2-r.htm
