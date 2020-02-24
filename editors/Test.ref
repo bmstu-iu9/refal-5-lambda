@@ -28,7 +28,7 @@ $ESWAP entry-swap;
 
 $DRIVE Drive;
 $INLINE Inline;
-$SPEC e.STATIC (e.dynamic);
+$SPEC FuncName e.STATIC (e.dynamic);
 
 %%
 void f() {
