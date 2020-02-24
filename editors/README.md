@@ -42,7 +42,7 @@
   (можно открыть через Preferences → Settings — User в верхнем меню) добавить
   строчку `"match_brackets_angle": true,`.
 
-* `codeblocks` (только Простой Рефал) — для добавления подсветки в `Code::Blocks`
-  скопировать файлы `lexer_refal.sample`, `lexer_real.xml` и добавить в папку
-  `%Путь_до_C::B%\CodeBlocks\share\CodeBlocks\lexers` или
+* `codeblocks` (только Простой Рефал) — для добавления подсветки
+  в **Code::Blocks** скопировать файлы `lexer_refal.sample`, `lexer_real.xml`
+  и добавить в папку `%Путь_до_C::B%\CodeBlocks\share\CodeBlocks\lexers` или
   `%appdata%\CodeBlocks\share\CodeBlocks\lexers`.
