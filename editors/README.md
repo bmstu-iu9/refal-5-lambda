@@ -46,3 +46,10 @@
   в **Code::Blocks** скопировать файлы `lexer_refal.sample`, `lexer_real.xml`
   и добавить в папку `%Путь_до_C::B%\CodeBlocks\share\CodeBlocks\lexers` или
   `%appdata%\CodeBlocks\share\CodeBlocks\lexers`.
+
+* `Visual Studio Code` - для добавления поддержки Refal-5λ в **Visual Studio Code**
+  нужно перейти в меню "Extensions", с помощью поисковой строки найти "Refal-5λ"
+  и нажать "Install". Подсветка синтаксиса доступна в файлах с
+  расширением `.ref` и `.refi`.
+
+  Также расширение доступно для скачивания в [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=gdvfox.refal-5-lambda).
