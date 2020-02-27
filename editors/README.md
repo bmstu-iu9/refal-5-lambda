@@ -5,51 +5,82 @@
 для поддержки редактирования Рефала-5λ и Простого Рефала (подсветка синтаксиса,
 парные скобки, другие параметры).
 
-* `vim` — файлы конфигурации для текстового редактора **Vim (GVim).**
-  Для установки содержимое каталога следует скопировать в папку `~/.vim` для
-  Linux (OS X), в папку `%userprofile%\vimfiles` для Windows.
+Vim
+---
 
-* `far` — файлы конфигурации плагина **Colorer** для **Far Manager 3.0.**
-  Для установки следует скопировать файл `refal.hrc`
-  в каталог `%appdata%\Far Manager\Profile`,
-  в файле `%appdata%\Far Manager\Profile\colorer.hrc` следует добавить секцию
-  `prototype`, скопировав её из `editors\far\colorer.hrc` текущего
-  дистрибутива. Если файла `colorer.hrc` в `%appdata%\Far Manager\Profile` нет,
-  то следует скопировать этот файл из `editors\far` текущего дистрибутива.
+Папка `vim` — файлы конфигурации для текстового редактора **Vim (GVim).**
+Для установки содержимое каталога следует скопировать в папку `~/.vim` для
+Linux (OS X), в папку `%userprofile%\vimfiles` для Windows.
 
-  Также необходимо зарегистрировать файл `colorer.hrc`, если он ещё не был
-  зарегистрирован. Для этого в меню Параметры → Параметры плагинов
-  нужно выбрать плагин FarColorer и в открывшемся диалоговом окне выбрать
-  «Файл списка схем пользователя».
+Far Manager
+-----------
 
-* `kate` (только Простой Рефал) — файлы конфигурации для текстового редактора
-   **Kate** из KF5. Для установки содержимое каталога следует скопировать
-   в папку `~/.local/share/katepart5/syntax/`.
+Папка `far` — файлы конфигурации плагина **Colorer** для **Far Manager 3.0.**
+Для установки следует скопировать файл `refal.hrc`
+в каталог `%appdata%\Far Manager\Profile`,
+в файле `%appdata%\Far Manager\Profile\colorer.hrc` следует добавить секцию
+`prototype`, скопировав её из `editors\far\colorer.hrc` текущего
+дистрибутива. Если файла `colorer.hrc` в `%appdata%\Far Manager\Profile` нет,
+то следует скопировать этот файл из `editors\far` текущего дистрибутива.
 
-* `notepad++` (только Простой Рефал) — файлы конфигурации для текстового
-  редактора **NotePad++** для Windows. Для установки требуется непосредственно
-  в NotePad++ зайти в Синтаксисы->Задать свой синтаксис, затем Импортировать
-  и указать путь к xml-файлу.
+Также необходимо зарегистрировать файл `colorer.hrc`, если он ещё не был
+зарегистрирован. Для этого в меню Параметры → Параметры плагинов
+нужно выбрать плагин FarColorer и в открывшемся диалоговом окне выбрать
+«Файл списка схем пользователя».
 
-* `sublime-text-3` (только Простой Рефал) — файлы конфигурации для текстового
-  редактора **Sublime Text 3.**
-  Файл `sref.tmLanguage` генерируется из файла `sref.YAML-tmLanguage`, который
-  имеет более удобное для редактирования представление.
-  Для установки следует скопировать содержимое каталога в папку
-  `~/.config/sublime-text-3/Packages/User` для Linux (OS X) или
-  `%appdata%\Sublime Text 3\Packages\User` для Windows.
-  Для подсветки угловых скобок нужно в файле `Preferences.sublime-settings`
-  (можно открыть через Preferences → Settings — User в верхнем меню) добавить
-  строчку `"match_brackets_angle": true,`.
+Kate
+----
 
-* `codeblocks` (только Простой Рефал) — для добавления подсветки
-  в **Code::Blocks** скопировать файлы `lexer_refal.sample`, `lexer_real.xml`
-  и добавить в папку `%Путь_до_C::B%\CodeBlocks\share\CodeBlocks\lexers` или
-  `%appdata%\CodeBlocks\share\CodeBlocks\lexers`.
+Папка `kate` — файлы конфигурации для текстового редактора
+**Kate** из KF5. Для установки содержимое каталога следует скопировать
+в папку `~/.local/share/katepart5/syntax/`.
 
-* `Visual Studio Code` - для добавления поддержки Refal-5λ в **Visual Studio Code**
-  нужно перейти в меню "Extensions", с помощью поисковой строки найти "Refal-5λ"
-  и нажать "Install". Подсветка синтаксиса доступна в файлах с
-  расширением `.ref` и `.refi`.
+Поддерживается только Простой Рефал.
 
-  Также расширение доступно для скачивания в [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=gdvfox.refal-5-lambda).
+Notepad++
+---------
+
+Папка `notepad++` — файлы конфигурации для текстового
+редактора **NotePad++** для Windows. Для установки требуется непосредственно
+в NotePad++ зайти в Синтаксисы->Задать свой синтаксис, затем Импортировать
+и указать путь к xml-файлу.
+
+Поддерживается только Простой Рефал.
+
+Sublime Text 3
+--------------
+
+Папка `sublime-text-3` — файлы конфигурации для текстового
+редактора **Sublime Text 3.**
+Файл `sref.tmLanguage` генерируется из файла `sref.YAML-tmLanguage`, который
+имеет более удобное для редактирования представление.
+Для установки следует скопировать содержимое каталога в папку
+`~/.config/sublime-text-3/Packages/User` для Linux (OS X) или
+`%appdata%\Sublime Text 3\Packages\User` для Windows.
+Для подсветки угловых скобок нужно в файле `Preferences.sublime-settings`
+(можно открыть через Preferences → Settings — User в верхнем меню) добавить
+строчку `"match_brackets_angle": true,`.
+
+Поддерживается только Простой Рефал.
+
+Code::Blocks
+------------
+
+Папка `codeblocks` — для добавления подсветки
+в **Code::Blocks** скопировать файлы `lexer_refal.sample`, `lexer_real.xml`
+и добавить в папку `%Путь_до_C::B%\CodeBlocks\share\CodeBlocks\lexers` или
+`%appdata%\CodeBlocks\share\CodeBlocks\lexers`.
+
+Поддерживается только Простой Рефал.
+
+Visual Studio Code
+------------------
+
+Для добавления поддержки Refal-5λ в **Visual Studio Code**
+нужно перейти в меню «Extensions», с помощью поисковой строки найти «Refal-5λ»
+и нажать «Install». Подсветка синтаксиса доступна в файлах с расширением
+`.ref` и `.refi`.
+
+Также расширение доступно для скачивания в [Visual Studio Marketplace][VSM].
+
+[VSM]: https://marketplace.visualstudio.com/items?itemName=gdvfox.refal-5-lambda
