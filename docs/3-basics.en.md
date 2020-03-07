@@ -1266,23 +1266,27 @@ _cyclic processes_ and to use the term _iteration,_ etc.
 ## Object, pattern, active and result expressions
 
 Before we continue studying Refal-5, it is necessary to institute several
-important definitions. We've considered different types of Refal expressions that
-can contain different syntactic constructions. Now it's time to introduce
-strict categorization.
+important definitions. We've considered different types of Refal expressions 
+that can contain different syntactic constructions. Now it's time to
+introduce strict categorization.
 
-* Refal expression is called an _object expression_ that can contain only symbols and
-  round brackets. Accordingly, terms that make up an object expression are
-  called an _object terms._ Function arguments can be only an object expression.
-* An expression that assembled from symbols, round and angled brackets is called an 
-  _active expression_ or a _ground expression._ The content of the field of view can only be an active expression.
-* An expression made up of symbols, structural brackets , and variables is called a 
-  _pattern expression_ or _pattern._ The left sentence part is a pattern
-  expression.
+* Refal expression is called an _object expression_.It can contain only symbols 
+and round brackets. Accordingly, terms that make up an object expression are
+called an _object terms._ Function arguments can be only an object expression.
+* An expression that assembled from symbols, round and angled brackets is called
+an _active expression_ or a _ground expression._ The content of the field 
+of view can only be an active expression.
+* An expression made up of symbols, structural brackets , and variables 
+is called a _pattern expression_ or _pattern._ The left sentence 
+part is a pattern expression.
 * An expression made up of symbols, round and angled brackets,
-  variables is called a _result expression_ or _result._ The right parts of the sentence are expressions of the result.
+  variables is called a _result expression_ or _result._ 
+  The right parts of the sentence are expressions of the result.
 
-Note: _the word ‘pattern’ is often used as a synonym for ‘left part’, and ‘the
-result’ is often used as a synonym for the right part. This is also the correct terminology, and the meaning of the word is usually clear from the context._
+Note: _the word ‘pattern’ is often used as a synonym for ‘left part’.
+‘the result’ is often used as a synonym for the right part. 
+This is also the correct terminology, and the meaning of the word is
+usually clear from the context._
 
 All four types of expressions can be imaged as a figure:
 
@@ -1296,13 +1300,13 @@ All four types of expressions can be imaged as a figure:
     Symbols,round       → → → → → → → → →   symbols, round and angular
   and angular brackets                         brackets, variables
 
-Object and active expressions exist only during the execution of a program such as 
-function arguments and the content of the view field (the content of static boxes
-and stack could be added we will consider later.) While pattern and
-result expressions exist only in source code as left and right parts of
-sentences. The reason for this is that there were variables. Pattern expression
-is a template that describes multiple object expressions. Result expression is
-template from which active expression is built.
+Object and active expressions exist only during the execution of a program 
+such as function arguments and the content of the view field (the content 
+of static boxes and stack could be added we will consider later.) While 
+pattern and result expressions exist only in source code as left and right
+parts of sentences. The reason for this is that there were variables. Pattern 
+expression is a template that describes multiple object expressions. Result 
+expression is template from which active expression is built.
 
 > *Translation to English of this hunk of this paper is prepared by*
 > **Anastasia Dudkina <anastasia.vlad2014@yandex.ru>** _at 2018-02-08_
