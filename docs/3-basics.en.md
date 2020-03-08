@@ -1265,7 +1265,7 @@ _cyclic processes_ and to use the term _iteration,_ etc.
 
 ## Object, pattern, active and result expressions
 
-Before we continue studying Refal-5, it is necessary to institute several
+Before we continue studying Refal-5λ, it is necessary to institute several
 important definitions. We've considered different types of Refal expressions that
 can contain different syntactic constructions. Now it's time to introduce
 strict categorization.
@@ -1274,7 +1274,7 @@ strict categorization.
   round brackets. Accordingly, terms that make up an object expression are
   called an _object terms._ Function arguments can be only an object expression.
 * An expression that assembled from symbols, round and angled brackets is called an 
-  _active expression_ or a _ground expression._ The content of the field of view can
+  _active expression_ or a _ground expression._ The content of the view field can
   only be an active expression.
 * An expression made up of symbols, structural brackets , and variables is called a 
   _pattern expression_ or _pattern._ The left sentence part is a pattern
