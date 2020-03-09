@@ -906,14 +906,14 @@ identical to the words without quotes – `"Success"`, `"SyntaxError"`.
 
 ### Escape sequences
 
-At first glance, that it was impossible to write a character that represents
-single quote or composed character that containing double quote. But that's not
+At first glance, it was impossible to write a character representing a single
+quote or a composed character containing a double quote. But that's not
 true. We can use _escape sequences_ (special marking for some symbols) in a
 chain of letters and composed characters.
 
-Escape sequence looks like sign `\`, followed by one or more other signs. All of
-them make up one character (if it is written into single quotes), or one of
-characters in compound symbol. In Refal-5λ following escape sequence are
+Escape sequence looks like characters `\`, followed by one or more other signs. All of
+them make up a single character (if it is written in single quotes), or one of the
+characters in a  compound symbol.  In Refal-5λ following escape sequence are
 permissible:
 * `\'` — single quote, `'`,
 * `\"` — double quotation mark, `"`,
@@ -948,31 +948,31 @@ and vice versa for uniformity.
 
 > This section has alternative translations **one**, [two](3-basics.en-alt.md).
 
-We referred earlier to the functions in the right part of a sentence which are
-calculated somehow after a substitution of variables. Now it is time to
-specify, how exactly, because it is impossible to write effective programs and
-to execute debugging of programs on Refal-5λ without it.
+We have referred earlier to the functions in the right part of a sentence which are
+calculated somehow after a substitution of variables. Now it's time to clarify exactly 
+how, because without this it is impossible to write effective programs and debug programs 
+on Refal-5λ.
 
 It is said that the Refal program is executed by the _abstract refal-machine_ —
 the imaginary calculating machine that may understand the Refal syntax. This
 machine has two areas of memory: program field, storing all the definitions of
-functions of the program, and a view field, storing a current status of
-computation. The status of computation is described in the form of the _active
-expression_ – expression of the Refal language which contains activation
-brackets, but at the same time cannot contain variables.
+functions of the program, and a view field, storing the current status of
+computation. The status of computation is described as the active expression —
+the Refal expression which contains _activation brackets_, but at the same time 
+cannot contain variables.
 
-Refal-maсhine executes the program step-by-step. Each step is an execution of
+Refal-maсhine executes the program step-by-step. Each step is the execution of
 the following sequence of actions.
 
-1. Refal-maсhine finds in a view field the most left couple of activation
-   brackets, such that doesn’t include other angle brackets in this call. This
-   section of a view field is called primary active sub-expression.
-2. Refal-maсhine observes what is on the right of the left activation bracket :
+1. The Refal machine finds the leftmost pair of activation brackets in the field 
+    of view, one that does not include other angle brackets in this call.This section
+    of a view field is called the primary active sub-expression. 
+2. The Refal-maсhine observes what is on the right of the left activation bracket :
    there should be the function name. If it is not there (language allows to
    write such a program), then the refal-machine stops with an error
    “recognition impossible”.
-3. Refal-maсhine finds function name in the program field. Function can be
-   either written on Refal or built-in. If it is the built-in function – the
+3. The Refal-maсhine finds a function name in the program field.The function can either
+    be written on Refal or built-in. If it is the built-in function – the
    refal-machine transfers control on the procedure in machine code
    implementing the logic of this function. If the function is written on
    Refal, the machine selects the first sentence of the function.
