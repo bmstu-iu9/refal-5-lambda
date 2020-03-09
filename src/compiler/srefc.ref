@@ -35,7 +35,9 @@ $EXTERN DirectorySeparator, IsDirectorySeparator;
 
 
 $ENTRY Go {
-  = <Main <ArgList>>;
+  /* пусто */
+    = <Main <ArgList>>
+      <Putout stderr 'Time elapsed: ' <TimeElapsed> ' seconds'>
 }
 
 Main {
