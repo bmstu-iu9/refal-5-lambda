@@ -47,7 +47,11 @@ main() {
   done
 
   D=()
-  "$DEBUG" && D=(-D "$LIBDIR/$PREFIX-rt/debug" "${D[@]}")
+  if "$DEBUG" then
+    D=(-D "$LIBDIR/$PREFIX-rt/debug" "${D[@]}")
+  else
+    D=(-D "$LIBDIR/$PREFIX-rt/debug-stubs" "${D[@]}")
+  fi
   [ "$BIND" = AUTO ] && D=("${D[@]}" -d "$LIBDIR/$PREFIX")
   [ "$BIND" = STATIC ] && D=("${D[@]}" -d "$LIBDIR/$PREFIX/exe")
   D=("${D[@]}" -D "$LIBDIR/${PREFIX}-rt" -d "$LIBDIR/references")

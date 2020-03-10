@@ -48,7 +48,11 @@ setlocal
 :EXIT_LOOP
 
   set D=
-  if "%DEBUG%"=="TRUE" set D=-D "%LIBDIR%\%PREFIX%-rt\debug"
+  if "%DEBUG%"=="TRUE" (
+    set D=-D "%LIBDIR%\%PREFIX%-rt\debug"
+  ) else (
+    set D=-D "%LIBDIR%\%PREFIX%-rt\debug-stubs"
+  )
   if "%BIND%"=="AUTO" set D=%D% -d "%LIBDIR%\%PREFIX%"
   if "%BIND%"=="STATIC" set D=%D% -d "%LIBDIR%\%PREFIX%\exe"
   set D=%D% -D "%LIBDIR%\%PREFIX%-rt" -d "%LIBDIR%\references"
