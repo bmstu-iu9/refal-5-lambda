@@ -28,7 +28,7 @@ compile_scratch() {
   SCRATCHDIR=../../lib/scratch-rt
   compile_separated "$SCRATCHDIR/exe" "Library Platform"
 
-  for d in . platform-* exe platform-*/lib debug; do
+  for d in . platform-* exe platform-*/lib debug debug-stubs; do
     if [[ -d "$d" ]]; then
       mkdir -p "$SCRATCHDIR/$d"
       cp "$d"/*.cpp "$SCRATCHDIR/$d"
