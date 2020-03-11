@@ -710,7 +710,7 @@ _Number symbol_ or _macrodigit_ is a number in the range between 0 and 2³²−1
 written in decimal form. For example, 1, 10, 65536, 4294967295 (the biggest
 macrodigit).
 
-For the comfort by work on Refal, there are some integrated arithmetic
+For the comfort by work in Refal, there are some integrated arithmetic
 functions:
 
 * Add – summation,
@@ -826,7 +826,7 @@ split into parts)
 
 # Other types of symbols: words
 
-While programming on Refal the user often has a necessity to mark different
+While programming in Refal the user often has a necessity to mark different
 types of objects or conditions: it is possible for a function to end
 successfully or not. State machine can possibly have different conditions.
 A program can manipulate different types of objects (representation of tokens
@@ -951,7 +951,7 @@ and vice versa for uniformity.
 We have referred earlier to the functions in the right part of a sentence which are
 calculated somehow after a substitution of variables. Now it's time to clarify exactly 
 how, because without this it is impossible to write effective programs and debug programs 
-on Refal-5λ.
+in Refal-5λ.
 
 It is said that the Refal program is executed by the _abstract refal-machine_ —
 the imaginary calculating machine that may understand the Refal syntax. This
@@ -972,7 +972,7 @@ the following sequence of actions.
    write such a program), then the refal-machine stops with an error
    “recognition impossible”.
 3. The Refal-maсhine finds a function name in the program field.The function can either
-    be written on Refal or built-in. If it is the built-in function – the
+    be written in Refal or built-in. If it is the built-in function – the
    refal-machine transfers control on the procedure in machine code
    implementing the logic of this function. If the function is written on
    Refal, the machine selects the first sentence of the function.
