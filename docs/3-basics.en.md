@@ -978,11 +978,11 @@ the following sequence of actions.
    Refal, the machine selects the first sentence of the function.
 4. If it is possible to choose such values of variables in the left part of the
    current sentence that it might become the function argument, then the
-   point 5 is implemented. Otherwise, the following sentence is selected and
+   point 5 has been implemented. Otherwise, the following sentence is selected and
    point 4 repeats. If there are no sentences anymore, then the refal-machine
-   stops with an error "recognition impossible".
+   stops with the error "recognition impossible".
 5. The found values of variables are added to the right part of the current
-   sentence. Refal-machine inserts received expression into the view field to
+   sentence. The Refal-machine inserts received expression into the view field at
    the place of the primary active subexpression.
 6. If there are activation brackets in the view field, then the refal-machine
    executes the following step – returns to the point 1. Otherwise, the
@@ -1002,9 +1002,9 @@ then the program won’t be started.
 
 Notes.
 
-1. _Classical REFAL-5 doesn’t support empty functions, any function has to have
+1. _Classical REFAL-5 doesn’t support empty functions, any function must to have
    at least one sentence. Refal-5λ supports – the call of such function leads
-   to an error "recognition impossible"._
+   to the error "recognition impossible"._
 2. _The current implementation at the time of the program creation can’t check
    that the `GO` or `Go` function is absent in the program. In this case there
    will be created the program which at start will display the error message
@@ -1013,9 +1013,9 @@ Notes.
 
 It is possible to make two important conclusions from this algorithm.
 
-Firstly, the primary active subexpression chooses the most left couple of
-activation brackets which isn’t containing in itself other activation brackets.
-It follows that Refal – is _applicative language,_ and an order of function
+Firstly, the primary active subexpression selects the leftmost pair of 
+activation brackets that does not contain any other activation brackets.
+It follows that the Refal – is an _applicative language,_ and an order of function
 computations is accurately defined: from left to right. I.e. if there are
 several calls of functions in the right part of the sentence, then they will be
 calculated from left to right, from the most internal to the most external.
@@ -1026,17 +1026,17 @@ Secondly, it immediately follows from semantics of a view field that Refal
 implements so-called _optimization of a tail recursion._
 
 In many imperative programming languages the recursion is quite expensive —
-overhead costs on preservation of a context of calculations are needed – points
+it requires the overhead of maintaining the calculation context – points
 where process of execution has to return after the completion of a tail call.
 And the memory for this preservation is given out from limited area – a system
 stack. The programmer, as a rule, can’t control the size of a system stack,
-and at its overflow the program abnormally comes to the end. Therefore in such
-languages you are not to use a recursion for the implementation of the cyclic
-repeating actions (particularly as in imperative languages for this purpose
-there are iteration statements).
+and at its overflow the program abnormally comes to the end. Therefore, in such 
+languages, you should not use a recursion to implement cyclically repeated 
+actions (especially since there are iterative operators for this in imperative
+languages). 
 
-In Refal functions don’t need to keep a context of calculations for return of a
-value as the function doing a recursive call comes to the end before the next
+The Refal functions do not need to keep a calculation context to return a
+value as the function that performs a recursive call is terminated before the next 
 recursive call. And it means that if the recursive call in the right part of
 the sentence is executed the last, incomplete calculations won’t collect in the
 view field. I.e. In fact there won’t be observed the recursion (the enclosed
