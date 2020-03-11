@@ -710,7 +710,7 @@ _Number symbol_ or _macrodigit_ is a number in the range between 0 and 2³²−1
 written in decimal form. For example, 1, 10, 65536, 4294967295 (the biggest
 macrodigit).
 
-For the comfort by work on Refal, there are some integrated arithmetic
+For the comfort by work in Refal, there are some integrated arithmetic
 functions:
 
 * Add – summation,
@@ -826,7 +826,7 @@ split into parts)
 
 # Other types of symbols: words
 
-While programming on Refal the user often has a necessity to mark different
+While programming in Refal the user often has a necessity to mark different
 types of objects or conditions: it is possible for a function to end
 successfully or not. State machine can possibly have different conditions.
 A program can manipulate different types of objects (representation of tokens
@@ -906,14 +906,14 @@ identical to the words without quotes – `"Success"`, `"SyntaxError"`.
 
 ### Escape sequences
 
-At first glance, that it was impossible to write a character that represents
-single quote or composed character that containing double quote. But that's not
+At first glance, it was impossible to write a character representing a single
+quote or a composed character containing a double quote. But that's not
 true. We can use _escape sequences_ (special marking for some symbols) in a
 chain of letters and composed characters.
 
-Escape sequence looks like sign `\`, followed by one or more other signs. All of
-them make up one character (if it is written into single quotes), or one of
-characters in compound symbol. In Refal-5λ following escape sequence are
+Escape sequence looks like characters `\`, followed by one or more other signs. All of
+them make up a single character (if it is written in single quotes), or one of the
+characters in a  compound symbol.  In Refal-5λ following escape sequence are
 permissible:
 * `\'` — single quote, `'`,
 * `\"` — double quotation mark, `"`,
@@ -948,41 +948,41 @@ and vice versa for uniformity.
 
 > This section has alternative translations **one**, [two](3-basics.en-alt.md).
 
-We referred earlier to the functions in the right part of a sentence which are
-calculated somehow after a substitution of variables. Now it is time to
-specify, how exactly, because it is impossible to write effective programs and
-to execute debugging of programs on Refal-5λ without it.
+We have referred earlier to the functions in the right part of a sentence which are
+calculated somehow after a substitution of variables. Now it's time to clarify exactly 
+how, because without this it is impossible to write effective programs and debug programs 
+in Refal-5λ.
 
 It is said that the Refal program is executed by the _abstract refal-machine_ —
 the imaginary calculating machine that may understand the Refal syntax. This
 machine has two areas of memory: program field, storing all the definitions of
-functions of the program, and a view field, storing a current status of
-computation. The status of computation is described in the form of the _active
-expression_ – expression of the Refal language which contains activation
-brackets, but at the same time cannot contain variables.
+functions of the program, and a view field, storing the current status of
+computation. The status of computation is described as the active expression —
+the Refal expression which contains _activation brackets_, but at the same time 
+cannot contain variables.
 
-Refal-maсhine executes the program step-by-step. Each step is an execution of
+Refal-maсhine executes the program step-by-step. Each step is the execution of
 the following sequence of actions.
 
-1. Refal-maсhine finds in a view field the most left couple of activation
-   brackets, such that doesn’t include other angle brackets in this call. This
-   section of a view field is called primary active sub-expression.
-2. Refal-maсhine observes what is on the right of the left activation bracket :
+1. The Refal machine finds the leftmost pair of activation brackets in the field 
+    of view, one that does not include other angle brackets in this call.This section
+    of a view field is called the primary active sub-expression. 
+2. The Refal-maсhine observes what is on the right of the left activation bracket :
    there should be the function name. If it is not there (language allows to
    write such a program), then the refal-machine stops with an error
    “recognition impossible”.
-3. Refal-maсhine finds function name in the program field. Function can be
-   either written on Refal or built-in. If it is the built-in function – the
+3. The Refal-maсhine finds a function name in the program field.The function can either
+    be written in Refal or built-in. If it is the built-in function – the
    refal-machine transfers control on the procedure in machine code
    implementing the logic of this function. If the function is written on
    Refal, the machine selects the first sentence of the function.
 4. If it is possible to choose such values of variables in the left part of the
    current sentence that it might become the function argument, then the
-   point 5 is implemented. Otherwise, the following sentence is selected and
+   point 5 has been implemented. Otherwise, the following sentence is selected and
    point 4 repeats. If there are no sentences anymore, then the refal-machine
-   stops with an error "recognition impossible".
+   stops with the error "recognition impossible".
 5. The found values of variables are added to the right part of the current
-   sentence. Refal-machine inserts received expression into the view field to
+   sentence. The Refal-machine inserts received expression into the view field at
    the place of the primary active subexpression.
 6. If there are activation brackets in the view field, then the refal-machine
    executes the following step – returns to the point 1. Otherwise, the
@@ -1002,9 +1002,9 @@ then the program won’t be started.
 
 Notes.
 
-1. _Classical REFAL-5 doesn’t support empty functions, any function has to have
+1. _Classical REFAL-5 doesn’t support empty functions, any function must to have
    at least one sentence. Refal-5λ supports – the call of such function leads
-   to an error "recognition impossible"._
+   to the error "recognition impossible"._
 2. _The current implementation at the time of the program creation can’t check
    that the `GO` or `Go` function is absent in the program. In this case there
    will be created the program which at start will display the error message
@@ -1013,9 +1013,9 @@ Notes.
 
 It is possible to make two important conclusions from this algorithm.
 
-Firstly, the primary active subexpression chooses the most left couple of
-activation brackets which isn’t containing in itself other activation brackets.
-It follows that Refal – is _applicative language,_ and an order of function
+Firstly, the primary active subexpression selects the leftmost pair of 
+activation brackets that does not contain any other activation brackets.
+It follows that the Refal – is an _applicative language,_ and an order of function
 computations is accurately defined: from left to right. I.e. if there are
 several calls of functions in the right part of the sentence, then they will be
 calculated from left to right, from the most internal to the most external.
@@ -1026,17 +1026,17 @@ Secondly, it immediately follows from semantics of a view field that Refal
 implements so-called _optimization of a tail recursion._
 
 In many imperative programming languages the recursion is quite expensive —
-overhead costs on preservation of a context of calculations are needed – points
+it requires the overhead of maintaining the calculation context – points
 where process of execution has to return after the completion of a tail call.
 And the memory for this preservation is given out from limited area – a system
 stack. The programmer, as a rule, can’t control the size of a system stack,
-and at its overflow the program abnormally comes to the end. Therefore in such
-languages you are not to use a recursion for the implementation of the cyclic
-repeating actions (particularly as in imperative languages for this purpose
-there are iteration statements).
+and at its overflow the program abnormally comes to the end. Therefore, in such 
+languages, you should not use a recursion to implement cyclically repeated 
+actions (especially since there are iterative operators for this in imperative
+languages). 
 
-In Refal functions don’t need to keep a context of calculations for return of a
-value as the function doing a recursive call comes to the end before the next
+The Refal functions do not need to keep a calculation context to return a
+value as the function that performs a recursive call is terminated before the next 
 recursive call. And it means that if the recursive call in the right part of
 the sentence is executed the last, incomplete calculations won’t collect in the
 view field. I.e. In fact there won’t be observed the recursion (the enclosed
