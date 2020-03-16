@@ -18,18 +18,18 @@ syntax). But these listed expressive means exist in the language.
 
 # Hello, World! Program
 
-In the [previous chapter](2-intro.en.md), we managed to compile and to run a
-program [`hello.ref`](hello.ref), which printed out a string “Hello, World!”.
+In the [previous chapter](2-intro.en.md), we've managed to compile and to run 
+a program [`hello.ref`](hello.ref), which printed out a string “Hello, World!”.
 Let us learn how to read and understand its source code.
 
     $ENTRY Go {                                 /* 1 */
       /* empty */ = <Prout 'Hello, World!'>;    /* 2 */
     }                                           /* 3 */
 
-Attentive readers noticed this program is different from the other in the
+Attentive readers have noticed that this program differs from the other in the
 previous chapter: strings starting from `/*` and ending at `*/` were added.
 These are _comments._ Any text between `/*` and `*/` is ignored by the compiler
-and is used to clarify the program idea.
+and used to clarify the program idea.
 
 There were added comments in this program, line numbering (for convenience of
 a quick reference from the manual text) and the word `/*empty*/`, which
