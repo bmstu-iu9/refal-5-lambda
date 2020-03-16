@@ -1,10 +1,12 @@
-#ifndef RefalRTS_DIAGNOSTIC_CONFIG_H
-#define RefalRTS_DIAGNOSTIC_CONFIG_H
+#ifndef RefalRTS_DIAGNOSTIC_DEFS_H
+#define RefalRTS_DIAGNOSTIC_DEFS_H
 
 #include <limits.h>
 #include <stdio.h>
 
 #include "refalrts.h"
+
+#define REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED 1
 
 
 namespace refalrts {
@@ -49,4 +51,4 @@ void init_diagnostic_config(
 } // namespace refalrts
 
 
-#endif // RefalRTS_DIAGNOSTIC_CONFIG_H
+#endif // RefalRTS_DIAGNOSTIC_DEFS_H

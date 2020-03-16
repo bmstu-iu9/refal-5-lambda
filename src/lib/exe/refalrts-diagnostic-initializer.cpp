@@ -1,4 +1,4 @@
-#include "refalrts-diagnostic-config.h"
+#include "refalrts-diagnostic-defs.h"
 
 
 void refalrts::init_diagnostic_config(

@@ -305,14 +305,18 @@ void refalrts::VM::print_seq(
               }
 
               const RefalFuncName& name = begin->function_info->name;
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
               if (m_diagnostic_config->show_cookies) {
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
                 fprintf(
                   output, "%s%s#%u:%u ",
                   amp, name.name, name.cookie1, name.cookie2
                 );
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
               } else {
                 fprintf(output, "%s%s ", amp, name.name);
               }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
               refalrts::move_left(begin, end);
             }
             continue;
@@ -473,10 +477,12 @@ void refalrts::VM::make_dump(refalrts::Iter begin, refalrts::Iter end) {
   fprintf(dump_stream(), "\nVIEW FIELD:\n");
   print_seq(dump_stream(), & m_first_marker, & m_last_marker);
 
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   if (m_diagnostic_config->dump_free_list) {
     fprintf(dump_stream(), "\nFREE LIST:\n");
     print_seq(dump_stream(), & m_begin_free_list, & m_end_free_list);
   }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
   m_domain->make_dump(this);
 
@@ -484,7 +490,9 @@ void refalrts::VM::make_dump(refalrts::Iter begin, refalrts::Iter end) {
 }
 
 FILE *refalrts::VM::dump_stream() {
+  // TODO: продумать имя файла по умолчанию в релизе
   if (m_dump_stream == 0) {
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
     if (m_diagnostic_config->dump_file[0]) {
       m_dump_stream = fopen(m_diagnostic_config->dump_file, "wt");
 
@@ -492,8 +500,11 @@ FILE *refalrts::VM::dump_stream() {
         m_dump_stream = stderr;
       }
     } else {
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
       m_dump_stream = stderr;
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
     }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
   }
 
   return m_dump_stream;
@@ -507,9 +518,11 @@ void refalrts::VM::free_view_field() {
     weld(&m_begin_free_list, &m_end_free_list);
   }
 
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   if (m_diagnostic_config->print_statistics) {
     fprintf(stderr, "Step count %d\n", m_step_counter);
   }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 }
 
 
@@ -1378,15 +1391,18 @@ JUMP_FROM_SCALE:
           m_error_begin = begin;
           m_error_end = end;
 
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
           if (
             m_diagnostic_config->step_limit
             && m_step_counter >= m_diagnostic_config->step_limit
           ) {
             return cStepLimit;
           }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
           refalrts::Iter function = next(begin);
 
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
           if (
             m_diagnostic_config->start_step_trace
             && m_step_counter >= m_diagnostic_config->start_step_trace
@@ -1414,6 +1430,7 @@ JUMP_FROM_SCALE:
               m_hide_steps = false;
             }
           }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
           FnResult res;
           if (cDataFunction == function->tag) {
@@ -1422,11 +1439,13 @@ JUMP_FROM_SCALE:
           } else if (cDataClosure == function->tag) {
             refalrts::Iter head = function->link_info;
 
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
             if (m_diagnostic_config->enable_profiler) {
               profiler()->add_profile_metric_unwrap(
                 head->next->function_info->name.name
               );
             }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
             if (m_debugger->handle_function_call(begin, end, 0) == cExit) {
               return cExit;
@@ -1471,9 +1490,11 @@ JUMP_FROM_SCALE:
             return res;
           }
 
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
           if (m_diagnostic_config->enable_profiler) {
             profiler()->add_profile_metric_call(callee->name.name);
           }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
           rasl = callee->rasl;
           m_module = callee->module;

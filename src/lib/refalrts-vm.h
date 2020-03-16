@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 #include "refalrts.h"
-#include "refalrts-diagnostic-config.h"
+#include "refalrts-diagnostic-defs.h"
 #include "refalrts-functions.h"
 #include "refalrts-utils.h"
 #include "refalrts-vm-api.h"

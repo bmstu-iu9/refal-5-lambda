@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "refalrts.h"
-#include "refalrts-diagnostic-config.h"
+#include "refalrts-diagnostic-defs.h"
 #include "refalrts-functions.h"
 #include "refalrts-native-module.h"
 #include "refalrts-platform-specific.h"

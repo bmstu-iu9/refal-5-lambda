@@ -1010,9 +1010,11 @@ bool refalrts::Domain::alloc_nodes(refalrts::Iter& begin, refalrts::Iter& end) {
     return true;
   }
 
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   if (m_memory_use + Chunk::cSize >= m_diagnostic_config->memory_limit) {
     return false;
   }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
   Chunk *new_chunk = new (std::nothrow) Chunk(m_chunks);
   if (! new_chunk) {
@@ -1198,12 +1200,14 @@ size_t refalrts::Domain::idents_count() {
 }
 
 void refalrts::Domain::free_idents_table() {
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   if (m_diagnostic_config->print_statistics) {
     fprintf(
       stderr, "Identifiers allocated: %lu\n",
       static_cast<unsigned long>(idents_count())
     );
   }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
   while (m_idents_table.size() > 0) {
     IdentsMap::iterator p = m_idents_table.begin();
@@ -1226,9 +1230,11 @@ refalrts::Domain::lookup_ident(const char *name) {
 
 bool refalrts::Domain::register_ident(RefalIdentifier ident) {
   try {
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
     if (idents_count() >= m_diagnostic_config->idents_limit) {
       return false;
     }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
     IdentsMap::value_type new_value(StringRef(ident->name()), ident);
     std::pair<IdentsMap::iterator, bool> res = m_idents_table.insert(new_value);
@@ -1322,6 +1328,7 @@ refalrts::Domain::lookup_module_by_name(
 }
 
 void refalrts::Domain::free_nodes() {
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   if (m_diagnostic_config->print_statistics) {
     fprintf(
       stderr,
@@ -1332,6 +1339,7 @@ void refalrts::Domain::free_nodes() {
       static_cast<unsigned long>(m_memory_use * sizeof(Node))
     );
   }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
   while (m_chunks != 0) {
     Chunk *next = m_chunks->next;

@@ -24,9 +24,13 @@ static void load_native_module_report_error(
   refalrts::ModuleLoadingErrorDetail *detail,
   void *callback_data
 ) {
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   using refalrts::DiagnosticConfig;
   DiagnosticConfig *diagnostic_config =
     static_cast<DiagnosticConfig*>(callback_data);
+#else  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
+  (void) callback_data;
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
   switch (error) {
     case refalrts::cModuleLoadingError_ModuleNotFound:
@@ -49,14 +53,18 @@ static void load_native_module_report_error(
       exit(155);
 
     case refalrts::cModuleLoadingError_CantAllocIdent:
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
       if (diagnostic_config->idents_limit != DiagnosticConfig::NO_LIMIT) {
         fprintf(
           stderr, "INTERNAL ERROR: Identifiers table overflows (max %ld)\n",
           diagnostic_config->idents_limit
         );
       } else {
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
         fprintf(stderr, "INTERNAL ERROR: can't allocate identifier\n");
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
       }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
       exit(154);
 
     case refalrts::cModuleLoadingError_UnresolvedExternal:
@@ -466,7 +474,9 @@ int main(int argc, char **argv) {
   refalrts::Domain domain(&diagnostic_config);
   refalrts::VM vm(&api, &profiler, &domain, &diagnostic_config);
 
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   vm.set_debugger_factory(diagnostic_config.debugger_factory);
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
   vm.set_args(argc, argv);
 
   refalrts::FnResult res;

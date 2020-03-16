@@ -5,7 +5,7 @@
 #include <string.h>     // memset
 
 #include "refalrts.h"
-#include "refalrts-diagnostic-config.h"
+#include "refalrts-diagnostic-defs.h"
 #include "refalrts-platform-specific.h"
 
 

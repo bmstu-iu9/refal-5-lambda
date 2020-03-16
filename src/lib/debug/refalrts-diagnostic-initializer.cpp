@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "refalrts-diagnostic-config.h"
+#include "refalrts-diagnostic-defs.h"
 
 //FROM refalrts-debugger
 /*
