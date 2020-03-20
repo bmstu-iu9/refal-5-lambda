@@ -183,7 +183,7 @@ void read_config(refalrts::DiagnosticConfig *config, const char *filename) {
   fclose(fin);
 }
 
-const char diagnostic_suffix[] = "@refal-5-lambda-diagnostics.txt";
+const char diagnostic_suffix[] = "@refal-5-lambda-diagnostics.ini";
 
 void load_local_diagnostic_config(
   refalrts::DiagnosticConfig *config, char *argv0
