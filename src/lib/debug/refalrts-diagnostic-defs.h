@@ -11,6 +11,9 @@
 
 namespace refalrts {
 
+class Debugger;
+typedef Debugger *(*DebuggerFactory)(VM *vm);
+
 struct DiagnosticConfig {
   unsigned long idents_limit;
   unsigned long memory_limit;
@@ -38,15 +41,36 @@ struct DiagnosticConfig {
     , show_hidden_steps(false)
     , enable_debugger(false)
     , enable_profiler(false)
-    , debugger_factory(0)
+    , debugger_factory(create_null_debugger)
   {
     dump_file[0] = '\0';
   }
+
+  class NullDebugger;
+  static Debugger* create_null_debugger(VM *vm);
 };
 
 void init_diagnostic_config(
   DiagnosticConfig *config, int *argc, char *argv[]
 );
+
+
+struct StringItem;
+struct RASLCommand;
+
+class Debugger {
+public:
+  virtual ~Debugger() {}
+
+  virtual void set_context(Iter *context) = 0;
+  virtual void set_string_items(const StringItem *items) = 0;
+  virtual void insert_var(const RASLCommand *next) = 0;
+
+  virtual FnResult handle_function_call(
+    Iter begin, Iter end, RefalFunction *callee
+  ) = 0;
+};
+
 
 } // namespace refalrts
 

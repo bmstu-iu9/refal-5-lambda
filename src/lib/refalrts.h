@@ -6,12 +6,9 @@
 
 namespace refalrts {
 
-class Debugger;
 class Domain;
 class Module;
 class VM;
-
-typedef Debugger *(*DebuggerFactory)(VM *vm);
 
 enum FnResult {
   cRecognitionImpossible = 0,

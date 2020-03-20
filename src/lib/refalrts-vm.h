@@ -25,8 +25,6 @@ class Module;
 class Profiler;
 class VM;
 
-typedef Debugger *(*DebuggerFactory)(VM *vm);
-
 class VM : public VMbase {
   struct StateRefalMachine;
 
@@ -140,12 +138,7 @@ private:
   StateRefalMachine *states_stack_pop();
   void states_stack_push(StateRefalMachine *state);
 
-  DebuggerFactory m_create_debugger;
   Debugger *m_debugger;
-
-  class NullDebugger;
-  static Debugger* create_null_debugger(VM *vm);
-
   Profiler *m_profiler;
   Domain *m_domain;
   Module *m_module;
@@ -201,13 +194,6 @@ public:
   );
 
   void free_states_stack();
-
-  void set_debugger_factory(DebuggerFactory debugger_factory) {
-    if (! debugger_factory) {
-      debugger_factory = create_null_debugger;
-    }
-    m_create_debugger = debugger_factory;
-  }
 
   void read_counters(double counters[]);
 
@@ -1028,19 +1014,6 @@ public:
   Iter splice_from_freelist(Iter pos);
 };
 
-class Debugger {
-public:
-  virtual ~Debugger() {}
-
-  virtual void set_context(Iter *context) = 0;
-  virtual void set_string_items(const StringItem *items) = 0;
-  virtual void insert_var(const RASLCommand *next) = 0;
-
-  virtual FnResult handle_function_call(
-    Iter begin, Iter end, RefalFunction *callee
-  ) = 0;
-};
-
 inline VM::VM(
   const VMapi *api, Profiler *profiler, Domain *domain,
   DiagnosticConfig *diagnostic_config
@@ -1062,7 +1035,6 @@ inline VM::VM(
   , m_private_state_stack_stack(0)
   , m_open_e_stack("m_open_e_stack")
   , m_context("m_context")
-  , m_create_debugger(create_null_debugger)
   , m_debugger(0)
   , m_profiler(profiler)
   , m_domain(domain)

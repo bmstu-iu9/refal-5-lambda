@@ -155,7 +155,7 @@ refalrts::FnResult refalrts::VM::execute_zero_arity_function(
   refalrts::RefalFunction *func, refalrts::Iter pos
 ) {
   if (! m_debugger) {
-    m_debugger = m_create_debugger(this);
+    m_debugger = m_diagnostic_config->debugger_factory(this);
   }
 
   if (! pos) {
@@ -527,36 +527,6 @@ void refalrts::VM::free_view_field() {
 
 
 //==============================================================================
-// Фальшивый отладчик
-//==============================================================================
-
-class refalrts::VM::NullDebugger: public refalrts::Debugger {
-public:
-  virtual void set_context(Iter* /*context*/) {
-    /* пусто */
-  }
-
-  virtual void set_string_items(const StringItem * /*items*/) {
-    /* пусто */
-  }
-
-  virtual void insert_var(const RASLCommand * /*next*/) {
-    /* пусто */
-  }
-
-  virtual FnResult handle_function_call(
-    Iter /*begin*/, Iter /*end*/, RefalFunction * /*callee*/
-  ) {
-    return cSuccess;
-  }
-};
-
-refalrts::Debugger*
-refalrts::VM::create_null_debugger(refalrts::VM * /*vm*/) {
-  return new NullDebugger;
-}
-
-//==============================================================================
 // Интерпретатор
 //==============================================================================
 
@@ -705,8 +675,10 @@ JUMP_FROM_SCALE:
           stack_top = prev_state->stack_top;
           states_stack_free(prev_state);
 
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
           m_debugger->set_context(context);
           m_debugger->set_string_items(strings);
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
         }
         continue;  // пропускаем ++rasl в конце
 
@@ -721,7 +693,9 @@ JUMP_FROM_SCALE:
           idents = descr->idents;
           numbers = descr->numbers;
           strings = descr->strings;
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
           m_debugger->set_string_items(strings);
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
         }
         break;
 
@@ -730,7 +704,9 @@ JUMP_FROM_SCALE:
         if (context == 0) {
           return cNoMemory;
         }
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
         m_debugger->set_context(context);
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
         break;
 
       case icReserveBacktrackStack:
@@ -1199,13 +1175,17 @@ JUMP_FROM_SCALE:
         break;
 
       case icVariableDebugOffset:
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
         m_debugger->insert_var(rasl);
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
         break;
 
       case icResetAllocator:
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
         if (m_debugger->handle_function_call(begin, end, callee) == cExit) {
           return cExit;
         }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
         reset_allocator();
         break;
 
@@ -1445,11 +1425,11 @@ JUMP_FROM_SCALE:
                 head->next->function_info->name.name
               );
             }
-#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
             if (m_debugger->handle_function_call(begin, end, 0) == cExit) {
               return cExit;
             }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
             if (1 == head->number_info) {
               /*
@@ -1544,9 +1524,11 @@ JUMP_FROM_SCALE:
 
       case icPerformNative:
         {
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
           if (m_debugger->handle_function_call(begin, end, callee) == cExit) {
             return cExit;
           }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
           RefalNativeFunction *native_callee =
             static_cast<RefalNativeFunction*>(callee);
           FnResult res = (native_callee->ptr)(this, begin, end);

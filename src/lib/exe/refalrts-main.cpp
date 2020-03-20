@@ -474,9 +474,6 @@ int main(int argc, char **argv) {
   refalrts::Domain domain(&diagnostic_config);
   refalrts::VM vm(&api, &profiler, &domain, &diagnostic_config);
 
-#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
-  vm.set_debugger_factory(diagnostic_config.debugger_factory);
-#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
   vm.set_args(argc, argv);
 
   refalrts::FnResult res;

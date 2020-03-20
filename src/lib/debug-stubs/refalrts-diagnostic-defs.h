@@ -6,8 +6,17 @@
 
 namespace refalrts {
 
+class Debugger {
+public:
+  virtual ~Debugger() {}
+};
+
+class VM;
+
 struct DiagnosticConfig {
-  /* пусто */
+  Debugger* debugger_factory(VM *) {
+    return new Debugger();
+  }
 };
 
 void init_diagnostic_config(
