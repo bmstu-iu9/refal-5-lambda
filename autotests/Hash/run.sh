@@ -78,7 +78,7 @@ simple_test_ok() {
 }
 
 run_exe() {
-  ./$1 ++diagnostic+config=test-diagnostics.txt > __out.txt
+  ./$1 ++diagnostic+config=test-diagnostics.ini > __out.txt
   if [ $? -gt 0 ]; then
     echo TEST FAILED, SEE __dump.txt
     exit 1

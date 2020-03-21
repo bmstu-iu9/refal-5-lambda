@@ -226,7 +226,7 @@ setlocal
 
   if not exist %NATCPP% set NATCPP=
 
-  _int_test.exe ++diagnostic+config=test-diagnostics.txt
+  _int_test.exe ++diagnostic+config=test-diagnostics.ini
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
     exit /b 1
@@ -272,7 +272,7 @@ setlocal
 
   if not exist %NATCPP% set NATCPP=
 
-  _int_test.exe ++diagnostic+config=test-diagnostics.txt
+  _int_test.exe ++diagnostic+config=test-diagnostics.ini
   if not errorlevel 100 (
     echo TEST NOT EXPECTATIVE FAILED, SEE __dump.txt
     exit /b 1

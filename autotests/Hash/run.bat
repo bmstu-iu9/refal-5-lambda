@@ -114,7 +114,7 @@ endlocal
 goto :EOF
 
 :RUN_EXE
-  %1 ++diagnostic+config=test-diagnostics.txt > __out.txt
+  %1 ++diagnostic+config=test-diagnostics.ini > __out.txt
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
     exit /b 1

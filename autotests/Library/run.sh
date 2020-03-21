@@ -30,7 +30,7 @@ run_all_tests() {
     --chmod-x-command="chmod +x"
   )
 
-  DIAG="++diagnostic+config=test-diagnostics.txt"
+  DIAG="++diagnostic+config=test-diagnostics.ini"
 
   echo Precompile Library.ref
   cp $LIBDIR/Library.ref .

@@ -89,7 +89,7 @@ setlocal
     exit /b 1
   )
 
-  _lexgen-out.exe ++diagnostic+config=test-diagnostics.txt
+  _lexgen-out.exe ++diagnostic+config=test-diagnostics.ini
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
     exit /b 1

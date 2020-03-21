@@ -35,7 +35,7 @@ setlocal
     refalrts-vm-api ^
     refalrts-platform-specific
 
-  set DIAG=++diagnostic+config=test-diagnostics.txt
+  set DIAG=++diagnostic+config=test-diagnostics.ini
 
   echo Precompile Library.ref
   copy ..\..\src\lib\Library.ref .

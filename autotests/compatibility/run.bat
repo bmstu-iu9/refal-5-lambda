@@ -64,7 +64,7 @@ goto :EOF
   if exist ..\..\bin\srefc-core.exe (
     set REFAL_COMPILERS=srefc_classic srefc_lambda %REFAL_COMPILERS%
     set SREFC_EXIST=1
-    set DIAG=++diagnostic+config=test-diagnostics.txt
+    set DIAG=++diagnostic+config=test-diagnostics.ini
     echo ... found srefc
     call ..\..\scripts\load-config.bat || exit /b 1
   )

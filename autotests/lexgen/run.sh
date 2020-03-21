@@ -42,7 +42,7 @@ run_test_aux.LEXGEN() {
   fi
   rm __error.txt
 
-  ./_lexgen-out ++diagnostic+config=test-diagnostics.txt
+  ./_lexgen-out ++diagnostic+config=test-diagnostics.ini
   if [ $? -gt 0 ]; then
     echo TEST FAILED, SEE __dump.txt
     exit 1

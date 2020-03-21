@@ -69,7 +69,7 @@ lookup_compilers() {
   if [ -e ../../bin/srefc-core ]; then
     REFAL_COMPILERS="srefc_classic srefc_lambda $REFAL_COMPILERS"
     SREFC_EXIST=1
-    DIAG="++diagnostic+config=test-diagnostics.txt"
+    DIAG="++diagnostic+config=test-diagnostics.ini"
     echo ... found srefc
     source ../../scripts/load-config.sh ../.. || return 1
     source ../../scripts/platform-specific.sh
