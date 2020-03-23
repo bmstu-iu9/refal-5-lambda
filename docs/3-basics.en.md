@@ -31,17 +31,17 @@ previous chapter: strings starting from `/*` and ending at `*/` were added.
 These are _comments._ Any text between `/*` and `*/` is ignored by the compiler
 and used to clarify the program idea.
 
-There were added comments in this program, line numbering (for convenience of
-a quick reference from the manual text) and the word `/*empty*/`, which
-emphasizes readers attention to the fact there is nothing at that place of the
-program. It sounds strange but it will make more sense.
+Comments, line numbering (for convenience of a quick reference from the manual text)
+and the word `/*empty*/` were added in this program; line numbering, which emphasizes
+readers' attention to the fact that there is nothing in this part of the program. It sounds
+strange but it will make more sense.
 
-The restricted by `/*` and `*/` signs comments are _multi-line._ It means `*/`
+Comments that are restricted to `/*` and `*/` are _multi-line._ This means that`*/`
 does not have to be on the same string that `/*`. There are not only multi-line
-comments but _single-lined._ Any string starts from `*` sign (in the first
+comments but _single-lined._ Any string starts with the `*` sign (in the first
 column) is ignored by the compiler.
 
-E.g. the next program is the same but is littered with useless comments.
+E.g. the next program is the same but filled  with useless comments.
 
     /*
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
@@ -71,7 +71,7 @@ Let’s get back to our function.
     }                                           /* 3 */
 
 Any program in Refal-5λ is a set of functions (it is a functional programming
-language after all). This program is not an exception. The `Go` function is
+language after all). This program is no an exception. The `Go` function is
 defined here. The function definition is written as the name of the function
 followed by a _block_ (the function body enclosed in braces: strings 1 and 3
 respectively). The `Go` name is not coincidentally: any Refal program must have
@@ -82,17 +82,17 @@ Hieroglyphic `$ENTRY` will be clarified in the next sections. Just need to know
 that the keyword `$ENTRY` must precede the `Go` (or `GO`) program entry point.
 
 There is a single function Go _sentence_ in the second string. A sentence is a
-rule, which defines how to put up the function value on an argument subset. A
-function can consist of several sentences, each ends with a `;` sign (a
+rule, which defines how to put the value of a function in a subset of arguments.
+A function can consist of several sentences, each ends with a `;` sign (a
 semicolon).  A semicolon may not be used at the end of the last sentence.
 
 Any sentence consists of two parts – _the left part, a pattern_, which describes
-a value subset of the function argument on which the sentence is applied. And
-_the right part, a result_ that describes the function value on the subset. The
+a value subset of the function argument that the sentence is applied to. And
+_the right part, a result_ that describes the function value in the subset. The
 left and the right parts are divided by `=` (equality) sign.
 
-Note. _In the future we will consider the extended Refal syntax in which
-sentence syntax will be more complicated._
+Note. _In the future, we will consider the extended Refal syntax, in which
+the sentence syntax will be more complicated._
 
 The sentence in the program `hello.ref` means that it can be applied on an
 empty function argument only (there is nothing before the equality). The `/*
