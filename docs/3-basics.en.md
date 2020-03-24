@@ -94,30 +94,30 @@ left and the right parts are divided by `=` (equality) sign.
 Note. _In the future, we will consider the extended Refal syntax, in which
 the sentence syntax will be more complicated._
 
-The sentence in the program `hello.ref` means that it can be applied on an
+The sentence in the program `hello.ref` means that it can be applied to an
 empty function argument only (there is nothing before the equality). The `/*
-empty */` comment stresses the fact. The right side describes the `Go` function
+empty */` comment highlights the fact. The right side describes the `Go` function
 definition with an empty argument as the result of the `Prout` function computing.
-A sequence of signs `Hello, World!` is transferred to it. A function call on
+A sequence of signs `Hello, World!` is transferred to it. A function call in
 Refal is written with angle brackets `<` and `>`. The function name has to be
 placed after the opening brace.
 
 The function Prout computes “emptiness” with any argument. However, its
-implementation has some side effects. It prints an argument on the screen. That
+implementation has some side effects. It displays an argumen. That
 is why it is called.
 
-Almost all Refal programs are written actually for these side effects. After
-the function `Go` (or `GO`) computing the result is discarded and the program is
+Almost all Refal programs are written actually for these side effects. After calculating 
+the  `Go` (or `GO`) function the result is discarded and the program is
 completed. The user sees only what was displayed on the screen by the function
 `Prout`, recorded to files or transferred “out” of the computing process by
 other ways.
 
 Note. _There are exceptions. On the one hand, these are automated tests
 (autotests) – programs that launch the testing function, check its result and
-are finalized. If this verification is successful the program is just
-completed. In another case the program termites by a fail-safe.  The tests run
-environment can distinguish these two cases and inform the user unsuccessful
-runs.  Another example are researches in the field of automatic program
+are finalized. If this verification is successful the program just terminates.
+In another case the program terminates with a fail-safe. The tests run
+environment can distinguish between these two cases and inform the user about
+failed launches. Another example are researches in the field of automatic program
 conversion and verification (e.g. by supercompilation). In this case, an
 interesting math function is written in Refal. It is fed to the tool (e.g
 Refal-5 supercompiler SCP4 (\[1], \[2], \[3])) and then the conversion result or
