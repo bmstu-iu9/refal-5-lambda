@@ -117,7 +117,7 @@ Note. _There are exceptions. On the one hand, these are automated tests
 are finalized. If this verification is successful the program just terminates.
 In another case the program terminates with a fail-safe. The tests run
 environment can distinguish between these two cases and inform the user about
-failed launches. Another example are researches in the field of automatic program
+failed launches. Another example is research in the field of automatic program
 conversion and verification (e.g. by supercompilation). In this case, an
 interesting math function is written in Refal. It is fed to the tool (e.g
 Refal-5 supercompiler SCP4 (\[1], \[2], \[3])) and then the conversion result or
@@ -125,7 +125,7 @@ the function analysis are examined. Researches in the field of tool
 development is one of the most important Refal application today._
 
 The function `Prout` is one of the functions that is included in the language
-standard library. And it is implicitly available for using in any program. In
+standard library. And it is implicitly available for use in any program. In
 classic Refal-5 it is built in function that means it is implicitly defined in
 any program.  However, Refal-5λ allows us to write programs in which a standard
 library is not used.
@@ -165,15 +165,15 @@ function call is written with angular brackets. The empty value is written as
 an empty space. That means that the Refal program execution is the same thing
 as the function `<Go>` or `<Go /*empty*/>` call. In the first case, we haven’t
 written anything (we have attached one to the other) between the function name
-`Go` and the closing brace `>`. In the second case, we have stucked a comment
-for illustrative purposes. A function call with an empty argument is usually
-written without a comment inside.
+`Go` and the closing brace `>`. In the second case, we have left a comment for 
+illustration. A function call with an empty argument is usually written without
+a comment inside.
 
 ## Examples of other programs.
 
 ### Programs with several sentences
 
-Before turning to other examples, we have to explain the syntax that is not
+Before moving to other examples, we have to explain the syntax that is not
 reflected in the `hello.ref` listing.
 
 First, Refal is a language with free syntax. The transition to a new line is
@@ -205,7 +205,7 @@ with a dash._
     }
 
 The left-hand parts of the sentences could be written together, for example
-`'00'`. It would not affect the work of the program because they were written
+`'00'`. It would not affect the program's performance because they were written
 separately for readability.
 
 It is easy to understand that the first sentence is applicable when the
@@ -354,9 +354,9 @@ the right side of the sentence.
 
 We need to clarify the process of Refal function execution now.
 
-1. A sentence is selected from the left side of which you can get a function
+1. A sentence is selected from the left side in which you can get the function
    argument by changing the variables in it to some values. If there are
-   several such sentences, it is chosen with the one with the smallest number.
+   several such sentences, then the one with the smallest number is selected.
    If there wasn’t such sentence, then the program ends with an error of
    recognition impossible.
 2. The variables values are fixed when they request to the function argument
