@@ -29,7 +29,7 @@ main() {
   MODE="$(basename "$0")"
 
   NEXT=true
-  while $NEXT; do
+  while ${NEXT}; do
     case "$1" in
       "--slim") PREFIX=slim; shift ;;
       "--rich") PREFIX=rich; shift ;;
@@ -47,13 +47,13 @@ main() {
   done
 
   D=()
-  if "$DEBUG" then
+  if ${DEBUG}; then
     D=(-D "$LIBDIR/$PREFIX-rt/debug" "${D[@]}")
   else
     D=(-D "$LIBDIR/$PREFIX-rt/debug-stubs" "${D[@]}")
   fi
-  [ "$BIND" = AUTO ] && D=("${D[@]}" -d "$LIBDIR/$PREFIX")
-  [ "$BIND" = STATIC ] && D=("${D[@]}" -d "$LIBDIR/$PREFIX/exe")
+  [[ "$BIND" = AUTO ]] && D=("${D[@]}" -d "$LIBDIR/$PREFIX")
+  [[ "$BIND" = STATIC ]] && D=("${D[@]}" -d "$LIBDIR/$PREFIX/exe")
   D=("${D[@]}" -D "$LIBDIR/${PREFIX}-rt" -d "$LIBDIR/references")
 
   if [[ "$PREFIX" != scratch ]]; then
@@ -85,7 +85,7 @@ main() {
   fi
 
   PATH=${BINDIR}:$PATH
-  if [ "$MODE" = "srefc" ]; then
+  if [[ "$MODE" = "srefc" ]]; then
     # shellcheck disable=SC2086
     srefc-core \
       -OC ${SREFC_FLAGS} \
@@ -93,7 +93,7 @@ main() {
       "${CPP[@]}" --cppflags="$CPPLINE_FLAGS" --chmod-x-command="chmod +x" \
       -d "$LIBDIR/common" --prelude=refal5-builtins.refi \
       ${PREFIX} "${D[@]}" -d "$LIBDIR" "$@"
-  elif [ "$MODE" = "srmake" ]; then
+  elif [[ "$MODE" = "srmake" ]]; then
     # shellcheck disable=SC2086
     srmake-core \
       -s "srefc-core" \
