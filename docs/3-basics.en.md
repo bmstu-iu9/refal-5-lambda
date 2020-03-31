@@ -18,30 +18,30 @@ syntax). But these listed expressive means exist in the language.
 
 # Hello, World! Program
 
-In the [previous chapter](2-intro.en.md), we managed to compile and to run a
-program [`hello.ref`](hello.ref), which printed out a string “Hello, World!”.
+In the [previous chapter](2-intro.en.md), we've managed to compile and to run 
+a program [`hello.ref`](hello.ref), which printed out a string “Hello, World!”.
 Let us learn how to read and understand its source code.
 
     $ENTRY Go {                                 /* 1 */
       /* empty */ = <Prout 'Hello, World!'>;    /* 2 */
     }                                           /* 3 */
 
-Attentive readers noticed this program is different from the other in the
+Attentive readers have noticed that this program differs from the other in the
 previous chapter: strings starting from `/*` and ending at `*/` were added.
 These are _comments._ Any text between `/*` and `*/` is ignored by the compiler
-and is used to clarify the program idea.
+and used to clarify the program idea.
 
-There were added comments in this program, line numbering (for convenience of
-a quick reference from the manual text) and the word `/*empty*/`, which
-emphasizes readers attention to the fact there is nothing at that place of the
-program. It sounds strange but it will make more sense.
+Comments, line numbering (for convenience of a quick reference from the manual text)
+and the word `/*empty*/` were added in this program; line numbering, which emphasizes
+readers' attention to the fact that there is nothing in this part of the program. It sounds
+strange but it will make more sense.
 
-The restricted by `/*` and `*/` signs comments are _multi-line._ It means `*/`
+Comments that are restricted to `/*` and `*/` are _multi-line._ This means that`*/`
 does not have to be on the same string that `/*`. There are not only multi-line
-comments but _single-lined._ Any string starts from `*` sign (in the first
+comments but _single-lined._ Any string starts with the `*` sign (in the first
 column) is ignored by the compiler.
 
-E.g. the next program is the same but is littered with useless comments.
+E.g. the next program is the same but filled  with useless comments.
 
     /*
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
@@ -71,7 +71,7 @@ Let’s get back to our function.
     }                                           /* 3 */
 
 Any program in Refal-5λ is a set of functions (it is a functional programming
-language after all). This program is not an exception. The `Go` function is
+language after all). This program is no an exception. The `Go` function is
 defined here. The function definition is written as the name of the function
 followed by a _block_ (the function body enclosed in braces: strings 1 and 3
 respectively). The `Go` name is not coincidentally: any Refal program must have
@@ -82,42 +82,42 @@ Hieroglyphic `$ENTRY` will be clarified in the next sections. Just need to know
 that the keyword `$ENTRY` must precede the `Go` (or `GO`) program entry point.
 
 There is a single function Go _sentence_ in the second string. A sentence is a
-rule, which defines how to put up the function value on an argument subset. A
-function can consist of several sentences, each ends with a `;` sign (a
+rule, which defines how to put the value of a function in a subset of arguments.
+A function can consist of several sentences, each ends with a `;` sign (a
 semicolon).  A semicolon may not be used at the end of the last sentence.
 
 Any sentence consists of two parts – _the left part, a pattern_, which describes
-a value subset of the function argument on which the sentence is applied. And
-_the right part, a result_ that describes the function value on the subset. The
+a value subset of the function argument that the sentence is applied to. And
+_the right part, a result_ that describes the function value in the subset. The
 left and the right parts are divided by `=` (equality) sign.
 
-Note. _In the future we will consider the extended Refal syntax in which
-sentence syntax will be more complicated._
+Note. _In the future, we will consider the extended Refal syntax, in which
+the sentence syntax will be more complicated._
 
-The sentence in the program `hello.ref` means that it can be applied on an
+The sentence in the program `hello.ref` means that it can be applied to an
 empty function argument only (there is nothing before the equality). The `/*
-empty */` comment stresses the fact. The right side describes the `Go` function
+empty */` comment highlights the fact. The right side describes the `Go` function
 definition with an empty argument as the result of the `Prout` function computing.
-A sequence of signs `Hello, World!` is transferred to it. A function call on
+A sequence of signs `Hello, World!` is transferred to it. A function call in
 Refal is written with angle brackets `<` and `>`. The function name has to be
 placed after the opening brace.
 
 The function Prout computes “emptiness” with any argument. However, its
-implementation has some side effects. It prints an argument on the screen. That
+implementation has some side effects. It prints an argument. That
 is why it is called.
 
-Almost all Refal programs are written actually for these side effects. After
-the function `Go` (or `GO`) computing the result is discarded and the program is
+Almost all Refal programs are written actually for these side effects. After calculating 
+the  `Go` (or `GO`) function the result is discarded and the program is
 completed. The user sees only what was displayed on the screen by the function
 `Prout`, recorded to files or transferred “out” of the computing process by
 other ways.
 
 Note. _There are exceptions. On the one hand, these are automated tests
 (autotests) – programs that launch the testing function, check its result and
-are finalized. If this verification is successful the program is just
-completed. In another case the program termites by a fail-safe.  The tests run
-environment can distinguish these two cases and inform the user unsuccessful
-runs.  Another example are researches in the field of automatic program
+are finalized. If this verification is successful the program silently 
+terminates. In another case the program crashes with an error. The tests run
+environment can distinguish between these two cases and inform the user about
+failed launches. Another example is research in the field of automatic program
 conversion and verification (e.g. by supercompilation). In this case, an
 interesting math function is written in Refal. It is fed to the tool (e.g
 Refal-5 supercompiler SCP4 (\[1], \[2], \[3])) and then the conversion result or
@@ -125,7 +125,7 @@ the function analysis are examined. Researches in the field of tool
 development is one of the most important Refal application today._
 
 The function `Prout` is one of the functions that is included in the language
-standard library. And it is implicitly available for using in any program. In
+standard library. And it is implicitly available for use in any program. In
 classic Refal-5 it is built in function that means it is implicitly defined in
 any program.  However, Refal-5λ allows us to write programs in which a standard
 library is not used.
@@ -165,15 +165,15 @@ function call is written with angular brackets. The empty value is written as
 an empty space. That means that the Refal program execution is the same thing
 as the function `<Go>` or `<Go /*empty*/>` call. In the first case, we haven’t
 written anything (we have attached one to the other) between the function name
-`Go` and the closing brace `>`. In the second case, we have stucked a comment
-for illustrative purposes. A function call with an empty argument is usually
-written without a comment inside.
+`Go` and the closing brace `>`. In the second case, we have stuck a comment for 
+illustration. A function call with an empty argument is usually written without
+a comment inside.
 
 ## Examples of other programs.
 
 ### Programs with several sentences
 
-Before turning to other examples, we have to explain the syntax that is not
+Before moving to other examples, we have to explain the syntax that is not
 reflected in the `hello.ref` listing.
 
 First, Refal is a language with free syntax. The transition to a new line is
@@ -205,7 +205,7 @@ with a dash._
     }
 
 The left-hand parts of the sentences could be written together, for example
-`'00'`. It would not affect the work of the program because they were written
+`'00'`. It would not affect the program's performance because they were written
 separately for readability.
 
 It is easy to understand that the first sentence is applicable when the
@@ -354,9 +354,9 @@ the right side of the sentence.
 
 We need to clarify the process of Refal function execution now.
 
-1. A sentence is selected from the left side of which you can get a function
+1. A sentence is selected from the left side in which you can get the function
    argument by changing the variables in it to some values. If there are
-   several such sentences, it is chosen with the one with the smallest number.
+   several such sentences, then the one with the smallest number is selected.
    If there wasn’t such sentence, then the program ends with an error of
    recognition impossible.
 2. The variables values are fixed when they request to the function argument
