@@ -103,7 +103,7 @@ Refal is written with angle brackets `<` and `>`. The function name has to be
 placed after the opening brace.
 
 The function Prout computes “emptiness” with any argument. However, its
-implementation has some side effects. It displays an argumen. That
+implementation has some side effects. It prints an argument. That
 is why it is called.
 
 Almost all Refal programs are written actually for these side effects. After calculating 
@@ -114,8 +114,8 @@ other ways.
 
 Note. _There are exceptions. On the one hand, these are automated tests
 (autotests) – programs that launch the testing function, check its result and
-are finalized. If this verification is successful the program just terminates.
-In another case the program terminates with a fail-safe. The tests run
+are finalized. If this verification is successful the program silently 
+terminates. In another case the program crashes with an error. The tests run
 environment can distinguish between these two cases and inform the user about
 failed launches. Another example is research in the field of automatic program
 conversion and verification (e.g. by supercompilation). In this case, an
@@ -165,7 +165,7 @@ function call is written with angular brackets. The empty value is written as
 an empty space. That means that the Refal program execution is the same thing
 as the function `<Go>` or `<Go /*empty*/>` call. In the first case, we haven’t
 written anything (we have attached one to the other) between the function name
-`Go` and the closing brace `>`. In the second case, we have left a comment for 
+`Go` and the closing brace `>`. In the second case, we have stuck a comment for 
 illustration. A function call with an empty argument is usually written without
 a comment inside.
 
