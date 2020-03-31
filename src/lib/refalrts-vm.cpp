@@ -19,7 +19,7 @@
 // Прочие операции
 //------------------------------------------------------------------------------
 
-const char* refalrts::VM::arg(unsigned int param) {
+char* refalrts::VM::arg(unsigned int param) {
   if (param < m_argc) {
     return m_argv[param];
   } else {

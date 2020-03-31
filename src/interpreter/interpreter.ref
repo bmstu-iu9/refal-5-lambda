@@ -1,1 +1,66 @@
-$ENTRY Go { = }
+*$FROM Library
+$EXTERN Module-Load, Module-LookupFunction, Module-Unload;
+
+%%
+#include "refalrts-vm.h"
+%%
+
+
+$ENTRY Go {
+  /* пусто */
+    = <ReadInterpreterFlags> : /* пусто */
+    = <Arg 0> : e.Module
+    = <LoadProgramModule e.Module> : t.Handle
+    = <FindEntryPoint t.Handle> : s.EntryPoint
+    = <s.EntryPoint> : e.Skipped
+    = <Module-Unload t.Handle> : /* пусто */
+    = /* пусто */;
+}
+
+ReadInterpreterFlags {
+%%
+  vm->shift_args();
+  char *arg;
+  while (arg = vm->arg(0), arg[0] == '-' && arg[1] == '-') {
+    vm->shift_args();
+  }
+
+  if (vm->arg(0)[0] == '\0') {
+    fprintf(stderr, "No module in command line\n");
+    vm->set_return_code(157);
+    return refalrts::cExit;
+  }
+
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+LoadProgramModule {
+  e.Module
+    = <Module-Load e.Module>
+    : {
+        Success t.Handle = t.Handle;
+        Fails e.Errors
+          = <Putout stderr 'Can\'t load module ' e.Module>
+            <Exit 157>;  /* see exe/refalrts-main.cpp */
+      }
+}
+
+FindEntryPoint {
+  t.Handle
+    = <Module-LookupFunction t.Handle Go>
+    : {
+        Success s.Go = s.Go;
+
+        Fails
+          = <Module-LookupFunction t.Handle GO>
+          : {
+              Success s.GO = s.GO;
+
+              Fails =
+                <Putout stderr 'Entry point (Go or GO) is not found'>
+                <Exit 158>;  /* see exe/refalrts-main.cpp */
+            }
+      }
+}

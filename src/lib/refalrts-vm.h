@@ -163,11 +163,18 @@ public:
     m_ret_code = code;
   }
 
-  const char* arg(unsigned int param);
+  char* arg(unsigned int param);
 
   void set_args(int argc, char **argv) {
     m_argc = argc;
     m_argv = argv;
+  }
+
+  void shift_args() {
+    if (m_argc > 0) {
+      --m_argc;
+      ++m_argv;
+    }
   }
 
   unsigned step_counter() const {
