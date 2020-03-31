@@ -37,6 +37,7 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     make_subdir srmake make.sh
     make_subdir lexgen makeself.sh
     make_subdir compiler makeself.sh
+    make_subdir interpreter make.sh
     make_subdir nemytykh-random-program-generator make.sh
     make_subdir rsl-decompiler make.sh
   else
