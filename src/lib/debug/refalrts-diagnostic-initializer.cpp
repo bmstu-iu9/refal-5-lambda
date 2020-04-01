@@ -238,6 +238,7 @@ refalrts::DiagnosticConfig::set_parameter(char *name, char *value) {
   enum Type { cString, cNumber, cBoolean_True, cBoolean_False } type;
   long int number_value;
 
+  name = trim(name);
   value = trim(value);
   size_t value_len = strlen(value);
   bool is_quoted_string = value_len > 2

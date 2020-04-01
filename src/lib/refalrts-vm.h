@@ -216,6 +216,10 @@ public:
     return m_module;
   }
 
+  DiagnosticConfig *diagnostic_config() const {
+    return m_diagnostic_config;
+  }
+
 public:
   // Операции сопоставления с образцом
 

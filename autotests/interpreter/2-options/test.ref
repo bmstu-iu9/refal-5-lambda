@@ -1,0 +1,8 @@
+$ENTRY Go {
+  = <Loop 1000> <Putout 1>
+}
+
+Loop {
+  0 = ;
+  s.N = <Loop <- s.N 1>>;
+}

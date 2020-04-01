@@ -2,6 +2,9 @@
 $EXTERN Module-Load, Module-LookupFunction, Module-Unload;
 
 %%
+#include <string.h>
+
+#include "refalrts-diagnostic-defs.h"
 #include "refalrts-vm.h"
 %%
 
@@ -19,10 +22,51 @@ $ENTRY Go {
 
 ReadInterpreterFlags {
 %%
+  using refalrts::DiagnosticConfig;
+  DiagnosticConfig *diagnostic_config = vm->diagnostic_config();
+
   vm->shift_args();
   char *arg;
+  int count = 1;
   while (arg = vm->arg(0), arg[0] == '-' && arg[1] == '-') {
+    char *equals = strchr(arg, '=');
+
+    char *name = arg + 2;
+    char *value;
+    if (equals) {
+      *equals = '\0';
+      value = equals + 1;
+    } else {
+      value = vm->arg(1);
+      vm->shift_args();
+      ++ count;
+    }
     vm->shift_args();
+    ++ count;
+
+    DiagnosticConfig::ParseError res =
+      diagnostic_config->set_parameter(name, value);
+
+    /* Ошибки в параметрах не препятствие для запуска */
+    switch (res) {
+      case DiagnosticConfig::cParseError_Success:
+        /* ничего не делаем */;
+        break;
+
+#define case_error(error, message) \
+      case DiagnosticConfig::cParseError_ ## error: \
+        fprintf(stderr, "Bad command line parameter %d: %s\n", count, arg); \
+        fprintf(stderr, "  " message "\n"); \
+        break;
+
+      case_error(NotANumber, "Number argument is expected");
+      case_error(NotABool, "Number argument is expected");
+      case_error(VeryLongString, "Very long string parameter");
+#undef case_error
+
+       default:
+         refalrts_switch_default_violation(res);
+    }
   }
 
   if (vm->arg(0)[0] == '\0') {
