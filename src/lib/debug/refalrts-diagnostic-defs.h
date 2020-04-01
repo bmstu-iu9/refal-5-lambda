@@ -48,6 +48,14 @@ struct DiagnosticConfig {
 
   class NullDebugger;
   static Debugger* create_null_debugger(VM *vm);
+
+  enum ParseError {
+    cParseError_Success,
+    cParseError_NotANumber,
+    cParseError_NotABool,
+    cParseError_VeryLongString,
+  };
+  ParseError set_parameter(char *param_name, char *param_value);
 };
 
 void init_diagnostic_config(

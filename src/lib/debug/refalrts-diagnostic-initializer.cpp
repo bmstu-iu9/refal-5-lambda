@@ -57,98 +57,45 @@ void parse_config_line(
   refalrts::DiagnosticConfig *config,
   const char *filename, int line_no, const char *line
 ) {
-  enum Type { cString, cNumber, cBoolean_True, cBoolean_False } type;
+  using refalrts::DiagnosticConfig;
+
   char param_name[cMaxLineLen + 1] = { '\0' };
-  char string_value[cMaxLineLen + 1] = { '\0' };
-  long int number_value;
+  char param_value[cMaxLineLen + 1] = { '\0' };
+  int value_pos;
 
-  if (
-    sscanf(line, "%[-_" AZaz "] = \"%[^\"]\"", param_name, string_value) == 2
-  ) {
-    type = cString;
-  } else if (
-    sscanf(line, "%[-_" AZaz "] = %li", param_name, &number_value) == 2
-  ) {
-    type = cNumber;
+  if (sscanf(line, "%[-_" AZaz "] = %n", param_name, &value_pos) == 1) {
+    /* %n не считается, поэтому 1, а не 2, ISO/IEC 9899-1990 (C89), 7.9.6.2 */
+    strcpy(param_value, line + value_pos);
+    DiagnosticConfig::ParseError res =
+      config->set_parameter(param_name, param_value);
+
+    switch (res) {
+      case DiagnosticConfig::cParseError_Success:
+        /* ничего не делаем */
+        break;
+
+      case DiagnosticConfig::cParseError_NotANumber:
+        bad_type(filename, line_no, param_name, "number");
+        break;
+
+      case DiagnosticConfig::cParseError_NotABool:
+        bad_type(filename, line_no, param_name, "boolean");
+        break;
+
+      case DiagnosticConfig::cParseError_VeryLongString:
+        fprintf(
+          stderr, "%s:%d:very long string parameter '%s': \"%s\"\n",
+          filename, line_no, param_name, param_value
+        );
+        break;
+
+      default:
+        refalrts_switch_default_violation(res);
+    }
   } else {
-    if (sscanf(line, "%[-_" AZaz "] = %s", param_name, string_value) == 2) {
-      char boolean_value_str[cMaxLineLen + 1];
-      normalize_name(boolean_value_str, string_value);
-      if (strcmp(boolean_value_str, "true") == 0) {
-        type = cBoolean_True;
-      } else if (strcmp(boolean_value_str, "false") == 0) {
-        type = cBoolean_False;
-      } else {
-        type = cString;
-      }
-    } else {
-      fprintf(stderr, "%s:%d:bad config line:\n", filename, line_no);
-      fprintf(stderr, "%s:%d:    %s\n", filename, line_no, line);
-      return;
-    }
+    fprintf(stderr, "%s:%d:bad config line:\n", filename, line_no);
+    fprintf(stderr, "%s:%d:    %s\n", filename, line_no, line);
   }
-
-  normalize_name(param_name, param_name);
-
-#define set_number_param(field) \
-  if (strcmp(param_name, #field) == 0) { \
-    if (type == cNumber) { \
-      config->field = static_cast<unsigned long>(number_value); \
-    } else { \
-      bad_type(filename, line_no, #field, "number"); \
-    } \
-  }
-
-#define set_boolean_param(field) \
-  if (strcmp(param_name, #field) == 0) { \
-    if (type == cNumber) { \
-      config->field = !!number_value; \
-    } else if (type == cBoolean_True) { \
-      config->field = true; \
-    } else if (type == cBoolean_False) { \
-      config->field = false; \
-    } else { \
-      bad_type(filename, line_no, #field, "boolean"); \
-    } \
-  }
-
-#define set_string_param(field) \
-  if (strcmp(param_name, #field) == 0) { \
-    if (type == cString) { \
-      if (sizeof(config->field) > strlen(string_value)) { \
-        strcpy(config->field, string_value); \
-      } else { \
-        fprintf( \
-          stderr, "%s:%d:very long string parameter '%s': \"%s\"\n", \
-          filename, line_no, #field, string_value \
-        ); \
-      } \
-    } else { \
-      bad_type(filename, line_no, #field, "string"); \
-    } \
-  }
-
-  set_number_param(idents_limit);
-  set_number_param(memory_limit);
-  set_number_param(step_limit);
-  set_number_param(start_step_trace);
-  set_boolean_param(print_statistics);
-  set_boolean_param(dump_free_list);
-  set_boolean_param(show_cookies);
-  set_boolean_param(show_hidden_steps);
-  set_boolean_param(enable_debugger);
-  set_boolean_param(enable_profiler);
-
-  if (strcmp(param_name, "enable_debugger") == 0) {
-    if (config->enable_debugger) {
-      config->debugger_factory = refalrts::debugger::create_debugger;
-    }
-  }
-
-  set_string_param(dump_file);
-#undef set_string_param
-#undef set_boolean_param
-#undef set_number_param
 }
 
 void read_config(refalrts::DiagnosticConfig *config, const char *filename) {
@@ -266,4 +213,115 @@ public:
 refalrts::Debugger*
 refalrts::DiagnosticConfig::create_null_debugger(refalrts::VM * /*vm*/) {
   return new NullDebugger;
+}
+
+namespace {
+
+char *trim(char *str) {
+  while (isspace(*str)) {
+    ++str;
+  }
+
+  size_t len = strlen(str);
+  while (len > 0 && isspace(str[len - 1])) {
+    --len;
+  }
+  str[len] = '\0';
+
+  return str;
+}
+
+}  // unnamed namespace
+
+refalrts::DiagnosticConfig::ParseError
+refalrts::DiagnosticConfig::set_parameter(char *name, char *value) {
+  enum Type { cString, cNumber, cBoolean_True, cBoolean_False } type;
+  long int number_value;
+
+  value = trim(value);
+  size_t value_len = strlen(value);
+  bool is_quoted_string = value_len > 2
+    && value[0] == '"'
+    && value[value_len - 1] == '"'
+    && strchr(value, '"') == (value + value_len - 1);
+
+  if (is_quoted_string) {
+    value[value_len - 1] = '\0';
+    value += 1;
+    type = cString;
+  } else if (sscanf(value, "%li", &number_value) == 1) {
+    type = cNumber;
+  } else {
+    enum { BOOL_LEN = sizeof("false") };
+    char boolean_value_str[BOOL_LEN + 1];
+
+    strncpy(boolean_value_str, value, BOOL_LEN);
+    boolean_value_str[BOOL_LEN] = '\0';
+    normalize_name(boolean_value_str, boolean_value_str);
+
+    if (strcmp(boolean_value_str, "true") == 0) {
+      type = cBoolean_True;
+    } else if (strcmp(boolean_value_str, "false") == 0) {
+      type = cBoolean_False;
+    } else {
+      type = cString;
+    }
+  }
+
+  normalize_name(name, name);
+
+#define set_number_param(field) \
+  if (strcmp(name, #field) == 0) { \
+    if (type == cNumber) { \
+      this->field = static_cast<unsigned long>(number_value); \
+    } else { \
+      return cParseError_NotANumber; \
+    } \
+  }
+
+#define set_boolean_param(field) \
+  if (strcmp(name, #field) == 0) { \
+    if (type == cNumber) { \
+      this->field = !!number_value; \
+    } else if (type == cBoolean_True) { \
+      this->field = true; \
+    } else if (type == cBoolean_False) { \
+      this->field = false; \
+    } else { \
+      return cParseError_NotABool; \
+    } \
+  }
+
+#define set_string_param(field) \
+  if (strcmp(name, #field) == 0) { \
+    if (sizeof(this->field) > strlen(value)) { \
+      strcpy(this->field, value); \
+    } else { \
+      return cParseError_VeryLongString; \
+    } \
+  }
+
+  set_number_param(idents_limit);
+  set_number_param(memory_limit);
+  set_number_param(step_limit);
+  set_number_param(start_step_trace);
+  set_boolean_param(print_statistics);
+  set_boolean_param(dump_free_list);
+  set_boolean_param(show_cookies);
+  set_boolean_param(show_hidden_steps);
+  set_boolean_param(enable_debugger);
+  set_boolean_param(enable_profiler);
+
+  if (strcmp(name, "enable_debugger") == 0) {
+    if (enable_debugger) {
+      debugger_factory = refalrts::debugger::create_debugger;
+    }
+  }
+
+  set_string_param(dump_file);
+#undef set_string_param
+#undef set_boolean_param
+#undef set_number_param
+
+  return cParseError_Success;
 }
