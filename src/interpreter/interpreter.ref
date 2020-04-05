@@ -41,7 +41,7 @@ ReadInterpreterFlags {
   using refalrts::DiagnosticConfig;
   DiagnosticConfig *diagnostic_config = vm->diagnostic_config();
 
-  if (vm->arg(1)[0] == '\0') {
+  if (vm->arg(1) && vm->arg(1)[0] == '\0') {
     help(stdout);
     vm->set_return_code(0);
     return refalrts::cExit;
@@ -50,7 +50,7 @@ ReadInterpreterFlags {
   vm->shift_args();
   char *arg;
   int count = 1;
-  while (arg = vm->arg(0), arg[0] == '-' && arg[1] == '-') {
+  while (arg = vm->arg(0), arg && arg[0] == '-' && arg[1] == '-') {
     char *equals = strchr(arg, '=');
 
     char *name = arg + 2;
@@ -97,7 +97,7 @@ ReadInterpreterFlags {
     }
   }
 
-  if (vm->arg(0)[0] == '\0') {
+  if (! vm->arg(0) || vm->arg(0)[0] == '\0') {
     fprintf(stderr, "No module in command line\n\n");
     help(stderr);
     vm->set_return_code(157);

@@ -23,7 +23,7 @@ char* refalrts::VM::arg(unsigned int param) {
   if (param < m_argc) {
     return m_argv[param];
   } else {
-    return "";
+    return 0;
   }
 }
 

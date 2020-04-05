@@ -225,6 +225,7 @@ $ENTRY Arg {
   refalrts::Iter param_begin = 0;
   refalrts::Iter param_end = 0;
   const char *param = refalrts::arg(vm, param_no);
+  param = param ? param : "";
   refalrts::alloc_string(vm, param_begin, param_end, param);
   refalrts::splice_evar(arg_begin, param_begin, param_end);
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
