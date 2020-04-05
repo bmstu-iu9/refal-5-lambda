@@ -10,7 +10,7 @@
 //FROM refalrts
 #include "refalrts.h"
 //FROM refalrts-diagnostic-initializer
-#include "refalrts-diagnostic-config.h"
+#include "refalrts-diagnostic-defs.h"
 //FROM refalrts-dynamic
 #include "refalrts-dynamic.h"
 //FROM refalrts-profiler

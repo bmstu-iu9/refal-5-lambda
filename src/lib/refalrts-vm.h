@@ -144,7 +144,9 @@ private:
   Module *m_module;
   DiagnosticConfig *m_diagnostic_config;
   FILE *m_dump_stream;
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   bool m_hide_steps;
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
   jmp_buf *m_memory_fail;
 
@@ -1052,7 +1054,9 @@ inline VM::VM(
   , m_module(0)
   , m_diagnostic_config(diagnostic_config)
   , m_dump_stream(0)
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   , m_hide_steps(false)
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
   , m_memory_fail(0)
 {
   /* пусто */

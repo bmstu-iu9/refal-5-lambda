@@ -310,7 +310,9 @@ class Domain {
 
   ModuleStorage m_storage;
   bool m_dangerous;
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   DiagnosticConfig *m_diagnostic_config;
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
   std::vector<RefalFunction*> m_allocated_functions;
 

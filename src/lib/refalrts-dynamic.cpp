@@ -934,7 +934,9 @@ refalrts::Domain::Domain(refalrts::DiagnosticConfig *diagnostic_config)
   : m_idents_table()
   , m_storage(this)
   , m_dangerous(false)
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   , m_diagnostic_config(diagnostic_config)
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
   , m_allocated_functions()
   , m_chunks(0)
   , m_memory_use(0)
