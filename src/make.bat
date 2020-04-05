@@ -59,7 +59,7 @@ setlocal
   if exist *.cpp move *.cpp ..\..\build\%DIR% >NUL
   if exist ..\common\*.rasl move ..\common\*.rasl ..\..\build\%DIR% >NUL
   if exist ..\common\*.cpp move ..\common\*.cpp ..\..\build\%DIR% >NUL
-  for %%d in (\debug\exe \exe -rt\exe -rt) do (
+  for %%d in (\exe -rt\debug-stubs -rt\exe -rt) do (
     copy %PATH_TO_SREFC%\lib\scratch%%d\*.rasl ..\..\build\%DIR% >NUL
     copy %PATH_TO_SREFC%\lib\scratch%%d\*.cpp ..\..\build\%DIR% >NUL
   )
