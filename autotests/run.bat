@@ -177,7 +177,7 @@ exit /b 0
 
 :PREPARE_INT_TEST
 setlocal
-  set REFERENCE=%~n1
+  set REFERENCE=%1
 
   call :PREPARE_PREFIX || exit /b 1
 
