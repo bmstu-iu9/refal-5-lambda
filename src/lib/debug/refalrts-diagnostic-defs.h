@@ -53,6 +53,8 @@ struct DiagnosticConfig {
     cParseError_VeryLongString,
   };
   ParseError set_parameter(char *param_name, char *param_value);
+
+  static const char *help;
 };
 
 void init_diagnostic_config(

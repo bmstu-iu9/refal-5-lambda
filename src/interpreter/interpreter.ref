@@ -2,10 +2,26 @@
 $EXTERN Module-Load, Module-LookupFunction, Module-Unload;
 
 %%
+#include <stdio.h>
 #include <string.h>
 
 #include "refalrts-diagnostic-defs.h"
 #include "refalrts-vm.h"
+
+static void help(FILE *output) {
+  fprintf(
+    output,
+    "Interpreter (loader) for Refal-5-lambda modules\n"
+    "Command line:\n\n"
+    "    interpreter [--param=value ...] module [module options]\n"
+    "    interpreter --help\n\n"
+    "--help - show this help\n\n"
+    "The parameters are same as in the config file "
+    "@refal-5-lambda-diagnostic.ini:\n\n"
+    "%s",
+    refalrts::DiagnosticConfig::help
+  );
+}
 %%
 
 
@@ -25,6 +41,12 @@ ReadInterpreterFlags {
   using refalrts::DiagnosticConfig;
   DiagnosticConfig *diagnostic_config = vm->diagnostic_config();
 
+  if (vm->arg(1)[0] == '\0') {
+    help(stdout);
+    vm->set_return_code(0);
+    return refalrts::cExit;
+  }
+
   vm->shift_args();
   char *arg;
   int count = 1;
@@ -43,6 +65,12 @@ ReadInterpreterFlags {
     }
     vm->shift_args();
     ++ count;
+
+    if (strcmp(name, "help") == 0) {
+      help(stdout);
+      vm->set_return_code(0);
+      return refalrts::cExit;
+    }
 
     DiagnosticConfig::ParseError res =
       diagnostic_config->set_parameter(name, value);
@@ -70,7 +98,8 @@ ReadInterpreterFlags {
   }
 
   if (vm->arg(0)[0] == '\0') {
-    fprintf(stderr, "No module in command line\n");
+    fprintf(stderr, "No module in command line\n\n");
+    help(stderr);
     vm->set_return_code(157);
     return refalrts::cExit;
   }

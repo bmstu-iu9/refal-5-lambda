@@ -326,3 +326,28 @@ refalrts::DiagnosticConfig::set_parameter(char *name, char *value) {
 
   return cParseError_Success;
 }
+
+const char *refalrts::DiagnosticConfig::help =
+  "idents-limit [number], default 0\n"
+  "  Interrupting the program after allocation of this number of identifiers\n\n"
+  "memory-limit [number], default 0\n"
+  "  Interrupting the program after allocation of this number of nodes\n\n"
+  "step-limit [number], default 0\n"
+  "  Interrupting the program after performing of this number of steps\n\n"
+  "start-step-trace [number], default 0\n"
+  "  Start output view field snapshots (trace) after this number of steps\n\n"
+  "print-statistics [boolean], default false\n"
+  "  Printing out statistics when the program ends\n\n"
+  "dump-free-list [boolean], default false\n"
+  "  Output contents of the free notes list in the emergency dump\n\n"
+  "show-cookies [boolean], default true\n"
+  "  Show scope cookies in the emergency dump\n\n"
+  "show-hidden-steps [boolean], default false\n"
+  "  Show steps of INIT, FINAL and between __Step-Start and __Step-End in trace\n\n"
+  "enable-debugger [boolean], default false\n"
+  "  Enables interactive debugger\n\n"
+  "enable-profiler [boolean], default false\n"
+  "  Enables per function profiling\n\n"
+  "dump-file [string], default \"\"\n"
+  "  Filename of the dump file for emergency dump and debug trace\n\n"
+  "Zero for number options means disabling its behaviour\n";
