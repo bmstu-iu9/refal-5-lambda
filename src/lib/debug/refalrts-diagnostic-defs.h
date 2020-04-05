@@ -1,7 +1,6 @@
 #ifndef RefalRTS_DIAGNOSTIC_DEFS_H
 #define RefalRTS_DIAGNOSTIC_DEFS_H
 
-#include <limits.h>
 #include <stdio.h>
 
 #include "refalrts.h"
@@ -28,11 +27,9 @@ struct DiagnosticConfig {
   DebuggerFactory debugger_factory;
   char dump_file[FILENAME_MAX];
 
-  static const unsigned long NO_LIMIT = ULONG_MAX;
-
   DiagnosticConfig()
-    : idents_limit(NO_LIMIT)
-    , memory_limit(NO_LIMIT)
+    : idents_limit(0)
+    , memory_limit(0)
     , step_limit(0)
     , start_step_trace(0)
     , print_statistics(false)

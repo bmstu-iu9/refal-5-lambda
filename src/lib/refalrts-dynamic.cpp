@@ -1011,7 +1011,10 @@ bool refalrts::Domain::alloc_nodes(refalrts::Iter& begin, refalrts::Iter& end) {
   }
 
 #if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
-  if (m_memory_use + Chunk::cSize >= m_diagnostic_config->memory_limit) {
+  if (
+    m_diagnostic_config->memory_limit
+    && m_memory_use + Chunk::cSize >= m_diagnostic_config->memory_limit
+  ) {
     return false;
   }
 #endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
@@ -1231,7 +1234,10 @@ refalrts::Domain::lookup_ident(const char *name) {
 bool refalrts::Domain::register_ident(RefalIdentifier ident) {
   try {
 #if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
-    if (idents_count() >= m_diagnostic_config->idents_limit) {
+    if (
+      m_diagnostic_config->idents_limit
+      && idents_count() >= m_diagnostic_config->idents_limit
+    ) {
       return false;
     }
 #endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */

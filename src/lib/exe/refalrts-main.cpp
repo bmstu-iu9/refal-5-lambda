@@ -54,7 +54,7 @@ static void load_native_module_report_error(
 
     case refalrts::cModuleLoadingError_CantAllocIdent:
 #if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
-      if (diagnostic_config->idents_limit != DiagnosticConfig::NO_LIMIT) {
+      if (diagnostic_config->idents_limit) {
         fprintf(
           stderr, "INTERNAL ERROR: Identifiers table overflows (max %ld)\n",
           diagnostic_config->idents_limit
