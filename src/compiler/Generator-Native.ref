@@ -112,8 +112,10 @@ BaseCName {
 }
 
 NameAndCookies {
+  e.Name Hash 0 0 = '"' <DisplayCName e.Name> '", 0U, 0U';
+
   e.Name Hash s.Cookie1 s.Cookie2 =
-    '"' <DisplayCName e.Name> '", ' <Symb s.Cookie1> 'U, ' <Symb s.Cookie2> 'U';
+    '"' <DisplayCName e.Name> '", COOKIE1_, COOKIE2_';
 }
 
 FormatOffsets {
@@ -145,7 +147,9 @@ GenCommand-Native {
 
   (e.Indent) (CmdCookieNS s.Cookie1 s.Cookie2)
     = (e.Indent)
-      ('#define cookie_ns cookie_ns_' <Symb s.Cookie1> '_' <Symb s.Cookie2>);
+      ('#define cookie_ns cookie_ns_' <Symb s.Cookie1> '_' <Symb s.Cookie2>)
+      ('#define COOKIE1_ ' <Symb s.Cookie1> 'U')
+      ('#define COOKIE2_ ' <Symb s.Cookie2> 'U');
 
   (e.Indent) (CmdNativeFuncDescr e.Name) =
     (e.Indent)
