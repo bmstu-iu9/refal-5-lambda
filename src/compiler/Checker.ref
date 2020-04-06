@@ -456,7 +456,7 @@ CheckSpecs-SeparateErrors-Rec {
 
 SeparateDefines {
   e.AST
-    = <MapReduce
+    = <MapAccum
         {
           (e.Declarations)
           (Function t.SrcPos s.ScopeClass (e.Name) e.Body) =
@@ -766,7 +766,7 @@ CheckPattern {
     >;
 
   (e.ScopeVars) e.Items =
-    <MapReduce
+    <MapAccum
       {
         (e.KnownVars-B (s.Mode e.Index) e.KnownVars-E)
         (TkVariable t.SrcPos s.Mode e.Index) =

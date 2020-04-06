@@ -1,5 +1,5 @@
 *$FROM LibraryEx
-$EXTERN Fetch, ArgList, SaveFile, LoadFile, MapReduce, Trim;
+$EXTERN Fetch, ArgList, SaveFile, LoadFile, MapAccum, Trim;
 
 
 $ENTRY Go {
@@ -26,7 +26,7 @@ Help {
 
 Parse {
   e.Source =
-    <MapReduce
+    <MapAccum
       {
         Scan
         ('enum ' e.EnumName '{ /*' e.FuncName ':' e.Prefix ';' e.Words '*/') =

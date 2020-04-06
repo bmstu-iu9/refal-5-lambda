@@ -14,6 +14,8 @@ setlocal
   call :COMPILE_SCRATCH
   call :COMPILE_REFERENCES
   call :COMPILE_SLIM
+  call :COMPILE_PREFIXES
+  call :COMPILE_DYNAMIC
 endlocal
 goto :EOF
 
@@ -39,13 +41,14 @@ goto :EOF
 :COMPILE_SCRATCH
   set SCRATCHDIR=..\..\lib\scratch
   call :COMPILE_SEPARATED "%SCRATCHDIR%\exe" "LibraryEx Hash GetOpt"
-  mkdir %SCRATCHDIR%\debug\exe\x
-  rmdir %SCRATCHDIR%\debug\exe\x
 
   set SCRATCHDIR=..\..\lib\scratch-rt
   call :COMPILE_SEPARATED "%SCRATCHDIR%\exe" "Library Platform"
 
-  for /d %%d in (. platform-* exe platform-Windows\lib platform-POSIX\lib) do (
+  for /d %%d in ( ^
+    . platform-* exe platform-Windows\lib platform-POSIX\lib debug ^
+    debug-stubs ^
+  ) do (
     if not exist %SCRATCHDIR%\%%d\NUL (
       mkdir %SCRATCHDIR%\%%d
     )
@@ -56,10 +59,6 @@ goto :EOF
 
   for /F %%c in ('dir /b /s %SCRATCHDIR%\*.cpp') do (
     if not exist %%~dpnc.rasl copy nul %%~dpnc.rasl
-  )
-
-  for %%d in (diagnostic-initializer debugger) do (
-    move ..\..\lib\scratch-rt\refalrts-%%d.* ..\..\lib\scratch\debug\exe
   )
 goto :EOF
 
@@ -80,11 +79,33 @@ goto :EOF
 
 :COMPILE_REFERENCES
 setlocal
-  mkdir ..\..\lib\references
+  if not exist ..\..\lib\references\nul mkdir ..\..\lib\references
 
   for %%s in (%LIBRARIES%) do (
     ..\..\bin\srefc-core --no-sources -R ^
        -o ..\..\lib\references\%%s.rasl --reference=%%s
   )
+endlocal
+goto :EOF
+
+:COMPILE_PREFIXES
+  pushd prefixes
+  call make.bat
+  popd
+goto :EOF
+
+:COMPILE_DYNAMIC
+setlocal
+  if exist tmp\nul rd /s /q tmp
+  mkdir tmp
+  pushd tmp
+  for %%l in (%LIBRARIES%) do (
+    copy ..\%%l.ref .
+    call ..\..\..\bin\srmake --scratch --makelib -o ..\..\..\lib\%%l.dll %%l.ref
+    erase %%l.ref
+  )
+  popd
+  rd /s /q tmp
+  if exist ..\..\lib\*.tds erase ..\..\lib\*.tds
 endlocal
 goto :EOF

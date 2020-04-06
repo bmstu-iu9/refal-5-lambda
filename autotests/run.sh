@@ -122,7 +122,7 @@ run_test_aux_with_flags() {
     NATCPP=
   fi
 
-  ./${INT} ++diagnostic+config=test-diagnostics.txt
+  ./${INT} ++diagnostic+config=test-diagnostics.ini
   if [[ $? -gt 0 ]]; then
     echo TEST FAILED, SEE __dump.txt
     exit 1
@@ -181,7 +181,7 @@ run_test_aux_with_flags.FAILURE() {
     NATCPP=
   fi
 
-  ./${INT} ++diagnostic+config=test-diagnostics.txt
+  ./${INT} ++diagnostic+config=test-diagnostics.ini
   if [[ $? -lt 100 ]]; then
     echo TEST NOT EXPECTATIVE FAILED, SEE __dump.txt
     exit 1
@@ -205,6 +205,7 @@ run_test() {
     --prelude=test-prelude.srefi
     -D$PLATFORM_SUBDIR
     -D$LIBDIR/platform-POSIX
+    -D$LIBDIR/debug
     -D$LIBDIR
     --log=__log.txt
     -f-g

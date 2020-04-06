@@ -16,10 +16,10 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     # SREFC_FLAGS используются только для сборки библиотек
     SREFC_FLAGS_PLUS="--markup-context --debug-info -OC"
     SRMAKE_FLAGS_PLUS="-X--markup-context -X--debug-info -X-OC"
-    DEFAULT_SCRIPT_FLAGS=--rich-debug
+    DEFAULT_SCRIPT_FLAGS="--rich --debug"
   else
-    SREFC_FLAGS_PLUS=-OCdPR
-    SRMAKE_FLAGS_PLUS=-X-OCdPR
+    SREFC_FLAGS_PLUS=-OCdDPRS
+    SRMAKE_FLAGS_PLUS=-X-OCdDPRS
     DEFAULT_SCRIPT_FLAGS=--scratch
   fi
 
@@ -29,16 +29,15 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     make_subdir rasl-constants make.sh
     make_subdir compiler makeself-s.sh
     make_subdir lexgen makeself-s.sh
-    make_subdir srmake make-s.sh
+    make_subdir make make-s.sh
     (
       export SREFC_FLAGS="$SREFC_FLAGS $SREFC_FLAGS_PLUS"
       make_subdir lib make.sh
     )
-    make_subdir lib-prefixes make.sh
-    make_subdir lib-dynamic make.sh
-    make_subdir srmake make.sh
+    make_subdir make make.sh
     make_subdir lexgen makeself.sh
     make_subdir compiler makeself.sh
+    make_subdir interpreter make.sh
     make_subdir nemytykh-random-program-generator make.sh
     make_subdir rsl-decompiler make.sh
   else
@@ -53,7 +52,7 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     fi
 
     if [[ -z "$SCRIPT_FLAGS" ]]; then
-      SCRIPT_FLAGS=${DEFAULT_SCRIPT_FLAGS}
+      SCRIPT_FLAGS="${DEFAULT_SCRIPT_FLAGS}"
     fi
 
     source ${PATH_TO_SREFC}/scripts/platform-specific.sh
@@ -77,10 +76,7 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     find . ../common \
       \( -name '*.rasl' -o -name '*.cpp' \) \
       -exec mv '{}' "../../build/$DIR" \;
-    cp ${PATH_TO_SREFC}/lib/scratch{{/debug,,-rt}/exe,-rt}/*.{rasl,cpp} \
+    cp ${PATH_TO_SREFC}/lib/scratch{/exe,-rt{/debug-stubs,/exe,}}/*.{rasl,cpp} \
       "../../build/$DIR"
-
-    cp "$PATH_TO_SREFC/srlib/scratch/"*.rasl "../../build/$DIR"
-    cp "$PATH_TO_SREFC/srlib/scratch/"*.cpp "../../build/$DIR"
   fi
 )

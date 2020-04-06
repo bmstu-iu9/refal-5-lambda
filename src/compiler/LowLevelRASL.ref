@@ -24,7 +24,7 @@ $EXTERN DisplayName;
 $ENTRY LowLevelRASL {
   s.GenMode s.DebugInfo (e.SrcName) e.ProgramElements
 
-    = <MapReduce
+    = <MapAccum
         &CalcDigest
         /* Числа выбраны случайно: hexdump /dev/urandom */
         (4001567069 291363191)
@@ -37,7 +37,7 @@ $ENTRY LowLevelRASL {
 
     = <SelectConstantsOutliner e.Items> : s.OutlineConstants e.Items^
 
-    = <MapReduce
+    = <MapAccum
         s.OutlineConstants
         ((0 /* functions */) (0 /* idents */))
         e.Items
@@ -212,7 +212,7 @@ OutlineConstants-RASLOnly {
 
 OutlineConstants-Commands {
   t.Tables e.Commands
-    = <MapReduce &OutlineConstants-OneCommand t.Tables e.Commands>;
+    = <MapAccum &OutlineConstants-OneCommand t.Tables e.Commands>;
 }
 
 OutlineConstants-OneCommand {

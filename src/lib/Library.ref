@@ -225,6 +225,7 @@ $ENTRY Arg {
   refalrts::Iter param_begin = 0;
   refalrts::Iter param_end = 0;
   const char *param = refalrts::arg(vm, param_no);
+  param = param ? param : "";
   refalrts::alloc_string(vm, param_begin, param_end, param);
   refalrts::splice_evar(arg_begin, param_begin, param_end);
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
@@ -1899,7 +1900,7 @@ Sysfun-Xxin {
     = <ExistFile e.FileName>
     : {
         True
-          = <FOpen 'r' e.FileName> : s.FileNo
+          = <Open-Auto 'r' e.FileName> : s.FileNo
           = <Xxin-Scan s.FileNo General ('^') <Type <Get-Aux s.FileNo>>>;
 
         False = /* empty */;
@@ -2104,7 +2105,7 @@ Quote {
 Sysfun-Xxout {
   e.FileName (s.Width e.Expression)
     = <Xxout-Wrap
-        <FOpen 'w' e.FileName> s.Width
+        <Open-Auto 'w' e.FileName> s.Width
         <Xxout-Scan <Type e.Expression>>
       >;
 }
@@ -3094,17 +3095,23 @@ $ENTRY FClose {
 
 
 /**
-  <FOpen t.Mode e.FileName> == s.FileNo
+  <Open-Auto t.Mode e.FileName> == s.FileNo
   t.Mode ::=
       'r' | 'w' | 'a'
     | 'R' | 'W' | 'A'
     | s.COMPOUND | (s.CHAR*)
+
+  FOpen (deprecated) is synonim for Open-Auto
 */
-$ENTRY FOpen {
+$ENTRY Open-Auto {
   t.Mode s.FileNameChar e.FileName
     = <GetFreeHandle> : s.FreeHandle
     = <Open t.Mode s.FreeHandle s.FileNameChar e.FileName>
       s.FreeHandle;
+}
+
+$ENTRY FOpen {
+  t.Mode e.FileName = <Open-Auto t.Mode e.FileName>
 }
 
 
@@ -3388,10 +3395,12 @@ bool cookie_ns::compare(refalrts::Iter left, refalrts::Iter right) {
 * Двоичный ввод-вывод
 
 /**
-  <FWriteBytes s.FileNo s.Byte*> == []
+  <WriteBytes s.FileNo s.Byte*> == []
   s.Byte ::= s.MACRODIGIT | s.CHAR
+
+  FWriteBytes (deprecated) is synonim for WriteBytes
 */
-$ENTRY FWriteBytes {
+$ENTRY WriteBytes {
 %%
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
@@ -3436,16 +3445,22 @@ $ENTRY FWriteBytes {
 %%
 }
 
+$ENTRY FWriteBytes {
+  s.FileNo e.Bytes = <WriteBytes s.FileNo e.Bytes>;
+}
+
 
 /**
-  <FReadBytes s.FileNo s.CountBytes> == e.ReadBytes
+  <ReadBytes s.FileNo s.CountBytes> == e.ReadBytes
 
   s.CountBytes ::= s.MACRODIGIT
   e.ReadBytes ::= s.MACRODIGIT*
 
   |e.ReadBytes| <= s.CountBytes
+
+  FReadBytes (deprecated) is synonim for ReadBytes
 */
-$ENTRY FReadBytes {
+$ENTRY ReadBytes {
 %%
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
@@ -3502,6 +3517,10 @@ $ENTRY FReadBytes {
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
+}
+
+$ENTRY FReadBytes {
+  s.FileNo s.Count = <ReadBytes s.FileNo s.Count>;
 }
 
 

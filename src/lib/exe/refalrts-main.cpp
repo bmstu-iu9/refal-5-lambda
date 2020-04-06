@@ -4,12 +4,13 @@
 #include <string.h>
 
 #include "refalrts-commands.h"
-#include "refalrts-diagnostic-config.h"
 #include "refalrts-native-module.h"
 
 
 //FROM refalrts
 #include "refalrts.h"
+//FROM refalrts-diagnostic-initializer
+#include "refalrts-diagnostic-defs.h"
 //FROM refalrts-dynamic
 #include "refalrts-dynamic.h"
 //FROM refalrts-profiler
@@ -23,9 +24,13 @@ static void load_native_module_report_error(
   refalrts::ModuleLoadingErrorDetail *detail,
   void *callback_data
 ) {
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   using refalrts::DiagnosticConfig;
   DiagnosticConfig *diagnostic_config =
     static_cast<DiagnosticConfig*>(callback_data);
+#else  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
+  (void) callback_data;
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
   switch (error) {
     case refalrts::cModuleLoadingError_ModuleNotFound:
@@ -48,14 +53,18 @@ static void load_native_module_report_error(
       exit(155);
 
     case refalrts::cModuleLoadingError_CantAllocIdent:
-      if (diagnostic_config->idents_limit != DiagnosticConfig::NO_LIMIT) {
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
+      if (diagnostic_config->idents_limit) {
         fprintf(
           stderr, "INTERNAL ERROR: Identifiers table overflows (max %ld)\n",
           diagnostic_config->idents_limit
         );
       } else {
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
         fprintf(stderr, "INTERNAL ERROR: can't allocate identifier\n");
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
       }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
       exit(154);
 
     case refalrts::cModuleLoadingError_UnresolvedExternal:
@@ -107,8 +116,6 @@ static void load_native_module_report_error(
       refalrts_switch_default_violation(error);
   }
 }
-
-refalrts::InitDiagnosticConfig refalrts::g_init_diagnostic_config;
 
 namespace {
 
@@ -461,15 +468,12 @@ const refalrts::VMapi api = {
 int main(int argc, char **argv) {
   refalrts::DiagnosticConfig diagnostic_config;
 
-  if (refalrts::g_init_diagnostic_config) {
-    refalrts::g_init_diagnostic_config(&diagnostic_config, &argc, argv);
-  }
+  refalrts::init_diagnostic_config(&diagnostic_config, &argc, argv);
 
   refalrts::Profiler profiler(&diagnostic_config);
   refalrts::Domain domain(&diagnostic_config);
   refalrts::VM vm(&api, &profiler, &domain, &diagnostic_config);
 
-  vm.set_debugger_factory(diagnostic_config.debugger_factory);
   vm.set_args(argc, argv);
 
   refalrts::FnResult res;

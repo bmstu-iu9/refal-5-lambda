@@ -257,7 +257,7 @@ BuildString {
 */
 $ENTRY MakeSavers {
   s.OriginContextOffset e.SubstitutesAndJunks
-    = <MapReduce
+    = <MapAccum
         {
           (s.ContextOffset e.CmdSaves) (Junk e.Junk)
             = (s.ContextOffset e.CmdSaves) (Junk e.Junk);

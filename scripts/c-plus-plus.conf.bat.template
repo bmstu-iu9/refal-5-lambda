@@ -1,6 +1,6 @@
 @echo off
 
-set DEFFILE=%~dp0lib\scratch\platform-Windows\lib\refalrts-main.def
+set DEFFILE=%~dp0lib\scratch-rt\platform-Windows\lib\refalrts-main.def
 
 rem Раскомментируте групппу строчек ниже в зависимости от используемого
 rem компилятора C++

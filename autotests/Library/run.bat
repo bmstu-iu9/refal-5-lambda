@@ -22,6 +22,7 @@ setlocal
     --cpp-command-lib-suf="%CPPLINELSUF%" ^
     --exesuffix=.exe ^
     -D../../src/lib/platform-Windows ^
+    -D../../src/lib/debug ^
     -D../../src/lib ^
     refalrts ^
     refalrts-debugger ^
@@ -34,7 +35,7 @@ setlocal
     refalrts-vm-api ^
     refalrts-platform-specific
 
-  set DIAG=++diagnostic+config=test-diagnostics.txt
+  set DIAG=++diagnostic+config=test-diagnostics.ini
 
   echo Precompile Library.ref
   copy ..\..\src\lib\Library.ref .

@@ -1,6 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, LoadFile, Pipe, MapReduce, Inc, DelAccumulator, Map, Trim,
-  Reduce;
+$EXTERN Fetch, LoadFile, Pipe, MapAccum, Inc, DelAccumulator, Map, Trim, Reduce;
 
 /*
   <LoadIniFile e.FileName>
@@ -22,7 +21,7 @@ $ENTRY LoadIniFile {
         <LoadFile e.FileName>
         <Pipe
           // Нумеруем строки файла
-          (MapReduce
+          (MapAccum
             {
               s.LineNumber (e.Line)
                 = <Inc s.LineNumber> (s.LineNumber e.Line);

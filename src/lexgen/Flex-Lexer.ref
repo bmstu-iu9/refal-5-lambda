@@ -1,5 +1,5 @@
 *$FROM LibraryEx
-$EXTERN Fetch, Pipe, Reduce, Map, MapReduce, Inc;
+$EXTERN Fetch, Pipe, Reduce, Map, MapAccum, Inc;
 
 *$FROM Escape
 $EXTERN EscapeString;
@@ -53,7 +53,7 @@ $ENTRY Flex-Tokens {
           e.Tokens (TEOF) = e.Tokens (TEOF);
           e.Tokens = e.Tokens (TEOF);
         }
-        (&MapReduce
+        (&MapAccum
           {
             s.LineNumber (TNewLine '\n') =
               <Inc s.LineNumber>

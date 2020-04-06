@@ -253,6 +253,10 @@ bool refalrts::Module::has_alias(const std::string& alias) const {
   return std::find(m_aliases.begin(), m_aliases.end(), alias) != m_aliases.end();
 }
 
+bool refalrts::Module::with_stat(const refalrts::api::stat *stat) const {
+  return api::stat_compare(m_stat, stat) == 0;
+}
+
 inline void refalrts::Module::del_ref() {
   assert(m_refcounter > 0);
   --m_refcounter;
@@ -607,8 +611,8 @@ refalrts::Module::Loader::read_const_table() {
 void refalrts::Module::Loader::enumerate_blocks() {
   ConstTable *table = 0;
 
-  bool successed = seek_rasl_signature();
-  if (! successed) {
+  bool succeeded = seek_rasl_signature();
+  if (! succeeded) {
     throw LoadModuleError("can't find signature in executable\n");
   }
 
@@ -709,16 +713,6 @@ void refalrts::Module::Loader::enumerate_blocks() {
 // Домен
 //==============================================================================
 
-refalrts::Module *
-refalrts::Domain::Stack::contain(const refalrts::api::stat *stat) const {
-  const Stack *node = this;
-  while (node != 0 && api::stat_compare(node->stat, stat) != 0) {
-    node = node->next;
-  }
-
-  return node != 0 ? node->module : 0;
-}
-
 refalrts::Domain::ModuleStorage::ModuleStorage(refalrts::Domain *domain)
   : m_domain(domain)
   , m_modules()
@@ -730,22 +724,6 @@ refalrts::Domain::ModuleStorage::~ModuleStorage() {
   while (! m_modules.empty()) {
     delete m_modules.front();
     m_modules.pop_front();
-  }
-}
-
-refalrts::Module *
-refalrts::Domain::ModuleStorage::operator[](
-  const refalrts::api::stat *stat
-) const {
-  ModuleList::const_iterator p = m_modules.begin();
-  while (p != m_modules.end() && api::stat_compare((*p)->stat(), stat) != 0) {
-    ++p;
-  }
-
-  if (p != m_modules.end()) {
-    return *p;
-  } else {
-    return 0;
   }
 }
 
@@ -763,27 +741,14 @@ refalrts::Domain::ModuleStorage::operator[](
   return func;
 }
 
-refalrts::Module *
-refalrts::Domain::ModuleStorage::find_by_alias(const std::string& name) const {
-  ModuleList::const_iterator p = m_modules.begin();
-
-  while (p != m_modules.end() && ! (*p)->has_alias(name)) {
-    ++p;
-  }
-
-  return p != m_modules.end() ? *p : 0;
-}
-
 refalrts::Module *refalrts::Domain::ModuleStorage::load_module(
   const std::string& name, refalrts::Domain::Stack *stack,
   LoadModuleEvent event, void *callback_data,
   refalrts::NativeModule *main_module
 ) {
-  Module *module = m_domain->m_storage.find_by_alias(name);
-  if (! module) {
-    module = find_by_alias(name);
-  }
-
+  // Без явной подсказки <const std::string&> тип не выводится
+  Module *module =
+     find_known<const std::string&>(stack, name, &Module::has_alias);
   if (module) {
     return module;
   }
@@ -799,7 +764,7 @@ refalrts::Module *refalrts::Domain::ModuleStorage::load_module(
     return 0;
   }
 
-  module = find_known(stack, stat);
+  module = find_known(stack, stat, &Module::with_stat);
   if (module) {
     api::stat_destroy(stat);
     return module;
@@ -810,7 +775,7 @@ refalrts::Module *refalrts::Domain::ModuleStorage::load_module(
     m_domain, real_name, stat, load_success, event, callback_data, main_module
   );
 
-  Stack substack(stat, module, stack);
+  Stack substack(module, stack);
   bool ref_success = true;
   for (
     Module::ReferenceMap::iterator p = module->references().begin();
@@ -904,18 +869,6 @@ void refalrts::Domain::ModuleStorage::make_dump(refalrts::VM *vm) {
   }
 }
 
-refalrts::Module *
-refalrts::Domain::ModuleStorage::find_known(
-  const refalrts::Domain::Stack *stack, const refalrts::api::stat *stat
-) const {
-  Module *result;
-  return
-    (result = m_domain->m_storage[stat], result != 0) ? result :
-    (result = (*this)[stat], result != 0) ? result :
-    stack != 0 && (result = stack->contain(stat), result != 0) ? result :
-    0;
-}
-
 void refalrts::Domain::ModuleStorage::gc(
   refalrts::VM *vm, refalrts::Iter pos, refalrts::FnResult& result
 ) {
@@ -981,7 +934,9 @@ refalrts::Domain::Domain(refalrts::DiagnosticConfig *diagnostic_config)
   : m_idents_table()
   , m_storage(this)
   , m_dangerous(false)
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   , m_diagnostic_config(diagnostic_config)
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
   , m_allocated_functions()
   , m_chunks(0)
   , m_memory_use(0)
@@ -990,7 +945,11 @@ refalrts::Domain::Domain(refalrts::DiagnosticConfig *diagnostic_config)
   , m_swap_begin(0, &m_swap_end)
   , m_swap_end(&m_swap_begin, 0)
 {
+#if ! REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   /* пусто */
+#else
+  (void) diagnostic_config;
+#endif /* ! REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 }
 
 bool refalrts::Domain::load_native_module(
@@ -1057,9 +1016,14 @@ bool refalrts::Domain::alloc_nodes(refalrts::Iter& begin, refalrts::Iter& end) {
     return true;
   }
 
-  if (m_memory_use + Chunk::cSize >= m_diagnostic_config->memory_limit) {
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
+  if (
+    m_diagnostic_config->memory_limit
+    && m_memory_use + Chunk::cSize >= m_diagnostic_config->memory_limit
+  ) {
     return false;
   }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
   Chunk *new_chunk = new (std::nothrow) Chunk(m_chunks);
   if (! new_chunk) {
@@ -1245,12 +1209,14 @@ size_t refalrts::Domain::idents_count() {
 }
 
 void refalrts::Domain::free_idents_table() {
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   if (m_diagnostic_config->print_statistics) {
     fprintf(
       stderr, "Identifiers allocated: %lu\n",
       static_cast<unsigned long>(idents_count())
     );
   }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
   while (m_idents_table.size() > 0) {
     IdentsMap::iterator p = m_idents_table.begin();
@@ -1273,9 +1239,14 @@ refalrts::Domain::lookup_ident(const char *name) {
 
 bool refalrts::Domain::register_ident(RefalIdentifier ident) {
   try {
-    if (idents_count() >= m_diagnostic_config->idents_limit) {
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
+    if (
+      m_diagnostic_config->idents_limit
+      && idents_count() >= m_diagnostic_config->idents_limit
+    ) {
       return false;
     }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
     IdentsMap::value_type new_value(StringRef(ident->name()), ident);
     std::pair<IdentsMap::iterator, bool> res = m_idents_table.insert(new_value);
@@ -1323,9 +1294,9 @@ refalrts::Domain::lookup_module_by_name(
   std::list<std::string> directories;
 
   char exe_file_directory[api::cModuleNameBufferLen];
-  bool main_module_successed = api::get_main_module_name(exe_file_directory);
+  bool main_module_succeeded = api::get_main_module_name(exe_file_directory);
 
-  if (main_module_successed) {
+  if (main_module_succeeded) {
     // Да, тут квадратичная сложность, но здесь это не критично
     size_t len = strlen(exe_file_directory);
     while (
@@ -1344,11 +1315,11 @@ refalrts::Domain::lookup_module_by_name(
       sep = path.find(api::path_env_separator);
       std::string next_dir = path.substr(0, sep);
       if (sep != std::string::npos) {
-        path = path.substr(sep);
+        path = path.substr(sep+1);
       }
       if (! next_dir.empty()) {
         if (! api::is_directory_ended_to_separator(next_dir.c_str())) {
-          next_dir += *api::directory_separators;
+          next_dir += api::directory_separators[0];
         }
         directories.push_back(next_dir);
       }
@@ -1369,6 +1340,7 @@ refalrts::Domain::lookup_module_by_name(
 }
 
 void refalrts::Domain::free_nodes() {
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   if (m_diagnostic_config->print_statistics) {
     fprintf(
       stderr,
@@ -1379,6 +1351,7 @@ void refalrts::Domain::free_nodes() {
       static_cast<unsigned long>(m_memory_use * sizeof(Node))
     );
   }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
   while (m_chunks != 0) {
     Chunk *next = m_chunks->next;

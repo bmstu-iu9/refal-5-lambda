@@ -22,7 +22,7 @@ $ENTRY HighLevelRASL-Function-Disjoint {
       >
     : e.Sentences^ ((CmdIssueMemory s.LastMemory) e.LastSentence)
 
-    = <MapReduce
+    = <MapAccum
         {
           s.MaxMemory ((CmdIssueMemory s.Memory) e.Sentence) =
             <Max s.MaxMemory s.Memory>

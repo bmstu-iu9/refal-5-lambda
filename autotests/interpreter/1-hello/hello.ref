@@ -1,0 +1,1 @@
+$ENTRY Go { = <Putout 1 <Arg 0> ':' <Arg 1>> }

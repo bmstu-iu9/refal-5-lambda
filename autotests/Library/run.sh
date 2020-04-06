@@ -13,6 +13,7 @@ run_all_tests() {
     --exesuffix=$(platform_exe_suffix)
     -D$(platform_subdir_lookup $LIBDIR)
     -D$LIBDIR/platform-POSIX
+    -D$LIBDIR/debug
     -D$LIBDIR
     -f-g
     refalrts
@@ -29,7 +30,7 @@ run_all_tests() {
     --chmod-x-command="chmod +x"
   )
 
-  DIAG="++diagnostic+config=test-diagnostics.txt"
+  DIAG="++diagnostic+config=test-diagnostics.ini"
 
   echo Precompile Library.ref
   cp $LIBDIR/Library.ref .

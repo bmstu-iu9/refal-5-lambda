@@ -422,7 +422,7 @@ CreateCommandInfo {
 
 CalcLabelsOffsets {
   e.RASL
-    = <MapReduce
+    = <MapAccum
         {
           (s.Offset e.Labels) (LABEL s.Label)
             = (s.Offset e.Labels (s.Label s.Offset));

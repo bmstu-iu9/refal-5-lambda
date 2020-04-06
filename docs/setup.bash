@@ -22,8 +22,20 @@
   if [ $(uname) == Darwin ]; then
     CONFIG=~/.bash_profile
   fi
+
+  CONFIG_UPDATED=false
+
   if ! grep -qE 'PATH=.*/.local/share/refal-5-lambda/bin' $CONFIG; then
     echo 'export PATH=$PATH:~/.local/share/refal-5-lambda/bin' >> $CONFIG
+    CONFIG_UPDATED=true
+  fi
+
+  if ! grep -qE 'RL_MODULE_PATH=.*/.local/share/refal-5-lambda/lib' $CONFIG; then
+    echo 'export RL_MODULE_PATH=$RL_MODULE_PATH:~/.local/share/refal-5-lambda/lib' >> $CONFIG
+    CONFIG_UPDATED=true
+  fi
+
+  if "$CONFIG_UPDATED"; then
     echo $(date): Updated file $CONFIG, check if you need
   fi
 

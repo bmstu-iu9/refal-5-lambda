@@ -329,7 +329,9 @@ void refalrts::copy_evar(
   refalrts::VM *vm, refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
 ) {
-  get_api(vm)->copy_evar(vm, evar_res_b, evar_res_e, evar_b_sample, evar_e_sample);
+  get_api(vm)->copy_evar(
+    vm, evar_res_b, evar_res_e, evar_b_sample, evar_e_sample
+  );
 }
 
 void refalrts::copy_stvar(

@@ -75,6 +75,7 @@ setlocal
     --libsuffix=.dll ^
     --prelude=test-prelude.srefi ^
     -D../src/lib/platform-Windows ^
+    -D../src/lib/debug ^
     -D../src/lib ^
     --log=__log.txt
   set SRFLAGS_PREF=--prefix=_test_prefix
@@ -176,7 +177,7 @@ exit /b 0
 
 :PREPARE_INT_TEST
 setlocal
-  set REFERENCE=%~n1
+  set REFERENCE=%1
 
   call :PREPARE_PREFIX || exit /b 1
 
@@ -225,7 +226,7 @@ setlocal
 
   if not exist %NATCPP% set NATCPP=
 
-  _int_test.exe ++diagnostic+config=test-diagnostics.txt
+  _int_test.exe ++diagnostic+config=test-diagnostics.ini
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
     exit /b 1
@@ -271,7 +272,7 @@ setlocal
 
   if not exist %NATCPP% set NATCPP=
 
-  _int_test.exe ++diagnostic+config=test-diagnostics.txt
+  _int_test.exe ++diagnostic+config=test-diagnostics.ini
   if not errorlevel 100 (
     echo TEST NOT EXPECTATIVE FAILED, SEE __dump.txt
     exit /b 1

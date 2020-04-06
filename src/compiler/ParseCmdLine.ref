@@ -83,7 +83,7 @@ $ENTRY ParseCommandLine {
           (e.Errors) e.Options
             = (<Config-Create> e.Errors) e.Options;
         }
-        (&MapReduce
+        (&MapAccum
           {
             (t.Config e.Errors) (CppCompiler-Exe s.Num e.CppCompiler)
               = <Update
@@ -249,7 +249,7 @@ $ENTRY ParseCommandLine {
               = (t.Config e.Errors) t.Option;
           }
         )
-        (&MapReduce
+        (&MapAccum
           {
             (t.Config e.Errors) (SearchFolder s.Num e.Folder)
               = (<Config-SetSearchFolder t.Config e.Folder> e.Errors);

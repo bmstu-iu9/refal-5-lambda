@@ -174,7 +174,7 @@ NormalizeTokens {
       e.Tokens
       <Pipe
         (Map NormalizeToken)
-        (MapReduce AddLineNumber 1)
+        (MapAccum AddLineNumber 1)
         DelAccumulator
         CollectNativeLines
       >

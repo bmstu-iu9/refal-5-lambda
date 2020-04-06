@@ -5,7 +5,7 @@ setlocal
     rem SREFC_FLAGS используются только для сборки библиотек
     set SREFC_FLAGS_PLUS=--markup-context --debug-info -OC
     set SRMAKE_FLAGS_PLUS=-X--markup-context -X--debug-info -X-OC
-    set DEFAULT_SCRIPT_FLAGS=--rich-debug
+    set DEFAULT_SCRIPT_FLAGS=--rich --debug
   ) else (
     set SREFC_FLAGS_PLUS=-OCdDPRS
     set SRMAKE_FLAGS_PLUS=-X-OCdDPRS
@@ -22,13 +22,12 @@ setlocal
   call :MAKE_SUBDIR rasl-constants make.bat
   call :MAKE_SUBDIR compiler makeself-s.bat
   call :MAKE_SUBDIR lexgen makeself-s.bat
-  call :MAKE_SUBDIR srmake make-s.bat
+  call :MAKE_SUBDIR make make-s.bat
   call :MAKE_SUBDIR lib make.bat
-  call :MAKE_SUBDIR lib-prefixes make.bat
-  call :MAKE_SUBDIR lib-dynamic make.bat
-  call :MAKE_SUBDIR srmake make.bat
+  call :MAKE_SUBDIR make make.bat
   call :MAKE_SUBDIR lexgen makeself.bat
   call :MAKE_SUBDIR compiler makeself.bat
+  call :MAKE_SUBDIR interpreter make.bat
   call :MAKE_SUBDIR nemytykh-random-program-generator make.bat
   call :MAKE_SUBDIR rsl-decompiler make.bat
 
@@ -60,13 +59,10 @@ setlocal
   if exist *.cpp move *.cpp ..\..\build\%DIR% >NUL
   if exist ..\common\*.rasl move ..\common\*.rasl ..\..\build\%DIR% >NUL
   if exist ..\common\*.cpp move ..\common\*.cpp ..\..\build\%DIR% >NUL
-  for %%d in (\debug\exe \exe -rt\exe -rt) do (
+  for %%d in (\exe -rt\debug-stubs -rt\exe -rt) do (
     copy %PATH_TO_SREFC%\lib\scratch%%d\*.rasl ..\..\build\%DIR% >NUL
     copy %PATH_TO_SREFC%\lib\scratch%%d\*.cpp ..\..\build\%DIR% >NUL
   )
-  rem TODO: удалить после обновления дистрбутива
-  copy %PATH_TO_SREFC%\srlib\scratch\*.rasl ..\..\build\%DIR% >NUL
-  copy %PATH_TO_SREFC%\srlib\scratch\*.cpp ..\..\build\%DIR% >NUL
 
 :END
 endlocal

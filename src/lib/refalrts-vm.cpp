@@ -19,11 +19,11 @@
 // Прочие операции
 //------------------------------------------------------------------------------
 
-const char* refalrts::VM::arg(unsigned int param) {
+char* refalrts::VM::arg(unsigned int param) {
   if (param < m_argc) {
     return m_argv[param];
   } else {
-    return "";
+    return 0;
   }
 }
 
@@ -155,7 +155,7 @@ refalrts::FnResult refalrts::VM::execute_zero_arity_function(
   refalrts::RefalFunction *func, refalrts::Iter pos
 ) {
   if (! m_debugger) {
-    m_debugger = m_create_debugger(this);
+    m_debugger = m_diagnostic_config->debugger_factory(this);
   }
 
   if (! pos) {
@@ -305,14 +305,18 @@ void refalrts::VM::print_seq(
               }
 
               const RefalFuncName& name = begin->function_info->name;
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
               if (m_diagnostic_config->show_cookies) {
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
                 fprintf(
                   output, "%s%s#%u:%u ",
                   amp, name.name, name.cookie1, name.cookie2
                 );
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
               } else {
                 fprintf(output, "%s%s ", amp, name.name);
               }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
               refalrts::move_left(begin, end);
             }
             continue;
@@ -473,10 +477,12 @@ void refalrts::VM::make_dump(refalrts::Iter begin, refalrts::Iter end) {
   fprintf(dump_stream(), "\nVIEW FIELD:\n");
   print_seq(dump_stream(), & m_first_marker, & m_last_marker);
 
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   if (m_diagnostic_config->dump_free_list) {
     fprintf(dump_stream(), "\nFREE LIST:\n");
     print_seq(dump_stream(), & m_begin_free_list, & m_end_free_list);
   }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
   m_domain->make_dump(this);
 
@@ -484,7 +490,9 @@ void refalrts::VM::make_dump(refalrts::Iter begin, refalrts::Iter end) {
 }
 
 FILE *refalrts::VM::dump_stream() {
+  // TODO: продумать имя файла по умолчанию в релизе
   if (m_dump_stream == 0) {
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
     if (m_diagnostic_config->dump_file[0]) {
       m_dump_stream = fopen(m_diagnostic_config->dump_file, "wt");
 
@@ -492,8 +500,11 @@ FILE *refalrts::VM::dump_stream() {
         m_dump_stream = stderr;
       }
     } else {
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
       m_dump_stream = stderr;
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
     }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
   }
 
   return m_dump_stream;
@@ -507,41 +518,13 @@ void refalrts::VM::free_view_field() {
     weld(&m_begin_free_list, &m_end_free_list);
   }
 
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   if (m_diagnostic_config->print_statistics) {
     fprintf(stderr, "Step count %d\n", m_step_counter);
   }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 }
 
-
-//==============================================================================
-// Фальшивый отладчик
-//==============================================================================
-
-class refalrts::VM::NullDebugger: public refalrts::Debugger {
-public:
-  virtual void set_context(Iter* /*context*/) {
-    /* пусто */
-  }
-
-  virtual void set_string_items(const StringItem * /*items*/) {
-    /* пусто */
-  }
-
-  virtual void insert_var(const RASLCommand * /*next*/) {
-    /* пусто */
-  }
-
-  virtual FnResult handle_function_call(
-    Iter /*begin*/, Iter /*end*/, RefalFunction * /*callee*/
-  ) {
-    return cSuccess;
-  }
-};
-
-refalrts::Debugger*
-refalrts::VM::create_null_debugger(refalrts::VM * /*vm*/) {
-  return new NullDebugger;
-}
 
 //==============================================================================
 // Интерпретатор
@@ -692,8 +675,10 @@ JUMP_FROM_SCALE:
           stack_top = prev_state->stack_top;
           states_stack_free(prev_state);
 
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
           m_debugger->set_context(context);
           m_debugger->set_string_items(strings);
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
         }
         continue;  // пропускаем ++rasl в конце
 
@@ -708,7 +693,9 @@ JUMP_FROM_SCALE:
           idents = descr->idents;
           numbers = descr->numbers;
           strings = descr->strings;
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
           m_debugger->set_string_items(strings);
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
         }
         break;
 
@@ -717,7 +704,9 @@ JUMP_FROM_SCALE:
         if (context == 0) {
           return cNoMemory;
         }
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
         m_debugger->set_context(context);
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
         break;
 
       case icReserveBacktrackStack:
@@ -1186,13 +1175,17 @@ JUMP_FROM_SCALE:
         break;
 
       case icVariableDebugOffset:
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
         m_debugger->insert_var(rasl);
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
         break;
 
       case icResetAllocator:
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
         if (m_debugger->handle_function_call(begin, end, callee) == cExit) {
           return cExit;
         }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
         reset_allocator();
         break;
 
@@ -1378,15 +1371,18 @@ JUMP_FROM_SCALE:
           m_error_begin = begin;
           m_error_end = end;
 
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
           if (
             m_diagnostic_config->step_limit
             && m_step_counter >= m_diagnostic_config->step_limit
           ) {
             return cStepLimit;
           }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
           refalrts::Iter function = next(begin);
 
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
           if (
             m_diagnostic_config->start_step_trace
             && m_step_counter >= m_diagnostic_config->start_step_trace
@@ -1414,6 +1410,7 @@ JUMP_FROM_SCALE:
               m_hide_steps = false;
             }
           }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
           FnResult res;
           if (cDataFunction == function->tag) {
@@ -1422,6 +1419,7 @@ JUMP_FROM_SCALE:
           } else if (cDataClosure == function->tag) {
             refalrts::Iter head = function->link_info;
 
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
             if (m_diagnostic_config->enable_profiler) {
               profiler()->add_profile_metric_unwrap(
                 head->next->function_info->name.name
@@ -1431,6 +1429,7 @@ JUMP_FROM_SCALE:
             if (m_debugger->handle_function_call(begin, end, 0) == cExit) {
               return cExit;
             }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
             if (1 == head->number_info) {
               /*
@@ -1471,9 +1470,11 @@ JUMP_FROM_SCALE:
             return res;
           }
 
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
           if (m_diagnostic_config->enable_profiler) {
             profiler()->add_profile_metric_call(callee->name.name);
           }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
           rasl = callee->rasl;
           m_module = callee->module;
@@ -1523,9 +1524,11 @@ JUMP_FROM_SCALE:
 
       case icPerformNative:
         {
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
           if (m_debugger->handle_function_call(begin, end, callee) == cExit) {
             return cExit;
           }
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
           RefalNativeFunction *native_callee =
             static_cast<RefalNativeFunction*>(callee);
           FnResult res = (native_callee->ptr)(this, begin, end);

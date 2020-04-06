@@ -29,7 +29,7 @@ $ENTRY GST {
 Enum {
   e.Items =
     <DelAccumulator
-      <MapReduce
+      <MapAccum
         { s.Num t.Item = <Inc s.Num> (Num s.Num t.Item); }
         0 e.Items
       >
@@ -219,7 +219,7 @@ FilterOverlapped {
 
 FindHeavyTile {
   t.NextTile e.Tiles =
-    <MapReduce
+    <MapAccum
       {
         (s.MaxWeight s.IndexP s.IndexR e.MaxItems)
         (s.Weight s.CurIndexP s.CurIndexR e.Items)

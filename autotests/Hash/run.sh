@@ -13,6 +13,7 @@ run_all_tests() {
     --exesuffix=$(platform_exe_suffix)
     -D$(platform_subdir_lookup $LIBDIR)
     -D$LIBDIR/platform-POSIX
+    -D$LIBDIR/debug
     -D$LIBDIR
     -f-g
     refalrts
@@ -77,7 +78,7 @@ simple_test_ok() {
 }
 
 run_exe() {
-  ./$1 ++diagnostic-config=test-diagnostics.txt > __out.txt
+  ./$1 ++diagnostic+config=test-diagnostics.ini > __out.txt
   if [ $? -gt 0 ]; then
     echo TEST FAILED, SEE __dump.txt
     exit 1

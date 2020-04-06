@@ -1,0 +1,11 @@
+*$REFERENCE foo
+$EXTERN Foo;
+
+*$REFERENCE bar
+$EXTERN Bar;
+
+$ENTRY Go {
+  = <Print <Foo>> : 'foo'
+  = <Print <Bar>> : 'bar'
+  = /* пусто */;
+}

@@ -18,10 +18,6 @@ $ENTRY Y {
 
 $ENTRY MapAccum;
 
-* Function MapReduce is deprecated!!!
-* Use MapAccum instead it.
-$ENTRY MapReduce;
-
 $ENTRY UnBracket;
 
 $ENTRY DelAccumulator;
@@ -214,7 +210,7 @@ $ENTRY Trim-R {
 }
 
 
-$ENTRY Pipe, Seq;
+$ENTRY Pipe;
 
 $ENTRY Sort {
   /* пусто */ = /* пусто */;

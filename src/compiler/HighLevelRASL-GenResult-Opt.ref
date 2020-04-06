@@ -178,7 +178,7 @@ CreateElemParam {
 
 GenPushLink {
   e.MarkedResult
-    = <MapReduce
+    = <MapAccum
         {
           (e.Stack) (TkOpenCall s.Offset) = (e.Stack s.Offset);
           (e.Stack) (TkOpenADT s.Offset) = (e.Stack s.Offset);
@@ -359,7 +359,7 @@ AddOffsets {
       для копии (+1 для s-переменных, +2 для t и e),
       для остальных элементов --- смещение s.ContextOffset.
     */
-    <MapReduce
+    <MapAccum
       {
         s.Offset (Tile e.Tile) =
           s.Offset

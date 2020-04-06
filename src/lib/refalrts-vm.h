@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 #include "refalrts.h"
-#include "refalrts-diagnostic-config.h"
+#include "refalrts-diagnostic-defs.h"
 #include "refalrts-functions.h"
 #include "refalrts-utils.h"
 #include "refalrts-vm-api.h"
@@ -24,8 +24,6 @@ class Domain;
 class Module;
 class Profiler;
 class VM;
-
-typedef Debugger *(*DebuggerFactory)(VM *vm);
 
 class VM : public VMbase {
   struct StateRefalMachine;
@@ -140,18 +138,15 @@ private:
   StateRefalMachine *states_stack_pop();
   void states_stack_push(StateRefalMachine *state);
 
-  DebuggerFactory m_create_debugger;
   Debugger *m_debugger;
-
-  class NullDebugger;
-  static Debugger* create_null_debugger(VM *vm);
-
   Profiler *m_profiler;
   Domain *m_domain;
   Module *m_module;
   DiagnosticConfig *m_diagnostic_config;
   FILE *m_dump_stream;
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   bool m_hide_steps;
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 
   jmp_buf *m_memory_fail;
 
@@ -170,11 +165,18 @@ public:
     m_ret_code = code;
   }
 
-  const char* arg(unsigned int param);
+  char* arg(unsigned int param);
 
   void set_args(int argc, char **argv) {
     m_argc = argc;
     m_argv = argv;
+  }
+
+  void shift_args() {
+    if (m_argc > 0) {
+      --m_argc;
+      ++m_argv;
+    }
   }
 
   unsigned step_counter() const {
@@ -202,13 +204,6 @@ public:
 
   void free_states_stack();
 
-  void set_debugger_factory(DebuggerFactory debugger_factory) {
-    if (! debugger_factory) {
-      debugger_factory = create_null_debugger;
-    }
-    m_create_debugger = debugger_factory;
-  }
-
   void read_counters(double counters[]);
 
   Profiler *profiler() const {
@@ -221,6 +216,10 @@ public:
 
   Module *module() const {
     return m_module;
+  }
+
+  DiagnosticConfig *diagnostic_config() const {
+    return m_diagnostic_config;
   }
 
 public:
@@ -1028,19 +1027,6 @@ public:
   Iter splice_from_freelist(Iter pos);
 };
 
-class Debugger {
-public:
-  virtual ~Debugger() {}
-
-  virtual void set_context(Iter *context) = 0;
-  virtual void set_string_items(const StringItem *items) = 0;
-  virtual void insert_var(const RASLCommand *next) = 0;
-
-  virtual FnResult handle_function_call(
-    Iter begin, Iter end, RefalFunction *callee
-  ) = 0;
-};
-
 inline VM::VM(
   const VMapi *api, Profiler *profiler, Domain *domain,
   DiagnosticConfig *diagnostic_config
@@ -1062,14 +1048,15 @@ inline VM::VM(
   , m_private_state_stack_stack(0)
   , m_open_e_stack("m_open_e_stack")
   , m_context("m_context")
-  , m_create_debugger(create_null_debugger)
   , m_debugger(0)
   , m_profiler(profiler)
   , m_domain(domain)
   , m_module(0)
   , m_diagnostic_config(diagnostic_config)
   , m_dump_stream(0)
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   , m_hide_steps(false)
+#endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
   , m_memory_fail(0)
 {
   /* пусто */
