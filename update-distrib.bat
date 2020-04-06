@@ -4,6 +4,7 @@ echo * * * * * * * * * * * * * * * * * * * * * * * * *
 echo * U P D A T E   V E R S I O N   N U M B E R !!! *
 echo *       file: docs/setup.sh                     *
 echo *       file: src/common/Version.ref            *
+echo *       file: src/interpreter/main.ref          *
 echo * * * * * * * * * * * * * * * * * * * * * * * * *
 
 pushd src
@@ -59,4 +60,5 @@ echo * * * * * * * * * * * * * * * * * * * * * * * * *
 echo * U P D A T E   V E R S I O N   N U M B E R !!! *
 echo *       file: docs/setup.sh                     *
 echo *       file: src/common/Version.ref            *
+echo *       file: src/interpreter/main.ref          *
 echo * * * * * * * * * * * * * * * * * * * * * * * * *
