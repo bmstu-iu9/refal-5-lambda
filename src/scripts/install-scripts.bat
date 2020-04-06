@@ -1,3 +1,5 @@
 @echo off
-copy srefc-srmake.bat ..\..\bin\srefc.bat
-copy srefc-srmake.bat ..\..\bin\srmake.bat
+copy rlc-rlmake.bat ..\..\bin\rlc.bat
+copy rlc-rlmake.bat ..\..\bin\rlmake.bat
+copy rlc-rlmake.bat ..\..\bin\srefc.bat
+copy rlc-rlmake.bat ..\..\bin\srmake.bat

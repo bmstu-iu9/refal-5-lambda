@@ -22,9 +22,9 @@ setlocal
   call :MAKE_SUBDIR rasl-constants make.bat
   call :MAKE_SUBDIR compiler makeself-s.bat
   call :MAKE_SUBDIR lexgen makeself-s.bat
-  call :MAKE_SUBDIR srmake make-s.bat
+  call :MAKE_SUBDIR make make-s.bat
   call :MAKE_SUBDIR lib make.bat
-  call :MAKE_SUBDIR srmake make.bat
+  call :MAKE_SUBDIR make make.bat
   call :MAKE_SUBDIR lexgen makeself.bat
   call :MAKE_SUBDIR compiler makeself.bat
   call :MAKE_SUBDIR interpreter make.bat

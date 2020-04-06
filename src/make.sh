@@ -29,12 +29,12 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     make_subdir rasl-constants make.sh
     make_subdir compiler makeself-s.sh
     make_subdir lexgen makeself-s.sh
-    make_subdir srmake make-s.sh
+    make_subdir make make-s.sh
     (
       export SREFC_FLAGS="$SREFC_FLAGS $SREFC_FLAGS_PLUS"
       make_subdir lib make.sh
     )
-    make_subdir srmake make.sh
+    make_subdir make make.sh
     make_subdir lexgen makeself.sh
     make_subdir compiler makeself.sh
     make_subdir interpreter make.sh

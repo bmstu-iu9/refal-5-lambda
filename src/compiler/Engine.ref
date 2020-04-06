@@ -134,7 +134,7 @@ LoadAST {
     = e.SrcName : e.BaseName '.rsl'
     = e.BaseName '-decompiled.ref' : e.DecompiledName
     = (FileRowCol (1 1) e.DecompiledName) : t.ErrorPos
-    = <System 'rsl-decompiler ' e.SrcName>
+    = <System 'rl-rsl-decompiler ' e.SrcName>
       <ExistFile e.DecompiledName>
     : {
         0 True

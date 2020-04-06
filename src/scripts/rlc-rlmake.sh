@@ -85,17 +85,17 @@ main() {
   fi
 
   PATH=${BINDIR}:$PATH
-  if [[ "$MODE" = "srefc" ]]; then
+  if [[ "$MODE" = "srefc" || "$MODE" = "rlc" ]]; then
     # shellcheck disable=SC2086
-    srefc-core \
+    rlc-core \
       -OC ${SREFC_FLAGS} \
       "--exesuffix=$(platform_exe_suffix)" "--libsuffix=$(platform_lib_suffix)" \
       "${CPP[@]}" --cppflags="$CPPLINE_FLAGS" --chmod-x-command="chmod +x" \
       -d "$LIBDIR/common" --prelude=refal5-builtins.refi \
       ${PREFIX} "${D[@]}" -d "$LIBDIR" "$@"
-  elif [[ "$MODE" = "srmake" ]]; then
+  elif [[ "$MODE" = "srmake" || "$MODE" = "rlmake" ]]; then
     # shellcheck disable=SC2086
-    srmake-core \
+    rlmake-core \
       -s "srefc-core" \
       -X-OC ${SRMAKE_FLAGS} \
       "-X--exesuffix=$(platform_exe_suffix)" "-X--libsuffix=$(platform_lib_suffix)" \
@@ -104,7 +104,7 @@ main() {
       -d "$LIBDIR/common" --prelude=refal5-builtins.refi \
       ${PREFIX} "${D[@]}" -d "$LIBDIR" "${RT[@]}" "$@"
   else
-    echo BAD SCRIPT NAME "$MODE", expected srefc or srmake
+    echo BAD SCRIPT NAME "$MODE", expected rlc or rlmake
   fi
 }
 

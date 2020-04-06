@@ -3,7 +3,7 @@ setlocal
 if exist REFAL1.DAT erase REFAL1.DAT
 call ..\..\..\bin\srmake -R hello.ref
 set RL_MODULE_PATH=
-..\..\..\bin\interpreter --show-cookies=false ./hello argument
+..\..\..\bin\rlgo --show-cookies=false ./hello argument
 endlocal
 
 if not exist REFAL1.DAT (

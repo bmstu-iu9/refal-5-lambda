@@ -2,7 +2,7 @@
 
 rm -f REFAL1.DAT
 ../../../bin/srmake -R hello.ref
-RL_MODULE_PATH="" ../../../bin/interpreter --show-cookies=false ./hello argument
+RL_MODULE_PATH="" ../../../bin/rlgo --show-cookies=false ./hello argument
 if [[ ! -e REFAL1.DAT ]]; then
   echo File REFAL1.DAT is not exit
   exit 1
