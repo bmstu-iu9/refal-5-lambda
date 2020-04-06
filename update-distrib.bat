@@ -15,20 +15,24 @@ endlocal
 popd
 
 pushd distrib
-rd /q /s bin scripts compiler doc docs lexgen lib srmake editors rsl-decompiler
+rd /q /s bin scripts compiler doc docs lexgen lib make editors rsl-decompiler
 erase lib-prefixes\*.ref*
 xcopy /e /y /i ..\build\compiler compiler
+xcopy /e /y /i ..\build\interpreter interpreter
 xcopy /e /y /i ..\build\lexgen lexgen
-xcopy /e /y /i ..\build\srmake srmake
+xcopy /e /y /i ..\build\make make
 xcopy /e /y /i ..\build\rsl-decompiler rsl-decompiler
 md bin
-copy ..\src\scripts\srefc-srmake.* bin\srefc.*
-copy ..\src\scripts\srefc-srmake.* bin\srmake.*
+copy ..\src\scripts\rlc-rlmake.* bin\rlc.*
+copy ..\src\scripts\rlc-rlmake.* bin\rlmake.*
+copy ..\src\scripts\rlc-rlmake.* bin\srefc.*
+copy ..\src\scripts\rlc-rlmake.* bin\srmake.*
 ren bin\*.sh *.
 md scripts
 copy ..\scripts\* scripts
 xcopy /e /y /i ..\lib lib
 erase lib\*.*-prefix
+erase lib\*.dll
 copy ..\src\lib\prefixes\*.ref* lib-prefixes
 md doc
 xcopy /e /i /y ..\doc\examples doc\examples

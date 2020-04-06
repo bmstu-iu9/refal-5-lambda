@@ -10,18 +10,22 @@ echo "* * * * * * * * * * * * * * * * * * * * * * * * *"
 ( cd src && RELEASE=1 ./make.sh )
 
 pushd distrib || exit
-rm -rf bin scripts compiler doc docs lexgen lib srmake editors rsl-decompiler
+rm -rf bin scripts compiler doc docs lexgen lib make editors rsl-decompiler
 rm -f lib-prefixes/*.ref*
-cp -R ../build/{compiler,lexgen,srmake,rsl-decompiler} .
+cp -R ../build/{compiler,lexgen,interpreter,make,rsl-decompiler} .
 mkdir bin
-cp ../src/scripts/srefc-srmake.bat bin/srefc.bat
-cp ../src/scripts/srefc-srmake.sh bin/srefc
-cp ../src/scripts/srefc-srmake.bat bin/srmake.bat
-cp ../src/scripts/srefc-srmake.sh bin/srmake
+cp ../src/scripts/rlc-rlmake.bat bin/rlc.bat
+cp ../src/scripts/rlc-rlmake.sh bin/rlc
+cp ../src/scripts/rlc-rlmake.bat bin/rlmake.bat
+cp ../src/scripts/rlc-rlmake.sh bin/rlmake
+cp ../src/scripts/rlc-rlmake.bat bin/srefc.bat
+cp ../src/scripts/rlc-rlmake.sh bin/srefc
+cp ../src/scripts/rlc-rlmake.bat bin/srmake.bat
+cp ../src/scripts/rlc-rlmake.sh bin/srmake
 mkdir scripts
 cp ../scripts/* scripts
 cp -R ../lib lib
-rm -f lib/*.*-prefix
+rm -f lib/*.*-prefix *.dll *.so
 cp ../src/lib/prefixes/*.ref* lib-prefixes
 mkdir doc
 cp -R ../doc/examples doc/examples
