@@ -1,31 +1,31 @@
 # Preface
 
-REFAL – Recursive Functional Algorithmic Language \[1], is a functional 
-programming language, focused on symbolic calculations, processing and 
-transformation of texts. This language has many dialects, for instance – 
+REFAL – Recursive Functional Algorithmic Language \[1], is a functional
+programming language, focused on symbolic calculations, processing and
+transformation of texts. This language has many dialects, for instance –
 - Refal-5λ.
 
 Note. _There is no established way of writing the name of the REFAL language,
-there is a record both in Cyrillic and in Latin, entirely in the uppercase, 
+there is a record both in Cyrillic and in Latin, entirely in the uppercase,
 with a capital letter or with a small one. In this document, when it comes to
-the family of languages, I will use the record in the uppercase (REFAL). 
-However, when it comes to a specific dialect, I will use the record, which 
+the family of languages, I will use the record in the uppercase (REFAL).
+However, when it comes to a specific dialect, I will use the record, which
 corresponds with the manual of a specific language. If the word “refal”;
 is used as an adjective, it will be written with a small letter, e.g._
 refal-expression, refal-program.
 
-_This implementation provides two similar dialects:_ Refal-5λ _and_ Simple 
-Refal. _When referring to them, it is highly recommended to use the following 
-record: Each word should start with a capital letter; the letter 
+_This implementation provides two similar dialects:_ Refal-5λ _and_ Simple
+Refal. _When referring to them, it is highly recommended to use the following
+record: Each word should start with a capital letter; the letter
 “lambda” should be Greek. In English, these names are usually recorded
 as_ Refal-5λ, Simple Refal. _If the typographical capabilities do not allow
 the use of the “λ” symbol, it is recommended to use the_ Рефал-5-лямбда,
 _or_ Refal-5-lambda.
- 
+
 _Hereinafter, the suffix “λ-5” will often be omitted. Instead of “Refal-5λ”,
 it will be indicated by “Refal”_
 
-Initially, Simple Refal language was a research project and was developed by 
+Initially, Simple Refal language was a research project and was developed by
 Alexander Konovalov aka Mazdaywik \[pronounced as Mazdaischik]. The author
 wanted to understand how the REFAL code is compiled in the imperative code. The
 goal was to write a minimal but algorithmically complete compiler dialect of
@@ -34,14 +34,14 @@ more important than the convenience of programming in the language. Despite
 this limitation (or, perhaps, due to it) the language turned out to be quite
 coherent and consistent.
 
-The compiler was simple enough, so it has been used as a testing ground for 
+The compiler was simple enough, so it has been used as a testing ground for
 several course papers and final qualification papers of the bachelor at Bauman
 Moscow State Technical University in the IU9 “Computer science and technologies”
 department.
 
 The abilities investigated through the compiler are the following:
 
-* interpreted code generation (course paper by Vadim Sukharev, spring 2009; 
+* interpreted code generation (course paper by Vadim Sukharev, spring 2009;
   course paper by Igor Drogunov, autumn 2015),
 * compilation to C# (course paper by Natalia Konnova (Bykadorova), spring 2010
   – not in the main branch, tag 005),
@@ -58,17 +58,17 @@ The abilities investigated through the compiler are the following:
   2016),
 * the syntax of assignments (course paper by Damir Gabbasov, autumn 2016).
 
-During its development, the compiler departed slightly from its original 
+During its development, the compiler departed slightly from its original
 simplicity. First of all, it was used as a back-end for Module Refal, so there
 were added the following features: identifiers, abstract data types and static
-boxes. Then we used the compiler for implementation of nested functions 
+boxes. Then we used the compiler for implementation of nested functions
 research. As a result, the language gained a new convenient tool.
 
-Gradually, the author (Mazdaywik) realized that it was very inconvenient to 
-program in the language because of the predeclarations necessity. Moreover, 
-there was no use in a separate incompatible dialect. Considering that the 
-language was very close to the classical REFAL-5 dialect, it was decided to 
-convert it into a REFAL-5 dialect compiler, which would have the main features 
+Gradually, the author (Mazdaywik) realized that it was very inconvenient to
+program in the language because of the predeclarations necessity. Moreover,
+there was no use in a separate incompatible dialect. Considering that the
+language was very close to the classical REFAL-5 dialect, it was decided to
+convert it into a REFAL-5 dialect compiler, which would have the main features
 of the Simple Refal (higher-order functions and nested functions). This dialect
 was called Refal-5λ.
 

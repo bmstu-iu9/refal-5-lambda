@@ -18,7 +18,7 @@ syntax). But these listed expressive means exist in the language.
 
 # Hello, World! Program
 
-In the [previous chapter](2-intro.en.md), we've managed to compile and to run 
+In the [previous chapter](2-intro.en.md), we've managed to compile and to run
 a program [`hello.ref`](hello.ref), which printed out a string “Hello, World!”.
 Let us learn how to read and understand its source code.
 
@@ -106,7 +106,7 @@ The function Prout computes “emptiness” with any argument. However, its
 implementation has some side effects. It prints an argument. That
 is why it is called.
 
-Almost all Refal programs are written actually for these side effects. After calculating 
+Almost all Refal programs are written actually for these side effects. After calculating
 the  `Go` (or `GO`) function the result is discarded and the program is
 completed. The user sees only what was displayed on the screen by the function
 `Prout`, recorded to files or transferred “out” of the computing process by
@@ -114,7 +114,7 @@ other ways.
 
 Note. _There are exceptions. On the one hand, these are automated tests
 (autotests) – programs that launch the testing function, check its result and
-are finalized. If this verification is successful the program silently 
+are finalized. If this verification is successful the program silently
 terminates. In another case the program crashes with an error. The tests run
 environment can distinguish between these two cases and inform the user about
 failed launches. Another example is research in the field of automatic program
@@ -165,7 +165,7 @@ function call is written with angular brackets. The empty value is written as
 an empty space. That means that the Refal program execution is the same thing
 as the function `<Go>` or `<Go /*empty*/>` call. In the first case, we haven’t
 written anything (we have attached one to the other) between the function name
-`Go` and the closing brace `>`. In the second case, we have stuck a comment for 
+`Go` and the closing brace `>`. In the second case, we have stuck a comment for
 illustration. A function call with an empty argument is usually written without
 a comment inside.
 
@@ -949,8 +949,8 @@ and vice versa for uniformity.
 > This section has alternative translations **one**, [two](3-basics.en-alt.md).
 
 We have referred earlier to the functions in the right part of a sentence which are
-calculated somehow after a substitution of variables. Now it's time to clarify exactly 
-how, because without this it is impossible to write effective programs and debug programs 
+calculated somehow after a substitution of variables. Now it's time to clarify exactly
+how, because without this it is impossible to write effective programs and debug programs
 in Refal-5λ.
 
 It is said that the Refal program is executed by the _abstract refal-machine_ —
@@ -958,15 +958,15 @@ the imaginary calculating machine that may understand the Refal syntax. This
 machine has two areas of memory: program field, storing all the definitions of
 functions of the program, and a view field, storing the current status of
 computation. The status of computation is described as the active expression —
-the Refal expression which contains _activation brackets_, but at the same time 
+the Refal expression which contains _activation brackets_, but at the same time
 cannot contain variables.
 
 Refal-maсhine executes the program step-by-step. Each step is the execution of
 the following sequence of actions.
 
-1. The Refal machine finds the leftmost pair of activation brackets in the field 
+1. The Refal machine finds the leftmost pair of activation brackets in the field
     of view, one that does not include other angle brackets in this call.This section
-    of a view field is called the primary active sub-expression. 
+    of a view field is called the primary active sub-expression.
 2. The Refal-maсhine observes what is on the right of the left activation bracket :
    there should be the function name. If it is not there (language allows to
    write such a program), then the refal-machine stops with an error
@@ -1013,7 +1013,7 @@ Notes.
 
 It is possible to make two important conclusions from this algorithm.
 
-Firstly, the primary active subexpression selects the leftmost pair of 
+Firstly, the primary active subexpression selects the leftmost pair of
 activation brackets that does not contain any other activation brackets.
 It follows that the Refal – is an _applicative language,_ and an order of function
 computations is accurately defined: from left to right. I.e. if there are
@@ -1030,13 +1030,13 @@ it requires the overhead of maintaining the calculation context – points
 where process of execution has to return after the completion of a tail call.
 And the memory for this preservation is given out from limited area – a system
 stack. The programmer, as a rule, can’t control the size of a system stack,
-and at its overflow the program abnormally comes to the end. Therefore, in such 
-languages, you should not use a recursion to implement cyclically repeated 
+and at its overflow the program abnormally comes to the end. Therefore, in such
+languages, you should not use a recursion to implement cyclically repeated
 actions (especially since there are iterative operators for this in imperative
-languages). 
+languages).
 
 The Refal functions do not need to keep a calculation context to return a
-value as the function that performs a recursive call is terminated before the next 
+value as the function that performs a recursive call is terminated before the next
 recursive call. And it means that if the recursive call in the right part of
 the sentence is executed the last, incomplete calculations won’t collect in the
 view field. I.e. In fact there won’t be observed the recursion (the enclosed
@@ -1273,18 +1273,18 @@ strict categorization.
 * Refal expression is called an _object expression_ that can contain only symbols and
   round brackets. Accordingly, terms that make up an object expression are
   called an _object terms._ Function arguments can be only an object expression.
-* An expression that assembled from symbols, round and angled brackets is called an 
+* An expression that assembled from symbols, round and angled brackets is called an
   _active expression_ or a _ground expression._ The content of the view field can
   only be an active expression.
-* An expression made up of symbols, structural brackets , and variables is called a 
+* An expression made up of symbols, structural brackets , and variables is called a
   _pattern expression_ or _pattern._ The left sentence part is a pattern
   expression.
 * An expression made up of symbols, round and angled brackets,
-  variables is called a _result expression_ or _result._ The right parts of the 
+  variables is called a _result expression_ or _result._ The right parts of the
   sentence are expressions of the result.
 
 Note: _the word ‘pattern’ is often used as a synonym for ‘left part’, and ‘the
-result’ is often used as a synonym for the right part. This is also the correct 
+result’ is often used as a synonym for the right part. This is also the correct
 terminology, and the meaning of the word is usually clear from the context._
 
 All four types of expressions can be imaged as a figure:
@@ -1299,7 +1299,7 @@ All four types of expressions can be imaged as a figure:
     Symbols,round       → → → → → → → → →   symbols, round and angular
   and angular brackets                         brackets, variables
 
-Object and active expressions exist only during the execution of a program such as 
+Object and active expressions exist only during the execution of a program such as
 function arguments and the content of the view field (the content of static boxes
 and stack could be added we will consider later.) While pattern and
 result expressions exist only in source code as left and right parts of
