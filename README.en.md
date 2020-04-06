@@ -43,7 +43,7 @@ first one has priority.
       static box can be placed in the local scope which is not available from
       the outside (by the way, the bank is implemented upon such a static box
       in the `Library`).
-    * `SRMake` utility that allows monitoring dependency between the source
+    * `rlmake` utility that allows monitoring dependency between the source
       codes.
     * Target file compilation – executable system file. No other interpreter is
       needed for running.
@@ -455,7 +455,7 @@ Download [latest version][6] of Installer and run it.
    perform a `bootstrap.bat --no-tests`.
 4. Add appeared directory `bin` to the directory list an environment variables
    `PATH` and `RL_MODULE_PATH`.
-5. You can use `srmake` or `srefc` commands compiling programs on Simple Refal.
+5. You can use `rlmake` or `rlc` commands compiling programs on Simple Refal.
    See section 5 [user guide][7] for compiler using.
 
 ### Installation on UNIX-like (Linux, macOS, Cygwin, MinGW)
@@ -471,7 +471,7 @@ configurations file by default.
    if necessary restart the build.
 3. Add appeared directory `bin` to the directory list an environment variables
    `PATH` and `RL_MODULE_PATH`.
-4. You can use `srmake` or `srefc` commands compiling programs on simple Refal.
+4. You can use `rlmake` or `rlc` commands compiling programs on simple Refal.
    See section 5 [user guide][7] for compiler using.
 
 ## License

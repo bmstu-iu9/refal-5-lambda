@@ -206,7 +206,7 @@ $ENTRY ParseCommandLine {
             (t.Config e.Errors) (Help s.Num) = <PrintHelp> (t.Config e.Errors);
 
             (t.Config e.Errors) (Version s.Num)
-              = <PrintVersion 'Srefc'> (t.Config e.Errors);
+              = <PrintVersion 'rlc'> (t.Config e.Errors);
 
             (t.Config e.Errors) (KeepRasls s.Num)
               = <Update t.Config (e.Errors) &Config-SetKeepRasls s.Num True>;
@@ -320,8 +320,8 @@ Update {
 
 PrintHelp {
   = <Prout
-'srefc-core flags... filenames...\n'
-'srefc-core @flag-list-file.txt\n'
+'rlc-core flags... filenames...\n'
+'rlc-core @flag-list-file.txt\n'
 '\n'
 '-c, --cpp-command, --cpp-command-exe command-line\n'
 '        C++ command line prefix for building executable module\n'

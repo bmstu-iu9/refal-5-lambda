@@ -50,7 +50,9 @@ $ENTRY ParseCommandLine {
           (Reference Required 'r' ('reference'))
           (RuntimeFolder Required 'D' ('runtime-dir') ('runtime-directory'))
           (SearchFolder Required 'd' ('dir') ('directory'))
-          (SrefCompiler Required 's' ('sref-command') ('srefc-command'))
+          (SrefCompiler Required
+             's' ('sref-command') ('srefc-command') ('rlc-command')
+          )
           (SrefCompilerOption Required 'X' ('thru') ('through'))
           (TargetFileName Required 'o' ('target-file'))
           (TargetMode-Exe None 'x' ('makeexe'))
@@ -165,7 +167,7 @@ $ENTRY ParseCommandLine {
             (t.Config e.Errors) (Help s.Num) = <PrintHelp> (t.Config e.Errors);
 
             (t.Config e.Errors) (Version s.Num)
-              = <PrintVersion 'SRMake'> (t.Config e.Errors);
+              = <PrintVersion 'rlmake'> (t.Config e.Errors);
 
             (t.Config e.Errors) (KeepRasls s.Num)
               = <Update t.Config (e.Errors) &Config-SetKeepRasls s.Num True>;
@@ -274,7 +276,7 @@ Update {
 
 $ENTRY PrintHelp {
   = <Prout
-'  srmake flags... MainFileName[.ref]\n'
+'  rlmake flags... MainFileName[.ref]\n'
 '\n'
 'flags:\n'
 '-c, --cpp-command, --cpp-command-exe command-line\n'
@@ -289,10 +291,10 @@ $ENTRY PrintHelp {
 '        Add the directory to search list and include list for C++ compiler\n'
 '-d, --dir, --directory dir\n'
 '        Add the directory to search list\n'
-'-s, --sref-command, --srefc-command command-line\n'
-'        srefc command line prefix for run Refal-5-Lambda compiler\n'
-'-X, --thru, --through srefc-command\n'
-'        Additional flags for srefc compiler, don\'t quoted in command line\n'
+'-s, --rlc-command, --sref-command, --srefc-command command-line\n'
+'        rlc command line prefix for run Refal-5-Lambda compiler\n'
+'-X, --thru, --through rlc-command\n'
+'        Additional flags for rlc compiler, don\'t quoted in command line\n'
 '-o, --target-file target-file-name\n'
 '        Name of target file\n'
 '-x, --makeexe\n'

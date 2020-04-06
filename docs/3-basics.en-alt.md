@@ -346,12 +346,12 @@ versions.
 
 For compilation and starting the program on Windows enter:
 
-    srefc pushkin.ref
+    rlc pushkin.ref
     pushkin.exe
 
 On  Linux:
 
-    srefc pushkin.ref
+    rlc pushkin.ref
     ./pushkin
 
 The program should print the following:

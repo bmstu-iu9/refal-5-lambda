@@ -146,7 +146,7 @@ RunSrefCompiler {
         0 = /* пусто */;
 
         e.RetCode
-          = <Prout 'ERROR: srefc-core returned code ' <Symb e.RetCode>>
+          = <Prout 'ERROR: rlc-core returned code ' <Symb e.RetCode>>
             <Exit 1>;
       };
 }

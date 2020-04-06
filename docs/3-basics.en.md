@@ -268,7 +268,7 @@ Functions `BinAdd`, `BinSub`, `IsEqual` and `Go` can be put in one file (let's
 call it [`binmath-1.ref`](binmath-1.ref)) and compiled with the following
 command:
 
-    srefc binmath-1.ref
+    rlc binmath-1.ref
 
 then you get an executable file `binmath-1.exe` (or `binmath-1` on unix-like)
 that will print on startup
@@ -642,12 +642,12 @@ versions._
 
 To compile and run the program for Windows, type:
 
-    srefc pushkin.ref
+    rlc pushkin.ref
     pushkin.exe
 
 For Linux:
 
-    srefc pushkin.ref
+    rlc pushkin.ref
     ./pushkin
 
 The program should print the following:

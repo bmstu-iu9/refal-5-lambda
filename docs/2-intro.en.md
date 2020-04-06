@@ -99,7 +99,7 @@ from your computer it is possible either to use “Refal-5-lambda” →
 depending on Windows OS version.
 
 Straight after installation it is possible to start the command line and to use
-the commands `srefc`, `srefc-core`, `srmake`, `srmake-core` in it in any folder.
+the commands `rlc`, `rlc-core`, `rlmake`, `rlmake-core` in it in any folder.
 
 ### “Half-compiled” archive unwinding (Windows, Linux, macOS)
 
@@ -199,7 +199,7 @@ Open your favorite text editor and write the following text in it:
 and save it with the name `hello.ref`. After that open command line in the folder
 with this file and write the following command:
 
-    srefc hello.ref
+    rlc hello.ref
 
 In the folder files `hello.rasl` and `hello.exe` should appear (on unix-like
 systems it will be named just `hello` without extension, but they will have `+x`

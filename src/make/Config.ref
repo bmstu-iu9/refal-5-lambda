@@ -14,7 +14,7 @@ $ENTRY Config-Create {
         (CppCompilerExe /* пусто */)
         (CppCompilerLib /* пусто */)
         (Folders /* пусто */)
-        (SrefCompiler ('srefc-core') /* флаги */)
+        (SrefCompiler ('rlc-core') /* флаги */)
         (TargetFileName DefaultTarget)
         (SourceFile NotSet)
         (Prefix NotSet)

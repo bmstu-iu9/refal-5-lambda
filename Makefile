@@ -32,11 +32,11 @@ lexgen-makeself-win:
 lexgen-makeself-s-win:
 	cd src\lexgen && makeself-s.bat
 
-srmake-makeself-win:
-	cd src\srmake && make.bat
+make-makeself-win:
+	cd src\make && make.bat
 
-srmake-makeself-s-win:
-	cd src\srmake && make-s.bat
+make-makeself-s-win:
+	cd src\make && make-s.bat
 
 
 all-posix:
@@ -57,8 +57,8 @@ lexgen-makeself-posix:
 lexgen-makeself-s-posix:
 	cd src/lexgen && ./makeself-s.sh
 
-srmake-makeself-posix:
-	cd src/srmake && ./make.sh
+make-makeself-posix:
+	cd src/make && ./make.sh
 
-srmake-makeself-s-posix:
-	cd src/srmake && ./make-s.sh
+make-makeself-s-posix:
+	cd src/make && ./make-s.sh
