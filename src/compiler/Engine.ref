@@ -343,7 +343,7 @@ ResolveIncludes-CheckEqualAST {
 
 GlueErrorListsAndASTs {
   (e.SrcName) e.Units
-    = <MapReduce
+    = <MapAccum
         {
           t.CommonErrorList (t.ErrorList (e.UnitName) e.AST)
             = <EL-Concat t.CommonErrorList t.ErrorList>

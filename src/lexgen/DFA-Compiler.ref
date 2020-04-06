@@ -1,5 +1,5 @@
 *$FROM LibraryEx
-$EXTERN Fetch, Pipe, MapReduce, Map, Reduce;
+$EXTERN Fetch, Pipe, MapAccum, Map, Reduce;
 
 *$FROM Error
 $EXTERN ErrorAt, WarningAt;
@@ -297,7 +297,7 @@ NormalizeRule {
     <Fetch
       e.Alternatives
       <Pipe
-        (&MapReduce
+        (&MapAccum
           &NormalizeAlternative
           (EOF-NotCatched)
         )

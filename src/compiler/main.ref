@@ -322,7 +322,7 @@ RenameLocations {
 RenameLocations-Aux {
   t.Config s.InitNumber e.Locations
     = <Config-GetOverwriteExistRasls t.Config> : s.Overwrite
-    = <MapReduce
+    = <MapAccum
         {
           s.Num (s.Pos Source (s.Dialect e.Source) e.Output '.rasl')
             , s.Overwrite : False

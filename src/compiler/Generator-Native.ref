@@ -10,7 +10,7 @@ $EXTERN EscapeChar, EscapeString;
 $ENTRY GenProgram-Native {
   (e.SourceFileName) (e.TargetFileName) (e.NativeRASL)
 
-    = <MapReduce
+    = <MapAccum
         &GenCommand-Native
         (/* отступ */)
         e.NativeRASL

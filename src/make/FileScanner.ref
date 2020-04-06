@@ -1,5 +1,5 @@
 *$FROM LibraryEx
-$EXTERN Map, LoadFile, MapReduce, Inc, Trim;
+$EXTERN Map, LoadFile, MapAccum, Inc, Trim;
 
 *$FROM Config
 $EXTERN
@@ -97,7 +97,7 @@ FindImports-Aux {
       }
     : e.FileContents
     = <PreludePseudoIncludeLine t.OriginConfig s.Dialect> : e.PseudoLine
-    = <MapReduce
+    = <MapAccum
         {
           (t.Config s.LineNum) (e.CommentPrefix 'FROM ' e.Name)
             = (t.Config <Inc s.LineNum>)

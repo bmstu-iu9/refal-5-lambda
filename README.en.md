@@ -34,7 +34,7 @@ first one has priority.
     * Extensive enough standard library (in comparison with classic Refal-5
       library). Alongside with all the Refal-5 capabilities `Library` provides
       the binary input/output, LibraryEx – handy utility functions and higher
-      order functions: `Map`, `Reduce`, hybrid `MapReduce` which significantly
+      order functions: `Map`, `Reduce`, hybrid `MapAccum` which significantly
       simplify the looping constructs writing.
     * Encapsulation:  named brackets support – abstract data types. The content
       of such brackets is available only in that compilation unit where they

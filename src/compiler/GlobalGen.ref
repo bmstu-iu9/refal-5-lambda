@@ -230,7 +230,7 @@ DoLocalGen {
 /* Возвращает первый элемент с максимальным ключом */
 GlobalGenFromLocalGen {
   t.Sentence e.OtherSentences
-    = <MapReduce
+    = <MapAccum
         {
           (s.NumAcc e.SentenceAcc) (s.NumNext e.SentenceNext)
             = <Max s.NumAcc s.NumNext>

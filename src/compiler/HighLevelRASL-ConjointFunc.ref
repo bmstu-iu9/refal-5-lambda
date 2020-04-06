@@ -180,7 +180,7 @@ ComposeVars {
 /* Добавляет уникальные индексы */
 EnumerateVarsRec {
   s.NextNumber e.Expr
-    = <MapReduce
+    = <MapAccum
         {
           s.Next (TkVariable s.Type)
             = <Inc s.Next> (TkVariable s.Type 'new' s.Next);
@@ -201,7 +201,7 @@ EnumerateVarsRec {
 
 EnumerateVars-Subst {
   s.StartNumber s.Depth e.Substitute
-    = <MapReduce
+    = <MapAccum
         {
           s.NextNumber (e.Value ':' (e.Var))
             = <EnumerateVarsRec s.NextNumber e.Value> : s.NextNumber^ e.Value^

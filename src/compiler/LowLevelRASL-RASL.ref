@@ -17,14 +17,14 @@ $INCLUDE "LibraryEx";
 $ENTRY LowLevelRASL-RASL {
   s.DebugInfo s.Hash1 s.Hash2 (t.FuncTable t.IdentTable) e.Items
 
-    = <MapReduce
+    = <MapAccum
         &ClassifyItems
         (/* Области видимости функций */)
         e.Items
       >
     : (e.FuncScopeClass) e.Definitions
 
-    = <MapReduce (&PrepareFunctionsRASL s.DebugInfo) 0 e.Definitions>
+    = <MapAccum (&PrepareFunctionsRASL s.DebugInfo) 0 e.Definitions>
     : s.MaxLabel e.Definitions^
 
     = (
@@ -130,7 +130,7 @@ RemoveDebugInfoRec {
 
 ConvertInterpretCommands {
   s.NextLabel e.Commands
-    = <MapReduce &ConvertOneInterpretCommand s.NextLabel e.Commands>;
+    = <MapAccum &ConvertOneInterpretCommand s.NextLabel e.Commands>;
 }
 
 ConvertOneInterpretCommand-Simple {
@@ -180,7 +180,7 @@ ConvertOneInterpretCommand {
 
 AddBacktrackStackAllocationCommand {
   e.Commands
-    = <MapReduce
+    = <MapAccum
         {
           s.Depth (CmdEStart e.VarInfo) =
             <Inc s.Depth> (CmdEStart e.VarInfo);
@@ -235,7 +235,7 @@ PrepareCommonRASL {
 
 GlueFunctionRASLs {
   e.Definitions
-    = <MapReduce
+    = <MapAccum
         {
           (e.All-RASL-Commands)
           (CmdInterpretFuncDescr
@@ -254,7 +254,7 @@ GlueFunctionRASLs {
 
 SetFunctionsScopeClass {
   (e.FuncScopeClass) e.Functions
-    = <MapReduce
+    = <MapAccum
         {
           (e.Decls-B (s.ScopeClass e.FuncName) e.Decls-E)
           (s.FuncId e.FuncName)

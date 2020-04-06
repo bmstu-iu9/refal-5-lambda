@@ -1,5 +1,5 @@
 *$FROM LibraryEx
-$EXTERN Fetch, Pipe, MapReduce, Map;
+$EXTERN Fetch, Pipe, MapAccum, Map;
 
 *$FROM GetOpt
 $EXTERN GetOpt;
@@ -83,7 +83,7 @@ $ENTRY ParseCommandLine {
           (e.Errors) e.Options
             = (<Config-Create> e.Errors) e.Options;
         }
-        (&MapReduce
+        (&MapAccum
           {
             (t.Config e.Errors) (CppCompilerExe s.Num e.CppCompilerExe)
               = <Update

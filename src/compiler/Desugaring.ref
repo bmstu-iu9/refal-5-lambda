@@ -267,7 +267,7 @@ EnumerateVars-Assignments {
 
 EnumerateVars-Expr {
   s.Depth (e.OriginScopeVars) e.Expr =
-    <MapReduce
+    <MapAccum
       {
         (e.ScopeVars-B (s.Mode e.Index s.Depth^) e.ScopeVars-E)
         (TkVariable s.Mode e.Index) =
@@ -353,7 +353,7 @@ NameNestedBody {
   (e.MainName) Sentences e.Sentences
     = Sentences
       <DelAccumulator
-        <MapReduce
+        <MapAccum
           {
             s.SentenceNumber ((e.Pattern) e.Assigns (e.Result) (e.Blocks^))
               = e.MainName '$' s.SentenceNumber: e.MainName^
@@ -375,7 +375,7 @@ NameNestedBody {
 
 NameNestedBlocks {
   (e.MainName) e.Blocks
-    = <MapReduce
+    = <MapAccum
         {
           s.BlockNumber (e.Body)
             = e.MainName ':' s.BlockNumber : e.MainName^
@@ -391,7 +391,7 @@ NameNestedBlocks {
 NameNestedAssigns {
   (e.MainName) e.Assigns
     = <DelAccumulator
-        <MapReduce
+        <MapAccum
           {
             s.AssignId (s.ChainType (e.Result) (e.Blocks) (e.Pattern))
               = <ChainTypeMarker s.ChainType> : s.Marker
@@ -422,7 +422,7 @@ NameNestedResult {
 
 NameNestedResultRec {
   s.StartNumber (e.MainName) e.Result
-    = <MapReduce
+    = <MapAccum
         (&NameNestedResultRec-Term e.MainName)
         s.StartNumber e.Result
       >;
@@ -595,7 +595,7 @@ ExtractNested {
 
 ExtractNestedRec {
   s.MarkupContext (e.ScopeVars) Sentences e.Sentences
-    = <MapReduce
+    = <MapAccum
         (&ExtractNested-Sentence s.MarkupContext e.ScopeVars)
         ((/* вложенные функции */) (/* заимствованные переменные */))
         e.Sentences
@@ -665,7 +665,7 @@ ExtractNested-Conditions {
 
 ExtractNested-Pattern {
   (e.ScopeVars) (e.BorrowedVars) e.Pattern =
-    <MapReduce
+    <MapAccum
       (&UpdateBorrowedVars e.ScopeVars)
       (e.BorrowedVars)
       <Uniq
@@ -711,7 +711,7 @@ UpdateBorrowedVars {
 ExtractNested-Result {
   s.MarkupContext
   (e.OriginBorrowedVars) (e.ScopeVars) (e.LocalVars) e.OriginResult
-    = <MapReduce
+    = <MapAccum
         (&ExtractNested-Result-Term s.MarkupContext (e.ScopeVars) (e.LocalVars))
         ((/* nested funcs */) (e.OriginBorrowedVars)) e.OriginResult
       >
