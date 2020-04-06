@@ -930,7 +930,13 @@ void refalrts::Domain::ModuleStorage::gc(
   m_modules.erase(end, m_modules.end());
 }
 
-refalrts::Domain::Domain(refalrts::DiagnosticConfig *diagnostic_config)
+refalrts::Domain::Domain(
+#if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
+  refalrts::DiagnosticConfig *diagnostic_config
+#else
+  refalrts::DiagnosticConfig * /*diagnostic_config*/
+#endif /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
+)
   : m_idents_table()
   , m_storage(this)
   , m_dangerous(false)
@@ -945,11 +951,7 @@ refalrts::Domain::Domain(refalrts::DiagnosticConfig *diagnostic_config)
   , m_swap_begin(0, &m_swap_end)
   , m_swap_end(&m_swap_begin, 0)
 {
-#if ! REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   /* пусто */
-#else
-  (void) diagnostic_config;
-#endif /* ! REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 }
 
 bool refalrts::Domain::load_native_module(
