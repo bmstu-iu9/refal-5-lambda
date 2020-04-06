@@ -111,15 +111,6 @@ DoMapAccum-Aux {
 $SPEC DoMapAccum-Aux t.FUNC (e.scanned) (e.acc-and-step-scanned) e.items;
 
 
-* Function MapReduce is deprecated!!!
-* Use MapAccum instead it.
-MapReduce {
-  t.Fn t.Acc e.Tail = <MapAccum t.Fn t.Acc e.Tail>;
-}
-
-$INLINE MapReduce;
-
-
 UnBracket {
   (e.Expr) = e.Expr;
 }
