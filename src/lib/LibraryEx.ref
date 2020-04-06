@@ -214,7 +214,7 @@ $ENTRY Trim-R {
 }
 
 
-$ENTRY Pipe, Seq;
+$ENTRY Pipe;
 
 $ENTRY Sort {
   /* пусто */ = /* пусто */;

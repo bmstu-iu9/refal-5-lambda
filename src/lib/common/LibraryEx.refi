@@ -158,8 +158,6 @@ $INLINE Inc, Dec;
   <Pipe s.F1 s.F2 ... s.Fn> == s.Compose
 
   <s.Compose e.X> == <s.Fn ... <s.F2 <s.F1 e.X>>...>
-
-  Seq (deprecated) is synonim for Pipe
 */
 Pipe {
   t.Func = t.Func;
@@ -172,12 +170,7 @@ Pipe {
   /* пусто */ = { e.Arg = e.Arg; };
 }
 
-/**
-  Seq is deprecated, use Pipe
-*/
-Seq { e.Funcs = <Pipe e.Funcs>; }
-
-$INLINE Pipe, Seq;
+$INLINE Pipe;
 
 
 *$FROM LibraryEx
