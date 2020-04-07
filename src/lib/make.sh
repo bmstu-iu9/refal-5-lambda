@@ -40,7 +40,7 @@ compile_scratch() {
 
   find "$SCRATCHDIR" -name '*.cpp' | while read -r cpp; do
     RASL="${cpp%.cpp}.rasl"
-    [ -e "$RASL" ] || : > "${cpp%.cpp}.rasl"
+    [[ -e "$RASL" ]] || : > "${cpp%.cpp}.rasl"
   done
 }
 

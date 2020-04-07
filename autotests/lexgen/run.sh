@@ -5,11 +5,11 @@ source ../../scripts/platform-specific.sh
 LIBDIR=../../src/lib
 
 prepare_prefix() {
-  if [ ! -e _test_prefix.exe-prefix ]; then
+  if [[ ! -e _test_prefix.exe-prefix ]]; then
     echo Prepare common prefix...
     ../../bin/srefc-core -o _test_prefix.exe-prefix \
       "${COMMON_SRFLAGS[@]}" $SRFLAGS_NAT 2>__error.txt
-      if [ $? -ge 100 ] || [ ! -e _test_prefix.exe-prefix ]; then
+      if [[ $? -ge 100 ]] || [[ ! -e _test_prefix.exe-prefix ]]; then
         echo "CAN'T CREATE COMMON PREFIX, SEE __error.txt"
         exit 1
       fi
@@ -24,33 +24,33 @@ run_test_aux.LEXGEN() {
   SREF=$1
 
   ../../bin/lexgen --from=$SREF --to=_lexgen-out.sref 2>__error.txt
-  if [ $? -ge 100 ]; then
+  if [[ $? -ge 100 ]]; then
     echo LEXGEN ON $SREF FAILS, SEE __error.txt
     exit 1
   fi
   rm __error.txt
-  if [ ! -e _lexgen-out.sref ]; then
+  if [[ ! -e _lexgen-out.sref ]]; then
     echo LEXGEN FAILED
     exit 1
   fi
 
   ../../bin/srefc-core _lexgen-out.sref -o _lexgen-out$(platform_exe_suffix) \
     "${COMMON_SRFLAGS[@]}" $SRFLAGS_PREF --keep-rasls 2>__error.txt
-  if [ $? -ge 100 ] || [ ! -e _lexgen-out$(platform_exe_suffix) ]; then
+  if [[ $? -ge 100 ]] || [[ ! -e _lexgen-out$(platform_exe_suffix) ]]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit 1
   fi
   rm __error.txt
 
   ./_lexgen-out ++diagnostic+config=test-diagnostics.ini
-  if [ $? -gt 0 ]; then
+  if [[ $? -gt 0 ]]; then
     echo TEST FAILED, SEE __dump.txt
     exit 1
   fi
 
   rm _lexgen-out*
-  [ -e __dump.txt ] && rm __dump.txt
-  [ -e __log.txt ] && rm __log.txt
+  [[ -e __dump.txt ]] && rm __dump.txt
+  [[ -e __log.txt ]] && rm __log.txt
 
   echo
 }
@@ -60,12 +60,12 @@ run_test_aux.BAD-SYNTAX-LEXGEN() {
   SREF=$1
 
   ../../bin/lexgen --from=$SREF --to=_lexgen-out.sref 2>__error.txt
-  if [ $? -ge 100 ]; then
+  if [[ $? -ge 100 ]]; then
     echo LEXGEN ON $SREF FAILS, SEE __error.txt
     exit 1
   fi
   rm __error.txt
-  if [ -e _lexgen-out.sref ]; then
+  if [[ -e _lexgen-out.sref ]]; then
     echo LEXGEN SUCCESSED, BUT EXPECTED SYNTAX ERROR
     exit 1
   fi
@@ -105,13 +105,13 @@ run_test() {
     refalrts-platform-specific
   "
   SREF=$1
-  if [ -e "$SREF" ]; then
+  if [[ -e "$SREF" ]]; then
     SUFFIX=`echo ${SREF%.*} | sed 's/[^.]*\(\.[^.]*\)*/\1/'`
     run_test_aux$SUFFIX $1
   fi
 }
 
-if [ -z "$1" ]; then
+if [[ -z "$1" ]]; then
   for s in *.sref *.ref; do
     run_test $s
   done
@@ -121,4 +121,4 @@ else
   done
 fi
 
-[ -e _test_prefix.exe-prefix ] && rm _test_prefix.exe-prefix
+[[ -e _test_prefix.exe-prefix ]] && rm _test_prefix.exe-prefix
