@@ -1,8 +1,8 @@
 #!/bin/bash
 
 rm -f *.rasl-module *.rasl caller
-../../../bin/srefc --keep-rasls -OC -R module-A.sref
-../../../bin/srefc --keep-rasls -OC -R module-B.sref
+../../../bin/rlc --keep-rasls -OC -R module-A.sref
+../../../bin/rlc --keep-rasls -OC -R module-B.sref
 ../../../bin/rlmake --keep-rasls -X-OC -X--markup-context caller.ref
 ./caller
 if [[ $? -gt 0 ]]; then

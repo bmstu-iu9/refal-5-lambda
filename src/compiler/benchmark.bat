@@ -26,12 +26,12 @@ echo --dir=../lib/common>>input.prj
 echo --prelude=refal5-builtins.refi>>input.prj
 
 echo.
-echo Run "..\..\bin\srefc-core -C %BENCH_FLAGS% *.ref *.sref" %TIMES% times...
+echo Run "..\..\bin\rlc-core -C %BENCH_FLAGS% *.ref *.sref" %TIMES% times...
 
 for /L %%i in (1, 1, %TIMES%) do (
   echo %%i
   echo %%i>>"%LOG%.stdout"
-  ..\..\bin\srefc-core @input.prj 1>> "%LOG%.stdout" 2>> "%LOG%.stderr"
+  ..\..\bin\rlc-core @input.prj 1>> "%LOG%.stdout" 2>> "%LOG%.stderr"
 )
 sort "%LOG%.stderr" > "%LOG%.time"
 erase *.rasl input.prj

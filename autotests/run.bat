@@ -23,7 +23,7 @@ goto :EOF
 :PREPARE_PREFIX
   if not exist _test_prefix.exe-prefix (
     echo Prepare common prefix...
-    ..\bin\srefc-core -o _test_prefix.exe-prefix ^
+    ..\bin\rlc-core -o _test_prefix.exe-prefix ^
       %COMMON_SRFLAGS% %SRFLAGS_NAT% 2>__error.txt
     if not exist _test_prefix.exe-prefix (
       echo CAN'T CREATE COMMON PREFIX, SEE __error.txt
@@ -181,7 +181,7 @@ setlocal
 
   call :PREPARE_PREFIX || exit /b 1
 
-  ..\bin\srefc-core --no-sources -o _int_test.exe ^
+  ..\bin\rlc-core --no-sources -o _int_test.exe ^
     %COMMON_SRFLAGS% %SRFLAGS_PREF% ^
     --reference=%REFERENCE% >__out.txt 2> __error.txt
   if errorlevel 100 (
@@ -212,7 +212,7 @@ setlocal
   set LIBR=%~n1.rasl-module
   set LIBN=%~n1.dll
 
-  ..\bin\srefc-core %SREF% --makelib %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
+  ..\bin\rlc-core %SREF% --makelib %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
     --keep-rasls 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
@@ -258,7 +258,7 @@ setlocal
   set LIBR=%~n1.rasl-module
   set LIBN=%~n1.dll
 
-  ..\bin\srefc-core %SREF% --makelib %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
+  ..\bin\rlc-core %SREF% --makelib %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
     --keep-rasls 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
@@ -295,7 +295,7 @@ setlocal
   set SREF=%1
   set RASL=%~n1.rasl
 
-  ..\bin\srefc-core --prelude=test-prelude.srefi -C %SRFLAGS% %1 2> __error.txt
+  ..\bin\rlc-core --prelude=test-prelude.srefi -C %SRFLAGS% %1 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1

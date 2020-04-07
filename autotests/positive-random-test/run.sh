@@ -76,7 +76,7 @@ run_test() {
   FLAGS=$2
 
   echo "Passing $FILE ($FLAGS):"
-  ../../bin/srefc-core --classic -C $FILE --prelude=prelude-for-test $FLAGS \
+  ../../bin/rlc-core --classic -C $FILE --prelude=prelude-for-test $FLAGS \
     2>$FILE.err$FLAGS >$FILE.out$FLAGS
 
   if [ ! -e $FILE.rasl ]; then

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 rm -f *.rasl-module *.rasl caller
-../../../bin/srefc --keep-rasls -OC -R module.sref -r foo
+../../../bin/rlc --keep-rasls -OC -R module.sref -r foo
 ../../../bin/rlmake --keep-rasls -X-OC -X--markup-context \
   caller.ref -r module --incorporated=foo
 ./caller

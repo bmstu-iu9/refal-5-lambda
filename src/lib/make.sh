@@ -11,8 +11,8 @@ compile_separated() {
 
   for s in ${LIBS}; do
     # shellcheck disable=SC2086
-    ../../bin/srefc-core -C ${SREFC_FLAGS} "$s" -d common
-    ../../bin/srefc-core --no-sources -R -o inco.bin --incorporated="$s"
+    ../../bin/rlc-core -C ${SREFC_FLAGS} "$s" -d common
+    ../../bin/rlc-core --no-sources -R -o inco.bin --incorporated="$s"
     grep '//FROM' < "$s".ref > "$TARGET/$s".rasl.froms
     [[ -e "$s".cpp ]] && mv "$s".cpp "$TARGET"
     cat inco.bin >> "$s".rasl
@@ -60,7 +60,7 @@ compile_references() {
   mkdir -p ../../lib/references
 
   for s in ${LIBRARIES}; do
-    ../../bin/srefc-core --no-sources -R \
+    ../../bin/rlc-core --no-sources -R \
       -o ../../lib/references/"$s".rasl --reference="$s"
   done
 }

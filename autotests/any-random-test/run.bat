@@ -47,7 +47,7 @@ setlocal
   set FILE="%~n1"
 
   echo Passing %FILE%:
-  ..\..\bin\srefc-core --classic -C %FILE% --prelude=prelude-for-test ^
+  ..\..\bin\rlc-core --classic -C %FILE% --prelude=prelude-for-test ^
     2>%FILE%.err >%FILE%.out
   if errorlevel 100 (
     echo ...COMPILER FAILS ON %FILE%, see %FILE%.err

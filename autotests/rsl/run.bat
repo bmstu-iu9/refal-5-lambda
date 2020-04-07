@@ -1,6 +1,6 @@
 @echo off
 
-call ..\..\bin\srefc --keep-rasls hello.rsl
+call ..\..\bin\rlc --keep-rasls hello.rsl
 if not exist hello.exe (
   echo COMPILING hello.rsl TO hello.exe FAILS!
   exit /b 1

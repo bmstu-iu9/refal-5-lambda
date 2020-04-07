@@ -2,7 +2,7 @@
 
 for s in tests/negative/*.sref; do
   echo Passing $s...
-  ../../bin/srefc-core --grammar-check $s >__out.txt 2>__error.txt
+  ../../bin/rlc-core --grammar-check $s >__out.txt 2>__error.txt
   RET=$?
   if [ $RET -ge 100 ]; then
     cat __out.txt
@@ -19,7 +19,7 @@ done
 
 for s in tests/positive/*.sref; do
   echo Passing $s...
-  ../../bin/srefc-core --grammar-check $s >__out.txt 2>__error.txt
+  ../../bin/rlc-core --grammar-check $s >__out.txt 2>__error.txt
   RET=$?
   if [ $RET -ge 100 ]; then
     cat __out.txt

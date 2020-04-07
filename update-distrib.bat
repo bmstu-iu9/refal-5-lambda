@@ -25,7 +25,6 @@ xcopy /e /y /i ..\build\rsl-decompiler rsl-decompiler
 md bin
 copy ..\src\scripts\rlc-rlmake.* bin\rlc.*
 copy ..\src\scripts\rlc-rlmake.* bin\rlmake.*
-copy ..\src\scripts\rlc-rlmake.* bin\srefc.*
 ren bin\*.sh *.
 md scripts
 copy ..\scripts\* scripts

@@ -28,8 +28,8 @@ setlocal
   rmdir %TARGET%\x
 
   for %%s in (%LIBS%) do (
-    ..\..\bin\srefc-core -C %SREFC_FLAGS% %%s -d common
-    ..\..\bin\srefc-core --no-sources -R -o inco.bin --incorporated=%%~ns
+    ..\..\bin\rlc-core -C %SREFC_FLAGS% %%s -d common
+    ..\..\bin\rlc-core --no-sources -R -o inco.bin --incorporated=%%~ns
     find "//FROM" < %%s.ref > %TARGET%\%%s.rasl.froms
     if exist %%s.cpp move %%s.cpp %TARGET%
     copy /b %%s.rasl+inco.bin %TARGET%\%%s.rasl
@@ -82,7 +82,7 @@ setlocal
   if not exist ..\..\lib\references\nul mkdir ..\..\lib\references
 
   for %%s in (%LIBRARIES%) do (
-    ..\..\bin\srefc-core --no-sources -R ^
+    ..\..\bin\rlc-core --no-sources -R ^
        -o ..\..\lib\references\%%s.rasl --reference=%%s
   )
 endlocal

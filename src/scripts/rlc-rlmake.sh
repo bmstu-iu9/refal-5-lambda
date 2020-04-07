@@ -85,7 +85,7 @@ main() {
   fi
 
   PATH=${BINDIR}:$PATH
-  if [[ "$MODE" = "srefc" || "$MODE" = "rlc" ]]; then
+  if [[ "$MODE" = "rlc" ]]; then
     # shellcheck disable=SC2086
     rlc-core \
       -OC ${SREFC_FLAGS} \
@@ -96,7 +96,7 @@ main() {
   elif [[ "$MODE" = "rlmake" ]]; then
     # shellcheck disable=SC2086
     rlmake-core \
-      -s "srefc-core" \
+      -s "rlc-core" \
       -X-OC ${SRMAKE_FLAGS} \
       "-X--exesuffix=$(platform_exe_suffix)" "-X--libsuffix=$(platform_lib_suffix)" \
       "${CPP[@]}" \

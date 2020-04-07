@@ -18,8 +18,6 @@ cp ../src/scripts/rlc-rlmake.bat bin/rlc.bat
 cp ../src/scripts/rlc-rlmake.sh bin/rlc
 cp ../src/scripts/rlc-rlmake.bat bin/rlmake.bat
 cp ../src/scripts/rlc-rlmake.sh bin/rlmake
-cp ../src/scripts/rlc-rlmake.bat bin/srefc.bat
-cp ../src/scripts/rlc-rlmake.sh bin/srefc
 mkdir scripts
 cp ../scripts/* scripts
 cp -R ../lib lib

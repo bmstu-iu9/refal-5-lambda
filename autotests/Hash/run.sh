@@ -47,7 +47,7 @@ compile() {
   TARGET=${SRC%%.sref}$(platform_exe_suffix)
 
   if [ "$SRC" != "Hash.ref" ]; then
-    ../../bin/srefc-core --keep-rasls $SRC -o $TARGET "${COMMON_SRFLAGS[@]}" \
+    ../../bin/rlc-core --keep-rasls $SRC -o $TARGET "${COMMON_SRFLAGS[@]}" \
       Hash lookup3 2>__error.txt
     if [ $? -ge 100 ] || [ ! -e $TARGET ]; then
       echo COMPILER FAILS ON $SRC, SEE __error.txt

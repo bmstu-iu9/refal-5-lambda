@@ -2,7 +2,7 @@
 
 for %%s in (tests\negative\*.ref) do (
   echo Passing %%s...
-  ..\..\bin\srefc-core --extended --grammar-check %%s >__out.txt 2>__error.txt
+  ..\..\bin\rlc-core --extended --grammar-check %%s >__out.txt 2>__error.txt
   if errorlevel 100 (
     type __out.txt
     echo COMPILER FAILS, see __error.txt
@@ -18,7 +18,7 @@ for %%s in (tests\negative\*.ref) do (
 
 for %%s in (tests\positive\*.ref) do (
   echo Passing %%s...
-  ..\..\bin\srefc-core --extended --grammar-check %%s >__out.txt 2>__error.txt
+  ..\..\bin\rlc-core --extended --grammar-check %%s >__out.txt 2>__error.txt
   if errorlevel 100 (
     type __out.txt
     echo COMPILER FAILS, see __error.txt

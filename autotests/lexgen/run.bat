@@ -17,7 +17,7 @@ goto :EOF
 :PREPARE_PREFIX
   if not exist _test_prefix.exe-prefix (
     echo Prepare common prefix...
-    ..\..\bin\srefc-core -o _test_prefix.exe-prefix ^
+    ..\..\bin\rlc-core -o _test_prefix.exe-prefix ^
       %COMMON_SRFLAGS% %SRFLAGS_NAT% 2>__error.txt
     if not exist _test_prefix.exe-prefix (
       echo CAN'T CREATE COMMON PREFIX, SEE __error.txt
@@ -77,7 +77,7 @@ setlocal
     exit /b 1
   )
 
-  ..\..\bin\srefc-core --keep-rasls _lexgen-out.sref -o _lexgen-out.exe %COMMON_SRFLAGS% ^
+  ..\..\bin\rlc-core --keep-rasls _lexgen-out.sref -o _lexgen-out.exe %COMMON_SRFLAGS% ^
     %SRFLAGS_PREF% 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt

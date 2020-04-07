@@ -7,7 +7,7 @@ LIBDIR=../../src/lib
 prepare_prefix() {
   if [[ ! -e _test_prefix.exe-prefix ]]; then
     echo Prepare common prefix...
-    ../../bin/srefc-core -o _test_prefix.exe-prefix \
+    ../../bin/rlc-core -o _test_prefix.exe-prefix \
       "${COMMON_SRFLAGS[@]}" $SRFLAGS_NAT 2>__error.txt
       if [[ $? -ge 100 ]] || [[ ! -e _test_prefix.exe-prefix ]]; then
         echo "CAN'T CREATE COMMON PREFIX, SEE __error.txt"
@@ -34,7 +34,7 @@ run_test_aux.LEXGEN() {
     exit 1
   fi
 
-  ../../bin/srefc-core _lexgen-out.sref -o _lexgen-out$(platform_exe_suffix) \
+  ../../bin/rlc-core _lexgen-out.sref -o _lexgen-out$(platform_exe_suffix) \
     "${COMMON_SRFLAGS[@]}" $SRFLAGS_PREF --keep-rasls 2>__error.txt
   if [[ $? -ge 100 ]] || [[ ! -e _lexgen-out$(platform_exe_suffix) ]]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt

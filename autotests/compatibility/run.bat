@@ -6,12 +6,12 @@ goto :EOF
 setlocal
   set OUTPUT_FILES=stdout.txt stderr.txt written_file.txt REFAL15.DAT
   call :LOOKUP_COMPILERS || exit /b 1
-  if {%REFC_EXIST%%SREFC_EXIST%%CREFAL_EXIST%}=={} (
+  if {%REFC_EXIST%%RLC_EXIST%%CREFAL_EXIST%}=={} (
     echo NO REFAL COMPILERS FOUND, EXITING
     exit /b 1
   )
 
-  if {%SREFC_EXIST%}=={1} (
+  if {%RLC_EXIST%}=={1} (
     call :PREPARE_PREFIX || exit /b 1
   )
 
@@ -27,7 +27,7 @@ goto :EOF
 :LOOKUP_COMPILERS
   :: Без setlocal
   set REFC_EXIST=
-  set SREFC_EXIST=
+  set RLC_EXIST=
   set CREFAL_EXIST=
 
   echo *** Detecting Refal-5 compilers ...
@@ -60,12 +60,12 @@ goto :EOF
     )
   )
 
-  :: Поиск srefc
-  if exist ..\..\bin\srefc-core.exe (
-    set REFAL_COMPILERS=srefc_classic srefc_lambda %REFAL_COMPILERS%
-    set SREFC_EXIST=1
+  :: Поиск rlc
+  if exist ..\..\bin\rlc-core.exe (
+    set REFAL_COMPILERS=rlc_classic rlc_lambda %REFAL_COMPILERS%
+    set RLC_EXIST=1
     set DIAG=++diagnostic+config=test-diagnostics.ini
-    echo ... found srefc
+    echo ... found rlc
     call ..\..\scripts\load-config.bat || exit /b 1
   )
   echo.
@@ -91,7 +91,7 @@ goto :EOF
   echo Prepare common prefix...
   if exist _test_prefix.exe-prefix erase _test_prefix.exe-prefix
   copy ..\..\src\lib\Library.ref .
-  ..\..\bin\srefc-core -o _test_prefix.exe-prefix %COMMON_SRFLAGS% ^
+  ..\..\bin\rlc-core -o _test_prefix.exe-prefix %COMMON_SRFLAGS% ^
     Library ^
     refalrts ^
     refalrts-debugger ^
@@ -249,12 +249,12 @@ setlocal
 endlocal
 goto :EOF
 
-:COMPILE_SREFC_COMMON
+:COMPILE_RLC_COMMON
 setlocal
   set SRC=%1
   set TARGET=%~n1.exe
 
-  ..\..\bin\srefc-core --keep-rasls %SRC% -o %TARGET% %COMMON_SRFLAGS% ^
+  ..\..\bin\rlc-core --keep-rasls %SRC% -o %TARGET% %COMMON_SRFLAGS% ^
     --prefix=_test_prefix external 2>__error.txt
   if errorlevel 100 (
     echo COMPILER FAILS ON %SRC%, SEE __error.txt
@@ -271,15 +271,15 @@ setlocal
 endlocal
 goto :EOF
 
-:COMPILE.srefc_classic
+:COMPILE.rlc_classic
 setlocal
   set COMMON_SRFLAGS=%COMMON_SRFLAGS% --classic
-  call :COMPILE_SREFC_COMMON "%~1"
+  call :COMPILE_RLC_COMMON "%~1"
   exit /b %ERRORLEVEL%
 endlocal
 goto :EOF
 
-:EXECUTE_OK.srefc_classic
+:EXECUTE_OK.rlc_classic
 setlocal
   set EXE=%~n1.exe
   echo Y| %EXE% %DIAG% Hello "Hello, World" "" \ > stdout.txt 2>stderr.txt
@@ -292,7 +292,7 @@ setlocal
 endlocal
 goto :EOF
 
-:EXECUTE_FAIL.srefc_classic
+:EXECUTE_FAIL.rlc_classic
 setlocal
   set EXE=%~n1.exe
   echo Y| %EXE% %DIAG% > stdout.txt
@@ -313,7 +313,7 @@ setlocal
 endlocal
 goto :EOF
 
-:CLEANUP.srefc_classic
+:CLEANUP.rlc_classic
 setlocal
   call :CLEANUP_COMMON
   if exist "%~1.rasl" erase "%~1.rasl"
@@ -324,29 +324,29 @@ setlocal
 endlocal
 goto :EOF
 
-:COMPILE.srefc_lambda
+:COMPILE.rlc_lambda
 setlocal
   set COMMON_SRFLAGS=%COMMON_SRFLAGS% --extended
-  call :COMPILE_SREFC_COMMON "%~1"
+  call :COMPILE_RLC_COMMON "%~1"
   exit /b %ERRORLEVEL%
 endlocal
 goto :EOF
 
-:EXECUTE_OK.srefc_lambda
+:EXECUTE_OK.rlc_lambda
 setlocal
-  call :EXECUTE_OK.srefc_classic "%~1" || exit /b 1
+  call :EXECUTE_OK.rlc_classic "%~1" || exit /b 1
 endlocal
 goto :EOF
 
-:EXECUTE_FAIL.srefc_lambda
+:EXECUTE_FAIL.rlc_lambda
 setlocal
-  call :EXECUTE_FAIL.srefc_classic "%~1" || exit /b 1
+  call :EXECUTE_FAIL.rlc_classic "%~1" || exit /b 1
 endlocal
 exit /b 0
 
-:CLEANUP.srefc_lambda
+:CLEANUP.rlc_lambda
 setlocal
-  call :CLEANUP.srefc_classic "%~1" || exit /b 1
+  call :CLEANUP.rlc_classic "%~1" || exit /b 1
 endlocal
 goto :EOF
 

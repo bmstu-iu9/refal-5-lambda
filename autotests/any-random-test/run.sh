@@ -43,7 +43,7 @@ run_test() {
   FILE=${1%%.ref}
 
   echo "Passing $FILE:"
-  ../../bin/srefc-core --classic -C $FILE --prelude=prelude-for-test \
+  ../../bin/rlc-core --classic -C $FILE --prelude=prelude-for-test \
     2>$FILE.err >$FILE.out
 
   if [ $? -gt 99 ]; then

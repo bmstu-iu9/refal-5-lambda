@@ -39,7 +39,7 @@ setlocal
 
   echo Precompile Library.ref
   copy ..\..\src\lib\Library.ref .
-  ..\..\bin\srefc-core %COMMON_SRFLAGS% -C Library 2>__error.txt
+  ..\..\bin\rlc-core %COMMON_SRFLAGS% -C Library 2>__error.txt
   if errorlevel 100 (
     echo COMPILER FAILS ON Library.ref, SEE __error.txt
     exit /b 1
@@ -183,7 +183,7 @@ setlocal
   set SRC=%1
   set TARGET=%~n1.exe
 
-  ..\..\bin\srefc-core --keep-rasls %SRC% -o %TARGET% %COMMON_SRFLAGS% ^
+  ..\..\bin\rlc-core --keep-rasls %SRC% -o %TARGET% %COMMON_SRFLAGS% ^
     Library 2>__error.txt
   if errorlevel 100 (
     echo COMPILER FAILS ON %SRC%, SEE __error.txt
