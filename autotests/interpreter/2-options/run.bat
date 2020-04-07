@@ -2,7 +2,7 @@
 setlocal
 if exist REFAL1.DAT erase REFAL1.DAT
 if exist dump.txt erase dump.txt
-call ..\..\..\bin\srmake -R test.ref
+call ..\..\..\bin\rlmake -R test.ref
 set RL_MODULE_PATH=
 ..\..\..\bin\rlgo --step-limit=1000 --dump-file=dump.txt ./test
 endlocal

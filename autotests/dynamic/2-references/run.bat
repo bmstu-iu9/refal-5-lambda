@@ -7,7 +7,7 @@ call ..\..\..\bin\srefc --keep-rasls -OC -R D-G.sref -r G
 call ..\..\..\bin\srefc --keep-rasls -OC -R E-F.sref -r F-E
 call ..\..\..\bin\srefc --keep-rasls -OC -R F-E.sref -r E-F
 call ..\..\..\bin\srefc --keep-rasls -OC -R G.sref
-call ..\..\..\bin\srmake --keep-rasls -X-OC -X--markup-context caller.ref
+call ..\..\..\bin\rlmake --keep-rasls -X-OC -X--markup-context caller.ref
 caller.exe
 if errorlevel 1 (
   echo TEST FAILED!

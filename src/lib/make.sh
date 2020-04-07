@@ -76,7 +76,7 @@ compile_dynamic() {
   (
     cd tmp && for l in ${LIBRARIES}; do
       cp ../"$l".ref .
-      ../../../bin/srmake --scratch --makelib \
+      ../../../bin/rlmake --scratch --makelib \
         -o ../../../lib/"$l$(platform_lib_suffix)" "$l".ref
         rm -- "$l".ref
     done

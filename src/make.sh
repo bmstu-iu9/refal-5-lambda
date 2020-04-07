@@ -66,7 +66,7 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
       export CPPLINE_FLAGS="$CPPLINE_FLAGS"
       export SRMAKE_FLAGS="$SRMAKE_FLAGS $SRMAKE_FLAGS_PLUS"
 
-      ${PATH_TO_SREFC}/bin/srmake \
+      ${PATH_TO_SREFC}/bin/rlmake \
         ${SCRIPT_FLAGS} --keep-rasls -d ../common "$MAINSRC" -o"$TARGET"
     )
     mv "$TARGET" "../../bin/$TARGET$TARGET_SUFFIX"

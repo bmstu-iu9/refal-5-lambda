@@ -2,7 +2,7 @@
 erase *.rasl-module *.rasl *.exe
 call ..\..\..\bin\srefc --keep-rasls -OC -R a\foo.sref
 call ..\..\..\bin\srefc --keep-rasls -OC -R b\bar.sref
-call ..\..\..\bin\srmake --keep-rasls -X-OC -X--markup-context caller.ref
+call ..\..\..\bin\rlmake --keep-rasls -X-OC -X--markup-context caller.ref
 setlocal
   set RL_MODULE_PATH=a;b
   caller.exe

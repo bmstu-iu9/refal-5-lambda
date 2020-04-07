@@ -9,7 +9,7 @@ rm -f *.rasl-module *.rasl caller
 ../../../bin/srefc --keep-rasls -OC -R E-F.sref -r F-E
 ../../../bin/srefc --keep-rasls -OC -R F-E.sref -r E-F
 ../../../bin/srefc --keep-rasls -OC -R G.sref
-../../../bin/srmake --keep-rasls -X-OC -X--markup-context caller.ref
+../../../bin/rlmake --keep-rasls -X-OC -X--markup-context caller.ref
 ./caller
 if [[ $? -gt 0 ]]; then
   echo TEST FAILED!

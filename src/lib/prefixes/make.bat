@@ -1,12 +1,12 @@
 @echo off
 goto :MAIN
 
-:CALL_SRMAKE
-  call %ROOT%\bin\srmake --scratch --static %*
+:CALL_RLMAKE
+  call %ROOT%\bin\rlmake --scratch --static %*
 goto :EOF
 
-:CALL_SRMAKE_DEBUG
-  call %ROOT%\bin\srmake --scratch --static --debug %*
+:CALL_RLMAKE_DEBUG
+  call %ROOT%\bin\rlmake --scratch --static --debug %*
 goto :EOF
 
 :MAKE_PREFIXES
@@ -18,8 +18,8 @@ goto :EOF
 :MAIN
 set ROOT=..\..\..
 
-call :MAKE_PREFIXES CALL_SRMAKE ""
-call :MAKE_PREFIXES CALL_SRMAKE_DEBUG "-debug"
+call :MAKE_PREFIXES CALL_RLMAKE ""
+call :MAKE_PREFIXES CALL_RLMAKE_DEBUG "-debug"
 
 if exist *.obj erase *.obj
 if exist %ROOT%\lib\*.tds erase %ROOT%\lib\*.tds

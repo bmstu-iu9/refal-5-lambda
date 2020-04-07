@@ -93,7 +93,7 @@ main() {
       "${CPP[@]}" --cppflags="$CPPLINE_FLAGS" --chmod-x-command="chmod +x" \
       -d "$LIBDIR/common" --prelude=refal5-builtins.refi \
       ${PREFIX} "${D[@]}" -d "$LIBDIR" "$@"
-  elif [[ "$MODE" = "srmake" || "$MODE" = "rlmake" ]]; then
+  elif [[ "$MODE" = "rlmake" ]]; then
     # shellcheck disable=SC2086
     rlmake-core \
       -s "srefc-core" \

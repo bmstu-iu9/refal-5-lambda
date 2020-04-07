@@ -101,7 +101,7 @@ setlocal
   pushd tmp
   for %%l in (%LIBRARIES%) do (
     copy ..\%%l.ref .
-    call ..\..\..\bin\srmake --scratch --makelib -o ..\..\..\lib\%%l.dll %%l.ref
+    call ..\..\..\bin\rlmake --scratch --makelib -o ..\..\..\lib\%%l.dll %%l.ref
     erase %%l.ref
   )
   popd

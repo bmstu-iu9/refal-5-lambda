@@ -26,7 +26,6 @@ md bin
 copy ..\src\scripts\rlc-rlmake.* bin\rlc.*
 copy ..\src\scripts\rlc-rlmake.* bin\rlmake.*
 copy ..\src\scripts\rlc-rlmake.* bin\srefc.*
-copy ..\src\scripts\rlc-rlmake.* bin\srmake.*
 ren bin\*.sh *.
 md scripts
 copy ..\scripts\* scripts

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 rm -f REFAL1.DAT dump.txt
-../../../bin/srmake -R test.ref
+../../../bin/rlmake -R test.ref
 RL_MODULE_PATH="" \
   ../../../bin/rlgo --step-limit=1000 --dump-file=dump.txt ./test
 

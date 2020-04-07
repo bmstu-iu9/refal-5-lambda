@@ -86,14 +86,6 @@ setlocal
       --cppflags="%CPPLINE_FLAGS%" --chmod-x-command= ^
       -d "%LIBDIR%\common" --prelude=refal5-builtins.refi ^
       %PREFIX% %D% -d "%LIBDIR%" %ARGS%
-  ) else if "%MODE%"=="srmake" (
-    srmake-core ^
-      -s srefc-core.exe ^
-      -X-OC %SRMAKE_FLAGS% ^
-      -X--exesuffix=.exe -X--libsuffix=.dll %CPP% ^
-      --thru=--cppflags="%CPPLINE_FLAGS%" -X--chmod-x-command= ^
-      -d "%LIBDIR%\common" --prelude=refal5-builtins.refi ^
-      %PREFIX% %D% -d "%LIBDIR%" %RT% %ARGS%
   ) else (
     echo BAD SCRIPT NAME %BAT%, expected rlc.bat or rlmake.bat
   )
