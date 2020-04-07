@@ -1,2 +1,2 @@
 @echo off
-call ..\make rasl-constants rasl-constants rasl-constants "" ..\..\distrib
+call ..\make rasl-constants rasl-constants rasl-constants ..\..\distrib

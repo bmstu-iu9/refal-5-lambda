@@ -44,8 +44,7 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     DIR=$1
     TARGET=$2
     MAINSRC=$3
-    CPPLINE_FLAGS=$4
-    PATH_TO_SREFC=$5
+    PATH_TO_SREFC=$4
 
     if [[ -z "$PATH_TO_SREFC" ]]; then
       PATH_TO_SREFC=../..
@@ -63,7 +62,6 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
 
     mkdir -p ${PATH_TO_SREFC}/bin
     (
-      export CPPLINE_FLAGS="$CPPLINE_FLAGS"
       export SRMAKE_FLAGS="$SRMAKE_FLAGS $SRMAKE_FLAGS_PLUS"
 
       ${PATH_TO_SREFC}/bin/rlmake \
