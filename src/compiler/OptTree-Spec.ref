@@ -156,13 +156,17 @@ SpecTerm {
     , <IsColdArg e.Expression> : True
     = <SpecCall (e.Name) e.Info (e.Expression)>
     : (e.Info^) t.NewCall e.NewFunction
-    = (e.SpecInfo-B ((e.Name) e.Info) e.SpecInfo-E (e.NewFunctions e.NewFunction))
+    = (
+        e.SpecInfo-B ((e.Name) e.Info) e.SpecInfo-E
+        (e.NewFunctions e.NewFunction)
+      )
       t.NewCall;
 
   (e.SpecInfo (e.NewFunctions)) (CallBrackets (Symbol Name e.Name) e.Expression)
     = <SpecResult (e.SpecInfo (e.NewFunctions)) e.Expression>
     : (e.SpecInfo^ (e.NewFunctions^)) e.Expression^
-    = (e.SpecInfo (e.NewFunctions)) (CallBrackets (Symbol Name e.Name) e.Expression);
+    = (e.SpecInfo (e.NewFunctions))
+      (CallBrackets (Symbol Name e.Name) e.Expression);
 
   (e.SpecInfo (e.NewFunctions)) (ClosureBrackects e.ClosureContent)
     = <SpecResult (e.SpecInfo (e.NewFunctions)) e.ClosureContent>
@@ -184,7 +188,8 @@ SpecTerm {
 }
 
 /**
-  <SpecCall (e.Name) (e.SpecPattern) (e.Body)
+  <SpecCall
+    (e.Name) (e.SpecPattern) (e.Body)
     s.CurrentNumber e.Signatures (e.Argument)
   >
     == ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures t.NewSignature)
@@ -251,10 +256,11 @@ SpecCall {
                           True
                             = (
                                 (e.SpecPattern) (e.Body) <Inc s.NextNumber>
-                                e.Signatures ((e.Name SUF '@' s.NextNumber) e.Signature)
+                                e.Signatures
+                                ((e.Name SUF '@' s.NextNumber) e.Signature)
                               )
-                              (
-                                ColdCallBrackets (Symbol Name e.Name SUF '@' s.NextNumber)
+                              (ColdCallBrackets
+                                (Symbol Name e.Name SUF '@' s.NextNumber)
                                 e.SpecializedFuncArgument
                               )
                               (
@@ -461,6 +467,7 @@ Spec-IsTrivialSignature {
 
 Spec-PrepareCallOrPattern {
   (e.StaticMatches) (e.DynamicMatches) e.Pattern
+
 *   extract set of vars from static param values
     = <Reduce
         {
@@ -476,6 +483,7 @@ Spec-PrepareCallOrPattern {
         e.StaticMatches
       >
     : (e.VarsFromStaticParams)
+
 *   union extracted vars from static and values from dynamic params
     = <WrapEVar e.VarsFromStaticParams>
       <Map
@@ -487,6 +495,7 @@ Spec-PrepareCallOrPattern {
         e.DynamicMatches
       >
     : e.Expression
+
     = <MapAccum
         {
           True (GhostBrackets e.Expr) = True (Brackets e.Expr);
@@ -499,6 +508,7 @@ Spec-PrepareCallOrPattern {
         e.Expression
       >
     : s.Flag e.Expression^
+
     = e.Expression;
 }
 
