@@ -359,7 +359,8 @@ ValidBodyForSpec {
 }
 
 ValidBodyForSpec-CheckSentensePattern {
-  (e.SpecPattern) (True e.Messages) ((e.SentencePattern) e.OtherSentenceConstruction)
+  (e.SpecPattern) (True e.Messages)
+  ((e.SentencePattern) e.OtherSentenceConstruction)
     = <GenericMatch
         (<RemovePos-Expr e.SentencePattern>) (<RemovePos-Expr e.SpecPattern>)
       >
@@ -368,8 +369,7 @@ ValidBodyForSpec-CheckSentensePattern {
           = <Reduce
               {
                 (True (e.NMessages) e.ExtractedVars) (e.Val ':' t.Var)
-                  , <IsSpecStaticVar t.Var>
-                  : True
+                  , <IsSpecStaticVar t.Var> : True
                   = <CheckSpec-VarTypeMatching (e.Val) t.Var>
                   : {
                       True
@@ -383,7 +383,10 @@ ValidBodyForSpec-CheckSentensePattern {
                             False e.ExtractedVars^
                               = (
                                   False
-                                  (e.NMessages (SpecStaticParamRepeatingVars t.Var))
+                                  (
+                                    e.NMessages
+                                    (SpecStaticParamRepeatingVars t.Var)
+                                  )
                                   e.ExtractedVars
                                 );
                           };
