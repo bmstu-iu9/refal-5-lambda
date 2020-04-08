@@ -32,7 +32,8 @@ $ENTRY OptTree-Drive-ExtractOptInfo {
   <OptTree-Drive s.OptDrive (e.DriveInfo) e.AST> == (e.DriveInfo^) e.AST^
 */
 $ENTRY OptTree-Drive {
-  NoOpt (e.DriveInfo) e.AST = (e.DriveInfo) e.AST ;
+  NoOpt (e.DriveInfo) e.AST = (e.DriveInfo) e.AST;
+
   s.Opt (e.DriveInfo) e.AST
     = <DriveInlineOptimizerTick (e.DriveInfo) e.AST s.Opt>;
 }
@@ -47,19 +48,16 @@ $ENTRY OptTree-Drive-Finalize {
 /* Функция генерирует имена остаточных прогоняемых функций */
 
 GenRemainderFuncNames {
-    (e.Name) (e.Sentences) =
-      <MapAccum
-       {
-          ((e.NewName SUF e.Suffix) (e.Names) s.N) t.A =
-            ((e.Name) (e.Names (e.Name '*' s.N)) <Add s.N 1>);
+  e.Name 0 = /* пусто */;
 
-          ((e.NewName) (e.Names) s.N) t.A =
-            ((e.Name)(e.Names (e.Name SUF '*' s.N)) <Add s.N 1>);
-       }
-       ((e.Name) () 1)
-       e.Sentences
-      > : ((e.Name^) (e.Names) t.N)
-       = e.Names
+  e.Name s.LastCount
+    , e.Name
+    : {
+        e.ProperName SUF e.Suffix = e.Name '*' s.LastCount;
+        e.ProperName = e.ProperName SUF '*' s.LastCount;
+      }
+    : e.NewName
+    = <GenRemainderFuncNames e.Name <Dec s.LastCount>> (e.NewName);
 }
 
 GetDrivenFunctions {
@@ -86,18 +84,21 @@ GetDrivenFunctions {
     = <MapAccum
         {
           ((e.OptFunctions) (e.RemNames))
-          (Function s.ScopeClass (e.Name) e.Body)
+          (Function s.ScopeClass (e.Name) Sentences e.Sentences)
             , e.OptNames : e.B (s.Label e.Name) e.E
-            , e.Body : Sentences e.Sentences
+            = <Lenw e.Sentences> : s.CountSentences e.Sentences^
             = (
-                (e.OptFunctions (s.Label s.ScopeClass (e.Name) { = e.Body}))
+                (
+                  e.OptFunctions
+                  (s.Label s.ScopeClass (e.Name) { = Sentences e.Sentences})
+                )
                 (
                   e.RemNames
                   (e.Name)
-                  <GenRemainderFuncNames (e.Name) (e.Sentences)>
+                  <GenRemainderFuncNames e.Name s.CountSentences>
                 )
               )
-              (Function s.ScopeClass (e.Name) e.Body);
+              (Function s.ScopeClass (e.Name) Sentences e.Sentences);
 
           (e.OptInfo) t.Other
             = (e.OptInfo) t.Other;
@@ -132,7 +133,8 @@ DriveInlineOptimizerTick {
         }
         t.OptInfo
         e.AST
-      >: e.AST^
+      >
+    : e.AST^
     = <DistinctFuncs e.AST>
 }
 
@@ -208,7 +210,8 @@ IsLexpr-Aux {
 
 /*
   Осуществляет попытку прогонки или встраивания в функции
-  <OptimizeF t.Function t.DriveInfo s.Mode> == t.Function*
+  <OptimizeF t.Function t.DriveInfo s.Mode>
+    == t.DriveInfo t.OptimizedFunction t.Function*
 
   Возвращает модифицированную функцию
   и порожденные из прогонки или встраивания
@@ -227,9 +230,9 @@ OptimizeF {
         (t.OptInfo (/*sentences*/) (/*functions*/))
         e.Sentences
       >
-    : (t.OptInfo (e.Sentences^) (e.Functions))
+    : (t.OptInfo (e.Sentences^) (e.NewFunctions))
     = t.OptInfo
-      (Function s.ScopeClass (e.Name) Sentences e.Sentences) e.Functions;
+      (Function s.ScopeClass (e.Name) Sentences e.Sentences) e.NewFunctions;
 }
 
 /*
@@ -267,6 +270,7 @@ OptSentence-Aux {
         s.Mode ((e.Left) (e.Right)) (e.Args) t.FunctionForDrive
       >
     : e.SolutionPacks
+
     = (e.OptFuncs)
       <MapAccum
         {
@@ -477,18 +481,16 @@ FindOptimizedCall-Term {
 */
 
 ApplySolutions {
-
   ((e.Left) (e.Right)) (e.RS) e.Solutions
-
-  = <Map
-      {
-        t.S
-          = <ApplySolution
-             ((e.Left) (e.Right)) (e.RS) t.S
-            >
-      }
-      e.Solutions
-    >
+    = <Map
+        {
+          t.S
+            = <ApplySolution
+               ((e.Left) (e.Right)) (e.RS) t.S
+              >
+        }
+        e.Solutions
+      >
 }
 
 /*
@@ -562,7 +564,7 @@ ApplyContractions-Term {
   (ColdCallBrackets e.OriginArgs) (e.Contrs)
     = <ApplyContractions e.OriginArgs (e.Contrs)>
     : {
-*        Содержимое холодных скобок не изменилось, оставляем их холодными
+*       Содержимое холодных скобок не изменилось, оставляем их холодными
         e.OriginArgs = (ColdCallBrackets e.OriginArgs);
 
 *       Содержимое обновилось, оттаиваем скобки
