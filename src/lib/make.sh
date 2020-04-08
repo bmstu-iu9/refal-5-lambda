@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Подавление предупреждений плагина
-SREFC_FLAGS="$SREFC_FLAGS"
+RLC_FLAGS="$RLC_FLAGS"
 
 compile_separated() {
   TARGET="$1"
@@ -11,7 +11,7 @@ compile_separated() {
 
   for s in ${LIBS}; do
     # shellcheck disable=SC2086
-    ../../bin/rlc-core -C ${SREFC_FLAGS} "$s" -d common
+    ../../bin/rlc-core -C ${RLC_FLAGS} "$s" -d common
     ../../bin/rlc-core --no-sources -R -o inco.bin --incorporated="$s"
     grep '//FROM' < "$s".ref > "$TARGET/$s".rasl.froms
     [[ -e "$s".cpp ]] && mv "$s".cpp "$TARGET"
@@ -47,7 +47,7 @@ compile_scratch() {
 compile_slim() {
   SLIMDIR=../../lib/slim
   mkdir -p ${SLIMDIR}/exe
-  SREFC_FLAGS="$SREFC_FLAGS -Od-" \
+  RLC_FLAGS="$RLC_FLAGS -Od-" \
     compile_separated "$SLIMDIR/exe" "LibraryEx GetOpt"
 }
 

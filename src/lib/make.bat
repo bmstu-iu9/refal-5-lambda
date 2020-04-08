@@ -28,7 +28,7 @@ setlocal
   rmdir %TARGET%\x
 
   for %%s in (%LIBS%) do (
-    ..\..\bin\rlc-core -C %SREFC_FLAGS% %%s -d common
+    ..\..\bin\rlc-core -C %RLC_FLAGS% %%s -d common
     ..\..\bin\rlc-core --no-sources -R -o inco.bin --incorporated=%%~ns
     find "//FROM" < %%s.ref > %TARGET%\%%s.rasl.froms
     if exist %%s.cpp move %%s.cpp %TARGET%
@@ -68,7 +68,7 @@ setlocal
   mkdir %SLIMDIR%\exe\x
   rmdir %SLIMDIR%\exe\x
 
-  set SREFC_FLAGS=%SREFC_FLAGS% -Od-
+  set RLC_FLAGS=%RLC_FLAGS% -Od-
   call :COMPILE_SEPARATED "%SLIMDIR%\exe" "LibraryEx GetOpt"
 endlocal
 goto :EOF

@@ -2,18 +2,22 @@
 setlocal
   if {%RELEASE%}=={} (
     rem Максимум 40 000 000 байт (x32), 80 000 000 байт (x64)
-    rem SREFC_FLAGS используются только для сборки библиотек
-    set SREFC_FLAGS_PLUS=--markup-context --debug-info -OC
-    set SRMAKE_FLAGS_PLUS=-X--markup-context -X--debug-info -X-OC
+    rem RLC_FLAGS используются только для сборки библиотек
+    set RLC_FLAGS_PLUS=--markup-context --debug-info -OC
+    set RLMAKE_FLAGS_PLUS=-X--markup-context -X--debug-info -X-OC
     set DEFAULT_SCRIPT_FLAGS=--rich --debug
   ) else (
-    set SREFC_FLAGS_PLUS=-OCdDPRS
-    set SRMAKE_FLAGS_PLUS=-X-OCdDPRS
+    set RLC_FLAGS_PLUS=-OCdDPRS
+    set RLMAKE_FLAGS_PLUS=-X-OCdDPRS
     set DEFAULT_SCRIPT_FLAGS=--scratch
   )
 
-  set SREFC_FLAGS=%SREFC_FLAGS% %SREFC_FLAGS_PLUS%
-  set SRMAKE_FLAGS=%SRMAKE_FLAGS% %SRMAKE_FLAGS_PLUS%
+  set RLC_FLAGS=%RLC_FLAGS% %RLC_FLAGS_PLUS%
+  set RLMAKE_FLAGS=%RLMAKE_FLAGS% %RLMAKE_FLAGS_PLUS%
+
+  :: TODO: удалить после обновления дистрибутива
+  set SREFC_FLAGS=%RLC_FLAGS%
+  set SRMAKE_FLAGS=%RLMAKE_FLAGS%
 
   if not {%1}=={} goto :MAKE_PROJECT
 
@@ -37,9 +41,9 @@ setlocal
   set DIR=%1
   set TARGET=%2
   set MAINSRC=%3
-  set PATH_TO_SREFC=%4
-  if "%PATH_TO_SREFC%"=="" (
-    set PATH_TO_SREFC=..\..
+  set PATH_TO_RLC=%4
+  if "%PATH_TO_RLC%"=="" (
+    set PATH_TO_RLC=..\..
   )
   if "%SCRIPT_FLAGS%"=="" (
     set SCRIPT_FLAGS=%DEFAULT_SCRIPT_FLAGS%
@@ -49,7 +53,7 @@ setlocal
   )
   if not exist ..\..\build\%DIR%\nul mkdir ..\..\build\%DIR%
   if exist ..\..\build\%DIR%\*.* erase /Q ..\..\build\%DIR%\*.*
-  call %PATH_TO_SREFC%\bin\rlmake ^
+  call %PATH_TO_RLC%\bin\rlmake ^
     %SCRIPT_FLAGS% --keep-rasls -d ..\common %MAINSRC% -o %TARGET%%TARGET_SUFFIX%
   move %TARGET%%TARGET_SUFFIX% ..\..\bin
   if exist *.obj erase *.obj
@@ -59,8 +63,8 @@ setlocal
   if exist ..\common\*.rasl move ..\common\*.rasl ..\..\build\%DIR% >NUL
   if exist ..\common\*.cpp move ..\common\*.cpp ..\..\build\%DIR% >NUL
   for %%d in (\exe -rt\debug-stubs -rt\exe -rt) do (
-    copy %PATH_TO_SREFC%\lib\scratch%%d\*.rasl ..\..\build\%DIR% >NUL
-    copy %PATH_TO_SREFC%\lib\scratch%%d\*.cpp ..\..\build\%DIR% >NUL
+    copy %PATH_TO_RLC%\lib\scratch%%d\*.rasl ..\..\build\%DIR% >NUL
+    copy %PATH_TO_RLC%\lib\scratch%%d\*.cpp ..\..\build\%DIR% >NUL
   )
 
 :END

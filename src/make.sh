@@ -13,13 +13,13 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
 (
   if [[ -z "$RELEASE" ]]; then
     # Максимум 40 000 000 байт (x32), 80 000 000 байт (x64)
-    # SREFC_FLAGS используются только для сборки библиотек
-    SREFC_FLAGS_PLUS="--markup-context --debug-info -OC"
-    SRMAKE_FLAGS_PLUS="-X--markup-context -X--debug-info -X-OC"
+    # RLC_FLAGS используются только для сборки библиотек
+    RLC_FLAGS_PLUS="--markup-context --debug-info -OC"
+    RLMAKE_FLAGS_PLUS="-X--markup-context -X--debug-info -X-OC"
     DEFAULT_SCRIPT_FLAGS="--rich --debug"
   else
-    SREFC_FLAGS_PLUS=-OCdDPRS
-    SRMAKE_FLAGS_PLUS=-X-OCdDPRS
+    RLC_FLAGS_PLUS=-OCdDPRS
+    RLMAKE_FLAGS_PLUS=-X-OCdDPRS
     DEFAULT_SCRIPT_FLAGS=--scratch
   fi
 
@@ -31,7 +31,9 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     make_subdir lexgen makeself-s.sh
     make_subdir make make-s.sh
     (
-      export SREFC_FLAGS="$SREFC_FLAGS $SREFC_FLAGS_PLUS"
+      export RLC_FLAGS="$RLC_FLAGS $RLC_FLAGS_PLUS"
+      # TODO: удалить после обновления дистрибутива
+      export SREFC_FLAGS="$RLC_FLAGS"
       make_subdir lib make.sh
     )
     make_subdir make make.sh
@@ -44,27 +46,29 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     DIR=$1
     TARGET=$2
     MAINSRC=$3
-    PATH_TO_SREFC=$4
+    PATH_TO_RLC=$4
 
-    if [[ -z "$PATH_TO_SREFC" ]]; then
-      PATH_TO_SREFC=../..
+    if [[ -z "$PATH_TO_RLC" ]]; then
+      PATH_TO_RLC=../..
     fi
 
     if [[ -z "$SCRIPT_FLAGS" ]]; then
       SCRIPT_FLAGS="${DEFAULT_SCRIPT_FLAGS}"
     fi
 
-    source ${PATH_TO_SREFC}/scripts/platform-specific.sh
+    source ${PATH_TO_RLC}/scripts/platform-specific.sh
 
     if [[ -z "$TARGET_SUFFIX" ]]; then
       TARGET_SUFFIX=$(platform_exe_suffix)
     fi
 
-    mkdir -p ${PATH_TO_SREFC}/bin
+    mkdir -p ../../bin
     (
-      export SRMAKE_FLAGS="$SRMAKE_FLAGS $SRMAKE_FLAGS_PLUS"
+      export RLMAKE_FLAGS="$RLMAKE_FLAGS $RLMAKE_FLAGS_PLUS"
+      # TODO: удалить после обновления дистрибутива
+      export SRMAKE_FLAGS="$RLMAKE_FLAGS"
 
-      ${PATH_TO_SREFC}/bin/rlmake \
+      ${PATH_TO_RLC}/bin/rlmake \
         ${SCRIPT_FLAGS} --keep-rasls -d ../common "$MAINSRC" -o"$TARGET"
     )
     mv "$TARGET" "../../bin/$TARGET$TARGET_SUFFIX"
@@ -74,7 +78,7 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     find . ../common \
       \( -name '*.rasl' -o -name '*.cpp' \) \
       -exec mv '{}' "../../build/$DIR" \;
-    cp ${PATH_TO_SREFC}/lib/scratch{/exe,-rt{/debug-stubs,/exe,}}/*.{rasl,cpp} \
+    cp ${PATH_TO_RLC}/lib/scratch{/exe,-rt{/debug-stubs,/exe,}}/*.{rasl,cpp} \
       "../../build/$DIR"
   fi
 )
