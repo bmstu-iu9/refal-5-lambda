@@ -243,7 +243,7 @@ SpecCall {
                           (e.SpecPattern) (e.StaticMatches)
                           s.NextNumber (<ExtractVariables e.Body>)
                         >
-                      : (e.StaticMatches^)
+                      : e.StaticMatches^
 
                       = <Spec-PrepareSpecializedFuncBody
                           (e.SpecPattern) (e.StaticMatches) e.Body
@@ -523,11 +523,30 @@ Spec-RenameGenericMatch {
       >
     : (e.VarsFromMatch)
 
+    /*
+      Используем Reduce вместо Map, чтобы накапливать замены в обратном
+      порядке. Замены применяются по очереди, поэтому во избежание конфликтов
+      их нужно применять в обратном порядке.
+    */
     = <Reduce
         {
-          (e.NStaticMatches) (e.CurrentVarName)
+          ((e.VarsFromBody^) e.Substitutions)
+          (e.CurrentVarName)
             = <NewVarName (e.VarsFromBody) e.CurrentVarName (/* empty suffix */)>
-            : (e.Vars) e.NewVarName
+            : (e.VarsFromBody^) e.NewVarName
+            = (
+                (e.VarsFromBody)
+                ((e.CurrentVarName) ':' (e.NewVarName)) e.Substitutions
+              )
+        }
+        ((e.VarsFromBody) /* substitutions */)
+        e.VarsFromMatch
+      >
+    : ((e.VarsFromBody^) e.Substitutions)
+
+    = <Reduce
+        {
+          (e.NStaticMatches) ((e.CurrentVarName) ':' (e.NewVarName))
             = (
                 <FindReplace-GenericMatches-Val
                   (e.NStaticMatches) ((TkVariable e.CurrentVarName))
@@ -536,8 +555,11 @@ Spec-RenameGenericMatch {
               );
         }
         (e.StaticMatches)
-        e.VarsFromMatch
-      >;
+        e.Substitutions
+      >
+    : (e.StaticMatches^)
+
+    = e.StaticMatches
 }
 
 Spec-PrepareSpecializedFuncBody {
