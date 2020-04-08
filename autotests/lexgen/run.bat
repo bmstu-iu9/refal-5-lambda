@@ -66,7 +66,7 @@ setlocal
   echo Passing %1 (lexgen)...
   set SREF=%1
 
-  ..\..\bin\lexgen --from=%SREF% --to=_lexgen-out.sref 2> __error.txt
+  ..\..\bin\rl-lexgen --from=%SREF% --to=_lexgen-out.sref 2> __error.txt
   if errorlevel 100 (
     echo LEXGEN ON %1 FAILS, SEE __error.txt
     exit /b 1
@@ -109,7 +109,7 @@ setlocal
   echo Passing %1 (lexgen, syntax error recovering)...
   set SREF=%1
 
-  ..\..\bin\lexgen --from=%SREF% --to=_lexgen-out.sref 2> __error.txt
+  ..\..\bin\rl-lexgen --from=%SREF% --to=_lexgen-out.sref 2> __error.txt
   if errorlevel 100 (
     echo LEXGEN ON %1 FAILS, SEE __error.txt
     exit /b 1

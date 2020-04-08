@@ -23,7 +23,7 @@ run_test_aux.LEXGEN() {
   echo Passing $1 \(lexgen\)...
   SREF=$1
 
-  ../../bin/lexgen --from=$SREF --to=_lexgen-out.sref 2>__error.txt
+  ../../bin/rl-lexgen --from=$SREF --to=_lexgen-out.sref 2>__error.txt
   if [[ $? -ge 100 ]]; then
     echo LEXGEN ON $SREF FAILS, SEE __error.txt
     exit 1
@@ -59,7 +59,7 @@ run_test_aux.BAD-SYNTAX-LEXGEN() {
   echo Passing $1 \(lexgen, syntax error recovering\)...
   SREF=$1
 
-  ../../bin/lexgen --from=$SREF --to=_lexgen-out.sref 2>__error.txt
+  ../../bin/rl-lexgen --from=$SREF --to=_lexgen-out.sref 2>__error.txt
   if [[ $? -ge 100 ]]; then
     echo LEXGEN ON $SREF FAILS, SEE __error.txt
     exit 1
