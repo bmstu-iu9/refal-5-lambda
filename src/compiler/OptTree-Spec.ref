@@ -240,14 +240,13 @@ SpecCall {
 
                     NotFound
                       = <Spec-RenameGenericMatch
-                          (e.SpecPattern) (e.StaticMatches) (e.DynamicMatches)
+                          (e.SpecPattern) (e.StaticMatches)
                           s.NextNumber (<ExtractVariables e.Body>)
                         >
-                      : ((e.StaticMatches^) (e.DynamicMatches^))
+                      : (e.StaticMatches^)
 
                       = <Spec-PrepareSpecializedFuncBody
-                          (e.SpecPattern) (e.StaticMatches) (e.DynamicMatches)
-                          e.Body
+                          (e.SpecPattern) (e.StaticMatches) e.Body
                         >
                       : (e.SpecializedFuncBody)
 
@@ -513,8 +512,7 @@ Spec-PrepareCallOrPattern {
 }
 
 Spec-RenameGenericMatch {
-  (e.SpecPattern) (e.StaticMatches) (e.DynamicMatches)
-  s.NextNumber (e.VarsFromBody)
+  (e.SpecPattern) (e.StaticMatches) s.NextNumber (e.VarsFromBody)
     = <Reduce
         {
           (e.VarsFromMatch) (e.Val ':' t.Var)
@@ -527,32 +525,23 @@ Spec-RenameGenericMatch {
 
     = <Reduce
         {
-          ((e.NStaticMatches) (e.NDynamicMatches))
-          (e.CurrentVarName)
+          (e.NStaticMatches) (e.CurrentVarName)
             = <NewVarName (e.VarsFromBody) e.CurrentVarName (/* empty suffix */)>
             : (e.Vars) e.NewVarName
             = (
-                (
-                  <FindReplace-GenericMatches-Val
-                    (e.NStaticMatches) ((TkVariable e.CurrentVarName))
-                    (TkVariable e.NewVarName)
-                  >
-                )
-                (
-                  <FindReplace-GenericMatches-Val
-                    (e.NDynamicMatches) ((TkVariable e.CurrentVarName))
-                    (TkVariable e.NewVarName)
-                  >
-                )
+                <FindReplace-GenericMatches-Val
+                  (e.NStaticMatches) ((TkVariable e.CurrentVarName))
+                  (TkVariable e.NewVarName)
+                >
               );
         }
-        ((e.StaticMatches) (e.DynamicMatches))
+        (e.StaticMatches)
         e.VarsFromMatch
       >;
 }
 
 Spec-PrepareSpecializedFuncBody {
-  (e.SpecPattern) (e.StaticMatches) (e.DynamicMatches) e.Body
+  (e.SpecPattern) (e.StaticMatches) e.Body
     = <Reduce
         {
           (e.PreparedBody) ((e.SentencePattern) e.Conditions (e.SentenceResult))
@@ -586,9 +575,7 @@ Spec-PrepareSpecializedFuncBody {
                       e.SentencePattern
                     >
                   )
-                  <Spec-PrepareConditions
-                    (e.StaticSubstitutions) (e.DynamicMatches) e.Conditions
-                  >
+                  <Spec-PrepareConditions (e.StaticSubstitutions) e.Conditions>
                   (<Spec-PrepareResult (e.StaticSubstitutions) e.SentenceResult>)
                 )
               );
@@ -599,7 +586,7 @@ Spec-PrepareSpecializedFuncBody {
 }
 
 Spec-PrepareConditions {
-  (e.StaticSubstitutions) (e.DynamicMatches) e.Conditions
+  (e.StaticSubstitutions) e.Conditions
     = <Map
         {
           (Condition (e.Name) (e.ConditionResult) (e.ConditionPattern))
