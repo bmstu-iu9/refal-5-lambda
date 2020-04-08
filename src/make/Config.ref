@@ -14,7 +14,7 @@ $ENTRY Config-Create {
         (CppCompilerExe /* пусто */)
         (CppCompilerLib /* пусто */)
         (Folders /* пусто */)
-        (SrefCompiler ('rlc-core') /* флаги */)
+        (RLCompiler ('rlc-core') /* флаги */)
         (TargetFileName DefaultTarget)
         (SourceFile NotSet)
         (Prefix NotSet)
@@ -101,36 +101,36 @@ $ENTRY Config-AddFolder {
 }
 
 /**
-  <Config-GetSrefCompiler t.Config>
-    == e.SrefCompiler
+  <Config-GetRLCompiler t.Config>
+    == e.RLCompiler
 */
-$ENTRY Config-GetSrefCompiler {
-  [Config e.Params-B (SrefCompiler (e.Compiler) e.Flags) e.Params-E]
+$ENTRY Config-GetRLCompiler {
+  [Config e.Params-B (RLCompiler (e.Compiler) e.Flags) e.Params-E]
     = e.Compiler e.Flags;
 }
 
 /**
-  <Config-SetSrefCompiler t.Config e.Compiler>
+  <Config-SetRLCompiler t.Config e.Compiler>
     == Success t.Config
 */
-$ENTRY Config-SetSrefCompiler {
-  [Config e.Params-B (SrefCompiler (e.OldCompiler) e.Flags) e.Params-E]
-  e.SrefCompiler
+$ENTRY Config-SetRLCompiler {
+  [Config e.Params-B (RLCompiler (e.OldCompiler) e.Flags) e.Params-E]
+  e.RLCompiler
     = Success
-      [Config e.Params-B (SrefCompiler (e.SrefCompiler) e.Flags) e.Params-E];
+      [Config e.Params-B (RLCompiler (e.RLCompiler) e.Flags) e.Params-E];
 }
 
 /**
-  <Config-AddSrefCompilerFlag t.Config e.Flags>
+  <Config-AddRLCompilerFlag t.Config e.Flags>
     == Success t.Config
 */
-$ENTRY Config-AddSrefCompilerFlag {
-  [Config e.Params-B (SrefCompiler t.SrefCompiler e.Flags) e.Params-E]
+$ENTRY Config-AddRLCompilerFlag {
+  [Config e.Params-B (RLCompiler t.RLCompiler e.Flags) e.Params-E]
   e.NewFlags
     = Success
       [Config
         e.Params-B
-        (SrefCompiler t.SrefCompiler e.Flags ' "' e.NewFlags '"')
+        (RLCompiler t.RLCompiler e.Flags ' "' e.NewFlags '"')
         e.Params-E
       ];
 }

@@ -95,7 +95,7 @@ main() {
   elif [[ "$MODE" = "rlmake" ]]; then
     # shellcheck disable=SC2086
     rlmake-core \
-      -s "rlc-core" \
+      --rlc-command="rlc-core" \
       -X-OC ${RLMAKE_FLAGS} \
       "-X--exesuffix=$(platform_exe_suffix)" "-X--libsuffix=$(platform_lib_suffix)" \
       "${CPP[@]}" \

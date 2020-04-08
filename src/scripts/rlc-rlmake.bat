@@ -72,7 +72,7 @@ setlocal
       %PREFIX% %D% -d "%LIBDIR%" %ARGS%
   ) else if "%MODE%"=="rlmake" (
     rlmake-core ^
-      -s rlc-core.exe ^
+      --rlc-command=rlc-core.exe ^
       -X-OC %RLMAKE_FLAGS% ^
       -X--exesuffix=.exe -X--libsuffix=.dll %CPP% -X--chmod-x-command= ^
       -d "%LIBDIR%\common" --prelude=refal5-builtins.refi ^

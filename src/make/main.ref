@@ -12,7 +12,7 @@ $EXTERN
   Config-GetFolders,
   Config-GetSourceFile,
   Config-GetRuntimeFiles,
-  Config-GetSrefCompiler,
+  Config-GetRLCompiler,
   Config-GetCppCompilerExe,
   Config-GetCppCompilerLib,
   Config-GetPrefix,
@@ -45,7 +45,7 @@ MakeProject {
     = <Config-GetRuntimeFiles t.Config> : e.RuntimeFiles
     = <CreateFileList t.Config (e.SourceFile) e.RuntimeFiles>
     : t.Config^ e.Units
-    = <RunSrefCompiler t.Config e.Units>;
+    = <RunRLCompiler t.Config e.Units>;
 
   Fails e.Errors
     = <Map
@@ -63,7 +63,7 @@ PrintSrcPos {
   (s.LineNum e.FileName) = e.FileName ':' <Symb s.LineNum>;
 }
 
-RunSrefCompiler {
+RunRLCompiler {
   t.Config e.Units-B (Error t.SrcPos e.Message) e.Units-E
     = <Map
         {
@@ -80,7 +80,7 @@ RunSrefCompiler {
       <Exit 1>;
 
   t.Config e.Units
-    = <Config-GetSrefCompiler t.Config> : e.SrefCompiler
+    = <Config-GetRLCompiler t.Config> : e.RLCompiler
     = <MakeOptionalFlag &Config-GetCppCompilerExe t.Config 'cpp-command-exe'>
     : e.CppCompilerExe
     = <MakeOptionalFlag &Config-GetCppCompilerLib t.Config 'cpp-command-lib'>
@@ -107,7 +107,7 @@ RunSrefCompiler {
       >
     : e.CppCompilerLibSuf
     = <System
-        e.SrefCompiler
+        e.RLCompiler
         e.TargetModeFlag
         e.CppCompilerExe
         e.CppCompilerLib

@@ -12,8 +12,8 @@ $EXTERN
   Config-SetPrefix,
   Config-AddReference,
   Config-AddFolder,
-  Config-SetSrefCompiler,
-  Config-AddSrefCompilerFlag,
+  Config-SetRLCompiler,
+  Config-AddRLCompilerFlag,
   Config-SetTargetFileName,
   Config-SetTargetMode,
   Config-SetPrelude,
@@ -50,10 +50,10 @@ $ENTRY ParseCommandLine {
           (Reference Required 'r' ('reference'))
           (RuntimeFolder Required 'D' ('runtime-dir') ('runtime-directory'))
           (SearchFolder Required 'd' ('dir') ('directory'))
-          (SrefCompiler Required
+          (RLCompiler Required
              's' ('sref-command') ('srefc-command') ('rlc-command')
           )
-          (SrefCompilerOption Required 'X' ('thru') ('through'))
+          (RLCompilerOption Required 'X' ('thru') ('through'))
           (TargetFileName Required 'o' ('target-file'))
           (TargetMode-Exe None 'x' ('makeexe'))
           (TargetMode-Lib None 'l' ('makelib'))
@@ -117,15 +117,15 @@ $ENTRY ParseCommandLine {
                   t.Config (e.Errors) &Config-AddFolder s.Num Search e.Folder
                 >;
 
-            (t.Config e.Errors) (SrefCompiler s.Num e.SrefCompiler)
+            (t.Config e.Errors) (RLCompiler s.Num e.RLCompiler)
               = <Update
                   t.Config (e.Errors)
-                  &Config-SetSrefCompiler s.Num e.SrefCompiler
+                  &Config-SetRLCompiler s.Num e.RLCompiler
                 >;
 
-            (t.Config e.Errors) (SrefCompilerOption s.Num e.Flag)
+            (t.Config e.Errors) (RLCompilerOption s.Num e.Flag)
               = <Update
-                  t.Config (e.Errors) &Config-AddSrefCompilerFlag s.Num e.Flag
+                  t.Config (e.Errors) &Config-AddRLCompilerFlag s.Num e.Flag
                 >;
 
             (t.Config e.Errors) (TargetFileName s.Num e.TargetFile)
