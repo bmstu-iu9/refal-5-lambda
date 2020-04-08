@@ -600,26 +600,17 @@ Spec-PrepareSpecializedFuncBody {
 
 Spec-PrepareConditions {
   (e.StaticSubstitutions) (e.DynamicMatches) e.Conditions
-    = <Reduce
+    = <Map
         {
-          (e.StaticSubstitutions)
           (Condition (e.Name) (e.ConditionResult) (e.ConditionPattern))
-            = (
-                Condition (e.Name)
+            = (Condition
+                (e.Name)
                 (<Spec-PrepareResult (e.StaticSubstitutions) e.ConditionResult>)
-                (
-                  <Spec-PrepareCallOrPattern
-                    (e.StaticSubstitutions) (e.DynamicMatches)
-                    e.ConditionPattern
-                  >
-                )
+                (<Spec-PrepareResult (e.StaticSubstitutions) e.ConditionPattern>)
               );
         }
-        (e.StaticSubstitutions)
         e.Conditions
       >
-    : (e.StaticSubstitutions) e.Conditions^
-    = e.Conditions;
 }
 
 Spec-PrepareResult {
