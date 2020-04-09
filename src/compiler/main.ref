@@ -25,7 +25,7 @@ $EXTERN FindFiles;
 $EXTERN CompileFile, GrammarCheck;
 
 *$FROM Library
-$EXTERN FOpen, FClose, FSeek, FTell, FWriteBytes, RenameFile;
+$EXTERN FOpen, FClose, FSeek, FTell, WriteBytes, RenameFile;
 
 *$FROM Generator-RASL
 $EXTERN PutBlockStart, PutBlockReference, PutBlockIncorporated;
@@ -687,7 +687,7 @@ AlignToPage {
         0 = /* ничего не делаем */;
 
         s.Other =
-          <FWriteBytes s.FileHandle '@'>
+          <WriteBytes s.FileHandle '@'>
           <AlignToPage s.FileHandle>;
       };
 }
@@ -701,7 +701,7 @@ AppendRASLToBinary {
     = <Map
         {
           (RASL s.Origin e.OutputName)
-            = <FWriteBytes s.FileHandle <LoadBytes e.OutputName>>;
+            = <WriteBytes s.FileHandle <LoadBytes e.OutputName>>;
 
           (Native s.Origin e.NativeName) = /* ничего не делаем */;
         }
@@ -725,7 +725,7 @@ AppendSimpleBlock {
     = <FOpen ('ab') e.BinaryName> : s.FileHandle
     = <Map
         {
-          (e.BlockItem) = <FWriteBytes s.FileHandle <s.FnAdder e.BlockItem>>;
+          (e.BlockItem) = <WriteBytes s.FileHandle <s.FnAdder e.BlockItem>>;
         }
         e.BlockItems
       >

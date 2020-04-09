@@ -3397,8 +3397,6 @@ bool cookie_ns::compare(refalrts::Iter left, refalrts::Iter right) {
 /**
   <WriteBytes s.FileNo s.Byte*> == []
   s.Byte ::= s.MACRODIGIT | s.CHAR
-
-  FWriteBytes (deprecated) is synonim for WriteBytes
 */
 $ENTRY WriteBytes {
 %%
@@ -3445,10 +3443,6 @@ $ENTRY WriteBytes {
 %%
 }
 
-$ENTRY FWriteBytes {
-  s.FileNo e.Bytes = <WriteBytes s.FileNo e.Bytes>;
-}
-
 
 /**
   <ReadBytes s.FileNo s.CountBytes> == e.ReadBytes
@@ -3457,8 +3451,6 @@ $ENTRY FWriteBytes {
   e.ReadBytes ::= s.MACRODIGIT*
 
   |e.ReadBytes| <= s.CountBytes
-
-  FReadBytes (deprecated) is synonim for ReadBytes
 */
 $ENTRY ReadBytes {
 %%
@@ -3517,10 +3509,6 @@ $ENTRY ReadBytes {
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
-}
-
-$ENTRY FReadBytes {
-  s.FileNo s.Count = <ReadBytes s.FileNo s.Count>;
 }
 
 

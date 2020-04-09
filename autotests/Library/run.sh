@@ -60,7 +60,7 @@ run_all_tests() {
     Library-SymbCompare \
     Library-Type \
     Library-Implode-Explode_Ext \
-    Library-FReadBytes \
+    Library-ReadBytes \
     Library-FTell \
     Library-FSeek \
     Library-PtrFromName \
@@ -135,11 +135,11 @@ run_all_tests() {
     cleanup Library-FOpen-extended-mode
   fi
 
-  if [ -e Library-FWriteBytes ]; then
-    echo Pass Library-FWriteBytes test...
-    run_exe Library-FWriteBytes
+  if [ -e Library-WriteBytes ]; then
+    echo Pass Library-WriteBytes test...
+    run_exe Library-WriteBytes
     compare __written_file.txt 2lines-no-eol.txt
-    cleanup Library-FWriteBytes
+    cleanup Library-WriteBytes
   fi
 
   if [ -e Library-RenameFile ]; then

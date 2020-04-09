@@ -2,7 +2,7 @@ $INCLUDE "LibraryEx";
 
 *$FROM Library
 $EXTERN FOpen, FClose, FReadLine, FWriteLine, Add, Sub, IntFromStr, Arg,
-  SymbCompare, FReadBytes, FWriteBytes;
+  SymbCompare, ReadBytes, WriteBytes;
 
 $ENTRY Apply;
 
@@ -61,7 +61,7 @@ $ENTRY LoadBytes {
 
 DoLoadBytes {
   s.FileHandle
-    = <FReadBytes s.FileHandle 4096>
+    = <ReadBytes s.FileHandle 4096>
     : {
         /* пусто */ = <FClose s.FileHandle>;
         e.Bytes = e.Bytes <DoLoadBytes s.FileHandle>;
@@ -78,7 +78,7 @@ $ENTRY AppendBytes {
 
 SaveBytes-Handle {
   s.FileHandle e.Bytes
-    = <FWriteBytes s.FileHandle e.Bytes>
+    = <WriteBytes s.FileHandle e.Bytes>
       <FClose s.FileHandle>;
 }
 

@@ -1,5 +1,5 @@
 //FROM Library
-$EXTERN FOpen, FWriteBytes, FWriteLine, FClose;
+$EXTERN FOpen, WriteBytes, FWriteLine, FClose;
 
 $ENTRY Go {
   =
@@ -7,11 +7,11 @@ $ENTRY Go {
       {
         s.FileHandle =
           // Hello в десятичных кодах
-          <IsEmpty <FWriteBytes s.FileHandle 72 101 108 25600108 111>>
+          <IsEmpty <WriteBytes s.FileHandle 72 101 108 25600108 111>>
           // перевод строки
           <FWriteLine s.FileHandle>
           // World без перевода строки в конце
-          <IsEmpty <FWriteBytes s.FileHandle 'World'>>
+          <IsEmpty <WriteBytes s.FileHandle 'World'>>
           <FClose s.FileHandle>;
       }
       <FOpen ('w') '__written_file.txt'>

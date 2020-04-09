@@ -69,7 +69,7 @@ setlocal
     Library-SymbCompare ^
     Library-Type ^
     Library-Implode-Explode_Ext ^
-    Library-FReadBytes ^
+    Library-ReadBytes ^
     Library-FTell ^
     Library-FSeek ^
     Library-PtrFromName ^
@@ -146,11 +146,11 @@ setlocal
     call :CLEANUP Library-FOpen-extended-mode
   )
 
-  if exist Library-FWriteBytes.exe (
-    echo Pass Library-FWriteBytes test...
-    call :RUN_EXE Library-FWriteBytes || exit /b 1
+  if exist Library-WriteBytes.exe (
+    echo Pass Library-WriteBytes test...
+    call :RUN_EXE Library-WriteBytes || exit /b 1
     call :COMPARE __written_file.txt 2lines-no-eol.txt || exit /b 1
-    call :CLEANUP Library-FWriteBytes
+    call :CLEANUP Library-WriteBytes
   )
 
   if exist Library-RenameFile.exe (
