@@ -2363,32 +2363,8 @@ $ENTRY Exit {
   54. <Close s.FileNo> == []
   If file not opened function never does.
 */
-%%
-namespace cookie_ns {
-
-enum CloseMode { cCloseMode_Silent, cCloseMode_Fail };
-
-extern refalrts::FnResult close(
-  refalrts::VM *vm, const refalrts::RefalIdentifier *identifiers,
-  refalrts::Iter arg_begin, refalrts::Iter arg_end, CloseMode mode
-);
-
-}  // namespace cookie_ns
-%%
-
 $ENTRY Close {
 %%
-  return cookie_ns::close(
-    vm, identifiers, arg_begin, arg_end, cookie_ns::cCloseMode_Silent
-  );
-%%
-}
-
-%%
-refalrts::FnResult cookie_ns::close(
-  refalrts::VM *vm, const refalrts::RefalIdentifier *identifiers,
-  refalrts::Iter arg_begin, refalrts::Iter arg_end, CloseMode mode
-) {
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
   refalrts::call_left(content_b, content_e, arg_begin, arg_end);
@@ -2402,33 +2378,16 @@ refalrts::FnResult cookie_ns::close(
   }
 
   FILE *handle = extract_file_handle(vm, identifiers, pfile_handle);
-  switch (mode) {
-  case cookie_ns::cCloseMode_Silent:
-    if (handle) {
-      if (! release_file_handle(vm, pfile_handle)) {
-        return refalrts::cRecognitionImpossible;
-      }
-    }
-    break;
-
-  case cookie_ns::cCloseMode_Fail:
-    if (! handle) {
-      return refalrts::cRecognitionImpossible;
-    }
-
+  if (handle) {
     if (! release_file_handle(vm, pfile_handle)) {
       return refalrts::cRecognitionImpossible;
     }
-    break;
-
-  default:
-    refalrts_switch_default_violation(mode);
   }
 
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
-}
 %%
+}
 
 
 /**
