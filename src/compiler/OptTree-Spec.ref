@@ -215,7 +215,7 @@ SpecCall {
 
     , <Spec-PrepareSignature e.StaticMatches (e.SpecPattern)> : e.Signature
 
-    , <Spec-IsTrivialSignature e.Signature> : False
+    , <Spec-IsTrivialSubstitutions e.StaticMatches> : False
 
     = <SpecCall-Aux
         (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures (e.Argument)
@@ -472,22 +472,21 @@ Spec-FindInSignatures {
 }
 
 /**
-  <Spec-IsTrivialSignature e.Signature>
-
-  e.Signature ::= (e.Expression)*
+  <Spec-IsTrivialSubstitutions e.StaticMatches>
 */
-Spec-IsTrivialSignature {
-  e.Signature
+Spec-IsTrivialSubstitutions {
+  e.StaticMatches
     = <Reduce
         {
           False t.Any = False;
 
-          True ((TkVariable e.VarName)) = True;
+          True ((TkVariable s.Mode e.Index1) ':' (TkVariable s.Mode e.Index2))
+            = True;
 
-          True t.OtherExpression = False;
+          True t.OtherSubstitution = False;
         }
         True
-        e.Signature
+        e.StaticMatches
       >;
 }
 
