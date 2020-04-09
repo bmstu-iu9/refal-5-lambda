@@ -241,23 +241,24 @@ SpecCall-Aux {
     : {
         Found e.SpecSuffix
           = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
-            (
-              ColdCallBrackets (Symbol Name e.Name SUF e.SpecSuffix)
+            (ColdCallBrackets
+              (Symbol Name e.Name SUF e.SpecSuffix)
               e.SpecializedFuncArgument
             )
             /* no new functions */;
 
         NotFound
+          = <ExtractVariables e.Body> : e.BodyVariables
+
           = <Spec-RenameGenericMatch
-              (e.SpecPattern) (e.StaticMatches)
-              s.NextNumber (<ExtractVariables e.Body>)
+              (e.SpecPattern) (e.StaticMatches) e.BodyVariables
             >
           : e.StaticMatches^
 
           = <Spec-PrepareSpecializedFuncBody
               (e.SpecPattern) (e.StaticMatches) e.Body
             >
-          : (e.SpecializedFuncBody)
+          : e.SpecializedFuncBody
 
           , <IsSoundBody e.SpecializedFuncBody>
           : {
@@ -538,7 +539,7 @@ Spec-PrepareCallOrPattern {
 }
 
 Spec-RenameGenericMatch {
-  (e.SpecPattern) (e.StaticMatches) s.NextNumber (e.VarsFromBody)
+  (e.SpecPattern) (e.StaticMatches) e.VarsFromBody
     = <Reduce
         {
           (e.VarsFromMatch) (e.Val ':' t.Var)
@@ -590,47 +591,44 @@ Spec-RenameGenericMatch {
 
 Spec-PrepareSpecializedFuncBody {
   (e.SpecPattern) (e.StaticMatches) e.Body
+    = <Map (&Spec-PrepareSentence (e.SpecPattern) (e.StaticMatches)) e.Body>;
+}
+
+Spec-PrepareSentence {
+  (e.SpecPattern) (e.CallStaticMatches)
+  ((e.Pattern) e.Conditions (e.Result))
+    = <GenericMatch-Wrapper (e.Pattern) (e.SpecPattern)>
+    : Clear (e.PatternStaticMatches) (e.PatternDynamicMatches)
+
+    = <MapGenericMatches (e.CallStaticMatches) (e.PatternStaticMatches)>
+    : e.StaticSubstitutions
+
+*   propogate static match val in e.PatternDynamicMatches
     = <Reduce
         {
-          (e.PreparedBody) ((e.SentencePattern) e.Conditions (e.SentenceResult))
-            = <GenericMatch-Wrapper (e.SentencePattern) (e.SpecPattern)>
-            : Clear (e.SentenceStaticMatches) (e.SentenceDynamicMatches)
-
-            = <MapGenericMatches (e.StaticMatches) (e.SentenceStaticMatches)>
-            : e.StaticSubstitutions
-
-*           propogate static match val in e.SentenceDynamicMatches
-            = <MapAccum
-                {
-                  (e.NSentenceDynamicMatches) (e.Val ':' t.Var)
-                    = (
-                        <FindReplace-GenericMatches-Val
-                          (e.NSentenceDynamicMatches) (t.Var) e.Val
-                        >
-                      );
-                }
-                (e.SentenceDynamicMatches)
-                e.StaticSubstitutions
-              >
-            : (e.SentenceDynamicMatches^)
-
+          (e.NSentenceDynamicMatches) (e.Val ':' t.Var)
             = (
-                e.PreparedBody
-                (
-                  (
-                    <Spec-PrepareCallOrPattern
-                      (e.StaticSubstitutions) (e.SentenceDynamicMatches)
-                      e.SentencePattern
-                    >
-                  )
-                  <Spec-PrepareConditions (e.StaticSubstitutions) e.Conditions>
-                  (<Spec-PrepareResult (e.StaticSubstitutions) e.SentenceResult>)
-                )
+                <FindReplace-GenericMatches-Val
+                  (e.NSentenceDynamicMatches) (t.Var) e.Val
+                >
               );
         }
-        (/* for result */)
-        e.Body
-      >;
+        (e.PatternDynamicMatches)
+        e.StaticSubstitutions
+      >
+    : (e.PatternDynamicMatches^)
+
+    = <Spec-PrepareCallOrPattern
+        (e.StaticSubstitutions) (e.PatternDynamicMatches) e.Pattern
+      >
+    : e.Pattern^
+
+    = <Spec-PrepareConditions (e.StaticSubstitutions) e.Conditions>
+    : e.Conditions^
+
+    = <Spec-PrepareResult (e.StaticSubstitutions) e.Result> : e.Result^
+
+    = ((e.Pattern) e.Conditions (e.Result));
 }
 
 Spec-PrepareConditions {
@@ -798,7 +796,7 @@ FindAndFormatVarTerm-Aux {
 }
 
 MapGenericMatches {
-  (e.ArgStaticMatches) (e.SentenceStaticMatches)
+  (e.ArgStaticMatches) (e.PatternStaticMatches)
     = <Reduce
         {
           (
@@ -815,7 +813,7 @@ MapGenericMatches {
               );
         }
         ((e.ArgStaticMatches) (/* for result */))
-        e.SentenceStaticMatches
+        e.PatternStaticMatches
       >
     : ((e.ArgStaticMatches) (e.ResultMatches))
     = e.ResultMatches;
