@@ -232,7 +232,7 @@ SpecCall-Aux {
   (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures (e.Argument)
   (e.Signature) (e.StaticMatches) (e.DynamicMatches)
 
-    = <Spec-PrepareCallOrPattern
+    = <Spec-PrepareArgOrPattern
         (e.StaticMatches) (e.DynamicMatches) e.SpecPattern
       >
     : e.SpecializedFuncArgument
@@ -248,12 +248,6 @@ SpecCall-Aux {
             /* no new functions */;
 
         NotFound
-          = <ExtractVariables e.Body> : e.BodyVariables
-
-          = <Spec-RenameGenericMatch
-              (e.SpecPattern) (e.StaticMatches) e.BodyVariables
-            >
-          : e.StaticMatches^
 
           = <Spec-PrepareSpecializedFuncBody
               (e.SpecPattern) (e.StaticMatches) e.Body
@@ -491,7 +485,7 @@ Spec-IsTrivialSubstitutions {
       >;
 }
 
-Spec-PrepareCallOrPattern {
+Spec-PrepareArgOrPattern {
   (e.StaticMatches) (e.DynamicMatches) e.SpecPattern
 
     /*
@@ -607,6 +601,13 @@ Spec-RenameGenericMatch {
 
 Spec-PrepareSpecializedFuncBody {
   (e.SpecPattern) (e.StaticMatches) e.Body
+    = <ExtractVariables e.Body> : e.BodyVariables
+
+    = <Spec-RenameGenericMatch
+        (e.SpecPattern) (e.StaticMatches) e.BodyVariables
+      >
+    : e.StaticMatches^
+
     = <Map (&Spec-PrepareSentence (e.SpecPattern) (e.StaticMatches)) e.Body>;
 }
 
@@ -634,7 +635,7 @@ Spec-PrepareSentence {
       >
     : (e.PatternDynamicMatches^)
 
-    = <Spec-PrepareCallOrPattern
+    = <Spec-PrepareArgOrPattern
         (e.CallStaticMatches) (e.PatternDynamicMatches) e.SpecPattern
       >
     : e.Pattern^
