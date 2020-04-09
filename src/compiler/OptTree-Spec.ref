@@ -207,79 +207,81 @@ SpecTerm {
 */
 SpecCall {
   (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures (e.Argument)
-    = <GenericMatch-Wrapper (e.Argument) (e.SpecPattern)>
+
+    , <GenericMatch-Wrapper (e.Argument) (e.SpecPattern)>
+    : Clear (e.StaticMatches) (e.DynamicMatches)
+
+    , <IsActiveMatches e.StaticMatches> : False
+
+    , <Spec-PrepareSignature e.StaticMatches> : e.Signature
+
+    , <Spec-IsTrivialSignature e.Signature> : False
+
+    = <SpecCall-Aux
+        (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures (e.Argument)
+        (e.Signature) (e.StaticMatches) (e.DynamicMatches)
+      >;
+
+  (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures (e.Argument)
+    = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
+      (ColdCallBrackets (Symbol Name e.Name) e.Argument)
+      /* no new functions */;
+}
+
+SpecCall-Aux {
+  (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures (e.Argument)
+  (e.Signature) (e.StaticMatches) (e.DynamicMatches)
+
+    = <Spec-PrepareCallOrPattern
+        (e.StaticMatches) (e.DynamicMatches) e.SpecPattern
+      >
+    : e.SpecializedFuncArgument
+
+    = <Spec-FindInSignatures (e.Signature) e.Signatures>
     : {
-        Clear (e.StaticMatches) (e.DynamicMatches)
-          , <IsActiveMatches e.StaticMatches> : False
+        Found e.SpecSuffix
+          = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
+            (
+              ColdCallBrackets (Symbol Name e.Name SUF e.SpecSuffix)
+              e.SpecializedFuncArgument
+            )
+            /* no new functions */;
 
-          = <Spec-PrepareSignature e.StaticMatches>
-          : e.Signature
+        NotFound
+          = <Spec-RenameGenericMatch
+              (e.SpecPattern) (e.StaticMatches)
+              s.NextNumber (<ExtractVariables e.Body>)
+            >
+          : e.StaticMatches^
 
-          = <Spec-IsTrivialSignature e.Signature>
+          = <Spec-PrepareSpecializedFuncBody
+              (e.SpecPattern) (e.StaticMatches) e.Body
+            >
+          : (e.SpecializedFuncBody)
+
+          , <IsSoundBody e.SpecializedFuncBody>
           : {
               True
+                = (
+                    (e.SpecPattern) (e.Body) <Inc s.NextNumber>
+                    e.Signatures
+                    ((e.Name SUF '@' s.NextNumber) e.Signature)
+                  )
+                  (ColdCallBrackets
+                    (Symbol Name e.Name SUF '@' s.NextNumber)
+                    e.SpecializedFuncArgument
+                  )
+                  (
+                    Function GN-Local (e.Name SUF '@' s.NextNumber)
+                    Sentences e.SpecializedFuncBody
+                  );
+
+              False
                 = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
                   (ColdCallBrackets (Symbol Name e.Name) e.Argument)
                   /* no new functions */;
-
-              False
-                = <Spec-PrepareCallOrPattern
-                    (e.StaticMatches) (e.DynamicMatches) e.SpecPattern
-                  >
-                : e.SpecializedFuncArgument
-
-                = <Spec-FindInSignatures (e.Signature) e.Signatures>
-                : {
-                    Found e.SpecSuffix
-                      = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
-                        (
-                          ColdCallBrackets (Symbol Name e.Name SUF e.SpecSuffix)
-                          e.SpecializedFuncArgument
-                        )
-                        /* no new functions */;
-
-                    NotFound
-                      = <Spec-RenameGenericMatch
-                          (e.SpecPattern) (e.StaticMatches)
-                          s.NextNumber (<ExtractVariables e.Body>)
-                        >
-                      : e.StaticMatches^
-
-                      = <Spec-PrepareSpecializedFuncBody
-                          (e.SpecPattern) (e.StaticMatches) e.Body
-                        >
-                      : (e.SpecializedFuncBody)
-
-                      , <IsSoundBody e.SpecializedFuncBody>
-                      : {
-                          True
-                            = (
-                                (e.SpecPattern) (e.Body) <Inc s.NextNumber>
-                                e.Signatures
-                                ((e.Name SUF '@' s.NextNumber) e.Signature)
-                              )
-                              (ColdCallBrackets
-                                (Symbol Name e.Name SUF '@' s.NextNumber)
-                                e.SpecializedFuncArgument
-                              )
-                              (
-                                Function GN-Local (e.Name SUF '@' s.NextNumber)
-                                Sentences e.SpecializedFuncBody
-                              );
-
-                          False
-                            = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
-                              (ColdCallBrackets (Symbol Name e.Name) e.Argument)
-                              /* no new functions */;
-                        }
-                  };
-            };
-
-        s.OtherResult e.ResultInfo
-          = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
-            (ColdCallBrackets (Symbol Name e.Name) e.Argument)
-            /* no new functions */;
-      };
+            }
+      }
 }
 
 IsActiveMatches {
