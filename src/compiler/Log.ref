@@ -1,5 +1,5 @@
 *$FROM Library
-$EXTERN FOpen, FClose;
+$EXTERN FOpen, Close;
 
 $INCLUDE "LibraryEx";
 
@@ -36,7 +36,7 @@ $ENTRY Log-Final {
     = <Log-PutLine 'Compilation ends'> : /* empty */
     = <G_LogFile>
     : {
-        s.FileHandle = <FClose s.FileHandle>;
+        s.FileHandle = <Close s.FileHandle>;
 
         /* empty */ = /* do nothing */;
       };

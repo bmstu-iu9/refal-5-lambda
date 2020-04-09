@@ -1,5 +1,5 @@
 //FROM Library
-$EXTERN FOpen, FWriteLine, FClose;
+$EXTERN FOpen, FWriteLine, Close;
 
 $ENTRY Go {
   = <FillFile <FOpen 'W' '__written_file.txt'>>;
@@ -12,5 +12,5 @@ FillFile {
   s.FileHandle =
     <Handle s.FileHandle <FWriteLine s.FileHandle 'Hello'>>
     <Handle s.FileHandle <FWriteLine s.FileHandle 'World'>>
-    <Empty <FClose s.FileHandle>>;
+    <Empty <Close s.FileHandle>>;
 }

@@ -1,5 +1,5 @@
 //FROM Library
-$EXTERN SymbCompare, FOpen, FClose;
+$EXTERN SymbCompare, FOpen, Close;
 
 LT { '<' = ; }
 EQ { '=' = ; }

@@ -7,8 +7,9 @@ $ENTRY Go {
     <Eq () <Putout 15 'Three'>>
     <Eq () <Close 15>>
     <Eq () <Close 15>>
-    <Eq () <Close 10>>
-    <Eq (28) <Step>>;
+    <Eq () <Close 10>>  /* unopened */
+    <Eq () <Close 0>>   /* zero handle */
+    <Eq (31) <Step>>;
 }
 
 Eq { (e.X) e.X = <Prout e.X>; }

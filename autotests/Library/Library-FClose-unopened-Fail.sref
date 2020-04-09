@@ -1,6 +1,0 @@
-//FROM Library
-$EXTERN FClose;
-
-$ENTRY Go {
-  = <FClose 10>;
-}

@@ -1,7 +1,7 @@
 $INCLUDE "LibraryEx";
 
 *$FROM Library
-$EXTERN FOpen, FClose, FReadLine, FWriteLine, Add, Sub, IntFromStr, Arg,
+$EXTERN FOpen, Close, FReadLine, FWriteLine, Add, Sub, IntFromStr, Arg,
   SymbCompare, ReadBytes, WriteBytes;
 
 $ENTRY Apply;
@@ -27,9 +27,9 @@ $ENTRY LoadFile {
 }
 
 DoLoadFile {
-  t.File 0 = <FClose t.File>;
+  t.File 0 = <Close t.File>;
 
-  t.File e.Line 0 = (e.Line) <FClose t.File>;
+  t.File e.Line 0 = (e.Line) <Close t.File>;
 
   t.File e.Line = (e.Line) <DoLoadFile <FReadLine t.File>>;
 }
@@ -44,7 +44,7 @@ $ENTRY AppendFile {
 
 SaveFile-Handle {
   s.FileHandle e.Lines
-    = <FClose
+    = <Close
         <Reduce
           {
             s.FileHandle^ (e.Line) = <FWriteLine s.FileHandle e.Line>;
@@ -63,7 +63,7 @@ DoLoadBytes {
   s.FileHandle
     = <ReadBytes s.FileHandle 4096>
     : {
-        /* пусто */ = <FClose s.FileHandle>;
+        /* пусто */ = <Close s.FileHandle>;
         e.Bytes = e.Bytes <DoLoadBytes s.FileHandle>;
       };
 }
@@ -79,7 +79,7 @@ $ENTRY AppendBytes {
 SaveBytes-Handle {
   s.FileHandle e.Bytes
     = <WriteBytes s.FileHandle e.Bytes>
-      <FClose s.FileHandle>;
+      <Close s.FileHandle>;
 }
 
 $ENTRY Inc;

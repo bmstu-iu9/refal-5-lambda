@@ -1,10 +1,10 @@
 //FROM Library
-$EXTERN FOpen, FWriteLine, FClose, FReadLine;
+$EXTERN FOpen, FWriteLine, Close, FReadLine;
 
 $ENTRY Go {
   =
     // «Обрезаем» файл на случай, если он уже существует
-    <FClose <FOpen 'w' '__written_file.txt'>>
+    <Close <FOpen 'w' '__written_file.txt'>>
 
     <AppendLine ('__written_file.txt') 'Hello'>
     <AppendLine ('__written_file.txt') 'World'>
@@ -17,7 +17,7 @@ AppendLine {
       {
         s.FileHandle =
           <FWriteLine s.FileHandle e.Line>
-          <FClose s.FileHandle>;
+          <Close s.FileHandle>;
       }
       <FOpen 'a' e.FileName>
     >;
@@ -28,7 +28,7 @@ CheckContent {
     <
       {
         (s.FileHandle e.NextLine 0) (e.NextLine 0) e.Lines^ =
-          <FClose s.FileHandle>;
+          <Close s.FileHandle>;
 
         (s.FileHandle e.NextLine) (e.NextLine) e.Lines^ =
           <CheckContent s.FileHandle e.Lines>;

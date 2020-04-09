@@ -1,5 +1,5 @@
 //FROM Library
-$EXTERN FOpen, WriteBytes, FWriteLine, FClose;
+$EXTERN FOpen, WriteBytes, FWriteLine, Close;
 
 $ENTRY Go {
   =
@@ -12,7 +12,7 @@ $ENTRY Go {
           <FWriteLine s.FileHandle>
           // World без перевода строки в конце
           <IsEmpty <WriteBytes s.FileHandle 'World'>>
-          <FClose s.FileHandle>;
+          <Close s.FileHandle>;
       }
       <FOpen ('w') '__written_file.txt'>
     >;

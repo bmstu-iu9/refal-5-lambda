@@ -1995,7 +1995,7 @@ Xxin-Scan {
     = <Sysfun-Xxin-ERROR 'Unbalanced )'>;
 
   /* EXIT FROM RECURSION */
-  s.FileNo General ('^' e.Scanned) 'N' s.0 0 = <FClose s.FileNo> e.Scanned;
+  s.FileNo General ('^' e.Scanned) 'N' s.0 0 = <Close s.FileNo> e.Scanned;
 
   s.FileNo General ((General t.Stack e.Scanned) e.Inner) 'N' s.0 0
     = <Sysfun-Xxin-ERROR 'Unbalanced ('>;
@@ -2114,7 +2114,7 @@ Xxout-Wrap {
   s.FileNo s.Width e.Text
     = <DoFirst s.Width () e.Text>
     : {
-        (e.Line) /* empty */ = <Write-Aux s.FileNo e.Line> <FClose s.FileNo>;
+        (e.Line) /* empty */ = <Write-Aux s.FileNo e.Line> <Close s.FileNo>;
 
         (e.Line) e.Rest
           = <Putout-Aux s.FileNo e.Line>
@@ -3080,19 +3080,6 @@ $ENTRY GetPPID {
 
 
 * Ввод-вывод
-
-/**
-  <FClose s.FileNo> == []
-  If file not opened function never does.
-*/
-$ENTRY FClose {
-%%
-  return cookie_ns::close(
-    vm, identifiers, arg_begin, arg_end, cookie_ns::cCloseMode_Fail
-  );
-%%
-}
-
 
 /**
   <Open-Auto t.Mode e.FileName> == s.FileNo

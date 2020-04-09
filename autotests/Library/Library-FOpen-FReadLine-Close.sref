@@ -1,5 +1,5 @@
 //FROM Library
-$EXTERN FOpen, FReadLine, FClose;
+$EXTERN FOpen, FReadLine, Close;
 
 $ENTRY Go {
   =
@@ -26,7 +26,7 @@ Empty { /* пусто */ = ; }
 DoCheckContent-EatLine {
   s.FileHandle (s.FileHandle e.NextLine 0) (e.NextLine 0) =
     /* всё, все строчки прочтены */
-    <Empty <FClose s.FileHandle>>;
+    <Empty <Close s.FileHandle>>;
 
   s.FileHandle (s.FileHandle e.NextLine) (e.NextLine) e.Lines =
     <DoCheckContent s.FileHandle e.Lines>;

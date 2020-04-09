@@ -25,7 +25,7 @@ $EXTERN FindFiles;
 $EXTERN CompileFile, GrammarCheck;
 
 *$FROM Library
-$EXTERN FOpen, FClose, FSeek, FTell, WriteBytes, RenameFile;
+$EXTERN FOpen, Close, FSeek, FTell, WriteBytes, RenameFile;
 
 *$FROM Generator-RASL
 $EXTERN PutBlockStart, PutBlockReference, PutBlockIncorporated;
@@ -676,7 +676,7 @@ EnsureAligned4096 {
   e.BinaryName
     = <FOpen ('ab') e.BinaryName> : s.FileHandle
     = <AlignToPage s.FileHandle>
-      <FClose s.FileHandle>;
+      <Close s.FileHandle>;
 }
 
 AlignToPage {
@@ -707,7 +707,7 @@ AppendRASLToBinary {
         }
         e.Files
       >
-      <FClose s.FileHandle>;
+      <Close s.FileHandle>;
 }
 
 AppendReferencesToBinary {
@@ -729,7 +729,7 @@ AppendSimpleBlock {
         }
         e.BlockItems
       >
-      <FClose s.FileHandle>;
+      <Close s.FileHandle>;
 }
 
 PostLinkRename {

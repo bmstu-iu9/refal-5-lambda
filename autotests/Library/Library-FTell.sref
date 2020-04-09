@@ -1,5 +1,5 @@
 //FROM Library
-$EXTERN FOpen, FTell, ReadBytes, FClose;
+$EXTERN FOpen, FTell, ReadBytes, Close;
 
 $ENTRY Go {
   = <Test-FTell <FOpen ('rb') 'nonprint.bin'>>;
@@ -14,7 +14,7 @@ Test-FTell {
     <Eq 30 <FTell s.FileHandle>>
     <NIL <ReadBytes s.FileHandle 10>>
     <Eq 32 <FTell s.FileHandle>>
-    <FClose s.FileHandle>;
+    <Close s.FileHandle>;
 }
 
 Eq { s.X s.X = ; }
