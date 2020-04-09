@@ -213,7 +213,7 @@ SpecCall {
 
     , <IsActiveMatches e.StaticMatches> : False
 
-    , <Spec-PrepareSignature e.StaticMatches> : e.Signature
+    , <Spec-PrepareSignature e.StaticMatches (e.SpecPattern)> : e.Signature
 
     , <Spec-IsTrivialSignature e.Signature> : False
 
@@ -362,20 +362,28 @@ FindClosuresInPatterns-Term {
 }
 
 Spec-PrepareSignature {
-  e.StaticMatches
+  e.StaticMatches (e.SpecPattern)
+    = <ExtractVariables-Expr e.SpecPattern> : e.SpecVars
     = <Spec-RenameSignatureVars
-        <Reduce
-          {
-            (e.Signature) (e.Val ':' t.Var) = (e.Signature (e.Val));
-          }
-          (/* empty signature */)
-          e.StaticMatches
-        >
+        <Spec-PrepareSignature-SortVars e.StaticMatches (e.SpecVars)>
       >;
 }
 
+Spec-PrepareSignature-SortVars {
+  e.Variables-B (e.Val ':' (TkVariable e.Index)) e.Variables-E
+  ((e.Index) e.SpecVars)
+    = (e.Val)
+      <Spec-PrepareSignature-SortVars e.Variables-B e.Variables-E (e.SpecVars)>;
+
+  /* Если очередной переменной нет среди подстановок, значит она динамическая */
+  e.Variables ((e.DynamicVar) e.SpecVars)
+    = <Spec-PrepareSignature-SortVars e.Variables (e.SpecVars)>;
+
+  /* пусто */ (/* пусто */) = /* пусто */;
+}
+
 Spec-RenameSignatureVars {
-  (e.Signature)
+  e.Signature
     = <Map
         {
           (e.SignaturePart) = <ExtractVariables-Expr e.SignaturePart>;
