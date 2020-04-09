@@ -492,50 +492,66 @@ Spec-IsTrivialSubstitutions {
 }
 
 Spec-PrepareCallOrPattern {
-  (e.StaticMatches) (e.DynamicMatches) e.Pattern
+  (e.StaticMatches) (e.DynamicMatches) e.SpecPattern
 
-*   extract set of vars from static param values
-    = <Reduce
-        {
-          (e.ExtractedVars) (e.Val ':' t.Var)
-            = (
-                <RemoveRepeatings
-                  e.ExtractedVars
-                  <ExtractVariables-Expr-Wrapper e.Val>
-                >
-              );
-        }
-        (/* for extracted vars */)
-        e.StaticMatches
-      >
-    : (e.VarsFromStaticParams)
-
-*   union extracted vars from static and values from dynamic params
-    = <WrapEVar e.VarsFromStaticParams>
-      <Map
-        {
-          (e.Val ':' (TkVariable 'e' e.Index)) = (GhostBrackets e.Val);
-
-          (e.Val ':' t.Var) = e.Val;
-        }
-        e.DynamicMatches
-      >
-    : e.Expression
+    /*
+      ExtractVariables-Expr сохраняет относительный порядок переменных,
+      однако оставляет дубликаты. Но в e.SpecPattern это не критично,
+      поскольку все переменные в нём должны быть уникальны (иначе
+      синтаксическая ошибка).
+    */
+    = <ExtractVariables-Expr e.SpecPattern> : e.SpecVars
 
     = <MapAccum
         {
-          True (GhostBrackets e.Expr) = True (Brackets e.Expr);
+          (e.KnownVarsFromStatic) (s.Mode e.Index)
+            , e.StaticMatches
+            : e._B (e.Expr ':' (TkVariable s.Mode e.Index)) e._E
+            = <MapAccum
+                {
+                  (e.KnownVarsFromStatic^) (s.Mode^ e.Index^)
+                    , e.KnownVarsFromStatic : e._B1 (s.Mode e.Index) e._E1
+                    = (e.KnownVarsFromStatic)
+                      /* пропускаем переменную */;
 
-          False (GhostBrackets e.Expr) = True e.Expr;
+                  (e.KnownVarsFromStatic^) (s.Mode^ e.Index^)
+                    = (e.KnownVarsFromStatic (s.Mode e.Index))
+                      <WrapVar s.Mode (TkVariable s.Mode e.Index)>;
+                }
+                (e.KnownVarsFromStatic)
+                <ExtractVariables-Expr e.Expr>
+              >;
 
-          s.Flag t.Other = s.Flag t.Other;
+          (e.KnownVarsFromStatic) (s.Mode e.Index)
+            , e.DynamicMatches
+            : e._B (e.Expr ':' (TkVariable s.Mode e.Index)) e._E
+            = (e.KnownVarsFromStatic) <WrapVar s.Mode e.Expr>;
         }
-        False
-        e.Expression
+        (/* Known vars from static */)
+        e.SpecVars
       >
-    : s.Flag e.Expression^
+    : (e.KnownVarsFromStatic) e.NewArgOrPattern
 
-    = e.Expression;
+    = e.NewArgOrPattern
+    : {
+        e.STValues (GhostBrackets e.FirstEValue) e.Values
+          = e.STValues e.FirstEValue
+            <Map
+              {
+                (GhostBrackets e.Expr) = (Brackets e.Expr);
+
+                t.STValue = t.STValue;
+              }
+              e.Values
+            >;
+
+        e.STValues = e.STValues;
+      };
+}
+
+WrapVar {
+  'e' e.Expr = (GhostBrackets e.Expr);
+  s.Mode e.Expr = e.Expr
 }
 
 Spec-RenameGenericMatch {
@@ -619,7 +635,7 @@ Spec-PrepareSentence {
     : (e.PatternDynamicMatches^)
 
     = <Spec-PrepareCallOrPattern
-        (e.StaticSubstitutions) (e.PatternDynamicMatches) e.Pattern
+        (e.CallStaticMatches) (e.PatternDynamicMatches) e.SpecPattern
       >
     : e.Pattern^
 
@@ -686,29 +702,6 @@ IsSpecStaticVar {
     = <SVar-IsInSet ('ABCDEFGHIJKLMNOPQRSTUVWXYZ') s.FirstSymbol>;
 }
 
-WrapEVar {
-  (TkVariable 'e' e.Index) e.Tail
-    = (GhostBrackets (TkVariable 'e' e.Index)) <WrapEVar e.Tail>;
-
-  ('e' e.Index) e.Tail  = (GhostBrackets ('e' e.Index)) <WrapEVar e.Tail>;
-
-  t.Other e.Tail = t.Other <WrapEVar e.Tail>;
-
-  /* empty */ = /* empty */;
-}
-
-RemoveRepeatings {
-  e.Terms-B t.Term e.Terms-M t.Term e.Terms-E
-    = <RemoveRepeatings e.Terms-B t.Term e.Terms-M e.Terms-E>;
-
-  e.Terms = e.Terms;
-}
-
-ExtractVariables-Expr-Wrapper {
-  e.Expr
-    = <FindAndFormatVarTerm <ExtractVariables-Expr e.Expr>>;
-}
-
 GenericMatch-Wrapper {
   (e.Expr) (e.HardExpr)
     = <GenericMatch (e.Expr) (e.HardExpr)>
@@ -763,36 +756,6 @@ IsColdArg {
        True
        e.Argument
      >;
-}
-
-FindAndFormatVarTerm {
-  e.Expr = <Map &FindAndFormatVarTerm-Aux e.Expr>;
-}
-
-FindAndFormatVarTerm-Aux {
-  (TkVariable e.Index) = (TkVariable e.Index);
-
-  ('e' e.Index) = (TkVariable 'e' e.Index);
-
-  ('s' e.Index) = (TkVariable 's' e.Index);
-
-  ('t' e.Index) = (TkVariable 't' e.Index);
-
-  (Symbol e.SymInfo) = (Symbol e.SymInfo);
-
-  (Brackets e.Expression) = (Brackets <FindAndFormatVarTerm e.Expression>);
-
-  (ADT-Brackets (e.Name) e.Expression)
-    = (ADT-Brackets (e.Name) <FindAndFormatVarTerm e.Expression>);
-
-  (CallBrackets e.Expression)
-     = (CallBrackets <FindAndFormatVarTerm e.Expression>);
-
-  (ColdCallBrackets e.Expression)
-     = (ColdCallBrackets <FindAndFormatVarTerm e.Expression>);
-
-  (ClosureBrackets e.ClosureContent)
-    = (ClosureBrackets <FindAndFormatVarTerm e.ClosureContent>);
 }
 
 MapGenericMatches {
