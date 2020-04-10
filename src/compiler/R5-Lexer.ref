@@ -285,6 +285,13 @@ DoScan-Var {
 
   t.Pos (s.Type '.' e.Index) (e.Line) e.Lines
     = (TkVariable t.Pos s.Type e.Index)
+      <Fetch
+        e.Index
+        {
+          '-' e._ = (TkError t.Pos 'Variable index can\'t start from \'-\'');
+          e._ = /* пусто */;
+        }
+      >
       <DoScan
         <IncCol t.Pos Len s.Type '.' e.Index> (e.Line) e.Lines
       >;

@@ -123,7 +123,15 @@ NormalizeToken {
 
   (#TkPunctuation s.Punctuation) = (<SwPunctuation s.Punctuation>);
 
-  (#TkVariable s.Type '.' e.Index) = (#TkVariable s.Type e.Index);
+  (#TkVariable s.Type '.' e.Index)
+    = (#TkVariable s.Type e.Index)
+      <Fetch
+        e.Index
+        {
+          '-' e._ = (#TkError 'Variable index can\'t start from \'-\'');
+          e._ = /* пусто */;
+        }
+      >;
 
   (#TkNativeLine e.Line) = (#TkNativeLine <Trim-R e.Line>);
 
