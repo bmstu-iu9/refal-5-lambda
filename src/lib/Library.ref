@@ -1299,7 +1299,7 @@ $ENTRY Prout {
 }
 
 /**
-  Proud and Trout is synonyms for Prout :-)
+  Proud and Trout are synonyms for Prout :-)
 */
 $ENTRY Proud { e.AnyExpression = <Prout e.AnyExpression>; }
 $ENTRY Trout { e.AnyExpression = <Prout e.AnyExpression>; }
