@@ -165,7 +165,7 @@ $INLINE Pipe;
 
 
 *$FROM LibraryEx
-$EXTERN Y, FastIntFromStr;
+$EXTERN Y;
 
 *$FROM LibraryEx
 $EXTERN LoadFile, SaveFile, AppendFile, LoadBytes, SaveBytes, AppendBytes,

@@ -87,7 +87,7 @@ NormalizeToken {
   (#TkLiteral-Char s.Char) = (#TkChar s.Char);
 
   (#TkLiteral-Code e.DecCode) =
-    (#TkChar <Chr <FastIntFromStr e.DecCode>>);
+    (#TkChar <Chr <Numb-Overflow e.DecCode>>);
 
   (#TkLiteral-OCode e.OctCode) =
     (#TkChar <CharFromNum 8 e.OctCode>);
@@ -119,7 +119,7 @@ NormalizeToken {
 
   (#TkNewLine e.Accumulated) = (#TkNewLine);
 
-  (#TkNumber e.Digits) = (#TkNumber <FastIntFromStr e.Digits>);
+  (#TkNumber e.Digits) = (#TkNumber <Numb-Overflow e.Digits>);
 
   (#TkPunctuation s.Punctuation) = (<SwPunctuation s.Punctuation>);
 
@@ -138,6 +138,12 @@ NormalizeToken {
   (#TkUnexpected e.Unexpected) = (#TkUnexpected e.Unexpected);
 
   (TokenError e.Message) = (#TkError e.Message);
+}
+
+Numb-Overflow {
+  e.Digits
+    = <Numb e.Digits> : e.HighMacrodigits s.LastMacrodigit
+    = s.LastMacrodigit;
 }
 
 ValidDirective {

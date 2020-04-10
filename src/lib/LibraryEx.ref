@@ -1,7 +1,7 @@
 $INCLUDE "LibraryEx";
 
 *$FROM Library
-$EXTERN FOpen, Close, Get, Putout, Add, Sub, IntFromStr, Arg,
+$EXTERN FOpen, Close, Get, Putout, Add, Sub, Arg,
   SymbCompare, ReadBytes, WriteBytes;
 
 $ENTRY Apply;
@@ -84,10 +84,6 @@ SaveBytes-Handle {
 
 $ENTRY Inc;
 $ENTRY Dec;
-
-$ENTRY FastIntFromStr {
-  e.Digits = <IntFromStr e.Digits> : Success s.Number = s.Number;
-}
 
 /**
   <ArgList> == (e.Arg)+
