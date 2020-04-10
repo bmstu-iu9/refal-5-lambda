@@ -211,7 +211,7 @@ SpecCall {
     , <GenericMatch-Wrapper (e.Argument) (e.SpecPattern)>
     : Clear (e.StaticMatches) (e.DynamicMatches)
 
-    , <IsActiveMatches e.StaticMatches> : False
+    , <ExtractCalls e.StaticMatches> : (e.Calls) e.StaticMatches^
 
     , <Spec-PrepareSignature e.StaticMatches (e.SpecPattern)> : e.Signature
 
@@ -219,7 +219,7 @@ SpecCall {
 
     = <SpecCall-Aux
         (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures (e.Argument)
-        (e.Signature) (e.StaticMatches) (e.DynamicMatches)
+        (e.Signature) (e.StaticMatches) (e.DynamicMatches) (e.Calls)
       >;
 
   (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures (e.Argument)
@@ -230,12 +230,15 @@ SpecCall {
 
 SpecCall-Aux {
   (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures (e.Argument)
-  (e.Signature) (e.StaticMatches) (e.DynamicMatches)
+  (e.Signature) (e.StaticMatches) (e.DynamicMatches) (e.Calls)
 
     = <Spec-PrepareArgOrPattern
         (e.StaticMatches) (e.DynamicMatches) e.SpecPattern
       >
     : e.SpecializedFuncArgument
+
+    = <ApplySubst-Expr (e.Calls) e.SpecializedFuncArgument>
+    : e.SpecializedFuncArgument^
 
     = <Spec-FindInSignatures (e.Signature) e.Signatures>
     : {
@@ -279,36 +282,60 @@ SpecCall-Aux {
       }
 }
 
-IsActiveMatches {
+ExtractCalls {
   e.StaticMatches
-    = <Reduce
-        {
-          True t.Match = True;
 
-          False (e.Val ':' (TkVariable e.Var)) = <IsActiveExpr e.Val>;
+    = <Map
+        {
+          (e.Expr ':' t.Var) = <ExtractVariables-Expr e.Expr>;
         }
-        False
         e.StaticMatches
-      >;
+      >
+    : e.UsedVars
+
+    = <MapAccum
+        {
+          (e.Calls (e.UsedVars^)) (e.Expr ':' t.Var)
+            = <ExtractCalls-Expr (e.Calls (e.UsedVars)) e.Expr>
+            : (e.Calls^ (e.UsedVars^)) e.Expr^
+            = (e.Calls (e.UsedVars)) (e.Expr ':' t.Var);
+        }
+        (/* calls */ (e.UsedVars)) e.StaticMatches
+      >
+    : (e.Calls (e.UsedVars^)) e.StaticMatches^
+
+    = (e.Calls) e.StaticMatches
 }
 
-IsActiveExpr {
-  e.Expr
-    = <Reduce
-        {
-          True t.Term = True;
+ExtractCalls-Expr {
+  (e.Calls (e.UsedVars)) e.Expr
+    = <MapAccum &ExtractCalls-Term (e.Calls (e.UsedVars)) e.Expr>;
+}
 
-          False (CallBrackets e.Expr^) = True;
-          False (ColdCallBrackets e.Expr^) = True;
+ExtractCalls-Term {
+  (e.Calls (e.UsedVars)) (CallBrackets e.Expr)
+    = <NewVarName (e.UsedVars) 'eCall' 0 (/* empty suffix */)>
+    : (e.UsedVars^) e.NewVar
+    = (e.Calls ((CallBrackets e.Expr) ':' (e.NewVar)) (e.UsedVars))
+      (TkVariable e.NewVar);
 
-          False (Brackets e.Expr^) = <IsActiveExpr e.Expr>;
-          False (ADT-Brackets (e.Name) e.Expr) = <IsActiveExpr e.Expr>;
+  (e.Calls (e.UsedVars)) (ColdCallBrackets e.Expr)
+    = <NewVarName (e.UsedVars) 'eCall' 0 (/* empty suffix */)>
+    : (e.UsedVars^) e.NewVar
+    = (e.Calls ((ColdCallBrackets e.Expr) ':' (e.NewVar)) (e.UsedVars))
+      (TkVariable e.NewVar);
 
-          False t.OtherTerm = False;
-        }
-        False
-        e.Expr
-      >;
+  (e.Calls (e.UsedVars)) (Brackets e.Expr)
+    = <ExtractCalls-Expr (e.Calls (e.UsedVars)) e.Expr>
+    : (e.Calls^ (e.UsedVars^)) e.Expr^
+    = (e.Calls (e.UsedVars)) (Brackets e.Expr);
+
+  (e.Calls (e.UsedVars)) (ADT-Brackets (e.Name) e.Expr)
+    = <ExtractCalls-Expr (e.Calls (e.UsedVars)) e.Expr>
+    : (e.Calls^ (e.UsedVars^)) e.Expr^
+    = (e.Calls (e.UsedVars)) (ADT-Brackets (e.Name) e.Expr);
+
+  (e.Calls (e.UsedVars)) t.OtherTerm = (e.Calls (e.UsedVars)) t.OtherTerm;
 }
 
 IsSoundBody {

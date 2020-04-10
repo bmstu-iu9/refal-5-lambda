@@ -1,8 +1,8 @@
 * TREE
 
 $ENTRY Go {
-  = <DATA 'abc'> :
-  = <SF 'def' (<DATA 'pqr'>)> : 'abcdefabc'
+  = <DATA 'ab'> :
+  = <SF 'def' (<DATA 'pqr'> 'c')> : 'abcdefabc'
   = ;
 }
 
