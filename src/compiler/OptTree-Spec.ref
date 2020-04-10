@@ -358,72 +358,74 @@ FindClosuresInPatterns-Term {
 
 Spec-PrepareSignature {
   e.StaticMatches (e.SpecPattern)
+    /* ExtractVariables-Expr сохраняет порядок переменных в выражении */
     = <ExtractVariables-Expr e.SpecPattern> : e.SpecVars
-    = <Spec-RenameSignatureVars
-        <Spec-PrepareSignature-SortVars e.StaticMatches (e.SpecVars)>
-      >;
+    = <Spec-PrepareSignature-SortVars e.StaticMatches (e.SpecVars)> : e.ExprList
+    = <Spec-RenameSignatureVars e.ExprList>;
 }
 
 Spec-PrepareSignature-SortVars {
-  e.Variables-B (e.Val ':' (TkVariable e.Index)) e.Variables-E
-  ((e.Index) e.SpecVars)
-    = (e.Val)
-      <Spec-PrepareSignature-SortVars e.Variables-B e.Variables-E (e.SpecVars)>;
+  e.StaticMatches (e.SpecPatternVars)
+    = <MapAccum
+        {
+          (e.Vars-B (e.Val ':' (TkVariable e.Index)) e.Vars-E) (e.Index)
+            = (e.Vars-B e.Vars-E) (e.Val);
 
-  /* Если очередной переменной нет среди подстановок, значит она динамическая */
-  e.Variables ((e.DynamicVar) e.SpecVars)
-    = <Spec-PrepareSignature-SortVars e.Variables (e.SpecVars)>;
-
-  /* пусто */ (/* пусто */) = /* пусто */;
+          /*
+            Если очередной переменной нет среди подстановок, значит
+            она динамическая
+          */
+          (e.Variables) (e.Index) = (e.Variables) /* пропускаем */;
+        }
+        (e.StaticMatches) e.SpecPatternVars
+      >
+    : (/* должно быть пусто */) e.SigValues
+    = e.SigValues;
 }
 
 Spec-RenameSignatureVars {
   e.Signature
-
-    = <Map
+    = <MapAccum
         {
-          (e.SignaturePart) = <ExtractVariables-Expr e.SignaturePart>;
+          (e.KnownVariables) (e.SignaturePart)
+            = <Spec-RenameSignatureVars-Expr (e.KnownVariables) e.SignaturePart>
         }
+        (
+          /* пусто */ /* known variables */
+          0           /* s.NextId */
+        )
         e.Signature
       >
-    : e.VarsFromSignature
-
-    = <Spec-RenameSignatureVars-PrepareSubstitution e.VarsFromSignature>
-    : e.Substitution
-
-    = <Map
-        {
-          (e.SignaturePart)
-             = (<ApplySubst-Expr (e.Substitution) e.SignaturePart>);
-        }
-        e.Signature
-      >;
 }
 
-Spec-RenameSignatureVars-PrepareSubstitution {
-  e.VarsFromSignature
-    = <Reduce
-        {
-          ((e.UsedVars) (e.Subst)) (e.VarName)
-            , e.Subst : e.Subst-B (t.NewVar ':' (e.VarName)) e.Subst-E
-            = ((e.UsedVars) (e.Subst));
+Spec-RenameSignatureVars-Expr {
+  t.State e.Expr = <MapAccum &Spec-RenameSignatureVars-Term t.State e.Expr>;
+}
 
-          ((e.UsedVars) (e.Subst)) (s.Mode e.Index s.Depth)
-            = <Upper s.Mode> s.Depth : e.Prefix
-            = <NewVarName (e.UsedVars) s.Mode e.Prefix (/* empty suffix */)>
-            : (e.UsedVars^) e.NewIndex
-            = (
-                (e.UsedVars)
-                (
-                  e.Subst
-                  ((TkVariable 'e' e.NewIndex) ':' (s.Mode e.Index s.Depth))
-                )
-              );
-        }
-        ((/* used vars */) (/* subst */)) e.VarsFromSignature
+Spec-RenameSignatureVars-Term {
+  (e.KnownVariables s.NextId) (TkVariable s.Mode e.OldIndex)
+    , e.KnownVariables : e._B (s.Mode e.OldIndex (e.NewIndex)) e._E
+    = (e.KnownVariables)
+      (TkVariable s.Mode e.NewIndex);
+
+  (e.KnownVariables s.NextId) (TkVariable s.Mode e.OldIndex)
+    = <Symb s.NextId> 0 : e.NewIndex
+    = (e.KnownVariables (s.Mode e.OldIndex (e.NewIndex)) <Inc s.NextId>)
+      (TkVariable s.Mode e.NewIndex);
+
+  t.State (s.BracketsTag e.Expr)
+    , <OneOf
+        s.BracketsTag ColdCallBrackets CallBrackets ClosureBrackets Brackets
       >
-    : ((e.UsedVars) (e.Substitution))
-    = e.Substitution;
+    : True
+    = <Spec-RenameSignatureVars-Expr t.State e.Expr> : t.State^ e.Expr^
+    = (s.BracketsTag e.Expr);
+
+  t.State (ADT-Brackets (e.Name) e.Expr)
+    = <Spec-RenameSignatureVars-Expr t.State e.Expr> : t.State^ e.Expr^
+    = (ADT-Brackets (e.Name) e.Expr);
+
+  t.State t.OtherTerm = t.State t.OtherTerm;
 }
 
 /*
