@@ -240,6 +240,7 @@ compile_rlc_common() {
     exit 1
   fi
   if [ ! -e $TARGET ]; then
+    cat __error.txt
     return 1
   fi
   rm __error.txt

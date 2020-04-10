@@ -118,8 +118,12 @@ run_test_aux_with_flags() {
 
   ../bin/rlc-core --keep-rasls ${SREF} --makelib "${COMMON_SRFLAGS[@]}" \
     ${SRFLAGS} ${SRFLAGS_PLUS} 2>__error.txt
-  if [[ $? -ge 100 ]] || [[ ! -e ${LIBR} ]] && [[ ! -e ${LIBN} ]]; then
+  if [[ $? -ge 100 ]]; then
     echo COMPILER ON ${SREF} FAILS, SEE __error.txt
+    exit 1
+  elif [[ ! -e ${LIBR} ]] && [[ ! -e ${LIBN} ]]; then
+    echo COMPILATION FAILED, __error.txt:
+    cat __error.txt
     exit 1
   fi
   rm __error.txt
@@ -156,6 +160,7 @@ run_test_aux.BAD-SYNTAX() {
     rm ${RASL}
     exit 1
   fi
+  cat __error.txt
   rm __error.txt
 
   echo "Ok! Compiler didn't crash on invalid syntax"

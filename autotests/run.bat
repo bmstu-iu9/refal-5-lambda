@@ -231,7 +231,8 @@ setlocal
     exit /b 1
   )
   if not exist %LIBR% if not exist %LIBN% (
-    echo COMPILATION FAILED, SEE __error.txt
+    echo COMPILATION FAILED, __error.txt:
+    type __error.txt
     exit /b 1
   )
   erase __error.txt
@@ -317,6 +318,7 @@ setlocal
     erase %RASL%
     exit /b 1
   )
+  type __error.txt
   erase __error.txt
   echo Ok! Compiler didn't crash on invalid syntax
   echo.

@@ -261,6 +261,7 @@ setlocal
     exit /b 3
   )
   if not exist %TARGET% (
+    type __error.txt
     endlocal
     exit /b 1
   )
