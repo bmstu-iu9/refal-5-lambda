@@ -1,5 +1,4 @@
-//FROM LibraryEx
-$EXTERN Fetch, LoadFile, Pipe, MapAccum, Inc, DelAccumulator, Map, Trim, Reduce;
+$INCLUDE "LibraryEx";
 
 /*
   <LoadIniFile e.FileName>
@@ -7,68 +6,68 @@ $EXTERN Fetch, LoadFile, Pipe, MapAccum, Inc, DelAccumulator, Map, Trim, Reduce;
 
   t.IniFile ::= (t.Section*)
   t.Section ::= (s.LineNumber t.SectionName t.Parameter*)
-  t.SectionName ::= #General | (e.Name)
+  t.SectionName ::= General | (e.Name)
   t.Parameter = (s.LineNumber (e.Name) e.Value)
 
   t.ErrorMessage ::=
-    (s.LineNumber #BadLine) |
-    (s.LineNumber #EmptyParameterName) |
-    (s.LineNumber #ReassignParameter e.ParameterName)
+    (s.LineNumber BadLine) |
+    (s.LineNumber EmptyParameterName) |
+    (s.LineNumber ReassignParameter e.ParameterName)
 */
 $ENTRY LoadIniFile {
   e.FileName
     = <Fetch
         <LoadFile e.FileName>
         <Pipe
-          // Нумеруем строки файла
-          (MapAccum
+          /* Нумеруем строки файла */
+          (&MapAccum
             {
               s.LineNumber (e.Line)
                 = <Inc s.LineNumber> (s.LineNumber e.Line);
             }
             1
           )
-          DelAccumulator
-          // Удаляем комментарии и начальные и концевые пробелы
-          (Map {
+          &DelAccumulator
+          /* Удаляем комментарии и начальные и концевые пробелы */
+          (&Map {
             (s.LineNumber e.Line ';' e.Comment) = (s.LineNumber <Trim e.Line>);
             (s.LineNumber e.Line) = (s.LineNumber <Trim e.Line>);
           })
-          // Удаляем пустые строки
-          (Map {
+          /* Удаляем пустые строки */
+          (&Map {
             (s.LineNumber) = /* пусто */;
             (s.LineNumber e.Line) = (s.LineNumber e.Line);
           })
-          // Парсим строки
-          (Map {
+          /* Парсим строки */
+          (&Map {
             (s.LineNumber '[' e.SectionName ']')
-              = (s.LineNumber #Section <Trim e.SectionName>);
+              = (s.LineNumber Section <Trim e.SectionName>);
 
             (s.LineNumber e.Parameter '=' e.Value)
-              = (s.LineNumber #Parameter (<Trim e.Parameter>) <Trim e.Value>);
+              = (s.LineNumber Parameter (<Trim e.Parameter>) <Trim e.Value>);
 
-            (s.LineNumber e.Other) = (s.LineNumber #BadLine);
+            (s.LineNumber e.Other) = (s.LineNumber BadLine);
           })
-          // Группируем параметры в секции
-          (Reduce
+          /* Группируем параметры в секции */
+          (&Reduce
             {
               (
                 e.Sections-B (s.SectionPos (e.Section) e.Params) e.Sections-E
                 (e.Errors)
               )
-              (s.LineNumber #Section e.Section)
+              (s.LineNumber Section e.Section)
                 = (
                     e.Sections-B e.Sections-E
                     (s.SectionPos (e.Section) e.Params)
                     (e.Errors)
                   );
 
-              (e.Sections (e.Errors)) (s.LineNumber #Section e.Section)
+              (e.Sections (e.Errors)) (s.LineNumber Section e.Section)
                 = (e.Sections (s.LineNumber (e.Section)) (e.Errors));
 
-              (e.Sections (e.Errors)) (s.LineNumber #Parameter () e.Value)
+              (e.Sections (e.Errors)) (s.LineNumber Parameter () e.Value)
                 = (e.Sections
-                    (e.Errors (s.LineNumber #EmptyParameterName))
+                    (e.Errors (s.LineNumber EmptyParameterName))
                   );
 
               (e.Sections
@@ -77,16 +76,16 @@ $ENTRY LoadIniFile {
                 )
                 (e.Errors)
               )
-              (s.LineNumber #Parameter (e.Param) e.NewValue)
+              (s.LineNumber Parameter (e.Param) e.NewValue)
                 = (e.Sections
                     (s.SectionPos (e.LastSection)
                       e.Params-B (s.ParamPos (e.Param) e.NewValue) e.Params-E
                     )
-                    (e.Errors (s.LineNumber #ReassignParameter e.Param))
+                    (e.Errors (s.LineNumber ReassignParameter e.Param))
                   );
 
               (e.Sections (s.SectionPos (e.LastSection) e.Params) (e.Errors))
-              (s.LineNumber #Parameter (e.Param) e.Value)
+              (s.LineNumber Parameter (e.Param) e.Value)
                 = (e.Sections
                     (s.SectionPos (e.LastSection)
                       e.Params (s.LineNumber (e.Param) e.Value)
@@ -94,12 +93,12 @@ $ENTRY LoadIniFile {
                     (e.Errors)
                   );
 
-              (e.Sections (e.Errors)) (s.LineNumber #BadLine)
-                = (e.Sections (e.Errors (s.LineNumber #BadLine)));
+              (e.Sections (e.Errors)) (s.LineNumber BadLine)
+                = (e.Sections (e.Errors (s.LineNumber BadLine)));
             }
-            ((1 #General) (/* ошибки */))
+            ((1 General) (/* ошибки */))
           )
-          // Формируем результат функции
+          /* Формируем результат функции */
           {
             (e.Sections (e.Errors))
               = (e.Sections) e.Errors;

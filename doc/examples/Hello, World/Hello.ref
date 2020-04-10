@@ -1,6 +1,3 @@
-//FROM Library
-$EXTERN Prout;
-
 $ENTRY Go {
   = <Prout 'Hello, World!'>;
 }

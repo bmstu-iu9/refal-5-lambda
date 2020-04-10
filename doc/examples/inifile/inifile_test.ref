@@ -1,10 +1,10 @@
-//FROM inifile
+*$FROM inifile
 $EXTERN LoadIniFile;
 
-//FROM LibraryEx
+*$FROM LibraryEx
 $EXTERN ArgList, Prout, Map, Fetch;
 
-//FROM Library
+*$FROM Library
 $EXTERN StrFromInt;
 
 $ENTRY Go {
@@ -30,18 +30,18 @@ Main {
                     = <Prout 'Errors:'>
                       <Map
                         {
-                          (s.LineNumber #BadLine)
+                          (s.LineNumber BadLine)
                             = <Prout
                                 '* Bad line at ' <StrFromInt s.LineNumber>
                               >;
 
-                          (s.LineNumber #EmptyParameterName)
+                          (s.LineNumber EmptyParameterName)
                             = <Prout
                                 '* Expected parameter name before ''='' at '
                                 <StrFromInt s.LineNumber>
                               >;
 
-                          (s.LineNumber #ReassignParameter e.Name)
+                          (s.LineNumber ReassignParameter e.Name)
                             = <Prout
                                 '* Reassign parameter ' e.Name ' at '
                                 <StrFromInt s.LineNumber>
@@ -69,10 +69,10 @@ PrintIni {
       <Prout 'Content of ' e.FileName>
       <Map
         {
-          (s.SectionPos #General)
+          (s.SectionPos General)
             = <Prout '(Default section) - empty'>;
 
-          (s.SectionPos #General e.Parameters)
+          (s.SectionPos General e.Parameters)
             = <Prout '(Default section)'>
               <PrintParameters e.Parameters>;
 
