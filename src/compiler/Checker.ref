@@ -37,6 +37,10 @@ PrepareMessage {
     = 'Variable hide operator^ must be applied to first occurence of '
       'variable ' s.Mode '.' e.Index;
 
+  UnnamedVariableInResult s.Mode e.Index
+    = 'Unnamed variable ' s.Mode '.' e.Index ' can\'t appear '
+      'in result expression';
+
   InvalidMode s.OldMode s.NewMode e.Index
     = 'Variables ' s.OldMode '.' e.Index ' and '
       s.NewMode '.' e.Index ' have different modes';
@@ -803,6 +807,9 @@ CheckResult {
     <Map
       (
         {
+          e.KnownVars (TkVariable t.SrcPos s.Mode '_' e.Index)
+            = (Error t.SrcPos UnnamedVariableInResult s.Mode '_' e.Index);
+
           e.KnownVars-B (s.Mode e.Index) e.KnownVars-E
           (TkVariable t.SrcPos s.Mode e.Index) =
             /* пропускаем, правильная переменная */;
