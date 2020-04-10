@@ -12,10 +12,6 @@ $ENTRY Reduce;
 
 $ENTRY Fetch;
 
-$ENTRY Y {
-  s.Y-Func = { e.Arg = <<s.Y-Func <Y s.Y-Func>> e.Arg>; };
-}
-
 $ENTRY MapAccum;
 
 $ENTRY UnBracket;

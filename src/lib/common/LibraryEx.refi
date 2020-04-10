@@ -165,9 +165,6 @@ $INLINE Pipe;
 
 
 *$FROM LibraryEx
-$EXTERN Y;
-
-*$FROM LibraryEx
 $EXTERN LoadFile, SaveFile, AppendFile, LoadBytes, SaveBytes, AppendBytes,
   ArgList, TermCompare, TermCompare-T, Trim, Trim-L, Trim-R, Sort, Min, Max,
   OneOf, Unique;
