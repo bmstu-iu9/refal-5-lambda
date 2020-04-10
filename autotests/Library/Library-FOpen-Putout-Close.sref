@@ -1,0 +1,15 @@
+//FROM Library
+$EXTERN FOpen, Putout, Close;
+
+$ENTRY Go {
+  = <FillFile <FOpen 'W' '__written_file.txt'>>;
+}
+
+Empty { /* пусто */ = ; }
+
+FillFile {
+  s.FileHandle =
+    <Empty <Putout s.FileHandle 'Hello'>>
+    <Empty <Putout s.FileHandle 'World'>>
+    <Empty <Close s.FileHandle>>;
+}

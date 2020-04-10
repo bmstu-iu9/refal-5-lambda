@@ -1,7 +1,7 @@
 $INCLUDE "LibraryEx";
 
 *$FROM Library
-$EXTERN FOpen, Close, FReadLine, FWriteLine, Add, Sub, IntFromStr, Arg,
+$EXTERN FOpen, Close, Get, Putout, Add, Sub, IntFromStr, Arg,
   SymbCompare, ReadBytes, WriteBytes;
 
 $ENTRY Apply;
@@ -23,7 +23,9 @@ $ENTRY UnBracket;
 $ENTRY DelAccumulator;
 
 $ENTRY LoadFile {
-  e.FileName = <DoLoadFile <FReadLine <FOpen 'r' e.FileName>>>;
+  e.FileName
+    = <FOpen 'r' e.FileName> : t.File
+    = <DoLoadFile t.File <Get t.File>>;
 }
 
 DoLoadFile {
@@ -31,7 +33,7 @@ DoLoadFile {
 
   t.File e.Line 0 = (e.Line) <Close t.File>;
 
-  t.File e.Line = (e.Line) <DoLoadFile <FReadLine t.File>>;
+  t.File e.Line = (e.Line) <DoLoadFile t.File <Get t.File>>;
 }
 
 $ENTRY SaveFile {
@@ -44,15 +46,13 @@ $ENTRY AppendFile {
 
 SaveFile-Handle {
   s.FileHandle e.Lines
-    = <Close
-        <Reduce
-          {
-            s.FileHandle^ (e.Line) = <FWriteLine s.FileHandle e.Line>;
-          }
-          s.FileHandle
-          e.Lines
-        >
-      >;
+    = <Map
+        {
+          (e.Line) = <Putout s.FileHandle e.Line>;
+        }
+        e.Lines
+      >
+      <Close s.FileHandle>;
 }
 
 $ENTRY LoadBytes {

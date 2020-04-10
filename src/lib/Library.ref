@@ -1320,7 +1320,6 @@ $ENTRY Put {
 namespace cookie_ns {
 
 enum {
-  cFlags_ReturnHandle   = 1 << 3,
   cFlags_Transparent    = 1 << 5,
   cFlags_NoEOL          = 1 << 8,
 };
@@ -1438,13 +1437,8 @@ refalrts::FnResult cookie_ns::fwrite_line(
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::Iter res = arg_begin;
   if (flags & cFlags_Transparent) {
-    res = refalrts::splice_evar(res, content_b, content_e);
-  }
-
-  if (flags & cFlags_ReturnHandle) {
-    refalrts::splice_stvar(res, pfile_handle);
+    refalrts::splice_evar(arg_begin, content_b, content_e);
   }
 
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
@@ -3058,26 +3052,6 @@ $ENTRY Open-Auto {
 
 $ENTRY FOpen {
   t.Mode e.FileName = <Open-Auto t.Mode e.FileName>
-}
-
-
-/**
-  <FReadLine s.FileNo> == s.FileNo s.CHAR* 0?
-*/
-$ENTRY FReadLine {
-  s.FileNo = s.FileNo <Get-Aux s.FileNo>;
-}
-
-
-/**
-  <FWriteLine s.FileNo e.AnyExpression> == s.FileNo
-*/
-$ENTRY FWriteLine {
-%%
-  return cookie_ns::fwrite_line(
-    vm, identifiers, arg_begin, arg_end, cookie_ns::cFlags_ReturnHandle
-  );
-%%
 }
 
 

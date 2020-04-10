@@ -1,5 +1,5 @@
 //FROM Library
-$EXTERN Put, Putout, FWriteLine, Get, Close, Close;
+$EXTERN Put, Putout, Get, Close, Close;
 
 $ENTRY Go {
   = <Get #stdin> : e.FirstLine
@@ -7,7 +7,7 @@ $ENTRY Go {
   = <Putout #stderr e.FirstLine> : /* empty */
   = <Get "stdin"> : e.SecondLine
   = <Put #stderr e.SecondLine> : 'World'
-  = <FWriteLine "stout" e.SecondLine> : #stout /* empty */
+  = <Putout "stout" e.SecondLine> : /* empty */
     /* this functions must do nothing: */
   = <Close #stdin> : /* empty */
   = <Close #stdout> : /* empty */

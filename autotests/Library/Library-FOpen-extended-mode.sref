@@ -1,20 +1,17 @@
 //FROM Library
-$EXTERN FOpen, FWriteLine, Close;
+$EXTERN FOpen, Putout, Close;
 
 $ENTRY Go {
-  =
-    <SaveFile <FOpen 'w' '__written_file.txt'> ('Ehllo') ('World')>
-    <Close
-      <FWriteLine
-        <FOpen ('r+') '__written_file.txt'>
-        'Hello'
-      >
-    >;
+  = <SaveFile <FOpen 'w' '__written_file.txt'> ('Ehllo') ('World')> : /* empty */
+  = <FOpen ('r+') '__written_file.txt'> : s.FileHandle
+  = <Putout s.FileHandle 'Hello'>
+    <Close s.FileHandle>;
 }
 
 SaveFile {
   s.FileHandle (e.Line) e.Lines =
-    <SaveFile <FWriteLine s.FileHandle e.Line> e.Lines>;
+    <Putout s.FileHandle e.Line>
+    <SaveFile s.FileHandle e.Lines>;
 
   s.FileHandle /* кончились строчки */ =
     <Close s.FileHandle>;

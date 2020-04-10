@@ -1,6 +1,0 @@
-//FROM Library
-$EXTERN FReadLine;
-
-$ENTRY Go {
-  = <FReadLine 0>;
-}

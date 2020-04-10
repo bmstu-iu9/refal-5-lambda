@@ -64,7 +64,7 @@ setlocal
     Library-LongMath-Mod-OK ^
     Library-LongMath-Numb-OK ^
     Library-LongMath-Symb-OK ^
-    Library-FOpen-FReadLine-Close ^
+    Library-FOpen-Get-Close ^
     Library-IntFromStr-StrFromInt-Chr-Ord ^
     Library-SymbCompare ^
     Library-Type ^
@@ -82,9 +82,6 @@ setlocal
     Library-Math-Div-Fail ^
     Library-Math-Mod-Fail ^
     Library-FOpen-Fail ^
-    Library-FWrite-unopened-file-Fail ^
-    Library-FReadLine-0-Fail ^
-    Library-FWriteLine-0-Fail ^
     Library-SymbCompare-Fail ^
     Library-Implodes-Fail ^
     Library-PtrFromName-Fail ^
@@ -104,11 +101,11 @@ setlocal
     call :CLEANUP Library-WriteLine-Expr
   )
 
-  if exist Library-FOpen-FWriteLine-Close.exe (
-    echo Pass Library-FOpen-FWriteLine-Close test...
-    call :RUN_EXE Library-FOpen-FWriteLine-Close || exit /b 1
+  if exist Library-FOpen-Putout-Close.exe (
+    echo Pass Library-FOpen-Putout-Close test...
+    call :RUN_EXE Library-FOpen-Putout-Close || exit /b 1
     call :COMPARE __written_file.txt 2lines.txt || exit /b 1
-    call :CLEANUP Library-FOpen-FWriteLine-Close
+    call :CLEANUP Library-FOpen-Putout-Close
   )
 
   if exist Library-ReadLine-2lines.exe (

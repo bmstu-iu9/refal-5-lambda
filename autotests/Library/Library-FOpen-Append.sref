@@ -1,5 +1,5 @@
 //FROM Library
-$EXTERN FOpen, FWriteLine, Close, FReadLine;
+$EXTERN FOpen, Putout, Close, Get;
 
 $ENTRY Go {
   =
@@ -16,7 +16,7 @@ AppendLine {
     <
       {
         s.FileHandle =
-          <FWriteLine s.FileHandle e.Line>
+          <Putout s.FileHandle e.Line>
           <Close s.FileHandle>;
       }
       <FOpen 'a' e.FileName>
@@ -27,12 +27,12 @@ CheckContent {
   s.FileHandle e.Lines =
     <
       {
-        (s.FileHandle e.NextLine 0) (e.NextLine 0) e.Lines^ =
+        (e.NextLine 0) (e.NextLine 0) e.Lines^ =
           <Close s.FileHandle>;
 
-        (s.FileHandle e.NextLine) (e.NextLine) e.Lines^ =
+        (e.NextLine) (e.NextLine) e.Lines^ =
           <CheckContent s.FileHandle e.Lines>;
       }
-      (<FReadLine s.FileHandle>) e.Lines
+      (<Get s.FileHandle>) e.Lines
     >;
 }

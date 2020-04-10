@@ -55,7 +55,7 @@ run_all_tests() {
     Library-LongMath-Mod-OK \
     Library-LongMath-Numb-OK \
     Library-LongMath-Symb-OK \
-    Library-FOpen-FReadLine-Close \
+    Library-FOpen-Get-Close \
     Library-IntFromStr-StrFromInt-Chr-Ord \
     Library-SymbCompare \
     Library-Type \
@@ -72,9 +72,6 @@ run_all_tests() {
     Library-Math-Div-Fail \
     Library-Math-Mod-Fail \
     Library-FOpen-Fail \
-    Library-FWrite-unopened-file-Fail \
-    Library-FReadLine-0-Fail \
-    Library-FWriteLine-0-Fail \
     Library-SymbCompare-Fail \
     Library-Implodes-Fail \
     Library-PtrFromName-Fail
@@ -93,11 +90,11 @@ run_all_tests() {
     cleanup Library-WriteLine-Expr
   fi
 
-  if [ -e Library-FOpen-FWriteLine-Close ]; then
-    echo Pass Library-FOpen-FWriteLine-Close test...
-    run_exe Library-FOpen-FWriteLine-Close
+  if [ -e Library-FOpen-Putout-Close ]; then
+    echo Pass Library-FOpen-Putout-Close test...
+    run_exe Library-FOpen-Putout-Close
     compare __written_file.txt 2lines.txt
-    cleanup Library-FOpen-FWriteLine-Close
+    cleanup Library-FOpen-Putout-Close
   fi
 
   if [ -e Library-ReadLine-2lines ]; then

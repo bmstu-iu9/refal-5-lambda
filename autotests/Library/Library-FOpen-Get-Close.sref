@@ -1,5 +1,5 @@
 //FROM Library
-$EXTERN FOpen, FReadLine, Close;
+$EXTERN FOpen, Get, Close;
 
 $ENTRY Go {
   =
@@ -17,17 +17,17 @@ CheckContent {
 DoCheckContent {
   s.FileHandle e.Lines =
     <DoCheckContent-EatLine
-      s.FileHandle (<FReadLine s.FileHandle>) e.Lines
+      s.FileHandle (<Get s.FileHandle>) e.Lines
     >;
 }
 
 Empty { /* пусто */ = ; }
 
 DoCheckContent-EatLine {
-  s.FileHandle (s.FileHandle e.NextLine 0) (e.NextLine 0) =
+  s.FileHandle (e.NextLine 0) (e.NextLine 0) =
     /* всё, все строчки прочтены */
     <Empty <Close s.FileHandle>>;
 
-  s.FileHandle (s.FileHandle e.NextLine) (e.NextLine) e.Lines =
+  s.FileHandle (e.NextLine) (e.NextLine) e.Lines =
     <DoCheckContent s.FileHandle e.Lines>;
 }
