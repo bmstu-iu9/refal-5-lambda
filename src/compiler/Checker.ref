@@ -264,7 +264,7 @@ ErrorsForRepeatedVariables {
   e.VarList-B
   (TkVariable t.SrcPos1 s.Mode e.Index) e.VarList-M
   (TkVariable t.SrcPos2 s.Mode e.Index) e.VarList-E
-    = <CheckSpecs-Redefine
+    = <ErrorsForRepeatedVariables
         e.VarList-B
         (TkVariable t.SrcPos1 s.Mode e.Index) e.VarList-M
         e.VarList-E
