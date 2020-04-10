@@ -394,7 +394,7 @@ Spec-RenameSignatureVars {
     = <Map
         {
           (e.SignaturePart)
-             = (<ApplySubstitution (e.Substitution) e.SignaturePart>);
+             = (<ApplySubst-Expr (e.Substitution) e.SignaturePart>);
         }
         e.Signature
       >;
@@ -426,29 +426,44 @@ Spec-RenameSignatureVars-PrepareSubstitution {
     = e.Substitution;
 }
 
-ApplySubstitution {
+/*
+  Применяем левую подстановку к левым частям правой.
+  Это не совсем композиция подстановок, поскольку для композиции нужно
+  также объединять домены подстановок.
+*/
+ApplySubst-Subst {
+  (e.FromSubstitution) e.ToSubstitution
+    = <Map
+        {
+          (e.Expr ':' t.Var)
+            = (<ApplySubst-Expr (e.FromSubstitution) e.Expr> ':' t.Var);
+        }
+        e.ToSubstitution
+      >;
+}
+
+ApplySubst-Expr {
   (e.Substitution) e.Expression
     = <Map
         {
           (TkVariable e.ModeIndex)
-            = e.Substitution
-            : e.Subst-B (e.Value ':' (e.ModeIndex)) e.Subst-E
+            , e.Substitution : e.Subst-B (e.Value ':' (e.ModeIndex)) e.Subst-E
             = e.Value;
 
           (Brackets e.Nested)
-            = (Brackets <ApplySubstitution (e.Substitution) e.Nested>);
+            = (Brackets <ApplySubst-Expr (e.Substitution) e.Nested>);
 
           (ADT-Brackets (e.Name) e.Nested)
             = (ADT-Brackets
-                (e.Name) <ApplySubstitution (e.Substitution) e.Nested>
+                (e.Name) <ApplySubst-Expr (e.Substitution) e.Nested>
               );
 
           (CallBrackets e.Nested)
-            = (CallBrackets <ApplySubstitution (e.Substitution) e.Nested>);
+            = (CallBrackets <ApplySubst-Expr (e.Substitution) e.Nested>);
 
           (ClosureBrackets e.ClosureContent)
             = (ClosureBrackets
-                <ApplySubstitution (e.Substitution) e.ClosureContent>
+                <ApplySubst-Expr (e.Substitution) e.ClosureContent>
               );
 
           t.OtherTerm = t.OtherTerm;
@@ -550,53 +565,30 @@ WrapVar {
 
 Spec-RenameGenericMatch {
   (e.SpecPattern) (e.StaticMatches) e.VarsFromBody
-    = <Reduce
+    = <Map
         {
-          (e.VarsFromMatch) (e.Val ':' t.Var)
-            = (e.VarsFromMatch <ExtractVariables-Expr e.Val>);
+          (e.Val ':' t.Var) = <ExtractVariables-Expr e.Val>;
         }
-        ()
         e.StaticMatches
       >
-    : (e.VarsFromMatch)
+    : e.VarsFromMatch
 
-    /*
-      Используем Reduce вместо Map, чтобы накапливать замены в обратном
-      порядке. Замены применяются по очереди, поэтому во избежание конфликтов
-      их нужно применять в обратном порядке.
-    */
-    = <Reduce
+    = <Unique e.VarsFromMatch> : e.VarsFromMatch^
+
+    = <MapAccum
         {
-          ((e.VarsFromBody^) e.Substitutions)
-          (e.CurrentVarName)
+          (e.VarsFromBody^) (e.CurrentVarName)
             = <NewVarName (e.VarsFromBody) e.CurrentVarName (/* empty suffix */)>
             : (e.VarsFromBody^) e.NewVarName
-            = (
-                (e.VarsFromBody)
-                ((e.CurrentVarName) ':' (e.NewVarName)) e.Substitutions
-              )
+            = (e.VarsFromBody)
+              ((TkVariable e.NewVarName) ':' (e.CurrentVarName))
         }
-        ((e.VarsFromBody) /* substitutions */)
+        (e.VarsFromBody)
         e.VarsFromMatch
       >
-    : ((e.VarsFromBody^) e.Substitutions)
+    : (e.VarsFromBody^) e.Renames
 
-    = <Reduce
-        {
-          (e.NStaticMatches) ((e.CurrentVarName) ':' (e.NewVarName))
-            = (
-                <FindReplace-GenericMatches-Val
-                  (e.NStaticMatches) ((TkVariable e.CurrentVarName))
-                  (TkVariable e.NewVarName)
-                >
-              );
-        }
-        (e.StaticMatches)
-        e.Substitutions
-      >
-    : (e.StaticMatches^)
-
-    = e.StaticMatches
+    = <ApplySubst-Subst (e.Renames) e.StaticMatches>;
 }
 
 Spec-PrepareSpecializedFuncBody {
@@ -620,20 +612,8 @@ Spec-PrepareSentence {
     = <MapGenericMatches (e.CallStaticMatches) (e.PatternStaticMatches)>
     : e.StaticSubstitutions
 
-*   propogate static match val in e.PatternDynamicMatches
-    = <Reduce
-        {
-          (e.NSentenceDynamicMatches) (e.Val ':' t.Var)
-            = (
-                <FindReplace-GenericMatches-Val
-                  (e.NSentenceDynamicMatches) (t.Var) e.Val
-                >
-              );
-        }
-        (e.PatternDynamicMatches)
-        e.StaticSubstitutions
-      >
-    : (e.PatternDynamicMatches^)
+    = <ApplySubst-Subst (e.StaticSubstitutions) e.PatternDynamicMatches>
+    : e.PatternDynamicMatches^
 
     = <Spec-PrepareArgOrPattern
         (e.CallStaticMatches) (e.PatternDynamicMatches) e.SpecPattern
@@ -643,7 +623,7 @@ Spec-PrepareSentence {
     = <Spec-PrepareConditions (e.StaticSubstitutions) e.Conditions>
     : e.Conditions^
 
-    = <Spec-PrepareResult (e.StaticSubstitutions) e.Result> : e.Result^
+    = <ApplySubst-Expr (e.StaticSubstitutions) e.Result> : e.Result^
 
     = ((e.Pattern) e.Conditions (e.Result));
 }
@@ -655,26 +635,12 @@ Spec-PrepareConditions {
           (Condition (e.Name) (e.ConditionResult) (e.ConditionPattern))
             = (Condition
                 (e.Name)
-                (<Spec-PrepareResult (e.StaticSubstitutions) e.ConditionResult>)
-                (<Spec-PrepareResult (e.StaticSubstitutions) e.ConditionPattern>)
+                (<ApplySubst-Expr (e.StaticSubstitutions) e.ConditionResult>)
+                (<ApplySubst-Expr (e.StaticSubstitutions) e.ConditionPattern>)
               );
         }
         e.Conditions
       >
-}
-
-Spec-PrepareResult {
-  (e.StaticSubstitutions) e.Result
-    = <Reduce
-        {
-          (e.NResult) (e.ReplaceToVal ':' t.ReplaceVar)
-            = (<FindReplace-Expr (e.NResult) (t.ReplaceVar) e.ReplaceToVal>);
-        }
-        (e.Result)
-        e.StaticSubstitutions
-      >
-    : (e.Result^)
-    = e.Result;
 }
 
 /**
@@ -689,20 +655,6 @@ $ENTRY OptTree-Spec-Finalize {
   Вспомогательные функции модуля
 */
 
-SVar-IsInSet {
-  (e.Set-B s.Var e.Set-E) s.Var = True;
-
-  (e.Set) s.Var = False;
-}
-
-IsSpecStaticVar {
-  (TkVariable s.Mode s.FirstSymbol e.Index s.Depth)
-    = <SVar-IsInSet ('ABCDEFGHIJKLMNOPQRSTUVWXYZ') s.FirstSymbol>;
-
-  (s.Mode s.FirstSymbol e.Index s.Depth)
-    = <SVar-IsInSet ('ABCDEFGHIJKLMNOPQRSTUVWXYZ') s.FirstSymbol>;
-}
-
 GenericMatch-Wrapper {
   (e.Expr) (e.HardExpr)
     = <GenericMatch (e.Expr) (e.HardExpr)>
@@ -710,26 +662,20 @@ GenericMatch-Wrapper {
         Clear e.VarsMatches
           = <MapAccum
               {
-                ((e.StaticMatches) (e.DynamicMatches)) (e.Val ':' (e.Var))
-                  = <IsSpecStaticVar (e.Var)>
-                  : {
-                      True
-                        = (
-                            (e.StaticMatches (e.Val ':' (TkVariable e.Var)))
-                            (e.DynamicMatches)
-                          );
+                (e.StaticMatches) (e.Val ':' (e.Var))
+                  , e.Var : s.Mode e.Index
+                  , <Type e.Index> : 'Lu' e._
+                  = (e.StaticMatches (e.Val ':' (TkVariable e.Var)))
+                    /* пусто */;
 
-                      False
-                        = (
-                            (e.StaticMatches)
-                            (e.DynamicMatches (e.Val ':' (TkVariable e.Var)))
-                          );
-                    };
+                (e.StaticMatches) (e.Val ':' (e.Var))
+                  = (e.StaticMatches)
+                    (e.Val ':' (TkVariable e.Var));
               }
-              ((/* for statics */) (/* for dynamics */))
+              (/* for statics */)
               e.VarsMatches
             >
-          : ((e.StaticMatches) (e.DynamicMatches))
+          : (e.StaticMatches) e.DynamicMatches
           = Clear (e.StaticMatches) (e.DynamicMatches);
 
         s.OtherResult e.ResultInfo
@@ -767,13 +713,13 @@ MapGenericMatches {
             (e.ArgStaticMatches-B (e.ArgVal ':' t.SpecVar) e.ArgStaticMatches-E)
             (e.MappedMatches)
           )
-          (e.SentenceVal ':' t.SpecVar)
+          ((TkVariable s.Mode e.Index) ':' t.SpecVar)
             = (
                 (
                   e.ArgStaticMatches-B (e.ArgVal ':' t.SpecVar)
                   e.ArgStaticMatches-E
                 )
-                (e.MappedMatches (e.ArgVal ':' e.SentenceVal))
+                (e.MappedMatches (e.ArgVal ':' (s.Mode e.Index)))
               );
         }
         ((e.ArgStaticMatches) (/* for result */))
@@ -781,67 +727,4 @@ MapGenericMatches {
       >
     : ((e.ArgStaticMatches) (e.ResultMatches))
     = e.ResultMatches;
-}
-
-FindReplace-GenericMatches-Val {
-  (e.GenericMatches) (e.LookFor) e.ReplaceVal
-    = <Map
-        {
-          (e.Val ':' t.Var)
-            = (<FindReplace-Expr (e.Val) (e.LookFor) e.ReplaceVal> ':' t.Var);
-        }
-        e.GenericMatches
-      >;
-}
-
-/**
-  <FindReplace-Expr (e.LookAt) (e.LookFor) e.ReplaceVal>
-
-  e.LookAt ::= e.Expression
-*/
-FindReplace-Expr {
-  (/* empty */) (e.LookFor) e.ReplaceVal = /* empty */;
-
-  (e.LookAt) (/* empty */) e.ReplaceVal = e.LookAt;
-
-  (e.LookAt) (e.LookAt) e.ReplaceVal = e.ReplaceVal;
-
-  (e.LookAt-B e.LookFor e.LookAt-E) (e.LookFor) e.ReplaceVal
-    = <FindReplace-Expr (e.LookAt-B) (e.LookFor) e.ReplaceVal>
-      e.ReplaceVal <FindReplace-Expr (e.LookAt-E) (e.LookFor) e.ReplaceVal>;
-
-  (e.LookAt) (e.LookFor) e.ReplaceVal
-    = <MapAccum
-        {
-          ((e.LookFor) e.ReplaceVal) t.LookAt-Term
-            = ((e.LookFor) e.ReplaceVal)
-              <FindReplace-Term t.LookAt-Term (e.LookFor) e.ReplaceVal>;
-        }
-        ((e.LookFor) e.ReplaceVal)
-        e.LookAt
-      >
-    : ((e.LookFor) e.ReplaceVal) e.ModifyedLookAt
-    = e.ModifyedLookAt;
-}
-
-FindReplace-Term {
-  (Brackets e.Expression) (e.LookFor) e.ReplaceVal
-    = (Brackets <FindReplace-Expr (e.Expression) (e.LookFor) e.ReplaceVal>);
-
-  (ADT-Brackets (e.Name) e.Expression) (e.LookFor) e.ReplaceVal
-    = (
-        ADT-Brackets (e.Name)
-        <FindReplace-Expr (e.Expression) (e.LookFor) e.ReplaceVal>
-      );
-
-  (CallBrackets e.Expression) (e.LookFor) e.ReplaceVal
-    = (CallBrackets <FindReplace-Expr (e.Expression) (e.LookFor) e.ReplaceVal>);
-
-  (ClosureBrackets e.ClosureContent) (e.LookFor) e.ReplaceVal
-    = (
-        ClosureBrackets
-        <FindReplace-Expr (e.ClosureContent) (e.LookFor) e.ReplaceVal>
-      );
-
-  t.OtherTerm (e.LookFor) e.ReplaceVal = t.OtherTerm;
 }
