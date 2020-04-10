@@ -1,6 +1,6 @@
 //FROM Library
-$EXTERN Add, WriteLine;
+$EXTERN Add, Prout;
 
 $ENTRY Go {
-  = <WriteLine '1+2=' <Add '1' '2'>>;
+  = <Prout '1+2=' <Add '1' '2'>>;
 }

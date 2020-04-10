@@ -76,18 +76,11 @@ run_all_tests() {
     Library-Implodes-Fail \
     Library-PtrFromName-Fail
 
-  if [ -e Library-WriteLine ]; then
-    echo Pass Library-WriteLine test...
-    run_exe Library-WriteLine
-    compare __out.txt 2lines.txt
-    cleanup Library-WriteLine
-  fi
-
-  if [ -e Library-WriteLine-Expr ]; then
-    echo Pass Library-WriteLine-Expr test...
-    run_exe Library-WriteLine-Expr
-    compare __out.txt WriteLine-Expr.txt
-    cleanup Library-WriteLine-Expr
+  if [ -e Library-Prout-Expr ]; then
+    echo Pass Library-Prout-Expr test...
+    run_exe Library-Prout-Expr
+    compare __out.txt Prout-Expr.txt
+    cleanup Library-Prout-Expr
   fi
 
   if [ -e Library-FOpen-Putout-Close ]; then
@@ -97,24 +90,24 @@ run_all_tests() {
     cleanup Library-FOpen-Putout-Close
   fi
 
-  if [ -e Library-ReadLine-2lines ]; then
-    echo Pass Library-ReadLine-2lines test...
-    ./Library-ReadLine-2lines $DIAG < 2lines.txt
+  if [ -e Library-Card-2lines ]; then
+    echo Pass Library-Card-2lines test...
+    ./Library-Card-2lines $DIAG < 2lines.txt
     if [ $? -gt 0 ]; then
       echo TEST FAILED, SEE __dump.txt
       exit 1
     fi
-    cleanup Library-ReadLine-2lines
+    cleanup Library-Card-2lines
   fi
 
-  if [ -e Library-ReadLine-2lines-no-eol ]; then
-    echo Pass Library-ReadLine-2lines-no-eol test...
-    ./Library-ReadLine-2lines-no-eol $DIAG < 2lines-no-eol.txt
+  if [ -e Library-Card-2lines-no-eol ]; then
+    echo Pass Library-Card-2lines-no-eol test...
+    ./Library-Card-2lines-no-eol $DIAG < 2lines-no-eol.txt
     if [ $? -gt 0 ]; then
       echo TEST FAILED, SEE __dump.txt
       exit 1
     fi
-    cleanup Library-ReadLine-2lines-no-eol
+    cleanup Library-Card-2lines-no-eol
   fi
 
   if [ -e Library-FOpen-Append ]; then

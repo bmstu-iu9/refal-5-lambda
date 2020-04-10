@@ -1,0 +1,8 @@
+//FROM Library
+$EXTERN Card;
+
+$ENTRY Go {
+  =
+    <{ 'Hello' = ; } <Card>>
+    <{ 'World' 0 = ; } <Card>>;
+}

@@ -3086,24 +3086,6 @@ GetFreeHandle {
 }
 
 
-/**
-  <ReadLine> == s.CHAR* 0?
-*/
-$ENTRY ReadLine {
-  = <Get stdin>;
-}
-
-
-/**
-  <WriteLine e.AnyExpression> == []
-
-  Synonym for Prout
-*/
-$ENTRY WriteLine {
-  e.AnyExpression = <Putout stdout e.AnyExpression>;
-}
-
-
 * Работа с типами символов
 
 /**

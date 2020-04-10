@@ -1,11 +1,11 @@
 //FROM Library
-$EXTERN WriteLine;
+$EXTERN Prout;
 
 Empty { /* пусто */ = ; }
 
 $ENTRY Go {
   e.Context =
     <Empty
-      <WriteLine 100 #Ident Go (1 2) 'abc' [Go] { = e.Context; } '!'>
+      <Prout 100 #Ident Go (1 2) 'abc' [Go] { = e.Context; } '!'>
     >;
 }

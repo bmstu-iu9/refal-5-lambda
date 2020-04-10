@@ -1,4 +1,4 @@
-$EXTERN WriteLine;
+$EXTERN Prout;
 $EXTERN Inc, Dec;
 //FROM LibraryEx
 $EXTERN Fetch, LoadFile, Map;

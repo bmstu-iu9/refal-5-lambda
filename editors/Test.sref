@@ -6,7 +6,7 @@
 // И однострочные тоже.
 
 //FROM Library
-$EXTERN WriteLine;
+$EXTERN Prout;
 
 //FROM LibraryEx
 $EXTERN SaveFile, LoadFile, ArgList;
@@ -46,11 +46,11 @@ void f() {
 
 Main {
   (e.ProgName) =
-    <WriteLine 'Arguments not found' 10 12>
-    <WriteLine "A am compound symbol">
-    <WriteLine lowercase _underscore>
+    <Prout 'Arguments not found' 10 12>
+    <Prout "A am compound symbol">
+    <Prout lowercase _underscore>
     // А вот незакрытая кавычка:
-    <WriteLine 'Ooops>;
+    <Prout 'Ooops>;
 
   (e.ProgName) e.Files =
     <Map

@@ -1,6 +1,6 @@
 //FROM Library
-$EXTERN WriteLine;
+$EXTERN Prout;
 
 $ENTRY Go {
-  = <WriteLine 'Hello, World!'>;
+  = <Prout 'Hello, World!'>;
 }

@@ -63,7 +63,7 @@ if ('onhashchange' in window) {
 <span id="L6" class="LineNr"> 6 </span><span class="Comment">// И однострочные тоже.</span>
 <span id="L7" class="LineNr"> 7 </span>
 <span id="L8" class="LineNr"> 8 </span><span class="Comment">//FROM Library</span>
-<span id="L9" class="LineNr"> 9 </span><span class="Statement">$EXTERN</span> WriteLine;
+<span id="L9" class="LineNr"> 9 </span><span class="Statement">$EXTERN</span> Prout;
 <span id="L10" class="LineNr">10 </span>
 <span id="L11" class="LineNr">11 </span><span class="Comment">//FROM LibraryEx</span>
 <span id="L12" class="LineNr">12 </span><span class="Statement">$EXTERN</span> SaveFile, LoadFile, ArgList;
@@ -103,11 +103,11 @@ if ('onhashchange' in window) {
 <span id="L46" class="LineNr">46 </span>
 <span id="L47" class="LineNr">47 </span>Main {
 <span id="L48" class="LineNr">48 </span>  (<span class="Special">e.ProgName</span>) =
-<span id="L49" class="LineNr">49 </span>    &lt;WriteLine <span class="Constant">'Arguments not found'</span> <span class="Constant">10</span> <span class="Constant">12</span>&gt;
-<span id="L50" class="LineNr">50 </span>    &lt;WriteLine <span class="Constant">&quot;A am compound symbol&quot;</span>&gt;
-<span id="L51" class="LineNr">51 </span>    &lt;WriteLine lowercase _underscore&gt;
+<span id="L49" class="LineNr">49 </span>    &lt;Prout <span class="Constant">'Arguments not found'</span> <span class="Constant">10</span> <span class="Constant">12</span>&gt;
+<span id="L50" class="LineNr">50 </span>    &lt;Prout <span class="Constant">&quot;A am compound symbol&quot;</span>&gt;
+<span id="L51" class="LineNr">51 </span>    &lt;Prout lowercase _underscore&gt;
 <span id="L52" class="LineNr">52 </span>    <span class="Comment">// А вот незакрытая кавычка:</span>
-<span id="L53" class="LineNr">53 </span>    &lt;WriteLine <span class="Error">'Ooops&gt;;</span>
+<span id="L53" class="LineNr">53 </span>    &lt;Prout <span class="Error">'Ooops&gt;;</span>
 <span id="L54" class="LineNr">54 </span>
 <span id="L55" class="LineNr">55 </span>  (<span class="Special">e.ProgName</span>) <span class="Special">e.Files</span> =
 <span id="L56" class="LineNr">56 </span>    &lt;Map

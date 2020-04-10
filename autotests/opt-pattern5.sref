@@ -11,7 +11,7 @@ $ENTRY Go {
         (#CmdVar #AlgLeft 2 't' 5 )
         (#CmdVariableDebugTable 't.Config#1' 5 )
         (#CmdVariableDebugTable 'e.Message#1' 2 )
-        (#CmdCreateElem #Allocate 7 #ElName 'WriteLine' )
+        (#CmdCreateElem #Allocate 7 #ElName 'Prout' )
         (#CmdCreateElem #Allocate 8 #ElString 'LINK ERROR: ' )
         (#CmdCreateElem #Allocate 12 #ElName 'CreateErrorFileMark' )
         (#CmdCreateElem #Allocate 15 #ElName 'Exit' )
@@ -63,7 +63,7 @@ RESULT {
     ('Lower' )
     ('Exit' )
     ('CreateErrorFileMark' )
-    ('WriteLine' )
+    ('Prout' )
   )
   (#CmdIdentArray 0
   )

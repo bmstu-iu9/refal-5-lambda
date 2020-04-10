@@ -87,18 +87,11 @@ setlocal
     Library-PtrFromName-Fail ^
     || exit /b 1
 
-  if exist Library-WriteLine.exe (
-    echo Pass Library-WriteLine test...
-    call :RUN_EXE Library-WriteLine || exit /b 1
-    call :COMPARE __out.txt 2lines.txt || exit /b 1
-    call :CLEANUP Library-WriteLine
-  )
-
-  if exist Library-WriteLine-Expr.exe (
-    echo Pass Library-WriteLine-Expr test...
-    call :RUN_EXE Library-WriteLine-Expr || exit /b 1
-    call :COMPARE __out.txt WriteLine-Expr.txt || exit /b 1
-    call :CLEANUP Library-WriteLine-Expr
+  if exist Library-Prout-Expr.exe (
+    echo Pass Library-Prout-Expr test...
+    call :RUN_EXE Library-Prout-Expr || exit /b 1
+    call :COMPARE __out.txt Prout-Expr.txt || exit /b 1
+    call :CLEANUP Library-Prout-Expr
   )
 
   if exist Library-FOpen-Putout-Close.exe (
@@ -108,24 +101,24 @@ setlocal
     call :CLEANUP Library-FOpen-Putout-Close
   )
 
-  if exist Library-ReadLine-2lines.exe (
-    echo Pass Library-ReadLine-2lines test...
-    Library-ReadLine-2lines.exe %DIAG% < 2lines.txt
+  if exist Library-Card-2lines.exe (
+    echo Pass Library-Card-2lines test...
+    Library-Card-2lines.exe %DIAG% < 2lines.txt
     if errorlevel 1 (
       echo TEST FAILED, SEE __dump.txt
       exit /b 1
     )
-    call :CLEANUP Library-ReadLine-2lines
+    call :CLEANUP Library-Card-2lines
   )
 
-  if exist Library-ReadLine-2lines-no-eol.exe (
-    echo Pass Library-ReadLine-2lines-no-eol test...
-    Library-ReadLine-2lines-no-eol.exe %DIAG% < 2lines-no-eol.txt
+  if exist Library-Card-2lines-no-eol.exe (
+    echo Pass Library-Card-2lines-no-eol test...
+    Library-Card-2lines-no-eol.exe %DIAG% < 2lines-no-eol.txt
     if errorlevel 1 (
       echo TEST FAILED, SEE __dump.txt
       exit /b 1
     )
-    call :CLEANUP Library-ReadLine-2lines-no-eol
+    call :CLEANUP Library-Card-2lines-no-eol
   )
 
   if exist Library-FOpen-Append.exe (
