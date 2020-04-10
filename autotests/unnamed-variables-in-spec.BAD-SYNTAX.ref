@@ -1,0 +1,5 @@
+$ENTRY S {
+  (e.S) e.d = e.S e.d;
+}
+
+$SPEC S (e.STAT) e._dyn;

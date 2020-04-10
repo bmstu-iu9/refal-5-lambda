@@ -67,6 +67,10 @@ PrepareMessage {
   RepVarInSpecPattern s.Mode e.Index
     = 'Repeated variable ' s.Mode '.' e.Index ' in specialization pattern';
 
+  UnnamedVariableInSpecPattern s.Mode e.Index
+    = 'Unnamed variable ' s.Mode '.' e.Index ' can\'t appear '
+      'in $SPEC pattern';
+
   SpecStaticParamTypeMismatching (s.Mode e.Index) e.FnName
     = 'Type mismatching of static parameter 's.Mode '.' e.Index
       ' in specialization of function ' e.FnName;
@@ -266,6 +270,10 @@ ErrorsForRepeatedVariables {
         e.VarList-E
       >
       (Error t.SrcPos2 RepVarInSpecPattern s.Mode e.Index);
+
+  e.VarList-B (TkVariable t.SrcPos s.Mode '_' e.Index) e.VarList-E
+    = <ErrorsForRepeatedVariables e.VarList-B e.VarList-E>
+      (Error t.SrcPos UnnamedVariableInSpecPattern s.Mode '_' e.Index);
 
   e.VarList = /* empty */;
 }
