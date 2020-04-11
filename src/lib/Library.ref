@@ -1139,44 +1139,26 @@ $ENTRY Numb {
 }
 
 Numb-Aux {
-  e.String = <DoNumb &Numb-Ok &Numb-Fail () e.String>;
+  e.String = <DoNumb (0) e.String>;
 }
 
 DoNumb {
-  s.Ok s.Fail (e.Digits) '0' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 0) e.Rest>;
-  s.Ok s.Fail (e.Digits) '1' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 1) e.Rest>;
-  s.Ok s.Fail (e.Digits) '2' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 2) e.Rest>;
-  s.Ok s.Fail (e.Digits) '3' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 3) e.Rest>;
-  s.Ok s.Fail (e.Digits) '4' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 4) e.Rest>;
-  s.Ok s.Fail (e.Digits) '5' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 5) e.Rest>;
-  s.Ok s.Fail (e.Digits) '6' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 6) e.Rest>;
-  s.Ok s.Fail (e.Digits) '7' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 7) e.Rest>;
-  s.Ok s.Fail (e.Digits) '8' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 8) e.Rest>;
-  s.Ok s.Fail (e.Digits) '9' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 9) e.Rest>;
+  (e.Value) '0' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 0> e.Rest>;
+  (e.Value) '1' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 1> e.Rest>;
+  (e.Value) '2' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 2> e.Rest>;
+  (e.Value) '3' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 3> e.Rest>;
+  (e.Value) '4' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 4> e.Rest>;
+  (e.Value) '5' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 5> e.Rest>;
+  (e.Value) '6' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 6> e.Rest>;
+  (e.Value) '7' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 7> e.Rest>;
+  (e.Value) '8' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 8> e.Rest>;
+  (e.Value) '9' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 9> e.Rest>;
 
-  s.Ok s.Fail () e.Rest = <s.Fail e.Rest>;
-  s.Ok s.Fail (e.Digits) e.Rest = <s.Ok (<Numb-Wrap e.Digits>) e.Rest>;
+  (e.Value) e.Rest = e.Value;
 }
 
-Numb-Ok {
-  (e.Number) e.Rest = e.Number;
-}
-
-Numb-Fail {
-  e.Rest = 0;
-}
-
-Numb-Wrap {
-  e.Digits = <DoNumb-Wrap (0) e.Digits>;
-}
-
-DoNumb-Wrap {
-  (e.Result) s.NextDigit e.Digits
-    = <DoNumb-Wrap
-        (<Add-Nat (<Mul-Nat-Line e.Result 10>) s.NextDigit>) e.Digits
-      >;
-
-  (e.Result) = e.Result;
+DoNumb-AddDigit {
+  e.Value s.Digit = (<Add-Nat (<Mul-Nat-Line e.Value 10>) s.Digit>);
 }
 
 
