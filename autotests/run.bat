@@ -165,10 +165,6 @@ setlocal
     call :%2 %1 || exit /b 1
     set SRFLAGS=-OS
     call :%2 %1 || exit /b 1
-    set SRFLAGS=-OS --markup-context
-    call :%2 %1 || exit /b 1
-    set SRFLAGS=-ODS --markup-context
-    call :%2 %1 || exit /b 1
     set SRFLAGS=-OCT
     call :%2 %1 || exit /b 1
     set SRFLAGS=-OCD
@@ -176,10 +172,6 @@ setlocal
     set SRFLAGS=-OCI
     call :%2 %1 || exit /b 1
     set SRFLAGS=-OCS
-    call :%2 %1 || exit /b 1
-    set SRFLAGS=-OCS --markup-context
-    call :%2 %1 || exit /b 1
-    set SRFLAGS=-OCDS --markup-context
     call :%2 %1 || exit /b 1
     echo Special tree tests is passed
   )
