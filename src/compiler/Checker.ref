@@ -386,7 +386,7 @@ ValidBodyForSpec-CheckSentensePattern {
                   : {
                       True
                         = <CheckSpec-RepeatingVarInStaticParams
-                            True e.ExtractedVars <ExtractVariables-Expr e.Val>
+                            e.ExtractedVars <ExtractVariables-Expr e.Val>
                           >
                         : {
                             True e.ExtractedVars^
@@ -434,23 +434,19 @@ CheckSpec-VarTypeMatching {
 }
 
 CheckSpec-RepeatingVarInStaticParams {
-  True e.ExtractedVars-B (e.Var) e.ExtractedVars-M (e.Var) e.ExtractedVars-E
+  e.ExtractedVars-B (e.Var) e.ExtractedVars-M (e.Var) e.ExtractedVars-E
     = False e.ExtractedVars-B (e.Var) e.ExtractedVars-M e.ExtractedVars-E;
 
-  True e.ExtractedVars = True e.ExtractedVars;
-
-  False e.ExtractedVars = False e.ExtractedVars;
-}
-
-SVar-IsInSet {
-  (e.Set-B s.Var e.Set-E) s.Var = True;
-
-  (e.Set) s.Var = False;
+  e.ExtractedVars = True e.ExtractedVars;
 }
 
 IsSpecStaticVar {
   (s.Mode s.FirstSymbol e.Index)
-    = <SVar-IsInSet ('ABCDEFGHIJKLMNOPQRSTUVWXYZ') s.FirstSymbol>;
+    , <Type s.FirstSymbol>
+    : {
+        'Lu' s._ = True;
+        e._ = False;
+      };
 }
 
 CheckSpecs-SeparateErrors {

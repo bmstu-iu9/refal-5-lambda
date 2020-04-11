@@ -693,7 +693,7 @@ GenericMatch-Wrapper {
               {
                 (e.StaticMatches) (e.Val ':' (e.Var))
                   , e.Var : s.Mode e.Index
-                  , <Type e.Index> : 'Lu' e._
+                  , <IsSpecStaticVar (e.Var)> : True
                   = (e.StaticMatches (e.Val ':' (TkVariable e.Var)))
                     /* пусто */;
 
@@ -709,6 +709,15 @@ GenericMatch-Wrapper {
 
         s.OtherResult e.ResultInfo
           = s.OtherResult e.ResultInfo;
+      };
+}
+
+IsSpecStaticVar {
+  (s.Mode s.FirstSymbol e.Index)
+    , <Type s.FirstSymbol>
+    : {
+        'Lu' s._ = True;
+        e._ = False;
       };
 }
 
