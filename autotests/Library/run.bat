@@ -65,7 +65,7 @@ setlocal
     Library-LongMath-Numb-OK ^
     Library-LongMath-Symb-OK ^
     Library-FOpen-Get-Close ^
-    Library-IntFromStr-StrFromInt-Chr-Ord ^
+    Library-StrFromInt-Chr-Ord ^
     Library-SymbCompare ^
     Library-Type ^
     Library-Implode-Explode_Ext ^

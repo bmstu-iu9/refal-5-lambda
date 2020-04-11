@@ -1,7 +1,3 @@
-*$FROM Library
-$EXTERN IntFromStr;
-
-
 /*
   Внутреннее представление:
 
@@ -725,14 +721,34 @@ $ENTRY Config-GetTreeOptCycles {
 */
 $ENTRY Config-SetTreeOptCycles {
   [Config e.Params-B (TreeOptCycles s.OldCycles) e.Params-E] e.NewCycles
-    = <IntFromStr e.NewCycles>
+    = <ParseNumber e.NewCycles>
     : {
-        Success s.NewCycles e.UnmatchedChars , e.UnmatchedChars : /* empty */
+        Success s.NewCycles
           = Success
             [Config e.Params-B (TreeOptCycles s.NewCycles) e.Params-E];
 
         e.OtherResult = Fails BadValue-MustBeNumber e.NewCycles;
       };
+}
+
+ParseNumber {
+  /* пусто */ = Fails;
+
+  e.String-B s.NotADigit e.String-E
+    , <IsDigit s.NotADigit> : False
+    = Fails;
+
+  e.Digits
+    , <Numb e.Digits>
+    : {
+        s.Number = Success s.Number;
+        e.BigNumber = Fails;
+      };
+}
+
+IsDigit {
+  s.Digit, <Type s.Digit> : 'D0' s._ = True;
+  s.Digit = False;
 }
 
 /**

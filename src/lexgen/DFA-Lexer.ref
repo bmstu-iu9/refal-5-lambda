@@ -4,9 +4,6 @@ $EXTERN EscapeString;
 *$FROM LibraryEx
 $EXTERN Fetch, Pipe, Map, MapAccum, Inc;
 
-*$FROM Library
-$EXTERN IntFromStr;
-
 
 /*==============================================================================
    Лексический разбор
@@ -106,12 +103,10 @@ Unescape {
 
   '\\d' e.Tail =
     <Fetch
-      <IntFromStr e.Tail>
+      <CollectDigits () e.Tail>
       {
-        Success s.Number e.Tail^ =
+        s.Number e.Tail^ =
           <Chr s.Number> <Unescape e.Tail>;
-
-        /* Fails невозможен */
       }
     >;
 
@@ -120,6 +115,14 @@ Unescape {
   s.Other e.Tail = s.Other <Unescape e.Tail>;
 
   /* пусто */ = /* пусто */;
+}
+
+CollectDigits {
+  (e.Scanned) s.Next e.Tail
+    , <Type s.Next> : 'D0' s.Digit
+    = <CollectDigits (e.Scanned s.Digit) e.Tail>;
+
+  (e.Scanned) e.Tail = <Numb e.Scanned> e.Tail;
 }
 
 /*GEN:TOKENS

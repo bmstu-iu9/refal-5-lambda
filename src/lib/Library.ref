@@ -3089,26 +3089,6 @@ GetFreeHandle {
 * Работа с типами символов
 
 /**
-  <IntFromStr s.DIGIT-CHAR* e.NotDigitExpr>
-    == Success s.MACRODIGIT e.NotDigitExpr
-  <IntFromStr e.NotDigitExpr>
-    == Fails e.NotDigitExpr
-*/
-$ENTRY IntFromStr {
-  e.String
-    = <DoNumb
-          {
-            (e.MacroDigits s.LastDigit) e.Rest = Success s.LastDigit e.Rest;
-          }
-          {
-            e.Rest = Fails e.Rest;
-          }
-        () e.String
-      >;
-}
-
-
-/**
   <StrFromInt s.MACRODIGIT> == s.DIGIT-CHAR+
 */
 $ENTRY StrFromInt {

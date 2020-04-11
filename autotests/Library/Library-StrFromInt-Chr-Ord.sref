@@ -1,12 +1,8 @@
 //FROM Library
-$EXTERN IntFromStr, StrFromInt, Chr, Ord;
+$EXTERN StrFromInt, Chr, Ord;
 
 $ENTRY Go {
   =
-    <{ #Success 123 'abcd' = ; } <IntFromStr '123abcd'>>
-    <{ #Success 0 = ; } <IntFromStr '4294967296'>>
-    <{ #Fails 'abcd' = ; } <IntFromStr 'abcd'>>
-    <{ #Fails /* пусто */ = ; } <IntFromStr /* пусто */>>
     <{ '123' = ; } <StrFromInt 123>>
     <{ '0' = ; } <StrFromInt 0>>
     <{ '4000000000' = ; } <StrFromInt 4000000000>>
