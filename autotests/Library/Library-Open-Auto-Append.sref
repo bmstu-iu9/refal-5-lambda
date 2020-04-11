@@ -1,14 +1,14 @@
 //FROM Library
-$EXTERN FOpen, Putout, Close, Get;
+$EXTERN Open-Auto, Putout, Close, Get;
 
 $ENTRY Go {
   =
     // «Обрезаем» файл на случай, если он уже существует
-    <Close <FOpen 'w' '__written_file.txt'>>
+    <Close <Open-Auto 'w' '__written_file.txt'>>
 
     <AppendLine ('__written_file.txt') 'Hello'>
     <AppendLine ('__written_file.txt') 'World'>
-    <CheckContent <FOpen 'r' '__written_file.txt'> ('Hello') ('World') (0)>;
+    <CheckContent <Open-Auto 'r' '__written_file.txt'> ('Hello') ('World') (0)>;
 }
 
 AppendLine {
@@ -19,7 +19,7 @@ AppendLine {
           <Putout s.FileHandle e.Line>
           <Close s.FileHandle>;
       }
-      <FOpen 'a' e.FileName>
+      <Open-Auto 'a' e.FileName>
     >;
 }
 

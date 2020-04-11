@@ -1,0 +1,6 @@
+//FROM Library
+$EXTERN Open-Auto;
+
+$ENTRY Go {
+  = <Open-Auto 'z' '2lines.txt'>;
+}

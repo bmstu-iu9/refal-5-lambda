@@ -3022,18 +3022,12 @@ $ENTRY GetPPID {
       'r' | 'w' | 'a'
     | 'R' | 'W' | 'A'
     | s.COMPOUND | (s.CHAR*)
-
-  FOpen (deprecated) is synonim for Open-Auto
 */
 $ENTRY Open-Auto {
   t.Mode s.FileNameChar e.FileName
     = <GetFreeHandle> : s.FreeHandle
     = <Open t.Mode s.FreeHandle s.FileNameChar e.FileName>
       s.FreeHandle;
-}
-
-$ENTRY FOpen {
-  t.Mode e.FileName = <Open-Auto t.Mode e.FileName>
 }
 
 

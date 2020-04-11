@@ -1,5 +1,5 @@
 //FROM Library
-$EXTERN FOpen, WriteBytes, Putout, Close;
+$EXTERN Open-Auto, WriteBytes, Putout, Close;
 
 $ENTRY Go {
   =
@@ -14,7 +14,7 @@ $ENTRY Go {
           <IsEmpty <WriteBytes s.FileHandle 'World'>>
           <Close s.FileHandle>;
       }
-      <FOpen ('w') '__written_file.txt'>
+      <Open-Auto ('w') '__written_file.txt'>
     >;
 }
 

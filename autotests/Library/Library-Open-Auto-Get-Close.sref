@@ -1,5 +1,5 @@
 //FROM Library
-$EXTERN FOpen, Get, Close;
+$EXTERN Open-Auto, Get, Close;
 
 $ENTRY Go {
   =
@@ -11,7 +11,7 @@ Handle { s.FileHandle = s.FileHandle; }
 
 CheckContent {
   (e.FileName) e.Lines =
-    <DoCheckContent <Handle <FOpen 'R' e.FileName>> e.Lines>;
+    <DoCheckContent <Handle <Open-Auto 'R' e.FileName>> e.Lines>;
 }
 
 DoCheckContent {

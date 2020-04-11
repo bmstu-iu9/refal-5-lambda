@@ -5,7 +5,7 @@ $INCLUDE "refal5-builtins.refi";
 $EXTERN PtrFromName;
 
 *$FROM Library
-$EXTERN FOpen, SymbCompare, WriteBytes, ReadBytes, FTell, FSeek, RenameFile;
+$EXTERN Open-Auto, SymbCompare, WriteBytes, ReadBytes, FTell, FSeek, RenameFile;
 
 *$FROM Library
 $EXTERN Module-Load, Module-Unload, Module-Mu, Module-LookupFunction,

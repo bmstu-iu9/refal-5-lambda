@@ -55,7 +55,7 @@ run_all_tests() {
     Library-LongMath-Mod-OK \
     Library-LongMath-Numb-OK \
     Library-LongMath-Symb-OK \
-    Library-FOpen-Get-Close \
+    Library-Open-Auto-Get-Close \
     Library-Chr-Ord-Upper-Lower \
     Library-SymbCompare \
     Library-Type \
@@ -71,7 +71,7 @@ run_all_tests() {
     Library-Math-Fail \
     Library-Math-Div-Fail \
     Library-Math-Mod-Fail \
-    Library-FOpen-Fail \
+    Library-Open-Auto-Fail \
     Library-SymbCompare-Fail \
     Library-Implodes-Fail \
     Library-PtrFromName-Fail
@@ -83,11 +83,11 @@ run_all_tests() {
     cleanup Library-Prout-Expr
   fi
 
-  if [ -e Library-FOpen-Putout-Close ]; then
-    echo Pass Library-FOpen-Putout-Close test...
-    run_exe Library-FOpen-Putout-Close
+  if [ -e Library-Open-Auto-Putout-Close ]; then
+    echo Pass Library-Open-Auto-Putout-Close test...
+    run_exe Library-Open-Auto-Putout-Close
     compare __written_file.txt 2lines.txt
-    cleanup Library-FOpen-Putout-Close
+    cleanup Library-Open-Auto-Putout-Close
   fi
 
   if [ -e Library-Card-2lines ]; then
@@ -110,17 +110,17 @@ run_all_tests() {
     cleanup Library-Card-2lines-no-eol
   fi
 
-  if [ -e Library-FOpen-Append ]; then
-    echo Pass Library-FOpen-Append test...
-    run_exe Library-FOpen-Append
-    cleanup Library-FOpen-Append
+  if [ -e Library-Open-Auto-Append ]; then
+    echo Pass Library-Open-Auto-Append test...
+    run_exe Library-Open-Auto-Append
+    cleanup Library-Open-Auto-Append
   fi
 
-  if [ -e Library-FOpen-extended-mode ]; then
-    echo Pass Library-FOpen-extended-mode test...
-    run_exe Library-FOpen-extended-mode
+  if [ -e Library-Open-Auto-extended-mode ]; then
+    echo Pass Library-Open-Auto-extended-mode test...
+    run_exe Library-Open-Auto-extended-mode
     compare __written_file.txt 2lines.txt
-    cleanup Library-FOpen-extended-mode
+    cleanup Library-Open-Auto-extended-mode
   fi
 
   if [ -e Library-WriteBytes ]; then

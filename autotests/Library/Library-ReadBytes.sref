@@ -1,5 +1,5 @@
 //FROM Library
-$EXTERN FOpen, ReadBytes, Close;
+$EXTERN Open-Auto, ReadBytes, Close;
 
 $ENTRY Go {
   =
@@ -13,7 +13,7 @@ $ENTRY Go {
           <Eq ()                              <ReadBytes s.FileHandle 10>>
           <Close s.FileHandle>;
       }
-      <FOpen ('rb') 'nonprint.bin'>
+      <Open-Auto ('rb') 'nonprint.bin'>
     >;
 }
 

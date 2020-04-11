@@ -1,5 +1,5 @@
 *$FROM Library
-$EXTERN FOpen, Close;
+$EXTERN Open-Auto, Close;
 
 $INCLUDE "LibraryEx";
 
@@ -20,7 +20,7 @@ $ENTRY Log-Init {
   /* no file name */ = /* do noting */;
 
   e.LogFileName
-    = <FOpen "w" e.LogFileName> : s.FileHandle
+    = <Open-Auto "w" e.LogFileName> : s.FileHandle
     = <G_LogFile s.FileHandle> : /* empty */
     = <Log-PutLine 'Compilation starts'>;
 }

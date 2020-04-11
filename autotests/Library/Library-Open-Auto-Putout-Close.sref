@@ -1,8 +1,8 @@
 //FROM Library
-$EXTERN FOpen, Putout, Close;
+$EXTERN Open-Auto, Putout, Close;
 
 $ENTRY Go {
-  = <FillFile <FOpen 'W' '__written_file.txt'>>;
+  = <FillFile <Open-Auto 'W' '__written_file.txt'>>;
 }
 
 Empty { /* пусто */ = ; }

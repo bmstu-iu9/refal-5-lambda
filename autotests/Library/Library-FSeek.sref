@@ -1,8 +1,8 @@
 //FROM Library
-$EXTERN FOpen, Get, FSeek, Close;
+$EXTERN Open-Auto, Get, FSeek, Close;
 
 $ENTRY Go {
-  = <Test-FSeek <FOpen 'r' '2lines-no-eol.txt'>>;
+  = <Test-FSeek <Open-Auto 'r' '2lines-no-eol.txt'>>;
 }
 
 Eq { (e.X) e.X = ; }

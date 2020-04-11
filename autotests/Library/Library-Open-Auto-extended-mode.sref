@@ -1,9 +1,10 @@
 //FROM Library
-$EXTERN FOpen, Putout, Close;
+$EXTERN Open-Auto, Putout, Close;
 
 $ENTRY Go {
-  = <SaveFile <FOpen 'w' '__written_file.txt'> ('Ehllo') ('World')> : /* empty */
-  = <FOpen ('r+') '__written_file.txt'> : s.FileHandle
+  = <SaveFile <Open-Auto 'w' '__written_file.txt'> ('Ehllo') ('World')>
+  : /* empty */
+  = <Open-Auto ('r+') '__written_file.txt'> : s.FileHandle
   = <Putout s.FileHandle 'Hello'>
     <Close s.FileHandle>;
 }

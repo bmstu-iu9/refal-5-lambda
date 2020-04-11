@@ -1,8 +1,8 @@
 //FROM Library
-$EXTERN FOpen, FTell, ReadBytes, Close;
+$EXTERN Open-Auto, FTell, ReadBytes, Close;
 
 $ENTRY Go {
-  = <Test-FTell <FOpen ('rb') 'nonprint.bin'>>;
+  = <Test-FTell <Open-Auto ('rb') 'nonprint.bin'>>;
 }
 
 Test-FTell {

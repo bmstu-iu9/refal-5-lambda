@@ -64,7 +64,7 @@ setlocal
     Library-LongMath-Mod-OK ^
     Library-LongMath-Numb-OK ^
     Library-LongMath-Symb-OK ^
-    Library-FOpen-Get-Close ^
+    Library-Open-Auto-Get-Close ^
     Library-Chr-Ord-Upper-Lower ^
     Library-SymbCompare ^
     Library-Type ^
@@ -81,7 +81,7 @@ setlocal
     Library-Math-Fail ^
     Library-Math-Div-Fail ^
     Library-Math-Mod-Fail ^
-    Library-FOpen-Fail ^
+    Library-Open-Auto-Fail ^
     Library-SymbCompare-Fail ^
     Library-Implodes-Fail ^
     Library-PtrFromName-Fail ^
@@ -94,11 +94,11 @@ setlocal
     call :CLEANUP Library-Prout-Expr
   )
 
-  if exist Library-FOpen-Putout-Close.exe (
-    echo Pass Library-FOpen-Putout-Close test...
-    call :RUN_EXE Library-FOpen-Putout-Close || exit /b 1
+  if exist Library-Open-Auto-Putout-Close.exe (
+    echo Pass Library-Open-Auto-Putout-Close test...
+    call :RUN_EXE Library-Open-Auto-Putout-Close || exit /b 1
     call :COMPARE __written_file.txt 2lines.txt || exit /b 1
-    call :CLEANUP Library-FOpen-Putout-Close
+    call :CLEANUP Library-Open-Auto-Putout-Close
   )
 
   if exist Library-Card-2lines.exe (
@@ -121,17 +121,17 @@ setlocal
     call :CLEANUP Library-Card-2lines-no-eol
   )
 
-  if exist Library-FOpen-Append.exe (
-    echo Pass Library-FOpen-Append test...
-    call :RUN_EXE Library-FOpen-Append || exit /b 1
-    call :CLEANUP Library-FOpen-Append
+  if exist Library-Open-Auto-Append.exe (
+    echo Pass Library-Open-Auto-Append test...
+    call :RUN_EXE Library-Open-Auto-Append || exit /b 1
+    call :CLEANUP Library-Open-Auto-Append
   )
 
-  if exist Library-FOpen-extended-mode.exe (
-    echo Pass Library-FOpen-extended-mode test...
-    call :RUN_EXE Library-FOpen-extended-mode || exit /b 1
+  if exist Library-Open-Auto-extended-mode.exe (
+    echo Pass Library-Open-Auto-extended-mode test...
+    call :RUN_EXE Library-Open-Auto-extended-mode || exit /b 1
     call :COMPARE __written_file.txt 2lines.txt || exit /b 1
-    call :CLEANUP Library-FOpen-extended-mode
+    call :CLEANUP Library-Open-Auto-extended-mode
   )
 
   if exist Library-WriteBytes.exe (

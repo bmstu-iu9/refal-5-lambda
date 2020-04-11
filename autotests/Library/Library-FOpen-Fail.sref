@@ -1,6 +1,0 @@
-//FROM Library
-$EXTERN FOpen;
-
-$ENTRY Go {
-  = <FOpen 'z' '2lines.txt'>;
-}

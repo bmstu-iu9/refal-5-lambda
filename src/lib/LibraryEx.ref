@@ -1,7 +1,7 @@
 $INCLUDE "LibraryEx";
 
 *$FROM Library
-$EXTERN FOpen, Close, Get, Putout, Add, Sub, Arg,
+$EXTERN Open-Auto, Close, Get, Putout, Add, Sub, Arg,
   SymbCompare, ReadBytes, WriteBytes;
 
 $ENTRY Apply;
@@ -20,7 +20,7 @@ $ENTRY DelAccumulator;
 
 $ENTRY LoadFile {
   e.FileName
-    = <FOpen 'r' e.FileName> : t.File
+    = <Open-Auto 'r' e.FileName> : t.File
     = <DoLoadFile t.File <Get t.File>>;
 }
 
@@ -33,11 +33,11 @@ DoLoadFile {
 }
 
 $ENTRY SaveFile {
-  (e.FileName) e.Lines = <SaveFile-Handle <FOpen 'w' e.FileName> e.Lines>;
+  (e.FileName) e.Lines = <SaveFile-Handle <Open-Auto 'w' e.FileName> e.Lines>;
 }
 
 $ENTRY AppendFile {
-  (e.FileName) e.Lines = <SaveFile-Handle <FOpen 'a' e.FileName> e.Lines>;
+  (e.FileName) e.Lines = <SaveFile-Handle <Open-Auto 'a' e.FileName> e.Lines>;
 }
 
 SaveFile-Handle {
@@ -52,7 +52,7 @@ SaveFile-Handle {
 }
 
 $ENTRY LoadBytes {
-  e.FileName = <DoLoadBytes <FOpen ('rb') e.FileName>>;
+  e.FileName = <DoLoadBytes <Open-Auto ('rb') e.FileName>>;
 }
 
 DoLoadBytes {
@@ -65,11 +65,13 @@ DoLoadBytes {
 }
 
 $ENTRY SaveBytes {
-  (e.FileName) e.Bytes = <SaveBytes-Handle <FOpen ('wb') e.FileName> e.Bytes>;
+  (e.FileName) e.Bytes
+    = <SaveBytes-Handle <Open-Auto ('wb') e.FileName> e.Bytes>;
 }
 
 $ENTRY AppendBytes {
-  (e.FileName) e.Bytes = <SaveBytes-Handle <FOpen ('ab') e.FileName> e.Bytes>;
+  (e.FileName) e.Bytes
+    = <SaveBytes-Handle <Open-Auto ('ab') e.FileName> e.Bytes>;
 }
 
 SaveBytes-Handle {
