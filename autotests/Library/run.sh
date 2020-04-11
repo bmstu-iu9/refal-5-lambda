@@ -56,7 +56,7 @@ run_all_tests() {
     Library-LongMath-Numb-OK \
     Library-LongMath-Symb-OK \
     Library-FOpen-Get-Close \
-    Library-Chr-Ord \
+    Library-Chr-Ord-Upper-Lower \
     Library-SymbCompare \
     Library-Type \
     Library-Implode-Explode_Ext \

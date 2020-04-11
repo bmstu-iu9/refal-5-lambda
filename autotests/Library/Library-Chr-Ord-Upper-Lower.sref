@@ -1,0 +1,11 @@
+//FROM Library
+$EXTERN Chr, Ord, Upper, Lower;
+
+$ENTRY Go {
+  =
+    <{ ' ' (' ' [Go 32 32] ' ') ' ' = ; } <Chr 32 (32 [Go 32 32] 32) 32>>
+    <{ 32 (32 [Go '  '] 32) 32 = ; } <Ord ' ' (' ' [Go '  '] ' ') ' '>>
+    <{ 32 = ; } <Ord ' '>>
+    <{ 'A' ('B' [Go 'Pq'] 'C') 'D' = ; } <Upper 'A' ('b' [Go 'Pq'] 'C') 'd'>>
+    <{ 'a' ('b' [Go 'Pq'] 'c') 'd' = ; } <Lower 'A' ('b' [Go 'Pq'] 'C') 'd'>>;
+}
