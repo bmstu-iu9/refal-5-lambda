@@ -37,6 +37,9 @@ PrepareMessage {
     = 'Variable hide operator^ must be applied to first occurence of '
       'variable ' s.Mode '.' e.Index;
 
+  UnnamedNewVariable s.Mode e.Index
+    = 'Unnamed new variable is forbidden: ' s.Mode '.' e.Index '^';
+
   UnnamedVariableInResult s.Mode e.Index
     = 'Unnamed variable ' s.Mode '.' e.Index ' can\'t appear '
       'in result expression';
@@ -769,6 +772,15 @@ FlatExpr {
 }
 
 CheckPattern {
+  (e.ScopeVars) e.Items-B (TkNewVariable t.SrcPos s.Mode '_' e.Index) e.Items-E
+    = <CheckPattern
+        (e.ScopeVars)
+        e.Items-B
+        (TkVariable t.SrcPos s.Mode '_' e.Index)
+        (Error t.SrcPos UnnamedNewVariable s.Mode '_' e.Index)
+        e.Items-E
+      >;
+
   (e.ScopeVars)
   e.Items-B (TkVariable t.SrcPos1 s.Mode1 e.Index) e.Items-M
   (TkNewVariable t.SrcPos2 s.Mode2 e.Index) e.Items-E =
