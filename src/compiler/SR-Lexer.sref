@@ -1,7 +1,7 @@
 $INCLUDE "LibraryEx";
 
 //FROM Library
-$EXTERN Chr, StrFromInt;
+$EXTERN Chr, Symb;
 
 //FROM Escape
 $EXTERN EscapeChar, EscapeString, CharFromNum, UnEscapeString-SR;
@@ -61,7 +61,7 @@ $ENTRY SR-StrFromToken {
   #TkName e.Name = 'Name ' e.Name;
   #TkNumber #Cookie1 = 'Number <Cookie1>';
   #TkNumber #Cookie2 = 'Number <Cookie2>';
-  #TkNumber s.Number = 'Number ' <StrFromInt s.Number>;
+  #TkNumber s.Number = 'Number ' <Symb s.Number>;
   #TkOpenADT = '"["';
   #TkOpenCall = '"<"';
   #TkOpenBlock = '"{"';

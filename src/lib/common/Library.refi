@@ -6,7 +6,7 @@ $EXTERN PtrFromName;
 
 *$FROM Library
 $EXTERN FOpen,
-  StrFromInt, SymbCompare, WriteBytes, ReadBytes, FTell, FSeek, RenameFile;
+  SymbCompare, WriteBytes, ReadBytes, FTell, FSeek, RenameFile;
 
 *$FROM Library
 $EXTERN Module-Load, Module-Unload, Module-Mu, Module-LookupFunction,

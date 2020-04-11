@@ -60,7 +60,7 @@ ReportErrors {
       {
         (s.Pos e.Message) =
           <Prout
-            'Command line argument ' <StrFromInt s.Pos> ': Error: ' e.Message
+            'Command line argument ' <Symb s.Pos> ': Error: ' e.Message
           >;
       }
       e.Errors
@@ -73,7 +73,7 @@ ReportErrors {
       {
         (s.Pos e.Message) =
           <Prout
-            e.ConfigFile ':' <StrFromInt s.Pos> ': Error: ' e.Message
+            e.ConfigFile ':' <Symb s.Pos> ': Error: ' e.Message
           >;
       }
       e.Errors
@@ -93,7 +93,7 @@ Map {
     >;
 }
 
-StrFromInt { 3 = '3'; }
+Symb { 3 = '3'; }
 Exit { 1 = ; }
 Prout { e.Text = [Prout e.Text]; }
 

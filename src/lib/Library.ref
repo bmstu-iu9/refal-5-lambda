@@ -1666,11 +1666,11 @@ $ENTRY Symb {
 }
 
 Symb-Nat {
-  s.Number = <StrFromInt s.Number>;
+  s.Number = <StrFromMacroDigit s.Number>;
 
   e.Number
     = <Divmod-Nat (e.Number) 1000000000 () ()> : (e.Div) s.Mod
-    = <DoLast 9 ('000000000' <StrFromInt s.Mod>)> : (e.Zeros) e.StrDigits
+    = <DoLast 9 ('000000000' <StrFromMacroDigit s.Mod>)> : (e.Zeros) e.StrDigits
     = <Symb-Nat e.Div> e.StrDigits;
 }
 
@@ -2114,7 +2114,7 @@ Xxout-Scan {
     = '"' e.Chars '"' <Xxout-Scan <Type e.Tail>>;
 
   'N' s.0 s.Number e.Tail
-    = <StrFromInt s.Number> ' ' <Xxout-Scan <Type e.Tail>>;
+    = <StrFromMacroDigit s.Number> ' ' <Xxout-Scan <Type e.Tail>>;
 
   'P' s.S s.Printable e.Tail
     = <Xxout-Chars () 'P' s.S s.Printable e.Tail> : (e.Chars) s.T s.S^ e.Tail^
@@ -3070,10 +3070,10 @@ GetFreeHandle {
 
 * Работа с типами символов
 
-/**
-  <StrFromInt s.MACRODIGIT> == s.DIGIT-CHAR+
+/*
+  <StrFromMacroDigit s.MACRODIGIT> == s.DIGIT-CHAR+
 */
-$ENTRY StrFromInt {
+StrFromMacroDigit {
 %%
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;

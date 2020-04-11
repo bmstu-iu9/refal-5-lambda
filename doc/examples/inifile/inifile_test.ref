@@ -4,9 +4,6 @@ $EXTERN LoadIniFile;
 *$FROM LibraryEx
 $EXTERN ArgList, Prout, Map, Fetch;
 
-*$FROM Library
-$EXTERN StrFromInt;
-
 $ENTRY Go {
   = <Main <ArgList>>;
 }
@@ -32,19 +29,19 @@ Main {
                         {
                           (s.LineNumber BadLine)
                             = <Prout
-                                '* Bad line at ' <StrFromInt s.LineNumber>
+                                '* Bad line at ' <Symb s.LineNumber>
                               >;
 
                           (s.LineNumber EmptyParameterName)
                             = <Prout
                                 '* Expected parameter name before ''='' at '
-                                <StrFromInt s.LineNumber>
+                                <Symb s.LineNumber>
                               >;
 
                           (s.LineNumber ReassignParameter e.Name)
                             = <Prout
                                 '* Reassign parameter ' e.Name ' at '
-                                <StrFromInt s.LineNumber>
+                                <Symb s.LineNumber>
                                 ', use last assigned value'
                               >;
                         }
@@ -60,7 +57,7 @@ Main {
 
 WriteLineAt {
   s.LineNumber e.Text
-    = <Prout <StrFromInt s.LineNumber> ': ' e.Text>;
+    = <Prout <Symb s.LineNumber> ': ' e.Text>;
 }
 
 PrintIni {

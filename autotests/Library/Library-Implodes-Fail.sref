@@ -1,5 +1,5 @@
 //FROM Library
-$EXTERN Implode, Add, StrFromInt;
+$EXTERN Implode, Add, Symb;
 
 $ENTRY Go {
   = <Loop 0>;
@@ -8,5 +8,5 @@ $ENTRY Go {
 Loop {
   50 = /* stop */;
 
-  s.Next = <Implode 'X-' <StrFromInt s.Next>> <Loop <Add s.Next 1>>;
+  s.Next = <Implode 'X-' <Symb s.Next>> <Loop <Add s.Next 1>>;
 }
