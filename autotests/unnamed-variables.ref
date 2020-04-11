@@ -1,0 +1,14 @@
+* TREE
+
+$ENTRY Go {
+  /* пусто */
+    = 'abc' : s._ s._ s._
+    = '12+34' : e._a '+' e._a
+    = <S ('pq') ('rs') ('tu')>;
+}
+
+$SPEC S (e.STAT1) (e.dyn) (e.STAT2);
+
+S {
+  (e._) (e._) (e._) = ;
+}

@@ -1,7 +1,7 @@
 $INCLUDE "LibraryEx";
 
 *$FROM Desugaring-UnCondition
-$EXTERN Pass-UnCondition;
+$EXTERN Pass-UnCondition, NewVarName;
 
 
 $ENTRY Desugar {
@@ -269,6 +269,13 @@ EnumerateVars-Expr {
   s.Depth (e.OriginScopeVars) e.Expr =
     <MapAccum
       {
+        (e.ScopeVars) (TkVariable s.Mode '_' e.Index)
+          = <NewVarName
+              (e.ScopeVars) s.Mode '_' e.Index s.Depth (/* no suffix */)
+            >
+          : (e.ScopeVars^) e.NewVar
+          = (e.ScopeVars) (TkVariable e.NewVar);
+
         (e.ScopeVars-B (s.Mode e.Index s.Depth^) e.ScopeVars-E)
         (TkVariable s.Mode e.Index) =
           (e.ScopeVars-B (s.Mode e.Index s.Depth) e.ScopeVars-E)

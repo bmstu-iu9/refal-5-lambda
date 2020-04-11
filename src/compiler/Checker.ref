@@ -434,6 +434,10 @@ CheckSpec-VarTypeMatching {
 }
 
 CheckSpec-RepeatingVarInStaticParams {
+  /* Игнорируем безымянные переменные */
+  e.ExtractedVars-B (s.Mode '_' e.Index) e.ExtractedVars-E
+    = True e.ExtractedVars-B e.ExtractedVars-E;
+
   e.ExtractedVars-B (e.Var) e.ExtractedVars-M (e.Var) e.ExtractedVars-E
     = False e.ExtractedVars-B (e.Var) e.ExtractedVars-M e.ExtractedVars-E;
 
