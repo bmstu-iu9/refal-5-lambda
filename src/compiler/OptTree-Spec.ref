@@ -47,8 +47,35 @@ $ENTRY OptTree-Spec-ExtractOptInfo {
     : {
         NoOpt = ((/* нет имён */) /* нет инфы */) e.AST;
 
-        s.OptSpec^ = ((e.Names) e.Info) e.AST;
+        s.OptSpec^
+          = <CreateGuardFunctions e.Info> : (e.GuardEnums) e.Info^
+          = ((e.Names) e.Info) e.AST e.GuardEnums;
       }
+}
+
+CreateGuardFunctions {
+  e.Info
+    = <MapAccum
+        {
+          (e.GuardEnums)
+          ((e.Name) (e.SpecPattern) (e.Sentences) e.Signatures)
+            = e.Name SUF '@' 0 : e.GuardName
+            = (e.SpecPattern)
+              ((CallBrackets (Symbol Name e.GuardName) e.SpecPattern))
+            : e.GuardSentence
+            = (
+                e.GuardEnums
+                (Function GN-Local (e.GuardName) Sentences /* пусто */)
+              )
+              (
+                (e.Name)
+                (e.SpecPattern)
+                (e.Sentences (e.GuardSentence))
+                e.Signatures
+              )
+        }
+        (/* guard enums */) e.Info
+      >
 }
 
 /**
