@@ -112,7 +112,7 @@ SpecUnit {
       >
     : (e.SpecInfo^ (e.NewFunctions^)) e.Sentences^
     = (e.SpecInfo (e.NewFunctions))
-      (Function s.ScopeClass t.Name Sentences e.Sentences);
+      (ColdFunction s.ScopeClass t.Name Sentences e.Sentences);
 
   (e.SpecInfo (e.NewFunctions)) t.Other = (e.SpecInfo (e.NewFunctions)) t.Other;
 }
@@ -701,7 +701,16 @@ Spec-PrepareConditions {
   <OptTree-Spec-CleanupColdFunctions e.AST> == e.AST^
 */
 $ENTRY OptTree-Spec-CleanupColdFunctions {
-  e.AST = e.AST;
+  e.AST
+    = <Map
+        {
+          (ColdFunction s.ScopeClass (e.Name) e.Body)
+            = (Function s.ScopeClass (e.Name) e.Body);
+
+          t.OtherItem = t.OtherItem;
+        }
+        e.AST
+      >;
 }
 
 /*

@@ -25,6 +25,8 @@ UndoubleEmtpyLines {
 
 Element {
   (Function s.Scope (e.Name) e.Body) = <Function (e.Name) s.Scope e.Body>;
+  (ColdFunction s.Scope (e.Name) e.Body)
+    = <ColdFunction (e.Name) s.Scope e.Body>;
 
   (Enum GN-Entry e.Name) = ('$EENUM ' <DisplayName e.Name> ';');
   (Enum GN-Local e.Name) = ('$ENUM ' <DisplayName e.Name> ';');
@@ -62,6 +64,16 @@ DoLongLine {
 
 
 Function {
+  (e.Name) s.Scope e.Body
+    = <Function-Aux (<DisplayName e.Name>) s.Scope e.Body>;
+}
+
+ColdFunction {
+  (e.Name) s.Scope e.Body
+    = <Function-Aux ('* ' <DisplayName e.Name> ' *') s.Scope e.Body>;
+}
+
+Function-Aux {
   (e.Name) s.Scope Sentences e.Sentences
     = ()
       (<Entry s.Scope> <DisplayName e.Name> ' {')
