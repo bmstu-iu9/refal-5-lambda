@@ -117,8 +117,6 @@ DoOptTree-SpecPass {
   s.Cycles s.OptSpec (e.SpecInfo) e.AST
     = <Log-AST ('Pass ' <Symb s.Cycles> ' (before Spec)') e.AST> : e.AST^
     = <Dec s.Cycles> <OptTree-Spec s.OptSpec (e.SpecInfo) e.AST>
-    : s.Cycles^ (e.SpecInfo^) e.AST^
-    = s.Cycles (e.SpecInfo) <OptTree-Drive-CleanupColdCalls e.AST>
 }
 
 

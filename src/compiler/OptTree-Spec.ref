@@ -258,7 +258,7 @@ SpecCall {
 
   (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures (e.Argument)
     = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
-      (ColdCallBrackets (Symbol Name e.Name) e.Argument)
+      (CallBrackets (Symbol Name e.Name) e.Argument)
       /* no new functions */;
 }
 
@@ -278,7 +278,7 @@ SpecCall-Aux {
     : {
         Found e.SpecSuffix
           = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
-            (ColdCallBrackets
+            (CallBrackets
               (Symbol Name e.Name SUF e.SpecSuffix)
               e.SpecializedFuncArgument
             )
@@ -299,7 +299,7 @@ SpecCall-Aux {
                     e.Signatures
                     ((e.Name SUF '@' s.NextNumber) e.Signature)
                   )
-                  (ColdCallBrackets
+                  (CallBrackets
                     (Symbol Name e.Name SUF '@' s.NextNumber)
                     e.SpecializedFuncArgument
                   )
@@ -310,7 +310,7 @@ SpecCall-Aux {
 
               False
                 = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
-                  (ColdCallBrackets (Symbol Name e.Name) e.Argument)
+                  (CallBrackets (Symbol Name e.Name) e.Argument)
                   /* no new functions */;
             }
       }
@@ -351,12 +351,6 @@ ExtractCalls-Term {
     = <NewVarName (e.UsedVars) 'eCall' 0 (/* empty suffix */)>
     : (e.UsedVars^) e.NewVar
     = (e.Calls ((CallBrackets e.Expr) ':' (e.NewVar)) (e.UsedVars))
-      (TkVariable e.NewVar);
-
-  (e.Calls (e.UsedVars)) (ColdCallBrackets e.Expr)
-    = <NewVarName (e.UsedVars) 'eCall' 0 (/* empty suffix */)>
-    : (e.UsedVars^) e.NewVar
-    = (e.Calls ((ColdCallBrackets e.Expr) ':' (e.NewVar)) (e.UsedVars))
       (TkVariable e.NewVar);
 
   (e.Calls (e.UsedVars)) (Brackets e.Expr)
@@ -475,10 +469,7 @@ Spec-RenameSignatureVars-Term {
       (TkVariable s.Mode e.NewIndex);
 
   t.State (s.BracketsTag e.Expr)
-    , <OneOf
-        s.BracketsTag ColdCallBrackets CallBrackets ClosureBrackets Brackets
-      >
-    : True
+    , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
     = <Spec-RenameSignatureVars-Expr t.State e.Expr> : t.State^ e.Expr^
     = (s.BracketsTag e.Expr);
 
