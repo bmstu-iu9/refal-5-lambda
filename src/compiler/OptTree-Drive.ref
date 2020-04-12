@@ -445,23 +445,25 @@ FindOptimizedCall-Term {
     = (e.OptFuncNames t.Found)
       (ADT-Brackets (e.Name) e.Expr);
 
-  (e.OptFuncNames-B (e.Name) e.OptFuncNames-E None)
-  (CallBrackets (Symbol Name e.Name) e.Expr)
-    = e.OptFuncNames-B (e.Name) e.OptFuncNames-E : e.OptFuncNames
-    = <FindOptimizedCall (e.OptFuncNames) e.Expr>
+  (e.OptFuncNames None) (CallBrackets (Symbol Name e.Name) e.Arg)
+    = <FindOptimizedCall (e.OptFuncNames) e.Arg>
     : {
-        (e.OptFuncNames^ None) e.Expr^
-          = (e.OptFuncNames (CallBrackets (Symbol Name e.Name) e.Expr))
+*       Вызов оптимизируемой функции, извлекаем его наружу
+        (e.OptFuncNames^ None) e.Arg^
+          , e.OptFuncNames : e.OptFuncNames-B (e.Name) e.OptFuncNames-E
+          = (e.OptFuncNames (CallBrackets (Symbol Name e.Name) e.Arg))
             (TkVariable 'e' DRIVEN 0);
 
-        (e.OptFuncNames^ t.Found) e.Expr^
-          = (e.OptFuncNames t.Found) (CallBrackets (Symbol Name e.Name) e.Expr);
-      };
+*       Функция, не подлежащая оптимизации. Остужаем вызов.
+        (e.OptFuncNames^ None) e.Arg^
+          = (e.OptFuncNames None)
+            (ColdCallBrackets (Symbol Name e.Name) e.Arg);
 
-  (e.OptFuncNames None) (CallBrackets t.F e.Expr)
-    = <FindOptimizedCall (e.OptFuncNames) e.Expr>
-    : (e.OptFuncNames^ t.Found) e.Expr^
-    = (e.OptFuncNames t.Found) (CallBrackets t.F e.Expr);
+*       Внутри аргумента найден оптимизируемый вызов
+        (e.OptFuncNames^ t.Found) e.Arg^
+          = (e.OptFuncNames t.Found)
+            (CallBrackets (Symbol Name e.Name) e.Arg);
+      };
 
   (e.OptFuncNames t.Found) t.AnyTerm
     = (e.OptFuncNames t.Found) t.AnyTerm;

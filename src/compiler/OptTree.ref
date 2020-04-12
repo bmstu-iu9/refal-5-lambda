@@ -94,10 +94,9 @@ DoOptTree-DriveLoop {
     = 0 (e.DriveInfo) e.AST;
 
   s.Cycles s.OptDrive (e.DriveInfo) e.AST
-    = e.DriveInfo : (e.DriveNames) e.Info
     = <Log-AST ('Pass ' <Symb s.Cycles> ' (before Drive)') e.AST> : e.AST^
     = e.AST : e.OriginAST
-    = <OptTree-Simple (e.DriveNames) e.AST> : e.AST^
+    = <OptTree-ExpandClosures e.AST> : e.AST^
     = <Dec s.Cycles> : s.Cycles^
     = <OptTree-Drive s.OptDrive (e.DriveInfo) e.AST> : (e.DriveInfo^) e.AST^
     = e.AST
