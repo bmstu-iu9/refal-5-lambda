@@ -4,10 +4,12 @@ $INCLUDE "LibraryEx";
 $EXTERN Config-GetTreeOptCycles, Config-GetOptDrive, Config-GetOptSpec;
 
 *$FROM OptTree-Drive
-$EXTERN OptTree-Drive-ExtractOptInfo, OptTree-Drive, OptTree-Drive-Finalize;
+$EXTERN OptTree-Drive-ExtractOptInfo, OptTree-Drive,
+  OptTree-Drive-CleanupColdCalls;
 
 *$FROM OptTree-Spec
-$EXTERN OptTree-Spec-ExtractOptInfo, OptTree-Spec, OptTree-Spec-Finalize;
+$EXTERN OptTree-Spec-ExtractOptInfo, OptTree-Spec,
+  OptTree-Spec-CleanupColdFunctions;
 
 *$FROM Log
 $EXTERN Log-PutLine, Log-AST;
@@ -62,22 +64,22 @@ OptTree-Aux {
 DoOptTree {
   0 s.OptDrive s.OptSpec
   (e.DriveInfo) (e.SpecInfo) (e.OptimizableFunctions) e.AST
-    = <OptTree-Drive-Finalize s.OptDrive (e.DriveInfo) e.AST> : e.AST^
-    = <OptTree-Spec-Finalize s.OptSpec (e.SpecInfo) e.AST> : e.AST^
-    = <OptTree-Simple-Finalize e.AST> : e.AST^
-    = e.AST;
+    = <OptTree-Spec-CleanupColdFunctions e.AST>;
 
   s.Cycles s.OptDrive s.OptSpec
   (e.DriveInfo) (e.SpecInfo) (e.OptimizableFunctions) e.AST
-    = <Log-AST ('Pass ' <Symb s.Cycles>) e.AST> : e.AST^
     = e.AST : e.OriginAST
-    = <OptTree-Simple (e.OptimizableFunctions) e.AST> : e.AST^
-    = <OptTree-Drive s.OptDrive (e.DriveInfo) e.AST> : (e.DriveInfo^) e.AST^
-    = <OptTree-Spec s.OptSpec (e.SpecInfo) e.AST> : (e.SpecInfo^) e.AST^
+
+    = <DoOptTree-DriveLoop s.Cycles s.OptDrive (e.DriveInfo) e.AST>
+    : s.Cycles^ (e.DriveInfo^) e.AST^
+
+    = <DoOptTree-SpecPass s.Cycles s.OptSpec (e.SpecInfo) e.AST>
+    : s.Cycles^ (e.SpecInfo^) e.AST^
+
     = e.AST
     : {
         e.OriginAST = 0 e.OriginAST;
-        e.AST^ = <Dec s.Cycles> e.AST;
+        e.AST^ = s.Cycles e.AST;
       }
     : s.Cycles^ e.AST^
     = <DoOptTree
@@ -85,6 +87,40 @@ DoOptTree {
         (e.DriveInfo) (e.SpecInfo) (e.OptimizableFunctions) e.AST
       >;
 }
+
+DoOptTree-DriveLoop {
+  0 s.OptDrive (e.DriveInfo) e.AST
+    = <OptTree-Drive-CleanupColdCalls e.AST> : e.AST^
+    = 0 (e.DriveInfo) e.AST;
+
+  s.Cycles s.OptDrive (e.DriveInfo) e.AST
+    = e.DriveInfo : (e.DriveNames) e.Info
+    = <Log-AST ('Pass ' <Symb s.Cycles> ' (before Drive)') e.AST> : e.AST^
+    = e.AST : e.OriginAST
+    = <OptTree-Simple (e.DriveNames) e.AST> : e.AST^
+    = <Dec s.Cycles> : s.Cycles^
+    = <OptTree-Drive s.OptDrive (e.DriveInfo) e.AST> : (e.DriveInfo^) e.AST^
+    = e.AST
+    : {
+        e.OriginAST
+          = s.Cycles (e.DriveInfo)
+            <OptTree-Drive-CleanupColdCalls e.AST>;
+
+        e.AST^
+          = <DoOptTree-DriveLoop s.Cycles s.OptDrive (e.DriveInfo) e.AST>;
+      };
+}
+
+DoOptTree-SpecPass {
+  0 s.OptSpec (e.SpecInfo) e.AST = (e.SpecInfo) e.AST;
+
+  s.Cycles s.OptSpec (e.SpecInfo) e.AST
+    = <Log-AST ('Pass ' <Symb s.Cycles> ' (before Spec)') e.AST> : e.AST^
+    = <Dec s.Cycles> <OptTree-Spec s.OptSpec (e.SpecInfo) e.AST>
+    : s.Cycles^ (e.SpecInfo^) e.AST^
+    = s.Cycles (e.SpecInfo) <OptTree-Drive-CleanupColdCalls e.AST>
+}
+
 
 
 /**
@@ -94,6 +130,10 @@ $ENTRY OptTree-CleanupMarkup {
   e.AST = <OptTree-Aux 0 NoOpt NoOpt e.AST>;
 }
 
+
+OptTree-ExpandClosures {
+  e.AST = <OptTree-Drive-CleanupColdCalls <OptTree-Simple () e.AST>>;
+}
 
 OptTree-Simple {
   (e.OptimizableFunctions) e.AST
@@ -190,54 +230,3 @@ OptResultTerm {
   e.OptimizableFunctions s.Temp t.OtherTerm = s.Temp t.OtherTerm;
 }
 
-OptTree-Simple-Finalize {
-  e.AST
-    = <Map
-        {
-          (Function s.ScopeClass (e.Name) Sentences e.Body)
-            = (Function
-                s.ScopeClass (e.Name) Sentences <CleanupCold-Body e.Body>
-              );
-
-          t.OtherItem = t.OtherItem;
-        }
-        e.AST
-      >;
-}
-
-CleanupCold-Body {
-  e.Sentences = <Map &CleanupCold-Sentence e.Sentences>;
-}
-
-CleanupCold-Sentence {
-  ((e.Pattern) e.Conditions (e.Result))
-    = (
-        (e.Pattern)
-        <Map
-          {
-            (Condition (e.Name) (e.Result^) (e.Pattern^))
-              = (Condition
-                  (e.Name) (<CleanupCold-Result e.Result>) (e.Pattern)
-                );
-          }
-          e.Conditions
-        >
-        (<CleanupCold-Result e.Result>)
-      );
-}
-
-CleanupCold-Result {
-  e.Result = <Map &CleanupCold-Term e.Result>;
-}
-
-CleanupCold-Term {
-  (Brackets e.Expr) = (Brackets <CleanupCold-Result e.Expr>);
-
-  (ADT-Brackets (e.Name) e.Expr)
-    = (ADT-Brackets (e.Name) <CleanupCold-Result e.Expr>);
-
-  (CallBrackets e.Expr) = (CallBrackets <CleanupCold-Result e.Expr>);
-  (ColdCallBrackets e.Expr) = (CallBrackets <CleanupCold-Result e.Expr>);
-
-  t.OtherTerm = t.OtherTerm;
-}

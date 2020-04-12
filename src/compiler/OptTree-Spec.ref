@@ -178,22 +178,13 @@ SpecResult {
   и пытается выполнить специализацию для него
 */
 SpecTerm {
-  (e.SpecInfo-B ((e.Name) e.Info) e.SpecInfo-E (e.NewFunctions))
-  (CallBrackets (Symbol Name e.Name) e.Expression)
-    , <IsColdArg e.Expression> : True
-    = <SpecCall (e.Name) e.Info (e.Expression)>
-    : (e.Info^) t.NewCall e.NewFunction
-    = (
-        e.SpecInfo-B ((e.Name) e.Info) e.SpecInfo-E
-        (e.NewFunctions e.NewFunction)
-      )
-      t.NewCall;
-
   (e.SpecInfo (e.NewFunctions)) (CallBrackets (Symbol Name e.Name) e.Expression)
     = <SpecResult (e.SpecInfo (e.NewFunctions)) e.Expression>
     : (e.SpecInfo^ (e.NewFunctions^)) e.Expression^
-    = (e.SpecInfo (e.NewFunctions))
-      (CallBrackets (Symbol Name e.Name) e.Expression);
+    = <TrySpecCall
+        (e.SpecInfo (e.NewFunctions))
+        (CallBrackets (Symbol Name e.Name) e.Expression)
+      >;
 
   (e.SpecInfo (e.NewFunctions)) (ClosureBrackects e.ClosureContent)
     = <SpecResult (e.SpecInfo (e.NewFunctions)) e.ClosureContent>
@@ -212,6 +203,22 @@ SpecTerm {
 
   (e.SpecInfo (e.NewFunctions)) t.Other
    = (e.SpecInfo (e.NewFunctions)) t.Other;
+}
+
+TrySpecCall {
+  (e.SpecInfo-B ((e.Name) e.Info) e.SpecInfo-E (e.NewFunctions))
+  (CallBrackets (Symbol Name e.Name) e.Expression)
+    = <SpecCall (e.Name) e.Info (e.Expression)>
+    : (e.Info^) t.NewCall e.NewFunction
+    = (
+        e.SpecInfo-B ((e.Name) e.Info) e.SpecInfo-E
+        (e.NewFunctions e.NewFunction)
+      )
+      t.NewCall;
+
+  (e.SpecInfo (e.NewFunctions)) (CallBrackets (Symbol Name e.Name) e.Expression)
+    = (e.SpecInfo (e.NewFunctions))
+      (CallBrackets (Symbol Name e.Name) e.Expression);
 }
 
 /**
@@ -700,11 +707,10 @@ Spec-PrepareConditions {
 }
 
 /**
-  <OptTree-Spec-Finalize s.OptSpec (e.SpecInfo) e.AST> == e.AST^
+  <OptTree-Spec-CleanupColdFunctions e.AST> == e.AST^
 */
-$ENTRY OptTree-Spec-Finalize {
-  s.OptSpec (e.SpecInfo) e.AST
-    = e.AST;
+$ENTRY OptTree-Spec-CleanupColdFunctions {
+  e.AST = e.AST;
 }
 
 /*
@@ -746,28 +752,6 @@ IsSpecStaticVar {
         'Lu' s._ = True;
         e._ = False;
       };
-}
-
-IsColdArg {
-  e.Argument
-   = <Reduce
-       {
-         False t.Any = False;
-
-         True (CallBrackets e.Expression) = False;
-
-         True (ClosureBrackects e.ClosureContent) = <IsColdArg e.ClosureContent>;
-
-         True (Brackets e.Expression) = <IsColdArg e.Expression>;
-
-         True (ADT-Brackets (e.Name) e.Expression) = <IsColdArg e.Expression>;
-
-         True t.Other = True;
-
-       }
-       True
-       e.Argument
-     >;
 }
 
 MapGenericMatches {

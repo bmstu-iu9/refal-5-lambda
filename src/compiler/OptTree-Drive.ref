@@ -38,13 +38,6 @@ $ENTRY OptTree-Drive {
     = <DriveInlineOptimizerTick (e.DriveInfo) e.AST s.Opt>;
 }
 
-/**
-  <OptTree-Drive-Finalize s.OptDrive (e.DriveInfo) e.AST> == e.AST^
-*/
-$ENTRY OptTree-Drive-Finalize {
-  s.OptDrive ((e.Names) e.Info) e.AST = e.AST;
-}
-
 /* Функция генерирует имена остаточных прогоняемых функций */
 
 GenRemainderFuncNames {
@@ -593,4 +586,59 @@ RemainderFuncIncName {
   e.Name SUF e.Suffixes = e.Name SUF e.Suffixes '*' 1;
 
   e.Name = e.Name SUF '*' 1;
+}
+
+/**
+  <OptTree-Drive-CleanupColdCalls e.AST> == e.AST^
+*/
+$ENTRY OptTree-Drive-CleanupColdCalls {
+  e.AST
+    = <Map
+        {
+          (Function s.ScopeClass (e.Name) Sentences e.Body)
+            = (Function
+                s.ScopeClass (e.Name) Sentences <CleanupCold-Body e.Body>
+              );
+
+          t.OtherItem = t.OtherItem;
+        }
+        e.AST
+      >;
+}
+
+CleanupCold-Body {
+  e.Sentences = <Map &CleanupCold-Sentence e.Sentences>;
+}
+
+CleanupCold-Sentence {
+  ((e.Pattern) e.Conditions (e.Result))
+    = (
+        (e.Pattern)
+        <Map
+          {
+            (Condition (e.Name) (e.Result^) (e.Pattern^))
+              = (Condition
+                  (e.Name) (<CleanupCold-Result e.Result>) (e.Pattern)
+                );
+          }
+          e.Conditions
+        >
+        (<CleanupCold-Result e.Result>)
+      );
+}
+
+CleanupCold-Result {
+  e.Result = <Map &CleanupCold-Term e.Result>;
+}
+
+CleanupCold-Term {
+  (Brackets e.Expr) = (Brackets <CleanupCold-Result e.Expr>);
+
+  (ADT-Brackets (e.Name) e.Expr)
+    = (ADT-Brackets (e.Name) <CleanupCold-Result e.Expr>);
+
+  (CallBrackets e.Expr) = (CallBrackets <CleanupCold-Result e.Expr>);
+  (ColdCallBrackets e.Expr) = (CallBrackets <CleanupCold-Result e.Expr>);
+
+  t.OtherTerm = t.OtherTerm;
 }
