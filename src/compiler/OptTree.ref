@@ -127,17 +127,13 @@ $ENTRY OptTree-CleanupMarkup {
 
 
 OptTree-ExpandClosures {
-  e.AST = <OptTree-Drive-CleanupColdCalls <OptTree-Simple () e.AST>>;
-}
-
-OptTree-Simple {
-  (e.OptimizableFunctions) e.AST
+  e.AST
     = <Map
         {
           (Function s.ScopeClass (e.Name) Sentences e.Body)
             = (Function
                 s.ScopeClass (e.Name) Sentences
-                <OptBody (e.OptimizableFunctions) e.Body>
+                <ExpandClosures-Body e.Body>
               );
 
           t.OtherItem = t.OtherItem;
@@ -146,13 +142,12 @@ OptTree-Simple {
       >;
 }
 
-OptBody {
-  (e.OptimizableFunctions) e.Sentences
-    = <Map (&OptSentence e.OptimizableFunctions) e.Sentences>;
+ExpandClosures-Body {
+  e.Sentences = <Map &ExpandClosures-Sentence e.Sentences>;
 }
 
-OptSentence {
-  e.OptimizableFunctions ((e.Pattern) e.Conditions (e.Result))
+ExpandClosures-Sentence {
+  ((e.Pattern) e.Conditions (e.Result))
     = (
         (e.Pattern)
         <Map
@@ -160,68 +155,37 @@ OptSentence {
             (Condition (e.Name) (e.Result^) (e.Pattern^))
               = (Condition
                   (e.Name)
-                  (<OptResult (e.OptimizableFunctions) e.Result>)
+                  (<ExpandClosures-Result e.Result>)
                   (e.Pattern)
                 );
           }
           e.Conditions
         >
-        (<OptResult (e.OptimizableFunctions) e.Result>)
+        (<ExpandClosures-Result e.Result>)
       );
 }
 
-/*
-  s.Temp ::= Cold | Hot — температура аргумента функции
-*/
-
-OptResult {
-  (e.OptimizableFunctions) e.Result
-    = <OptResultRec (e.OptimizableFunctions) Cold e.Result> : s.Temp e.Result^
-    = e.Result;
+ExpandClosures-Result {
+  e.Result = <Map &ExpandClusures-ResultTerm e.Result>;
 }
 
-OptResultRec {
-  (e.OptimizableFunctions) s.Temp e.Result
-    = <MapAccum (&OptResultTerm e.OptimizableFunctions) s.Temp e.Result>;
-}
+ExpandClusures-ResultTerm {
+  (Brackets e.Expr) = (Brackets <ExpandClosures-Result e.Expr>);
 
-OptResultTerm {
-  e.OptimizableFunctions s.Temp (Brackets e.Expr)
-    = <OptResultRec (e.OptimizableFunctions) s.Temp e.Expr> : s.Temp^ e.Expr^
-    = s.Temp (Brackets e.Expr);
+  (ADT-Brackets (e.Name) e.Expr)
+    = (ADT-Brackets (e.Name) <ExpandClosures-Result e.Expr>);
 
-  e.OptimizableFunctions s.Temp (ADT-Brackets (e.Name) e.Expr)
-    = <OptResultRec (e.OptimizableFunctions) s.Temp e.Expr> : s.Temp^ e.Expr^
-    = s.Temp (ADT-Brackets (e.Name) e.Expr);
+  (CallBrackets (ClosureBrackets e.Content) e.Expr)
+    = (CallBrackets <ExpandClosures-Result e.Content e.Expr>);
 
-  /* Терм горячий, ещё предстоит проанализировать */
-  e.OptimizableFunctions s.Temp (CallBrackets (ClosureBrackets e.Content) e.Expr)
-    = <OptResultRec (e.OptimizableFunctions) Cold e.Expr> : s.Temp^ e.Expr^
-    = Hot (CallBrackets e.Content e.Expr);
-
-  /* Вызов оптимизируемой функции, значит терм горячий */
-  e.OptimizableFunctions s.Temp (CallBrackets (Symbol Name e.FuncName) e.Expr)
-    , e.OptimizableFunctions : e.Funcs-B (e.FuncName) e.Funcs-E
-    = <OptResultRec (e.OptimizableFunctions) Cold e.Expr> : s.Temp^ e.Expr^
-    = Hot (CallBrackets (Symbol Name e.FuncName) e.Expr);
+  (CallBrackets e.Expr) = (CallBrackets <ExpandClosures-Result e.Expr>);
 
   /*
-    Вызов неоптимизированной функции, можем остудить, если аргумент холодный
-    Сам терм тоже можем считать холодным
+    Анализировать холодные вызовы (ColdCallBrackets …) не нужно,
+    поскольку они были проанализированы на предыдущих проходах
+    и с тех пор не менялись.
   */
-  e.OptimizableFunctions s.Temp (CallBrackets e.Expr)
-    = <OptResultRec (e.OptimizableFunctions) Cold e.Expr>
-    : {
-        Hot e.Expr^ = Hot (CallBrackets e.Expr);
 
-        /* Оставляем старую температуру, мы ничего не нагрели */
-        Cold e.Expr^ = s.Temp (ColdCallBrackets e.Expr);
-      };
-
-  /* Остывший вызов уже проанализирован на прошлых проходах */
-  e.OptimizableFunctions s.Temp (ColdCallBrackets e.Expr)
-    = s.Temp (ColdCallBrackets e.Expr);
-
-  e.OptimizableFunctions s.Temp t.OtherTerm = s.Temp t.OtherTerm;
+  t.OtherTerm = t.OtherTerm;
 }
 
