@@ -41,23 +41,27 @@ OptTree-Aux {
     = <OptTree-Spec-ExtractOptInfo s.OptSpec e.AST>
     : ((e.SpecFuncNames) e.SpecInfo-Specific) e.AST^
 
-    = e.DriveFuncNames e.SpecFuncNames : e.OptimizableFunctions
-
-    = <Log-PutLine
-        'Optimizable functions:'
-        <Map
-          {
-            (e.FuncName) = ' ' <DisplayName e.FuncName>
-          }
-          e.OptimizableFunctions
-        >
-      >
+    = <PrintFuncNames ('Drive functions:') e.DriveFuncNames>
+      <PrintFuncNames ('Specializable functions:') e.SpecFuncNames>
       <DoOptTree
         s.Cycles s.OptDrive s.OptSpec
         ((e.DriveFuncNames) e.DriveInfo-Specific)
         ((e.SpecFuncNames) e.SpecInfo-Specific)
         e.AST
       >;
+}
+
+PrintFuncNames {
+  (e.Title) e.Names
+    = <Log-PutLine
+        e.Title
+        <Map
+          {
+            (e.FuncName) = ' ' <DisplayName e.FuncName>
+          }
+          e.Names
+        >
+      >
 }
 
 DoOptTree {
