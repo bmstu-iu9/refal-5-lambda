@@ -56,18 +56,15 @@ OptTree-Aux {
         s.Cycles s.OptDrive s.OptSpec
         ((e.DriveFuncNames) e.DriveInfo-Specific)
         ((e.SpecFuncNames) e.SpecInfo-Specific)
-        (e.OptimizableFunctions)
         e.AST
       >;
 }
 
 DoOptTree {
-  0 s.OptDrive s.OptSpec
-  (e.DriveInfo) (e.SpecInfo) (e.OptimizableFunctions) e.AST
+  0 s.OptDrive s.OptSpec (e.DriveInfo) (e.SpecInfo) e.AST
     = <OptTree-Spec-CleanupColdFunctions e.AST>;
 
-  s.Cycles s.OptDrive s.OptSpec
-  (e.DriveInfo) (e.SpecInfo) (e.OptimizableFunctions) e.AST
+  s.Cycles s.OptDrive s.OptSpec (e.DriveInfo) (e.SpecInfo) e.AST
     = e.AST : e.OriginAST
 
     = <DoOptTree-DriveLoop s.Cycles s.OptDrive (e.DriveInfo) e.AST>
@@ -82,10 +79,7 @@ DoOptTree {
         e.AST^ = s.Cycles e.AST;
       }
     : s.Cycles^ e.AST^
-    = <DoOptTree
-        s.Cycles s.OptDrive s.OptSpec
-        (e.DriveInfo) (e.SpecInfo) (e.OptimizableFunctions) e.AST
-      >;
+    = <DoOptTree s.Cycles s.OptDrive s.OptSpec (e.DriveInfo) (e.SpecInfo) e.AST>;
 }
 
 DoOptTree-DriveLoop {
