@@ -76,7 +76,7 @@ ColdFunction {
 Function-Aux {
   (e.Name) s.Scope Sentences e.Sentences
     = ()
-      (<Entry s.Scope> <DisplayName e.Name> ' {')
+      (<Entry s.Scope> e.Name ' {')
       <Sentences ('  ') e.Sentences>
       ('}')
       ();
