@@ -14,15 +14,7 @@ Transform-Unit {
   s.MarkupContext (Function s.Scope (e.Name) Sentences e.Sentences)
     = <UnCondition s.MarkupContext (e.Name) s.Scope e.Sentences>;
 
-  s.MarkupContext (Ident e.Name) = (Ident e.Name);
-
-  s.MarkupContext (NativeBlock t.SrcPos e.Code) = (NativeBlock t.SrcPos e.Code);
-
-  s.MarkupContext (Spec (e.Name) e.Pattern)
-    = (Spec (e.Name) e.Pattern);
-
-  s.MarkupContext (s.EnumSwapDeclaration s.ScopeClass e.Name)
-    = (s.EnumSwapDeclaration s.ScopeClass e.Name);
+  s.MarkupContext t.Other = t.Other;
 }
 
 ** НАМЕРЕННО ОТКАЗЫВАЕМСЯ ОТ ОТСЛЕЖИВАНИЯ КОПИРОВАНИЯ ПОВТОРНЫХ ПЕРЕМЕННЫХ

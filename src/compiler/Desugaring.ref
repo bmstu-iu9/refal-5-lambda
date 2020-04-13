@@ -578,12 +578,16 @@ Pass-FlatNestedFuncs {
       {
         (Function s.ScopeClass (e.Name) e.Body)
           = <ExtractNested s.MarkupContext e.Body> : (e.NestedFuncs) e.Body^
-          = <Map {
-              t.Nf, t.Nf : (Function s.NfScopeClass (e.NfName) e.NfBody)
-                = (Drive e.NfName) t.Nf
+          = <Map
+              {
+                t.Function
+                  , t.Function : (Function s._ScopeClass (e.NestedName) e._Body)
+                  = (Drive e.NestedName)
+                    t.Function
               }
               e.NestedFuncs
-            > (Function s.ScopeClass (e.Name) e.Body);
+            >
+            (Function s.ScopeClass (e.Name) e.Body);
 
         t.OtherProgramElement = t.OtherProgramElement;
       }
