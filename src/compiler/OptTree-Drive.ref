@@ -488,10 +488,7 @@ ApplySolutions {
   ((e.Left) (e.Right)) (e.RS) e.Solutions
     = <Map
         {
-          t.S
-            = <ApplySolution
-               ((e.Left) (e.Right)) (e.RS) t.S
-              >
+          t.S = <ApplySolution ((e.Left) (e.Right)) (e.RS) t.S>
         }
         e.Solutions
       >
