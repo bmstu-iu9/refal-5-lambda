@@ -19,7 +19,7 @@
 			<key>comment</key>
 			<string>keywords</string>
 			<key>match</key>
-			<string>\$ENTRY|\$SWAP|\$ESWAP|\$EXTERN|\$FORWARD|\$LABEL|\$ENUM|\$EENUM|\$EASTEREGG|\$INCLUDE|\$SPEC</string>
+			<string>\$ENTRY|\$SWAP|\$ESWAP|\$EXTERN|\$FORWARD|\$LABEL|\$ENUM|\$EENUM|\$EASTEREGG|\$INCLUDE|\$SPEC|\$META</string>
 			<key>name</key>
 			<string>keyword.other.sref</string>
 		</dict>

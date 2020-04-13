@@ -1,6 +1,6 @@
 syntax include @simpleRefalCpp $VIMRUNTIME/syntax/cpp.vim
 syntax case match
-syntax keyword simpleRefalKeyword $ENTRY $SWAP $ESWAP
+syntax keyword simpleRefalKeyword $ENTRY $SWAP $ESWAP $META
 syntax keyword simpleRefalKeyword $EXTERN $FORWARD $LABEL $ENUM $EENUM
 syntax keyword simpleRefalKeyword $EASTEREGG $INCLUDE $SCOPEID $SPEC
 syntax match simpleRefalBrokenKeyword /\$\a*\>/

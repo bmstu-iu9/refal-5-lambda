@@ -86,6 +86,7 @@
         <word name="$INCLUDE"/>
         <word name="$SCOPEID"/>
         <word name="$SPEC"/>
+        <word name="$META"/>
       </keywords>
       <keywords region="simpleRefalSymbol">
         <symb name="="/>

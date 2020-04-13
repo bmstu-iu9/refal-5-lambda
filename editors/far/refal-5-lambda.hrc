@@ -84,6 +84,7 @@
         <word name="$DRIVE"/>
         <word name="$INLINE"/>
         <word name="$SPEC"/>
+        <word name="$META"/>
       </keywords>
       <keywords region="refal5LambdaSymbol">
         <symb name="="/>
