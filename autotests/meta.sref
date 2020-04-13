@@ -1,0 +1,15 @@
+// TREE
+
+$ENTRY Go {
+  /* пусто */
+    = <Test 'abc'> : 'abc' (s.table) 'abc'
+    = /* пусто */;
+}
+
+$META Test;
+
+__Meta_Test {
+  e.X s.Table = e.X (s.Table) e.X;
+}
+
+__Step-Drop { = ; }

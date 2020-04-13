@@ -51,6 +51,10 @@ ClassifyItems {
     (e.FuncScopeClass (s.ScopeClass e.Name))
     (CmdNativeFuncDescr s.ScopeClass e.Name);
 
+  (e.FuncScopeClass) (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.Table) =
+    (e.FuncScopeClass (s.ScopeClass e.Name))
+    (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.Table);
+
   (e.FuncScopeClass) (CmdEnum s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
     (CmdEnumDescr s.ScopeClass e.Name);

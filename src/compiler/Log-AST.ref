@@ -83,6 +83,19 @@ Function-Aux {
 
   (e.Name) s.Scope NativeBody t.SrcPos e.NativeBody
     = (<Entry s.Scope> <DisplayName e.Name> ' { %% native %% }');
+
+  (e.Name) s.Scope Table e.Table
+    = ()
+      (<Entry s.Scope> e.Name ' {')
+      <Map
+        {
+          (t.Ident t.Name)
+            = ('  ' <InlineTerm t.Ident> ' :: ' <InlineTerm t.Name>);
+        }
+        e.Table
+      >
+      ('}')
+      ();
 };
 
 Entry {

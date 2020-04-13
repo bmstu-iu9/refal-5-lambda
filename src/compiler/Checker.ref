@@ -487,6 +487,13 @@ SeparateDefines {
           (e.Declarations) (Enum t.SrcPos s.ScopeClass e.Name) =
             (e.Declarations (Define t.SrcPos s.ScopeClass e.Name));
 
+          (e.Declarations) (Meta t.SrcPos s.ScopeClass e.Name) =
+            (e.Declarations
+              (Define t.SrcPos s.ScopeClass e.Name)
+              (Declare t.SrcPos GN-Entry '__Meta_' e.Name)
+              (Declare t.SrcPos GN-Entry '__Step-Drop')
+            );
+
           (e.Declarations) (Declaration t.SrcPos s.ScopeClass e.Name) =
             (e.Declarations (Declare t.SrcPos s.ScopeClass e.Name));
 

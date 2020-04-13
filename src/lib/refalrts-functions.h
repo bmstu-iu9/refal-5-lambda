@@ -2,6 +2,7 @@
 #define RefalRTS_FUNCTIONS_H_
 
 #include <string>
+#include <vector>
 
 #include "refalrts.h"
 
@@ -158,6 +159,31 @@ struct ModuleRepresentant : public RefalFunction {
   }
 
   Module *module;
+};
+
+struct IdentFuncMap: public RefalFunction {
+  struct Pair {
+    UInt32 ident;
+    UInt32 func;
+  };
+
+  std::vector<Pair> pairs;
+  RefalFunction **functions;
+  const RefalIdentifier *idents;
+
+  IdentFuncMap(
+    RefalFuncName name,
+    RefalFunction **functions,
+    const RefalIdentifier *idents
+  )
+    : RefalFunction(RefalEmptyFunction::run, name)
+    , functions(functions)
+    , idents(idents)
+  {
+    /* пусто */
+  }
+
+  RefalFunction *lookup(const RefalIdentifier ident);
 };
 
 

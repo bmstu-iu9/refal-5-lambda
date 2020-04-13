@@ -10,7 +10,7 @@ $EXTERN DisplayName;
 $EXTERN EscapeString;
 
 *$FROM Log-AST
-$EXTERN Log-TextFromAST;
+$EXTERN Log-TextFromAST, Log-FormatIdentFuncMapTableLines;
 
 
 /**
@@ -114,6 +114,18 @@ PutProgramElement {
   (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code)
     = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: native {'>
       <PutCode s.FileHandle t.SrcPos e.Code>
+      <Putout s.FileHandle '  }\n'>;
+
+  s.FileHandle
+  (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.Table)
+    = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: table {'>
+      <Map
+        {
+          ((Symbol Identifier e.Ident) (Symbol Name e.Function))
+            = <Putout s.FileHandle '    ' e.Ident ' :: ' e.Function>;
+        }
+        e.Table
+      >
       <Putout s.FileHandle '  }\n'>;
 
   s.FileHandle (CmdEnum s.ScopeClass e.Name)

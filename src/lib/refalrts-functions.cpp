@@ -70,3 +70,16 @@ const refalrts::RASLCommand refalrts::RefalCondFunctionNative::run[] = {
 };
 
 const refalrts::UInt32 refalrts::ModuleRepresentant::FAKE_COOKIE;
+
+refalrts::RefalFunction *
+refalrts::IdentFuncMap::lookup(const refalrts::RefalIdentifier ident) {
+  std::vector<Pair>::iterator p, end;
+  p = pairs.begin();
+  end = pairs.end();
+
+  while (p != end && idents[p->ident] != ident) {
+    ++p;
+  }
+
+  return p != end ? functions[p->func] : 0;
+}

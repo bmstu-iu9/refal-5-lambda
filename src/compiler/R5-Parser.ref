@@ -86,7 +86,7 @@ UnitStartToken {
 }
 
 NameListTags {
-  = TkExtern TkEnum TkEEnum TkSwap TkESwap TkLabel TkInline TkDrive
+  = TkExtern TkEnum TkEEnum TkSwap TkESwap TkLabel TkInline TkDrive TkMeta
 }
 
 OneOf {
@@ -193,6 +193,10 @@ TkInline {
 
 TkDrive {
   t.Pos e.Name = (Drive t.Pos GN-Local e.Name)
+}
+
+TkMeta {
+  t.Pos e.Name = (Meta t.Pos GN-Local e.Name)
 }
 
 TkSpec {
@@ -980,4 +984,5 @@ TokName {
   TkRedefinition = '\'^\'';
   TkNativeCode = 'native code insertion';
   TkSpec = '$SPEC';
+  TkMeta = '$META';
 }

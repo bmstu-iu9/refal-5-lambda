@@ -702,6 +702,37 @@ void refalrts::Module::Loader::enumerate_blocks() {
         table->unit_name = read_asciiz();
         break;
 
+      case cBlockTypeIdentFuncMapTable:
+        {
+          PARSE_ASSERT(
+            table != 0, "IDENT_FUNC_MAP_TABLE must precede unit name block"
+          );
+          std::string name = read_asciiz();
+
+          UInt32 count;
+          read = fread(&count, sizeof(count), 1);
+          PARSE_ASSERT(read == 1, "can't read IDENT_FUNC_MAP_TABLE size");
+
+          IdentFuncMap *ident_func_map =
+            domain()->new_ident_func_map(
+              table->make_name(name),
+              &table->externals_pointers[0],
+              &table->idents[0]
+            );
+
+          for (UInt32 i = 0; i < count; ++i) {
+            IdentFuncMap::Pair pair;
+
+            read = fread(&pair, sizeof(pair), 1);
+            PARSE_ASSERT(read == 1, "can't read IDENT_FUNC_MAP item");
+
+            ident_func_map->pairs.push_back(pair);
+          }
+
+          register_(ident_func_map);
+        }
+        break;
+
       default:
         refalrts_switch_default_violation(type);
     }

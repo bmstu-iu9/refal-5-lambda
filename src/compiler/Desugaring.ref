@@ -81,6 +81,16 @@ RemovePos-Body {
     >;
 
   NativeBody t.SrcPos e.Code = NativeBody t.SrcPos e.Code;
+
+  Table e.Table
+    = Table
+      <Map
+        {
+          (t.Ident (Symbol Name t.SrcPos e.Name))
+            = (t.Ident (Symbol Name e.Name))
+        }
+        e.Table
+      >
 }
 
 AssignOrCondition {
@@ -234,6 +244,8 @@ EnumerateVars-Body {
 
   s.Depth (e.ScopeVars) NativeBody t.SrcPos e.Code =
     NativeBody t.SrcPos e.Code;
+
+  s.Depth (e.ScopeVars) Table e.Table = Table e.Table;
 }
 
 EnumerateVars-Blocks {
@@ -378,6 +390,8 @@ NameNestedBody {
 
   (e.MainName) NativeBody t.SrcPos e.Code
     = NativeBody t.SrcPos e.Code;
+
+  (e.MainName) Table e.Table = Table e.Table;
 }
 
 NameNestedBlocks {
@@ -487,6 +501,8 @@ RemoveAssigns-Sentences {
 
   NativeBody t.SrcPos e.Code =
     NativeBody t.SrcPos e.Code;
+
+  Table e.Table = Table e.Table;
 }
 
 RemoveAssigns-Sentence {
@@ -617,6 +633,10 @@ ExtractNestedRec {
   s.MarkupContext (e.ScopeVars) NativeBody t.SrcPos e.Code =
     (/* нет заимстовованных переменных */) (/* нет вложенных функций */)
     NativeBody t.SrcPos e.Code;
+
+  s.MarkupContext (e.ScopeVars) Table e.Table
+    = (/* нет заимстовованных переменных */) (/* нет вложенных функций */)
+      Table e.Table;
 }
 
 ExtractNested-Sentence {

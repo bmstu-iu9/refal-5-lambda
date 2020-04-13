@@ -129,6 +129,7 @@ ASTItemFromDirective {
   #Extern  = #Declaration #GN-Entry;
   #Forward = #Declaration #GN-Local;
   #Entry   = #Entry       #GN-Entry;
+  #Meta    = #Meta        #GN-Local;
 }
 
 ParseElement-SwDirective {

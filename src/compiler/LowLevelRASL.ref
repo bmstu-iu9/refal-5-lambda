@@ -69,6 +69,11 @@ CalcDigest {
     (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'N'>)
     (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
 
+  (s.Hash1 s.Hash2)
+  (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.Table) =
+    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'T'>)
+    (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.Table);
+
   (s.Hash1 s.Hash2) (CmdEnum s.ScopeClass e.Name) =
     (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'E'>)
     (CmdEnum s.ScopeClass e.Name);
@@ -187,6 +192,12 @@ OutlineConstants-WithNative {
     = <UpdateFuncTable t.Tables e.Name> : t.Tables^ s.Id
     = t.Tables (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
 
+  t.Tables (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.IdentFuncMapTable)
+    = <OutlineConstants-MetaTable t.Tables e.IdentFuncMapTable>
+    : t.Tables^ e.IdentFuncMapTable^
+    = t.Tables
+      (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.IdentFuncMapTable);
+
   t.Tables (s.Definition s.ScopeClass e.Name)
     , <OneOf s.Definition CmdEnum CmdSwap CmdConditionFunc CmdDeclaration> : True
     = <UpdateFuncTable t.Tables e.Name> : t.Tables^ s.Id
@@ -207,7 +218,26 @@ OutlineConstants-RASLOnly {
 
   t.Tables (CmdDefineIdent e.Name) = t.Tables /* пропускаем */;
 
+  t.Tables (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.IdentFuncMapTable)
+    = <OutlineConstants-MetaTable t.Tables e.IdentFuncMapTable>
+    : t.Tables^ e.IdentFuncMapTable^
+    = t.Tables
+      (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.IdentFuncMapTable);
+
   t.Tables t.OtherItem = t.Tables t.OtherItem;
+}
+
+OutlineConstants-MetaTable {
+  t.Tables e.MetaTable
+    = <MapAccum
+        {
+          t.Tables^ ((Symbol Identifier e.Ident) (Symbol Name e.Function))
+            = <UpdateIdentTable t.Tables e.Ident> : t.Tables^ s.IdentId
+            = <UpdateFuncTable t.Tables e.Function> : t.Tables^ s.FuncId
+            = t.Tables (s.IdentId s.FuncId);
+        }
+        t.Tables e.MetaTable
+      >
 }
 
 OutlineConstants-Commands {

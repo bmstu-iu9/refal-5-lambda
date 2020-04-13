@@ -60,6 +60,10 @@ SetCookies {
       t.SrcPos e.Code
     );
 
+  s.Hash1 s.Hash2
+  (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.Table) =
+    /* пропускаем */;
+
   s.Hash1 s.Hash2 (CmdEnum s.ScopeClass e.Name) =
     /* пропускаем */;
 

@@ -47,6 +47,9 @@ $ENTRY HighLevelRASL {
           (Function s.ScopeClass (e.Name) NativeBody t.SrcPos e.Code) =
             (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
 
+          (Function s.ScopeClass (e.Name) Table e.Table) =
+            (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.Table);
+
           (Enum s.ScopeClass e.Name) =
             (CmdEnum s.ScopeClass e.Name);
 

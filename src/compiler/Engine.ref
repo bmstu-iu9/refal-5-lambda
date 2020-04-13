@@ -381,9 +381,7 @@ PatchASTSrcPos-Item {
   s.FnPatch (Include t.SrcPos e.IncludeName) = /* пропускаем */;
 
   s.FnPatch (s.Label t.SrcPos s.ScopeClass e.Name)
-    , <OneOf
-        s.Label Enum Swap Declaration Entry Inline Drive
-      > : True
+    , <OneOf s.Label Enum Swap Declaration Entry Inline Drive Meta> : True
     = (s.Label <s.FnPatch t.SrcPos> s.ScopeClass e.Name);
 
   s.FnPatch (Spec t.SrcPos (e.Name) e.Pattern)
@@ -479,6 +477,7 @@ BackEnd {
     = <Config-GetOptResult t.Config> : s.OptResult
     = <Config-GetConditionsMode t.Config> : s.ConditionsMode
     = <Config-GetGenMode t.Config> : s.GenMode
+    = <CreateMetaFunctions e.AST> : e.AST^
     = <Desugar s.MarkupContext s.ConditionsMode e.AST> : e.AST^
     = <Log-AST (e.SrcName ' (after desugar)') e.AST> : e.AST^
     = <Config-GetOptTree t.Config>
@@ -522,6 +521,66 @@ BackEnd-NativeModule {
     >
     (e.OutputName);
 }
+
+CreateMetaFunctions {
+  e.AST-B (Meta e.MetaInfo) e.AST-E
+    = <MapAccum
+        {
+          (e.FunctionNames) (Meta t.SrcPos s.ScopeClass e.Name)
+            = (e.FunctionNames (e.Name))
+              (Declaration t.SrcPos GN-Entry '__Meta_' e.Name)
+              (Declaration t.SrcPos GN-Entry '__Step-Drop')
+              (Inline t.SrcPos s.ScopeClass e.Name)
+              (Function
+                t.SrcPos s.ScopeClass (e.Name) Sentences
+                (
+                  ((TkVariable t.SrcPos 'eArg'))
+                  (
+                    (CallBrackets (Symbol Name t.SrcPos '__Step-Drop'))
+                    (CallBrackets
+                      (Symbol Name t.SrcPos '__Meta_' e.Name)
+                      (TkVariable t.SrcPos 'eArg')
+                      (Symbol Name t.SrcPos '$table')
+                    )
+                  )
+                  (/* нет блоков */)
+                )
+              );
+
+          (e.FunctionNames) (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
+            = (e.FunctionNames (e.Name))
+              (Function t.SrcPos s.ScopeClass (e.Name) e.Body);
+
+          (e.FunctionNames) (s.Definition t.SrcPos s.ScopeClass e.Name)
+            , <OneOf s.Definition Swap Enum> : True
+            = (e.FunctionNames (e.Name))
+              (s.Definition t.SrcPos s.ScopeClass e.Name);
+
+          (e.FunctionNames) t.OtherItem = (e.FunctionNames) t.OtherItem;
+        }
+        (/* function names */)
+        e.AST-B (Meta e.MetaInfo) e.AST-E
+      >
+    : (e.FunctionNames) e.AST^
+    = e.MetaInfo : t.MetaSrcPos s._ScopeClass e._Name
+    = e.AST
+      (Function
+        t.MetaSrcPos GN-Local ('$table') Table
+        <Map
+          {
+            (e.Name)
+              = (
+                  (Symbol Identifier e.Name)
+                  (Symbol Name t.MetaSrcPos e.Name)
+                );
+          }
+          e.FunctionNames
+        >
+      );
+
+  e.AST = e.AST;
+}
+
 
 /**
   <GrammarCheck t.Config s.Dialect e.SrcName>

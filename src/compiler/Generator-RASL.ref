@@ -146,6 +146,20 @@ GenCommand-Globals {
       <PutWordLE s.Offset>
     >;
 
+  e.Labels (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.Table)
+    = <Lenw e.Table> : s.Count e.Table^
+    = <PutBlock
+        IdentFuncMapTable
+        <NameWithSign-Bytes s.ScopeClass e.Name>
+        <PutWordLE s.Count>
+        <Map
+          {
+            (s.Ident s.Function) = <PutWordLE s.Ident> <PutWordLE s.Function>;
+          }
+          e.Table
+        >
+      >;
+
   e.Labels (CmdSwapDescr s.ScopeClass e.Name) =
     <PutBlock Swap <NameWithSign-Bytes s.ScopeClass e.Name>>;
 

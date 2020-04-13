@@ -37,6 +37,7 @@ DecorateChars {
         {
           '-' = 'm_';
           '_' = 'u_';
+          '$' = 'd_';
           s.Other
             = <Fetch
                 <AlphaNumber>
