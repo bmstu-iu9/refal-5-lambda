@@ -47,7 +47,8 @@ setlocal
   rem Some C++ compilers write syntax error messages to stderr,
   rem don't erase __error.txt
   if not exist Library.ref (
-    echo COMPILATION FAILED, MAYBE SEE __error.txt
+    echo COMPILATION FAILED, __error.txt:
+    type __error.txt
     exit /b 1
   )
   erase __error.txt Library.ref
@@ -180,7 +181,8 @@ setlocal
   rem Some C++ compilers write syntax error messages to stderr,
   rem don't erase __error.txt
   if not exist %TARGET% (
-    echo COMPILATION FAILED
+    echo COMPILATION FAILED, __error.txt:
+    type __error.txt
     exit /b 1
   )
   erase __error.txt

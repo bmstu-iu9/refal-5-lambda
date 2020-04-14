@@ -35,8 +35,12 @@ run_all_tests() {
   echo Precompile Library.ref
   cp $LIBDIR/Library.ref .
   ../../bin/rlc-core "${COMMON_SRFLAGS[@]}" -C Library 2>__error.txt
-  if [ $? -ge 100 ] || [ ! -e Library.rasl ]; then
+  if [ $? -ge 100 ]; then
     echo COMPILER FAILS ON Library.ref, SEE __error.txt
+    exit 1
+  elif [ ! -e Library.rasl ]; then
+    echo COMPILATION FAILED, __error.txt:
+    cat __error.txt
     exit 1
   fi
   rm __error.txt Library.ref
@@ -160,8 +164,12 @@ compile() {
 
   ../../bin/rlc-core --keep-rasls $SRC -o $TARGET "${COMMON_SRFLAGS[@]}" \
     Library 2>__error.txt
-  if [ $? -ge 100 ] || [ ! -e $TARGET ]; then
+  if [ $? -ge 100 ]; then
     echo COMPILER FAILS ON $SRC, SEE __error.txt
+    exit 1
+  elif [ ! -e $TARGET ]; then
+    echo COMPILATION FAILED, __error.txt:
+    cat __error.txt
     exit 1
   fi
   rm __error.txt
