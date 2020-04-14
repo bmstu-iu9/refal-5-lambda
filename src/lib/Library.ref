@@ -25,40 +25,6 @@
 *-------------------------------------------------------------------------------
 
 
-/*
-  <__FindMuPtr e.LocalScope e.FuncName> == s.FuncPtr | []
-*/
-$ENTRY __FindMuPtr {
-  s.Cookie1 s.Cookie2 e.FuncName
-    = <PtrFromName s.Cookie1 s.Cookie2 e.FuncName>
-      <PtrFromName 0 0 e.FuncName>
-    : {
-        s.FnPtr e.Rest = s.FnPtr;
-
-        /* empty */ = /* empty */;
-      };
-}
-
-
-/**
-  <PtrFromName e.Scope e.FuncName> == s.FUNCTION | []
-
-  e.Scope ::= s.Cookie1 s.Cookie2
-  s.Cookie1, s.Cookie2 ::= s.NUMBER
-  e.FuncName ::= s.COMPOUND | s.CHAR*
-*/
-$ENTRY PtrFromName {
-  s.Cookie1 s.Cookie2 e.FuncName
-    = <Module-LookupFunction
-        CURRENT-AND-GLOBAL s.Cookie1 s.Cookie2 e.FuncName
-      >
-    : {
-        Success s.FuncPtr = s.FuncPtr;
-        Fails = /* пусто */;
-      };
-}
-
-
 /**
   <__Meta_Mu t.MuFunc e.Arg $table> == e.Res
 

@@ -10,29 +10,7 @@
   extension:
      <Mu s.FuncPtr e.Arg> == <s.FuncPtr e.Arg>
 */
-Mu {
-  t.Function e.Arg
-    , <__Step-Start> <__Mu-Aux t.Function> : s.Function-Ptr
-    = <__Step-End> <s.Function-Ptr e.Arg>;
-}
-
-__Mu-Aux {
-  '+' = &Add; '/' = &Div; '%' = &Mod; '*' = &Mul; '?' = &Residue; '-' = &Sub;
-  "+" = &Add; "/" = &Div; "%" = &Mod; "*" = &Mul; "?" = &Residue; "-" = &Sub;
-
-  t.Function
-    = <Type t.Function>
-    : {
-        'F' s.SubType s.FnPtr = s.FnPtr;
-
-        'W' s.SubType s.FnName = <__FindMuPtr $SCOPEID s.FnName>;
-
-        'B' s.0 (e.FnName) = <__FindMuPtr $SCOPEID e.FnName>;
-      };
-}
-
-*$FROM Library
-$EXTERN __FindMuPtr, __Step-Start, __Step-End;
+$META Mu;
 
 
 * 2. Add
@@ -275,11 +253,10 @@ $ENUM Ev-met;
   extension:
       <Residue s.FuncPtr e.Arg> == <s.FuncPtr e.Arg>
 */
-Residue {
-  t.Function e.Arg
-    , <__Step-Start> <__Mu-Aux t.Function> : s.Function-Ptr
-    = <__Step-End> <s.Function-Ptr e.Arg>;
-}
+$META Residue;
+
+__Meta_Residue { e.Arg = <__Step-Drop> <__Meta_Mu e.Arg> }
+$INLINE __Meta_Residue;
 
 
 * 51. GetEnv

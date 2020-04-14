@@ -73,7 +73,6 @@ setlocal
     Library-ReadBytes ^
     Library-FTell ^
     Library-FSeek ^
-    Library-PtrFromName ^
     Library-Mu ^
     Library-Sysfun-2 ^
     Library-Platform ^
@@ -86,7 +85,6 @@ setlocal
     Library-Open-Auto-Fail ^
     Library-SymbCompare-Fail ^
     Library-Implodes-Fail ^
-    Library-PtrFromName-Fail ^
     Library-Mu-Fail ^
     || exit /b 1
 

@@ -67,7 +67,6 @@ run_all_tests() {
     Library-ReadBytes \
     Library-FTell \
     Library-FSeek \
-    Library-PtrFromName \
     Library-Mu \
     Library-Sysfun-2 \
     Library-Platform
@@ -79,8 +78,7 @@ run_all_tests() {
     Library-Open-Auto-Fail \
     Library-SymbCompare-Fail \
     Library-Implodes-Fail \
-    Library-Mu-Fail \
-    Library-PtrFromName-Fail
+    Library-Mu-Fail
 
   if [ -e Library-Prout-Expr ]; then
     echo Pass Library-Prout-Expr test...
