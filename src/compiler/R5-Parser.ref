@@ -199,10 +199,6 @@ TkMeta {
   t.Pos e.Name = (Meta t.Pos GN-Local e.Name)
 }
 
-TkSpec {
-  t.Pos (e.Name) e.Pattern = (Spec t.Pos (e.Name) e.Pattern);
-}
-
 NameList-DoNames {
   t.ErrorList s.Tag (e.Units)
   (TkRefal5Mode t.Pos s.Mode) e.Tokens
