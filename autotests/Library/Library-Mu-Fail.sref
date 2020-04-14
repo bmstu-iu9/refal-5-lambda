@@ -1,0 +1,6 @@
+//FROM Library
+$META Mu;
+
+$ENTRY Go {
+  = <Mu 1 2 3>;
+}

@@ -184,6 +184,7 @@ struct IdentFuncMap: public RefalFunction {
   }
 
   RefalFunction *lookup(const RefalIdentifier ident);
+  RefalFunction *lookup(const char *);
 };
 
 

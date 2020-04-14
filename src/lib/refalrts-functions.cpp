@@ -1,3 +1,6 @@
+#include <string.h>
+
+
 #include "refalrts-functions.h"
 #include "refalrts-commands.h"
 
@@ -78,6 +81,19 @@ refalrts::IdentFuncMap::lookup(const refalrts::RefalIdentifier ident) {
   end = pairs.end();
 
   while (p != end && idents[p->ident] != ident) {
+    ++p;
+  }
+
+  return p != end ? functions[p->func] : 0;
+}
+
+refalrts::RefalFunction *
+refalrts::IdentFuncMap::lookup(const char *name) {
+  std::vector<Pair>::iterator p, end;
+  p = pairs.begin();
+  end = pairs.end();
+
+  while (p != end && strcmp(idents[p->ident]->name(), name) != 0) {
     ++p;
   }
 

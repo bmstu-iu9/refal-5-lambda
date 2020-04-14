@@ -261,6 +261,14 @@ extern unsigned read_chars(
   char buffer[], unsigned buflen, Iter& first, Iter& last
 );
 
+bool is_metatable(VM *vm, RefalFunction *func);
+RefalFunction *function_for_ident(
+  VM *vm, RefalFunction *metatable, RefalIdentifier ident
+);
+RefalFunction *function_for_name(
+  VM *vm, RefalFunction *metatable, const char *name
+);
+
 // Операции построения результата
 
 extern void reset_allocator(VM *vm);

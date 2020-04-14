@@ -1,0 +1,20 @@
+//FROM Library
+$META Mu;
+
+$ENTRY Go {
+  /* пусто */
+    = <Mu Rev 'abc'> : 'cba'
+    = <Mu #Rev 'def'> : 'fed'
+    = <Mu ('Rev') 'ghi'> : 'ihg'
+    = <Mu #Add 1 2> : 3
+    = <Mu '+' 3 4> : 7
+    = <Mu "+" 5 6> : 11
+    = 'jkl' : e.X
+    = <Mu { e.Y = e.X e.Y; } 'mno'> : 'jklmno'
+    = /* пусто */;
+}
+
+Rev {
+  e.X s.Y = s.Y <Rev e.X>;
+  /* пусто */ = /* пусто */;
+}

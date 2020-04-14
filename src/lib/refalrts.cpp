@@ -317,6 +317,25 @@ unsigned refalrts::read_chars(
   return read;
 }
 
+bool refalrts::is_metatable(
+  refalrts::VM *vm, refalrts::RefalFunction *func
+) {
+  return get_api(vm)->is_metatable(func);
+}
+
+refalrts::RefalFunction *refalrts::function_for_ident(
+  refalrts::VM *vm,
+  refalrts::RefalFunction *metatable, refalrts::RefalIdentifier ident
+) {
+  return get_api(vm)->function_for_ident(metatable, ident);
+}
+
+refalrts::RefalFunction *refalrts::function_for_name(
+  refalrts::VM *vm, refalrts::RefalFunction *metatable, const char *name
+) {
+  return get_api(vm)->function_for_name(metatable, name);
+}
+
 //------------------------------------------------------------------------------
 
 // Операции построения результата

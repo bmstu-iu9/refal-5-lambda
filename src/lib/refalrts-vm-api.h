@@ -97,6 +97,13 @@ struct VMapi {
   bool (*dangerous_state)(VM *vm);
   void (*push_stack)(VM *vm, Iter call_bracket);
   void (*set_return_code)(VM *vm, int code);
+  bool (*is_metatable)(RefalFunction *func);
+  RefalFunction *(*function_for_ident)(
+    RefalFunction *metatable, RefalIdentifier ident
+  );
+  RefalFunction *(*function_for_name)(
+    RefalFunction *metatable, const char *name
+  );
 };
 
 const struct VMapi *get_api(VM *vm);

@@ -74,6 +74,7 @@ setlocal
     Library-FTell ^
     Library-FSeek ^
     Library-PtrFromName ^
+    Library-Mu ^
     Library-Sysfun-2 ^
     Library-Platform ^
     || exit /b 1
@@ -86,6 +87,7 @@ setlocal
     Library-SymbCompare-Fail ^
     Library-Implodes-Fail ^
     Library-PtrFromName-Fail ^
+    Library-Mu-Fail ^
     || exit /b 1
 
   if exist Library-Prout-Expr.exe (

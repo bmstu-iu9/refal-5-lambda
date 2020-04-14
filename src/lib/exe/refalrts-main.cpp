@@ -413,6 +413,27 @@ void vm_set_return_code(refalrts::VM *vm, int code) {
   vm->set_return_code(code);
 }
 
+bool is_metatable(refalrts::RefalFunction *func) {
+  return dynamic_cast<refalrts::IdentFuncMap *>(func) != 0;
+}
+
+refalrts::RefalFunction *function_for_ident(
+  refalrts::RefalFunction *maybe_metatable, refalrts::RefalIdentifier ident
+) {
+  refalrts::IdentFuncMap *metatable =
+    dynamic_cast<refalrts::IdentFuncMap *>(maybe_metatable);
+
+  return metatable != 0 ? metatable->lookup(ident) : 0;
+}
+refalrts::RefalFunction *function_for_name(
+  refalrts::RefalFunction *maybe_metatable, const char *name
+) {
+  refalrts::IdentFuncMap *metatable =
+    dynamic_cast<refalrts::IdentFuncMap *>(maybe_metatable);
+
+  return metatable != 0 ? metatable->lookup(name) : 0;
+}
+
 const refalrts::VMapi api = {
   lookup_function_in_domain,
   lookup_function_in_module,
@@ -461,6 +482,9 @@ const refalrts::VMapi api = {
   vm_dangerous_state,
   vm_push_stack,
   vm_set_return_code,
+  is_metatable,
+  function_for_ident,
+  function_for_name,
 };
 
 }  // unnamed namespace
