@@ -1,6 +1,79 @@
 # Интерфейсы между отдельными проходами компиляции
 
-## Лексический анализ (проход 1)
+## Лексический анализ Рефала-5λ (проход 1А)
+
+    <R5-Scan e.SourceFile> == t.Token*
+
+    t.Token ::= (s.TokType t.SrcPos e.TokValue)
+    t.SrcPos ::= (RowCol s.Line s.Col)
+
+    s.TokType ~ e.TokValue ::=
+        TkName ~ s.CHAR*
+      | TkCompound ~ s.CHAR*
+      | TkMacroDigit ~ s.NUMBER
+      | TkChar ~ s.CHAR
+      | TkVariable ~ s.VarType e.VarName
+      | TkOpenBracket, TkCloseBracket, TkCloseCall, TkCloseADT,
+      | TkOpenBlock, TkCloseBlock ~ пусто
+      | TkOpenCall, TkOpenADT ~ s.CHAR* -- имя функции
+      | TkComma, TkColon, TkAssign, TkSemicolon ~ пусто
+      | TkExtern, TkEntry, TkEnum, TkEEnum, TkSwap,
+      | TkESwap, TkInclude, TkInline, TkDrive,
+      | TkSpec, TkMeta ~ пусто
+      | TkScopeId ~ пусто
+      | TkLabel ~ пусто
+      | TkEOF ~ пусто
+      | TkError ~ s.CHAR*
+      | TkWarning ~ s.CHAR*
+      | TkRefal5Mode ~ Classic | Extended
+      | TkAmpersand ~ empty
+      | TkRedefinition ~ empty
+      | TkNativeCode ~ (s.CHAR*)*
+    s.VarType ::= 's' | 't' | 'e'
+    e.VarName ::= s.CHAR*
+
+* `e.SourceFile` — имя файла исходного текста.
+* `t.Token` — токен.
+* `t.SrcPos` — позиция токена.
+* `s.TokType` — тег лексического домена.
+* `e.TokValue` — атрибут токена, зависит от `s.TokType`.
+
+Ниже перечислены значения тегов типов и атрибутов. Для лексем с атрибутами
+атрибут записан после тега типа. Если атрибут явно не указан, значит его нет
+(`e.TokValue` пустое).
+
+* `TkName s.CHAR*` — идентификатор.
+* `TkCompound s.CHAR*` — строка в двойных кавычках.
+* `TkMacroDigit s.NUMBER` — макроцифра.
+* `TkChar s.CHAR` — символ-литера. Несколько литер в общих кавычках
+  (например `'hello'`) трактуются как отдельные токены.
+* `TkVariable s.VarType e.VarName` — переменная.
+* `TkOpenBracket`, `TkCloseBracket` — круглые скобки.
+* `TkOpenCall s.CHAR*`, `TkCloseCall` — угловые скобки. Имя вызываемой
+  функции является частью открывающей скобки. Для скобок без имени имя
+  пустое.
+* `TkOpenBlock`, `TkCloseBlock` — фигурные скобки.
+* `TkOpenADT s.CHAR*`, `TkCloseATD` — квадратные скобки.
+* `TkComma`, `TkColon`, `TkAssign`, `TkSemicolon` — `,`, `:`, `=`, `;`.
+* `TkExtern` — `$EXTERN`, `$EXTRN`, `$EXTERNAL`.
+* `TkEntry` — `$ENTRY`.
+* `TkEnum`, `TkEEum` — `$ENUM`, `$EENUM`.
+* `TkSwap`, `TkESwap` — `$SWAP`, `$ESWAP`.
+* `TkInclude` — `$INCLUDE`.
+* `TkInline`, `TkDrive`, `TkSpec` — `$INLINE`, `$DRIVE`, `$SPEC`.
+* `TkMeta` — `$META`.
+* `TkScopeId` — `$SCOPEID`.
+* `TkLabel` — `$LABEL`.
+* `TkEOF` — конец файла.
+* `TkError s.CHAR*`, `TkWarning s.CHAR*` — сообщение о лексической ошибке
+  или предупреждении.
+* `TkRefal5Mode s.Refal5Mode` — псевдокомментарий `*$CLASSIC` или
+  `*$EXTENDED`.
+* `TkAmpersand`, `TkRedefinition` — знаки `&` и `^`.
+* `TkNativeCode (s.CHAR*)*` — вставка нативного кода.
+
+
+## Лексический анализ Простого Рефала (проход 1Б)
 
     <SR-Scan e.FileName>
       == e.Tokens
@@ -31,7 +104,10 @@
   * `Forward` — `$FORWARD`,
   * `Swap` — `$SWAP`,
   * `ESwap` — `$ESWAP`,
-  * `Ident` — `$LABEL`.
+  * `Ident` — `$LABEL`,
+  * `Include` — `$INCLUDE`,
+  * `Spec` — `$SPEC`,
+  * `Meta` — `$META`.
 * `TkIdentMarker` — знак решётки.
 * `TkName e.Name` — идентификатор (имя функции или идентификатора после `#`).
 * `TkNumber s.Number` — целое число. `s.Number` может быть как целым числом,
@@ -48,7 +124,63 @@
 * `TkUnexpected e.Unexpected` — лексема с последовательностью неопознанных
   символов.
 
-## Синтаксический анализ (проход 2)
+## Синтаксический анализ Рефала-5λ (проход 2А)
+
+    <R5-Parse t.ErrorList s.Mode e.Tokens>
+      == t.ErrorList t.Unit*
+
+    s.Mode ::= Classic | Extended
+
+    t.Unit ::= t.Function | t.Extern | t.SingleDeclaration | t.Include
+      | t.NativeBlock | t.Ident
+    t.Extern ::= (Declaration t.Pos GN-Entry e.Name)
+    t.SingleDeclaration ::= (s.SingleDeclarationTag t.Pos s.ScopeClass e.Name)
+    s.SingleDeclarationTag ::= Enum | Swap | Inline | Drive | Meta
+    t.Include ::= (Include t.Pos e.Name)
+    t.NativeBlock ::= (NativeBlock t.Pos e.Code)
+    t.Ident ::= (Ident t.SrcPos e.Name)
+
+    t.Function ::= (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
+    e.Body ::=
+        Sentences t.Sentence*
+      | NativeBody t.Pos e.Code
+    s.ScopeClass ::= GN-Entry | GN-Local
+    t.Sentence ::=
+      (t.Pattern (s.Chain t.Result (e.Blocks) t.Pattern)* e.SentenceTail)
+    s.Chain ::= Condition | Assign
+    e.SentenceTail ::= t.Result (e.Blocks)
+    e.Blocks ::= (e.Body)*
+    e.Code ::= (s.Char*)*
+
+    t.Pattern, t.Result ::= (t.Term*)
+    t.Term ::=
+        (Symbol s.SymType e.SymInfo)
+      | (TkVariable t.SrcPos s.VarType e.Index)
+      | (Brackets t.Term*)
+      | (CallBrackets (Symbol Name t.SrcPos e.Function)? t.Term*)
+      | (Closure Sentences t.Sentence*)
+      | (TkNewVariable t.SrcPos s.VarType e.Index)
+      | (ADT-Brackets t.SrcPos (e.ADT-Name) t.Term*)
+    s.SymType e.SymInfo ::=
+        Char s.Char
+      | Number s.Number
+      | Name t.SrcPos s.Char*
+      | Identifier s.Char*
+    e.ADT-Name ::= s.CHAR* | UnnamedADT
+    s.VarType ::= 's' | 't' | 'e'
+
+Проходы 2А и 2Б порождают структурно одно и то же синтаксическое дерево,
+однако их содержимое незначительно различается. Например, в Рефале-5λ
+отсутствует конструкция `$FORWARD`, а потому объявления функций
+(`(Declaration …)`) всегда имеют область видимости `GN-Extern`. И наоборот,
+списки `$INLINE` и `$DRIVE` есть только в Рефале-5λ.
+
+Для списков `Inline`, `Drive` и `Meta` тег области видимости всегда
+`GN-Local`, в дерево он добавлен для общности.
+
+Подробное описание большинства элементов дерева в проходе 2Б.
+
+## Синтаксический анализ Простого Рефала (проход 2Б)
 
     <SR-ParseProgram t.ErrorList e.Tokens>
       == t.ErrorList e.AST
@@ -58,6 +190,7 @@
         (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
       | (Enum t.SrcPos s.ScopeClass e.Name)
       | (Swap t.SrcPos s.ScopeClass e.Name)
+      | (Meta t.SrcPos GN-Local e.Name)
       | (Declaration t.SrcPos s.ScopeClass e.Name)
       | (Entry t.SrcPos GN-Entry e.Name)
       | (Ident t.SrcPos e.Name)
@@ -150,7 +283,18 @@
 
 Замена `t.SrcPos`:
 
-    t.SrcPos ::= (FileLine s.LineNumber e.FileName)
+    t.SrcPos^ ::= (FileLine s.LineNumber e.FileName)
+
+Кроме того, на этом проходе создаётся функция-метатаблица, используемая
+в реализации метафункций. Таким образом, тело функции меняется на
+
+    e.Body^ ::=
+        Sentences t.Sentence*
+      | NativeBody t.Pos e.Code
+      | Metatable e.Metatable
+
+    e.Metatable ::=
+        ((Symbol Identifier s.CHAR*) (Symbol Name t.SrcPos s.CHAR*)*
 
 Таким образом последующие проходы (5 и 9) правильным образом выписывают путь
 к файлу.
@@ -184,6 +328,7 @@
     e.ReducedBody ::=
         Sentences t.ReducedSentence*
       | NativeBody t.SrcPos e.Code
+      | Metatable e.ReducedMetatable
     t.ReducedSentence ::=
         ((e.ReducedPattern) t.ReducedCondition* (e.ReducedResult))
     t.ReducedCondition ::=
@@ -209,6 +354,9 @@
       | (Brackets (TkVariable 'e' e.Index s.Depth))
       | (TkIdentifier e.Name)
     s.ModeTS ::= 't' | 's'
+
+    e.ReducedMetatable ::=
+        ((Symbol Identifier s.CHAR*) (Symbol Name s.CHAR*)*
 
 Нужно отметить, что в `ADT-Brackets` на входе не может быть имени как `UnnamedADT`,
 поскольку этот проход и последующие вызываются только при отсутствии ошибок.
@@ -268,6 +416,7 @@
       | (CmdConditionFunc s.ScopeClass e.Name)
       | (CmdDefineIdent e.Name)
       | (CmdEmitNativeCode t.SrcPos e.Code)
+      | (CmdMetatable s.ScopeClass (e.Name) e.ReducedMetatable)
 
     e.HiCommands ::= t.HiCommand*
     t.HiCommand ::=
@@ -545,6 +694,7 @@ e-переменные, распределяемые последователь�
       | (CmdNativeFuncDescr s.ScopeClass e.Name)
       | (CmdConditionFuncDescrRasl s.ScopeClass e.Name)
       | (CmdConditionFuncDescrNative s.ScopeClass e.Name)
+      | (CmdMetatable s.ScopeClass (e.Name) e.LowMetatable)
 
     e.CookiedName ::= e.Name Hash s.Cookie1 s.Cookie2
     s.Cookie1, s.Cookie2 ::= s.NUMBER
@@ -642,6 +792,9 @@ e-переменные, распределяемые последователь�
       | ElOpenCall | ElCloseCall
       | ElClosureHead
       | ElUnwrappedClosure s.HeadOffset
+
+    e.LowMetatable ::= (s.IdentNameId s.FuncNameId)*
+    s.IdentNameId, s.FuncNameId ::= s.NameId
 
 * `(UnitName e.SrcName)` — имя исходного файла.
 * `(s.LiteralArray t.LiteralItem*)` — массив литеральных значений. Поскольку
