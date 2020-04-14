@@ -1520,6 +1520,7 @@ refalrts::GlobalRef<unsigned long> g_start_step;
 /*
   <__Step-Start e.Any> == []
   <__Step-End e.Any> == []
+  <__Step-Drop e.Any> == []
 */
 $ENTRY __Step-Start {
 %%
@@ -1541,6 +1542,16 @@ $ENTRY __Step-End {
   cookie_ns::g_correction.ref(vm) +=
     (cookie_ns::raw_step(vm) - cookie_ns::g_start_step.ref(vm)) + 1;
   cookie_ns::g_start_step.ref(vm) = 0;
+
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+$ENTRY __Step-Drop {
+%%
+  /* Шаг вызова себя и шаг предыдущей функции */
+  cookie_ns::g_correction.ref(vm) += 2;
 
   refalrts::splice_to_freelist(vm, arg_begin, arg_end);
   return refalrts::cSuccess;
