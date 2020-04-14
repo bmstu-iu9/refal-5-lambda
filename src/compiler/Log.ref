@@ -117,14 +117,14 @@ PutProgramElement {
       <Putout s.FileHandle '  }\n'>;
 
   s.FileHandle
-  (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.Table)
-    = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: table {'>
+  (CmdMetatable s.ScopeClass (e.Name) e.Metatable)
+    = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: metatable {'>
       <Map
         {
           ((Symbol Identifier e.Ident) (Symbol Name e.Function))
             = <Putout s.FileHandle '    ' e.Ident ' :: ' e.Function>;
         }
-        e.Table
+        e.Metatable
       >
       <Putout s.FileHandle '  }\n'>;
 

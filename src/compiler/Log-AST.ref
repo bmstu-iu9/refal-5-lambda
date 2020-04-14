@@ -84,15 +84,16 @@ Function-Aux {
   (e.Name) s.Scope NativeBody t.SrcPos e.NativeBody
     = (<Entry s.Scope> <DisplayName e.Name> ' { %% native %% }');
 
-  (e.Name) s.Scope Table e.Table
+  (e.Name) s.Scope Metatable e.Metatable
     = ()
       (<Entry s.Scope> e.Name ' {')
+      ('* metatable function')
       <Map
         {
           (t.Ident t.Name)
             = ('  ' <InlineTerm t.Ident> ' :: ' <InlineTerm t.Name>);
         }
-        e.Table
+        e.Metatable
       >
       ('}')
       ();

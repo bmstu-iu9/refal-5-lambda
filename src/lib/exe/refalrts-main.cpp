@@ -414,22 +414,22 @@ void vm_set_return_code(refalrts::VM *vm, int code) {
 }
 
 bool is_metatable(refalrts::RefalFunction *func) {
-  return dynamic_cast<refalrts::IdentFuncMap *>(func) != 0;
+  return dynamic_cast<refalrts::Metatable*>(func) != 0;
 }
 
 refalrts::RefalFunction *function_for_ident(
   refalrts::RefalFunction *maybe_metatable, refalrts::RefalIdentifier ident
 ) {
-  refalrts::IdentFuncMap *metatable =
-    dynamic_cast<refalrts::IdentFuncMap *>(maybe_metatable);
+  refalrts::Metatable *metatable =
+    dynamic_cast<refalrts::Metatable*>(maybe_metatable);
 
   return metatable != 0 ? metatable->lookup(ident) : 0;
 }
 refalrts::RefalFunction *function_for_name(
   refalrts::RefalFunction *maybe_metatable, const char *name
 ) {
-  refalrts::IdentFuncMap *metatable =
-    dynamic_cast<refalrts::IdentFuncMap *>(maybe_metatable);
+  refalrts::Metatable *metatable =
+    dynamic_cast<refalrts::Metatable*>(maybe_metatable);
 
   return metatable != 0 ? metatable->lookup(name) : 0;
 }

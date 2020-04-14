@@ -75,7 +75,7 @@ const refalrts::RASLCommand refalrts::RefalCondFunctionNative::run[] = {
 const refalrts::UInt32 refalrts::ModuleRepresentant::FAKE_COOKIE;
 
 refalrts::RefalFunction *
-refalrts::IdentFuncMap::lookup(const refalrts::RefalIdentifier ident) {
+refalrts::Metatable::lookup(const refalrts::RefalIdentifier ident) {
   std::vector<Pair>::iterator p, end;
   p = pairs.begin();
   end = pairs.end();
@@ -88,7 +88,7 @@ refalrts::IdentFuncMap::lookup(const refalrts::RefalIdentifier ident) {
 }
 
 refalrts::RefalFunction *
-refalrts::IdentFuncMap::lookup(const char *name) {
+refalrts::Metatable::lookup(const char *name) {
   std::vector<Pair>::iterator p, end;
   p = pairs.begin();
   end = pairs.end();

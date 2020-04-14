@@ -437,12 +437,12 @@ public:
     return res;
   }
 
-  IdentFuncMap* new_ident_func_map(
+  Metatable *new_metatable(
     RefalFuncName name,
     RefalFunction **functions,
     const RefalIdentifier *idents
   ) {
-    IdentFuncMap* res = new IdentFuncMap(name, functions, idents);
+    Metatable* res = new Metatable(name, functions, idents);
     m_allocated_functions.push_back(res);
     return res;
   }

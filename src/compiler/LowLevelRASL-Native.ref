@@ -61,7 +61,7 @@ SetCookies {
     );
 
   s.Hash1 s.Hash2
-  (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.Table) =
+  (CmdMetatable s.ScopeClass (e.Name) e.Metatable) =
     /* пропускаем */;
 
   s.Hash1 s.Hash2 (CmdEnum s.ScopeClass e.Name) =

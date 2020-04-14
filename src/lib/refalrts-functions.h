@@ -161,7 +161,7 @@ struct ModuleRepresentant : public RefalFunction {
   Module *module;
 };
 
-struct IdentFuncMap: public RefalFunction {
+struct Metatable: public RefalFunction {
   struct Pair {
     UInt32 ident;
     UInt32 func;
@@ -171,7 +171,7 @@ struct IdentFuncMap: public RefalFunction {
   RefalFunction **functions;
   const RefalIdentifier *idents;
 
-  IdentFuncMap(
+  Metatable(
     RefalFuncName name,
     RefalFunction **functions,
     const RefalIdentifier *idents

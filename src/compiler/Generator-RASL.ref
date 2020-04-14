@@ -146,10 +146,10 @@ GenCommand-Globals {
       <PutWordLE s.Offset>
     >;
 
-  e.Labels (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.Table)
+  e.Labels (CmdMetatable s.ScopeClass (e.Name) e.Table)
     = <Lenw e.Table> : s.Count e.Table^
     = <PutBlock
-        IdentFuncMapTable
+        Metatable
         <NameWithSign-Bytes s.ScopeClass e.Name>
         <PutWordLE s.Count>
         <Map

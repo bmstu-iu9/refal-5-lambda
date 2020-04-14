@@ -147,5 +147,5 @@ $ENTRY BlockTypeNumber{
   ConditionNative = 9;
   Incorporated = 10;
   UnitName = 11;
-  IdentFuncMapTable = 12;
+  Metatable = 12;
 }

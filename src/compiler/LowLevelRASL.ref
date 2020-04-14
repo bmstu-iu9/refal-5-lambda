@@ -70,9 +70,9 @@ CalcDigest {
     (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
 
   (s.Hash1 s.Hash2)
-  (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.Table) =
+  (CmdMetatable s.ScopeClass (e.Name) e.Metatable) =
     (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'T'>)
-    (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.Table);
+    (CmdMetatable s.ScopeClass (e.Name) e.Metatable);
 
   (s.Hash1 s.Hash2) (CmdEnum s.ScopeClass e.Name) =
     (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'E'>)
@@ -192,11 +192,10 @@ OutlineConstants-WithNative {
     = <UpdateFuncTable t.Tables e.Name> : t.Tables^ s.Id
     = t.Tables (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
 
-  t.Tables (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.IdentFuncMapTable)
-    = <OutlineConstants-MetaTable t.Tables e.IdentFuncMapTable>
-    : t.Tables^ e.IdentFuncMapTable^
+  t.Tables (CmdMetatable s.ScopeClass (e.Name) e.Metatable)
+    = <OutlineConstants-Metatable t.Tables e.Metatable> : t.Tables^ e.Metatable^
     = t.Tables
-      (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.IdentFuncMapTable);
+      (CmdMetatable s.ScopeClass (e.Name) e.Metatable);
 
   t.Tables (s.Definition s.ScopeClass e.Name)
     , <OneOf s.Definition CmdEnum CmdSwap CmdConditionFunc CmdDeclaration> : True
@@ -218,17 +217,16 @@ OutlineConstants-RASLOnly {
 
   t.Tables (CmdDefineIdent e.Name) = t.Tables /* пропускаем */;
 
-  t.Tables (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.IdentFuncMapTable)
-    = <OutlineConstants-MetaTable t.Tables e.IdentFuncMapTable>
-    : t.Tables^ e.IdentFuncMapTable^
+  t.Tables (CmdMetatable s.ScopeClass (e.Name) e.Metatable)
+    = <OutlineConstants-Metatable t.Tables e.Metatable> : t.Tables^ e.Metatable^
     = t.Tables
-      (CmdIdentFuncMapTable s.ScopeClass (e.Name) e.IdentFuncMapTable);
+      (CmdMetatable s.ScopeClass (e.Name) e.Metatable);
 
   t.Tables t.OtherItem = t.Tables t.OtherItem;
 }
 
-OutlineConstants-MetaTable {
-  t.Tables e.MetaTable
+OutlineConstants-Metatable {
+  t.Tables e.Metatable
     = <MapAccum
         {
           t.Tables^ ((Symbol Identifier e.Ident) (Symbol Name e.Function))
@@ -236,7 +234,7 @@ OutlineConstants-MetaTable {
             = <UpdateFuncTable t.Tables e.Function> : t.Tables^ s.FuncId
             = t.Tables (s.IdentId s.FuncId);
         }
-        t.Tables e.MetaTable
+        t.Tables e.Metatable
       >
 }
 

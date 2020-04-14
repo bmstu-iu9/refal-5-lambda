@@ -565,7 +565,7 @@ CreateMetaFunctions {
     = e.MetaInfo : t.MetaSrcPos s._ScopeClass e._Name
     = e.AST
       (Function
-        t.MetaSrcPos GN-Local ('$table') Table
+        t.MetaSrcPos GN-Local ('$table') Metatable
         <Map
           {
             (e.Name)

@@ -82,14 +82,14 @@ RemovePos-Body {
 
   NativeBody t.SrcPos e.Code = NativeBody t.SrcPos e.Code;
 
-  Table e.Table
-    = Table
+  Metatable e.Metatable
+    = Metatable
       <Map
         {
           (t.Ident (Symbol Name t.SrcPos e.Name))
             = (t.Ident (Symbol Name e.Name))
         }
-        e.Table
+        e.Metatable
       >
 }
 
@@ -245,7 +245,7 @@ EnumerateVars-Body {
   s.Depth (e.ScopeVars) NativeBody t.SrcPos e.Code =
     NativeBody t.SrcPos e.Code;
 
-  s.Depth (e.ScopeVars) Table e.Table = Table e.Table;
+  s.Depth (e.ScopeVars) Metatable e.Metatable = Metatable e.Metatable;
 }
 
 EnumerateVars-Blocks {
@@ -391,7 +391,7 @@ NameNestedBody {
   (e.MainName) NativeBody t.SrcPos e.Code
     = NativeBody t.SrcPos e.Code;
 
-  (e.MainName) Table e.Table = Table e.Table;
+  (e.MainName) Metatable e.Metatable = Metatable e.Metatable;
 }
 
 NameNestedBlocks {
@@ -502,7 +502,7 @@ RemoveAssigns-Sentences {
   NativeBody t.SrcPos e.Code =
     NativeBody t.SrcPos e.Code;
 
-  Table e.Table = Table e.Table;
+  Metatable e.Metatable = Metatable e.Metatable;
 }
 
 RemoveAssigns-Sentence {
@@ -634,9 +634,9 @@ ExtractNestedRec {
     (/* нет заимстовованных переменных */) (/* нет вложенных функций */)
     NativeBody t.SrcPos e.Code;
 
-  s.MarkupContext (e.ScopeVars) Table e.Table
+  s.MarkupContext (e.ScopeVars) Metatable e.Metatable
     = (/* нет заимстовованных переменных */) (/* нет вложенных функций */)
-      Table e.Table;
+      Metatable e.Metatable;
 }
 
 ExtractNested-Sentence {
