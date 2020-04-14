@@ -9,15 +9,16 @@ $EXTERN Solve;
 
 
 /**
-  <OptTree-Drive-ExtractOptInfo s.OptDrive e.AST>
+  <OptTree-Drive-ExtractOptInfo s.OptDrive s.OptIntrinsic e.AST>
     == (e.DriveInfo) e.AST
 
   s.OptDrive ::= OptDrive | OptInline | NoOpt
+  s.OptIntrinsic ::= OptIntrinsic | NoOpt
   e.DriveInfo ::= (e.DriveFuncNames) e.DriveInfo-Specific
   e.DriveFuncNames ::= (e.FuncName)*
 */
 $ENTRY OptTree-Drive-ExtractOptInfo {
-  s.OptDrive e.AST
+  s.OptDrive s.OptIntrinsic e.AST
     = <GetDrivenFunctions e.AST>
     : ((e.Names) e.Info) e.AST^
     = s.OptDrive
@@ -32,9 +33,9 @@ $ENTRY OptTree-Drive-ExtractOptInfo {
   <OptTree-Drive s.OptDrive (e.DriveInfo) e.AST> == (e.DriveInfo^) e.AST^
 */
 $ENTRY OptTree-Drive {
-  NoOpt (e.DriveInfo) e.AST = (e.DriveInfo) e.AST;
+  NoOpt s.OptIntrinsic (e.DriveInfo) e.AST = (e.DriveInfo) e.AST;
 
-  s.Opt (e.DriveInfo) e.AST
+  s.Opt s.OptIntrinsic (e.DriveInfo) e.AST
     = <DriveInlineOptimizerTick (e.DriveInfo) e.AST s.Opt>;
 }
 

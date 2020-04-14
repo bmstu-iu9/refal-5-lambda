@@ -261,6 +261,30 @@ $ENTRY Config-GetOptDrive {
 }
 
 /**
+  <Config-GetOptAutoMarkup t.Config>
+    == NoOpt
+    == OptAutoMarkup
+*/
+$ENTRY Config-GetOptAutoMarkup {
+  [Config e.Params-B (Optimize e.Opt-B OptAutoMarkup e.Opt-E) e.Params-E]
+    = OptAutoMarkup;
+
+  [Config e.Params] = NoOpt;
+}
+
+/**
+  <Config-GetOptIntrinsic t.Config>
+    == NoOpt
+    == OptIntrinsic
+*/
+$ENTRY Config-GetOptIntrinsic {
+  [Config e.Params-B (Optimize e.Opt-B OptIntrinsic e.Opt-E) e.Params-E]
+    = OptIntrinsic;
+
+  [Config e.Params] = NoOpt;
+}
+
+/**
   <Config-GetOptSpec t.Config>
     == NoOpt
     == OptSpec
@@ -278,7 +302,7 @@ $ENTRY Config-GetOptSpec {
     == Fails BadValue-Opt e.Letters
 
   e.Flags ::= s.Letter* s.Change?
-  s.Letter ::= 'd' | 'C' | 'D' | 'I' | 'P' | 'Q' | 'R' | 'S' | 'T'
+  s.Letter ::= 'd' | 'i' | 'A' | 'C' | 'D' | 'I' | 'P' | 'R' | 'S' | 'T'
   s.Change ::= '+' | '-' | '='
 */
 $ENTRY Config-SetOptFlags {
@@ -326,6 +350,8 @@ ValidFlag {
   'D' = True OptTree OptDrive;
   'I' = True OptTree OptInline;
   'S' = True OptTree OptSpec;
+  'A' = True OptTree OptAutoMarkup;
+  'i' = True OptTree OptIntrinsic;
 
   s.Other = False;
 }
