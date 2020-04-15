@@ -42,6 +42,15 @@ DoOptTree {
   0 t.OptDrive s.OptSpec s.OptAutoMarkup e.AST
     = <OptTree-CleanupMarkup e.AST>;
 
+  s.Cycles t.OptDrive s.OptSpec NoOpt e.AST
+    = <OptTree-Drive-Prepare t.OptDrive e.AST> : e.AST^
+    = <OptTree-Spec-Prepare s.OptSpec e.AST> : e.AST^
+
+    = <DoOptTree-DriveSpecLoop s.Cycles t.OptDrive s.OptSpec e.AST>
+    : s.Cycles^ e.AST^
+
+    = <OptTree-CleanupMarkup e.AST>;
+
   s.Cycles t.OptDrive s.OptSpec s.OptAutoMarkup e.AST
     = <Log-AST ('Pass ' <Symb s.Cycles> ' (before Auto markup)') e.AST> : e.AST^
     = e.AST : e.OriginAST
@@ -65,6 +74,9 @@ DoOptTree-DriveSpecLoop {
   0 t.OptDrive s.OptSpec e.AST
     = 0 <OptTree-Spec-CleanupColdFunctions e.AST>;
 
+  s.Cycles t.OptDrive NoOpt e.AST
+    = <DoOptTree-DriveLoop s.Cycles t.OptDrive e.AST>;
+
   s.Cycles t.OptDrive s.OptSpec e.AST
     = e.AST : e.OriginAST
     = <DoOptTree-DriveLoop s.Cycles t.OptDrive e.AST> : s.Cycles^ e.AST^
@@ -80,6 +92,8 @@ DoOptTree-DriveLoop {
   0 t.OptDrive e.AST
     = <OptTree-Drive-CleanupColdCalls e.AST> : e.AST^
     = 0 e.AST;
+
+  s.Cycles (NoOpt NoOpt) e.AST = s.Cycles e.AST;
 
   s.Cycles t.OptDrive e.AST
     = <Log-AST ('Pass ' <Symb s.Cycles> ' (before Drive)') e.AST> : e.AST^
