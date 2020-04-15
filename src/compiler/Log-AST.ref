@@ -47,6 +47,8 @@ Element {
 
   (Spec (e.Name) e.Pattern)
     = ('$SPEC ' <DisplayName e.Name> ' ' <InlineExpr e.Pattern> ';');
+
+  (DriveInfo e.DriveInfo) = ('(DriveInfo ...)');
 }
 
 

@@ -7,36 +7,55 @@ $EXTERN ExtractVariables;
 *$FROM GenericMatch
 $EXTERN Solve;
 
+*$FROM Log
+$EXTERN Log-PutLine;
+
+*$FROM DisplayName
+$EXTERN DisplayName;
+
+
+/*
+  В дерево добавляется узел (DriveInfo e.DriveInfo).
+
+  e.DriveInfo ::= (e.OptFuncNames (e.OptFunctions))
+  e.OptFuncNames ::= (e.Name)*
+  e.OptFunctions ::= t.OptFunction
+
+  t.OptFunction ::= (s.Label s.ScopeClass (e.Name) s.BodyHolder)
+
+  <s.BodyHolder>
+    == Sentences e.Sentences
+*/
+
 
 /**
-  <OptTree-Drive-ExtractOptInfo s.OptDrive s.OptIntrinsic e.AST>
-    == (e.DriveInfo) e.AST
+  <OptTree-Drive-Prepare s.OptDrive s.OptIntrinsic e.AST> == e.AST
 
   s.OptDrive ::= OptDrive | OptInline | NoOpt
   s.OptIntrinsic ::= OptIntrinsic | NoOpt
-  e.DriveInfo ::= (e.DriveFuncNames) e.DriveInfo-Specific
-  e.DriveFuncNames ::= (e.FuncName)*
 */
-$ENTRY OptTree-Drive-ExtractOptInfo {
-  s.OptDrive s.OptIntrinsic e.AST
-    = <GetDrivenFunctions e.AST>
-    : ((e.Names) e.Info) e.AST^
-    = s.OptDrive
-    : {
-        NoOpt = ((/* нет имён */) /* нет инфы */) e.AST;
+$ENTRY OptTree-Drive-Prepare {
+  NoOpt NoOpt e.AST = e.AST;
 
-        s.OptDrive^ = ((e.Names) e.Info) e.AST;
-      }
+  s.OptDrive s.OptIntrinsic
+  e.AST-B (DriveInfo e.DriveInfo) e.AST-E
+    = <UpdateDriveInfo s.OptDrive s.OptIntrinsic (e.DriveInfo) e.AST-B e.AST-E>;
+
+  s.OptDrive s.OptIntrinsic e.AST
+    = (/* no names */) /* no info */ : e.EmptyInfo
+    = <UpdateDriveInfo s.OptDrive s.OptIntrinsic (e.EmptyInfo) e.AST>;
 }
 
 /**
-  <OptTree-Drive s.OptDrive (e.DriveInfo) e.AST> == (e.DriveInfo^) e.AST^
+  <OptTree-Drive s.OptDrive s.OptIntrinsic e.AST> == e.AST^
 */
 $ENTRY OptTree-Drive {
-  NoOpt s.OptIntrinsic (e.DriveInfo) e.AST = (e.DriveInfo) e.AST;
+  NoOpt NoOpt e.AST = e.AST;
 
-  s.Opt s.OptIntrinsic (e.DriveInfo) e.AST
-    = <DriveInlineOptimizerTick (e.DriveInfo) e.AST s.Opt>;
+  s.OptDrive s.OptIntrinsic e.AST-B (DriveInfo e.DriveInfo) e.AST-E
+    = <DriveInlineOptimizerTick
+        (e.DriveInfo) e.AST-B e.AST-E s.OptDrive s.OptIntrinsic
+      >
 }
 
 /* Функция генерирует имена остаточных прогоняемых функций */
@@ -54,8 +73,8 @@ GenRemainderFuncNames {
     = <GenRemainderFuncNames e.Name <Dec s.LastCount>> (e.NewName);
 }
 
-GetDrivenFunctions {
-  e.AST
+UpdateDriveInfo {
+  s.OptDrive s.OptIntrinsic ((e.KnownNames) e.KnownFunctions) e.AST
 
     /* Выносим все Drive и Inline из дерева */
     = <MapAccum
@@ -68,6 +87,8 @@ GetDrivenFunctions {
       >
     : (e.OptNames) e.AST^
 
+    = <SetNames-Reject (e.OptNames) (e.KnownNames)> : e.OptNames^
+
     /*
       Выделяем тела оптимизируемых функций,
       копировать несколько имён в e.OptimizableNames не страшно
@@ -75,7 +96,15 @@ GetDrivenFunctions {
       Используем MapAccum не смотря на то, что достаточно Map:
       избегаем копирования дерева
     */
-    = <MapAccum
+    = <Map
+        {
+          (s.Label e.Name)
+            = <Lower <Explode s.Label>> : e.Label
+            = <Log-PutLine 'New ' e.Label ' function: ' <DisplayName e.Name>>;
+        }
+        e.OptNames
+      >
+      <MapAccum
         {
           ((e.OptFunctions) (e.RemNames))
           (Function s.ScopeClass (e.Name) Sentences e.Sentences)
@@ -101,7 +130,16 @@ GetDrivenFunctions {
       >
     : ((e.OptFunctions) (e.DrivenNames)) e.AST^
 
-    = ((e.DrivenNames) e.OptFunctions) e.AST;
+    = (DriveInfo (e.KnownNames e.DrivenNames) e.KnownFunctions e.OptFunctions)
+      e.AST;
+}
+
+SetNames-Reject {
+  (e.Minuent-B (s._M e.Name) e.Minuent-E) (e.Subtr-B (s.Label e.Name) e.Subtr-E)
+    = e.Minuent-B
+      <SetNames-Reject (e.Minuent-E) (e.Subtr-B (s.Label e.Name) e.Subtr-E)>;
+
+  (e.Minuent) (e.Subtrahend) = e.Minuent;
 }
 
 OptSwitch {
@@ -112,8 +150,8 @@ OptSwitch {
 /* Осуществляет прогонку или оптимизацию в зависимости от ключа */
 
 DriveInlineOptimizerTick {
-  t.OptInfo e.AST s.Opt
-    = <OptSwitch s.Opt> : s.Mode
+  t.OptInfo e.AST s.OptDrive s.OptIntrinsic
+    = <OptSwitch s.OptDrive> : s.Mode
     = <MapAccum
         {
           t.OptInfo^ (Function s.ScopeClass (e.Name) Sentences e.Sentences)
@@ -128,8 +166,8 @@ DriveInlineOptimizerTick {
         t.OptInfo
         e.AST
       >
-    : e.AST^
-    = <DistinctFuncs e.AST>
+    : (e.OptInfo) e.AST^
+    = (DriveInfo e.OptInfo) <DistinctFuncs e.AST>
 }
 
 DistinctFuncs {
