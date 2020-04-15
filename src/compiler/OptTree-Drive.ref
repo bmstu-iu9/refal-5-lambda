@@ -21,10 +21,8 @@ $EXTERN DisplayName;
   e.OptFuncNames ::= (e.Name)*
   e.OptFunctions ::= t.OptFunction
 
-  t.OptFunction ::= (s.Label s.ScopeClass (e.Name) s.BodyHolder)
-
-  <s.BodyHolder>
-    == Sentences e.Sentences
+  t.OptFunction ::= (s.Label s.ScopeClass (e.Name) e.OptBody)
+  e.OptBody ::= Sentences e.Sentences
 */
 
 
@@ -99,7 +97,7 @@ UpdateDriveInfo {
     = <Map
         {
           (s.Label e.Name)
-            = <Lower <Explode s.Label>> : e.Label
+            = '$' <Upper <Explode s.Label>> : e.Label
             = <Log-PutLine 'New ' e.Label ' function: ' <DisplayName e.Name>>;
         }
         e.OptNames
@@ -113,7 +111,7 @@ UpdateDriveInfo {
             = (
                 (
                   e.OptFunctions
-                  (s.Label s.ScopeClass (e.Name) { = Sentences e.Sentences})
+                  (s.Label s.ScopeClass (e.Name) Sentences e.Sentences)
                 )
                 (
                   e.RemNames
@@ -155,7 +153,7 @@ DriveInlineOptimizerTick {
     = <MapAccum
         {
           t.OptInfo^ (Function s.ScopeClass (e.Name) Sentences e.Sentences)
-            = <OptimizeF
+            = <OptFunction
                 (Function s.ScopeClass (e.Name) Sentences e.Sentences)
                 t.OptInfo
                 s.Mode
@@ -251,14 +249,14 @@ IsLexpr-Aux {
 
 /*
   Осуществляет попытку прогонки или встраивания в функции
-  <OptimizeF t.Function t.DriveInfo s.Mode>
+  <OptFunction t.Function t.DriveInfo s.Mode>
     == t.DriveInfo t.OptimizedFunction t.Function*
 
   Возвращает модифицированную функцию
   и порожденные из прогонки или встраивания
 */
 
-OptimizeF {
+OptFunction {
   (Function s.ScopeClass (e.Name) Sentences e.Sentences)
   t.OptInfo s.Mode
     = <Reduce
@@ -271,7 +269,7 @@ OptimizeF {
         (t.OptInfo (/*sentences*/) (/*functions*/))
         e.Sentences
       >
-    : (t.OptInfo (e.Sentences^) (e.NewFunctions))
+    : (t.OptInfo^ (e.Sentences^) (e.NewFunctions))
     = t.OptInfo
       (Function s.ScopeClass (e.Name) Sentences e.Sentences) e.NewFunctions;
 }
@@ -305,7 +303,7 @@ OptSentence-Aux {
   e.OptFuncs
 
     /* Поиск информации для прогонки */
-    = <FindOptInfo e.OptFuncs (e.Name)> : e.OptFuncs t.FunctionForDrive
+    = <FindOptInfo e.OptFuncs (e.Name)> : e.OptFuncs^ t.FunctionForDrive
 
     = <OptSentence-MakeSubstitutions
         s.Mode ((e.Left) (e.Right)) (e.Args) t.FunctionForDrive
@@ -455,10 +453,10 @@ FindOptInfo {
 }
 
 FindOptInfo-Aux {
-  e.OptFuncs-B (s.Mode s.ScopeClass (e.LookupName) s.Body) e.OptFuncs-E
+  e.OptFuncs-B (s.Mode s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
   (e.Name) (e.LookupName) s.Drop
-    = <s.Body> : Sentences e.Sentences
-    = e.OptFuncs-B (s.Mode s.ScopeClass (e.LookupName) s.Body) e.OptFuncs-E
+    = e.Body : Sentences e.Sentences
+    = e.OptFuncs-B (s.Mode s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
       (s.Mode s.ScopeClass (e.Name) Sentences <DropLeft e.Sentences s.Drop>);
 }
 
