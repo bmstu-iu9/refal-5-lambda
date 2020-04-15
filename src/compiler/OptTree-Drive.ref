@@ -148,6 +148,9 @@ OptSwitch {
 /* Осуществляет прогонку или оптимизацию в зависимости от ключа */
 
 DriveInlineOptimizerTick {
+  /* TODO: грязный костыль, ничего не делаем, если s.OptDrive == NoOpt */
+  (e.OptInfo) e.AST NoOpt s.OptIntrinsic = (DriveInfo e.OptInfo) e.AST;
+
   t.OptInfo e.AST s.OptDrive s.OptIntrinsic
     = <OptSwitch s.OptDrive> : s.Mode
     = <MapAccum
