@@ -49,6 +49,7 @@ Element {
     = ('$SPEC ' <DisplayName e.Name> ' ' <InlineExpr e.Pattern> ';');
 
   (DriveInfo e.DriveInfo) = ('(DriveInfo ...)');
+  (SpecInfo e.SpecInfo) = ('(SpecInfo ...)');
 }
 
 

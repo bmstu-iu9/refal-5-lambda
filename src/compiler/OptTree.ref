@@ -11,8 +11,7 @@ $EXTERN OptTree-AutoMarkup, OptTree-AutoMarkup-CleanupTags;
 $EXTERN OptTree-Drive-Prepare, OptTree-Drive, OptTree-Drive-CleanupColdCalls;
 
 *$FROM OptTree-Spec
-$EXTERN OptTree-Spec-ExtractOptInfo, OptTree-Spec,
-  OptTree-Spec-CleanupColdFunctions;
+$EXTERN OptTree-Spec-Prepare, OptTree-Spec, OptTree-Spec-CleanupColdFunctions;
 
 *$FROM Log
 $EXTERN Log-PutLine, Log-AST;
@@ -50,15 +49,10 @@ DoOptTree {
     = <OptTree-AutoMarkup s.OptAutoMarkup e.AST> : e.AST^
 
     = <OptTree-Drive-Prepare s.OptDrive s.OptIntrinsic e.AST> : e.AST^
+    = <OptTree-Spec-Prepare s.OptSpec e.AST> : e.AST^
 
-    = <OptTree-Spec-ExtractOptInfo s.OptSpec e.AST>
-    : ((e.SpecFuncNames) e.SpecInfo-Specific) e.AST^
-
-    = <PrintFuncNames ('Specializable functions:') e.SpecFuncNames>
-      <DoOptTree-DriveSpecLoop
-        <Dec s.Cycles> s.OptDrive s.OptIntrinsic s.OptSpec
-        ((e.SpecFuncNames) e.SpecInfo-Specific)
-        e.AST
+    = <DoOptTree-DriveSpecLoop
+        <Dec s.Cycles> s.OptDrive s.OptIntrinsic s.OptSpec e.AST
       >
     : s.Cycles^ e.AST^
 
@@ -73,24 +67,11 @@ DoOptTree {
       }
 }
 
-PrintFuncNames {
-  (e.Title) e.Names
-    = <Log-PutLine
-        e.Title
-        <Map
-          {
-            (e.FuncName) = ' ' <DisplayName e.FuncName>
-          }
-          e.Names
-        >
-      >
-}
-
 DoOptTree-DriveSpecLoop {
-  0 s.OptDrive s.OptIntrinsic s.OptSpec (e.SpecInfo) e.AST
+  0 s.OptDrive s.OptIntrinsic s.OptSpec e.AST
     = 0 <OptTree-Spec-CleanupColdFunctions e.AST>;
 
-  s.Cycles s.OptDrive s.OptIntrinsic s.OptSpec (e.SpecInfo) e.AST
+  s.Cycles s.OptDrive s.OptIntrinsic s.OptSpec e.AST
     = e.AST : e.OriginAST
 
     = <DoOptTree-DriveLoop
@@ -98,8 +79,7 @@ DoOptTree-DriveSpecLoop {
       >
     : s.Cycles^ e.AST^
 
-    = <DoOptTree-SpecPass s.Cycles s.OptSpec (e.SpecInfo) e.AST>
-    : s.Cycles^ (e.SpecInfo^) e.AST^
+    = <DoOptTree-SpecPass s.Cycles s.OptSpec e.AST> : s.Cycles^ e.AST^
 
     = e.AST
     : {
@@ -109,7 +89,7 @@ DoOptTree-DriveSpecLoop {
         e.AST^
           = <DoOptTree-DriveSpecLoop
               s.Cycles s.OptDrive s.OptIntrinsic s.OptSpec
-              (e.SpecInfo) e.AST
+              e.AST
             >;
       }
 }
@@ -139,11 +119,11 @@ DoOptTree-DriveLoop {
 }
 
 DoOptTree-SpecPass {
-  0 s.OptSpec (e.SpecInfo) e.AST = (e.SpecInfo) e.AST;
+  0 s.OptSpec e.AST = e.AST;
 
-  s.Cycles s.OptSpec (e.SpecInfo) e.AST
+  s.Cycles s.OptSpec e.AST
     = <Log-AST ('Pass ' <Symb s.Cycles> ' (before Spec)') e.AST> : e.AST^
-    = <Dec s.Cycles> <OptTree-Spec s.OptSpec (e.SpecInfo) e.AST>
+    = <Dec s.Cycles> <OptTree-Spec s.OptSpec e.AST>
 }
 
 
@@ -162,6 +142,7 @@ $ENTRY OptTree-CleanupMarkup {
           (Spec (e.Name) e.Pattern) = /* пропускаем */;
 
           (DriveInfo e.Info) = /* пропускаем */;
+          (SpecInfo e.Info) = /* пропускаем */;
 
           t.Other = t.Other;
         }

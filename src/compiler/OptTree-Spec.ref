@@ -6,24 +6,50 @@ $EXTERN ExtractVariables, ExtractVariables-Expr, NewVarName;
 *$FROM GenericMatch
 $EXTERN GenericMatch;
 
+*$FROM Log
+$EXTERN Log-PutLine;
+
+*$FROM DisplayName
+$EXTERN DisplayName;
+
 
 /**
-  <OptTree-Spec-ExtractOptInfo s.OptSpec e.AST>
-    == (e.SpecInfo) e.AST^
+  <OptTree-Spec-Prepare s.OptSpec e.AST> == e.AST^
 
   s.OptSpec ::= OptSpec | NoOpt
+
+  В дерево добавляется узел (SpecInfo e.SpecInfo).
+
   e.SpecInfo ::= (e.SpecFuncNames) e.SpecInfo-Specific
   e.SpecFuncNames ::= (e.FuncName)*
   e.SpecInfo-Specific ::= t.FunctionInfo*
-  t.FunctionInfo ::= ((e.Name) (e.Pattern) (e.Body) s.NextCounter)
+  t.FunctionInfo ::= ((e.Name) (e.Pattern) (e.Body) s.NextCounter t.Signature*)
+  t.Signature ::= ((e.Name SUF '@' e.SpecFuncName) t.StaticVarVals*)
+  t.StaticVarVals ::= (e.Expression)
 */
-$ENTRY OptTree-Spec-ExtractOptInfo {
-  s.OptSpec e.AST
+$ENTRY OptTree-Spec-Prepare {
+  NoOpt e.AST = e.AST;
+
+  OptSpec e.AST-B (SpecInfo e.SpecInfo) e.AST-E
+    = <Prepare-Aux (e.SpecInfo) e.AST-B e.AST-E>;
+
+  OptSpec e.AST
+    = (/* no names */) /* no info */ : e.EmptyInfo
+    = <Prepare-Aux (e.EmptyInfo) e.AST>;
+}
+
+Prepare-Aux {
+  ((e.KnownNames) e.KnownInfo) e.AST
     = <Fetch
         ((/* no names */) /* no info */) e.AST
         <Pipe
           (&MapAccum
             {
+              /* Игнорируем новые $SPEC’и для известных функций */
+              ((e.Names) e.Info) (Spec t.Name e.Pattern)
+                , e.KnownNames : e._B t.Name e._E
+                = ((e.Names) e.Info) /* пропускаем */;
+
               ((e.Names) e.Info) (Spec t.Name e.Pattern)
                 = ((e.Names t.Name) e.Info (t.Name (e.Pattern)));
 
@@ -42,15 +68,18 @@ $ENTRY OptTree-Spec-ExtractOptInfo {
           )
         >
       >
-    : ((e.Names) e.Info) e.AST^
-    = s.OptSpec
-    : {
-        NoOpt = ((/* нет имён */) /* нет инфы */) e.AST;
+    : ((e.NewNames) e.NewInfo) e.AST^
+    = <CreateGuardFunctions e.NewInfo> : (e.GuardEnums) e.NewInfo^
+    = (SpecInfo (e.KnownNames e.NewNames) e.KnownInfo e.NewInfo)
+      e.AST
+      e.GuardEnums
 
-        s.OptSpec^
-          = <CreateGuardFunctions e.Info> : (e.GuardEnums) e.Info^
-          = ((e.Names) e.Info) e.AST e.GuardEnums;
-      }
+      <Map
+        {
+          (e.Name) = <Log-PutLine 'New $SPEC function: ' <DisplayName e.Name>>;
+        }
+        e.NewNames
+      >
 }
 
 CreateGuardFunctions {
@@ -79,27 +108,17 @@ CreateGuardFunctions {
 }
 
 /**
-  <OptTree-Spec s.OptSpec (e.SpecInfo) e.AST>
-    == (e.SpecInfo^) e.AST^
+  <OptTree-Spec s.OptSpec e.AST> == e.AST^
 
   s.OptSpec ::= OptSpec | NoOpt
-  e.SpecInfo ::= (e.SpecFuncNames) e.SpecInfo-Specific
-  e.SpecFuncNames ::= (e.FuncName)*
-  e.SpecInfo-Specific ::= t.FunctionInfo*
-  t.FunctionInfo ::= ((e.Name) (e.Pattern) (e.Body) s.NextCounter t.Signature*)
-  t.Signature ::= ((e.Name SUF '@' e.SpecFuncName) t.StaticVarVals*)
-  t.StaticVarVals ::= (e.Expression)
 */
 $ENTRY OptTree-Spec {
-  NoOpt (e.SpecInfo) e.AST = (e.SpecInfo) <ColdAll e.AST>;
+  NoOpt e.AST = <ColdAll e.AST>;
 
-  OptSpec ((/* no names */) /* no info */) e.AST
-    = ((/* no names */) /* no info */) <ColdAll e.AST>;
-
-  OptSpec ((e.Names) e.SpecInfo) e.AST
-    = <MapAccum &SpecUnit (e.SpecInfo (/* new functions */)) e.AST>
-    : (e.SpecInfo^ (e.NewFunctions)) e.AST^
-    = ((e.Names) e.SpecInfo) e.AST e.NewFunctions;
+  OptSpec e.AST-B (SpecInfo (e.Names) e.SpecInfo) e.AST-E
+    = <MapAccum &SpecUnit (e.SpecInfo (/* new functions */)) e.AST-B e.AST-E>
+    : (e.SpecInfo^ (e.NewFunctions)) e.AST
+    = (SpecInfo (e.Names) e.SpecInfo) e.AST e.NewFunctions;
 }
 
 ColdAll {
