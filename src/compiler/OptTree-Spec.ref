@@ -91,15 +91,28 @@ CreateGuardFunctions {
   t.StaticVarVals ::= (e.Expression)
 */
 $ENTRY OptTree-Spec {
-  NoOpt (e.SpecInfo) e.AST = (e.SpecInfo) e.AST;
+  NoOpt (e.SpecInfo) e.AST = (e.SpecInfo) <ColdAll e.AST>;
 
   OptSpec ((/* no names */) /* no info */) e.AST
-    = ((/* no names */) /* no info */) e.AST;
+    = ((/* no names */) /* no info */) <ColdAll e.AST>;
 
   OptSpec ((e.Names) e.SpecInfo) e.AST
     = <MapAccum &SpecUnit (e.SpecInfo (/* new functions */)) e.AST>
     : (e.SpecInfo^ (e.NewFunctions)) e.AST^
     = ((e.Names) e.SpecInfo) e.AST e.NewFunctions;
+}
+
+ColdAll {
+  e.AST
+    = <Map
+        {
+          (Function s.ScopeClass (e.Name) e.Body)
+            = (ColdFunction s.ScopeClass (e.Name) e.Body);
+
+          t.OtherItem = t.OtherItem;
+        }
+        e.AST
+      >;
 }
 
 SpecUnit {
