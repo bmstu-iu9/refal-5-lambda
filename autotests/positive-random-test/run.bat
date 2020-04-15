@@ -16,6 +16,14 @@ goto :EOF
 setlocal
   for %%r in (saved-test-*.ref) do (
     call :RUN_TEST "%%r" ^
+      && call :RUN_TEST "%%r" -Oi ^
+      && call :RUN_TEST "%%r" -OiA ^
+      && call :RUN_TEST "%%r" -OiD ^
+      && call :RUN_TEST "%%r" -OiAD ^
+      && call :RUN_TEST "%%r" -OiC ^
+      && call :RUN_TEST "%%r" -OiAC ^
+      && call :RUN_TEST "%%r" -OiCD ^
+      && call :RUN_TEST "%%r" -OiACD ^
       && call :RUN_TEST "%%r" -OP ^
       && call :RUN_TEST "%%r" -OR ^
       && call :RUN_TEST "%%r" -OPR ^
@@ -48,6 +56,14 @@ setlocal
   echo gen (%NOW%) %TIME%>>time.txt
   for %%r in (test-*.ref) do (
     call :RUN_TEST "%%r" ^
+      && call :RUN_TEST "%%r" -Oi ^
+      && call :RUN_TEST "%%r" -OiA ^
+      && call :RUN_TEST "%%r" -OiD ^
+      && call :RUN_TEST "%%r" -OiAD ^
+      && call :RUN_TEST "%%r" -OiC ^
+      && call :RUN_TEST "%%r" -OiAC ^
+      && call :RUN_TEST "%%r" -OiCD ^
+      && call :RUN_TEST "%%r" -OiACD ^
       && call :RUN_TEST "%%r" -OP ^
       && call :RUN_TEST "%%r" -OR ^
       && call :RUN_TEST "%%r" -OPR ^

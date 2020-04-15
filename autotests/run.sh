@@ -79,6 +79,16 @@ run_test_all_modes() {
     SRFLAGS=-OCD $2 $1
     SRFLAGS=-OCI $2 $1
     SRFLAGS=-OCS $2 $1
+    SRFLAGS=-Oi $2 $1
+    SRFLAGS=-OiD $2 $1
+    SRFLAGS=-OiCD $2 $1
+    SRFLAGS=-OAD $2 $1
+    SRFLAGS=-OACD $2 $1
+    SRFLAGS=-OAS $2 $1
+    SRFLAGS=-OACS $2 $1
+    SRFLAGS=-OADS $2 $1
+    SRFLAGS=-OACDS $2 $1
+    SRFLAGS=-OiACDS $2 $1
     echo "Special tree tests is passed"
   fi
 }

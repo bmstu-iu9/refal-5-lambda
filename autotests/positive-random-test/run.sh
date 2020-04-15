@@ -16,6 +16,14 @@ main() {
 regression() {
   for r in saved-test-*.ref; do
     if run_test "$r" \
+      && run_test "$r" -Oi \
+      && run_test "$r" -OiA \
+      && run_test "$r" -OiD \
+      && run_test "$r" -OiAD \
+      && run_test "$r" -OiC \
+      && run_test "$r" -OiAC \
+      && run_test "$r" -OiCD \
+      && run_test "$r" -OiACD \
       && run_test "$r" -OP \
       && run_test "$r" -OR \
       && run_test "$r" -OPR \
@@ -48,6 +56,14 @@ new_tests() {
 
   for r in test-*.ref; do
     if run_test "$r" \
+      && run_test "$r" -Oi \
+      && run_test "$r" -OiA \
+      && run_test "$r" -OiD \
+      && run_test "$r" -OiAD \
+      && run_test "$r" -OiC \
+      && run_test "$r" -OiAC \
+      && run_test "$r" -OiCD \
+      && run_test "$r" -OiACD \
       && run_test "$r" -OP \
       && run_test "$r" -OR \
       && run_test "$r" -OPR \

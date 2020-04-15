@@ -173,6 +173,26 @@ setlocal
     call :%2 %1 || exit /b 1
     set SRFLAGS=-OCS
     call :%2 %1 || exit /b 1
+    set SRFLAGS=-Oi
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OiD
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OiCD
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OAD
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OACD
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OAS
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OACS
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OADS
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OACDS
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OiACDS
+    call :%2 %1 || exit /b 1
     echo Special tree tests is passed
   )
 endlocal
