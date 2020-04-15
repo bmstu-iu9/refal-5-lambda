@@ -27,30 +27,30 @@ $EXTERN DisplayName;
 
 
 /**
-  <OptTree-Drive-Prepare s.OptDrive s.OptIntrinsic e.AST> == e.AST
+  <OptTree-Drive-Prepare (s.OptDrive s.OptIntrinsic) e.AST> == e.AST
 
   s.OptDrive ::= OptDrive | OptInline | NoOpt
   s.OptIntrinsic ::= OptIntrinsic | NoOpt
 */
 $ENTRY OptTree-Drive-Prepare {
-  NoOpt NoOpt e.AST = e.AST;
+  (NoOpt NoOpt) e.AST = e.AST;
 
-  s.OptDrive s.OptIntrinsic
+  (s.OptDrive s.OptIntrinsic)
   e.AST-B (DriveInfo e.DriveInfo) e.AST-E
     = <UpdateDriveInfo s.OptDrive s.OptIntrinsic (e.DriveInfo) e.AST-B e.AST-E>;
 
-  s.OptDrive s.OptIntrinsic e.AST
+  (s.OptDrive s.OptIntrinsic) e.AST
     = (/* no names */) /* no info */ : e.EmptyInfo
     = <UpdateDriveInfo s.OptDrive s.OptIntrinsic (e.EmptyInfo) e.AST>;
 }
 
 /**
-  <OptTree-Drive s.OptDrive s.OptIntrinsic e.AST> == e.AST^
+  <OptTree-Drive (s.OptDrive s.OptIntrinsic) e.AST> == e.AST^
 */
 $ENTRY OptTree-Drive {
-  NoOpt NoOpt e.AST = e.AST;
+  (NoOpt NoOpt) e.AST = e.AST;
 
-  s.OptDrive s.OptIntrinsic e.AST-B (DriveInfo e.DriveInfo) e.AST-E
+  (s.OptDrive s.OptIntrinsic) e.AST-B (DriveInfo e.DriveInfo) e.AST-E
     = <DriveInlineOptimizerTick
         (e.DriveInfo) e.AST-B e.AST-E s.OptDrive s.OptIntrinsic
       >
