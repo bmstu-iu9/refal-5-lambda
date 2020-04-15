@@ -119,7 +119,7 @@ DoOptTree-DriveLoop {
 }
 
 DoOptTree-SpecPass {
-  0 s.OptSpec e.AST = e.AST;
+  0 s.OptSpec e.AST = 0 e.AST;
 
   s.Cycles s.OptSpec e.AST
     = <Log-AST ('Pass ' <Symb s.Cycles> ' (before Spec)') e.AST> : e.AST^
