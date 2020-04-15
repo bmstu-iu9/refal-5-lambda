@@ -1,0 +1,102 @@
+* TREE
+
+$ENTRY Go {
+  = <Go1> <Go2> <Go3> <Go4> <Go5> <Go6> <Go-h1> <Go-h2>;
+}
+
+Go1 {
+  e.X = <F1 (e.X)>;
+}
+
+$DRIVE F1;
+
+F1 {
+  e.X = e.X;
+}
+
+
+Go2 {
+  = <Q '2x2=5'> : NEQ = ;
+}
+
+Q {
+  e.X '=' e.Y = <EQ (e.X) e.Y>;
+}
+
+$DRIVE EQ;
+
+EQ {
+  (e.X) e.X = EQ;
+  (e.X) e.Y = NEQ;
+}
+
+
+Go3 {
+  = <{ A = 1; B = 2; C = 3 } B> : 2 = ;
+
+  B = 4;
+}
+
+$DRIVE Go3;
+
+
+Go4 {
+  e.X = <S { = e.X }> <D { = e.X }> <I { = e.X }>;
+}
+
+$SPEC S s.X;
+S { s.X = s.X }
+
+$DRIVE D;
+D { s.X = s.X }
+
+$INLINE I;
+I { s.X = s.X }
+
+
+Go5 {
+  e.X = [Go5 <F2 B e.X>];
+}
+
+$DRIVE F2;
+
+F2 {
+  A e.Z = e.Z;
+  B e.Z = e.Z e.Z;
+  C e.Z = e.Z e.Z e.Z;
+  e.Any = ;
+}
+
+
+Go6 {
+  = <Test 'ABCD'> : 'BC' = ;
+}
+
+Test {
+  s.X e.Y = <F3 e.Y>;
+}
+
+F3 {
+  e.Z s.X = e.Z;
+}
+
+$DRIVE F3;
+
+
+Go-h1 { = <Lookup fact <fact>> }
+
+fact {
+  = (fact DUP (0) '=' if (DROP (1)) else (DUP (1) '-' fact '*'));
+}
+
+$INLINE Lookup;
+
+Lookup {
+  s.Func (s.Func e.Code) e.Program = e.Code;
+  s.Func (s.OtherFunc e.Code) e.Program = <Lookup s.Func e.Program>;
+}
+
+
+Go-h2 {
+  e.X = (e.X) (e.X) : (e.Y) (e.Y) = e.Y
+}

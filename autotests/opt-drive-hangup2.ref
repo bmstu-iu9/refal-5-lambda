@@ -1,5 +1,0 @@
-* TREE
-
-$ENTRY Go {
-  e.X = (e.X) (e.X) : (e.Y) (e.Y) = e.Y
-}
