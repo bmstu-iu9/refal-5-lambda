@@ -475,7 +475,7 @@ Spec-RenameSignatureVars {
     = <MapAccum
         {
           (e.KnownVariables) (e.SignaturePart)
-            = <Spec-RenameSignatureVars-Expr (e.KnownVariables) e.SignaturePart>
+            = <Spec-RenameSignatureVars-Part (e.KnownVariables) e.SignaturePart>
         }
         (
           /* пусто */ /* known variables */
@@ -483,6 +483,11 @@ Spec-RenameSignatureVars {
         )
         e.Signature
       >
+}
+
+Spec-RenameSignatureVars-Part {
+  (e.KnownVariables) e.SignaturePart
+    = (<Spec-RenameSignatureVars-Expr (e.KnownVariables) e.SignaturePart>)
 }
 
 Spec-RenameSignatureVars-Expr {
