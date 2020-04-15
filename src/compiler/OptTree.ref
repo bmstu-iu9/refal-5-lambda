@@ -4,6 +4,9 @@ $INCLUDE "LibraryEx";
 $EXTERN Config-GetTreeOptCycles, Config-GetOptDrive, Config-GetOptSpec,
   Config-GetOptAutoMarkup, Config-GetOptIntrinsic;
 
+*$FROM OptTree-AutoMarkup
+$EXTERN OptTree-AutoMarkup, OptTree-AutoMarkup-CleanupTags;
+
 *$FROM OptTree-Drive
 $EXTERN OptTree-Drive-ExtractOptInfo, OptTree-Drive,
   OptTree-Drive-CleanupColdCalls;
@@ -32,13 +35,20 @@ $ENTRY OptTree {
     = <Config-GetOptSpec t.Config> : s.OptSpec
     = <Config-GetOptAutoMarkup t.Config> : s.OptAutoMarkup
     = <Config-GetOptIntrinsic t.Config> : s.OptIntrinsic
-    = <OptTree-Aux
+    = <DoOptTree
         s.Cycles s.OptDrive s.OptIntrinsic s.OptSpec s.OptAutoMarkup e.AST
       >;
 }
 
-OptTree-Aux {
+DoOptTree {
+  0 s.OptDrive s.OptIntrinsic s.OptSpec s.OptAutoMarkup e.AST
+    = <OptTree-CleanupMarkup e.AST>;
+
   s.Cycles s.OptDrive s.OptIntrinsic s.OptSpec s.OptAutoMarkup e.AST
+    = <Log-AST ('Pass ' <Symb s.Cycles> ' (before Auto markup)') e.AST> : e.AST^
+    = e.AST : e.OriginAST
+
+    = <OptTree-AutoMarkup s.OptAutoMarkup e.AST> : e.AST^
 
     = <OptTree-Drive-ExtractOptInfo s.OptDrive s.OptIntrinsic e.AST>
     : ((e.DriveFuncNames) e.DriveInfo-Specific) e.AST^
@@ -48,12 +58,23 @@ OptTree-Aux {
 
     = <PrintFuncNames ('Drive functions:') e.DriveFuncNames>
       <PrintFuncNames ('Specializable functions:') e.SpecFuncNames>
-      <DoOptTree
-        s.Cycles s.OptDrive s.OptIntrinsic s.OptSpec s.OptAutoMarkup
+      <DoOptTree-DriveSpecLoop
+        <Dec s.Cycles> s.OptDrive s.OptIntrinsic s.OptSpec
         ((e.DriveFuncNames) e.DriveInfo-Specific)
         ((e.SpecFuncNames) e.SpecInfo-Specific)
         e.AST
-      >;
+      >
+    : s.Cycles^ e.AST^
+
+    = e.AST
+    : {
+        e.OriginAST = <OptTree-CleanupMarkup e.AST>;
+
+        e.AST^
+          = <DoOptTree
+              s.Cycles s.OptDrive s.OptIntrinsic s.OptSpec s.OptAutoMarkup e.AST
+            >;
+      }
 }
 
 PrintFuncNames {
@@ -69,13 +90,11 @@ PrintFuncNames {
       >
 }
 
-DoOptTree {
-  0 s.OptDrive s.OptIntrinsic s.OptSpec s.OptAutoMarkup
-  (e.DriveInfo) (e.SpecInfo) e.AST
-    = <OptTree-Spec-CleanupColdFunctions e.AST>;
+DoOptTree-DriveSpecLoop {
+  0 s.OptDrive s.OptIntrinsic s.OptSpec (e.DriveInfo) (e.SpecInfo) e.AST
+    = 0 <OptTree-Spec-CleanupColdFunctions e.AST>;
 
-  s.Cycles s.OptDrive s.OptIntrinsic s.OptSpec s.OptAutoMarkup
-  (e.DriveInfo) (e.SpecInfo) e.AST
+  s.Cycles s.OptDrive s.OptIntrinsic s.OptSpec (e.DriveInfo) (e.SpecInfo) e.AST
     = e.AST : e.OriginAST
 
     = <DoOptTree-DriveLoop
@@ -88,14 +107,15 @@ DoOptTree {
 
     = e.AST
     : {
-        e.OriginAST = 0 e.OriginAST;
-        e.AST^ = s.Cycles e.AST;
+        e.OriginAST
+          = s.Cycles <OptTree-Spec-CleanupColdFunctions e.AST>;
+
+        e.AST^
+          = <DoOptTree-DriveSpecLoop
+              s.Cycles s.OptDrive s.OptIntrinsic s.OptSpec
+              (e.DriveInfo) (e.SpecInfo) e.AST
+            >;
       }
-    : s.Cycles^ e.AST^
-    = <DoOptTree
-        s.Cycles s.OptDrive s.OptIntrinsic s.OptSpec s.OptAutoMarkup
-        (e.DriveInfo) (e.SpecInfo) e.AST
-      >;
 }
 
 DoOptTree-DriveLoop {
@@ -132,12 +152,24 @@ DoOptTree-SpecPass {
 }
 
 
-
 /**
   <OptTree-CleanupMarkup e.AST> == e.OptAST
+
+  Удаляет метки $DRIVE, $INLINE, $INTRINSIC, $SPEC из дерева.
 */
 $ENTRY OptTree-CleanupMarkup {
-  e.AST = <OptTree-Aux 0 NoOpt NoOpt NoOpt NoOpt e.AST>;
+  e.AST
+    = <Map
+        {
+          (Drive e.Name) = /* пропускаем */;
+          (Inline e.Name) = /* пропускаем */;
+          (Intrinsic e.Name) = /* пропускаем */;
+          (Spec (e.Name) e.Pattern) = /* пропускаем */;
+
+          t.Other = t.Other;
+        }
+        e.AST
+      >
 }
 
 

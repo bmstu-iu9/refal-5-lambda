@@ -1,0 +1,10 @@
+/**
+  <OptTree-AutoMarkup s.OptAutoMarkup e.AST> == e.AST
+*/
+$ENTRY OptTree-AutoMarkup {
+  NoOpt e.AST = e.AST;
+
+  OptAutoMarkup e.AST
+*   TODO: реализовать разметку
+    = e.AST;
+}
