@@ -1,0 +1,140 @@
+* TREE
+
+$ENTRY Go {
+  = <Go1> <Go2> <Go3> <Go4> <Go5> <Go6> <Go7> <Go8> <Go9> <Go10>
+}
+
+Go1 {
+  = <Test1 [Go 'ABC'] 'def'>;
+}
+
+$SPEC Test1 [Go e.STAT] e.dyn;
+
+Test1 {
+  [Go e.Stat] e.Dyn = e.Stat e.Dyn;
+}
+
+
+Go2 {
+  /* пусто */
+    = <Test2 '12+34+56'> : 'ab|cd|3412|ef|3456|3456'
+    = /* пусто */;
+}
+
+Test2 {
+  e.X '+' e.Y '+' e.Z
+    = <S2 ('ab') ('cd') (e.Y e.X) ('ef') (e.Y e.Z) (e.Y e.Z)>;
+}
+
+$SPEC S2 (e.S1) (e.d2) (e.S3) (e.d4) (e.S5) (e.d6);
+
+S2 {
+  (e.a) (e.b) (e.c) (e.d) (e.f) (e.g)
+     = e.a '|' e.b '|' e.c '|' e.d '|' e.f '|' e.g;
+}
+
+
+Go3 {
+  /* пусто */
+    = <F3 ('ab') ('cd')> : 'abcdefgh'
+    = /* пусто */;
+}
+
+F3 {
+  (e.X) (e.X1) = <S3 (e.X e.X1) 'ef' ('gh')>;
+}
+
+$SPEC S3 (e.S) e.d;
+
+S3 {
+  (e.A) e.X (e.X0) = e.A e.X e.X0;
+}
+
+
+Go4 {
+  /* пусто */
+    = <Spec ('abc') 'def'> : 'abcdef'
+    = /* пусто */;
+}
+
+$SPEC Spec (e.STATIC) e.dynamic;
+
+Spec {
+  (e.X) e.y, 'abc' : e.X, 'def' : e.y = e.X e.y;
+}
+
+
+Go5 {
+  = <DATA 'ab'> :
+  = <SF 'def' (<DATA 'pqr'> 'c')> : 'abcdefabc'
+  = ;
+}
+
+$SWAP DATA;
+
+$SPEC SF e.dyn (e.STAT);
+
+SF {
+  e.Dyn (e.Stat) = e.Stat e.Dyn e.Stat;
+}
+
+
+Go6 {
+  = <Eq6 ('*' <F6>) ('**')> : True
+  = ;
+}
+
+$SPEC Eq6 t.X t.y;
+
+Eq6 {
+  t.Eq t.Eq = True;
+  t.1 t.2 = False;
+}
+
+F6 { = '*' }
+
+
+$SPEC F7 t.STAT e.dyn;
+
+F7 { t.Stat e.Dyn = STAT t.Stat DYN e.Dyn }
+
+H7 { e.X = e.X }
+
+Go7 {
+  = <F7 <H7 'ABC'>> : STAT 'A' DYN 'BC' = ;
+}
+
+
+$SPEC F8 t.dyn e.STAT;
+
+F8 { t.Dyn e.Stat = DYN t.Dyn STAT e.Stat }
+
+H8 { e.X = e.X }
+
+Go8 {
+  = <F8 <H8 'ABC'>> : DYN 'A' STAT 'BC' = ;
+}
+
+
+Go9 {
+  e.X = <Eq9 { = e.X } X>;
+}
+
+$SPEC Eq9 t.STAT t.dyn;
+
+Eq9 {
+  t.X t.X = True;
+  t.X t.Y = False;
+}
+
+
+Go10 {
+  /* пусто */
+    = <S10 ('ab') ('c')> : 'c+ab'
+    = <S10 ('a') ('bc')> : 'bc+a'
+    = /* пусто */
+}
+
+$SPEC S10 (e.S1) (e.S2);
+
+S10 { (e.X) (e.Y) = e.Y '+' e.X }
