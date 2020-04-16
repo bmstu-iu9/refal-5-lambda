@@ -584,7 +584,10 @@ MakeOpenE-ForwardNext {
       )
       (
         GN-Local (e.NextName)
-        ((e.T5) ((CallBrackets (Symbol Name e.CheckFunction) e.CheckFuncArgSubst)))
+        (
+          (e.T5)
+          ((CallBrackets (Symbol Name e.CheckFunction) e.CheckFuncArgSubst))
+        )
         <MakeContinuationSentence t.ContName (e.T6) (e.T7)>
       );
 }
@@ -649,24 +652,24 @@ $ENTRY NewVarNameSuf {
   e.Variable ::= s.Mode e.Index s.Depth
 */
 $ENTRY NewVarName {
-  (e.Names-B (e.Variable) e.Names-E) e.Variable
-    = <DoNewVarName ((e.Variable) e.Names-B e.Names-E) e.Variable 0>;
+  (e.Vars-B (e.Variable) e.Vars-E) e.Variable
+    = <DoNewVarName ((e.Variable) e.Vars-B e.Vars-E) e.Variable 0>;
 
-  (e.Names) e.Variable = ((e.Variable) e.Names) e.Variable;
+  (e.Vars) e.Variable = ((e.Variable) e.Vars) e.Variable;
 }
 
 DoNewVarName {
-  (e.Names) e.Variable s.SufNo
+  (e.Vars) e.Variable s.SufNo
     = e.Variable : s.Mode e.Index s.Depth
     , e.Index <Symb s.SufNo> s.Depth: e.NewIndex
-    = s.Mode e.NewIndex s.Depth : e.NewName
-    , e.Names
+    = s.Mode e.NewIndex s.Depth : e.NewVar
+    , e.Vars
     : {
-        e.Names-B (e.NewName) e.Names-E
+        e.Vars-B (e.NewVar) e.Vars-E
           = <DoNewVarName
-              ((e.NewName) e.Names-B e.Names-E) e.NewName <+ s.SufNo 1>
+              ((e.NewVar) e.Vars-B e.Vars-E) e.NewVar <+ s.SufNo 1>
             >;
 
-        e.Names = ((e.NewName) e.Names) e.NewName;
+        e.Vars^ = ((e.NewVar) e.Vars) e.NewVar;
       };
 }
