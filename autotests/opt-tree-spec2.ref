@@ -1,0 +1,52 @@
+* TREE
+
+$ENTRY Go {
+  /* пусто */
+    = (1 'Bad option') (2 'Missed semicolon') (3 'Unexpected character')
+    : e.Messages
+
+    = <ReportMessages ('Error') ('file.cfg') e.Messages>
+    : ('file.cfg:1: Error: Bad option')
+      ('file.cfg:2: Error: Missed semicolon')
+      ('file.cfg:3: Error: Unexpected character')
+
+    = <ReportMessages ('Warning') CommandLine e.Messages>
+    : ('Command line argument 1: Warning: Bad option')
+      ('Command line argument 2: Warning: Missed semicolon')
+      ('Command line argument 3: Warning: Unexpected character')
+
+    = /* пусто */
+}
+
+ReportMessages {
+  (e.Banner) t.CommandLineSource e.Messages
+    = t.CommandLineSource
+    : {
+        (e.ConfigFile) = e.ConfigFile ':';
+        CommandLine = 'Command line argument ';
+      }
+    : e.Prefix
+    = <Map
+        {
+          (s.Pos e.Message)
+            = <PrintErr e.Prefix <Symb s.Pos> ': ' e.Banner ': ' e.Message>;
+        }
+        e.Messages
+      >
+}
+
+PrintErr {
+  e.Line = (e.Line);
+}
+
+Symb {
+  1 = '1'; 2 = '2'; 3 = '3';
+}
+
+$SPEC Map s.FUNC e.items;
+
+Map {
+  s.Fn t.Next e.Rest = <s.Fn t.Next> <Map s.Fn e.Rest>;
+
+  s.Fn /* empty */ = /* empty */;
+}

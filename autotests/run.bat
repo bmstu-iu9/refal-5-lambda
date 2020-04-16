@@ -165,6 +165,8 @@ setlocal
     call :%2 %1 || exit /b 1
     set SRFLAGS=-OS
     call :%2 %1 || exit /b 1
+    set SRFLAGS=-ODS
+    call :%2 %1 || exit /b 1
     set SRFLAGS=-OCT
     call :%2 %1 || exit /b 1
     set SRFLAGS=-OCD
@@ -172,6 +174,8 @@ setlocal
     set SRFLAGS=-OCI
     call :%2 %1 || exit /b 1
     set SRFLAGS=-OCS
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OCDS
     call :%2 %1 || exit /b 1
     set SRFLAGS=-Oi
     call :%2 %1 || exit /b 1

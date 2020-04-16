@@ -469,17 +469,20 @@ PrepareSignature-SortVars {
 
 RenameSignatureVars {
   e.Signature
+    = /* пусто */ : e.KnownVars
+    = 0 : s.NextId
     = <MapAccum
         {
-          (e.KnownVariables) (e.SignaturePart)
-            = (<RenameSignatureVars-Expr (e.KnownVariables) e.SignaturePart>)
+          (e.KnownVars^ s.NextId^) (e.SignaturePart)
+            = <RenameSignatureVars-Expr (e.KnownVars s.NextId) e.SignaturePart>
+            : (e.KnownVars^ s.NextId^) e.SignaturePart^
+            = (e.KnownVars s.NextId) (e.SignaturePart);
         }
-        (
-          /* пусто */ /* known variables */
-          0           /* s.NextId */
-        )
+        (e.KnownVars s.NextId)
         e.Signature
       >
+    : (e.KnownVars^ s.NextId^) e.Signature^
+    = e.Signature;
 }
 
 RenameSignatureVars-Expr {
@@ -489,7 +492,7 @@ RenameSignatureVars-Expr {
 RenameSignatureVars-Term {
   (e.KnownVariables s.NextId) (TkVariable s.Mode e.OldIndex)
     , e.KnownVariables : e._B (s.Mode e.OldIndex (e.NewIndex)) e._E
-    = (e.KnownVariables)
+    = (e.KnownVariables s.NextId)
       (TkVariable s.Mode e.NewIndex);
 
   (e.KnownVariables s.NextId) (TkVariable s.Mode e.OldIndex)
@@ -500,11 +503,11 @@ RenameSignatureVars-Term {
   t.State (s.BracketsTag e.Expr)
     , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
     = <RenameSignatureVars-Expr t.State e.Expr> : t.State^ e.Expr^
-    = (s.BracketsTag e.Expr);
+    = t.State (s.BracketsTag e.Expr);
 
   t.State (ADT-Brackets (e.Name) e.Expr)
     = <RenameSignatureVars-Expr t.State e.Expr> : t.State^ e.Expr^
-    = (ADT-Brackets (e.Name) e.Expr);
+    = t.State (ADT-Brackets (e.Name) e.Expr);
 
   t.State t.OtherTerm = t.State t.OtherTerm;
 }

@@ -75,10 +75,12 @@ run_test_all_modes() {
     SRFLAGS=-OD $2 $1
     SRFLAGS=-OI $2 $1
     SRFLAGS=-OS $2 $1
+    SRFLAGS=-ODS $2 $1
     SRFLAGS=-OCT $2 $1
     SRFLAGS=-OCD $2 $1
     SRFLAGS=-OCI $2 $1
     SRFLAGS=-OCS $2 $1
+    SRFLAGS=-OCDS $2 $1
     SRFLAGS=-Oi $2 $1
     SRFLAGS=-OiD $2 $1
     SRFLAGS=-OiCD $2 $1
