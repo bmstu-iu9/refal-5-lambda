@@ -290,9 +290,9 @@ DoBindBrackets {
 T1 {
   t.UsedVars
   e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
-    , <NewVarName t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
-    , <NewVarName t.UsedVars1 't' e.Index ('_next')> : t.UsedVars2 e.tX_next
-    , <NewVarName t.UsedVars2 'e' e.Index ('_rest')> : t.UsedVars3 e.eX_rest
+    , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
+    , <NewVarNameSuf t.UsedVars1 't' e.Index ('_next')> : t.UsedVars2 e.tX_next
+    , <NewVarNameSuf t.UsedVars2 'e' e.Index ('_rest')> : t.UsedVars3 e.eX_rest
     = (
         e.Items
         (Brackets (TkVariable e.eX_fix))
@@ -306,7 +306,8 @@ PassiveHoles {
   t.UsedVariables
   e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern)
   e.ItemsAndHoles
-    , <NewVarName t.UsedVariables 'e' e.Index ('_rest')> : t.NewVars e.eX_rest
+    , <NewVarNameSuf t.UsedVariables 'e' e.Index ('_rest')>
+    : t.NewVars e.eX_rest
     = e.Items
       (TkVariable e.eX_rest)
       <PassiveHoles t.NewVars e.ItemsAndHoles>;
@@ -317,9 +318,9 @@ PassiveHoles {
 T2 {
   t.UsedVars
   e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
-    , <NewVarName t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
-    , <NewVarName t.UsedVars1 't' e.Index ('_next')> : t.UsedVars2 e.tX_next
-    , <NewVarName t.UsedVars2 'e' e.Index ('_rest')> : t.UsedVars3 e.eX_rest
+    , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
+    , <NewVarNameSuf t.UsedVars1 't' e.Index ('_next')> : t.UsedVars2 e.tX_next
+    , <NewVarNameSuf t.UsedVars2 'e' e.Index ('_rest')> : t.UsedVars3 e.eX_rest
     = (
         e.Items
         (Brackets (TkVariable e.eX_fix) (TkVariable e.tX_next))
@@ -331,7 +332,7 @@ T2 {
 T3 {
   t.UsedVars
   e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
-    , <NewVarName t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
+    , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
     = (
         e.Items
         (Brackets (TkVariable e.eX_fix))
@@ -342,7 +343,7 @@ T3 {
 T4 {
   t.UsedVars
   e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
-    , <NewVarName t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
+    , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
     = (
         e.Items (TkVariable e.eX_fix)
         <PassiveHoles t.UsedVars1 e.ItemsAndHoles>
@@ -370,8 +371,8 @@ T5-UnHole {
 
 T5-sub {
   t.UsedVars e.Index
-    , <NewVarName t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
-    , <NewVarName t.UsedVars 'e' e.Index ('_var')> : t.UsedVars2 e.eX_var
+    , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
+    , <NewVarNameSuf t.UsedVars 'e' e.Index ('_var')> : t.UsedVars2 e.eX_var
     = ((TkVariable 'e' e.Index) (TkVariable e.eX_fix) (TkVariable e.eX_var));
 }
 
@@ -406,8 +407,8 @@ Substitute {
 T6 {
   t.UsedVars
   e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
-    , <NewVarName t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
-    , <NewVarName t.UsedVars1 'e' e.Index ('_rest')> : t.UsedVars2 e.eX_rest
+    , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
+    , <NewVarNameSuf t.UsedVars1 'e' e.Index ('_rest')> : t.UsedVars2 e.eX_rest
     = (
         e.Items
         (Brackets (TkVariable e.eX_fix))
@@ -419,8 +420,8 @@ T6 {
 T7 {
   t.UsedVars
   e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
-    , <NewVarName t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
-    , <NewVarName t.UsedVars1 'e' e.Index ('_rest')> : t.UsedVars2 e.eX_rest
+    , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
+    , <NewVarNameSuf t.UsedVars1 'e' e.Index ('_rest')> : t.UsedVars2 e.eX_rest
     = (
         e.Items
         (TkVariable e.eX_fix) (TkVariable e.eX_rest)
@@ -511,7 +512,7 @@ OpenEChain {
   (e.ConditionName) (e.VarNames) (e.ContName)
   (e.CheckFunction) (e.PatternVarsAsExpr) (e.CondResult)
   ((e.T0)) /* пусто */
-    , <NewVarName (e.VarNames) 'e' 0 ('Other')> : (e.NewVarNames) e.eOther
+    , <NewVarNameSuf (e.VarNames) 'e' 0 ('Other')> : (e.NewVarNames) e.eOther
     = (
         (
           (e.PatternVarsAsExpr (TkVariable e.eOther))
@@ -530,7 +531,7 @@ OpenEChain {
         (/* generated */) e.Templates
       >
     : e.NewFunctions
-    , <NewVarName (e.VarNames) 'e' 0 ('Other')> : (e.NewVarNames) e.eOther
+    , <NewVarNameSuf (e.VarNames) 'e' 0 ('Other')> : (e.NewVarNames) e.eOther
     = (
         (
           (e.PatternVarsAsExpr (TkVariable e.eOther))
@@ -634,28 +635,36 @@ $ENTRY ExtractVariables-Expr {
 
 
 /**
-  <NewVarName (e.Variables) s.Mode e.Prefix s.Depth (e.Suffix)>
-    == (e.Variables^) s.Mode e.NewIndex
+  <NewVarNameSuf (e.Variables) s.Mode e.Prefix s.Depth (e.Suffix)>
+    == (e.Variables^) s.Mode e.NewIndex s.Depth
+*/
+$ENTRY NewVarNameSuf {
+  (e.Variables) s.Mode e.Prefix s.Depth (e.Suffix)
+    = <NewVarName (e.Variables) s.Mode e.Prefix e.Suffix s.Depth>;
+}
+
+/**
+  <NewVarName (e.Variables) e.Variable> == (e.Variables^) e.Variable^
+
+  e.Variable ::= s.Mode e.Index s.Depth
 */
 $ENTRY NewVarName {
-  (e.Names-B (e.Prefix e.Suffix s.Depth) e.Names-E) e.Prefix s.Depth (e.Suffix)
-    = <DoNewVarName
-        ((e.Prefix e.Suffix s.Depth) e.Names-B e.Names-E)
-        e.Prefix e.Suffix s.Depth 0
-      >;
+  (e.Names-B (e.Variable) e.Names-E) e.Variable
+    = <DoNewVarName ((e.Variable) e.Names-B e.Names-E) e.Variable 0>;
 
-  (e.Names) e.Prefix s.Depth (e.Suffix)
-    = ((e.Prefix e.Suffix s.Depth) e.Names) e.Prefix e.Suffix s.Depth;
+  (e.Names) e.Variable = ((e.Variable) e.Names) e.Variable;
 }
 
 DoNewVarName {
-  (e.Names) e.Prefix s.Depth s.SufNo
-    , e.Prefix <Symb s.SufNo> s.Depth: e.NewName
+  (e.Names) e.Variable s.SufNo
+    = e.Variable : s.Mode e.Index s.Depth
+    , e.Index <Symb s.SufNo> s.Depth: e.NewIndex
+    = s.Mode e.NewIndex s.Depth : e.NewName
     , e.Names
     : {
         e.Names-B (e.NewName) e.Names-E
           = <DoNewVarName
-              ((e.NewName) e.Names-B e.Names-E) e.Prefix s.Depth <+ s.SufNo 1>
+              ((e.NewName) e.Names-B e.Names-E) e.NewName <+ s.SufNo 1>
             >;
 
         e.Names = ((e.NewName) e.Names) e.NewName;

@@ -282,9 +282,7 @@ EnumerateVars-Expr {
     <MapAccum
       {
         (e.ScopeVars) (TkVariable s.Mode '_' e.Index)
-          = <NewVarName
-              (e.ScopeVars) s.Mode '_' e.Index s.Depth (/* no suffix */)
-            >
+          = <NewVarName (e.ScopeVars) s.Mode '_' e.Index s.Depth>
           : (e.ScopeVars^) e.NewVar
           = (e.ScopeVars) (TkVariable e.NewVar);
 

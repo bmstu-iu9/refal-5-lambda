@@ -378,8 +378,7 @@ ExtractCalls-Expr {
 
 ExtractCalls-Term {
   (e.Calls (e.UsedVars)) (CallBrackets e.Expr)
-    = <NewVarName (e.UsedVars) 'eCall' 0 (/* empty suffix */)>
-    : (e.UsedVars^) e.NewVar
+    = <NewVarName (e.UsedVars) 'eCall' 0> : (e.UsedVars^) e.NewVar
     = (e.Calls ((CallBrackets e.Expr) ':' (e.NewVar)) (e.UsedVars))
       (TkVariable e.NewVar);
 
@@ -662,7 +661,7 @@ RenameGenericMatch {
     = <MapAccum
         {
           (e.VarsFromBody^) (e.CurrentVarName)
-            = <NewVarName (e.VarsFromBody) e.CurrentVarName (/* no suffix */)>
+            = <NewVarName (e.VarsFromBody) e.CurrentVarName>
             : (e.VarsFromBody^) e.NewVarName
             = (e.VarsFromBody)
               ((TkVariable e.NewVarName) ':' (e.CurrentVarName))

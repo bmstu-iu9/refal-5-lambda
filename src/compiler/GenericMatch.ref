@@ -292,8 +292,8 @@ Solve-Aux {
   e.Equations (e.Assigns)
     , <IsTerm t.Ht> : True
     , t.Pt : (TkVariable 'e' e.Index)
-    = <NewVarName (e.UsedVars) 't' 0 ()> : (e.UsedVars^) 't' e.tIdx
-    = <NewVarName (e.UsedVars) 'e' 0 ()> : (e.UsedVars^) 'e' e.eIdx
+    = <NewVarName (e.UsedVars) 't' 0> : (e.UsedVars^) 't' e.tIdx
+    = <NewVarName (e.UsedVars) 'e' 0> : (e.UsedVars^) 'e' e.eIdx
     = <AddContraction
         (t.Pt ':' )
         (e.Contrs)
@@ -324,8 +324,8 @@ Solve-Aux {
   e.Equations (e.Assigns)
     , <IsTerm t.Ht> : True
     , t.Pt : (TkVariable 'e' e.Index)
-      = <NewVarName (e.UsedVars) 't' 0 ()> : (e.UsedVars^) 't' e.tIdx
-      = <NewVarName (e.UsedVars) 'e' 0 ()> : (e.UsedVars^) 'e' e.eIdx
+      = <NewVarName (e.UsedVars) 't' 0> : (e.UsedVars^) 't' e.tIdx
+      = <NewVarName (e.UsedVars) 'e' 0> : (e.UsedVars^) 'e' e.eIdx
       = <AddContraction
           (t.Pt ':' )
           (e.Contrs)
@@ -458,7 +458,7 @@ Solve-TermEquation {
   /* P - t-переменная, H - скобочный терм */
   (e.UsedVars) t.PTvar (Brackets e.HBody) (e.Contrs) e.Equations (e.Assigns)
     , t.PTvar : (TkVariable 't' e.Pindex)
-    = <NewVarName (e.UsedVars) 'e' 0 ()>
+    = <NewVarName (e.UsedVars) 'e' 0>
       : t.NewVars 'e' e.NewIndex
       = Success
         t.NewVars
@@ -472,7 +472,7 @@ Solve-TermEquation {
   /* P - t-переменная, H - скобочный терм */
   (e.UsedVars) t.PTvar (ADT-Brackets (e.Name) e.HBody) (e.Contrs) e.Equations (e.Assigns)
     , t.PTvar : (TkVariable 't' e.Pindex)
-    = <NewVarName (e.UsedVars) 'e' 0 ()>
+    = <NewVarName (e.UsedVars) 'e' 0>
       : t.NewVars 'e' e.NewIndex
       = Success
         t.NewVars
@@ -500,7 +500,7 @@ Solve-TermEquation {
   (e.UsedVars) t.PTvar t.HSvar (e.Contrs) e.Equations (e.Assigns)
     , t.PTvar t.HSvar
     : (TkVariable 't' e.Pindex) (TkVariable 's' e.Hindex)
-    = <NewVarName (e.UsedVars) 's' e.Hindex ()> : (e.UsedVars^) 's' e.sIdx
+    = <NewVarName (e.UsedVars) 's' e.Hindex> : (e.UsedVars^) 's' e.sIdx
     = Success
       (e.UsedVars)
       <AddContraction
