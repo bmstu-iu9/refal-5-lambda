@@ -653,23 +653,27 @@ $ENTRY NewVarNameSuf {
 */
 $ENTRY NewVarName {
   (e.Vars-B (e.Variable) e.Vars-E) e.Variable
-    = <DoNewVarName ((e.Variable) e.Vars-B e.Vars-E) e.Variable 0>;
+    = <DoNewVarName ((e.Variable) e.Vars-B e.Vars-E) e.Variable>;
 
   (e.Vars) e.Variable = ((e.Variable) e.Vars) e.Variable;
 }
 
 DoNewVarName {
-  (e.Vars) e.Variable s.SufNo
+  (e.Vars) e.Variable
     = e.Variable : s.Mode e.Index s.Depth
-    , e.Index <Symb s.SufNo> s.Depth: e.NewIndex
+    = <IncName e.Index> : e.NewIndex
     = s.Mode e.NewIndex s.Depth : e.NewVar
     , e.Vars
     : {
         e.Vars-B (e.NewVar) e.Vars-E
-          = <DoNewVarName
-              ((e.NewVar) e.Vars-B e.Vars-E) e.NewVar <+ s.SufNo 1>
-            >;
+          = <DoNewVarName ((e.NewVar) e.Vars-B e.Vars-E) e.NewVar>;
 
         e.Vars^ = ((e.NewVar) e.Vars) e.NewVar;
       };
+}
+
+IncName {
+  e.Name s.Digit, '0123456789' : e._B s.Digit s.Next e._E = e.Name s.Next;
+  e.Name '9' = <IncName e.Name> '0';
+  e.Name = e.Name '0';
 }
