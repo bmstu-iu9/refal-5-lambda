@@ -597,7 +597,8 @@ ApplyContractions {
 }
 
 ApplyContractions-Term {
-  (Brackets e.Expr) (e.Contrs) = (Brackets <ApplyContractions e.Expr (e.Contrs)>);
+  (Brackets e.Expr) (e.Contrs)
+    = (Brackets <ApplyContractions e.Expr (e.Contrs)>);
 
   (CallBrackets e.Args) (e.Contrs)
     = (CallBrackets <ApplyContractions e.Args (e.Contrs)>);

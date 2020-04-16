@@ -279,9 +279,9 @@ SpecCall {
 
     , <ExtractCalls e.StaticMatches> : (e.Calls) e.StaticMatches^
 
-    , <Spec-PrepareSignature e.StaticMatches (e.SpecPattern)> : e.Signature
+    , <PrepareSignature e.StaticMatches (e.SpecPattern)> : e.Signature
 
-    , <Spec-IsTrivialSubstitutions e.StaticMatches> : False
+    , <IsTrivialSubstitutions e.StaticMatches> : False
 
     = <SpecCall-Aux
         (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures (e.Argument)
@@ -298,9 +298,7 @@ SpecCall-Aux {
   (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures (e.Argument)
   (e.Signature) (e.StaticMatches) (e.DynamicMatches) (e.Calls)
 
-    = <Spec-PrepareArgOrPattern
-        (e.StaticMatches) (e.DynamicMatches) e.SpecPattern
-      >
+    = <PrepareArgOrPattern (e.StaticMatches) (e.DynamicMatches) e.SpecPattern>
     : e.SpecializedFuncArgument
 
     = <ApplySubst-Expr (e.Calls) e.SpecializedFuncArgument>
@@ -318,7 +316,7 @@ SpecCall-Aux {
 
         NotFound
 
-          = <Spec-PrepareSpecializedFuncBody
+          = <PrepareSpecializedFuncBody
               (e.SpecPattern) (e.StaticMatches) e.Body
             >
           : e.SpecializedFuncBody
@@ -443,15 +441,15 @@ FindClosuresInPatterns-Term {
   (ClosureBrackets e.Context) = Found;
 }
 
-Spec-PrepareSignature {
+PrepareSignature {
   e.StaticMatches (e.SpecPattern)
     /* ExtractVariables-Expr сохраняет порядок переменных в выражении */
     = <ExtractVariables-Expr e.SpecPattern> : e.SpecVars
-    = <Spec-PrepareSignature-SortVars e.StaticMatches (e.SpecVars)> : e.ExprList
-    = <Spec-RenameSignatureVars e.ExprList>;
+    = <PrepareSignature-SortVars e.StaticMatches (e.SpecVars)> : e.ExprList
+    = <RenameSignatureVars e.ExprList>;
 }
 
-Spec-PrepareSignature-SortVars {
+PrepareSignature-SortVars {
   e.StaticMatches (e.SpecPatternVars)
     = <MapAccum
         {
@@ -470,12 +468,12 @@ Spec-PrepareSignature-SortVars {
     = e.SigValues;
 }
 
-Spec-RenameSignatureVars {
+RenameSignatureVars {
   e.Signature
     = <MapAccum
         {
           (e.KnownVariables) (e.SignaturePart)
-            = <Spec-RenameSignatureVars-Part (e.KnownVariables) e.SignaturePart>
+            = (<RenameSignatureVars-Expr (e.KnownVariables) e.SignaturePart>)
         }
         (
           /* пусто */ /* known variables */
@@ -485,16 +483,11 @@ Spec-RenameSignatureVars {
       >
 }
 
-Spec-RenameSignatureVars-Part {
-  (e.KnownVariables) e.SignaturePart
-    = (<Spec-RenameSignatureVars-Expr (e.KnownVariables) e.SignaturePart>)
+RenameSignatureVars-Expr {
+  t.State e.Expr = <MapAccum &RenameSignatureVars-Term t.State e.Expr>;
 }
 
-Spec-RenameSignatureVars-Expr {
-  t.State e.Expr = <MapAccum &Spec-RenameSignatureVars-Term t.State e.Expr>;
-}
-
-Spec-RenameSignatureVars-Term {
+RenameSignatureVars-Term {
   (e.KnownVariables s.NextId) (TkVariable s.Mode e.OldIndex)
     , e.KnownVariables : e._B (s.Mode e.OldIndex (e.NewIndex)) e._E
     = (e.KnownVariables)
@@ -507,11 +500,11 @@ Spec-RenameSignatureVars-Term {
 
   t.State (s.BracketsTag e.Expr)
     , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
-    = <Spec-RenameSignatureVars-Expr t.State e.Expr> : t.State^ e.Expr^
+    = <RenameSignatureVars-Expr t.State e.Expr> : t.State^ e.Expr^
     = (s.BracketsTag e.Expr);
 
   t.State (ADT-Brackets (e.Name) e.Expr)
-    = <Spec-RenameSignatureVars-Expr t.State e.Expr> : t.State^ e.Expr^
+    = <RenameSignatureVars-Expr t.State e.Expr> : t.State^ e.Expr^
     = (ADT-Brackets (e.Name) e.Expr);
 
   t.State t.OtherTerm = t.State t.OtherTerm;
@@ -573,9 +566,9 @@ Spec-FindInSignatures {
 }
 
 /**
-  <Spec-IsTrivialSubstitutions e.StaticMatches>
+  <IsTrivialSubstitutions e.StaticMatches>
 */
-Spec-IsTrivialSubstitutions {
+IsTrivialSubstitutions {
   e.StaticMatches
     = <Reduce
         {
@@ -591,7 +584,7 @@ Spec-IsTrivialSubstitutions {
       >;
 }
 
-Spec-PrepareArgOrPattern {
+PrepareArgOrPattern {
   (e.StaticMatches) (e.DynamicMatches) e.SpecPattern
 
     /*
@@ -654,7 +647,7 @@ WrapVar {
   s.Mode e.Expr = e.Expr
 }
 
-Spec-RenameGenericMatch {
+RenameGenericMatch {
   (e.SpecPattern) (e.StaticMatches) e.VarsFromBody
     = <Map
         {
@@ -669,7 +662,7 @@ Spec-RenameGenericMatch {
     = <MapAccum
         {
           (e.VarsFromBody^) (e.CurrentVarName)
-            = <NewVarName (e.VarsFromBody) e.CurrentVarName (/* empty suffix */)>
+            = <NewVarName (e.VarsFromBody) e.CurrentVarName (/* no suffix */)>
             : (e.VarsFromBody^) e.NewVarName
             = (e.VarsFromBody)
               ((TkVariable e.NewVarName) ':' (e.CurrentVarName))
@@ -682,19 +675,17 @@ Spec-RenameGenericMatch {
     = <ApplySubst-Subst (e.Renames) e.StaticMatches>;
 }
 
-Spec-PrepareSpecializedFuncBody {
+PrepareSpecializedFuncBody {
   (e.SpecPattern) (e.StaticMatches) e.Body
     = <ExtractVariables e.Body> : e.BodyVariables
 
-    = <Spec-RenameGenericMatch
-        (e.SpecPattern) (e.StaticMatches) e.BodyVariables
-      >
+    = <RenameGenericMatch (e.SpecPattern) (e.StaticMatches) e.BodyVariables>
     : e.StaticMatches^
 
-    = <Map (&Spec-PrepareSentence (e.SpecPattern) (e.StaticMatches)) e.Body>;
+    = <Map (&PrepareSpecSentence (e.SpecPattern) (e.StaticMatches)) e.Body>;
 }
 
-Spec-PrepareSentence {
+PrepareSpecSentence {
   (e.SpecPattern) (e.CallStaticMatches)
   ((e.Pattern) e.Conditions (e.Result))
     = <GenericMatch-Wrapper (e.Pattern) (e.SpecPattern)>
@@ -706,12 +697,12 @@ Spec-PrepareSentence {
     = <ApplySubst-Subst (e.StaticSubstitutions) e.PatternDynamicMatches>
     : e.PatternDynamicMatches^
 
-    = <Spec-PrepareArgOrPattern
+    = <PrepareArgOrPattern
         (e.CallStaticMatches) (e.PatternDynamicMatches) e.SpecPattern
       >
     : e.Pattern^
 
-    = <Spec-PrepareConditions (e.StaticSubstitutions) e.Conditions>
+    = <PrepareSpecConditions (e.StaticSubstitutions) e.Conditions>
     : e.Conditions^
 
     = <ApplySubst-Expr (e.StaticSubstitutions) e.Result> : e.Result^
@@ -719,7 +710,7 @@ Spec-PrepareSentence {
     = ((e.Pattern) e.Conditions (e.Result));
 }
 
-Spec-PrepareConditions {
+PrepareSpecConditions {
   (e.StaticSubstitutions) e.Conditions
     = <Map
         {
