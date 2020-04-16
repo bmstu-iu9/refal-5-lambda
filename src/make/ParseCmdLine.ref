@@ -50,9 +50,7 @@ $ENTRY ParseCommandLine {
           (Reference Required 'r' ('reference'))
           (RuntimeFolder Required 'D' ('runtime-dir') ('runtime-directory'))
           (SearchFolder Required 'd' ('dir') ('directory'))
-          (RLCompiler Required
-             's' ('sref-command') ('srefc-command') ('rlc-command')
-          )
+          (RLCompiler Required ('rlc-command'))
           (RLCompilerOption Required 'X' ('thru') ('through'))
           (TargetFileName Required 'o' ('target-file'))
           (TargetMode-Exe None 'x' ('makeexe'))
@@ -291,7 +289,7 @@ $ENTRY PrintHelp {
 '        Add the directory to search list and include list for C++ compiler\n'
 '-d, --dir, --directory dir\n'
 '        Add the directory to search list\n'
-'-s, --rlc-command, --sref-command, --srefc-command command-line\n'
+'--rlc-command command-line\n'
 '        rlc command line prefix for run Refal-5-Lambda compiler\n'
 '-X, --thru, --through rlc-command\n'
 '        Additional flags for rlc compiler, don\'t quoted in command line\n'
