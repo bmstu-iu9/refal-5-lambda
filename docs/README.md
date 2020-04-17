@@ -6,3 +6,4 @@
 * [Основы программирования, Базисный Рефал](3-basics.md)
   ([Basis of programming in Refal, Basic Refal](3-basics.en.md))
 * [Приложение A. Форматы функций и типы данных в Рефале-5λ](A-formats-and-types.md)
+* [Приложение B. Краткий справочник](B-reference.md)
