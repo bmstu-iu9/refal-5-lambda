@@ -229,7 +229,7 @@ memory will be printed. It should be so._
 It will be said about the meaning of written in `hello.ref` file in the next
 [chapter](3-basics.en.md).
 
-# References
+## References
 
 1. V.F.Turchin. Metaalgorythmic language. Cybernetics №4, 1968, pages 45-54.
    Available in the Internet:

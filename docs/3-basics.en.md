@@ -7,7 +7,7 @@ This chapter is an informal introduction to Refal-5λ, which is accessible even
 to a beginner or a programming beginner. In the next chapter (manual) of this
 article, we will look at this issue in a more formal way.
 
-# Basic Refal Syntax
+## Basic Refal Syntax
 
 The term _Basic Refal_ is commonly referred to a Refal semantic subset, which
 function sentences consist of two parts, the variables can be s-, t- or e-
@@ -19,7 +19,7 @@ the considered structures may be quite different in diverse dialects and
 implementations (e.g. the Refal-2 syntax is widely different from the Refal-5
 syntax). But these listed expressive means exist in the language.
 
-# Hello, World! Program
+## Hello, World! Program
 
 In the [previous chapter](2-intro.en.md), we've managed to compile and to run
 a program [`hello.ref`](hello.ref), which printed out a string “Hello, World!”.
@@ -133,7 +133,7 @@ classic Refal-5 it is built in function that means it is implicitly defined in
 any program.  However, Refal-5λ allows us to write programs in which a standard
 library is not used.
 
-### Interim conclusions – what have we seen in `hello.ref`
+#### Interim conclusions – what have we seen in `hello.ref`
 
 Let us conclude what we have learned by now.
 
@@ -172,9 +172,9 @@ written anything (we have attached one to the other) between the function name
 illustration. A function call with an empty argument is usually written without
 a comment inside.
 
-## Examples of other programs.
+### Examples of other programs.
 
-### Programs with several sentences
+#### Programs with several sentences
 
 Before moving to other examples, we have to explain the syntax that is not
 reflected in the `hello.ref` listing.
@@ -304,7 +304,7 @@ calling `<F 'A'>` will be `'1'`, not `'3'`:
 
 The first sentence have priority over the third.
 
-## Variables
+### Variables
 
 > This section has alternative translations **one**, [two](3-basics.en-alt.md).
 
@@ -444,7 +444,7 @@ Its easy to see that the function implements the two binary numbers columnar
 addition. If the last digits of both numbers are '1' and '1', then the next
 digit is transferred. This extra unit is added to the first argument.
 
-### Interim conclusions
+#### Interim conclusions
 
 Let's sum up:
 * There can be variables in the left and the right parts of the sentence –
@@ -457,7 +457,7 @@ Let's sum up:
   values substitution, which converts the left side to a function argument.
 * The same substitution is also made on the right side of the sentence.
 
-## Structure brackets
+### Structure brackets
 
 > This section has alternative translations **one**, [two](3-basics.en-alt.md).
 
@@ -699,7 +699,7 @@ Now the functions `IsEqual` and `BinAdd` can be rewritten as:
 > *Translation to English of this hunk of this paper is prepared by*
 > **Jessica Jimenez Kuthko <kuthko@mail.ru>** _at 2018-01-17_
 
-## Other types of symbols: numbers
+### Other types of symbols: numbers
 
 We have already used some definitions; symbols, characters as synonyms. But it
 is actually not completely true. Refal can operate not only with the
@@ -827,7 +827,7 @@ split into parts)
     29638952175999932299156089414639761565182862536979208272237582511↓
     85210916864000000000000000000000000
 
-# Other types of symbols: words
+## Other types of symbols: words
 
 While programming in Refal the user often has a necessity to mark different
 types of objects or conditions: it is possible for a function to end
@@ -907,7 +907,7 @@ identical to the words without quotes – `"Success"`, `"SyntaxError"`.
 > *Translation to English of this hunk of this paper is prepared by*
 > **Ksenia Kalinina <ks-kalinina@mail.ru>** _at 2018-01-18_
 
-### Escape sequences
+#### Escape sequences
 
 At first glance, it was impossible to write a character representing a single
 quote or a composed character containing a double quote. But that's not
@@ -947,7 +947,7 @@ and vice versa for uniformity.
 > *Translation to English of this hunk of this paper is prepared by*
 > **Anastasia Dudkina <anastasia.vlad2014@yandex.ru>** _at 2018-02-08_
 
-## The abstract refal-machine. View field semantics
+### The abstract refal-machine. View field semantics
 
 > This section has alternative translations **one**, [two](3-basics.en-alt.md).
 
@@ -1145,7 +1145,7 @@ expression.
 
 The view field will become empty – the refal-machine will correctly stop.
 
-### Tail and not tail recursion
+#### Tail and not tail recursion
 
 > This section has alternative translations **one**, [two](3-basics.en-alt.md).
 
@@ -1266,7 +1266,7 @@ _cyclic processes_ and to use the term _iteration,_ etc.
 > *Translation to English of this hunk of this paper is prepared by*
 > **Maria Ivanova <ya.ivanovamaria96@yandex.ru>** _at 2018-01-17_
 
-## Object, pattern, active and result expressions
+### Object, pattern, active and result expressions
 
 Before we continue studying Refal-5λ, it is necessary to institute several
 important definitions. We've considered different types of Refal expressions that

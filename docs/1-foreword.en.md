@@ -1,4 +1,4 @@
-# Preface
+## Preface
 
 REFAL – Recursive Functional Algorithmic Language \[1], is a functional
 programming language, focused on symbolic calculations, processing and
@@ -72,7 +72,7 @@ convert it into a REFAL-5 dialect compiler, which would have the main features
 of the Simple Refal (higher-order functions and nested functions). This dialect
 was called Refal-5λ.
 
-# References
+## References
 1. A. P. Nemytykh. Lectures on Refal programming language.
    Collected papers of functional programming language Refal, vol I
    // edited by A. P. Nemytykh. — Pereslavl-Zalessky:

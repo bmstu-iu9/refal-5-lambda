@@ -1,4 +1,7 @@
-## Variables
+<div id="toc"></div>
+<script src="toc.js"></script>
+
+### Variables
 
 > This section has alternative translations [one](3-basics.en.md), **two**.
 
@@ -139,7 +142,7 @@ integers. If the last numeric symbols of both digits are `'1'` and `'1'`, then
 there is a transposition in the next place – this extending 1 adds to the first
 argument.
 
-### Intermediate conclusions
+#### Intermediate conclusions
 
 Let’s summarize:
 
@@ -157,7 +160,7 @@ Let’s summarize:
 > *Translation to English of this hunk of paper is prepared by*
 > **Yarullina Diana <190471@list.ru>** _at 2018-01-17_
 
-## Structure brackets
+### Structure brackets
 
 > This section has alternative translations [one](3-basics.en.md), **two**.
 
@@ -402,7 +405,7 @@ Now functions `IsEqual` and  `BinAdd` can be written the following way:
 > **Yarullina Diana <190471@list.ru>** _at 2018-01-17_
 
 
-## Abstract refal-machine. The semantics of the view field.
+### Abstract refal-machine. The semantics of the view field.
 
 > This section has alternative translations [one](3-basics.en.md), **two**.
 
