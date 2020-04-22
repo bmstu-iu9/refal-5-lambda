@@ -1,5 +1,8 @@
 # Introduction in language
 
+<div id="toc"></div>
+<script src="toc.js"></script>
+
 ## What is REFAL? What is Refal-5λ?
 REFAL – functional programming language, oriented on symbols data elaboration:
 computer programs analyzing, transmission, text elaboration based on natural

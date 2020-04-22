@@ -1,5 +1,8 @@
 # Basis of programming in Refal, Basic Refal
 
+<div id="toc"></div>
+<script src="toc.js"></script>
+
 This chapter is an informal introduction to Refal-5λ, which is accessible even
 to a beginner or a programming beginner. In the next chapter (manual) of this
 article, we will look at this issue in a more formal way.

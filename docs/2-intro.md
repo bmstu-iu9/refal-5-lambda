@@ -1,5 +1,13 @@
 # Введение в язык
 
+<div id="toc"></div>
+<script src="toc.js"></script>
+<script>
+makeTOC.localizedHeader = "Содержание"
+makeTOC.localizedShow = "Показать";
+makeTOC.localizedHide = "Скрыть";
+</script>
+
 ## Что такое РЕФАЛ? Что такое Рефал-5λ?
 
 РЕФАЛ — язык функционального программирования, ориентированный на обработку
