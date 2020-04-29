@@ -514,6 +514,11 @@ FindOptimizedCall-Term {
             (CallBrackets (Symbol Name e.Name) e.Arg);
       };
 
+  (e.OptFuncNames None) (CallBrackets e.Expr)
+    = <FindOptimizedCall (e.OptFuncNames) e.Expr>
+    : (e.OptFuncNames^ t.Found) e.Expr^
+    = (e.OptFuncNames t.Found) (CallBrackets e.Expr);
+
   (e.OptFuncNames t.Found) t.AnyTerm
     = (e.OptFuncNames t.Found) t.AnyTerm;
 }
