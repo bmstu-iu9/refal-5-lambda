@@ -344,7 +344,6 @@ PrintHelp {
 '-O keys[change]\n'
 '        Optimization keys:\n'
 '          -OP - conjoint pattern optimization\n'
-'          -OQ - extended conjoint pattern optimization\n'
 '          -OR - building result optimization\n'
 '          -Od - use direct code generation instead interpretation code,\n'
 '                compile functions to C++ instead RASL\n'
