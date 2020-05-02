@@ -62,7 +62,7 @@ DoOptTree {
 
     = e.AST
     : {
-        e.OriginAST = s.Cycles e.AST;
+        e.OriginAST = s.Cycles e.OriginAST;
         e.AST^ = <DoOptTree s.Cycles t.OptDrive s.OptSpec s.OptAutoMarkup e.AST>;
       }
 }
@@ -88,7 +88,7 @@ DoDriveSpecLoop {
     = <SpecPass s.Cycles s.OptSpec e.AST> : s.Cycles^ e.AST^
     = e.AST
     : {
-        e.OriginAST = s.Cycles e.AST;
+        e.OriginAST = s.Cycles e.OriginAST;
         e.AST^ = <DoDriveSpecLoop s.Cycles t.OptDrive s.OptSpec e.AST>;
       }
 }
