@@ -163,7 +163,7 @@ SpecSentence {
   ((e.Pattern) e.Conditions (e.Result))
     = <MapAccum
         {
-          (e.SpecInfo (e.NewFunctions))
+          (e.SpecInfo^ (e.NewFunctions^))
           (Condition (e.Name) (e.ConditionResult) (e.ConditionPattern))
             = <SpecResult (e.SpecInfo (e.NewFunctions)) e.ConditionResult>
             : (e.SpecInfo^ (e.NewFunctions^)) e.ConditionResult^

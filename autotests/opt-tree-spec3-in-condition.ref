@@ -1,0 +1,15 @@
+* TREE
+
+$ENTRY Go {
+  e.X
+    , <S A e.X> : /* пусто */
+    , <S B e.X> : /* пусто */
+    = /* пусто */;
+}
+
+$SPEC S s.A e.rest;
+
+S {
+  s.A s.X e.Rest = s.A <S s.A e.Rest>;
+  s.A /* пусто */ = /* пусто */;
+}
