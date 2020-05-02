@@ -113,7 +113,7 @@ DoDriveLoop {
     = <Dec s.Cycles> : s.Cycles^
     = e.AST
     : {
-        e.OriginAST = s.Cycles e.AST;
+        e.OriginAST = s.Cycles e.OriginAST;
         e.AST^ = <DoDriveLoop s.Cycles t.OptDrive e.AST>;
       };
 }
