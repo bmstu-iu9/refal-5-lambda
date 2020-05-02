@@ -401,7 +401,7 @@ void refalrts::Profiler::print_profile(int counter, const char *name) {
   FILE *profile = fopen(name, "w");
   typedef std::vector< std::pair<double, FuncItemKey> > FunctionMetricVector;
   FunctionMetricVector function_times;
-  double fn_total = 0;
+  FuncItemValue total;
 
   for (
     FunctionMetricTable::const_iterator p = m_function_items.begin();
@@ -410,10 +410,16 @@ void refalrts::Profiler::print_profile(int counter, const char *name) {
   ) {
     double value = p->second.values[counter];
     function_times.push_back(std::make_pair(value, p->first));
-    fn_total += value;
+    total += p->second;
   }
 
   std::sort(function_times.begin(), function_times.end());
+
+  double mean_step_time =
+    total[FuncItemValue::TIME] / total[FuncItemValue::COUNT];
+  fprintf(profile, "Total time: %.5f s\n", total[FuncItemValue::TIME] / 1000);
+  fprintf(profile, "Total steps: %.0f\n", total[FuncItemValue::COUNT]);
+  fprintf(profile, "Mean step time: %f us\n\n", 1000 * mean_step_time);
 
   double pareto = 0;
   for (
@@ -423,10 +429,40 @@ void refalrts::Profiler::print_profile(int counter, const char *name) {
   ) {
     pareto += p->first;
     fprintf(
-      profile, "%s%s -> %.1f (%.2f %%, += %.2f %%)\n",
-      (p->second.unwrap ? "<unwrap closure>: " : ""),
-      p->second.func_name, p->first, 100.0 * p->first / fn_total,
-      100.0 * pareto / fn_total
+      profile, "%s%s -> ",
+      (p->second.unwrap ? "<unwrap closure>: " : ""), p->second.func_name
+    );
+
+    switch (counter) {
+      case FuncItemValue::TIME:
+        fprintf(profile, "%.1f ms ", p->first);
+        break;
+
+      case FuncItemValue::COUNT:
+        fprintf(profile, "%.0f ", p->first);
+        break;
+
+      default:
+        refalrts_switch_default_violation(counter);
+    }
+
+    fprintf(
+      profile, "(%.2f %%, += %.2f %%)   ",
+      100.0 * p->first / total[counter], 100.0 * pareto / total[counter]
+    );
+
+    for (
+      size_t i = strlen(p->second.func_name) + (p->second.unwrap ? 17 : 0);
+      i < 35;
+      ++i
+    ) {
+      fputc(' ', profile);
+    }
+
+    const FuncItemValue& value = m_function_items[p->second];
+    fprintf(
+      profile, "rel step time %.2f\n",
+      value[FuncItemValue::TIME] / value[FuncItemValue::COUNT] / mean_step_time
     );
   }
 
@@ -436,8 +472,7 @@ void refalrts::Profiler::print_profile(int counter, const char *name) {
 void refalrts::Profiler::add_profile_metric(const FuncItemKey& function) {
   double step = clock();
   FuncItemValue& value = m_function_items[m_current_function];
-  value.values[FuncItemValue::TIME] +=
-    (step - m_current_function_start) / 1e6;
+  value.values[FuncItemValue::TIME] += (step - m_current_function_start) / 1e6;
   value.values[FuncItemValue::COUNT] += 1;
   m_current_function_start = step;
   m_current_function = function;

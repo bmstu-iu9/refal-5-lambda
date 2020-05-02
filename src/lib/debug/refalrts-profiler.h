@@ -75,6 +75,17 @@ class Profiler {
       values[TIME] = 0;
       values[COUNT] = 0;
     }
+
+    FuncItemValue& operator+=(const FuncItemValue& inc) {
+      values[TIME] += inc.values[TIME];
+      values[COUNT] += inc.values[COUNT];
+
+      return *this;
+    }
+
+    double operator[](int counter) const {
+      return values[counter];
+    }
   };
 
   typedef std::map<FuncItemKey, FuncItemValue> FunctionMetricTable;
