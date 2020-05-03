@@ -787,16 +787,40 @@ $ENTRY Explode {
       s.N ::= s.NUMBER
 */
 $ENTRY First {
-  s.N e.Expr = <__Step-Start> <DoFirst s.N () e.Expr> <__Step-End>;
-}
+%%
+  refalrts::Iter pfunc_name = arg_begin->next;
+  refalrts::Iter pcount = pfunc_name->next;
 
-DoFirst {
-  0 (e.Prefix) e.Suffix = (e.Prefix) e.Suffix;
+  if (refalrts::cDataNumber != pcount->tag) {
+    return refalrts::cRecognitionImpossible;
+  }
 
-  s.N (e.Prefix) /* empty */ = (e.Prefix) /* empty */;
+  refalrts::RefalNumber count = pcount->number_info;
+  refalrts::Iter term = pcount->next;
 
-  s.N (e.Prefix) t.Next e.Suffix
-    = <DoFirst <Sub-Digits s.N 1> (e.Prefix t.Next) e.Suffix>;
+  while(term != arg_end && count > 0) {
+    if (
+      refalrts::cDataOpenBracket == term->tag
+      || refalrts::cDataOpenADT == term->tag
+    ) {
+      term = term->link_info;
+    }
+
+    term = term->next;
+    --count;
+  }
+
+  refalrts::Iter open_bracket = pcount;
+  refalrts::Iter close_bracket = arg_begin;
+  refalrts::splice_stvar(term, close_bracket);
+  refalrts::reinit_open_bracket(open_bracket);
+  refalrts::reinit_close_bracket(close_bracket);
+  refalrts::link_brackets(open_bracket, close_bracket);
+  refalrts::splice_to_freelist(vm, pfunc_name, pfunc_name);
+  refalrts::splice_to_freelist(vm, arg_end, arg_end);
+
+  return refalrts::cSuccess;
+%%
 }
 
 
@@ -1042,16 +1066,40 @@ DoImplode {
       <Last s.N e.Expr> == () e.Expr, |e.Expr| < s.N
 */
 $ENTRY Last {
-  s.N e.Expr = <__Step-Start> <DoLast s.N (e.Expr)> <__Step-End>;
-}
+%%
+  refalrts::Iter pfunc_name = arg_begin->next;
+  refalrts::Iter pcount = pfunc_name->next;
 
-DoLast {
-  0 (e.Prefix) e.Suffix = (e.Prefix) e.Suffix;
+  if (refalrts::cDataNumber != pcount->tag) {
+    return refalrts::cRecognitionImpossible;
+  }
 
-  s.N (/* empty */) e.Suffix = (/* empty */) e.Suffix;
+  refalrts::RefalNumber count = pcount->number_info;
+  refalrts::Iter term_end = arg_end->prev;
 
-  s.N (e.Prefix t.Next) e.Suffix
-    = <DoLast <Sub-Digits s.N 1> (e.Prefix) t.Next e.Suffix>;
+  while (term_end != pcount && count > 0) {
+    if (
+      refalrts::cDataCloseBracket == term_end->tag
+      || refalrts::cDataCloseADT == term_end->tag
+    ) {
+      term_end = term_end->link_info;
+    }
+
+    term_end = term_end->prev;
+    --count;
+  }
+
+  refalrts::Iter open_bracket = pcount;
+  refalrts::Iter close_bracket = arg_begin;
+  refalrts::splice_stvar(term_end->next, close_bracket);
+  refalrts::reinit_open_bracket(open_bracket);
+  refalrts::reinit_close_bracket(close_bracket);
+  refalrts::link_brackets(open_bracket, close_bracket);
+  refalrts::splice_to_freelist(vm, pfunc_name, pfunc_name);
+  refalrts::splice_to_freelist(vm, arg_end, arg_end);
+
+  return refalrts::cSuccess;
+%%
 }
 
 
@@ -1059,12 +1107,31 @@ DoLast {
   17. <Lenw e.Expr> == s.N e.Expr, where s.N == |e.Expr|
 */
 $ENTRY Lenw {
-  e.Expr = <__Step-Start> <DoLenw 0 e.Expr> <__Step-End>;
-}
+%%
+  refalrts::Iter pfunc_name = arg_begin->next;
+  refalrts::RefalNumber count = 0;
 
-DoLenw {
-  s.Len /* empty */ = s.Len;
-  s.Len e.Expr t.Term = <DoLenw <Add-Digits s.Len 1> e.Expr> t.Term;
+  refalrts::Iter term = pfunc_name->next;
+
+  while (term != arg_end) {
+    if (
+      refalrts::cDataOpenBracket == term->tag
+      || refalrts::cDataOpenADT == term->tag
+    ) {
+      term = term->link_info;
+    }
+
+    ++count;
+    term = term->next;
+  }
+
+  refalrts::Iter pcount = pfunc_name;
+  refalrts::reinit_number(pcount, count);
+  refalrts::splice_to_freelist(vm, arg_begin, arg_begin);
+  refalrts::splice_to_freelist(vm, arg_end, arg_end);
+
+  return refalrts::cSuccess;
+%%
 }
 
 
@@ -1769,7 +1836,7 @@ Symb-Nat {
 
   e.Number
     = <Divmod-Nat (e.Number) 1000000000 () ()> : (e.Div) s.Mod
-    = <DoLast 9 ('000000000' <StrFromMacroDigit s.Mod>)> : (e.Zeros) e.StrDigits
+    = <Last 9 '000000000' <StrFromMacroDigit s.Mod>> : (e.Zeros) e.StrDigits
     = <Symb-Nat e.Div> e.StrDigits;
 }
 
@@ -2187,7 +2254,7 @@ Sysfun-Xxout {
 
 Xxout-Wrap {
   s.FileNo s.Width e.Text
-    = <DoFirst s.Width () e.Text>
+    = <First s.Width e.Text>
     : {
         (e.Line) /* empty */ = <Write-Aux s.FileNo e.Line> <Close s.FileNo>;
 
