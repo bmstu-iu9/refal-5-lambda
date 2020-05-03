@@ -4,23 +4,22 @@
 <script src="toc.js"></script>
 
 ## What is REFAL? What is Refal-5λ?
-REFAL – functional programming language, oriented on symbols data elaboration:
+REFAL – a functional programming language, focused on symbols data elaboration:
 computer programs analyzing, transmission, text elaboration based on natural
 and artificial languages.
 
 Firstly this language was suggested by Valentin Fedorovich Turchin in 1968 year
 as a metaalgorythmic language\[1] – a language for describing semantics of
-another programming languages. In other words, it is pseudo-code, something
-like mathematic notation. Later there had been new and effective methods of
-REFAL implementation for ECM – he had already become a fully-featured
-programming language.
+another programming languages. In other words, it is pseudocode, some kind of
+mathematical notation. Later new and effective methods of REFAL implementation
+for ECM appeared – it has already become a fully-featured programming language.
 
 The difference between REFAL and other functional languages (FL) is, first of
-all, the usage of special data structure – object expression. The most FL use
-single linked lists – the sequences of elements, in which only left side is
-accessed for direct elaboration. In other words, it is possible to make only
-such operations as looking on the first element, cutting off the first element,
-making the new list by adding an element at the beginning of the starting list.
+all, the usage of a special data structure – an object expression. Most FL use
+single linked lists – the sequences of elements, in which only the left side 
+is accessed for direct elaboration. In other words, it is possible to make only
+operations such as looking for the first element, cutting off the first element,
+making a new list by adding an element at the beginning of the initial list.
 
 It is possible to derive the last element only by sequential truncation of the
 first element until the sequence won’t be empty – the last truncated element is
