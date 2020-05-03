@@ -90,8 +90,9 @@ IncLine {
 IncCol {
   (RowCol s.Line s.Col) = (RowCol s.Line <Inc s.Col>);
 
-  t.Pos Len = t.Pos;
-  t.Pos Len s.First e.String = <IncCol <IncCol t.Pos> Len e.String>;
+  (RowCol s.Line s.Col) Len e.String
+    = <Lenw e.String> : s.Len e._
+    = (RowCol s.Line <+ s.Col s.Len>);
 }
 
 DoScan {
