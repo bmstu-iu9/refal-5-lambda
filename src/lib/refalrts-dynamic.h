@@ -219,7 +219,8 @@ public:
   void finalize(VM *vm, Iter pos, FnResult& result);
   void deactivate();
 
-  void make_dump(VM *vm);
+  void make_dump(VM *vm) const;
+  void print_scopes(FILE *stream) const;
 
 private:
   RefalFunction *lookup_function_aux(const RefalFuncName& name);
@@ -274,7 +275,8 @@ class Domain {
 
     void unload_module(VM *vm, Iter pos, Module *module, FnResult& result);
 
-    void make_dump(VM *vm);
+    void make_dump(VM *vm) const;
+    void print_scopes(FILE *stream) const;
 
   private:
     // Если эту функцию назвать find, компилятор BCC 5.5.1 будет выдавать
@@ -451,7 +453,10 @@ public:
   void free_nodes(Iter begin, Iter end);
   void swap_save(Iter begin, Iter end);
 
-  void make_dump(VM *vm);
+  void make_dump(VM *vm) const;
+  void print_scopes(FILE *stream) const {
+    m_storage.print_scopes(stream);
+  }
 
   size_t memory_use() const {
     return m_memory_use;

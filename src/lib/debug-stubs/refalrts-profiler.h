@@ -9,17 +9,18 @@
 namespace refalrts {
 
 struct DiagnosticConfig;
+class Domain;
 
 class Profiler {
 public:
   Profiler(DiagnosticConfig *) { }
 
   void start_profiler() { }
-  void end_profiler() { }
+  void end_profiler(Domain *domain) { }
   void read_counters(double counters[]);
 
-  void add_profile_metric_unwrap(const char *function) { }
-  void add_profile_metric_call(const char *function) { }
+  void add_profile_metric_unwrap(const RefalFuncName& function) { }
+  void add_profile_metric_call(const RefalFuncName& function) { }
 
   void init_function_count() { }
 

@@ -15,6 +15,8 @@
 
 namespace refalrts {
 
+class Domain;
+
 class Profiler {
   enum State {
     cInRuntime,
@@ -46,22 +48,18 @@ class Profiler {
 
   struct FuncItemKey {
     bool unwrap;
-    const char *func_name;
+    const RefalFuncName *func_name;
 
-    FuncItemKey(bool unwrap = false, const char *func_name = "")
+    FuncItemKey() : unwrap(false), func_name(0) {}
+
+    FuncItemKey(bool unwrap, const RefalFuncName& func_name)
       : unwrap(unwrap)
-      , func_name(func_name)
+      , func_name(&func_name)
     {
       /* пусто */
     }
 
-    bool operator<(const FuncItemKey& rhs) const {
-      int res = (int) this->unwrap - (int) rhs.unwrap;
-      if (res == 0) {
-        res = strcmp(this->func_name, rhs.func_name);
-      }
-      return res < 0;
-    }
+    bool operator<(const FuncItemKey& rhs) const;
   };
 
   struct FuncItemValue {
@@ -111,10 +109,10 @@ class Profiler {
   };
 
   static int reverse_compare(const void *left_void, const void *right_void);
-  void print_statistics();
+  void print_statistics(Domain *domain);
 
   void add_profile_metric(const FuncItemKey& function);
-  void print_profile(int counter, const char *name);
+  void print_profile(int counter, const char *name, Domain *domain);
 
 public:
   Profiler(DiagnosticConfig *diagnostic_config);
@@ -123,21 +121,18 @@ public:
   }
 
   void start_profiler();
-  void end_profiler();
+  void end_profiler(Domain *domain);
   void read_counters(double counters[]);
 
-  void add_profile_metric_unwrap(const char *function) {
+  void add_profile_metric_unwrap(const RefalFuncName& function) {
     add_profile_metric(FuncItemKey(true, function));
   }
 
-  void add_profile_metric_call(const char *function) {
+  void add_profile_metric_call(const RefalFuncName& function) {
     add_profile_metric(FuncItemKey(false, function));
   }
 
-  void init_function_count() {
-    m_current_function_start = clock();
-    m_current_function = FuncItemKey(false, "<startup_code>");
-  }
+  void init_function_count();
 
   void start_generated_function();
   void stop_sentence();

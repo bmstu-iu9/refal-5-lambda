@@ -1422,7 +1422,7 @@ JUMP_FROM_SCALE:
 #if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
             if (m_diagnostic_config->enable_profiler) {
               profiler()->add_profile_metric_unwrap(
-                head->next->function_info->name.name
+                head->next->function_info->name
               );
             }
 
@@ -1472,7 +1472,7 @@ JUMP_FROM_SCALE:
 
 #if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
           if (m_diagnostic_config->enable_profiler) {
-            profiler()->add_profile_metric_call(callee->name.name);
+            profiler()->add_profile_metric_call(callee->name);
           }
 #endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 

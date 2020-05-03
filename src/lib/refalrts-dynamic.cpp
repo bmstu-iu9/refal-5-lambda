@@ -328,7 +328,7 @@ void refalrts::Module::deactivate() {
   }
 }
 
-void refalrts::Module::make_dump(refalrts::VM *vm) {
+void refalrts::Module::make_dump(refalrts::VM *vm) const {
   FILE *dump_stream = vm->dump_stream();
 
   fprintf(
@@ -392,6 +392,21 @@ void refalrts::Module::make_dump(refalrts::VM *vm) {
     ++p
   ) {
     fprintf(dump_stream, "%10d. %s\n", ++count, p->c_str());
+  }
+}
+
+void refalrts::Module::print_scopes(FILE *stream) const {
+  fprintf(stream, "      SCOPES:\n");
+  int count = 0;
+  for (
+    std::list<ConstTable>::const_iterator p = m_tables.begin();
+    p != m_tables.end();
+    ++p
+  ) {
+    fprintf(
+      stream, "%10d. #%04u - %s\n",
+      ++count, (p->cookie1 ^ p->cookie2) % 10000, p->unit_name.c_str()
+    );
   }
 }
 
@@ -888,7 +903,7 @@ void refalrts::Domain::ModuleStorage::unload_module(
   gc(vm, pos, result);
 }
 
-void refalrts::Domain::ModuleStorage::make_dump(refalrts::VM *vm) {
+void refalrts::Domain::ModuleStorage::make_dump(refalrts::VM *vm) const {
   FILE *dump_stream = vm->dump_stream();
 
   int count = 0;
@@ -897,6 +912,16 @@ void refalrts::Domain::ModuleStorage::make_dump(refalrts::VM *vm) {
   ) {
     fprintf(dump_stream, "%4d. %s\n", ++count, (*p)->name().c_str());
     (*p)->make_dump(vm);
+  }
+}
+
+void refalrts::Domain::ModuleStorage::print_scopes(FILE *stream) const {
+  int count = 0;
+  for (
+    ModuleList::const_iterator p = m_modules.begin(); p != m_modules.end(); ++p
+  ) {
+    fprintf(stream, "%4d. %s\n", ++count, (*p)->name().c_str());
+    (*p)->print_scopes(stream);
   }
 }
 
@@ -1110,12 +1135,14 @@ void refalrts::Domain::swap_save(refalrts::Iter begin, refalrts::Iter end) {
   list_splice(m_swap_begin.next, begin, end);
 }
 
-void refalrts::Domain::make_dump(refalrts::VM *vm) {
+void refalrts::Domain::make_dump(refalrts::VM *vm) const {
   FILE *dump_stream = vm->dump_stream();
   fprintf(dump_stream, "\nDOMAIN CONTENT:\n");
 
   fprintf(dump_stream, "\nSWAPS:\n");
-  vm->print_seq(dump_stream, &m_swap_begin, &m_swap_end);
+  vm->print_seq(
+    dump_stream, const_cast<Iter>(&m_swap_begin), const_cast<Iter>(&m_swap_end)
+  );
 
   fprintf(dump_stream, "\nIDENTIFIERS:\n");
   int count = 0;

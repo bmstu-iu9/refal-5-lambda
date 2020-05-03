@@ -538,7 +538,7 @@ int main(int argc, char **argv) {
   }
 
   // TODO: правильный порядок финализации
-  profiler.end_profiler();
+  profiler.end_profiler(&domain);
   refalrts::FnResult res_unload;
   domain.unload(&vm, res_unload);
   if (res == refalrts::cSuccess) {
