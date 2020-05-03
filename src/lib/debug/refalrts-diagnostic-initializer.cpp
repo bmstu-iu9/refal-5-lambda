@@ -120,7 +120,7 @@ void read_config(refalrts::DiagnosticConfig *config, const char *filename) {
     }
 
     // Пустая строка или комментарий
-    if (*pline == '\n' || *pline == '#') {
+    if (*pline == '\0' || *pline == '#') {
       continue;
     }
 
