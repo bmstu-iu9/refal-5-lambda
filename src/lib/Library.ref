@@ -159,7 +159,7 @@ $ENTRY __Meta_Mu {
 */
 $ENTRY Add {
   /* optimization for two digits */
-  s.First s.Second = <__Step-Start> <Add-Digits s.First s.Second> <__Step-End>;
+  s.First s.Second = <__Step-Drop> <Add-Digits s.First s.Second>;
 
   e.ArithmArg
     , <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
@@ -340,7 +340,7 @@ $SWAP Buried;
   5. <Card> == s.CHAR* 0?
 */
 $ENTRY Card {
-  = <__Step-Start> <Get-Aux stdin> <__Step-End>;
+  = <__Step-Drop> <Get-Aux stdin>;
 }
 
 
@@ -436,7 +436,7 @@ $ENTRY Dg {
   9. <Dgall> == (e.Key '=' e.Value)*
 */
 $ENTRY Dgall {
-  = <__Step-Start> <Buried> <__Step-End>;
+  = <__Step-Drop> <Buried>;
 }
 
 
@@ -462,8 +462,7 @@ $ENTRY Div {
 */
 $ENTRY Divmod {
   /* optimization for two digits */
-  s.First s.Second
-    = <__Step-Start> <Divmod-Digits s.First s.Second> <__Step-End>;
+  s.First s.Second = <__Step-Drop> <Divmod-Digits s.First s.Second>;
 
   e.ArithmArg
     , <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) s.Sign e.Second
@@ -1117,7 +1116,7 @@ $ENTRY Mod {
 */
 $ENTRY Mul {
   /* optimization for two digits */
-  s.First s.Second = <__Step-Start> <Mul-Digits s.First s.Second> <__Step-End>;
+  s.First s.Second = <__Step-Drop> <Mul-Digits s.First s.Second>;
 
   e.ArithmArg
     , <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
@@ -1358,8 +1357,7 @@ $ENTRY Ord {
   24. <Print e.AnyExpression> == e.AnyExpression
 */
 $ENTRY Print {
-  e.AnyExpression
-    = <__Step-Start> <Put-Aux stdout e.AnyExpression> <__Step-End>;
+  e.AnyExpression = <__Step-Drop> <Put-Aux stdout e.AnyExpression>;
 }
 
 
@@ -1367,8 +1365,7 @@ $ENTRY Print {
   25. <Prout e.AnyExpression> == []
 */
 $ENTRY Prout {
-  e.AnyExpression
-    = <__Step-Start> <Putout-Aux stdout e.AnyExpression> <__Step-End>;
+  e.AnyExpression = <__Step-Drop> <Putout-Aux stdout e.AnyExpression>;
 }
 
 /**
@@ -1655,7 +1652,7 @@ $ENTRY __Step-Drop {
 */
 $ENTRY Sub {
   /* optimization for two digits */
-  s.First s.Second = <__Step-Start> <Sub-Digits s.First s.Second> <__Step-End>;
+  s.First s.Second = <__Step-Drop> <Sub-Digits s.First s.Second>;
 
   e.ArithmArg
     , <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
@@ -2618,7 +2615,7 @@ $ENTRY Implode_Ext {
   59. <Explode_Ext s.COMPOUND> == s.CHAR*
 */
 $ENTRY Explode_Ext {
-  s.Compound = <__Step-Start> <Explode s.Compound> <__Step-End>;
+  s.Compound = <__Step-Drop> <Explode s.Compound>;
 }
 
 
@@ -2676,8 +2673,7 @@ $ENTRY TimeElapsed {
 */
 $ENTRY Compare {
   /* optimization for two digits */
-  s.First s.Second
-    = <__Step-Start> <Compare-Digits s.First s.Second> <__Step-End>;
+  s.First s.Second = <__Step-Drop> <Compare-Digits s.First s.Second>;
 
   e.ArithmArg
     , <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
