@@ -17,7 +17,9 @@ else
 fi
 
 echo -C>input.prj
-[[ -n "$BENCH_FLAGS" ]] && echo "$BENCH_FLAGS" >> input.prj
+for f in $BENCH_FLAGS; do
+  echo "$f" >> input.prj
+done
 ls *.ref *.sref >> input.prj
 echo --dir=../lib/common>>input.prj
 echo --prelude=refal5-builtins.refi>>input.prj

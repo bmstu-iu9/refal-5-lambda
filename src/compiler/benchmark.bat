@@ -20,7 +20,7 @@ if {%~2}=={} (
 )
 
 echo -C>input.prj
-if not {%BENCH_FLAGS%}=={} echo %BENCH_FLAGS%>>input.prj
+for %%f in (%BENCH_FLAGS%) do echo %%f>> input.prj
 dir /b *.ref *.sref | find /v ".refi" >>input.prj
 echo --dir=../lib/common>>input.prj
 echo --prelude=refal5-builtins.refi>>input.prj
