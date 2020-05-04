@@ -68,7 +68,7 @@ DeEnum {
 TileCandidates {
   (e.Pattern) (e.Result) =
     <Fetch
-      <AlignEnumExprs 0 () (e.Pattern) () (e.Result)>
+      <EnumExprs 0 () (e.Pattern) () (e.Result)>
       {
         (e.AlignedPattern t.Last) (t.First e.AlignedResult) =
           <DoOverlapOffsets
@@ -78,11 +78,11 @@ TileCandidates {
     >;
 }
 
-AlignEnumExprs {
+EnumExprs {
   s.Num
   (e.ScannedPattern) (t.PatternItem e.Pattern)
   (e.ScannedResult) (t.ResultItem e.Result) =
-    <AlignEnumExprs
+    <EnumExprs
       <Inc s.Num>
       (e.ScannedPattern (s.Num t.PatternItem)) (e.Pattern)
       (e.ScannedResult (s.Num t.ResultItem)) (e.Result)
@@ -91,19 +91,19 @@ AlignEnumExprs {
   s.Num
   (e.ScannedPattern) (/* пусто */)
   (e.ScannedResult) (t.ResultItem e.Result) =
-    <AlignEnumExprs
+    <EnumExprs
       <Inc s.Num>
-      (e.ScannedPattern (s.Num '*')) (/* пусто */)
+      (e.ScannedPattern) (/* пусто */)
       (e.ScannedResult (s.Num t.ResultItem)) (e.Result)
     >;
 
   s.Num
   (e.ScannedPattern) (t.PatternItem e.Pattern)
   (e.ScannedResult) (/* пусто */) =
-    <AlignEnumExprs
+    <EnumExprs
       <Inc s.Num>
       (e.ScannedPattern (s.Num t.PatternItem)) (e.Pattern)
-      (e.ScannedResult (s.Num '*')) (/* пусто */)
+      (e.ScannedResult) (/* пусто */)
     >;
 
   s.Num (e.ScannedPattern) (/* пусто */) (e.ScannedResult) (/* пусто */) =
@@ -111,6 +111,7 @@ AlignEnumExprs {
 }
 
 DoOverlapOffsets {
+  /* Образец и результат начинают перекрываться */
   (e.Pattern t.Last) (e.OverlappedPattern)
   (e.OverlappedResult) (t.First e.Result) =
     <OverlapChain (e.OverlappedPattern) (e.OverlappedResult)>
@@ -119,6 +120,25 @@ DoOverlapOffsets {
       (e.OverlappedResult t.First) (e.Result)
     >;
 
+  /* образец короче, чем результат — он ползёт по результату */
+  (/* пусто */) (e.OverlappedPattern)
+  (t.Skip e.OverlappedResult) (t.Next e.Result)
+    = <OverlapChain (e.OverlappedPattern) (t.Skip e.OverlappedResult)>
+      <DoOverlapOffsets
+        (/* пусто */) (e.OverlappedPattern)
+        (e.OverlappedResult t.Next) (e.Result)
+      >;
+
+  /* образец длиннее результата — результат ползёт по образцу */
+  (e.Pattern t.Next) (e.OverlappedPattern t.Skip)
+  (e.OverlappedResult) (/* пусто */)
+    = <OverlapChain (e.OverlappedPattern t.Skip) (e.OverlappedResult)>
+      <DoOverlapOffsets
+        (e.Pattern) (t.Next e.OverlappedPattern)
+        (e.OverlappedResult) (/* пусто */)
+      >;
+
+  /* образец и результат заканчвают перекрываться */
   (/* пусто */) (e.OverlappedPattern t.Last)
   (t.First e.OverlappedResult) (/* пусто */) =
     <OverlapChain (e.OverlappedPattern t.Last) (t.First e.OverlappedResult)>
@@ -127,8 +147,7 @@ DoOverlapOffsets {
       (e.OverlappedResult) (/* пусто */)
     >;
 
-  (/* пусто */) (/* пусто */) (/* пусто */) (/* пусто */) =
-    /* пусто */;
+  (/* пусто */) (/* пусто */) (/* пусто */) (/* пусто */) = /* пусто */;
 }
 
 OverlapChain {
@@ -464,7 +483,4 @@ OverlapItem {
   (RIGHT-EDGE) (RIGHT-EDGE) = 3 AsIs;
   (LEFT-EDGE) t.Other = NoOverlap;
   (RIGHT-EDGE) t.Other = NoOverlap;
-
-  t.AnyItem '*' = NoOverlap;
-  '*' t.AnyItem = NoOverlap;
 }
