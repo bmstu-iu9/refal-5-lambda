@@ -26,6 +26,17 @@ echo --dir=../lib/common>>input.prj
 echo --prelude=refal5-builtins.refi>>input.prj
 
 echo.
+echo Run "..\..\bin\rlc-core -C %BENCH_FLAGS% *.ref *.sref" with profile...
+set INI=rlc-core.exe@refal-5-lambda-diagnostics.ini
+set INISAVE=%INI%.save
+if not exist %INISAVE% copy %INI% %INISAVE%
+echo enable-profiler = true>> %INI%
+..\..\bin\rlc-core @input.prj
+move %INISAVE% %INI%
+if exist _profile_time.txt move _profile_time.txt "%LOG%_profile_time.txt"
+if exist _profile_count.txt move _profile_count.txt "%LOG%_profile_count.txt"
+
+echo.
 echo Run "..\..\bin\rlc-core -C %BENCH_FLAGS% *.ref *.sref" %TIMES% times...
 
 for /L %%i in (1, 1, %TIMES%) do (
