@@ -21,18 +21,17 @@ is accessed for direct elaboration. In other words, it is possible to make only
 operations such as looking for the first element, cutting off the first element,
 making a new list by adding an element at the beginning of the initial list.
 
-It is possible to derive the last element only by sequential truncation of the
-first element until the sequence won’t be empty – the last truncated element is
-the last element of the list. In order to concatenate (paste) two lists, the
-elements of the first list in inverse order must be appended to the beginning
-of the second list.
+It is possible to derive the last element only by sequential truncating the
+first element until the sequence is empty – the last truncated element is
+the last element in the list. In order to concatenate (paste) two lists, the
+elements in the first list must be appended to the beginning of the second list
+in reverse order.
 
-As to REFAL, it manipulates with bidirectional sequences (that are called
-‘object expressions’): for them it is possible to use not only the same
-operations with both sides (cutting off the first element, adding an element)
-but also concatenation and separation in any place (see ahead about opened
-e-variable). All these operations are primitive!  The expressivity of programs
-is rising at that expense.
+As for REFAL, it manipulates bidirectional sequences (that are called
+‘object expressions’): for them it is possible to use not only the same operations
+on both sides (cutting off the first element, adding an element) but also 
+concatenation and separation anywhere (see ahead about opened e-variable). All these
+operations are primitive! The expressivity of programs increases due to this.
 
 The another important specialty of REFAL is pattern matching. REFAL was one of
 the first programming languages (maybe even the first), which uses this
