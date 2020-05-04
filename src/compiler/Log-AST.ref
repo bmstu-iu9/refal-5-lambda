@@ -56,13 +56,13 @@ Element {
 MAX-LINE { = 77 }
 
 LongLine {
-  e.Line = <DoLongLine <MAX-LINE> e.Line>;
-}
-
-DoLongLine {
-  s.Len /* пусто */ = False;
-  0 e.Line = True;
-  s.Len t.Next e.Line = <DoLongLine <- s.Len 1> e.Line>;
+  e.Line
+    = <Lenw e.Line> : s.Len e.Line^
+    = <Compare s.Len <MAX-LINE>>
+    : {
+        '+' = True;
+        s._ = False;
+      };
 }
 
 
