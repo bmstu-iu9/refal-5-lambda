@@ -15,10 +15,6 @@ setlocal
   set RLC_FLAGS=%RLC_FLAGS% %RLC_FLAGS_PLUS%
   set RLMAKE_FLAGS=%RLMAKE_FLAGS% %RLMAKE_FLAGS_PLUS%
 
-  :: TODO: удалить после обновления дистрибутива
-  set SREFC_FLAGS=%RLC_FLAGS%
-  set SRMAKE_FLAGS=%RLMAKE_FLAGS%
-
   if not {%1}=={} goto :MAKE_PROJECT
 
   if not exist ..\bin\nul mkdir ..\bin

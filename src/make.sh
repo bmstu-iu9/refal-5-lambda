@@ -32,8 +32,6 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     make_subdir make make-s.sh
     (
       export RLC_FLAGS="$RLC_FLAGS $RLC_FLAGS_PLUS"
-      # TODO: удалить после обновления дистрибутива
-      export SREFC_FLAGS="$RLC_FLAGS"
       make_subdir lib make.sh
     )
     make_subdir make make.sh
@@ -65,8 +63,6 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     mkdir -p ../../bin
     (
       export RLMAKE_FLAGS="$RLMAKE_FLAGS $RLMAKE_FLAGS_PLUS"
-      # TODO: удалить после обновления дистрибутива
-      export SRMAKE_FLAGS="$RLMAKE_FLAGS"
 
       ${PATH_TO_RLC}/bin/rlmake \
         ${SCRIPT_FLAGS} --keep-rasls -d ../common "$MAINSRC" -o"$TARGET"

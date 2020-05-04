@@ -1,6 +1,5 @@
 #!/bin/bash
-# TODO: удалить `SRMAKE_FLAGS=` после обновления дистрибутива
-SRMAKE_FLAGS= RLMAKE_FLAGS= ./makeself-s.sh
+RLMAKE_FLAGS= ./makeself-s.sh
 ./update-lib.sh
 ./makeself.sh
 ./makeself.sh

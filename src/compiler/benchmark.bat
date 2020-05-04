@@ -1,8 +1,6 @@
 @echo off
 setlocal
   set RLMAKE_FLAGS=
-  :: TODO: удалить после обновления дистрибутива
-  set SRMAKE_FLAGS=
   call makeself-s.bat
 endlocal
 call update-lib.bat
