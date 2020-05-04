@@ -225,14 +225,6 @@ public:
 public:
   // Операции сопоставления с образцом
 
-  static Iter next(Iter current) {
-    return current->next;
-  }
-
-  static Iter prev(Iter current) {
-    return current->prev;
-  }
-
   static void move_left(Iter& first, Iter& last) {
     // assert((first == 0) == (last == 0));
     if (first == 0) assert (last == 0);
@@ -242,7 +234,7 @@ public:
       first = 0;
       last = 0;
     } else {
-      first = next(first);
+      first = first->next;
     }
   }
 
@@ -255,7 +247,7 @@ public:
       first = 0;
       last = 0;
     } else {
-      last = prev(last);
+      last = last->prev;
     }
   }
 
@@ -418,9 +410,9 @@ public:
 
     Iter right_bracket = pos->link_info;
 
-    if (next(pos) != right_bracket) {
-      res_first = next(pos);
-      res_last = prev(right_bracket);
+    if (pos->next != right_bracket) {
+      res_first = pos->next;
+      res_last = right_bracket->prev;
     } else {
       res_first = 0;
       res_last = 0;
@@ -442,9 +434,9 @@ public:
       Iter left_bracket = first;
       Iter right_bracket = left_bracket->link_info;
 
-      if (next(left_bracket) != right_bracket) {
-        res_first = next(left_bracket);
-        res_last = prev(right_bracket);
+      if (left_bracket->next != right_bracket) {
+        res_first = left_bracket->next;
+        res_last = right_bracket->prev;
       } else {
         res_first = 0;
         res_last = 0;
@@ -454,7 +446,7 @@ public:
         first = 0;
         last = 0;
       } else {
-        first = next(right_bracket);
+        first = right_bracket->next;
       }
 
       return left_bracket;
@@ -474,9 +466,9 @@ public:
       Iter right_bracket = last;
       Iter left_bracket = right_bracket->link_info;
 
-      if (next(left_bracket) != right_bracket) {
-        res_first = next(left_bracket);
-        res_last = prev(right_bracket);
+      if (left_bracket->next != right_bracket) {
+        res_first = left_bracket->next;
+        res_last = right_bracket->prev;
       } else {
         res_first = 0;
         res_last = 0;
@@ -486,7 +478,7 @@ public:
         first = 0;
         last = 0;
       } else {
-        last = prev(left_bracket);
+        last = left_bracket->prev;
       }
 
       return left_bracket;
@@ -504,7 +496,7 @@ public:
       return 0;
     }
 
-    Iter adt_tag = next(pos);
+    Iter adt_tag = pos->next;
 
     assert (adt_tag->tag == cDataFunction);
     if (adt_tag->function_info != tag) {
@@ -513,9 +505,9 @@ public:
 
     Iter right_bracket = pos->link_info;
 
-    if (next(adt_tag) != right_bracket) {
-      res_first = next(adt_tag);
-      res_last = prev(right_bracket);
+    if (adt_tag->next != right_bracket) {
+      res_first = adt_tag->next;
+      res_last = right_bracket->prev;
     } else {
       res_first = 0;
       res_last = 0;
@@ -538,7 +530,7 @@ public:
     } else {
       Iter left_bracket = first;
       Iter right_bracket = left_bracket->link_info;
-      Iter pnext = next(left_bracket);
+      Iter pnext = left_bracket->next;
 
       if (pnext == right_bracket) {
         return 0;
@@ -547,9 +539,9 @@ public:
       } else if (pnext->function_info != tag) {
         return 0;
       } else {
-        if (next(pnext) != right_bracket) {
-          res_first = next(pnext);
-          res_last = prev(right_bracket);
+        if (pnext->next != right_bracket) {
+          res_first = pnext->next;
+          res_last = right_bracket->prev;
         } else {
           res_first = 0;
           res_last = 0;
@@ -559,7 +551,7 @@ public:
           first = 0;
           last = 0;
         } else {
-          first = next(right_bracket);
+          first = right_bracket->next;
         }
 
         return left_bracket;
@@ -581,7 +573,7 @@ public:
     } else {
       Iter right_bracket = last;
       Iter left_bracket = right_bracket->link_info;
-      Iter pnext = next(left_bracket);
+      Iter pnext = left_bracket->next;
 
       if (pnext == right_bracket) {
         return 0;
@@ -590,9 +582,9 @@ public:
       } else if (pnext->function_info != tag) {
         return 0;
       } else {
-        if (next(pnext) != right_bracket) {
-          res_first = next(pnext);
-          res_last = prev(right_bracket);
+        if (pnext->next != right_bracket) {
+          res_first = pnext->next;
+          res_last = right_bracket->prev;
         } else {
           res_first = 0;
           res_last = 0;
@@ -602,7 +594,7 @@ public:
           first = 0;
           last = 0;
         } else {
-          last = prev(left_bracket);
+          last = left_bracket->prev;
         }
 
         return left_bracket;
@@ -611,7 +603,7 @@ public:
   }
 
   static void adt_pointers(Iter left_bracket, Iter& tag, Iter& right_bracket) {
-    Iter pnext = next(left_bracket);
+    Iter pnext = left_bracket->next;
     tag = pnext;
     right_bracket = left_bracket->link_info;
   }
@@ -624,13 +616,13 @@ public:
 
     Iter left_bracket = first;
     Iter right_bracket = last;
-    Iter function = next(left_bracket);
+    Iter function = left_bracket->next;
 
     assert(left_bracket->link_info == right_bracket);
 
-    if (next(function) != right_bracket) {
-      res_first = next(function);
-      res_last = prev(right_bracket);
+    if (function->next != right_bracket) {
+      res_first = function->next;
+      res_last = right_bracket->prev;
     } else {
       res_first = 0;
       res_last = 0;
@@ -640,7 +632,7 @@ public:
   }
 
   static void call_pointers(Iter left_bracket, Iter& tag, Iter& right_bracket) {
-    Iter pnext = next(left_bracket);
+    Iter pnext = left_bracket->next;
     tag = pnext;
     right_bracket = left_bracket->link_info;
   }
