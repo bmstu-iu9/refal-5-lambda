@@ -277,6 +277,11 @@ void refalrts::Profiler::stop_allocation_abnormal() {
   BaseCounter counter;
 
   switch (m_current_state) {
+    case cInRuntime:
+      next = cInRuntime;
+      counter = cCounter_RuntimeTime;
+      break;
+
     case cInRuntimeCopy:
       next = cInRuntime;
       counter = cCounter_ContextCopyTime;
