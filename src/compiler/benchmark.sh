@@ -36,7 +36,7 @@ mv "$INISAVE" "$INI"
 [[ -e _profile_count.txt ]] && mv _profile_count.txt "${LOG}_profile_count.txt"
 
 echo
-echo Run "../../bin/rlc-core -C $BENCH_FLAGS \*.ref \*.sref" $TIMES times...
+echo Run "../../bin/rlc-core -C $BENCH_FLAGS *.ref *.sref" $TIMES times...
 
 for ((i = 1; i <= "$TIMES"; ++i)); do
   echo ${i}
