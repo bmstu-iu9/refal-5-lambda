@@ -332,9 +332,9 @@ ParseOptFlags {
 ParseOptLetters {
   (e.Scanned) s.Flag e.Flags
      , <ValidFlag s.Flag> : True e.FlagNames
-     = <ParseOptLetters (<Flags-Unique e.Scanned e.FlagNames>) e.Flags>;
+     = <ParseOptLetters (e.Scanned e.FlagNames) e.Flags>;
 
-  (e.Scanned) /* пусто */ = Success e.Scanned;
+  (e.Scanned) /* пусто */ = Success <Flags-Unique e.Scanned>;
 
   (e.Scanned) e.Unparsed = Fails e.Unparsed;
 }
@@ -357,8 +357,10 @@ ValidFlag {
 }
 
 Flags-Unique {
-  e.Flags-B s.Repeated e.Flags-E s.Repeated = e.Flags-B s.Repeated e.Flags-E;
-  e.Flags s.New = e.Flags s.New;
+  e.Flags-B s.Repeated e.Flags-M s.Repeated e.Flags-E
+    = <Flags-Unique e.Flags-B s.Repeated e.Flags-M e.Flags-E>;
+
+  e.Flags = e.Flags;
 }
 
 Opt-Add {
