@@ -535,26 +535,20 @@ void refalrts::VM::reset_allocator() {
   reset_allocator_aux();
 }
 
-void refalrts::VM::alloc_node(Iter& res) {
-  ensure_memory();
+void refalrts::VM::free_closure() {
+  assert(refalrts::cDataClosure == m_free_ptr->tag);
 
-  if (refalrts::cDataClosure == m_free_ptr->tag) {
-    refalrts::Iter head = m_free_ptr->link_info;
-    -- head->number_info;
+  refalrts::Iter head = m_free_ptr->link_info;
+  -- head->number_info;
 
-    if (0 == head->number_info) {
-      unwrap_closure(m_free_ptr);
-      // теперь перед m_free_ptr находится "развёрнутое" замыкание
-      m_free_ptr->tag = refalrts::cDataClosureHead;
-      m_free_ptr->number_info = 407193; // :-)
+  if (0 == head->number_info) {
+    unwrap_closure(m_free_ptr);
+    // теперь перед m_free_ptr находится "развёрнутое" замыкание
+    m_free_ptr->tag = refalrts::cDataClosureHead;
+    m_free_ptr->number_info = 407193; // :-)
 
-      m_free_ptr = head;
-    }
+    m_free_ptr = head;
   }
-
-  res = m_free_ptr;
-  m_free_ptr = m_free_ptr->next;
-  res->tag = refalrts::cDataIllegal;
 }
 
 bool refalrts::VM::create_nodes() {
@@ -1248,7 +1242,7 @@ JUMP_FROM_SCALE:
 
       case icAllocateBracket:
         assert(val2 <= ibCloseCall);
-        alloc_some_bracket(elem, bracket_tag[val2]);
+        alloc_node(elem, bracket_tag[val2]);
         break;
 
       case icAllocateString:
@@ -1840,53 +1834,40 @@ bool refalrts::VM::repeated_evar_right(
   }
 }
 
-void refalrts::VM::copy_node(refalrts::Iter& res, refalrts::Iter sample) {
+void refalrts::VM::copy_svar(refalrts::Iter& res, refalrts::Iter sample) {
+  ensure_memory();
+
+  if (refalrts::cDataClosure == m_free_ptr->tag) {
+    free_closure();
+  }
+
+  res = m_free_ptr;
+  m_free_ptr = m_free_ptr->next;
+  res->tag = sample->tag;
+
   switch(sample->tag) {
     case refalrts::cDataChar:
-      alloc_char(res, sample->char_info);
+      res->char_info = sample->char_info;
       break;
 
     case refalrts::cDataNumber:
-      alloc_number(res, sample->number_info);
+      res->number_info = sample->number_info;
       break;
 
     case refalrts::cDataFunction:
-      alloc_name(res, sample->function_info);
+      res->function_info = sample->function_info;
       break;
 
     case refalrts::cDataIdentifier:
-      alloc_ident(res, sample->ident_info);
-      break;
-
-    case refalrts::cDataOpenBracket:
-      alloc_open_bracket(res);
-      break;
-
-    case refalrts::cDataCloseBracket:
-      alloc_close_bracket(res);
-      break;
-
-    case refalrts::cDataOpenADT:
-      alloc_open_adt(res);
-      break;
-
-    case refalrts::cDataCloseADT:
-      alloc_close_adt(res);
+      res->ident_info = sample->ident_info;
       break;
 
     case refalrts::cDataClosure:
-      {
-        alloc_node(res);
-        res->tag = refalrts::cDataClosure;
-        refalrts::Iter head = sample->link_info;
-        res->link_info = head;
-        ++ (head->number_info);
-      }
+      res->link_info = sample->link_info;
+      ++res->link_info->number_info;
       break;
 
     case refalrts::cDataFile:
-      alloc_node(res);
-      res->tag = refalrts::cDataFile;
       res->file_info = sample->file_info;
       break;
 
@@ -1909,22 +1890,68 @@ void refalrts::VM::copy_nonempty_evar(
   refalrts::Iter bracket_stack = 0;
 
   refalrts::Iter prev_res_begin = m_free_ptr->prev;
+  refalrts::Iter limit = evar_e_sample->next;
 
-  while (! refalrts::empty_seq(evar_b_sample, evar_e_sample)) {
-    copy_node(res, evar_b_sample);
+  for (refalrts::Iter p = evar_b_sample; p != limit; p = p->next) {
+    ensure_memory();
 
-    if (is_open_bracket(res)) {
-      res->link_info = bracket_stack;
-      bracket_stack = res;
-    } else if (is_close_bracket(res)) {
-      assert(bracket_stack != 0);
-
-      refalrts::Iter open_cobracket = bracket_stack;
-      bracket_stack = bracket_stack->link_info;
-      refalrts::link_brackets(open_cobracket, res);
+    if (refalrts::cDataClosure == m_free_ptr->tag) {
+      free_closure();
     }
 
-    refalrts::move_left(evar_b_sample, evar_e_sample);
+    res = m_free_ptr;
+    m_free_ptr = m_free_ptr->next;
+    res->tag = p->tag;
+
+    switch (res->tag) {
+      case refalrts::cDataChar:
+        res->char_info = p->char_info;
+        break;
+
+      case refalrts::cDataNumber:
+        res->number_info = p->number_info;
+        break;
+
+      case refalrts::cDataFunction:
+        res->function_info = p->function_info;
+        break;
+
+      case refalrts::cDataIdentifier:
+        res->ident_info = p->ident_info;
+        break;
+
+      case refalrts::cDataOpenBracket:
+      case refalrts::cDataOpenADT:
+        res->link_info = bracket_stack;
+        bracket_stack = res;
+        break;
+
+      case refalrts::cDataCloseBracket:
+      case refalrts::cDataCloseADT:
+        {
+          assert(bracket_stack != 0);
+          refalrts::Iter open_cobracket = bracket_stack;
+          bracket_stack = bracket_stack->link_info;
+          refalrts::link_brackets(open_cobracket, res);
+        }
+        break;
+
+      case refalrts::cDataClosure:
+        res->link_info = p->link_info;
+        ++res->link_info->number_info;
+        break;
+
+      case refalrts::cDataFile:
+        res->file_info = p->file_info;
+        break;
+
+      /*
+        Копируем только объектное выражение -- никаких вызовов функций
+        быть не должно.
+      */
+      default:
+        refalrts_switch_default_violation(res->tag);
+    }
   }
 
   assert(bracket_stack == 0);
