@@ -41,6 +41,7 @@ mkdir docs
 cp ../docs/*.md docs
 cp ../docs/*.ref docs
 cp ../docs/*.yml docs
+cp ../docs/*.js docs
 cp ../LICENSE .
 cp ../README.md .
 cp ../README.en.md .

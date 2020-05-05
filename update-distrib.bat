@@ -50,6 +50,7 @@ md docs
 copy ..\docs\*.md docs
 copy ..\docs\*.ref docs
 copy ..\docs\*.yml docs
+copy ..\docs\*.js docs
 copy ..\LICENSE .
 copy ..\README.md .
 copy ..\README.en.md .
