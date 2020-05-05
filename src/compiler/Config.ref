@@ -352,6 +352,7 @@ ValidFlag {
   'S' = True OptTree OptSpec;
   'A' = True OptTree OptAutoMarkup;
   'i' = True OptTree OptIntrinsic;
+  'G' = True /* глобальная оптимизация пока не реализована */;
 
   'x' = True /* пусто */;
   'y' = True /* пусто */;

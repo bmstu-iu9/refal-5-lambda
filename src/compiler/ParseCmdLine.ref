@@ -353,6 +353,7 @@ PrintHelp {
 '          -OS - specialize functions with $SPEC\n'
 '          -OA - automatically markup optimizable functions\n'
 '          -Oi - optimize intrinsic functions\n'
+'          -OG - global optimization (not implemented yet)\n'
 '          -Ox, -Oy, -Oz - experimental keys, do nothing in release\n'
 '        Flags D, I, S, A, i implicitly contain T\n'
 '        Change key mode (optional):\n'
