@@ -24,8 +24,9 @@ $EXTERN DisplayName;
   e.SpecFuncNames ::= (e.FuncName)*
   e.SpecInfo-Specific ::= t.FunctionInfo*
   t.FunctionInfo ::= ((e.Name) (e.Pattern) (e.Body) s.NextCounter t.Signature*)
-  t.Signature ::= ((e.Name SUF '@' e.SpecFuncName) t.StaticVarVals*)
+  t.Signature ::= ((e.InstanceName) t.StaticVarVals*)
   t.StaticVarVals ::= (e.Expression)
+  e.InstanceName ::= e.Name
 */
 $ENTRY OptTree-Spec-Prepare {
   NoOpt e.AST = e.AST;
@@ -88,7 +89,7 @@ CreateGuardFunctions {
         {
           (e.GuardEnums)
           ((e.Name) (e.SpecPattern) (e.Sentences) e.Signatures)
-            = e.Name SUF '@' 0 : e.GuardName
+            = <AddSuffix e.Name ('@' 0)> : e.GuardName
             = (e.SpecPattern)
               ((CallBrackets (Symbol Name e.GuardName) e.SpecPattern))
             : e.GuardSentence
@@ -105,6 +106,11 @@ CreateGuardFunctions {
         }
         (/* guard enums */) e.Info
       >
+}
+
+AddSuffix {
+  e.Name SUF e.Suffix (e.NewSuffix) = e.Name SUF e.Suffix e.NewSuffix;
+  e.Name (e.NewSuffix) = e.Name SUF e.NewSuffix;
 }
 
 /**
@@ -311,11 +317,10 @@ SpecCall-Aux {
 
     = <Spec-FindInSignatures (e.Signature) e.Signatures>
     : {
-        Found e.SpecSuffix
+        Found e.InstanceName
           = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
             (CallBrackets
-              (Symbol Name e.Name SUF e.SpecSuffix)
-              e.SpecializedFuncArgument
+              (Symbol Name e.InstanceName) e.SpecializedFuncArgument
             )
             /* no new functions */;
 
@@ -329,18 +334,16 @@ SpecCall-Aux {
           , <IsSoundBody e.SpecializedFuncBody>
           : {
               True
+                = <AddSuffix e.Name ('@' s.NextNumber)> : e.InstanceName
                 = (
                     (e.SpecPattern) (e.Body) <Inc s.NextNumber>
-                    e.Signatures
-                    ((e.Name SUF '@' s.NextNumber) e.Signature)
+                    e.Signatures ((e.InstanceName) e.Signature)
                   )
                   (CallBrackets
-                    (Symbol Name e.Name SUF '@' s.NextNumber)
-                    e.SpecializedFuncArgument
+                    (Symbol Name e.InstanceName) e.SpecializedFuncArgument
                   )
-                  (
-                    Function GN-Local (e.Name SUF '@' s.NextNumber)
-                    Sentences e.SpecializedFuncBody
+                  (Function
+                    GN-Local (e.InstanceName) Sentences e.SpecializedFuncBody
                   );
 
               False
@@ -564,9 +567,8 @@ ApplySubst-Expr {
 }
 
 Spec-FindInSignatures {
-  (e.Signature)
-  e.Signatures-B ((e.Name SUF e.SpecSuffix) e.Signature) e.Signatures-E
-    = Found e.SpecSuffix;
+  (e.Signature) e.Signatures-B ((e.InstanceName) e.Signature) e.Signatures-E
+    = Found e.InstanceName;
 
   (e.Signature) e.Signatures
     = NotFound;
