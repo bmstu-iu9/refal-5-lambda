@@ -33,16 +33,16 @@ on both sides (cutting off the first element, adding an element) but also
 concatenation and separation anywhere (see ahead about opened e-variable). All these
 operations are primitive! The expressivity of programs increases due to this.
 
-The another important specialty of REFAL is pattern matching. REFAL was one of
-the first programming languages (maybe even the first), which uses this
-mechanism for data structures analyzing. The functions on REFAL make the
-analysis of its parameter by choosing one of some samples that describe the
-parameter. Another way of analyzing data is not anticipated in this language.
+The another important feature of REFAL is a pattern matching. REFAL was one of
+the first programming languages (maybe even the first), to use this mechanism
+for data structures analyzing. The REFAL functions analyze its parameter by
+choosing one of some samples that describe the parameter. There is no other way
+to analyze data in this language.
 
 Firstly, REFAL-5λ dialect is an exact comprehending set of REFAL-5\[2] dialect,
-that means that any program worked on “classical” implementation \[3] (further
-we will name implementation as classical one without using quotations) will be
-correct in REFAL-5λ.
+that means that any program running on the “classical” implementation \[3] 
+(further we will call the implementation classical without using quotations)
+will be correct in REFAL-5λ.
 
 Note. _Metafunctions `Ev-met`, `Up` and `Dn` aren’t work in actual version.
 They will be implemented in next versions. There aren’t any other limitations._
