@@ -353,6 +353,10 @@ ValidFlag {
   'A' = True OptTree OptAutoMarkup;
   'i' = True OptTree OptIntrinsic;
 
+  'x' = True /* пусто */;
+  'y' = True /* пусто */;
+  'z' = True /* пусто */;
+
   s.Other = False;
 }
 
