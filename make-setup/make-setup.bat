@@ -21,9 +21,10 @@ setlocal
   echo Test > test.txt
   echo Test >> test.txt
   copy test.txt test.d2u
-  dos2unix test.d2u
+  %MSYSDIR%\dos2unix test.d2u
   fc /b test.txt test.d2u && (
-    echo Add dos2unix and tar to PATH!
+    echo Set MSYSDIR to usr\bin for MSys installation!
+    echo This folder should contain the files tar.exe and dos2unix.exe
     exit /b 1
   )
   erase test.txt test.d2u
@@ -38,11 +39,11 @@ setlocal
   for %%f in (..\..\distrib\*) do copy %%f %%~nxf
   for /d %%d in (..\..\distrib\*) do xcopy /e /i /y %%d %%~nxd
 
-  dos2unix bin/*
-  dos2unix bootstrap.*
-  dos2unix clear.*
-  for /F "tokens=*" %%f in ('dir /b /s *.sh *.cpp *.froms *.ref *.refi') do dos2unix "%%~f"
-  dos2unix scripts/*
+  %MSYSDIR%\dos2unix bin/*
+  %MSYSDIR%\dos2unix bootstrap.*
+  %MSYSDIR%\dos2unix clear.*
+  for /F "tokens=*" %%f in ('dir /b /s *.sh *.cpp *.froms *.ref *.refi') do %MSYSDIR%\dos2unix "%%~f"
+  %MSYSDIR%\dos2unix scripts/*
 
   erase c-plus-plus.conf.* .gitignore
 
@@ -50,7 +51,10 @@ setlocal
 
   set ARC=..\_setup\bootstrap-refal-5-lambda-%VERSION%.tar.gz
   if not exist %ARC% erase %ARC%
-  tar czvf %ARC:\=/% *
+  setlocal
+  set PATH=%MSYSDIR%;%PATH%
+  tar czvf %ARC% *
+  endlocal
 
   set ARC=%ARC:tar.gz=zip%
   if not exist %ARC% erase %ARC%
