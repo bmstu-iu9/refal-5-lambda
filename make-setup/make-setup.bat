@@ -41,7 +41,7 @@ setlocal
   dos2unix bin/*
   dos2unix bootstrap.*
   dos2unix clear.*
-  for /F %%f in ('dir /b /s *.sh *.cpp *.froms *.ref *.refi') do dos2unix %%f
+  for /F "tokens=*" %%f in ('dir /b /s *.sh *.cpp *.froms *.ref *.refi') do dos2unix "%%~f"
   dos2unix scripts/*
 
   erase c-plus-plus.conf.* .gitignore
