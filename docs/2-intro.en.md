@@ -44,20 +44,20 @@ that means that any program running on the “classical” implementation \[3]
 (further we will call the implementation classical without using quotations)
 will be correct in REFAL-5λ.
 
-Note. _Metafunctions `Ev-met`, `Up` and `Dn` aren’t work in actual version.
-They will be implemented in next versions. There aren’t any other limitations._
+Note. _Metafunctions `Ev-met`, `Up` and `Dn` don’t work in the actual version.
+They will be implemented in next versions. There are no any other limitations._
 
-Secondly, it is an extension of REFAL-5, that includes higher order functions
+Secondly, it is an extension of REFAL-5, which includes higher-order functions
 and also nested functions and a lot of good, tasty and useful syntactic sugar.
-Classical REFAL-5 didn’t maintain nested functions as it was conceived, because
-by Turchin REFAL it supposed to be not only the subject, but also the object of
-programs modifications, and, what is important, valid modifications considered
-to be only those, which could be described using “pen and paper”\[4].
+Classical REFAL-5 didn’t support nested functions as it was conceived, because
+according to Turchin REFAL supposed to be not only the subject, but also the 
+object of programs modifications, and, what is important, valid modifications 
+are considered only those, which could be described using “pen and paper”\[4].
 
-Firstly nested functions appeared in Refal-7 dialect, suggested by Sergei
+Firstly, nested functions appeared in Refal-7 dialect, suggested by Sergei
 Yurievich Skorobogatov in 2006 year \[5]. Refal-5λ language has constrained
-handling of  Refal-7 nested functions – only unnamed nested functions. But, as
-the practice shows, it is quite enough.
+handling of  Refal-7 nested functions – only unnamed nested functions. But,
+as practice shows, this is quite enough.
 
 Syntactic sugar – redundant syntax structures of programming language, that
 make language more comfortable for usage. Such constructions can be written as
