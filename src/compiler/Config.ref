@@ -18,6 +18,10 @@ $ENTRY Config-Create {
           (/* конец командной строки для библиотек */)
         )
         (Optimize /* пусто */)
+        (WarningAll False)
+        (WarningError False)
+        (WarningScreening False)
+        (WarningInitFinalEntry False)
         (ErrorFile /* пусто */)
         (DebugMode NoMarkupContext NoDebugInfo)
         (GrammarCheck NormalRun)
@@ -389,6 +393,59 @@ Opt-Remove {
 
 Opt-Assign {
   (e.OldFlags) e.NewFlags = e.NewFlags;
+}
+
+/**
+  <Config-GetWarning t.Config e.WarningName>
+    == True | False
+*/
+$ENTRY Config-GetWarning {
+  [Config e.Params-B (e.WarningName e.Value) e.Params-E]
+    = e.Value;
+}
+
+/**
+  <Config-SetWarning t.Config e.Flag>
+    == Success t.Config
+    == Fails BadValue-Warning e.WarningName
+
+  e.WarningName ::= 'all' | 'error' | 'screening' | 'init-final-entry' |
+                    'no-screening' | 'no-init-final-entry'
+*/
+$ENTRY Config-SetWarning {
+  [Config e.Params-B (WarningAll e.OldValue) e.Params-E] e.Warning
+    = <ParseWarningName e.Warning>
+    : {
+        Success (e.WarningName) e.NewValue
+          = Success
+            [Config
+              e.Params-B
+              (e.WarningName e.NewValue)
+              e.Params-E
+            ];
+
+        Fails e.NotParsed
+          = Fails BadValue-Warning e.NotParsed;
+      };
+}
+
+ParseWarningName {
+  e.Warning
+     , <ValidWarning e.Warning> : True (e.WarningName) e.NewValue
+     = Success (e.WarningName) e.NewValue ;
+
+  e.Unparsed = Fails e.Unparsed;
+}
+
+ValidWarning {
+  'all' = True (WarningAll) True;
+  'error' = True (WarningError) True;
+  'screening' = True (WarningScreening) True;
+  'init-final-entry' = True (WarningInitFinalEntry) True;
+  'no-screening' = True (WarningScreening) False;
+  'no-init-final-entry' = True (WarningInitFinalEntry) False;
+
+  e.Other = False;
 }
 
 /**

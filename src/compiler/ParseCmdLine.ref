@@ -12,7 +12,7 @@ $EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
   Config-SetChmodXCommand, Config-SetPrelude, Config-SetR5Mode,
   Config-SetLogFile, Config-SetTreeOptCycles, Config-SetIncorporated,
   Config-SetKeepRasls, Config-SetTempDir, Config-SetOverwriteExistRasls,
-  Config-SetCppCompilerSuf, Config-SetNoSources;
+  Config-SetCppCompilerSuf, Config-SetNoSources, Config-SetWarning;
 
 *$FROM Version
 $EXTERN PrintVersion;
@@ -38,6 +38,7 @@ $ENTRY ParseCommandLine {
           (Incorporated Required ('incorporated'))
           (MarkupContext None ('markup-context'))
           (Opt Required 'O')
+          (Warning Required 'W')
           (Prefix Required 'p' ('prefix'))
           (Reference Required 'r' ('reference'))
           (RuntimeFolder Required 'D' ('runtime-dir') ('runtime-directory'))
@@ -129,6 +130,9 @@ $ENTRY ParseCommandLine {
 
             (t.Config e.Errors) (Opt s.Num e.Flags)
               = <Update t.Config (e.Errors) &Config-SetOptFlags s.Num e.Flags>;
+
+            (t.Config e.Errors) (Warning s.Num e.WarningName)
+              = <Update t.Config (e.Errors) &Config-SetWarning s.Num e.WarningName>;
 
             (t.Config e.Errors) (Prefix s.Num e.Prefix)
               = <Update t.Config (e.Errors) &Config-SetPrefix s.Num e.Prefix>;
@@ -289,6 +293,14 @@ $ENTRY ParseCommandLine {
                     'but got \'' e.BadValue '\''
                   );
 
+                (s.Pos BadValue-Warning e.BadValue) =
+                   (
+                     s.Pos
+                     'option -W expects \'all\', \'error\', \'screening\', \'init-final-entry\', '
+                     '\'no-screening\' or \'no-init-final-entry\', '
+                     'but got \'' e.BadValue '\''
+                   );
+
                 (s.Pos EmptyErrorFileName)
                   = (s.Pos 'option --error-file expects non-empty argument');
 
@@ -360,6 +372,12 @@ PrintHelp {
 '          -O...+ - set the flags with previous setted\n'
 '          -O...- - reject the flags from previous setted\n'
 '          -O...= - assign the flags, previous setted will be skipped\n'
+'-W keywords\n'
+'        Warning keywords:\n'
+'          -Wall - show all warnings\n'
+'          -Werror - treat all warnings as errors\n'
+'          -Wscreening, -Wno-screening - enable/disable screening\n'
+'          -Winit-final-entry, -Wno-init-final-entry - check/don\'t init final entry\n'
 '-p, --prefix prefix-name\n'
 '        set prefix file name\n'
 '-r, --reference reference-name\n'
