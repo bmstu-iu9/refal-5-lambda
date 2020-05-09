@@ -22,6 +22,7 @@ $ENTRY Config-Create {
         (WarningError False)
         (WarningScreening False)
         (WarningInitFinalEntry False)
+        (WarningZeroCompound True)
         (ErrorFile /* пусто */)
         (DebugMode NoMarkupContext NoDebugInfo)
         (GrammarCheck NormalRun)
@@ -441,9 +442,11 @@ ValidWarning {
   'all' = True (WarningAll) True;
   'error' = True (WarningError) True;
   'screening' = True (WarningScreening) True;
-  'init-final-entry' = True (WarningInitFinalEntry) True;
   'no-screening' = True (WarningScreening) False;
+  'init-final-entry' = True (WarningInitFinalEntry) True;
   'no-init-final-entry' = True (WarningInitFinalEntry) False;
+  'zero-compound' = True (WarningZeroCompound) True;
+  'no-zero-compound' = True (WarningZeroCompound) False;
 
   e.Other = False;
 }

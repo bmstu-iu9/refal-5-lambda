@@ -297,7 +297,7 @@ $ENTRY ParseCommandLine {
                    (
                      s.Pos
                      'option -W expects \'all\', \'error\', \'screening\', \'init-final-entry\', '
-                     '\'no-screening\' or \'no-init-final-entry\', '
+                     '\'zero-compound\', \'no-screening\', \'no-init-final-entry\', \'no-zero-compound\', '
                      'but got \'' e.BadValue '\''
                    );
 
@@ -378,6 +378,7 @@ PrintHelp {
 '          -Werror - treat all warnings as errors\n'
 '          -Wscreening, -Wno-screening - enable/disable screening\n'
 '          -Winit-final-entry, -Wno-init-final-entry - check/don\'t init final entry\n'
+'          -Wzero-compund, -Wno-zero-compound - check/don\'t zeros in compounds\n'
 '-p, --prefix prefix-name\n'
 '        set prefix file name\n'
 '-r, --reference reference-name\n'
