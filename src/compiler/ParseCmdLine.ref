@@ -132,7 +132,9 @@ $ENTRY ParseCommandLine {
               = <Update t.Config (e.Errors) &Config-SetOptFlags s.Num e.Flags>;
 
             (t.Config e.Errors) (Warning s.Num e.WarningName)
-              = <Update t.Config (e.Errors) &Config-SetWarning s.Num e.WarningName>;
+              = <Update
+                  t.Config (e.Errors) &Config-SetWarning s.Num e.WarningName
+                >;
 
             (t.Config e.Errors) (Prefix s.Num e.Prefix)
               = <Update t.Config (e.Errors) &Config-SetPrefix s.Num e.Prefix>;
@@ -296,9 +298,10 @@ $ENTRY ParseCommandLine {
                 (s.Pos BadValue-Warning e.BadValue) =
                    (
                      s.Pos
-                     'option -W expects \'all\', \'error\', \'screening\', \'init-final-entry\', '
-                     '\'zero-compound\', \'no-screening\', \'no-init-final-entry\', \'no-zero-compound\', '
-                     'but got \'' e.BadValue '\''
+                     'option -W expects \'all\', \'error\', \'screening\', '
+                     '\'init-final-entry\', \'nul-in-compound\', '
+                     '\'no-screening\', \'no-init-final-entry\', '
+                     '\'no-nul-in-compound\', but got \'' e.BadValue '\''
                    );
 
                 (s.Pos EmptyErrorFileName)
@@ -378,7 +381,7 @@ PrintHelp {
 '          -Werror - treat all warnings as errors\n'
 '          -Wscreening, -Wno-screening - enable/disable screening\n'
 '          -Winit-final-entry, -Wno-init-final-entry - check/don\'t init final entry\n'
-'          -Wzero-compund, -Wno-zero-compound - check/don\'t zeros in compounds\n'
+'          -Wnul-in-compound, -Wno-nul-in-compound - check/don\'t nuls in compounds\n'
 '-p, --prefix prefix-name\n'
 '        set prefix file name\n'
 '-r, --reference reference-name\n'

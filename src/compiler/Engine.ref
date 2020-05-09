@@ -1,7 +1,7 @@
 $INCLUDE "LibraryEx";
 
 *$FROM Error
-$EXTERN EL-Destroy, EL-Create, EL-AddErrorAt, EL-Concat;
+$EXTERN EL-Destroy, EL-Create, EL-AddErrorAt, EL-AddWarningAt, EL-Concat;
 
 *$FROM Config
 $EXTERN
@@ -13,7 +13,9 @@ $EXTERN
   Config-GetOptResult,
   Config-GetConditionsMode,
   Config-GetGenMode,
-  Config-GetOptTree;
+  Config-GetOptTree,
+  Config-GetWarningIds,
+  Config-GetWarningLevel;
 
 *$FROM Checker
 $EXTERN CheckProgram;
@@ -66,7 +68,11 @@ $ENTRY CompileFile {
   t.Config (s.Dialect e.SrcName) e.OutputName '.rasl'
     = <FrontEnd t.Config s.Dialect e.SrcName>
     : t.ErrorList e.AST
-    = <EL-Destroy t.ErrorList>
+    = <EL-Destroy
+        t.ErrorList
+        <Config-GetWarningIds t.Config>
+        <Config-GetWarningLevel t.Config>
+      >
     : {
         EL-NoErrors = <BackEnd t.Config (e.SrcName) (e.OutputName) e.AST>;
 
@@ -111,6 +117,24 @@ DisplayLexerWarnings {
       >;
 }
 
+FilterLexerMessages {
+  t.ErrorList e.Tokens
+    = <MapAccum
+        {
+          t.ErrorList^ (TkWarning t.Pos e.Message)
+            = <EL-AddWarningAt t.ErrorList nul-in-compound t.Pos e.Message>
+              /* пусто */;
+          t.ErrorList^ (TkError t.Pos e.Message)
+            = <EL-AddErrorAt t.ErrorList t.Pos e.Message>
+              /* пусто */;
+          t.ErrorList^ t.OtherToken
+            = t.ErrorList
+              t.OtherToken
+        }
+        t.ErrorList e.Tokens
+      >;
+}
+
 StrFromPos {
   NoPos = '1:1';
   s.Row = <Symb s.Row>;
@@ -121,8 +145,9 @@ LoadAST {
   t.Config R5 e.SrcName
     = <Config-GetR5Mode t.Config> : s.Mode
     = <R5-Scan s.Mode e.SrcName> : e.Tokens
-    = <DisplayLexerWarnings (e.SrcName) e.Tokens> : e.Tokens^
-    = <R5-Parse <EL-Create e.SrcName> s.Mode e.Tokens> : t.ErrorList e.AST
+    = <FilterLexerMessages <EL-Create e.SrcName> e.Tokens>
+    : t.ErrorList e.Tokens^
+    = <R5-Parse t.ErrorList s.Mode e.Tokens> : t.ErrorList^ e.AST
     = t.ErrorList <PreludeIncludeLine t.Config> e.AST;
 
   t.Config SR e.SrcName
@@ -590,7 +615,11 @@ CreateMetaFunctions {
 $ENTRY GrammarCheck {
   t.Config s.Dialect e.SrcName
     = <LoadAST t.Config s.Dialect e.SrcName> : t.ErrorList e.AST
-    = <EL-Destroy t.ErrorList>
+    = <EL-Destroy
+        t.ErrorList
+        <Config-GetWarningIds t.Config>
+        <Config-GetWarningLevel t.Config>
+      >
     : {
         EL-NoErrors = Success;
         EL-HasErrors = Fails;

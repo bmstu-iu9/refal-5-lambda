@@ -3,69 +3,194 @@ $INCLUDE "LibraryEx";
 
 /**
   Внутренний формат:
-  [ErrorList (e.FileName) (t.SrcPos e.Message)*]
+  [ErrorList (e.FileName) (t.Error*) (t.Warning*)]
+
+  t.Error ::= (t.SrcPos e.Message)
+  t.Warning ::= (s.WarningId t.SrcPos e.FileName)
   t.SrcPos ::=
       NoPos
     | (FileLine s.LineNumber e.FileName)
     | (RowCol s.Row s.Col)
     | (FileRowCol (s.Row s.Col) e.FileName)
+  s.WarningId ::=
+      screening
+    | nul-in-compound
+    | init-is-entry
 */
 $ENUM ErrorList;
 
 $ENTRY EL-Create {
-  e.FileName = [ErrorList (e.FileName)];
+  e.FileName = [ErrorList (e.FileName) () ()];
 }
 
 $ENTRY EL-AddError {
-  [ErrorList (e.FileName) e.Errors] e.Message =
-    [ErrorList (e.FileName) e.Errors (NoPos e.Message)];
+  [ErrorList (e.FileName) (e.Errors) t.Warnings] e.Message
+    = [ErrorList
+        (e.FileName) (e.Errors (NoPos e.Message)) t.Warnings
+      ];
+}
+
+$ENTRY EL-AddWarning {
+  [ErrorList (e.FileName) t.Errors (e.Warnings)] s.WarningId e.Message
+    = [ErrorList
+        (e.FileName) t.Errors (e.Warnings (s.WarningId NoPos e.Message))
+      ];
 }
 
 $ENTRY EL-AddErrorAt {
-  [ErrorList (e.FileName) e.Errors] NoPos e.Message =
-    [ErrorList
-      (e.FileName) e.Errors (NoPos e.Message)
-    ];
-
-  [ErrorList (e.FileName) e.Errors] s.LineNumber e.Message =
-    [ErrorList
-      (e.FileName) e.Errors ((FileLine s.LineNumber e.FileName) e.Message)
-    ];
-
-  [ErrorList (e.FileName) e.Errors] (RowCol s.Row s.Col) e.Message
+  [ErrorList (e.FileName) (e.Errors) t.Warnings] NoPos e.Message
     = [ErrorList
-        (e.FileName) e.Errors ((FileRowCol (s.Row s.Col) e.FileName) e.Message)
+        (e.FileName)
+        (e.Errors (NoPos e.Message))
+        t.Warnings
       ];
 
-  [ErrorList (e.FileName) e.Errors] t.SrcPos e.Message =
-    [ErrorList (e.FileName) e.Errors (t.SrcPos e.Message)];
+  [ErrorList (e.FileName) (e.Errors) t.Warnings] s.LineNumber e.Message
+    = [ErrorList
+        (e.FileName)
+        (e.Errors ((FileLine s.LineNumber e.FileName) e.Message))
+        t.Warnings
+      ];
+
+  [ErrorList (e.FileName) (e.Errors) t.Warnings] (RowCol s.Row s.Col) e.Message
+    = [ErrorList
+        (e.FileName)
+        (e.Errors ((FileRowCol (s.Row s.Col) e.FileName) e.Message))
+        t.Warnings
+      ];
+
+  [ErrorList (e.FileName) (e.Errors) t.Warnings] t.SrcPos e.Message
+    = [ErrorList
+        (e.FileName)
+        (e.Errors (t.SrcPos e.Message))
+        t.Warnings
+      ];
+}
+
+$ENTRY EL-AddWarningAt {
+  [ErrorList (e.FileName) t.Errors (e.Warnings)] s.WarningId NoPos e.Message
+    = [ErrorList
+        (e.FileName)
+        t.Errors
+        (e.Warnings (s.WarningId NoPos e.Message))
+      ];
+
+  [ErrorList (e.FileName) t.Errors (e.Warnings)]
+  s.WarningId
+  s.LineNumber
+  e.Message
+    = [ErrorList
+        (e.FileName)
+        t.Errors
+        (e.Warnings (s.WarningId (FileLine s.LineNumber e.FileName) e.Message))
+      ];
+
+  [ErrorList (e.FileName) t.Errors (e.Warnings)]
+  s.WarningId
+  (RowCol s.Row s.Col)
+  e.Message
+    = [ErrorList
+        (e.FileName)
+        t.Errors
+        (e.Warnings
+          (s.WarningId (FileRowCol (s.Row s.Col) e.FileName) e.Message))
+      ];
+
+  [ErrorList (e.FileName) t.Errors (e.Warnings)] s.WarningId t.SrcPos e.Message
+    = [ErrorList
+        (e.FileName)
+        t.Errors
+        (e.Warnings (s.WarningId t.SrcPos e.Message))
+      ];
 }
 
 $ENTRY EL-Concat {
-  [ErrorList (e.FileName-L) e.Errors-L] [ErrorList (e.FileName-R) e.Errors-R]
-    = [ErrorList (e.FileName-L) e.Errors-L e.Errors-R];
+  [ErrorList (e.FileName-L) (e.Errors-L) (e.Warnings-L)]
+  [ErrorList (e.FileName-R) (e.Errors-R) (e.Warnings-R)]
+    = [ErrorList
+        (e.FileName-L)
+        (e.Errors-L e.Errors-R)
+        (e.Warnings-L e.Warnings-R)
+      ];
+}
+
+/*
+<EL-Destroy t.ErrorList e.EnabledWarnings s.WarningControl>
+  == EL-NoErrors
+  == EL-HasErrors
+
+e.EnabledWarnings ::= s.WarningId*
+s.WarningLevel ::=
+    WarningsAsErrors
+  | WarningsAsWarnings
+*/
+$ENTRY EL-Destroy {
+  [ErrorList (e.FileName) (e.Errors) (e.Warnings)]
+  e.EnabledWarnings
+  s.WarningControl
+    = <FilterEnabledWarnings (e.Warnings) e.EnabledWarnings> : e.Warnings^
+    = <CheckHasErrors
+        [ErrorList (e.FileName) (e.Errors) (e.Warnings)]
+        s.WarningControl
+      >
+    : s.HasErrors
+    = <Map
+        (&PrintMessage 'ERROR')
+        <Sort e.Errors>
+      >
+      <Map
+        (&PrintMessage 'WARNING')
+        <Sort e.Warnings>
+      >
+      s.HasErrors
+}
+
+FilterEnabledWarnings {
+  (e.Warnings) e.EnabledWarnings =
+    <Map
+      (&IsWarningEnabled e.EnabledWarnings)
+      e.Warnings
+    >
+}
+
+IsWarningEnabled{
+  e._ s.WarningId e._ (s.WarningId e.Warning-R)
+    = (e.Warning-R);
+
+  e.WarningIds t.Skipped = /* пусто */
+}
+
+CheckHasErrors {
+  [ErrorList (e.FileName) () (e.Warnings)] WarningsAsWarnings
+    = EL-NoErrors;
+  [ErrorList (e.FileName) () ()] WarningsAsErrors
+    = EL-NoErrors;
+
+  t.ErrorList s.WarningLevel = EL-HasErrors
+}
+
+PrintMessage {
+  e.MessageType (NoPos e.Message)
+    = <PrintErr '  ' e.MessageType ': ' e.Message>;
+
+  e.MessageType ((FileLine s.LineNumber e.FileName) e.Message)
+    = <PrintErr
+        e.FileName
+        ':' <Symb s.LineNumber>
+        ':' e.MessageType
+        ': ' e.Message
+      >;
+
+  e.MessageType ((FileRowCol (s.Row s.Col) e.FileName) e.Message)
+    = <PrintErr
+        e.FileName
+        ':' <Symb s.Row>
+        ':' <Symb s.Col>
+        ':' e.MessageType
+        ': ' e.Message
+      >;
 }
 
 $ENTRY PrintErr {
   e.Message = <Putout stderr e.Message>;
-}
-
-$ENTRY EL-Destroy {
-  [ErrorList (e.FileName)] = EL-NoErrors;
-
-  [ErrorList (e.FileName) e.Errors] =
-    <Map
-      {
-        (NoPos e.Message)
-          = <PrintErr '  ERROR: ' e.Message>;
-
-        ((FileLine s.LineNumber e.FileName^) e.Message)
-          = <PrintErr e.FileName ':' <Symb s.LineNumber> ':ERROR: ' e.Message>;
-
-        ((FileRowCol (s.Row s.Col) e.FileName^) e.Message)
-          = <PrintErr e.FileName ':' <Symb s.Row> ':' <Symb s.Col> ':' e.Message>;
-      }
-      <Sort e.Errors>
-    >
-    EL-HasErrors;
 }

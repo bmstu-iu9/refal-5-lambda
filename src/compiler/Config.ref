@@ -18,11 +18,8 @@ $ENTRY Config-Create {
           (/* конец командной строки для библиотек */)
         )
         (Optimize /* пусто */)
-        (WarningAll False)
-        (WarningError False)
-        (WarningScreening False)
-        (WarningInitFinalEntry False)
-        (WarningZeroCompound True)
+        (WarningIds nul-in-compound)
+        (WarningLevel WarningsAsWarnings)
         (ErrorFile /* пусто */)
         (DebugMode NoMarkupContext NoDebugInfo)
         (GrammarCheck NormalRun)
@@ -397,31 +394,63 @@ Opt-Assign {
 }
 
 /**
-  <Config-GetWarning t.Config e.WarningName>
-    == True | False
+  <Config-GetWarningLevel t.Config>
+    == WarningLevel
 */
-$ENTRY Config-GetWarning {
-  [Config e.Params-B (e.WarningName e.Value) e.Params-E]
-    = e.Value;
+$ENTRY Config-GetWarningLevel {
+  [Config e._ (WarningLevel s.WarningLevel) e._]
+    = s.WarningLevel;
 }
 
 /**
-  <Config-SetWarning t.Config e.Flag>
+  <Config-GetWarningIds t.Config>
+    == WarningId*
+*/
+$ENTRY Config-GetWarningIds {
+  [Config e._ (WarningIds e.WarningIds) e._]
+    = e.WarningIds;
+}
+
+/**
+  <Config-SetWarning t.Config e.WarningName>
     == Success t.Config
     == Fails BadValue-Warning e.WarningName
 
-  e.WarningName ::= 'all' | 'error' | 'screening' | 'init-final-entry' |
-                    'no-screening' | 'no-init-final-entry'
+  e.WarningName ::= 'all' | 'error' | 'screening' | 'init-final-entry' | 'nul-in-compound' |
+                    'no-screening' | 'no-init-final-entry' | 'no-nul-in-compound'
 */
 $ENTRY Config-SetWarning {
-  [Config e.Params-B (WarningAll e.OldValue) e.Params-E] e.Warning
-    = <ParseWarningName e.Warning>
+  [Config
+    e.Params-B
+    (WarningIds e.OldWarningIds)
+    (WarningLevel s.WarningLevel)
+    e.Params-E
+  ]
+  e.WarningName
+    = <ParseWarningNames e.WarningName>
     : {
-        Success (e.WarningName) e.NewValue
+        Success WarningIds e.NewWarningIds On
           = Success
             [Config
               e.Params-B
-              (e.WarningName e.NewValue)
+              (WarningIds <WarningIds-Add (e.OldWarningIds) e.NewWarningIds>)
+              (WarningLevel s.WarningLevel)
+              e.Params-E
+            ];
+        Success WarningIds e.NewWarningIds Off
+          = Success
+            [Config
+              e.Params-B
+              (WarningIds <WarningIds-Remove (e.OldWarningIds) e.NewWarningIds>)
+              (WarningLevel s.WarningLevel)
+              e.Params-E
+            ];
+        Success WarningLevel e.NewWarningLevel
+          = Success
+            [Config
+              e.Params-B
+              (WarningIds e.OldWarningIds)
+              (WarningLevel e.NewWarningLevel)
               e.Params-E
             ];
 
@@ -430,23 +459,55 @@ $ENTRY Config-SetWarning {
       };
 }
 
-ParseWarningName {
-  e.Warning
-     , <ValidWarning e.Warning> : True (e.WarningName) e.NewValue
-     = Success (e.WarningName) e.NewValue ;
+ParseWarningNames {
+  e.Warning, <ValidWarningId e.Warning> : True (e.WarningIds) s.Switch
+    = Success WarningIds e.WarningIds s.Switch;
+  e.Warning, <ValidWarningLevel e.Warning> : True s.WarningLevel
+    = Success WarningLevel s.WarningLevel;
 
   e.Unparsed = Fails e.Unparsed;
 }
 
-ValidWarning {
-  'all' = True (WarningAll) True;
-  'error' = True (WarningError) True;
-  'screening' = True (WarningScreening) True;
-  'no-screening' = True (WarningScreening) False;
-  'init-final-entry' = True (WarningInitFinalEntry) True;
-  'no-init-final-entry' = True (WarningInitFinalEntry) False;
-  'zero-compound' = True (WarningZeroCompound) True;
-  'no-zero-compound' = True (WarningZeroCompound) False;
+WarningIds-Add {
+  (e.OldIds-B s.Repeated e.OldIds-E) s.Repeated e.NewFlags
+    = <WarningIds-Add (e.OldIds-B s.Repeated e.OldIds-E) e.NewFlags>;
+
+  (e.OldIds) s.NextNewFlag e.NewFlags
+    = <WarningIds-Add (e.OldIds s.NextNewFlag) e.NewFlags>;
+
+  (e.OldIds) /* пусто */ = e.OldIds;
+}
+
+WarningIds-Remove {
+  (e.OldIds-B s.Repeated e.OldIds-E) s.Repeated e.NewFlags
+    = <WarningIds-Remove (e.OldIds-B e.OldIds-E) e.NewFlags>;
+
+  (e.OldIds) s.NextNewFlag e.NewFlags
+    = <WarningIds-Remove (e.OldIds) e.NewFlags>;
+
+  (e.OldIds) /* пусто */ = e.OldIds;
+}
+
+
+
+ValidWarningId {
+  e.Name, <WarningForName e.Name> : True s.Id = True (s.Id) On;
+  'no-' e.Name, <WarningForName e.Name> : True s.Id = True (s.Id) Off;
+  'all' = True (screening init-is-entry nul-in-compound) On;
+
+  e.Other = False;
+}
+
+WarningForName {
+  'screening' = True screening;
+  'init-final-entry' = True init-is-entry;
+  'nul-in-compound' = True nul-in-compound;
+
+  e.Other = False
+}
+
+ValidWarningLevel {
+  'error' = True WarningsAsErrors;
 
   e.Other = False;
 }
