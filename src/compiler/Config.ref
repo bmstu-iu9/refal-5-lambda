@@ -416,8 +416,9 @@ $ENTRY Config-GetWarningIds {
     == Success t.Config
     == Fails BadValue-Warning e.WarningName
 
-  e.WarningName ::= 'all' | 'error' | 'screening' | 'init-final-entry' | 'nul-in-compound' |
-                    'no-screening' | 'no-init-final-entry' | 'no-nul-in-compound'
+  e.WarningName ::= 'all' | 'error' | 'screening' | 'init-final-entry' |
+                    'nul-in-compound' | 'no-screening' | 'no-init-final-entry' |
+                    'no-nul-in-compound'
 */
 $ENTRY Config-SetWarning {
   [Config

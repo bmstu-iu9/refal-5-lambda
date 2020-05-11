@@ -301,7 +301,7 @@
 
 ## Проверка контекстных зависимостей (проход 4)
 
-    <CheckProgram t.ErrorList e.AST>
+    <CheckProgram e.WarningIds t.ErrorList e.AST>
       == t.ErrorList
 
 Проверка только пополняет список ошибок контекстно-зависимыми ошибками.

@@ -92,7 +92,7 @@ FrontEnd {
       >
     : e.IncludeUnits
     = <GlueErrorListsAndASTs (e.SrcName) e.IncludeUnits> : t.ErrorList^ e.AST
-    = <CheckProgram t.ErrorList e.AST> e.AST;
+    = <CheckProgram (<Config-GetWarningIds t.Config>) t.ErrorList e.AST> e.AST;
 }
 
 PreludeIncludeLine {
