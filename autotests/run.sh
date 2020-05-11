@@ -175,6 +175,47 @@ run_test_aux.BAD-SYNTAX() {
   echo
 }
 
+run_test_aux.WARNING() {
+  echo Passing $1 \(flags -Wall\)...
+  SREF=$1
+  RASL=${SREF%.*}.rasl
+  EXE=${SREF%.*}$(platform_exe_suffix)
+  WARN=-Wall
+
+  ../bin/rlc-core ${WARN} --prelude=test-prelude.srefi -C ${SRFLAGS} ${SREF} 2>__error.txt
+  if [[ $? -ge 100 ]]; then
+    echo COMPILER ON ${SREF} FAILS, SEE __error.txt
+    exit 1
+  fi
+  if [[ ! -e ${RASL} ]]; then
+    echo COMPILATION FAILED
+    exit 1
+  fi
+  cat __error.txt
+  rm __error.txt
+  rm ${RASL}
+  echo "Ok! Compiler didn't abort"
+  echo
+
+  echo Passing $1 \(flags -Wal -Werror\)...
+  WARN='-Wall -Werror'
+  ../bin/rlc-core ${WARN} --prelude=test-prelude.srefi -C ${SRFLAGS} ${SREF} 2>__error.txt
+  if [[ $? -ge 100 ]]; then
+    echo COMPILER ON ${SREF} FAILS, SEE __error.txt
+    exit 1
+  fi
+  if [[ -e ${RASL} ]]; then
+    echo COMPILATION SUCCEEDED, BUT EXPECTED ERROR
+    rm ${RASL}
+    exit 1
+  fi
+  cat __error.txt
+  rm __error.txt
+  echo "Ok! Compiler treated warnings as errors"
+  echo
+
+}
+
 run_test_aux.FAILURE() {
   prepare_int_test $1
   run_test_all_modes $1 run_test_aux_with_flags.FAILURE

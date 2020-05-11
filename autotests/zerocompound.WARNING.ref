@@ -1,0 +1,5 @@
+$ENTRY Go {
+  = <Eq ABC "ABC\x00DEF" "ABC\x00123">
+}
+
+Eq { s.1 s.1 s.1 = }
