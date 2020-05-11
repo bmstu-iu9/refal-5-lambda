@@ -104,19 +104,6 @@ PreludeIncludeLine {
       }
 }
 
-DisplayLexerWarnings {
-  (e.FileName) e.Tokens
-    = <Map
-        {
-          (TkWarning t.Pos e.Message)
-            = <Prout e.FileName ':' <StrFromPos t.Pos> ':WARNING:' e.Message>;
-
-          t.OtherToken = t.OtherToken;
-        }
-        e.Tokens
-      >;
-}
-
 FilterLexerMessages {
   t.ErrorList e.Tokens
     = <MapAccum
@@ -135,12 +122,6 @@ FilterLexerMessages {
       >;
 }
 
-StrFromPos {
-  NoPos = '1:1';
-  s.Row = <Symb s.Row>;
-  (RowCol s.Row s.Col) = <Symb s.Row> ':' <Symb s.Col>;
-}
-
 LoadAST {
   t.Config R5 e.SrcName
     = <Config-GetR5Mode t.Config> : s.Mode
@@ -152,8 +133,9 @@ LoadAST {
 
   t.Config SR e.SrcName
     = <SR-Scan e.SrcName> : e.Tokens
-    = <DisplayLexerWarnings (e.SrcName) e.Tokens> : e.Tokens^
-    = <SR-ParseProgram <EL-Create e.SrcName> e.Tokens>;
+    = <FilterLexerMessages <EL-Create e.SrcName> e.Tokens>
+    : t.ErrorList e.Tokens^
+    = <SR-ParseProgram t.ErrorList e.Tokens>;
 
   t.Config RSL e.SrcName
     = e.SrcName : e.BaseName '.rsl'
