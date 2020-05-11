@@ -678,7 +678,7 @@ FindInvalidForwards {
 }
 
 FindFinalInitEntry {
-  e.Declarations
+  (e._ init-is-entry e._) e.Declarations
     = <Map
         {
           (Define t.ScrPosDefine GN-Entry e.Name)
@@ -689,7 +689,8 @@ FindFinalInitEntry {
           t.OtherDeclaraion = t.OtherDeclaraion
         }
         e.Declarations
-      >
+      >;
+  (e.WarningIds) e.Declarations = e.Declarations
 }
 
 CheckRedefinitions {
