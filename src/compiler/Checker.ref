@@ -527,56 +527,59 @@ CheckDeclarations {
         &FindInvalidEntry
         &CleanupValidForwards
         &FindInvalidForwards
-        &CleanupValidDriveInline
         &FindInvalidDriveInline
         &CheckRedefinitions
       >
     >;
 }
 
-InlineDriveErrors {
-    Inline = DanglingInline;
-    Drive = DanglingDrive;
-}
-
-CleanupValidDriveInline {
-    e.Declarations-B
-    (s.Label t.SrcPosEntry e.Name)
-    e.Declarations-M
-    (Define t.SrcPosDefine s.ScopeClass e.Name)
-    e.Declarations-E, <OneOf s.Label Inline Drive>: True
-      = <CleanupValidDriveInline
-          e.Declarations-B e.Declarations-M
-          (Define t.SrcPosDefine s.ScopeClass e.Name)
-          e.Declarations-E
-        >;
-
-    e.Declarations-B
-    (Define t.SrcPosDefine s.ScopeClass e.Name)
-    e.Declarations-M
-    (s.Label t.SrcPosEntry e.Name)
-    e.Declarations-E, <OneOf s.Label Inline Drive>: True
-      = <CleanupValidDriveInline
-          e.Declarations-B e.Declarations-M
-          (Define t.SrcPosDefine s.ScopeClass e.Name)
-          e.Declarations-E
-        >;
-
-    e.Declarations = e.Declarations;
-}
-
 FindInvalidDriveInline {
-    e.Declarations
-      = <Map
+  e.Declarations
+
+    /* находим все $DRIVE и $INLINE */
+    = <MapAccum
         {
-          (s.Label t.SrcPos e.Name), <OneOf s.Label Inline Drive>: True =
-            (Error t.SrcPos <InlineDriveErrors s.Label> e.Name);
+          (e.DriveInline) (s.Label t.SrcPos e.Name)
+            , <OneOf s.Label Inline Drive>: True
+            = (e.DriveInline (s.Label t.SrcPos e.Name));
 
-          t.Other = t.Other
+          (e.DriveInline) t.OtherDeclaration
+            = (e.DriveInline) t.OtherDeclaration;
         }
-
+        (/* drive inline */)
         e.Declarations
-      >;
+      >
+    : (e.DriveInline) e.Declarations^
+
+    /* Удаляем валидные $DRIVE и $INLINE */
+    = <MapAccum
+        {
+          (e.DriveInline^) t.Definition
+            , t.Definition : (Define t.SrcPosDefine s.ScopeClass e.Name)
+            = <Map
+                {
+                  (s.Label t.SrcPos e.Name) = /* пусто */;
+                  t.DriveInline = t.DriveInline;
+                }
+              >
+            : e.DriveInline^
+            = (e.DriveInline) t.Definition;
+
+          (e.DriveInline^) t.OtherDeclaration
+            = (e.DriveInline) t.OtherDeclaration;
+        }
+        (e.DriveInline) e.Declarations
+      >
+    : (e.InvalidDriveInline) e.Declarations^
+
+    = <Map
+        {
+          (Inline t.SrcPos e.Name) = (Error t.SrcPos DanglingInline e.Name);
+          (Drive t.SrcPos e.Name) = (Error t.SrcPos DanglingDrive e.Name);
+        }
+        e.InvalidDriveInline
+      >
+      e.Declarations;
 }
 
 CleanupValidEntry {
