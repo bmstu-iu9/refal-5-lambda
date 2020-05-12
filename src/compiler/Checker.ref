@@ -527,13 +527,15 @@ CheckDeclarations {
         &FindInvalidEntry
         &CleanupValidForwards
         &FindInvalidForwards
+        &CleanupValidDriveInline
         &FindInvalidDriveInline
         &CheckRedefinitions
       >
     >;
 }
 
-FindInvalidDriveInline {
+* TODO: объединить CleanupValidDriveInline и FindInvalidDriveInline
+CleanupValidDriveInline {
   e.Declarations
 
     /* находим все $DRIVE и $INLINE */
@@ -570,8 +572,10 @@ FindInvalidDriveInline {
         }
         (e.DriveInline) e.Declarations
       >
-    : (e.InvalidDriveInline) e.Declarations^
+}
 
+FindInvalidDriveInline {
+  (e.InvalidDriveInline) e.Declarations
     = <Map
         {
           (Inline t.SrcPos e.Name) = (Error t.SrcPos DanglingInline e.Name);
