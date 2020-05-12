@@ -568,6 +568,7 @@ FindInvalidDriveInline {
                   (s.Label t.SrcPos e.Name) = /* пусто */;
                   t.DriveInline = t.DriveInline;
                 }
+                e.DriveInline
               >
             : e.DriveInline^
             = (e.DriveInline) t.Definition;
