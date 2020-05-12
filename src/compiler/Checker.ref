@@ -526,8 +526,7 @@ SeparateDefines {
 
 CheckDeclarations {
   (e.WarningIds) e.Declarations
-    = (e.WarningIds)
-      <Fetch
+    = <Fetch
         e.Declarations
         <Pipe
           &CleanupValidEntry
