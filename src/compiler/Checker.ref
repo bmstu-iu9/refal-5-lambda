@@ -546,9 +546,11 @@ FindInvalidDriveInline {
     /* находим все $DRIVE и $INLINE */
     = <MapAccum
         {
-          (e.DriveInline) (s.Label t.SrcPos e.Name)
-            , <OneOf s.Label Inline Drive>: True
-            = (e.DriveInline (s.Label t.SrcPos e.Name));
+          (e.DriveInline) (Inline t.SrcPos e.Name)
+            = (e.DriveInline (Inline t.SrcPos e.Name));
+
+          (e.DriveInline) (Drive t.SrcPos e.Name)
+            = (e.DriveInline (Drive t.SrcPos e.Name));
 
           (e.DriveInline) t.OtherDeclaration
             = (e.DriveInline) t.OtherDeclaration;
