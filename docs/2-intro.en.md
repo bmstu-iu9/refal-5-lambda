@@ -12,7 +12,7 @@ Firstly this language was suggested by Valentin Fedorovich Turchin in 1968 year
 as a metaalgorythmic language\[1] – a language for describing semantics of
 another programming languages. In other words, it is pseudocode, some kind of
 mathematical notation. Later new and effective methods of REFAL implementation
-for ECM appeared – it has already become a fully-featured programming language.
+for computer appeared – it has already become a fully-featured programming language.
 
 The difference between REFAL and other functional languages (FL) is, first of
 all, the usage of a special data structure – an object expression. Most FL use
@@ -23,7 +23,7 @@ making a new list by adding an element at the beginning of the initial list.
 
 It is possible to derive the last element only by sequential truncating the
 first element until the sequence is empty – the last truncated element is
-the last element in the list. In order to concatenate (paste) two lists, the
+the last element in the list. In order to concatenate (glue) two lists, the
 elements in the first list must be appended to the beginning of the second list
 in reverse order.
 
