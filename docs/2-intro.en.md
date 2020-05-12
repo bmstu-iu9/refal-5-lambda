@@ -4,62 +4,60 @@
 <script src="toc.js"></script>
 
 ## What is REFAL? What is Refal-5λ?
-REFAL – functional programming language, oriented on symbols data elaboration:
+REFAL – a functional programming language, focused on symbols data elaboration:
 computer programs analyzing, transmission, text elaboration based on natural
 and artificial languages.
 
 Firstly this language was suggested by Valentin Fedorovich Turchin in 1968 year
 as a metaalgorythmic language\[1] – a language for describing semantics of
-another programming languages. In other words, it is pseudo-code, something
-like mathematic notation. Later there had been new and effective methods of
-REFAL implementation for ECM – he had already become a fully-featured
-programming language.
+another programming languages. In other words, it is pseudocode, some kind of
+mathematical notation. Later new and effective methods of REFAL implementation
+for computer appeared – it has already become a fully-featured programming language.
 
 The difference between REFAL and other functional languages (FL) is, first of
-all, the usage of special data structure – object expression. The most FL use
-single linked lists – the sequences of elements, in which only left side is
-accessed for direct elaboration. In other words, it is possible to make only
-such operations as looking on the first element, cutting off the first element,
-making the new list by adding an element at the beginning of the starting list.
+all, the usage of a special data structure – an object expression. Most FL use
+single linked lists – the sequences of elements, in which only the left side 
+is accessed for direct elaboration. In other words, it is possible to make only
+operations such as looking for the first element, cutting off the first element,
+making a new list by adding an element at the beginning of the initial list.
 
-It is possible to derive the last element only by sequential truncation of the
-first element until the sequence won’t be empty – the last truncated element is
-the last element of the list. In order to concatenate (paste) two lists, the
-elements of the first list in inverse order must be appended to the beginning
-of the second list.
+It is possible to derive the last element only by sequential truncating the
+first element until the sequence is empty – the last truncated element is
+the last element in the list. In order to concatenate (glue) two lists, the
+elements in the first list must be appended to the beginning of the second list
+in reverse order.
 
-As to REFAL, it manipulates with bidirectional sequences (that are called
-‘object expressions’): for them it is possible to use not only the same
-operations with both sides (cutting off the first element, adding an element)
-but also concatenation and separation in any place (see ahead about opened
-e-variable). All these operations are primitive!  The expressivity of programs
-is rising at that expense.
+As for REFAL, it manipulates bidirectional sequences (that are called
+‘object expressions’): for them it is possible to use not only the same operations
+on both sides (cutting off the first element, adding an element) but also 
+concatenation and separation anywhere (see ahead about opened e-variable). All these
+operations are primitive! The expressivity of programs increases due to this.
 
-The another important specialty of REFAL is pattern matching. REFAL was one of
-the first programming languages (maybe even the first), which uses this
-mechanism for data structures analyzing. The functions on REFAL make the
-analysis of its parameter by choosing one of some samples that describe the
-parameter. Another way of analyzing data is not anticipated in this language.
+The another important feature of REFAL is a pattern matching. REFAL was one of
+the first programming languages (maybe even the first), to use this mechanism
+for data structures analyzing. The REFAL functions analyze its parameter by
+choosing one of some samples that describe the parameter. There is no other way
+to analyze data in this language.
 
 Firstly, REFAL-5λ dialect is an exact comprehending set of REFAL-5\[2] dialect,
-that means that any program worked on “classical” implementation \[3] (further
-we will name implementation as classical one without using quotations) will be
-correct in REFAL-5λ.
+that means that any program running on the “classical” implementation \[3] 
+(further we will call the implementation classical without using quotations)
+will be correct in REFAL-5λ.
 
-Note. _Metafunctions `Ev-met`, `Up` and `Dn` aren’t work in actual version.
-They will be implemented in next versions. There aren’t any other limitations._
+Note. _Metafunctions `Ev-met`, `Up` and `Dn` don’t work in the actual version.
+They will be implemented in next versions. There are no any other limitations._
 
-Secondly, it is an extension of REFAL-5, that includes higher order functions
+Secondly, it is an extension of REFAL-5, which includes higher-order functions
 and also nested functions and a lot of good, tasty and useful syntactic sugar.
-Classical REFAL-5 didn’t maintain nested functions as it was conceived, because
-by Turchin REFAL it supposed to be not only the subject, but also the object of
-programs modifications, and, what is important, valid modifications considered
-to be only those, which could be described using “pen and paper”\[4].
+Classical REFAL-5 didn’t support nested functions as it was conceived, because
+according to Turchin REFAL supposed to be not only the subject, but also the 
+object of programs modifications, and, what is important, valid modifications 
+are considered only those, which could be described using “pen and paper”\[4].
 
-Firstly nested functions appeared in Refal-7 dialect, suggested by Sergei
+Firstly, nested functions appeared in Refal-7 dialect, suggested by Sergei
 Yurievich Skorobogatov in 2006 year \[5]. Refal-5λ language has constrained
-handling of  Refal-7 nested functions – only unnamed nested functions. But, as
-the practice shows, it is quite enough.
+handling of  Refal-7 nested functions – only unnamed nested functions. But,
+as practice shows, this is quite enough.
 
 Syntactic sugar – redundant syntax structures of programming language, that
 make language more comfortable for usage. Such constructions can be written as
