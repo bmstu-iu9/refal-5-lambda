@@ -1,7 +1,7 @@
 $INCLUDE "LibraryEx";
 
 *$FROM Error
-$EXTERN EL-Destroy, EL-Create, EL-AddErrorAt, EL-Concat;
+$EXTERN EL-Destroy, EL-Create, EL-AddErrorAt, EL-AddWarningAt, EL-Concat;
 
 *$FROM Config
 $EXTERN
@@ -13,7 +13,9 @@ $EXTERN
   Config-GetOptResult,
   Config-GetConditionsMode,
   Config-GetGenMode,
-  Config-GetOptTree;
+  Config-GetOptTree,
+  Config-GetWarningIds,
+  Config-GetWarningLevel;
 
 *$FROM Checker
 $EXTERN CheckProgram;
@@ -66,7 +68,11 @@ $ENTRY CompileFile {
   t.Config (s.Dialect e.SrcName) e.OutputName '.rasl'
     = <FrontEnd t.Config s.Dialect e.SrcName>
     : t.ErrorList e.AST
-    = <EL-Destroy t.ErrorList>
+    = <EL-Destroy
+        t.ErrorList
+        <Config-GetWarningIds t.Config>
+        <Config-GetWarningLevel t.Config>
+      >
     : {
         EL-NoErrors = <BackEnd t.Config (e.SrcName) (e.OutputName) e.AST>;
 
@@ -86,7 +92,7 @@ FrontEnd {
       >
     : e.IncludeUnits
     = <GlueErrorListsAndASTs (e.SrcName) e.IncludeUnits> : t.ErrorList^ e.AST
-    = <CheckProgram t.ErrorList e.AST> e.AST;
+    = <CheckProgram (<Config-GetWarningIds t.Config>) t.ErrorList e.AST> e.AST;
 }
 
 PreludeIncludeLine {
@@ -98,37 +104,38 @@ PreludeIncludeLine {
       }
 }
 
-DisplayLexerWarnings {
-  (e.FileName) e.Tokens
-    = <Map
+FilterLexerMessages {
+  t.ErrorList e.Tokens
+    = <MapAccum
         {
-          (TkWarning t.Pos e.Message)
-            = <Prout e.FileName ':' <StrFromPos t.Pos> ':WARNING:' e.Message>;
-
-          t.OtherToken = t.OtherToken;
+          t.ErrorList^ (TkWarning t.Pos e.Message)
+            = <EL-AddWarningAt t.ErrorList nul-in-compound t.Pos e.Message>
+              /* пусто */;
+          t.ErrorList^ (TkError t.Pos e.Message)
+            = <EL-AddErrorAt t.ErrorList t.Pos e.Message>
+              /* пусто */;
+          t.ErrorList^ t.OtherToken
+            = t.ErrorList
+              t.OtherToken
         }
-        e.Tokens
+        t.ErrorList e.Tokens
       >;
-}
-
-StrFromPos {
-  NoPos = '1:1';
-  s.Row = <Symb s.Row>;
-  (RowCol s.Row s.Col) = <Symb s.Row> ':' <Symb s.Col>;
 }
 
 LoadAST {
   t.Config R5 e.SrcName
     = <Config-GetR5Mode t.Config> : s.Mode
     = <R5-Scan s.Mode e.SrcName> : e.Tokens
-    = <DisplayLexerWarnings (e.SrcName) e.Tokens> : e.Tokens^
-    = <R5-Parse <EL-Create e.SrcName> s.Mode e.Tokens> : t.ErrorList e.AST
+    = <FilterLexerMessages <EL-Create e.SrcName> e.Tokens>
+    : t.ErrorList e.Tokens^
+    = <R5-Parse t.ErrorList s.Mode e.Tokens> : t.ErrorList^ e.AST
     = t.ErrorList <PreludeIncludeLine t.Config> e.AST;
 
   t.Config SR e.SrcName
     = <SR-Scan e.SrcName> : e.Tokens
-    = <DisplayLexerWarnings (e.SrcName) e.Tokens> : e.Tokens^
-    = <SR-ParseProgram <EL-Create e.SrcName> e.Tokens>;
+    = <FilterLexerMessages <EL-Create e.SrcName> e.Tokens>
+    : t.ErrorList e.Tokens^
+    = <SR-ParseProgram t.ErrorList e.Tokens>;
 
   t.Config RSL e.SrcName
     = e.SrcName : e.BaseName '.rsl'
@@ -590,7 +597,11 @@ CreateMetaFunctions {
 $ENTRY GrammarCheck {
   t.Config s.Dialect e.SrcName
     = <LoadAST t.Config s.Dialect e.SrcName> : t.ErrorList e.AST
-    = <EL-Destroy t.ErrorList>
+    = <EL-Destroy
+        t.ErrorList
+        <Config-GetWarningIds t.Config>
+        <Config-GetWarningLevel t.Config>
+      >
     : {
         EL-NoErrors = Success;
         EL-HasErrors = Fails;

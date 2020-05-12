@@ -1,0 +1,24 @@
+$LABEL "1 + 1", Foo, "\x20\010\n", Bar;
+
+$ENTRY Go {
+  = <Eq <F "\x21\041\xA\012"> 1>
+    <Eq <F "Abcd"> 2>
+    <Eq <F ""> 3>
+    <Eq <F "Abcd""Efgh"> 4>
+    <Eq <F "\1234"> 5>
+    <Eq <F "\d1234"> 6>
+    <Eq <F "ABC\0DEF"> 7>
+    <Eq <F "ABC\0XYZ"> 7>;
+}
+
+Eq { s.X s.X = ; }
+
+F {
+  "!!\n\n" = 1;
+  #Abcd = 2;
+  "" = 3;
+  #Abcd #Efgh = 4;
+  "S4" = 5;
+  "{4" = 6;
+  #ABC = 7;
+}

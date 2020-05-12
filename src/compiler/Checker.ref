@@ -1,7 +1,7 @@
 $INCLUDE "LibraryEx";
 
 *$FROM Error
-$EXTERN EL-AddErrorAt;
+$EXTERN EL-AddErrorAt, EL-AddWarningAt;
 
 *$FROM GenericMatch
 $EXTERN GenericMatch;
@@ -13,14 +13,18 @@ $EXTERN RemovePos-Expr;
 $EXTERN ExtractVariables-Expr;
 
 $ENTRY CheckProgram {
-  t.ErrorList e.AST
+  (e.WarningIds) t.ErrorList e.AST
     = <Reduce
         {
           t.ErrorList^ (Error t.SrcPos e.Message)
             = <EL-AddErrorAt t.ErrorList t.SrcPos <PrepareMessage e.Message>>;
+          t.ErrorList^ (Warning s.WarningId t.SrcPos e.Message)
+            = <EL-AddWarningAt
+                t.ErrorList s.WarningId t.SrcPos <PrepareMessage e.Message>
+              >;
         }
         t.ErrorList
-        <FindErrors e.AST>
+        <FindErrors (e.WarningIds) e.AST>
       >;
 }
 
@@ -28,6 +32,8 @@ PrepareMessage {
   AlreadyDefined e.Name = 'Function ' e.Name ' is already defined';
 
   ForwardForEntry e.Name = '$FORWARD ' e.Name ' for $ENTRY ' e.Name;
+
+  InitFinalEntry e.Name = 'Function ' e.Name ' should not be declared $ENTRY';
 
   ForwardNotDefined e.Name = 'Function for $FORWARD ' e.Name ' is not defined';
 
@@ -93,14 +99,14 @@ PrepareMessage {
 }
 
 FindErrors {
-  e.AST
+  (e.WarningIds) e.AST
     = <CheckSpecsAndDrives e.AST> : e.ConflictErrors (e.AST^)
     = <CheckSpecs e.AST> : (e.SpecErrors) e.AST^
     = <SeparateDefines e.AST> : (e.Declarations) e.FunctionBodies
     = e.ConflictErrors
       e.SpecErrors
       <CheckValidUsings
-        (<CheckDeclarations e.Declarations>)
+        (<CheckDeclarations (e.WarningIds) e.Declarations>)
         <Map &CheckFunctionBody e.FunctionBodies>
       >;
 }
@@ -519,19 +525,20 @@ SeparateDefines {
 }
 
 CheckDeclarations {
-  e.Declarations =
-    <Fetch
-      e.Declarations
-      <Pipe
-        &CleanupValidEntry
-        &FindInvalidEntry
-        &CleanupValidForwards
-        &FindInvalidForwards
-        &CleanupValidDriveInline
-        &FindInvalidDriveInline
-        &CheckRedefinitions
+  (e.WarningIds) e.Declarations
+    = <Fetch
+        e.Declarations
+        <Pipe
+          &CleanupValidEntry
+          &FindInvalidEntry
+          &CleanupValidForwards
+          &FindInvalidForwards
+          &CleanupValidDriveInline
+          &FindInvalidDriveInline
+          &CheckRedefinitions
+          (&FindFinalInitEntry (e.WarningIds))
+        >
       >
-    >;
 }
 
 * TODO: объединить CleanupValidDriveInline и FindInvalidDriveInline
@@ -674,6 +681,22 @@ FindInvalidForwards {
     >;
 
   e.Declarations = e.Declarations;
+}
+
+FindFinalInitEntry {
+  (e._ init-is-entry e._) e.Declarations
+    = <Map
+        {
+          (Define t.ScrPosDefine GN-Entry e.Name)
+            , <OneOf (e.Name) ('FINAL') ('INIT')> : True
+            = (Define t.ScrPosDefine GN-Entry e.Name)
+              (Warning init-is-entry t.ScrPosDefine InitFinalEntry e.Name);
+
+          t.OtherDeclaraion = t.OtherDeclaraion
+        }
+        e.Declarations
+      >;
+  (e.WarningIds) e.Declarations = e.Declarations
 }
 
 CheckRedefinitions {
@@ -918,8 +941,10 @@ CheckValidUsings {
   (e.DeclarationsAndErrors) /* кончились ошибки и имена */ =
     <Map
       {
-        (Error t.SrcPos s.Type e.Info) =
-          (Error t.SrcPos s.Type e.Info);
+        (Error t.SrcPos s.Type e.Info)
+          = (Error t.SrcPos s.Type e.Info);
+        (Warning s.WarningId t.SrcPos s.Type e.Info)
+          = (Warning s.WarningId t.SrcPos s.Type e.Info);
 
         t.OtherItem = /* пропускаем */;
       }
