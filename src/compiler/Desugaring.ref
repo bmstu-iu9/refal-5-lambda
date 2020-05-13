@@ -592,15 +592,7 @@ Pass-FlatNestedFuncs {
       {
         (Function s.ScopeClass (e.Name) e.Body)
           = <ExtractNested s.MarkupContext e.Body> : (e.NestedFuncs) e.Body^
-          = <Map
-              {
-                t.Function
-                  , t.Function : (Function s._ScopeClass (e.NestedName) e._Body)
-                  = (Drive e.NestedName)
-                    t.Function
-              }
-              e.NestedFuncs
-            >
+          = e.NestedFuncs
             (Function s.ScopeClass (e.Name) e.Body);
 
         t.OtherProgramElement = t.OtherProgramElement;
@@ -799,6 +791,7 @@ ExtractNested-Result-Term {
         /* Случай функции без контекста, нативной функции в том числе */
         (/* нет захваченных переменных */) e.Body^
           = (Function GN-Local (e.ClosureName) e.Body)
+            (Drive e.ClosureName)
             (e.BorrowedVars)
             (Symbol Name e.ClosureName);
 
@@ -816,14 +809,19 @@ ExtractNested-Result-Term {
                 e.Sentences
               >
             )
+            (Drive e.ClosureName)
+            (Spec (e.ClosureName) <CreateSpecPattern e.Context>)
             <Reduce
               (&CheckBorrowed (e.ScopeVars))
               (e.BorrowedVars) e.NestedBorrowedVars
             >
             (ClosureBrackets (Symbol Name e.ClosureName) e.Context);
       }
-    : t.Function (e.BorrowedVars^) t.ClosureTerm
-    = ((e.NestedFuncs e.NestedNestedFuncs t.Function) (e.BorrowedVars))
+    : t.Function e.OptMarks (e.BorrowedVars^) t.ClosureTerm
+    = (
+        (e.NestedFuncs e.NestedNestedFuncs t.Function e.OptMarks)
+        (e.BorrowedVars)
+      )
       t.ClosureTerm;
 
   s.MarkupContext (e.ScopeVars) (e.LocalVars)
@@ -867,6 +865,22 @@ CreateContext {
       }
       e.Context
     >;
+}
+
+CreateSpecPattern {
+  e.Context
+    = <Map
+        {
+          (Symbol Identifier e.Ident) = (Symbol Identifier e.Ident);
+
+          (TkVariable s.Mode e.Index) = (TkVariable s.Mode 'STAT_' e.Index);
+
+          (Brackets (TkVariable 'e' e.Index))
+            = (Brackets (TkVariable 'eSTAT_' e.Index));
+        }
+        e.Context
+      >
+      (TkVariable 'edyn' 0)
 }
 
 Pass-CleanupRedudandExterns {
