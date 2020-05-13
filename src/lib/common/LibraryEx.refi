@@ -55,6 +55,7 @@ Fetch {
 }
 
 $INLINE Fetch;
+$SPEC Fetch e.arg t.FUNC;
 
 
 /**
