@@ -259,7 +259,8 @@ SpecTerm {
     : (e.SpecInfo^ (e.NewFunctions^)) e.Expression^
     = (e.SpecInfo (e.NewFunctions)) (CallBrackets e.Expression);
 
-  (e.SpecInfo (e.NewFunctions)) (ClosureBrackects e.ClosureContent)
+  (e.SpecInfo (e.NewFunctions)) (ClosureBrackets e.ClosureContent)
+
     = <SpecResult (e.SpecInfo (e.NewFunctions)) e.ClosureContent>
     : (e.SpecInfo^ (e.NewFunctions^)) e.ClosureContent^
     = (e.SpecInfo (e.NewFunctions)) (ClosureBrackets e.ClosureContent);
