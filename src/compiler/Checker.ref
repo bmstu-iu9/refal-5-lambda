@@ -87,77 +87,17 @@ PrepareMessage {
   SpecStaticParamRepeatingVars (s.Mode e.Index) e.FnName
     = 'Repeating variables match static parameter ' s.Mode '.' e.Index
       ' in specialization of function ' e.FnName;
-
-  SpecDriveConflict e.Name Spec
-    = 'Directive $SPEC ' e.Name ' is not compatible with $DRIVE or $INLINE';
-
-  SpecDriveConflict e.Name Drive
-    = 'Directive $DRIVE ' e.Name ' is not compatible with $SPEC';
-
-  SpecDriveConflict e.Name Inline
-    = 'Directive $INLINE ' e.Name ' is not compatible with $SPEC';
 }
 
 FindErrors {
   (e.WarningIds) e.AST
-    = <CheckSpecsAndDrives e.AST> : e.ConflictErrors (e.AST^)
     = <CheckSpecs e.AST> : (e.SpecErrors) e.AST^
     = <SeparateDefines e.AST> : (e.Declarations) e.FunctionBodies
-    = e.ConflictErrors
-      e.SpecErrors
+    = e.SpecErrors
       <CheckValidUsings
         (<CheckDeclarations (e.WarningIds) e.Declarations>)
         <Map &CheckFunctionBody e.FunctionBodies>
       >;
-}
-
-CheckSpecsAndDrives {
-  e.AST
-    = <MapAccum
-        {
-          (e.OptMarks) (Spec t.SrcPos (e.Name) e.Pattern)
-            = (e.OptMarks (Spec t.SrcPos e.Name))
-              (Spec t.SrcPos (e.Name) e.Pattern);
-
-          (e.OptMarks) (s.DriveInline t.SrcPos s.ScopeClass e.Name)
-            , <OneOf s.DriveInline Drive Inline> : True
-            = (e.OptMarks (s.DriveInline t.SrcPos e.Name))
-              (s.DriveInline t.SrcPos s.ScopeClass e.Name);
-
-          (e.OptMarks) t.Other = (e.OptMarks) t.Other;
-        }
-        (/* opt marks */) e.AST
-      >
-    : (e.OptMarks) e.AST^
-    = <Reduce
-        {
-          (e.Groups-B ((e.Name) e.Marks) e.Groups-E)
-          (s.Mark t.SrcPos e.Name)
-            = (e.Groups-B ((e.Name) e.Marks (s.Mark t.SrcPos)) e.Groups-E);
-
-          (e.Groups) (s.Mark t.SrcPos e.Name)
-            = (e.Groups ((e.Name) (s.Mark t.SrcPos)));
-        }
-        (/* groups */) e.OptMarks
-      >
-    : (e.OptMarkGroups)
-    = <Map &ConflictSpecDriveErrorForName e.OptMarkGroups> (e.AST);
-}
-
-ConflictSpecDriveErrorForName {
-  ((e.Name) e.OptMarks)
-    , e.OptMarks : e.OptMarks-1-B (Spec t.SpecSrcPos) e.OptMarks-1-E
-    , e.OptMarks (Drive Inline)
-    : e.OptMarks-2-B (s.DriveInline t.DriveSrcPos) e.OptMarks-2-E
-      (e.Flags-B s.DriveInline e.Flags-E)
-    = <Map
-        {
-          (s.Mark t.SrcPos) = (Error t.SrcPos SpecDriveConflict e.Name s.Mark);
-        }
-        e.OptMarks
-      >;
-
-  (e.Name) e.OptMarks = /* нет ошибок */;
 }
 
 CheckSpecs {

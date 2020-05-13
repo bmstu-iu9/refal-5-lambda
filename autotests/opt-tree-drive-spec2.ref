@@ -1,0 +1,22 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */
+    = <DS 1 /* empty */> : 1 1
+    = <DS 2 1 2 3> : A (2)
+    = <DS 3 'abc'> : (('abc')) 3
+    = /* пусто */;
+}
+
+Test {
+  e.X = <DS 1 e.X>;
+}
+
+$DRIVE DS;
+$SPEC DS s.STAT e.dyn;
+
+DS {
+  s.Mark /* empty */ = s.Mark s.Mark;
+  s.Mark e._ s.Mark e._ = A (s.Mark);
+  s.Mark e.X = ((e.X)) s.Mark;
+}
