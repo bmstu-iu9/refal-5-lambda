@@ -27,7 +27,7 @@ $INLINE Apply;
 Map {
   t.Fn t.Next e.Tail = <Apply t.Fn t.Next> <Map t.Fn e.Tail>;
 
-  t.Fn = ;
+  t.Fn /* пусто */ = /* пусто */;
 }
 
 $SPEC Map t.FUNC e.items;
@@ -45,7 +45,7 @@ Reduce {
         t.Fn <Apply t.Fn t.Acc t.Next> e.Tail
       >;
 
-  t.Fn t.Acc = t.Acc;
+  t.Fn t.Acc /* пусто */ = t.Acc;
 }
 
 /*
@@ -79,7 +79,7 @@ DoMapAccum {
         t.Fn (e.Scanned) (<Apply t.Fn t.Acc t.Next>) e.Tail
       >;
 
-  t.Fn t.Acc (e.Scanned) = t.Acc e.Scanned;
+  t.Fn t.Acc (e.Scanned) /* пусто */ = t.Acc e.Scanned;
 }
 
 $SPEC DoMapAccum t.FUNC t.acc (e.scanned) e.items;
