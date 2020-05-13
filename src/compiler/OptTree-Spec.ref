@@ -271,7 +271,16 @@ SpecTerm {
     : (e.SpecInfo^ (e.NewFunctions^))
       (CallBrackets e.ClosureContent^ (TkVariable 'e@' 0))
 
-    = (e.SpecInfo (e.NewFunctions)) (ClosureBrackets e.ClosureContent);
+    = e.ClosureContent
+    : {
+        (Symbol Name e.OptName) /* пусто */
+          = (e.SpecInfo (e.NewFunctions)) (Symbol Name e.OptName);
+
+        e.ClosureContent^
+          = (e.SpecInfo (e.NewFunctions))
+            (ClosureBrackets e.ClosureContent);
+      };
+
 
   (e.SpecInfo (e.NewFunctions)) (Brackets e.Expression)
     = <SpecResult (e.SpecInfo (e.NewFunctions)) e.Expression>
