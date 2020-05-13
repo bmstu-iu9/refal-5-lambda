@@ -664,26 +664,29 @@ PrepareArgOrPattern {
       >
     : (e.KnownVarsFromStatic) e.NewArgOrPattern
 
-    = e.NewArgOrPattern
-    : {
-        e.STValues (GhostBrackets e.FirstEValue) e.Values
-          = e.STValues e.FirstEValue
-            <Map
-              {
-                (GhostBrackets e.Expr) = (Brackets e.Expr);
-
-                t.STValue = t.STValue;
-              }
-              e.Values
-            >;
-
-        e.STValues = e.STValues;
-      };
+    = <RemoveLastGhostBracket e.NewArgOrPattern>;
 }
 
 WrapVar {
   'e' e.Expr = (GhostBrackets e.Expr);
   s.Mode e.Expr = e.Expr
+}
+
+RemoveLastGhostBracket {
+  e.NewArgOrPattern (GhostBrackets e.LastEValue)
+    = <Map
+        {
+          (GhostBrackets e.Expr) = (Brackets e.Expr);
+          t.STValue = t.STValue;
+        }
+        e.NewArgOrPattern
+      >
+      e.LastEValue;
+
+  e.NewArgOrPattern t.STValue
+    = <RemoveLastGhostBracket e.NewArgOrPattern> t.STValue;
+
+  /* пусто */ = /* пусто */;
 }
 
 RenameGenericMatch {
