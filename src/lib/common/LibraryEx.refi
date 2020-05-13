@@ -41,17 +41,13 @@ $SPEC Map t.FUNC e.items;
 */
 Reduce {
   t.Fn t.Acc t.Next e.Tail
-    = <Reduce
-        t.Fn <Apply t.Fn t.Acc t.Next> e.Tail
-      >;
+    = <Apply t.Fn t.Acc t.Next> : t.Acc^
+    = <Reduce t.Fn t.Acc e.Tail>;
 
   t.Fn t.Acc /* пусто */ = t.Acc;
 }
 
-/*
-  По поводу формата шаблона см. комментарий к MapAccum ниже по тексту.
-*/
-$SPEC Reduce t.FUNC e.accum-and-items;
+$SPEC Reduce t.FUNC t.accum e.items;
 
 
 Fetch {
@@ -75,40 +71,15 @@ $SPEC MapAccum t.FUNC t.accum e.items;
 
 DoMapAccum {
   t.Fn t.Acc (e.Scanned) t.Next e.Tail
-    = <DoMapAccum-Aux
-        t.Fn (e.Scanned) (<Apply t.Fn t.Acc t.Next>) e.Tail
+    = <Apply t.Fn t.Acc t.Next> : t.Acc^ e.StepScanned
+    = <DoMapAccum
+        t.Fn t.Acc (e.Scanned e.StepScanned) e.Tail
       >;
 
   t.Fn t.Acc (e.Scanned) /* пусто */ = t.Acc e.Scanned;
 }
 
 $SPEC DoMapAccum t.FUNC t.acc (e.scanned) e.items;
-
-DoMapAccum-Aux {
-    t.Fn (e.Scanned) (t.Acc e.StepScanned) e.Tail
-    = <DoMapAccum
-        t.Fn t.Acc (e.Scanned e.StepScanned) e.Tail
-      >;
-}
-
-/*
-  Шаблон для DoMapAccum-Aux должнен быть именно такой.
-  Эта функция вызывается в общем случае как
-  (после специализации):
-
-  <DoMapAccum t.Fn (e.Scanned) (<F t.Acc t.Next>) e.Tail>
-
-  Такой вызов не соответствует очевидному шаблону
-
-  t.F (e.s) (t.a e.ss) e.i
-
-  поскольку во вторых скобках <F …>. Приходится использовать
-  шаблон
-
-  t.F (e.s) (e.a-and-ss) e.i
-*/
-
-$SPEC DoMapAccum-Aux t.FUNC (e.scanned) (e.acc-and-step-scanned) e.items;
 
 
 UnBracket {
