@@ -70,7 +70,11 @@ Prepare-Aux {
         >
       >
     : ((e.NewNames) e.NewInfo) e.AST^
+
     = <CreateGuardFunctions e.NewInfo> : (e.GuardEnums) e.NewInfo^
+
+    = <CreateRemainderFunctions e.NewInfo> : e.NewInfo^
+
     = (SpecInfo (e.KnownNames e.NewNames) e.KnownInfo e.NewInfo)
       e.AST
       e.GuardEnums
@@ -106,6 +110,32 @@ CreateGuardFunctions {
         }
         (/* guard enums */) e.Info
       >
+}
+
+CreateRemainderFunctions {
+  e.Info = <Map (&CreateRemainderFunctions-OneFunction 0) e.Info>
+}
+
+CreateRemainderFunctions-OneFunction {
+  s.Count ((e.Name) (e.SpecPattern) ((e.GuardSentence)) 1 /* нет сигнатур */)
+    = /* пусто */;
+
+  s.Count ((e.Name) (e.SpecPattern) (e.Sentences) 1 /* нет сигнатур */)
+    = s.Count
+    : {
+        0 = e.Name;
+        s._ = <AddSuffix e.Name ('*' s.Count)>;
+      }
+    : e.RemainderName
+    = ((e.RemainderName) (e.SpecPattern) (e.Sentences) 1 /* нет сигнатур */)
+      <CreateRemainderFunctions-OneFunction
+        <Inc s.Count>
+        ((e.Name) (e.SpecPattern) (<Drop e.Sentences>) 1 /* нет сигнатур */)
+      >;
+}
+
+Drop {
+  t.First e.Rest = e.Rest
 }
 
 AddSuffix {
