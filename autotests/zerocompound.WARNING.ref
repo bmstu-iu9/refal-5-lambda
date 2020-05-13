@@ -1,3 +1,5 @@
+* WARNING nul-in-compound
+
 $ENTRY Go {
   = <Eq ABC "ABC\x00DEF" "ABC\x00123">
 }
