@@ -792,38 +792,36 @@ ExtractNested-Result-Term {
   s.MarkupContext (e.ScopeVars) (e.LocalVars)
   ((e.NestedFuncs) (e.BorrowedVars))
   (Closure (e.ClosureName) e.Body)
-     = <ExtractNestedRec s.MarkupContext (e.ScopeVars e.LocalVars) e.Body>
-     : (e.NestedBorrowedVars) (e.NestedNestedFuncs) e.Body^
-     = <Fetch
-        (e.NestedBorrowedVars) e.Body
-        {
-          /* Случай функции без контекста, нативной функции в том числе */
-          (/* нет захваченных переменных */) e.Body^
-            = (Function GN-Local (e.ClosureName) e.Body)
-              (e.BorrowedVars)
-              (Symbol Name e.ClosureName);
+    = <ExtractNestedRec s.MarkupContext (e.ScopeVars e.LocalVars) e.Body>
+    : (e.NestedBorrowedVars) (e.NestedNestedFuncs) e.Body^
+    = (e.NestedBorrowedVars) e.Body
+    : {
+        /* Случай функции без контекста, нативной функции в том числе */
+        (/* нет захваченных переменных */) e.Body^
+          = (Function GN-Local (e.ClosureName) e.Body)
+            (e.BorrowedVars)
+            (Symbol Name e.ClosureName);
 
-          /* Случай функции с контекстом */
-          (e.NestedBorrowedVars) Sentences e.Sentences
-            = <CreateContext s.MarkupContext e.NestedBorrowedVars> : e.Context
-            = (Function
-                GN-Local (e.ClosureName)
-                Sentences
-                <Map
-                  {
-                    ((e.Pattern) e.Conditions (e.Result))
-                      = ((e.Context e.Pattern) e.Conditions (e.Result));
-                  }
-                  e.Sentences
-                >
-              )
-              <Reduce
-                (&CheckBorrowed (e.ScopeVars))
-                (e.BorrowedVars) e.NestedBorrowedVars
+        /* Случай функции с контекстом */
+        (e.NestedBorrowedVars) Sentences e.Sentences
+          = <CreateContext s.MarkupContext e.NestedBorrowedVars> : e.Context
+          = (Function
+              GN-Local (e.ClosureName)
+              Sentences
+              <Map
+                {
+                  ((e.Pattern) e.Conditions (e.Result))
+                    = ((e.Context e.Pattern) e.Conditions (e.Result));
+                }
+                e.Sentences
               >
-              (ClosureBrackets (Symbol Name e.ClosureName) e.Context);
-        }
-      >
+            )
+            <Reduce
+              (&CheckBorrowed (e.ScopeVars))
+              (e.BorrowedVars) e.NestedBorrowedVars
+            >
+            (ClosureBrackets (Symbol Name e.ClosureName) e.Context);
+      }
     : t.Function (e.BorrowedVars^) t.ClosureTerm
     = ((e.NestedFuncs e.NestedNestedFuncs t.Function) (e.BorrowedVars))
       t.ClosureTerm;
