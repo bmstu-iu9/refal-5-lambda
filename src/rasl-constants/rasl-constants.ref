@@ -1,5 +1,4 @@
-*$FROM LibraryEx
-$EXTERN Fetch, ArgList, SaveFile, LoadFile, MapAccum, Trim;
+$INCLUDE "LibraryEx";
 
 
 $ENTRY Go {
@@ -35,8 +34,7 @@ Parse {
             {
               e.SplittenWords =
                 (ParseEnum (<Word-Prefix e.Prefix>) e.SplittenWords)
-                ()
-                ('$ENTRY ' <Trim e.FuncName> '{');
+                (Header <Trim e.FuncName>);
             }
           >;
 
@@ -48,9 +46,8 @@ Parse {
         ('  ' e.Prefix e.Constant ' = ' e.Number ',') =
           (ParseEnum ((e.OutPrefix) e.Prefix) e.Words)
           (
-            '  '
-            <MakeDashes <ParseWords (e.OutPrefix) e.Words (e.Constant)>>
-            ' = ' e.Number ';'
+            (<MakeDashes <ParseWords (e.OutPrefix) e.Words (e.Constant)>>)
+            '=' (e.Number)
           );
 
         (ParseEnum ((e.OutPrefix) e.Prefix) e.Words)
@@ -122,7 +119,14 @@ Generate {
       ('  Edit ' e.Source ' first and then run:')
       ('  $ rasl-constants ' e.Source ' ' e.Target)
       ('*/')
-      e.Lines
+      <Map
+        {
+          (Header e.FuncName) = () ('$ENTRY ' e.FuncName '{');
+          ((e.Words) '=' (e.Number)) = ('  ' e.Words ' = ' e.Number ';');
+          ('}') = ('}');
+        }
+        e.Lines
+      >
     >;
 
   (e.Source) (e.Target) Fails e.Lines =
