@@ -1,7 +1,7 @@
 $INCLUDE "LibraryEx";
 
-*$FROM Desugaring-UnCondition
-$EXTERN ExtractVariables, ExtractVariables-Expr, NewVarName;
+*$FROM TreeUtils
+$EXTERN ExtractVariables, ExtractVariables-Expr, NewVarName, AddSuffix;
 
 *$FROM GenericMatch
 $EXTERN GenericMatch;
@@ -143,11 +143,6 @@ CreateRemainderFunctions-OneFunction {
 
 Drop {
   t.First e.Rest = e.Rest
-}
-
-AddSuffix {
-  e.Name SUF e.Suffix (e.NewSuffix) = e.Name SUF e.Suffix e.NewSuffix;
-  e.Name (e.NewSuffix) = e.Name SUF e.NewSuffix;
 }
 
 /**

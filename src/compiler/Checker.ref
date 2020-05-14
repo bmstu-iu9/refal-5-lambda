@@ -9,7 +9,7 @@ $EXTERN GenericMatch;
 *$FROM Desugaring
 $EXTERN RemovePos-Expr;
 
-*$FROM Desugaring-UnCondition
+*$FROM TreeUtils
 $EXTERN ExtractVariables-Expr;
 
 $ENTRY CheckProgram {

@@ -352,7 +352,7 @@
     t.ContextVariable ::=
         (TkVariable s.ModeTS e.Index s.Depth)
       | (Brackets (TkVariable 'e' e.Index s.Depth))
-      | (TkIdentifier e.Name)
+      | (Symbol Name e.Name)
     s.ModeTS ::= 't' | 's'
 
     e.ReducedMetatable ::=

@@ -1,0 +1,139 @@
+$INCLUDE "LibraryEx";
+
+
+/**
+  <ExtractVariables e.Sentences> == e.Variables
+
+  e.Variables ::= (s.Mode e.Index s.Depth)*
+*/
+$ENTRY ExtractVariables {
+  e.Sentences = <Unique <ExtractVariables-Sentences e.Sentences>>;
+}
+
+ExtractVariables-Sentences {
+  ((e.Pattern) e.Tail) e.Sentences
+    = <ExtractVariables-Expr e.Pattern>
+      <ExtractVariables-Tail e.Tail>
+      <ExtractVariables-Sentences e.Sentences>;
+
+  /* пусто */ = /* пусто */;
+}
+
+ExtractVariables-Tail {
+  (Condition (e.ConditionName) (e.Result) (e.Pattern)) e.Tail
+    = <ExtractVariables-Expr e.Result>
+      <ExtractVariables-Expr e.Pattern>
+      <ExtractVariables-Tail e.Tail>;
+
+  (e.Result) = <ExtractVariables-Expr e.Result>;
+}
+
+$ENTRY ExtractVariables-Expr {
+  (TkVariable s.VarType e.Index) e.Terms
+    = (s.VarType e.Index) <ExtractVariables-Expr e.Terms>;
+
+  (Brackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
+  (ADT-Brackets (e.Name) e.Inner) e.Terms
+    = <ExtractVariables-Expr e.Inner e.Terms>;
+
+  (CallBrackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
+  (ClosureBrackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
+
+  t.Other e.Terms = <ExtractVariables-Expr e.Terms>;
+
+  /* пусто */ = /* пусто */;
+}
+
+/**
+  <NewVarName (e.Variables) e.Variable> == (e.Variables^) e.Variable^
+
+  e.Variable ::= s.Mode e.Index s.Depth
+*/
+$ENTRY NewVarName {
+  (e.Vars-B (e.Variable) e.Vars-E) e.Variable
+    = <DoNewVarName ((e.Variable) e.Vars-B e.Vars-E) e.Variable>;
+
+  (e.Vars) e.Variable = ((e.Variable) e.Vars) e.Variable;
+}
+
+DoNewVarName {
+  (e.Vars) e.Variable
+    = e.Variable : s.Mode e.Index s.Depth
+    = <IncName e.Index> : e.NewIndex
+    = s.Mode e.NewIndex s.Depth : e.NewVar
+    , e.Vars
+    : {
+        e.Vars-B (e.NewVar) e.Vars-E
+          = <DoNewVarName ((e.NewVar) e.Vars-B e.Vars-E) e.NewVar>;
+
+        e.Vars^ = ((e.NewVar) e.Vars) e.NewVar;
+      };
+}
+
+IncName {
+  e.Name s.Digit, '0123456789' : e._B s.Digit s.Next e._E = e.Name s.Next;
+  e.Name '9' = <IncName e.Name> '0';
+  e.Name = e.Name '0';
+}
+
+
+/**
+  <CreateContext s.MarkupContext t.Variable> == t.ContextVariable*
+
+  t.ContextVariable ::=
+      (TkVariable s.ModeTS e.Index s.Depth)
+    | (Brackets (TkVariable 'e' e.Index s.Depth))
+    | (Symbol Name e.Name)
+*/
+$ENTRY CreateContext {
+  MarkupContext e.Context =
+    <Map
+      {
+        ('e' e.Index) =
+          (Symbol Identifier VAR 'e' e.Index)
+          (Brackets (TkVariable 'e' e.Index));
+
+        (s.Mode e.Index) =
+          (Symbol Identifier VAR s.Mode e.Index)
+          (TkVariable s.Mode e.Index);
+      }
+      e.Context
+    >;
+
+  NoMarkupContext e.Context =
+    <Map
+      {
+        ('e' e.Index) = (Brackets (TkVariable 'e' e.Index));
+        (s.Mode e.Index) = (TkVariable s.Mode e.Index);
+      }
+      e.Context
+    >;
+}
+
+/**
+  <CreateSpecPatternForContext t.ContextVariable*> == e.Expression
+*/
+$ENTRY CreateSpecPatternForContext {
+  e.Context
+    = <Map
+        {
+          (Symbol Identifier e.Ident) = (Symbol Identifier e.Ident);
+
+          (TkVariable s.Mode e.Index) = (TkVariable s.Mode 'STAT_' e.Index);
+
+          (Brackets (TkVariable 'e' e.Index))
+            = (Brackets (TkVariable 'eSTAT_' e.Index));
+        }
+        e.Context
+      >
+      (TkVariable 'edyn' 0)
+}
+
+
+/**
+  <AddSuffix e.Name (e.NewSuffix)> == e.Name
+*/
+$ENTRY AddSuffix {
+  e.Name SUF e.Suffix (e.NewSuffix) = e.Name SUF e.Suffix e.NewSuffix;
+  e.Name (e.NewSuffix) = e.Name SUF e.NewSuffix;
+}

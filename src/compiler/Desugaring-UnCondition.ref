@@ -1,5 +1,10 @@
 $INCLUDE "LibraryEx";
 
+*$FROM TreeUtils
+$EXTERN AddSuffix, ExtractVariables, CreateSpecPatternForContext,
+  CreateContext, ExtractVariables-Expr, NewVarName;
+
+
 /**
   <Pass-UnCondition s.MarkupContext t.Unit*> == t.Unit*
 
@@ -52,11 +57,6 @@ UnCondition-Unit-Sentence {
 
   e.Name s.MarkupContext (s.SkipNo e.RemNames (e.NewFunctions)) (e.Sentence)
     = (<Inc s.SkipNo> e.RemNames '-' (e.NewFunctions)) (e.Sentence);
-}
-
-AddSuffix {
-  e.Name SUF e.Suf (e.NewSuf) = e.Name SUF e.Suf e.NewSuf;
-  e.Name (e.NewSuf) = e.Name SUF e.NewSuf;
 }
 
 UnCondition-RemFunctions {
@@ -441,16 +441,16 @@ UnCondition-Sentence {
       e.SentenceTail
     , e.ConditionName '?' 0 : e.CheckFunction
     , <ExtractVariables (e.Sentence)> : e.SentenceVariables
-    , <ConditionContext s.MarkupContext e.Pattern> : e.PatternVarsAsExpr
+    , <ConditionContext s.MarkupContext e.Pattern> : e.Context
     , <PatternSteps (e.SentenceVariables) e.Pattern> : e.PatternSteps
     , <OpenEChain
         (e.ConditionName) (e.SentenceVariables) t.ContName (e.CheckFunction)
-        (e.PatternVarsAsExpr) (e.CondResult)
+        (e.Context) (e.CondResult)
         e.PatternSteps
       >
     : (e.ContSentence) e.OpenEFunctions
     , (Function GN-Local (e.CheckFunction) Sentences
-        ((e.PatternVarsAsExpr e.CondPattern) e.SentenceTail)
+        ((e.Context e.CondPattern) e.SentenceTail)
         e.ContSentence
       )
     : t.CheckFunction
@@ -458,60 +458,47 @@ UnCondition-Sentence {
         (e.Pattern)
         (
           (CallBrackets
-            (Symbol Name e.CheckFunction) e.PatternVarsAsExpr e.CondResult
+            (Symbol Name e.CheckFunction) e.Context e.CondResult
           )
         )
       )
       (Drive e.CheckFunction)
-      (Spec (e.CheckFunction) <?CreateSpecPattern e.PatternVarsAsExpr>)
+      (Spec (e.CheckFunction) <CreateSpecPatternForContext e.Context>)
       t.CheckFunction e.OpenEFunctions;
 }
 
 ConditionContext {
   s.MarkupContext e.Pattern
-    = <Map
-        (&MakeVariables s.MarkupContext)
-        <Unique <ExtractVariables-Expr e.Pattern>>
-      >;
-}
-
-MakeVariables {
-  MarkupContext ('e' e.Index)
-    = (Symbol Identifier VAR 'e' e.Index) (Brackets (TkVariable 'e' e.Index));
-  MarkupContext (s.VarType e.Index)
-    = (Symbol Identifier VAR s.VarType e.Index) (TkVariable s.VarType e.Index);
-
-  NoMarkupContext ('e' e.Index) = (Brackets (TkVariable 'e' e.Index));
-  NoMarkupContext (s.VarType e.Index) = (TkVariable s.VarType e.Index);
+    = <CreateContext s.MarkupContext <Unique <ExtractVariables-Expr e.Pattern>>>
 }
 
 OpenEChain {
   (e.ConditionName) (e.VarNames) (e.ContName)
-  (e.CheckFunction) (e.PatternVarsAsExpr) (e.CondResult)
+  (e.CheckFunction) (e.Context) (e.CondResult)
   ((e.T0)) /* пусто */
     , <NewVarName (e.VarNames) 'eOther' 0> : (e.NewVarNames) e.eOther
     = (
         (
-          (e.PatternVarsAsExpr (TkVariable e.eOther))
+          (e.Context (TkVariable e.eOther))
           ((CallBrackets (Symbol Name e.ContName) e.T0))
         )
       )
       /* пусто */;
 
   (e.ConditionName) (e.VarNames) t.ContName
-  (e.CheckFunction) (e.PatternVarsAsExpr) (e.CondResult)
+  (e.CheckFunction) (e.Context) (e.CondResult)
   ((e.T0)) e.Templates
     , e.ConditionName '?' 2 : e.NextForward
     , <DoOpenEChain
         (e.ConditionName) 2 (e.NextForward) t.ContName
-        (e.CheckFunction) (e.PatternVarsAsExpr e.CondResult)
+        (e.CheckFunction) (e.Context e.CondResult)
         (/* generated */) e.Templates
       >
     : e.NewFunctions
     , <NewVarName (e.VarNames) 'eOther' 0> : (e.NewVarNames) e.eOther
     = (
         (
-          (e.PatternVarsAsExpr (TkVariable e.eOther))
+          (e.Context (TkVariable e.eOther))
           ((CallBrackets (Symbol Name e.NextForward) e.T0))
         )
       )
@@ -569,87 +556,11 @@ MakeOpenE-ForwardNext {
 }
 
 
-/**
-  <ExtractVariables e.Sentences> == e.Variables
-
-  e.Variables ::= (s.Mode e.Index s.Depth)*
-*/
-$ENTRY ExtractVariables {
-  e.Sentences = <Unique <ExtractVariables-Sentences e.Sentences>>;
-}
-
-ExtractVariables-Sentences {
-  ((e.Pattern) e.Tail) e.Sentences
-    = <ExtractVariables-Expr e.Pattern>
-      <ExtractVariables-Tail e.Tail>
-      <ExtractVariables-Sentences e.Sentences>;
-
-  /* пусто */ = /* пусто */;
-}
-
-ExtractVariables-Tail {
-  (Condition (e.ConditionName) (e.Result) (e.Pattern)) e.Tail
-    = <ExtractVariables-Expr e.Result>
-      <ExtractVariables-Expr e.Pattern>
-      <ExtractVariables-Tail e.Tail>;
-
-  (e.Result) = <ExtractVariables-Expr e.Result>;
-}
-
-$ENTRY ExtractVariables-Expr {
-  (TkVariable s.VarType e.Index) e.Terms
-    = (s.VarType e.Index) <ExtractVariables-Expr e.Terms>;
-
-  (Brackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
-  (ADT-Brackets (e.Name) e.Inner) e.Terms
-    = <ExtractVariables-Expr e.Inner e.Terms>;
-
-  (CallBrackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
-  (ClosureBrackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
-
-  t.Other e.Terms = <ExtractVariables-Expr e.Terms>;
-
-  /* пусто */ = /* пусто */;
-}
-
-
-/**
+/*
   <NewVarNameSuf (e.Variables) s.Mode e.Prefix s.Depth (e.Suffix)>
     == (e.Variables^) s.Mode e.NewIndex s.Depth
 */
-$ENTRY NewVarNameSuf {
+NewVarNameSuf {
   (e.Variables) s.Mode e.Prefix s.Depth (e.Suffix)
     = <NewVarName (e.Variables) s.Mode e.Prefix e.Suffix s.Depth>;
-}
-
-/**
-  <NewVarName (e.Variables) e.Variable> == (e.Variables^) e.Variable^
-
-  e.Variable ::= s.Mode e.Index s.Depth
-*/
-$ENTRY NewVarName {
-  (e.Vars-B (e.Variable) e.Vars-E) e.Variable
-    = <DoNewVarName ((e.Variable) e.Vars-B e.Vars-E) e.Variable>;
-
-  (e.Vars) e.Variable = ((e.Variable) e.Vars) e.Variable;
-}
-
-DoNewVarName {
-  (e.Vars) e.Variable
-    = e.Variable : s.Mode e.Index s.Depth
-    = <IncName e.Index> : e.NewIndex
-    = s.Mode e.NewIndex s.Depth : e.NewVar
-    , e.Vars
-    : {
-        e.Vars-B (e.NewVar) e.Vars-E
-          = <DoNewVarName ((e.NewVar) e.Vars-B e.Vars-E) e.NewVar>;
-
-        e.Vars^ = ((e.NewVar) e.Vars) e.NewVar;
-      };
-}
-
-IncName {
-  e.Name s.Digit, '0123456789' : e._B s.Digit s.Next e._E = e.Name s.Next;
-  e.Name '9' = <IncName e.Name> '0';
-  e.Name = e.Name '0';
 }
