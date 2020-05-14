@@ -44,6 +44,6 @@ for /L %%i in (1, 1, %TIMES%) do (
   echo %%i>>"%LOG%.stdout"
   ..\..\bin\rlc-core @input.prj 1>> "%LOG%.stdout" 2>> "%LOG%.stderr"
 )
-sort "%LOG%.stderr" > "%LOG%.time"
+sort "%LOG%.stderr" > "%LOG%_time.txt"
 erase *.rasl input.prj
 if exist *.cpp erase *.cpp

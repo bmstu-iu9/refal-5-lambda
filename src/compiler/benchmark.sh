@@ -44,5 +44,5 @@ for ((i = 1; i <= "$TIMES"; ++i)); do
   ../../bin/rlc-core @input.prj 1>> "$LOG".stdout 2>> "$LOG".stderr
 done
 
-sort "$LOG".stderr > "$LOG".time
+sort "$LOG".stderr > "$LOG"_time.txt
 rm -f *.rasl *.cpp input.prj
