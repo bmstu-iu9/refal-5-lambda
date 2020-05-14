@@ -188,3 +188,21 @@
 Блок `UNIT_NAME` содержит имя исходного файла для некоторой единицы трансляции.
 Ему должен предшествовать хотя бы один `CONST_TABLE`. Собственно, это имя
 и помещается в соответствующую таблицу констант.
+
+## Блок METATABLE=12
+
+    struct METATABLE {
+      name: FUNCNAME;
+      count: WORD;
+      items: METATABLE_PAIR * count;
+    }
+
+    struct METATABLE_PAIR {
+      ident_id: WORD;
+      func_id: WORD;
+    }
+
+Ей должен предшествовать хотя бы один `CONST_TABLE`.
+
+* `ident_id` — номер идентификатора в таблице `CONST_TABLE::idents`,
+* `func_id` — номер функции в таблице `CONST_TABLE::externals`.
