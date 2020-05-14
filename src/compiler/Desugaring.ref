@@ -867,7 +867,7 @@ CreateContext {
     >;
 }
 
-CreateSpecPattern {
+$ENTRY CreateSpecPattern {
   e.Context
     = <Map
         {
