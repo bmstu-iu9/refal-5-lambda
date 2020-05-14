@@ -343,12 +343,15 @@ goto :EOF
 
 :RUN_TEST_AUX.WARNING
 setlocal
-  echo Passing %1 (flags -Wall)...
+  for /F "tokens=3 delims= " %%f in ('
+    findstr "WARNING" %1
+  ') do set FLAG=%%f
+
   set SREF=%1
   set RASL=%~n1.rasl
-  set WARN=-Wall
-
-  ..\bin\rlc-core %WARN% --prelude=test-prelude.srefi -C %SRFLAGS% %1 2> __error.txt
+  set WARN=-W
+  echo Passing %1 (flag %WARN%%FLAG%)...
+  ..\bin\rlc-core %WARN%%FLAG% --prelude=test-prelude.srefi -C %SRFLAGS% %1 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
@@ -363,9 +366,9 @@ setlocal
   echo Ok! Compilation didn't abort
   echo.
 
-  echo Passing %1 (flags -Wall -Werror)...
-  set WARN=-Wall -Werror
-  ..\bin\rlc-core %WARN% --prelude=test-prelude.srefi -C %SRFLAGS% %1 2> __error.txt
+  set WARN=-Werror=
+  echo Passing %1 (flag %WARN%%FLAG%)...
+  ..\bin\rlc-core %WARN%%FLAG% --prelude=test-prelude.srefi -C %SRFLAGS% %1 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
@@ -379,5 +382,6 @@ setlocal
   erase __error.txt
   echo Ok! Compiler treated warnings as errors
   echo.
+
 endlocal
 goto :EOF

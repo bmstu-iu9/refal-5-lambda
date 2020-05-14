@@ -1,5 +1,6 @@
 $INCLUDE "LibraryEx";
 
+$EXTERN Config-AllWarningIds;
 
 /**
   Внутренний формат:
@@ -15,7 +16,7 @@ $INCLUDE "LibraryEx";
   s.WarningId ::=
       screening
     | nul-in-compound
-    | init-is-entry
+    | init-final-entry
 */
 $ENUM ErrorList;
 
@@ -68,7 +69,10 @@ $ENTRY EL-AddErrorAt {
 }
 
 $ENTRY EL-AddWarningAt {
-  [ErrorList (e.FileName) t.Errors (e.Warnings)] s.WarningId NoPos e.Message
+  [ErrorList (e.FileName) t.Errors (e.Warnings)]
+  s.WarningId
+  NoPos
+  e.Message
     = [ErrorList
         (e.FileName)
         t.Errors
@@ -93,14 +97,20 @@ $ENTRY EL-AddWarningAt {
         (e.FileName)
         t.Errors
         (e.Warnings
-          (s.WarningId (FileRowCol (s.Row s.Col) e.FileName) e.Message))
-      ];
+          (s.WarningId (FileRowCol (s.Row s.Col) e.FileName) e.Message)
+        )
+     ];
 
-  [ErrorList (e.FileName) t.Errors (e.Warnings)] s.WarningId t.SrcPos e.Message
+  [ErrorList (e.FileName) t.Errors (e.Warnings)]
+  s.WarningId
+  t.SrcPos
+  e.Message
     = [ErrorList
         (e.FileName)
         t.Errors
-        (e.Warnings (s.WarningId t.SrcPos e.Message))
+        (e.Warnings
+          (s.WarningId t.SrcPos e.Message)
+        )
       ];
 }
 
@@ -115,80 +125,129 @@ $ENTRY EL-Concat {
 }
 
 /*
-<EL-Destroy t.ErrorList e.EnabledWarnings s.WarningControl>
+<EL-Destroy t.ErrorList (e.EnabledWarningIds) (e.WarningIdsAsErrors)>
   == EL-NoErrors
   == EL-HasErrors
 
-e.EnabledWarnings ::= s.WarningId*
-s.WarningLevel ::=
-    WarningsAsErrors
-  | WarningsAsWarnings
+e.EnabledWarningIds ::= s.WarningId*
+e.WarningIdsAsErrors ::= s.WarningId*
 */
 $ENTRY EL-Destroy {
   [ErrorList (e.FileName) (e.Errors) (e.Warnings)]
-  e.EnabledWarnings
-  s.WarningControl
-    = <FilterEnabledWarnings (e.Warnings) e.EnabledWarnings> : e.Warnings^
+  (e.EnabledWarningIds)
+  (e.WarningIdsAsErrors)
+    = <FilterEnabledWarnings (e.Warnings) e.EnabledWarningIds> : e.Warnings^
     = <CheckHasErrors
         [ErrorList (e.FileName) (e.Errors) (e.Warnings)]
-        s.WarningControl
+        e.WarningIdsAsErrors
       >
     : s.HasErrors
     = <Map
-        (&PrintMessage 'ERROR')
+        &PrintMessageError
         <Sort e.Errors>
       >
       <Map
-        (&PrintMessage 'WARNING')
+        (&PrintMessageWarning (e.WarningIdsAsErrors))
         <Sort e.Warnings>
+      >
+      <PrintWarningsAsErrorsMessage
+        (e.FileName)
+        <CheckWarningsAsErrors (e.Warnings) e.WarningIdsAsErrors>
       >
       s.HasErrors
 }
 
 FilterEnabledWarnings {
-  (e.Warnings) e.EnabledWarnings =
+  (e.Warnings) e.EnabledWarningIds =
     <Map
-      (&IsWarningEnabled e.EnabledWarnings)
+      (&IsWarningEnabled e.EnabledWarningIds)
       e.Warnings
     >
 }
 
 IsWarningEnabled{
-  e._ s.WarningId e._ (s.WarningId e.Warning-R)
-    = (e.Warning-R);
+  e._ s.WarningId e._ (s.WarningId t.SrcPos e.Message)
+    = (s.WarningId t.SrcPos e.Message);
 
   e.WarningIds t.Skipped = /* пусто */
 }
 
 CheckHasErrors {
-  [ErrorList (e.FileName) () (e.Warnings)] WarningsAsWarnings
-    = EL-NoErrors;
-  [ErrorList (e.FileName) () ()] WarningsAsErrors
-    = EL-NoErrors;
+  [ErrorList (e.FileName) (t.Error e._) (e.Warnings)] e._
+    = EL-HasErrors;
 
-  t.ErrorList s.WarningLevel = EL-HasErrors
+  [ErrorList (e.FileName) () (e._ (s.WarningId e._) e._)]
+  e._
+  s.WarningId
+  e._
+    = EL-HasErrors;
+
+  t.ErrorList e._ = EL-NoErrors
 }
 
-PrintMessage {
-  e.MessageType (NoPos e.Message)
-    = <PrintErr '  ' e.MessageType ': ' e.Message>;
+CheckWarningsAsErrors {
+  (e._ (s.WarningId t.SrcPos e.Message) e._) e.Ids-RB s.WarningId e.Ids-RE
+  , <SetsEq
+      (e.Ids-RB s.WarningId e.Ids-RE)
+      <Config-AllWarningIds>
+    >
+  : True = All;
 
-  e.MessageType ((FileLine s.LineNumber e.FileName) e.Message)
-    = <PrintErr
-        e.FileName
-        ':' <Symb s.LineNumber>
-        ':' e.MessageType
-        ': ' e.Message
-      >;
+  (e._ (s.WarningId t.SrcPos e.Message) e._) e._ s.WarningId e._  = Some;
 
-  e.MessageType ((FileRowCol (s.Row s.Col) e.FileName) e.Message)
+  (e.Warnings) e.WarningIds = None
+}
+
+SetsEq {
+  () () = True;
+
+  (e.Set-LB s.Item e.Set-LE) (e.Set-RB s.Item e.Set-RE)
+    = <SetsEq (e.Set-LB e.Set-LE) (e.Set-RB e.Set-RE)>;
+
+  (e.Set-L) (e.Set-R) = False
+}
+
+PrintWarningsAsErrorsMessage {
+  (e.FileName) All
+    = <Prout e.FileName ': all warnings being treated as errors'>;
+  (e.FileName) Some
+    = <Prout e.FileName ': some warnings being treated as errors'>;
+
+  (e.FileName) None = /* пусто */
+}
+
+PrintMessageError {
+  (t.SrcPos e.Message)
     = <PrintErr
-        e.FileName
-        ':' <Symb s.Row>
-        ':' <Symb s.Col>
-        ':' e.MessageType
-        ': ' e.Message
+        <StrFromPos t.SrcPos>
+        'ERROR: '
+        e.Message
       >;
+}
+
+PrintMessageWarning {
+  (e._ s.WarningId e._)
+  (s.WarningId t.SrcPos e.Message)
+    = <PrintErr
+        <StrFromPos t.SrcPos>
+        'ERROR: ' e.Message ' '
+        '[-Werror=' <Explode s.WarningId> ']'
+      >;
+  (e._)
+  (s.WarningId t.SrcPos e.Message)
+    = <PrintErr
+        <StrFromPos t.SrcPos>
+        'WARNING: ' e.Message ' '
+        '[-W' <Explode s.WarningId> ']'
+      >;
+}
+
+StrFromPos {
+  NoPos = '  ';
+  (FileLine s.LineNumber e.FileName)
+    = e.FileName ':' <Symb s.LineNumber> ': ';
+  (FileRowCol (s.Row s.Col) e.FileName)
+    = e.FileName ':' <Symb s.Row> ':' <Symb s.Col> ': ';
 }
 
 $ENTRY PrintErr {

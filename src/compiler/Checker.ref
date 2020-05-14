@@ -623,13 +623,13 @@ FindInvalidForwards {
 }
 
 FindFinalInitEntry {
-  (e._ init-is-entry e._) e.Declarations
+  (e._ init-final-entry e._) e.Declarations
     = <Map
         {
           (Define t.ScrPosDefine GN-Entry e.Name)
             , <OneOf (e.Name) ('FINAL') ('INIT')> : True
             = (Define t.ScrPosDefine GN-Entry e.Name)
-              (Warning init-is-entry t.ScrPosDefine InitFinalEntry e.Name);
+              (Warning init-final-entry t.ScrPosDefine InitFinalEntry e.Name);
 
           t.OtherDeclaraion = t.OtherDeclaraion
         }

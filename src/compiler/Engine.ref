@@ -15,7 +15,7 @@ $EXTERN
   Config-GetGenMode,
   Config-GetOptTree,
   Config-GetWarningIds,
-  Config-GetWarningLevel;
+  Config-GetWarningIdsAsErrors;
 
 *$FROM Checker
 $EXTERN CheckProgram;
@@ -70,8 +70,8 @@ $ENTRY CompileFile {
     : t.ErrorList e.AST
     = <EL-Destroy
         t.ErrorList
-        <Config-GetWarningIds t.Config>
-        <Config-GetWarningLevel t.Config>
+        (<Config-GetWarningIds t.Config>)
+        (<Config-GetWarningIdsAsErrors t.Config>)
       >
     : {
         EL-NoErrors = <BackEnd t.Config (e.SrcName) (e.OutputName) e.AST>;
@@ -599,8 +599,8 @@ $ENTRY GrammarCheck {
     = <LoadAST t.Config s.Dialect e.SrcName> : t.ErrorList e.AST
     = <EL-Destroy
         t.ErrorList
-        <Config-GetWarningIds t.Config>
-        <Config-GetWarningLevel t.Config>
+        (<Config-GetWarningIds t.Config>)
+        (<Config-GetWarningIdsAsErrors t.Config>)
       >
     : {
         EL-NoErrors = Success;

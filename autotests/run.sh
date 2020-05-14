@@ -176,11 +176,14 @@ run_test_aux.BAD-SYNTAX() {
 }
 
 run_test_aux.WARNING() {
-  echo Passing $1 \(flags -Wall\)...
+  FLAG=$(grep 'WARNING' "$1")
+  IFS=' ' read -a array <<< "$FLAG"
+  WARN=-W"${array[2]}"
+
+  echo Passing $1 \(flag "${WARN}"\)...
   SREF=$1
   RASL=${SREF%.*}.rasl
   EXE=${SREF%.*}$(platform_exe_suffix)
-  WARN=-Wall
 
   ../bin/rlc-core ${WARN} --prelude=test-prelude.srefi -C ${SRFLAGS} ${SREF} 2>__error.txt
   if [[ $? -ge 100 ]]; then
@@ -197,8 +200,8 @@ run_test_aux.WARNING() {
   echo "Ok! Compiler didn't abort"
   echo
 
-  echo Passing $1 \(flags -Wal -Werror\)...
-  WARN='-Wall -Werror'
+  WARN="-Werror=${array[2]}"
+  echo Passing $1 \(flags "${WARN}"\)...
   ../bin/rlc-core ${WARN} --prelude=test-prelude.srefi -C ${SRFLAGS} ${SREF} 2>__error.txt
   if [[ $? -ge 100 ]]; then
     echo COMPILER ON ${SREF} FAILS, SEE __error.txt
