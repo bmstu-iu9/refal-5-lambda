@@ -368,7 +368,7 @@ setlocal
 
   set WARN=-Werror=
   echo Passing %1 (flag %WARN%%FLAG%)...
-  ..\bin\rlc-core %WARN% --prelude=test-prelude.srefi -C %SRFLAGS% %1 2> __error.txt
+  ..\bin\rlc-core %WARN%%FLAG% --prelude=test-prelude.srefi -C %SRFLAGS% %1 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
