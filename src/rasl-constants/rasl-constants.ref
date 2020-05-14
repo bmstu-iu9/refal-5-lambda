@@ -121,9 +121,17 @@ Generate {
       ('*/')
       <Map
         {
-          (Header e.FuncName) = () ('$ENTRY ' e.FuncName '{');
+          (Header e.FuncName) = () ('$ENTRY ' e.FuncName ' {');
           ((e.Words) '=' (e.Number)) = ('  ' e.Words ' = ' e.Number ';');
           ('}') = ('}');
+        }
+        e.Lines
+      >
+      <Map
+        {
+          (Header e.FuncName) = () ('$ENTRY Rev_' e.FuncName ' {');
+          ((e.Words) '=' (e.Number)) = ('  ' e.Number ' = Ok ' e.Words ';');
+          ('}') = ('  e._ = Fails;') ('}');
         }
         e.Lines
       >

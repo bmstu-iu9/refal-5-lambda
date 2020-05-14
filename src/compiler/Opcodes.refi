@@ -4,7 +4,7 @@
   $ rasl-constants ../lib/refalrts-commands.h Opcodes.refi
 */
 
-$ENTRY NumberFromOpcode{
+$ENTRY NumberFromOpcode {
   CmdProfileFunction = 0;
   CmdLoadConstants = 1;
   CmdIssueMemory = 2;
@@ -126,7 +126,7 @@ $ENTRY NumberFromOpcode{
   CmdMainLoopReturnSuccess = 118;
 }
 
-$ENTRY NumberFromBracket{
+$ENTRY NumberFromBracket {
   ElOpenADT = 0;
   ElOpenBracket = 1;
   ElOpenCall = 2;
@@ -135,7 +135,7 @@ $ENTRY NumberFromBracket{
   ElCloseCall = 5;
 }
 
-$ENTRY BlockTypeNumber{
+$ENTRY BlockTypeNumber {
   Start = 1;
   ConstTable = 2;
   RefalFunction = 3;
@@ -148,4 +148,153 @@ $ENTRY BlockTypeNumber{
   Incorporated = 10;
   UnitName = 11;
   Metatable = 12;
+}
+
+$ENTRY Rev_NumberFromOpcode {
+  0 = Ok CmdProfileFunction;
+  1 = Ok CmdLoadConstants;
+  2 = Ok CmdIssueMemory;
+  3 = Ok CmdReserveBacktrackStack;
+  4 = Ok CmdOnFailGoTo;
+  5 = Ok CmdProfilerStopSentence;
+  6 = Ok CmdInitB0;
+  7 = Ok CmdInitB0-Lite;
+  8 = Ok CmdChar AlgLeft;
+  9 = Ok CmdChar AlgRight;
+  10 = Ok CmdChar AlgTerm;
+  11 = Ok CmdCharSave AlgLeft;
+  12 = Ok CmdCharSave AlgRight;
+  13 = Ok CmdNumber AlgLeft;
+  14 = Ok CmdNumber AlgRight;
+  15 = Ok CmdNumber AlgTerm;
+  16 = Ok CmdNumberSave AlgLeft;
+  17 = Ok CmdNumberSave AlgRight;
+  18 = Ok CmdHugeNum AlgLeft;
+  19 = Ok CmdHugeNum AlgRight;
+  20 = Ok CmdHugeNum AlgTerm;
+  21 = Ok CmdHugeNumSave AlgLeft;
+  22 = Ok CmdHugeNumSave AlgRight;
+  23 = Ok CmdName AlgLeft;
+  24 = Ok CmdName AlgRight;
+  25 = Ok CmdName AlgTerm;
+  26 = Ok CmdNameSave AlgLeft;
+  27 = Ok CmdNameSave AlgRight;
+  28 = Ok CmdIdent AlgLeft;
+  29 = Ok CmdIdent AlgRight;
+  30 = Ok CmdIdent AlgTerm;
+  31 = Ok CmdIdentSave AlgLeft;
+  32 = Ok CmdIdentSave AlgRight;
+  33 = Ok CmdBrackets AlgLeft;
+  34 = Ok CmdBrackets AlgRight;
+  35 = Ok CmdBrackets AlgTerm;
+  36 = Ok CmdBracketsSave AlgLeft;
+  37 = Ok CmdBracketsSave AlgRight;
+  38 = Ok CmdADT AlgLeft;
+  39 = Ok CmdADT AlgRight;
+  40 = Ok CmdADT AlgTerm;
+  41 = Ok CmdADTSave AlgLeft;
+  42 = Ok CmdADTSave AlgRight;
+  43 = Ok CmdADTSave AlgTerm;
+  44 = Ok CmdCallSave AlgLeft;
+  45 = Ok CmdEmpty;
+  46 = Ok CmdNotEmpty;
+  47 = Ok 's' CmdVar AlgLeft;
+  48 = Ok 's' CmdVar AlgRight;
+  49 = Ok 's' CmdVar AlgTerm;
+  50 = Ok 't' CmdVar AlgLeft;
+  51 = Ok 't' CmdVar AlgRight;
+  52 = Ok 't' CmdVarSave AlgLeft;
+  53 = Ok 't' CmdVarSave AlgRight;
+  54 = Ok 'e' CmdRepeated AlgLeft;
+  55 = Ok 'e' CmdRepeated AlgRight;
+  56 = Ok 's' CmdRepeated AlgLeft;
+  57 = Ok 's' CmdRepeated AlgRight;
+  58 = Ok 's' CmdRepeated AlgTerm;
+  59 = Ok 't' CmdRepeated AlgLeft;
+  60 = Ok 't' CmdRepeated AlgRight;
+  61 = Ok 't' CmdRepeated AlgTerm;
+  62 = Ok 't' CmdRepeatedSave AlgLeft;
+  63 = Ok 't' CmdRepeatedSave AlgRight;
+  64 = Ok CmdEPrepare;
+  65 = Ok CmdEStart;
+  66 = Ok CmdSave;
+  67 = Ok CmdResetAllocator;
+  68 = Ok CmdSetResArgBegin;
+  69 = Ok CmdSetResRightEdge;
+  70 = Ok CmdSetRes;
+  71 = Ok CmdCopyEVar;
+  72 = Ok CmdCopySTVar;
+  73 = Ok CmdReinitSVar;
+  74 = Ok Allocate ElChar;
+  75 = Ok Allocate ElName;
+  76 = Ok Allocate ElNumber;
+  77 = Ok Allocate ElHugeNumber;
+  78 = Ok Allocate ElIdent;
+  79 = Ok Allocate ElBracket;
+  80 = Ok Allocate ElString;
+  113 = Ok Allocate ElClosureHead;
+  114 = Ok Allocate ElUnwrappedClosure;
+  81 = Ok Reinit ElChar;
+  82 = Ok Reinit ElName;
+  83 = Ok Reinit ElNumber;
+  84 = Ok Reinit ElHugeNumber;
+  85 = Ok Reinit ElIdent;
+  86 = Ok Reinit ElBracket;
+  87 = Ok Reinit ElClosureHead;
+  88 = Ok Reinit ElUnwrappedClosure;
+  89 = Ok Update ElChar;
+  90 = Ok Update ElName;
+  91 = Ok Update ElNumber;
+  92 = Ok Update ElHugeNumber;
+  93 = Ok Update ElIdent;
+  94 = Ok CmdLinkBrackets;
+  95 = Ok CmdPushStack;
+  110 = Ok CmdWrapClosure;
+  96 = Ok CmdSpliceElem;
+  97 = Ok CmdSpliceEVar;
+  98 = Ok CmdSpliceSTVar;
+  99 = Ok CmdSpliceRange;
+  100 = Ok CmdSpliceTile;
+  101 = Ok CmdSpliceToFreeList;
+  102 = Ok CmdNextStep;
+  103 = Ok CmdTrashLeftEdge;
+  104 = Ok CmdTrash;
+  105 = Ok CmdFail;
+  106 = Ok CmdFetchSwapHead;
+  107 = Ok CmdFetchSwapInfoBounds;
+  108 = Ok CmdSwapSave;
+  109 = Ok CmdPerformNative;
+  111 = Ok CmdScale;
+  112 = Ok CmdVariableDebugOffset;
+  115 = Ok CmdSpliceToFreeList-Range;
+  116 = Ok CmdPushState;
+  117 = Ok CmdPopState;
+  118 = Ok CmdMainLoopReturnSuccess;
+  e._ = Fails;
+}
+
+$ENTRY Rev_NumberFromBracket {
+  0 = Ok ElOpenADT;
+  1 = Ok ElOpenBracket;
+  2 = Ok ElOpenCall;
+  3 = Ok ElCloseADT;
+  4 = Ok ElCloseBracket;
+  5 = Ok ElCloseCall;
+  e._ = Fails;
+}
+
+$ENTRY Rev_BlockTypeNumber {
+  1 = Ok Start;
+  2 = Ok ConstTable;
+  3 = Ok RefalFunction;
+  4 = Ok NativeFunction;
+  5 = Ok EmptyFunction;
+  6 = Ok Swap;
+  7 = Ok Reference;
+  8 = Ok ConditionRasl;
+  9 = Ok ConditionNative;
+  10 = Ok Incorporated;
+  11 = Ok UnitName;
+  12 = Ok Metatable;
+  e._ = Fails;
 }
