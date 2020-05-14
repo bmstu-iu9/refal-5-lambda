@@ -851,16 +851,20 @@ CheckEntryDuplicates {
     : {
         Success e.RASLBlocks = e.RASLBlocks;
 
-        Fails = <LinkError t.Config 'Can\'t parse RASL in ' e.CheckedExecutable>;
+        Fails
+          = <CheckedRemoveFile t.Config e.CheckedExecutable>
+            <LinkError t.Config 'Can\'t parse RASL in ' e.CheckedExecutable>;
       }
     : e.RASLBlocks
     = <CollectEntries e.RASLBlocks>
     : {
         Error UnitNameBeforeConstTable e.UnitName
-          = <LinkError t.Config 'Unit name before CONST_TABLE: ' e.UnitName>;
+          = <CheckedRemoveFile t.Config e.CheckedExecutable>
+            <LinkError t.Config 'Unit name before CONST_TABLE: ' e.UnitName>;
 
         Error FunctionBeforeConstTable e.Function
-          = <LinkError t.Config 'Function before CONST_TABLE: ' e.Function>;
+          = <CheckedRemoveFile t.Config e.CheckedExecutable>
+            <LinkError t.Config 'Function before CONST_TABLE: ' e.Function>;
 
         e.Entries = e.Entries;
       }
@@ -880,6 +884,7 @@ CheckEntryDuplicates {
               }
               e.ErrorMessages
             >
+            <CheckedRemoveFile t.Config e.CheckedExecutable>
             <LinkError t.Config 'Entry duplicates is found'>;
       }
 }
