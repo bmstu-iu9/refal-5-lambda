@@ -158,7 +158,8 @@ run_test_aux.BAD-SYNTAX() {
   RASL=${SREF%.*}.rasl
   EXE=${SREF%.*}$(platform_exe_suffix)
 
-  ../bin/rlc-core --prelude=test-prelude.srefi -C ${SRFLAGS} ${SREF} 2>__error.txt
+  ../bin/rlc-core --prelude=test-prelude.srefi -C ${SRFLAGS} ${SREF} \
+    2>__error.txt
   if [[ $? -ge 100 ]]; then
     echo COMPILER ON ${SREF} FAILS, SEE __error.txt
     exit 1
@@ -185,7 +186,8 @@ run_test_aux.WARNING() {
   RASL=${SREF%.*}.rasl
   EXE=${SREF%.*}$(platform_exe_suffix)
 
-  ../bin/rlc-core ${WARN} --prelude=test-prelude.srefi -C ${SRFLAGS} ${SREF} 2>__error.txt
+  ../bin/rlc-core ${WARN} --prelude=test-prelude.srefi -C ${SRFLAGS} ${SREF} \
+    2>__error.txt
   if [[ $? -ge 100 ]]; then
     echo COMPILER ON ${SREF} FAILS, SEE __error.txt
     exit 1
@@ -202,7 +204,8 @@ run_test_aux.WARNING() {
 
   WARN="-Werror=${array[2]}"
   echo Passing $1 \(flags "${WARN}"\)...
-  ../bin/rlc-core ${WARN} --prelude=test-prelude.srefi -C ${SRFLAGS} ${SREF} 2>__error.txt
+  ../bin/rlc-core ${WARN} --prelude=test-prelude.srefi -C ${SRFLAGS} ${SREF} \
+    2>__error.txt
   if [[ $? -ge 100 ]]; then
     echo COMPILER ON ${SREF} FAILS, SEE __error.txt
     exit 1
