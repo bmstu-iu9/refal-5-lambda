@@ -1,7 +1,7 @@
 $INCLUDE "LibraryEx";
 
 /**
-  <R5-Transform s.MarkupContext t.Unit*> == t.Unit*
+  <Pass-UnCondition s.MarkupContext t.Unit*> == t.Unit*
 
   s.MarkupContext ::= MarkupContext | NoMarkupContext
 */
@@ -25,79 +25,88 @@ Transform-Unit {
 */
 UnCondition {
   s.MarkupContext (e.Name) s.Scope e.Sentences
-    = <DoUnCondition s.MarkupContext (s.Scope (e.Name) e.Sentences)>;
+    = 1 : s.SkipNo
+    = /* пусто */ : e.RemNames
+    = /* пусто */ : e.NewFunctions
+    = <MapAccum
+        (&UnCondition-Sentence e.Name s.MarkupContext)
+        (s.SkipNo e.RemNames (e.NewFunctions))
+        e.Sentences
+      >
+    : (s.SkipNo^ e.RemNames^ (e.NewFunctions^)) e.Sentences^
+    = (Function s.Scope (e.Name) Sentences e.Sentences)
+      <UnCondition-RemFunctions 1 (e.RemNames) e.Sentences>
+      <Map
+        {
+          (s.Scope^ (e.Name^) e.Sentences^)
+            = <UnCondition s.MarkupContext (e.Name) s.Scope e.Sentences>;
+        }
+        e.NewFunctions
+      >;
 }
 
-DoUnCondition {
-  s.MarkupContext
-  (s.Scope (e.Name) e.Sentences-B (e.ConditionalSentence) e.Sentences-E)
-  e.UnscannedFunctions
-    , e.ConditionalSentence
-    : (e.Pattern)
-      (Condition (e.ConditionName) (e.CondResult) (e.CondPattern))
-      e.Tail
-
-    , <UnConditionSentence
-        s.MarkupContext (e.ConditionName) (e.ConditionalSentence) e.Sentences-E
+UnCondition-Sentence {
+  e.Name s.MarkupContext (s.SkipNo e.RemNames (e.NewFunctions)) (e.Sentence)
+    , e.Sentence : (e._) (Condition (e.ConditionName) (e._) (e._)) e._
+    = <AddSuffix e.Name ('*' s.SkipNo)> : e.RemName
+    = <UnConditionSentence
+        s.MarkupContext (e.ConditionName) (e.Sentence) e.RemName
       >
-    : (e.TransformedSentences) e.NewFunctions
-
-    = (Function
-        s.Scope (e.Name) Sentences e.Sentences-B e.TransformedSentences
+    : (e.Sentence^) e.NewSentenceFunctions
+    = (
+        <Inc s.SkipNo> e.RemNames (e.RemName)
+        (e.NewFunctions e.NewSentenceFunctions)
       )
-      <DoUnCondition s.MarkupContext e.UnscannedFunctions e.NewFunctions>;
+      (e.Sentence);
 
-  s.MarkupContext
-  (s.Scope (e.Name) e.Sentences) e.UnscannedFunctions
-    = (Function s.Scope (e.Name) Sentences e.Sentences)
-      <DoUnCondition s.MarkupContext e.UnscannedFunctions>;
+  e.Name s.MarkupContext (s.SkipNo e.RemNames (e.NewFunctions)) (e.Sentence)
+    = (<Inc s.SkipNo> e.RemNames '-' (e.NewFunctions)) (e.Sentence);
+}
 
-  s.MarkupContext /* пусто */ = /* пусто */;
+AddSuffix {
+  e.Name SUF e.Suf (e.NewSuf) = e.Name SUF e.Suf e.NewSuf;
+  e.Name (e.NewSuf) = e.Name SUF e.NewSuf;
+}
+
+UnCondition-RemFunctions {
+  s.SkipNo (t.RemainderName e.RemNames) t.Skip e.Sentences
+    = <Fetch
+        t.RemainderName
+        {
+          (e.RemainderName)
+            = (Function GN-Local (e.RemainderName) Sentences e.Sentences);
+
+          '-' = /* пусто */;
+        }
+      >
+      <UnCondition-RemFunctions <Inc s.SkipNo> (e.RemNames) e.Sentences>;
+
+  s.SkipNo (/* пусто */) /* пусто */ = /* пусто */;
 }
 
 /**
   <UnConditionSentence
-    s.MarkupContext (e.ConditionalSentence) e.ContinuationSentences
+    s.MarkupContext (e.ConditionalSentence) e.ContinuationName
   >
-    == (e.TransformedSentences) e.NewFunctions
+    == (e.TransformedSentence) e.NewFunctions
 */
 UnConditionSentence {
-  s.MarkupContext (e.ConditionName) (e.Sentence) e.ContinuationSentences
-    , <AnalyzeContinuation (e.ConditionName) e.ContinuationSentences>
-    : t.ContName e.ContFunction
-    , <ConditionSubFunctions
+  s.MarkupContext (e.ConditionName) (e.Sentence) e.ContinuationName
+    = (e.ContinuationName) : t.ContName
+    = <ConditionSubFunctions
         s.MarkupContext (e.ConditionName) t.ContName e.Sentence
       >
-    : (e.CallCheckSentence) e.SubFunctions
-    = (
-        (e.CallCheckSentence)
-        <MakeContinuationSentence
-          t.ContName ((TkVariable 'eOther' 0)) ((TkVariable 'eOther' 0))
-        >
-      )
-      e.SubFunctions
-      e.ContFunction;
 }
 
 /*
   Схема нумерации замыканий:
   ?0 - функция проверки,
-  ?1 - функция продолжения (может отсутствовать)
+  ?1 - функция продолжения (вместо них генерируется *n)
   ?n, n - чётное, - функция forward,
   ?n, n - нечётное, - функция next.
 */
 
-AnalyzeContinuation {
-  (e.ConditionName) /* пусто */ = NoContinuation /* пусто */;
-
-  (e.ConditionName) e.Sentences
-    , e.ConditionName '?' 1 : e.ContName
-    = (e.ContName) (GN-Local (e.ContName) e.Sentences);
-}
-
 MakeContinuationSentence {
-  NoContinuation (e.Pattern) (e.ContArg) = /* пусто */;
-
   (e.ContName) (e.Pattern) (e.ContArg)
     = ((e.Pattern) ((CallBrackets (Symbol Name e.ContName) e.ContArg)));
 }
@@ -504,11 +513,6 @@ MakeVariables {
 }
 
 OpenEChain {
-  (e.ConditionName) (e.VarNames) NoContinuation
-  (e.CheckFunction) (e.PatternVarsAsExpr) (e.CondResult)
-  ((e.T0)) /* пусто */
-    = (/* пусто */) /* пусто */;
-
   (e.ConditionName) (e.VarNames) (e.ContName)
   (e.CheckFunction) (e.PatternVarsAsExpr) (e.CondResult)
   ((e.T0)) /* пусто */
