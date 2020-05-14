@@ -7,50 +7,41 @@ $INCLUDE "LibraryEx";
 */
 $ENTRY Pass-UnCondition {
   s.MarkupContext e.Units
-    = <Map (&Transform-Unit s.MarkupContext) e.Units>;
-}
-
-Transform-Unit {
-  s.MarkupContext (Function s.Scope (e.Name) Sentences e.Sentences)
-    = <UnCondition s.MarkupContext (e.Name) s.Scope e.Sentences>;
-
-  s.MarkupContext t.Other = t.Other;
+    = <Map (&UnCondition-Unit s.MarkupContext) e.Units>;
 }
 
 ** НАМЕРЕННО ОТКАЗЫВАЕМСЯ ОТ ОТСЛЕЖИВАНИЯ КОПИРОВАНИЯ ПОВТОРНЫХ ПЕРЕМЕННЫХ
 
 /**
-  <UnCondition s.MarkupContext (e.Name) s.Scope e.Sentences>
+  <UnCondition-Unit s.MarkupContext (e.Name) s.Scope e.Sentences>
     == e.NewFunctions
 */
-UnCondition {
-  s.MarkupContext (e.Name) s.Scope e.Sentences
+UnCondition-Unit {
+  s.MarkupContext (Function s.Scope (e.Name) Sentences e.Sentences)
+
     = 1 : s.SkipNo
     = /* пусто */ : e.RemNames
     = /* пусто */ : e.NewFunctions
     = <MapAccum
-        (&UnCondition-Sentence e.Name s.MarkupContext)
+        (&UnCondition-Unit-Sentence e.Name s.MarkupContext)
         (s.SkipNo e.RemNames (e.NewFunctions))
         e.Sentences
       >
     : (s.SkipNo^ e.RemNames^ (e.NewFunctions^)) e.Sentences^
+
     = (Function s.Scope (e.Name) Sentences e.Sentences)
       <UnCondition-RemFunctions 1 (e.RemNames) e.Sentences>
-      <Map
-        {
-          (s.Scope^ (e.Name^) e.Sentences^)
-            = <UnCondition s.MarkupContext (e.Name) s.Scope e.Sentences>;
-        }
-        e.NewFunctions
-      >;
+      <Map (&UnCondition-Unit s.MarkupContext) e.NewFunctions>;
+
+  s.MarkupContext t.Other = t.Other;
 }
 
-UnCondition-Sentence {
+UnCondition-Unit-Sentence {
   e.Name s.MarkupContext (s.SkipNo e.RemNames (e.NewFunctions)) (e.Sentence)
     , e.Sentence : (e._) (Condition (e.ConditionName) (e._) (e._)) e._
     = <AddSuffix e.Name ('*' s.SkipNo)> : e.RemName
-    = <UnConditionSentence
-        s.MarkupContext (e.ConditionName) (e.Sentence) e.RemName
+    = <UnCondition-Sentence
+        s.MarkupContext (e.ConditionName) (e.RemName) e.Sentence
       >
     : (e.Sentence^) e.NewSentenceFunctions
     = (
@@ -84,20 +75,6 @@ UnCondition-RemFunctions {
   s.SkipNo (/* пусто */) /* пусто */ = /* пусто */;
 }
 
-/**
-  <UnConditionSentence
-    s.MarkupContext (e.ConditionalSentence) e.ContinuationName
-  >
-    == (e.TransformedSentence) e.NewFunctions
-*/
-UnConditionSentence {
-  s.MarkupContext (e.ConditionName) (e.Sentence) e.ContinuationName
-    = (e.ContinuationName) : t.ContName
-    = <ConditionSubFunctions
-        s.MarkupContext (e.ConditionName) t.ContName e.Sentence
-      >
-}
-
 /*
   Схема нумерации замыканий:
   ?0 - функция проверки,
@@ -105,11 +82,6 @@ UnConditionSentence {
   ?n, n - чётное, - функция forward,
   ?n, n - нечётное, - функция next.
 */
-
-MakeContinuationSentence {
-  (e.ContName) (e.Pattern) (e.ContArg)
-    = ((e.Pattern) ((CallBrackets (Symbol Name e.ContName) e.ContArg)));
-}
 
 PatternSteps {
   (e.UsedVariables) e.Pattern
@@ -456,12 +428,12 @@ DoT0 {
 }
 
 /**
-  <ConditionSubFunctions
-    s.MarkupContext (e.ConditionName) t.ContName e.Sentence
+  <UnCondition-Sentence
+    s.MarkupContext (e.ConditionName) (e.ContName) e.Sentence
   >
-    == (e.CallCheckSentence) e.SubFunctions
+    == (e.TransformedSentence) e.SubFunctions
 */
-ConditionSubFunctions {
+UnCondition-Sentence {
   s.MarkupContext (e.ConditionName) t.ContName e.Sentence
     , e.Sentence
     : (e.Pattern)
@@ -477,8 +449,7 @@ ConditionSubFunctions {
         e.PatternSteps
       >
     : (e.ContSentence) e.OpenEFunctions
-    , (
-        GN-Local (e.CheckFunction)
+    , (Function GN-Local (e.CheckFunction) Sentences
         ((e.PatternVarsAsExpr e.CondPattern) e.SentenceTail)
         e.ContSentence
       )
@@ -516,7 +487,7 @@ OpenEChain {
   (e.ConditionName) (e.VarNames) (e.ContName)
   (e.CheckFunction) (e.PatternVarsAsExpr) (e.CondResult)
   ((e.T0)) /* пусто */
-    , <NewVarNameSuf (e.VarNames) 'e' 0 ('Other')> : (e.NewVarNames) e.eOther
+    , <NewVarName (e.VarNames) 'eOther' 0> : (e.NewVarNames) e.eOther
     = (
         (
           (e.PatternVarsAsExpr (TkVariable e.eOther))
@@ -535,7 +506,7 @@ OpenEChain {
         (/* generated */) e.Templates
       >
     : e.NewFunctions
-    , <NewVarNameSuf (e.VarNames) 'e' 0 ('Other')> : (e.NewVarNames) e.eOther
+    , <NewVarName (e.VarNames) 'eOther' 0> : (e.NewVarNames) e.eOther
     = (
         (
           (e.PatternVarsAsExpr (TkVariable e.eOther))
@@ -576,23 +547,21 @@ DoOpenEChain {
 }
 
 MakeOpenE-ForwardNext {
-  (e.ConditionName) s.CurrentForwardId (e.CurrentForwardName) t.ContName
+  (e.ConditionName) s.CurrentForwardId (e.CurrentForwardName) (e.ContName)
   (e.CheckFunction) (e.CheckFunctionArg)
   (e.T1) (e.T2) (e.T3) (e.T4) (e.T5) (e.T5-sub) (e.T6) (e.T7)
     , e.ConditionName '?' <+ 1 s.CurrentForwardId> : e.NextName
     , <Substitute e.CheckFunctionArg (e.T5-sub)> : e.CheckFuncArgSubst
-    = (
-        GN-Local (e.CurrentForwardName)
+    = (Function GN-Local (e.CurrentForwardName) Sentences
         ((e.T1) ((CallBrackets (Symbol Name e.NextName) e.T2)))
-        <MakeContinuationSentence t.ContName (e.T3) (e.T4)>
+        ((e.T3) ((CallBrackets (Symbol Name e.ContName) e.T4)))
       )
-      (
-        GN-Local (e.NextName)
+      (Function GN-Local (e.NextName) Sentences
         (
           (e.T5)
           ((CallBrackets (Symbol Name e.CheckFunction) e.CheckFuncArgSubst))
         )
-        <MakeContinuationSentence t.ContName (e.T6) (e.T7)>
+        ((e.T6) ((CallBrackets (Symbol Name e.ContName) e.T7)))
       );
 }
 
