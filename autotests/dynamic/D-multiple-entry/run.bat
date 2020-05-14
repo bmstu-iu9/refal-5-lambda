@@ -6,6 +6,6 @@ if exist target.rasl-module (
   exit /b 1
 ) else (
   echo Test OK: linker found expected errors!
-  erase *.rasl-module *.rasl *.exe
+  erase *.rasl-module *.partial *.rasl *.exe
   exit /b 0
 )

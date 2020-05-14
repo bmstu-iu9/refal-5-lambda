@@ -8,6 +8,6 @@ if [[ -e target.rasl-module ]]; then
   exit 1
 else
   echo Test OK: linker found expected errors!
-  rm -f *.rasl-module *.rasl caller
+  rm -f *.rasl-module *.partial *.rasl caller
   exit 0
 fi

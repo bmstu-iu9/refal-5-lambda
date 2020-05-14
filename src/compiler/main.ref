@@ -25,10 +25,11 @@ $EXTERN FindFiles;
 $EXTERN CompileFile, GrammarCheck;
 
 *$FROM Library
-$EXTERN Open-Auto, Close, FSeek, FTell, WriteBytes, RenameFile;
+$EXTERN Open-Auto, Close, FSeek, FTell, WriteBytes, RenameFile, ReadBytes;
 
 *$FROM Generator-RASL
-$EXTERN PutBlockStart, PutBlockReference, PutBlockIncorporated;
+$EXTERN PutBlockStart, PutBlockReference, PutBlockIncorporated,
+  Rev_BlockTypeNumber;
 
 *$FROM Platform
 $EXTERN DirectorySeparator, IsDirectorySeparator;
@@ -446,7 +447,8 @@ Link-Exe {
   t.CommandLineSource t.Config
   ((e.CommandLine) e.Flags (e.CommandLineSuf)) (/* нет префикса */) e.Files
     = <Link-CppCompile
-        t.Config ((e.CommandLine) e.Flags (e.CommandLineSuf)) e.Files
+        t.CommandLineSource t.Config
+        ((e.CommandLine) e.Flags (e.CommandLineSuf)) e.Files
       >;
 
   t.CommandLineSource t.Config
@@ -466,7 +468,9 @@ Link-Exe {
     = <FindPrefix t.Config e.Prefix>
     : {
         Success e.PrefixFileName
-          = <Link-WithPrefix (e.PrefixFileName) t.Config e.Files>;
+          = <Link-WithPrefix
+              (e.PrefixFileName) t.CommandLineSource t.Config e.Files
+            >;
 
         Fails e.ExpectedPrefixName
           = <ReportErrors
@@ -504,7 +508,8 @@ Link-Lib {
   t.CommandLineSource t.Config
   ((e.CommandLine) e.Flags (e.CommandLineSuf)) (/* нет префикса */) e.Files
     = <Link-CppCompile
-        t.Config ((e.CommandLine) e.Flags (e.CommandLineSuf)) e.Files
+        t.CommandLineSource t.Config
+        ((e.CommandLine) e.Flags (e.CommandLineSuf)) e.Files
       >;
 
   t.CommandLineSource t.Config
@@ -524,7 +529,9 @@ Link-Lib {
     = <FindPrefix t.Config e.Prefix>
     : {
         Success e.PrefixFileName
-          = <Link-WithPrefix (e.PrefixFileName) t.Config e.Files>;
+          = <Link-WithPrefix
+              (e.PrefixFileName) t.CommandLineSource t.Config e.Files
+            >;
 
         Fails e.ExpectedPrefixName
           = <ReportWarnings
@@ -553,12 +560,12 @@ Link-R {
         {
           e.IntermediateName = /* ничего не делаем */;
         }
-        t.Config e.Files
+        t.CommandLineSource t.Config e.Files
       >;
 }
 
 Link-WithPrefix {
-  (e.PrefixFileName) t.Config e.Files
+  (e.PrefixFileName) t.CommandLineSource t.Config e.Files
     = <Link-Aux
         <Config-GetTargetMode t.Config>
         {
@@ -566,7 +573,7 @@ Link-WithPrefix {
             = <CopyPrefix (e.PrefixFileName) (e.IntermediateName)>
               <Chmod-X-Prefix t.Config e.IntermediateName>;
         }
-        t.Config e.Files
+        t.CommandLineSource t.Config e.Files
       >;
 }
 
@@ -594,7 +601,8 @@ CheckReturnCode {
 }
 
 Link-CppCompile {
-  t.Config ((e.CommandLine) e.Flags (e.CommandLineSuf)) e.Files
+  t.CommandLineSource t.Config
+  ((e.CommandLine) e.Flags (e.CommandLineSuf)) e.Files
     = e.CommandLineSuf
     : {
         /* пусто */ = /* пусто */;
@@ -623,12 +631,12 @@ Link-CppCompile {
               <CheckCppCompilationSuccessed t.Config e.IntermediateName>
               <EnsureAligned4096 e.IntermediateName>;
         }
-        t.Config e.Files
+        t.CommandLineSource t.Config e.Files
       >;
 }
 
 Link-Aux {
-  s.TargetMode s.FnCreatePrefix t.Config e.Files
+  s.TargetMode s.FnCreatePrefix t.CommandLineSource t.Config e.Files
     = <CalcTargetFileName s.TargetMode t.Config e.Files> : e.TargetFileName
     = e.TargetFileName '.partial' : e.IntermediateName
     = <Config-GetReferences t.Config> : e.References
@@ -638,6 +646,7 @@ Link-Aux {
       <AppendRASLToBinary (e.IntermediateName) e.Files>
       <AppendReferencesToBinary (e.IntermediateName) e.References>
       <AppendIncorporatedToBinary (e.IntermediateName) e.IncorporatedLibNames>
+      <CheckEntryDuplicates t.CommandLineSource t.Config e.IntermediateName>
       <PostLinkRename t.Config (e.IntermediateName) (e.TargetFileName)>
       <CleanupIntermediateFiles t.Config e.Files>
 }
@@ -839,4 +848,181 @@ GetBaseName {
     = <GetBaseName e.RestOfPath>;
 
   e.BaseName = e.BaseName;
+}
+
+CheckEntryDuplicates {
+  t.CommandLineSource t.Config e.CheckedExecutable
+    = <Open-Auto "rb" e.CheckedExecutable> : s.FileHandle
+    = <LoadRASLPart s.FileHandle>
+      <Close s.FileHandle>
+    : {
+        Success e.RASLBlocks = e.RASLBlocks;
+
+        Fails
+          = <ReportErrors
+              t.CommandLineSource t.Config
+              (1 'Can\'t parse RASL in ' e.CheckedExecutable)
+            >;
+      }
+    : e.RASLBlocks
+    = <CollectEntries e.RASLBlocks>
+    : {
+        Error UnitNameBeforeConstTable e.UnitName
+          = <ReportErrors
+              t.CommandLineSource t.Config
+              (1 'Unit name before CONST_TABLE: ' e.UnitName)
+            >;
+
+        Error FunctionBeforeConstTable e.Function
+          = <ReportErrors
+              t.CommandLineSource t.Config
+              (1 'Function before CONST_TABLE: ' e.Function)
+            >;
+
+        e.Entries = e.Entries;
+      }
+    : e.Entries
+    = <FindDuplicatedEntries e.Entries>
+    : {
+        /* нет дубликатов */ = /* пусто */;
+
+        e.ErrorMessages
+          = <Map
+              {
+                ((e.EntryName) e.Unit)
+                  = <PrintErr
+                       e.Unit ':1: LINK ERROR: Entry function ' e.EntryName
+                       ' is multiple defined'
+                     >;
+              }
+              e.ErrorMessages
+            >
+            <ReportErrors
+              t.CommandLineSource t.Config (1 'Linker errors is found')
+            >;
+      }
+}
+
+LoadRASLPart {
+  s.FileHandle
+    = <ReadBytes s.FileHandle 4096>
+    : {
+        s.Type 8 0 0 0 s.R s.A s.S s.L s.C s.O s.D s.E e.RestOfRASL
+          , <Rev_BlockTypeNumber s.Type> : Ok Start
+          , <Ord 'RASLCODE'> : s.R s.A s.S s.L s.C s.O s.D s.E
+          = <ParseRASLBlocks e.RestOfRASL <LoadRestOfFile s.FileHandle>>;
+
+*       файл с размером, кратным 4096, но без сигнатуры,
+*       является корректным префиксом
+        /* пусто */ = Success /* пусто, ноль блоков */;
+
+        e.Bytes
+          = <Lenw e.Bytes>
+          : {
+              4096 e._ = <LoadRASLPart s.FileHandle>;
+              s._ e._ = Fails;
+          };
+    };
+}
+
+LoadRestOfFile {
+  s.FileHandle
+    = <ReadBytes s.FileHandle 4096>
+    : {
+        /* пусто */ = /* пусто */;
+        e.Bytes = e.Bytes <LoadRestOfFile s.FileHandle>;
+    };
+}
+
+ParseRASLBlocks {
+  e.Bytes
+    = <DoParseRASLBlocks e.Bytes>
+    : {
+        e.Blocks Fails = Fails;
+        e.Blocks = Success e.Blocks;
+      };
+}
+
+DoParseRASLBlocks {
+  s.Type s.S s.I s.Z s.E e.Tail
+    , <Rev_BlockTypeNumber s.Type> : Ok s.Type^
+    , <DecodeWord s.S s.I s.Z s.E> : s.Size
+    = <First s.Size e.Tail EOF>
+    : {
+        (e.Block EOF) = Fails;
+        (e.Block) e.Tail^ EOF = (s.Type e.Block) <DoParseRASLBlocks e.Tail>;
+      };
+
+  /* пусто */ = /* все блоки загружены */;
+
+  e.Unparsed = Fails;
+}
+
+DecodeWord {
+  s.Byte = s.Byte;
+  s.Low e.High = <+ s.Low <* 256 <DecodeWord e.High>>>;
+}
+
+CollectEntries {
+  (ConstTable e.T1) e.Unit (ConstTable e.T2) e.Blocks
+    = <AttachNamesToEntries e.Unit>
+      <CollectEntries (ConstTable e.T2) e.Blocks>;
+
+  (ConstTable e._) e.Unit = <AttachNamesToEntries e.Unit>;
+
+  (UnitName e.Name 0) e._
+    = Error UnitNameBeforeConstTable <Chr e.Name>;
+
+  (s.FuncType e.Name 0 e._) e.Blocks
+    , <IsFunction s.FuncType> : True
+    = Error FunctionBeforeConstTable <Chr e.Name>;
+
+  t.OtherBlock e.Blocks = <CollectEntries e.Blocks>;
+
+  /* нет блоков */ = /* нет и entry-функций */;
+}
+
+IsFunction {
+  s.Type
+     = <OneOf
+         s.Type
+         RefalFunction NativeFunction EmptyFunction Swap ConditionRasl
+         ConditionNative Metatable
+       >
+}
+
+AttachNamesToEntries {
+  e.Blocks-B (UnitName e.UnitName 0) e.Blocks-E
+    = <Chr e.UnitName> : e.UnitName^
+    = <Map
+        {
+           (s.FuncType e.FuncName 0 e._), <Chr e.FuncName> : '*' e.FuncName^
+             = ((e.FuncName) e.UnitName);
+
+           t.OtherBlock = /* пропускаем */
+        }
+        e.Blocks-B e.Blocks-E
+      >;
+}
+
+FindDuplicatedEntries {
+  ((e.FuncName) e.UnitName)
+  e.Entries-B ((e.FuncName) e.OtherUnitName) e.Entries-E
+    = ((e.FuncName) e.UnitName)
+      ((e.FuncName) e.OtherUnitName)
+      <Map
+        {
+          t.Entry, t.Entry : ((e.FuncName) e._) = t.Entry;
+          t.Entry = /* пусто */;
+        }
+        e.Entries-E
+      >
+
+      <FindDuplicatedEntries
+        e.Entries-B ((e.FuncName) e.OtherUnitName) e.Entries-E
+      >;
+
+  t.Entry e.Entries = <FindDuplicatedEntries e.Entries>;
+
+  /* пусто */ = /* пусто */;
 }
