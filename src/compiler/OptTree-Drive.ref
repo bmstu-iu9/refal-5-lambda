@@ -187,7 +187,7 @@ DistinctFuncs {
   (Function s.ScopeClass (e.Name) e.Body2)
   e.E
   = <DistinctFuncs
-      e.B (Function s.ScopeClass (e.Name) e.Body1) e.M e.E
+      e.B (ColdFunction s.ScopeClass (e.Name) e.Body1) e.M e.E
     >;
 
   e.Other = e.Other
