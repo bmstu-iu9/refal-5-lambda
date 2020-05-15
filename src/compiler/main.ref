@@ -235,7 +235,7 @@ Main-SwRenamedTargets {
 /*----------------------------------------------------------------------------*/
 
 CalcTargetFileName {
-  s.TargetMode t.Config e.OutputFiles
+  s.TargetMode t.Config
     = <Config-GetTargetFileName t.Config>
     : {
         FromFirstFile e.BaseName
@@ -729,7 +729,7 @@ Link-CppCompile {
 
 Link-Aux {
   s.TargetMode s.FnCreatePrefix t.Config e.Files
-    = <CalcTargetFileName s.TargetMode t.Config e.Files> : e.TargetFileName
+    = <CalcTargetFileName s.TargetMode t.Config> : e.TargetFileName
     = e.TargetFileName '.partial' : e.IntermediateName
     = <Config-GetReferences t.Config> : e.References
     = <Config-GetIncorporateds t.Config> : e.IncorporatedLibNames
