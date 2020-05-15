@@ -16,7 +16,7 @@ $EXTERN Config-GetLogFile,
 $EXTERN Log-Init, Log-Final;
 
 *$FROM Error
-$EXTERN PrintErr;
+$EXTERN PrintErr, EL-CheckEntryDuplicates;
 
 *$FROM FindFile
 $EXTERN FindFiles;
@@ -946,24 +946,14 @@ CheckEntryDuplicates {
         e.Entries = e.Entries;
       }
     : e.Entries
-    = <FindDuplicatedEntries e.Entries>
+    = <EL-CheckEntryDuplicates e.Entries>
     : {
-        /* нет дубликатов */ = /* пусто */;
+        EL-NoErrors = /* пусто */;
 
-        e.ErrorMessages
-          = <Map
-              {
-                ((e.EntryName) e.Unit)
-                  = <PrintErr
-                       e.Unit ':1: LINK ERROR: Entry function ' e.EntryName
-                       ' is multiple defined'
-                     >;
-              }
-              e.ErrorMessages
-            >
-            <CheckedRemoveFile t.Config e.CheckedExecutable>
+        EL-HasErrors
+          = <CheckedRemoveFile t.Config e.CheckedExecutable>
             <LinkError t.Config 'Entry duplicates is found'>;
-      }
+      };
 }
 
 LoadRASLPart {
@@ -1028,10 +1018,10 @@ DecodeWord {
 
 CollectEntries {
   (ConstTable e.T1) e.Unit (ConstTable e.T2) e.Blocks
-    = <AttachNamesToEntries e.Unit>
+    = <AttachPosToEntries e.Unit>
       <CollectEntries (ConstTable e.T2) e.Blocks>;
 
-  (ConstTable e._) e.Unit = <AttachNamesToEntries e.Unit>;
+  (ConstTable e._) e.Unit = <AttachPosToEntries e.Unit>;
 
   (UnitName e.Name 0) e._
     = Error UnitNameBeforeConstTable <Chr e.Name>;
@@ -1054,38 +1044,16 @@ IsFunction {
        >
 }
 
-AttachNamesToEntries {
+AttachPosToEntries {
   e.Blocks-B (UnitName e.UnitName 0) e.Blocks-E
     = <Chr e.UnitName> : e.UnitName^
     = <Map
         {
            (s.FuncType e.FuncName 0 e._), <Chr e.FuncName> : '*' e.FuncName^
-             = ((e.FuncName) e.UnitName);
+             = ((e.FuncName) (FileLine 1 e.UnitName));
 
            t.OtherBlock = /* пропускаем */
         }
         e.Blocks-B e.Blocks-E
       >;
-}
-
-FindDuplicatedEntries {
-  ((e.FuncName) e.UnitName)
-  e.Entries-B ((e.FuncName) e.OtherUnitName) e.Entries-E
-    = ((e.FuncName) e.UnitName)
-      ((e.FuncName) e.OtherUnitName)
-      <Map
-        {
-          t.Entry, t.Entry : ((e.FuncName) e._) = t.Entry;
-          t.Entry = /* пусто */;
-        }
-        e.Entries-E
-      >
-
-      <FindDuplicatedEntries
-        e.Entries-B ((e.FuncName) e.OtherUnitName) e.Entries-E
-      >;
-
-  t.Entry e.Entries = <FindDuplicatedEntries e.Entries>;
-
-  /* пусто */ = /* пусто */;
 }

@@ -1,7 +1,8 @@
 $INCLUDE "LibraryEx";
 
 *$FROM Error
-$EXTERN EL-Destroy, EL-Create, EL-AddErrorAt, EL-AddWarningAt, EL-Concat;
+$EXTERN EL-Destroy, EL-Create, EL-AddErrorAt, EL-AddWarningAt, EL-Concat,
+  EL-CheckEntryDuplicates;
 
 *$FROM Config
 $EXTERN
@@ -750,38 +751,9 @@ UpdateAccum {
 */
 $ENTRY GlobalASTStorage-Check {
   ((s.NextLocalId e.Entries) e.AST)
-    = <CheckEntries e.Entries> : t.ErrorList
-    = <EL-Destroy t.ErrorList (/* no warnings */) (/* no error warnings */)>
+    = <EL-CheckEntryDuplicates e.Entries>
     : {
         EL-NoErrors = Success e.AST;
         EL-HasErrors = Fails;
       }
-}
-
-CheckEntries {
-  e.Entries
-    = <Reduce
-        {
-          t.ErrorList ((e.Name) t.OnePos) = t.ErrorList;
-
-          t.ErrorList ((e.Name) e.Positions)
-            = <Reduce (&AddEntryError e.Name) t.ErrorList e.Positions>;
-        }
-        <EL-Create>
-        <GroupEntries e.Entries>
-      >
-}
-
-AddEntryError {
-  e.Name t.ErrorList^ t.Pos
-    = <EL-AddErrorAt
-        t.ErrorList t.Pos 'Entry function ' e.Name ' is multiple defined'
-      >;
-}
-
-GroupEntries {
-  e.Begin ((e.Name) e.Pos1) e.Middle ((e.Name) e.Pos2) e.End
-    = e.Begin <GroupEntries e.Middle ((e.Name) e.Pos1 e.Pos2) e.End>;
-
-  e.Entries = e.Entries;
 }

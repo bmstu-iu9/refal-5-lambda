@@ -205,3 +205,42 @@ StrFromPos {
 $ENTRY PrintErr {
   e.Message = <Putout stderr e.Message>;
 }
+
+/**
+  <EL-CheckEntryDuplicates ((e.EntryName) t.SrcPos+)*>
+    == EL-NoErrors
+    == EL-HasErrors
+*/
+$ENTRY EL-CheckEntryDuplicates {
+  e.Entries
+    = <CheckEntries e.Entries> : t.ErrorList
+    = <EL-Destroy t.ErrorList (/* no warnings */) (/* no error warnings */)>
+}
+
+CheckEntries {
+  e.Entries
+    = <Reduce
+        {
+          t.ErrorList ((e.Name) t.OnePos) = t.ErrorList;
+
+          t.ErrorList ((e.Name) e.Positions)
+            = <Reduce (&AddEntryError e.Name) t.ErrorList e.Positions>;
+        }
+        <EL-Create>
+        <GroupEntries e.Entries>
+      >
+}
+
+AddEntryError {
+  e.Name t.ErrorList^ t.Pos
+    = <EL-AddErrorAt
+        t.ErrorList t.Pos 'Entry function ' e.Name ' is multiple defined'
+      >;
+}
+
+GroupEntries {
+  e.Begin ((e.Name) e.Pos1) e.Middle ((e.Name) e.Pos2) e.End
+    = e.Begin <GroupEntries e.Middle ((e.Name) e.Pos1 e.Pos2) e.End>;
+
+  e.Entries = e.Entries;
+}
