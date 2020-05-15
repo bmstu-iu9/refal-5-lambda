@@ -50,9 +50,6 @@ $ENTRY HighLevelRASL {
           (Function s.ScopeClass (e.Name) Metatable e.Metatable) =
             (CmdMetatable s.ScopeClass (e.Name) e.Metatable);
 
-          (Enum s.ScopeClass e.Name) =
-            (CmdEnum s.ScopeClass e.Name);
-
           (Swap s.ScopeClass e.Name) =
             (CmdSwap s.ScopeClass e.Name);
 

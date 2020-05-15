@@ -190,24 +190,6 @@ DistinctFuncs {
       e.B (Function s.ScopeClass (e.Name) e.Body1) e.M e.E
     >;
 
-  e.B
-  (Enum s.ScopeClass e.Name)
-  e.M
-  (Function s.ScopeClass (e.Name) Sentences /* пусто */)
-  e.E
-  = <DistinctFuncs
-      e.B (Enum s.ScopeClass e.Name) e.M e.E
-    >;
-
-  e.B
-  (Function s.ScopeClass (e.Name) Sentences /* пусто */)
-  e.M
-  (Enum s.ScopeClass e.Name)
-  e.E
-  = <DistinctFuncs
-      e.B (Enum s.ScopeClass e.Name) e.M e.E
-    >;
-
   e.Other = e.Other
 }
 

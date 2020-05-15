@@ -28,9 +28,6 @@ Element {
   (ColdFunction s.Scope (e.Name) e.Body)
     = <ColdFunction (e.Name) s.Scope e.Body>;
 
-  (Enum GN-Entry e.Name) = ('$EENUM ' <DisplayName e.Name> ';');
-  (Enum GN-Local e.Name) = ('$ENUM ' <DisplayName e.Name> ';');
-
   (Swap GN-Entry e.Name) = ('$ESWAP ' <DisplayName e.Name> ';');
   (Swap GN-Local e.Name) = ('$SWAP ' <DisplayName e.Name> ';');
 

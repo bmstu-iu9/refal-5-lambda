@@ -318,7 +318,6 @@
 
     t.ReducedProgramElement ::=
         (Function s.ScopeClass (e.Name) e.ReducedBody)
-      | (Enum s.ScopeClass e.Name)
       | (Swap s.ScopeClass e.Name)
       | (Declaration s.ScopeClass e.Name)
       | (Ident e.Name)

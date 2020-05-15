@@ -28,7 +28,7 @@ $ENTRY Desugar {
           }
         >
         &Pass-CleanupRedudandExterns
-        &Pass-FoldEnums
+        &Pass-UnfoldEnums
       >
     >;
 }
@@ -899,12 +899,12 @@ FilterDeclarations {
   e.DefinedFunctions t.OtherItem = t.OtherItem;
 }
 
-Pass-FoldEnums {
+Pass-UnfoldEnums {
   e.AST
     = <Map
         {
-          (Function s.ScopeClass (e.Name) Sentences /* пусто */) =
-            (Enum s.ScopeClass e.Name);
+          (Enum s.ScopeClass e.Name) =
+            (Function s.ScopeClass (e.Name) Sentences /* пусто */);
 
           t.Other = t.Other;
         }
