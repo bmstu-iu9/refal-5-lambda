@@ -409,9 +409,21 @@ CompileFiles-GlobalOpt-EachFile {
       <FrontEnd t.Config s.Dialect e.Source>
     : {
         Success WithNative e.AST
-          = t.ASTStorage
-            <Prout '   ... with native, generating separately'>
-            <BackEnd t.Config (e.Source) (e.OutputName) e.AST>;
+          = <Prout '   ... with native, generating separately'>
+            <BackEnd t.Config (e.Source) (e.OutputName) e.AST>
+          : {
+              Success e.OutputName^ NoNative
+                = t.ASTStorage
+                  (RASL Generated e.OutputName);
+
+              Success e.OutputName^ (e.NativeOutputName)
+                = t.ASTStorage
+                  <Prout '   ... natives generated'>
+                  (RASL Generated e.OutputName)
+                  (Native Generated e.NativeOutputName);
+
+              Fails = t.ASTStorage Fails;
+            };
 
         Success NoNative e.AST
           = <GlobalASTStorage-AddAST t.ASTStorage e.AST> : t.ASTStorage^ s.Id
