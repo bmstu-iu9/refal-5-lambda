@@ -393,6 +393,8 @@ GlueErrorListsAndASTs {
 PatchASTSrcPos {
   (e.FileName) e.AST
     = {
+        Name e.Name = e.Name;
+
         SrcPos NoPos = NoPos;
         SrcPos s.LnNum = (FileLine s.LnNum e.FileName);
         SrcPos (RowCol s.Row s.Col) = (FileRowCol (s.Row s.Col) e.FileName);
@@ -413,7 +415,7 @@ PatchAST-Item {
   s.FnPatch (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
     = (Function
         <s.FnPatch SrcPos t.SrcPos>
-        s.ScopeClass (e.Name)
+        s.ScopeClass (<s.FnPatch Name e.Name>)
         <PatchAST-Body s.FnPatch e.Body>
       );
 
@@ -427,11 +429,15 @@ PatchAST-Item {
 
   s.FnPatch (s.Label t.SrcPos s.ScopeClass e.Name)
     , <OneOf s.Label Enum Swap Declaration Entry Inline Drive Meta> : True
-    = (s.Label <s.FnPatch SrcPos t.SrcPos> s.ScopeClass e.Name);
+    = (s.Label
+        <s.FnPatch SrcPos t.SrcPos>
+        s.ScopeClass
+        <s.FnPatch Name e.Name>
+      );
 
   s.FnPatch (Spec t.SrcPos (e.Name) e.Pattern)
     = (
-        Spec <s.FnPatch SrcPos t.SrcPos> (e.Name)
+        Spec <s.FnPatch SrcPos t.SrcPos> (<s.FnPatch Name e.Name>)
         <PatchAST-Expr s.FnPatch e.Pattern>
       );
 }
@@ -444,6 +450,18 @@ PatchAST-Body {
 
   s.FnPatch NativeBody t.SrcPos e.Code
     = NativeBody <s.FnPatch SrcPos t.SrcPos> e.Code;
+
+  s.FnPatch Metatable e.Metatable
+    = Metatable
+      <Map
+        {
+          ((e.Identifier) (Symbol Name t.SrcPos e.Name))
+            = <s.FnPatch SrcPos t.SrcPos> : t.SrcPos^
+            = <s.FnPatch Name e.Name> : e.Name^
+            = ((e.Identifier) (Symbol Name t.SrcPos e.Name));
+        }
+        e.Metatable
+      >;
 }
 
 $SPEC PatchAST-Sentence s.FN-PATCH t.sentence;
@@ -501,7 +519,7 @@ PatchAST-Expr {
             = (TkNewVariable <s.FnPatch SrcPos t.SrcPos> s.Mode e.Index);
 
           (Symbol Name t.SrcPos e.Name)
-            = (Symbol Name <s.FnPatch SrcPos t.SrcPos> e.Name);
+            = (Symbol Name <s.FnPatch SrcPos t.SrcPos> <s.FnPatch Name e.Name>);
 
           (Brackets e.InBrackets)
             = (Brackets <PatchAST-Expr s.FnPatch e.InBrackets>);
@@ -509,7 +527,7 @@ PatchAST-Expr {
           (ADT-Brackets t.SrcPos (e.Name) e.InBrackets)
             = (ADT-Brackets
                 <s.FnPatch SrcPos t.SrcPos>
-                (e.Name)
+                (<s.FnPatch Name e.Name>)
                 <PatchAST-Expr s.FnPatch e.InBrackets>
               );
 
@@ -663,4 +681,107 @@ $ENTRY GrammarCheck {
         EL-NoErrors = Success;
         EL-HasErrors = Fails;
       };
+}
+
+
+/**
+  <GlobalASTStorage-Create> == t.ASTStorage
+*/
+$ENTRY GlobalASTStorage-Create {
+  /* пусто */
+    = 1 : s.NextLocalId
+    = /* пусто */ : e.Entries
+    = /* пусто */ : e.ASTs
+    = ((s.NextLocalId e.Entries) e.ASTs);
+}
+
+
+/**
+  <GlobalASTStorage-AddAST t.ASTStorage e.AST> == t.ASTStorage^
+*/
+$ENTRY GlobalASTStorage-AddAST {
+  ((s.NextLocalId e.Entries) e.ASTs) e.AST
+    = <MapAccum
+        {
+          t.Accum (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
+            = <UpdateAccum t.Accum t.SrcPos s.ScopeClass e.Name>
+              (Function t.SrcPos s.ScopeClass (e.Name) e.Body);
+
+          t.Accum (s.Label t.SrcPos s.ScopeClass e.Name)
+            , <OneOf s.Label Enum Swap Entry Meta> : True
+            = <UpdateAccum t.Accum t.SrcPos s.ScopeClass e.Name>
+              (s.Label t.SrcPos s.ScopeClass e.Name);
+
+          t.Accum t.Other = t.Accum t.Other;
+        }
+        ((e.Entries) (/* locals */))
+        e.AST
+      >
+    : ((e.Entries^) (e.Locals)) e.AST^
+
+    = {
+        SrcPos t.SrcPos = t.SrcPos;
+
+        Name e.Name, e.Locals : e._ (e.Name) e._
+          = e.Name SUF '~' s.NextLocalId;
+
+        Name e.Name = e.Name;
+      }
+    : s.FnPatch
+
+    = (
+        (<Inc s.NextLocalId> e.Entries)
+        e.ASTs <PatchAST s.FnPatch e.AST>
+      );
+}
+
+UpdateAccum {
+  ((e.Entries) (e.Locals)) t.SrcPos GN-Entry e.Name
+    = ((e.Entries ((e.Name) t.SrcPos))  (e.Locals));
+
+  ((e.Entries) (e.Locals)) t.SrcPos GN-Local e.Name
+    = ((e.Entries)  (e.Locals (e.Name)));
+}
+
+/**
+  <GlobalASTStorage-Check t.ASTStorage>
+    == Success e.AST
+    == Fails
+*/
+$ENTRY GlobalASTStorage-Check {
+  ((s.NextLocalId e.Entries) e.AST)
+    = <CheckEntries e.Entries> : t.ErrorList
+    = <EL-Destroy t.ErrorList (/* no warnings */) (/* no error warnings */)>
+    : {
+        EL-NoErrors = Success e.AST;
+        EL-HasErrors = Fails;
+      }
+}
+
+CheckEntries {
+  e.Entries
+    = <Reduce
+        {
+          t.ErrorList ((e.Name) t.OnePos) = t.ErrorList;
+
+          t.ErrorList ((e.Name) e.Positions)
+            = <Reduce (&AddEntryError e.Name) t.ErrorList e.Positions>;
+        }
+        <EL-Create>
+        <GroupEntries e.Entries>
+      >
+}
+
+AddEntryError {
+  e.Name t.ErrorList^ t.Pos
+    = <EL-AddErrorAt
+        t.ErrorList t.Pos 'Entry function ' e.Name ' is multiple defined'
+      >;
+}
+
+GroupEntries {
+  e.Begin ((e.Name) e.Pos1) e.Middle ((e.Name) e.Pos2) e.End
+    = e.Begin <GroupEntries e.Middle ((e.Name) e.Pos1 e.Pos2) e.End>;
+
+  e.Entries = e.Entries;
 }

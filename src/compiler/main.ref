@@ -10,7 +10,7 @@ $EXTERN Config-GetLogFile,
   Config-GetSearchFolders, Config-GetTargetMode, Config-GetPrefix,
   Config-GetChmodXCommand, Config-GetReferences, Config-GetIncorporateds,
   Config-GetTempDir, Config-GetKeepRasls, Config-GetOverwriteExistRasls,
-  Config-GetNoSources;
+  Config-GetNoSources, Config-GetOptGlobal;
 
 *$FROM Log
 $EXTERN Log-Init, Log-Final;
@@ -22,7 +22,8 @@ $EXTERN PrintErr;
 $EXTERN FindFiles;
 
 *$FROM Engine
-$EXTERN CompileFile, GrammarCheck;
+$EXTERN CompileFile, GrammarCheck, GlobalASTStorage-Create,
+  GlobalASTStorage-AddAST, GlobalASTStorage-Check, FrontEnd, BackEnd;
 
 *$FROM Library
 $EXTERN Open-Auto, Close, FSeek, FTell, WriteBytes, RenameFile, ReadBytes;
@@ -364,6 +365,82 @@ FindFreeName {
 }
 
 CompileFiles {
+  t.Config NormalRun e.Files
+    , <Config-GetOptGlobal t.Config> : OptGlobal
+    = <MapAccum
+        {
+          (t.ASTStorage e.CommonOutputName)
+          (s.Pos Output e.OutputName NoNative)
+            = (t.ASTStorage e.CommonOutputName)
+              <Prout '+Linking ' e.OutputName>
+              (RASL Given e.OutputName);
+
+          (t.ASTStorage e.CommonOutputName)
+          (s.Pos Output e.OutputName (e.NativeName))
+            = (t.ASTStorage e.CommonOutputName)
+              <Prout '+Linking (+ natives) ' e.OutputName>
+              (RASL Given e.OutputName) (Native Given e.NativeName);
+
+          (t.ASTStorage e.CommonOutputName)
+          (s.Pos Source (s.Dialect e.Source) e.OutputName)
+
+            = <Prout '*Parsing ' e.Source '...'>
+              <FrontEnd t.Config s.Dialect e.Source>
+            : {
+                Success WithNative e.AST
+                  = (t.ASTStorage e.CommonOutputName)
+                    <Prout '   ... with native, generating separately'>
+                    <BackEnd t.Config (e.Source) (e.OutputName) e.AST>;
+
+                Success NoNative e.AST
+                  = <GlobalASTStorage-AddAST t.ASTStorage e.AST> : t.ASTStorage^
+                  = e.CommonOutputName
+                  : {
+                      /* пусто */ = e.OutputName;
+                      e.CommonOutputName^ = e.CommonOutputName;
+                    }
+                  : e.CommonOutputName^
+                  = (t.ASTStorage e.CommonOutputName)
+                    /* генерация откладывается */;
+
+                Fails
+                  = (t.ASTStorage e.CommonOutputName)
+                    Fails;
+              };
+        }
+        (<GlobalASTStorage-Create> /* нет имени */)
+        e.Files
+      >
+    : (t.ASTStorage e.CommonOutputName) e.Outputs
+
+    = e.Outputs
+    : {
+        e._ Fails e._ = Fails;
+
+        e.Outputs^
+          = <GlobalASTStorage-Check t.ASTStorage>
+          : {
+              Success /* пусто */ = e.Outputs;
+
+              Success e.AST
+                = <Prout '*Generating code'>
+                  <BackEnd t.Config ('-.ref') (e.CommonOutputName) e.AST>
+                : {
+                    Success e.OutputName^ NoNative
+                      = (RASL Generated e.OutputName);
+
+                    Success e.OutputName^ (e.NativeOutputName)
+                      = <Prout '   ... natives generated'>
+                        (RASL Generated e.OutputName)
+                        (Native Generated e.NativeOutputName);
+
+                    Fails = Fails;
+                  };
+
+              Fails = Fails;
+            };
+      };
+
   t.Config NormalRun e.Files
     = <Map
         {

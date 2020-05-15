@@ -299,12 +299,24 @@ $ENTRY Config-GetOptSpec {
 }
 
 /**
+  <Config-GetOptGlobal t.Config>
+    == NoOpt
+    == OptGlobal
+*/
+$ENTRY Config-GetOptGlobal {
+  [Config e.Params-B (Optimize e.Opt-B OptGlobal e.Opt-E) e.Params-E]
+    = OptGlobal;
+
+  [Config e.Params] = NoOpt;
+}
+
+/**
   <Config-SetOptFlags t.Config e.Flags>
     == Success t.Config
     == Fails BadValue-Opt e.Letters
 
   e.Flags ::= s.Letter* s.Change?
-  s.Letter ::= 'd' | 'i' | 'A' | 'C' | 'D' | 'I' | 'P' | 'R' | 'S' | 'T'
+  s.Letter ::= 'd' | 'i' | 'A' | 'C' | 'D' | 'G' | 'I' | 'P' | 'R' | 'S' | 'T'
   s.Change ::= '+' | '-' | '='
 */
 $ENTRY Config-SetOptFlags {
@@ -354,7 +366,7 @@ ValidFlag {
   'S' = True OptTree OptSpec;
   'A' = True OptTree OptAutoMarkup;
   'i' = True OptTree OptIntrinsic;
-  'G' = True /* глобальная оптимизация пока не реализована */;
+  'G' = True OptGlobal;
 
   'x' = True /* пусто */;
   'y' = True /* пусто */;
