@@ -378,71 +378,59 @@ CompileFiles {
 
 CompileFiles-GlobalOpt {
   t.Config e.Files
+    = <CalcTargetFileName CompileOnly t.Config> : e.TargetName
     = <MapAccum
         (&CompileFiles-GlobalOpt-EachFile t.Config)
-        (<GlobalASTStorage-Create> /* нет имени */)
+        <GlobalASTStorage-Create>
         e.Files
       >
-    : (t.ASTStorage e.CommonOutputName) e.Outputs
+    : t.ASTStorage e.Outputs
     = <CompileFiles-GlobalOpt-CheckSucceededOutputs
-        t.Config (t.ASTStorage e.CommonOutputName) e.Outputs
+        t.Config t.ASTStorage (e.TargetName) e.Outputs
       >
 }
 
 CompileFiles-GlobalOpt-EachFile {
-  t.Config (t.ASTStorage e.CommonOutputName)
-  (s.Pos Output e.OutputName NoNative)
-    = (t.ASTStorage e.CommonOutputName)
+  t.Config t.ASTStorage (s.Pos Output e.OutputName NoNative)
+    = t.ASTStorage
       <Prout '+Linking ' e.OutputName>
       (RASL Given e.OutputName);
 
-  t.Config (t.ASTStorage e.CommonOutputName)
-  (s.Pos Output e.OutputName (e.NativeName))
-    = (t.ASTStorage e.CommonOutputName)
+  t.Config t.ASTStorage (s.Pos Output e.OutputName (e.NativeName))
+    = t.ASTStorage
       <Prout '+Linking (+ natives) ' e.OutputName>
       (RASL Given e.OutputName) (Native Given e.NativeName);
 
-  t.Config (t.ASTStorage e.CommonOutputName)
-  (s.Pos Source (s.Dialect e.Source) e.OutputName)
-
+  t.Config t.ASTStorage (s.Pos Source (s.Dialect e.Source) e.OutputName '.rasl')
     = <Prout '*Parsing ' e.Source '...'>
       <FrontEnd t.Config s.Dialect e.Source>
     : {
         Success WithNative e.AST
-          = (t.ASTStorage e.CommonOutputName)
+          = t.ASTStorage
             <Prout '   ... with native, generating separately'>
             <BackEnd t.Config (e.Source) (e.OutputName) e.AST>;
 
         Success NoNative e.AST
           = <GlobalASTStorage-AddAST t.ASTStorage e.AST> : t.ASTStorage^
-          = e.CommonOutputName
-          : {
-              /* пусто */ = e.OutputName;
-              e.CommonOutputName^ = e.CommonOutputName;
-            }
-          : e.CommonOutputName^
-          = (t.ASTStorage e.CommonOutputName)
+          = t.ASTStorage
             /* генерация откладывается */;
 
-        Fails
-          = (t.ASTStorage e.CommonOutputName)
-            Fails;
+        Fails = t.ASTStorage Fails;
       };
 }
 
 CompileFiles-GlobalOpt-CheckSucceededOutputs {
-  t.Config (t.ASTStorage e.CommonOutputName)
-  e._ Fails e._ = Fails;
+  t.Config t.ASTStorage (e.TargetName) e._ Fails e._ = Fails;
 
-  t.Config (t.ASTStorage e.CommonOutputName)
-  e.Outputs
+  t.Config t.ASTStorage (e.TargetName) e.Outputs
+    = e.TargetName '.GLOBALS' : e.PseudoSourceName
     = <GlobalASTStorage-Check t.ASTStorage>
     : {
         Success /* пусто */ = e.Outputs;
 
         Success e.AST
-          = <Prout '*Generating code'>
-            <BackEnd t.Config ('-.ref') (e.CommonOutputName) e.AST>
+          = <Prout '*Generating code...'>
+            <BackEnd t.Config (e.PseudoSourceName) (e.TargetName) e.AST>
           : {
               Success e.OutputName^ NoNative
                 = (RASL Generated e.OutputName)
