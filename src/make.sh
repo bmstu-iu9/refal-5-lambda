@@ -72,7 +72,7 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     mkdir -p "../../build/$DIR"
     rm -f "../../build/$DIR/"*
     find . ../common \
-      \( -name '*.rasl' -o -name '*.cpp' \) \
+      \( -name '*.rasl' -o -name '*.cpp' -o -name '*-locals.lst' \) \
       -exec mv '{}' "../../build/$DIR" \;
     cp ${PATH_TO_RLC}/lib/scratch{/exe,-rt{/debug-stubs,/exe,}}/*.{rasl,cpp} \
       "../../build/$DIR"

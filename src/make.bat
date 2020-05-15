@@ -55,6 +55,7 @@ setlocal
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   move *.rasl ..\..\build\%DIR% >NUL
+  if exist *-locals.lst move *-locals.lst ..\..\build\%DIR% >NUL
   if exist *.cpp move *.cpp ..\..\build\%DIR% >NUL
   if exist ..\common\*.rasl move ..\common\*.rasl ..\..\build\%DIR% >NUL
   if exist ..\common\*.cpp move ..\common\*.cpp ..\..\build\%DIR% >NUL

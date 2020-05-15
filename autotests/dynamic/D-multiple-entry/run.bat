@@ -16,5 +16,5 @@ if exist target.rasl-module (
   exit /b 1
 ) else (
   echo Test OK: compiler found expected errors!
-  erase *.rasl-module *.rasl *.exe
+  erase *.rasl-module *.rasl *.exe *-locals.lst
 )

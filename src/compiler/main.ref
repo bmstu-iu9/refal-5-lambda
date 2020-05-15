@@ -379,11 +379,13 @@ CompileFiles {
 CompileFiles-GlobalOpt {
   t.Config e.Files
     = <CalcTargetFileName CompileOnly t.Config> : e.TargetName
+    = <Open-Auto "w" e.TargetName '-locals.lst'> : s.LstFile
     = <MapAccum
-        (&CompileFiles-GlobalOpt-EachFile t.Config)
+        (&CompileFiles-GlobalOpt-EachFile t.Config s.LstFile)
         <GlobalASTStorage-Create>
         e.Files
       >
+      <Close s.LstFile>
     : t.ASTStorage e.Outputs
     = <CompileFiles-GlobalOpt-CheckSucceededOutputs
         t.Config t.ASTStorage (e.TargetName) e.Outputs
@@ -391,17 +393,18 @@ CompileFiles-GlobalOpt {
 }
 
 CompileFiles-GlobalOpt-EachFile {
-  t.Config t.ASTStorage (s.Pos Output e.OutputName NoNative)
+  t.Config s.LstFile t.ASTStorage (s.Pos Output e.OutputName NoNative)
     = t.ASTStorage
       <Prout '+Linking ' e.OutputName>
       (RASL Given e.OutputName);
 
-  t.Config t.ASTStorage (s.Pos Output e.OutputName (e.NativeName))
+  t.Config s.LstFile t.ASTStorage (s.Pos Output e.OutputName (e.NativeName))
     = t.ASTStorage
       <Prout '+Linking (+ natives) ' e.OutputName>
       (RASL Given e.OutputName) (Native Given e.NativeName);
 
-  t.Config t.ASTStorage (s.Pos Source (s.Dialect e.Source) e.OutputName '.rasl')
+  t.Config s.LstFile t.ASTStorage
+  (s.Pos Source (s.Dialect e.Source) e.OutputName '.rasl')
     = <Prout '*Parsing ' e.Source '...'>
       <FrontEnd t.Config s.Dialect e.Source>
     : {
@@ -411,8 +414,9 @@ CompileFiles-GlobalOpt-EachFile {
             <BackEnd t.Config (e.Source) (e.OutputName) e.AST>;
 
         Success NoNative e.AST
-          = <GlobalASTStorage-AddAST t.ASTStorage e.AST> : t.ASTStorage^
+          = <GlobalASTStorage-AddAST t.ASTStorage e.AST> : t.ASTStorage^ s.Id
           = t.ASTStorage
+            <Putout s.LstFile '~' <Symb s.Id> ' -- ' e.Source>
             /* генерация откладывается */;
 
         Fails = t.ASTStorage Fails;

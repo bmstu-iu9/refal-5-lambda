@@ -17,5 +17,5 @@ if [[ -e target.rasl-module ]]; then
   exit 1
 else
   echo Test OK: compiler found expected errors!
-  rm -f *.rasl-module *.rasl caller
+  rm -f *.rasl-module *.rasl caller *-locals.lst
 fi

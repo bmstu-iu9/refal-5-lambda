@@ -698,7 +698,7 @@ $ENTRY GlobalASTStorage-Create {
 
 
 /**
-  <GlobalASTStorage-AddAST t.ASTStorage e.AST> == t.ASTStorage^
+  <GlobalASTStorage-AddAST t.ASTStorage e.AST> == t.ASTStorage^ s.Id
 */
 $ENTRY GlobalASTStorage-AddAST {
   ((s.NextLocalId e.Entries) e.ASTs) e.AST
@@ -733,7 +733,8 @@ $ENTRY GlobalASTStorage-AddAST {
     = (
         (<Inc s.NextLocalId> e.Entries)
         e.ASTs <PatchAST s.FnPatch e.AST>
-      );
+      )
+      s.NextLocalId;
 }
 
 UpdateAccum {
