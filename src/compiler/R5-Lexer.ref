@@ -280,9 +280,7 @@ DoScan-Number {
 DoScan-Var {
   t.Pos (e.Variable) (s.Next e.Line) e.Lines
     , <IsIdentTail s.Next> : True
-    = <DoScan-Var
-        t.Pos (e.Variable s.Next) (e.Line) e.Lines
-      >;
+    = <DoScan-Var t.Pos (e.Variable s.Next) (e.Line) e.Lines>;
 
   t.Pos (s.Type '.' e.Index) (e.Line) e.Lines
     = (TkVariable t.Pos s.Type e.Index)
@@ -475,7 +473,9 @@ DoScan-Compound {
 DoScan-Compound-HandleEscape {
   t.StartPos t.Pos (e.Compound) (s.Escaped e.Line) e.Lines
     , <SimpleEscapedChar s.Escaped> : s.Char
-    = <DoScan-Compound t.StartPos <IncCol t.Pos> (e.Compound s.Char) (e.Line) e.Lines>;
+    = <DoScan-Compound
+        t.StartPos <IncCol t.Pos> (e.Compound s.Char) (e.Line) e.Lines
+      >;
 
   t.StartPos t.Pos (e.Compound) ('x' s.Hex1 s.Hex2 e.Line) e.Lines
     , <HexDigit s.Hex1> : s.Num1
