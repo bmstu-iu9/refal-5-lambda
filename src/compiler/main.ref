@@ -445,12 +445,14 @@ CompileFiles-GlobalOpt-CheckSucceededOutputs {
             <BackEnd t.Config ('-.ref') (e.CommonOutputName) e.AST>
           : {
               Success e.OutputName^ NoNative
-                = (RASL Generated e.OutputName);
+                = (RASL Generated e.OutputName)
+                  e.Outputs;
 
               Success e.OutputName^ (e.NativeOutputName)
                 = <Prout '   ... natives generated'>
                   (RASL Generated e.OutputName)
-                  (Native Generated e.NativeOutputName);
+                  (Native Generated e.NativeOutputName)
+                  e.Outputs;
 
               Fails = Fails;
             };
