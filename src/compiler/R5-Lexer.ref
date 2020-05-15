@@ -288,6 +288,7 @@ DoScan-Var {
         e.Index
         {
           '-' e._ = (TkError t.Pos 'Variable index can\'t start from \'-\'');
+          /* пусто */ = (TkError t.Pos 'Empty variable index');
           e._ = /* пусто */;
         }
       >
