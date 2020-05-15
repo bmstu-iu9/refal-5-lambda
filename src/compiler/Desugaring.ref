@@ -4,7 +4,7 @@ $INCLUDE "LibraryEx";
 $EXTERN Pass-UnCondition;
 
 *$FROM TreeUtils
-$EXTERN NewVarName, CreateContext, CreateSpecPatternForContext;
+$EXTERN NewVarName, AddSuffix, CreateContext, CreateSpecPatternForContext;
 
 
 $ENTRY Desugar {
@@ -351,7 +351,7 @@ Pass-NameNestedFuncs {
         (Function s.ScopeClass (e.Name) e.Body) =
           (Function
             s.ScopeClass (e.Name)
-            <NameNestedBody (e.Name SUF) e.Body>
+            <NameNestedBody (<AddSuffix e.Name ()>) e.Body>
           );
 
         t.OtherProgramElement = t.OtherProgramElement;
