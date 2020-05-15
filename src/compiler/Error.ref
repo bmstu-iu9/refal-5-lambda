@@ -39,68 +39,22 @@ $ENTRY EL-AddWarning {
 }
 
 $ENTRY EL-AddErrorAt {
-  [ErrorList (e.FileName) (e.Errors) t.Warnings] NoPos e.Message
-    = [ErrorList
-        (e.FileName)
-        (e.Errors (NoPos e.Message))
-        t.Warnings
-      ];
-
-  [ErrorList (e.FileName) (e.Errors) t.Warnings] s.LineNumber e.Message
-    = [ErrorList
-        (e.FileName)
-        (e.Errors ((FileLine s.LineNumber e.FileName) e.Message))
-        t.Warnings
-      ];
-
-  [ErrorList (e.FileName) (e.Errors) t.Warnings] (RowCol s.Row s.Col) e.Message
-    = [ErrorList
-        (e.FileName)
-        (e.Errors ((FileRowCol (s.Row s.Col) e.FileName) e.Message))
-        t.Warnings
-      ];
-
   [ErrorList (e.FileName) (e.Errors) t.Warnings] t.SrcPos e.Message
     = [ErrorList
         (e.FileName)
-        (e.Errors (t.SrcPos e.Message))
+        (e.Errors (<WithFileName t.SrcPos e.FileName> e.Message))
         t.Warnings
       ];
 }
 
+WithFileName {
+  NoPos e.FileName = NoPos;
+  s.LineNumber e.FileName = (FileLine s.LineNumber e.FileName);
+  (RowCol s.Row s.Col) e.FileName = (FileRowCol (s.Row s.Col) e.FileName);
+  t.SrcPos e.FileName = t.SrcPos;
+}
+
 $ENTRY EL-AddWarningAt {
-  [ErrorList (e.FileName) t.Errors (e.Warnings)]
-  s.WarningId
-  NoPos
-  e.Message
-    = [ErrorList
-        (e.FileName)
-        t.Errors
-        (e.Warnings (s.WarningId NoPos e.Message))
-      ];
-
-  [ErrorList (e.FileName) t.Errors (e.Warnings)]
-  s.WarningId
-  s.LineNumber
-  e.Message
-    = [ErrorList
-        (e.FileName)
-        t.Errors
-        (e.Warnings (s.WarningId (FileLine s.LineNumber e.FileName) e.Message))
-      ];
-
-  [ErrorList (e.FileName) t.Errors (e.Warnings)]
-  s.WarningId
-  (RowCol s.Row s.Col)
-  e.Message
-    = [ErrorList
-        (e.FileName)
-        t.Errors
-        (e.Warnings
-          (s.WarningId (FileRowCol (s.Row s.Col) e.FileName) e.Message)
-        )
-     ];
-
   [ErrorList (e.FileName) t.Errors (e.Warnings)]
   s.WarningId
   t.SrcPos
@@ -108,9 +62,7 @@ $ENTRY EL-AddWarningAt {
     = [ErrorList
         (e.FileName)
         t.Errors
-        (e.Warnings
-          (s.WarningId t.SrcPos e.Message)
-        )
+        (e.Warnings (s.WarningId <WithFileName t.SrcPos e.FileName> e.Message))
       ];
 }
 
