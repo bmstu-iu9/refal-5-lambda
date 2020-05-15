@@ -1,0 +1,17 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */
+    = <Test '***'> : Ok
+    = /* empty */;
+}
+
+Test {
+  e.X = <D e.X>;
+}
+
+$DRIVE D;
+
+D {
+  e.X, e.X : '***' = Ok;
+}
