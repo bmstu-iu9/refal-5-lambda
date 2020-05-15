@@ -61,27 +61,33 @@ $EXTERN GenProgram-Native;
   <CompileFile t.Config (s.Dialect e.SrcName) e.OutputName>
     == Success e.OutputName t.Native
     == Fails
+
   s.Dialect ::= R5 | SR
   t.Native ::= NoNative | (e.NativeOutputName)
 */
 $ENTRY CompileFile {
   t.Config (s.Dialect e.SrcName) e.OutputName '.rasl'
     = <FrontEnd t.Config s.Dialect e.SrcName>
-    : t.ErrorList e.AST
-    = <EL-Destroy
-        t.ErrorList
-        (<Config-GetWarningIds t.Config>)
-        (<Config-GetWarningIdsAsErrors t.Config>)
-      >
     : {
-        EL-NoErrors = <BackEnd t.Config (e.SrcName) (e.OutputName) e.AST>;
+        Success s.HasNative e.AST
+          = <BackEnd t.Config (e.SrcName) (e.OutputName) e.AST>;
 
-        EL-HasErrors = Fails;
+        Fails = Fails;
       }
 }
 
-FrontEnd {
+/**
+  <FrontEnd t.Config s.Dialect e.SrcName>
+    == Success s.HasNative e.AST
+    == Fails
+
+  s.HasNative ::= WithNative | NoNative
+*/
+$ENTRY FrontEnd {
   t.Config s.Dialect e.SrcName
+    = <Config-GetWarningIds t.Config> : e.WarningIds
+    = <Config-GetWarningIdsAsErrors t.Config> : e.WarningIdsAsErrors
+
     = <LoadAST t.Config s.Dialect e.SrcName> : t.ErrorList e.FirstAST
     = <ResolveIncludes
         t.Config (/* bad includes */)
@@ -92,7 +98,30 @@ FrontEnd {
       >
     : e.IncludeUnits
     = <GlueErrorListsAndASTs (e.SrcName) e.IncludeUnits> : t.ErrorList^ e.AST
-    = <CheckProgram (<Config-GetWarningIds t.Config>) t.ErrorList e.AST> e.AST;
+    = <CheckProgram (e.WarningIds) t.ErrorList e.AST> : t.ErrorList^
+    = <EL-Destroy t.ErrorList (e.WarningIds) (e.WarningIdsAsErrors)>
+    : {
+        EL-NoErrors
+          = <CreateMetaFunctions e.AST> : e.AST^
+          = e.AST
+          : {
+              e.AST-B (NativeBlock t.SrcPos e.Name) e.AST-E
+                = Success WithNative
+                  e.AST-B (NativeBlock t.SrcPos e.Name) e.AST-E;
+
+              e.AST-B
+              (Function t.SrcPos s.ScopeClass (e.Name) NativeBody e.Body)
+              e.AST-E
+                = Success WithNative
+                  e.AST-B
+                  (Function t.SrcPos s.ScopeClass (e.Name) NativeBody e.Body)
+                  e.AST-E;
+
+              e.AST = Success NoNative e.AST;
+          };
+
+        EL-HasErrors = Fails;
+      }
 }
 
 PreludeIncludeLine {
@@ -364,67 +393,82 @@ GlueErrorListsAndASTs {
 PatchASTSrcPos {
   (e.FileName) e.AST
     = {
-        NoPos = NoPos;
-        s.LnNum = (FileLine s.LnNum e.FileName);
-        (RowCol s.Row s.Col) = (FileRowCol (s.Row s.Col) e.FileName);
+        SrcPos NoPos = NoPos;
+        SrcPos s.LnNum = (FileLine s.LnNum e.FileName);
+        SrcPos (RowCol s.Row s.Col) = (FileRowCol (s.Row s.Col) e.FileName);
       }
     : s.FnPatch
-    = <Map (&PatchASTSrcPos-Item s.FnPatch) e.AST>;
+    = <PatchAST s.FnPatch e.AST>;
 }
 
-PatchASTSrcPos-Item {
+$SPEC PatchAST s.FN-PATCH e.ast;
+
+PatchAST {
+  s.FnPatch e.AST = <Map (&PatchAST-Item s.FnPatch) e.AST>;
+}
+
+$SPEC PatchAST-Item s.FN-PATCH t.item;
+
+PatchAST-Item {
   s.FnPatch (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
     = (Function
-        <s.FnPatch t.SrcPos>
+        <s.FnPatch SrcPos t.SrcPos>
         s.ScopeClass (e.Name)
-        <PatchASTSrcPos-Body s.FnPatch e.Body>
+        <PatchAST-Body s.FnPatch e.Body>
       );
 
-  s.FnPatch (Ident t.SrcPos e.Name) = (Ident <s.FnPatch t.SrcPos> e.Name);
+  s.FnPatch (Ident t.SrcPos e.Name)
+    = (Ident <s.FnPatch SrcPos t.SrcPos> e.Name);
 
   s.FnPatch (NativeBlock t.SrcPos e.Name)
-    = (NativeBlock <s.FnPatch t.SrcPos> e.Name);
+    = (NativeBlock <s.FnPatch SrcPos t.SrcPos> e.Name);
 
   s.FnPatch (Include t.SrcPos e.IncludeName) = /* пропускаем */;
 
   s.FnPatch (s.Label t.SrcPos s.ScopeClass e.Name)
     , <OneOf s.Label Enum Swap Declaration Entry Inline Drive Meta> : True
-    = (s.Label <s.FnPatch t.SrcPos> s.ScopeClass e.Name);
+    = (s.Label <s.FnPatch SrcPos t.SrcPos> s.ScopeClass e.Name);
 
   s.FnPatch (Spec t.SrcPos (e.Name) e.Pattern)
     = (
-        Spec <s.FnPatch t.SrcPos> (e.Name)
-        <PatchASTSrcPos-Expr s.FnPatch e.Pattern>
+        Spec <s.FnPatch SrcPos t.SrcPos> (e.Name)
+        <PatchAST-Expr s.FnPatch e.Pattern>
       );
 }
 
-PatchASTSrcPos-Body {
+$SPEC PatchAST-Body s.FN-PATCH e.body;
+
+PatchAST-Body {
   s.FnPatch Sentences e.Sentences
-    = Sentences <Map (&PatchASTSrcPos-Sentence s.FnPatch) e.Sentences>;
+    = Sentences <Map (&PatchAST-Sentence s.FnPatch) e.Sentences>;
 
   s.FnPatch NativeBody t.SrcPos e.Code
-    = NativeBody <s.FnPatch t.SrcPos> e.Code;
+    = NativeBody <s.FnPatch SrcPos t.SrcPos> e.Code;
 }
 
-PatchASTSrcPos-Sentence {
+$SPEC PatchAST-Sentence s.FN-PATCH t.sentence;
+
+PatchAST-Sentence {
   s.FnPatch ((e.Pattern) e.ConditionsAndAssigns (e.Result) (e.Blocks))
-    = { e.Expr = <PatchASTSrcPos-Expr s.FnPatch e.Expr>; } : s.FnPatchExpr
+    = { e.Expr = <PatchAST-Expr s.FnPatch e.Expr>; } : s.FnPatchExpr
     = (
         (<s.FnPatchExpr e.Pattern>)
-        <PatchASTSrcPos-Chain s.FnPatch s.FnPatchExpr e.ConditionsAndAssigns>
+        <PatchAST-Chain s.FnPatch s.FnPatchExpr e.ConditionsAndAssigns>
         (<s.FnPatchExpr e.Result>)
-        (<PatchASTSrcPos-Blocks s.FnPatch e.Blocks>)
+        (<PatchAST-Blocks s.FnPatch e.Blocks>)
       );
 }
 
-PatchASTSrcPos-Chain {
+$SPEC PatchAST-Chain s.FN-PATCH s.FN-PATCH-EXPR e.chain;
+
+PatchAST-Chain {
   s.FnPatch s.FnPatchExpr e.ConditionsAndAssigns
     = <Map
         {
           (s.ChainType (e.Result^) (e.Blocks) (e.Pattern^))
             = (s.ChainType
                 (<s.FnPatchExpr e.Result>)
-                (<PatchASTSrcPos-Blocks s.FnPatch e.Blocks>)
+                (<PatchAST-Blocks s.FnPatch e.Blocks>)
                 (<s.FnPatchExpr e.Pattern>)
               );
         }
@@ -432,44 +476,48 @@ PatchASTSrcPos-Chain {
       >;
 }
 
-PatchASTSrcPos-Blocks {
+$SPEC PatchAST-Blocks s.FN-PATCH e.blocks;
+
+PatchAST-Blocks {
   s.FnPatch e.Blocks
     = <Map
         {
-          (e.Body) = (<PatchASTSrcPos-Body s.FnPatch e.Body>);
+          (e.Body) = (<PatchAST-Body s.FnPatch e.Body>);
         }
         e.Blocks
       >;
 }
 
-PatchASTSrcPos-Expr {
+$SPEC PatchAST-Expr s.FN-PATCH e.expr;
+
+PatchAST-Expr {
   s.FnPatch e.Expression
     = <Map
         {
           (TkVariable t.SrcPos s.Mode e.Index)
-            = (TkVariable <s.FnPatch t.SrcPos> s.Mode e.Index);
+            = (TkVariable <s.FnPatch SrcPos t.SrcPos> s.Mode e.Index);
 
           (TkNewVariable t.SrcPos s.Mode e.Index)
-            = (TkNewVariable <s.FnPatch t.SrcPos> s.Mode e.Index);
+            = (TkNewVariable <s.FnPatch SrcPos t.SrcPos> s.Mode e.Index);
 
           (Symbol Name t.SrcPos e.Name)
-            = (Symbol Name <s.FnPatch t.SrcPos> e.Name);
+            = (Symbol Name <s.FnPatch SrcPos t.SrcPos> e.Name);
 
           (Brackets e.InBrackets)
-            = (Brackets <PatchASTSrcPos-Expr s.FnPatch e.InBrackets>);
+            = (Brackets <PatchAST-Expr s.FnPatch e.InBrackets>);
 
           (ADT-Brackets t.SrcPos (e.Name) e.InBrackets)
             = (ADT-Brackets
-                <s.FnPatch t.SrcPos>
+                <s.FnPatch SrcPos t.SrcPos>
                 (e.Name)
-                <PatchASTSrcPos-Expr s.FnPatch e.InBrackets>
+                <PatchAST-Expr s.FnPatch e.InBrackets>
               );
 
           (CallBrackets e.InBrackets)
-            = (CallBrackets <PatchASTSrcPos-Expr s.FnPatch e.InBrackets>);
+            = (CallBrackets <PatchAST-Expr s.FnPatch e.InBrackets>);
 
           (Closure e.Sentences)
-            = (Closure <PatchASTSrcPos-Body s.FnPatch e.Sentences>);
+            = (Closure <PatchAST-Body s.FnPatch e.Sentences>);
 
           t.OtherTerm = t.OtherTerm;
         }
@@ -477,17 +525,26 @@ PatchASTSrcPos-Expr {
       >;
 }
 
-BackEnd {
+
+/**
+  <BackEnd t.Config (e.SrcName) (e.OutputName) e.AST>
+    == Success e.OutputName t.Native
+    == Fails
+
+  t.Native ::= NoNative | (e.NativeOutputName)
+*/
+$ENTRY BackEnd {
   t.Config (e.SrcName) (e.OutputName) e.AST
     = <Config-GetDebugMode t.Config> : s.MarkupContext s.DebugInfo
     = <Config-GetOptPattern t.Config> : s.OptPattern
     = <Config-GetOptResult t.Config> : s.OptResult
     = <Config-GetConditionsMode t.Config> : s.ConditionsMode
     = <Config-GetGenMode t.Config> : s.GenMode
-    = <CreateMetaFunctions e.AST> : e.AST^
+    = <Config-GetOptTree t.Config> : s.OptTree
+
     = <Desugar s.MarkupContext s.ConditionsMode e.AST> : e.AST^
     = <Log-AST (e.SrcName ' (after desugar)') e.AST> : e.AST^
-    = <Config-GetOptTree t.Config>
+    = s.OptTree
     : {
         OptTree = <OptTree t.Config e.AST>;
         NoOpt = <OptTree-CleanupMarkup e.AST>;
