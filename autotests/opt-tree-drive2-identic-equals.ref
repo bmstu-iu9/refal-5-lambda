@@ -1,0 +1,24 @@
+* TREE
+
+* Автотест выявляет ошибку в случае идентичных присваиваний вида
+* s.A ← s.B, s.A ← s.B. Для них по ошибке порождалось сужение s.A → s.A
+* на котором компилятор зависал.
+
+$ENTRY Go {
+  /* empty */
+    = <Test 'abc'> : False ('abca')
+    = <Test 'aba'> : True ('ab')
+    = <Test 'a'> : True ()
+    = /* empty */;
+}
+
+Test {
+  s.X e.Y = <F s.X e.Y s.X>;
+}
+
+$DRIVE F;
+
+F {
+  e.Y s.X s.X = True (e.Y);
+  e.Z = False (e.Z);
+}

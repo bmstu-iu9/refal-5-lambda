@@ -106,6 +106,21 @@ HasRepeatedVarsAssigns {
 
 Solution-PostProcess {
   /*
+    если есть идентичные присваивания, то удалаяем их
+  */
+  (e.Contractions) (e.Assigns)
+    , e.Assigns
+    : e.B
+      (e.Expr ':' (TkVariable e.HIndex))
+      e.M
+      (e.Expr ':' (TkVariable e.HIndex))
+      e.E
+    = <Solution-PostProcess
+        (e.Contractions)
+        (e.B (e.Expr ':' (TkVariable e.HIndex)) e.M e.E)
+      >;
+
+  /*
     Если есть непротиворечивые присваивания вида:
     (s.A <- v.B) и (s.C <- v.B) то добавляется сужение (s.C -> v.A)
     и второе присваивание удаляется
@@ -192,21 +207,6 @@ Solution-PostProcess {
       ((Symbol e.Info2) ':' (TkVariable e.HIndex))
       e.E
     = /* пусто, т.к. противоречие */;
-
-  /*
-    если есть идентичные присваивания, то удалаяем их
-  */
-  (e.Contractions) (e.Assigns)
-    , e.Assigns
-    : e.B
-      (e.Expr ':' (TkVariable e.HIndex))
-      e.M
-      (e.Expr ':' (TkVariable e.HIndex))
-      e.E
-    = <Solution-PostProcess
-        (e.Contractions)
-        (e.B (e.Expr ':' (TkVariable e.HIndex)) e.M e.E)
-      >;
 
   /*
     если есть идентичные сужения, то удаляем их
