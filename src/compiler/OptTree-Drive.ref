@@ -172,25 +172,28 @@ DriveInlineOptimizerTick {
 }
 
 DistinctFuncs {
-  e.B
-  (Function s.ScopeClass (e.Name) e.Body1)
-  e.M
-  (Function s.ScopeClass (e.Name) e.Body2)
-  e.E
-  = <DistinctFuncs
-      e.B (Function s.ScopeClass (e.Name) e.Body1) e.M e.E
-    >;
+  e.AST
+    = <DistinctFuncs-Aux ColdFunction e.AST> : e.AST^
+    = <DistinctFuncs-Aux Function e.AST>;
+}
 
-  e.B
-  (ColdFunction s.ScopeClass (e.Name) e.Body1)
-  e.M
-  (Function s.ScopeClass (e.Name) e.Body2)
-  e.E
-  = <DistinctFuncs
-      e.B (ColdFunction s.ScopeClass (e.Name) e.Body1) e.M e.E
-    >;
+$SPEC DistinctFuncs-Aux s.TAG e.ast;
 
-  e.Other = e.Other
+DistinctFuncs-Aux {
+  s.FunctionTag
+  e.AST-B
+  (s.FunctionTag s.ScopeClass (e.Name) e.Body1)
+  e.AST-M
+  (Function s.ScopeClass (e.Name) e.Body2)
+  e.AST-E
+    = e.AST-B
+      <DistinctFuncs-Aux
+        s.FunctionTag
+        (s.FunctionTag s.ScopeClass (e.Name) e.Body1)
+        e.AST-M e.AST-E
+      >;
+
+  s.FunctionTag e.AST = e.AST
 }
 
 IsPassiveCall {
@@ -498,9 +501,11 @@ FindOptimizedCall-Term {
     = <FindOptimizedCall (e.OptFuncNames) e.Arg>
     : {
 *       Вызов оптимизируемой функции, извлекаем его наружу
-        (e.OptFuncNames^ None) e.Arg^
-          , e.OptFuncNames : e.OptFuncNames-B (e.Name) e.OptFuncNames-E
-          = (e.OptFuncNames (CallBrackets (Symbol Name e.Name) e.Arg))
+        (e.OptFuncNames-B (e.Name) e.OptFuncNames-E None) e.Arg^
+          = (
+              e.OptFuncNames-B (e.Name) e.OptFuncNames-E
+              (CallBrackets (Symbol Name e.Name) e.Arg)
+            )
             (TkVariable 'e' DRIVEN 0);
 
 *       Функция, не подлежащая оптимизации. Остужаем вызов.
