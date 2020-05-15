@@ -50,7 +50,9 @@ $ENTRY GenProgram-RASL {
         e.StringsAsBytes
         <Map &UnBracket e.RASLAsWords>
       >
-      <Map (&GenCommand-Globals e.LabelOffsets) e.Items>;
+      <DelAccumulator
+        <MapAccum &GenCommand-Globals (e.LabelOffsets) e.Items>
+      >
 }
 
 BytesFromFunctionList {
@@ -132,45 +134,51 @@ NameWithSign-Bytes {
 }
 
 GenCommand-Globals {
-  e.Labels (UnitName e.SrcName) =
-    <PutBlock UnitName <Asciiz e.SrcName>>;
+  (e.Labels) (UnitName e.SrcName)
+    = (e.Labels) <PutBlock UnitName <Asciiz e.SrcName>>;
 
-  e.Labels (CmdEnumDescr s.ScopeClass e.Name) =
-    <PutBlock EmptyFunction <NameWithSign-Bytes s.ScopeClass e.Name>>;
+  (e.Labels) (CmdEnumDescr s.ScopeClass e.Name)
+    = (e.Labels) <PutBlock EmptyFunction <NameWithSign-Bytes s.ScopeClass e.Name>>;
 
-  e.Labels-B (s.Label s.Offset) e.Labels-E
-  (CmdInterpretFuncDescr s.ScopeClass e.Name s.Label) =
-    <PutBlock
-      RefalFunction
-      <NameWithSign-Bytes s.ScopeClass e.Name>
-      <PutWordLE s.Offset>
-    >;
+  (e.Labels-B (s.Label s.Offset) e.Labels-E)
+  (CmdInterpretFuncDescr s.ScopeClass e.Name s.Label)
+    = (e.Labels-B (s.Label s.Offset) e.Labels-E)
+      <PutBlock
+        RefalFunction
+        <NameWithSign-Bytes s.ScopeClass e.Name>
+        <PutWordLE s.Offset>
+      >;
 
-  e.Labels (CmdMetatable s.ScopeClass (e.Name) e.Table)
+  (e.Labels) (CmdMetatable s.ScopeClass (e.Name) e.Table)
     = <Lenw e.Table> : s.Count e.Table^
-    = <PutBlock
+    = (e.Labels)
+      <PutBlock
         Metatable
         <NameWithSign-Bytes s.ScopeClass e.Name>
         <PutWordLE s.Count>
         <Map
           {
-            (s.Ident s.Function) = <PutWordLE s.Ident> <PutWordLE s.Function>;
+            (s.Ident s.Function)
+              = <PutWordLE s.Ident> <PutWordLE s.Function>;
           }
           e.Table
         >
       >;
 
-  e.Labels (CmdSwapDescr s.ScopeClass e.Name) =
-    <PutBlock Swap <NameWithSign-Bytes s.ScopeClass e.Name>>;
+  (e.Labels) (CmdSwapDescr s.ScopeClass e.Name)
+    = (e.Labels) <PutBlock Swap <NameWithSign-Bytes s.ScopeClass e.Name>>;
 
-  e.Labels (CmdConditionFuncDecsrRasl  s.ScopeClass e.Name) =
-    <PutBlock ConditionRasl <NameWithSign-Bytes s.ScopeClass e.Name>>;
+  (e.Labels) (CmdConditionFuncDecsrRasl  s.ScopeClass e.Name)
+    = (e.Labels)
+      <PutBlock ConditionRasl <NameWithSign-Bytes s.ScopeClass e.Name>>;
 
-  e.Labels (CmdConditionFuncDecsrNative  s.ScopeClass e.Name) =
-    <PutBlock ConditionNative <NameWithSign-Bytes s.ScopeClass e.Name>>;
+  (e.Labels) (CmdConditionFuncDecsrNative  s.ScopeClass e.Name)
+    = (e.Labels)
+      <PutBlock ConditionNative <NameWithSign-Bytes s.ScopeClass e.Name>>;
 
-  e.Labels (CmdNativeFuncDescr s.ScopeClass e.Name) =
-    <PutBlock NativeFunction <NameWithSign-Bytes s.ScopeClass e.Name>>;
+  (e.Labels) (CmdNativeFuncDescr s.ScopeClass e.Name)
+    = (e.Labels)
+      <PutBlock NativeFunction <NameWithSign-Bytes s.ScopeClass e.Name>>;
 }
 
 Assemble {

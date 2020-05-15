@@ -168,32 +168,38 @@ DriveInlineOptimizerTick {
         e.AST
       >
     : (e.OptInfo) e.AST^
-    = (DriveInfo e.OptInfo) <DistinctFuncs e.AST>
-}
 
-DistinctFuncs {
-  e.AST
-    = <DistinctFuncs-Aux ColdFunction e.AST> : e.AST^
-    = <DistinctFuncs-Aux Function e.AST>;
-}
+    = <MapAccum
+        {
+          (e.News-B (Function s.ScopeClass (e.Name) e.Body) e.News-E)
+          (NewFunction s.ScopeClass (e.Name) e._)
+            = (e.News-B (Function s.ScopeClass (e.Name) e.Body) e.News-E)
+              /* пропускаем */;
 
-$SPEC DistinctFuncs-Aux s.TAG e.ast;
+          (e.NewFunctions) (NewFunction s.ScopeClass (e.Name) e.Body)
+            = (e.NewFunctions (Function s.ScopeClass (e.Name) e.Body));
 
-DistinctFuncs-Aux {
-  s.FunctionTag
-  e.AST-B
-  (s.FunctionTag s.ScopeClass (e.Name) e.Body1)
-  e.AST-M
-  (Function s.ScopeClass (e.Name) e.Body2)
-  e.AST-E
-    = e.AST-B
-      <DistinctFuncs-Aux
-        s.FunctionTag
-        (s.FunctionTag s.ScopeClass (e.Name) e.Body1)
-        e.AST-M e.AST-E
-      >;
+          (e.NewFunctions) t.Other = (e.NewFunctions) t.Other;
+        }
+        (/* new functions */) e.AST
+      >
+    : (e.NewFunctions) e.AST^
 
-  s.FunctionTag e.AST = e.AST
+    = <MapAccum
+        {
+          (e.News-B (Function s.ScopeClass (e.Name) e._) e.News-E)
+          (s.Function s.ScopeClass (e.Name) e.Body)
+            , <OneOf s.Function Function ColdFunction> : True
+            = (e.News-B e.News-E)
+              (s.Function s.ScopeClass (e.Name) e.Body);
+
+          (e.NewFunctions^) t.Other = (e.NewFunctions) t.Other;
+        }
+        (e.NewFunctions) e.AST
+      >
+    : (e.NewFunctions^) e.AST^
+
+    = (DriveInfo e.OptInfo) e.AST e.NewFunctions;
 }
 
 IsPassiveCall {
@@ -366,7 +372,7 @@ MakeColdSolution {
     = (
         ((ColdCallBrackets (Symbol Name e.Name) e.Args))
         ((/* нет присваиваний */) (/* нет сужений */))
-        ((Function s.ScopeClass (e.Name) Sentences e.Body))
+        ((NewFunction s.ScopeClass (e.Name) Sentences e.Body))
       );
 
   (s.FuncMode s.ScopeClass (e.Name) Sentences e.Body) e.Args

@@ -192,17 +192,47 @@ Pass-AttachEntries {
 }
 
 Pass-RemoveRedundantDriveInline {
-    e.B (s.Label e.FuncName) e.M (s.Label e.FuncName) e.E
-      , <OneOf s.Label Drive Inline> : True
-      = <Pass-RemoveRedundantDriveInline e.B (s.Label e.FuncName) e.M e.E>;
+  e.AST
+    = <MapAccum
+        {
+          (e.Labels-B (e.Name s.KnownLabel) e.Labels-E) (Drive e.Name)
+            = (e.Labels-B (e.Name Drive) e.Labels-E)
+              (Drive e.Name);
 
-    e.B (Drive e.FuncName) e.M (Inline e.FuncName) e.E
-      = <Pass-RemoveRedundantDriveInline e.B (Drive e.FuncName) e.M e.E>;
+          (e.Labels-B (e.Name s.KnownLabel) e.Labels-E) (Inline e.Name)
+            = (e.Labels-B (e.Name s.KnownLabel) e.Labels-E)
+              (Inline e.Name);
 
-    e.B (Inline e.FuncName) e.M (Drive e.FuncName) e.E
-      = <Pass-RemoveRedundantDriveInline e.B e.M (Drive e.FuncName) e.E>;
+          (e.Labels) (Drive e.Name)
+            = (e.Labels (e.Name Drive)) (Drive e.Name);
 
-    e.AST = e.AST;
+          (e.Labels) (Inline e.Name)
+            = (e.Labels (e.Name Inline)) (Inline e.Name);
+
+          (e.Labels) t.Other = (e.Labels) t.Other;
+        }
+        (/* labels */) e.AST
+      >
+    : (e.Labels) e.AST^
+
+    = <MapAccum
+        {
+          (e.Labels-B (e.Name s.Label) e.Labels-E) (s.Label e.Name)
+            = (e.Labels-B e.Labels-E) (s.Label e.Name);
+
+          (e.Labels-B (e.Name Drive) e.Labels-E) (Inline e.Name)
+            = (e.Labels-B (e.Name Drive) e.Labels-E) /* пропускаем */;
+
+          (e.Labels^) (Drive e.Name) = (e.Labels) /* пропускаем */;
+          (e.Labels^) (Inline e.Name) = (e.Labels) /* пропускаем */;
+
+          (e.Labels^) t.Other = (e.Labels) t.Other;
+        }
+        (e.Labels) e.AST
+      >
+    : () e.AST^
+
+    = e.AST;
 }
 
 Pass-EnumerateVariables {
@@ -888,15 +918,18 @@ Pass-CleanupRedudandExterns {
        e.AST
       >
     : (e.DefinedFunctions) e.AST^
-    = <Map (&FilterDeclarations e.DefinedFunctions) e.AST>;
+    = <MapAccum &FilterDeclarations (e.DefinedFunctions) e.AST>
+    : (e.DefinedFunctions^) e.AST^
+    = e.AST;
 }
 
 FilterDeclarations {
-  e.DefinedFunctions-B (e.Name) e.DefinedFunctions-E
+  (e.DefinedFunctions-B (e.Name) e.DefinedFunctions-E)
   (Declaration s.ScopeClass e.Name)
-    = /* пусто */;
+    = (e.DefinedFunctions-B (e.Name) e.DefinedFunctions-E)
+      /* пусто */;
 
-  e.DefinedFunctions t.OtherItem = t.OtherItem;
+  (e.DefinedFunctions) t.OtherItem = (e.DefinedFunctions) t.OtherItem;
 }
 
 Pass-UnfoldEnums {
