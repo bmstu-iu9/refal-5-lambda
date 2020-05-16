@@ -193,7 +193,8 @@ run_test_aux.WARNING() {
     exit 1
   fi
   if [[ ! -e ${RASL} ]]; then
-    echo COMPILATION FAILED
+    echo COMPILATION FAILED, __error.txt:
+    cat __error.txt
     exit 1
   fi
   cat __error.txt

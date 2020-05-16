@@ -294,7 +294,8 @@ setlocal
     exit /b 1
   )
   if not exist %LIBR% if not exist %LIBN% (
-    echo COMPILATION FAILED
+    echo COMPILATION FAILED, __error.txt:
+    type __error.txt
     exit /b 1
   )
   erase __error.txt
@@ -358,7 +359,8 @@ setlocal
     exit /b 1
   )
   if not exist %RASL% (
-    echo COMPILATION FAILED
+    echo COMPILATION FAILED, __error.txt:
+    type __error.txt
     exit /b 1
   )
   type __error.txt
