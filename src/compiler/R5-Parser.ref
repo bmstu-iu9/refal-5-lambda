@@ -73,12 +73,16 @@ DoProgram {
 
   t.ErrorList s.Mode (e.Units) t.Unexpected e.Tokens
     = <DoProgram
-        <UnexpectedToken
-          t.ErrorList
-          t.Unexpected '$EXTERN, $ENTRY, function name or special comment'
-        >
-        s.Mode (e.Units) e.Tokens
+        <UnexpectedUnitToken t.ErrorList t.Unexpected> s.Mode (e.Units) e.Tokens
       >;
+}
+
+UnexpectedUnitToken {
+  t.ErrorList t.Unexpected
+    = <UnexpectedToken
+        t.ErrorList
+        t.Unexpected 'Declaration, definition, $INCLUDE or special comment'
+      >
 }
 
 UnitStartToken {
@@ -100,7 +104,7 @@ OneOf {
             | "$ESWAP" | "$INLINE" | "$DRIVE"
             | "$SPEC".
 
-  <Unit t.ErrorList s.Mode e.Tokens> == t.ErrorList (t.ErrorUnit*) e.Tokens
+  <Unit t.ErrorList s.Mode e.Tokens> == t.ErrorList (t.Unit*) e.Tokens
 */
 Unit {
   t.ErrorList s.Mode t.NextToken e.Tokens
@@ -242,7 +246,7 @@ NameList-DoNames {
   t.ErrorList s.Tag (e.Units) t.NextToken e.Tokens
     , t.NextToken : (s.Type t.Pos e.Value)
     , <OneOf s.Type TkExtern TkEntry TkEOF> : True
-    = <EL-AddErrorAt t.ErrorList t.Pos 'missed semicolon'>
+    = <EL-AddErrorAt t.ErrorList t.Pos 'semicolon'>
       (e.Units) t.NextToken e.Tokens;
 
   t.ErrorList s.Tag (e.Units) t.NextToken e.Tokens
@@ -317,10 +321,13 @@ Expect {
 */
 Function {
    t.ErrorList s.Mode
-   (TkEntry t.EntryPos) (TkName t.NamePos e.Name) (s.Punctuation t.PunctPos) e.Tokens
+   (TkEntry t.EntryPos) (TkName t.NamePos e.Name) (s.Punctuation t.PunctPos)
+   e.Tokens
      , <OneOf s.Punctuation TkComma TkSemicolon> : True =
        <NameList
-         <ClassicError t.ErrorList s.Mode t.EntryPos 'Entry list is an extension'>
+         <ClassicError
+           t.ErrorList s.Mode t.EntryPos 'Entry list is an extension'
+         >
          TkEntryL (TkName t.NamePos e.Name) (s.Punctuation t.PunctPos) e.Tokens
        >;
 
