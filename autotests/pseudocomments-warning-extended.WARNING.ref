@@ -1,0 +1,9 @@
+* WARNING nul-in-compound
+
+*$EXTENDED;
+
+*$SPEC Func s.STAT "ABC\x00DEF" s.dyn;
+
+$ENTRY Func {
+  s.Stat ABC s.Dyn = s.Stat s.Dyn;
+}

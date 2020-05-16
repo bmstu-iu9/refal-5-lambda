@@ -1,5 +1,5 @@
 *$FROM Error
-$EXTERN EL-AddErrorAt;
+$EXTERN EL-AddErrorAt, EL-AddWarningAt;
 
 
 /**
@@ -86,7 +86,8 @@ UnexpectedUnitToken {
 }
 
 UnitStartToken {
-  = <NameListTags> TkEntry TkName TkSemicolon TkInclude TkNativeCode TkSpec;
+  = <NameListTags> TkEntry TkName TkSemicolon TkInclude TkNativeCode TkSpec
+    TkPseudoComment;
 }
 
 NameListTags {
@@ -136,7 +137,20 @@ Unit {
           , <OneOf s.Type TkEntry TkName>: True
           = <Function t.ErrorList s.Mode t.NextToken e.Tokens>;
 
-        /* других типов быть не должно */
+        (TkPseudoComment t.Pos e.CommentTokens)
+          = <Unit t.ErrorList Extended e.CommentTokens>
+          : {
+              t.ErrorList^ (e.Units) (TkEOF t._)
+                = t.ErrorList (e.Units) e.Tokens;
+
+              t.ErrorList^ (e.Units) (s.Token t.Pos^ e.Info) e._
+                = <EL-AddErrorAt
+                    t.ErrorList t.Pos 'Too many units in pseudocomment'
+                  >
+                  (/* no units */) e.Tokens;
+            };
+
+        t.Unexpected = <UnexpectedUnitToken t.ErrorList t.Unexpected> e.Tokens;
       };
 }
 
@@ -988,4 +1002,5 @@ TokName {
   TkNativeCode = 'native code insertion';
   TkSpec = '$SPEC';
   TkMeta = '$META';
+  TkPseudoComment = '*$-pseudocomment';
 }

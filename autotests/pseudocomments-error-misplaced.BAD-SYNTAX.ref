@@ -1,0 +1,12 @@
+*$EXTENDED;
+
+Func {
+  s.Stat (s.Dyn) = s.Stat s.Dyn;
+*$SPEC Func s.STAT (s.dyn);
+}
+
+$ENTRY Go {
+  /* empty */
+    = <Func 'a' ('b')> : 'ab'
+    = /* empty */
+}

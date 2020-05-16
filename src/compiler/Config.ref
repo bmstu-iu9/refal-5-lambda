@@ -531,6 +531,7 @@ WarningForName {
   'screening' = True screening;
   'init-final-entry' = True init-final-entry;
   'nul-in-compound' = True nul-in-compound;
+  'ignored-pseudocomments' = True ignored-pseudocomments;
 
   e.Other = False
 }

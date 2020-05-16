@@ -138,8 +138,8 @@ FilterLexerMessages {
   t.ErrorList e.Tokens
     = <MapAccum
         {
-          t.ErrorList^ (TkWarning t.Pos e.Message)
-            = <EL-AddWarningAt t.ErrorList nul-in-compound t.Pos e.Message>
+          t.ErrorList^ (TkWarning t.Pos s.Type e.Message)
+            = <EL-AddWarningAt t.ErrorList s.Type t.Pos e.Message>
               /* пусто */;
           t.ErrorList^ (TkError t.Pos e.Message)
             = <EL-AddErrorAt t.ErrorList t.Pos e.Message>
