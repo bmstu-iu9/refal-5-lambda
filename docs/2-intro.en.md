@@ -68,19 +68,19 @@ Refal-5λ syntax sugar is assignments and blocks, and, as it will be seen
 further, they are expressed with nested functions. These and other kinds of
 “sugar” will be told about later.
 
-Thirdly, the actual implementation of Refal-5λ is not locked in contrast to a lot
-of other REFAL implementations. It means that  programmer is not constrained
-with some “embedded” language functions, embedded interface with C++ language
-allows the programmer to implement and use functionality in their programs on
-Refal, that absent in standard library – work with networks, with databases,
-windows interface and so on. As well as C/C++ languages allow using
-code insertion on assembler, Refal-5λ allows code insertions on C++ in source
-texts on REFAL (e.g. native insertions). Surely, C++ compiler is essential for
-compilation of such programs, but if you do not use native insertions,
-compiler C++ might not be installed.
+Thirdly, the actual implementation of Refal-5λ is not locked unlike many other
+REFAL implementations. It means that  the programmer is not constrained by some
+“embedded” language functions, embedded interface with C++ language allows
+the programmer to implement and use functionality in their programs on
+Refal, that absent in the standard library – work with networks, with databases,
+windows interface and so on. As well as C/C++ languages allow you to insert 
+assembly code, Refal-5λ allows you  to insert C++ code into  REFAL source texts
+(e.g. native insertions). Surely, C++ compiler is necessary to compile such
+programs, but if you do not use native insertions, compiler C++ might not be
+installed.
 
-The actual implementation can compile the programs both in intermediate
-interpretive code and in code on C++.
+The actual implementation can compile programs in both intermediate interpretive
+code and C++ code.
 
 ## Installation and startup
 
