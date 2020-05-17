@@ -16,7 +16,7 @@ for computer appeared – it has already become a fully-featured programming lan
 
 The difference between REFAL and other functional languages (FL) is, first of
 all, the usage of a special data structure – an object expression. Most FL use
-single linked lists – the sequences of elements, in which only the left side 
+single linked lists – the sequences of elements, in which only the left side
 is accessed for direct elaboration. In other words, it is possible to make only
 operations such as looking for the first element, cutting off the first element,
 making a new list by adding an element at the beginning of the initial list.
@@ -29,7 +29,7 @@ in reverse order.
 
 As for REFAL, it manipulates bidirectional sequences (that are called
 ‘object expressions’): for them it is possible to use not only the same operations
-on both sides (cutting off the first element, adding an element) but also 
+on both sides (cutting off the first element, adding an element) but also
 concatenation and separation anywhere (see ahead about opened e-variable). All these
 operations are primitive! The expressivity of programs increases due to this.
 
@@ -40,7 +40,7 @@ choosing one of some samples that describe the parameter. There is no other way
 to analyze data in this language.
 
 Firstly, REFAL-5λ dialect is an exact comprehending set of REFAL-5\[2] dialect,
-that means that any program running on the “classical” implementation \[3] 
+that means that any program running on the “classical” implementation \[3]
 (further we will call the implementation classical without using quotations)
 will be correct in REFAL-5λ.
 
@@ -50,8 +50,8 @@ They will be implemented in next versions. There are no any other limitations._
 Secondly, it is an extension of REFAL-5, which includes higher-order functions
 and also nested functions and a lot of good, tasty and useful syntactic sugar.
 Classical REFAL-5 didn’t support nested functions as it was conceived, because
-according to Turchin REFAL supposed to be not only the subject, but also the 
-object of programs modifications, and, what is important, valid modifications 
+according to Turchin REFAL supposed to be not only the subject, but also the
+object of programs modifications, and, what is important, valid modifications
 are considered only those, which could be described using “pen and paper”\[4].
 
 Firstly, nested functions appeared in Refal-7 dialect, suggested by Sergei
