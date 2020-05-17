@@ -91,9 +91,9 @@ webpage
 
 <https://github.com/bmstu-iu9/refal-5-lambda/releases/latest>
 
-and just start it up. In this way archive with executable and library Refal
-modules in user profile (into folder `%APPDATA%`), the way to the catalog will
-be written into `PATH` variable for the current user. In order to delete Refal
+and just start it up. In this way  it is archived with Refal's executable and 
+library modules in the user profile (into folder `%APPDATA%`), the path to the catalog 
+will be written to the `PATH` variable for the current user. In order to delete Refal
 from your computer it is possible either to use “Refal-5-lambda” →
 “UninstallRefal-5-lambda” shortcut in Start menu or using “Control panel” →
 “Programs and components” or “Parameters” → “Applications” → “Apps & features”
@@ -109,13 +109,13 @@ catalog from the same page
 <https://github.com/bmstu-iu9/refal-5-lambda/releases/latest>.
 
 In the archive there are Refal-5λ, compiled into code on C++ and glue
-interpretive code. In order to get ready executable modules from it is
-essential to have an installed C++98 compiler on a computer. It is enough to
-download `bootstrap.bat` file on Windows or `bootstrap.sh` on Linux or macOS –
+interpretive code. In order to get ready executable modules from it, you must
+have an installed C++98 compiler on a computer. It is enough to download
+`bootstrap.bat` file in Windows or `bootstrap.sh` in Linux or macOS –
 after distribution there will be new executable files in the bin subfolder.
 
-Note. _After archive distribution the attribute `+x` in the executable files
-can be cleared. For its annealing it is required to implement the following
+Note. _After the archive is distributed, the `+x` attribute in the executable 
+files can be cleared. For its annealing it is required to implement the following
 command:_
 
     chmod +x *.sh scripts/load-config.sh bin/sr{efc,make}
