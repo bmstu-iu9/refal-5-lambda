@@ -754,7 +754,44 @@ $ENTRY GlobalASTStorage-Check {
   ((s.NextLocalId e.Entries) e.AST)
     = <EL-CheckEntryDuplicates e.Entries>
     : {
-        EL-NoErrors = Success e.AST;
+        EL-NoErrors = Success <ExtendMetatables (e.Entries) e.AST>;
         EL-HasErrors = Fails;
       }
+}
+
+ExtendMetatables {
+  (e.Entries) e.AST
+    = <Map
+        {
+          ((e.EntryName) t.SrcPos)
+            = (
+                (Symbol Identifier e.EntryName)
+                (Symbol Name t.SrcPos e.EntryName)
+              );
+        }
+        e.Entries
+      >
+    : e.MetatableExtension
+
+    = <Map
+        {
+          (Function t.SrcPos s.ScopeClass (e.Name) Metatable e.Metatable)
+            = (Function
+                t.SrcPos s.ScopeClass (e.Name)
+                Metatable <CleanupDuplicates e.Metatable e.MetatableExtension>
+              );
+
+          t.Other = t.Other;
+        }
+        e.AST
+      >
+}
+
+CleanupDuplicates {
+  ((e.Name) t.Pointer) e.MT-B ((e.Name) t._) e.MT-E
+    = <CleanupDuplicates ((e.Name) t.Pointer) e.MT-B e.MT-E>;
+
+  t.MT-Item e.Metatable = t.MT-Item <CleanupDuplicates e.Metatable>;
+
+  /* пусто */ = /* пусто */;
 }
