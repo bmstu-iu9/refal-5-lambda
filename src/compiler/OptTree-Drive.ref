@@ -104,9 +104,11 @@ UpdateDriveInfo {
       >
       <MapAccum
         {
-          ((e.OptFunctions) (e.RemNames))
+          (
+            (e.OptFunctions) (e.RemNames)
+            (e.OptNames-B (s.Label e.Name) e.OptNames-E)
+          )
           (Function s.ScopeClass (e.Name) Sentences e.Sentences)
-            , e.OptNames : e.B (s.Label e.Name) e.E
             = <Lenw e.Sentences> : s.CountSentences e.Sentences^
             = (
                 (
@@ -118,15 +120,16 @@ UpdateDriveInfo {
                   (e.Name)
                   <GenRemainderFuncNames e.Name s.CountSentences>
                 )
+                (e.OptNames-B e.OptNames-E)
               )
               (Function s.ScopeClass (e.Name) Sentences e.Sentences);
 
           (e.OptInfo) t.Other
             = (e.OptInfo) t.Other;
         }
-        (() ()) e.AST
+        (() () (e.OptNames)) e.AST
       >
-    : ((e.OptFunctions) (e.DrivenNames)) e.AST^
+    : ((e.OptFunctions) (e.DrivenNames) (e._)) e.AST^
 
     = (DriveInfo (e.KnownNames e.DrivenNames) e.KnownFunctions e.OptFunctions)
       e.AST;
