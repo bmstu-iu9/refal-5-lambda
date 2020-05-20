@@ -223,17 +223,21 @@ SpecSentence {
     == (e.SpecInfo^ (e.NewFunctions^)) e.Result^
 
   Функция разбирает результирующее выражение, ищет в нем вызовы специализируемых
-  функций и пытается выполнить специализацию для него
+  функций и замыканий и пытается выполнить специализацию для них
 */
 SpecResult {
-  (e.SpecInfo (e.NewFunctions)) /* empty */
-    = (e.SpecInfo (e.NewFunctions)) /* empty */ ;
-
   (e.SpecInfo (e.NewFunctions)) e.Result
+    = <SpecResult-Pass Functions (e.SpecInfo (e.NewFunctions)) e.Result>
+    : (e.SpecInfo^ (e.NewFunctions^)) e.Result^
+    = <SpecResult-Pass Closures (e.SpecInfo (e.NewFunctions)) e.Result>;
+}
+
+SpecResult-Pass {
+  s.Pass (e.SpecInfo (e.NewFunctions)) e.Result
     = <MapAccum
         {
           (e.Info (e.NewFuncs)) t.Result-T
-            = <SpecTerm (e.Info (e.NewFuncs)) t.Result-T>;
+            = <SpecTerm s.Pass (e.Info (e.NewFuncs)) t.Result-T>;
         }
         (e.SpecInfo (e.NewFunctions))
         e.Result
@@ -248,25 +252,41 @@ SpecResult {
   и пытается выполнить специализацию для него
 */
 SpecTerm {
-  (e.SpecInfo (e.NewFunctions)) (CallBrackets (Symbol Name e.Name) e.Expression)
-    = <SpecResult (e.SpecInfo (e.NewFunctions)) e.Expression>
+  s.Pass (e.SpecInfo (e.NewFunctions))
+  (CallBrackets (Symbol Name e.Name) e.Expression)
+    = <SpecResult-Pass s.Pass (e.SpecInfo (e.NewFunctions)) e.Expression>
     : (e.SpecInfo^ (e.NewFunctions^)) e.Expression^
-    = <TrySpecCall
+
+    = s.Pass
+    : {
+        Functions = &TrySpecCall;
+        Closures = &SkipSpecCall;
+      }
+    : s.TrySpecCall
+
+    = <s.TrySpecCall
         (e.SpecInfo (e.NewFunctions))
         (CallBrackets (Symbol Name e.Name) e.Expression)
       >;
 
-  (e.SpecInfo (e.NewFunctions)) (CallBrackets e.Expression)
-    = <SpecResult (e.SpecInfo (e.NewFunctions)) e.Expression>
+  s.Pass (e.SpecInfo (e.NewFunctions)) (CallBrackets e.Expression)
+    = <SpecResult-Pass s.Pass (e.SpecInfo (e.NewFunctions)) e.Expression>
     : (e.SpecInfo^ (e.NewFunctions^)) e.Expression^
     = (e.SpecInfo (e.NewFunctions)) (CallBrackets e.Expression);
 
-  (e.SpecInfo (e.NewFunctions)) (ClosureBrackets e.ClosureContent)
+  s.Pass (e.SpecInfo (e.NewFunctions)) (ClosureBrackets e.ClosureContent)
 
-    = <SpecResult (e.SpecInfo (e.NewFunctions)) e.ClosureContent>
+    = <SpecResult-Pass s.Pass (e.SpecInfo (e.NewFunctions)) e.ClosureContent>
     : (e.SpecInfo^ (e.NewFunctions^)) e.ClosureContent^
 
-    = <TrySpecCall
+    = s.Pass
+    : {
+        Functions = &SkipSpecCall;
+        Closures = &TrySpecCall;
+      }
+    : s.TrySpecCall
+
+    = <s.TrySpecCall
         (e.SpecInfo (e.NewFunctions))
         (CallBrackets e.ClosureContent (TkVariable 'e@' 0))
       >
@@ -284,17 +304,17 @@ SpecTerm {
       };
 
 
-  (e.SpecInfo (e.NewFunctions)) (Brackets e.Expression)
-    = <SpecResult (e.SpecInfo (e.NewFunctions)) e.Expression>
+  s.Pass (e.SpecInfo (e.NewFunctions)) (Brackets e.Expression)
+    = <SpecResult-Pass s.Pass (e.SpecInfo (e.NewFunctions)) e.Expression>
     : (e.SpecInfo^ (e.NewFunctions^)) e.Expression^
     = (e.SpecInfo (e.NewFunctions)) (Brackets e.Expression);
 
-  (e.SpecInfo (e.NewFunctions)) (ADT-Brackets (e.Name) e.Expression)
-    = <SpecResult (e.SpecInfo (e.NewFunctions)) e.Expression>
+  s.Pass (e.SpecInfo (e.NewFunctions)) (ADT-Brackets (e.Name) e.Expression)
+    = <SpecResult-Pass s.Pass (e.SpecInfo (e.NewFunctions)) e.Expression>
     : (e.SpecInfo^ (e.NewFunctions^)) e.Expression^
     = (e.SpecInfo (e.NewFunctions)) (ADT-Brackets (e.Name) e.Expression);
 
-  (e.SpecInfo (e.NewFunctions)) t.Other
+  s.Pass (e.SpecInfo (e.NewFunctions)) t.Other
    = (e.SpecInfo (e.NewFunctions)) t.Other;
 }
 
@@ -312,6 +332,11 @@ TrySpecCall {
   (e.SpecInfo (e.NewFunctions)) (CallBrackets (Symbol Name e.Name) e.Expression)
     = (e.SpecInfo (e.NewFunctions))
       (CallBrackets (Symbol Name e.Name) e.Expression);
+}
+
+SkipSpecCall {
+  (e.SpecInfo (e.NewFunctions)) t.CallTerm
+    = (e.SpecInfo (e.NewFunctions)) t.CallTerm;
 }
 
 /**
