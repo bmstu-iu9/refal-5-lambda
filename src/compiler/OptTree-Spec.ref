@@ -254,6 +254,16 @@ SpecResult-Pass {
 SpecTerm {
   s.Pass (e.SpecInfo (e.NewFunctions))
   (CallBrackets (Symbol Name e.Name) e.Expression)
+    , e.Name : e._ '@' 0
+    /*
+      Аргументы вызовов аварийных функций специализатора специализировать
+      нельзя, они должны оставаться неизменными.
+    */
+    = (e.SpecInfo (e.NewFunctions))
+      (CallBrackets (Symbol Name e.Name) e.Expression);
+
+  s.Pass (e.SpecInfo (e.NewFunctions))
+  (CallBrackets (Symbol Name e.Name) e.Expression)
     = <SpecResult-Pass s.Pass (e.SpecInfo (e.NewFunctions)) e.Expression>
     : (e.SpecInfo^ (e.NewFunctions^)) e.Expression^
 
