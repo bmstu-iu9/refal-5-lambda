@@ -1,10 +1,77 @@
+$INCLUDE "LibraryEx";
+
+*$FROM Log
+$EXTERN Log-PutLine;
+
+
+*$FROM DisplayName
+$EXTERN DisplayName;
+
 /**
   <OptTree-AutoMarkup s.OptAutoMarkup e.AST> == e.AST
 */
+
+
 $ENTRY OptTree-AutoMarkup {
-  NoOpt e.AST = e.AST;
+  NoOpt e.AST 
+    = <Log-PutLine 'AutoMarkup is disabled'> :
+    = e.AST;
 
   OptAutoMarkup e.AST
-*   TODO: реализовать разметку
+    = <Log-PutLine 'AutoMarkup'> :
+    = <Map &OptTree-AutoMarkup-ProcessFunc e.AST > : e.CallGraph
+    = <Log-PutLine e.CallGraph> :
     = e.AST;
+}
+
+
+OptTree-AutoMarkup-ProcessFunc {
+  (Function s.ScopeClass (e.Name) Sentences e.Body)
+    = <Map &OptTree-AutoMarkup-ExtractNamesFromBody e.Body> : e.FunctionCalls
+    = <Unique e.FunctionCalls> : e.UniqueFunctionCalls
+    = (Func e.Name (s.ScopeClass) Children (e.UniqueFunctionCalls)) ;
+
+  e.Smth 
+    = ;
+}
+
+
+
+OptTree-AutoMarkup-ExtractNamesFromBody {
+  ((e.Pattern) e.Conditions (e.Result))
+    = <OptTree-AutoMarkup-ExtractExpressionName e.Pattern> : e.PatternNames
+    = <Map
+        {
+          (Condition (e.Name) (e.Result^) (e.Pattern^))
+            = <OptTree-AutoMarkup-ExtractExpressionName e.Result> 
+              <OptTree-AutoMarkup-ExtractExpressionName e.Pattern>;
+        }
+        e.Conditions
+      > 
+      : e.ConditionNames
+    = <OptTree-AutoMarkup-ExtractExpressionName e.Result> : e.ResultNames
+    = e.PatternNames e.ConditionNames e.ResultNames;
+}
+
+
+OptTree-AutoMarkup-ExtractExpressionName {
+  e.Expr 
+    = <Map
+        {
+          (Symbol Name e.Name) 
+            = (e.Name);
+          (Brackets e.Nested) 
+            = <OptTree-AutoMarkup-ExtractExpressionName e.Nested>;
+          (ADT-Brackets (e.Name) e.Nested) 
+            = <OptTree-AutoMarkup-ExtractExpressionName e.Nested>;
+          (CallBrackets e.Nested) 
+            = <OptTree-AutoMarkup-ExtractExpressionName e.Nested>;
+          (ClosureBrackets e.Nested) 
+            = <OptTree-AutoMarkup-ExtractExpressionName e.Nested>;
+
+          (t.Marker e.Smth)
+            =
+        }  
+        e.Expr
+      >
 }
