@@ -1,0 +1,87 @@
+$INCLUDE "LibraryEx";
+
+*$FROM Log
+$EXTERN Log-PutLine;
+
+
+*$FROM DisplayName
+$EXTERN DisplayName;
+
+/**
+  <OptTree-AutoMarkup-ExtractGraph  e.AST> == e.FunctionCallsGraph
+*/
+
+
+$ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
+  e.AST
+    = <Map &OptTree-AutoMarkup-GetMetatables e.AST > : e.ExtractedMetaTables
+    = <Map &OptTree-AutoMarkup-GetFuncs e.AST > : e.ExtractedFuncs
+    = <Log-PutLine 'Fuctions: ' e.ExtractedFuncs> :
+    = <Log-PutLine 'MetaTables: ' e.ExtractedMetaTables> :
+    =  (e.ExtractedMetaTables e.ExtractedFuncs);
+}
+
+OptTree-AutoMarkup-GetMetatables {
+  (Function s.ScopeClass (e.Name) Metatable e.Metatable)
+    = <Map &OptTree-AutoMarkup-ExtractFunctionCallsFromMetatable e.Metatable> : e.FunctionCalls
+    = (e.Name (<Unique e.FunctionCalls>));
+
+  e.Smth 
+    = ;
+}
+
+OptTree-AutoMarkup-GetFuncs {
+  (Function s.ScopeClass (e.Name) Sentences e.Body)
+    = <Map &OptTree-AutoMarkup-ExtractFunctionCallsFromSentencesBody e.Body> : e.FunctionCalls
+    = <Unique e.FunctionCalls> : e.UniqueFunctionCalls
+    = (Func e.Name (s.ScopeClass) Children (e.UniqueFunctionCalls)) ;
+
+  e.Smth 
+    = ;
+}
+
+OptTree-AutoMarkup-ExtractFunctionCallsFromMetatable {
+  ((Symbol Identifier e.Ident) (Symbol Name e.Name))
+    = (e.Name);
+}
+
+
+
+OptTree-AutoMarkup-ExtractFunctionCallsFromSentencesBody {
+  ((e.Pattern) e.Conditions (e.Result))
+    = <OptTree-AutoMarkup-ExtractExpressionName e.Pattern> : e.PatternNames
+    = <Map
+        {
+          (Condition (e.Name) (e.Result^) (e.Pattern^))
+            = <OptTree-AutoMarkup-ExtractExpressionName e.Result> 
+              <OptTree-AutoMarkup-ExtractExpressionName e.Pattern>;
+        }
+        e.Conditions
+      > 
+      : e.ConditionNames
+    = <OptTree-AutoMarkup-ExtractExpressionName e.Result> : e.ResultNames
+    = e.PatternNames e.ConditionNames e.ResultNames;
+}
+
+
+OptTree-AutoMarkup-ExtractExpressionName {
+  e.Expr 
+    = <Map
+        {
+          (Symbol Name e.Name) 
+            = (e.Name);
+          (Brackets e.Nested) 
+            = <OptTree-AutoMarkup-ExtractExpressionName e.Nested>;
+          (ADT-Brackets (e.Name) e.Nested) 
+            = <OptTree-AutoMarkup-ExtractExpressionName e.Nested>;
+          (CallBrackets e.Nested) 
+            = <OptTree-AutoMarkup-ExtractExpressionName e.Nested>;
+          (ClosureBrackets e.Nested) 
+            = <OptTree-AutoMarkup-ExtractExpressionName e.Nested>;
+
+          (t.Marker e.Smth)
+            =
+        }  
+        e.Expr
+      >
+}
