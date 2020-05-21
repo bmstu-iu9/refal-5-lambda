@@ -19,15 +19,25 @@ $ENTRY OptTree-AutoMarkup {
 
   OptAutoMarkup e.AST
     = <Log-PutLine 'AutoMarkup'> :
-    = <Map &OptTree-AutoMarkup-ProcessFunc e.AST > : e.CallGraph
-    = <Log-PutLine e.CallGraph> :
+    = <Map &OptTree-AutoMarkup-GetMetatables e.AST > : e.ExtractedMetaTables
+    = <Map &OptTree-AutoMarkup-GetFuncs e.AST > : e.ExtractedFuncs
+    = <Log-PutLine 'Fuctions: ' e.ExtractedFuncs> :
+    = <Log-PutLine 'MetaTables: ' e.ExtractedMetaTables> :
     = e.AST;
 }
 
+OptTree-AutoMarkup-GetMetatables {
+  (Function s.ScopeClass (e.Name) Metatable e.Metatable)
+    = <Map &OptTree-AutoMarkup-ExtractFunctionCallsFromMetatable e.Metatable> : e.FunctionCalls
+    = (e.Name (<Unique e.FunctionCalls>));
 
-OptTree-AutoMarkup-ProcessFunc {
+  e.Smth 
+    = ;
+}
+
+OptTree-AutoMarkup-GetFuncs {
   (Function s.ScopeClass (e.Name) Sentences e.Body)
-    = <Map &OptTree-AutoMarkup-ExtractNamesFromBody e.Body> : e.FunctionCalls
+    = <Map &OptTree-AutoMarkup-ExtractFunctionCallsFromSentencesBody e.Body> : e.FunctionCalls
     = <Unique e.FunctionCalls> : e.UniqueFunctionCalls
     = (Func e.Name (s.ScopeClass) Children (e.UniqueFunctionCalls)) ;
 
@@ -35,9 +45,14 @@ OptTree-AutoMarkup-ProcessFunc {
     = ;
 }
 
+OptTree-AutoMarkup-ExtractFunctionCallsFromMetatable {
+  ((Symbol Identifier e.Ident) (Symbol Name e.Name))
+    = (e.Name);
+}
 
 
-OptTree-AutoMarkup-ExtractNamesFromBody {
+
+OptTree-AutoMarkup-ExtractFunctionCallsFromSentencesBody {
   ((e.Pattern) e.Conditions (e.Result))
     = <OptTree-AutoMarkup-ExtractExpressionName e.Pattern> : e.PatternNames
     = <Map
