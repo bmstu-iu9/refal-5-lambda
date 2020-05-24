@@ -120,19 +120,19 @@ command:_
 
     chmod +x *.sh scripts/load-config.sh bin/sr{efc,make}
 
-On Windows platform the first `bootstrap.bat` start will inevitably lead to
-error. It should be so: `bootstrap.bat` script will make configuration
-`c-plus-plus.conf.bat` file and suggest writing of command line of C++ compiler
-used by you in it (it already has some ready commented lines, you should use
+On the Windows platform the first `bootstrap.bat` start will inevitably lead to 
+an error. It should be so: `bootstrap.bat` script will make configuration
+`c-plus-plus.conf.bat` file and suggest writing the command-line C++ compiler
+you use in it (it already has some ready commented lines, you should use
 one of them if your compiler is mentioned there). The second start is to put
-all together.
+everything together.
 
 Note. _On unix-like platforms (Linux, macOS)  bootstrap.sh also makes
 configured c-plus-plus.conf.sh file, but GCC C++ call is already written in
-it automatically. If you want, you can change it on, for example, Clang._
+it automatically. If you want, you can change it to, for example, Clang._
 
 The content of this “half-compiled” archive is available as an archive on
-GitHub on the address <https://github.com/bmstu-iu9/simple-refal-distrib>.
+GitHub at <https://github.com/bmstu-iu9/simple-refal-distrib>.
 It is possible to clone it using command
 
     git clone https://github.com/bmstu-iu9/simple-refal-distrib
@@ -152,24 +152,24 @@ It is enough to have any C++98 compiler for expanding. Distribution was tested
 on BCC 5.5, Microsoft Visual C++ of different versions, GCC C++, Clang,
 OpenWatcom.  Supported operational systems: Windows XP and newer, GNU+Linux
 (distributives not older than 5 years), macOS ( I don’t know certain versions —
-they were not tested by me). Supported processors architectures are x386 and
-amd64 (work on big endian machines is not supported in current version).
+they were not tested by me). Supported processor architectures are x386 and
+amd64 (work on big endian machines is not supported in the current version).
 
-**It is important!** Source codes from GitHub must be downloaded only by
+**It is important!** Source codes from GitHub should only be downloaded only by
 cloning. Website interface allows to download files as zip-archive, but
 `bootstrap.***`  will not work in unpacked archive. `bootstrap.***` script in
 `refal-5-lambda` repository considers that repository is connected to the folder
 `distrib` as sub-module and it can be initialized with `git submodule init` and
-`git submodule update` commands. In downloaded archive `distrib` folder will
-stay empty, which means that it will be impossible to bootstrap from the
-sources. Probably, it will be corrected in the next versions.
+`git submodule update` commands. In the downloaded archive `distrib` folder will
+remain empty, which means that it will be impossible to bootstrap from the
+sources. This may be fixed in future versions.
 
 ### Text editors configuring
 
 There are configuration files in distributive, which imply syntax highlighting
 for different text editors. If you installed REFAL on Windows, using
 automatic setup («setup.exe»), a folder with configuration files are accessed
-through the Start menu: “Refal-5 lambda” → “Plugins for text editors”. In all
+from the Start menu: “Refal-5 lambda” → “Plugins for text editors”. In all
 other cases (half-compiled archive, cloned repositories) files of texts
 editors configuration are available in `editors` subfolder.
 
@@ -186,8 +186,8 @@ errors and autocompletion, it is available at the following link:
 
 However, it doesn’t support assignments, conditions and blocks.
 
-There is a support of classical REFAL-5 for SciTE text editor, it is available
-on the link <http://www.refal.net/~belous/refscite.htm>.
+There is a support for the classic text editor REFAL-5 for SciTE, it is available
+at the link <http://www.refal.net/~belous/refscite.htm>.
 
 ### Simple program compilation
 
@@ -203,10 +203,10 @@ with this file and write the following command:
     rlc hello.ref
 
 In the folder files `hello.rasl` and `hello.exe` should appear (on unix-like
-systems it will be named just `hello` without extension, but they will have `+x`
-flag – executable mark). `Hello.rasl` file – a transient file with interpretive
-code, is not useful itself (it is made and used in compilation) and can be
-deleted.
+systems it will be called simply `hello` without an extension, but they will have
+the `+x` flag – an executable mark). `Hello.rasl` file – a transitional file with 
+interpretive code, is not useful itself (it is made and used in compilation) and 
+can be deleted.
 
 The `hello.exe` file-is an already compiled program. On Windows it is set the
 following way:
