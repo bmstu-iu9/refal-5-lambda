@@ -379,6 +379,9 @@ SpecCall {
 
     , <IsTrivialSubstitutions e.StaticMatches> : False
 
+    /* Проверяем, выполняется ли отношение Хигмана-Крускала для текущей сигнатуры и одной из предыдущих */
+    , <HasHigmanKruskalRelation (e.Signature) e.Signatures> : False
+
     = <SpecCall-Aux
         (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures (e.Argument)
         (e.Signature) (e.StaticMatches) (e.DynamicMatches) (e.Calls)
@@ -901,4 +904,183 @@ MapGenericMatches {
       >
     : ((e.ArgStaticMatches) (e.ResultMatches))
     = e.ResultMatches;
+}
+
+/*
+  Функции, относящиеся к проверке отношения Хигмана-Крускала
+*/
+
+/**
+  <HasHigmanKruskalRelation (e.Signature) e.Signatures> == True e.InstanceName | False
+
+  Функция проверяет, выполняется ли отношение Хигмана-Крускала для одной из сигнатур в
+  e.Signatures и сигнатуры e.Signature, то есть проверяется, можно ли вложить одну сигнатуру в другую,
+  удалив некоторые элементы.
+  В случае, если в истории сигнатур удаётся найти сигнатуру, для которой выполняется указанное отношение,
+  функция возвращает True и соответствующий e.InstanceName. В ином случае возвращается False.
+*/
+HasHigmanKruskalRelation {
+  (e.Signature) e.Signatures
+
+    /*
+      Находим в истории сигнатур ещё не проверенную сигнатуру, поиск начинаем с конца.
+      Скобки с Checked добавляются, чтобы данный образец работал для первого вызова функции.
+    */
+    , e.Signatures (Checked (/*пусто*/) (/*пусто*/))
+    : e.Signatures-B ((e.NextInstanceName) e.NextSignature)
+      (Checked (e.InstanceName) e.CheckedSignature) e.Signature-E
+
+    /* Проверяем для пары сигнатур отношение Хигмана-Крускала */
+    , <CheckSignaturesPairForRelation (e.Signature) e.NextSignature> : True
+
+    /* Если для этой пары сигнатур отношение выполнилось, возвращаем True и e.InstanceName */
+    = True e.NextInstanceName;
+
+  /*
+    Если попали сюда, то :
+    1) либо для текущей сигнатуры из истории отношение не выполнилось, это значит,
+    что надо пометить текущую сигнатуру как Checked и перейти к следующей,
+    2) либо все сигнатуры из истории уже проверены и надо вернуть False.
+  */
+  /* Проверяем 1) */
+  (e.Signature) e.Signatures
+
+    , e.Signatures (Checked (/*пусто*/) (/*пусто*/))
+    : e.Signatures-B ((e.NextInstanceName) e.NextSignature)
+      (Checked (e.InstanceName) e.CheckedSignature) e.Signature-E
+
+    /* Указываем Checked для сигнатуры и выполняем рекурсию */
+    = e.Signatures-B (Checked (e.NextInstanceName) e.NextSignature)
+      (Checked (e.InstanceName) e.CheckedSignature) e.Signature-E
+    : e.Signatures^
+
+    = <HasHigmanKruskalRelation (e.Signature) e.Signatures>;
+
+  /* Получили ситуацию 2), возвращаем False */
+  (e.Signature) e.Signatures
+    = False;
+}
+
+/**
+  <CheckSignaturesPairForRelation (e.CurrentSignature) e.HistorySignature> == True | False
+
+  Проверяет выполнение отношения Хигмана-Крускала для двух сигнатур.
+  Возвращает True, если отношение выполняется, и False в ином случае.
+*/
+CheckSignaturesPairForRelation {
+  (e.CurrentSignature) e.HistorySignature
+    /* Запускаем рекурсивный процесс */
+    = <DoCheckSignaturesPairForRelation (1) (e.CurrentSignature) e.HistorySignature>;
+}
+
+/* Одна итерация функции CheckSignaturesPairForRelation */
+DoCheckSignaturesPairForRelation {
+  (s.ElemNumber) (e.CurrentSignature) e.HistorySignature
+
+    /* Проверяем, равны ли сигнатуры с точностью до переименования переменных в текущей сигнатуре */
+    , <EqSignatures (e.CurrentSignature) e.HistorySignature> : True
+
+    = True;
+
+  (s.ElemNumber) (e.CurrentSignature) e.HistorySignature
+
+    /* Удаляем элемент, который при проходе по элементам текущей сигнатуры попадётся под номером s.ElemNumber */
+    = <DeleteElemWithNumber (s.ElemNumber) e.CurrentSignature> :
+      {
+        True e.SignatureWithDelElem
+          /* Выполняем рекурсию с сигнатурой с удалённым элементом */
+          , <DoCheckSignaturesPairForRelation (s.ElemNumber) (e.SignatureWithDelElem) e.HistorySignature>
+          : True
+          = True;
+
+        True e.SignatureWithDelElem
+          /* Не удаляем текущий элемент и переходим к следующему */
+          = <DoCheckSignaturesPairForRelation (<Inc s.ElemNumber>) (e.CurrentSignature) e.HistorySignature>;
+
+        e.Expr = False;
+      }
+}
+
+/**
+  <EqSignatures (e.CurrentSignature) e.HistorySignature> == True | False
+
+  Проверяет, равны ли сигнатуры с точностью до переименования переменных в текущей сигнатуре.
+*/
+EqSignatures {
+  (e.CurrentSignature) e.HistorySignature
+
+    /* Выполняем переименование переменных в текущей сигнатуре */
+    = <RenameSignatureVars e.CurrentSignature> : e.CurrentSignature^
+
+    /* Проверяем, равны ли сигнатуры */
+    = e.CurrentSignature
+    : {
+        e.HistorySignature = True;
+        e.OtherSignature = False;
+      }
+}
+
+/**
+  <DeleteElemWithNumber (s.ElemNumber) e.Signature> == True e.Signature^ | False e.Signature^
+
+  Удаляет из сигнатуры элемент, который при проходе через сигнатуру попадётся под указанным номером.
+  Первым параметром возвращает True или False в зависимости от того, удалось ли
+  удалить элемент с указанным номером.
+  Если не удалось (значение False), то элемента с таким номером нет.
+*/
+DeleteElemWithNumber {
+  (s.ElemNumber) e.Signature
+    = False : s.Changed
+    = 1 : s.CurNumber
+    = <MapAccum
+        {
+          (s.ElemNumber^ s.CurNumber^ s.Changed^) (e.SignaturePart)
+            = <DeleteElemWithNumber-Expr (s.ElemNumber s.CurNumber s.Changed) e.SignaturePart>
+            : (s.ElemNumber^ s.CurNumber^ s.Changed^) e.SignaturePart^
+            = (s.ElemNumber s.CurNumber s.Changed) (e.SignaturePart);
+        }
+        (s.ElemNumber s.CurNumber s.Changed)
+        e.Signature
+      >
+    : (s.ElemNumber^ s.CurNumber^ s.Changed^) e.Signature^
+    = s.Changed e.Signature;
+}
+
+DeleteElemWithNumber-Expr {
+  t.State e.Expr
+    = <MapAccum &DeleteElemWithNumber-Term t.State e.Expr>;
+}
+
+DeleteElemWithNumber-Term {
+  /* Если s.Changed == True, ничего не делаем, так как нужный элемент уже был удалён */
+  (s.ElemNumber s.CurNumber s.Changed) e.Expr
+    , s.Changed : True
+    = (s.ElemNumber s.CurNumber s.Changed) e.Expr;
+
+  (s.ElemNumber s.CurNumber s.Changed) (TkVariable s.Mode e.Index)
+    , <Compare s.ElemNumber s.CurNumber> : '0'
+    = True : s.Changed^
+    = (s.ElemNumber <Inc s.CurNumber> s.Changed);
+
+  (s.ElemNumber s.CurNumber s.Changed) (s.BracketsTag e.Expr)
+    , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
+    , <Compare s.ElemNumber s.CurNumber> : '0'
+    = True : s.Changed^
+    = (s.ElemNumber <Inc s.CurNumber> s.Changed) e.Expr;
+
+  (s.ElemNumber s.CurNumber s.Changed) (s.BracketsTag e.Expr)
+    , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
+    = <DeleteElemWithNumber-Expr (s.ElemNumber <Inc s.CurNumber> s.Changed) e.Expr> : (s.ElemNumber^ s.CurNumber^ s.Changed^) e.Expr^
+    = (s.ElemNumber s.CurNumber s.Changed) (s.BracketsTag e.Expr);
+
+  (s.ElemNumber s.CurNumber s.Changed) (ADT-Brackets (e.Name) e.Expr)
+    , <Compare s.ElemNumber s.CurNumber> : '0'
+    = True : s.Changed^
+    = (s.ElemNumber <Inc s.CurNumber> s.Changed) e.Expr;
+
+  (s.ElemNumber s.CurNumber s.Changed) (ADT-Brackets (e.Name) e.Expr)
+    = <DeleteElemWithNumber-Expr (s.ElemNumber <Inc s.CurNumber>  s.Changed) e.Expr> : (s.ElemNumber^ s.CurNumber^ s.Changed^) e.Expr^
+    = (s.ElemNumber s.CurNumber s.Changed) (ADT-Brackets e.Expr);
+
+  t.State e.Expr = t.State e.Expr;
 }
