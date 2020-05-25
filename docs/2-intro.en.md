@@ -69,8 +69,8 @@ further, they are expressed with nested functions. These and other kinds of
 “sugar” will be told about later.
 
 Thirdly, the actual implementation of Refal-5λ is not locked unlike many other
-REFAL implementations. It means that  the programmer is not constrained by some
-“embedded” language functions, embedded interface with C++ language allows
+REFAL implementations. It means that  the programmer is not limited to certain
+built-in language functions, embedded interface with C++ language allows
 the programmer to implement and use functionality in their programs on
 Refal, that absent in the standard library – work with networks, with databases,
 windows interface and so on. As well as C/C++ languages allow you to insert 
@@ -91,7 +91,7 @@ webpage
 
 <https://github.com/bmstu-iu9/refal-5-lambda/releases/latest>
 
-and just start it up. In this way  it is archived with Refal's executable and 
+and just start it up. In this way the archive will be unpacked with Refal executable and 
 library modules in the user profile (into folder `%APPDATA%`), the path to the catalog 
 will be written to the `PATH` variable for the current user. In order to delete Refal
 from your computer it is possible either to use “Refal-5-lambda” →
@@ -185,7 +185,7 @@ errors and autocompletion, it is available at the following link:
 
 <https://github.com/bmstu-iu9/RefalFiveLambdaPlugin>
 
-There is a support for the classic text editor REFAL-5 for SciTE, it is available
+There is classical REFAL-5 support for SciTE text editor, it is available
 at the link <http://www.refal.net/~belous/refscite.htm>.
 
 ### Simple program compilation
