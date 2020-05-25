@@ -68,19 +68,19 @@ Refal-5λ syntax sugar is assignments and blocks, and, as it will be seen
 further, they are expressed with nested functions. These and other kinds of
 “sugar” will be told about later.
 
-Thirdly, the actual implementation of Refal-5λ is not locked in contrast to a lot
-of other REFAL implementations. It means that  programmer is not constrained
-with some “embedded” language functions, embedded interface with C++ language
-allows the programmer to implement and use functionality in their programs on
-Refal, that absent in standard library – work with networks, with databases,
-windows interface and so on. As well as C/C++ languages allow using
-code insertion on assembler, Refal-5λ allows code insertions on C++ in source
-texts on REFAL (e.g. native insertions). Surely, C++ compiler is essential for
-compilation of such programs, but if you do not use native insertions,
-compiler C++ might not be installed.
+Thirdly, the actual implementation of Refal-5λ is not locked unlike many other
+REFAL implementations. It means that  the programmer is not limited to certain
+built-in language functions, embedded interface with C++ language allows
+the programmer to implement and use functionality in their programs on
+Refal, that absent in the standard library – work with networks, with databases,
+windows interface and so on. As well as C/C++ languages allow you to insert 
+assembly code, Refal-5λ allows you  to insert C++ code into  REFAL source texts
+(e.g. native insertions). Surely, C++ compiler is necessary to compile such
+programs, but if you do not use native insertions, compiler C++ might not be
+installed.
 
-The actual implementation can compile the programs both in intermediate
-interpretive code and in code on C++.
+The actual implementation can compile programs in both intermediate interpretive
+code and C++ code.
 
 ## Installation and startup
 
@@ -91,11 +91,11 @@ webpage
 
 <https://github.com/bmstu-iu9/refal-5-lambda/releases/latest>
 
-and just start it up. In this way archive with executable and library Refal
-modules in user profile (into folder `%APPDATA%`), the way to the catalog will
-be written into `PATH` variable for the current user. In order to delete Refal
+and just start it up. In this way the archive will be unpacked with Refal executable and 
+library modules in the user profile (into folder `%APPDATA%`), the path to the catalog 
+will be written to the `PATH` variable for the current user. In order to delete Refal
 from your computer it is possible either to use “Refal-5-lambda” →
-“UninstallRefal-5-lambda” shortcut in Start menu or using “Control panel” →
+“Uninstall Refal-5-lambda” shortcut in Start menu or using “Control panel” →
 “Programs and components” or “Parameters” → “Applications” → “Apps & features”
 depending on Windows OS version.
 
@@ -109,35 +109,36 @@ catalog from the same page
 <https://github.com/bmstu-iu9/refal-5-lambda/releases/latest>.
 
 In the archive there are Refal-5λ, compiled into code on C++ and glue
-interpretive code. In order to get ready executable modules from it is
-essential to have an installed C++98 compiler on a computer. It is enough to
-download `bootstrap.bat` file on Windows or `bootstrap.sh` on Linux or macOS –
+interpretive code. In order to get ready executable modules from it, you must
+have an installed C++98 compiler on a computer. It is enough to download
+`bootstrap.bat` file in Windows or `bootstrap.sh` in Linux or macOS –
 after distribution there will be new executable files in the bin subfolder.
 
-Note. _After archive distribution the attribute `+x` in the executable files
-can be cleared. For its annealing it is required to implement the following
+Note. _After the archive is distributed, the `+x` attribute in the executable 
+files can be cleared. For its annealing it is required to implement the following
 command:_
 
     chmod +x *.sh scripts/load-config.sh bin/sr{efc,make}
 
-On Windows platform the first `bootstrap.bat` start will inevitably lead to
-error. It should be so: `bootstrap.bat` script will make configuration
-`c-plus-plus.conf.bat` file and suggest writing of command line of C++ compiler
-used by you in it (it already has some ready commented lines, you should use
+On the Windows platform the first `bootstrap.bat` start will inevitably lead to 
+an error. It should be so: `bootstrap.bat` script will make configuration
+`c-plus-plus.conf.bat` file and suggest writing the command-line C++ compiler
+you use in it (it already has some ready commented lines, you should use
 one of them if your compiler is mentioned there). The second start is to put
-all together.
+everything together.
 
 Note. _On unix-like platforms (Linux, macOS)  bootstrap.sh also makes
-configured c-plus-plus.conf.sh file, but GCC C++ call is already written in
-it automatically. If you want, you can change it on, for example, Clang._
+
+configured `c-plus-plus.conf.sh` file, but GCC C++ call is already written in
+it by default. If you want, you can change it to, for example, Clang._
 
 The content of this “half-compiled” archive is available as an archive on
-GitHub on the address <https://github.com/bmstu-iu9/simple-refal-distrib>.
+GitHub at <https://github.com/bmstu-iu9/simple-refal-distrib>.
 It is possible to clone it using command
 
     git clone https://github.com/bmstu-iu9/simple-refal-distrib
 
-and further unwind it using procedure that was described earlier.
+and further deploy it using procedure that was described earlier.
 
 ### Building from sources
 
@@ -152,42 +153,40 @@ It is enough to have any C++98 compiler for expanding. Distribution was tested
 on BCC 5.5, Microsoft Visual C++ of different versions, GCC C++, Clang,
 OpenWatcom.  Supported operational systems: Windows XP and newer, GNU+Linux
 (distributives not older than 5 years), macOS ( I don’t know certain versions —
-they were not tested by me). Supported processors architectures are x386 and
-amd64 (work on big endian machines is not supported in current version).
+they were not tested by me). Supported processor architectures are x386 and
+amd64 (work on big endian machines is not supported in the current version).
 
-**It is important!** Source codes from GitHub must be downloaded only by
+**It is important!** Source codes from GitHub should only be downloaded only by
 cloning. Website interface allows to download files as zip-archive, but
 `bootstrap.***`  will not work in unpacked archive. `bootstrap.***` script in
 `refal-5-lambda` repository considers that repository is connected to the folder
 `distrib` as sub-module and it can be initialized with `git submodule init` and
-`git submodule update` commands. In downloaded archive `distrib` folder will
-stay empty, which means that it will be impossible to bootstrap from the
-sources. Probably, it will be corrected in the next versions.
+`git submodule update` commands. In the downloaded archive `distrib` folder will
+remain empty, which means that it will be impossible to bootstrap from the
+sources. This may be fixed in future versions.
 
 ### Text editors configuring
 
 There are configuration files in distributive, which imply syntax highlighting
 for different text editors. If you installed REFAL on Windows, using
 automatic setup («setup.exe»), a folder with configuration files are accessed
-through the Start menu: “Refal-5 lambda” → “Plugins for text editors”. In all
+from the Start menu: “Refal-5 lambda” → “Plugins for text editors”. In all
 other cases (half-compiled archive, cloned repositories) files of texts
 editors configuration are available in `editors` subfolder.
 
-At the moment highlighting is fully supported for Refal-5λ and expanded
+At the moment highlighting is fully supported for Refal-5λ and extended
 Simple Refal for Vim editors and implanted in Far (Far Colorer plugin). For
 some other text editors (Code::Blocks, Kate, Notepad++, SublimeText 3) only
-colouring of expanded Simple Refal syntax is supported, and, probably, only for
+colouring of extended Simple Refal syntax is supported, and, probably, only for
 non-actual version.
 
-For Simple Refal there is a plugin for IDEA, that provides colouring of syntax
+For Refal-5λ there is a plugin for IDEA, that provides colouring of syntax
 errors and autocompletion, it is available at the following link:
 
-<https://github.com/bmstu-iu9/simple-refal-plugin>
+<https://github.com/bmstu-iu9/RefalFiveLambdaPlugin>
 
-However, it doesn’t support assignments, conditions and blocks.
-
-There is a support of classical REFAL-5 for SciTE text editor, it is available
-on the link <http://www.refal.net/~belous/refscite.htm>.
+There is classical REFAL-5 support for SciTE text editor, it is available
+at the link <http://www.refal.net/~belous/refscite.htm>.
 
 ### Simple program compilation
 
@@ -202,14 +201,11 @@ with this file and write the following command:
 
     rlc hello.ref
 
-In the folder files `hello.rasl` and `hello.exe` should appear (on unix-like
-systems it will be named just `hello` without extension, but they will have `+x`
-flag – executable mark). `Hello.rasl` file – a transient file with interpretive
-code, is not useful itself (it is made and used in compilation) and can be
-deleted.
+In the folder file `hello.exe` should appear (on unix-like systems it will
+be called simply `hello` without extension, but they will have the `+x` flag – an
+executable mark).
 
-The `hello.exe` file-is an already compiled program. On Windows it is set the
-following way:
+On Windows it can be run as following way:
 
     hello.exe
 
@@ -218,11 +214,6 @@ On unix-like the following way:
     ./hello
 
 In both cases it will print the line `Hello, World!`
-
-Appendix. _In Refal-5λ distribution from the sources compiled programs print
-out plenty of diagnostic information in the end. In other words, after Hello,
-World!  phrase the number of steps, spent time (in details) and amount of used
-memory will be printed. It should be so._
 
 It will be said about the meaning of written in `hello.ref` file in the next
 [chapter](3-basics.en.md).
