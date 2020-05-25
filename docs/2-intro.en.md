@@ -95,7 +95,7 @@ and just start it up. In this way  it is archived with Refal's executable and
 library modules in the user profile (into folder `%APPDATA%`), the path to the catalog 
 will be written to the `PATH` variable for the current user. In order to delete Refal
 from your computer it is possible either to use “Refal-5-lambda” →
-“UninstallRefal-5-lambda” shortcut in Start menu or using “Control panel” →
+“Uninstall Refal-5-lambda” shortcut in Start menu or using “Control panel” →
 “Programs and components” or “Parameters” → “Applications” → “Apps & features”
 depending on Windows OS version.
 
@@ -128,8 +128,9 @@ one of them if your compiler is mentioned there). The second start is to put
 everything together.
 
 Note. _On unix-like platforms (Linux, macOS)  bootstrap.sh also makes
-configured c-plus-plus.conf.sh file, but GCC C++ call is already written in
-it automatically. If you want, you can change it to, for example, Clang._
+
+configured `c-plus-plus.conf.sh` file, but GCC C++ call is already written in
+it by default. If you want, you can change it to, for example, Clang._
 
 The content of this “half-compiled” archive is available as an archive on
 GitHub at <https://github.com/bmstu-iu9/simple-refal-distrib>.
@@ -137,7 +138,7 @@ It is possible to clone it using command
 
     git clone https://github.com/bmstu-iu9/simple-refal-distrib
 
-and further unwind it using procedure that was described earlier.
+and further deploy it using procedure that was described earlier.
 
 ### Building from sources
 
@@ -173,18 +174,16 @@ from the Start menu: “Refal-5 lambda” → “Plugins for text editors”. In
 other cases (half-compiled archive, cloned repositories) files of texts
 editors configuration are available in `editors` subfolder.
 
-At the moment highlighting is fully supported for Refal-5λ and expanded
+At the moment highlighting is fully supported for Refal-5λ and extended
 Simple Refal for Vim editors and implanted in Far (Far Colorer plugin). For
 some other text editors (Code::Blocks, Kate, Notepad++, SublimeText 3) only
-colouring of expanded Simple Refal syntax is supported, and, probably, only for
+colouring of extended Simple Refal syntax is supported, and, probably, only for
 non-actual version.
 
-For Simple Refal there is a plugin for IDEA, that provides colouring of syntax
+For Refal-5λ there is a plugin for IDEA, that provides colouring of syntax
 errors and autocompletion, it is available at the following link:
 
-<https://github.com/bmstu-iu9/simple-refal-plugin>
-
-However, it doesn’t support assignments, conditions and blocks.
+<https://github.com/bmstu-iu9/RefalFiveLambdaPlugin>
 
 There is a support for the classic text editor REFAL-5 for SciTE, it is available
 at the link <http://www.refal.net/~belous/refscite.htm>.
@@ -202,14 +201,11 @@ with this file and write the following command:
 
     rlc hello.ref
 
-In the folder files `hello.rasl` and `hello.exe` should appear (on unix-like
-systems it will be called simply `hello` without an extension, but they will have
-the `+x` flag – an executable mark). `Hello.rasl` file – a transitional file with 
-interpretive code, is not useful itself (it is made and used in compilation) and 
-can be deleted.
+In the folder file `hello.exe` should appear (on unix-like systems it will
+be called simply `hello` without extension, but they will have the `+x` flag – an
+executable mark).
 
-The `hello.exe` file-is an already compiled program. On Windows it is set the
-following way:
+On Windows it can be run as following way:
 
     hello.exe
 
@@ -218,11 +214,6 @@ On unix-like the following way:
     ./hello
 
 In both cases it will print the line `Hello, World!`
-
-Appendix. _In Refal-5λ distribution from the sources compiled programs print
-out plenty of diagnostic information in the end. In other words, after Hello,
-World!  phrase the number of steps, spent time (in details) and amount of used
-memory will be printed. It should be so._
 
 It will be said about the meaning of written in `hello.ref` file in the next
 [chapter](3-basics.en.md).
