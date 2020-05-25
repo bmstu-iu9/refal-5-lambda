@@ -19,7 +19,7 @@ $INCLUDE "LibraryEx";
     TkComma, TkColon, TkAssign, TkSemicolon ~ пусто
     TkExtern, TkEntry, TkEnum, TkEEnum, TkSwap,
     TkESwap, TkInclude, TkInline, TkDrive,
-    TkSpec, TkMeta ~ пусто
+    TkSpec, TkMeta, TkIntrinsic ~ пусто
     TkScopeId ~ пусто
     TkLabel ~ пусто
     TkEOF ~ пусто
@@ -274,6 +274,7 @@ DoScan-BuildKeyword {
       (TkScopeId '$SCOPEID') (TkLabel '$LABEL')
       (TkInline '$INLINE') (TkDrive '$DRIVE')
       (TkSpec '$SPEC') (TkMeta '$META')
+      (TkIntrinsic '$INTRINSIC')
     : e.Keywords-B (s.Tag e.KeywordChars) e.Keywords-E
     = (s.Tag t.Pos)
       <DoScan <IncCol t.Pos Len e.KeywordChars> (e.Line) e.Lines>;

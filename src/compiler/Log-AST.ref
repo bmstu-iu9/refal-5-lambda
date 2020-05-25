@@ -38,6 +38,8 @@ Element {
 
   (Drive e.Name) = ('$DRIVE ' <DisplayName e.Name> ';');
 
+  (Intrinsic e.Name) = ('$INTRINSIC' <DisplayName e.Name> ';');
+
   (Ident e.Name) = ('$LABEL ' <DisplayName e.Name> ';');
 
   (NativeBlock t.SrcPos e.Code) = ('%% native block %%');

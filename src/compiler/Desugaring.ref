@@ -180,6 +180,10 @@ Pass-AttachEntries {
     = (s.DriveInline e.Name)
       <Pass-AttachEntries e.Items>;
 
+  (Intrinsic s.ScopeClass e.Name) e.Items
+    = (Intrinsic e.Name)
+        <Pass-AttachEntries e.Items>;
+
   (Ident e.Name) e.Items = (Ident e.Name) <Pass-AttachEntries e.Items>;
 
   (NativeBlock t.SrcPos e.Code) e.Items
@@ -901,6 +905,9 @@ Pass-CleanupRedudandExterns {
 
          (e.DefinedFunctions) (Drive e.Name)
            = (e.DefinedFunctions (e.Name)) (Drive e.Name);
+           
+         (e.DefinedFunctions) (Intrinsic e.Name)
+           = (e.DefinedFunctions (e.Name)) (Intrinsic e.Name);
 
          (e.DefinedFunctions) (Declaration s.ScopeClass e.Name)
            = (e.DefinedFunctions) (Declaration s.ScopeClass e.Name);

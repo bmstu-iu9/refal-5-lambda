@@ -91,7 +91,7 @@ UnitStartToken {
 }
 
 NameListTags {
-  = TkExtern TkEnum TkEEnum TkSwap TkESwap TkLabel TkInline TkDrive TkMeta
+  = TkExtern TkEnum TkEEnum TkSwap TkESwap TkLabel TkInline TkDrive TkMeta TkIntrinsic
 }
 
 OneOf {
@@ -215,6 +215,10 @@ TkDrive {
 
 TkMeta {
   t.Pos e.Name = (Meta t.Pos GN-Local e.Name)
+}
+
+TkIntrinsic {
+  t.Pos e.Name = (Intrinsic t.Pos GN-Local e.Name)
 }
 
 NameList-DoNames {
@@ -995,6 +999,7 @@ TokName {
   TkLabel = '$LABEL';
   TkInline = '$INLINE';
   TkDrive = '$DRIVE';
+  TkIntrinsic = '$INTRINSIC';
   TkEOF = 'end-of-file';
   TkRefal5Mode = '*$CLASSIC or *$EXTENDED';
   TkAmpersand = '\'&\'';
