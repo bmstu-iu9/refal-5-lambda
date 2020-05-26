@@ -14,7 +14,7 @@ $ENTRY Desugar {
       <Pipe
         &Pass-RemovePos
         &Pass-AttachEntries
-        &Pass-RemoveRedundantDriveInline
+        &Pass-RemoveRedundantDriveInlineIntrinsic
         &Pass-EnumerateVariables
         &Pass-NameNestedFuncs
         &Pass-RemoveBlocksAndAssigns
