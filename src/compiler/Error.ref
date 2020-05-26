@@ -161,9 +161,9 @@ SetsEq {
 
 PrintWarningsAsErrorsMessage {
   (e.FileName) All
-    = <Prout e.FileName ': all warnings being treated as errors'>;
+    = <PrintErr e.FileName ': all warnings being treated as errors'>;
   (e.FileName) Some
-    = <Prout e.FileName ': some warnings being treated as errors'>;
+    = <PrintErr e.FileName ': some warnings being treated as errors'>;
 
   (e.FileName) None = /* пусто */
 }
