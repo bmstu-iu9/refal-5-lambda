@@ -195,7 +195,7 @@ Pass-AttachEntries {
   /* empty */ = /* empty */;
 }
 
-Pass-RemoveRedundantDriveInline {
+Pass-RemoveRedundantDriveInlineIntrinsic {
   e.AST
     = <MapAccum
         {
@@ -206,12 +206,19 @@ Pass-RemoveRedundantDriveInline {
           (e.Labels-B (e.Name s.KnownLabel) e.Labels-E) (Inline e.Name)
             = (e.Labels-B (e.Name s.KnownLabel) e.Labels-E)
               (Inline e.Name);
+            
+          (e.Labels-B (e.Name s.KnownLabel) e.Labels-E) (Intrinsic e.Name)
+            = (e.Labels-B (e.Name s.KnownLabel) e.Labels-E)
+              (Intrinsic e.Name);
 
           (e.Labels) (Drive e.Name)
             = (e.Labels (e.Name Drive)) (Drive e.Name);
 
           (e.Labels) (Inline e.Name)
             = (e.Labels (e.Name Inline)) (Inline e.Name);
+
+          (e.Labels) (Intrinsic e.Name)
+            = (e.Labels (e.Name Intrinsic)) (Intrinsic e.Name);
 
           (e.Labels) t.Other = (e.Labels) t.Other;
         }
@@ -227,8 +234,15 @@ Pass-RemoveRedundantDriveInline {
           (e.Labels-B (e.Name Drive) e.Labels-E) (Inline e.Name)
             = (e.Labels-B (e.Name Drive) e.Labels-E) /* пропускаем */;
 
+          (e.Labels-B (e.Name Drive) e.Labels-E) (Intrinsic e.Name)
+            = (e.Labels-B (e.Name Drive) e.Labels-E) /* пропускаем */;
+          
+          (e.Labels-B (e.Name Inline) e.Labels-E) (Intrinsic e.Name)
+            = (e.Labels-B (e.Name Inline) e.Labels-E) /* пропускаем */;
+
           (e.Labels^) (Drive e.Name) = (e.Labels) /* пропускаем */;
           (e.Labels^) (Inline e.Name) = (e.Labels) /* пропускаем */;
+          (e.Labels^) (Intrinsic e.Name) = (e.Labels) /* пропускаем */;
 
           (e.Labels^) t.Other = (e.Labels) t.Other;
         }
