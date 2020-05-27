@@ -12,6 +12,9 @@ $EXTERN RemovePos-Expr;
 *$FROM TreeUtils
 $EXTERN ExtractVariables-Expr;
 
+*$FROM Checker-Screening
+$EXTERN CheckScreening;
+
 $ENTRY CheckProgram {
   (e.WarningIds) t.ErrorList e.AST
     = <Reduce
@@ -87,6 +90,10 @@ PrepareMessage {
   SpecStaticParamRepeatingVars (s.Mode e.Index) e.FnName
     = 'Repeating variables match static parameter ' s.Mode '.' e.Index
       ' in specialization of function ' e.FnName;
+
+  Screening (e.FunName) (e.Screening) (e.Screened)
+    = 'Function `' e.FunName '\': sentence ' e.Screening
+      ' screens sentence ' e.Screened
 }
 
 FindErrors {
@@ -97,7 +104,8 @@ FindErrors {
       <CheckValidUsings
         (<CheckDeclarations (e.WarningIds) e.Declarations>)
         <Map &CheckFunctionBody e.FunctionBodies>
-      >;
+      >
+      <CheckScreening (e.WarningIds) (e.AST)>;
 }
 
 CheckSpecs {

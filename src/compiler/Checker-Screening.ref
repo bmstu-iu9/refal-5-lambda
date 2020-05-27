@@ -1,0 +1,289 @@
+$INCLUDE "LibraryEx";
+
+*$FROM Error
+$EXTERN PrintErr;
+
+*$FROM GenericMatch
+$EXTERN GenericMatch;
+
+*$FROM Desugaring
+$EXTERN RemovePos-Expr;
+
+/*
+  CheckScreening выводит стандартизированные сообщения об экранировании.
+*/
+$ENTRY CheckScreening {
+ (e._ screening e._) (e.AST)
+   = <FindFunctionsInAST e.AST> : e.Functions
+   = <Map &CheckFunction e.Functions>;
+
+ (e._) (e.AST) = /* пусто */
+}
+
+/*
+  FindFunctionsInAST находит обычные функции в AST-дереве.
+*/
+FindFunctionsInAST {
+  e.AST
+    = <Map
+        {
+          (Function t.SrcPos s.ScopeClass (e.Name) Sentences e.Sentences)
+            = (Function t.SrcPos s.ScopeClass (e.Name) Sentences e.Sentences);
+
+          (e._) = /* пусто */
+        }
+        e.AST
+      >
+}
+
+/*
+  MakePairs создает "декартовы" пары для дальнейшей попарной проверки
+  алгоритмом обобщенного сравнивания.
+
+  Считаем, что предложение с условием не экранирует,
+  но может экранироваться само.
+*/
+MakePairs {
+  t.NumberedSentence e.Tail
+    = <Map
+        {
+          t.NumberedSentenceTail = (t.NumberedSentenceTail t.NumberedSentence);
+        }
+        e.Tail
+      >
+      <MakePairs e.Tail>;
+
+  /* пусто */ = /* пусто */;
+}
+
+/*
+  <Enumerate t.Item*>
+    == (t.Item-1 1) (t.Item-2 2) ... (t.Item-N N)
+*/
+Enumerate {
+  e.Items
+    = <MapAccum
+        {
+          s.Count t.Item = <Inc s.Count> (t.Item s.Count);
+        }
+        1 e.Items
+      >
+    : s._ e.NumberedItems = e.NumberedItems
+}
+
+CheckFunction {
+  (Function t.SrcPos s.ScopeClass (e.Name) Sentences e.Sentences)
+    = <CheckSentences t.SrcPos (e.Name) () (e.Sentences)>;
+}
+
+CheckSentences {
+  t.SrcPos (e.FuncName) (e.Prefix) (e.Sentences)
+    = <Enumerate e.Sentences> : e.NumberedSentences
+    = <MakePairs e.NumberedSentences> : e.NumberedSentencesPairs
+    = <FilterConditions e.NumberedSentencesPairs> : e.NumberedSentencesPairs^
+    = <CheckPatternPairs t.SrcPos (e.FuncName) (e.Prefix) (e.NumberedSentencesPairs)>
+      <DelAccumulator
+        <MapAccum
+          {
+            s.Num t.Sentence
+              = <Inc s.Num>
+                <CheckSentenceAssignsAndConditions
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix '$' <Symb s.Num>)
+                  t.Sentence
+                >
+                <CheckSentenceResult
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix '$' <Symb s.Num>)
+                  t.Sentence
+                >
+                <CheckSentenceBlocks
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix '$' <Symb s.Num>)
+                  t.Sentence
+                >
+          }
+          1 e.Sentences
+        >
+      >
+}
+
+CheckBlocks {
+  t.SrcPos (e.FuncName) (e.Prefix) (e.Blocks)
+    = <DelAccumulator
+        <MapAccum
+          {
+            s.Num (Sentences e.Sentences)
+              = <Inc s.Num>
+                <CheckSentences
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix ':' <Symb s.Num>)
+                  (e.Sentences)
+                >;
+
+            s.Num t.OtherBlock = s.Num /* пусто */;
+          }
+          1 e.Blocks
+        >
+      >;
+}
+
+CheckSentenceBlocks {
+  t.SrcPos (e.FuncName) (e.Prefix) ((e._) e._ (e._) (e.Blocks))
+    = <CheckBlocks t.SrcPos (e.FuncName) (e.Prefix) (e.Blocks)>;
+}
+
+CheckSentenceAssignsAndConditions {
+  t.SrcPos (e.FuncName) (e.Prefix) ((e._) e.AssignsOrConditions (e._) (e._))
+    = <DelAccumulator
+        <MapAccum
+          {
+            s.Num (s.AssignOrCondition (e.Result) (e.Blocks) (e.Pattern))
+              = <Inc s.Num>
+                <CheckExpression
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix '=' <Symb s.Num>)
+                  (e.Pattern)
+                >
+                <CheckBlocks
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix '=' <Symb s.Num>)
+                  (e.Blocks)
+                >
+                <CheckExpression
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix '=' <Symb s.Num>)
+                  (e.Result)
+                >;
+
+            s.Num t.Other = s.Num /* пусто */;
+          }
+          1 e.AssignsOrConditions
+        >
+      >;
+}
+
+CheckSentenceResult {
+  t.SrcPos (e.FuncName) (e.Prefix) ((e._) e._ (e.Result) (e._))
+    = <CheckExpression t.SrcPos (e.FuncName) (e.Prefix) (e.Result)>
+}
+
+CheckSentencePattern {
+  t.SrcPos (e.FuncName) (e.Prefix) ((e.Pattern) e._ (e._) (e._))
+    = <CheckExpression t.SrcPos (e.FuncName) (e.Prefix) (e.Pattern)>
+}
+
+CheckExpression {
+  t.SrcPos (e.FuncName) (e.Prefix) (e.Expression)
+    = <DelAccumulator
+        <MapAccum
+          {
+            s.Num (Brackets e.Expression)
+              = <CheckExpression
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix)
+                  (e.Expression)
+                >;
+            s.Num (ADT-Brackets t._ (e._) e.Expression)
+              = <CheckExpression
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix)
+                  (e.Expression)
+                >;
+            s.Num (CallBrackets e.Expression)
+              = <CheckExpression
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix)
+                  (e.Expression)
+                >;
+            s.Num (Closure Sentences e.Sentences)
+              = <Inc s.Num>
+                <CheckSentences
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix '\\' <Symb s.Num>)
+                  (e.Sentences)
+                >;
+
+            s.Num t.Other = s.Num /* пусто */
+          }
+          1 e.Expression
+        >
+      >
+}
+
+CheckPatternPairs {
+  t.SrcPos (e.FuncName) (e.Prefix) (e.Pairs)
+    = <Map
+      {
+        (
+          (((e.Pattern-L) e._ (e._) (e._)) s.Num-L)
+          (((e.Pattern-R) e._ (e._) (e._)) s.Num-R)
+        )
+          = <GenericMatch
+              (<RemovePos-Expr e.Pattern-L>)
+              (<RemovePos-Expr e.Pattern-R>)
+            >
+          : {
+            e._
+              , (e.Pattern-L) (e.Pattern-R)
+              : () ()
+              = <CreateScreeningWarning
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix '$' <Symb s.Num-R>)
+                  (e.Prefix '$' <Symb s.Num-L>)
+                >;
+            Clear e._
+              = <CreateScreeningWarning
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix '$' <Symb s.Num-R>)
+                  (e.Prefix '$' <Symb s.Num-L>)
+                >;
+
+            e._ = /* пусто */;
+          };
+      }
+      e.Pairs
+    >;
+
+  /* пусто */ = /* пусто */;
+}
+
+
+FilterConditions {
+  e.NumberedSentencesPairs
+    = <Map
+        {
+          (t.NumberedSentence-L (((e._) (Condition e.Cond) e._) s._))
+            = /* пусто */;
+
+          t.OtherPair = t.OtherPair;
+        }
+        e.NumberedSentencesPairs
+      >;
+}
+
+CreateScreeningWarning {
+  t.SrcPos (e.FunName) (e.Screening) (e.Screened)
+    = (Warning
+        screening
+        t.SrcPos
+        Screening
+        (e.FunName)
+        (e.Screening)
+        (e.Screened)
+      )
+}
+
