@@ -185,26 +185,29 @@ CheckExpression {
     = <DelAccumulator
         <MapAccum
           {
-            s.Num (Brackets e.Expression)
-              = <CheckExpression
+            s.Num (Brackets e.Expr)
+              = s.Num
+                <CheckExpression
                   t.SrcPos
                   (e.FuncName)
                   (e.Prefix)
-                  (e.Expression)
+                  (e.Expr)
                 >;
-            s.Num (ADT-Brackets t._ (e._) e.Expression)
-              = <CheckExpression
+            s.Num (ADT-Brackets t._ (e._) e.Expr)
+              = s.Num
+                <CheckExpression
                   t.SrcPos
                   (e.FuncName)
                   (e.Prefix)
-                  (e.Expression)
+                  (e.Expr)
                 >;
-            s.Num (CallBrackets e.Expression)
-              = <CheckExpression
+            s.Num (CallBrackets e.Expr)
+              = s.Num
+                <CheckExpression
                   t.SrcPos
                   (e.FuncName)
                   (e.Prefix)
-                  (e.Expression)
+                  (e.Expr)
                 >;
             s.Num (Closure Sentences e.Sentences)
               = <Inc s.Num>
