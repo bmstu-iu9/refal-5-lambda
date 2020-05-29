@@ -1,0 +1,11 @@
+* NO-WARNINGS
+
+$ENTRY Go {
+  = <RepeatedVarsTest 'A'>
+}
+
+RepeatedVarsTest {
+   s.X = True;
+   s.X^ = False;
+}
+

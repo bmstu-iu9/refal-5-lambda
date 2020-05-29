@@ -1,0 +1,11 @@
+* WARNING screening
+
+$ENTRY Go {
+  = <BracketsInPatternTest 'b'>
+}
+
+BracketsInPatternTest {
+  ((s.X))
+    = ({'a' = a; s.X = s; 'b' = b}) : True
+    = True;
+}

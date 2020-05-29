@@ -1,0 +1,10 @@
+* WARNING screening
+
+$ENTRY Go {
+  = <BracketsInPatternTest 'b'>
+}
+
+BracketsInPatternTest {
+  ((s.X)) = True;
+  (('a')) = False;
+}
