@@ -12,9 +12,6 @@ $EXTERN Log-PutLine;
 *$FROM DisplayName
 $EXTERN DisplayName;
 
-*$FROM GlobalGen
-$EXTERN GlobalGen;
-
 /**
   <OptTree-Spec-Prepare s.OptSpec e.AST> == e.AST^
 
