@@ -52,6 +52,13 @@ run_test_all_modes() {
   SRFLAGS=-OdR $2 $1
   SRFLAGS=-OdPR $2 $1
 
+  if grep 'NO-WARNINGS' $1 > /dev/null; then
+    echo "Pass special warning tests:"
+    SRFLAGS_PLUS="$SRFLAGS_PLUS_INIT"
+    SRFLAGS="-Wall -Werror" $2 $1
+    echo "Special warning tests passed"
+  fi
+
   if grep 'CONDITIONS' $1 > /dev/null; then
     echo "Pass special conditions tests:"
     SRFLAGS_PLUS="$SRFLAGS_PLUS_INIT"

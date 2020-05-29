@@ -127,6 +127,15 @@ setlocal
   set SRFLAGS=-OdPR
   call :%2 %1 || exit /b 1
 
+  find "NO-WARNINGS" %1 > NUL
+  if not errorlevel 1 (
+    echo Pass special warning tests:
+    set SRFLAGS_PLUS=%SRFLAGS_PLUS_INIT%
+    set SRFLAGS=-Wall -Werror
+    call :%2 %1 || exit /b 1
+    echo Special warning tests passed
+  )
+
   find "CONDITIONS" %1 > NUL
   if not errorlevel 1 (
     echo Pass special conditions tests:
