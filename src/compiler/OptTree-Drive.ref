@@ -146,23 +146,22 @@ SetNames-Reject {
 OptSwitch {
   OptDrive = Drive;
   OptInline = Inline;
+  OptIntrinsic = Intrinsic;
+  NoOpt = None
 }
 
 /* Осуществляет прогонку или оптимизацию в зависимости от ключа */
 
 DriveInlineOptimizerTick {
-  /* TODO: грязный костыль, ничего не делаем, если s.OptDrive == NoOpt */
-  (e.OptInfo) e.AST NoOpt s.OptIntrinsic = (DriveInfo e.OptInfo) e.AST;
-
   t.OptInfo e.AST s.OptDrive s.OptIntrinsic
-    = <OptSwitch s.OptDrive> : s.Mode
+    = (<OptSwitch s.OptDrive> <OptSwitch s.OptIntrinsic>) : t.Mode
     = <MapAccum
         {
           t.OptInfo^ (Function s.ScopeClass (e.Name) Sentences e.Sentences)
             = <OptFunction
                 (Function s.ScopeClass (e.Name) Sentences e.Sentences)
                 t.OptInfo
-                s.Mode
+                t.Mode
               >;
 
           t.OptInfo^ t.Other = t.OptInfo t.Other
@@ -273,11 +272,11 @@ IsLexpr-Aux {
 
 OptFunction {
   (Function s.ScopeClass (e.Name) Sentences e.Sentences)
-  t.OptInfo s.Mode
+  t.OptInfo t.Mode
     = <Reduce
         {
           (t.OptInfo^ (e.SntAcc) (e.FunAcc)) t.Sentence
-            = <OptSentence t.Sentence t.OptInfo s.Mode>
+            = <OptSentence t.Sentence t.OptInfo t.Mode>
             : t.OptInfo^ (e.NewFunctions) e.NewSentences
             = (t.OptInfo (e.SntAcc e.NewSentences) (e.FunAcc e.NewFunctions));
         }
@@ -296,23 +295,23 @@ OptFunction {
 
 OptSentence {
   /* Оптимизируем только предложения вида Pat = Res */
-  ((e.Left) (e.Right)) ((e.OptFuncNames) e.OptFuncs) s.Mode
+  ((e.Left) (e.Right)) ((e.OptFuncNames) e.OptFuncs) t.Mode
      = <FindOptimizedCall (e.OptFuncNames) e.Right>
      : {
          (e.OptFuncNames^ None) e.Right^
            = ((e.OptFuncNames) e.OptFuncs) () ((e.Left) (e.Right));
 
          (e.OptFuncNames^ t.Call) e.Right^
-           = <OptSentence-Aux s.Mode ((e.Left) (e.Right)) t.Call e.OptFuncs>
+           = <OptSentence-Aux t.Mode ((e.Left) (e.Right)) t.Call e.OptFuncs>
            : (e.OptFuncs^) (e.NewFunctions) e.NewSentences
            = ((e.OptFuncNames) e.OptFuncs) (e.NewFunctions) e.NewSentences
        };
 
-  t.Sentence t.OptInfo s.Mode = t.OptInfo () t.Sentence
+  t.Sentence t.OptInfo t.Mode = t.OptInfo () t.Sentence
 }
 
 OptSentence-Aux {
-  s.Mode
+  t.Mode
   ((e.Left) (e.Right))
   (CallBrackets (Symbol Name e.Name) e.Args)
   e.OptFuncs
@@ -321,7 +320,7 @@ OptSentence-Aux {
     = <FindOptInfo e.OptFuncs (e.Name)> : e.OptFuncs^ t.FunctionForDrive
 
     = <OptSentence-MakeSubstitutions
-        s.Mode ((e.Left) (e.Right)) (e.Args) t.FunctionForDrive
+        t.Mode ((e.Left) (e.Right)) (e.Args) t.FunctionForDrive
       >
     : e.SolutionPacks
 
@@ -337,8 +336,16 @@ OptSentence-Aux {
       >;
 }
 
+/* 
+  <OptSentence-MakeSubstitutions
+    t.Mode (e.OriginSentence) (e.CallArgs) t.OptFunction
+  >
+    == (e.SolutionsPack)*
+  e.SolutionsPack ::= (e.ReplacedExpr) t.Solution* (e.NewFunctions)
+  t.Solution ::= (e.Contractions) (e.Assignments)
+*/
 OptSentence-MakeSubstitutions {
-  s.Mode
+  t.Mode
   ((e.Left) (e.Expr)) (e.Args)
   t.Function
 
@@ -347,26 +354,31 @@ OptSentence-MakeSubstitutions {
 
     = <MakeColdSolution t.Function e.Args>;
 
-  s.Mode
+  (s.DriveMode s.IntrinsicMode)
   ((e.Left) (e.Expr)) (e.Args)
   (s.FuncMode s.ScopeClass (e.Name) Sentences e.Body)
+    , <OneOf s.DriveMode Drive Inline> : True
 
     /* Если левая часть не L-выражение, допускаем только встраивание */
     = <IsLexpr e.Left>
     : {
-        True = s.Mode;
+        True = s.DriveMode;
         False = Inline;
       }
-    : s.Mode^
+    : s.DriveMode^
 
     = <ExtractVariables ((e.Left) (e.Expr))> : e.SentenceVars
-    = <DecreaseMode s.Mode s.FuncMode> : s.Mode^
+    = <DecreaseMode s.DriveMode s.FuncMode> : s.DriveMode^
 
     = <DoOptSentence-MakeSubstitutions
-        s.Mode (e.SentenceVars) (e.Args)
+      s.DriveMode (e.SentenceVars) (e.Args)
         (/* substitutions */)
         (Function s.ScopeClass (e.Name) Sentences e.Body)
       >;
+  t.Mode
+  ((e.Left) (e.Expr)) (e.Args)
+  t.Function
+    = <MakeColdSolution t.Function e.Args>;
 }
 
 MakeColdSolution {
