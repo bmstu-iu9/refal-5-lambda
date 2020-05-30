@@ -12,6 +12,9 @@ $EXTERN Log-PutLine;
 *$FROM DisplayName
 $EXTERN DisplayName;
 
+*$FROM GlobalGen
+$EXTERN GlobalGen;
+
 /**
   <OptTree-Spec-Prepare s.OptSpec e.AST> == e.AST^
 
@@ -460,6 +463,23 @@ SpecCall {
     , <GenericMatch-Wrapper (e.Argument) (e.SpecPattern)>
     : Clear (e.StaticMatches) (e.DynamicMatches)
 
+    = <SpecCall-Matches
+        (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
+        (e.Argument) (e.StaticMatches) (e.DynamicMatches) (e.History)
+      >;
+
+  (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
+  (e.Argument) (e.History)
+    = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
+      (CallBrackets (Symbol Name e.Name) e.Argument)
+      /* no new functions */
+      (/* no new history */);
+}
+
+SpecCall-Matches {
+  (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
+  (e.Argument) (e.StaticMatches) (e.DynamicMatches) (e.History)
+
     , <ExtractCalls e.StaticMatches> : (e.Calls) e.StaticMatches^
 
     , <PrepareSignature e.StaticMatches (e.SpecPattern)> : e.Signature
@@ -474,7 +494,7 @@ SpecCall {
       >;
 
   (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
-  (e.Argument) (e.History)
+  (e.Argument) (e.StaticMatches) (e.DynamicMatches) (e.History)
     = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
       (CallBrackets (Symbol Name e.Name) e.Argument)
       /* no new functions */
@@ -503,49 +523,108 @@ SpecCall-Aux {
 
         NotFound
 
-          , <HasHigmanKruskalRelation
+          = <HasHigmanKruskalRelation
               (e.Name) (<RemoveSignatureVarsNames e.Signature>) e.History
             >
-          : False
-
-          = <PrepareSpecializedFuncBody
-              (e.SpecPattern) (e.StaticMatches) e.Body
-            >
-          : e.SpecializedFuncBody
-
-          , <IsSoundBody e.SpecializedFuncBody>
           : {
-              True
-                = <AddSuffix e.Name ('@' s.NextNumber)> : e.InstanceName
-                = (
-                    (e.SpecPattern) (e.Body) <Inc s.NextNumber>
-                    e.Signatures ((e.InstanceName) e.Signature)
-                  )
-                  (CallBrackets
-                    (Symbol Name e.InstanceName) e.SpecializedFuncArgument
-                  )
-                  (Function
-                    GN-Local (e.InstanceName) Sentences e.SpecializedFuncBody
-                  )
-                  (
-                    (
-                      (e.InstanceName) e.History
-                      ((e.InstanceName) e.Signature)
-                    )
-                  );
+              True e.RelationInstanceName
+
+                , e.History
+                : e.History-B ((e.RelationInstanceName) e.HistorySignature)
+                  e.History-E
+
+                /* Получаем обобщение двух сигнатур */
+                , <GetSignaturesGeneralization
+                    (e.Signature) e.HistorySignature
+                  >
+                : e.GenSignature
+
+                /* Находим имеющиеся в аргументе переменные */
+                , <ExtractVariables-Expr e.Argument> : e.ArgumentVars
+
+                /*
+                  Присваиваем переменным в сигнатуре имена,
+                  отличные от имён переменных в аргументе e.Argument
+                */
+                , <NameSignatureVars (e.ArgumentVars) e.GenSignature>
+                : e.GenStaticMatches
+
+                /* Получаем переменные из e.SpecPattern */
+                , <ExtractVariables-Expr e.SpecPattern> : e.SpecPatternVars
+                /*
+                  Частям обобщённой сигнатуры приписываем
+                  имена статических переменных
+                */
+                , <GetSignaturesGeneralizationMatches
+                    (e.SpecPatternVars) e.GenStaticMatches
+                  >
+                : e.GenStaticMatches^
+
+                /* Формируем e.RealSubst через GenericMatch */
+                , <GetRealSubst (e.StaticMatches) (e.GenStaticMatches)>
+                : e.RealSubst
+
+                /* Для e.GenStaticMatches вызываем SpecCall-Matches */
+                , <SpecCall-Matches
+                    (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
+                    (e.Argument) (e.GenStaticMatches)
+                    (e.DynamicMatches) (e.History)
+                  >
+                : ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
+                  t.NewCall
+                  e.NewFunc
+                  (e.NewHistory)
+
+                /* К новому вызову применяем подстановку*/
+                , <ApplySubst-Expr (e.RealSubst) t.NewCall> : t.NewCall^
+
+                = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
+                  t.NewCall
+                  e.NewFunc
+                  (e.NewHistory);
 
               False
+                = <PrepareSpecializedFuncBody
+                    (e.SpecPattern) (e.StaticMatches) e.Body
+                  >
+                : e.SpecializedFuncBody
+
+                , <IsSoundBody e.SpecializedFuncBody>
+                : {
+                    True
+                      = <AddSuffix e.Name ('@' s.NextNumber)> : e.InstanceName
+                      = (
+                          (e.SpecPattern) (e.Body) <Inc s.NextNumber>
+                          e.Signatures ((e.InstanceName) e.Signature)
+                        )
+                        (CallBrackets
+                          (Symbol Name e.InstanceName)
+                          e.SpecializedFuncArgument
+                        )
+                        (Function
+                          GN-Local (e.InstanceName)
+                          Sentences e.SpecializedFuncBody
+                        )
+                        (
+                          (
+                            (e.InstanceName) e.History
+                            ((e.InstanceName) e.Signature)
+                          )
+                        );
+
+                    False
+                      = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
+                        (CallBrackets (Symbol Name e.Name) e.Argument)
+                        /* no new functions */
+                        (/* no new history */);
+                  };
+
+              e.Other
                 = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
                   (CallBrackets (Symbol Name e.Name) e.Argument)
                   /* no new functions */
                   (/* no new history */);
             };
-
-        e.Other
-          = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
-          (CallBrackets (Symbol Name e.Name) e.Argument)
-          /* no new functions */
-          (/* no new history */);
       };
 }
 
@@ -1042,7 +1121,9 @@ HasHigmanKruskalRelation {
             >
           : {
               True = True e.InstanceName;
-              False = <HasHigmanKruskalRelation (e.Name) (e.Signature) e.History>;
+              False = <HasHigmanKruskalRelation
+                        (e.Name) (e.Signature) e.History
+                      >;
             };
 
         e.OtherName
@@ -1283,4 +1364,108 @@ RemoveSignatureVarsNames-Term {
     = (ADT-Brackets (e.Name) e.Expr);
 
   t.OtherTerm = t.OtherTerm;
+}
+
+/*
+  Назначает имена переменным в сигнатуре,
+  отличные от тех, что есть в e.KnownVars.
+*/
+NameSignatureVars {
+  (e.KnownVars) e.Signature
+    = 0 : s.NextId
+    = <MapAccum
+        {
+          (s.NextId^ (e.KnownVars^)) (e.SignaturePart)
+            = <NameSignatureVars-Expr (s.NextId (e.KnownVars)) e.SignaturePart>
+            : (s.NextId^ (e.KnownVars^)) e.SignaturePart^
+            = (s.NextId (e.KnownVars)) (e.SignaturePart);
+        }
+        (s.NextId (e.KnownVars))
+        e.Signature
+      >
+    : (s.NextId^ (e.KnownVars^)) e.Signature^
+    = e.Signature;
+}
+
+NameSignatureVars-Expr {
+  t.State e.Expr = <MapAccum &NameSignatureVars-Term t.State e.Expr>;
+}
+
+NameSignatureVars-Term {
+  (s.NextId (e.KnownVars)) (TkVariable s.Mode)
+    = <NewVarName (e.KnownVars) 'X' <Symb s.NextId>> : (e.KnownVars^) e.Index
+    = (<Inc s.NextId> (e.KnownVars))
+      (TkVariable s.Mode e.Index);
+
+  t.State (s.BracketsTag e.Expr)
+    , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
+    = <NameSignatureVars-Expr t.State e.Expr> : t.State^ e.Expr^
+    = t.State (s.BracketsTag e.Expr);
+
+  t.State (ADT-Brackets (e.Name) e.Expr)
+    = <NameSignatureVars-Expr t.State e.Expr> : t.State^ e.Expr^
+    = t.State (ADT-Brackets (e.Name) e.Expr);
+
+  t.State t.OtherTerm = t.State t.OtherTerm;
+}
+
+/*
+  Получает обобщённую сигнатуру для двух сигнатур.
+  Перебирает статические переменные сигнатур по очереди.
+*/
+GetSignaturesGeneralization {
+  (t.Sig1-StaticVarPart e.Sig1-Rest) t.Sig2-StaticVarPart e.Sig2-Rest
+    = (<GlobalGen t.Sig1-StaticVarPart t.Sig2-StaticVarPart>)
+      <GetSignaturesGeneralization (e.Sig1-Rest) e.Sig2-Rest>;
+
+  (/* пусто */) /* пусто */
+    = /* пусто */;
+}
+
+/*
+  Возвращает соответствия между статическими переменными и
+  частями обобщённой сигнатуры
+*/
+GetSignaturesGeneralizationMatches {
+  (t.Var e.Vars) (e.GenSignature-First) e.GenSignature-E
+    = <IsSpecStaticVar t.Var>
+    : {
+        True
+          , t.Var : (e.VarInner)
+          = (e.GenSignature-First ':' (TkVariable e.VarInner))
+            <GetSignaturesGeneralizationMatches
+              (e.Vars) e.GenSignature-E
+            >;
+
+        False
+          = <GetSignaturesGeneralizationMatches
+              (e.Vars) (e.GenSignature-First) e.GenSignature-E
+            >;
+      };
+
+  e.OtherExpr
+    = /* пусто */;
+}
+
+GetRealSubst {
+  (e.StaticMatches-B (e.Val1 ':' (TkVariable e.Var)) e.StaticMatches-E)
+  (e.GenStaticMatches-B (e.Val2 ':' (TkVariable e.Var)) e.StaticMatches-E)
+    = <GenericMatch (e.Val1) (e.Val2)>
+    : {
+        Clear e.Expr
+          = e.Expr
+            <GetRealSubst
+              (e.StaticMatches-B e.StaticMatches-E)
+              (e.GenStaticMatches-B e.StaticMatches-E)
+            >;
+
+        e.Other
+          = <GetRealSubst
+              (e.StaticMatches-B e.StaticMatches-E)
+              (e.GenStaticMatches-B e.StaticMatches-E)
+            >;
+      };
+
+  e.OtherExpr
+    = /* пусто */;
 }
