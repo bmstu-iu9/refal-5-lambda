@@ -1,4 +1,4 @@
-* NO-WARNINGS
+* WARNING screening
 
 $ENTRY Go {
   = <Eq 'A' 'B'>
@@ -8,7 +8,7 @@ Eq {
   t.X t.Y
     , t.X
     : {
-        t.Y = True;
-        t.Y^ = False;
+        t.Y^ = True;
+        t.Y = False;
       }
 }

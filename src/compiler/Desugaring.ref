@@ -33,7 +33,7 @@ $ENTRY Desugar {
     >;
 }
 
-Pass-RemovePos {
+$ENTRY Pass-RemovePos {
   e.AST
     = <Map
         {
@@ -235,7 +235,7 @@ Pass-RemoveRedundantDriveInline {
     = e.AST;
 }
 
-Pass-EnumerateVariables {
+$ENTRY Pass-EnumerateVariables {
   e.AST =
     <Map
       {

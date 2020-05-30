@@ -7,33 +7,41 @@ $EXTERN PrintErr;
 $EXTERN GenericMatch;
 
 *$FROM Desugaring
-$EXTERN RemovePos-Expr;
+$EXTERN CreateContext, RemovePos-Expr, ExtractVariables-Expr,
+        Pass-EnumerateVariables, Pass-RemovePos;
 
 /*
   CheckScreening выводит стандартизированные сообщения об экранировании.
 */
 $ENTRY CheckScreening {
  (e._ screening e._) (e.AST)
-   = <FindFunctionsInAST e.AST> : e.Functions
-   = <Map &CheckFunction e.Functions>;
+   = <FindFunctionsPosInAST e.AST> : (e.FunctionsPos) e.AST^
+   = <Pass-RemovePos e.AST> : e.AST^
+   = <Pass-EnumerateVariables e.AST> : e.AST^
+   = <Zip (e.AST) (e.FunctionsPos)> : e.FunctionsWithPos
+   = <Map &CheckFunction e.FunctionsWithPos>;
 
  (e._) (e.AST) = /* пусто */
 }
 
-/*
-  FindFunctionsInAST находит обычные функции в AST-дереве.
-*/
-FindFunctionsInAST {
-  e.AST
-    = <Map
-        {
-          (Function t.SrcPos s.ScopeClass (e.Name) Sentences e.Sentences)
-            = (Function t.SrcPos s.ScopeClass (e.Name) Sentences e.Sentences);
+Zip {
+  (t.L e.L) (t.R e.R) = (t.L t.R) <Zip (e.L) (e.R)>;
+  () () = /* пусто */;
+}
 
-          (e._) = /* пусто */
+FindFunctionsPosInAST {
+  e.AST
+    = <MapAccum
+        {
+          (e.Positions)
+          (Function t.SrcPos s.ScopeClass (e.Name) Sentences e.Sentences)
+            = (e.Positions t.SrcPos)
+             (Function t.SrcPos s.ScopeClass (e.Name) Sentences e.Sentences);
+
+          (e.Positions) t.Other = (e.Positions) /* пусто */
         }
-        e.AST
-      >
+        () e.AST
+      >;
 }
 
 /*
@@ -72,38 +80,57 @@ Enumerate {
 }
 
 CheckFunction {
-  (Function t.SrcPos s.ScopeClass (e.Name) Sentences e.Sentences)
-    = <CheckSentences t.SrcPos (e.Name) () (e.Sentences)>;
+  ((Function s.ScopeClass (e.Name) Sentences e.Sentences) t.SrcPos)
+    = <CheckSentences t.SrcPos (e.Name) () () (e.Sentences)>
 }
 
 CheckSentences {
-  t.SrcPos (e.FuncName) (e.Prefix) (e.Sentences)
+  t.SrcPos (e.FuncName) (e.Prefix) (e.ContextVars) (e.Sentences)
     = <Enumerate e.Sentences> : e.NumberedSentences
     = <MakePairs e.NumberedSentences> : e.NumberedSentencesPairs
     = <FilterConditions e.NumberedSentencesPairs> : e.NumberedSentencesPairs^
-    = <CheckPatternPairs t.SrcPos (e.FuncName) (e.Prefix) (e.NumberedSentencesPairs)>
+    = <CheckPatternPairs
+        t.SrcPos
+        (e.FuncName)
+        (e.Prefix)
+        (e.ContextVars)
+        (e.NumberedSentencesPairs)
+      >
       <DelAccumulator
         <MapAccum
           {
-            s.Num t.Sentence
+            s.Num ((e.Pattern) e.AssignsOrConds (e.Result) (e.Blocks))
+              = e.Prefix '$' <Symb s.Num> : e.Prefix^
+              = e.ContextVars e.Pattern : e.ContextVars^
+              = <Map
+                  {
+                    (s.AssignOrCond (e.Result^) (e.Blocks^) (e.Pattern^))
+                      = e.Pattern;
+                  }
+                  e.AssignsOrConds
+                >
+              : e.ContextAllAssignsOrConds
               = <Inc s.Num>
                 <CheckSentenceAssignsAndConditions
                   t.SrcPos
                   (e.FuncName)
-                  (e.Prefix '$' <Symb s.Num>)
-                  t.Sentence
+                  (e.Prefix)
+                  (e.ContextVars)
+                  ((e.Pattern) e.AssignsOrConds (e.Result) (e.Blocks))
                 >
                 <CheckSentenceResult
                   t.SrcPos
                   (e.FuncName)
-                  (e.Prefix '$' <Symb s.Num>)
-                  t.Sentence
+                  (e.Prefix)
+                  (e.ContextVars e.ContextAllAssignsOrConds)
+                  ((e.Pattern) e.AssignsOrConds (e.Result) (e.Blocks))
                 >
                 <CheckSentenceBlocks
                   t.SrcPos
                   (e.FuncName)
-                  (e.Prefix '$' <Symb s.Num>)
-                  t.Sentence
+                  (e.Prefix)
+                  (e.ContextVars e.ContextAllAssignsOrConds)
+                  ((e.Pattern) e.AssignsOrConds (e.Result) (e.Blocks))
                 >
           }
           1 e.Sentences
@@ -111,8 +138,23 @@ CheckSentences {
       >
 }
 
+CheckSentenceBlocks {
+  t.SrcPos
+  (e.FuncName)
+  (e.Prefix)
+  (e.ContextVars)
+  ((e.SentencePattern) e._ (e._) (e.Blocks))
+    = <CheckBlocks
+        t.SrcPos
+        (e.FuncName)
+        (e.Prefix)
+        (e.ContextVars)
+        (e.Blocks)
+      >;
+}
+
 CheckBlocks {
-  t.SrcPos (e.FuncName) (e.Prefix) (e.Blocks)
+  t.SrcPos (e.FuncName) (e.Prefix) (e.ContextVars) (e.Blocks)
     = <DelAccumulator
         <MapAccum
           {
@@ -122,6 +164,7 @@ CheckBlocks {
                   t.SrcPos
                   (e.FuncName)
                   (e.Prefix ':' <Symb s.Num>)
+                  (e.ContextVars)
                   (e.Sentences)
                 >;
 
@@ -132,56 +175,72 @@ CheckBlocks {
       >;
 }
 
-CheckSentenceBlocks {
-  t.SrcPos (e.FuncName) (e.Prefix) ((e._) e._ (e._) (e.Blocks))
-    = <CheckBlocks t.SrcPos (e.FuncName) (e.Prefix) (e.Blocks)>;
-}
 
 CheckSentenceAssignsAndConditions {
-  t.SrcPos (e.FuncName) (e.Prefix) ((e._) e.AssignsOrConditions (e._) (e._))
+  t.SrcPos
+  (e.FuncName)
+  (e.Prefix)
+  (e.ContextVars)
+  ((e._) e.AssignsOrConditions (e._) (e._))
     = <DelAccumulator
         <MapAccum
           {
-            s.Num (s.AssignOrCondition (e.Result) (e.Blocks) (e.Pattern))
-              = <Inc s.Num>
-                <CheckExpression
-                  t.SrcPos
-                  (e.FuncName)
-                  (e.Prefix '=' <Symb s.Num>)
-                  (e.Pattern)
-                >
+            (s.Num e.ContextVars^)
+            (s.AssignOrCondition (e.Result) (e.Blocks) (e.Pattern))
+              , s.AssignOrCondition
+              : {
+                  Assign = '=';
+                  Condition = '?'
+                }
+              : s.AssignOrCondition^
+              = e.Prefix s.AssignOrCondition <Symb s.Num> : e.Prefix^
+              = (<Inc s.Num> e.ContextVars e.Pattern)
                 <CheckBlocks
                   t.SrcPos
                   (e.FuncName)
-                  (e.Prefix '=' <Symb s.Num>)
+                  (e.Prefix)
+                  (e.ContextVars)
                   (e.Blocks)
                 >
                 <CheckExpression
                   t.SrcPos
                   (e.FuncName)
-                  (e.Prefix '=' <Symb s.Num>)
+                  (e.Prefix)
+                  (e.ContextVars)
                   (e.Result)
                 >;
 
-            s.Num t.Other = s.Num /* пусто */;
+            (s.Num e.ContextVars^) t.Other = (s.Num e.ContextVars) /* пусто */;
           }
-          1 e.AssignsOrConditions
+          (1 e.ContextVars) e.AssignsOrConditions
         >
       >;
 }
 
 CheckSentenceResult {
-  t.SrcPos (e.FuncName) (e.Prefix) ((e._) e._ (e.Result) (e._))
-    = <CheckExpression t.SrcPos (e.FuncName) (e.Prefix) (e.Result)>
+  t.SrcPos (e.FuncName) (e.Prefix) (e.ContextVars) ((e._) e._ (e.Result) (e._))
+    = <CheckExpression
+        t.SrcPos
+        (e.FuncName)
+        (e.Prefix)
+        (e.ContextVars)
+        (e.Result)
+      >
 }
 
 CheckSentencePattern {
-  t.SrcPos (e.FuncName) (e.Prefix) ((e.Pattern) e._ (e._) (e._))
-    = <CheckExpression t.SrcPos (e.FuncName) (e.Prefix) (e.Pattern)>
+  t.SrcPos (e.FuncName) (e.Prefix) (e.ContextVars) ((e.Pattern) e._ (e._) (e._))
+    = <CheckExpression
+        t.SrcPos
+        (e.FuncName)
+        (e.Prefix)
+        (e.ContextVars)
+        (e.Pattern)
+      >
 }
 
 CheckExpression {
-  t.SrcPos (e.FuncName) (e.Prefix) (e.Expression)
+  t.SrcPos (e.FuncName) (e.Prefix) (e.ContextVars) (e.Expression)
     = <DelAccumulator
         <MapAccum
           {
@@ -191,6 +250,7 @@ CheckExpression {
                   t.SrcPos
                   (e.FuncName)
                   (e.Prefix)
+                  (e.ContextVars)
                   (e.Expr)
                 >;
             s.Num (ADT-Brackets t._ (e._) e.Expr)
@@ -199,6 +259,7 @@ CheckExpression {
                   t.SrcPos
                   (e.FuncName)
                   (e.Prefix)
+                  (e.ContextVars)
                   (e.Expr)
                 >;
             s.Num (CallBrackets e.Expr)
@@ -207,6 +268,7 @@ CheckExpression {
                   t.SrcPos
                   (e.FuncName)
                   (e.Prefix)
+                  (e.ContextVars)
                   (e.Expr)
                 >;
             s.Num (Closure Sentences e.Sentences)
@@ -215,6 +277,7 @@ CheckExpression {
                   t.SrcPos
                   (e.FuncName)
                   (e.Prefix '\\' <Symb s.Num>)
+                  (e.ContextVars)
                   (e.Sentences)
                 >;
 
@@ -226,16 +289,18 @@ CheckExpression {
 }
 
 CheckPatternPairs {
-  t.SrcPos (e.FuncName) (e.Prefix) (e.Pairs)
+  t.SrcPos (e.FuncName) (e.Prefix) (e.ContextVars) (e.Pairs)
     = <Map
       {
         (
           (((e.Pattern-L) e._ (e._) (e._)) s.Num-L)
           (((e.Pattern-R) e._ (e._) (e._)) s.Num-R)
         )
+          = <Unique <ExtractVariables-Expr e.ContextVars>> : e.ContextVars^
+          = <CreateContext NoMarkupContext e.ContextVars> : e.ContextVars^
           = <GenericMatch
-              (<RemovePos-Expr e.Pattern-L>)
-              (<RemovePos-Expr e.Pattern-R>)
+              (e.ContextVars e.Pattern-L)
+              (e.ContextVars e.Pattern-R)
             >
           : {
             e._

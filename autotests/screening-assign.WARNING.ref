@@ -1,11 +1,15 @@
 * WARNING screening
 
 $ENTRY Go {
-  = <BracketsInPatternTest 'b'>
+  = <Test>
 }
 
-BracketsInPatternTest {
-  ((s.X))
-    = ({'a' = a; s.X = s; 'b' = b}) : True
-    = True;
+Test {
+  /* empty */
+    = {
+        e.Var = 1;
+        'I am screened' = 2;
+      }
+    : e.Var
+    = e.Var;
 }

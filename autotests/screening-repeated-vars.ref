@@ -9,6 +9,6 @@ Eq {
     , t.X
     : {
         t.Y = True;
-        t.Y^ = False;
+        t.Other = False;
       }
 }
