@@ -3,17 +3,21 @@ $INCLUDE "LibraryEx";
 *$FROM Log
 $EXTERN Log-PutLine;
 
-
 *$FROM DisplayName
 $EXTERN DisplayName;
 
 *$FROM OptTree-AutoMarkup-GraphExtractor
 $EXTERN OptTree-AutoMarkup-ExtractFunctionCallsGraph;
 
+*$FROM OptTree-AutoMarkup-BasisVertexesExtractor
+$EXTERN OptTree-AutoMarkup-ExtractBasisVertexes;
+
+*$FROM OptTree-AutoMarkup-Common
+$EXTERN OptTree-AutoMarkup-Contains;
+
 /**
   <OptTree-AutoMarkup s.OptAutoMarkup e.AST> == e.AST
 */
-
 
 $ENTRY OptTree-AutoMarkup {
   NoOpt e.AST 
@@ -22,6 +26,31 @@ $ENTRY OptTree-AutoMarkup {
 
   OptAutoMarkup e.AST
     = <Log-PutLine 'AutoMarkup'> :
-    = <OptTree-AutoMarkup-ExtractFunctionCallsGraph e.AST > : e.ExtractedGraph
+    = <OptTree-AutoMarkup-ExtractFunctionCallsGraph e.AST>
+      : e.ExtractedGraph
+    = <OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph>
+      : e.BasisVertexes
+    = <Log-PutLine 'Basis vertexes' e.BasisVertexes> :
+    = <OptTree-AutoMarkup-GetDrivenFunctions 
+        (e.ExtractedGraph) 
+        (e.BasisVertexes)
+      >
+      : e.DrivenFunctions
+    = <Log-PutLine 'Driven funcs ' e.DrivenFunctions> :
     = e.AST;
+}
+
+OptTree-AutoMarkup-GetDrivenFunctions{
+  (e.ExtractedGraph) (e.BasisVertexes)
+    = <Map
+        {
+          (Func (e.FuncName) Children (e.Children))
+          , <OptTree-AutoMarkup-Contains (e.FuncName)(e.BasisVertexes)> : False
+            = (e.FuncName);
+
+          e.Other
+            = ;
+        }
+        e.ExtractedGraph
+      >
 }

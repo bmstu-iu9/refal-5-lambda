@@ -1,9 +1,5 @@
 $INCLUDE "LibraryEx";
 
-*$FROM Log
-$EXTERN Log-PutLine;
-
-
 *$FROM DisplayName
 $EXTERN DisplayName;
 
@@ -11,19 +7,25 @@ $EXTERN DisplayName;
   <OptTree-AutoMarkup-ExtractGraph  e.AST> == e.FunctionCallsGraph
 */
 
-
 $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
   e.AST
-    = <Map &OptTree-AutoMarkup-GetMetatables e.AST > : e.ExtractedMetaTables
-    = <Map &OptTree-AutoMarkup-GetFuncs e.AST > : e.ExtractedFuncs
-    = <Log-PutLine 'Fuctions: ' e.ExtractedFuncs> :
-    = <Log-PutLine 'MetaTables: ' e.ExtractedMetaTables> :
-    =  (e.ExtractedMetaTables e.ExtractedFuncs);
+    = <Map &OptTree-AutoMarkup-GetFuncs e.AST> 
+      : e.ExtractedFuncs
+    = <Map &OptTree-AutoMarkup-GetMetatables e.AST> 
+      : e.ExtractedMetaTables
+    = <OptTree-AutoMarkup-InlineFuncCallsWithMetatable 
+        (e.ExtractedFuncs) 
+        (e.ExtractedMetaTables)
+      >;
 }
 
 OptTree-AutoMarkup-GetMetatables {
   (Function s.ScopeClass (e.Name) Metatable e.Metatable)
-    = <Map &OptTree-AutoMarkup-ExtractFunctionCallsFromMetatable e.Metatable> : e.FunctionCalls
+    = <Map 
+        &OptTree-AutoMarkup-ExtractFunctionCallsFromMetatable 
+        e.Metatable
+      > 
+      : e.FunctionCalls
     = (e.Name (<Unique e.FunctionCalls>));
 
   e.Smth 
@@ -32,9 +34,13 @@ OptTree-AutoMarkup-GetMetatables {
 
 OptTree-AutoMarkup-GetFuncs {
   (Function s.ScopeClass (e.Name) Sentences e.Body)
-    = <Map &OptTree-AutoMarkup-ExtractFunctionCallsFromSentencesBody e.Body> : e.FunctionCalls
+    = <Map 
+        &OptTree-AutoMarkup-ExtractFunctionCallsFromSentencesBody 
+        e.Body
+      > 
+      : e.FunctionCalls
     = <Unique e.FunctionCalls> : e.UniqueFunctionCalls
-    = (Func e.Name (s.ScopeClass) Children (e.UniqueFunctionCalls)) ;
+    = (Func (e.Name) Children (e.UniqueFunctionCalls));
 
   e.Smth 
     = ;
@@ -45,11 +51,10 @@ OptTree-AutoMarkup-ExtractFunctionCallsFromMetatable {
     = (e.Name);
 }
 
-
-
 OptTree-AutoMarkup-ExtractFunctionCallsFromSentencesBody {
   ((e.Pattern) e.Conditions (e.Result))
-    = <OptTree-AutoMarkup-ExtractExpressionName e.Pattern> : e.PatternNames
+    = <OptTree-AutoMarkup-ExtractExpressionName e.Pattern> 
+      : e.PatternNames
     = <Map
         {
           (Condition (e.Name) (e.Result^) (e.Pattern^))
@@ -62,7 +67,6 @@ OptTree-AutoMarkup-ExtractFunctionCallsFromSentencesBody {
     = <OptTree-AutoMarkup-ExtractExpressionName e.Result> : e.ResultNames
     = e.PatternNames e.ConditionNames e.ResultNames;
 }
-
 
 OptTree-AutoMarkup-ExtractExpressionName {
   e.Expr 
@@ -81,7 +85,64 @@ OptTree-AutoMarkup-ExtractExpressionName {
 
           (t.Marker e.Smth)
             =
-        }  
+        } 
         e.Expr
       >
+}
+
+OptTree-AutoMarkup-InlineFuncCallsWithMetatable {
+  (e.ExtractedFuncs) (e.ExtractedMetaTables)
+    = <Map 
+        {
+          e.Elem
+            = <OptTree-AutoMarkup-InlineOneFuncChildrenWithMetatable 
+                e.Elem 
+                (e.ExtractedMetaTables)
+              >;
+        } 
+        e.ExtractedFuncs
+      >;
+}
+
+OptTree-AutoMarkup-InlineOneFuncChildrenWithMetatable {
+  (Func (e.Name) Children (e.UniqueFunctionCalls)) (e.ExtractedMetaTables)
+      = <Map 
+          {
+            e.Elem 
+              = <OptTree-AutoMarkup-GetCallsFromMetaTables 
+                  e.Elem 
+                  (e.ExtractedMetaTables)
+                >;
+          } 
+          e.UniqueFunctionCalls
+        > 
+        : e.ReplacedChildren
+      = <Unique e.ReplacedChildren> : e.UniqueReplacedChildren
+      = (Func (e.Name) Children (e.UniqueReplacedChildren));
+}
+
+OptTree-AutoMarkup-GetCallsFromMetaTables {
+  (e.FuncName) (e.ExtractedMetaTables)
+    = (<Map 
+        {
+          (e.Key (e.Value))
+            , e.Key : e.FuncName 
+            = e.Value;
+
+          (e.Other)
+            = ;
+        }
+        e.ExtractedMetaTables
+      >)
+    : e.ReplaceValue
+    = <Fetch 
+        e.ReplaceValue
+        {
+          ()
+            = (e.FuncName);
+
+          (e.FuncSet) 
+            = e.FuncSet;
+        } 
+      >;
 }
