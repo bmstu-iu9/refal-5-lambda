@@ -118,7 +118,7 @@ $ENTRY FrontEnd {
                   (Function t.SrcPos s.ScopeClass (e.Name) NativeBody e.Body)
                   e.AST-E;
 
-              e.AST = Success NoNative e.AST;
+              e.AST^ = Success NoNative e.AST;
           };
 
         EL-HasErrors = Fails;
