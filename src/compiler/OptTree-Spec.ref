@@ -570,7 +570,7 @@ SpecCall-Aux {
                     (e.Argument) (e.GenStaticMatches)
                     (e.DynamicMatches) (e.History)
                   >
-                : ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
+                : t.Info
                   t.NewCall
                   e.NewFunc
                   (e.NewHistory)
@@ -578,7 +578,7 @@ SpecCall-Aux {
                 /* К новому вызову применяем подстановку*/
                 , <ApplySubst-Expr (e.RealSubst) t.NewCall> : t.NewCall^
 
-                = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
+                = t.Info
                   t.NewCall
                   e.NewFunc
                   (e.NewHistory);
