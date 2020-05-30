@@ -4,6 +4,8 @@ $INTRINSIC Add, __Meta_Mu;
 
 $META Mu;
 
+__Step-Drop { = }
+
 $ENTRY Go {
   /* empty */
     = <Add 1 2> : 3

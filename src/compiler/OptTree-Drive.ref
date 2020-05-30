@@ -74,11 +74,12 @@ GenRemainderFuncNames {
 UpdateDriveInfo {
   s.OptDrive s.OptIntrinsic ((e.KnownNames) e.KnownFunctions) e.AST
 
-    /* Выносим все Drive и Inline из дерева */
+    /* Выносим все Drive, Inline, Intrinsic из дерева */
     = <MapAccum
         {
           (e.Optimizable) (Drive e.Name) = (e.Optimizable (Drive e.Name));
           (e.Optimizable) (Inline e.Name) = (e.Optimizable (Inline e.Name));
+          (e.Optimizable) (Intrinsic e.Name) = (e.Optimizable (Intrinsic e.Name));
           (e.Optimizable) t.Other = (e.Optimizable) t.Other;
         }
         () e.AST
@@ -108,6 +109,30 @@ UpdateDriveInfo {
             (e.OptFunctions) (e.RemNames)
             (e.OptNames-B (s.Label e.Name) e.OptNames-E)
           )
+          (Function s.ScopeClass (e.Name) s.BodyLabel e.Body)
+          , <OneOf s.Label Intrinsic Metatable> : True
+            = s.Label : {
+              Intrinsic = e.Name;
+              Metatable = e.Body
+            } : e.OptFunctionBody
+            =
+            (
+              (
+                e.OptFunctions
+                (s.Label s.ScopeClass (e.Name) s.Label e.OptFunctionBody)
+              )
+              (
+                e.RemNames
+                (e.Name)
+              )
+              (e.OptNames-B e.OptNames-E)
+            )
+            (Function s.ScopeClass (e.Name) s.BodyLabel e.Body);
+
+          (
+            (e.OptFunctions) (e.RemNames)
+            (e.OptNames-B (s.Label e.Name) e.OptNames-E)
+          )
           (Function s.ScopeClass (e.Name) Sentences e.Sentences)
             = <Lenw e.Sentences> : s.CountSentences e.Sentences^
             = (
@@ -127,7 +152,7 @@ UpdateDriveInfo {
           (e.OptInfo) t.Other
             = (e.OptInfo) t.Other;
         }
-        (() () (e.OptNames)) e.AST
+        (() () (e.OptNames (Metatable '$table'))) e.AST
       >
     : ((e.OptFunctions) (e.DrivenNames) (e._)) e.AST^
 
@@ -382,15 +407,15 @@ OptSentence-MakeSubstitutions {
 }
 
 MakeColdSolution {
-  (s.FuncMode s.ScopeClass (e.Name) Sentences e.Body) e.Args
+  (s.FuncMode s.ScopeClass (e.Name) s.BodyLabel e.Body) e.Args
     , e.Name : e.Prefix '*' s.Num
     = (
         ((ColdCallBrackets (Symbol Name e.Name) e.Args))
         ((/* нет присваиваний */) (/* нет сужений */))
-        ((NewFunction s.ScopeClass (e.Name) Sentences e.Body))
+        ((NewFunction s.ScopeClass (e.Name) s.BodyLabel e.Body))
       );
 
-  (s.FuncMode s.ScopeClass (e.Name) Sentences e.Body) e.Args
+  (s.FuncMode s.ScopeClass (e.Name) s.BodyLabel e.Body) e.Args
     = (
         ((ColdCallBrackets (Symbol Name e.Name) e.Args))
         ((/* нет присваиваний */) (/* нет сужений */))
@@ -480,6 +505,12 @@ FindOptInfo {
 }
 
 FindOptInfo-Aux {
+  e.OptFuncs-B (s.Mode s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
+  (e.Name) (e.LookupName) s._
+  , <OneOf s.Mode Intrinsic Metatable> : True
+  = e.OptFuncs-B (s.Mode s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
+    (s.Mode s.ScopeClass (e.Name) e.Body);
+  
   e.OptFuncs-B (s.Mode s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
   (e.Name) (e.LookupName) s.Drop
     = e.Body : Sentences e.Sentences
