@@ -4,7 +4,7 @@ $INCLUDE "LibraryEx";
 $EXTERN ExtractVariables, NewVarName;
 
 
-/*
+/**
   <GenericMatch (e.Pattern) (e.LPattern)>
     == Clear (e.Val ':' t.Var)*
     == Contracted ((Ct t.Var ':' e.Val)* (As (e.Val ':' t.Var)*))*
@@ -12,8 +12,7 @@ $EXTERN ExtractVariables, NewVarName;
     == Undefined
 
   e.Pattern, e.LPattern ::= t.PatternTerm*
-  t.PatternTerm — см. interfaces.md + переменные в e.Pattern могут иметь тип
-    'k' — неразменные переменные.
+  t.PatternTerm — см. src/compiler/README.md
 
   e.Val ::= t.PatternTerm*
   t.Var ::= (s.VarType e.Index)
@@ -61,7 +60,7 @@ IsSVarSubset {
     t.Contr ::= (t.Var ':' e.Val)
     t.Equation ::= ((e.Expr) ':' (e.LExpr))
     t.Assign ::= (e.Val ':' t.Var)
-    t.Result ::= ((t.Contr*) (t.Assign*))*
+    t.Result ::= ((t.Contr*) (t.Assign*))
 */
 
 $ENTRY Solve {
