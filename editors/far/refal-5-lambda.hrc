@@ -81,6 +81,7 @@
         <word name="$EXTRN"/>
         <word name="$INCLUDE"/>
         <word name="$INLINE"/>
+        <word name="$INTRINSIC"/>
         <word name="$META"/>
         <word name="$SCOPEID"/>
         <word name="$SPEC"/>

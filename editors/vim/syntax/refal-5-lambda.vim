@@ -11,6 +11,7 @@ syntax keyword refal5LambdaKeyword $EXTERNAL
 syntax keyword refal5LambdaKeyword $EXTRN
 syntax keyword refal5LambdaKeyword $INCLUDE
 syntax keyword refal5LambdaKeyword $INLINE
+syntax keyword refal5LambdaKeyword $INTRINSIC
 syntax keyword refal5LambdaKeyword $META
 syntax keyword refal5LambdaKeyword $SCOPEID
 syntax keyword refal5LambdaKeyword $SPEC
