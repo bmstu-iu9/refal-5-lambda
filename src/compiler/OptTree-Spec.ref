@@ -1051,7 +1051,7 @@ MapGenericMatches {
 
 /**
   <HasHigmanKruskalRelation (e.Name) (e.Signature) e.History>
-    == True e.InstanceName
+    == True e.HistorySignature
     == False
 
   Функция проверяет, выполняется ли отношение Хигмана-Крускала
