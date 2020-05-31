@@ -527,61 +527,14 @@ SpecCall-Aux {
               (e.Name) (<RemoveSignatureVarsNames e.Signature>) e.History
             >
           : {
-              True e.RelationInstanceName
+              True e.HistorySignature
 
-                , e.History
-                : e.History-B ((e.RelationInstanceName) e.HistorySignature)
-                  e.History-E
-
-                /* Получаем обобщение двух сигнатур */
-                , <GetSignaturesGeneralization
-                    (e.Signature) e.HistorySignature
-                  >
-                : e.GenSignature
-
-                /* Находим имеющиеся в аргументе переменные */
-                , <ExtractVariables-Expr e.Argument> : e.ArgumentVars
-
-                /*
-                  Присваиваем переменным в сигнатуре имена,
-                  отличные от имён переменных в аргументе e.Argument
-                */
-                , <NameSignatureVars (e.ArgumentVars) e.GenSignature>
-                : e.GenStaticMatches
-
-                /* Получаем переменные из e.SpecPattern */
-                , <ExtractVariables-Expr e.SpecPattern> : e.SpecPatternVars
-                /*
-                  Частям обобщённой сигнатуры приписываем
-                  имена статических переменных
-                */
-                , <GetSignaturesGeneralizationMatches
-                    (e.SpecPatternVars) e.GenStaticMatches
-                  >
-                : e.GenStaticMatches^
-
-                /* Формируем e.RealSubst через GenericMatch */
-                , <GetRealSubst (e.StaticMatches) (e.GenStaticMatches)>
-                : e.RealSubst
-
-                /* Для e.GenStaticMatches вызываем SpecCall-Matches */
-                , <SpecCall-Matches
-                    (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
-                    (e.Argument) (e.GenStaticMatches)
-                    (e.DynamicMatches) (e.History)
-                  >
-                : t.Info
-                  t.NewCall
-                  e.NewFunc
-                  (e.NewHistory)
-
-                /* К новому вызову применяем подстановку*/
-                , <ApplySubst-Expr (e.RealSubst) t.NewCall> : t.NewCall^
-
-                = t.Info
-                  t.NewCall
-                  e.NewFunc
-                  (e.NewHistory);
+                = <MakeGeneralization
+                    (e.Signature) (e.HistorySignature) (e.Argument)
+                    (e.SpecPattern) (e.StaticMatches) (e.Name)
+                    (e.Body) s.NextNumber (e.Signatures) (e.DynamicMatches)
+                    (e.History)
+                  >;
 
               False
                 = <PrepareSpecializedFuncBody
@@ -1107,7 +1060,7 @@ MapGenericMatches {
   удалив некоторые элементы.
   В случае, если в истории сигнатур удаётся найти сигнатуру,
   для которой выполняется указанное отношение,
-  функция возвращает True и соответствующий e.InstanceName.
+  функция возвращает True и соответствующий e.HistorySignature.
   В ином случае возвращается False.
 */
 HasHigmanKruskalRelation {
@@ -1115,12 +1068,13 @@ HasHigmanKruskalRelation {
     = e.InstanceName
     : {
         e.Name SUF e.InstanceName-Rest
-          , <RemoveSignatureVarsNames e.HistorySignature> : e.HistorySignature^
+          , <RemoveSignatureVarsNames e.HistorySignature>
+          : e.HistorySignatureWithoutNames
           , <CheckSignaturesPairForRelation
-              (e.Signature) e.HistorySignature
+              (e.Signature) e.HistorySignatureWithoutNames
             >
           : {
-              True = True e.InstanceName;
+              True = True e.HistorySignature;
               False = <HasHigmanKruskalRelation
                         (e.Name) (e.Signature) e.History
                       >;
@@ -1366,24 +1320,82 @@ RemoveSignatureVarsNames-Term {
   t.OtherTerm = t.OtherTerm;
 }
 
+/* Выполняет обобщение */
+MakeGeneralization {
+  (e.Signature) (e.HistorySignature) (e.Argument)
+  (e.SpecPattern) (e.StaticMatches) (e.Name)
+  (e.Body) s.NextNumber (e.Signatures) (e.DynamicMatches)
+  (e.History)
+
+    /* Получаем обобщение двух сигнатур */
+    = <GetSignaturesGeneralization
+        (e.Signature) e.HistorySignature
+      >
+    : e.GenSignature
+
+    /* Находим имеющиеся в аргументе переменные */
+    = <ExtractVariables-Expr e.Argument> : e.ArgumentVars
+
+    /*
+      Присваиваем переменным в сигнатуре имена,
+      отличные от имён переменных в аргументе e.Argument
+    */
+    = <NameSignatureVars (e.ArgumentVars) e.GenSignature>
+    : e.GenStaticMatches
+
+    /* Получаем переменные из e.SpecPattern */
+    = <ExtractVariables-Expr e.SpecPattern> : e.SpecPatternVars
+
+    /*
+      Частям обобщённой сигнатуры приписываем
+      имена статических переменных
+    */
+    = <GetSignaturesGeneralizationMatches
+        (e.SpecPatternVars) e.GenStaticMatches
+      >
+    : e.GenStaticMatches^
+
+    /* Формируем e.RealSubst через GenericMatch */
+    = <GetRealSubst (e.StaticMatches) (e.GenStaticMatches)>
+    : e.RealSubst
+
+    /* Для e.GenStaticMatches вызываем SpecCall-Matches */
+    , <SpecCall-Matches
+        (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
+        (e.Argument) (e.GenStaticMatches)
+        (e.DynamicMatches) (e.History)
+      >
+    : t.Info
+      t.NewCall
+      e.NewFunc
+      (e.NewHistory)
+
+    /* К новому вызову применяем подстановку*/
+    = <ApplySubst-Expr (e.RealSubst) t.NewCall> : t.NewCall^
+
+    = t.Info
+      t.NewCall
+      e.NewFunc
+      (e.NewHistory);
+}
+
 /*
   Назначает имена переменным в сигнатуре,
   отличные от тех, что есть в e.KnownVars.
 */
 NameSignatureVars {
   (e.KnownVars) e.Signature
-    = 0 : s.NextId
     = <MapAccum
         {
-          (s.NextId^ (e.KnownVars^)) (e.SignaturePart)
-            = <NameSignatureVars-Expr (s.NextId (e.KnownVars)) e.SignaturePart>
-            : (s.NextId^ (e.KnownVars^)) e.SignaturePart^
-            = (s.NextId (e.KnownVars)) (e.SignaturePart);
+          (e.KnownVars^) (e.SignaturePart)
+            = <NameSignatureVars-Expr (e.KnownVars) e.SignaturePart>
+            : (e.KnownVars^) e.SignaturePart^
+            = (e.KnownVars) (e.SignaturePart);
         }
-        (s.NextId (e.KnownVars))
+        (e.KnownVars)
         e.Signature
       >
-    : (s.NextId^ (e.KnownVars^)) e.Signature^
+    : (e.KnownVars^) e.Signature^
     = e.Signature;
 }
 
@@ -1392,10 +1404,10 @@ NameSignatureVars-Expr {
 }
 
 NameSignatureVars-Term {
-  (s.NextId (e.KnownVars)) (TkVariable s.Mode)
-    = <NewVarName (e.KnownVars) 'X' <Symb s.NextId>> : (e.KnownVars^) e.Index
-    = (<Inc s.NextId> (e.KnownVars))
-      (TkVariable s.Mode e.Index);
+  (e.KnownVars) (TkVariable s.Mode)
+    = <NewVarName (e.KnownVars) s.Mode 'X' 0> : (e.KnownVars^) e.Index
+    = (e.KnownVars)
+      (TkVariable e.Index);
 
   t.State (s.BracketsTag e.Expr)
     , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
