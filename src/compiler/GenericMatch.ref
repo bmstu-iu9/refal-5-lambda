@@ -33,15 +33,15 @@ FormatAssigns {
 $ENTRY GenericMatch {
   (e.Pattern) (e.LPattern)
     = <Solve
-       (<ExtractVariables ((e.Pattern e.LPattern) (/* пусто */)) >)
-       ((e.Pattern) ':' (e.LPattern))
+        (<ExtractVariables ((e.Pattern e.LPattern) (/* пусто */))>)
+        ((e.Pattern) ':' (e.LPattern))
       >
-      : {
-          Success (() (e.Assigns)) = Clear <FormatAssigns e.Assigns>;
-          Failure = Failure;
-          Undefined = Undefined;
-          e.Other = Undefined;
-        }
+    : {
+        Success (() (e.Assigns)) = Clear <FormatAssigns e.Assigns>;
+        Failure = Failure;
+        Undefined = Undefined;
+        e.Other = Undefined;
+      }
 }
 
 IsSVarSubset {
