@@ -7,7 +7,7 @@ $EXTERN ExtractVariables, NewVarName;
 /**
   <GenericMatch (e.Pattern) (e.LPattern)>
     == Clear (e.Val ':' t.Var)*
-    == Contracted ((Ct t.Var ':' e.Val)* (As (e.Val ':' t.Var)*))*
+    == Contracted ((t.Var ':' e.Val)* (e.Val ':' t.Var))*
     == Failure
     == Undefined
 
@@ -38,9 +38,9 @@ $ENTRY GenericMatch {
       >
     : {
         Success (() (e.Assigns)) = Clear <FormatAssigns e.Assigns>;
+        Success e.Solutions = Contracted e.Solutions;
         Failure = Failure;
         Undefined = Undefined;
-        e.Other = Undefined;
       }
 }
 
