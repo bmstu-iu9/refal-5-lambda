@@ -58,9 +58,9 @@ OptTree-AutoMarkup-GetWalkOrder-ProcessGraphNode {
                 }              
         }
         ((e.ProcessedBagWithMe) (e.Order)) e.Children
-      > 
+      >
       : ((e.ProcessedBagRes) (e.OrderRes))
-    = ((e.ProcessedBagRes) ((e.Name) e.OrderRes)); 
+    = ((e.ProcessedBagRes) ((e.Name) e.OrderRes));
 
   () (e.ProcessedBag) (e.Order) (e.Graph)
     = ((e.ProcessedBag) (e.Order));
@@ -73,16 +73,16 @@ OptTree-AutoMarkup-GetWalkOrder {
           ((e.ProcessedBag) (e.Order)) (Func (e.Name) Children (e.Children))
             = <OptTree-AutoMarkup-Contains (e.Name) (e.ProcessedBag)>
               : {
-                True
-                  = ((e.ProcessedBag) (e.Order));
+                  True
+                    = ((e.ProcessedBag) (e.Order));
 
-                False
-                  = <OptTree-AutoMarkup-GetWalkOrder-ProcessGraphNode 
+                  False
+                    = <OptTree-AutoMarkup-GetWalkOrder-ProcessGraphNode 
                       (Func (e.Name) Children (e.Children)) 
                       (e.ProcessedBag)
                       (e.Order) 
                       (e.Graph)
-                    >;
+                      >;
                 };
         }
         ((/*processedBag*/)(/*order*/)) e.Graph
@@ -172,7 +172,7 @@ OptTree-AutoMarkup-GetExtractedComponents {
                       );
                 };
         }
-        ((/*processed bag*/)(/*extracted components*/)) e.WalkOrder
+        ((/*processedBag*/)(/*extractedComponents*/)) e.WalkOrder
       > 
       : ((e.ProcessedBagRes) (e.ExtractedComponentsRes))
     = (e.ExtractedComponentsRes);
@@ -222,4 +222,3 @@ OptTree-AutoMarkup-GetNotBaseVertexes {
         e.Graph
       > 
 }
-

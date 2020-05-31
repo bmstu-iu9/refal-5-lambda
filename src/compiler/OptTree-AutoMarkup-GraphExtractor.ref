@@ -134,7 +134,7 @@ OptTree-AutoMarkup-GetCallsFromMetaTables {
         }
         e.ExtractedMetaTables
       >)
-    : e.ReplaceValue
+      : e.ReplaceValue
     = <Fetch 
         e.ReplaceValue
         {

@@ -1,7 +1,7 @@
 $INCLUDE "LibraryEx";
 
 *$FROM Log
-$EXTERN Log-PutLine;
+$EXTERN Log-PutLine, Log-AST;
 
 *$FROM DisplayName
 $EXTERN DisplayName;
@@ -13,7 +13,7 @@ $EXTERN OptTree-AutoMarkup-ExtractFunctionCallsGraph;
 $EXTERN OptTree-AutoMarkup-ExtractBasisVertexes;
 
 *$FROM OptTree-AutoMarkup-Common
-$EXTERN OptTree-AutoMarkup-Contains;
+$EXTERN OptTree-AutoMarkup-Contains, OptTree-AutoMarkup-GetSetDifference;
 
 /**
   <OptTree-AutoMarkup s.OptAutoMarkup e.AST> == e.AST
@@ -25,22 +25,46 @@ $ENTRY OptTree-AutoMarkup {
     = e.AST;
 
   OptAutoMarkup e.AST
-    = <Log-PutLine 'AutoMarkup'> :
-    = <OptTree-AutoMarkup-ExtractFunctionCallsGraph e.AST>
+    = <OptTree-AutoMarkup-ExtractFunctionCallsGraph e.AST> 
       : e.ExtractedGraph
-    = <OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph>
+    = <OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph> 
       : e.BasisVertexes
-    = <Log-PutLine 'Basis vertexes' e.BasisVertexes> :
     = <OptTree-AutoMarkup-GetDrivenFunctions 
         (e.ExtractedGraph) 
-        (e.BasisVertexes)
-      >
+        (e.BasisVertexes) 
+      > 
       : e.DrivenFunctions
-    = <Log-PutLine 'Driven funcs ' e.DrivenFunctions> :
-    = e.AST;
+    = <OptTree-AutoMarkup-GetAlreadyMarkedFunctions e.AST> 
+      : e.AlreadyMarkedFunctions
+    = <OptTree-AutoMarkup-GetSetDifference 
+        (e.DrivenFunctions) 
+        (e.AlreadyMarkedFunctions)
+      > : (e.FunctionToDrive)
+    = <OptTree-AutoMarkup-GetUpdatedWithDrivenFunctionsAst 
+        (e.AST) 
+        (e.FunctionToDrive) 
+        (e.BasisVertexes)
+      >;
 }
 
-OptTree-AutoMarkup-GetDrivenFunctions{
+OptTree-AutoMarkup-GetAlreadyMarkedFunctions {
+  e.AST
+    = <Map
+        {
+          (s.Label e.Name)
+            , <OptTree-AutoMarkup-Contains 
+                (s.Label) 
+                ((Drive)(Inline)(Intrinsic))
+              > : True
+            = (e.Name);
+
+          e.Other
+            = ;
+        } e.AST
+      >
+}
+
+OptTree-AutoMarkup-GetDrivenFunctions {
   (e.ExtractedGraph) (e.BasisVertexes)
     = <Map
         {
@@ -49,8 +73,30 @@ OptTree-AutoMarkup-GetDrivenFunctions{
             = (e.FuncName);
 
           e.Other
-            = ;
+            =;
         }
         e.ExtractedGraph
       >
+}
+
+OptTree-AutoMarkup-GetUpdatedWithDrivenFunctionsAst {
+  (e.AST) (e.FunctionsToDrive) (e.BasisVertexes)
+    = <Map
+        {
+          (e.FuncName)
+            = (Drive e.FuncName);
+        }
+        e.FunctionsToDrive
+      > : e.DrivedFunctions
+    = <Map
+        {
+          (Drive e.Name)
+            , e.BasisVertexes : e._ (e.Name) e._
+            = ;
+
+          t.Other = t.Other;
+        }
+        e.AST
+      > : e.ClearAST
+    = e.ClearAST e.DrivedFunctions;
 }
