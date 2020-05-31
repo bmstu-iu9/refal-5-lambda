@@ -1,8 +1,20 @@
 syntax include @refal5LambdaCpp $VIMRUNTIME/syntax/cpp.vim
 syntax case match
-syntax keyword refal5LambdaKeyword $ENTRY $EXTERN $EXTRN $EXTERNAL $EASTEREGG
-syntax keyword refal5LambdaKeyword $ENUM $EENUM $SWAP $ESWAP $INCLUDE $SCOPEID
-syntax keyword refal5LambdaKeyword $DRIVE $INLINE $SPEC $META
+syntax keyword refal5LambdaKeyword $DRIVE
+syntax keyword refal5LambdaKeyword $EASTEREGG
+syntax keyword refal5LambdaKeyword $EENUM
+syntax keyword refal5LambdaKeyword $ENTRY
+syntax keyword refal5LambdaKeyword $ENUM
+syntax keyword refal5LambdaKeyword $ESWAP
+syntax keyword refal5LambdaKeyword $EXTERN
+syntax keyword refal5LambdaKeyword $EXTERNAL
+syntax keyword refal5LambdaKeyword $EXTRN
+syntax keyword refal5LambdaKeyword $INCLUDE
+syntax keyword refal5LambdaKeyword $INLINE
+syntax keyword refal5LambdaKeyword $META
+syntax keyword refal5LambdaKeyword $SCOPEID
+syntax keyword refal5LambdaKeyword $SPEC
+syntax keyword refal5LambdaKeyword $SWAP
 syntax match refal5LambdaBrokenKeyword /\$\a*\>/
 syntax match refal5LambdaIdentifier /\<[A-Za-z_][A-Za-z0-9_\-]*\>/
 syntax match refal5LambdaVariable /\<[ste]\.[A-Za-z0-9_-]\+\>/

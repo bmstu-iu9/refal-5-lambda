@@ -70,21 +70,21 @@
              region00="refal5LambdaOpenStruct"
              region10="refal5LambdaCloseStruct"/>
       <keywords region="refal5LambdaDirective">
-        <word name="$ENTRY"/>
-        <word name="$EXTERN"/>
-        <word name="$EXTRN"/>
-        <word name="$EXTERNAL"/>
-        <word name="$EASTEREGG"/>
-        <word name="$ENUM"/>
-        <word name="$EENUM"/>
-        <word name="$SWAP"/>
-        <word name="$ESWAP"/>
-        <word name="$INCLUDE"/>
-        <word name="$SCOPEID"/>
         <word name="$DRIVE"/>
+        <word name="$EASTEREGG"/>
+        <word name="$EENUM"/>
+        <word name="$ENTRY"/>
+        <word name="$ENUM"/>
+        <word name="$ESWAP"/>
+        <word name="$EXTERN"/>
+        <word name="$EXTERNAL"/>
+        <word name="$EXTRN"/>
+        <word name="$INCLUDE"/>
         <word name="$INLINE"/>
-        <word name="$SPEC"/>
         <word name="$META"/>
+        <word name="$SCOPEID"/>
+        <word name="$SPEC"/>
+        <word name="$SWAP"/>
       </keywords>
       <keywords region="refal5LambdaSymbol">
         <symb name="="/>
