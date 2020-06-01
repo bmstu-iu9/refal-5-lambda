@@ -4,16 +4,15 @@ $INCLUDE "LibraryEx";
 $EXTERN ExtractVariables, NewVarName;
 
 
-/*
+/**
   <GenericMatch (e.Pattern) (e.LPattern)>
     == Clear (e.Val ':' t.Var)*
-    == Contracted ((Ct t.Var ':' e.Val)* (As (e.Val ':' t.Var)*))*
+    == Contracted ((t.Var ':' e.Val)* (e.Val ':' t.Var))*
     == Failure
     == Undefined
 
   e.Pattern, e.LPattern ::= t.PatternTerm*
-  t.PatternTerm — см. interfaces.md + переменные в e.Pattern могут иметь тип
-    'k' — неразменные переменные.
+  t.PatternTerm — см. src/compiler/README.md
 
   e.Val ::= t.PatternTerm*
   t.Var ::= (s.VarType e.Index)
@@ -34,15 +33,15 @@ FormatAssigns {
 $ENTRY GenericMatch {
   (e.Pattern) (e.LPattern)
     = <Solve
-       (<ExtractVariables ((e.Pattern e.LPattern) (/* пусто */)) >)
-       ((e.Pattern) ':' (e.LPattern))
+        (<ExtractVariables ((e.Pattern e.LPattern) (/* пусто */))>)
+        ((e.Pattern) ':' (e.LPattern))
       >
-      : {
-          Success (() (e.Assigns)) = Clear <FormatAssigns e.Assigns>;
-          Failure = Failure;
-          Undefined = Undefined;
-          e.Other = Undefined;
-        }
+    : {
+        Success (() (e.Assigns)) = Clear <FormatAssigns e.Assigns>;
+        Success e.Solutions = Contracted e.Solutions;
+        Failure = Failure;
+        Undefined = Undefined;
+      }
 }
 
 IsSVarSubset {
@@ -61,7 +60,7 @@ IsSVarSubset {
     t.Contr ::= (t.Var ':' e.Val)
     t.Equation ::= ((e.Expr) ':' (e.LExpr))
     t.Assign ::= (e.Val ':' t.Var)
-    t.Result ::= ((t.Contr*) (t.Assign*))*
+    t.Result ::= ((t.Contr*) (t.Assign*))
 */
 
 $ENTRY Solve {

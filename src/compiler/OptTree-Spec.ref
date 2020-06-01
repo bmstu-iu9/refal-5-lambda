@@ -12,7 +12,6 @@ $EXTERN Log-PutLine;
 *$FROM DisplayName
 $EXTERN DisplayName;
 
-
 /**
   <OptTree-Spec-Prepare s.OptSpec e.AST> == e.AST^
 
@@ -378,6 +377,11 @@ SpecCall {
     , <PrepareSignature e.StaticMatches (e.SpecPattern)> : e.Signature
 
     , <IsTrivialSubstitutions e.StaticMatches> : False
+
+    , <HasHigmanKruskalRelation
+        (<RemoveSignatureVarsNames e.Signature>) e.Signatures
+      >
+    : False
 
     = <SpecCall-Aux
         (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures (e.Argument)
@@ -901,4 +905,264 @@ MapGenericMatches {
       >
     : ((e.ArgStaticMatches) (e.ResultMatches))
     = e.ResultMatches;
+}
+
+/*
+  Функции, относящиеся к проверке отношения Хигмана-Крускала
+*/
+
+/**
+  <HasHigmanKruskalRelation (e.Signature) e.Signatures> == True e.InstanceName | False
+
+  Функция проверяет, выполняется ли отношение Хигмана-Крускала для одной из сигнатур в
+  e.Signatures и сигнатуры e.Signature, то есть проверяется, можно ли вложить одну сигнатуру в другую,
+  удалив некоторые элементы.
+  В случае, если в истории сигнатур удаётся найти сигнатуру, для которой выполняется указанное отношение,
+  функция возвращает True и соответствующий e.InstanceName. В ином случае возвращается False.
+*/
+HasHigmanKruskalRelation {
+  (e.Signature) e.Signatures ((e.InstanceName) e.HistorySignature)
+    , <RemoveSignatureVarsNames e.HistorySignature> : e.HistorySignature^
+    , <CheckSignaturesPairForRelation
+        (e.Signature) e.HistorySignature
+      >
+    : {
+        True = True e.InstanceName;
+        False = <HasHigmanKruskalRelation (e.Signature) e.Signatures>;
+      };
+
+  (e.Signature) /* пустая история */ = False;
+}
+
+/**
+  <CheckSignaturesPairForRelation (e.CurrentSignature) e.HistorySignature>
+    == True
+    == False
+
+  Проверяет выполнение отношения Хигмана-Крускала для двух сигнатур.
+  Возвращает True, если отношение выполняется, и False в ином случае.
+
+  e.CurrentSignature, e.HistorySignature ::= t.StaticVarVals*
+  t.StaticVarVals ::= (t.Term*)
+  t.Term ::=
+      (Symbol s.SymType e.SymInfo)
+    | (TkVariable 't' e.Index)
+    | (TkVariable 's' e.Index)
+    | (TkVariable 'e' e.Index)
+    | (ADT-Brackets t.Name t.Term*)
+    | (Brackets t.Term*)
+    | (ClosureBrackets t.Term*)
+    | (CallBrackets t.Name t.Term*)
+*/
+CheckSignaturesPairForRelation {
+  (/* пусто */) /* пусто */ = True;
+
+  (e.CurrentSignature) e.HistorySignature
+
+    /* Берём часть сигнатур для одной статической переменной */
+    , e.CurrentSignature
+    : (e.CurrentSignature-CurVar) e.CurrentSignature-Rest
+
+    , e.HistorySignature
+    : (e.HistorySignature-CurVar) e.HistorySignature-Rest
+
+    /* Разделяем текущую сигнатуру на две части  */
+    , e.CurrentSignature-CurVar : t.Term e.OtherPart
+
+    , <DoCheckSignaturesPairForRelation
+        (t.Term) (e.OtherPart) e.HistorySignature-CurVar
+      >
+      : True
+
+    = <CheckSignaturesPairForRelation
+        (e.CurrentSignature-Rest) e.HistorySignature-Rest
+      >;
+
+  (e.CurrentSignature) e.HistorySignature = False;
+}
+
+/**
+  <DoCheckSignaturesPairForRelation
+    (e.CurSig1) (e.CurSig2) e.HistorySignature
+  >
+    == True
+    == False
+
+  Одна итерация функции CheckSignaturesPairForRelation.
+
+  e.CurSig1 ::= t.Term*
+  e.CurSig2 ::= t.Term*
+  e.HistorySignature ::= t.Term*
+*/
+DoCheckSignaturesPairForRelation {
+  (e.CurSig1) (e.CurSig2) e.HistorySignature
+
+    /* Проверяем, содержится ли полностью в e.CurSig1 */
+    , <ContainsSignature (e.CurSig1) e.HistorySignature> : True
+    = True;
+
+  (e.CurSig1) (e.CurSig2) e.HistorySignature
+
+    /* Проверяем, содержится ли полностью в e.CurSig2 */
+    , <ContainsSignature (e.CurSig2) e.HistorySignature> : True
+
+    = True;
+
+  (e.CurSig1) (e.CurSig2) e.HistorySignature
+
+    /* Проверяем, что часть e.HistorySignature содержится в e.CurSig1 */
+    , <PartiallyContainsSignature (e.CurSig1) e.HistorySignature>
+    : True e.HistorySignature-Rest
+
+    /* Проверяем, что оставшаяся часть содержится в e.CurSig2 */
+    , <ContainsSignature (e.CurSig2) e.HistorySignature-Rest>
+    : True
+
+    = True;
+
+  (e.CurSig1) (e.CurSig2) e.HistorySignature = False;
+}
+
+/**
+  <ContainsSignature (e.Expr) e.Signature>
+    == True
+    == False
+
+  Проверяет, что выражение содержит сигнатуру.
+
+  e.Expr ::= t.Term*
+  e.Signature ::= t.Term*
+*/
+ContainsSignature {
+  (e.Expr-B e.Signature e.Expr-E) e.Signature
+    = True;
+
+  ((s.TermType e.Inner) e.RestExpr) e.Signature
+    , e.Inner : t.Inner-FirstTerm e.Inner-Rest
+    = s.TermType
+    :  {
+        Brackets
+          = <DoCheckSignaturesPairForRelation
+              (e.Inner) (e.RestExpr) e.Signature
+            >;
+
+        ADT-Brackets
+          , e.Inner : (e.Name) e.ADT-Brackets-Inner
+          = <DoCheckSignaturesPairForRelation
+              (e.ADT-Brackets-Inner) (e.RestExpr) e.Signature
+            >;
+
+        CallBrackets
+          , e.Inner : (e.SymbolName) e.Argument
+          = <DoCheckSignaturesPairForRelation
+              (e.Argument) (e.RestExpr) e.Signature
+            >;
+
+        ClosureBrackets
+          = <DoCheckSignaturesPairForRelation
+              (e.Inner) (e.RestExpr) e.Signature
+            >;
+
+        TkVariable
+          = <DoCheckSignaturesPairForRelation
+              (/* пусто */) (e.RestExpr) e.Signature
+            >;
+
+        Symbol
+          = <DoCheckSignaturesPairForRelation
+              (/* пусто */) (e.RestExpr) e.Signature
+            >;
+
+        s.OtherTermType
+          = False;
+      };
+
+  (e.Expr) e.Signature = False;
+}
+
+/**
+  <PartiallyContainsSignature (e.Expr) e.Signature>
+    == True e.SignaturePart
+    == False
+
+  Проверяет, что выражение частично содержит сигнатуру.
+  Если была обнаружена часть сигнатуры,
+  содержащаяся в выражении, возвращает True, за которым
+  следует остальная часть сигнатуры.
+  Иначе возвращает False.
+
+  e.Expr ::= t.Term*
+  e.Signature ::= t.Term*
+*/
+PartiallyContainsSignature {
+  (e.Expr) e.Signature
+    /* Если выражение из истории пусто, возвращаем False */
+    , e.Signature : /*пусто*/
+    = False;
+
+  (e.Expr) e.Signature
+
+    /* Разделяем сигнатуру из истории на две части */
+    , e.Signature : e.Signature-Part t.LastTerm
+
+    /* Проверяем, что e.Signature-Part не пусто */
+    , e.Signature-Part : t.FirstTerm e.OtherPart
+
+    /*
+      Если текущая сигнатура содержит часть сигнатуры из истории,
+      возвращаем True и остальную часть, которую она не содержит.
+    */
+    , <ContainsSignature (e.Expr) e.Signature-Part>
+    : True
+
+    = True t.LastTerm;
+
+  /*
+    Отщепляем последний терм от сигнатуры из истории и вызываем рекурсию,
+    в конце добавляем последний терм, который отщепили.
+   */
+  (e.Expr) e.Signature-Part t.LastTerm
+    = <PartiallyContainsSignature
+        (e.Expr) e.Signature-Part
+      > t.LastTerm;
+}
+
+/**
+  <RemoveSignatureVarsNames e.Signature> == e.Signature^
+
+  Убирает имена переменных в сигнатуре, оставляет их типы данных.
+*/
+RemoveSignatureVarsNames {
+  e.Signature
+    = <Map
+        {
+          (e.SignaturePart)
+            = <RemoveSignatureVarsNames-Expr e.SignaturePart>
+            : e.SignaturePart^
+            = (e.SignaturePart);
+        }
+        e.Signature
+      >
+    : e.Signature^
+    = e.Signature;
+}
+
+RemoveSignatureVarsNames-Expr {
+  e.Expr = <Map &RemoveSignatureVarsNames-Term e.Expr>;
+}
+
+RemoveSignatureVarsNames-Term {
+  (TkVariable s.Mode e.Index)
+    = (TkVariable s.Mode);
+
+  (s.BracketsTag e.Expr)
+    , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
+    = <RemoveSignatureVarsNames-Expr e.Expr> : e.Expr^
+    = (s.BracketsTag e.Expr);
+
+  (ADT-Brackets (e.Name) e.Expr)
+    = <RemoveSignatureVarsNames-Expr e.Expr> : e.Expr^
+    = (ADT-Brackets (e.Name) e.Expr);
+
+  t.OtherTerm = t.OtherTerm;
 }

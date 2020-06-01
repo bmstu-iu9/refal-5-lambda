@@ -1,6 +1,14 @@
 $INCLUDE "LibraryEx";
 
 
+/**
+  <GlobalGen (e.Pattern)+> == e.Pattern
+
+  Результат обобщения является по форме жёстким выражением,
+  т.е. на каждом скобочном уровне находится не более одной e-переменной,
+  при этом у всех переменных стёрты индексы. Т.е. переменные в обобщении
+  имеют вид (TkVariable s.Mode <пусто>).
+*/
 $ENTRY GlobalGen {
   e.HardSentences
     = <Map { (e.Pattern) = <BuildImage e.Pattern> } e.HardSentences> : e.Images
@@ -9,12 +17,13 @@ $ENTRY GlobalGen {
 }
 
 
-/*
+/**
   Строим многорезультатное обобщение терма
   <BuildImage e.Pattern> == t.Image
+  <BuildImage-Term t.PatternTerm> == t.TermImage
 
-  e.Pattern ::= t.Term*
-  t.Term ::=
+  e.Pattern ::= t.PatterTerm*
+  t.PatternTerm ::=
       (Symbol s.SymType e.SymInfo)
     | (TkVariable 't' e.Index)
     | (TkVariable 's' e.Index)
@@ -73,9 +82,10 @@ $ENTRY BuildImage-Term {
 }
 
 
-/*
+/**
   Попарно обобщаем все полученные образы:
-  <Generalization t.Image*> == t.Image?
+  <Generalization t.Image*> == t.Image
+  <Generalization-Term t.TermImage*> == t.TermImage
 */
 $ENTRY Generalization {
   t.Image1 t.Image2 e.Rest
@@ -167,9 +177,10 @@ IsSVarSubset {
 }
 
 
-/*
+/**
   Коллапс:
   <Collapse t.Image> == e.Pattern
+  <Collapse-Term t.TermImage> == t.PatternTerm
 
   Скобочные термы (K: t′1…t’K) коллапсируют в (t1…tK), где внутренние
     термы коллапсируют рекурсивно
@@ -246,7 +257,7 @@ GlobalGenFromLocalGen {
     = e.Sentence;
 }
 
-/*
+/**
   Вычисляет сложность выражения по формуле:
   C(P) = n_t + 2*n_s + 3*n_X + 3*n_() − n_e + 1
 */
