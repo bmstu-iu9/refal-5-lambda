@@ -321,7 +321,8 @@ OptFunction {
 OptSentence {
   /* Оптимизируем только предложения вида Pat = Res */
   ((e.Left) (e.Right)) ((e.OptFuncNames) e.OptFuncs) t.Mode
-     = <FindOptimizedCall (e.OptFuncNames) e.Right>
+     = <FindOptimizedCall (e.OptFuncNames) e.Right>: e.FindOptimizedCall
+     = e.FindOptimizedCall
      : {
          (e.OptFuncNames^ None) e.Right^
            = ((e.OptFuncNames) e.OptFuncs) () ((e.Left) (e.Right));
@@ -336,16 +337,19 @@ OptSentence {
 }
 
 OptSentence-Aux {
-  t.Mode
+  (s.DriveMode s.IntrinsicMode)
   ((e.Left) (e.Right))
   (CallBrackets (Symbol Name e.Name) e.Args)
   e.OptFuncs
 
     /* Поиск информации для прогонки */
     = <FindOptInfo e.OptFuncs (e.Name)> : e.OptFuncs^ t.FunctionForDrive
-
-    = <OptSentence-MakeSubstitutions
-        t.Mode ((e.Left) (e.Right)) (e.Args) t.FunctionForDrive
+    = s.IntrinsicMode : {
+      Intrinsic = <FindOptInfo e.OptFuncs ('$table')> : {e._ t.Metatable = t.Metatable };
+      s._ = ()
+    } : t.Metatable
+    = <Prout FunctionForDrive (t.FunctionForDrive)> <Prout Args e.Args> <OptSentence-MakeSubstitutions
+      (s.DriveMode s.IntrinsicMode) ((e.Left) (e.Right)) (e.Args) t.FunctionForDrive t.Metatable
       >
     : e.SolutionPacks
 
@@ -361,19 +365,261 @@ OptSentence-Aux {
       >;
 }
 
+
+ArithmeticFunctions {
+  = ('Add') ('Div') ('Divmod') ('Mod') ('Mul') ('Sub') ('Compare');
+}
+
+SymbolsToNumber {
+  e.Symbols = <Map
+    {
+      (Symbol Char '-') = '-';
+      (Symbol Number s.n) = s.n
+    }
+    e.Symbols
+  >
+}
+
+NumberToSymbols {
+  e.Number = <Map
+    {
+      '-' = (Symbol Char '-');
+      s.n = (Symbol Number s.n)
+    }
+    e.Number
+  >
+}
+
+DoOptSentence-MakeSubstitutions-Intrinsic {
+  t.IntrinsicFunction t.Metatable (e.Args) e.BehaviorName =
+  e.BehaviorName : {
+    '__Meta_Mu' =
+      e.Args : {
+      t.Function e.Arg (Symbol Name e.MetatableName) =
+      t.Function : {
+        (Symbol Name e.Name) = (
+          ((CallBrackets (Symbol Name e.Name) e.Arg))
+          (()()) ()
+        );
+
+        (ClosureBrackets e.Body) =
+        (
+          ((CallBrackets (ClosureBrackets e.Body) e.Arg))
+          (()()) ()
+        );
+
+        (Symbol Identifier e.Name) = t.Metatable : {
+          (Metatable s.ScopeClass (e._)
+           Metatable e.Left ((Symbol Identifier e.Name) t.SymbolName) e.Right) = (
+            ((CallBrackets t.SymbolName e.Arg))
+            (()()) ()
+          );
+          e.Other = <MakeColdSolution t.IntrinsicFunction e.Args>;
+        };
+
+        (Brackets e.Chars) = <MapAccum
+            {
+              (e.Result) (Symbol Char s.1) e.Rest = (e.Result s.1) e.Rest;
+            }
+            () e.Chars
+          > : (e.Name) e._
+          = (
+            ((CallBrackets (Symbol Name e.Name) e.Arg))
+            (()()) ()
+          )
+        ;
+
+        e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
+      };
+
+      e.Other = <MakeColdSolution t.IntrinsicFunction e.Args>
+    };
+
+    'Add' = e.Args : {
+      (Symbol Number s.1) (Symbol Number s.2) =
+        (
+          ((Symbol Number <Add s.1 s.2>)) (()()) ()
+        );
+
+      (Brackets e.Numbers1) e.Numbers2 =
+        <Add (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : e.Result
+        = <NumberToSymbols e.Result> : e.Result^
+        =
+        (
+          (e.Result) (()()) ()
+        );
+
+      (Symbol Number 0) (ColdCallBrackets (Symbol Name e.Name) e.Body),
+      <OneOf (e.Name) <ArithmeticFunctions>> : True =
+        (
+          ((ColdCallBrackets (Symbol Name e.Name) e.Body)) (()()) ()
+        );
+
+      (ColdCallBrackets (Symbol Name e.Name) e.Body) (Symbol Number 0),
+      <OneOf (e.Name) <ArithmeticFunctions>> : True =
+      (
+        ((ColdCallBrackets (Symbol Name e.Name) e.Body)) (()()) ()
+      );
+      e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
+    };
+
+    'Sub' = e.Args : {
+      (Symbol Number s.1) (Symbol Number s.2) =
+      (
+        ((Symbol Number <Sub s.1 s.2>)) (()()) ()
+      );
+
+      (Brackets e.Numbers1) e.Numbers2 =
+        <Sub (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : e.Result
+        = <NumberToSymbols e.Result> : e.Result^
+        =
+        (
+          (e.Result) (()()) ()
+        );
+
+      (ColdCallBrackets (Symbol Name e.Name) e.Body) (Symbol Number 0),
+      <OneOf (e.Name) <ArithmeticFunctions>> : True =
+      (
+        ((ColdCallBrackets (Symbol Name e.Name) e.Body)) (()()) ()
+      );
+
+      e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
+    };
+
+    'Mul' = e.Args : {
+      (Symbol Number s.1) (Symbol Number s.2) =
+      (
+        ((Symbol Number <Mul s.1 s.2>)) (()()) ()
+      );
+
+      (Brackets e.Numbers1) e.Numbers2 =
+        <Mul (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : e.Result
+        = <NumberToSymbols e.Result> : e.Result^
+        =
+        (
+          (e.Result) (()()) ()
+        );
+
+      (ColdCallBrackets (Symbol Name e.Name) e.Body) (Symbol Number 1),
+      <OneOf (e.Name) <ArithmeticFunctions>> : True =
+      (
+        ((ColdCallBrackets (Symbol Name e.Name) e.Body)) (()()) ()
+      );
+
+      (Symbol Number 1) (ColdCallBrackets (Symbol Name e.Name) e.Body),
+      <OneOf (e.Name) <ArithmeticFunctions>> : True =
+      (
+        ((ColdCallBrackets (Symbol Name e.Name) e.Body)) (()()) ()
+      );
+
+      e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
+    };
+
+    'Div' = e.Args : {
+        (Symbol Number s.1) (Symbol Number s.2) =
+        (
+          ((Symbol Number <Div s.1 s.2>)) (()()) ()
+        );
+
+        (Brackets e.Numbers1) e.Numbers2
+        = <Div (<SymbolsToNumber e.Numbers1> ) <SymbolsToNumber e.Numbers2>> : e.Result
+        = <NumberToSymbols e.Result> : e.Result^
+        =
+        (
+          (e.Result) (()()) ()
+        );
+
+        (ColdCallBrackets (Symbol Name e.Name) e.Body) (Symbol Number 1),
+        <OneOf (e.Name) <ArithmeticFunctions>> : True =
+        (
+          ((ColdCallBrackets (Symbol Name e.Name) e.Body)) (()()) ()
+        );
+
+        e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
+      };
+
+    'Mod' = e.Args : {
+      (Symbol Number s.1) (Symbol Number s.2) =
+      (
+        ((Symbol Number <Mod s.1 s.2>)) (()()) ()
+      );
+
+      (Brackets e.Numbers1) e.Numbers2 =
+        <Mod (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : e.Result
+        = <NumberToSymbols e.Result> : e.Result^
+        =
+        (
+          (e.Result) (()()) ()
+        );
+
+    e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
+  };
+
+    'Divmod' = e.Args : {
+      (Symbol Number s.1) (Symbol Number s.2) =
+      <Divmod s.1 s.2> : (s.Q) s.R
+      =
+      (
+        ((Brackets (Symbol Number s.Q)) (Symbol Number s.R)) (()()) ()
+      );
+
+      (Brackets e.Numbers1) e.Numbers2 =
+        <Divmod (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : (e.Q) e.R
+        = <NumberToSymbols e.Q> : e.Q^
+        = <NumberToSymbols e.R> : e.R^
+        =
+        (
+          ((Brackets e.Q) e.R) (()()) ()
+        );
+
+      (ColdCallBrackets (Symbol Name e.Name) e.Body) (Symbol Number 1),
+      <OneOf (e.Name) <ArithmeticFunctions>> : True =
+      (
+        ((Brackets (ColdCallBrackets (Symbol Name e.Name) e.Body)) (Symbol Number 0)) (()()) ()
+      );
+
+      e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
+    };
+
+    'Compare' = e.Args : {
+      (Symbol Number s.1) (Symbol Number s.2)
+      = <Compare s.1 s.2> : s.Result
+      = (
+        ((Symbol Char s.Result)) (()()) ()
+      );
+
+      (Brackets e.Numbers1) e.Numbers2
+      = <Compare (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : s.Result
+      = (
+        ((Symbol Char s.Result)) (()()) ()
+      );
+
+      e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
+    };
+
+    e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
+  }
+}
+
 /* 
   <OptSentence-MakeSubstitutions
-    t.Mode (e.OriginSentence) (e.CallArgs) t.OptFunction
+    t.Mode (e.OriginSentence) (e.CallArgs) t.OptFunction t.Metatable
   >
     == (e.SolutionsPack)*
   e.SolutionsPack ::= (e.ReplacedExpr) t.Solution* (e.NewFunctions)
   t.Solution ::= (e.Contractions) (e.Assignments)
 */
 OptSentence-MakeSubstitutions {
+  (s.DriveMode Intrinsic)
+  ((e.Left) (e.Expr)) (e.Args)
+  (Intrinsic s.ScopeClass (e.IntrinsicName) Intrinsic e.BehaviorName) t.Metatable
+    = (Intrinsic s.ScopeClass (e.IntrinsicName) Intrinsic e.BehaviorName) : t.IntrinsicFunction
+    = <Prout Expr e.Expr> <Prout Metatable t.Metatable> : e._
+    = <DoOptSentence-MakeSubstitutions-Intrinsic t.IntrinsicFunction t.Metatable (e.Args) e.BehaviorName>;
+
   t.Mode
   ((e.Left) (e.Expr)) (e.Args)
-  t.Function
-
+  t.Function t._
     /* Активные вызовы игнорируем */
     , <IsPassiveCall e.Args> : False
 
@@ -381,7 +627,7 @@ OptSentence-MakeSubstitutions {
 
   (s.DriveMode s.IntrinsicMode)
   ((e.Left) (e.Expr)) (e.Args)
-  (s.FuncMode s.ScopeClass (e.Name) Sentences e.Body)
+  (s.FuncMode s.ScopeClass (e.Name) Sentences e.Body) t._
     , <OneOf s.DriveMode Drive Inline> : True
 
     /* Если левая часть не L-выражение, допускаем только встраивание */
@@ -400,9 +646,10 @@ OptSentence-MakeSubstitutions {
         (/* substitutions */)
         (Function s.ScopeClass (e.Name) Sentences e.Body)
       >;
+
   t.Mode
   ((e.Left) (e.Expr)) (e.Args)
-  t.Function
+  t.Function t._
     = <MakeColdSolution t.Function e.Args>;
 }
 
@@ -516,6 +763,8 @@ FindOptInfo-Aux {
     = e.Body : Sentences e.Sentences
     = e.OptFuncs-B (s.Mode s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
       (s.Mode s.ScopeClass (e.Name) Sentences <DropLeft e.Sentences s.Drop>);
+
+  e.Other = ()
 }
 
 $DRIVE CutSUF;
@@ -562,8 +811,11 @@ FindOptimizedCall-Term {
 
 *       Функция, не подлежащая оптимизации. Остужаем вызов.
         (e.OptFuncNames^ None) e.Arg^
-          = (e.OptFuncNames None)
+          = e.Name : {
+            '__Step-Drop' = (e.OptFuncNames None);
+            e._ = (e.OptFuncNames None)
             (ColdCallBrackets (Symbol Name e.Name) e.Arg);
+          };
 
 *       Внутри аргумента найден оптимизируемый вызов
         (e.OptFuncNames^ t.Found) e.Arg^
