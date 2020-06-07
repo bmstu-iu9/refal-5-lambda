@@ -34,7 +34,7 @@ OptTree-AutoMarkup-GetWalkOrder-ProcessGraphNode {
       : e.ProcessedBagWithMe
     = <MapAccum
         {
-          ((e.ProcessedBagAccumed) (e.OrderAccumed)) 
+          ((e.ProcessedBagAccumed) (e.OrderAccumed))
           (e.ChildName)
             = <OptTree-AutoMarkup-Contains 
                 (e.ChildName) 
@@ -77,15 +77,15 @@ OptTree-AutoMarkup-GetWalkOrder {
                     = ((e.ProcessedBag) (e.Order));
 
                   False
-                    = <OptTree-AutoMarkup-GetWalkOrder-ProcessGraphNode 
-                      (Func (e.Name) Children (e.Children)) 
-                      (e.ProcessedBag)
-                      (e.Order) 
-                      (e.Graph)
+                    = <OptTree-AutoMarkup-GetWalkOrder-ProcessGraphNode
+                        (Func (e.Name) Children (e.Children)) 
+                        (e.ProcessedBag)
+                        (e.Order) 
+                        (e.Graph)
                       >;
                 };
         }
-        ((/*processedBag*/)(/*order*/)) e.Graph
+        ((/*processedBag*/) (/*order*/)) e.Graph
       > 
       : ((e.ProcessedBagRes) (e.OrderRes))
     = (e.OrderRes);
@@ -172,7 +172,7 @@ OptTree-AutoMarkup-GetExtractedComponents {
                       );
                 };
         }
-        ((/*processedBag*/)(/*extractedComponents*/)) e.WalkOrder
+        ((/*processedBag*/) (/*extractedComponents*/)) e.WalkOrder
       > 
       : ((e.ProcessedBagRes) (e.ExtractedComponentsRes))
     = (e.ExtractedComponentsRes);

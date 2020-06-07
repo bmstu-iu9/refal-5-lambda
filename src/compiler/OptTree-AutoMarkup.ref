@@ -9,6 +9,9 @@ $EXTERN DisplayName;
 *$FROM OptTree-AutoMarkup-GraphExtractor
 $EXTERN OptTree-AutoMarkup-ExtractFunctionCallsGraph;
 
+*$FROM OptTree-AutoMarkup-SpecializableExtractor
+$EXTERN OptTree-AutoMarkup-GetSpecializableDict;
+
 *$FROM OptTree-AutoMarkup-BasisVertexesExtractor
 $EXTERN OptTree-AutoMarkup-ExtractBasisVertexes;
 
@@ -25,6 +28,8 @@ $ENTRY OptTree-AutoMarkup {
     = e.AST;
 
   OptAutoMarkup e.AST
+    = <OptTree-AutoMarkup-GetSpecializableDict (e.AST)> 
+      : e.SpecializableDict
     = <OptTree-AutoMarkup-ExtractFunctionCallsGraph e.AST> 
       : e.ExtractedGraph
     = <OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph> 
@@ -39,7 +44,8 @@ $ENTRY OptTree-AutoMarkup {
     = <OptTree-AutoMarkup-GetSetDifference 
         (e.DrivenFunctions) 
         (e.AlreadyMarkedFunctions)
-      > : (e.FunctionToDrive)
+      > 
+      : (e.FunctionToDrive)
     = <OptTree-AutoMarkup-GetUpdatedWithDrivenFunctionsAst 
         (e.AST) 
         (e.FunctionToDrive) 
@@ -73,7 +79,7 @@ OptTree-AutoMarkup-GetDrivenFunctions {
             = (e.FuncName);
 
           e.Other
-            =;
+            = ;
         }
         e.ExtractedGraph
       >

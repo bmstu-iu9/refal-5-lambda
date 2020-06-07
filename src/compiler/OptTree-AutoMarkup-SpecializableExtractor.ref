@@ -1,0 +1,256 @@
+$INCLUDE "LibraryEx";
+
+*$FROM GlobalGen
+$EXTERN GlobalGen;
+
+*$FROM GenericMatch
+$EXTERN GenericMatch;
+
+*$FROM Log
+$EXTERN Log-PutLine;
+
+/**
+  <OptTree-AutoMarkup-GetSpecializableDict (e.AST)> 
+    == ((e.FuncName) '->' ((e.TypedVariable)+))
+
+  e.TypedVariable = {s.VariableType}
+                    {STAT | dyn}
+                    {index}
+*/
+
+$ENTRY OptTree-AutoMarkup-GetSpecializableDict {
+  (e.AST)
+    = <Map 
+        {
+          (Function s.ScopeClass (e.Name) Sentences e.Body)
+            = <Map 
+                {
+                  ((e.Pattern) e.Conditions (e.Result))
+                    = (e.Pattern);
+
+                  e.Other
+                    = <Log-PutLine '??' e.Other >;
+                } 
+                e.Body
+              > : e.ExtractedPatterns
+            = <OptTree-AutoMarkup-ContainsDuplications
+                (e.ExtractedPatterns)
+              > 
+              : {
+                  True
+                    = (NOTSPECIALIZABLE (e.Name));
+
+                  False
+                    = <OptTree_AutoMarkup-GetSpecifiedPattern
+                        (e.ExtractedPatterns)
+                      > 
+                      : e.SpecifiedPattern
+                    = (SPECIALIZABLE (e.Name) '->' (e.SpecifiedPattern));
+                } : e.Result
+            = <Log-PutLine 'Spec res ' e.Result> :
+            = e.Result;
+            
+          e.Other
+            = ;
+        }
+        e.AST
+      >;
+
+  e.Other
+    = ;
+}
+
+OptTree-AutoMarkup-ContainsDuplications {
+  (e.ExtractedPatterns)
+    = <Map
+        {
+          (e.Patterns)
+            = <Map
+                &OptTree-AutoMarkup-GetPatternVariables
+                e.Patterns
+              >: e.Stm
+            = e.Stm
+              : {
+                  e.Head (e.Variable) e._ (e.Variable) e.Tail
+                    = (True);
+
+                  e.Other
+                    = (False);
+                };
+        }
+        e.ExtractedPatterns
+      > : {
+            e.Head (True) e.Tail
+              = True;
+
+            e.Other
+              = False;
+          }
+}
+
+OptTree-AutoMarkup-GetPatternVariables {
+  (TkVariable e.Name)
+    = (e.Name);
+
+  (Symbol Identifier VAR e.Name)
+    = (e.Name);
+
+  (Brackets e.Nested)
+    = <Map
+        {
+          (e.SubPattern)
+            = <OptTree-AutoMarkup-GetPatternVariables (e.SubPattern)>;
+        }
+        e.Nested
+      >;
+
+  (e.Other)
+    = ;
+}
+
+OptTree_AutoMarkup-GetSpecifiedPattern {
+  (e.ExtractedPatterns)
+    = <OptTree-AutoMarkup-GetIndexedGlobalGens (e.ExtractedPatterns)>
+      : e.IndexedGlobalGens
+    = <Map
+        {
+          (e.ConcretePattern)
+            = <GenericMatch 
+                (e.IndexedGlobalGens) 
+                (e.ConcretePattern)
+              > 
+              : e.GenericMatch
+            = (e.GenericMatch);
+        }
+        e.ExtractedPatterns
+      > 
+      : e.GenericMatches
+    = <OptTree-AutoMarkup-GetVariableMatches 
+        (e.GenericMatches) 
+        (e.IndexedGlobalGens)
+      > 
+      : e.VariableMatchesDict
+    = <OptTree-AutoMarkup-GetVariableTypes (e.VariableMatchesDict)>
+      : e.TypedVariables
+    = e.TypedVariables;
+}
+
+OptTree-AutoMarkup-GetIndexedGlobalGens {
+  ()
+    = ();
+
+  (e.Patterns)
+    = <GlobalGen e.Patterns> : e.GlobalGens
+    = <OptTree-AutoMarkup-FillIndexes (e.GlobalGens) 't'> : e.Result
+    = <OptTree-AutoMarkup-FillIndexes (e.Result) 'e'> : e.Result^
+    = <OptTree-AutoMarkup-FillIndexes (e.Result) 's'> : e.Result^
+    = e.Result;
+
+  e.Other
+    = ;
+}
+
+OptTree-AutoMarkup-FillIndexes {
+  (e.GlobalGens) s.Type
+    = <OptTree-AutoMarkup-FillIndexes (0) (e.GlobalGens) s.Type>
+      : (e._) e.IndexedTypeGlobalGens
+    = e.IndexedTypeGlobalGens;
+
+  (e.StartIndex) (e.GlobalGens) s.Type
+    = <MapAccum
+        {
+          (e.CurrentIndex) (TkVariable s.Type)
+            = TkVariable s.Type '.' e.CurrentIndex 
+              : e.IndexedVariable
+            = <Add e.CurrentIndex 1> 
+              : e.NewIndex
+            = (e.NewIndex) (e.IndexedVariable);
+
+          (e.CurrentIndex) (TkVariable e.Other)
+            = (e.CurrentIndex) (TkVariable e.Other);
+
+          (e.CurrentIndex) (Brackets e.Nested)
+            = <OptTree-AutoMarkup-FillIndexes 
+                (e.CurrentIndex) 
+                (e.Nested) 
+                s.Type
+              > 
+              : (e.NextIndex) e.IndexedTypeGlobalGens 
+            = (e.NextIndex) (Brackets e.IndexedTypeGlobalGens);
+
+          (e.CurrentIndex) (e.Other)
+            = (e.CurrentIndex) (e.Other);
+        }
+        (e.StartIndex) e.GlobalGens
+      >
+}
+
+
+OptTree-AutoMarkup-GetVariableMatches {
+  (e.GenericMatches) (e.IndexedGlobalGens)
+    = <Map 
+        {
+          (TkVariable e.VariableName)
+            = <Map
+                {
+                  (Clear e.Dict)
+                    = <OptTree-AutoMarkup-GetMatchesByVariableName
+                        (e.VariableName)
+                        (e.Dict)
+                      >;
+
+                  e.Other
+                    = ;
+                }
+                e.GenericMatches
+              > 
+              : e.CurrentVariableRes
+            = (e.VariableName ':' e.CurrentVariableRes);
+
+          e.Other
+            = ;
+        }
+        e.IndexedGlobalGens
+      >
+}
+
+OptTree-AutoMarkup-IsAllEqual {
+  (e.Single)
+    = True;
+
+  (e.Value) (e.Value)
+    = True;
+
+  (e.First) (e.Next) e.Tail
+    , e.Next : e.First
+    = <OptTree-AutoMarkup-IsAllEqual (e.First) e.Tail>;
+
+  e._
+    = False;
+}
+
+OptTree-AutoMarkup-GetMatchesByVariableName {
+  (e.Key) (e.Head ((TkVariable e.Key) ':' e.Value) e.Tail)
+    = (e.Value);
+
+  (e.Key) e.Other
+    = ;
+}
+
+OptTree-AutoMarkup-GetVariableTypes {
+  (e.VariableMatchesDict)
+    = <Map
+        {
+          (t.VariableType '.' t.VariableIndex ':' e.Matches)
+            = <OptTree-AutoMarkup-IsAllEqual e.Matches>
+              : {
+                  True
+                    = (t.VariableType '.STAT' t.VariableIndex);
+
+                  False
+                    = (t.VariableType '.dyn' t.VariableIndex);
+                }
+        }
+        e.VariableMatchesDict
+      >
+} 

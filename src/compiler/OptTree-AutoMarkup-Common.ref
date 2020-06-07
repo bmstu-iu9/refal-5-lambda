@@ -61,7 +61,7 @@ $ENTRY OptTree-AutoMarkup-GetElemByKey {
 	e.Children = (e._ (e.ChildName) e._)
 */
 
-$ENTRY OptTree-AutoMarkup-GetParents{
+$ENTRY OptTree-AutoMarkup-GetParents {
   (e.ChildName) (e.Graph)
     = <Map
         {

@@ -35,7 +35,7 @@ OptTree-AutoMarkup-GetMetatables {
 OptTree-AutoMarkup-GetFuncs {
   (Function s.ScopeClass (e.Name) Sentences e.Body)
     = <Map 
-        &OptTree-AutoMarkup-ExtractFunctionCallsFromSentencesBody 
+        &OptTree-AutoMarkup-ExtractFunctionCallsFromSentencesBody
         e.Body
       > 
       : e.FunctionCalls
@@ -74,17 +74,21 @@ OptTree-AutoMarkup-ExtractExpressionName {
         {
           (Symbol Name e.Name) 
             = (e.Name);
+
           (Brackets e.Nested) 
             = <OptTree-AutoMarkup-ExtractExpressionName e.Nested>;
+
           (ADT-Brackets (e.Name) e.Nested) 
             = <OptTree-AutoMarkup-ExtractExpressionName e.Nested>;
+
           (CallBrackets e.Nested) 
             = <OptTree-AutoMarkup-ExtractExpressionName e.Nested>;
+            
           (ClosureBrackets e.Nested) 
             = <OptTree-AutoMarkup-ExtractExpressionName e.Nested>;
 
           (t.Marker e.Smth)
-            =
+            = ;
         } 
         e.Expr
       >
