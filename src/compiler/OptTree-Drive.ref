@@ -348,7 +348,7 @@ OptSentence-Aux {
       Intrinsic = <FindOptInfo e.OptFuncs ('$table')> : {e._ t.Metatable = t.Metatable };
       s._ = ()
     } : t.Metatable
-    = <Prout FunctionForDrive (t.FunctionForDrive)> <Prout Args e.Args> <OptSentence-MakeSubstitutions
+    = <OptSentence-MakeSubstitutions
       (s.DriveMode s.IntrinsicMode) ((e.Left) (e.Right)) (e.Args) t.FunctionForDrive t.Metatable
       >
     : e.SolutionPacks
@@ -388,6 +388,19 @@ NumberToSymbols {
     }
     e.Number
   >
+}
+
+StaticSubstitution {
+  (e.Args) (e.FuncName) s.Func s.SymbolFrom s.SymbolTo =
+  <MapAccum
+    {
+      (e.Result) (Symbol s.SymbolFrom s.n) e.Rest = (e.Result (Symbol s.SymbolTo <s.Func s.n>)) e.Rest;
+      (e.Result) (TkVariable e.Var) e.Rest = (e.Result (ColdCallBrackets (Symbol Name e.FuncName) (TkVariable e.Var))) e.Rest;
+      (e.Result) (Brackets e.Body) e.Rest = (e.Result (Brackets <StaticSubstitution (e.Body) (e.FuncName) s.Func s.SymbolFrom s.SymbolTo>)) e.Rest
+    }
+    () e.Args
+  > : (e.Result) e._
+  = e.Result
 }
 
 DoOptSentence-MakeSubstitutions-Intrinsic {
@@ -597,6 +610,30 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
       e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
     };
 
+    'Chr'
+    = <StaticSubstitution (e.Args) ('Chr') &Chr Number Char> : e.Substitution
+    = (
+      (e.Substitution) (()()) ()
+    );
+
+    'Ord'
+    = <StaticSubstitution (e.Args) ('Ord') &Ord Char Number> : e.Substitution
+    = (
+      (e.Substitution) (()()) ()
+    );
+
+    'Upper'
+    = <StaticSubstitution (e.Args) ('Upper') &Upper Char Char> : e.Substitution
+    = (
+      (e.Substitution) (()()) ()
+    );
+
+    'Lower'
+    = <StaticSubstitution (e.Args) ('Lower') &Lower Char Char> : e.Substitution
+    = (
+      (e.Substitution) (()()) ()
+    );
+
     e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
   }
 }
@@ -614,7 +651,6 @@ OptSentence-MakeSubstitutions {
   ((e.Left) (e.Expr)) (e.Args)
   (Intrinsic s.ScopeClass (e.IntrinsicName) Intrinsic e.BehaviorName) t.Metatable
     = (Intrinsic s.ScopeClass (e.IntrinsicName) Intrinsic e.BehaviorName) : t.IntrinsicFunction
-    = <Prout Expr e.Expr> <Prout Metatable t.Metatable> : e._
     = <DoOptSentence-MakeSubstitutions-Intrinsic t.IntrinsicFunction t.Metatable (e.Args) e.BehaviorName>;
 
   t.Mode

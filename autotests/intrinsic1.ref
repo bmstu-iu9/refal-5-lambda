@@ -18,7 +18,7 @@ $ENTRY Go {
     = <Add 1 2> : 3
     = <Add (2 3) 1> : 2 4
     = <Add (1) 2 3> : 2 4
-    = <Numb '2'> : e.z
+    = <ConstValue 1> : e.z
     = <Add 0 <Mul 2 e.z>> : 4
     = <Sub 8 5> : 3
     = <Sub <Mul 2 e.z> 0> : 4
@@ -39,6 +39,10 @@ $ENTRY Go {
     = <Compare 10 10> : '0'
     = <Compare (1 2) 2 3> : '-'
     = /* empty */
+}
+
+ConstValue {
+  1 = 2
 }
 
 Rev {
