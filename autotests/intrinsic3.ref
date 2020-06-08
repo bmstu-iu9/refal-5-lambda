@@ -2,6 +2,8 @@
 
 $INTRINSIC Numb, Symb;
 $INTRINSIC Explode, Implode, Implode_Ext, Explode_Ext;
+$INTRINSIC Type;
+$INTRINSIC First, Last, Lenw;
 
 $ENTRY Go {
   /* empty */
@@ -9,7 +11,41 @@ $ENTRY Go {
     = <Numb '-101'> : '-' 101
     = <Symb 101> : '101'
     = <Symb '-' 101> : '-101'
+
+    = <Implode 'abcd'> : abcd
+    = <Explode abcd> : 'abcd'
+    = <Implode_Ext 'abcd'> : abcd
+    = <Explode_Ext abcd> : 'abcd'
+
+    = <Type 'a' b 1> : 'Lla' b 1
+    = <Type 1 b 1> : 'N0' 1 b 1
+    = <Type a b 1> : 'Wi' a b 1
+
+    = <Lenw 'abc'> : 3 'abc'
+    = <ConstValue 3> : s.x
+    = <Lenw 'a' s.x 'c'> : 3 'abc'
+    = <ConstValue 3> : e.y
+    = <Lenw 'a' e.y 'c'> : 3 'abc'
+
+    = <First 2 a (1 2) b c> : (a (1 2)) b c
+    = <ConstValue 4> : s.x2
+    = <First 2 s.x2 (1 2) b c> : (a (1 2)) b c
+    = <ConstValue 4> : e.y2
+    = <First 2 e.y2 (1 2) b c> : (a (1 2)) b c
+
+    = <Last 1 a (1 2) b c> : (a (1 2) b) c
+    = <ConstValue 4> : s.x2
+    = <Last 1 s.x2 (1 2) b c> : (a (1 2) b) c
+    = <ConstValue 4> : e.y2
+    = <Last 1 e.y2 (1 2) b c> : (a (1 2) b) c
     = /* empty */
+}
+
+ConstValue {
+    1 = 1 2;
+    2 = 2;
+    3 = 'b';
+    4 = a
 }
 
 Numb {
@@ -20,4 +56,38 @@ Numb {
 Symb {
     101 = '101';
     '-' 101 = '-101'
+}
+
+Implode {
+    'abcd' = abcd
+}
+
+Explode {
+    abcd = 'abcd'
+}
+
+Implode_Ext {
+    'abcd' = abcd
+}
+
+Explode_Ext {
+    abcd = 'abcd'
+}
+
+Type {
+    'a' b 1 = 'Lla' b 1;
+    1 b 1 = 'N0' 1 b 1;
+    a b 1 = 'Wi' a b 1
+}
+
+Lenw {
+    'abc' = 3 'abc';
+}
+
+First {
+    2 a (1 2) b c = (a (1 2)) b c;
+}
+
+Last {
+    1 a (1 2) b c = (a (1 2) b) c;
 }

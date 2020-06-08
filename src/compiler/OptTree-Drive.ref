@@ -433,6 +433,14 @@ CheckArgs-Intrinsic-Symb {
   = True;
 }
 
+CheckArgs-Intrinsic-EVariable {
+  (Symbol s.SymbolName e.Name) e.Rest = <CheckArgs-Intrinsic-EVariable e.Rest>;
+  (Brackets e.Body) e.Rest = <CheckArgs-Intrinsic-EVariable e.Rest>;
+  (TkVariable s.Mode e.VarName) e.Rest, <OneOf s.Mode 't' 's'> : True = <CheckArgs-Intrinsic-EVariable e.Rest>;
+  t.Other e.Rest = False;
+  = True;
+}
+
 SignedArithmeticResult {
   s.Res e.ResSign
   = e.ResSign : {
@@ -825,6 +833,93 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
       = (
         (e.Result) (()()) ()
       );
+
+    'Implode'
+    , <CheckArgs-Intrinsic (e.Args) Char> : True
+      = <NodeToChar e.Args> : e.Chars
+      = (
+        ((Symbol Identifier e.Chars)) (()()) ()
+      );
+
+    'Implode_Ext'
+    , <CheckArgs-Intrinsic (e.Args) Char> : True
+      = <NodeToChar e.Args> : e.Chars
+      = (
+        ((Symbol Identifier e.Chars)) (()()) ()
+      );
+
+    'Explode'
+    , <CheckArgs-Intrinsic (e.Args) Identifier> : True
+      = e.Args : {
+        (Symbol Identifier e.Name) = <CharToNode e.Name>
+      } : e.Result
+      = (
+        (e.Result) (()()) ()
+      );
+
+    'Explode_Ext'
+    , <CheckArgs-Intrinsic (e.Args) Identifier> : True
+      = e.Args : {
+        (Symbol Identifier e.Name) = <CharToNode e.Name>
+      } : e.Result
+      = (
+        (e.Result) (()()) ()
+      );
+
+    'Type'
+    = e.Args : {
+      (Symbol Number s.Num) e.Rest =
+      <Type s.Num> : s.Type s.SubType e._
+      = <CharToNode s.Type s.SubType> : e.Result
+      = (
+        (e.Result (Symbol Number s.Num) e.Rest) (()()) ()
+      );
+
+      (Symbol Char s.Char) e.Rest =
+      <Type s.Char> : s.Type s.SubType e._
+      = <CharToNode s.Type s.SubType> : e.Result
+      = (
+        (e.Result (Symbol Char s.Char) e.Rest) (()()) ()
+      );
+
+      (Symbol Identifier e.Name) e.Rest =
+      <Type <Implode e.Name>> : s.Type s.SubType e._
+      = <CharToNode s.Type s.SubType> : e.Result
+      = (
+        (e.Result (Symbol Identifier e.Name) e.Rest) (()()) ()
+      );
+    };
+
+    'Lenw'
+    , <CheckArgs-Intrinsic-EVariable e.Args> : True
+    = <Lenw e.Args> : s.Len e._
+    = (
+      ((Symbol Number s.Len) e.Args) (()()) ()
+    );
+
+    'First'
+    = e.Args : {
+      (Symbol Number s.N) e.Expr
+      , <CheckArgs-Intrinsic-EVariable e.Expr> : True
+      = <First s.N e.Expr> : (e.Prefix) e.Suffix
+      = (
+        ((Brackets e.Prefix) e.Suffix) (()()) ()
+      );
+
+      e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
+    };
+
+    'Last'
+    = e.Args : {
+      (Symbol Number s.N) e.Expr
+      , <CheckArgs-Intrinsic-EVariable e.Expr> : True
+      = <Last s.N e.Expr> : (e.Prefix) e.Suffix
+      = (
+        ((Brackets e.Prefix) e.Suffix) (()()) ()
+      );
+
+      e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
+    };
 
     e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
   }
