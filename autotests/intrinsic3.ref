@@ -1,0 +1,23 @@
+* TREE
+
+$INTRINSIC Numb, Symb;
+$INTRINSIC Explode, Implode, Implode_Ext, Explode_Ext;
+
+$ENTRY Go {
+  /* empty */
+    = <Numb '101'> : 101
+    = <Numb '-101'> : '-' 101
+    = <Symb 101> : '101'
+    = <Symb '-' 101> : '-101'
+    = /* empty */
+}
+
+Numb {
+    '101' = 101;
+    '-101' = '-' 101
+}
+
+Symb {
+    101 = '101';
+    '-' 101 = '-101'
+}
