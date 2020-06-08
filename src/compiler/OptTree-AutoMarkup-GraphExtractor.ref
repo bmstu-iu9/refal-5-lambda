@@ -4,7 +4,7 @@ $INCLUDE "LibraryEx";
 $EXTERN DisplayName;
 
 /**
-  <OptTree-AutoMarkup-ExtractGraph  e.AST> == e.FunctionCallsGraph
+  <OptTree-AutoMarkup-ExtractGraph e.AST> == e.FunctionCallsGraph
 */
 
 $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
@@ -22,7 +22,7 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
 OptTree-AutoMarkup-GetMetatables {
   (Function s.ScopeClass (e.Name) Metatable e.Metatable)
     = <Map 
-        &OptTree-AutoMarkup-ExtractFunctionCallsFromMetatable 
+        &OptTree-AutoMarkup-ExtractFunctionCallsFromMetatable
         e.Metatable
       > 
       : e.FunctionCalls
@@ -58,7 +58,7 @@ OptTree-AutoMarkup-ExtractFunctionCallsFromSentencesBody {
     = <Map
         {
           (Condition (e.Name) (e.Result^) (e.Pattern^))
-            = <OptTree-AutoMarkup-ExtractExpressionName e.Result> 
+            = <OptTree-AutoMarkup-ExtractExpressionName e.Result>
               <OptTree-AutoMarkup-ExtractExpressionName e.Pattern>;
         }
         e.Conditions
@@ -83,7 +83,7 @@ OptTree-AutoMarkup-ExtractExpressionName {
 
           (CallBrackets e.Nested) 
             = <OptTree-AutoMarkup-ExtractExpressionName e.Nested>;
-            
+
           (ClosureBrackets e.Nested) 
             = <OptTree-AutoMarkup-ExtractExpressionName e.Nested>;
 

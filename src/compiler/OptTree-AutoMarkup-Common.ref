@@ -13,7 +13,7 @@ $ENTRY OptTree-AutoMarkup-GetSetDifference {
             = e.Node;
 
           e.Other
-            =;
+            = ;
         }
         e.FirstSet
       > 
@@ -75,4 +75,12 @@ $ENTRY OptTree-AutoMarkup-GetParents {
       > 
       : e.Res
     = (e.Res)
+}
+
+$ENTRY OptTree-AutoMarkup-IsEmpty {
+  ()
+    = True;
+  
+  e.Other
+    = False;
 }

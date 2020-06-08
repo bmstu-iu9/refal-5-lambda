@@ -16,7 +16,9 @@ $EXTERN OptTree-AutoMarkup-GetSpecializableDict;
 $EXTERN OptTree-AutoMarkup-ExtractBasisVertexes;
 
 *$FROM OptTree-AutoMarkup-Common
-$EXTERN OptTree-AutoMarkup-Contains, OptTree-AutoMarkup-GetSetDifference;
+$EXTERN OptTree-AutoMarkup-Contains,
+        OptTree-AutoMarkup-GetSetDifference,
+        OptTree-AutoMarkup-IsEmpty;
 
 /**
   <OptTree-AutoMarkup s.OptAutoMarkup e.AST> == e.AST
@@ -30,27 +32,66 @@ $ENTRY OptTree-AutoMarkup {
   OptAutoMarkup e.AST
     = <OptTree-AutoMarkup-GetSpecializableDict (e.AST)> 
       : e.SpecializableDict
-    = <OptTree-AutoMarkup-ExtractFunctionCallsGraph e.AST> 
+    = <OptTree-AutoMarkup-GetForbiddenToSpecializeFunctionNames (e.AST)>
+      : e.ForbiddenToSpecializeFunctionNames
+    = <OptTree-AutoMarkup-GetSpecializePatterns
+        (e.SpecializableDict)
+        (e.ForbiddenToSpecializeFunctionNames)
+      >
+      : e.SpecPatterns
+    = <OptTree-AutoMarkup-ExtractFunctionCallsGraph e.AST>
       : e.ExtractedGraph
-    = <OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph> 
+    = <OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph>
       : e.BasisVertexes
-    = <OptTree-AutoMarkup-GetDrivenFunctions 
-        (e.ExtractedGraph) 
-        (e.BasisVertexes) 
-      > 
-      : e.DrivenFunctions
-    = <OptTree-AutoMarkup-GetAlreadyMarkedFunctions e.AST> 
-      : e.AlreadyMarkedFunctions
-    = <OptTree-AutoMarkup-GetSetDifference 
-        (e.DrivenFunctions) 
-        (e.AlreadyMarkedFunctions)
-      > 
-      : (e.FunctionToDrive)
-    = <OptTree-AutoMarkup-GetUpdatedWithDrivenFunctionsAst 
-        (e.AST) 
-        (e.FunctionToDrive) 
+    = <OptTree-AutoMarkup-GetDrivenFunctions
+        (e.ExtractedGraph)
         (e.BasisVertexes)
-      >;
+      >
+      : e.DrivenFunctions
+    = <OptTree-AutoMarkup-GetAlreadyMarkedFunctions e.AST>
+      : e.AlreadyMarkedFunctions
+    = <OptTree-AutoMarkup-GetSetDifference
+        (e.DrivenFunctions)
+        (e.AlreadyMarkedFunctions)
+      >
+      : (e.FunctionToDrive)
+    = <OptTree-AutoMarkup-GetUpdatedWithDrivenFunctionsAst
+        (e.AST)
+        (e.FunctionToDrive)
+        (e.BasisVertexes)
+      >
+      : e.DrivedAst
+    = e.DrivedAst;
+}
+
+OptTree-AutoMarkup-GetForbiddenToSpecializeFunctionNames {
+  (e.AST)
+    = <Map
+        {
+          (Spec (e.Name) e.SpecPattern)
+            = (e.Name);
+
+          e.Other
+            = ;
+        }
+        e.AST
+      >
+}
+
+OptTree-AutoMarkup-GetSpecializePatterns {
+  (e.SpecializableDict) (e.Filter)
+    = <Map
+        {
+          (SPECIALIZABLE (e.FuncName) '->' (e.SpecifiedPattern))
+            , <OptTree-AutoMarkup-Contains (e.FuncName)(e.Filter)> : False
+            , <OptTree-AutoMarkup-IsEmpty (e.SpecifiedPattern)> : False
+            = (Spec e.FuncName e.SpecifiedPattern);
+
+          e.Other
+            = ;
+        }
+        e.SpecializableDict
+      >
 }
 
 OptTree-AutoMarkup-GetAlreadyMarkedFunctions {
@@ -58,8 +99,8 @@ OptTree-AutoMarkup-GetAlreadyMarkedFunctions {
     = <Map
         {
           (s.Label e.Name)
-            , <OptTree-AutoMarkup-Contains 
-                (s.Label) 
+            , <OptTree-AutoMarkup-Contains
+                (s.Label)
                 ((Drive)(Inline)(Intrinsic))
               > : True
             = (e.Name);
@@ -93,16 +134,19 @@ OptTree-AutoMarkup-GetUpdatedWithDrivenFunctionsAst {
             = (Drive e.FuncName);
         }
         e.FunctionsToDrive
-      > : e.DrivedFunctions
+      > 
+      : e.DrivedFunctions
     = <Map
         {
           (Drive e.Name)
             , e.BasisVertexes : e._ (e.Name) e._
             = ;
 
-          t.Other = t.Other;
+          t.Other 
+            = t.Other;
         }
         e.AST
-      > : e.ClearAST
+      > 
+      : e.ClearAST
     = e.ClearAST e.DrivedFunctions;
 }

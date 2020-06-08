@@ -22,23 +22,24 @@ $ENTRY OptTree-AutoMarkup-GetSpecializableDict {
   (e.AST)
     = <Map 
         {
-          (Function s.ScopeClass (e.Name) Sentences e.Body)
+          (Function s.ScopeClass (e.Name) Sentences e.Body) 
             = <Map 
                 {
                   ((e.Pattern) e.Conditions (e.Result))
                     = (e.Pattern);
 
                   e.Other
-                    = <Log-PutLine '??' e.Other >;
+                    = ;
                 } 
                 e.Body
-              > : e.ExtractedPatterns
+              > 
+              : e.ExtractedPatterns
             = <OptTree-AutoMarkup-ContainsDuplications
                 (e.ExtractedPatterns)
               > 
               : {
                   True
-                    = (NOTSPECIALIZABLE (e.Name));
+                    =(NOTSPECIALIZABLE (e.Name));
 
                   False
                     = <OptTree_AutoMarkup-GetSpecifiedPattern
@@ -46,9 +47,7 @@ $ENTRY OptTree-AutoMarkup-GetSpecializableDict {
                       > 
                       : e.SpecifiedPattern
                     = (SPECIALIZABLE (e.Name) '->' (e.SpecifiedPattern));
-                } : e.Result
-            = <Log-PutLine 'Spec res ' e.Result> :
-            = e.Result;
+              };
             
           e.Other
             = ;
@@ -68,7 +67,8 @@ OptTree-AutoMarkup-ContainsDuplications {
             = <Map
                 &OptTree-AutoMarkup-GetPatternVariables
                 e.Patterns
-              >: e.Stm
+              >
+              : e.Stm
             = e.Stm
               : {
                   e.Head (e.Variable) e._ (e.Variable) e.Tail
@@ -79,13 +79,14 @@ OptTree-AutoMarkup-ContainsDuplications {
                 };
         }
         e.ExtractedPatterns
-      > : {
-            e.Head (True) e.Tail
-              = True;
+      > 
+      : {
+          e.Head (True) e.Tail
+            = True;
 
-            e.Other
-              = False;
-          }
+          e.Other
+            = False;
+        }
 }
 
 OptTree-AutoMarkup-GetPatternVariables {
@@ -127,7 +128,7 @@ OptTree_AutoMarkup-GetSpecifiedPattern {
       : e.GenericMatches
     = <OptTree-AutoMarkup-GetVariableMatches 
         (e.GenericMatches) 
-        (e.IndexedGlobalGens)
+        (e.IndexedGlobalGens) 
       > 
       : e.VariableMatchesDict
     = <OptTree-AutoMarkup-GetVariableTypes (e.VariableMatchesDict)>
@@ -140,14 +141,18 @@ OptTree-AutoMarkup-GetIndexedGlobalGens {
     = ();
 
   (e.Patterns)
-    = <GlobalGen e.Patterns> : e.GlobalGens
-    = <OptTree-AutoMarkup-FillIndexes (e.GlobalGens) 't'> : e.Result
-    = <OptTree-AutoMarkup-FillIndexes (e.Result) 'e'> : e.Result^
-    = <OptTree-AutoMarkup-FillIndexes (e.Result) 's'> : e.Result^
+    = <GlobalGen e.Patterns> 
+      : e.GlobalGens
+    = <OptTree-AutoMarkup-FillIndexes (e.GlobalGens) 't'>
+      : e.Result
+    = <OptTree-AutoMarkup-FillIndexes (e.Result) 'e'>
+      : e.Result^
+    = <OptTree-AutoMarkup-FillIndexes (e.Result) 's'>
+      : e.Result^
     = e.Result;
 
   e.Other
-    = ;
+    =;
 }
 
 OptTree-AutoMarkup-FillIndexes {
@@ -162,7 +167,7 @@ OptTree-AutoMarkup-FillIndexes {
           (e.CurrentIndex) (TkVariable s.Type)
             = TkVariable s.Type '.' e.CurrentIndex 
               : e.IndexedVariable
-            = <Add e.CurrentIndex 1> 
+            = <Add e.CurrentIndex 1>
               : e.NewIndex
             = (e.NewIndex) (e.IndexedVariable);
 
@@ -175,14 +180,14 @@ OptTree-AutoMarkup-FillIndexes {
                 (e.Nested) 
                 s.Type
               > 
-              : (e.NextIndex) e.IndexedTypeGlobalGens 
+              : (e.NextIndex) e.IndexedTypeGlobalGens
             = (e.NextIndex) (Brackets e.IndexedTypeGlobalGens);
 
           (e.CurrentIndex) (e.Other)
             = (e.CurrentIndex) (e.Other);
         }
         (e.StartIndex) e.GlobalGens
-      >
+      > 
 }
 
 
