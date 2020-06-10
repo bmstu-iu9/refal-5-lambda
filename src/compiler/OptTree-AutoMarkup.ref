@@ -39,6 +39,7 @@ $ENTRY OptTree-AutoMarkup {
         (e.ForbiddenToSpecializeFunctionNames)
       >
       : e.SpecPatterns
+    = <Log-PutLine 'SpecPatterns ' e.SpecPatterns> :
     = <OptTree-AutoMarkup-ExtractFunctionCallsGraph e.AST>
       : e.ExtractedGraph
     = <OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph>
@@ -70,6 +71,14 @@ OptTree-AutoMarkup-GetForbiddenToSpecializeFunctionNames {
         {
           (Spec (e.Name) e.SpecPattern)
             = (e.Name);
+
+          (Function s.ScopeClass (e.FuncName) Sentences e.Body) 
+            , (e.FuncName) : (e.FuncName '@' e.FuncNameTail) 
+            = (e.FuncName);
+
+          (Function s.ScopeClass (e.FuncName) Sentences e.Body)
+            , (e.FuncName) : (e.FuncNameMain SUF e.FuncNameTail) 
+            = (e.FuncName);
 
           e.Other
             = ;
@@ -142,7 +151,7 @@ OptTree-AutoMarkup-GetUpdatedWithDrivenFunctionsAst {
             , e.BasisVertexes : e._ (e.Name) e._
             = ;
 
-          t.Other 
+          t.Other
             = t.Other;
         }
         e.AST

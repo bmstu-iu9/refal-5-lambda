@@ -10,7 +10,7 @@ $EXTERN GenericMatch;
 $EXTERN Log-PutLine;
 
 /**
-  <OptTree-AutoMarkup-GetSpecializableDict (e.AST)> 
+  <OptTree-AutoMarkup-GetSpecializableDict (e.AST)>
     == ((e.FuncName) '->' ((e.TypedVariable)+))
 
   e.TypedVariable = {s.VariableType}
@@ -22,7 +22,7 @@ $ENTRY OptTree-AutoMarkup-GetSpecializableDict {
   (e.AST)
     = <Map 
         {
-          (Function s.ScopeClass (e.Name) Sentences e.Body) 
+          (Function s.ScopeClass (e.Name) Sentences e.Body)
             = <Map 
                 {
                   ((e.Pattern) e.Conditions (e.Result))
@@ -117,8 +117,8 @@ OptTree_AutoMarkup-GetSpecifiedPattern {
         {
           (e.ConcretePattern)
             = <GenericMatch 
-                (e.IndexedGlobalGens) 
                 (e.ConcretePattern)
+                (e.IndexedGlobalGens) 
               > 
               : e.GenericMatch
             = (e.GenericMatch);
@@ -152,7 +152,7 @@ OptTree-AutoMarkup-GetIndexedGlobalGens {
     = e.Result;
 
   e.Other
-    =;
+    = ;
 }
 
 OptTree-AutoMarkup-FillIndexes {
@@ -165,7 +165,7 @@ OptTree-AutoMarkup-FillIndexes {
     = <MapAccum
         {
           (e.CurrentIndex) (TkVariable s.Type)
-            = TkVariable s.Type '.' e.CurrentIndex 
+            = TkVariable s.Type '.' e.CurrentIndex
               : e.IndexedVariable
             = <Add e.CurrentIndex 1>
               : e.NewIndex
@@ -235,7 +235,7 @@ OptTree-AutoMarkup-IsAllEqual {
 }
 
 OptTree-AutoMarkup-GetMatchesByVariableName {
-  (e.Key) (e.Head ((TkVariable e.Key) ':' e.Value) e.Tail)
+  (e.Key) (e.Head (e.Value ':' (e.Key)) e.Tail)
     = (e.Value);
 
   (e.Key) e.Other
@@ -258,4 +258,4 @@ OptTree-AutoMarkup-GetVariableTypes {
         }
         e.VariableMatchesDict
       >
-} 
+}
