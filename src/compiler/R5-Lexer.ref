@@ -68,7 +68,7 @@ CheckClassicTokens {
     = t.NextToken <CheckClassicTokens Extended e.Tokens>;
 
   Classic (TkName t.Pos '_' e.Name) e.Tokens
-    = (TkError t.Pos 'Illegal identifier "_' e.Name '"')
+    = (TkError t.Pos 'invalid identifier "_' e.Name '"')
       (TkName t.Pos '_' e.Name)
       <CheckClassicTokens Classic e.Tokens>;
 
@@ -302,7 +302,7 @@ DoScan-Number {
           = <DoScan-Number t.Pos (e.Number s.Next) (e.Line) e.Lines>;
 
         e.MacrodigitChain
-          = (TkError t.Pos 'Very big numeric literal: ' e.Number s.Next)
+          = (TkError t.Pos 'Very large numeric literal: ' e.Number s.Next)
             <DoScan
               <IncCol t.Pos Len e.Number s.Next> (e.Line) e.Lines
             >;
@@ -325,8 +325,8 @@ DoScan-Var {
       <Fetch
         e.Index
         {
-          '-' e._ = (TkError t.Pos 'Variable index can\'t start from \'-\'');
-          /* пусто */ = (TkError t.Pos 'Empty variable index');
+          '-' e._ = (TkError t.Pos 'A variable index can\'t start with \'-\'');
+          /* пусто */ = (TkError t.Pos 'an empty variable index');
           e._ = /* пусто */;
         }
       >
@@ -375,7 +375,7 @@ DoScan-DoNativeCode {
 
   t.StartPos t.Pos (e.Collected) /* empty */
     = (TkNativeCode t.StartPos e.Collected)
-      (TkError t.Pos 'Unexpected EOF, unclosed native code insertion')
+      (TkError t.Pos 'Unexpected EOF, incomplete native code insertion')
       (TkEOF t.Pos);
 
   t.StartPos t.Pos (e.Collected) (e.NextLine) e.Lines
@@ -412,7 +412,7 @@ DoScan-Chars {
       <DoScan-Chars <IncCol t.Pos> (e.Line) e.Lines>;
 
   t.Pos () e.Lines
-    = (TkError t.Pos 'Unclosed \' - single quote')
+    = (TkError t.Pos 'Unclosed \' - single quotes')
       <DoScan <IncLine t.Pos> e.Lines>;
 }
 
@@ -440,7 +440,7 @@ ScanEscape {
       <IncCol t.Pos Len '\\x' s.Hex1 s.Hex2> e.Line;
 
   t.Pos 'x' e.Line
-    = (TkError t.Pos 'After \\x must be two hex digits')
+    = (TkError t.Pos 'After \\x should be two hex digits')
       <IncCol t.Pos Len '\\x'> e.Line;
 
 
@@ -449,7 +449,7 @@ ScanEscape {
       <IncCol t.Pos Len '\\' s.Other> e.Line;
 
   t.Pos /* пусто */
-    = (TkError t.Pos 'Unexpected \\ at end of line')
+    = (TkError t.Pos 'Unexpected \\ at the end of the line')
       t.Pos /* пусто */;
 }
 
@@ -483,7 +483,7 @@ DoHexDigit {
 
 MakeCompound {
   t.Pos e.Compound-B '\x00' e.Compound-E
-    = (TkWarning t.Pos nul-in-compound 'Zero byte in compound symbol')
+    = (TkWarning t.Pos nul-in-compound 'Zero byte in the compound symbol')
       (TkCompound t.Pos e.Compound-B);
 
   t.Pos e.Compound = (TkCompound t.Pos e.Compound);
@@ -505,7 +505,7 @@ DoScan-Compound {
       >;
 
   t.StartPos t.Pos (e.Compound) () e.Lines
-    = (TkError t.Pos 'Unclosed \" - double quote')
+    = (TkError t.Pos 'Unclosed \" - double quotes')
       <DoScan <IncLine t.Pos> e.Lines>;
 }
 
@@ -525,7 +525,7 @@ DoScan-Compound-HandleEscape {
       >;
 
   t.StartPos t.Pos (e.Compound) ('x' e.Line) e.Lines
-    = (TkError t.Pos 'After \\x must be two hex digits')
+    = (TkError t.Pos 'After \\x should be two hex digits')
       <DoScan-Compound t.StartPos <IncCol t.Pos> (e.Compound) (e.Line) e.Lines>;
 
   t.StartPos t.Pos (e.Compound) (s.Other e.Line) e.Lines
@@ -533,7 +533,7 @@ DoScan-Compound-HandleEscape {
       <DoScan-Compound t.StartPos <IncCol t.Pos> (e.Compound) (e.Line) e.Lines>;
 
   t.StartPos t.Pos (e.Compound) () e.Lines
-    = (TkError t.Pos 'Unexpected \\ at end of compound literal')
+    = (TkError t.Pos 'Unexpected \\ at the end of compound literal')
       <MakeCompound t.StartPos e.Compound>
       <DoScan <IncLine t.Pos> e.Lines>;
 }
