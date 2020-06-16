@@ -481,11 +481,11 @@ ResolveLabeledDestinations {
 
         s.Other
           = <PrintErr
-              'Compilation failure in function ' <DisplayName e.FuncName> ':'
+              'Compilation failure in the function ' <DisplayName e.FuncName> ':'
             >
             <PrintErr
-              '  this function try jump over ' <Symb s.RelativeJump>
-              ' commands, but maximum jump length is 65535.'
+              '  this function tries to jump over ' <Symb s.RelativeJump>
+              ' commands, but the maximum jump length is 65535.'
             >
             <PrintErr '  Compilation aborted.'>
             <Exit 1>;
