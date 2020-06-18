@@ -1,0 +1,19 @@
+* WARNING screening
+
+$ENTRY Go {
+  = ;
+}
+
+$ENUM ErrorList;
+
+ADT-Test {
+ [ErrorList (e.FileName) (e._) (e.Warnings)] e._
+    = EL-HasErrors;
+
+  [ErrorList (e.FileName) () (e._ (s.WarningId e._) e._)]
+  e._
+  s.WarningId
+  e._
+    = EL-HasErrors;
+}
+

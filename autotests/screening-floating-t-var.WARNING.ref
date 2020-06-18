@@ -1,0 +1,10 @@
+* WARNING screening
+
+$ENTRY Go {
+  = <FLoatingTVarTest 'b' ()>
+}
+
+FLoatingTVarTest {
+  t.X1 e.Y1 = 1;
+  e.X2 t.Y2 = 2;
+}

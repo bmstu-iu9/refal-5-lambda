@@ -1,17 +1,23 @@
 $INCLUDE "LibraryEx";
 
-*$FROM Error
-$EXTERN PrintErr;
-
 *$FROM GenericMatch
 $EXTERN GenericMatch;
+
+*$FROM ObjectMatch
+$EXTERN ObjectMatch;
+
+*$FROM GlobalGen
+$EXTERN GlobalGen;
 
 *$FROM Desugaring
 $EXTERN CreateContext, RemovePos-Expr, ExtractVariables-Expr,
         Pass-EnumerateVariables, Pass-RemovePos;
 
 /*
-  CheckScreening выводит стандартизированные сообщения об экранировании.
+  <CheckScreening (t.WarningId*) (e.AST)
+    == t.Warning*
+
+  CheckScreening осуществляет попарную проверку экранирования образцов.
 */
 $ENTRY CheckScreening {
  (e._ screening e._) (e.AST)
@@ -24,11 +30,13 @@ $ENTRY CheckScreening {
  (e._) (e.AST) = /* пусто */
 }
 
-Zip {
-  (t.L e.L) (t.R e.R) = (t.L t.R) <Zip (e.L) (e.R)>;
-  () () = /* пусто */;
-}
+/*
+  <FindFunctionsPosInAST e.AST>
+    == (t.SrcPos*) t.Function*
 
+  FindFunctionsPosInAST достает из AST-дерева функции
+  и их расположение в исходном файле.
+*/
 FindFunctionsPosInAST {
   e.AST
     = <MapAccum
@@ -45,11 +53,11 @@ FindFunctionsPosInAST {
 }
 
 /*
-  MakePairs создает "декартовы" пары для дальнейшей попарной проверки
-  алгоритмом обобщенного сравнивания.
+  <MakePairs (t.Pattern s.Num)*>
+    == ((t.Pattern1 s.Num1) (t.Pattern2 s.Num2))*
 
-  Считаем, что предложение с условием не экранирует,
-  но может экранироваться само.
+  MakePairs создает "декартовы" пары предложений
+  для дальнейшей попарной проверки экранирования.
 */
 MakePairs {
   t.NumberedSentence e.Tail
@@ -65,25 +73,31 @@ MakePairs {
 }
 
 /*
-  <Enumerate t.Item*>
-    == (t.Item-1 1) (t.Item-2 2) ... (t.Item-N N)
-*/
-Enumerate {
-  e.Items
-    = <MapAccum
-        {
-          s.Count t.Item = <Inc s.Count> (t.Item s.Count);
-        }
-        1 e.Items
-      >
-    : s._ e.NumberedItems = e.NumberedItems
-}
+  <CheckFunction t.Function>
+    == t.Warning*
 
+  CheckFunction проверяет тело функции на экранирование.
+*/
 CheckFunction {
   ((Function s.ScopeClass (e.Name) Sentences e.Sentences) t.SrcPos)
     = <CheckSentences t.SrcPos (e.Name) () () (e.Sentences)>
 }
 
+/*
+  <CheckSentences t.SrcPos (e.FuncName) (e.Prefix) (e.CtxVars) (e.Sentences)>
+    == t.Warning*
+
+  CheckSentences проверяет тело функции на экранирование.
+  t.SrcPos, e.FuncName и e.Prefix используются для генерации
+  сообщения предупрждения с указанием экранируемых предложений.
+
+  Алгоритм:
+  - предложения нумеруются с помощью Enumerate
+  - создаются пары предложений (MakePairs)
+  - отсеиваются предложения с условиями (FilterConditions)
+  - проверяются созданные пары предложений (CheckPatternPairs)
+  - обрабатываются условия, блоки, правая часть с обновлением контекста
+*/
 CheckSentences {
   t.SrcPos (e.FuncName) (e.Prefix) (e.ContextVars) (e.Sentences)
     = <Enumerate e.Sentences> : e.NumberedSentences
@@ -138,6 +152,43 @@ CheckSentences {
       >
 }
 
+/*
+  <FilterConditions t.NumberedSentencePair*>
+    == t.NumberedSentencePair*
+
+  FilterConditions отсеивает пары предложений, где потенциальное экранирующее
+  предложение содержит условия, или есть вызовы функций.
+*/
+FilterConditions {
+  e.NumberedSentencesPairs
+    = <Map
+        {
+          (
+            t.NumberedSentence-L
+            ((t.Pattern (Condition e._) e.SentenceTail) s.Num)
+          )
+            = /* пусто */;
+
+          (
+            t.NumberedSentence-L
+            ((t.Pattern e._ (e._ (CallBrackets e.1) e._) ((Sentences e.2) e._)) s.Num)
+
+          )
+            = /* пусто */;
+
+          (t.NumberedSentence-L t.NumberedSentence-R)
+            = (t.NumberedSentence-L t.NumberedSentence-R);
+        }
+        e.NumberedSentencesPairs
+      >;
+}
+
+/*
+  <CheckSentenceBlocks t.SrcPos (e.FuncName) (e.Prefix) (e.Ctx) (e.Sentences)>
+    == t.Warning*
+
+  CheckSentenceBlocks обрабатывает блоки предложения.
+*/
 CheckSentenceBlocks {
   t.SrcPos
   (e.FuncName)
@@ -153,6 +204,12 @@ CheckSentenceBlocks {
       >;
 }
 
+/*
+  <CheckBlocks t.SrcPos (e.FuncName) (e.Prefix) (e.Ctx) (e.Blocks)>
+    == t.Warning*
+
+  CheckBlocks обрабатывает блоки.
+*/
 CheckBlocks {
   t.SrcPos (e.FuncName) (e.Prefix) (e.ContextVars) (e.Blocks)
     = <DelAccumulator
@@ -175,7 +232,14 @@ CheckBlocks {
       >;
 }
 
+/*
+  <CheckSentenceAssignsAndConditions
+    t.SrcPos (e.FuncName) (e.Prefix) (e.Ctx) (e.Blocks)
+  >
+    == t.Warning*
 
+  CheckBlocks обрабатывает присваивания и условия.
+*/
 CheckSentenceAssignsAndConditions {
   t.SrcPos
   (e.FuncName)
@@ -217,6 +281,14 @@ CheckSentenceAssignsAndConditions {
       >;
 }
 
+/*
+  <CheckSentenceResult
+    t.SrcPos (e.FuncName) (e.Prefix) (e.Ctx) (e.Sentence)
+  >
+    == t.Warning*
+
+  CheckSentenceResult обрабатывает правую часть предложения (результат).
+*/
 CheckSentenceResult {
   t.SrcPos (e.FuncName) (e.Prefix) (e.ContextVars) ((e._) e._ (e.Result) (e._))
     = <CheckExpression
@@ -228,6 +300,14 @@ CheckSentenceResult {
       >
 }
 
+/*
+  <CheckSentencePattern
+    t.SrcPos (e.FuncName) (e.Prefix) (e.Ctx) (e.Sentence)
+  >
+    == t.Warning*
+
+  CheckSentencePattern обрабатывает выражение в предложении.
+*/
 CheckSentencePattern {
   t.SrcPos (e.FuncName) (e.Prefix) (e.ContextVars) ((e.Pattern) e._ (e._) (e._))
     = <CheckExpression
@@ -239,6 +319,14 @@ CheckSentencePattern {
       >
 }
 
+/*
+  <CheckExpression
+    t.SrcPos (e.FuncName) (e.Prefix) (e.Ctx) (e.Expression)
+  >
+    == t.Warning*
+
+  CheckExpression обрабатывает выражение.
+*/
 CheckExpression {
   t.SrcPos (e.FuncName) (e.Prefix) (e.ContextVars) (e.Expression)
     = <DelAccumulator
@@ -288,40 +376,66 @@ CheckExpression {
       >
 }
 
+/*
+  <CheckPatternPairs t.SrcPos (e.FuncName) (e.Prefix) (e.ContextVars) (e.Pairs)
+    == t.Warning*
+
+  CheckPatternPairs проверяет экранирование каждой пары образцов из e.Pairs
+  1) алгоритмом обобщенного сопоставления GenericMatch
+  2) алгоритмом, основанном на теории языков образцов
+
+  t.SroPos - позиция функции, телу которой принадлежит пара образцов
+  e.FuncName - имя функции
+  e.Prefix - префикс, указывающий путь к экранирумым предложениям,
+             например, $5:1\1
+  e.ContextVars - контекст, содержащий связанные переменные
+*/
 CheckPatternPairs {
   t.SrcPos (e.FuncName) (e.Prefix) (e.ContextVars) (e.Pairs)
+    = <Unique <ExtractVariables-Expr e.ContextVars>> : e.ContextVars^
+    = <CreateContext NoMarkupContext e.ContextVars> : e.ContextVars^
     = <Map
       {
         (
           (((e.Pattern-L) e._ (e._) (e._)) s.Num-L)
           (((e.Pattern-R) e._ (e._) (e._)) s.Num-R)
         )
-          = <Unique <ExtractVariables-Expr e.ContextVars>> : e.ContextVars^
-          = <CreateContext NoMarkupContext e.ContextVars> : e.ContextVars^
           = <GenericMatch
               (e.ContextVars e.Pattern-L)
               (e.ContextVars e.Pattern-R)
             >
           : {
-            e._
-              , (e.Pattern-L) (e.Pattern-R)
-              : () ()
-              = <CreateScreeningWarning
-                  t.SrcPos
-                  (e.FuncName)
-                  (e.Prefix '$' <Symb s.Num-R>)
-                  (e.Prefix '$' <Symb s.Num-L>)
-                >;
-            Clear e._
-              = <CreateScreeningWarning
-                  t.SrcPos
-                  (e.FuncName)
-                  (e.Prefix '$' <Symb s.Num-R>)
-                  (e.Prefix '$' <Symb s.Num-L>)
-                >;
+              e._, (e.Pattern-L) (e.Pattern-R) : () ()
+                = <CreateScreeningWarning
+                    t.SrcPos
+                    (e.FuncName)
+                    (e.Prefix '$' <Symb s.Num-R>)
+                    (e.Prefix '$' <Symb s.Num-L>)
+                  >;
+              Clear e._
+                = <CreateScreeningWarning
+                    t.SrcPos
+                    (e.FuncName)
+                    (e.Prefix '$' <Symb s.Num-R>)
+                    (e.Prefix '$' <Symb s.Num-L>)
+                  >;
 
-            e._ = /* пусто */;
-          };
+              e._ = <PatternLanguagesCheck
+                      (e.ContextVars e.Pattern-L)
+                      (e.ContextVars e.Pattern-R)
+                    >
+                  : {
+                      True e.Other
+                        = <CreateScreeningWarning
+                            t.SrcPos
+                            (e.FuncName)
+                            (e.Prefix '$' <Symb s.Num-R>)
+                            (e.Prefix '$' <Symb s.Num-L>)
+                          >;
+
+                      False = /* пусто */;
+                  }
+            }
       }
       e.Pairs
     >;
@@ -329,20 +443,553 @@ CheckPatternPairs {
   /* пусто */ = /* пусто */;
 }
 
+/*
+  <PatternLanguagesCheck (e.ContextVars) (e.Pattern-L) (e.Pattern-R)>
+    == t.Warning*
 
-FilterConditions {
-  e.NumberedSentencesPairs
+  PatternLanguagesCheck проверяет пару предложений
+  на экранирование алгоритмом, основанном на языках образцов.
+*/
+PatternLanguagesCheck {
+  (e.Pattern-L) (e.Pattern-R)
+    , <FlattenPattern e.Pattern-R> : e.FlattenedPattern-R
+    , <IsPatternLinear e.FlattenedPattern-R> : True
+    = <ReplaceADTBrackets e.Pattern-R> : e.Pattern-R^
+    = <ReplaceADTBrackets e.Pattern-L> : e.Pattern-L^
+    = <Normalize e.Pattern-R> : e.Pattern-R^
+    = <Generalize (e.Pattern-L) (e.Pattern-R)> : e.Generalized
+    = <RenameVars () e.Generalized> : e.Generalized^
+    = <GenericMatch (e.Pattern-R) (e.Generalized) > : Clear e.Tuple-R
+    = <GenericMatch (e.Pattern-L) (e.Generalized) > : Clear e.Tuple-L
+    = <CreateTuplePairs (e.Tuple-L) (e.Tuple-R)> : e.Tuples
+    = <CheckEveryMatch e.Tuples ()>;
+
+
+  (e.Pattern-L) (e.Pattern-R)
+    = False;
+}
+
+/*
+  Заменяет АДТ-скобки
+*/
+ReplaceADTBrackets {
+  e.Pattern
     = <Map
         {
-          (t.NumberedSentence-L (((e._) (Condition e.Cond) e._) s._))
-            = /* пусто */;
+          (ADT-Brackets (e.Name) e.Inner)
+            = (Brackets (Symbol Identifier e.Name) (Brackets <ReplaceADTBrackets e.Inner>));
 
-          t.OtherPair = t.OtherPair;
+          (Brackets e.Inner)
+            = (Brackets (Symbol Char '*') <ReplaceADTBrackets e.Inner>);
+
+          t.Other = t.Other;
         }
-        e.NumberedSentencesPairs
+        e.Pattern
       >;
 }
 
+
+/*
+  <CheckEveryMatch t.Tuple*>
+    == True
+    == False
+
+  t.Tuple ::= (t.Pattern-L t.Pattern-R)
+
+  CheckEveryMatch сверяет пары кортежей.
+  Возвращает True, если все совпали, иначе False.
+*/
+CheckEveryMatch {
+  ((e.Pattern-L) (e.Pattern-R)) e.Tuples (e.Assigns)
+    = <ObjectMatch (e.Pattern-L) (e.Pattern-R)>
+    : {
+        Clear e.NewAssigns
+          = <AppendAssigns (e.Assigns) e.NewAssigns>
+          : {
+              Success e.UpdatedAssigns
+                = <CheckEveryMatch e.Tuples (e.UpdatedAssigns)>;
+
+              Fails
+                = False;
+            };
+
+        e.Other
+          = False;
+      };
+
+  /* пусто */ (e.Assigns) = True (e.Assigns);
+}
+
+
+/*
+  <AppendAssigns (t.Assign*) t.Assign*>
+    == Success t.Assign*
+    == Fails
+
+  AppendAssigns пополняет список присваиваний новыми.
+  Если новое присваивание содержится в списке, список не изменяется.
+  Если новое присваивание противоречит старрому, возвращается Fails.
+*/
+AppendAssigns {
+  /* если старое значение совпало с новым */
+  (e.Assigns-L (e.Vars-L ':' e.Vars-R) e.Assigns-R)
+  (e.Vars-L ':' e.Vars-R) e.NewAssignsTail
+    = <AppendAssigns
+        (e.Assigns-L (e.Vars-L ':' e.Vars-R) e.Assigns-R)
+        e.NewAssignsTail
+      >;
+
+  /* если старое не совпало с новым */
+  (e.Assigns-L (e.Vars-L ':' e.Vars-R) e.Assigns-R)
+  (e.Vars-L-Other ':' e.Vars-R) e.NewAssignsTail
+    = Fails;
+
+  /* если новая переменная */
+  (e.Assigns)
+  (e.Vars-L ':' e.Vars-R) e.NewAssignsTail
+    = <AppendAssigns
+        (e.Assigns (e.Vars-L ':' e.Vars-R))
+        e.NewAssignsTail
+      >;
+
+  (e.Assigns) /* пусто */ = Success e.Assigns;
+}
+
+/*
+  <CreateTuplePairs (t.Assign-L*) (t.Assign-R*)>
+    == t.Tuple*
+
+  t.Assign ::= ((t.Pattern*) ':' (t.Pattern*))
+
+  CreateTuplePairs сверяет пары кортежей,
+  возвращает True, если все совпали, иначе False.
+  Правая часть выражения нормализуется.
+*/
+CreateTuplePairs {
+  (e.Tuple-L) (e.Tuple-R)
+    = <DelAccumulator
+        <MapAccum
+          {
+            (t.L e.Tail-L) t.R
+              , t.L : (e.Vars-L ':' e._)
+              , t.R : (e.Vars-R ':' e._)
+              = (e.Tail-L) ((e.Vars-L) (e.Vars-R));
+          }
+          (e.Tuple-L) e.Tuple-R
+        >
+      >;
+}
+
+/*
+  <RenameVars (e.Prefix) e.Pattern>
+    == e.Pattern
+
+  RenameVars добавляет суффиксы переменным, полученным из ГСО.
+*/
+RenameVars {
+  (e.Prefix) e.Pattern
+    = <DelAccumulator
+        <MapAccum
+          {
+            s.Count (TkVariable s.Type e.Index)
+              = <Inc s.Count>
+                (TkVariable s.Type e.Index e.Prefix 's' <Symb s.Count>);
+            s.Count (Brackets e.Other)
+              = <Inc s.Count>
+                (Brackets <RenameVars (e.Prefix 'p' <Symb s.Count>) e.Other>);
+            s.Count t.Other
+              = s.Count t.Other;
+          }
+          1 e.Pattern
+        >
+      >;
+}
+
+/*
+  <Normalize e.Pattern>
+    == e.NormalizedPattern
+
+  Normalize строит нормальную форму образца.
+  Если в предложении нет e-переменных, предложение не изменится.
+
+  Алгоритм:
+  - разметка t-переменных кратности >=2 (1-ая часть определения)
+  - нахождение других якорных t-переменных (2-ая часть определения)
+  - "плавающие" t-переменные обрамляются новыми e-переменными
+*/
+Normalize {
+  e.Pattern
+    = <FlattenPattern e.Pattern> : e.FlatPattern
+    = <CountTVarsMultiplicity e.FlatPattern> : t.Multiplicity
+    = <MarkupMultipleAnchorTVars (e.Pattern) t.Multiplicity> : e.MarkedPattern
+    = <MarkupNeighbourAnchorTVars e.MarkedPattern> : e.MarkedPattern^
+    = <InsertFakeEVars e.MarkedPattern> : e.NormalizedPattern
+    = <DeleteMarkup e.NormalizedPattern>
+}
+
+/*
+  <DeleteMarkup e.MarkedPattern>
+    == e.Pattern
+
+  DeleteMarkup удаляет разметку Anchor/Float с t-переменных.
+*/
+DeleteMarkup {
+  e.MarkedPattern
+    = <Map
+        {
+          (Float t.Item) = t.Item;
+          (Anchor t.Item) = t.Item;
+          (MarkedBrackets e.Brackets) = (Brackets <DeleteMarkup e.Brackets>);
+
+          t.Item = t.Item;
+        }
+        e.MarkedPattern
+      >;
+}
+
+/*
+  <InsertFakeEVars e.MarkedPattern>
+    == e.MarkedPattern
+
+  InsertFakeEVars добавляет новые e-переменные вокруг плавающих t-переменных.
+*/
+InsertFakeEVars {
+  e.Prefix
+  (TkVariable 'e' e.Index1) (TkVariable 't' e.Index2) (TkVariable 'e' e.Index3)
+  e.Suffix
+    = <InsertFakeEVars
+        e.Prefix
+        (TkVariable 'e' e.Index1)
+        (Float (TkVariable 't' e.Index2))
+        (TkVariable 'e' e.Index3)
+        e.Suffix
+      >;
+
+  e.Prefix
+  (TkVariable 'e' e.Index1) (TkVariable 't' e.Index2)
+  e.Suffix
+    = <InsertFakeEVars
+        e.Prefix
+        (TkVariable 'e' e.Index1)
+        (Float (TkVariable 't' e.Index2))
+        (TkVariable 'e' e.Index2 'fake')
+        e.Suffix
+      >;
+
+  e.Prefix
+  (TkVariable 't' e.Index2) (TkVariable 'e' e.Index3)
+  e.Suffix
+    = <InsertFakeEVars
+        e.Prefix
+        (TkVariable 'e' e.Index2 'fake')
+        (Float (TkVariable 't' e.Index2))
+        (TkVariable 'e' e.Index3)
+        e.Suffix
+      >;
+
+  e.Prefix
+  (TkVariable 't' e.Index2)
+  e.Suffix
+    = <InsertFakeEVars
+        e.Prefix
+        (TkVariable 'e' e.Index2 'fake1')
+        (Float (TkVariable 't' e.Index2))
+        (TkVariable 'e' e.Index2 'fake2')
+        e.Suffix
+      >;
+
+  e.Prefix
+  (Brackets e.Brackets)
+  e.Suffix
+    = <InsertFakeEVars
+        e.Prefix
+        (MarkedBrackets <InsertFakeEVars e.Brackets>)
+        e.Suffix
+      >;
+
+   e.Other = e.Other;
+}
+
+/*
+  <MarkupNeighbourAnchorTVars e.MarkedPattern>
+    == e.MarkedPattern
+
+  MarkupNeighbourAnchorTVars размечает якорные t-переменные
+  (2-ая часть определения)
+*/
+MarkupNeighbourAnchorTVars {
+  e.MarkedPattern
+    = <MarkupNeighbourHelper () (e.MarkedPattern)>;
+}
+
+MarkupNeighbourHelper {
+  (e.Prefix) ((TkVariable 't' e.Index) e.Suffix)
+    , <HasAnchorsPrefix e.Prefix> : True
+    , <HasAnchorsSuffix e.Suffix> : True
+    = <MarkupNeighbourHelper
+        (e.Prefix (Anchor (TkVariable 't' e.Index)))
+        (e.Suffix)
+      >;
+
+  (e.Prefix) ((Brackets e.Brackets) e.Suffix)
+    = <MarkupNeighbourHelper
+        (
+          e.Prefix
+          (Brackets <MarkupNeighbourHelper () (e.Brackets)>)
+        )
+        (e.Suffix)
+      >;
+
+  (e.Prefix) (t.Item e.Suffix)
+    = <MarkupNeighbourHelper
+        (e.Prefix t.Item)
+        (e.Suffix)
+      >;
+
+  (e.Prefix) ()
+    = e.Prefix;
+}
+
+/*
+  <HasAnchorsPrefix e.MarkedPattern>
+    == False
+    == True
+
+  HasAnchorsPrefix осуществляет поиск слева
+  от проверяемой на якорность t-переменной
+  (2-ая часть определения)
+*/
+HasAnchorsPrefix {
+  e.Prefix (Anchor (TkVariable 't' e.Index))
+    = True;
+
+  e.Prefix (Symbol s.Mode e.Index)
+    = True;
+
+  e.Prefix (TkVariable 'e' e.Index)
+    = False;
+
+  e.Prefix (Brackets e._)
+    = True;
+
+  e.Prefix t.Other
+    = <HasAnchorsPrefix e.Prefix>;
+
+  /* пусто */ = True;
+}
+
+/*
+  <HasAnchorsSuffix e.MarkedPattern>
+    == False
+    == True
+
+  HasAnchorsSuffix осуществляет поиск справа
+  от проверяемой на якорность t-переменной
+  (2-ая часть определения)
+*/
+HasAnchorsSuffix {
+  (Anchor (TkVariable 't' e.Index)) e.Suffix
+    = True;
+
+  (Symbol s.Mode e.Index) e.Suffix
+    = True;
+
+  (TkVariable 'e' e.Index) e.Suffix
+    = False;
+
+  (Brackets e._) e.Suffix
+    = True;
+
+  t.Other e.Suffix
+    = <HasAnchorsSuffix e.Suffix>;
+
+  /* пусто */ = True;
+}
+
+/*
+  <MarkupMultipleAnchorTVars (e.Pattern) t.Multiplicity>
+    == e.MarkedPattern
+
+  MarkupMultipleAnchorTVars размечает якорные t-переменные
+  (1-ая часть определения)
+*/
+MarkupMultipleAnchorTVars {
+  (e.Pattern) t.Multiplicity
+    = <Map
+        {
+          (TkVariable 't' e.Index)
+            , <HasMultiplicity (TkVariable 't' e.Index) t.Multiplicity> : True
+            = (Anchor (TkVariable 't' e.Index));
+
+          (Brackets e.Brackets)
+            = (Brackets
+                <MarkupMultipleAnchorTVars (e.Brackets) t.Multiplicity>
+              );
+
+          t.Other = t.Other;
+        }
+        e.Pattern
+      >;
+}
+
+/*
+  <CountTVarsMultiplicity e.FlatPattern>
+    == (t.Var s.Count)*
+
+  CountTVarsMultiplicity осуществляет подсчет кратности t-переменных
+  в плоском(!) образце.
+*/
+CountTVarsMultiplicity {
+  e.FlatPattern
+    = <MapAccum
+        {
+          (e.Accum) (TkVariable 't' e.Index)
+            = <IncMultiplicity
+                (TkVariable 't' e.Index)
+                (e.Accum)
+              >
+              /* пусто */;
+
+          (e.Accum) t._ = (e.Accum) /* пусто */;
+        }
+        () e.FlatPattern
+      >
+    : {
+        t.Accum e._ = t.Accum;
+      }
+}
+
+/*
+  <HasMultiplicity t.Var1 ((t.Var s.Count)*)>
+    == False
+    == True
+
+  HasMultiplicity возвращает True, если кратность t-переменной >= 2,
+  иначе False.
+*/
+HasMultiplicity {
+  (TkVariable 't' e.Index)
+  (
+    e.Accum-L
+    ((TkVariable 't' e.Index) s.Count)
+    e.Accum-R
+  )
+    = s.Count
+    : {
+        1 = False;
+        s._ = True;
+      };
+}
+
+/*
+  <IncMultiplicity t.Var1 ((t.Var s.Count)*)>
+    == ((t.Var1 1)*)
+    == ((t.Var1 <Inc s.Count>)*)
+
+  IncMultiplicity увеличивает кратность t-переменной
+  в списке на 1.
+*/
+IncMultiplicity {
+  (TkVariable 't' e.Index)
+  (
+    e.Accum-L
+    ((TkVariable 't' e.Index) s.Count)
+    e.Accum-R
+  )
+    = (e.Accum-L ((TkVariable 't' e.Index) <Inc s.Count>) e.Accum-R);
+
+  (TkVariable 't' e.Index)
+  (e.Accum)
+    = (e.Accum ((TkVariable 't' e.Index) 1));
+}
+
+/*
+  <HasPatternTVars (e.Pattern)>
+    == True
+    == False
+
+  HasPatternTVars возвращает True, если e.Pattern содержит t-переменные,
+  иначе False.
+*/
+HasPatternTVars {
+  (e._ (TkVariable 't' e._) e._)
+    = True;
+  (e._)
+    = False;
+}
+
+/*
+  <IsPatternLinear (e.Pattern)>
+    == True
+    == False
+
+  IsPatternLinear возвращает True, если образец e.Pattern линеен
+  (не имеет повторных e-переменных), иначе False.
+*/
+IsPatternLinear {
+  e._ (TkVariable 'e' e.VarName) e._ (TkVariable 'e' e.VarName) e._
+    = False;
+  e._
+    = True;
+}
+
+/*
+  <IsPatternFlat (e.Pattern)>
+    == True
+    == False
+
+  IsPatternFlat возвращает True, если образец e.Pattern - плоский
+  (не содержит круглых скобок), иначе False.
+*/
+IsPatternFlat {
+  e._ (Brackets e._) e._
+    = False;
+  e._
+    = True;
+}
+
+/*
+  <FlattenPattern (e.Pattern)>
+    == (e.FlatPattern)
+
+  FlattenPattern "расплющивает" образец.
+*/
+FlattenPattern {
+  e.Pattern
+    = <Map
+        {
+          (Brackets e.Inner)
+            = <FlattenPattern e.Inner>;
+
+          t.Other = t.Other;
+        }
+        e.Pattern
+      >
+}
+
+/*
+  <Generalize (e.Pattern-L) (e.Pattern-R)>
+    == e.GeneralizedPattern
+
+  Generalize реконструирует общий формат двух образцов (ГСО)
+*/
+Generalize {
+  (e.Pattern-L) (e.Pattern-R)
+    = <GlobalGen (e.Pattern-L) (e.Pattern-R)> : e.GlobalComplexGeneralization
+    = e.GlobalComplexGeneralization
+}
+
+/*
+  <CreateScreeningWarning t.SrcPos (e.FunName) (e.Screening) (e.Screened)>
+    == t.Warning
+
+  CreateScreeningWarning создает объект предупреждения.
+
+  t.SrcPos - позиция в исходном коде
+  (e.FunName) - имя функции
+  e.Screening - экранирующее предложение
+  e.Screened - экранируемое предложение
+*/
 CreateScreeningWarning {
   t.SrcPos (e.FunName) (e.Screening) (e.Screened)
     = (Warning
@@ -355,3 +1002,26 @@ CreateScreeningWarning {
       )
 }
 
+/*
+  <Enumerate t.Item*>
+    == (t.Item-1 1) (t.Item-2 2) ... (t.Item-N N)
+*/
+Enumerate {
+  e.Items
+    = <MapAccum
+        {
+          s.Count t.Item = <Inc s.Count> (t.Item s.Count);
+        }
+        1 e.Items
+      >
+    : s._ e.NumberedItems = e.NumberedItems
+}
+
+/*
+  <Zip (t.L1 t.L2 ...) (t.R1 t.R2 ...)>
+    ==  (t.L1 t.R1) (t.L2 t.R2) ...
+*/
+Zip {
+  (t.L e.L) (t.R e.R) = (t.L t.R) <Zip (e.L) (e.R)>;
+  () () = /* пусто */;
+}
