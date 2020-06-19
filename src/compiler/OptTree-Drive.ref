@@ -469,32 +469,65 @@ SignedResult-Divmod {
   )
 }
 
+MakeSubstitution-FromMetatable {
+  t.Metatable t.IntrinsicFunction (e.Args) (e.MuArg) e.Name =
+  t.Metatable : {
+    (Metatable s.ScopeClass (e._)
+     Metatable e.Left ((Symbol Identifier e.Name) t.SymbolName) e.Right) = (
+      ((CallBrackets t.SymbolName e.MuArg))
+      (()()) ()
+    );
+    e.Other = <MakeColdSolution t.IntrinsicFunction e.Args>
+  }
+}
+
 DoOptSentence-MakeSubstitutions-Intrinsic {
   t.IntrinsicFunction t.Metatable (e.Args) e.BehaviorName =
   e.BehaviorName : {
     '__Meta_Mu' =
       e.Args : {
-      t.Function e.Arg (Symbol Name e.MetatableName) =
+      t.Function e.MuArg (Symbol Name e.MetatableName) =
       t.Function : {
         (Symbol Name e.Name) = (
-          ((CallBrackets (Symbol Name e.Name) e.Arg))
+          ((CallBrackets (Symbol Name e.Name) e.MuArg))
           (()()) ()
         );
 
         (ClosureBrackets e.Body) =
         (
-          ((CallBrackets (ClosureBrackets e.Body) e.Arg))
+          ((CallBrackets (ClosureBrackets e.Body) e.MuArg))
           (()()) ()
         );
 
-        (Symbol Identifier e.Name) = t.Metatable : {
-          (Metatable s.ScopeClass (e._)
-           Metatable e.Left ((Symbol Identifier e.Name) t.SymbolName) e.Right) = (
-            ((CallBrackets t.SymbolName e.Arg))
-            (()()) ()
-          );
-          e.Other = <MakeColdSolution t.IntrinsicFunction e.Args>;
-        };
+        (Symbol Identifier s.Name), <OneOf s.Name "+" "-" "/" "%" "*" "?"> : True
+        = s.Name : {
+          "+" = 'Add';
+          "-" = 'Sub';
+          "/" = 'Div';
+          "*" = 'Mul';
+          "%" = 'Divmod';
+          "?" = 'Mod'
+        } : e.FunctionName
+        = (
+          ((CallBrackets (Symbol Name e.FunctionName) e.MuArg))
+          (()()) ()
+        );
+
+        (Symbol Char s.Name), <OneOf s.Name '+-/%*?'> : True
+        = s.Name : {
+          '+' = 'Add';
+          '-' = 'Sub';
+          '/' = 'Div';
+          '*' = 'Mul';
+          '%' = 'Divmod';
+          '?' = 'Mod'
+        } : e.FunctionName
+        = (
+          ((CallBrackets (Symbol Name e.FunctionName) e.MuArg))
+          (()()) ()
+        );
+
+        (Symbol Identifier e.Name)= <MakeSubstitution-FromMetatable t.Metatable t.IntrinsicFunction (e.Args) (e.MuArg) e.Name>;
 
         (Brackets e.Chars) = <MapAccum
             {
@@ -502,11 +535,7 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
             }
             () e.Chars
           > : (e.Name) e._
-          = (
-            ((CallBrackets (Symbol Name e.Name) e.Arg))
-            (()()) ()
-          )
-        ;
+          = <MakeSubstitution-FromMetatable t.Metatable t.IntrinsicFunction (e.Args) (e.MuArg) e.Name>;
 
         e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
       };

@@ -15,6 +15,8 @@ $ENTRY Go {
     = 'abra' : e.X
     = <Mu { e.A = e.X e.A e.X } 'cad'> : 'abracadabra'
     = <Mu &Add 1 2> : 3
+    = <Mu '+' 1 2> : 3
+    = <Mu "+" 1 2> : 3
     = <Add 1 2> : 3
     = <Add '-' 1 2> : 1
     = <Add 1 '-' 2> : '-' 1
@@ -76,6 +78,8 @@ Rev {
 __Meta_Mu {
   Rev e.Arg s.Metatable = <Rev e.Arg>;
   ('Rev') e.Arg s.Metatable = <Rev e.Arg>;
+  '+' e.Arg s.Metatable = <Add e.Arg>;
+  "+" e.Arg s.Metatable = <Add e.Arg>;
   s.Ptr e.Arg s.Metatable = <s.Ptr e.Arg>;
 }
 
