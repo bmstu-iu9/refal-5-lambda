@@ -13,46 +13,40 @@ $ENTRY Go {
   /* empty */
     = <ConstValue 4> : e.z
     = <Chr 10 115 97> : '\nsa'
-    = <Chr e.z 115 97> : '\n' 'sa'
-    = <Chr (10) 115 97> : ('\n') 'sa'
-    = <Chr (e.z) 115 97> : ('\n') 'sa'
+    = <Chr e.z 115 97> : '\nsa'
+    = <Chr <Numb '10'> 115 97> : '\nsa'
     = <ConstValue 3> : e.f
-    = <Ord  '\n' 'sa'> : 10 115 97
-    = <Ord  ('\n') 'sa'> : (10) 115 97
-    = <Ord  '\n' 's' e.f> : 10 115 97
+    = <Ord '\nsa'> : 10 115 97
+    = <Ord '\ns' e.f> : 10 115 97
     = <ConstValue 1> : e.x
     = <Upper 'abcd'> : 'ABCD'
     = <Upper 'a' e.x 'cd'> : 'ABCD'
-    = <Upper 'a' ('bc') 'd'> : 'A' ('BC') 'D'
+    = <Upper 'abcd'> : 'ABCD'
     = <ConstValue 2> : e.y
     = <Lower 'ABCD'> : 'abcd'
     = <Lower 'A' e.y 'CD'> : 'abcd'
-    = <Lower 'A' ('BC') 'D'> : 'a' ('bc') 'd'
+    = <Lower 'ABCD'> : 'abcd'
     = /* empty */
 }
 
 Chr {
     10 115 97 = '\nsa';
-    (10) 115 97 = ('\n') 'sa';
     10 = '\n'
 }
 
 Ord {
     '\nsa' = 10 115 97;
-    ('\n') 'sa' =  (10) 115 97;
     '\n' = 10;
     'a' = 97
 }
 
 Upper {
     'abcd' = 'ABCD';
-    'a' ('bc') 'd' = 'A' ('BC') 'D';
     'b' = 'B'
 }
 
 Lower {
     'ABCD' = 'abcd';
-    'A' ('BC') 'D' = 'a' ('bc') 'd';
     'B' = 'b'
 }
 

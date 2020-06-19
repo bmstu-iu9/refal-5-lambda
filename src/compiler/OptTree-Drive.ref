@@ -404,13 +404,25 @@ CharToNode {
   } e.Char>
 }
 
+
+CheckArgs-Intrinsic-StaticSubstitution {
+  (e.Args) s.SymbolName =
+  e.Args : {
+    (Symbol s.SymbolName e.Name) e.Rest = <CheckArgs-Intrinsic-StaticSubstitution (e.Rest) s.SymbolName>;
+    (TkVariable e.Var) e.Rest = <CheckArgs-Intrinsic-StaticSubstitution (e.Rest) s.SymbolName>;
+    (ColdCallBrackets e.Body) e.Rest =  <CheckArgs-Intrinsic-StaticSubstitution (e.Rest) s.SymbolName>;
+    t.Other e.Rest = False;
+    = True;
+  }
+}
+
 StaticSubstitution {
   (e.Args) (e.FuncName) s.Func s.SymbolFrom s.SymbolTo =
   <MapAccum
     {
       (e.Result) (Symbol s.SymbolFrom s.n) e.Rest = (e.Result (Symbol s.SymbolTo <s.Func s.n>)) e.Rest;
       (e.Result) (TkVariable e.Var) e.Rest = (e.Result (ColdCallBrackets (Symbol Name e.FuncName) (TkVariable e.Var))) e.Rest;
-      (e.Result) (Brackets e.Body) e.Rest = (e.Result (Brackets <StaticSubstitution (e.Body) (e.FuncName) s.Func s.SymbolFrom s.SymbolTo>)) e.Rest
+      (e.Result) (ColdCallBrackets e.Body) e.Rest = (e.Result (ColdCallBrackets (Symbol Name e.FuncName) (ColdCallBrackets e.Body))) e.Rest
     }
     () e.Args
   > : (e.Result) e._
@@ -823,25 +835,25 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
       e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
     };
 
-    'Chr'
+    'Chr', <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Number> : True
     = <StaticSubstitution (e.Args) ('Chr') &Chr Number Char> : e.Substitution
     = (
       (e.Substitution) (()()) ()
     );
 
-    'Ord'
+    'Ord', <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
     = <StaticSubstitution (e.Args) ('Ord') &Ord Char Number> : e.Substitution
     = (
       (e.Substitution) (()()) ()
     );
 
-    'Upper'
+    'Upper', <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
     = <StaticSubstitution (e.Args) ('Upper') &Upper Char Char> : e.Substitution
     = (
       (e.Substitution) (()()) ()
     );
 
-    'Lower'
+    'Lower', <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
     = <StaticSubstitution (e.Args) ('Lower') &Lower Char Char> : e.Substitution
     = (
       (e.Substitution) (()()) ()
