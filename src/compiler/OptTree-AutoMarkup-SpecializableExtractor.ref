@@ -39,14 +39,19 @@ $ENTRY OptTree-AutoMarkup-GetSpecializableDict {
               > 
               : {
                   True
-                    =(NOTSPECIALIZABLE (e.Name));
+                    = (NOTSPECIALIZABLE (e.Name));
 
                   False
-                    = <OptTree_AutoMarkup-GetSpecifiedPattern
+                    = <OptTree-AutoMarkup-GetSpecifiedPattern
                         (e.ExtractedPatterns)
                       > 
                       : e.SpecifiedPattern
-                    = (SPECIALIZABLE (e.Name) '->' (e.SpecifiedPattern));
+                    = <OptTree-AutoMarkup-GetSpecializableDictNode 
+                        (e.Name) 
+                        (e.SpecifiedPattern)
+                      > 
+                      : e.DictNode
+                    = e.DictNode;
               };
             
           e.Other
@@ -57,6 +62,15 @@ $ENTRY OptTree-AutoMarkup-GetSpecializableDict {
 
   e.Other
     = ;
+}
+
+OptTree-AutoMarkup-GetSpecializableDictNode {
+  (e.FuncName) (e.SpecifiedPattern)
+    , e.SpecifiedPattern : e.Head ('e.STAT' e.Suffix) e.Tail
+    = (SPECIALIZABLE (e.FuncName) '->' (e.SpecifiedPattern));
+
+  (e.FuncName) e.Other
+    = (NOTSPECIALIZABLE (e.FuncName));
 }
 
 OptTree-AutoMarkup-ContainsDuplications {
@@ -109,7 +123,7 @@ OptTree-AutoMarkup-GetPatternVariables {
     = ;
 }
 
-OptTree_AutoMarkup-GetSpecifiedPattern {
+OptTree-AutoMarkup-GetSpecifiedPattern {
   (e.ExtractedPatterns)
     = <OptTree-AutoMarkup-GetIndexedGlobalGens (e.ExtractedPatterns)>
       : e.IndexedGlobalGens
@@ -131,7 +145,7 @@ OptTree_AutoMarkup-GetSpecifiedPattern {
         (e.IndexedGlobalGens) 
       > 
       : e.VariableMatchesDict
-    = <OptTree-AutoMarkup-GetVariableTypes (e.VariableMatchesDict)>
+    = <OptTree-AutoMarkup-GetVariableSpecType (e.VariableMatchesDict)>
       : e.TypedVariables
     = e.TypedVariables;
 }
@@ -191,32 +205,88 @@ OptTree-AutoMarkup-FillIndexes {
 }
 
 
-OptTree-AutoMarkup-GetVariableMatches {
-  (e.GenericMatches) (e.IndexedGlobalGens)
-    = <Map 
+OptTree-AutoMarkup-GetVariableMatchesByIndexedGlobalGen {
+  TkVariable e.VariableName (e.GenericMatches)
+    = <Map
         {
-          (TkVariable e.VariableName)
-            = <Map
-                {
-                  (Clear e.Dict)
-                    = <OptTree-AutoMarkup-GetMatchesByVariableName
-                        (e.VariableName)
-                        (e.Dict)
-                      >;
-
-                  e.Other
-                    = ;
-                }
-                e.GenericMatches
-              > 
-              : e.CurrentVariableRes
-            = (e.VariableName ':' e.CurrentVariableRes);
+          (Clear e.Dict)
+            = <OptTree-AutoMarkup-GetMatchesByVariableName
+                (e.VariableName)
+                (e.Dict)
+              >;
 
           e.Other
             = ;
         }
+        e.GenericMatches
+      > 
+      : e.CurrentVariableRes
+    = <OptTree-AutoMarkup-GetVariablesTypes e.CurrentVariableRes> 
+      : e.CurrentVariableTypeRes
+    = (e.VariableName ':' e.CurrentVariableTypeRes);
+
+  Brackets e.Nested (e.GenericMatches)
+    = <OptTree-AutoMarkup-GetVariableMatchesByIndexedGlobalGen 
+        e.Nested 
+        (e.GenericMatches)
+      >;
+
+  (e.Nested) (e.GenericMatches)
+    = <OptTree-AutoMarkup-GetVariableMatchesByIndexedGlobalGen 
+        e.Nested 
+        (e.GenericMatches)
+      >;
+
+  e.Other
+    = ;
+}
+
+
+OptTree-AutoMarkup-GetVariableMatches {
+  (e.GenericMatches) (e.IndexedGlobalGens)
+    = <Map 
+        {
+          e.IndexedGlobalGenNode
+            = <OptTree-AutoMarkup-GetVariableMatchesByIndexedGlobalGen 
+                (e.IndexedGlobalGenNode)
+                (e.GenericMatches)
+              >;
+        }
         e.IndexedGlobalGens
       >
+}
+
+OptTree-AutoMarkup-GetVariablesTypes{
+  ()
+    = ();
+
+  TkVariable 's' e._
+    = TkVariable 's';
+  TkVariable 't' e._
+    = TkVariable 't';
+  TkVariable 'e' e._
+    = TkVariable 'e';
+
+  Symbol e.Tail
+    = Symbol e.Tail;
+
+  Symbol Char e.Tail
+    = Symbol Char e.Tail;
+
+  Brackets e.Nested
+    = <Map
+        &OptTree-AutoMarkup-GetVariablesTypes
+        e.Nested
+      >
+      : e.NestedRes
+    = Brackets e.NestedRes;
+
+  (e.Nested) e.Tail
+    = (<OptTree-AutoMarkup-GetVariablesTypes e.Nested>) 
+      <OptTree-AutoMarkup-GetVariablesTypes e.Tail>;
+
+  e.Other
+    = e.Other;
 }
 
 OptTree-AutoMarkup-IsAllEqual {
@@ -242,7 +312,7 @@ OptTree-AutoMarkup-GetMatchesByVariableName {
     = ;
 }
 
-OptTree-AutoMarkup-GetVariableTypes {
+OptTree-AutoMarkup-GetVariableSpecType {
   (e.VariableMatchesDict)
     = <Map
         {
