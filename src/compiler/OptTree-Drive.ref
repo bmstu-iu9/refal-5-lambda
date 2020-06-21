@@ -493,6 +493,15 @@ MakeSubstitution-FromMetatable {
   }
 }
 
+ArithmeticSymbolToFunction {
+    '+' = 'Add';
+    '-' = 'Sub';
+    '/' = 'Div';
+    '*' = 'Mul';
+    '%' = 'Divmod';
+    '?' = 'Mod'
+}
+
 DoOptSentence-MakeSubstitutions-Intrinsic {
   t.IntrinsicFunction t.Metatable (e.Args) e.BehaviorName =
   e.BehaviorName : {
@@ -511,29 +520,15 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
           (()()) ()
         );
 
-        (Symbol Identifier s.Name), <OneOf s.Name "+" "-" "/" "%" "*" "?"> : True
-        = s.Name : {
-          "+" = 'Add';
-          "-" = 'Sub';
-          "/" = 'Div';
-          "*" = 'Mul';
-          "%" = 'Divmod';
-          "?" = 'Mod'
-        } : e.FunctionName
+        (Symbol Identifier s.Name), <OneOf s.Name '+-/%*?'> : True
+        = <ArithmeticSymbolToFunction s.Name> : e.FunctionName
         = (
           ((CallBrackets (Symbol Name e.FunctionName) e.MuArg))
           (()()) ()
         );
 
         (Symbol Char s.Name), <OneOf s.Name '+-/%*?'> : True
-        = s.Name : {
-          '+' = 'Add';
-          '-' = 'Sub';
-          '/' = 'Div';
-          '*' = 'Mul';
-          '%' = 'Divmod';
-          '?' = 'Mod'
-        } : e.FunctionName
+        = <ArithmeticSymbolToFunction s.Name> : e.FunctionName
         = (
           ((CallBrackets (Symbol Name e.FunctionName) e.MuArg))
           (()()) ()
