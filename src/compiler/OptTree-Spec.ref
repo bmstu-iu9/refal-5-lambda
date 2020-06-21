@@ -1173,6 +1173,7 @@ DoCheckSignaturesPairForRelation {
 
     /* Проверяем, содержится ли полностью в e.CurSig1 */
     , <ContainsSignature (e.CurSig1) e.HistorySignature> : True
+
     = True;
 
   (e.CurSig1) (e.CurSig2) e.HistorySignature
@@ -1211,30 +1212,105 @@ ContainsSignature {
   (e.Expr-B e.Signature e.Expr-E) e.Signature
     = True;
 
+  /*
+    Если первый токен у обеих сигнатур - скобки,
+    пытаемся их убрать у обеих сигнатур и посмотреть,
+    есть ли вложение без них
+  */
+  ((s.TermType e.Inner) e.RestExpr) (s.TermType e.OtherInner) e.OtherRestExpr
+    , e.Inner : t.Inner-FirstTerm e.Inner-Rest
+    , e.OtherInner : t.OtherInner-FirstTerm e.OtherInner-Rest
+
+    /*
+      Проверяем, что первый элемент - скобки, и
+      в зависимости от типа скобок определяем
+      её внутреннее выражение
+    */
+    , s.TermType :
+      {
+        Brackets
+          = True e.Inner;
+
+        ClosureBrackets
+          = True e.Inner;
+
+        ADT-Brackets
+          , e.Inner
+          : (e.Name) e.ADT-Brackets-Inner-Rest
+          = True e.ADT-Brackets-Inner-Rest;
+
+        CallBrackets
+          , e.Inner
+          : (e.SymbolName) e.Argument
+          = True e.Argument;
+
+        e.OtherTermType
+          = False;
+      }
+    : True e.Inner^
+
+    , e.Inner :
+      {
+        t.Inner-FirstTerm^ e.Inner-Rest^
+          = <DoCheckSignaturesPairForRelation
+              (t.Inner-FirstTerm) (e.Inner-Rest) e.OtherInner
+            >;
+
+        e.Expr
+          = <DoCheckSignaturesPairForRelation
+              (e.Expr) (/* пусто */) e.OtherInner
+            >;
+      }
+    : s.InnerCheckResult
+
+    , s.InnerCheckResult
+    : True
+
+    , e.RestExpr :
+      {
+        t.RestExpr-Term e.RestExpr-Rest
+          = <DoCheckSignaturesPairForRelation
+              (t.RestExpr-Term) (e.RestExpr-Rest) e.OtherRestExpr
+            >;
+
+        e.Expr
+          = <DoCheckSignaturesPairForRelation
+              (e.Expr) (/* пусто */) e.OtherRestExpr
+            >;
+      }
+    : s.RestExprCheckResult
+
+    , s.RestExprCheckResult
+    : True
+
+    = True;
+
   ((s.TermType e.Inner) e.RestExpr) e.Signature
     , e.Inner : t.Inner-FirstTerm e.Inner-Rest
     = s.TermType
     :  {
         Brackets
           = <DoCheckSignaturesPairForRelation
-              (e.Inner) (e.RestExpr) e.Signature
+              (t.Inner-FirstTerm) (e.Inner-Rest e.RestExpr) e.Signature
             >;
 
         ADT-Brackets
-          , e.Inner : (e.Name) e.ADT-Brackets-Inner
+          , e.Inner
+          : (e.Name) t.ADT-Brackets-Inner-FirstTerm e.ADT-Brackets-Inner-Rest
           = <DoCheckSignaturesPairForRelation
-              (e.ADT-Brackets-Inner) (e.RestExpr) e.Signature
+              (t.ADT-Brackets-Inner-FirstTerm) (e.ADT-Brackets-Inner-Rest e.RestExpr) e.Signature
             >;
 
         CallBrackets
           , e.Inner : (e.SymbolName) e.Argument
+          , e.Argument : t.Argument-FirstTerm e.Argument-RestExpr
           = <DoCheckSignaturesPairForRelation
-              (e.Argument) (e.RestExpr) e.Signature
+              (t.Argument-FirstTerm) (e.Argument-RestExpr e.RestExpr) e.Signature
             >;
 
         ClosureBrackets
           = <DoCheckSignaturesPairForRelation
-              (e.Inner) (e.RestExpr) e.Signature
+              (t.Inner-FirstTerm) (e.Inner-Rest e.RestExpr) e.Signature
             >;
 
         TkVariable
