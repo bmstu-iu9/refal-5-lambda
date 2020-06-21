@@ -1298,14 +1298,16 @@ ContainsSignature {
           , e.Inner
           : (e.Name) t.ADT-Brackets-Inner-FirstTerm e.ADT-Brackets-Inner-Rest
           = <DoCheckSignaturesPairForRelation
-              (t.ADT-Brackets-Inner-FirstTerm) (e.ADT-Brackets-Inner-Rest e.RestExpr) e.Signature
+              (t.ADT-Brackets-Inner-FirstTerm)
+              (e.ADT-Brackets-Inner-Rest e.RestExpr) e.Signature
             >;
 
         CallBrackets
           , e.Inner : (e.SymbolName) e.Argument
           , e.Argument : t.Argument-FirstTerm e.Argument-RestExpr
           = <DoCheckSignaturesPairForRelation
-              (t.Argument-FirstTerm) (e.Argument-RestExpr e.RestExpr) e.Signature
+              (t.Argument-FirstTerm) (e.Argument-RestExpr e.RestExpr)
+              e.Signature
             >;
 
         ClosureBrackets
