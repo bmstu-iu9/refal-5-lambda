@@ -74,12 +74,14 @@ GenRemainderFuncNames {
 UpdateDriveInfo {
   s.OptDrive s.OptIntrinsic ((e.KnownNames) e.KnownFunctions) e.AST
 
-    /* Выносим все Drive, Inline, Intrinsic из дерева */
+    /* Выносим все Drive, Inline, Intrinsic, Metatable из дерева */
     = <MapAccum
         {
           (e.Optimizable) (Drive e.Name) = (e.Optimizable (Drive e.Name));
           (e.Optimizable) (Inline e.Name) = (e.Optimizable (Inline e.Name));
           (e.Optimizable) (Intrinsic e.Name) = (e.Optimizable (Intrinsic e.Name));
+          (e.Optimizable) (Function s.ScopeClass (e.Name) Metatable e.Body)
+           = (e.Optimizable (Metatable e.Name)) (Function s.ScopeClass (e.Name) Metatable e.Body);
           (e.Optimizable) t.Other = (e.Optimizable) t.Other;
         }
         () e.AST
@@ -152,7 +154,7 @@ UpdateDriveInfo {
           (e.OptInfo) t.Other
             = (e.OptInfo) t.Other;
         }
-        (() () (e.OptNames (Metatable '$table'))) e.AST
+        (() () (e.OptNames)) e.AST
       >
     : ((e.OptFunctions) (e.DrivenNames) (e._)) e.AST^
 
@@ -321,8 +323,7 @@ OptFunction {
 OptSentence {
   /* Оптимизируем только предложения вида Pat = Res */
   ((e.Left) (e.Right)) ((e.OptFuncNames) e.OptFuncs) t.Mode
-     = <FindOptimizedCall (e.OptFuncNames) e.Right>: e.FindOptimizedCall
-     = e.FindOptimizedCall
+     = <FindOptimizedCall (e.OptFuncNames) e.Right>
      : {
          (e.OptFuncNames^ None) e.Right^
            = ((e.OptFuncNames) e.OptFuncs) () ((e.Left) (e.Right));
@@ -345,11 +346,11 @@ OptSentence-Aux {
     /* Поиск информации для прогонки */
     = <FindOptInfo e.OptFuncs (e.Name)> : e.OptFuncs^ t.FunctionForDrive
     = s.IntrinsicMode : {
-      Intrinsic = <FindOptInfo e.OptFuncs ('$table')> : {e._ t.Metatable = t.Metatable };
+      Intrinsic = <FindMetatables e.OptFuncs>;
       s._ = ()
-    } : t.Metatable
+    } : t.Metatables
     = <OptSentence-MakeSubstitutions
-      (s.DriveMode s.IntrinsicMode) ((e.Left) (e.Right)) (e.Args) t.FunctionForDrive t.Metatable
+      (s.DriveMode s.IntrinsicMode) ((e.Left) (e.Right)) (e.Args) t.FunctionForDrive t.Metatables
       >
     : e.SolutionPacks
 
@@ -481,11 +482,11 @@ SignedResult-Divmod {
   )
 }
 
-MakeSubstitution-FromMetatable {
-  t.Metatable t.IntrinsicFunction (e.Args) (e.MuArg) e.Name =
-  t.Metatable : {
-    (Metatable s.ScopeClass (e._)
-     Metatable e.Left ((Symbol Identifier e.Name) t.SymbolName) e.Right) = (
+MakeSubstitution-FromMetatables {
+  t.Metatables (e.MetatableName) t.IntrinsicFunction (e.Args) (e.MuArg) e.Name =
+  t.Metatables : {
+    (e._ (Metatable s.ScopeClass (e.MetatableName)
+    Metatable e.Left ((Symbol Identifier e.Name) t.SymbolName) e.Right) e._) = (
       ((CallBrackets t.SymbolName e.MuArg))
       (()()) ()
     );
@@ -503,7 +504,7 @@ ArithmeticSymbolToFunction {
 }
 
 DoOptSentence-MakeSubstitutions-Intrinsic {
-  t.IntrinsicFunction t.Metatable (e.Args) e.BehaviorName =
+  t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName =
   e.BehaviorName : {
     '__Meta_Mu' =
       e.Args : {
@@ -534,7 +535,7 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
           (()()) ()
         );
 
-        (Symbol Identifier e.Name)= <MakeSubstitution-FromMetatable t.Metatable t.IntrinsicFunction (e.Args) (e.MuArg) e.Name>;
+        (Symbol Identifier e.Name)= <MakeSubstitution-FromMetatables t.Metatables (e.MetatableName) t.IntrinsicFunction (e.Args) (e.MuArg) e.Name>;
 
         (Brackets e.Chars) = <MapAccum
             {
@@ -542,7 +543,7 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
             }
             () e.Chars
           > : (e.Name) e._
-          = <MakeSubstitution-FromMetatable t.Metatable t.IntrinsicFunction (e.Args) (e.MuArg) e.Name>;
+          = <MakeSubstitution-FromMetatables t.Metatables (e.MetatableName) t.IntrinsicFunction (e.Args) (e.MuArg) e.Name>;
 
         e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
       };
@@ -972,9 +973,9 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
 OptSentence-MakeSubstitutions {
   (s.DriveMode Intrinsic)
   ((e.Left) (e.Expr)) (e.Args)
-  (Intrinsic s.ScopeClass (e.IntrinsicName) Intrinsic e.BehaviorName) t.Metatable
+  (Intrinsic s.ScopeClass (e.IntrinsicName) Intrinsic e.BehaviorName) t.Metatables
     = (Intrinsic s.ScopeClass (e.IntrinsicName) Intrinsic e.BehaviorName) : t.IntrinsicFunction
-    = <DoOptSentence-MakeSubstitutions-Intrinsic t.IntrinsicFunction t.Metatable (e.Args) e.BehaviorName>;
+    = <DoOptSentence-MakeSubstitutions-Intrinsic t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName>;
 
   t.Mode
   ((e.Left) (e.Expr)) (e.Args)
@@ -1111,11 +1112,10 @@ FindOptInfo {
 }
 
 FindOptInfo-Aux {
-  e.OptFuncs-B (s.Mode s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
+  e.OptFuncs-B (Intrinsic s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
   (e.Name) (e.LookupName) s._
-  , <OneOf s.Mode Intrinsic Metatable> : True
-  = e.OptFuncs-B (s.Mode s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
-    (s.Mode s.ScopeClass (e.Name) e.Body);
+  = e.OptFuncs-B (Intrinsic s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
+    (Intrinsic s.ScopeClass (e.Name) e.Body);
   
   e.OptFuncs-B (s.Mode s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
   (e.Name) (e.LookupName) s.Drop
@@ -1131,6 +1131,16 @@ $DRIVE CutSUF;
 CutSUF {
   e.Prefix SUF = e.Prefix;
   e.Prefix = e.Prefix;
+}
+
+FindMetatables {
+  e.OptFuncs = <MapAccum
+    {
+      (e.Result) (Metatable e.Body) = (e.Result (Metatable e.Body));
+      (e.Result) t.Other = (e.Result)
+    } () e.OptFuncs>
+    : (e.Metatables) e._
+  = (e.Metatables)
 }
 
 /*
