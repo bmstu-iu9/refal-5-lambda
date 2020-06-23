@@ -393,6 +393,13 @@ SymbolsToNumber {
   >
 }
 
+Number-Check {
+  (Symbol Char s.Char) e.Rest = <Number-Check e.Rest>;
+  (Symbol Number s.n) e.Rest = <Number-Check e.Rest>;
+  t.Other e.Rest = False;
+  = True
+}
+
 NumberToSymbols {
   e.Number = <Map
     {
@@ -563,8 +570,9 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     };
 
     'Add' = e.Args : {
-      (Brackets e.Numbers1) e.Numbers2 =
-        <Add (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : e.Result
+      (Brackets e.Numbers1) e.Numbers2,
+      <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
+        = <Add (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : e.Result
         = <NumberToSymbols e.Result> : e.Result^
         =
         (
@@ -609,8 +617,9 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     };
 
     'Sub' = e.Args : {
-      (Brackets e.Numbers1) e.Numbers2 =
-        <Sub (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : e.Result
+      (Brackets e.Numbers1) e.Numbers2,
+      <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
+        = <Sub (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : e.Result
         = <NumberToSymbols e.Result> : e.Result^
         =
         (
@@ -648,8 +657,9 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     };
 
     'Mul' = e.Args : {
-      (Brackets e.Numbers1) e.Numbers2 =
-        <Mul (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : e.Result
+      (Brackets e.Numbers1) e.Numbers2,
+      <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
+        = <Mul (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : e.Result
         = <NumberToSymbols e.Result> : e.Result^
         =
         (
@@ -694,7 +704,8 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     };
 
     'Div' = e.Args : {
-        (Brackets e.Numbers1) e.Numbers2
+        (Brackets e.Numbers1) e.Numbers2,
+        <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
         = <Div (<SymbolsToNumber e.Numbers1> ) <SymbolsToNumber e.Numbers2>> : e.Result
         = <NumberToSymbols e.Result> : e.Result^
         =
@@ -733,7 +744,8 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     };
 
     'Mod' = e.Args : {
-      (Brackets e.Numbers1) e.Numbers2
+      (Brackets e.Numbers1) e.Numbers2,
+      <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
         = <Mod (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : e.Result
         = <NumberToSymbols e.Result> : e.Result^
         =
@@ -766,8 +778,9 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     };
 
     'Divmod' = e.Args : {
-      (Brackets e.Numbers1) e.Numbers2 =
-        <Divmod (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : (e.Q) e.R
+      (Brackets e.Numbers1) e.Numbers2,
+      <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
+        = <Divmod (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : (e.Q) e.R
         = <NumberToSymbols e.Q> : e.Q^
         = <NumberToSymbols e.R> : e.R^
         =
@@ -813,7 +826,8 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     };
 
     'Compare' = e.Args : {
-      (Brackets e.Numbers1) e.Numbers2
+      (Brackets e.Numbers1) e.Numbers2,
+      <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
       = <Compare (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : s.Result
       = (
         ((Symbol Char s.Result)) (()()) ()
@@ -936,6 +950,8 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
       = (
         (e.Result (Symbol Identifier e.Name) e.Rest) (()()) ()
       );
+
+      e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
     };
 
     'Lenw'
