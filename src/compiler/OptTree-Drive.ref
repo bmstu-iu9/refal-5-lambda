@@ -109,19 +109,14 @@ UpdateDriveInfo {
         {
           (
             (e.OptFunctions) (e.RemNames)
-            (e.OptNames-B (s.Label e.Name) e.OptNames-E)
+            (e.OptNames-B (Metatable e.Name) e.OptNames-E)
           )
-          (Function s.ScopeClass (e.Name) s.BodyLabel e.Body)
-          , <OneOf s.Label Intrinsic Metatable> : True
-            = s.Label : {
-              Intrinsic = e.Name;
-              Metatable = e.Body
-            } : e.OptFunctionBody
+          (Function s.ScopeClass (e.Name) Metatable e.Body)
             =
             (
               (
                 e.OptFunctions
-                (s.Label s.ScopeClass (e.Name) s.Label e.OptFunctionBody)
+                (Metatable s.ScopeClass (e.Name) Metatable e.Body)
               )
               (
                 e.RemNames
@@ -129,7 +124,7 @@ UpdateDriveInfo {
               )
               (e.OptNames-B e.OptNames-E)
             )
-            (Function s.ScopeClass (e.Name) s.BodyLabel e.Body);
+            (Function s.ScopeClass (e.Name) Metatable e.Body);
 
           (
             (e.OptFunctions) (e.RemNames)
@@ -157,8 +152,24 @@ UpdateDriveInfo {
         (() () (e.OptNames)) e.AST
       >
     : ((e.OptFunctions) (e.DrivenNames) (e._)) e.AST^
+    = <MapAccum
+      {
+        ((e.AccFuncs) (e.AccNames)) (Intrinsic e.Name) = (
+          (
+            e.AccFuncs
+            (Intrinsic GN-Local (e.Name) Intrinsic e.Name)
+          )
+          (
+            e.AccNames
+            (e.Name)
+          )
+        );
 
-    = (DriveInfo (e.KnownNames e.DrivenNames) e.KnownFunctions e.OptFunctions)
+        ((e.AccFuncs) (e.AccNames)) t.Other = ((e.AccFuncs) (e.AccNames))
+      } (() ()) e.OptNames>
+       : ((e.OptIntrinsicFuncs) (e.IntrinsicNames))
+
+    = (DriveInfo (e.KnownNames e.DrivenNames e.IntrinsicNames) e.KnownFunctions e.OptFunctions e.OptIntrinsicFuncs)
       e.AST;
 }
 
