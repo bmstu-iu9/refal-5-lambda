@@ -11,7 +11,7 @@ compile_separated() {
 
   for s in ${LIBS}; do
     # shellcheck disable=SC2086
-    ../../bin/rlc-core -C ${RLC_FLAGS} "$s" -d common
+    ../../bin/rlc-core -C ${RLC_FLAGS} "$s" -d common --prelude=refal5-builtins.refi
     ../../bin/rlc-core --no-sources -R -o inco.bin --incorporated="$s"
     grep '//FROM' < "$s".ref > "$TARGET/$s".rasl.froms
     [[ -e "$s".cpp ]] && mv "$s".cpp "$TARGET"

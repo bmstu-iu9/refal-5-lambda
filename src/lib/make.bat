@@ -28,7 +28,7 @@ setlocal
   rmdir %TARGET%\x
 
   for %%s in (%LIBS%) do (
-    ..\..\bin\rlc-core -C %RLC_FLAGS% %%s -d common
+    ..\..\bin\rlc-core -C %RLC_FLAGS% %%s -d common --prelude=refal5-builtins.refi
     ..\..\bin\rlc-core --no-sources -R -o inco.bin --incorporated=%%~ns
     find "//FROM" < %%s.ref > %TARGET%\%%s.rasl.froms
     if exist %%s.cpp move %%s.cpp %TARGET%
