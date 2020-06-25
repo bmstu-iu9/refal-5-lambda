@@ -40,17 +40,12 @@ $ENTRY OptTree-AutoMarkup-Contains {
 */
 
 $ENTRY OptTree-AutoMarkup-GetElemByKey {
-  (e.Key) (e.Graph)
-    = <Map
-        {
-          e._ (Func (e.Key) Children (e.Children)) e._
-            = Func (e.Key) Children (e.Children);
+  (e.Key) (e.Graph-B (Func (e.Key) Children (e.Children)) e.Graph-E)
+    = Func (e.Key) Children (e.Children)
+      <OptTree-AutoMarkup-GetElemByKey (e.Key) (e.Graph-E)>;
 
-          e.Other
-            = ;
-        }
-        e.Graph
-      > 
+  (e.Key) (e._)
+    = ;
 }
 
 /**
@@ -62,19 +57,13 @@ $ENTRY OptTree-AutoMarkup-GetElemByKey {
 */
 
 $ENTRY OptTree-AutoMarkup-GetParents {
-  (e.ChildName) (e.Graph)
-    = <Map
-        {
-          e._ (Func (e.FuncName) Children (e._ (e.ChildName) e._)) e._
-            = (e.FuncName);
+  (e.ChildName) 
+  (e.Graph-B (Func (e.FuncName) Children (e._ (e.ChildName) e._)) e.Graph-E)
+    = (e.FuncName)
+      <OptTree-AutoMarkup-GetParents (e.ChildName) (e.Graph-E)>;
 
-          e.Other
-            = ;
-        }
-        e.Graph
-      > 
-      : e.Res
-    = (e.Res)
+  (e.ChildName) (e._) 
+    = ;
 }
 
 $ENTRY OptTree-AutoMarkup-IsEmpty {

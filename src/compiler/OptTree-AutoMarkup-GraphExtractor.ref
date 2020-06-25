@@ -3,6 +3,10 @@ $INCLUDE "LibraryEx";
 *$FROM DisplayName
 $EXTERN DisplayName;
 
+*$FROM OptTree-AutoMarkup-Common
+$EXTERN OptTree-AutoMarkup-Contains,
+        OptTree-AutoMarkup-GetElemByKey;
+
 /**
   <OptTree-AutoMarkup-ExtractGraph e.AST> == e.FunctionCallsGraph
 */
@@ -16,7 +20,89 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
     = <OptTree-AutoMarkup-InlineFuncCallsWithMetatable 
         (e.ExtractedFuncs) 
         (e.ExtractedMetaTables)
+      >
+      : e.InlinedGraph
+    = <Map &OptTree-AutoMarkup-GetEntryPoints e.AST>
+      : e.EntryPoints
+    = <OptTree-AutoMarkup-GetClearedByEntryPointsGraph 
+        (e.InlinedGraph)
+        (e.EntryPoints)
+      >
+      : e.Res
+    = <Unique e.Res>;
+}
+
+OptTree-AutoMarkup-GetEntryPoints {
+  (Function GN-Entry (e.FuncName) Sentences e.Body)
+    = (e.FuncName);
+
+  (Function s.Scope (e.FuncName) Sentences e.Body)
+    ,<OneOf (e.FuncName) (INIT) (FINAL)> : True
+    = (e.FuncName);
+
+  e.Smth
+    = ;
+}
+
+OptTree-AutoMarkup-GetClearedByEntryPointsGraph {
+  (e.Graph) (e.EntryPoints)
+    = <OptTree-AutoMarkup-GetClearedByEntryPointsGraph
+        (e.Graph)
+        ()
+        (e.EntryPoints)
       >;
+
+  (e.Graph) (e.ProccessedNodes) (e.EntryPoints)
+    = <MapAccum
+        {
+          ((e.ProcessedNodes) (e.Result) (e.Graph^))
+          (e.EntryPoint)
+            , <OptTree-AutoMarkup-Contains
+                (e.EntryPoint)
+                (e.ProcessedNodes)
+              > : False
+            = (e.ProcessedNodes (e.EntryPoint))
+              : (e.NewProcessedNodes)
+            = <OptTree-AutoMarkup-GetElemByKey
+                (e.EntryPoint)
+                (e.Graph)
+              >
+              : e.Node
+            = e.Node
+              : {
+                  Func (e.FuncName) Children (e.Children)
+                    = <OptTree-AutoMarkup-GetClearedByEntryPointsGraph
+                        (e.Graph)
+                        (e.NewProcessedNodes)
+                        (e.Children)
+                      >
+                      : e.SubTreeResult
+                    = (
+                        (e.NewProcessedNodes)
+                        (
+                          e.Result
+                          (Func (e.FuncName) Children (e.Children))
+                          e.SubTreeResult
+                        )
+                        (e.Graph)
+                      );
+
+                  e._
+                    = (
+                        (e.NewProcessedNodes)
+                        (e.Result)
+                        (e.Graph)
+                      );
+                };
+
+
+          ((e.ProcessedNodes) (e.Result) (e.Graph^)) e.Other
+            = ((e.ProcessedNodes) (e.Result) (e.Graph));
+        }
+        ((e.ProccessedNodes) (/*result*/) (e.Graph)) e.EntryPoints
+      >
+      : ((e.ProccessedNodes^) (e.Result) (e.Graph^))
+    = e.Result
 }
 
 OptTree-AutoMarkup-GetMetatables {
