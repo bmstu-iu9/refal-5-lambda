@@ -1,0 +1,13 @@
+* WARNING screening
+
+$ENTRY Go {
+  = <EVarsTest 'b' A 'c'>
+}
+
+EVarsTest {
+  e.X A e.Y
+    = {
+        e._ = e.X;
+        'I am screened' = e.Y
+      };
+}

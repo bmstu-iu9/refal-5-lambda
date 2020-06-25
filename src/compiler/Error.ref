@@ -7,7 +7,7 @@ $EXTERN Config-AllWarningIds;
   [ErrorList (e.FileName) (t.Error*) (t.Warning*)]
 
   t.Error ::= (t.SrcPos e.Message)
-  t.Warning ::= (s.WarningId t.SrcPos e.FileName)
+  t.Warning ::= (s.WarningId t.SrcPos e.Message)
   t.SrcPos ::=
       NoPos
     | (FileLine s.LineNumber e.FileName)
@@ -161,9 +161,9 @@ SetsEq {
 
 PrintWarningsAsErrorsMessage {
   (e.FileName) All
-    = <Prout e.FileName ': all warnings being treated as errors'>;
+    = <PrintErr e.FileName ': all warnings being treated as errors'>;
   (e.FileName) Some
-    = <Prout e.FileName ': some warnings being treated as errors'>;
+    = <PrintErr e.FileName ': some warnings being treated as errors'>;
 
   (e.FileName) None = /* пусто */
 }

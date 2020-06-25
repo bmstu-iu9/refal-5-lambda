@@ -1,0 +1,10 @@
+* WARNING screening
+
+$ENTRY Go {
+  = <BracketsClosureTest 'b'>
+}
+
+BracketsClosureTest {
+  'a' = 0;
+  s.X = ({e.Y = 1; s.x = 2});
+}

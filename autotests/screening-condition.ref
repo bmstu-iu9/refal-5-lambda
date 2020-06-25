@@ -1,0 +1,21 @@
+* NO-WARNINGS
+
+$ENTRY Go {
+  = <ShellTest 'unix'>
+}
+
+GetEnv {
+  e._ = '/bash';
+}
+
+ShellTest {
+ 'unix', <GetEnv 'SHELL'> :
+    { e.path '/bash' = Bash;
+      e.path '/tcsh' = Tcsh;
+    };
+ 'unix' = <GetEnv 'shell'> :
+    { e.path '/bash' = Bash;
+      e.path '/tcsh' = Tcsh;
+    };
+ 'unix' = Default;
+}
