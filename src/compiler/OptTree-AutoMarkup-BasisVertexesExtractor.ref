@@ -193,7 +193,8 @@ OptTree-AutoMarkup-GetNotBaseVertexes {
   (e.StronglyConnectedComponents) (e.Graph)
     = <MapAccum
         {
-          (Func (e.FuncName) Children (e.Children)) (e.Graph^)
+          ((e.ResultFuncNames) (e.Graph^))
+          (Func (e.FuncName) Children (e.Children))
             = <OptTree-AutoMarkup-GetParents (e.FuncName) (e.Graph)>
               : e.Parents
             = <Map
@@ -221,15 +222,16 @@ OptTree-AutoMarkup-GetNotBaseVertexes {
             = (t.ComponentLength) (e.Diff)
               : {
                   (1) (e.Diff)
-                    = (e.Graph);
+                    = ((e.ResultFuncNames) (e.Graph));
 
                   (t.ComponentLength) ()
-                    = (e.Graph);
+                    = ((e.ResultFuncNames) (e.Graph));
 
                   e.Other
-                    = (e.FuncName) (e.Graph);
+                    = ((e.ResultFuncNames (e.FuncName)) (e.Graph));
                 }
         }
-        e.Graph
-      > 
+        ((/*result func names*/) (e.Graph)) e.Graph
+      > : ((e.ResultFuncNames) (e.Graph^))
+      = e.ResultFuncNames
 }

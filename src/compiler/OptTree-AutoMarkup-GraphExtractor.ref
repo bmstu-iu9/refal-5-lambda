@@ -28,8 +28,8 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
         (e.InlinedGraph)
         (e.EntryPoints)
       >
-      : e.Res
-    = <Unique e.Res>;
+      : ((e.ResultGraph) (e.InlinedGraph^))
+    = <Unique e.ResultGraph>;
 }
 
 OptTree-AutoMarkup-GetEntryPoints {
@@ -76,7 +76,7 @@ OptTree-AutoMarkup-GetClearedByEntryPointsGraph {
                         (e.NewProcessedNodes)
                         (e.Children)
                       >
-                      : e.SubTreeResult
+                      : ((e.SubTreeResult) (e.Graph^))
                     = (
                         (e.NewProcessedNodes)
                         (
@@ -102,7 +102,7 @@ OptTree-AutoMarkup-GetClearedByEntryPointsGraph {
         ((e.ProccessedNodes) (/*result*/) (e.Graph)) e.EntryPoints
       >
       : ((e.ProccessedNodes^) (e.Result) (e.Graph^))
-    = e.Result
+    = ((e.Result) (e.Graph))
 }
 
 OptTree-AutoMarkup-GetMetatables {
