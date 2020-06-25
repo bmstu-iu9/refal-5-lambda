@@ -28,7 +28,6 @@ $ENTRY CName {
     'var_' s.Mode <CName e.Index> '_' <Symb s.Depth>;
   e.Name SUF e.Suffix = 'gen_' <CName e.Name> '_' <CNameSuf e.Suffix>;
   e.Name = <DecorateChars e.Name>;
-  e.Name = e.Name;
 }
 
 DecorateChars {

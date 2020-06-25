@@ -204,11 +204,6 @@ $ENTRY ParseCommandLine {
                   t.Config (e.Errors) &Config-SetTreeOptCycles s.Num e.Cycles
                 >;
 
-            (t.Config e.Errors) (Incorporated s.Num e.LibName)
-              = <Update
-                  t.Config (e.Errors) &Config-AddIncorporated s.Num e.LibName
-                >;
-
             (t.Config e.Errors) (Help s.Num) = <PrintHelp> (t.Config e.Errors);
 
             (t.Config e.Errors) (Version s.Num)
