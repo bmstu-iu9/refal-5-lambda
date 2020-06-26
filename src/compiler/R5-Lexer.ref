@@ -68,7 +68,7 @@ CheckClassicTokens {
     = t.NextToken <CheckClassicTokens Extended e.Tokens>;
 
   Classic (TkName t.Pos '_' e.Name) e.Tokens
-    = (TkError t.Pos 'invalid identifier "_' e.Name '"')
+    = (TkError t.Pos 'Invalid identifier "_' e.Name '"')
       (TkName t.Pos '_' e.Name)
       <CheckClassicTokens Classic e.Tokens>;
 
@@ -326,7 +326,7 @@ DoScan-Var {
         e.Index
         {
           '-' e._ = (TkError t.Pos 'A variable index can\'t start with \'-\'');
-          /* пусто */ = (TkError t.Pos 'an empty variable index');
+          /* пусто */ = (TkError t.Pos 'An empty variable index');
           e._ = /* пусто */;
         }
       >
@@ -375,7 +375,7 @@ DoScan-DoNativeCode {
 
   t.StartPos t.Pos (e.Collected) /* empty */
     = (TkNativeCode t.StartPos e.Collected)
-      (TkError t.Pos 'Unexpected EOF, incomplete native code insertion')
+      (TkError t.Pos 'Unexpected EOF, unclosed native code insertion')
       (TkEOF t.Pos);
 
   t.StartPos t.Pos (e.Collected) (e.NextLine) e.Lines
