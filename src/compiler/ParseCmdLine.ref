@@ -298,16 +298,16 @@ $ENTRY ParseCommandLine {
                    );
 
                 (s.Pos EmptyErrorFileName)
-                  = (s.Pos 'option --error-file expects non-empty argument');
+                  = (s.Pos 'option --error-file expects a non-empty argument');
 
                 (s.Pos TargetModeAlreadySet)
                   = (s.Pos
                       'options --makeexe (-x), --makelib (-l) and -R '
-                      'must appear one time'
+                      'should appear once'
                     );
 
                 (s.Pos BadValue-MustBeNumber e.Cycles)
-                  = (s.Pos 'option --opt-tree-cycles expects number parameter');
+                  = (s.Pos 'option --opt-tree-cycles expects a number parameter');
               }
               e.Errors
             >;
