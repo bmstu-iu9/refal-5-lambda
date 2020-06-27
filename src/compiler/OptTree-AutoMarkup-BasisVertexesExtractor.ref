@@ -14,10 +14,10 @@ $EXTERN OptTree-AutoMarkup-GetSetDifference,
 
 $ENTRY OptTree-AutoMarkup-ExtractBasisVertexes {
   e.Graph
-    = <OptTree-AutoMarkup-GetWalkOrder e.Graph> 
+    = <OptTree-AutoMarkup-GetWalkOrder e.Graph>
       : (e.WalkOrder)
-    = <OptTree-AutoMarkup-GetExtractedComponents 
-        (e.WalkOrder) 
+    = <OptTree-AutoMarkup-GetExtractedComponents
+        (e.WalkOrder)
         (e.Graph)
       >
       : (e.Components)
@@ -45,24 +45,24 @@ OptTree-AutoMarkup-GetWalkOrder-ProcessGraphNode {
             = <OptTree-AutoMarkup-Contains
                 (e.ChildName)
                 (e.ProcessedBagAccumed)
-              > 
+              >
               : {
                   True
                     = ((e.ProcessedBagAccumed) (e.OrderAccumed) (e.Graph));
 
                   False
-                    = <OptTree-AutoMarkup-GetElemByKey 
-                        (e.ChildName) 
+                    = <OptTree-AutoMarkup-GetElemByKey
+                        (e.ChildName)
                         (e.Graph)
-                      > 
+                      >
                       : e.Child
                     = <OptTree-AutoMarkup-GetWalkOrder-ProcessGraphNode
                         (e.Child)
-                        (e.ProcessedBagAccumed) 
-                        (e.OrderAccumed) 
+                        (e.ProcessedBagAccumed)
+                        (e.OrderAccumed)
                         (e.Graph)
                       >;
-                }              
+                }
         }
         ((e.ProcessedBagWithMe) (e.Order) (e.Graph)) e.Children
       >
@@ -74,7 +74,7 @@ OptTree-AutoMarkup-GetWalkOrder-ProcessGraphNode {
 }
 
 OptTree-AutoMarkup-GetWalkOrder {
-  e.Graph 
+  e.Graph
     = <MapAccum
         {
           ((e.ProcessedBag) (e.Order) (e.Graph^))
@@ -86,15 +86,15 @@ OptTree-AutoMarkup-GetWalkOrder {
 
                   False
                     = <OptTree-AutoMarkup-GetWalkOrder-ProcessGraphNode
-                        (Func (e.Name) Children (e.Children)) 
+                        (Func (e.Name) Children (e.Children))
                         (e.ProcessedBag)
-                        (e.Order) 
+                        (e.Order)
                         (e.Graph)
                       >;
                 };
         }
         ((/*processedBag*/) (/*order*/) (e.Graph)) e.Graph
-      > 
+      >
       : ((e.ProcessedBagRes) (e.OrderRes) (e.Graph^))
     = (e.OrderRes);
 }
@@ -102,15 +102,15 @@ OptTree-AutoMarkup-GetWalkOrder {
 OptTree-AutoMarkup-GetExtractedComponents-ProcessGraphNode {
   (Func (e.Name) Children (e.Children))
   (e.ProcessedBag) (e.CurExtractedComponent) (e.Graph)
-    = e.ProcessedBag (e.Name) 
+    = e.ProcessedBag (e.Name)
       : e.ProcessedBagWithMe
-    = e.CurExtractedComponent (e.Name) 
+    = e.CurExtractedComponent (e.Name)
       : e.ExtractedComponentWithMe
     = <OptTree-AutoMarkup-GetParents (e.Name) (e.Graph)>
       : e.Parents
     = <MapAccum
         {
-          ((e.ProcessedBagAccumed) (e.ExtractedComponentAccumed) (e.Graph^)) 
+          ((e.ProcessedBagAccumed) (e.ExtractedComponentAccumed) (e.Graph^))
           (e.Name)
             = (
                 (e.ProcessedBagAccumed)
@@ -123,7 +123,7 @@ OptTree-AutoMarkup-GetExtractedComponents-ProcessGraphNode {
             = <OptTree-AutoMarkup-Contains
                 (e.ParentName)
                 (e.ProcessedBagAccumed)
-              > 
+              >
               : {
                   True
                     = (
@@ -136,7 +136,7 @@ OptTree-AutoMarkup-GetExtractedComponents-ProcessGraphNode {
                     = <OptTree-AutoMarkup-GetElemByKey
                         (e.ParentName)
                         (e.Graph)
-                      > 
+                      >
                       : e.Parent
                     = <OptTree-AutoMarkup-GetExtractedComponents-ProcessGraphNode
                         (e.Parent)
@@ -144,10 +144,10 @@ OptTree-AutoMarkup-GetExtractedComponents-ProcessGraphNode {
                         (e.ExtractedComponentAccumed)
                         (e.Graph)
                       >;
-                }              
+                }
         }
         ((e.ProcessedBagWithMe) (e.ExtractedComponentWithMe) (e.Graph)) e.Parents
-      >; 
+      >;
 
   () (e.ProcessedBag) (e.CurExtractedComponent) (e.Graph)
     = ((e.ProcessedBag) (e.CurExtractedComponent) (e.Graph));
@@ -164,27 +164,27 @@ OptTree-AutoMarkup-GetExtractedComponents {
                     = ((e.ProcessedBag) (e.ExtractedComponents) (e.Graph));
 
                   False
-                    = <OptTree-AutoMarkup-GetElemByKey 
-                        (e.FuncName) 
+                    = <OptTree-AutoMarkup-GetElemByKey
+                        (e.FuncName)
                         (e.Graph)
-                      > 
+                      >
                       : e.GraphNode
                     = <OptTree-AutoMarkup-GetExtractedComponents-ProcessGraphNode
-                        (e.GraphNode) 
+                        (e.GraphNode)
                         (e.ProcessedBag)
-                        () 
+                        ()
                         (e.Graph)
-                      > 
+                      >
                       : ((e.NextProcessedBag) (e.NextExtractedComponent) (e.Graph^))
                     = (
-                        (e.NextProcessedBag) 
+                        (e.NextProcessedBag)
                         (e.ExtractedComponents (e.NextExtractedComponent))
                         (e.Graph)
                       );
                 };
         }
         ((/*processedBag*/) (/*extractedComponents*/) (e.Graph)) e.WalkOrder
-      > 
+      >
       : ((e.ProcessedBagRes) (e.ExtractedComponentsRes) (e.Graph^))
     = (e.ExtractedComponentsRes);
 }
@@ -210,12 +210,12 @@ OptTree-AutoMarkup-GetNotBaseVertexes {
                     = ;
                 }
                 e.StronglyConnectedComponents
-              > 
+              >
               : (e.MatchedComponent)
             = <OptTree-AutoMarkup-GetSetDifference
                 (e.Parents)
                 (e.MatchedComponent)
-              > 
+              >
               : (e.Diff)
             = <Lenw e.MatchedComponent>
               : t.ComponentLength e._
