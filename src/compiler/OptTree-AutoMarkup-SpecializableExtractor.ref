@@ -204,7 +204,6 @@ OptTree-AutoMarkup-FillIndexes {
       >
 }
 
-
 OptTree-AutoMarkup-GetVariableMatchesByIndexedGlobalGen {
   TkVariable e.VariableName (e.GenericMatches)
     = <Map
@@ -240,7 +239,6 @@ OptTree-AutoMarkup-GetVariableMatchesByIndexedGlobalGen {
   e.Other
     = ;
 }
-
 
 OptTree-AutoMarkup-GetVariableMatches {
   (e.GenericMatches) (e.IndexedGlobalGens)

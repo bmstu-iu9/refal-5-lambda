@@ -106,7 +106,7 @@ OptTree-AutoMarkup-GetClearedByEntryPointsGraph {
                 (e.EntryPoint)
                 (e.Graph)
               >
-              : e.Node
+              : e.Node (e.Graph^)
             = e.Node
               : {
                   Func (e.FuncName) Children (e.Children)
@@ -340,7 +340,7 @@ OptTree-AutoMarkup-InnerExtractExpressionName {
               );
 
           ((e.DirectCalls^) (e.IndirectDetected^) (e.IndirectChildren^))
-          (CallBrackets  (Symbol Name e.Name) e.Nested)
+          (CallBrackets (Symbol Name e.Name) e.Nested)
             = <OptTree-AutoMarkup-InnerExtractExpressionName
                 (e.Nested)
                 (e.DirectCalls)

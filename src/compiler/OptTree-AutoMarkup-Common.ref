@@ -1,4 +1,4 @@
-$INCLUDE "LibraryEx";
+﻿$INCLUDE "LibraryEx";
 
 /**
 	<OptTree-AutoMarkup-GetSetDifference (e.FirstSet) (e.SecondSet)> ==
@@ -34,17 +34,19 @@ $ENTRY OptTree-AutoMarkup-Contains {
 }
 
 /**
-	<OptTree-AutoMarkup-GetElemByKey (e.Key) (e.Graph)> == e.GraphNode
+	<OptTree-AutoMarkup-GetElemByKey (e.Key) (e.Graph)>
+    == e.GraphNode (e.Graph)
 
 	e.GraphNode = (Func (e.Key) Children (e.Children))
 */
 
 $ENTRY OptTree-AutoMarkup-GetElemByKey {
-  (e.Key) (e.Graph-B (Func (e.Key) Children (e.Children)) e.Graph-E)
-    = Func (e.Key) Children (e.Children);
+  (e.Key) (e.GraphHead (Func (e.Key) Children (e.Children)) e.GraphTail)
+    = Func (e.Key) Children (e.Children)
+      (e.GraphHead (Func (e.Key) Children (e.Children)) e.GraphTail);
 
-  (e.Key) (e._)
-    = ;
+  (e.Key) (e.Graph)
+    = /* пусто */ (e.Graph);
 }
 
 /**

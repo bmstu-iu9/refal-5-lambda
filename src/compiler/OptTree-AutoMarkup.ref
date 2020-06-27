@@ -42,7 +42,7 @@ $ENTRY OptTree-AutoMarkup {
     = <OptTree-AutoMarkup-ExtractFunctionCallsGraph e.AST>
       : e.ExtractedGraph
     = <OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph>
-      : e.BasisVertexes
+      : (e.BasisVertexes) (e.ExtractedGraph^)
     = <OptTree-AutoMarkup-GetDrivenFunctions
         (e.ExtractedGraph)
         (e.BasisVertexes)
