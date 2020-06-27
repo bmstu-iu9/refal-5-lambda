@@ -13,6 +13,8 @@ $ENTRY Go {
     = <Symb '-' 101> : '-101'
 
     = <Implode 'abcd'> : abcd
+    = <Implode 'Abcd10abc#$@#$'> : Abcd10abc '#$@#$'
+    = <Implode_Ext 'Abcd10abc#$@#$'> : "Abcd10abc#$@#$"
     = <Explode abcd> : 'abcd'
     = <Implode_Ext 'abcd'> : abcd
     = <Explode_Ext abcd> : 'abcd'
@@ -20,6 +22,12 @@ $ENTRY Go {
     = <Type 'a' b 1> : 'Lla' b 1
     = <Type 1 b 1> : 'N0' 1 b 1
     = <Type a b 1> : 'Wi' a b 1
+    = <Type "cada bra"> : 'Wq' "cada bra"
+    = <Type () ()> : 'B0' () ()
+    = <Type [Test ]> : 'Ba' [Test ]
+    = <Type &Test> : 'Fg' &Test
+    = <Type {s.1 e.x = e.x}> : 'Fc' e._
+    = <Type> : '*0'
 
     = <Lenw 'abc'> : 3 'abc'
     = <ConstValue 1> : s.x
@@ -57,7 +65,8 @@ Symb {
 }
 
 Implode {
-    'abcd' = abcd
+    'abcd' = abcd;
+    'Abcd10abc#$@#$' = Abcd10abc '#$@#$'
 }
 
 Explode {
@@ -65,17 +74,26 @@ Explode {
 }
 
 Implode_Ext {
-    'abcd' = abcd
+    'abcd' = abcd;
+    'Abcd10abc#$@#$' = "Abcd10abc#$@#$"
 }
 
 Explode_Ext {
     abcd = 'abcd'
 }
 
+$ENUM Test;
+
 Type {
     'a' b 1 = 'Lla' b 1;
     1 b 1 = 'N0' 1 b 1;
-    a b 1 = 'Wi' a b 1
+    a b 1 = 'Wi' a b 1;
+    () () = 'B0' () ();
+    [Test ] = 'Ba' [Test ];
+    &Test = 'Fg' &Test;
+    = '*0';
+    "cada bra" = 'Wq' "cada bra";
+    s.Closure e.Rest = 'Fc' e.Rest
 }
 
 Lenw {

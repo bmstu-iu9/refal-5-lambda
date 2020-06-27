@@ -517,8 +517,8 @@ ArithmeticSymbolToFunction {
     '-' = 'Sub';
     '/' = 'Div';
     '*' = 'Mul';
-    '%' = 'Divmod';
-    '?' = 'Mod'
+    '%' = 'Mod';
+    '?' = 'Residue'
 }
 
 DoOptSentence-MakeSubstitutions-Intrinsic {
@@ -899,8 +899,9 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     'Implode'
     , <CheckArgs-Intrinsic (e.Args) Char> : True
       = <NodeToChar e.Args> : e.Chars
+      = <Implode e.Chars> : s.Ident e.NonIdent
       = (
-        ((Symbol Identifier e.Chars)) (()()) ()
+        ((Symbol Identifier <Explode s.Ident>) <CharToNode e.NonIdent>) (()()) ()
       );
 
     'Implode_Ext'
@@ -934,21 +935,51 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
       <Type s.Num> : s.Type s.SubType e._
       = <CharToNode s.Type s.SubType> : e.Result
       = (
-        (e.Result (Symbol Number s.Num) e.Rest) (()()) ()
+        (e.Result e.Args) (()()) ()
       );
 
       (Symbol Char s.Char) e.Rest =
       <Type s.Char> : s.Type s.SubType e._
       = <CharToNode s.Type s.SubType> : e.Result
       = (
-        (e.Result (Symbol Char s.Char) e.Rest) (()()) ()
+        (e.Result e.Args) (()()) ()
       );
 
-      (Symbol Identifier e.Name) e.Rest =
-      <Type <Implode e.Name>> : s.Type s.SubType e._
+      (Symbol Identifier e.Name) e.Rest
+      = <Implode_Ext e.Name> : s.Ident
+      = <Type s.Ident> : s.Type s.SubType e._
       = <CharToNode s.Type s.SubType> : e.Result
       = (
-        (e.Result (Symbol Identifier e.Name) e.Rest) (()()) ()
+        (e.Result e.Args) (()()) ()
+      );
+
+      (Symbol Name e.Name) e.Rest
+      = <CharToNode 'Fg'> : e.Result
+      = (
+        (e.Result e.Args) (()()) ()
+      );
+
+      (ClosureBrackets e.Body) e.Rest
+      = <CharToNode 'Fc'> : e.Result
+      = (
+        (e.Result e.Args) (()()) ()
+      );
+
+      (Brackets e.Body) e.Rest
+      = <CharToNode 'B0'> : e.Result
+      = (
+        (e.Result e.Args) (()()) ()
+      );
+
+      (ADT-Brackets e.Body) e.Rest
+      = <CharToNode 'Ba'> : e.Result
+      = (
+        (e.Result e.Args) (()()) ()
+      );
+
+      = <CharToNode '*0'> : e.Result
+      = (
+        (e.Result) (()()) ()
       );
 
       e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
@@ -991,7 +1022,7 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
 
 /* 
   <OptSentence-MakeSubstitutions
-    t.Mode (e.OriginSentence) (e.CallArgs) t.OptFunction t.Metatable
+    t.Mode (e.OriginSentence) (e.CallArgs) t.OptFunction t.Metatables
   >
     == (e.SolutionsPack)*
   e.SolutionsPack ::= (e.ReplacedExpr) t.Solution* (e.NewFunctions)

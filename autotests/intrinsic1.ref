@@ -5,6 +5,8 @@ $INTRINSIC Add, Div, Divmod, Mod, Mul, Sub, Compare;
 
 $META Mu;
 
+$INLINE Residue;
+
 __Step-Drop { = }
 
 $ENTRY Go {
@@ -12,6 +14,7 @@ $ENTRY Go {
     = <Mu &Rev 'abracadabra'> : 'arbadacarba'
     = <Mu Rev 'abracadabra'> : 'arbadacarba'
     = <Mu ('Rev') 'abracadabra'> : 'arbadacarba'
+    = <Mu '?' Rev 'abracadabra'> : 'arbadacarba'
     = 'abra' : e.X
     = <Mu { e.A = e.X e.A e.X } 'cad'> : 'abracadabra'
     = <Mu &Add 1 2> : 3
@@ -80,7 +83,12 @@ __Meta_Mu {
   ('Rev') e.Arg s.Metatable = <Rev e.Arg>;
   '+' e.Arg s.Metatable = <Add e.Arg>;
   "+" e.Arg s.Metatable = <Add e.Arg>;
+  '?' e.Arg s.Metatable = <Residue e.Arg>;
   s.Ptr e.Arg s.Metatable = <s.Ptr e.Arg>;
+}
+
+Residue {
+  e.Arg = <Mu e.Arg>
 }
 
 Add {
