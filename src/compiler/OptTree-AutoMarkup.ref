@@ -48,11 +48,11 @@ $ENTRY OptTree-AutoMarkup {
         (e.BasisVertexes)
       >
       : e.DrivenFunctions
-    = <OptTree-AutoMarkup-GetAlreadyMarkedFunctions e.AST>
-      : e.AlreadyMarkedFunctions
+    = <OptTree-AutoMarkup-GetForbiddenToDriveFunctions e.AST>
+      : e.ForbiddenToDriveFuncs
     = <OptTree-AutoMarkup-GetSetDifference
         (e.DrivenFunctions)
-        (e.AlreadyMarkedFunctions)
+        (e.ForbiddenToDriveFuncs)
       >
       : (e.FunctionToDrive)
     = <OptTree-AutoMarkup-GetUpdatedWithDrivenFunctionsAst
@@ -110,9 +110,10 @@ OptTree-AutoMarkup-GetSpecializePatterns {
       >
 }
 
-OptTree-AutoMarkup-GetAlreadyMarkedFunctions {
+OptTree-AutoMarkup-GetForbiddenToDriveFunctions {
   e.AST
-    = <Map
+    = (INIT) (FINAL)
+      <Map
         {
           (s.Label e.Name)
             , <OptTree-AutoMarkup-Contains
@@ -120,6 +121,24 @@ OptTree-AutoMarkup-GetAlreadyMarkedFunctions {
                 ((Drive)(Inline)(Intrinsic))
               > : True
             = (e.Name);
+
+          (Declaration GN-Entry e.FuncName)
+            = (e.FuncName);
+
+          (Function GN-Entry (e.FuncName) Sentences e.Body)
+            = (e.FuncName);
+
+          (Function s.Scope (e.FuncName) Sentences e.Body)
+            = <Lenw e.Body>
+              : s.SentencesCount e.Body^
+            = <TermCompare s.SentencesCount 20>
+              : {
+                  '>'
+                    = (e.FuncName);
+
+                  e.Other
+                    = ;
+                };
 
           e.Other
             = ;

@@ -4,7 +4,8 @@ $INCLUDE "LibraryEx";
 $EXTERN OptTree-AutoMarkup-GetSetDifference,
         OptTree-AutoMarkup-Contains,
         OptTree-AutoMarkup-GetElemByKey,
-        OptTree-AutoMarkup-GetParents;
+        OptTree-AutoMarkup-GetParents,
+        OptTree-AutoMarkup-Equal;
 
 /**
 	<OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph>
@@ -47,6 +48,7 @@ OptTree-AutoMarkup-GetGraphRoots {
                   Children (e.ChildrenHead (e.FuncName) e.ChildrenTail)
                 )
                 e.GraphTail
+            , <OptTree-AutoMarkup-Equal (e.ParentName) (e.FuncName)> : False
             = ((e.Result) (e.Graph));
 
           ((e.Result) (e.Graph^))

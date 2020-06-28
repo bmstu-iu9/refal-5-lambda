@@ -34,6 +34,18 @@ $ENTRY OptTree-AutoMarkup-Contains {
 }
 
 /**
+  <OptTree-AutoMarkup-Equal (e.First) (e.Second)> == True|False
+*/
+
+$ENTRY OptTree-AutoMarkup-Equal {
+  (e.X) (e.X)
+    = True;
+
+  (e.X) (e.Y)
+    = False;
+}
+
+/**
 	<OptTree-AutoMarkup-GetElemByKey (e.Key) (e.Graph)>
     == e.GraphNode (e.Graph)
 

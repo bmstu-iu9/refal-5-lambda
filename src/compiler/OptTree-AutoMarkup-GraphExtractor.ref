@@ -34,26 +34,10 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
         ((/*graph nodes*/) (/*indirect children*/)) e.AST
       >
       : ((e.ExtractedFuncs) (e.IndirectChildren))
-    = <Map &OptTree-AutoMarkup-GetMetatablesNames e.AST>
+     = <Map &OptTree-AutoMarkup-GetMetatablesNames e.AST>
       : e.MetatablesNames
-    = <Map &OptTree-AutoMarkup-GetMetatables e.AST>
-      : e.ExtractedMetaTables
-    = <OptTree-AutoMarkup-InlineFuncCallsWithMetatable
-        (e.ExtractedFuncs)
-        (e.ExtractedMetaTables)
-      >
-      : e.InlinedGraph
-    = <Map &OptTree-AutoMarkup-GetEntryPoints e.AST>
-      : e.EntryPoints
-    = <OptTree-AutoMarkup-GetClearedByEntryPointsGraph
-        (e.InlinedGraph)
-        (e.EntryPoints)
-      >
-      : ((e.ResultGraph) (e.InlinedGraph^))
     = <Unique e.IndirectChildren>
       : e.UniqueIndirectChildren
-    = <Map &OptTree-AutoMarkup-GetMetatablesNames e.AST>
-      : e.MetatablesNames
     = <Map
         {
           (e.FuncName)
@@ -68,7 +52,26 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
       : e.ClearedUniqueIndirectChildren
     = (Func (Indirect function for implicit calls)
       Children (e.ClearedUniqueIndirectChildren))
-      <Unique e.ResultGraph>;
+      : e.IndirectFuncNode
+    = <Map &OptTree-AutoMarkup-GetMetatablesNames e.AST>
+      : e.MetatablesNames
+    = <Map &OptTree-AutoMarkup-GetMetatables e.AST>
+      : e.ExtractedMetaTables
+    = <OptTree-AutoMarkup-InlineFuncCallsWithMetatable
+        (e.ExtractedFuncs)
+        (e.ExtractedMetaTables)
+      >
+      : e.InlinedGraph
+    = <Map &OptTree-AutoMarkup-GetEntryPoints e.AST>
+      : e.EntryPoints
+    = e.EntryPoints e.UniqueIndirectChildren
+      : e.EntryPoints^
+    = <OptTree-AutoMarkup-GetClearedByEntryPointsGraph
+        (e.InlinedGraph)
+        (e.EntryPoints)
+      >
+      : ((e.ResultGraph) (e.InlinedGraph^))
+    = <Unique e.IndirectFuncNode e.ResultGraph>;
 }
 
 OptTree-AutoMarkup-GetEntryPoints {
@@ -190,11 +193,12 @@ OptTree-AutoMarkup-GetFuncs {
     = (e.ImplicitCalls)
       : {
           ()
-            =;
+            = ;
 
           (e._)
             = (Indirect function for implicit calls)
-        } : e.IndirectChild
+        }
+        : e.IndirectChild
     = (Func (e.Name) Children (e.UniqueDirectCalls e.IndirectChild))
       (e.IndirectChildren);
 
@@ -306,11 +310,18 @@ OptTree-AutoMarkup-InnerExtractExpressionName {
             (Symbol Name e.IndirectChild)
             e.NestedTail
           )
-            = (
-                e.NestedHead
+            = (e.IndirectChild)
+              <Map
+                {
+                  (Symbol Name e.NextInderectChild)
+                    = (e.NextInderectChild);
+
+                  e.Other
+                    = ;
+                }
                 e.NestedTail
-              )
-              : e.Nested
+              >
+              : e.AdditionaIndirectChildren
             = <Map
                 {
                   (Symbol Name e._)
@@ -319,7 +330,7 @@ OptTree-AutoMarkup-InnerExtractExpressionName {
                   e.Other
                     = e.Other;
                 }
-                e.Nested
+                e.NestedHead e.NestedTail
               >
               : e.Nested^
             = <OptTree-AutoMarkup-InnerExtractExpressionName
@@ -336,7 +347,7 @@ OptTree-AutoMarkup-InnerExtractExpressionName {
             = (
                 (e.DirectCalls (e.Name))
                 (e.IndirectDetected)
-                (e.IndirectChildren (e.IndirectChild))
+                (e.IndirectChildren e.AdditionaIndirectChildren)
               );
 
           ((e.DirectCalls^) (e.IndirectDetected^) (e.IndirectChildren^))
