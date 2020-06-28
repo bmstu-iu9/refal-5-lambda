@@ -129,6 +129,10 @@ OptTree-AutoMarkup-GetForbiddenToDriveFunctions {
             = (e.FuncName);
 
           (Function s.Scope (e.FuncName) Sentences e.Body)
+            , (e.FuncName) : (e.Head '*' s.Num e.Tail)
+            = (e.FuncName);
+
+          (Function s.Scope (e.FuncName) Sentences e.Body)
             = <Lenw e.Body>
               : s.SentencesCount e.Body^
             = <TermCompare s.SentencesCount 20>
