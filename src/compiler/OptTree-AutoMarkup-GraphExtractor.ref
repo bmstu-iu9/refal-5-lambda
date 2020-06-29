@@ -62,8 +62,8 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
         (e.InlinedGraph)
         (e.EntryPoints)
       >
-      : ((e.ResultGraph) (e.InlinedGraph^))
-    = <Unique t.IndirectFuncNode e.ResultGraph>;
+      : e.ResultGraph
+    = t.IndirectFuncNode e.ResultGraph;
 }
 
 GetEntryPoints {
@@ -83,19 +83,37 @@ GetClearedByEntryPointsGraph {
         (e.Graph)
         ()
         (e.EntryPoints)
-      >;
+      >
+    : ((e.UsedFuncNames) (e.Graph^))
+    = <Unique e.UsedFuncNames> : e.UsedFuncNames
+    = <Map
+        {
+          (Func (e.FuncName) Children (e.Children))
+            , e.UsedFuncNames : e._ (e.FuncName) e._
+            = (Func (e.FuncName) Children (e.Children));
+
+          (Func (e._) Children (e._)) = /* пропускаем */;
+        }
+        e.Graph
+      >
 }
 
 GetClearedByEntryPointsGraphRec {
   (e.Graph) (e.ProcessedNodes-Arg) (e.EntryPoints)
     = <MapAccum
         {
+          (
+            (e.ProcessedNodes-B (e.EntryPoint) e.ProcessedNodes-E)
+            (e.Result) (e.Graph^)
+          )
+          (e.EntryPoint)
+            = (
+                (e.ProcessedNodes-B (e.EntryPoint) e.ProcessedNodes-E)
+                (e.Result) (e.Graph)
+              );
+
           ((e.ProcessedNodes) (e.Result) (e.Graph^))
           (e.EntryPoint)
-            , <OptTree-AutoMarkup-Contains
-                (e.EntryPoint)
-                (e.ProcessedNodes)
-              > : False
             = (e.ProcessedNodes (e.EntryPoint))
               : (e.NewProcessedNodes)
             = <OptTree-AutoMarkup-GetElemByKey
@@ -114,11 +132,7 @@ GetClearedByEntryPointsGraphRec {
                       : ((e.SubTreeResult) (e.Graph^))
                     = (
                         (e.NewProcessedNodes)
-                        (
-                          e.Result
-                          (Func (e.FuncName) Children (e.Children))
-                          e.SubTreeResult
-                        )
+                        (<UnionWith (e.FuncName) e.SubTreeResult (e.Result)>)
                         (e.Graph)
                       );
 
@@ -129,14 +143,21 @@ GetClearedByEntryPointsGraphRec {
                         (e.Graph)
                       );
                 };
-
-          ((e.ProcessedNodes) (e.Result) (e.Graph^)) (e._)
-            = ((e.ProcessedNodes) (e.Result) (e.Graph));
         }
         ((e.ProcessedNodes-Arg) (/*result*/) (e.Graph)) e.EntryPoints
       >
       : ((e.ProcessedNodes-Arg^) (e.Result) (e.Graph^))
     = ((e.Result) (e.Graph))
+}
+
+/*
+  <UnionWith e.SmallSet (e.BigSet)> == e.Set
+*/
+UnionWith {
+  e.Small-Unique t.Item e.Small-Unscanned (e.Big-B t.Item e.Big-E)
+    = e.Small-Unique <UnionWith e.Small-Unscanned (t.Item e.Big-B e.Big-E)>;
+
+  e.SmallSet (e.BigSet) = e.SmallSet e.BigSet;
 }
 
 GetMetatables {
