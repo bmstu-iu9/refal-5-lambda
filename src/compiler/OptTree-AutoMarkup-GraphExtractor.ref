@@ -77,7 +77,7 @@ OptTree-AutoMarkup-GetEntryPoints {
     = (e.FuncName);
 
   (Function s.Scope (e.FuncName) Sentences e.Body)
-    ,<OneOf (e.FuncName) (INIT) (FINAL)> : True
+    ,<OneOf (e.FuncName) ('INIT') ('FINAL')> : True
     = (e.FuncName);
 
   e.Smth
