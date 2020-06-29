@@ -60,7 +60,6 @@ $ENTRY ParseCommandLine {
           (ExtendedMode None ('extended'))
           (Log Required ('log'))
           (TreeOptCycles Required ('opt-tree-cycles'))
-          (Incorporated Required ('incorporated'))
           (Help None 'h?' ('help'))
           (Version None 'v' ('version'))
           (KeepRasls None ('keep-rasl') ('keep-rasls'))
@@ -120,9 +119,9 @@ $ENTRY ParseCommandLine {
             (t.Config e.Errors) (GrammarCheck s.Num)
               = <Update t.Config (e.Errors) &Config-SetGrammarCheck s.Num>;
 
-            (t.Config e.Errors) (Incorporated s.Num e.Name)
+            (t.Config e.Errors) (Incorporated s.Num e.LibName)
               = <Update
-                  t.Config (e.Errors) &Config-AddIncorporated s.Num e.Name
+                  t.Config (e.Errors) &Config-AddIncorporated s.Num e.LibName
                 >;
 
             (t.Config e.Errors) (MarkupContext s.Num)
@@ -202,11 +201,6 @@ $ENTRY ParseCommandLine {
             (t.Config e.Errors) (TreeOptCycles s.Num e.Cycles)
               = <Update
                   t.Config (e.Errors) &Config-SetTreeOptCycles s.Num e.Cycles
-                >;
-
-            (t.Config e.Errors) (Incorporated s.Num e.LibName)
-              = <Update
-                  t.Config (e.Errors) &Config-AddIncorporated s.Num e.LibName
                 >;
 
             (t.Config e.Errors) (Help s.Num) = <PrintHelp> (t.Config e.Errors);
@@ -304,16 +298,16 @@ $ENTRY ParseCommandLine {
                    );
 
                 (s.Pos EmptyErrorFileName)
-                  = (s.Pos 'option --error-file expects non-empty argument');
+                  = (s.Pos 'option --error-file expects a non-empty argument');
 
                 (s.Pos TargetModeAlreadySet)
                   = (s.Pos
                       'options --makeexe (-x), --makelib (-l) and -R '
-                      'must appear one time'
+                      'should appear once'
                     );
 
                 (s.Pos BadValue-MustBeNumber e.Cycles)
-                  = (s.Pos 'option --opt-tree-cycles expects number parameter');
+                  = (s.Pos 'option --opt-tree-cycles expects a number parameter');
               }
               e.Errors
             >;

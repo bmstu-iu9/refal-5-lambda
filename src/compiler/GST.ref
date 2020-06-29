@@ -334,8 +334,6 @@ FoldTile {
     <FoldTile <Sub s.Weight 3> e.Items>;
 
   s.Weight e.Items = <FoldTile-EEnd s.Weight e.Items>;
-
-  s.Weight /* пусто */ = /* пусто */;
 }
 
 FoldTileW {

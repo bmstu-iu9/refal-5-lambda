@@ -1,0 +1,15 @@
+* WARNING screening
+
+$ENTRY Go {
+  = <Test>
+}
+
+Test {
+  /* empty */
+    = {
+        e.Var = 1;
+        'I am screened' = 2;
+      }
+    : e.Var
+    = e.Var;
+}

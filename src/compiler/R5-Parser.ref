@@ -145,7 +145,7 @@ Unit {
 
               t.ErrorList^ (e.Units) (s.Token t.Pos^ e.Info) e._
                 = <EL-AddErrorAt
-                    t.ErrorList t.Pos 'Too many units in pseudocomment'
+                    t.ErrorList t.Pos 'Too many units in the pseudocomment'
                   >
                   (/* no units */) e.Tokens;
             };
@@ -172,7 +172,7 @@ NameList {
     , t.NextToken : (s.Type t.Pos e.Value)
     = <EL-AddErrorAt
         t.ErrorList t.Pos
-        'expected function name after ' <TokName s.Tag > ' keyword'
+        'expected function name after the ' <TokName s.Tag > ' keyword'
       >
       (/* empty */) t.NextToken e.Tokens;
 }
@@ -253,7 +253,7 @@ NameList-DoNames {
 
   t.ErrorList s.Tag (e.Units) (TkName t.Pos e.Name) e.Tokens
     = <NameList-DoNames
-        <EL-AddErrorAt t.ErrorList t.Pos 'missed comma after external name'>
+        <EL-AddErrorAt t.ErrorList t.Pos 'missed comma after the external name'>
         s.Tag (e.Units) e.Tokens
       >;
 
@@ -361,7 +361,7 @@ Function {
     = <Function t.ErrorList s.NewMode (TkEntry t.EntryPos) e.Tokens>;
 
   t.ErrorList s.Mode (TkEntry t.Pos) e.Tokens
-    = <EL-AddErrorAt t.ErrorList t.Pos '$ENTRY without function name, skipped'>
+    = <EL-AddErrorAt t.ErrorList t.Pos '$ENTRY without the function name, skipped'>
       (/* none */) e.Tokens;
 }
 
@@ -540,7 +540,7 @@ DoCheckExceedBlocks {
 AssignmentError {
   t.ErrorList Classic Assign t.Pos
     = <EL-AddErrorAt
-        t.ErrorList t.Pos 'Assignment not supported in classic mode'
+        t.ErrorList t.Pos 'Assignment is not supported in the classic mode'
       >;
 
   t.ErrorList s.Mode s.Type t.Pos = t.ErrorList;
@@ -563,7 +563,7 @@ CheckSentenceEnd {
 CheckMistakenAssign {
   t.ErrorList s.Mode Assign t.Pos
     = <ClassicError
-        t.ErrorList s.Mode t.Pos 'Mistaken \'=\' for \',\' in classic mode'
+        t.ErrorList s.Mode t.Pos 'Mistaken \'=\' for \',\' in the classic mode'
       >;
 
   t.ErrorList s.Mode Condition t.Pos = t.ErrorList;
@@ -766,7 +766,7 @@ DoTokenChain {
 
         (TkOpenADT t.OpenPos e.FuncName)
           = <ClassicError
-              t.ErrorList s.Mode t.OpenPos 'Abstract data types is an extension'
+              t.ErrorList s.Mode t.OpenPos 'Abstract data types are an extension'
             >
           : t.ErrorList^
 
@@ -821,7 +821,7 @@ DoTokenChain {
           , s.Kind : Result
 
           = <ClassicError
-              t.ErrorList s.Mode t.Pos 'Do you forged \':\' before block?'
+              t.ErrorList s.Mode t.Pos 'Did you forget \':\' before block?'
             >
           : t.ErrorList^
 
@@ -839,7 +839,7 @@ DoTokenChain {
                 s.Kind
                 <ClassicError
                   t.ErrorList s.Mode t.Pos
-                  'Variable redefinition is available in extended mode'
+                  'Variable redefinition is available in the extended mode'
                 >
                 (e.Collected) t.Pos
               >
@@ -851,7 +851,7 @@ DoTokenChain {
               s.Mode s.Kind
               <ClassicError
                 t.ErrorList s.Mode t.Pos
-                '$SCOPEID is not supported in classic REFAL-5'
+                '$SCOPEID is not supported in the classic REFAL-5'
               >
               (e.Collected (Symbol Number Cookie1) (Symbol Number Cookie2))
               e.Tokens
@@ -883,7 +883,7 @@ DoTokenChain-AfterCall {
         s.Mode Pattern
         <EL-AddErrorAt
           t.ErrorList t.CallPos
-          'unexpected \'<\' in pattern expression, probably missed \'=\''
+          'unexpected \'<\' in the pattern expression, probably missed \'=\''
         >
         (e.Collected (Brackets e.OptionalFuncName e.BracketTerms)) e.Tokens
       >;
@@ -900,7 +900,7 @@ DoTokenChain-AfterCall {
   t.ErrorList (e.BracketTerms) (s.Type t.Pos e.Value) e.Tokens
     = <EL-AddErrorAt
         t.ErrorList t.CallPos
-        'unexpected \'<\' in pattern expression, probably missed \'=\''
+        'unexpected \'<\' in the pattern expression, probably missed \'=\''
       >
     : t.ErrorList^
     = <EL-AddErrorAt t.ErrorList t.Pos 'Missed \'>\''> : t.ErrorList^
@@ -918,13 +918,13 @@ DoTokenChain-AddRedefinition {
 
   Pattern t.ErrorList (e.Collected) t.Pos
     = <EL-AddErrorAt
-        t.ErrorList t.Pos 'Redefinition sign expects variable before'
+        t.ErrorList t.Pos 'The redefinition sign expects the variable before'
       >
       (e.Collected);
 
   Result t.ErrorList (e.Collected) t.Pos
     = <EL-AddErrorAt
-        t.ErrorList t.Pos 'Illegal redefinition sign in result expression'
+        t.ErrorList t.Pos 'Invalid redefinition sign in the result expression'
       >
       (e.Collected);
 }

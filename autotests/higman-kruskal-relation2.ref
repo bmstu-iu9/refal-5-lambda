@@ -1,0 +1,15 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */
+    = <Test () 'aza'> : 'bzb'
+    = /* empty */;
+}
+
+$SPEC Test (e.ACC) e.input;
+
+Test {
+  (e.Acc) 'a' e.Rest = <Test (e.Acc 'b') e.Rest>;
+  (e.Acc) s.Next e.Rest = <Test (e.Acc s.Next) e.Rest>;
+  (e.Acc) /* empty */ = e.Acc;
+}

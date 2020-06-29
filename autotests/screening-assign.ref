@@ -1,0 +1,15 @@
+* NO-WARNINGS
+
+$ENTRY Go {
+  = <AssignTest 'b' A 'abc'>
+}
+
+AssignTest {
+  e.X A e.Y
+    = e.X : e.F
+    = {
+        e.Y = e.Y;
+        e.F = e.X;
+        'I am no screened' = e.Y
+      };
+}

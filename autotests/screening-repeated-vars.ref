@@ -1,0 +1,14 @@
+* NO-WARNINGS
+
+$ENTRY Go {
+  = <Eq 'A' 'B'>
+}
+
+Eq {
+  t.X t.Y
+    , t.X
+    : {
+        t.Y = True;
+        t.Other = False;
+      }
+}
