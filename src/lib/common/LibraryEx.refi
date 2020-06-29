@@ -9,7 +9,7 @@
   e.Arg, e.Res, e.Bounded ::= e.AnyExpr
 */
 Apply {
-  s.Fn e.Argument = <s.Fn e.Argument>;
+  s.Fn e.Argument = <Mu s.Fn e.Argument>;
 
   (t.Closure e.Bounded) e.Argument
     = <Apply t.Closure e.Bounded e.Argument>;

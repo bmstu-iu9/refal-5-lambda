@@ -14,7 +14,7 @@ $ENTRY Desugar {
       <Pipe
         &Pass-RemovePos
         &Pass-AttachEntries
-        &Pass-RemoveRedundantDriveInline
+        &Pass-RemoveRedundantDriveInlineIntrinsic
         &Pass-EnumerateVariables
         &Pass-NameNestedFuncs
         &Pass-RemoveBlocksAndAssigns
@@ -180,6 +180,10 @@ Pass-AttachEntries {
     = (s.DriveInline e.Name)
       <Pass-AttachEntries e.Items>;
 
+  (Intrinsic s.ScopeClass e.Name) e.Items
+    = (Intrinsic e.Name)
+        <Pass-AttachEntries e.Items>;
+
   (Ident e.Name) e.Items = (Ident e.Name) <Pass-AttachEntries e.Items>;
 
   (NativeBlock t.SrcPos e.Code) e.Items
@@ -191,7 +195,7 @@ Pass-AttachEntries {
   /* empty */ = /* empty */;
 }
 
-Pass-RemoveRedundantDriveInline {
+Pass-RemoveRedundantDriveInlineIntrinsic {
   e.AST
     = <MapAccum
         {
@@ -199,15 +203,26 @@ Pass-RemoveRedundantDriveInline {
             = (e.Labels-B (e.Name Drive) e.Labels-E)
               (Drive e.Name);
 
-          (e.Labels-B (e.Name s.KnownLabel) e.Labels-E) (Inline e.Name)
-            = (e.Labels-B (e.Name s.KnownLabel) e.Labels-E)
+          (e.Labels-B (e.Name Drive) e.Labels-E) (Inline e.Name)
+            = (e.Labels-B (e.Name Drive) e.Labels-E)
               (Inline e.Name);
+
+          (e.Labels-B (e.Name Intrinsic) e.Labels-E) (Inline e.Name)
+            = (e.Labels-B (e.Name Inline) e.Labels-E)
+              (Inline e.Name);
+
+          (e.Labels-B (e.Name s.KnownLabel) e.Labels-E) (Intrinsic e.Name)
+            = (e.Labels-B (e.Name s.KnownLabel) e.Labels-E)
+              (Intrinsic e.Name);
 
           (e.Labels) (Drive e.Name)
             = (e.Labels (e.Name Drive)) (Drive e.Name);
 
           (e.Labels) (Inline e.Name)
             = (e.Labels (e.Name Inline)) (Inline e.Name);
+
+          (e.Labels) (Intrinsic e.Name)
+            = (e.Labels (e.Name Intrinsic)) (Intrinsic e.Name);
 
           (e.Labels) t.Other = (e.Labels) t.Other;
         }
@@ -223,15 +238,21 @@ Pass-RemoveRedundantDriveInline {
           (e.Labels-B (e.Name Drive) e.Labels-E) (Inline e.Name)
             = (e.Labels-B (e.Name Drive) e.Labels-E) /* пропускаем */;
 
+          (e.Labels-B (e.Name Drive) e.Labels-E) (Intrinsic e.Name)
+            = (e.Labels-B (e.Name Drive) e.Labels-E) /* пропускаем */;
+
+          (e.Labels-B (e.Name Inline) e.Labels-E) (Intrinsic e.Name)
+            = (e.Labels-B (e.Name Inline) e.Labels-E) /* пропускаем */;
+
           (e.Labels^) (Drive e.Name) = (e.Labels) /* пропускаем */;
           (e.Labels^) (Inline e.Name) = (e.Labels) /* пропускаем */;
+          (e.Labels^) (Intrinsic e.Name) = (e.Labels) /* пропускаем */;
 
           (e.Labels^) t.Other = (e.Labels) t.Other;
         }
         (e.Labels) e.AST
       >
     : () e.AST^
-
     = e.AST;
 }
 
@@ -901,6 +922,9 @@ Pass-CleanupRedudandExterns {
 
          (e.DefinedFunctions) (Drive e.Name)
            = (e.DefinedFunctions (e.Name)) (Drive e.Name);
+
+         (e.DefinedFunctions) (Intrinsic e.Name)
+           = (e.DefinedFunctions (e.Name)) (Intrinsic e.Name);
 
          (e.DefinedFunctions) (Declaration s.ScopeClass e.Name)
            = (e.DefinedFunctions) (Declaration s.ScopeClass e.Name);

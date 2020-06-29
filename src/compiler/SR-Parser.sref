@@ -42,6 +42,7 @@ PrepareBracket {
     '$SWAP' NameList |
     '$ESWAP' NameList |
     '$LABEL' NameList |
+    '$INTRINSIC' NameList |
     '$ENTRY' Function |
     Function |
     NATIVE-BLOCK .
@@ -87,6 +88,7 @@ PrepareBracket {
     '$FORWARD' NameList |
     '$SWAP' NameList |
     '$ESWAP' NameList |
+    '$INTRINSIC' NameList |
     '$LABEL' NameList-Idents |
     '$INCLUDE ' Compound ';' |
     '$ENTRY' Function |

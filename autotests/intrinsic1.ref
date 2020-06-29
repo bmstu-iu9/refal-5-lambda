@@ -1,0 +1,163 @@
+* TREE
+
+$INTRINSIC __Meta_Mu;
+$INTRINSIC Add, Div, Divmod, Mod, Mul, Sub, Compare;
+
+$META Mu;
+
+$INLINE Residue;
+
+__Step-Drop { = }
+
+$ENTRY Go {
+  /* empty */
+    = <Mu &Rev 'abracadabra'> : 'arbadacarba'
+    = <Mu Rev 'abracadabra'> : 'arbadacarba'
+    = <Mu ('Rev') 'abracadabra'> : 'arbadacarba'
+    = <Mu '?' Rev 'abracadabra'> : 'arbadacarba'
+    = 'abra' : e.X
+    = <Mu { e.A = e.X e.A e.X } 'cad'> : 'abracadabra'
+    = <Mu &Add 1 2> : 3
+    = <Mu '+' 1 2> : 3
+    = <Mu "+" 1 2> : 3
+    = <Add 1 2> : 3
+    = <Add '-' 1 2> : 1
+    = <Add 1 '-' 2> : '-' 1
+    = <Add '-' 1 '-' 2> : '-' 3
+    = <Add (2 3) 1> : 2 4
+    = <Add (1) 2 3> : 2 4
+    = <ConstValue 1> : e.z
+    = <Add 0 <Mul 2 e.z>> : 4
+    = <Sub 8 5> : 3
+    = <Sub '-' 8 5> : '-' 13
+    = <Sub 8 '-' 5> : 13
+    = <Sub '-' 8 '-' 5> : '-' 3
+    = <Sub <Mul 2 e.z> 0> : 4
+    = <Mul 3 3> : 9
+    = <Mul '-' 3 3> : '-' 9
+    = <Mul 3 '-' 3> : '-' 9
+    = <Mul '-' 3 '-' 3> : 9
+    = <Mul 1 <Mul 2 e.z>> : 4
+    = <Mul <Mul 2 e.z> 1> : 4
+    = <Mul (1 1) 1 1> : 1 2 1
+    = <Div 12 4> : 3
+    = <Div '-' 12 4> : '-' 3
+    = <Div 12 '-' 4> : '-' 3
+    = <Div '-' 12 '-' 4> : 3
+    = <Div <Mul 2 e.z> 1> : 4
+    = <Div (1 2) 1 1> : 1
+    = <Divmod 12 5> : (2) 2
+    = <Divmod '-' 12 5> : ('-' 2) '-' 2
+    = <Divmod 12 '-' 5> : ('-' 2) 2
+    = <Divmod '-' 12 '-' 5> : (2) '-' 2
+    = <Divmod <Mul 2 e.z> 1> : (4) 0
+    = <Divmod (1 2) 1 1> : (1) 1
+    = <Mod 12 5> : 2
+    = <Mod '-' 12 5> : '-' 2
+    = <Mod 12 '-' 5> : 2
+    = <Mod '-' 12 '-' 5> : '-' 2
+    = <Mod (1 2) 1 1> : 1
+    = <Compare 10 20> : '-'
+    = <Compare '-' 10 20> : '-'
+    = <Compare 10 '-' 20> : '+'
+    = <Compare '-' 10 '-' 20> : '+'
+    = <Compare 20 10> : '+'
+    = <Compare 10 10> : '0'
+    = <Compare (1 2) 2 3> : '-'
+    = <Compare ('-' 1 2) 2 3> : '-'
+    = /* empty */
+}
+
+ConstValue {
+  1 = 2
+}
+
+Rev {
+  t.First e.Middle t.Last = t.Last <Rev e.Middle> t.First;
+  t.One = t.One;
+  /* empty */ = /* empty */;
+}
+
+__Meta_Mu {
+  Rev e.Arg s.Metatable = <Rev e.Arg>;
+  ('Rev') e.Arg s.Metatable = <Rev e.Arg>;
+  '+' e.Arg s.Metatable = <Add e.Arg>;
+  "+" e.Arg s.Metatable = <Add e.Arg>;
+  '?' e.Arg s.Metatable = <Residue e.Arg>;
+  s.Ptr e.Arg s.Metatable = <s.Ptr e.Arg>;
+}
+
+Residue {
+  e.Arg = <Mu e.Arg>
+}
+
+Add {
+  1 2 = 3;
+  0 4 = 4;
+  (2 3) 1 = 2 4;
+  (1) 2 3 = 2 4;
+  '-' 1 2 = 1;
+  1 '-' 2 = '-' 1;
+  '-' 1 '-' 2 = '-' 3
+}
+
+Sub {
+  8 5 = 3;
+  '-' 8 5 = '-' 13;
+  8 '-' 5 = 13;
+  '-' 8 '-' 5 = '-' 3;
+  4 0 = 4
+}
+
+Numb {
+  '2' = 2;
+}
+
+Mul {
+  2 2 = 4;
+  '-' 3 3 = '-' 9;
+  3 '-' 3 = '-' 9;
+  '-' 3 '-' 3 = 9;
+  3 3 = 9;
+  1 4 = 4;
+  4 1 = 4;
+  (1 1) 1 1 = 1 2 1;
+}
+
+Div {
+  4 1 = 4;
+  12 4 = 3;
+  '-' 12 4 = '-' 3;
+  12 '-' 4 = '-' 3;
+  '-' 12 '-' 4 = 3;
+  (1 2) 1 1 = 1;
+}
+
+Divmod {
+  4 1 = (4) 0;
+  12 5 = (2) 2;
+  '-' 12 5 = ('-' 2) '-' 2;
+  12 '-' 5 = ('-' 2) 2;
+  '-' 12 '-' 5 = (2) '-' 2;
+  (1 2) 1 1 = (1) 1;
+}
+
+Mod {
+  4 1 = 0;
+  12 5 = 2;
+  '-' 12 5 = '-' 2;
+  12 '-' 5 = 2;
+  '-' 12 '-' 5 = '-' 2;
+  (1 2) 1 1 = 1;
+}
+
+Compare {
+  10 20 = '-';
+  '-' 10 20 = '-';
+  10 '-' 20 = '+';
+  '-' 10 '-' 20 = '+';
+  20 10 = '+';
+  10 10 = '0';
+  (1 2) 2 3 = '-';
+  ('-' 1 2) 2 3 = '-';
+}

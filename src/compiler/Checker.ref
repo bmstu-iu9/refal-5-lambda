@@ -460,6 +460,9 @@ SeparateDefines {
           (e.Declarations) (Drive t.SrcPos s.ScopeClass e.Name) =
             (e.Declarations (Drive t.SrcPos e.Name));
 
+          (e.Declarations) (Intrinsic t.SrcPos s.ScopeClass e.Name) =
+            (e.Declarations (Intrinsic t.SrcPos e.Name));
+
           /* определения идентификаторов игнорируем */
           (e.Declarations) (Ident t.SrcPos e.Name) =
             (e.Declarations);

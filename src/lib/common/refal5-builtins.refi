@@ -377,3 +377,11 @@ $EXTERN GetPID;
 
 *$FROM Library
 $EXTERN GetPPID;
+
+$INTRINSIC __Meta_Mu;
+$INTRINSIC Add, Div, Divmod, Mod, Mul, Sub, Compare;
+$INTRINSIC Chr, Ord, Upper, Lower;
+$INTRINSIC Explode, Implode, Implode_Ext, Explode_Ext;
+$INTRINSIC First, Last, Lenw;
+$INTRINSIC Numb, Symb;
+$INTRINSIC Type;
