@@ -10,7 +10,7 @@ fi
 
 main() {
   regression || return 1
-  new_tests
+  new_tests || return 1
 }
 
 regression() {
@@ -101,4 +101,4 @@ run_test() {
   rm -f "$FILE.rasl"
 }
 
-main
+main || exit 1

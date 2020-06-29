@@ -2,13 +2,13 @@
 set LOOPS=10
 if not "{%1}"=="{}" set LOOPS=%1
 
-call :MAIN
+call :MAIN || exit /b 1
 goto :EOF
 
 :MAIN
 setlocal
   call :REGRESSION || exit /b 1
-  call :NEW_TESTS
+  call :NEW_TESTS || exit /b 1
 endlocal
 goto :EOF
 
