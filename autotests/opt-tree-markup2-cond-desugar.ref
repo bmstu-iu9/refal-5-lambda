@@ -1,0 +1,20 @@
+* TREE
+
+$ENTRY Go {
+  e.X
+    = <Test e.X> : 3
+    = /* empty */;
+}
+
+Test {
+  A e.B, <B e.B> : True = <Test e.B>;
+  '*' e.X = 1;
+  e.X '*' = 2;
+  e.X = 3;
+}
+
+B {
+  B e.X = True;
+  s._ e.X = <B e.X>;
+  e._ = False;
+}
