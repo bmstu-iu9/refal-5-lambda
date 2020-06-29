@@ -15,6 +15,7 @@ $ENTRY Go {
     = <Implode 'abcd'> : abcd
     = <Implode 'Abcd10abc#$@#$'> : Abcd10abc '#$@#$'
     = <Implode_Ext 'Abcd10abc#$@#$'> : "Abcd10abc#$@#$"
+    = <Implode '!@#$%^&*()'> : 0 '!@#$%^&*()'
     = <Explode abcd> : 'abcd'
     = <Implode_Ext 'abcd'> : abcd
     = <Explode_Ext abcd> : 'abcd'
@@ -66,7 +67,8 @@ Symb {
 
 Implode {
     'abcd' = abcd;
-    'Abcd10abc#$@#$' = Abcd10abc '#$@#$'
+    'Abcd10abc#$@#$' = Abcd10abc '#$@#$';
+    '!@#$%^&*()' = 0 '!@#$%^&*()'
 }
 
 Explode {

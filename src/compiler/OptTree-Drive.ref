@@ -81,7 +81,8 @@ UpdateDriveInfo {
           (e.Optimizable) (Inline e.Name) = (e.Optimizable (Inline e.Name));
           (e.Optimizable) (Intrinsic e.Name) = (e.Optimizable (Intrinsic e.Name));
           (e.Optimizable) (Function s.ScopeClass (e.Name) Metatable e.Body)
-           = (e.Optimizable (Metatable e.Name)) (Function s.ScopeClass (e.Name) Metatable e.Body);
+           = (e.Optimizable (Metatable e.Name))
+           (Function s.ScopeClass (e.Name) Metatable e.Body);
           (e.Optimizable) t.Other = (e.Optimizable) t.Other;
         }
         () e.AST
@@ -169,7 +170,8 @@ UpdateDriveInfo {
       } (() ()) e.OptNames>
        : ((e.OptIntrinsicFuncs) (e.IntrinsicNames))
 
-    = (DriveInfo (e.KnownNames e.DrivenNames e.IntrinsicNames) e.KnownFunctions e.OptFunctions e.OptIntrinsicFuncs)
+    = (DriveInfo (e.KnownNames e.DrivenNames e.IntrinsicNames)
+      e.KnownFunctions e.OptFunctions e.OptIntrinsicFuncs)
       e.AST;
 }
 
@@ -361,8 +363,8 @@ OptSentence-Aux {
       s._ = ()
     } : t.Metatables
     = <OptSentence-MakeSubstitutions
-      (s.DriveMode s.IntrinsicMode) ((e.Left) (e.Right)) (e.Args) t.FunctionForDrive t.Metatables
-      >
+      (s.DriveMode s.IntrinsicMode) ((e.Left) (e.Right))
+      (e.Args) t.FunctionForDrive t.Metatables>
     : e.SolutionPacks
 
     = (e.OptFuncs)
@@ -427,9 +429,12 @@ CharToNode {
 CheckArgs-Intrinsic-StaticSubstitution {
   (e.Args) s.SymbolName =
   e.Args : {
-    (Symbol s.SymbolName e.Name) e.Rest = <CheckArgs-Intrinsic-StaticSubstitution (e.Rest) s.SymbolName>;
-    (TkVariable e.Var) e.Rest = <CheckArgs-Intrinsic-StaticSubstitution (e.Rest) s.SymbolName>;
-    (ColdCallBrackets e.Body) e.Rest =  <CheckArgs-Intrinsic-StaticSubstitution (e.Rest) s.SymbolName>;
+    (Symbol s.SymbolName e.Name) e.Rest
+      = <CheckArgs-Intrinsic-StaticSubstitution (e.Rest) s.SymbolName>;
+    (TkVariable e.Var) e.Rest
+      = <CheckArgs-Intrinsic-StaticSubstitution (e.Rest) s.SymbolName>;
+    (ColdCallBrackets e.Body) e.Rest
+      =  <CheckArgs-Intrinsic-StaticSubstitution (e.Rest) s.SymbolName>;
     t.Other e.Rest = False;
     = True;
   }
@@ -439,9 +444,14 @@ StaticSubstitution {
   (e.Args) (e.FuncName) s.Func s.SymbolFrom s.SymbolTo =
   <MapAccum
     {
-      (e.Result) (Symbol s.SymbolFrom s.n) e.Rest = (e.Result (Symbol s.SymbolTo <s.Func s.n>)) e.Rest;
-      (e.Result) (TkVariable e.Var) e.Rest = (e.Result (ColdCallBrackets (Symbol Name e.FuncName) (TkVariable e.Var))) e.Rest;
-      (e.Result) (ColdCallBrackets e.Body) e.Rest = (e.Result (ColdCallBrackets (Symbol Name e.FuncName) (ColdCallBrackets e.Body))) e.Rest
+      (e.Result) (Symbol s.SymbolFrom s.n) e.Rest
+        = (e.Result (Symbol s.SymbolTo <s.Func s.n>)) e.Rest;
+      (e.Result) (TkVariable e.Var) e.Rest
+        = (e.Result (ColdCallBrackets (Symbol Name e.FuncName)
+          (TkVariable e.Var))) e.Rest;
+      (e.Result) (ColdCallBrackets e.Body) e.Rest
+        = (e.Result (ColdCallBrackets (Symbol Name e.FuncName)
+          (ColdCallBrackets e.Body))) e.Rest
     }
     () e.Args
   > : (e.Result) e._
@@ -465,9 +475,12 @@ CheckArgs-Intrinsic-Symb {
 }
 
 CheckArgs-Intrinsic-EVariable {
-  (Symbol s.SymbolName e.Name) e.Rest = <CheckArgs-Intrinsic-EVariable e.Rest>;
-  (Brackets e.Body) e.Rest = <CheckArgs-Intrinsic-EVariable e.Rest>;
-  (TkVariable s.Mode e.VarName) e.Rest, <OneOf s.Mode 't' 's'> : True = <CheckArgs-Intrinsic-EVariable e.Rest>;
+  (Symbol s.SymbolName e.Name) e.Rest
+    = <CheckArgs-Intrinsic-EVariable e.Rest>;
+  (Brackets e.Body) e.Rest
+    = <CheckArgs-Intrinsic-EVariable e.Rest>;
+  (TkVariable s.Mode e.VarName) e.Rest, <OneOf s.Mode 't' 's'> : True
+    = <CheckArgs-Intrinsic-EVariable e.Rest>;
   t.Other e.Rest = False;
   = True;
 }
@@ -487,11 +500,13 @@ SignedResult-Divmod {
   (e.QSign s.Q) e.RSign s.R
   = e.QSign : {
     s.QSignChar = e.RSign : {
-      s.RSignChar = (Brackets (Symbol Char s.QSignChar) (Symbol Number s.Q)) (Symbol Char s.RSignChar) (Symbol Number s.R);
+      s.RSignChar = (Brackets (Symbol Char s.QSignChar) (Symbol Number s.Q))
+      (Symbol Char s.RSignChar) (Symbol Number s.R);
       = (Brackets (Symbol Char s.QSignChar) (Symbol Number s.Q)) (Symbol Number s.R)
     };
     = e.RSign : {
-      s.RSignChar = (Brackets (Symbol Number s.Q)) (Symbol Char s.RSignChar) (Symbol Number s.R);
+      s.RSignChar = (Brackets (Symbol Number s.Q)) (Symbol Char s.RSignChar)
+      (Symbol Number s.R);
       = (Brackets (Symbol Number s.Q)) (Symbol Number s.R)
     }
   } : e.Res
@@ -553,7 +568,9 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
           (()()) ()
         );
 
-        (Symbol Identifier e.Name)= <MakeSubstitution-FromMetatables t.Metatables (e.MetatableName) t.IntrinsicFunction (e.Args) (e.MuArg) e.Name>;
+        (Symbol Identifier e.Name)
+          = <MakeSubstitution-FromMetatables t.Metatables (e.MetatableName)
+            t.IntrinsicFunction (e.Args) (e.MuArg) e.Name>;
 
         (Brackets e.Chars) = <MapAccum
             {
@@ -561,7 +578,8 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
             }
             () e.Chars
           > : (e.Name) e._
-          = <MakeSubstitution-FromMetatables t.Metatables (e.MetatableName) t.IntrinsicFunction (e.Args) (e.MuArg) e.Name>;
+          = <MakeSubstitution-FromMetatables t.Metatables (e.MetatableName)
+            t.IntrinsicFunction (e.Args) (e.MuArg) e.Name>;
 
         e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
       };
@@ -780,7 +798,8 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     'Divmod' = e.Args : {
       (Brackets e.Numbers1) e.Numbers2,
       <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
-        = <Divmod (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : (e.Q) e.R
+        = <Divmod (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
+         : (e.Q) e.R
         = <NumberToSymbols e.Q> : e.Q^
         = <NumberToSymbols e.R> : e.R^
         =
@@ -791,7 +810,8 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
       (ColdCallBrackets (Symbol Name e.Name) e.Body) (Symbol Number 1),
       <OneOf (e.Name) <ArithmeticFunctions>> : True =
       (
-        ((Brackets (ColdCallBrackets (Symbol Name e.Name) e.Body)) (Symbol Number 0)) (()()) ()
+        ((Brackets (ColdCallBrackets (Symbol Name e.Name) e.Body)) (Symbol Number 0))
+        (()()) ()
       );
 
       (Symbol Number s.1) (Symbol Number s.2) =
@@ -900,8 +920,12 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     , <CheckArgs-Intrinsic (e.Args) Char> : True
       = <NodeToChar e.Args> : e.Chars
       = <Implode e.Chars> : s.Ident e.NonIdent
+      = s.Ident : {
+        0 = (Symbol Number 0);
+        e._ = (Symbol Identifier <Explode s.Ident>)
+      } : e.Result
       = (
-        ((Symbol Identifier <Explode s.Ident>) <CharToNode e.NonIdent>) (()()) ()
+        (e.Result <CharToNode e.NonIdent>) (()()) ()
       );
 
     'Implode_Ext'
@@ -1020,7 +1044,7 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
   }
 }
 
-/* 
+/*
   <OptSentence-MakeSubstitutions
     t.Mode (e.OriginSentence) (e.CallArgs) t.OptFunction t.Metatables
   >
@@ -1032,8 +1056,10 @@ OptSentence-MakeSubstitutions {
   (s.DriveMode Intrinsic)
   ((e.Left) (e.Expr)) (e.Args)
   (Intrinsic s.ScopeClass (e.IntrinsicName) Intrinsic e.BehaviorName) t.Metatables
-    = (Intrinsic s.ScopeClass (e.IntrinsicName) Intrinsic e.BehaviorName) : t.IntrinsicFunction
-    = <DoOptSentence-MakeSubstitutions-Intrinsic t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName>;
+    = (Intrinsic s.ScopeClass (e.IntrinsicName) Intrinsic e.BehaviorName)
+     : t.IntrinsicFunction
+    = <DoOptSentence-MakeSubstitutions-Intrinsic
+      t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName>;
 
   t.Mode
   ((e.Left) (e.Expr)) (e.Args)
@@ -1174,7 +1200,7 @@ FindOptInfo-Aux {
   (e.Name) (e.LookupName) s._
   = e.OptFuncs-B (Intrinsic s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
     (Intrinsic s.ScopeClass (e.Name) e.Body);
-  
+
   e.OptFuncs-B (s.Mode s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
   (e.Name) (e.LookupName) s.Drop
     = e.Body : Sentences e.Sentences

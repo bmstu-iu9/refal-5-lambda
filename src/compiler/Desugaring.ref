@@ -202,15 +202,15 @@ Pass-RemoveRedundantDriveInlineIntrinsic {
           (e.Labels-B (e.Name s.KnownLabel) e.Labels-E) (Drive e.Name)
             = (e.Labels-B (e.Name Drive) e.Labels-E)
               (Drive e.Name);
-          
+
           (e.Labels-B (e.Name Drive) e.Labels-E) (Inline e.Name)
             = (e.Labels-B (e.Name Drive) e.Labels-E)
               (Inline e.Name);
-          
+
           (e.Labels-B (e.Name Intrinsic) e.Labels-E) (Inline e.Name)
             = (e.Labels-B (e.Name Inline) e.Labels-E)
               (Inline e.Name);
-            
+
           (e.Labels-B (e.Name s.KnownLabel) e.Labels-E) (Intrinsic e.Name)
             = (e.Labels-B (e.Name s.KnownLabel) e.Labels-E)
               (Intrinsic e.Name);
@@ -240,7 +240,7 @@ Pass-RemoveRedundantDriveInlineIntrinsic {
 
           (e.Labels-B (e.Name Drive) e.Labels-E) (Intrinsic e.Name)
             = (e.Labels-B (e.Name Drive) e.Labels-E) /* пропускаем */;
-          
+
           (e.Labels-B (e.Name Inline) e.Labels-E) (Intrinsic e.Name)
             = (e.Labels-B (e.Name Inline) e.Labels-E) /* пропускаем */;
 
@@ -922,7 +922,7 @@ Pass-CleanupRedudandExterns {
 
          (e.DefinedFunctions) (Drive e.Name)
            = (e.DefinedFunctions (e.Name)) (Drive e.Name);
-           
+
          (e.DefinedFunctions) (Intrinsic e.Name)
            = (e.DefinedFunctions (e.Name)) (Intrinsic e.Name);
 
