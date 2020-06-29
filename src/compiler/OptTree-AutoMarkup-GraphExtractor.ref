@@ -53,8 +53,6 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
     = (Func (Indirect function for implicit calls)
       Children (e.ClearedUniqueIndirectChildren))
       : e.IndirectFuncNode
-    = <Map &OptTree-AutoMarkup-GetMetatablesNames e.AST>
-      : e.MetatablesNames
     = <Map &OptTree-AutoMarkup-GetMetatables e.AST>
       : e.ExtractedMetaTables
     = <OptTree-AutoMarkup-InlineFuncCallsWithMetatable
