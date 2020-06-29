@@ -1,10 +1,195 @@
+$INCLUDE "LibraryEx";
+
+*$FROM Log
+$EXTERN Log-PutLine, Log-AST;
+
+*$FROM DisplayName
+$EXTERN DisplayName;
+
+*$FROM OptTree-AutoMarkup-GraphExtractor
+$EXTERN OptTree-AutoMarkup-ExtractFunctionCallsGraph;
+
+*$FROM OptTree-AutoMarkup-SpecializableExtractor
+$EXTERN OptTree-AutoMarkup-GetSpecializableDict;
+
+*$FROM OptTree-AutoMarkup-BasisVertexesExtractor
+$EXTERN OptTree-AutoMarkup-ExtractBasisVertexes;
+
+*$FROM OptTree-AutoMarkup-Common
+$EXTERN OptTree-AutoMarkup-Contains,
+        OptTree-AutoMarkup-GetSetDifference,
+        OptTree-AutoMarkup-IsEmpty;
+
 /**
   <OptTree-AutoMarkup s.OptAutoMarkup e.AST> == e.AST
 */
+
 $ENTRY OptTree-AutoMarkup {
-  NoOpt e.AST = e.AST;
+  NoOpt e.AST
+    = <Log-PutLine 'AutoMarkup is disabled'> :
+    = e.AST;
 
   OptAutoMarkup e.AST
-*   TODO: реализовать разметку
-    = e.AST;
+    = <OptTree-AutoMarkup-GetSpecializableDict (e.AST)>
+      : e.SpecializableDict
+    = <OptTree-AutoMarkup-GetForbiddenToSpecializeFunctionNames (e.AST)>
+      : e.ForbiddenToSpecializeFunctionNames
+    = <OptTree-AutoMarkup-GetSpecializePatterns
+        (e.SpecializableDict)
+        (e.ForbiddenToSpecializeFunctionNames)
+      >
+      : e.SpecPatterns
+    = <OptTree-AutoMarkup-ExtractFunctionCallsGraph e.AST>
+      : e.ExtractedGraph
+    = <OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph>
+      : (e.BasisVertexes) (e.ExtractedGraph^)
+    = <OptTree-AutoMarkup-GetDrivenFunctions
+        (e.ExtractedGraph)
+        (e.BasisVertexes)
+      >
+      : e.DrivenFunctions
+    = <OptTree-AutoMarkup-GetForbiddenToDriveFunctions e.AST>
+      : e.ForbiddenToDriveFuncs
+    = <OptTree-AutoMarkup-GetSetDifference
+        (e.DrivenFunctions)
+        (e.ForbiddenToDriveFuncs)
+      >
+      : (e.FunctionToDrive)
+    = <OptTree-AutoMarkup-GetUpdatedWithDrivenFunctionsAst
+        (e.AST)
+        (e.FunctionToDrive)
+        (e.BasisVertexes)
+      >
+      : e.DrivedAst
+    = e.DrivedAst e.SpecPatterns;
+}
+
+OptTree-AutoMarkup-GetForbiddenToSpecializeFunctionNames {
+  (e.AST)
+    = <Map
+        {
+          (Spec (e.Name) e.SpecPattern)
+            = (e.Name);
+
+          (Function s.ScopeClass (e.FuncName) Sentences e.Body)
+            , (e.FuncName) : (e.FuncName '@' e.FuncNameTail)
+            = (e.FuncName);
+
+          (Function s.ScopeClass (e.FuncName) Sentences e.Body)
+            , (e.FuncName) : (e.FuncNameMain SUF e.FuncNameTail)
+            = (e.FuncName);
+
+          e.Other
+            = ;
+        }
+        e.AST
+      >
+}
+
+OptTree-AutoMarkup-GetSpecializePatterns {
+  (e.SpecializableDict) (e.Filter)
+    = <Map
+        {
+          (SPECIALIZABLE (e.FuncName) '->' (e.SpecifiedPattern))
+            , <OptTree-AutoMarkup-Contains (e.FuncName)(e.Filter)> : False
+            , <OptTree-AutoMarkup-IsEmpty (e.SpecifiedPattern)> : False
+            = <Map
+                {
+                  (e.Variable)
+                    = (TkVariable e.Variable)
+                }
+                e.SpecifiedPattern
+              >
+              : e.MarkedSpecPattern
+            = (Spec (e.FuncName) e.MarkedSpecPattern);
+
+          e.Other
+            = ;
+        }
+        e.SpecializableDict
+      >
+}
+
+OptTree-AutoMarkup-GetForbiddenToDriveFunctions {
+  e.AST
+    = (INIT) (FINAL)
+      <Map
+        {
+          (s.Label e.Name)
+            , <OptTree-AutoMarkup-Contains
+                (s.Label)
+                ((Drive)(Inline)(Intrinsic))
+              > : True
+            = (e.Name);
+
+          (Declaration GN-Entry e.FuncName)
+            = (e.FuncName);
+
+          (Function GN-Entry (e.FuncName) Sentences e.Body)
+            = (e.FuncName);
+
+          (Function s.Scope (e.FuncName) Sentences e.Body)
+            , (e.FuncName) : (e.Head '*' s.Num e.Tail)
+            = (e.FuncName);
+
+          (Function s.Scope (e.FuncName) Sentences e.Body)
+            = <Lenw e.Body>
+              : s.SentencesCount e.Body^
+            = <TermCompare s.SentencesCount 20>
+              : {
+                  '>'
+                    = (e.FuncName);
+
+                  e.Other
+                    = ;
+                };
+
+          e.Other
+            = ;
+        }
+        e.AST
+      >
+}
+
+OptTree-AutoMarkup-GetDrivenFunctions {
+  (e.ExtractedGraph) (e.BasisVertexes)
+    = <Map
+        {
+          (Func (Indirect function for implicit calls) Children (e.Children))
+            = ;
+
+          (Func (e.FuncName) Children (e.Children))
+          , <OptTree-AutoMarkup-Contains (e.FuncName)(e.BasisVertexes)> : False
+            = (e.FuncName);
+
+          e.Other
+            = ;
+        }
+        e.ExtractedGraph
+      >
+}
+
+OptTree-AutoMarkup-GetUpdatedWithDrivenFunctionsAst {
+  (e.AST) (e.FunctionsToDrive) (e.BasisVertexes)
+    = <Map
+        {
+          (e.FuncName)
+            = (Drive e.FuncName);
+        }
+        e.FunctionsToDrive
+      >
+      : e.DrivedFunctions
+    = <Map
+        {
+          (Drive e.Name)
+            , e.BasisVertexes : e._ (e.Name) e._
+            = ;
+
+          t.Other
+            = t.Other;
+        }
+        e.AST
+      >
+      : e.ClearAST
+    = e.ClearAST e.DrivedFunctions;
 }

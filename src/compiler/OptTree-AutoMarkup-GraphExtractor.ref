@@ -1,0 +1,463 @@
+$INCLUDE "LibraryEx";
+
+*$FROM DisplayName
+$EXTERN DisplayName;
+
+*$FROM OptTree-AutoMarkup-Common
+$EXTERN OptTree-AutoMarkup-Contains,
+        OptTree-AutoMarkup-GetElemByKey;
+
+/**
+  <OptTree-AutoMarkup-ExtractGraph e.AST> == e.FunctionCallsGraph
+*/
+
+$ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
+  e.AST
+    = <MapAccum
+        {
+          ((e.GraphNodes) (e.IndirectChildren))
+          e.AstNode
+            = <OptTree-AutoMarkup-GetFuncs e.AstNode>
+              :
+                {
+                  (e.Node) (e.NodeIndirectChildren)
+                    = (
+                        (e.GraphNodes (e.Node))
+                        (e.IndirectChildren e.NodeIndirectChildren)
+                      );
+
+                  e.Other
+                    = ((e.GraphNodes) (e.IndirectChildren));
+                }
+
+        }
+        ((/*graph nodes*/) (/*indirect children*/)) e.AST
+      >
+      : ((e.ExtractedFuncs) (e.IndirectChildren))
+     = <Map &OptTree-AutoMarkup-GetMetatablesNames e.AST>
+      : e.MetatablesNames
+    = <Unique e.IndirectChildren>
+      : e.UniqueIndirectChildren
+    = <Map
+        {
+          (e.FuncName)
+            , e.MetatablesNames : e.MetatableHead (e.FuncName) e.MetatableTail
+            = ;
+
+          e.Other
+            = e.Other;
+        }
+        e.UniqueIndirectChildren
+      >
+      : e.ClearedUniqueIndirectChildren
+    = (Func (Indirect function for implicit calls)
+      Children (e.ClearedUniqueIndirectChildren))
+      : e.IndirectFuncNode
+    = <Map &OptTree-AutoMarkup-GetMetatablesNames e.AST>
+      : e.MetatablesNames
+    = <Map &OptTree-AutoMarkup-GetMetatables e.AST>
+      : e.ExtractedMetaTables
+    = <OptTree-AutoMarkup-InlineFuncCallsWithMetatable
+        (e.ExtractedFuncs)
+        (e.ExtractedMetaTables)
+      >
+      : e.InlinedGraph
+    = <Map &OptTree-AutoMarkup-GetEntryPoints e.AST>
+      : e.EntryPoints
+    = e.EntryPoints e.UniqueIndirectChildren
+      : e.EntryPoints^
+    = <OptTree-AutoMarkup-GetClearedByEntryPointsGraph
+        (e.InlinedGraph)
+        (e.EntryPoints)
+      >
+      : ((e.ResultGraph) (e.InlinedGraph^))
+    = <Unique e.IndirectFuncNode e.ResultGraph>;
+}
+
+OptTree-AutoMarkup-GetEntryPoints {
+  (Function GN-Entry (e.FuncName) Sentences e.Body)
+    = (e.FuncName);
+
+  (Function s.Scope (e.FuncName) Sentences e.Body)
+    ,<OneOf (e.FuncName) (INIT) (FINAL)> : True
+    = (e.FuncName);
+
+  e.Smth
+    = ;
+}
+
+OptTree-AutoMarkup-GetClearedByEntryPointsGraph {
+  (e.Graph) (e.EntryPoints)
+    = <OptTree-AutoMarkup-GetClearedByEntryPointsGraph
+        (e.Graph)
+        ()
+        (e.EntryPoints)
+      >;
+
+  (e.Graph) (e.ProccessedNodes) (e.EntryPoints)
+    = <MapAccum
+        {
+          ((e.ProcessedNodes) (e.Result) (e.Graph^))
+          (e.EntryPoint)
+            , <OptTree-AutoMarkup-Contains
+                (e.EntryPoint)
+                (e.ProcessedNodes)
+              > : False
+            = (e.ProcessedNodes (e.EntryPoint))
+              : (e.NewProcessedNodes)
+            = <OptTree-AutoMarkup-GetElemByKey
+                (e.EntryPoint)
+                (e.Graph)
+              >
+              : e.Node (e.Graph^)
+            = e.Node
+              : {
+                  Func (e.FuncName) Children (e.Children)
+                    = <OptTree-AutoMarkup-GetClearedByEntryPointsGraph
+                        (e.Graph)
+                        (e.NewProcessedNodes)
+                        (e.Children)
+                      >
+                      : ((e.SubTreeResult) (e.Graph^))
+                    = (
+                        (e.NewProcessedNodes)
+                        (
+                          e.Result
+                          (Func (e.FuncName) Children (e.Children))
+                          e.SubTreeResult
+                        )
+                        (e.Graph)
+                      );
+
+                  e._
+                    = (
+                        (e.NewProcessedNodes)
+                        (e.Result)
+                        (e.Graph)
+                      );
+                };
+
+          ((e.ProcessedNodes) (e.Result) (e.Graph^)) e.Other
+            = ((e.ProcessedNodes) (e.Result) (e.Graph));
+        }
+        ((e.ProccessedNodes) (/*result*/) (e.Graph)) e.EntryPoints
+      >
+      : ((e.ProccessedNodes^) (e.Result) (e.Graph^))
+    = ((e.Result) (e.Graph))
+}
+
+OptTree-AutoMarkup-GetMetatables {
+  (Function s.ScopeClass (e.Name) Metatable e.Metatable)
+    = <Map
+        &OptTree-AutoMarkup-ExtractFunctionCallsFromMetatable
+        e.Metatable
+      >
+      : e.FunctionCalls
+    = (e.Name (<Unique e.FunctionCalls>));
+
+  e.Smth
+    = ;
+}
+
+OptTree-AutoMarkup-GetMetatablesNames {
+  (Function s.ScopeClass (e.Name) Metatable e.Metatable)
+    = (e.Name);
+
+  e.Smth
+    = ;
+}
+
+OptTree-AutoMarkup-GetFuncs {
+  (Function s.ScopeClass (e.Name) Sentences e.Body)
+    = <MapAccum
+        {
+          ((e.DirectCalls)(e.ImplicitCalls)(e.IndirectChildren))
+          (e.Sentence)
+            = <OptTree-AutoMarkup-ExtractFunctionCallsFromSentencesBody
+                (e.Sentence)
+              >
+              : (e.SentenceDirectCalls)
+                (e.SentecnseImplicitCalls)
+                (e.SentecnseIndirectChildren)
+            = (
+                (e.DirectCalls e.SentenceDirectCalls)
+                (e.ImplicitCalls e.SentecnseImplicitCalls)
+                (e.IndirectChildren e.SentecnseIndirectChildren)
+              )
+        }
+        ((/*direct calls*/) (/*implicit calls*/) (/*indirect children*/))
+        e.Body
+      >
+      : ((e.DirectCalls) (e.ImplicitCalls) (e.IndirectChildren))
+    = <Unique e.DirectCalls> : e.UniqueDirectCalls
+    = (e.ImplicitCalls)
+      : {
+          ()
+            = ;
+
+          (e._)
+            = (Indirect function for implicit calls)
+        }
+        : e.IndirectChild
+    = (Func (e.Name) Children (e.UniqueDirectCalls e.IndirectChild))
+      (e.IndirectChildren);
+
+  e.Smth
+    = ;
+}
+
+OptTree-AutoMarkup-ExtractFunctionCallsFromMetatable {
+  ((Symbol Identifier e.Ident) (Symbol Name e.Name))
+    = (e.Name);
+}
+
+OptTree-AutoMarkup-ExtractFunctionCallsFromSentencesBody {
+  ((e.Pattern) e.Conditions (e.Result))
+    = <OptTree-AutoMarkup-ExtractExpressionName e.Pattern>
+      : (e.PatternNames) (e.PatternIndirectCalls) (e.PatternIndirectChildren)
+    = <MapAccum
+        {
+          ((e.DirectCalls)(e.IndirectCalls)(e.IndirectChildren))
+          (Condition (e.Name) (e.ConditionResult) (e.ConditionPattern))
+              = <OptTree-AutoMarkup-ExtractExpressionName
+                  e.ConditionResult
+                >
+                : (e.ConditionResultCalls)
+                  (e.ConditionResultIndirectCalls)
+                  (e.ConditionResultIndirectChildren)
+              = <OptTree-AutoMarkup-ExtractExpressionName
+                  e.ConditionPattern
+                >
+                : (e.ConditionPatternCalls)
+                  (e.ConditionPatternIndirectCalls)
+                  (e.ConditionPatternIndirectChildren)
+              = (
+                  (
+                    e.DirectCalls
+                    e.ConditionResultCalls
+                    e.ConditionPatternCalls
+                  )
+                  (
+                    e.IndirectCalls
+                    e.ConditionResultIndirectCalls
+                    e.ConditionPatternIndirectCalls
+                  )
+                  (
+                    e.IndirectChildren
+                    e.ConditionResultIndirectChildren
+                    e.ConditionPatternIndirectChildren
+                  )
+                );
+        }
+        ((/*direct calls*/) (/*indirect calls*/) (/*indirect children*/))
+        e.Conditions
+      >
+      : (
+          (e.ConditionNames)
+          (e.ConditionIndirectCalls)
+          (e.ConditionIndirectChildren)
+        )
+    = <OptTree-AutoMarkup-ExtractExpressionName e.Result>
+      : (e.ResultNames) (e.ResultIndirectCalls) (e.ResultIndirectChildren)
+    = (
+        e.PatternNames
+        e.ConditionNames
+        e.ResultNames
+      )
+      (
+        e.PatternIndirectCalls
+        e.ConditionIndirectCalls
+        e.ResultIndirectCalls
+      )
+      (
+        e.PatternIndirectCalls
+        e.ConditionIndirectChildren
+        e.ResultIndirectChildren
+      );
+}
+
+OptTree-AutoMarkup-InnerExtractExpressionName {
+  (e.Expr) (e.DirectCalls) (e.IndirectDetected) (e.IndirectChildren)
+    = <MapAccum
+        {
+          ((e.DirectCalls^) (e.IndirectDetected^) (e.IndirectChildren^))
+          (Symbol Name e.Name)
+            = (
+                (e.DirectCalls (e.Name))
+                (e.IndirectDetected)
+                (e.IndirectChildren)
+              );
+
+          ((e.DirectCalls^) (e.IndirectDetected^) (e.IndirectChildren^))
+          (t.Marker e.Nested)
+            , <OneOf
+                (t.Marker)
+                (Brackets)
+                (ADT-Brackets)
+                (ClosureBrackets)
+              > : True
+            = <OptTree-AutoMarkup-InnerExtractExpressionName
+                (e.Nested)
+                (e.DirectCalls)
+                (e.IndirectDetected)
+                (e.IndirectChildren)
+              >;
+
+          ((e.DirectCalls^) (e.IndirectDetected^) (e.IndirectChildren^))
+          (CallBrackets
+            (Symbol Name e.Name)
+            e.NestedHead
+            (Symbol Name e.IndirectChild)
+            e.NestedTail
+          )
+            = (e.IndirectChild)
+              <Map
+                {
+                  (Symbol Name e.NextInderectChild)
+                    = (e.NextInderectChild);
+
+                  e.Other
+                    = ;
+                }
+                e.NestedTail
+              >
+              : e.AdditionaIndirectChildren
+            = <Map
+                {
+                  (Symbol Name e._)
+                    = ;
+
+                  e.Other
+                    = e.Other;
+                }
+                e.NestedHead e.NestedTail
+              >
+              : e.Nested^
+            = <OptTree-AutoMarkup-InnerExtractExpressionName
+                (e.Nested)
+                (e.DirectCalls)
+                (e.IndirectDetected)
+                (e.IndirectChildren)
+              >
+              : (
+                  (e.DirectCalls^)
+                  (e.IndirectDetected^)
+                  (e.IndirectChildren^)
+                )
+            = (
+                (e.DirectCalls (e.Name))
+                (e.IndirectDetected)
+                (e.IndirectChildren e.AdditionaIndirectChildren)
+              );
+
+          ((e.DirectCalls^) (e.IndirectDetected^) (e.IndirectChildren^))
+          (CallBrackets (Symbol Name e.Name) e.Nested)
+            = <OptTree-AutoMarkup-InnerExtractExpressionName
+                (e.Nested)
+                (e.DirectCalls)
+                (e.IndirectDetected)
+                (e.IndirectChildren)
+              >
+              : (
+                  (e.DirectCalls^)
+                  (e.IndirectDetected^)
+                  (e.IndirectChildren^)
+                )
+            = (
+                (e.DirectCalls (e.Name))
+                (e.IndirectDetected)
+                (e.IndirectChildren)
+              );
+
+          ((e.DirectCalls^) (e.IndirectDetected^) (e.IndirectChildren^))
+          (CallBrackets e.Nested)
+            = <OptTree-AutoMarkup-InnerExtractExpressionName
+                (e.Nested)
+                (e.DirectCalls)
+                (e.IndirectDetected)
+                (e.IndirectChildren)
+              >
+              : (
+                  (e.DirectCalls^)
+                  (e.IndirectDetected^)
+                  (e.IndirectChildren^)
+                )
+            = (
+                (e.DirectCalls)
+                (Indirect detected)
+                (e.IndirectChildren)
+              );
+
+          ((e.DirectCalls^) (e.IndirectDetected^) (e.IndirectChildren^))
+          (t.Marker e.Smth)
+            = ((e.DirectCalls) (e.IndirectDetected) (e.IndirectChildren));
+        }
+        ((e.DirectCalls) (e.IndirectDetected) (e.IndirectChildren))
+        e.Expr
+      >;
+}
+
+OptTree-AutoMarkup-ExtractExpressionName {
+  e.Expr
+    = <OptTree-AutoMarkup-InnerExtractExpressionName (e.Expr) () () ()>
+      : ((e.DirectCalls) (e.IndirectDetected) (e.IndirectChildren))
+    = (e.DirectCalls) (e.IndirectDetected) (e.IndirectChildren)
+}
+
+OptTree-AutoMarkup-InlineFuncCallsWithMetatable {
+  (e.ExtractedFuncs) (e.ExtractedMetaTables)
+    = <Map
+        {
+          e.Elem
+            = <OptTree-AutoMarkup-InlineOneFuncChildrenWithMetatable
+                e.Elem
+                (e.ExtractedMetaTables)
+              >;
+        }
+        e.ExtractedFuncs
+      >;
+}
+
+OptTree-AutoMarkup-InlineOneFuncChildrenWithMetatable {
+  (Func (e.Name) Children (e.UniqueFunctionCalls)) (e.ExtractedMetaTables)
+      = <Map
+          {
+            e.Elem
+              = <OptTree-AutoMarkup-GetCallsFromMetaTables
+                  e.Elem
+                  (e.ExtractedMetaTables)
+                >;
+          }
+          e.UniqueFunctionCalls
+        >
+        : e.ReplacedChildren
+      = <Unique e.ReplacedChildren>
+        : e.UniqueReplacedChildren
+      = (Func (e.Name) Children (e.UniqueReplacedChildren));
+}
+
+OptTree-AutoMarkup-GetCallsFromMetaTables {
+  (e.FuncName) (e.ExtractedMetaTables)
+    = (<Map
+        {
+          (e.Key (e.Value))
+            , e.Key : e.FuncName
+            = e.Value;
+
+          (e.Other)
+            = ;
+        }
+        e.ExtractedMetaTables
+      >)
+      : e.ReplaceValue
+    = <Fetch
+        e.ReplaceValue
+        {
+          ()
+            = (e.FuncName);
+
+          (e.FuncSet)
+            = e.FuncSet;
+        }
+      >;
+}

@@ -1,0 +1,194 @@
+$INCLUDE "LibraryEx";
+
+*$FROM OptTree-AutoMarkup-Common
+$EXTERN OptTree-AutoMarkup-GetSetDifference,
+        OptTree-AutoMarkup-Contains,
+        OptTree-AutoMarkup-GetElemByKey,
+        OptTree-AutoMarkup-GetParents,
+        OptTree-AutoMarkup-Equal;
+
+/**
+	<OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph>
+    = (e.BasisVertex)* (e.Graph)
+
+	e.BasisVertex = e.FuncName
+*/
+
+$ENTRY OptTree-AutoMarkup-ExtractBasisVertexes {
+  e.Graph
+    = <OptTree-AutoMarkup-GetGraphRoots (e.Graph)>
+      : (e.GraphRoots)
+    = <OptTree-AutoMarkup-GetBasisVertexes
+        (e.GraphRoots)
+        e.Graph
+      >
+      : (
+          (e.CurrentPath)
+          (e.Proccessed)
+          (e.BasisVertexes)
+          (e.Graph^)
+        )
+    = (e.BasisVertexes) (e.Graph);
+}
+
+OptTree-AutoMarkup-GetGraphRoots {
+  (e.Graph)
+    = <MapAccum
+        {
+          ((e.Result) (e.Graph^))
+          (Func (Indirect function for implicit calls) Children (e.Children))
+            = ((e.Result) (e.Graph));
+
+          ((e.Result) (e.Graph^))
+          (Func (e.FuncName) Children (e.Children))
+            , e.Graph
+              : e.GraphHead
+                (
+                  Func (e.ParentName)
+                  Children (e.ChildrenHead (e.FuncName) e.ChildrenTail)
+                )
+                e.GraphTail
+            , <OptTree-AutoMarkup-Equal (e.ParentName) (e.FuncName)> : False
+            = ((e.Result) (e.Graph));
+
+          ((e.Result) (e.Graph^))
+          (Func (e.FuncName) Children (e.Children))
+            = ((e.Result (e.FuncName)) (e.Graph))
+        }
+        ((/*result*/) (e.Graph)) e.Graph
+      >
+      : ((e.Roots) (e.Graph^))
+    = (e.Roots);
+}
+
+OptTree-AutoMarkup-GetBasisVertexes-GetResultByNode {
+  (Func (e.Name) Children (e.Children))
+  ((e.CurrentPath) (e.Proccessed) (e.BasisVertexes) (e.Graph))
+    = <MapAccum
+        {
+          ((e.CurrentPath^) (e.Proccessed^) (e.BasisVertexes^) (e.Graph^))
+          (e.ChildFunc)
+            , e.BasisVertexes : e._ (e.ChildFunc) e._
+            = (
+                (e.CurrentPath)
+                (e.Proccessed)
+                (e.BasisVertexes)
+                (e.Graph)
+              );
+
+          ((e.CurrentPath^) (e.Proccessed^) (e.BasisVertexes^) (e.Graph^))
+          (e.Name)
+            , e.CurrentPath : e._ (e.ChildFunc) e._
+            = (
+                (e.CurrentPath)
+                (e.Proccessed)
+                (e.BasisVertexes (e.Name))
+                (e.Graph)
+              );
+
+          ((e.CurrentPath^) (e.Proccessed^) (e.BasisVertexes^) (e.Graph^))
+          (e.ChildFunc)
+            , e.CurrentPath : e._ (e.ChildFunc) e._
+            = (
+                (e.CurrentPath)
+                (e.Proccessed)
+                (e.BasisVertexes (e.ChildFunc))
+                (e.Graph)
+              );
+
+          ((e.CurrentPath^) (e.Proccessed^) (e.BasisVertexes^) (e.Graph^))
+          (e.ChildFunc)
+            , e.Proccessed : e._ (e.ChildFunc) e._
+            = (
+                (e.CurrentPath)
+                (e.Proccessed)
+                (e.BasisVertexes)
+                (e.Graph)
+              );
+
+          ((e.CurrentPath^) (e.Proccessed^) (e.BasisVertexes^) (e.Graph^))
+          (e.ChildFunc)
+            = e.CurrentPath (e.ChildFunc) : e.NewCurrentPath
+            = <OptTree-AutoMarkup-GetBasisVertexes
+                ((e.ChildFunc))
+                (
+                  (e.NewCurrentPath)
+                  (e.Proccessed)
+                  (e.BasisVertexes)
+                  (e.Graph)
+                )
+              >
+              : (
+                  (e.NewCurrentPath^)
+                  (e.Proccessed^)
+                  (e.BasisVertexes^)
+                  (e.Graph^)
+                )
+            = (
+                (e.CurrentPath)
+                (e.Proccessed)
+                (e.BasisVertexes)
+                (e.Graph)
+              );
+        }
+        ((e.CurrentPath) (e.Proccessed) (e.BasisVertexes) (e.Graph))
+        e.Children
+      >
+      : ((e.CurrentPath^) (e.Proccessed^) (e.BasisVertexes^) (e.Graph^))
+      = e.Proccessed (e.Name) : e.NewProccessed
+      = (
+          (e.CurrentPath)
+          (e.NewProccessed)
+          (e.BasisVertexes)
+          (e.Graph)
+        );
+
+  (e.Other)
+  ((e.CurrentPath) (e.Proccessed) (e.BasisVertexes) (e.Graph))
+    = ((e.CurrentPath) (e.Proccessed) (e.BasisVertexes) (e.Graph));
+}
+
+
+OptTree-AutoMarkup-GetBasisVertexes {
+  (e.NextGraphNodes)
+  (
+    (e.CurrentPath)
+    (e.Proccessed)
+    (e.BasisVertexes)
+    (e.Graph)
+  )
+    = <MapAccum
+        {
+          ((e.CurrentPath^)(e.Proccessed^)(e.BasisVertexes^)(e.Graph^))
+          (e.FuncName)
+            = <OptTree-AutoMarkup-GetElemByKey
+                (e.FuncName)
+                (e.Graph)
+              >
+              : e.Node (e.Graph^)
+            = <OptTree-AutoMarkup-GetBasisVertexes-GetResultByNode
+                (e.Node)
+                ((e.CurrentPath)(e.Proccessed)(e.BasisVertexes)(e.Graph))
+              >
+        }
+        (
+          (e.CurrentPath)
+          (e.Proccessed)
+          (e.BasisVertexes)
+          (e.Graph)
+        )
+        e.NextGraphNodes
+      >;
+
+  (e.RootNodes)
+  e.Graph
+    = <OptTree-AutoMarkup-GetBasisVertexes
+        (e.RootNodes)
+        (
+          ()
+          ()
+          ()
+          (e.Graph)
+        )
+      >;
+}
