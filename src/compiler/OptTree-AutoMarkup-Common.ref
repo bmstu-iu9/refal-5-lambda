@@ -55,7 +55,7 @@ $ENTRY OptTree-AutoMarkup-Equal {
 $ENTRY OptTree-AutoMarkup-GetElemByKey {
   (e.Key) (e.GraphHead (Func (e.Key) Children (e.Children)) e.GraphTail)
     = Func (e.Key) Children (e.Children)
-      (e.GraphHead (Func (e.Key) Children (e.Children)) e.GraphTail);
+      ((Func (e.Key) Children (e.Children)) e.GraphHead e.GraphTail);
 
   (e.Key) (e.Graph)
     = /* пусто */ (e.Graph);
