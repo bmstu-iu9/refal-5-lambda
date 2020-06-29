@@ -16,9 +16,9 @@ $EXTERN OptTree-AutoMarkup-GetSetDifference,
 
 $ENTRY OptTree-AutoMarkup-ExtractBasisVertexes {
   e.Graph
-    = <OptTree-AutoMarkup-GetGraphRoots (e.Graph)>
+    = <GetGraphRoots (e.Graph)>
       : (e.GraphRoots)
-    = <OptTree-AutoMarkup-GetBasisVertexes
+    = <GetBasisVertexes
         (e.GraphRoots)
         e.Graph
       >
@@ -31,7 +31,7 @@ $ENTRY OptTree-AutoMarkup-ExtractBasisVertexes {
     = (e.BasisVertexes) (e.Graph);
 }
 
-OptTree-AutoMarkup-GetGraphRoots {
+GetGraphRoots {
   (e.Graph)
     = <MapAccum
         {
@@ -61,7 +61,7 @@ OptTree-AutoMarkup-GetGraphRoots {
     = (e.Roots);
 }
 
-OptTree-AutoMarkup-GetBasisVertexes-GetResultByNode {
+GetBasisVertexes-GetResultByNode {
   (Func (e.Name) Children (e.Children))
   ((e.CurrentPath) (e.Proccessed) (e.BasisVertexes) (e.Graph))
     = <MapAccum
@@ -109,7 +109,7 @@ OptTree-AutoMarkup-GetBasisVertexes-GetResultByNode {
           ((e.CurrentPath^) (e.Proccessed^) (e.BasisVertexes^) (e.Graph^))
           (e.ChildFunc)
             = e.CurrentPath (e.ChildFunc) : e.NewCurrentPath
-            = <OptTree-AutoMarkup-GetBasisVertexes
+            = <GetBasisVertexes
                 ((e.ChildFunc))
                 (
                   (e.NewCurrentPath)
@@ -149,7 +149,7 @@ OptTree-AutoMarkup-GetBasisVertexes-GetResultByNode {
 }
 
 
-OptTree-AutoMarkup-GetBasisVertexes {
+GetBasisVertexes {
   (e.NextGraphNodes)
   (
     (e.CurrentPath)
@@ -166,7 +166,7 @@ OptTree-AutoMarkup-GetBasisVertexes {
                 (e.Graph)
               >
               : e.Node (e.Graph^)
-            = <OptTree-AutoMarkup-GetBasisVertexes-GetResultByNode
+            = <GetBasisVertexes-GetResultByNode
                 (e.Node)
                 ((e.CurrentPath)(e.Proccessed)(e.BasisVertexes)(e.Graph))
               >
@@ -182,7 +182,7 @@ OptTree-AutoMarkup-GetBasisVertexes {
 
   (e.RootNodes)
   e.Graph
-    = <OptTree-AutoMarkup-GetBasisVertexes
+    = <GetBasisVertexes
         (e.RootNodes)
         (
           ()

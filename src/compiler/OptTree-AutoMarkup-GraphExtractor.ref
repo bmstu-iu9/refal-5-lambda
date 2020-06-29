@@ -17,7 +17,7 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
         {
           ((e.GraphNodes) (e.IndirectChildren))
           e.AstNode
-            = <OptTree-AutoMarkup-GetFuncs e.AstNode>
+            = <GetFuncs e.AstNode>
               :
                 {
                   (e.Node) (e.NodeIndirectChildren)
@@ -34,7 +34,7 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
         ((/*graph nodes*/) (/*indirect children*/)) e.AST
       >
       : ((e.ExtractedFuncs) (e.IndirectChildren))
-     = <Map &OptTree-AutoMarkup-GetMetatablesNames e.AST>
+     = <Map &GetMetatablesNames e.AST>
       : e.MetatablesNames
     = <Unique e.IndirectChildren>
       : e.UniqueIndirectChildren
@@ -53,18 +53,18 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
     = (Func (Indirect function for implicit calls)
       Children (e.ClearedUniqueIndirectChildren))
       : e.IndirectFuncNode
-    = <Map &OptTree-AutoMarkup-GetMetatables e.AST>
+    = <Map &GetMetatables e.AST>
       : e.ExtractedMetaTables
-    = <OptTree-AutoMarkup-InlineFuncCallsWithMetatable
+    = <InlineFuncCallsWithMetatable
         (e.ExtractedFuncs)
         (e.ExtractedMetaTables)
       >
       : e.InlinedGraph
-    = <Map &OptTree-AutoMarkup-GetEntryPoints e.AST>
+    = <Map &GetEntryPoints e.AST>
       : e.EntryPoints
     = e.EntryPoints e.UniqueIndirectChildren
       : e.EntryPoints^
-    = <OptTree-AutoMarkup-GetClearedByEntryPointsGraph
+    = <GetClearedByEntryPointsGraph
         (e.InlinedGraph)
         (e.EntryPoints)
       >
@@ -72,7 +72,7 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
     = <Unique e.IndirectFuncNode e.ResultGraph>;
 }
 
-OptTree-AutoMarkup-GetEntryPoints {
+GetEntryPoints {
   (Function GN-Entry (e.FuncName) Sentences e.Body)
     = (e.FuncName);
 
@@ -84,9 +84,9 @@ OptTree-AutoMarkup-GetEntryPoints {
     = ;
 }
 
-OptTree-AutoMarkup-GetClearedByEntryPointsGraph {
+GetClearedByEntryPointsGraph {
   (e.Graph) (e.EntryPoints)
-    = <OptTree-AutoMarkup-GetClearedByEntryPointsGraph
+    = <GetClearedByEntryPointsGraph
         (e.Graph)
         ()
         (e.EntryPoints)
@@ -111,7 +111,7 @@ OptTree-AutoMarkup-GetClearedByEntryPointsGraph {
             = e.Node
               : {
                   Func (e.FuncName) Children (e.Children)
-                    = <OptTree-AutoMarkup-GetClearedByEntryPointsGraph
+                    = <GetClearedByEntryPointsGraph
                         (e.Graph)
                         (e.NewProcessedNodes)
                         (e.Children)
@@ -144,7 +144,7 @@ OptTree-AutoMarkup-GetClearedByEntryPointsGraph {
     = ((e.Result) (e.Graph))
 }
 
-OptTree-AutoMarkup-GetMetatables {
+GetMetatables {
   (Function s.ScopeClass (e.Name) Metatable e.Metatable)
     = <Map
         &OptTree-AutoMarkup-ExtractFunctionCallsFromMetatable
@@ -157,7 +157,7 @@ OptTree-AutoMarkup-GetMetatables {
     = ;
 }
 
-OptTree-AutoMarkup-GetMetatablesNames {
+GetMetatablesNames {
   (Function s.ScopeClass (e.Name) Metatable e.Metatable)
     = (e.Name);
 
@@ -165,7 +165,7 @@ OptTree-AutoMarkup-GetMetatablesNames {
     = ;
 }
 
-OptTree-AutoMarkup-GetFuncs {
+GetFuncs {
   (Function s.ScopeClass (e.Name) Sentences e.Body)
     = <MapAccum
         {
@@ -402,7 +402,7 @@ OptTree-AutoMarkup-ExtractExpressionName {
     = (e.DirectCalls) (e.IndirectDetected) (e.IndirectChildren)
 }
 
-OptTree-AutoMarkup-InlineFuncCallsWithMetatable {
+InlineFuncCallsWithMetatable {
   (e.ExtractedFuncs) (e.ExtractedMetaTables)
     = <Map
         {

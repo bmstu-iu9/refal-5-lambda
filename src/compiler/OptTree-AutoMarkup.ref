@@ -32,9 +32,9 @@ $ENTRY OptTree-AutoMarkup {
   OptAutoMarkup e.AST
     = <OptTree-AutoMarkup-GetSpecializableDict (e.AST)>
       : e.SpecializableDict
-    = <OptTree-AutoMarkup-GetForbiddenToSpecializeFunctionNames (e.AST)>
+    = <GetForbiddenToSpecializeFunctionNames (e.AST)>
       : e.ForbiddenToSpecializeFunctionNames
-    = <OptTree-AutoMarkup-GetSpecializePatterns
+    = <GetSpecializePatterns
         (e.SpecializableDict)
         (e.ForbiddenToSpecializeFunctionNames)
       >
@@ -43,19 +43,19 @@ $ENTRY OptTree-AutoMarkup {
       : e.ExtractedGraph
     = <OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph>
       : (e.BasisVertexes) (e.ExtractedGraph^)
-    = <OptTree-AutoMarkup-GetDrivenFunctions
+    = <GetDrivenFunctions
         (e.ExtractedGraph)
         (e.BasisVertexes)
       >
       : e.DrivenFunctions
-    = <OptTree-AutoMarkup-GetForbiddenToDriveFunctions e.AST>
+    = <GetForbiddenToDriveFunctions e.AST>
       : e.ForbiddenToDriveFuncs
     = <OptTree-AutoMarkup-GetSetDifference
         (e.DrivenFunctions)
         (e.ForbiddenToDriveFuncs)
       >
       : (e.FunctionToDrive)
-    = <OptTree-AutoMarkup-GetUpdatedWithDrivenFunctionsAst
+    = <GetUpdatedWithDrivenFunctionsAst
         (e.AST)
         (e.FunctionToDrive)
         (e.BasisVertexes)
@@ -64,7 +64,7 @@ $ENTRY OptTree-AutoMarkup {
     = e.DrivedAst e.SpecPatterns;
 }
 
-OptTree-AutoMarkup-GetForbiddenToSpecializeFunctionNames {
+GetForbiddenToSpecializeFunctionNames {
   (e.AST)
     = <Map
         {
@@ -86,7 +86,7 @@ OptTree-AutoMarkup-GetForbiddenToSpecializeFunctionNames {
       >
 }
 
-OptTree-AutoMarkup-GetSpecializePatterns {
+GetSpecializePatterns {
   (e.SpecializableDict) (e.Filter)
     = <Map
         {
@@ -110,7 +110,7 @@ OptTree-AutoMarkup-GetSpecializePatterns {
       >
 }
 
-OptTree-AutoMarkup-GetForbiddenToDriveFunctions {
+GetForbiddenToDriveFunctions {
   e.AST
     = (INIT) (FINAL)
       <Map
@@ -151,7 +151,7 @@ OptTree-AutoMarkup-GetForbiddenToDriveFunctions {
       >
 }
 
-OptTree-AutoMarkup-GetDrivenFunctions {
+GetDrivenFunctions {
   (e.ExtractedGraph) (e.BasisVertexes)
     = <Map
         {
@@ -169,7 +169,7 @@ OptTree-AutoMarkup-GetDrivenFunctions {
       >
 }
 
-OptTree-AutoMarkup-GetUpdatedWithDrivenFunctionsAst {
+GetUpdatedWithDrivenFunctionsAst {
   (e.AST) (e.FunctionsToDrive) (e.BasisVertexes)
     = <Map
         {
