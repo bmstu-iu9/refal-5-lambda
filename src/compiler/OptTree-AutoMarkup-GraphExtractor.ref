@@ -171,7 +171,7 @@ GetFuncs {
         {
           ((e.DirectCalls)(e.ImplicitCalls)(e.IndirectChildren))
           (e.Sentence)
-            = <OptTree-AutoMarkup-ExtractFunctionCallsFromSentencesBody
+            = <ExtractFunctionCallsFromSentencesBody
                 (e.Sentence)
               >
               : (e.SentenceDirectCalls)
@@ -204,26 +204,26 @@ GetFuncs {
     = ;
 }
 
-OptTree-AutoMarkup-ExtractFunctionCallsFromMetatable {
+ExtractFunctionCallsFromMetatable {
   ((Symbol Identifier e.Ident) (Symbol Name e.Name))
     = (e.Name);
 }
 
-OptTree-AutoMarkup-ExtractFunctionCallsFromSentencesBody {
+ExtractFunctionCallsFromSentencesBody {
   ((e.Pattern) e.Conditions (e.Result))
-    = <OptTree-AutoMarkup-ExtractExpressionName e.Pattern>
+    = <ExtractExpressionName e.Pattern>
       : (e.PatternNames) (e.PatternIndirectCalls) (e.PatternIndirectChildren)
     = <MapAccum
         {
           ((e.DirectCalls)(e.IndirectCalls)(e.IndirectChildren))
           (Condition (e.Name) (e.ConditionResult) (e.ConditionPattern))
-              = <OptTree-AutoMarkup-ExtractExpressionName
+              = <ExtractExpressionName
                   e.ConditionResult
                 >
                 : (e.ConditionResultCalls)
                   (e.ConditionResultIndirectCalls)
                   (e.ConditionResultIndirectChildren)
-              = <OptTree-AutoMarkup-ExtractExpressionName
+              = <ExtractExpressionName
                   e.ConditionPattern
                 >
                 : (e.ConditionPatternCalls)
@@ -255,7 +255,7 @@ OptTree-AutoMarkup-ExtractFunctionCallsFromSentencesBody {
           (e.ConditionIndirectCalls)
           (e.ConditionIndirectChildren)
         )
-    = <OptTree-AutoMarkup-ExtractExpressionName e.Result>
+    = <ExtractExpressionName e.Result>
       : (e.ResultNames) (e.ResultIndirectCalls) (e.ResultIndirectChildren)
     = (
         e.PatternNames
@@ -274,7 +274,7 @@ OptTree-AutoMarkup-ExtractFunctionCallsFromSentencesBody {
       );
 }
 
-OptTree-AutoMarkup-InnerExtractExpressionName {
+InnerExtractExpressionName {
   (e.Expr) (e.DirectCalls) (e.IndirectDetected) (e.IndirectChildren)
     = <MapAccum
         {
@@ -294,7 +294,7 @@ OptTree-AutoMarkup-InnerExtractExpressionName {
                 (ADT-Brackets)
                 (ClosureBrackets)
               > : True
-            = <OptTree-AutoMarkup-InnerExtractExpressionName
+            = <InnerExtractExpressionName
                 (e.Nested)
                 (e.DirectCalls)
                 (e.IndirectDetected)
@@ -331,7 +331,7 @@ OptTree-AutoMarkup-InnerExtractExpressionName {
                 e.NestedHead e.NestedTail
               >
               : e.Nested^
-            = <OptTree-AutoMarkup-InnerExtractExpressionName
+            = <InnerExtractExpressionName
                 (e.Nested)
                 (e.DirectCalls)
                 (e.IndirectDetected)
@@ -350,7 +350,7 @@ OptTree-AutoMarkup-InnerExtractExpressionName {
 
           ((e.DirectCalls^) (e.IndirectDetected^) (e.IndirectChildren^))
           (CallBrackets (Symbol Name e.Name) e.Nested)
-            = <OptTree-AutoMarkup-InnerExtractExpressionName
+            = <InnerExtractExpressionName
                 (e.Nested)
                 (e.DirectCalls)
                 (e.IndirectDetected)
@@ -369,7 +369,7 @@ OptTree-AutoMarkup-InnerExtractExpressionName {
 
           ((e.DirectCalls^) (e.IndirectDetected^) (e.IndirectChildren^))
           (CallBrackets e.Nested)
-            = <OptTree-AutoMarkup-InnerExtractExpressionName
+            = <InnerExtractExpressionName
                 (e.Nested)
                 (e.DirectCalls)
                 (e.IndirectDetected)
@@ -395,9 +395,9 @@ OptTree-AutoMarkup-InnerExtractExpressionName {
       >;
 }
 
-OptTree-AutoMarkup-ExtractExpressionName {
+ExtractExpressionName {
   e.Expr
-    = <OptTree-AutoMarkup-InnerExtractExpressionName (e.Expr) () () ()>
+    = <InnerExtractExpressionName (e.Expr) () () ()>
       : ((e.DirectCalls) (e.IndirectDetected) (e.IndirectChildren))
     = (e.DirectCalls) (e.IndirectDetected) (e.IndirectChildren)
 }
@@ -407,7 +407,7 @@ InlineFuncCallsWithMetatable {
     = <Map
         {
           e.Elem
-            = <OptTree-AutoMarkup-InlineOneFuncChildrenWithMetatable
+            = <InlineOneFuncChildrenWithMetatable
                 e.Elem
                 (e.ExtractedMetaTables)
               >;
@@ -416,12 +416,12 @@ InlineFuncCallsWithMetatable {
       >;
 }
 
-OptTree-AutoMarkup-InlineOneFuncChildrenWithMetatable {
+InlineOneFuncChildrenWithMetatable {
   (Func (e.Name) Children (e.UniqueFunctionCalls)) (e.ExtractedMetaTables)
       = <Map
           {
             e.Elem
-              = <OptTree-AutoMarkup-GetCallsFromMetaTables
+              = <GetCallsFromMetaTables
                   e.Elem
                   (e.ExtractedMetaTables)
                 >;
@@ -434,7 +434,7 @@ OptTree-AutoMarkup-InlineOneFuncChildrenWithMetatable {
       = (Func (e.Name) Children (e.UniqueReplacedChildren));
 }
 
-OptTree-AutoMarkup-GetCallsFromMetaTables {
+GetCallsFromMetaTables {
   (e.FuncName) (e.ExtractedMetaTables)
     = (<Map
         {
