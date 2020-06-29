@@ -16,20 +16,12 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
     = <MapAccum
         {
           ((e.GraphNodes) (e.IndirectChildren))
-          e.AstNode
-            = <GetFuncs e.AstNode>
-              :
-                {
-                  (e.Node) (e.NodeIndirectChildren)
-                    = (
-                        (e.GraphNodes (e.Node))
-                        (e.IndirectChildren e.NodeIndirectChildren)
-                      );
-
-                  e.Other
-                    = ((e.GraphNodes) (e.IndirectChildren));
-                }
-
+          t.AstNode
+            = <GetFuncs t.AstNode> : e.NodeOpt (e.NodeIndirectChildren)
+            = (
+                (e.GraphNodes e.NodeOpt)
+                (e.IndirectChildren e.NodeIndirectChildren)
+              );
         }
         ((/*graph nodes*/) (/*indirect children*/)) e.AST
       >
@@ -50,9 +42,11 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
         e.UniqueIndirectChildren
       >
       : e.ClearedUniqueIndirectChildren
-    = (Func (Indirect function for implicit calls)
-      Children (e.ClearedUniqueIndirectChildren))
-      : e.IndirectFuncNode
+    = (Func
+        (Indirect function for implicit calls)
+        Children (e.ClearedUniqueIndirectChildren)
+      )
+      : t.IndirectFuncNode
     = <Map &GetMetatables e.AST>
       : e.ExtractedMetaTables
     = <InlineFuncCallsWithMetatable
@@ -69,7 +63,7 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
         (e.EntryPoints)
       >
       : ((e.ResultGraph) (e.InlinedGraph^))
-    = <Unique e.IndirectFuncNode e.ResultGraph>;
+    = <Unique t.IndirectFuncNode e.ResultGraph>;
 }
 
 GetEntryPoints {
@@ -77,22 +71,23 @@ GetEntryPoints {
     = (e.FuncName);
 
   (Function s.Scope (e.FuncName) Sentences e.Body)
-    ,<OneOf (e.FuncName) ('INIT') ('FINAL')> : True
+    , <OneOf (e.FuncName) ('INIT') ('FINAL')> : True
     = (e.FuncName);
 
-  e.Smth
-    = ;
+  t._ = /* пусто */;
 }
 
 GetClearedByEntryPointsGraph {
   (e.Graph) (e.EntryPoints)
-    = <GetClearedByEntryPointsGraph
+    = <GetClearedByEntryPointsGraphRec
         (e.Graph)
         ()
         (e.EntryPoints)
       >;
+}
 
-  (e.Graph) (e.ProccessedNodes) (e.EntryPoints)
+GetClearedByEntryPointsGraphRec {
+  (e.Graph) (e.ProcessedNodes-Arg) (e.EntryPoints)
     = <MapAccum
         {
           ((e.ProcessedNodes) (e.Result) (e.Graph^))
@@ -111,7 +106,7 @@ GetClearedByEntryPointsGraph {
             = e.Node
               : {
                   Func (e.FuncName) Children (e.Children)
-                    = <GetClearedByEntryPointsGraph
+                    = <GetClearedByEntryPointsGraphRec
                         (e.Graph)
                         (e.NewProcessedNodes)
                         (e.Children)
@@ -135,34 +130,32 @@ GetClearedByEntryPointsGraph {
                       );
                 };
 
-          ((e.ProcessedNodes) (e.Result) (e.Graph^)) e.Other
+          ((e.ProcessedNodes) (e.Result) (e.Graph^)) (e._)
             = ((e.ProcessedNodes) (e.Result) (e.Graph));
         }
-        ((e.ProccessedNodes) (/*result*/) (e.Graph)) e.EntryPoints
+        ((e.ProcessedNodes-Arg) (/*result*/) (e.Graph)) e.EntryPoints
       >
-      : ((e.ProccessedNodes^) (e.Result) (e.Graph^))
+      : ((e.ProcessedNodes-Arg^) (e.Result) (e.Graph^))
     = ((e.Result) (e.Graph))
 }
 
 GetMetatables {
   (Function s.ScopeClass (e.Name) Metatable e.Metatable)
     = <Map
-        &OptTree-AutoMarkup-ExtractFunctionCallsFromMetatable
+        &ExtractFunctionCallsFromMetatable
         e.Metatable
       >
       : e.FunctionCalls
     = (e.Name (<Unique e.FunctionCalls>));
 
-  e.Smth
-    = ;
+  t._other_node = /* пусто */;
 }
 
 GetMetatablesNames {
   (Function s.ScopeClass (e.Name) Metatable e.Metatable)
     = (e.Name);
 
-  e.Smth
-    = ;
+  t._other_node = /* пусто */;
 }
 
 GetFuncs {
@@ -175,12 +168,12 @@ GetFuncs {
                 (e.Sentence)
               >
               : (e.SentenceDirectCalls)
-                (e.SentecnseImplicitCalls)
-                (e.SentecnseIndirectChildren)
+                (e.SentenceImplicitCalls)
+                (e.SentenceIndirectChildren)
             = (
                 (e.DirectCalls e.SentenceDirectCalls)
-                (e.ImplicitCalls e.SentecnseImplicitCalls)
-                (e.IndirectChildren e.SentecnseIndirectChildren)
+                (e.ImplicitCalls e.SentenceImplicitCalls)
+                (e.IndirectChildren e.SentenceIndirectChildren)
               )
         }
         ((/*direct calls*/) (/*implicit calls*/) (/*indirect children*/))
@@ -200,8 +193,7 @@ GetFuncs {
     = (Func (e.Name) Children (e.UniqueDirectCalls e.IndirectChild))
       (e.IndirectChildren);
 
-  e.Smth
-    = ;
+  t._other_node = /* нет узлов */ (/* нет косвенных потомков */);
 }
 
 ExtractFunctionCallsFromMetatable {
@@ -420,9 +412,9 @@ InlineOneFuncChildrenWithMetatable {
   (Func (e.Name) Children (e.UniqueFunctionCalls)) (e.ExtractedMetaTables)
       = <Map
           {
-            e.Elem
+            t.Elem
               = <GetCallsFromMetaTables
-                  e.Elem
+                  t.Elem
                   (e.ExtractedMetaTables)
                 >;
           }
