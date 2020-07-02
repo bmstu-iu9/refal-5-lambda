@@ -85,7 +85,6 @@ GetClearedByEntryPointsGraph {
         (e.EntryPoints)
       >
     : ((e.UsedFuncNames) (e.Graph^))
-    = <Unique e.UsedFuncNames> : e.UsedFuncNames
     = <Map
         {
           (Func (e.FuncName) Children (e.Children))
