@@ -1,0 +1,12 @@
+Entry1 {
+  = 'Entry1'
+}
+
+$ENTRY Entry1;
+
+$ENTRY Entry2;
+
+Entry2 {
+  = 'Entry2'
+}
+

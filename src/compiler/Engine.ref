@@ -715,10 +715,13 @@ $ENTRY GlobalASTStorage-AddAST {
 
           t.Accum t.Other = t.Accum t.Other;
         }
-        ((e.Entries) (/* locals */))
+        ((/* entries */) (/* locals */))
         e.AST
       >
-    : ((e.Entries^) (e.Locals)) e.AST^
+    : ((e.NewEntries) (e.Locals)) e.AST^
+
+    = <CleanupLocals e.Locals (e.NewEntries)> : e.Locals^
+    = e.NewEntries e.Entries : e.Entries^
 
     = {
         SrcPos t.SrcPos = t.SrcPos;
@@ -743,6 +746,14 @@ UpdateAccum {
 
   ((e.Entries) (e.Locals)) t.SrcPos GN-Local e.Name
     = ((e.Entries)  (e.Locals (e.Name)));
+}
+
+CleanupLocals {
+  e.Locals-B (e.Name) e.Locals-E (e.Entries)
+    , e.Entries : e._ ((e.Name) t.SrcPos) e._
+    = e.Locals-B <CleanupLocals e.Locals-E (e.Entries)>;
+
+  e.Locals (e.Entries) = e.Locals;
 }
 
 /**

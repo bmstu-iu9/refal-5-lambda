@@ -1,0 +1,8 @@
+$EXTERN Entry1, Entry2;
+
+$ENTRY Go {
+  /* empty */
+    = <Entry1> : 'Entry1'
+    = <Entry2> : 'Entry2'
+    = /* empty */;
+}
