@@ -141,58 +141,39 @@ $ENTRY RemovePos-Expr {
 }
 
 Pass-AttachEntries {
-  (Entry GN-Entry e.Name)
-  e.Items-B (Function s.ScopeClass (e.Name) e.Body) e.Items-E
-    = <Pass-AttachEntries
-        e.Items-B (Function GN-Entry (e.Name) e.Body) e.Items-E
+  e.AST
+    = <MapAccum
+        {
+          (e.Entries) (Entry GN-Entry e.Name)
+            = (e.Entries (e.Name)) /* удаляем из дерева */;
+
+          (e.Entries) t.Other = (e.Entries) t.Other;
+        }
+        (/* entries */) e.AST
+      >
+    : (e.Entries) e.AST^
+    = <Map
+        {
+          (Function s.ScopeClass (e.Name) e.Body)
+            , e.Entries : e._ (e.Name) e._
+            = (Function GN-Entry (e.Name) e.Body);
+
+          (Enum s.ScopeClass e.Name)
+            , e.Entries : e._ (e.Name) e._
+            = (Enum GN-Entry e.Name);
+
+          (Swap s.ScopeClass e.Name)
+            , e.Entries : e._ (e.Name) e._
+            = (Swap GN-Entry e.Name);
+
+          (Declaration s.ScopeClass e.Name)
+            , e.Entries : e._ (e.Name) e._
+            = (Declaration GN-Entry e.Name);
+
+          t.Other = t.Other;
+        }
+        e.AST
       >;
-
-  (Entry GN-Entry e.Name)
-  e.Items-B (s.EnumSwapDeclaration s.ScopeClass e.Name) e.Items-E
-    , <OneOf s.EnumSwapDeclaration Enum Swap Declaration> : True
-    = <Pass-AttachEntries
-        e.Items-B (s.EnumSwapDeclaration GN-Entry e.Name) e.Items-E
-      >;
-
-  (Function s.ScopeClass (e.Name) e.Body)
-  e.Items-B (Entry GN-Entry e.Name) e.Items-E
-    = <Pass-AttachEntries
-        (Function GN-Entry (e.Name) e.Body) e.Items-B e.Items-E
-      >;
-
-  (Function s.ScopeClass (e.Name) e.Body) e.Items
-    = (Function s.ScopeClass (e.Name) e.Body) <Pass-AttachEntries e.Items>;
-
-  (s.EnumSwapDeclaration s.ScopeClass e.Name)
-  e.Items-B (Entry GN-Entry e.Name) e.Items-E
-    , <OneOf s.EnumSwapDeclaration Enum Swap Declaration> : True
-    = <Pass-AttachEntries
-        (s.EnumSwapDeclaration s.ScopeClass e.Name) e.Items-B e.Items-E
-      >;
-
-  (s.EnumSwapDeclaration s.ScopeClass e.Name) e.Items
-    , <OneOf s.EnumSwapDeclaration Enum Swap Declaration> : True
-    = (s.EnumSwapDeclaration s.ScopeClass e.Name)
-      <Pass-AttachEntries e.Items>;
-
-  (s.DriveInline s.ScopeClass e.Name) e.Items
-    , <OneOf s.DriveInline Inline Drive> : True
-    = (s.DriveInline e.Name)
-      <Pass-AttachEntries e.Items>;
-
-  (Intrinsic s.ScopeClass e.Name) e.Items
-    = (Intrinsic e.Name)
-        <Pass-AttachEntries e.Items>;
-
-  (Ident e.Name) e.Items = (Ident e.Name) <Pass-AttachEntries e.Items>;
-
-  (NativeBlock t.SrcPos e.Code) e.Items
-    = (NativeBlock t.SrcPos e.Code) <Pass-AttachEntries e.Items>;
-
-  (Spec (e.Name) e.Pattern) e.Items
-    = (Spec (e.Name) e.Pattern) <Pass-AttachEntries e.Items>;
-
-  /* empty */ = /* empty */;
 }
 
 Pass-RemoveRedundantDriveInlineIntrinsic {
