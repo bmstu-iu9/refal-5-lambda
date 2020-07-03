@@ -167,7 +167,7 @@ Pass-AttachEntries {
   e.Items-B (Entry GN-Entry e.Name) e.Items-E
     , <OneOf s.EnumSwapDeclaration Enum Swap Declaration> : True
     = <Pass-AttachEntries
-        (s.EnumSwapDeclaration s.ScopeClass e.Name)
+        (s.EnumSwapDeclaration s.ScopeClass e.Name) e.Items-B e.Items-E
       >;
 
   (s.EnumSwapDeclaration s.ScopeClass e.Name) e.Items
