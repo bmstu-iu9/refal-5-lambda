@@ -170,6 +170,10 @@ Pass-AttachEntries {
             , e.Entries : e._ (e.Name) e._
             = (Declaration GN-Entry e.Name);
 
+          (Drive s.ScopeClass e.Name) = (Drive e.Name);
+          (Inline s.ScopeClass e.Name) = (Inline e.Name);
+          (Intrinsic s.ScopeClass e.Name) = (Intrinsic e.Name);
+
           t.Other = t.Other;
         }
         e.AST
