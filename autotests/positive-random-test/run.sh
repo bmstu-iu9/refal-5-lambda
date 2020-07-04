@@ -81,6 +81,8 @@ new_tests() {
       && run_test "$r" -OCdPR
     then
       rm -f ${r%%.ref}.*
+    else
+      return 1
     fi
   done
 

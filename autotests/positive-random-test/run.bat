@@ -79,9 +79,9 @@ setlocal
       && call :RUN_TEST "%%r" -OCdP ^
       && call :RUN_TEST "%%r" -OCdR ^
       && call :RUN_TEST "%%r" -OCdPR
-    if not errorlevel 1 (
-      erase "%%~nr.*"
-    )
+
+    if errorlevel 1 exit /b 1
+    erase "%%~nr.*"
   )
   echo stop (%NOW%) %TIME%>>time.txt
 endlocal
