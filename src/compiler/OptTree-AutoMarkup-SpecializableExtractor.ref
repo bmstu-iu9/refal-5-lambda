@@ -25,37 +25,23 @@ $ENTRY OptTree-AutoMarkup-GetSpecializableDict {
           (Function s.ScopeClass (e.Name) Sentences e.Body)
             = <Map
                 {
-                  ((e.Pattern) e.Conditions (e.Result))
-                    = (e.Pattern);
-
-                  e.Other
-                    = ;
+                  ((e.Pattern) e.Conditions (e.Result)) = (e.Pattern);
                 }
                 e.Body
               >
               : e.ExtractedPatterns
-            = <ContainsDuplications
-                (e.ExtractedPatterns)
-              >
-              : {
-                  True
-                    = (NOTSPECIALIZABLE (e.Name));
+            = <ContainsDuplications (e.ExtractedPatterns)>
+            : {
+                True
+                  = (NOTSPECIALIZABLE (e.Name));
 
-                  False
-                    = <GetSpecifiedPattern
-                        (e.ExtractedPatterns)
-                      >
-                      : e.SpecifiedPattern
-                    = <GetSpecializableDictNode
-                        (e.Name)
-                        (e.SpecifiedPattern)
-                      >
-                      : e.DictNode
-                    = e.DictNode;
+                False
+                  = <GetSpecifiedPattern (e.ExtractedPatterns)>
+                  : e.SpecifiedPattern
+                  = <GetSpecializableDictNode (e.Name) (e.SpecifiedPattern)>;
               };
 
-          e.Other
-            = ;
+          t.Other = ;
         }
         e.AST
       >;
@@ -78,43 +64,31 @@ ContainsDuplications {
     = <Map
         {
           (e.Patterns)
-            = <Map
-                &GetPatternVariables
-                e.Patterns
-              >
-              : e.Stm
-            = e.Stm
-              : {
-                  e.Head (e.Variable) e._ (e.Variable) e.Tail
-                    = (True);
+            = <Map &GetPatternVariables e.Patterns>
+            : {
+                e.Head (e.Variable) e._ (e.Variable) e.Tail = (True);
 
-                  e.Other
-                    = (False);
-                };
+                e.Other = (False);
+              };
         }
         e.ExtractedPatterns
       >
-      : {
-          e.Head (True) e.Tail
-            = True;
+    : {
+        e.Head (True) e.Tail = True;
 
-          e.Other
-            = False;
-        }
+        e.Other = False;
+      }
 }
 
 GetPatternVariables {
-  (TkVariable e.Name)
-    = (e.Name);
+  (TkVariable e.Name) = (e.Name);
 
-  (Symbol Identifier VAR e.Name)
-    = (e.Name);
+  (Symbol Identifier VAR e.Name) = (e.Name);
 
   (Brackets e.Nested)
     = <Map
         {
-          (e.SubPattern)
-            = <GetPatternVariables (e.SubPattern)>;
+          (e.SubPattern) = <GetPatternVariables (e.SubPattern)>;
         }
         e.Nested
       >;
@@ -155,26 +129,21 @@ GetIndexedGlobalGens {
     = ();
 
   (e.Patterns)
-    = <GlobalGen e.Patterns>
-      : e.GlobalGens
-    = <FillIndexes (e.GlobalGens) 't'>
-      : e.Result
-    = <FillIndexes (e.Result) 'e'>
-      : e.Result^
-    = <FillIndexes (e.Result) 's'>
-      : e.Result^
+    = <GlobalGen e.Patterns> : e.GlobalGens
+    = <FillIndexes (e.GlobalGens) 't'> : e.Result
+    = <FillIndexes (e.Result) 'e'> : e.Result^
+    = <FillIndexes (e.Result) 's'> : e.Result^
     = e.Result;
-
-  e.Other
-    = ;
 }
 
 FillIndexes {
   (e.GlobalGens) s.Type
-    = <FillIndexes (0) (e.GlobalGens) s.Type>
+    = <FillIndexesRec (0) (e.GlobalGens) s.Type>
       : (e._) e.IndexedTypeGlobalGens
     = e.IndexedTypeGlobalGens;
+}
 
+FillIndexesRec {
   (e.StartIndex) (e.GlobalGens) s.Type
     = <MapAccum
         {
@@ -189,7 +158,7 @@ FillIndexes {
             = (e.CurrentIndex) (TkVariable e.Other);
 
           (e.CurrentIndex) (Brackets e.Nested)
-            = <FillIndexes
+            = <FillIndexesRec
                 (e.CurrentIndex)
                 (e.Nested)
                 s.Type
@@ -213,9 +182,6 @@ GetVariableMatchesByIndexedGlobalGen {
                 (e.VariableName)
                 (e.Dict)
               >;
-
-          e.Other
-            = ;
         }
         e.GenericMatches
       >
@@ -255,51 +221,37 @@ OptTree-AutoMarkup-GetVariableMatches {
 }
 
 GetVariablesTypes {
-  ()
-    = ();
+  () = ();
 
-  TkVariable 's' e._
-    = TkVariable 's';
-  TkVariable 't' e._
-    = TkVariable 't';
-  TkVariable 'e' e._
-    = TkVariable 'e';
+  TkVariable 's' e._ = TkVariable 's';
+  TkVariable 't' e._ = TkVariable 't';
+  TkVariable 'e' e._ = TkVariable 'e';
 
-  Symbol e.Tail
-    = Symbol e.Tail;
+  Symbol e.Tail = Symbol e.Tail;
 
-  Symbol Char e.Tail
-    = Symbol Char e.Tail;
+  Symbol Char e.Tail = Symbol Char e.Tail;
 
   Brackets e.Nested
-    = <Map
-        &GetVariablesTypes
-        e.Nested
-      >
-      : e.NestedRes
+    = <Map &GetVariablesTypes e.Nested> : e.NestedRes
     = Brackets e.NestedRes;
 
   (e.Nested) e.Tail
     = (<GetVariablesTypes e.Nested>)
       <GetVariablesTypes e.Tail>;
 
-  e.Other
-    = e.Other;
+  e.Other = e.Other;
 }
 
 IsAllEqual {
-  (e.Single)
-    = True;
+  (e.Single) = True;
 
-  (e.Value) (e.Value)
-    = True;
+  (e.Value) (e.Value) = True;
 
   (e.First) (e.Next) e.Tail
     , e.Next : e.First
     = <IsAllEqual (e.First) e.Tail>;
 
-  e._
-    = False;
+  e._ = False;
 }
 
 GetMatchesByVariableName {
@@ -317,11 +269,8 @@ GetVariableSpecType {
           (t.VariableType '.' t.VariableIndex ':' e.Matches)
             = <IsAllEqual e.Matches>
               : {
-                  True
-                    = (t.VariableType '.STAT' t.VariableIndex);
-
-                  False
-                    = (t.VariableType '.dyn' t.VariableIndex);
+                  True = (t.VariableType '.STAT' t.VariableIndex);
+                  False = (t.VariableType '.dyn' t.VariableIndex);
                 }
         }
         e.VariableMatchesDict
