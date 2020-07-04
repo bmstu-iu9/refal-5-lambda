@@ -1,3 +1,5 @@
+*$EXTENDED
+
 Chr { = }
 Ev-met { = }
 Lenw { = }
@@ -8,3 +10,5 @@ Print { = }
 Prout { = }
 Type { = }
 Upper { = }
+
+$INTRINSIC Chr, Lenw, Lower, Mu, Ord, Type, Upper;
