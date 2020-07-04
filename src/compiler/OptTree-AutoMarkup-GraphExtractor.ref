@@ -98,55 +98,57 @@ GetClearedByEntryPointsGraph {
 }
 
 GetClearedByEntryPointsGraphRec {
-  (e.Graph) (e.ProcessedNodes-Arg) (e.EntryPoints)
-    = <MapAccum
-        {
-          (
-            (e.ProcessedNodes-B (e.EntryPoint) e.ProcessedNodes-E)
-            (e.Result) (e.Graph^)
-          )
-          (e.EntryPoint)
-            = (
-                (e.ProcessedNodes-B (e.EntryPoint) e.ProcessedNodes-E)
-                (e.Result) (e.Graph)
-              );
+  (e.Graph) (e.ProcessedNodes) (e.EntryPoints)
+    = <DoGetClearedByEntryPointsGraphRec
+        (e.ProcessedNodes) (/* result */) (e.Graph) e.EntryPoints
+      >;
+}
 
-          ((e.ProcessedNodes) (e.Result) (e.Graph^))
-          (e.EntryPoint)
-            = (e.ProcessedNodes (e.EntryPoint))
-              : (e.NewProcessedNodes)
-            = <OptTree-AutoMarkup-GetElemByKey
-                (e.EntryPoint)
-                (e.Graph)
-              >
-              : e.Node (e.Graph^)
-            = e.Node
-              : {
-                  Func (e.FuncName) Children (e.Children)
-                    = <GetClearedByEntryPointsGraphRec
-                        (e.Graph)
-                        (e.NewProcessedNodes)
-                        (e.Children)
-                      >
-                      : ((e.SubTreeResult) (e.Graph^))
-                    = (
-                        (e.NewProcessedNodes)
-                        (<UnionWith (e.FuncName) e.SubTreeResult (e.Result)>)
-                        (e.Graph)
-                      );
+/*
+  Явный цикл вместо MapAccum нужен ради экономии числа шагов. Неоптимизированный
+  MapAccum требует дополнительных шагов на Mu, Apply и присваивание внутри
+  DoMapAccum.
+*/
+DoGetClearedByEntryPointsGraphRec {
+  (e.ProcessedNodes-B (e.EntryPoint) e.ProcessedNodes-E)
+  (e.Result) (e.Graph)
+  (e.EntryPoint) e.EntryPoints
+    = <DoGetClearedByEntryPointsGraphRec
+        (e.ProcessedNodes-B (e.EntryPoint) e.ProcessedNodes-E)
+        (e.Result) (e.Graph)
+        e.EntryPoints
+      >;
 
-                  e._
-                    = (
-                        (e.NewProcessedNodes)
-                        (e.Result)
-                        (e.Graph)
-                      );
-                };
-        }
-        ((e.ProcessedNodes-Arg) (/*result*/) (e.Graph)) e.EntryPoints
+  (e.ProcessedNodes) (e.Result) (e.Graph)
+  (e.EntryPoint) e.EntryPoints
+    = e.ProcessedNodes (e.EntryPoint) : e.NewProcessedNodes
+    = <OptTree-AutoMarkup-GetElemByKey
+        (e.EntryPoint)
+        (e.Graph)
       >
-      : ((e.ProcessedNodes-Arg^) (e.Result) (e.Graph^))
-    = ((e.Result) (e.Graph))
+    : e.Node (e.Graph^)
+    = e.Node
+    : {
+        Func (e.FuncName) Children (e.Children)
+          = <GetClearedByEntryPointsGraphRec
+              (e.Graph) (e.NewProcessedNodes) (e.Children)
+            >
+          : ((e.SubTreeResult) (e.Graph^))
+          = <DoGetClearedByEntryPointsGraphRec
+              (e.NewProcessedNodes)
+              (<UnionWith (e.FuncName) e.SubTreeResult (e.Result)>)
+              (e.Graph)
+              e.EntryPoints
+            >;
+
+        e._
+          = <DoGetClearedByEntryPointsGraphRec
+              (e.NewProcessedNodes) (e.Result) (e.Graph) e.EntryPoints
+            >;
+      };
+
+  (e.ProcessedNodes) (e.Result) (e.Graph) /* пусто */
+    = ((e.Result) (e.Graph));
 }
 
 /*
