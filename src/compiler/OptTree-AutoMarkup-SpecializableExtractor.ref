@@ -93,6 +93,14 @@ GetPatternVariables {
         e.Nested
       >;
 
+  (ADT-Brackets (e.Name) e.Nested)
+    = <Map
+        {
+          (e.SubPattern) = <GetPatternVariables (e.SubPattern)>;
+        }
+        e.Nested
+      >;
+
   (e.Other)
     = ;
 }
@@ -166,6 +174,15 @@ FillIndexesRec {
               : (e.NextIndex) e.IndexedTypeGlobalGens
             = (e.NextIndex) (Brackets e.IndexedTypeGlobalGens);
 
+          (e.CurrentIndex) (ADT-Brackets (e.Name) e.Nested)
+            = <FillIndexesRec
+                (e.CurrentIndex)
+                (e.Nested)
+                s.Type
+              >
+              : (e.NextIndex) e.IndexedTypeGlobalGens
+            = (e.NextIndex) (ADT-Brackets (e.Name) e.IndexedTypeGlobalGens);
+
           (e.CurrentIndex) (e.Other)
             = (e.CurrentIndex) (e.Other);
         }
@@ -191,6 +208,12 @@ GetVariableMatchesByIndexedGlobalGen {
     = (e.VariableName ':' e.CurrentVariableTypeRes);
 
   Brackets e.Nested (e.GenericMatches)
+    = <GetVariableMatchesByIndexedGlobalGen
+        e.Nested
+        (e.GenericMatches)
+      >;
+
+  ADT-Brackets (e.Name) e.Nested (e.GenericMatches)
     = <GetVariableMatchesByIndexedGlobalGen
         e.Nested
         (e.GenericMatches)
@@ -234,6 +257,10 @@ GetVariablesTypes {
   Brackets e.Nested
     = <Map &GetVariablesTypes e.Nested> : e.NestedRes
     = Brackets e.NestedRes;
+
+  ADT-Brackets (e.Name) e.Nested
+    = <Map &GetVariablesTypes e.Nested> : e.NestedRes
+    = ADT-Brackets (e.Name) e.NestedRes;
 
   (e.Nested) e.Tail
     = (<GetVariablesTypes e.Nested>)
