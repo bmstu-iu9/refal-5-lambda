@@ -252,8 +252,6 @@ GetVariablesTypes {
 
   Symbol e.Tail = Symbol e.Tail;
 
-  Symbol Char e.Tail = Symbol Char e.Tail;
-
   Brackets e.Nested
     = <Map &GetVariablesTypes e.Nested> : e.NestedRes
     = Brackets e.NestedRes;
