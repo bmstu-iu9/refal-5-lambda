@@ -16,6 +16,7 @@ main() {
 regression() {
   for r in saved-test-*.ref; do
     if run_test "$r" \
+      && run_test "$r" -Wall \
       && run_test "$r" -Oi \
       && run_test "$r" -OiA \
       && run_test "$r" -OiD \
@@ -62,6 +63,7 @@ new_tests() {
 
   for r in test-*.ref; do
     if run_test "$r" \
+      && run_test "$r" -Wall \
       && run_test "$r" -Oi \
       && run_test "$r" -OiA \
       && run_test "$r" -OiD \

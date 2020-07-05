@@ -16,6 +16,7 @@ goto :EOF
 setlocal
   for %%r in (saved-test-*.ref) do (
     call :RUN_TEST "%%r" ^
+      && call :RUN_TEST "%%r" -Wall ^
       && call :RUN_TEST "%%r" -Oi ^
       && call :RUN_TEST "%%r" -OiA ^
       && call :RUN_TEST "%%r" -OiD ^
@@ -62,6 +63,7 @@ setlocal
   echo gen (%NOW%) %TIME%>>time.txt
   for %%r in (test-*.ref) do (
     call :RUN_TEST "%%r" ^
+      && call :RUN_TEST "%%r" -Wall ^
       && call :RUN_TEST "%%r" -Oi ^
       && call :RUN_TEST "%%r" -OiA ^
       && call :RUN_TEST "%%r" -OiD ^
