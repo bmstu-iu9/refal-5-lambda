@@ -26,7 +26,10 @@ setlocal
       && call :RUN_TEST "%%r" -OiACD ^
       && call :RUN_TEST "%%r" -OAS ^
       && call :RUN_TEST "%%r" -OADS ^
-      && call :RUN_TEST "%%r" -OAiDS ^
+      && call :RUN_TEST "%%r" -OiADS ^
+      && call :RUN_TEST "%%r" -OACS ^
+      && call :RUN_TEST "%%r" -OACDS ^
+      && call :RUN_TEST "%%r" -OiACDS ^
       && call :RUN_TEST "%%r" -OP ^
       && call :RUN_TEST "%%r" -OR ^
       && call :RUN_TEST "%%r" -OPR ^
@@ -69,7 +72,10 @@ setlocal
       && call :RUN_TEST "%%r" -OiACD ^
       && call :RUN_TEST "%%r" -OAS ^
       && call :RUN_TEST "%%r" -OADS ^
-      && call :RUN_TEST "%%r" -OAiDS ^
+      && call :RUN_TEST "%%r" -OiADS ^
+      && call :RUN_TEST "%%r" -OACS ^
+      && call :RUN_TEST "%%r" -OACDS ^
+      && call :RUN_TEST "%%r" -OiACDS ^
       && call :RUN_TEST "%%r" -OP ^
       && call :RUN_TEST "%%r" -OR ^
       && call :RUN_TEST "%%r" -OPR ^

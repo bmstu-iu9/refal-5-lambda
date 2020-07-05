@@ -26,7 +26,10 @@ regression() {
       && run_test "$r" -OiACD \
       && run_test "$r" -OAS \
       && run_test "$r" -OADS \
-      && run_test "$r" -OAiDS \
+      && run_test "$r" -OiADS \
+      && run_test "$r" -OACS \
+      && run_test "$r" -OACDS \
+      && run_test "$r" -OiACDS \
       && run_test "$r" -OP \
       && run_test "$r" -OR \
       && run_test "$r" -OPR \
@@ -69,7 +72,10 @@ new_tests() {
       && run_test "$r" -OiACD \
       && run_test "$r" -OAS \
       && run_test "$r" -OADS \
-      && run_test "$r" -OAiDS \
+      && run_test "$r" -OiADS \
+      && run_test "$r" -OACS \
+      && run_test "$r" -OACDS \
+      && run_test "$r" -OiACDS \
       && run_test "$r" -OP \
       && run_test "$r" -OR \
       && run_test "$r" -OPR \
