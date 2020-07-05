@@ -87,7 +87,7 @@ GetClearedByEntryPointsGraph {
   ((e.NextName) e.Unscanned)
     = (Func (e.NextName) Children (e.Children))
       <GetClearedByEntryPointsGraph
-        (e.Graph-B e.Graph-E) (e.Children (e.Unscanned))
+        (e.Graph-B e.Graph-E) (e.Children e.Unscanned)
       >;
 
 * Очередная функция или уже просканирована (удалена из графа),
