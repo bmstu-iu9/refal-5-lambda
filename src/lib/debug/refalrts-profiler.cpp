@@ -433,10 +433,10 @@ void refalrts::Profiler::print_profile(
     total[FuncItemValue::TIME] / total[FuncItemValue::COUNT];
   fprintf(profile, "Total time: %.5f s\n", total[FuncItemValue::TIME] / 1000);
   fprintf(
-    profile, "Total steps (including unwraps of closures): %.0f\n",
+    profile, "Total semisteps (function calls and closure unwraps): %.0f\n",
     total[FuncItemValue::COUNT]
   );
-  fprintf(profile, "Mean step time: %f us\n\n", 1000 * mean_step_time);
+  fprintf(profile, "Mean semistep time: %f us\n\n", 1000 * mean_step_time);
 
   double pareto = 0;
   for (
