@@ -52,7 +52,7 @@ $ENTRY OptTree-AutoMarkup-GetSpecializableDict {
 
 GetSpecializableDictNode {
   (e.FuncName) (e.SpecifiedPattern)
-    , e.SpecifiedPattern : e.Head ('e.STAT' e.Suffix) e.Tail
+    , e.SpecifiedPattern : e.Head (s.Mode '.STAT' e.Suffix) e.Tail
     = (SPECIALIZABLE (e.FuncName) '->' (e.SpecifiedPattern));
 
   (e.FuncName) e.Other
