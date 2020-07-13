@@ -47,42 +47,34 @@ $ENTRY OptTree-Spec-Prepare {
 Prepare-Aux {
   ((e.KnownNames) e.KnownInfo (e.KnownHistories)) e.AST
     = <Fetch
-        ((/* no names */) /* no info */ (/* no histories */)) e.AST
+        ((/* no names */) /* no info */) e.AST
         <Pipe
           (&MapAccum
             {
               /* Игнорируем новые $SPEC’и для известных функций */
-              ((e.Names) e.Info (e.Histories)) (Spec t.Name e.Pattern)
+              ((e.Names) e.Info) (Spec t.Name e.Pattern)
                 , e.KnownNames : e._B t.Name e._E
-                = ((e.Names) e.Info (e.Histories)) /* пропускаем */;
+                = ((e.Names) e.Info) /* пропускаем */;
 
-              ((e.Names) e.Info (e.Histories)) (Spec t.Name e.Pattern)
-                = (
-                    (e.Names t.Name)
-                    e.Info (t.Name (e.Pattern)) (e.Histories)
-                  );
+              ((e.Names) e.Info) (Spec t.Name e.Pattern)
+                = ((e.Names t.Name) e.Info (t.Name (e.Pattern)));
 
-              ((e.Names) e.Info (e.Histories)) t.Other
-                = ((e.Names) e.Info (e.Histories)) t.Other;
+              ((e.Names) e.Info) t.Other = ((e.Names) e.Info) t.Other;
             }
           )
           (&MapAccum
             {
-              ((e.Names) e.Info-B (t.Name (e.Pattern)) e.Info-E (e.Histories))
+              ((e.Names) e.Info-B (t.Name (e.Pattern)) e.Info-E)
               (Function s.ScopeClass t.Name Sentences e.Body)
-                = (
-                    (e.Names) e.Info-B (t.Name (e.Pattern) (e.Body) 1)
-                    e.Info-E (e.Histories)
-                  )
+                = ((e.Names) e.Info-B (t.Name (e.Pattern) (e.Body) 1) e.Info-E)
                   (Function s.ScopeClass t.Name Sentences e.Body);
 
-               ((e.Names) e.Info (e.Histories)) t.Other
-                 = ((e.Names) e.Info (e.Histories)) t.Other;
+               ((e.Names) e.Info) t.Other = ((e.Names) e.Info) t.Other;
             }
           )
         >
       >
-    : ((e.NewNames) e.NewInfo (e.NewHistories)) e.AST^
+    : ((e.NewNames) e.NewInfo) e.AST^
 
     = <CreateGuardFunctions e.NewInfo> : (e.GuardEnums) e.NewInfo^
 
