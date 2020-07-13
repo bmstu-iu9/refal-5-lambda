@@ -52,7 +52,7 @@ $ENTRY OptTree-AutoMarkup-GetSpecializableDict {
 
 GetSpecializableDictNode {
   (e.FuncName) (e.SpecifiedPattern)
-    , e.SpecifiedPattern : e.Head (s.Mode '.STAT' e.Suffix) e.Tail
+    , e.SpecifiedPattern : e.Head (s.Mode 'STAT' e.Suffix) e.Tail
     = (SPECIALIZABLE (e.FuncName) '->' (e.SpecifiedPattern));
 
   (e.FuncName) e.Other
@@ -294,8 +294,8 @@ GetVariableSpecType {
           (t.VariableType '.' t.VariableIndex ':' e.Matches)
             = <IsAllEqual e.Matches>
               : {
-                  True = (t.VariableType '.STAT' t.VariableIndex);
-                  False = (t.VariableType '.dyn' t.VariableIndex);
+                  True = (t.VariableType 'STAT' t.VariableIndex);
+                  False = (t.VariableType 'dyn' t.VariableIndex);
                 }
         }
         e.VariableMatchesDict
