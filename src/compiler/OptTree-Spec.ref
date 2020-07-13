@@ -188,29 +188,29 @@ SpecUnit {
     (e.Histories-B (t.Name e.History) e.Histories-E) (e.NewFunctions)
   )
   (Function s.ScopeClass t.Name Sentences e.Sentences)
-      = <MapAccum
-          &SpecSentence
-          (
-            e.SpecInfo (e.Histories-B (t.Name e.History) e.Histories-E)
-            (e.History) (e.NewFunctions)
-          )
-          e.Sentences
-        >
-      : (e.SpecInfo^ (e.Histories) (e.History^) (e.NewFunctions^)) e.Sentences^
-      = (e.SpecInfo (e.Histories) (e.NewFunctions))
-        (ColdFunction s.ScopeClass t.Name Sentences e.Sentences);
+    = <MapAccum
+        &SpecSentence
+        (
+          e.SpecInfo (e.Histories-B (t.Name e.History) e.Histories-E)
+          (e.History) (e.NewFunctions)
+        )
+        e.Sentences
+      >
+    : (e.SpecInfo^ (e.Histories) (e.History^) (e.NewFunctions^)) e.Sentences^
+    = (e.SpecInfo (e.Histories) (e.NewFunctions))
+      (ColdFunction s.ScopeClass t.Name Sentences e.Sentences);
 
   (e.SpecInfo (e.Histories) (e.NewFunctions))
   (Function s.ScopeClass t.Name Sentences e.Sentences)
-      = <MapAccum
-          &SpecSentence
-          (e.SpecInfo (e.Histories) (/* empty history */) (e.NewFunctions))
-          e.Sentences
-        >
-      : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^))
-        e.Sentences^
-      = (e.SpecInfo (e.Histories) (e.NewFunctions))
-        (ColdFunction s.ScopeClass t.Name Sentences e.Sentences);
+    = <MapAccum
+        &SpecSentence
+        (e.SpecInfo (e.Histories) (/* empty history */) (e.NewFunctions))
+        e.Sentences
+      >
+    : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^))
+      e.Sentences^
+    = (e.SpecInfo (e.Histories) (e.NewFunctions))
+      (ColdFunction s.ScopeClass t.Name Sentences e.Sentences);
 
   (e.SpecInfo (e.Histories) (e.NewFunctions)) t.Other
     = (e.SpecInfo (e.Histories) (e.NewFunctions)) t.Other;
