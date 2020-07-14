@@ -9,6 +9,10 @@ $EXTERN GenericMatch;
 *$FROM Log
 $EXTERN Log-PutLine;
 
+*$FROM TreeUtils
+$EXTERN ExtractVariables-Expr;
+
+
 /**
   <OptTree-AutoMarkup-GetSpecializableDict (e.AST)>
     == ((e.Name) e.SpecPattern)*
@@ -96,7 +100,7 @@ GetSpecifiedPattern {
         {
           (e.ConcretePattern)
             = <GenericMatch (e.ConcretePattern) (e.IndexedGlobalGen)>
-              : e.GenericMatch
+              : Clear e.GenericMatch
             = (e.GenericMatch);
         }
         e.ExtractedPatterns
@@ -211,16 +215,34 @@ GetVariableMatchesByIndexedGlobalGen {
 
 GetVariableMatches {
   e.GenericMatches (e.IndexedGlobalGen)
+    = <Unique <ExtractVariables-Expr e.IndexedGlobalGen>> : e.Variables
+
     = <Map
         {
-          e.IndexedGlobalGenNode
-            = <GetVariableMatchesByIndexedGlobalGen
-                (e.IndexedGlobalGenNode)
-                (e.GenericMatches)
-              >;
+          (s.Mode e.Index) = ((s.Mode e.Index) ':' /* matches */);
         }
-        e.IndexedGlobalGen
+        e.Variables
       >
+    : e.VariableBags
+
+    = <Reduce
+        &GetVariableMatches-FillBag
+        (e.VariableBags) e.GenericMatches
+      >
+    : (e.VariableBags^)
+
+    = e.VariableBags;
+}
+
+GetVariableMatches-FillBag {
+  (e.VariableBags) (e.Subst)
+    = <Reduce
+        {
+          (e.Bag-B (t.Var ':' e.Matches) e.Bag-E) (e.Val ':' t.Var)
+            = (e.Bag-B (t.Var ':' e.Matches (e.Val)) e.Bag-E);
+        }
+        (e.VariableBags) e.Subst
+      >;
 }
 
 GetVariablesTypes {
@@ -267,15 +289,21 @@ GetMatchesByVariableName {
     = ;
 }
 
+VarsSameIndex {
+  s.Mode ((TkVariable s.Mode e._)) e.Matches = <VarsSameIndex s.Mode e.Matches>;
+  s.Mode /* пусто */ = True;
+  s.Mode e._ = False;
+}
+
 GetVariableSpecType {
   (e.VariableMatchesDict)
     = <Map
         {
-          (t.VariableType t.VariableIndex ':' e.Matches)
-            = <IsAllEqual e.Matches>
+          ((s.Mode s.Index) ':' e.Matches)
+            = <VarsSameIndex s.Mode e.Matches>
               : {
-                  True = (t.VariableType 'STAT' t.VariableIndex);
-                  False = (t.VariableType 'dyn' t.VariableIndex);
+                  True = (s.Mode 'STAT' s.Index);
+                  False = (s.Mode 'dyn' s.Index);
                 }
         }
         e.VariableMatchesDict
