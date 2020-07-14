@@ -43,21 +43,6 @@ $ENTRY OptTree-AutoMarkup-GetSpecializableDict {
       >;
 }
 
-GetSpecializableDictNode {
-  (e.FuncName) (e.SpecifiedPattern)
-    , e.SpecifiedPattern : e.Head (s._mode 'STAT' e.Suffix) e.Tail
-    = <Map
-        {
-          (s.Mode e.Index) = (TkVariable s.Mode e.Index);
-        }
-        e.SpecifiedPattern
-      >
-    : e.SpecifiedPattern^
-    = ((e.FuncName) e.SpecifiedPattern);
-
-  (e.FuncName) (e.SpecifiedPattern) = /* нет статических переменных */;
-}
-
 ContainsDuplications {
   (e.ExtractedPatterns)
     = <Map
@@ -120,8 +105,15 @@ GetSpecifiedPattern {
     = <GetVariableMatches e.GenericMatches (e.IndexedGlobalGen)>
       : e.VariableMatchesDict
     = <GetVariableSpecType (e.VariableMatchesDict)>
-      : e.TypedVariables
-    = <GetSpecializableDictNode (e.Name) (e.TypedVariables)>;
+    : {
+        e.TypedVariables
+          , e.TypedVariables : e._ (s._mode 'STAT' e.Suffix) e._
+          = <MarkupVarsInPattern (e.TypedVariables) e.IndexedGlobalGen>
+          : e.Pattern
+          = ((e.Name) e.Pattern);
+
+        e._ = /* нет статических переменных, пропускаем */;
+      };
 }
 
 GetIndexedGlobalGen {
@@ -145,7 +137,7 @@ FillIndexesRec {
     = <MapAccum
         {
           (e.CurrentIndex) (TkVariable s.Type)
-            = TkVariable s.Type '.' e.CurrentIndex
+            = TkVariable s.Type e.CurrentIndex
               : e.IndexedVariable
             = <Add e.CurrentIndex 1>
               : e.NewIndex
@@ -279,7 +271,7 @@ GetVariableSpecType {
   (e.VariableMatchesDict)
     = <Map
         {
-          (t.VariableType '.' t.VariableIndex ':' e.Matches)
+          (t.VariableType t.VariableIndex ':' e.Matches)
             = <IsAllEqual e.Matches>
               : {
                   True = (t.VariableType 'STAT' t.VariableIndex);
@@ -288,4 +280,26 @@ GetVariableSpecType {
         }
         e.VariableMatchesDict
       >
+}
+
+MarkupVarsInPattern {
+  (e.TypedVariables) e.Pattern
+    = <Map
+        {
+          (TkVariable s.Mode s.Index)
+            , e.TypedVariables : e._ (s.Mode e.Type s.Index) e._
+            = (TkVariable s.Mode e.Type s.Index);
+
+          (Symbol e.Info) = (Symbol e.Info);
+
+          (Brackets e.Expr)
+            = (Brackets <MarkupVarsInPattern (e.TypedVariables) e.Expr>);
+
+          (ADT-Brackets (e.Name) e.Expr)
+            = (ADT-Brackets
+                (e.Name) <MarkupVarsInPattern (e.TypedVariables) e.Expr>
+              );
+        }
+        e.Pattern
+      >;
 }

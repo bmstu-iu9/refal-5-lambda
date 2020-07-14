@@ -1,0 +1,14 @@
+* TREE
+
+S {
+  (t.A) e.B 1 = 1 t.A;
+  (t.A) e.B 2 = 2 e.B;
+  (t.A) e.B s._ = <S (t.A) e.B>;
+}
+
+$ENTRY Go {
+  /* empty */
+    = <S ('a') 'bc' 1> : 1 'a'
+    = <S ('a') 'bc' 2> : 2 'bc'
+    = /* empty */;
+}
