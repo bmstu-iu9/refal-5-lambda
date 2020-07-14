@@ -107,14 +107,14 @@ GetPatternVariables {
 
 GetSpecifiedPattern {
   (e.ExtractedPatterns)
-    = <GetIndexedGlobalGens (e.ExtractedPatterns)>
-      : e.IndexedGlobalGens
+    = <GetIndexedGlobalGen (e.ExtractedPatterns)>
+      : e.IndexedGlobalGen
     = <Map
         {
           (e.ConcretePattern)
             = <GenericMatch
                 (e.ConcretePattern)
-                (e.IndexedGlobalGens)
+                (e.IndexedGlobalGen)
               >
               : e.GenericMatch
             = (e.GenericMatch);
@@ -124,7 +124,7 @@ GetSpecifiedPattern {
       : e.GenericMatches
     = <OptTree-AutoMarkup-GetVariableMatches
         (e.GenericMatches)
-        (e.IndexedGlobalGens)
+        (e.IndexedGlobalGen)
       >
       : e.VariableMatchesDict
     = <GetVariableSpecType (e.VariableMatchesDict)>
@@ -132,27 +132,27 @@ GetSpecifiedPattern {
     = e.TypedVariables;
 }
 
-GetIndexedGlobalGens {
+GetIndexedGlobalGen {
   ()
     = ();
 
   (e.Patterns)
-    = <GlobalGen e.Patterns> : e.GlobalGens
-    = <FillIndexes (e.GlobalGens) 't'> : e.Result
-    = <FillIndexes (e.Result) 'e'> : e.Result^
-    = <FillIndexes (e.Result) 's'> : e.Result^
-    = e.Result;
+    = <GlobalGen e.Patterns> : e.GlobalGen
+    = <FillIndexes (e.GlobalGen) 't'> : e.GlobalGen^
+    = <FillIndexes (e.GlobalGen) 'e'> : e.GlobalGen^
+    = <FillIndexes (e.GlobalGen) 's'> : e.GlobalGen^
+    = e.GlobalGen;
 }
 
 FillIndexes {
-  (e.GlobalGens) s.Type
-    = <FillIndexesRec (0) (e.GlobalGens) s.Type>
+  (e.GlobalGen) s.Type
+    = <FillIndexesRec (0) (e.GlobalGen) s.Type>
       : (e._) e.IndexedTypeGlobalGens
     = e.IndexedTypeGlobalGens;
 }
 
 FillIndexesRec {
-  (e.StartIndex) (e.GlobalGens) s.Type
+  (e.StartIndex) (e.GlobalGen) s.Type
     = <MapAccum
         {
           (e.CurrentIndex) (TkVariable s.Type)
@@ -186,7 +186,7 @@ FillIndexesRec {
           (e.CurrentIndex) (e.Other)
             = (e.CurrentIndex) (e.Other);
         }
-        (e.StartIndex) e.GlobalGens
+        (e.StartIndex) e.GlobalGen
       >
 }
 
@@ -230,7 +230,7 @@ GetVariableMatchesByIndexedGlobalGen {
 }
 
 OptTree-AutoMarkup-GetVariableMatches {
-  (e.GenericMatches) (e.IndexedGlobalGens)
+  (e.GenericMatches) (e.IndexedGlobalGen)
     = <Map
         {
           e.IndexedGlobalGenNode
@@ -239,7 +239,7 @@ OptTree-AutoMarkup-GetVariableMatches {
                 (e.GenericMatches)
               >;
         }
-        e.IndexedGlobalGens
+        e.IndexedGlobalGen
       >
 }
 
