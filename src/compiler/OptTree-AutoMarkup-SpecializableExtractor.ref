@@ -174,45 +174,6 @@ FillIndexesRec {
       >
 }
 
-GetVariableMatchesByIndexedGlobalGen {
-  TkVariable e.VariableName (e.GenericMatches)
-    = <Map
-        {
-          (Clear e.Dict)
-            = <GetMatchesByVariableName
-                (e.VariableName)
-                (e.Dict)
-              >;
-        }
-        e.GenericMatches
-      >
-      : e.CurrentVariableRes
-    = <GetVariablesTypes e.CurrentVariableRes>
-      : e.CurrentVariableTypeRes
-    = (e.VariableName ':' e.CurrentVariableTypeRes);
-
-  Brackets e.Nested (e.GenericMatches)
-    = <GetVariableMatchesByIndexedGlobalGen
-        e.Nested
-        (e.GenericMatches)
-      >;
-
-  ADT-Brackets (e.Name) e.Nested (e.GenericMatches)
-    = <GetVariableMatchesByIndexedGlobalGen
-        e.Nested
-        (e.GenericMatches)
-      >;
-
-  (e.Nested) (e.GenericMatches)
-    = <GetVariableMatchesByIndexedGlobalGen
-        e.Nested
-        (e.GenericMatches)
-      >;
-
-  e.Other
-    = ;
-}
-
 GetVariableMatches {
   e.GenericMatches (e.IndexedGlobalGen)
     = <Unique <ExtractVariables-Expr e.IndexedGlobalGen>> : e.Variables
@@ -243,50 +204,6 @@ GetVariableMatches-FillBag {
         }
         (e.VariableBags) e.Subst
       >;
-}
-
-GetVariablesTypes {
-  () = ();
-
-  TkVariable 's' e._ = TkVariable 's';
-  TkVariable 't' e._ = TkVariable 't';
-  TkVariable 'e' e._ = TkVariable 'e';
-
-  Symbol e.Tail = Symbol e.Tail;
-
-  Brackets e.Nested
-    = <Map &GetVariablesTypes e.Nested> : e.NestedRes
-    = Brackets e.NestedRes;
-
-  ADT-Brackets (e.Name) e.Nested
-    = <Map &GetVariablesTypes e.Nested> : e.NestedRes
-    = ADT-Brackets (e.Name) e.NestedRes;
-
-  (e.Nested) e.Tail
-    = (<GetVariablesTypes e.Nested>)
-      <GetVariablesTypes e.Tail>;
-
-  e.Other = e.Other;
-}
-
-IsAllEqual {
-  (e.Single) = True;
-
-  (e.Value) (e.Value) = True;
-
-  (e.First) (e.Next) e.Tail
-    , e.Next : e.First
-    = <IsAllEqual (e.First) e.Tail>;
-
-  e._ = False;
-}
-
-GetMatchesByVariableName {
-  (e.Key) (e.Head (e.Value ':' (e.Key)) e.Tail)
-    = (e.Value);
-
-  (e.Key) e.Other
-    = ;
 }
 
 VarsSameIndex {
