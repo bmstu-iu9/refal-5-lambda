@@ -7,7 +7,7 @@ $EXTERN ExtractVariables, ExtractVariables-Expr, NewVarName, AddSuffix;
 $EXTERN GenericMatch;
 
 *$FROM Log
-$EXTERN Log-PutLine;
+$EXTERN Log-PutLine, Log-InlineExpr;
 
 *$FROM DisplayName
 $EXTERN DisplayName;
@@ -57,7 +57,12 @@ Prepare-Aux {
                 = ((e.Names) e.Info) /* пропускаем */;
 
               ((e.Names) e.Info) (Spec t.Name e.Pattern)
-                = ((e.Names t.Name) e.Info (t.Name (e.Pattern)));
+                = t.Name : (e.Name)
+                = ((e.Names t.Name) e.Info (t.Name (e.Pattern)))
+                  <Log-PutLine
+                    'New $SPEC function: ' <DisplayName e.Name> ' '
+                    <Log-InlineExpr e.Pattern>
+                  >;
 
               ((e.Names) e.Info) t.Other = ((e.Names) e.Info) t.Other;
             }
@@ -85,13 +90,6 @@ Prepare-Aux {
       )
       e.AST
       e.GuardEnums
-
-      <Map
-        {
-          (e.Name) = <Log-PutLine 'New $SPEC function: ' <DisplayName e.Name>>;
-        }
-        e.NewNames
-      >
 }
 
 * Добавляет вызов аварийной функции Func@0 в конец каждой специализируемой

@@ -132,6 +132,10 @@ Sentence {
       <Tail (e.Indent '  ') e.Tail>;
 }
 
+$ENTRY Log-InlineExpr {
+  e.Expr = <InlineSubexpr e.Expr>;
+}
+
 InlineExpr {
   /* empty */ = '/* empty */';
   e.Expr = <InlineSubexpr e.Expr>;
