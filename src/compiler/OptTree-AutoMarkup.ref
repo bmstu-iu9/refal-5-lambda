@@ -30,15 +30,11 @@ $ENTRY OptTree-AutoMarkup {
     = e.AST;
 
   OptAutoMarkup e.AST
-    = <OptTree-AutoMarkup-GetSpecializableDict (e.AST)>
-      : e.SpecializableDict
-    = <GetForbiddenToSpecializeFunctionNames (e.AST)>
-      : e.ForbiddenToSpecializeFunctionNames
-    = <GetSpecializePatterns
-        (e.SpecializableDict)
-        (e.ForbiddenToSpecializeFunctionNames)
-      >
-      : e.SpecPatterns
+    = <OptTree-AutoMarkup-GetSpecializableDict e.AST> : e.SpecPatterns
+    = <GetForbiddenToSpecializeFunctionNames (e.AST)> : e.ForbiddenSpecNames
+    = <FilterSpecPatterns e.SpecPatterns (e.ForbiddenSpecNames)>
+    : e.SpecPatterns^
+
     = <OptTree-AutoMarkup-ExtractFunctionCallsGraph e.AST>
       : e.ExtractedGraph
     = <OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph>
@@ -86,25 +82,12 @@ GetForbiddenToSpecializeFunctionNames {
       >
 }
 
-GetSpecializePatterns {
-  (e.SpecializableDict) (e.Filter)
+FilterSpecPatterns {
+  e.SpecializableDict (e.Forbidden)
     = <Map
         {
-          (SPECIALIZABLE (e.FuncName) '->' (e.SpecifiedPattern))
-            , <OptTree-AutoMarkup-Contains (e.FuncName)(e.Filter)> : False
-            , <OptTree-AutoMarkup-IsEmpty (e.SpecifiedPattern)> : False
-            = <Map
-                {
-                  (e.Variable)
-                    = (TkVariable e.Variable)
-                }
-                e.SpecifiedPattern
-              >
-              : e.MarkedSpecPattern
-            = (Spec (e.FuncName) e.MarkedSpecPattern);
-
-          e.Other
-            = ;
+          ((e.Name) e.Pattern), e.Forbidden : e._ (e.Name) e._ = /* пусто */;
+          ((e.Name) e.Pattern) = (Spec (e.Name) e.Pattern);
         }
         e.SpecializableDict
       >
