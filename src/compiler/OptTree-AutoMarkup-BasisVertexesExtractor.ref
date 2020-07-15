@@ -5,10 +5,10 @@ $EXTERN OptTree-AutoMarkup-GetElemByKey,
         OptTree-AutoMarkup-Equal;
 
 /**
-	<OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph>
+  <OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph>
     = (e.BasisVertex)* (e.Graph)
 
-	e.BasisVertex = e.FuncName
+  e.BasisVertex ::= e.FuncName
 */
 
 $ENTRY OptTree-AutoMarkup-ExtractBasisVertexes {

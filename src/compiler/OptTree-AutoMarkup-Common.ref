@@ -1,10 +1,10 @@
 ﻿$INCLUDE "LibraryEx";
 
-/**
-	<OptTree-AutoMarkup-GetSetDifference (e.FirstSet) (e.SecondSet)> ==
-  (e.FirstSet\e.SecondSet)
-*/
 
+/**
+  <OptTree-AutoMarkup-GetSetDifference (e.FirstSet) (e.SecondSet)>
+    == (e.FirstSet\e.SecondSet)
+*/
 $ENTRY OptTree-AutoMarkup-GetSetDifference {
   (e.FirstSet) (e.SecondSet)
     = <Map
@@ -21,10 +21,10 @@ $ENTRY OptTree-AutoMarkup-GetSetDifference {
     = (e.Res);
 }
 
-/**
-	<OptTree-AutoMarkup-Contains (e.Elem) (e.Array)> == True|False
-*/
 
+/**
+  <OptTree-AutoMarkup-Contains (e.Elem) (e.Array)> == True | False
+*/
 $ENTRY OptTree-AutoMarkup-Contains {
   (e.Elem) (e.ArrayHead (e.Elem) e.ArrayTail)
     = True;
@@ -33,10 +33,10 @@ $ENTRY OptTree-AutoMarkup-Contains {
     =  False;
 }
 
+
 /**
   <OptTree-AutoMarkup-Equal (e.First) (e.Second)> == True|False
 */
-
 $ENTRY OptTree-AutoMarkup-Equal {
   (e.X) (e.X)
     = True;
@@ -45,13 +45,13 @@ $ENTRY OptTree-AutoMarkup-Equal {
     = False;
 }
 
+
 /**
-	<OptTree-AutoMarkup-GetElemByKey (e.Key) (e.Graph)>
-    == e.GraphNode (e.Graph)
+  <OptTree-AutoMarkup-GetElemByKey (e.Key) (e.Graph)>
+    == t.GraphNode (e.Graph)
 
-	e.GraphNode = (Func (e.Key) Children (e.Children))
+  t.GraphNode ::= (Func (e.Key) Children (e.Children))
 */
-
 $ENTRY OptTree-AutoMarkup-GetElemByKey {
   (e.Key) (e.GraphHead (Func (e.Key) Children (e.Children)) e.GraphTail)
     = Func (e.Key) Children (e.Children)
@@ -62,11 +62,10 @@ $ENTRY OptTree-AutoMarkup-GetElemByKey {
 }
 
 /**
-	<OptTree-AutoMarkup-GetParents (e.ChildName) (e.Graph)> == e.GraphNode*
+  <OptTree-AutoMarkup-GetParents (e.ChildName) (e.Graph)> == t.GraphNode*
 
-	e.GraphNode = (Func (e.Key) Children (e.Children))
-
-	e.Children = (e._ (e.ChildName) e._)
+  t.GraphNode ::= (Func (e.Key) Children (e.Children))
+  e.Children ::= (e._ (e.ChildName) e._)
 */
 
 $ENTRY OptTree-AutoMarkup-GetParents {

@@ -8,7 +8,8 @@ $EXTERN OptTree-AutoMarkup-Contains,
         OptTree-AutoMarkup-GetElemByKey;
 
 /**
-  <OptTree-AutoMarkup-ExtractGraph e.AST> == e.FunctionCallsGraph
+  <OptTree-AutoMarkup-ExtractFunctionCallsGraph e.AST>
+    == e.FunctionCallsGraph
 */
 
 $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
