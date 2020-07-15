@@ -1,0 +1,12 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */ = ;
+  s._ e.X = <F e.X> <Go e.X>;
+}
+
+F {
+  Y1 e.X = <F e.X>;
+  Y2 e.X = <Go e.X>;
+  Y3 e.X = ;
+}

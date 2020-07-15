@@ -35,8 +35,8 @@ $ENTRY OptTree-AutoMarkup {
     : e.SpecPatterns^
 
     = <OptTree-AutoMarkup-ExtractFunctionCallsGraph e.AST>
-      : e.ExtractedGraph
-    = <OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph>
+      : e.ExtractedGraph (e.RootSet)
+    = <OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph (e.RootSet)>
       : (e.BasisVertexes) (e.ExtractedGraph^)
     = <GetDrivenFunctions
         (e.ExtractedGraph)

@@ -1,20 +1,18 @@
 $INCLUDE "LibraryEx";
 
 *$FROM OptTree-AutoMarkup-Common
-$EXTERN OptTree-AutoMarkup-GetElemByKey,
-        OptTree-AutoMarkup-Equal;
+$EXTERN OptTree-AutoMarkup-GetElemByKey;
+
 
 /**
-  <OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph>
+  <OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph (e.RootSet)>
     = (e.BasisVertex)* (e.Graph)
 
   e.BasisVertex ::= e.FuncName
 */
 
 $ENTRY OptTree-AutoMarkup-ExtractBasisVertexes {
-  e.Graph
-    = <GetGraphRoots (e.Graph)>
-      : (e.GraphRoots)
+  e.Graph (e.GraphRoots)
     = <GetBasisVertexes
         (e.GraphRoots)
         e.Graph
@@ -26,36 +24,6 @@ $ENTRY OptTree-AutoMarkup-ExtractBasisVertexes {
           (e.Graph^)
         )
     = (e.BasisVertexes) (e.Graph);
-}
-
-GetGraphRoots {
-  (e.Graph)
-    = <MapAccum
-        {
-          ((e.Result) (e.Graph^))
-          (Func (Indirect function for implicit calls) Children (e.Children))
-            = ((e.Result) (e.Graph));
-
-          ((e.Result) (e.Graph^))
-          (Func (e.FuncName) Children (e.Children))
-            , e.Graph
-              : e.GraphHead
-                (
-                  Func (e.ParentName)
-                  Children (e.ChildrenHead (e.FuncName) e.ChildrenTail)
-                )
-                e.GraphTail
-            , <OptTree-AutoMarkup-Equal (e.ParentName) (e.FuncName)> : False
-            = ((e.Result) (e.Graph));
-
-          ((e.Result) (e.Graph^))
-          (Func (e.FuncName) Children (e.Children))
-            = ((e.Result (e.FuncName)) (e.Graph))
-        }
-        ((/*result*/) (e.Graph)) e.Graph
-      >
-      : ((e.Roots) (e.Graph^))
-    = (e.Roots);
 }
 
 GetBasisVertexes-GetResultByNode {

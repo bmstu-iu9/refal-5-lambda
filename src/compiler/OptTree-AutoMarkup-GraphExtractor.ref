@@ -9,7 +9,9 @@ $EXTERN OptTree-AutoMarkup-Contains,
 
 /**
   <OptTree-AutoMarkup-ExtractFunctionCallsGraph e.AST>
-    == e.FunctionCallsGraph
+    == e.FunctionCallsGraph (e.RootSet)
+
+  e.RootSet ::= (e.FuncName)*
 */
 
 $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
@@ -57,14 +59,9 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
       : e.InlinedGraph
     = <Map &GetEntryPoints e.AST>
       : e.EntryPoints
-    = e.EntryPoints e.UniqueIndirectChildren
-      : e.EntryPoints^
-    = <GetClearedByEntryPointsGraph
-        (e.InlinedGraph)
-        (e.EntryPoints)
-      >
-      : e.ResultGraph
-    = t.IndirectFuncNode e.ResultGraph;
+    = <Unique e.EntryPoints e.UniqueIndirectChildren> : e.Roots
+    = <GetClearedByEntryPointsGraph (e.InlinedGraph) (e.Roots)> : e.ResultGraph
+    = t.IndirectFuncNode e.ResultGraph (e.Roots);
 }
 
 GetEntryPoints {
