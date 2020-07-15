@@ -35,62 +35,12 @@ $ENTRY OptTree-AutoMarkup-GetSpecializableDict {
                 e.Body
               >
               : e.ExtractedPatterns
-            = <ContainsDuplications (e.ExtractedPatterns)>
-            : {
-                True = /* пусто */;
-                False = <GetSpecifiedPattern (e.Name) e.ExtractedPatterns>;
-              };
+            = <GetSpecifiedPattern (e.Name) e.ExtractedPatterns>;
 
           t.Other = /* пусто */;
         }
         e.AST
       >;
-}
-
-ContainsDuplications {
-  (e.ExtractedPatterns)
-    = <Map
-        {
-          (e.Patterns)
-            = <Map &GetPatternVariables e.Patterns>
-            : {
-                e.Head (e.Variable) e._ (e.Variable) e.Tail = (True);
-
-                e.Other = (False);
-              };
-        }
-        e.ExtractedPatterns
-      >
-    : {
-        e.Head (True) e.Tail = True;
-
-        e.Other = False;
-      }
-}
-
-GetPatternVariables {
-  (TkVariable e.Name) = (e.Name);
-
-  (Symbol Identifier VAR e.Name) = (e.Name);
-
-  (Brackets e.Nested)
-    = <Map
-        {
-          (e.SubPattern) = <GetPatternVariables (e.SubPattern)>;
-        }
-        e.Nested
-      >;
-
-  (ADT-Brackets (e.Name) e.Nested)
-    = <Map
-        {
-          (e.SubPattern) = <GetPatternVariables (e.SubPattern)>;
-        }
-        e.Nested
-      >;
-
-  (e.Other)
-    = ;
 }
 
 GetSpecifiedPattern {
@@ -108,13 +58,13 @@ GetSpecifiedPattern {
       : e.GenericMatches
     = <GetVariableMatches e.GenericMatches (e.IndexedGlobalGen)>
       : e.VariableMatchesDict
-    = <StaticCandidates e.VariableMatchesDict>
+    = <StaticCandidates e.VariableMatchesDict> : e.StaticCandidates
+    = <FilterUnrepeatedStaticParams e.StaticCandidates (e.GenericMatches)>
     : {
         /* пусто */ = /* нет статических переменных, пропускаем */;
 
-        e.StaticCandidates
-          = <MarkupVarsInPattern (e.StaticCandidates) e.IndexedGlobalGen>
-          : e.Pattern
+        e.StaticParams
+          = <MarkupVarsInPattern (e.StaticParams) e.IndexedGlobalGen> : e.Pattern
           = ((e.Name) e.Pattern);
       };
 }
@@ -247,4 +197,43 @@ MarkupVarsInPattern {
         }
         e.Pattern
       >;
+}
+
+FilterUnrepeatedStaticParams {
+  e.StaticCandidates (e.GenericMatches)
+    = <Map
+        (&FilterUnrepeatedStaticParams-CleanupMatch e.StaticCandidates)
+        e.GenericMatches
+      >
+    : e.GenericMatches^
+    = <FilterUnrepeatedStaticParams-RemoveBad
+        e.StaticCandidates (e.GenericMatches)
+      >;
+}
+
+FilterUnrepeatedStaticParams-CleanupMatch {
+  e.StaticCandidates (e.Substitution)
+    = <Map
+        {
+          (t.MappedVar ':' t.StaticParam)
+            , e.StaticCandidates : e._ t.StaticParam e._
+            = (t.MappedVar ':' t.StaticParam);
+
+          t._other_mapping = /* пропускаем его */;
+        }
+        e.Substitution
+      >
+    : e.Substitution^
+    = (e.Substitution);
+}
+
+FilterUnrepeatedStaticParams-RemoveBad {
+  e.StaticCandidates-B t.BadParam e.StaticCandidates-E (e.GenericMatches)
+    , e.GenericMatches : e._ (e.Subst) e._
+    , e.Subst : e._ (t.MappedVar ':' t.BadParam) e._ (t.MappedVar ':' t._) e._
+    = <FilterUnrepeatedStaticParams
+        e.StaticCandidates-B e.StaticCandidates-E (e.GenericMatches)
+      >;
+
+  e.StaticCandidates (e.GenericMatches) = e.StaticCandidates;
 }
