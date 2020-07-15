@@ -108,15 +108,14 @@ GetSpecifiedPattern {
       : e.GenericMatches
     = <GetVariableMatches e.GenericMatches (e.IndexedGlobalGen)>
       : e.VariableMatchesDict
-    = <GetVariableSpecType (e.VariableMatchesDict)>
+    = <StaticCandidates e.VariableMatchesDict>
     : {
-        e.TypedVariables
-          , e.TypedVariables : e._ (s._mode 'STAT' e.Suffix) e._
-          = <MarkupVarsInPattern (e.TypedVariables) e.IndexedGlobalGen>
+        /* пусто */ = /* нет статических переменных, пропускаем */;
+
+        e.StaticCandidates
+          = <MarkupVarsInPattern (e.StaticCandidates) e.IndexedGlobalGen>
           : e.Pattern
           = ((e.Name) e.Pattern);
-
-        e._ = /* нет статических переменных, пропускаем */;
       };
 }
 
@@ -212,37 +211,38 @@ VarsSameIndex {
   s.Mode e._ = False;
 }
 
-GetVariableSpecType {
-  (e.VariableMatchesDict)
+StaticCandidates {
+  e.VariableMatchesDict
     = <Map
         {
           ((s.Mode s.Index) ':' e.Matches)
-            = <VarsSameIndex s.Mode e.Matches>
-              : {
-                  True = (s.Mode 'STAT' s.Index);
-                  False = (s.Mode 'dyn' s.Index);
-                }
+            , <VarsSameIndex s.Mode e.Matches> : True
+            = (s.Mode s.Index);
+
+          t.VarMatches = /* пропускаем */;
         }
         e.VariableMatchesDict
       >
 }
 
 MarkupVarsInPattern {
-  (e.TypedVariables) e.Pattern
+  (e.StaticParams) e.Pattern
     = <Map
         {
           (TkVariable s.Mode s.Index)
-            , e.TypedVariables : e._ (s.Mode e.Type s.Index) e._
-            = (TkVariable s.Mode e.Type s.Index);
+            , e.StaticParams : e._ (s.Mode s.Index) e._
+            = (TkVariable s.Mode 'STAT' s.Index);
+
+          (TkVariable s.Mode s.Index) = (TkVariable s.Mode 'dyn' s.Index);
 
           (Symbol e.Info) = (Symbol e.Info);
 
           (Brackets e.Expr)
-            = (Brackets <MarkupVarsInPattern (e.TypedVariables) e.Expr>);
+            = (Brackets <MarkupVarsInPattern (e.StaticParams) e.Expr>);
 
           (ADT-Brackets (e.Name) e.Expr)
             = (ADT-Brackets
-                (e.Name) <MarkupVarsInPattern (e.TypedVariables) e.Expr>
+                (e.Name) <MarkupVarsInPattern (e.StaticParams) e.Expr>
               );
         }
         e.Pattern
