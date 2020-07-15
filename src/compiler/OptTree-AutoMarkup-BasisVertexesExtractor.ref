@@ -1,10 +1,7 @@
 $INCLUDE "LibraryEx";
 
 *$FROM OptTree-AutoMarkup-Common
-$EXTERN OptTree-AutoMarkup-GetSetDifference,
-        OptTree-AutoMarkup-Contains,
-        OptTree-AutoMarkup-GetElemByKey,
-        OptTree-AutoMarkup-GetParents,
+$EXTERN OptTree-AutoMarkup-GetElemByKey,
         OptTree-AutoMarkup-Equal;
 
 /**

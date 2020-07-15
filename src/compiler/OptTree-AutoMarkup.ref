@@ -17,8 +17,7 @@ $EXTERN OptTree-AutoMarkup-ExtractBasisVertexes;
 
 *$FROM OptTree-AutoMarkup-Common
 $EXTERN OptTree-AutoMarkup-Contains,
-        OptTree-AutoMarkup-GetSetDifference,
-        OptTree-AutoMarkup-IsEmpty;
+        OptTree-AutoMarkup-GetSetDifference;
 
 /**
   <OptTree-AutoMarkup s.OptAutoMarkup e.AST> == e.AST
