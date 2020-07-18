@@ -1,0 +1,21 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */
+    = '****' : e.Stars
+    = <F () e.Stars> : '****'
+    = /* empty */;
+}
+
+$SPEC F (e.LEFT) e.RIGHT;
+
+F {
+  (e.Left) e.Right = <G (e.Left) e.Right>;
+}
+
+$SPEC G (e.LEFT) e.right;
+
+G {
+  (e.Left) '*' e.Right = <F (e.Left '*') e.Right>;
+  (e.Left) /* empty */ = e.Left;
+}

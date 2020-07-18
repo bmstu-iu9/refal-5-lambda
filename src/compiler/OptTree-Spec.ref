@@ -1558,7 +1558,7 @@ GetSignaturesGeneralizationMatches {
 
 GetRealSubst {
   (e.StaticMatches-B (e.Val1 ':' (TkVariable e.Var)) e.StaticMatches-E)
-  (e.GenStaticMatches-B (e.Val2 ':' (TkVariable e.Var)) e.StaticMatches-E)
+  (e.GenStaticMatches-B (e.Val2 ':' (TkVariable e.Var)) e.GenStaticMatches-E)
     = <GenericMatch (e.Val1) (e.Val2)>
     : {
         Clear e.Expr
