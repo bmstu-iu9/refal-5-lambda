@@ -1565,13 +1565,13 @@ GetRealSubst {
           = e.Expr
             <GetRealSubst
               (e.StaticMatches-B e.StaticMatches-E)
-              (e.GenStaticMatches-B e.StaticMatches-E)
+              (e.GenStaticMatches-B e.GenStaticMatches-E)
             >;
 
         e.Other
           = <GetRealSubst
               (e.StaticMatches-B e.StaticMatches-E)
-              (e.GenStaticMatches-B e.StaticMatches-E)
+              (e.GenStaticMatches-B e.GenStaticMatches-E)
             >;
       };
 
