@@ -73,6 +73,13 @@ OctDigits { = '01234567'; }
 DecDigits { = '0123456789'; }
 HexDigits { = '01234567AaBbCcDdEeFf'; }
 
+/*
+  Подавляем избыточную специализацию функции по аккумулятору.
+  Иначе аккумулятор выводится как статический параметр и строятся экземпляры
+  для e.Scanned '\n', e.Scanned '\r' и т.д.
+*/
+$SPEC DoUnEscapeString-SR (e.scanned) e.text;
+
 DoUnEscapeString-SR {
   (e.Scanned) '\\x' e.HexAndTail
     = <DoUnEscapeString-SR-Hex
