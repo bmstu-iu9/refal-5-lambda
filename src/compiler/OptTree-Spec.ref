@@ -539,7 +539,7 @@ SpecCall-Aux {
                     (e.Signature) (e.HistorySignature) (e.Argument)
                     (e.SpecPattern) (e.StaticMatches) (e.Name)
                     (e.Body) s.NextNumber (e.Signatures) (e.DynamicMatches)
-                    (e.History)
+                    (e.History) (e.Calls)
                   >;
 
               False
@@ -1412,7 +1412,7 @@ MakeGeneralization {
   (e.Signature) (e.HistorySignature) (e.Argument)
   (e.SpecPattern) (e.StaticMatches) (e.Name)
   (e.Body) s.NextNumber (e.Signatures) (e.DynamicMatches)
-  (e.History)
+  (e.History) (e.Calls)
 
     /* Получаем обобщение двух сигнатур */
     = <GetSignaturesGeneralization
@@ -1469,6 +1469,7 @@ MakeGeneralization {
 
     /* К новому вызову применяем подстановку*/
     = <ApplySubst-Expr (e.RealSubst) t.NewCall> : t.NewCall^
+    = <ApplySubst-Expr (e.Calls) t.NewCall> : t.NewCall^
 
     = t.Info
       t.NewCall
