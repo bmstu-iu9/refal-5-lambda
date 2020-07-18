@@ -23,6 +23,8 @@ $ENTRY GenerateFromDFA {
 WriteFunction {
   ((e.NextRule) e.Alternatives) =
     ()
+    ('$SPEC ' e.NextRule ' (e.acc) e.text;')
+    ()
     (e.NextRule ' {')
     <Map &WriteAlternative e.Alternatives>
     ('}');
