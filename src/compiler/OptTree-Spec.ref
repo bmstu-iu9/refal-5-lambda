@@ -453,13 +453,12 @@ SpecCall {
     , <GenericMatch-Wrapper (e.Argument) (e.SpecPattern)>
     : Clear (e.StaticMatches) (e.DynamicMatches)
 
-    = True
-    : e.NeedRelationCheck
+    = True : s.NeedRelationCheck
 
     = <SpecCall-Matches
         (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
         (e.Argument) (e.StaticMatches) (e.DynamicMatches) (e.History)
-        (e.NeedRelationCheck)
+        s.NeedRelationCheck
       >;
 
   (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
@@ -473,7 +472,7 @@ SpecCall {
 SpecCall-Matches {
   (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
   (e.Argument) (e.StaticMatches) (e.DynamicMatches) (e.History)
-  (e.NeedRelationCheck)
+  s.NeedRelationCheck
 
     , <ExtractCalls e.StaticMatches> : (e.Calls) e.StaticMatches^
 
@@ -485,12 +484,12 @@ SpecCall-Matches {
         (e.Name) (e.SpecPattern) (e.Body)
         s.NextNumber e.Signatures (e.Argument)
         (e.Signature) (e.StaticMatches) (e.DynamicMatches)
-        (e.Calls) (e.History) (e.NeedRelationCheck)
+        (e.Calls) (e.History) s.NeedRelationCheck
       >;
 
   (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
   (e.Argument) (e.StaticMatches) (e.DynamicMatches) (e.History)
-  (e.NeedRelationCheck)
+  s.NeedRelationCheck
     = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
       (CallBrackets (Symbol Name e.Name) e.Argument)
       /* no new functions */
@@ -500,7 +499,7 @@ SpecCall-Matches {
 SpecCall-Aux {
   (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures (e.Argument)
   (e.Signature) (e.StaticMatches) (e.DynamicMatches) (e.Calls) (e.History)
-  (e.NeedRelationCheck)
+  s.NeedRelationCheck
 
     = <PrepareArgOrPattern (e.StaticMatches) (e.DynamicMatches) e.SpecPattern>
     : e.SpecializedFuncArgument
@@ -520,7 +519,7 @@ SpecCall-Aux {
 
         NotFound
 
-          = e.NeedRelationCheck
+          = s.NeedRelationCheck
           : {
               True
                 = <HasHigmanKruskalRelation
@@ -528,8 +527,7 @@ SpecCall-Aux {
                     e.History
                   >;
 
-              False
-                = False;
+              False = False;
             }
           : e.RelationCheckResult
 
@@ -1429,15 +1427,13 @@ MakeGeneralization {
       Присваиваем переменным в сигнатуре имена,
       отличные от имён переменных в аргументе e.Argument
     */
-    = <NameSignatureVars (e.ArgumentVars) e.GenSignature>
-    : e.GenStaticMatches
+    = <NameSignatureVars (e.ArgumentVars) e.GenSignature> : e.GenStaticMatches
 
     /* Получаем переменные из e.SpecPattern */
     = <ExtractVariables-Expr e.SpecPattern> : e.SpecPatternVars
 
     /*
-      Частям обобщённой сигнатуры приписываем
-      имена статических переменных
+      Частям обобщённой сигнатуры приписываем имена статических переменных
     */
     = <GetSignaturesGeneralizationMatches
         (e.SpecPatternVars) e.GenStaticMatches
@@ -1445,8 +1441,7 @@ MakeGeneralization {
     : e.GenStaticMatches^
 
     /* Формируем e.RealSubst через GenericMatch */
-    = <GetRealSubst (e.StaticMatches) (e.GenStaticMatches)>
-    : e.RealSubst
+    = <GetRealSubst (e.StaticMatches) (e.GenStaticMatches)> : e.RealSubst
 
     = <IsTrivialSubstitutions e.RealSubst>
     : {
@@ -1455,19 +1450,17 @@ MakeGeneralization {
           проверку отношения Хигмана-Крускала
           в рекурсивном вызове не выполняем
         */
-        True
-          = False;
+        True = False;
 
-        False
-          = True;
+        False = True;
       }
-    : e.NeedRelationCheck
+    : s.NeedRelationCheck
 
     /* Для e.GenStaticMatches вызываем SpecCall-Matches */
     = <SpecCall-Matches
         (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
         (e.Argument) (e.GenStaticMatches)
-        (e.DynamicMatches) (e.History) (e.NeedRelationCheck)
+        (e.DynamicMatches) (e.History) s.NeedRelationCheck
       >
     : t.Info
       t.NewCall
