@@ -1140,6 +1140,23 @@ CheckSignaturesPairForRelation {
         (e.CurrentSignature-Rest) e.HistorySignature-Rest
       >;
 
+  (e.CurrentSignature) e.HistorySignature
+
+    /* Берём часть сигнатур для одной статической переменной */
+    , e.CurrentSignature
+    : (e.CurrentSignature-CurVar) e.CurrentSignature-Rest
+
+    , e.HistorySignature
+    : (e.HistorySignature-CurVar) e.HistorySignature-Rest
+
+    /* Текущий кусок — пустое выражение  */
+    , e.CurrentSignature-CurVar : /* пусто */
+
+    /* Исторический кусок — тоже пустое выражение */
+    , e.HistorySignature-CurVar : /* пусто */
+
+    = True;
+
   (e.CurrentSignature) e.HistorySignature = False;
 }
 
