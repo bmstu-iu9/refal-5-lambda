@@ -523,7 +523,7 @@ SpecCall-Aux {
           : {
               True
                 = <HasHigmanKruskalRelation
-                    (e.Name) (<RemoveSignatureVarsNames e.Signature>)
+                    (e.Name) (<CanonizeSignature e.Signature>)
                     e.History
                   >;
 
@@ -1077,7 +1077,7 @@ HasHigmanKruskalRelation {
     = e.InstanceName
     : {
         e.Name SUF e.InstanceName-Rest
-          , <RemoveSignatureVarsNames e.HistorySignature>
+          , <CanonizeSignature e.HistorySignature>
           : e.HistorySignatureWithoutNames
           , <CheckSignaturesPairForRelation
               (e.Signature) e.HistorySignatureWithoutNames
@@ -1368,16 +1368,16 @@ PartiallyContainsSignature {
 }
 
 /**
-  <RemoveSignatureVarsNames e.Signature> == e.Signature^
+  <CanonizeSignature e.Signature> == e.Signature^
 
-  Убирает имена переменных в сигнатуре, оставляет их типы данных.
+  * Убирает имена переменных в сигнатуре, оставляет их типы данных.
 */
-RemoveSignatureVarsNames {
+CanonizeSignature {
   e.Signature
     = <Map
         {
           (e.SignaturePart)
-            = <RemoveSignatureVarsNames-Expr e.SignaturePart>
+            = <CanonizeSignature-Expr e.SignaturePart>
             : e.SignaturePart^
             = (e.SignaturePart);
         }
@@ -1387,21 +1387,21 @@ RemoveSignatureVarsNames {
     = e.Signature;
 }
 
-RemoveSignatureVarsNames-Expr {
-  e.Expr = <Map &RemoveSignatureVarsNames-Term e.Expr>;
+CanonizeSignature-Expr {
+  e.Expr = <Map &CanonizeSignature-Term e.Expr>;
 }
 
-RemoveSignatureVarsNames-Term {
+CanonizeSignature-Term {
   (TkVariable s.Mode e.Index)
     = (TkVariable s.Mode);
 
   (s.BracketsTag e.Expr)
     , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
-    = <RemoveSignatureVarsNames-Expr e.Expr> : e.Expr^
+    = <CanonizeSignature-Expr e.Expr> : e.Expr^
     = (s.BracketsTag e.Expr);
 
   (ADT-Brackets (e.Name) e.Expr)
-    = <RemoveSignatureVarsNames-Expr e.Expr> : e.Expr^
+    = <CanonizeSignature-Expr e.Expr> : e.Expr^
     = (ADT-Brackets (e.Name) e.Expr);
 
   t.OtherTerm = t.OtherTerm;
