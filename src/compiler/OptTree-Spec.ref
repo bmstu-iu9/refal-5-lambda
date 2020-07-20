@@ -1074,9 +1074,9 @@ MapGenericMatches {
 */
 HasHigmanKruskalRelation {
   (e.Name) (e.Signature) e.History ((e.InstanceName) e.HistorySignature)
-    = e.InstanceName
+    = <SourceNameOfInstance e.InstanceName>
     : {
-        e.Name SUF e.InstanceName-Rest
+        e.Name
           , <CanonizeSignature e.HistorySignature>
           : e.HistorySignatureWithoutNames
           , <CheckSignaturesPairForRelation
@@ -1095,6 +1095,11 @@ HasHigmanKruskalRelation {
       };
 
   (e.Name) (e.Signature) /* пустая история */ = False;
+}
+
+SourceNameOfInstance {
+  e.Name SUF '@' s._ = e.Name;
+  e.Name '@' s._ = e.Name;
 }
 
 /**
