@@ -1074,25 +1074,15 @@ MapGenericMatches {
 */
 HasHigmanKruskalRelation {
   (e.Name) (e.Signature) e.History ((e.InstanceName) e.HistorySignature)
-    = <SourceNameOfInstance e.InstanceName>
-    : {
-        e.Name
-          , <CanonizeSignature e.HistorySignature>
-          : e.HistorySignatureWithoutNames
-          , <CheckSignaturesPairForRelation
-              (e.Signature) e.HistorySignatureWithoutNames
-            >
-          : {
-              True = True e.HistorySignature;
-              False
-                = <HasHigmanKruskalRelation
-                    (e.Name) (e.Signature) e.History
-                  >;
-            };
+    , <SourceNameOfInstance e.InstanceName> : e.Name
+    , <CheckSignaturesPairForRelation
+        (e.Signature) <CanonizeSignature e.HistorySignature>
+      >
+    : True
+    = True e.HistorySignature;
 
-        e.InstanceOfOtherFunction
-          = <HasHigmanKruskalRelation (e.Name) (e.Signature) e.History>;
-      };
+  (e.Name) (e.Signature) e.History ((e.InstanceName) e.HistorySignature)
+    = <HasHigmanKruskalRelation (e.Name) (e.Signature) e.History>;
 
   (e.Name) (e.Signature) /* пустая история */ = False;
 }
@@ -1137,13 +1127,14 @@ CheckSignaturesPairForRelation {
     , <CheckSignaturesPairForRelation-OneVar
         (e.CurrentSignature-CurVar) e.HistorySignature-CurVar
       >
-    : True
+    : {
+        True
+          = <CheckSignaturesPairForRelation
+              (e.CurrentSignature-Rest) e.HistorySignature-Rest
+            >;
 
-    = <CheckSignaturesPairForRelation
-        (e.CurrentSignature-Rest) e.HistorySignature-Rest
-      >;
-
-  (e.CurrentSignature) e.HistorySignature = False;
+        False = False;
+    };
 }
 
 CheckSignaturesPairForRelation-OneVar {
