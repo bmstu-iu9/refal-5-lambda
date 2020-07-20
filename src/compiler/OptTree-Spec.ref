@@ -1417,6 +1417,8 @@ CanonizeSignature-Term {
     = <CanonizeSignature-Expr e.Expr> : e.Expr^
     = (ADT-Brackets (e.Name) e.Expr);
 
+  (Symbol Number s._) = (Symbol Number);
+
   t.OtherTerm = t.OtherTerm;
 }
 
