@@ -12,5 +12,5 @@ Loop {
   (e.Unused) (e.Res) (t.Item e.Items)
     = <Loop (e.Unused) (e.Res (t.Item)) (e.Items)>;
 
-  (e.Unused) (e.Res) (/* пусто */) = e.Res;
+  (e.Unused) (e.Res) (/* РїСѓСЃС‚Рѕ */) = e.Res;
 }
