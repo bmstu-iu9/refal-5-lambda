@@ -49,6 +49,12 @@ Element {
 
   (DriveInfo e.DriveInfo) = ('(DriveInfo ...)');
   (SpecInfo e.SpecInfo) = ('(SpecInfo ...)');
+
+  (DrivenCallOf (e.Name) In (e.Function))
+    = (
+        'Call of ' <DisplayName e.Name> ' was driven in function '
+        <DisplayName e.Function>
+      );
 }
 
 

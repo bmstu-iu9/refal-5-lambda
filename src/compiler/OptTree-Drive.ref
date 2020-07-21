@@ -335,6 +335,14 @@ OptFunction {
           (t.OptInfo^ (e.SntAcc) (e.ASTAcc)) t.Sentence
             = <OptSentence t.Sentence t.OptInfo t.Mode>
             : t.OptInfo^ (e.NewASTItems) e.NewSentences
+            = <Map
+                {
+                  (DrivenCallOf (e.Call)) = (DrivenCallOf (e.Call) In (e.Name));
+                  t.NewFunction = t.NewFunction;
+                }
+                e.NewASTItems
+              >
+            : e.NewASTItems^
             = (t.OptInfo (e.SntAcc e.NewSentences) (e.ASTAcc e.NewASTItems));
         }
         (t.OptInfo (/*sentences*/) (/*functions*/))
@@ -1162,13 +1170,23 @@ DoOptSentence-MakeSubstitutions {
     : {
         /*
           В случае решения без сужений просто применяем замены.
+          Помечаем, что шаг прогонки был сделан и специализатор должен
+          объединить истории.
         */
         Success (() (e.Assigns))
           = e.Substitutions
-            ((e.RS) (() (e.Assigns)) (/* нет новых функций */));
+            (
+              (e.RS) (() (e.Assigns))
+              (
+                /* нет новых функций */
+                (DrivenCallOf (e.Name))
+              )
+            );
 
         /*
           «Грязное» решение допускаем только в случае прогонки.
+          Помечаем, что шаг прогонки был сделан и специализатор должен
+          объединить истории.
         */
         Success e.M
           , s.Mode : Drive
@@ -1176,7 +1194,7 @@ DoOptSentence-MakeSubstitutions {
               s.Mode (e.SentenceVars) (e.Args)
               (
                 e.Substitutions
-                ((e.RS) e.M (/* нет новых функций */))
+                ((e.RS) e.M (/* нет новых функций */ (DrivenCallOf (e.Name))))
               )
               (Function
                 GN-Local (<RemainderFuncIncName e.Name>) Sentences e.Rest
@@ -1186,6 +1204,8 @@ DoOptSentence-MakeSubstitutions {
         /*
           При неудаче переходим к следующему предложению, к подстановкам
           ничего не добавляем.
+          Так как в результатной части новых вызовов, которые можно
+          специализировать, не появилось, шаг прогонки помечать не нужно.
         */
         Failure
           = <DoOptSentence-MakeSubstitutions
@@ -1198,6 +1218,7 @@ DoOptSentence-MakeSubstitutions {
         /*
           Здесь либо Undefined, либо грязное решение в режиме встраивания,
           в обоих случаях добавляем холодный вызов остаточной функции.
+          Объединять истории не нужно по аналогичной причине.
         */
         e.Other
           = e.Substitutions
