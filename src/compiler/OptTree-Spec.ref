@@ -160,7 +160,8 @@ $ENTRY OptTree-Spec {
 
   OptSpec e.AST-B (SpecInfo (e.Names) e.SpecInfo (e.Histories)) e.AST-E
     = <MergeHistories e.AST-B e.AST-E (e.Histories)> : e.AST (e.Histories^)
-    = <MapAccum
+    = <PrintHistories e.Histories>
+      <MapAccum
         &SpecUnit
         (e.SpecInfo (e.Histories) (/* new functions */))
         e.AST
@@ -180,6 +181,36 @@ ColdAll {
         }
         e.AST
       >;
+}
+
+PrintHistories {
+  e.Histories = <Map &PrintHistory e.Histories>;
+}
+
+PrintHistory {
+  ((e.Function) e.History)
+    = <Log-PutLine
+        'History of ' <DisplayName e.Function> '\n'
+        <Map
+          {
+            ((e.FuncName) e.StaticVarsVals)
+              = '    ' <DisplayName e.FuncName> ':'
+                ' [' <PrintSignature e.StaticVarsVals> ']\n';
+          }
+          e.History
+        >
+      >
+}
+
+PrintSignature {
+  /* пусто */ = /* пусто */;
+  t.First e.Last
+    = <PrintSignatureItem t.First>
+      <Map { t.Item = ', ' <PrintSignature t.Item> } e.Last>
+}
+
+PrintSignatureItem {
+  (e.Expr) = <Log-InlineExpr e.Expr>;
 }
 
 MergeHistories {
