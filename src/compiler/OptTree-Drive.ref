@@ -375,13 +375,16 @@ OptSentence-Aux {
 
     /* Поиск информации для прогонки */
     = <FindOptInfo e.OptFuncs (e.Name)> : e.OptFuncs^ t.FunctionForDrive
-    = s.IntrinsicMode : {
-      Intrinsic = <FindMetatables e.OptFuncs>;
-      s._ = ()
-    } : t.Metatables
+    = s.IntrinsicMode
+    : {
+        Intrinsic = <FindMetatables e.OptFuncs>;
+        s._ = ()
+      }
+    : t.Metatables
     = <OptSentence-MakeSubstitutions
-      (s.DriveMode s.IntrinsicMode) ((e.Left) (e.Right))
-      (e.Args) t.FunctionForDrive t.Metatables>
+        (s.DriveMode s.IntrinsicMode) ((e.Left) (e.Right))
+        (e.Args) t.FunctionForDrive t.Metatables
+      >
     : e.SolutionPacks
 
     = (e.OptFuncs)
@@ -478,7 +481,8 @@ StaticSubstitution {
 CheckArgs-Intrinsic {
   (e.Args) s.SymbolName =
   e.Args : {
-    (Symbol s.SymbolName e.Name) e.Rest = <CheckArgs-Intrinsic (e.Rest) s.SymbolName>;
+    (Symbol s.SymbolName e.Name) e.Rest
+      = <CheckArgs-Intrinsic (e.Rest) s.SymbolName>;
     t.Other e.Rest = False;
     = True;
   }
@@ -519,7 +523,8 @@ SignedResult-Divmod {
     s.QSignChar = e.RSign : {
       s.RSignChar = (Brackets (Symbol Char s.QSignChar) (Symbol Number s.Q))
       (Symbol Char s.RSignChar) (Symbol Number s.R);
-      = (Brackets (Symbol Char s.QSignChar) (Symbol Number s.Q)) (Symbol Number s.R)
+      = (Brackets (Symbol Char s.QSignChar) (Symbol Number s.Q))
+        (Symbol Number s.R)
     };
     = e.RSign : {
       s.RSignChar = (Brackets (Symbol Number s.Q)) (Symbol Char s.RSignChar)
@@ -607,7 +612,8 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     'Add' = e.Args : {
       (Brackets e.Numbers1) e.Numbers2,
       <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
-        = <Add (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : e.Result
+        = <Add (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
+        : e.Result
         = <NumberToSymbols e.Result> : e.Result^
         =
         (
@@ -654,7 +660,8 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     'Sub' = e.Args : {
       (Brackets e.Numbers1) e.Numbers2,
       <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
-        = <Sub (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : e.Result
+        = <Sub (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
+        : e.Result
         = <NumberToSymbols e.Result> : e.Result^
         =
         (
@@ -694,7 +701,8 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     'Mul' = e.Args : {
       (Brackets e.Numbers1) e.Numbers2,
       <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
-        = <Mul (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : e.Result
+        = <Mul (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
+        : e.Result
         = <NumberToSymbols e.Result> : e.Result^
         =
         (
@@ -741,7 +749,8 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     'Div' = e.Args : {
         (Brackets e.Numbers1) e.Numbers2,
         <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
-        = <Div (<SymbolsToNumber e.Numbers1> ) <SymbolsToNumber e.Numbers2>> : e.Result
+        = <Div (<SymbolsToNumber e.Numbers1> ) <SymbolsToNumber e.Numbers2>>
+        : e.Result
         = <NumberToSymbols e.Result> : e.Result^
         =
         (
@@ -781,7 +790,8 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     'Mod' = e.Args : {
       (Brackets e.Numbers1) e.Numbers2,
       <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
-        = <Mod (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : e.Result
+        = <Mod (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
+        : e.Result
         = <NumberToSymbols e.Result> : e.Result^
         =
         (
@@ -827,7 +837,10 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
       (ColdCallBrackets (Symbol Name e.Name) e.Body) (Symbol Number 1),
       <OneOf (e.Name) <ArithmeticFunctions>> : True =
       (
-        ((Brackets (ColdCallBrackets (Symbol Name e.Name) e.Body)) (Symbol Number 0))
+        (
+          (Brackets (ColdCallBrackets (Symbol Name e.Name) e.Body))
+          (Symbol Number 0)
+        )
         (()()) ()
       );
 
@@ -865,7 +878,8 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     'Compare' = e.Args : {
       (Brackets e.Numbers1) e.Numbers2,
       <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
-      = <Compare (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>> : s.Result
+      = <Compare (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
+      : s.Result
       = (
         ((Symbol Char s.Result)) (()()) ()
       );
@@ -1072,7 +1086,8 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
 OptSentence-MakeSubstitutions {
   (s.DriveMode Intrinsic)
   ((e.Left) (e.Expr)) (e.Args)
-  (Intrinsic s.ScopeClass (e.IntrinsicName) Intrinsic e.BehaviorName) t.Metatables
+  (Intrinsic s.ScopeClass (e.IntrinsicName) Intrinsic e.BehaviorName)
+  t.Metatables
     = (Intrinsic s.ScopeClass (e.IntrinsicName) Intrinsic e.BehaviorName)
      : t.IntrinsicFunction
     = <DoOptSentence-MakeSubstitutions-Intrinsic
