@@ -33,9 +33,9 @@ $ENTRY OptTree {
     = <Config-GetOptSpec t.Config> : s.OptSpec
     = <Config-GetOptAutoMarkup t.Config> : s.OptAutoMarkup
     = <Config-GetOptIntrinsic t.Config> : s.OptIntrinsic
-    = <OptTree-Aux
-        s.Cycles (s.OptDrive s.OptIntrinsic) s.OptSpec s.OptAutoMarkup e.AST
-      >
+
+    = (s.OptDrive s.OptIntrinsic) : t.OptDrive
+    = <OptTree-Aux s.Cycles t.OptDrive s.OptSpec s.OptAutoMarkup e.AST>
     : s.Cycles^ e.AST^
     = <OptTree-CleanupMarkup e.AST>;
 }
@@ -213,4 +213,3 @@ ExpandClusures-ResultTerm {
 
   t.OtherTerm = t.OtherTerm;
 }
-
