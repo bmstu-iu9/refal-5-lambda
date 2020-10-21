@@ -619,7 +619,7 @@ JUMP_FROM_SCALE:
     Iter &res_b = context[val2];
     Iter &res_e = context[val2 + 1];
 
-    // Используется в case icAllocateBracket и case icReinitBracket
+    // Используется в case icAllocateBracket и case icReinitBracket
     static DataTag bracket_tag[] = {
       cDataOpenADT,
       cDataOpenBracket,
@@ -674,7 +674,7 @@ JUMP_FROM_SCALE:
           m_debugger->set_string_items(strings);
 #endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
         }
-        continue;  // пропускаем ++rasl в конце
+        continue;  // пропускаем ++rasl в конце
 
       case icProfileFunction:
         profiler()->start_generated_function();

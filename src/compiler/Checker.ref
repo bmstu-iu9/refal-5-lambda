@@ -545,8 +545,8 @@ FindInvalidDriveInline {
 
 CleanupValidEntry {
   /*
-    При помощи $ENTRY Foo, Bar; можно объявлять и $ENTRY Foo { ... },
-    поэтому и s.ScopeClass в Define. Но потом для определения устанавливаем
+    При помощи $ENTRY Foo, Bar; можно объявлять и $ENTRY Foo { ... },
+    поэтому и s.ScopeClass в Define. Но потом для определения устанавливаем
     GN-Entry.
   */
   e.Declarations-B

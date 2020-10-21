@@ -839,6 +839,6 @@ AllocatorFuncArgument {
 
   ElUnwrappedClosure s.HeadOffset = ', ' <ContextItem s.HeadOffset>;
 
-  /* Остальное — без аргументов (скобки и ElClosureHead) */
+  /* Остальное — без аргументов (скобки и ElClosureHead) */
   s.Other = ;
 }

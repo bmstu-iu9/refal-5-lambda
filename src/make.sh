@@ -12,7 +12,7 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
 
 (
   if [[ -z "$RELEASE" ]]; then
-    # Максимум 40 000 000 байт (x32), 80 000 000 байт (x64)
+    # Максимум 40 000 000 байт (x32), 80 000 000 байт (x64)
     # RLC_FLAGS используются только для сборки библиотек
     RLC_FLAGS_PLUS="--markup-context --debug-info -OC"
     RLMAKE_FLAGS_PLUS="-X--markup-context -X--debug-info -X-OC"

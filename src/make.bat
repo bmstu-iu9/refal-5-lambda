@@ -1,7 +1,7 @@
 @echo off
 setlocal
   if {%RELEASE%}=={} (
-    rem Максимум 40 000 000 байт (x32), 80 000 000 байт (x64)
+    rem Максимум 40 000 000 байт (x32), 80 000 000 байт (x64)
     rem RLC_FLAGS используются только для сборки библиотек
     set RLC_FLAGS_PLUS=--markup-context --debug-info -OC
     set RLMAKE_FLAGS_PLUS=-X--markup-context -X--debug-info -X-OC

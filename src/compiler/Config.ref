@@ -742,8 +742,8 @@ $ENTRY Config-SetSearchFolder {
   <Config-GetPrefix t.Config>
     == e.Prefix
 
-  При этом пустое значение префикса является допустимым — это означает,
-  что пользователь его не указал.
+  При этом пустое значение префикса является допустимым — это означает,
+  что пользователь его не указал.
 */
 $ENTRY Config-GetPrefix {
   [Config e.Params-B (Prefix e.Prefix) e.Params-E]
@@ -858,7 +858,7 @@ $ENTRY Config-SetChmodXCommand {
 /**
   <Config-GetPrelude t.Config> == e.Prelude
 
-  Пустое значение является допустимым — означает, что стандартное вступление
+  Пустое значение является допустимым — означает, что стандартное вступление
   подключать не надо.
 */
 $ENTRY Config-GetPrelude {

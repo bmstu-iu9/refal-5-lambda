@@ -99,7 +99,7 @@ StrFromToken {
   // #TkNumber s.Number = 'Number ' <Symb s.Number>;
   #TkNumber s.Number = 'Number ' s.Number;
   #TkOpenADT = '"["';
-  // Переполнение таблицы идентификаторов в тестовом режиме,
+  // Переполнение таблицы идентификаторов в тестовом режиме,
   // строки закомментированы
 /*
   #TkOpenCall = '"<"';

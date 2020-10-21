@@ -7,7 +7,7 @@
 //FROM refalrts-debugger
 /*
   Не используем #include "refalrts-debugger.h" ради снижения времени
-  компиляции. В refalrts-debugger.h используются большие и тяжёлые
+  компиляции. В refalrts-debugger.h используются большие и тяжёлые
   заголовки STL, а нам нужна только функция-конструктор.
 */
 namespace refalrts {

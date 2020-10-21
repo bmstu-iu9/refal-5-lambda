@@ -14,7 +14,7 @@ $EXTERN CollectStrings, IncVarOffset, PrintVar;
 */
 $ENTRY GenResult-Simple {
   s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
-    = /* e.MarkedPattern не используется */
+    = /* e.MarkedPattern не используется */
       <GenResult s.ContextOffset &MakeVarTable-Simple (e.PatternVars) e.Result>
     : {
         s.ContextOffset^ (e.CommonVars) /* нет команд генерации результата */ =

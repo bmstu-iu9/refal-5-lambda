@@ -2,7 +2,7 @@
 $EXTERN SymbCompare;
 
 /*
-  Функция SymbCompare не поддерживает атомы-замыкания.
+  Функция SymbCompare не поддерживает атомы-замыкания.
 */
 
 $ENTRY Go {

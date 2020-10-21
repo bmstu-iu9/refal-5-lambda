@@ -2334,19 +2334,19 @@ Hex {
 
 
 /**
-  45. Freeze — not implemented yet
+  45. Freeze — not implemented yet
 */
 $EENUM Freeze;
 
 
 /**
-  46. Freezer — not implemented yet
+  46. Freezer — not implemented yet
 */
 $EENUM Freezer;
 
 
 /**
-  47. Dn — not implemented yet
+  47. Dn — not implemented yet
 */
 $EENUM Dn;
 
@@ -2615,7 +2615,7 @@ $ENTRY RemoveFile {
   refalrts::Iter filename_e = content_e;
 
   char filename[FILENAME_MAX + 1] = { '\0' };
-  // возвращаемое значение не проверяем для совместимости с РЕФАЛом-5
+  // возвращаемое значение не проверяем для совместимости с РЕФАЛом-5
   refalrts::read_chars(filename, FILENAME_MAX, filename_b, filename_e);
 
   const char *error_message = "";
@@ -2814,7 +2814,7 @@ $ENTRY DeSysfun {
 
 
 /**
-  63. XMLParse — not implemented yet
+  63. XMLParse — not implemented yet
 */
 $EENUM XMLParse;
 

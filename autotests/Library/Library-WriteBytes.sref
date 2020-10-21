@@ -6,11 +6,11 @@ $ENTRY Go {
     <
       {
         s.FileHandle =
-          // Hello в десятичных кодах
+          // Hello в десятичных кодах
           <IsEmpty <WriteBytes s.FileHandle 72 101 108 25600108 111>>
           // перевод строки
           <Putout s.FileHandle>
-          // World без перевода строки в конце
+          // World без перевода строки в конце
           <IsEmpty <WriteBytes s.FileHandle 'World'>>
           <Close s.FileHandle>;
       }
