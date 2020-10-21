@@ -159,14 +159,13 @@ $ENTRY OptTree-Spec {
   NoOpt e.AST = <ColdAll e.AST>;
 
   OptSpec e.AST-B (SpecInfo (e.Names) e.SpecInfo (e.Histories)) e.AST-E
-    = <MergeHistories e.AST-B e.AST-E (e.Histories)> : e.AST (e.Histories^)
     = <PrintHistories e.Histories>
       <MapAccum
         &SpecUnit
         (e.SpecInfo (e.Histories) (/* new functions */))
-        e.AST
+        e.AST-B e.AST-E
       >
-    : (e.SpecInfo^ (e.Histories^) (e.NewFunctions)) e.AST^
+    : (e.SpecInfo^ (e.Histories^) (e.NewFunctions)) e.AST
     = (SpecInfo (e.Names) e.SpecInfo (e.Histories)) e.AST e.NewFunctions;
 }
 
@@ -211,49 +210,6 @@ PrintSignature {
 
 PrintSignatureItem {
   (e.Expr) = <Log-InlineExpr e.Expr>;
-}
-
-MergeHistories {
-  e.AST-B (DrivenCallOf (e.Call) In (e.Function)) e.AST-E (e.Histories)
-    = <MergeHistories-Update
-        e.Histories (DrivenCallOf (e.Call) In (e.Function))
-      >
-    : e.Histories^
-    = e.AST-B <MergeHistories e.AST-E (e.Histories)>;
-
-  e.AST (e.Histories) = e.AST (e.Histories);
-}
-
-MergeHistories-Update {
-  /* На всякий случай. */
-  e.Histories (DrivenCallOf (e.SourceName) In (e.DestName))
-    , e.SourceName : e.DestName
-    = e.Histories;
-
-  e.Histories-B ((e.SourceName) e.SourceHistory) e.Histories-E
-  (DrivenCallOf (e.SourceName) In (e.DestName))
-    = e.Histories-B e.Histories-E
-    : {
-        e.Histories-B^ ((e.DestName) e.DestHistory) e.Histories-E^
-          = ((e.SourceName) e.SourceHistory)
-            ((e.DestName) <UnionHistories (e.SourceHistory) (e.DestHistory)>)
-            e.Histories-B e.Histories-E;
-
-        e.Histories
-          /* Копируем историю. */
-          = ((e.SourceName) e.SourceHistory)
-            ((e.DestName) e.SourceHistory)
-            e.Histories;
-      };
-
-  e.Histories (DrivenCallOf (e.SourceName) In (e.DestName)) = e.Histories;
-}
-
-UnionHistories {
-  (e.Source-B t.Double e.Source-E) (e.Dest-B t.Double e.Dest-E)
-    = e.Source-B t.Double <UnionHistories (e.Source-E) (e.Dest-B e.Dest-E)>;
-
-  (e.Source) (e.Dest) = e.Source e.Dest;
 }
 
 SpecUnit {

@@ -144,8 +144,6 @@ $ENTRY OptTree-CleanupMarkup {
           (DriveInfo e.Info) = /* пропускаем */;
           (SpecInfo e.Info) = /* пропускаем */;
 
-          (DrivenCallOf (e.Call) In (e.Function)) = /* пропускаем */;
-
           t.Other = t.Other;
         }
         e.AST
