@@ -321,7 +321,7 @@ IsLexpr-Aux {
 /*
   Осуществляет попытку прогонки или встраивания в функции
   <OptFunction t.Function t.DriveInfo s.Mode>
-    == t.DriveInfo t.OptimizedFunction t.ASTItem*
+    == t.DriveInfo t.OptimizedFunction t.Function*
 
   Возвращает модифицированную функцию
   и порожденные из прогонки или встраивания
@@ -332,26 +332,22 @@ OptFunction {
   t.OptInfo t.Mode
     = <Reduce
         {
-          (t.OptInfo^ (e.SntAcc) (e.ASTAcc)) t.Sentence
+          (t.OptInfo^ (e.SntAcc) (e.FunAcc)) t.Sentence
             = <OptSentence t.Sentence t.OptInfo t.Mode>
-            : t.OptInfo^ (e.NewASTItems) e.NewSentences
-            = (t.OptInfo (e.SntAcc e.NewSentences) (e.ASTAcc e.NewASTItems));
+            : t.OptInfo^ (e.NewFunctions) e.NewSentences
+            = (t.OptInfo (e.SntAcc e.NewSentences) (e.FunAcc e.NewFunctions));
         }
         (t.OptInfo (/*sentences*/) (/*functions*/))
         e.Sentences
       >
-    : (t.OptInfo^ (e.Sentences^) (e.NewASTItems))
+    : (t.OptInfo^ (e.Sentences^) (e.NewFunctions))
     = t.OptInfo
-      (Function s.ScopeClass (e.Name) Sentences e.Sentences) e.NewASTItems;
+      (Function s.ScopeClass (e.Name) Sentences e.Sentences) e.NewFunctions;
 }
 
 /*
    <OptSentence t.Sentence t.OptInfo s.Mode>
-     == t.OptInfo (e.NewASTItems) t.Sentence*
-
-   e.NewASTItems ::= t.NewFunction? t.DriveMarker*
-   t.NewFunction ::= (NewFunction s.ScopeClass (e.Name) e.Body)
-   t.DriveMarker ::= (DrivenCallOf (e.Name))
+   == t.OptInfo (t.Func?) t.Sentence*
 */
 
 OptSentence {
@@ -364,8 +360,8 @@ OptSentence {
 
          (e.OptFuncNames^ t.Call) e.Right^
            = <OptSentence-Aux t.Mode ((e.Left) (e.Right)) t.Call e.OptFuncs>
-           : (e.OptFuncs^) (e.NewASTItems) e.NewSentences
-           = ((e.OptFuncNames) e.OptFuncs) (e.NewASTItems) e.NewSentences
+           : (e.OptFuncs^) (e.NewFunctions) e.NewSentences
+           = ((e.OptFuncNames) e.OptFuncs) (e.NewFunctions) e.NewSentences
        };
 
   t.Sentence t.OptInfo t.Mode = t.OptInfo () t.Sentence
@@ -394,8 +390,8 @@ OptSentence-Aux {
     = (e.OptFuncs)
       <MapAccum
         {
-          (e.NewASTItems) ((e.RS^) e.Solutions^ (e.NewASTItemsSentence))
-            = (e.NewASTItems e.NewASTItemsSentence)
+          (e.NewFunctions) ((e.RS^) e.Solutions^ (e.NewFunction))
+            = (e.NewFunctions e.NewFunction)
               <ApplySolutions ((e.Left) (e.Right)) (e.RS) e.Solutions>;
         }
         (/* new functions */)
