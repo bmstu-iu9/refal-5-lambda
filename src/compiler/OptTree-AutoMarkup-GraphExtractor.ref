@@ -60,7 +60,7 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
     = <Map &GetEntryPoints e.AST>
       : e.EntryPoints
     = <Unique e.EntryPoints e.UniqueIndirectChildren> : e.Roots
-    = <GetClearedByEntryPointsGraph (e.InlinedGraph) (e.Roots)> : e.ResultGraph
+    = <ReachableFunctions (e.InlinedGraph) (e.Roots)> : e.ResultGraph
     = t.IndirectFuncNode e.ResultGraph (e.Roots);
 }
 
@@ -75,23 +75,19 @@ GetEntryPoints {
   t._ = /* пусто */;
 }
 
-GetClearedByEntryPointsGraph {
+ReachableFunctions {
 * Очередная функция ещё не анализировалась, она есть в графе.
   (
-    e.Graph-B
-    (Func (e.NextName) Children (e.Children))
-    e.Graph-E
+    e.Graph-B (Func (e.NextName) Children (e.Children)) e.Graph-E
   )
   ((e.NextName) e.Unscanned)
     = (Func (e.NextName) Children (e.Children))
-      <GetClearedByEntryPointsGraph
-        (e.Graph-B e.Graph-E) (e.Children e.Unscanned)
-      >;
+      <ReachableFunctions (e.Graph-B e.Graph-E) (e.Children e.Unscanned)>;
 
 * Очередная функция или уже просканирована (удалена из графа),
 * или не является функцией с предложениями.
   (e.Graph) ((e.NextName) e.Unscanned)
-    = <GetClearedByEntryPointsGraph (e.Graph) (e.Unscanned)>;
+    = <ReachableFunctions (e.Graph) (e.Unscanned)>;
 
 * Кончились несканированные функции.
 * То, что осталось в графе, недоступно из корня.
@@ -101,7 +97,9 @@ GetClearedByEntryPointsGraph {
 GetMetatables {
   (Function s.ScopeClass (e.Name) Metatable e.Metatable)
     = <Map
-        &ExtractFunctionCallsFromMetatable
+        {
+          ((Symbol Identifier e.Ident) (Symbol Name e.Name^)) = (e.Name);
+        }
         e.Metatable
       >
       : e.FunctionCalls
@@ -155,16 +153,11 @@ GetFuncs {
   t._other_node = /* нет узлов */ (/* нет косвенных потомков */);
 }
 
-ExtractFunctionCallsFromMetatable {
-  ((Symbol Identifier e.Ident) (Symbol Name e.Name))
-    = (e.Name);
-}
-
 ExtractFunctionCallsFromSentencesBody {
   ((e.Pattern) e.Conditions (e.Result))
     = <ExtractExpressionName e.Pattern>
       : (e.PatternNames) (e.PatternIndirectCalls) (e.PatternIndirectChildren)
-    = <MapAccum
+    = <Reduce
         {
           ((e.DirectCalls)(e.IndirectCalls)(e.IndirectChildren))
           (Condition (e.Name) (e.ConditionResult) (e.ConditionPattern))
@@ -238,9 +231,9 @@ InnerExtractExpressionName {
               );
 
           ((e.DirectCalls^) (e.IndirectDetected^) (e.IndirectChildren^))
-          (t.Marker e.Nested)
+          (s.Marker e.Nested)
             , <OneOf
-                (t.Marker)
+                (s.Marker)
                 (Brackets)
                 (ADT-Brackets)
                 (ClosureBrackets)
@@ -357,9 +350,9 @@ InlineFuncCallsWithMetatable {
   (e.ExtractedFuncs) (e.ExtractedMetaTables)
     = <Map
         {
-          e.Elem
+          t.Elem
             = <InlineOneFuncChildrenWithMetatable
-                e.Elem
+                t.Elem
                 (e.ExtractedMetaTables)
               >;
         }
