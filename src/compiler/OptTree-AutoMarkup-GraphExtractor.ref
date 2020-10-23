@@ -16,6 +16,18 @@ $EXTERN OptTree-AutoMarkup-Contains,
 
 $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
   e.AST
+    = <SeparateMetatables e.AST> : (e.Metatables) e.Functions
+    = <Map &MetatableReferences e.Metatables> : e.MetatablesRef
+    = <Map &FunctionReferences e.Functions> : e.FunctionsRef
+
+    = <InlineMetatableReferences e.FunctionsRef (e.MetatablesRef)>
+    : e.FunctionsRef^
+
+    = <SeparateIndirects e.FunctionsRef> : (e.Indirects) e.FunctionsRef^
+    = <InlineIndirects e.FunctionsRef (e.Indirects)> : e.FunctionsRef^
+
+    = <PrepareGraphFormat e.FunctionsRef> : (e.EntryPoints) e.Graph
+
     = <MapAccum
         {
           ((e.GraphNodes) (e.IndirectChildren))
@@ -58,10 +70,183 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
       >
       : e.InlinedGraph
     = <Map &GetEntryPoints e.AST>
-      : e.EntryPoints
-    = <Unique e.EntryPoints e.UniqueIndirectChildren> : e.Roots
-    = <ReachableFunctions (e.InlinedGraph) (e.Roots)> : e.ResultGraph
-    = t.IndirectFuncNode e.ResultGraph (e.Roots);
+      : e.EntryPoints2
+    = <Unique e.EntryPoints e.Indirects> : e.Roots
+    = <ReachableFunctions (e.Graph) (e.Roots)> : e.ResultGraph
+    = e.ResultGraph (e.Roots);
+}
+
+SeparateMetatables {
+  e.AST
+    = <MapAccum
+        {
+          (e.Metatables) t.Function
+            , t.Function : (Function s._ (e._) Metatable e._)
+            = (e.Metatables t.Function) /* пусто */;
+
+          (e.Metatables) t.Function
+            , t.Function : (Function s._ (e._) Sentences e._)
+            = (e.Metatables) t.Function;
+
+          (e.Metatables) t._ = (e.Metatables) /* пропускаем */;
+        }
+        (/* metatables */)
+        e.AST
+      >
+}
+
+MetatableReferences {
+  (Function s.ScopeClass (e.MetatableName) Metatable e.Metatable)
+    = <Map
+        {
+          (t.FuncName-Word (Symbol Name e.Name)) = (Call e.Name);
+        }
+        e.Metatable
+      >
+    : e.References
+    = ((e.MetatableName) s.ScopeClass e.References (INDIRECT));
+}
+
+FunctionReferences {
+  (Function s.ScopeClass (e.Name) Sentences e.Sentences)
+    = ((e.Name) s.ScopeClass <References-Body e.Sentences>)
+}
+
+References-Body {
+  e.Sentences
+    = <Map
+        {
+          ((e.Pattern) e.Conditions (e.Result))
+            = <Unique
+                <References-Expr e.Pattern>
+                <Map
+                  {
+                    (Condition (e._) (e.CondResult) (e.CondPattern))
+                      = <References-Expr e.CondResult>
+                        <References-Expr e.CondPattern>
+                  }
+                >
+                <References-Expr e.Result>
+              >
+        }
+        e.Sentences
+      >;
+}
+
+References-Expr {
+  e.Expression = <Map &References-Term e.Expression>
+}
+
+References-Term {
+  (CallBrackets (Symbol Name e.Name) e.Expr)
+    = (Call e.Name) <References-Expr e.Expr>;
+
+  (CallBrackets e.Expr) = (INDIRECT) <References-Expr e.Expr>;
+
+  (Symbol Name e.Name) = (Pointer e.Name);
+
+  (ADT-Brackets (e.Name) e.Expr) = <References-Expr e.Expr>;
+
+  (s.Brackets e.Expr)
+    , Brackets ClosureBrackets : e._ s.Brackets e._
+    = <References-Expr e.Expr>;
+
+  t.AnyOtherTerm = /* ничего интересного */;
+}
+
+InlineMetatableReferences {
+  e.Functions (e.Metatables)
+    = <Reduce
+        {
+          (e.Functions^) t.Metatable
+            = (<InlineOneMetatable e.Functions t.Metatable>)
+        }
+        (e.Functions) e.Metatables
+      >
+    : (e.Functions^)
+    = e.Functions;
+}
+
+InlineOneMetatable {
+  e.Functions-B
+  (
+    (e.Name) s.ScopeClass
+    e.References-B (Pointer e.MetatableName) e.References-E
+  )
+  e.Functions-E
+  t.Metatable
+    , t.Metatable : ((e.MetatableName) s._ e.MetatableReferences)
+    = e.Functions-B
+      (
+        (e.Name) s.ScopeClass
+        e.References-B e.MetatableReferences e.References-E
+      )
+      <InlineOneMetatable e.Functions-E t.Metatable>;
+
+  e.Functions t.Metatable = e.Functions;
+}
+
+SeparateIndirects {
+  e.Functions
+    = <MapAccum
+        {
+          (e.Indirects)
+          ((e.Name) s.ScopeClass e.References)
+
+            = <SeparateIndirects-References e.References>
+            : (e.FunctionIndirects) e.References^
+
+            = (e.Indirects e.FunctionIndirects)
+              ((e.Name) s.ScopeClass <Unique e.References>);
+        }
+        (/* indirects */)
+        e.Functions
+      >
+    : (e.Indirects) e.Functions^
+    = (<Unique e.Indirects>) e.Functions;
+}
+
+SeparateIndirects-References {
+  e.References
+    = <MapAccum
+        {
+          (e.Indirects) (Call e.Name) = (e.Indirects) (e.Name);
+          (e.Indirects) (Pointer e.Name) = (e.Indirects (e.Name)) /* удаляем */;
+          (e.Indirects) (INDIRECT) = (e.Indirects) INDIRECT;
+        }
+        (/* indirects */) e.References
+      >
+}
+
+InlineIndirects {
+  e.Functions-B
+  ((e.Name) s.ScopeClass e.Children-B INDIRECT e.Children-E)
+  e.Functions-E
+  (e.Indirects)
+    = e.Functions-B
+      ((e.Name) s.ScopeClass <Unique e.Children-B e.Indirects e.Children-E>)
+      <InlineIndirects e.Functions-E (e.Indirects)>;
+
+  e.Functions (e.Indirects) = e.Functions;
+}
+
+PrepareGraphFormat {
+  e.Functions
+    = <MapAccum
+        {
+          (e.EntryPoints) ((e.Name) s.ScopeClass e.Children)
+            = e.Name s.ScopeClass
+            : {
+                e._ GN-Entry = (e.Name);
+                e._ s._, ('INIT') ('FINAL') : e._ (e.Name) e._ = (e.Name);
+                e._ s._ = /* пропускаем */;
+              }
+            : e.NewEntryName
+            = (e.EntryPoints e.NewEntryName)
+              (Func (e.Name) Children (e.Children));
+        }
+        (/* entry points */) e.Functions
+      >
 }
 
 GetEntryPoints {

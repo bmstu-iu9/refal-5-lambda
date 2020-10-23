@@ -1,0 +1,7 @@
+$ENTRY Go {
+  = &Rec
+}
+
+Rec {
+  e.X = <Mu Rec e.X e.X>;
+}
