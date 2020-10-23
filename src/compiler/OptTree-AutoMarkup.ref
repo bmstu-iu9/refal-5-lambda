@@ -167,10 +167,6 @@ GetUpdatedWithDrivenFunctionsAst {
             , e.BasisVertexes : e._ (e.Name) e._
             = ;
 
-          (Inline e.Name)
-            , e.BasisVertexes : e._ (e.Name) e._
-            = ;
-
           t.Other
             = t.Other;
         }
