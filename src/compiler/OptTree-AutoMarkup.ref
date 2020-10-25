@@ -39,12 +39,9 @@ GetForbiddenToSpecializeFunctionNames {
           (Spec (e.Name) e.SpecPattern)
             = (e.Name);
 
+          /* экземпляры повторно не специализируем */
           (Function s.ScopeClass (e.FuncName) Sentences e.Body)
-            , (e.FuncName) : (e.FuncName '@' e.FuncNameTail)
-            = (e.FuncName);
-
-          (Function s.ScopeClass (e.FuncName) Sentences e.Body)
-            , (e.FuncName) : (e.FuncNameMain SUF e.FuncNameTail)
+            , (e.FuncName) : (e._ SUF e._ '@' s._ e._)
             = (e.FuncName);
 
           e.Other
