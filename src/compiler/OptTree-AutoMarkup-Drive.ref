@@ -16,6 +16,7 @@ $EXTERN OptTree-AutoMarkup-Contains,
 
 $ENTRY OptTree-AutoMarkup-Drive {
   e.AST
+    = <ForbiddenToDriveFunctions e.AST> : (e.Forbidden) e.AST^
     = <SeparateMetatables e.AST> : (e.Metatables) e.Functions
     = <Map &MetatableReferences e.Metatables> : e.MetatablesRef
     = <Map &FunctionReferences e.Functions> : e.FunctionsRef
@@ -29,7 +30,35 @@ $ENTRY OptTree-AutoMarkup-Drive {
     = <PrepareGraphFormat e.FunctionsRef> : (e.EntryPoints) e.Graph
 
     = <Unique e.EntryPoints e.Indirects> : e.Roots
-    = <BasicVertexes e.Graph (e.Roots)>;
+    = <BasicVertexes e.Graph (e.Roots)>
+    : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
+    = <SetDifference e.ToDrive (e.Forbidden)> : e.ToDrive^
+    = <UpdateAST e.AST (e.ToDrive) (e.Basics)>
+}
+
+ForbiddenToDriveFunctions {
+  e.AST
+    = <MapAccum
+        {
+          (e.Forbidden) (s.Label e.Name)
+            , Drive Inline Intrinsic : e._ s.Label e._
+            = (e.Forbidden (e.Name)) (s.Label e.Name);
+
+          (e.Forbidden) (Function s.Scope (e.FuncName) Sentences e.Body)
+            , (e.FuncName) : (e.Head '*' s.Num e.Tail)
+            = (e.Forbidden (e.FuncName))
+              (Function s.Scope (e.FuncName) Sentences e.Body);
+
+          (e.Forbidden) (Function s.Scope (e.FuncName) Sentences e.Body)
+            , <Lenw e.Body> : s.SentencesCount e.Body^
+            , <Compare s.SentencesCount 20> : '+'
+            = (e.Forbidden (e.FuncName))
+              (Function s.Scope (e.FuncName) Sentences e.Body);
+
+          (e.Forbidden) t.Other = (e.Forbidden) t.Other;
+        }
+        (/* forbidden list */) e.AST
+      >
 }
 
 SeparateMetatables {
@@ -289,4 +318,31 @@ DoBasicVertexes {
           e.Graph
         >
       );
+}
+
+SetDifference {
+  e.Set1-B t.Common e.Set1-E (e.Set2-B t.Common e.Set2-E)
+    = e.Set1-B <SetDifference e.Set1-E (e.Set2-B t.Common e.Set2-E)>;
+
+  e.Set1 (e.Set2) = e.Set1;
+}
+
+UpdateAST {
+  e.AST (e.FunctionsToDrive) (e.BasisVertexes)
+    = <Map
+        {
+          (Drive e.Name)
+            , e.BasisVertexes : e._ (e.Name) e._
+            = /* пропускаем */;
+
+          t.Other = t.Other;
+        }
+        e.AST
+      >
+      <Map
+        {
+          (e.FuncName) = (Drive e.FuncName);
+        }
+        e.FunctionsToDrive
+      >
 }

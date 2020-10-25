@@ -31,23 +31,7 @@ $ENTRY OptTree-AutoMarkup {
     = <FilterSpecPatterns e.SpecPatterns (e.ForbiddenSpecNames)>
     : e.SpecPatterns^
 
-    = <OptTree-AutoMarkup-Drive e.AST>
-      : (ToDrive e.DrivenFunctions)
-        (Basics e.BasisVertexes)
-        (Unreachable e.Unreachable)
-    = <GetForbiddenToDriveFunctions e.AST>
-      : e.ForbiddenToDriveFuncs
-    = <OptTree-AutoMarkup-GetSetDifference
-        (e.DrivenFunctions)
-        (e.ForbiddenToDriveFuncs)
-      >
-      : (e.FunctionToDrive)
-    = <GetUpdatedWithDrivenFunctionsAst
-        (e.AST)
-        (e.FunctionToDrive)
-        (e.BasisVertexes)
-      >
-      : e.DrivedAst
+    = <OptTree-AutoMarkup-Drive e.AST> : e.DrivedAst
     = e.DrivedAst e.SpecPatterns;
 }
 
@@ -82,63 +66,4 @@ FilterSpecPatterns {
         }
         e.SpecializableDict
       >
-}
-
-GetForbiddenToDriveFunctions {
-  e.AST
-    = <Map
-        {
-          (s.Label e.Name)
-            , <OptTree-AutoMarkup-Contains
-                (s.Label)
-                ((Drive)(Inline)(Intrinsic))
-              > : True
-            = (e.Name);
-
-          (Function s.Scope (e.FuncName) Sentences e.Body)
-            , (e.FuncName) : (e.Head '*' s.Num e.Tail)
-            = (e.FuncName);
-
-          (Function s.Scope (e.FuncName) Sentences e.Body)
-            = <Lenw e.Body>
-              : s.SentencesCount e.Body^
-            = <TermCompare s.SentencesCount 20>
-              : {
-                  '>'
-                    = (e.FuncName);
-
-                  e.Other
-                    = ;
-                };
-
-          e.Other
-            = ;
-        }
-        e.AST
-      >
-}
-
-GetUpdatedWithDrivenFunctionsAst {
-  (e.AST) (e.FunctionsToDrive) (e.BasisVertexes)
-    = <Map
-        {
-          (e.FuncName)
-            = (Drive e.FuncName);
-        }
-        e.FunctionsToDrive
-      >
-      : e.DrivedFunctions
-    = <Map
-        {
-          (Drive e.Name)
-            , e.BasisVertexes : e._ (e.Name) e._
-            = ;
-
-          t.Other
-            = t.Other;
-        }
-        e.AST
-      >
-      : e.ClearAST
-    = e.ClearAST e.DrivedFunctions;
 }
