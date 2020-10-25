@@ -1,10 +1,7 @@
 $INCLUDE "LibraryEx";
 
 *$FROM Log
-$EXTERN Log-PutLine, Log-AST;
-
-*$FROM DisplayName
-$EXTERN DisplayName;
+$EXTERN Log-PutLine;
 
 *$FROM OptTree-AutoMarkup-Drive
 $EXTERN OptTree-AutoMarkup-Drive;

@@ -6,9 +6,6 @@ $EXTERN GlobalGen;
 *$FROM GenericMatch
 $EXTERN GenericMatch;
 
-*$FROM Log
-$EXTERN Log-PutLine;
-
 *$FROM TreeUtils
 $EXTERN ExtractVariables-Expr;
 

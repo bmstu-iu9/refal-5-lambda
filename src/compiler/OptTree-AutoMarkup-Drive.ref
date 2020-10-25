@@ -1,8 +1,5 @@
 $INCLUDE "LibraryEx";
 
-*$FROM DisplayName
-$EXTERN DisplayName;
-
 /**
   <OptTree-AutoMarkup-Drive e.AST>
     == e.FunctionCallsGraph (e.RootSet)
