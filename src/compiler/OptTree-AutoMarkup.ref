@@ -9,8 +9,8 @@ $EXTERN DisplayName;
 *$FROM OptTree-AutoMarkup-Drive
 $EXTERN OptTree-AutoMarkup-Drive;
 
-*$FROM OptTree-AutoMarkup-SpecializableExtractor
-$EXTERN OptTree-AutoMarkup-GetSpecializableDict;
+*$FROM OptTree-AutoMarkup-Spec
+$EXTERN OptTree-AutoMarkup-Spec;
 
 
 /**
@@ -23,41 +23,7 @@ $ENTRY OptTree-AutoMarkup {
     = e.AST;
 
   OptAutoMarkup e.AST
-    = <OptTree-AutoMarkup-GetSpecializableDict e.AST> : e.SpecPatterns
-    = <GetForbiddenToSpecializeFunctionNames (e.AST)> : e.ForbiddenSpecNames
-    = <FilterSpecPatterns e.SpecPatterns (e.ForbiddenSpecNames)>
-    : e.SpecPatterns^
-
-    = <OptTree-AutoMarkup-Drive e.AST> : e.DrivedAst
-    = e.DrivedAst e.SpecPatterns;
-}
-
-GetForbiddenToSpecializeFunctionNames {
-  (e.AST)
-    = <Map
-        {
-          (Spec (e.Name) e.SpecPattern)
-            = (e.Name);
-
-          /* экземпляры повторно не специализируем */
-          (Function s.ScopeClass (e.FuncName) Sentences e.Body)
-            , (e.FuncName) : (e._ SUF e._ '@' s._ e._)
-            = (e.FuncName);
-
-          e.Other
-            = ;
-        }
-        e.AST
-      >
-}
-
-FilterSpecPatterns {
-  e.SpecializableDict (e.Forbidden)
-    = <Map
-        {
-          ((e.Name) e.Pattern), e.Forbidden : e._ (e.Name) e._ = /* пусто */;
-          ((e.Name) e.Pattern) = (Spec (e.Name) e.Pattern);
-        }
-        e.SpecializableDict
-      >
+    = <OptTree-AutoMarkup-Spec e.AST> : e.AST^
+    = <OptTree-AutoMarkup-Drive e.AST> : e.AST^
+    = e.AST;
 }
