@@ -29,8 +29,6 @@ $ENTRY OptTree-AutoMarkup-Drive {
     = <PrepareGraphFormat e.FunctionsRef> : (e.EntryPoints) e.Graph
 
     = <Unique e.EntryPoints e.Indirects> : e.Roots
-    = <BasicVertexes e.Graph (e.Roots)>
-    : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
     = <BasicVertexes e.Graph (e.Roots)>;
 }
 
