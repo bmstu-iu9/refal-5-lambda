@@ -12,9 +12,6 @@ $EXTERN OptTree-AutoMarkup-Drive;
 *$FROM OptTree-AutoMarkup-SpecializableExtractor
 $EXTERN OptTree-AutoMarkup-GetSpecializableDict;
 
-*$FROM OptTree-AutoMarkup-Common
-$EXTERN OptTree-AutoMarkup-Contains,
-        OptTree-AutoMarkup-GetSetDifference;
 
 /**
   <OptTree-AutoMarkup s.OptAutoMarkup e.AST> == e.AST
