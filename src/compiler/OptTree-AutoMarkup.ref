@@ -12,9 +12,6 @@ $EXTERN OptTree-AutoMarkup-ExtractFunctionCallsGraph;
 *$FROM OptTree-AutoMarkup-SpecializableExtractor
 $EXTERN OptTree-AutoMarkup-GetSpecializableDict;
 
-*$FROM OptTree-AutoMarkup-BasisVertexesExtractor
-$EXTERN OptTree-AutoMarkup-ExtractBasisVertexes;
-
 *$FROM OptTree-AutoMarkup-Common
 $EXTERN OptTree-AutoMarkup-Contains,
         OptTree-AutoMarkup-GetSetDifference;
@@ -35,14 +32,9 @@ $ENTRY OptTree-AutoMarkup {
     : e.SpecPatterns^
 
     = <OptTree-AutoMarkup-ExtractFunctionCallsGraph e.AST>
-      : e.ExtractedGraph (e.RootSet)
-    = <OptTree-AutoMarkup-ExtractBasisVertexes e.ExtractedGraph (e.RootSet)>
-      : (e.BasisVertexes) (e.ExtractedGraph^)
-    = <GetDrivenFunctions
-        (e.ExtractedGraph)
-        (e.BasisVertexes)
-      >
-      : e.DrivenFunctions
+      : (ToDrive e.DrivenFunctions)
+        (Basics e.BasisVertexes)
+        (Unreachable e.Unreachable)
     = <GetForbiddenToDriveFunctions e.AST>
       : e.ForbiddenToDriveFuncs
     = <OptTree-AutoMarkup-GetSetDifference
@@ -130,24 +122,6 @@ GetForbiddenToDriveFunctions {
             = ;
         }
         e.AST
-      >
-}
-
-GetDrivenFunctions {
-  (e.ExtractedGraph) (e.BasisVertexes)
-    = <Map
-        {
-          (Func (Indirect function for implicit calls) Children (e.Children))
-            = ;
-
-          (Func (e.FuncName) Children (e.Children))
-          , <OptTree-AutoMarkup-Contains (e.FuncName)(e.BasisVertexes)> : False
-            = (e.FuncName);
-
-          e.Other
-            = ;
-        }
-        e.ExtractedGraph
       >
 }
 

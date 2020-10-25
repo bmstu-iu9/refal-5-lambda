@@ -29,8 +29,9 @@ $ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
     = <PrepareGraphFormat e.FunctionsRef> : (e.EntryPoints) e.Graph
 
     = <Unique e.EntryPoints e.Indirects> : e.Roots
-    = <ReachableFunctions (e.Graph) (e.Roots)> : e.ResultGraph
-    = e.ResultGraph (e.Roots);
+    = <BasicVertexes e.Graph (e.Roots)>
+    : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
+    = <BasicVertexes e.Graph (e.Roots)>;
 }
 
 SeparateMetatables {
@@ -206,21 +207,88 @@ PrepareGraphFormat {
       >
 }
 
-ReachableFunctions {
-* Очередная функция ещё не анализировалась, она есть в графе.
-  (
-    e.Graph-B (Func (e.NextName) Children (e.Children)) e.Graph-E
-  )
-  ((e.NextName) e.Unscanned)
-    = (Func (e.NextName) Children (e.Children))
-      <ReachableFunctions (e.Graph-B e.Graph-E) (e.Children e.Unscanned)>;
+/*
+  <BasicVertexes e.Graph (e.Roots)>
+    == (ToDrive e.FuncNames) (Basics e.FuncNames) (Unreachable e.FuncNames)
+  e.FuncNames ::= (e.Name)*
+*/
+BasicVertexes {
+  e.Graph (e.Roots)
+    = <DoBasicVertexes
+        <MarkChildren e.Roots> (e.Graph) (/* to drive */) (/* basic */)
+      >;
+}
 
-* Очередная функция или уже просканирована (удалена из графа),
-* или не является функцией с предложениями.
-  (e.Graph) ((e.NextName) e.Unscanned)
-    = <ReachableFunctions (e.Graph) (e.Unscanned)>;
+MarkChildren {
+  e.FuncNames = <Map { (e.Name) = (Child e.Name) } e.FuncNames>
+}
 
-* Кончились несканированные функции.
-* То, что осталось в графе, недоступно из корня.
-  (e.Graph) (/* no unscanned */) = /* пусто */;
+/*
+  <DoBasicVertexes e.Stack (e.Graph) (e.ToDrive) (e.Basics)>
+
+  e.ToDrive, e.Basics ::= (e.Name)*
+  e.Stack ::= t.StackItem*
+  t.StackItem ::= (Child e.Name) | (Func e.Name)
+
+  Функция совершает обход графа в глубину.
+
+  На стек кладутся потомки функции, а также имя самой функции. Когда со стека
+  снимается потомок, и эта функция ещё не сканирована (есть в графе),
+  на стек кладутся потомки потомка и имя самого потомка. Когда все потомки
+  функции просканированы, на верхушке остаётся имя самой функции, которое
+  можно снять. Для алгоритма обхода в чистом виде имена функций на стеке
+  не так уж и важны, они нужны для маркировки прогоняемых и базисных функций.
+
+  Интересно получается с базисными вершинами. Базисная вершина — это вершина,
+  в которую ведёт стрелка от потомка. Поэтому если на стеке есть имя функции,
+  совпадающей с очередным потомком, эта функция базисная. Вырезаем её
+  из стека и запоминаем как базисную. Если на вершине стека обнаружилось
+  имя функции, это значит, что ссылки из потомков на неё не было, она
+  не является базисной и пригодна для прогонки.
+
+  В графе находятся только функции с предложениями. Все имена функций из графа,
+  достижимые из корней, кладутся на стек (включая корни). Любое имя, оказавшееся
+  на стеке, либо переносится в карман базисных, либо прогоняемых. Функции,
+  оставшиеся в графе, являются недостижимыми. Таким образом, множество функций
+  из графа разбивается на три подмножества: базисные, прогоняемые
+  и недостижимые.
+*/
+DoBasicVertexes {
+* Базисная вершина, удаляем пометку функции со стека.
+  (Child e.BasicName) e.Stack-B (Func e.BasicName) e.Stack-E
+  (e.Graph) (e.ToDrive) (e.Basics)
+    = <DoBasicVertexes
+        e.Stack-B e.Stack-E (e.Graph) (e.ToDrive) (e.Basics (e.BasicName))
+      >;
+
+* Обычная вершина.
+  (Child e.FuncName) e.Stack
+  (e.Graph-B (Func (e.FuncName) Children (e.Children)) e.Graph-E)
+  (e.ToDrive) (e.Basics)
+    = <DoBasicVertexes
+        <MarkChildren e.Children> (Func e.FuncName) e.Stack
+        (e.Graph-B e.Graph-E) (e.ToDrive) (e.Basics)
+      >;
+
+* Уже просканированная вершина или вызов внешней функции.
+  (Child e._) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
+    = <DoBasicVertexes e.Stack (e.Graph) (e.ToDrive) (e.Basics)>;
+
+* Всех детей функции просканировали.
+* Если сама метка функции не удалена со стека, значит она не была базисной.
+  (Func e.FuncName) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
+    = <DoBasicVertexes e.Stack (e.Graph) (e.ToDrive (e.FuncName)) (e.Basics)>;
+
+* Все функции просканировали.
+  /* пустой стек */ (e.Graph) (e.ToDrive) (e.Basics)
+    = (ToDrive e.ToDrive)
+      (Basics e.Basics)
+      (Unreachable
+        <Map
+          {
+            (Func (e.Name) Children (e._)) = (e.Name)
+          }
+          e.Graph
+        >
+      );
 }

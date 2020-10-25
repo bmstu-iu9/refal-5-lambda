@@ -5,3 +5,5 @@ $ENTRY Go {
 Rec {
   e.X = <Mu Rec e.X e.X>;
 }
+
+$SPEC Rec e.dyn;
