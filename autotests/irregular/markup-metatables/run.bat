@@ -2,6 +2,7 @@
 
 call :CLEANUP
 call :RUN_TEST test-Rec-Mu || exit /b 0
+call :RUN_TEST test-Mu-Rec || exit /b 0
 exit /b 0
 
 :RUN_TEST

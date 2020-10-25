@@ -9,7 +9,8 @@ $INCLUDE "LibraryEx";
 
 $ENTRY OptTree-AutoMarkup-Drive {
   e.AST
-    = <ForbiddenToDriveFunctions e.AST> : (e.Forbidden) e.AST^
+    = <ForbiddenToDriveAndInlineFunctions e.AST>
+    : ((e.Forbidden) (e.Inlines)) e.AST^
     = <SeparateMetatables e.AST> : (e.Metatables) e.Functions
     = <Map &MetatableReferences e.Metatables> : e.MetatablesRef
     = <Map &FunctionReferences e.Functions> : e.FunctionsRef
@@ -20,6 +21,10 @@ $ENTRY OptTree-AutoMarkup-Drive {
     = <SeparateIndirects e.FunctionsRef> : (e.Indirects) e.FunctionsRef^
     = <InlineIndirects e.FunctionsRef (e.Indirects)> : e.FunctionsRef^
 
+    = <SeparateInlineReferences e.FunctionsRef (e.Inlines)>
+    : (e.InlinesRef) e.FunctionsRef^
+    = <InlineInlineReferences e.FunctionsRef (e.InlinesRef)> : e.FunctionsRef^
+
     = <PrepareGraphFormat e.FunctionsRef> : (e.EntryPoints) e.Graph
 
     = <Unique e.EntryPoints e.Indirects> : e.Roots
@@ -29,28 +34,37 @@ $ENTRY OptTree-AutoMarkup-Drive {
     = <UpdateAST e.AST (e.ToDrive) (e.Basics)>
 }
 
-ForbiddenToDriveFunctions {
+ForbiddenToDriveAndInlineFunctions {
   e.AST
     = <MapAccum
         {
-          (e.Forbidden) (s.Label e.Name)
-            , Drive Inline Intrinsic : e._ s.Label e._
-            = (e.Forbidden (e.Name)) (s.Label e.Name);
+          ((e.Forbidden) (e.Inlines))
+          (Inline e.Name)
+            = ((e.Forbidden (e.Name)) (e.Inlines (e.Name)))
+              (Inline e.Name);
 
-          (e.Forbidden) (Function s.Scope (e.FuncName) Sentences e.Body)
+          ((e.Forbidden) (e.Inlines))
+          (s.Label e.Name)
+            , Drive Intrinsic : e._ s.Label e._
+            = ((e.Forbidden (e.Name)) (e.Inlines)) (s.Label e.Name);
+
+          ((e.Forbidden) (e.Inlines))
+          (Function s.Scope (e.FuncName) Sentences e.Body)
             , (e.FuncName) : (e.Head '*' s.Num e.Tail)
-            = (e.Forbidden (e.FuncName))
+            = ((e.Forbidden (e.FuncName)) (e.Inlines))
               (Function s.Scope (e.FuncName) Sentences e.Body);
 
-          (e.Forbidden) (Function s.Scope (e.FuncName) Sentences e.Body)
+          ((e.Forbidden) (e.Inlines))
+          (Function s.Scope (e.FuncName) Sentences e.Body)
             , <Lenw e.Body> : s.SentencesCount e.Body^
             , <Compare s.SentencesCount 20> : '+'
-            = (e.Forbidden (e.FuncName))
+            = ((e.Forbidden (e.FuncName)) (e.Inlines))
               (Function s.Scope (e.FuncName) Sentences e.Body);
 
-          (e.Forbidden) t.Other = (e.Forbidden) t.Other;
+          ((e.Forbidden) (e.Inlines)) t.Other
+            = ((e.Forbidden) (e.Inlines)) t.Other;
         }
-        (/* forbidden list */) e.AST
+        ((/* forbidden list */) (/* inlines */)) e.AST
       >
 }
 
@@ -162,6 +176,57 @@ InlineOneMetatable {
       <InlineOneMetatable e.Functions-E t.Metatable>;
 
   e.Functions t.Metatable = e.Functions;
+}
+
+SeparateInlineReferences {
+  e.Functions (e.Inlines)
+    = <MapAccum
+        {
+          (e.InlinesRef) t.Reference
+            , t.Reference : ((e.Name) s.ScopeClass e.References)
+            , e.Inlines : e._ (e.Name) e._
+            = (e.InlinesRef t.Reference) t.Reference;
+
+          (e.InlinesRef) t.Reference = (e.InlinesRef) t.Reference;
+        }
+        (/* inlines references */) e.Functions
+      >
+}
+
+InlineInlineReferences {
+  e.Functions (e.Inlines)
+    = <InlineInlineReferences-Pass e.Functions (e.Inlines)>
+    : {
+        e.Functions /* same */ = e.Functions;
+
+        e.Functions^ = <InlineInlineReferences e.Functions (e.Inlines)>;
+      }
+}
+
+InlineInlineReferences-Pass {
+  e.Functions (e.Inlines)
+    = <Map
+        {
+          ((e.Name) s.ScopeClass e.References)
+            = <AugmentReferences e.References (e.Inlines)> : (e.References^)
+            = ((e.Name) s.ScopeClass e.References);
+        }
+        e.Functions
+      >
+}
+
+AugmentReferences {
+  e.References (e.Inlines)
+    = <Reduce
+        {
+          (e.References^) ((e.Name) s.ScopeClass e.InlineChilden)
+            , e.References : e._ (e.Name) e._
+            = (e.References <SetDifference e.InlineChilden (e.References)>);
+
+          (e.References^) t.InlineNode = (e.References);
+        }
+        (e.References) e.Inlines
+      >
 }
 
 SeparateIndirects {

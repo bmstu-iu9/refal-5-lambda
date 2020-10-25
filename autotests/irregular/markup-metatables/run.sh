@@ -29,3 +29,4 @@ run_test() {
 
 cleanup
 run_test test-Rec-Mu
+run_test test-Mu-Rec
