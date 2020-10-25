@@ -8,13 +8,13 @@ $EXTERN OptTree-AutoMarkup-Contains,
         OptTree-AutoMarkup-GetElemByKey;
 
 /**
-  <OptTree-AutoMarkup-ExtractFunctionCallsGraph e.AST>
+  <OptTree-AutoMarkup-Drive e.AST>
     == e.FunctionCallsGraph (e.RootSet)
 
   e.RootSet ::= (e.FuncName)*
 */
 
-$ENTRY OptTree-AutoMarkup-ExtractFunctionCallsGraph {
+$ENTRY OptTree-AutoMarkup-Drive {
   e.AST
     = <SeparateMetatables e.AST> : (e.Metatables) e.Functions
     = <Map &MetatableReferences e.Metatables> : e.MetatablesRef

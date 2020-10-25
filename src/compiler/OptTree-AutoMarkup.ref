@@ -6,8 +6,8 @@ $EXTERN Log-PutLine, Log-AST;
 *$FROM DisplayName
 $EXTERN DisplayName;
 
-*$FROM OptTree-AutoMarkup-GraphExtractor
-$EXTERN OptTree-AutoMarkup-ExtractFunctionCallsGraph;
+*$FROM OptTree-AutoMarkup-Drive
+$EXTERN OptTree-AutoMarkup-Drive;
 
 *$FROM OptTree-AutoMarkup-SpecializableExtractor
 $EXTERN OptTree-AutoMarkup-GetSpecializableDict;
@@ -31,7 +31,7 @@ $ENTRY OptTree-AutoMarkup {
     = <FilterSpecPatterns e.SpecPatterns (e.ForbiddenSpecNames)>
     : e.SpecPatterns^
 
-    = <OptTree-AutoMarkup-ExtractFunctionCallsGraph e.AST>
+    = <OptTree-AutoMarkup-Drive e.AST>
       : (ToDrive e.DrivenFunctions)
         (Basics e.BasisVertexes)
         (Unreachable e.Unreachable)
