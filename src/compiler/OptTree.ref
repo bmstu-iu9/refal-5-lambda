@@ -32,95 +32,55 @@ $ENTRY OptTree {
     = <Config-GetOptIntrinsic t.Config> : s.OptIntrinsic
 
     = (s.OptDrive s.OptIntrinsic) : t.OptDrive
-    = <OptTree-Aux s.Cycles t.OptDrive s.OptSpec s.OptAutoMarkup e.AST>
-    : s.Cycles^ e.AST^
-    = <OptTree-CleanupMarkup e.AST>;
-}
-
-OptTree-Aux {
-  s.Cycles t.OptDrive s.OptSpec NoOpt e.AST
-    = <DriveSpecLoop s.Cycles t.OptDrive s.OptSpec e.AST>;
-
-  s.Cycles t.OptDrive s.OptSpec s.OptAutoMarkup e.AST
-    = <DoOptTree s.Cycles t.OptDrive s.OptSpec s.OptAutoMarkup e.AST>;
-}
-
-DoOptTree {
-  0 t.OptDrive s.OptSpec s.OptAutoMarkup e.AST = 0 e.AST;
-
-  s.Cycles t.OptDrive s.OptSpec s.OptAutoMarkup e.AST
-    = <Log-AST ('Pass ' <Symb s.Cycles> ' (before Auto markup)') e.AST> : e.AST^
-    = e.AST : e.OriginAST
-
-    = <OptTree-AutoMarkup s.OptAutoMarkup e.AST> : e.AST^
-    = <Dec s.Cycles> : s.Cycles^
-
-    = <DriveSpecLoop s.Cycles t.OptDrive s.OptSpec e.AST> : s.Cycles^ e.AST^
-
-    = e.AST
+    = t.OptDrive
     : {
-        e.OriginAST = s.Cycles e.OriginAST;
-        e.AST^ = <DoOptTree s.Cycles t.OptDrive s.OptSpec s.OptAutoMarkup e.AST>;
+        (NoOpt NoOpt) = NoOpt;
+        t.OptFlags = t.OptFlags;
       }
-}
+    : t.OptDriveFlags
 
-DriveSpecLoop {
-  s.Cycles t.OptDrive NoOpt e.AST
-    = <OptTree-Drive-Prepare t.OptDrive e.AST> : e.AST^
-    = <DriveLoop s.Cycles t.OptDrive e.AST>;
+    = <Int
+        (define OptTree-Aux
+          (if s.OptAutoMarkup
+            (loop-for-fix-point
+              (trace 'before Auto markup')
+              (pass &OptTree-AutoMarkup s.OptAutoMarkup)
+              (DriveSpecLoop))
+            (DriveSpecLoop))
+          (call &OptTree-CleanupMarkup))
 
-  s.Cycles t.OptDrive s.OptSpec e.AST
-    = <OptTree-Drive-Prepare t.OptDrive e.AST> : e.AST^
-    = <OptTree-Spec-Prepare s.OptSpec e.AST> : e.AST^
-    = <DoDriveSpecLoop s.Cycles t.OptDrive s.OptSpec e.AST> : s.Cycles^ e.AST^
-    = s.Cycles <OptTree-Spec-CleanupColdFunctions e.AST>;
-}
+        (define DriveSpecLoop
+          (if s.OptSpec
+            (begin
+              (call &OptTree-Drive-Prepare t.OptDrive)
+              (call &OptTree-Spec-Prepare s.OptSpec)
+              (loop-for-fix-point
+                (DriveLoop)
+                (SpecPass))
+              (call &OptTree-Spec-CleanupColdFunctions))
+            (begin
+              (call &OptTree-Drive-Prepare t.OptDrive)
+              (DriveLoop))))
 
-DoDriveSpecLoop {
-  0 t.OptDrive s.OptSpec e.AST = 0 e.AST;
+        (define DriveLoop
+          (if t.OptDriveFlags
+            (begin
+              (loop-for-fix-point
+                (trace 'before Drive')
+                (call &ExpandClosures)
+                (pass &OptTree-Drive t.OptDrive))
+              (call &OptTree-Drive-CleanupColdCalls))
+            (call &ExpandClosures)))
 
-  s.Cycles t.OptDrive s.OptSpec e.AST
-    = e.AST : e.OriginAST
-    = <DriveLoop s.Cycles t.OptDrive e.AST> : s.Cycles^ e.AST^
-    = <SpecPass s.Cycles s.OptSpec e.AST> : s.Cycles^ e.AST^
-    = e.AST
-    : {
-        e.OriginAST = s.Cycles e.OriginAST;
-        e.AST^ = <DoDriveSpecLoop s.Cycles t.OptDrive s.OptSpec e.AST>;
-      }
-}
+        (define SpecPass
+          (on-cycles
+            (trace 'before Spec')
+            (pass &OptTree-Spec s.OptSpec)))
 
-DriveLoop {
-  s.Cycles (NoOpt NoOpt) e.AST
-    = s.Cycles <ExpandClosures e.AST>;
+        (OptTree-Aux)
 
-  s.Cycles t.OptDrive e.AST
-    = <DoDriveLoop s.Cycles t.OptDrive e.AST> : s.Cycles^ e.AST^
-    = s.Cycles <OptTree-Drive-CleanupColdCalls e.AST>;
-}
-
-DoDriveLoop {
-  0 t.OptDrive e.AST = 0 e.AST;
-
-  s.Cycles t.OptDrive e.AST
-    = <Log-AST ('Pass ' <Symb s.Cycles> ' (before Drive)') e.AST> : e.AST^
-    = e.AST : e.OriginAST
-    = <ExpandClosures e.AST> : e.AST^
-    = <OptTree-Drive t.OptDrive e.AST> : e.AST^
-    = <Dec s.Cycles> : s.Cycles^
-    = e.AST
-    : {
-        e.OriginAST = s.Cycles e.OriginAST;
-        e.AST^ = <DoDriveLoop s.Cycles t.OptDrive e.AST>;
-      };
-}
-
-SpecPass {
-  0 s.OptSpec e.AST = 0 e.AST;
-
-  s.Cycles s.OptSpec e.AST
-    = <Log-AST ('Pass ' <Symb s.Cycles> ' (before Spec)') e.AST> : e.AST^
-    = <Dec s.Cycles> <OptTree-Spec s.OptSpec e.AST>
+        s.Cycles (e.AST)
+      >
 }
 
 
@@ -209,4 +169,98 @@ ExpandClusures-ResultTerm {
   */
 
   t.OtherTerm = t.OtherTerm;
+}
+
+* Интерпретатор императивного кода оптимизаций
+
+
+* TODO: удалить следующие пометки после оптимизации алгоритма оптимизации!
+* Сейчас компиляция в режиме -OADiS для этого файла требует десятки минут.
+$SPEC Int-Code e.arg;
+$SPEC Int-Command e.arg;
+$SPEC Int-FixPoint e.arg;
+
+
+Int {
+  e.Code s.Cycles (e.AST)
+    = <Int-Code (/* defines */) e.Code s.Cycles (e.AST)> : s.Cycles^ e.AST^
+    = e.AST
+}
+
+Int-Code {
+  (e.Defines) e.Code s.Cycles (e.AST)
+    = e.Code
+    : {
+        (define s.ProcName e.Body) e.Code^
+          = <Int-Code ((s.ProcName e.Body) e.Defines) e.Code s.Cycles (e.AST)>;
+
+        t.Command e.Code^
+          = <Int-Command (e.Defines) t.Command s.Cycles (e.AST)>
+          : s.Cycles^ e.AST^
+          = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)>;
+
+        /* empty */ = s.Cycles e.AST;
+      }
+}
+
+Int-Command {
+  (e.Defines) (e.Command) s.Cycles (e.AST)
+    = e.Command
+    : {
+        on-cycles e.Code
+          = s.Cycles
+          : {
+              0 = 0 e.AST;
+              s._ = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)>;
+            };
+
+        if NoOpt t.Then t.Else
+          = <Int-Command (e.Defines) t.Else s.Cycles (e.AST)>;
+
+        if t.Opt t.Then t.Else
+          = <Int-Command (e.Defines) t.Then s.Cycles (e.AST)>;
+
+        begin e.Code
+          = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)>;
+
+        call s.Func e.Args
+          = s.Cycles <s.Func e.Args e.AST>;
+
+        pass s.Func e.Args
+          = <Dec s.Cycles> : s.Cycles^
+          = s.Cycles <s.Func e.Args e.AST>;
+
+        trace e.Message
+          = <Log-AST ('Pass ' <Symb s.Cycles> ' (' e.Message ')') e.AST> : e.AST^
+          = s.Cycles e.AST;
+
+        loop-for-fix-point e.Code
+          = <Int-FixPoint (e.Defines) e.Code s.Cycles (e.AST)>;
+
+        s.Proc
+          = <Int-Lookup s.Proc e.Defines> : e.Code
+          = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)>;
+      }
+}
+
+Int-FixPoint {
+  (e.Defines) e.Code 0 (e.AST) = 0 e.AST;
+
+  (e.Defines) e.Code s.Cycles (e.AST)
+    = e.AST : e.OriginAST
+
+    = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)> : s.Cycles^ e.AST^
+
+    = e.AST
+    : {
+        e.OriginAST = s.Cycles e.OriginAST;
+        e.AST^ = <Int-FixPoint (e.Defines) e.Code s.Cycles (e.AST)>;
+      };
+}
+
+$INLINE Int-Lookup;
+
+Int-Lookup {
+  s.ProcName (s.ProcName e.Body) e._ = e.Body;
+  s.ProcName t._ e.Defines = <Int-Lookup s.ProcName e.Defines>;
 }
