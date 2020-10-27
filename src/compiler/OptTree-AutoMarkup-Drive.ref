@@ -137,6 +137,9 @@ References-Term {
   (CallBrackets (Symbol Name e.Name) e.Expr)
     = (Call e.Name) <References-Expr e.Expr>;
 
+  (CallBrackets (ClosureBrackets (Symbol Name e.Name) e.Context) e.Expr)
+    = (Call e.Name) <References-Expr e.Context> <References-Expr e.Expr>;
+
   (CallBrackets e.Expr) = (INDIRECT) <References-Expr e.Expr>;
 
   (Symbol Name e.Name) = (Pointer e.Name);
