@@ -5,7 +5,7 @@ $EXTERN Config-GetTreeOptCycles, Config-GetOptDrive, Config-GetOptSpec,
   Config-GetOptAutoMarkup, Config-GetOptIntrinsic;
 
 *$FROM OptTree-AutoMarkup
-$EXTERN OptTree-AutoMarkup, OptTree-AutoMarkup-CleanupTags;
+$EXTERN OptTree-AutoMarkup;
 
 *$FROM OptTree-Drive
 $EXTERN OptTree-Drive-Prepare, OptTree-Drive, OptTree-Drive-CleanupColdCalls;
@@ -14,10 +14,7 @@ $EXTERN OptTree-Drive-Prepare, OptTree-Drive, OptTree-Drive-CleanupColdCalls;
 $EXTERN OptTree-Spec-Prepare, OptTree-Spec, OptTree-Spec-CleanupColdFunctions;
 
 *$FROM Log
-$EXTERN Log-PutLine, Log-AST;
-
-*$FROM DisplayName
-$EXTERN DisplayName;
+$EXTERN Log-AST;
 
 
 /**
