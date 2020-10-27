@@ -9,8 +9,7 @@ $INCLUDE "LibraryEx";
 
 $ENTRY OptTree-AutoMarkup-Drive {
   e.AST
-    = <ForbiddenToDriveAndInlineFunctions e.AST>
-    : ((e.Forbidden) (e.Inlines)) e.AST^
+    = <MetaInfo e.AST> : ((e.Forbidden) (e.Inlines) (e.UserdefDrives)) e.AST^
     = <SeparateMetatables e.AST> : (e.Metatables) e.Functions
     = <Map &MetatableReferences e.Metatables> : e.MetatablesRef
     = <Map &FunctionReferences e.Functions> : e.FunctionsRef
@@ -30,41 +29,46 @@ $ENTRY OptTree-AutoMarkup-Drive {
     = <Unique e.EntryPoints e.Indirects> : e.Roots
     = <BasicVertexes e.Graph (e.Roots)>
     : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
-    = <SetDifference e.ToDrive (e.Forbidden)> : e.ToDrive^
+    = <SetDifference e.ToDrive (e.Forbidden e.UserdefDrives)> : e.ToDrive^
     = <UpdateAST e.AST (e.ToDrive) (e.Basics)>
 }
 
-ForbiddenToDriveAndInlineFunctions {
+MetaInfo {
   e.AST
     = <MapAccum
         {
-          ((e.Forbidden) (e.Inlines))
+          ((e.Forbidden) (e.Inlines) (e.Drives))
           (Inline e.Name)
-            = ((e.Forbidden (e.Name)) (e.Inlines (e.Name)))
+            = ((e.Forbidden (e.Name)) (e.Inlines (e.Name)) (e.Drives))
               (Inline e.Name);
 
-          ((e.Forbidden) (e.Inlines))
-          (s.Label e.Name)
-            , Drive Intrinsic : e._ s.Label e._
-            = ((e.Forbidden (e.Name)) (e.Inlines)) (s.Label e.Name);
+          ((e.Forbidden) (e.Inlines) (e.Drives))
+          (Drive e.Name)
+            = ((e.Forbidden) (e.Inlines) (e.Drives (e.Name)))
+              (Drive e.Name);
 
-          ((e.Forbidden) (e.Inlines))
+          ((e.Forbidden) (e.Inlines) (e.Drives))
+          (Intrinsic e.Name)
+            = ((e.Forbidden (e.Name)) (e.Inlines) (e.Drives))
+              (Intrinsic e.Name);
+
+          ((e.Forbidden) (e.Inlines) (e.Drives))
           (Function s.Scope (e.FuncName) Sentences e.Body)
             , (e.FuncName) : (e.Head '*' s.Num e.Tail)
-            = ((e.Forbidden (e.FuncName)) (e.Inlines))
+            = ((e.Forbidden (e.FuncName)) (e.Inlines) (e.Drives))
               (Function s.Scope (e.FuncName) Sentences e.Body);
 
-          ((e.Forbidden) (e.Inlines))
+          ((e.Forbidden) (e.Inlines) (e.Drives))
           (Function s.Scope (e.FuncName) Sentences e.Body)
             , <Lenw e.Body> : s.SentencesCount e.Body^
             , <Compare s.SentencesCount 20> : '+'
-            = ((e.Forbidden (e.FuncName)) (e.Inlines))
+            = ((e.Forbidden (e.FuncName)) (e.Inlines) (e.Drives))
               (Function s.Scope (e.FuncName) Sentences e.Body);
 
-          ((e.Forbidden) (e.Inlines)) t.Other
-            = ((e.Forbidden) (e.Inlines)) t.Other;
+          ((e.Forbidden) (e.Inlines) (e.Drives)) t.Other
+            = ((e.Forbidden) (e.Inlines) (e.Drives)) t.Other;
         }
-        ((/* forbidden list */) (/* inlines */)) e.AST
+        ((/* forbidden list */) (/* inlines */) (/* drives */)) e.AST
       >
 }
 
