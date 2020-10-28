@@ -4,8 +4,8 @@ $INCLUDE "LibraryEx";
 $EXTERN Config-GetTreeOptCycles, Config-GetOptDrive, Config-GetOptSpec,
   Config-GetOptAutoMarkup, Config-GetOptIntrinsic;
 
-*$FROM OptTree-AutoMarkup
-$EXTERN OptTree-AutoMarkup;
+*$FROM OptTree-AutoMarkup-Spec
+$EXTERN OptTree-AutoMarkup-Spec;
 
 *$FROM OptTree-AutoMarkup-Drive
 $EXTERN OptTree-AutoMarkup-Drive;
@@ -47,7 +47,7 @@ $ENTRY OptTree {
           (if s.OptAutoMarkup
             (begin
               (trace 'before Auto markup')
-              (pass &OptTree-AutoMarkup s.OptAutoMarkup)
+              (pass &OptTree-AutoMarkup)
               (DriveSpecLoop)
               (trace 'before Driving transient instances')
               (pass &OptTree-AutoMarkup-Drive)
@@ -83,6 +83,13 @@ $ENTRY OptTree {
 
         s.Cycles (e.AST)
       >
+}
+
+OptTree-AutoMarkup {
+  e.AST
+    = <OptTree-AutoMarkup-Spec e.AST> : e.AST^
+    = <OptTree-AutoMarkup-Drive e.AST> : e.AST^
+    = e.AST;
 }
 
 
