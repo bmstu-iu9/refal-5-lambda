@@ -40,7 +40,7 @@ $ENTRY OptTree {
     : t.OptDriveFlags
 
     = <Int
-        (define OptTree-Aux
+        (define main
           (if s.OptAutoMarkup
             (loop-for-fix-point
               (trace 'before Auto markup')
@@ -56,7 +56,9 @@ $ENTRY OptTree {
               (call &OptTree-Spec-Prepare s.OptSpec)
               (loop-for-fix-point
                 (DriveLoop)
-                (SpecPass))
+                (on-cycles
+                  (trace 'before Spec')
+                  (pass &OptTree-Spec s.OptSpec)))
               (call &OptTree-Spec-CleanupColdFunctions))
             (begin
               (call &OptTree-Drive-Prepare t.OptDrive)
@@ -71,13 +73,6 @@ $ENTRY OptTree {
                 (pass &OptTree-Drive t.OptDrive))
               (call &OptTree-Drive-CleanupColdCalls))
             (call &ExpandClosures)))
-
-        (define SpecPass
-          (on-cycles
-            (trace 'before Spec')
-            (pass &OptTree-Spec s.OptSpec)))
-
-        (OptTree-Aux)
 
         s.Cycles (e.AST)
       >
@@ -182,8 +177,9 @@ $SPEC Int-FixPoint e.arg;
 
 
 Int {
-  e.Code s.Cycles (e.AST)
-    = <Int-Code (/* defines */) e.Code s.Cycles (e.AST)> : s.Cycles^ e.AST^
+  e.Defines s.Cycles (e.AST)
+    = e.Defines : (define s.StartPoint e._) e._
+    = <Int-Code (e.Defines) (s.StartPoint) s.Cycles (e.AST)> : s.Cycles^ e.AST^
     = e.AST
 }
 
@@ -191,9 +187,6 @@ Int-Code {
   (e.Defines) e.Code s.Cycles (e.AST)
     = e.Code
     : {
-        (define s.ProcName e.Body) e.Code^
-          = <Int-Code ((s.ProcName e.Body) e.Defines) e.Code s.Cycles (e.AST)>;
-
         t.Command e.Code^
           = <Int-Command (e.Defines) t.Command s.Cycles (e.AST)>
           : s.Cycles^ e.AST^
@@ -261,6 +254,6 @@ Int-FixPoint {
 $INLINE Int-Lookup;
 
 Int-Lookup {
-  s.ProcName (s.ProcName e.Body) e._ = e.Body;
+  s.ProcName (define s.ProcName e.Body) e._ = e.Body;
   s.ProcName t._ e.Defines = <Int-Lookup s.ProcName e.Defines>;
 }
