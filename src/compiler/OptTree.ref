@@ -46,11 +46,13 @@ $ENTRY OptTree {
         (define main
           (if s.OptAutoMarkup
             (begin
-              (trace 'before Auto markup')
-              (pass &OptTree-AutoMarkup)
+              (on-cycles
+                (trace 'before Auto markup')
+                (pass &OptTree-AutoMarkup))
               (DriveSpecLoop)
-              (trace 'before Driving transient instances')
-              (pass &OptTree-AutoMarkup-Drive)
+              (on-cycles
+                (trace 'before Driving transient instances')
+                (pass &OptTree-AutoMarkup-Drive))
               (call &OptTree-Drive-Prepare t.OptDrive)
               (DriveLoop))
             (DriveSpecLoop))
