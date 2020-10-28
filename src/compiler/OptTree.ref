@@ -7,6 +7,9 @@ $EXTERN Config-GetTreeOptCycles, Config-GetOptDrive, Config-GetOptSpec,
 *$FROM OptTree-AutoMarkup
 $EXTERN OptTree-AutoMarkup;
 
+*$FROM OptTree-AutoMarkup-Drive
+$EXTERN OptTree-AutoMarkup-Drive;
+
 *$FROM OptTree-Drive
 $EXTERN OptTree-Drive-Prepare, OptTree-Drive, OptTree-Drive-CleanupColdCalls;
 
@@ -42,10 +45,14 @@ $ENTRY OptTree {
     = <Int
         (define main
           (if s.OptAutoMarkup
-            (loop-for-fix-point
+            (begin
               (trace 'before Auto markup')
               (pass &OptTree-AutoMarkup s.OptAutoMarkup)
-              (DriveSpecLoop))
+              (DriveSpecLoop)
+              (trace 'before Driving transient instances')
+              (pass &OptTree-AutoMarkup-Drive)
+              (call &OptTree-Drive-Prepare t.OptDrive)
+              (DriveLoop))
             (DriveSpecLoop))
           (call &OptTree-CleanupMarkup))
 
