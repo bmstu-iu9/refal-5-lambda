@@ -46,13 +46,14 @@ $ENTRY OptTree {
         (define main
           (if s.OptAutoMarkup
             (begin
-              (on-cycles
+              (pass
                 (trace 'before Auto markup')
-                (pass &OptTree-AutoMarkup))
+                (call &OptTree-AutoMarkup-Spec)
+                (call &OptTree-AutoMarkup-Drive))
               (DriveSpecLoop)
-              (on-cycles
+              (pass
                 (trace 'before Driving transient instances')
-                (pass &OptTree-AutoMarkup-Drive))
+                (call &OptTree-AutoMarkup-Drive))
               (call &OptTree-Drive-Prepare t.OptDrive)
               (DriveLoop))
             (DriveSpecLoop))
@@ -65,9 +66,9 @@ $ENTRY OptTree {
               (call &OptTree-Spec-Prepare s.OptSpec)
               (loop-for-fix-point
                 (DriveLoop)
-                (on-cycles
+                (pass
                   (trace 'before Spec')
-                  (pass &OptTree-Spec s.OptSpec)))
+                  (call &OptTree-Spec s.OptSpec)))
               (call &OptTree-Spec-CleanupColdFunctions))
             (begin
               (call &OptTree-Drive-Prepare t.OptDrive)
@@ -77,21 +78,15 @@ $ENTRY OptTree {
           (if t.OptDriveFlags
             (begin
               (loop-for-fix-point
-                (trace 'before Drive')
-                (call &ExpandClosures)
-                (pass &OptTree-Drive t.OptDrive))
+                (pass
+                  (trace 'before Drive')
+                  (call &ExpandClosures)
+                  (call &OptTree-Drive t.OptDrive)))
               (call &OptTree-Drive-CleanupColdCalls))
             (call &ExpandClosures)))
 
         s.Cycles (e.AST)
       >
-}
-
-OptTree-AutoMarkup {
-  e.AST
-    = <OptTree-AutoMarkup-Spec e.AST> : e.AST^
-    = <OptTree-AutoMarkup-Drive e.AST> : e.AST^
-    = e.AST;
 }
 
 
@@ -216,11 +211,14 @@ Int-Command {
   (e.Defines) (e.Command) s.Cycles (e.AST)
     = e.Command
     : {
-        on-cycles e.Code
+        pass e.Code
           = s.Cycles
           : {
               0 = 0 e.AST;
-              s._ = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)>;
+
+              s._
+                = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)> : s.Cycles^ e.AST^
+                = <Dec s.Cycles> e.AST;
             };
 
         if NoOpt t.Then t.Else
@@ -233,10 +231,6 @@ Int-Command {
           = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)>;
 
         call s.Func e.Args
-          = s.Cycles <s.Func e.Args e.AST>;
-
-        pass s.Func e.Args
-          = <Dec s.Cycles> : s.Cycles^
           = s.Cycles <s.Func e.Args e.AST>;
 
         trace e.Message
