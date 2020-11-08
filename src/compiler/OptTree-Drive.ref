@@ -378,9 +378,9 @@ OptSentence-Aux {
     = s.IntrinsicMode
     : {
         Intrinsic = <FindMetatables e.OptFuncs>;
-        s._ = ()
+        s._ = () e.OptFuncs;
       }
-    : t.Metatables
+    : t.Metatables e.OptFuncs^
     = <OptSentence-MakeSubstitutions
         (s.DriveMode s.IntrinsicMode) ((e.Left) (e.Right))
         (e.Args) t.FunctionForDrive t.Metatables
@@ -1250,13 +1250,16 @@ CutSUF {
 }
 
 FindMetatables {
-  e.OptFuncs = <MapAccum
-    {
-      (e.Result) (Metatable e.Body) = (e.Result (Metatable e.Body));
-      (e.Result) t.Other = (e.Result)
-    } () e.OptFuncs>
-    : (e.Metatables) e._
-  = (e.Metatables)
+  e.OptFuncs
+    = <MapAccum
+        {
+          (e.Result) (Metatable e.Body)
+             = (e.Result (Metatable e.Body)) (Metatable e.Body);
+
+          (e.Result) t.Other = (e.Result) t.Other;
+        }
+        () e.OptFuncs
+      >
 }
 
 /*
