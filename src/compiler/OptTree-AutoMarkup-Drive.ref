@@ -9,6 +9,18 @@ $INCLUDE "LibraryEx";
 $ENTRY OptTree-AutoMarkup-Drive {
   e.AST
     = <MetaInfo e.AST> : ((e.Forbidden) (e.Inlines) (e.UserdefDrives)) e.AST^
+
+    = <BuldCallGraph e.AST (e.Inlines)> : (e.EntryPoints) (e.Indirects) e.Graph
+
+    = <Unique e.EntryPoints e.Indirects> : e.Roots
+    = <BasicVertexes e.Graph (e.Roots)>
+    : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
+    = <SetDifference e.ToDrive (e.Forbidden e.UserdefDrives)> : e.ToDrive^
+    = <UpdateAST e.AST (e.ToDrive) (e.Basics)>
+}
+
+BuldCallGraph {
+  e.AST (e.Inlines)
     = <SeparateMetatables e.AST> : (e.Metatables) e.Functions
     = <Map &MetatableReferences e.Metatables> : e.MetatablesRef
     = <Map &FunctionReferences e.Functions> : e.FunctionsRef
@@ -22,14 +34,8 @@ $ENTRY OptTree-AutoMarkup-Drive {
     = <SeparateInlineReferences e.FunctionsRef (e.Inlines)>
     : (e.InlinesRef) e.FunctionsRef^
     = <InlineInlineReferences e.FunctionsRef (e.InlinesRef)> : e.FunctionsRef^
-
     = <PrepareGraphFormat e.FunctionsRef> : (e.EntryPoints) e.Graph
-
-    = <Unique e.EntryPoints e.Indirects> : e.Roots
-    = <BasicVertexes e.Graph (e.Roots)>
-    : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
-    = <SetDifference e.ToDrive (e.Forbidden e.UserdefDrives)> : e.ToDrive^
-    = <UpdateAST e.AST (e.ToDrive) (e.Basics)>
+    = (e.EntryPoints) (e.Indirects) e.Graph;
 }
 
 MetaInfo {
@@ -417,21 +423,8 @@ UpdateAST {
 $ENTRY OptTree-AutoMarkup-CureDrives {
   e.AST
     = <MetaInfo e.AST> : ((e.Forbidden) (e.Inlines) (e.UserdefDrives)) e.AST^
-    = <SeparateMetatables e.AST> : (e.Metatables) e.Functions
-    = <Map &MetatableReferences e.Metatables> : e.MetatablesRef
-    = <Map &FunctionReferences e.Functions> : e.FunctionsRef
 
-    = <InlineMetatableReferences e.FunctionsRef (e.MetatablesRef)>
-    : e.FunctionsRef^
-
-    = <SeparateIndirects e.FunctionsRef> : (e.Indirects) e.FunctionsRef^
-    = <InlineIndirects e.FunctionsRef (e.Indirects)> : e.FunctionsRef^
-
-    = <SeparateInlineReferences e.FunctionsRef (e.Inlines)>
-    : (e.InlinesRef) e.FunctionsRef^
-    = <InlineInlineReferences e.FunctionsRef (e.InlinesRef)> : e.FunctionsRef^
-
-    = <PrepareGraphFormat e.FunctionsRef> : (e.EntryPoints) e.Graph
+    = <BuldCallGraph e.AST (e.Inlines)> : (e.EntryPoints) (e.Indirects) e.Graph
 
     = <MapAccum
         {
