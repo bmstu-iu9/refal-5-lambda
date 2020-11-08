@@ -410,3 +410,60 @@ UpdateAST {
         e.FunctionsToDrive
       >
 }
+
+/**
+  <OptTree-AutoMarkup-CureDrives e.AST> == e.AST
+*/
+$ENTRY OptTree-AutoMarkup-CureDrives {
+  e.AST
+    = <MetaInfo e.AST> : ((e.Forbidden) (e.Inlines) (e.UserdefDrives)) e.AST^
+    = <SeparateMetatables e.AST> : (e.Metatables) e.Functions
+    = <Map &MetatableReferences e.Metatables> : e.MetatablesRef
+    = <Map &FunctionReferences e.Functions> : e.FunctionsRef
+
+    = <InlineMetatableReferences e.FunctionsRef (e.MetatablesRef)>
+    : e.FunctionsRef^
+
+    = <SeparateIndirects e.FunctionsRef> : (e.Indirects) e.FunctionsRef^
+    = <InlineIndirects e.FunctionsRef (e.Indirects)> : e.FunctionsRef^
+
+    = <SeparateInlineReferences e.FunctionsRef (e.Inlines)>
+    : (e.InlinesRef) e.FunctionsRef^
+    = <InlineInlineReferences e.FunctionsRef (e.InlinesRef)> : e.FunctionsRef^
+
+    = <PrepareGraphFormat e.FunctionsRef> : (e.EntryPoints) e.Graph
+
+    = <MapAccum
+        {
+          (e.DrivenNodes) (Func (e.Name) Children (e.Children))
+            , e.UserdefDrives : e._ (e.Name) e._
+            = (
+                e.DrivenNodes
+                (Func (e.Name) Children (e.Children))
+              )
+              /* пусто */;
+
+          (e.DrivenNodes) (Func (e.Name) Children (e.Children))
+             = (e.DrivenNodes) e.Children;
+        }
+        (/* driven nodes */)
+        e.Graph
+      >
+    : (e.DrivenNodes) e.NamesCalledFromUndriven
+
+    = <Unique e.EntryPoints e.Indirects e.NamesCalledFromUndriven> : e.Roots
+    = <SetIntersect (e.Roots) (e.UserdefDrives)> : e.Roots^
+    = <BasicVertexes e.Graph (e.Roots)>
+    : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
+
+    /* новых функций для прогонки не добавляем */
+    = /* пусто */ : e.ToDrive^
+    = <UpdateAST e.AST (e.ToDrive) (e.Basics)>
+}
+
+SetIntersect {
+  (e.Set1-B t.Common e.Set1-E) (e.Set2-B t.Common t.Set2-E)
+    = t.Common <SetIntersect (e.Set1-E) (e.Set2-B t.Set2-E)>;
+
+  (e.Set1) (e.Set2) = /* пусто */;
+}
