@@ -649,7 +649,7 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
             = <SignedArithmeticResult s.Res e.ResSign>;
 
             = (
-              ((Symbol Number <Add s.1 s.2>)) (()()) ()
+              (<NumberToSymbols <Add s.1 s.2>>) (()()) ()
             );
         }
       };
@@ -738,7 +738,7 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
             = <SignedArithmeticResult s.Res e.ResSign>;
 
             = (
-              ((Symbol Number <Mul s.1 s.2>)) (()()) ()
+              (<NumberToSymbols <Mul s.1 s.2>>) (()()) ()
             )
         }
       };
