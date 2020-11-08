@@ -99,7 +99,7 @@ goto :EOF
 
 :RUN_TEST_ALL_MODES
 setlocal
-  find "%%" %1 > NUL
+  find "%%%%" %1 > NUL
   if errorlevel 1 (
     set SRFLAGS_PLUS_INIT=%SRFLAGS_PREF%
   ) else (
