@@ -1,8 +1,7 @@
 $INCLUDE "LibraryEx";
 
 /**
-  <OptTree-AutoMarkup-Drive e.AST>
-    == e.FunctionCallsGraph (e.RootSet)
+  <OptTree-AutoMarkup-Drive e.AST> == e.AST
 
   e.RootSet ::= (e.FuncName)*
 */

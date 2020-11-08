@@ -11,8 +11,7 @@ $EXTERN ExtractVariables-Expr;
 
 
 /**
-  <OptTree-AutoMarkup-GetSpecializableDict (e.AST)>
-    == ((e.Name) e.SpecPattern)*
+  <OptTree-AutoMarkup-Spec (e.AST)> == e.AST
 
   e.SpecPattern ::= e.Pattern
 */
