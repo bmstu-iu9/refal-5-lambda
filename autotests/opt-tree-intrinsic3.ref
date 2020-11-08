@@ -5,8 +5,13 @@ $INTRINSIC Explode, Implode, Implode_Ext, Explode_Ext;
 $INTRINSIC Type;
 $INTRINSIC First, Last, Lenw;
 
+$EXTERN Numb, Symb;
+$EXTERN Explode, Implode, Implode_Ext, Explode_Ext;
+$EXTERN Type;
+$EXTERN First, Last, Lenw;
+
 $ENTRY Go {
-  /* empty */
+  e.Empty
     = <Numb '101'> : 101
     = <Numb '-101'> : '-' 101
     = <Symb 101> : '101'
@@ -25,9 +30,9 @@ $ENTRY Go {
     = <Type a b 1> : 'Wi' a b 1
     = <Type "cada bra"> : 'Wq' "cada bra"
     = <Type () ()> : 'B0' () ()
-    = <Type [Test ]> : 'Ba' [Test ]
-    = <Type &Test> : 'Fg' &Test
-    = <Type {s.1 e.x = e.x}> : 'Fc' e._
+    = <Type [Type]> : 'Ba' [Type]
+    = <Type &Type> : 'Fg' &Type
+    = <Type { = e.Empty }> : 'Fc' e._
     = <Type> : '*0'
 
     = <Lenw 'abc'> : 3 'abc'
@@ -53,59 +58,4 @@ $ENTRY Go {
 ConstValue {
     1 = 'b';
     2 = a
-}
-
-Numb {
-    '101' = 101;
-    '-101' = '-' 101
-}
-
-Symb {
-    101 = '101';
-    '-' 101 = '-101'
-}
-
-Implode {
-    'abcd' = abcd;
-    'Abcd10abc#$@#$' = Abcd10abc '#$@#$';
-    '!@#$%^&*()' = 0 '!@#$%^&*()'
-}
-
-Explode {
-    abcd = 'abcd'
-}
-
-Implode_Ext {
-    'abcd' = abcd;
-    'Abcd10abc#$@#$' = "Abcd10abc#$@#$"
-}
-
-Explode_Ext {
-    abcd = 'abcd'
-}
-
-$ENUM Test;
-
-Type {
-    'a' b 1 = 'Lla' b 1;
-    1 b 1 = 'N0' 1 b 1;
-    a b 1 = 'Wi' a b 1;
-    () () = 'B0' () ();
-    [Test ] = 'Ba' [Test ];
-    &Test = 'Fg' &Test;
-    = '*0';
-    "cada bra" = 'Wq' "cada bra";
-    s.Closure e.Rest = 'Fc' e.Rest
-}
-
-Lenw {
-    'abc' = 3 'abc';
-}
-
-First {
-    2 a (1 2) b c = (a (1 2)) b c;
-}
-
-Last {
-    1 a (1 2) b c = (a (1 2) b) c;
 }

@@ -1,0 +1,24 @@
+$ENTRY Chr {
+  10 115 97 = '\nsa';
+  10 = '\n'
+}
+
+$ENTRY Ord {
+  '\nsa' = 10 115 97;
+  '\n' = 10;
+  'a' = 97
+}
+
+$ENTRY Upper {
+  'abcd' = 'ABCD';
+  'b' = 'B'
+}
+
+$ENTRY Lower {
+  'ABCD' = 'abcd';
+  'B' = 'b'
+}
+
+$ENTRY Numb {
+  '10' = 10;
+}

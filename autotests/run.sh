@@ -130,9 +130,14 @@ run_test_aux_with_flags() {
   NATCPP=${SREF%.*}.cpp
   LIBR=${SREF%.*}.rasl-module
   LIBN=${SREF%.*}$(platform_lib_suffix)
+  SATELITE=${SREF%.*}.SATELITE.ref
+
+  if ! -e "$SATELITE"; then
+    SATELITE=
+  fi
 
   ../bin/rlc-core --keep-rasls ${SREF} --makelib "${COMMON_SRFLAGS[@]}" \
-    ${SRFLAGS} ${SRFLAGS_PLUS} 2>__error.txt
+    ${SRFLAGS} ${SRFLAGS_PLUS} intrinsics.SATELITE.ref 2>__error.txt
   if [[ $? -ge 100 ]]; then
     echo COMPILER ON ${SREF} FAILS, SEE __error.txt
     exit 1
@@ -154,6 +159,7 @@ run_test_aux_with_flags() {
   fi
 
   rm -f ${RASL} ${NATCPP} ${LIBR} ${LIBN} __dump.txt __log.txt
+  rm -f *.SATELITE.{rasl,cpp}
   rm -rf ${SREF%.*}.partial.dSYM
 
   echo
@@ -265,6 +271,10 @@ run_test_aux_with_flags.FAILURE() {
 
   echo "Ok! This failure was normal and expected"
   echo
+}
+
+run_test_aux.SATELITE() {
+  echo Skip satelite part $1...
 }
 
 run_test() {
