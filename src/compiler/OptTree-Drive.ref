@@ -403,7 +403,11 @@ OptSentence-Aux {
 
 DoOptSentence-MakeSubstitutions-Intrinsic {
   t.IntrinsicFunction t.Metatables (e.Args) '__Meta_Mu'
-    = <Intrinsic-Mu t.IntrinsicFunction e.Args t.Metatables>;
+    = <Intrinsic-Mu e.Args t.Metatables>
+    : {
+        Ok e.Result = ( (e.Result) (() ()) () );
+        MakeColdCall = <MakeColdSolution t.IntrinsicFunction e.Args>;
+      };
 
   t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName
     = e.BehaviorName
@@ -433,46 +437,38 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
         e._ = &MakeColdSolution
       }
     : s.TransformFunction
-    = <s.TransformFunction t.IntrinsicFunction e.Args>;
+    = <s.TransformFunction e.Args>
+    : {
+        Ok e.Result = ( (e.Result) (() ()) () );
+        MakeColdCall = <MakeColdSolution t.IntrinsicFunction e.Args>;
+      };
 }
 
 Intrinsic-Mu {
-  t.IntrinsicFunction e.Args t.Metatables
+  e.Args t.Metatables
     = e.Args
     : {
       t.Function e.MuArg (Symbol Name e.MetatableName)
       = t.Function
       : {
           (Symbol Name e.Name)
-          = (
-              ((CallBrackets (Symbol Name e.Name) e.MuArg))
-              (()()) ()
-            );
+          = Ok (CallBrackets (Symbol Name e.Name) e.MuArg);
 
           (ClosureBrackets e.Body)
-          = (
-              ((CallBrackets (ClosureBrackets e.Body) e.MuArg))
-              (()()) ()
-            );
+          = Ok (CallBrackets (ClosureBrackets e.Body) e.MuArg);
 
           (Symbol Identifier s.Name), <OneOf s.Name '+-/%*?'> : True
             = <ArithmeticSymbolToFunction s.Name> : e.FunctionName
-            = (
-                ((CallBrackets (Symbol Name e.FunctionName) e.MuArg))
-                (()()) ()
-              );
+            = Ok (CallBrackets (Symbol Name e.FunctionName) e.MuArg);
 
           (Symbol Char s.Name), <OneOf s.Name '+-/%*?'> : True
             = <ArithmeticSymbolToFunction s.Name> : e.FunctionName
-            = (
-                ((CallBrackets (Symbol Name e.FunctionName) e.MuArg))
-                (()()) ()
-              );
+            = Ok (CallBrackets (Symbol Name e.FunctionName) e.MuArg);
 
           (Symbol Identifier e.Name)
             = <MakeSubstitution-FromMetatables
                 t.Metatables (e.MetatableName)
-                t.IntrinsicFunction (e.Args) (e.MuArg) e.Name
+                (e.Args) (e.MuArg) e.Name
               >;
 
           (Brackets e.Chars)
@@ -485,13 +481,13 @@ Intrinsic-Mu {
             : (e.Name) e._
             = <MakeSubstitution-FromMetatables
                 t.Metatables (e.MetatableName)
-                t.IntrinsicFunction (e.Args) (e.MuArg) e.Name
+                (e.Args) (e.MuArg) e.Name
               >;
 
-          e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
+          e._ = MakeColdCall;
         };
 
-      e.Other = <MakeColdSolution t.IntrinsicFunction e.Args>
+      e.Other = MakeColdCall;
     };
 }
 
@@ -505,7 +501,7 @@ ArithmeticSymbolToFunction {
 }
 
 MakeSubstitution-FromMetatables {
-  t.Metatables (e.MetatableName) t.IntrinsicFunction (e.Args) (e.MuArg) e.Name
+  t.Metatables (e.MetatableName) (e.Args) (e.MuArg) e.Name
     = t.Metatables
     : {
         (
@@ -516,17 +512,14 @@ MakeSubstitution-FromMetatables {
           )
           e._
         )
-          = (
-              ((CallBrackets t.SymbolName e.MuArg))
-              (()()) ()
-            );
+          = Ok (CallBrackets t.SymbolName e.MuArg);
 
-        e.Other = <MakeColdSolution t.IntrinsicFunction e.Args>
+        e.Other = MakeColdCall;
       }
 }
 
 Intrinsic-Add {
-  t.IntrinsicFunction e.Args
+  e.Args
     = e.Args
     : {
       (Brackets e.Numbers1) e.Numbers2
@@ -534,22 +527,15 @@ Intrinsic-Add {
         , <Number-Check e.Numbers2> : True
         = <Add (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
         : e.Result
-        = <NumberToSymbols e.Result> : e.Result^
-        = (
-            (e.Result) (()()) ()
-          );
+        = Ok <NumberToSymbols e.Result>;
 
       (Symbol Number 0) (ColdCallBrackets (Symbol Name e.Name) e.Body),
       <OneOf (e.Name) <ArithmeticFunctions>> : True =
-        (
-          ((ColdCallBrackets (Symbol Name e.Name) e.Body)) (()()) ()
-        );
+        Ok (ColdCallBrackets (Symbol Name e.Name) e.Body);
 
       (ColdCallBrackets (Symbol Name e.Name) e.Body) (Symbol Number 0),
       <OneOf (e.Name) <ArithmeticFunctions>> : True =
-      (
-        ((ColdCallBrackets (Symbol Name e.Name) e.Body)) (()()) ()
-      );
+      Ok (ColdCallBrackets (Symbol Name e.Name) e.Body);
 
       e.Sign1 (Symbol Number s.1) e.Sign2 (Symbol Number s.2) =
       e.Sign1 : {
@@ -567,13 +553,11 @@ Intrinsic-Add {
             = <Add s.1 s.sign2 s.2> : e.ResSign s.Res
             = <SignedArithmeticResult s.Res e.ResSign>;
 
-            = (
-              (<NumberToSymbols <Add s.1 s.2>>) (()()) ()
-            );
+            = Ok <NumberToSymbols <Add s.1 s.2>>;
         }
       };
 
-      e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
+      e._  = MakeColdCall;
     };
 }
 
@@ -620,29 +604,22 @@ SignedArithmeticResult {
       = (Symbol Number s.Res)
     }
     : e.Result
-    = (
-        (e.Result) (()()) ()
-      )
+    = Ok e.Result
 }
 
 Intrinsic-Sub {
-  t.IntrinsicFunction e.Args
+  e.Args
     = e.Args : {
       (Brackets e.Numbers1) e.Numbers2,
       <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
         = <Sub (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
         : e.Result
         = <NumberToSymbols e.Result> : e.Result^
-        =
-        (
-          (e.Result) (()()) ()
-        );
+        = Ok e.Result;
 
       (ColdCallBrackets (Symbol Name e.Name) e.Body) (Symbol Number 0),
       <OneOf (e.Name) <ArithmeticFunctions>> : True =
-      (
-        ((ColdCallBrackets (Symbol Name e.Name) e.Body)) (()()) ()
-      );
+      Ok (ColdCallBrackets (Symbol Name e.Name) e.Body);
 
       e.Sign1 (Symbol Number s.1) e.Sign2 (Symbol Number s.2) =
       e.Sign1 : {
@@ -665,34 +642,27 @@ Intrinsic-Sub {
         }
       };
 
-      e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
+      e._  = MakeColdCall;
     };
 }
 
 Intrinsic-Mul {
-  t.IntrinsicFunction e.Args
+  e.Args
     = e.Args : {
       (Brackets e.Numbers1) e.Numbers2,
       <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
         = <Mul (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
         : e.Result
         = <NumberToSymbols e.Result> : e.Result^
-        =
-        (
-          (e.Result) (()()) ()
-        );
+        = Ok e.Result;
 
       (ColdCallBrackets (Symbol Name e.Name) e.Body) (Symbol Number 1),
       <OneOf (e.Name) <ArithmeticFunctions>> : True =
-      (
-        ((ColdCallBrackets (Symbol Name e.Name) e.Body)) (()()) ()
-      );
+      Ok (ColdCallBrackets (Symbol Name e.Name) e.Body);
 
       (Symbol Number 1) (ColdCallBrackets (Symbol Name e.Name) e.Body),
       <OneOf (e.Name) <ArithmeticFunctions>> : True =
-      (
-        ((ColdCallBrackets (Symbol Name e.Name) e.Body)) (()()) ()
-      );
+      Ok (ColdCallBrackets (Symbol Name e.Name) e.Body);
 
       e.Sign1 (Symbol Number s.1) e.Sign2 (Symbol Number s.2) =
       e.Sign1 : {
@@ -710,34 +680,27 @@ Intrinsic-Mul {
             = <Mul s.1 s.sign2 s.2> : e.ResSign s.Res
             = <SignedArithmeticResult s.Res e.ResSign>;
 
-            = (
-              (<NumberToSymbols <Mul s.1 s.2>>) (()()) ()
-            )
+            = Ok <NumberToSymbols <Mul s.1 s.2>>;
         }
       };
 
-      e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
+      e._  = MakeColdCall;
     };
 }
 
 Intrinsic-Div {
-  t.IntrinsicFunction e.Args
+  e.Args
     = e.Args : {
         (Brackets e.Numbers1) e.Numbers2,
         <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
         = <Div (<SymbolsToNumber e.Numbers1> ) <SymbolsToNumber e.Numbers2>>
         : e.Result
         = <NumberToSymbols e.Result> : e.Result^
-        =
-        (
-          (e.Result) (()()) ()
-        );
+        = Ok e.Result;
 
         (ColdCallBrackets (Symbol Name e.Name) e.Body) (Symbol Number 1),
         <OneOf (e.Name) <ArithmeticFunctions>> : True =
-        (
-          ((ColdCallBrackets (Symbol Name e.Name) e.Body)) (()()) ()
-        );
+        Ok (ColdCallBrackets (Symbol Name e.Name) e.Body);
 
         e.Sign1 (Symbol Number s.1) e.Sign2 (Symbol Number s.2) =
         e.Sign1 : {
@@ -760,22 +723,19 @@ Intrinsic-Div {
           }
         };
 
-        e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
+        e._  = MakeColdCall;
     };
 }
 
 Intrinsic-Mod {
-  t.IntrinsicFunction e.Args
+  e.Args
     = e.Args : {
       (Brackets e.Numbers1) e.Numbers2,
       <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
         = <Mod (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
         : e.Result
         = <NumberToSymbols e.Result> : e.Result^
-        =
-        (
-          (e.Result) (()()) ()
-        );
+        = Ok e.Result;
 
       e.Sign1 (Symbol Number s.1) e.Sign2 (Symbol Number s.2) =
       e.Sign1 : {
@@ -798,12 +758,12 @@ Intrinsic-Mod {
         }
       };
 
-      e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
+      e._  = MakeColdCall;
     };
 }
 
 Intrinsic-Divmod {
-  t.IntrinsicFunction e.Args
+  e.Args
     = e.Args : {
       (Brackets e.Numbers1) e.Numbers2,
       <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
@@ -811,27 +771,16 @@ Intrinsic-Divmod {
          : (e.Q) e.R
         = <NumberToSymbols e.Q> : e.Q^
         = <NumberToSymbols e.R> : e.R^
-        =
-        (
-          ((Brackets e.Q) e.R) (()()) ()
-        );
+        = Ok (Brackets e.Q) e.R;
 
       (ColdCallBrackets (Symbol Name e.Name) e.Body) (Symbol Number 1),
       <OneOf (e.Name) <ArithmeticFunctions>> : True =
-      (
-        (
-          (Brackets (ColdCallBrackets (Symbol Name e.Name) e.Body))
-          (Symbol Number 0)
-        )
-        (()()) ()
-      );
+      Ok (Brackets (ColdCallBrackets (Symbol Name e.Name) e.Body))
+      (Symbol Number 0);
 
       (Symbol Number s.1) (Symbol Number s.2) =
       <Divmod s.1 s.2> : (s.Q) s.R
-      =
-      (
-        ((Brackets (Symbol Number s.Q)) (Symbol Number s.R)) (()()) ()
-      );
+      = Ok (Brackets (Symbol Number s.Q)) (Symbol Number s.R);
 
       e.Sign1 (Symbol Number s.1) e.Sign2 (Symbol Number s.2) =
       e.Sign1 : {
@@ -854,7 +803,7 @@ Intrinsic-Divmod {
         }
       };
 
-      e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
+      e._  = MakeColdCall;
     };
 }
 
@@ -886,21 +835,17 @@ SignedResult-Divmod {
             };
       }
     : e.Res
-    = (
-        (e.Res) (()()) ()
-      )
+    = Ok e.Res;
 }
 
 Intrinsic-Compare {
-  t.IntrinsicFunction e.Args
+  e.Args
     = e.Args : {
       (Brackets e.Numbers1) e.Numbers2,
       <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
       = <Compare (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
       : s.Result
-      = (
-        ((Symbol Char s.Result)) (()()) ()
-      );
+      = Ok (Symbol Char s.Result);
 
       e.Sign1 (Symbol Number s.1) e.Sign2 (Symbol Number s.2) =
       e.Sign1 : {
@@ -918,23 +863,19 @@ Intrinsic-Compare {
             = <Compare s.1 s.2>
         }
       } : s.Result
-      = (
-        ((Symbol Char s.Result)) (()()) ()
-      );
+      = Ok (Symbol Char s.Result);
 
-      e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
+      e._  = MakeColdCall;
     };
 }
 
 Intrinsic-Chr {
-  t.IntrinsicFunction e.Args
+  e.Args
     , <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Number> : True
     = <StaticSubstitution (e.Args) ('Chr') &Chr Number Char> : e.Substitution
-    = (
-      (e.Substitution) (()()) ()
-    );
+    = Ok e.Substitution;
 
-  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+  e.Args = MakeColdCall;
 }
 
 CheckArgs-Intrinsic-StaticSubstitution {
@@ -976,48 +917,40 @@ StaticSubstitution {
 }
 
 Intrinsic-Ord {
-  t.IntrinsicFunction e.Args
+  e.Args
     , <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
     = <StaticSubstitution (e.Args) ('Ord') &Ord Char Number> : e.Substitution
-    = (
-      (e.Substitution) (()()) ()
-    );
+    = Ok e.Substitution;
 
-  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+  e.Args = MakeColdCall;
 }
 
 Intrinsic-Upper {
-  t.IntrinsicFunction e.Args
+  e.Args
     , <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
     = <StaticSubstitution (e.Args) ('Upper') &Upper Char Char> : e.Substitution
-    = (
-      (e.Substitution) (()()) ()
-    );
+    = Ok e.Substitution;
 
-  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+  e.Args = MakeColdCall;
 }
 
 Intrinsic-Lower {
-  t.IntrinsicFunction e.Args
+  e.Args
     , <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
     = <StaticSubstitution (e.Args) ('Lower') &Lower Char Char> : e.Substitution
-    = (
-      (e.Substitution) (()()) ()
-    );
+    = Ok e.Substitution;
 
-  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+  e.Args = MakeColdCall;
 }
 
 Intrinsic-Numb {
-  t.IntrinsicFunction e.Args
+  e.Args
     , <CheckArgs-Intrinsic (e.Args) Char> : True
       = <NodeToChar e.Args> : e.Chars
       = <NumberToSymbols <Numb e.Chars>> : e.Result
-      = (
-        (e.Result) (()()) ()
-      );
+      = Ok e.Result;
 
-  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+  e.Args = MakeColdCall;
 }
 
 CheckArgs-Intrinsic {
@@ -1037,15 +970,13 @@ NodeToChar {
 }
 
 Intrinsic-Symb {
-  t.IntrinsicFunction e.Args
+  e.Args
     , <CheckArgs-Intrinsic-Symb e.Args> : True
       = <Symb <SymbolsToNumber e.Args>> : e.Numbers
       = <CharToNode e.Numbers> : e.Result
-      = (
-        (e.Result) (()()) ()
-      );
+      = Ok e.Result;
 
-  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+  e.Args = MakeColdCall;
 }
 
 CheckArgs-Intrinsic-Symb {
@@ -1060,7 +991,7 @@ CharToNode {
 }
 
 Intrinsic-Implode {
-  t.IntrinsicFunction e.Args
+  e.Args
     , <CheckArgs-Intrinsic (e.Args) Char> : True
       = <NodeToChar e.Args> : e.Chars
       = <Implode e.Chars> : s.Ident e.NonIdent
@@ -1068,117 +999,91 @@ Intrinsic-Implode {
         0 = (Symbol Number 0);
         e._ = (Symbol Identifier <Explode s.Ident>)
       } : e.Result
-      = (
-        (e.Result <CharToNode e.NonIdent>) (()()) ()
-      );
+      = Ok e.Result <CharToNode e.NonIdent>;
 
-  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+  e.Args = MakeColdCall;
 }
 
 Intrinsic-Implode_Ext {
-  t.IntrinsicFunction e.Args
+  e.Args
     , <CheckArgs-Intrinsic (e.Args) Char> : True
       = <NodeToChar e.Args> : e.Chars
-      = (
-        ((Symbol Identifier e.Chars)) (()()) ()
-      );
+      = Ok (Symbol Identifier e.Chars);
 
-  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+  e.Args = MakeColdCall;
 }
 
 Intrinsic-Explode {
-  t.IntrinsicFunction e.Args
+  e.Args
     , <CheckArgs-Intrinsic (e.Args) Identifier> : True
       = e.Args : {
         (Symbol Identifier e.Name) = <CharToNode e.Name>
       } : e.Result
-      = (
-        (e.Result) (()()) ()
-      );
+      = Ok e.Result;
 
-  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+  e.Args = MakeColdCall;
 }
 
 Intrinsic-Explode_Ext {
-  t.IntrinsicFunction e.Args
+  e.Args
     , <CheckArgs-Intrinsic (e.Args) Identifier> : True
       = e.Args : {
         (Symbol Identifier e.Name) = <CharToNode e.Name>
       } : e.Result
-      = (
-        (e.Result) (()()) ()
-      );
+      = Ok e.Result;
 
-  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+  e.Args = MakeColdCall;
 }
 
 Intrinsic-Type {
-  t.IntrinsicFunction e.Args
+  e.Args
     = e.Args : {
       (Symbol Number s.Num) e.Rest =
       <Type s.Num> : s.Type s.SubType e._
       = <CharToNode s.Type s.SubType> : e.Result
-      = (
-        (e.Result e.Args) (()()) ()
-      );
+      = Ok e.Result e.Args;
 
       (Symbol Char s.Char) e.Rest =
       <Type s.Char> : s.Type s.SubType e._
       = <CharToNode s.Type s.SubType> : e.Result
-      = (
-        (e.Result e.Args) (()()) ()
-      );
+      = Ok e.Result e.Args;
 
       (Symbol Identifier e.Name) e.Rest
       = <Implode_Ext e.Name> : s.Ident
       = <Type s.Ident> : s.Type s.SubType e._
       = <CharToNode s.Type s.SubType> : e.Result
-      = (
-        (e.Result e.Args) (()()) ()
-      );
+      = Ok e.Result e.Args;
 
       (Symbol Name e.Name) e.Rest
       = <CharToNode 'Fg'> : e.Result
-      = (
-        (e.Result e.Args) (()()) ()
-      );
+      = Ok e.Result e.Args;
 
       (ClosureBrackets e.Body) e.Rest
       = <CharToNode 'Fc'> : e.Result
-      = (
-        (e.Result e.Args) (()()) ()
-      );
+      = Ok e.Result e.Args;
 
       (Brackets e.Body) e.Rest
       = <CharToNode 'B0'> : e.Result
-      = (
-        (e.Result e.Args) (()()) ()
-      );
+      = Ok e.Result e.Args;
 
       (ADT-Brackets e.Body) e.Rest
       = <CharToNode 'Ba'> : e.Result
-      = (
-        (e.Result e.Args) (()()) ()
-      );
+      = Ok e.Result e.Args;
 
       = <CharToNode '*0'> : e.Result
-      = (
-        (e.Result) (()()) ()
-      );
+      = Ok e.Result e.Args;
 
-      e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
+      e._ = MakeColdCall;
     };
 }
 
 Intrinsic-Lenw {
-  t.IntrinsicFunction e.Args
+  e.Args
     , <CheckArgs-Intrinsic-EVariable e.Args> : True
     = <Lenw e.Args> : s.Len e._
-    = (
-      ((Symbol Number s.Len) e.Args) (()()) ()
-    );
+    = Ok (Symbol Number s.Len) e.Args;
 
-  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+  e.Args = MakeColdCall;
 }
 
 CheckArgs-Intrinsic-EVariable {
@@ -1193,30 +1098,26 @@ CheckArgs-Intrinsic-EVariable {
 }
 
 Intrinsic-First {
-  t.IntrinsicFunction e.Args
+  e.Args
     = e.Args : {
       (Symbol Number s.N) e.Expr
       , <CheckArgs-Intrinsic-EVariable e.Expr> : True
       = <First s.N e.Expr> : (e.Prefix) e.Suffix
-      = (
-        ((Brackets e.Prefix) e.Suffix) (()()) ()
-      );
+      = Ok (Brackets e.Prefix) e.Suffix;
 
-      e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
+      e._ = MakeColdCall;
     };
 }
 
 Intrinsic-Last {
-  t.IntrinsicFunction e.Args
+  e.Args
     = e.Args : {
       (Symbol Number s.N) e.Expr
       , <CheckArgs-Intrinsic-EVariable e.Expr> : True
       = <Last s.N e.Expr> : (e.Prefix) e.Suffix
-      = (
-        ((Brackets e.Prefix) e.Suffix) (()()) ()
-      );
+      = Ok (Brackets e.Prefix) e.Suffix;
 
-      e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
+      e._ = MakeColdCall;
     };
 }
 
