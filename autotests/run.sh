@@ -137,7 +137,7 @@ run_test_aux_with_flags() {
   fi
 
   ../bin/rlc-core --keep-rasls ${SREF} --makelib "${COMMON_SRFLAGS[@]}" \
-    ${SRFLAGS} ${SRFLAGS_PLUS} intrinsics.SATELITE.ref 2>__error.txt
+    ${SRFLAGS} ${SRFLAGS_PLUS} "$SATELITE" 2>__error.txt
   if [[ $? -ge 100 ]]; then
     echo COMPILER ON ${SREF} FAILS, SEE __error.txt
     exit 1
