@@ -1391,8 +1391,8 @@ JUMP_FROM_SCALE:
             }
 
             bool init_final = name
-              && (strcmp(name->name, "INIT") == 0
-                  || strcmp(name->name, "FINAL") == 0)
+              && (strcmp(name->name, "__INIT") == 0
+                  || strcmp(name->name, "__FINAL") == 0)
               && (name->cookie1 != 0 && name->cookie2 != 0);
             bool hidden_step = m_hide_steps || init_final;
 

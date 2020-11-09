@@ -638,7 +638,7 @@ FindFinalInitEntry {
     = <Map
         {
           (Define t.ScrPosDefine GN-Entry e.Name)
-            , <OneOf (e.Name) ('FINAL') ('INIT')> : True
+            , <OneOf (e.Name) ('__FINAL') ('__INIT')> : True
             = (Define t.ScrPosDefine GN-Entry e.Name)
               (Warning init-final-entry t.ScrPosDefine InitFinalEntry e.Name);
 

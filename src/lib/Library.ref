@@ -4202,7 +4202,7 @@ $ENTRY PathSeparator {
 }
 
 
-INIT {
+__INIT {
 %%
   // 1. Дескрипторы файлов
   for (size_t i = 0; i < cMaxFileHandles; ++i) {
@@ -4225,7 +4225,7 @@ INIT {
 %%
 }
 
-FINAL {
+__FINAL {
 %%
   // 4. Генератор случайных чисел
   delete g_gen.ref(vm);

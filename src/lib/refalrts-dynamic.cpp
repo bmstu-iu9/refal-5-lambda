@@ -273,7 +273,7 @@ void refalrts::Module::initialize(
   ) {
     UInt32 cookie1 = p->cookie1;
     UInt32 cookie2 = p->cookie2;
-    RefalFuncName init_name("INIT", cookie1, cookie2);
+    RefalFuncName init_name("__INIT", cookie1, cookie2);
     FuncsMap::iterator pfunc = m_funcs_table.find(init_name);
     if (pfunc != m_funcs_table.end()) {
       result = vm->execute_zero_arity_function(pfunc->second, pos);
@@ -292,7 +292,7 @@ void refalrts::Module::finalize(
   while (! m_initialized_scopes.empty() && result == cSuccess) {
     UInt32 cookie1 = m_initialized_scopes.front().first;
     UInt32 cookie2 = m_initialized_scopes.front().second;
-    RefalFuncName final_name("FINAL", cookie1, cookie2);
+    RefalFuncName final_name("__FINAL", cookie1, cookie2);
     FuncsMap::iterator pfunc = m_funcs_table.find(final_name);
     if (pfunc != m_funcs_table.end()) {
       result = vm->execute_zero_arity_function(pfunc->second, pos);

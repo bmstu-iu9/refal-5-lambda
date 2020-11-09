@@ -293,7 +293,7 @@ PrepareGraphFormat {
             = e.Name s.ScopeClass
             : {
                 e._ GN-Entry = (e.Name);
-                e._ s._, ('INIT') ('FINAL') : e._ (e.Name) e._ = (e.Name);
+                e._ s._, ('__INIT') ('__FINAL') : e._ (e.Name) e._ = (e.Name);
                 e._ s._ = /* пропускаем */;
               }
             : e.NewEntryName
