@@ -274,6 +274,7 @@ run_test_aux_with_flags.FAILURE() {
 
   rm -f ${RASL} ${NATCPP} ${LIBR} ${LIBN} __dump.txt __log.txt
   rm -f *.SATELITE.{rasl,cpp}
+  rm -rf ${SREF%.*}.partial.dSYM
 
   echo "Ok! This failure was normal and expected"
   echo
