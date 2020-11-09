@@ -519,42 +519,45 @@ MakeSubstitution-FromMetatables {
 }
 
 Intrinsic-Add {
-  (Brackets e.Numbers1) e.Numbers2
-    , <Number-Check e.Numbers1> : True
-    , <Number-Check e.Numbers2> : True
-    = <Add (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
-    : e.Result
-    = Ok <NumberToSymbols e.Result>;
+  e.Args
+    = <ArithmArgs e.Args>
+    : {
+        Ok (Const e.Left) (Const e.Right)
+          = Ok <NumberToSymbols <Add (e.Left) e.Right>>;
 
-  (Symbol Number 0) (ColdCallBrackets (Symbol Name e.Name) e.Body),
-  <OneOf (e.Name) <ArithmeticFunctions>> : True =
-    Ok (ColdCallBrackets (Symbol Name e.Name) e.Body);
+        Ok (Const 0) (ArithmResult t.ArithmCall) = Ok t.ArithmCall;
+        Ok (ArithmResult t.ArithmCall) (Const 0) = Ok t.ArithmCall;
 
-  (ColdCallBrackets (Symbol Name e.Name) e.Body) (Symbol Number 0),
-  <OneOf (e.Name) <ArithmeticFunctions>> : True =
-  Ok (ColdCallBrackets (Symbol Name e.Name) e.Body);
+        e._ = MakeColdCall;
+      };
+}
 
-  e.Sign1 (Symbol Number s.1) e.Sign2 (Symbol Number s.2) =
-  e.Sign1 : {
-    (Symbol Char s.sign1)
-    = e.Sign2 : {
-      (Symbol Char s.sign2)
-        = <Add s.sign1 s.1 s.sign2 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>;
+ArithmArgs {
+  (Brackets e.Left) e.Right
+    , <ArithmOneArg e.Left> : Ok e.Left^
+    , <ArithmOneArg e.Right> : Ok e.Right^
+    = Ok (e.Left) (e.Right);
 
-        = <Add s.sign1 s.1 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>
-    };
-    = e.Sign2 : {
-      (Symbol Char s.sign2)
-        = <Add s.1 s.sign2 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>;
+  (Symbol Char s.Sign) (Symbol Number s.Left) e.Right
+    , <ArithmOneArg e.Right> : Ok e.Right^
+    = Ok (Const s.Sign s.Left) (e.Right);
 
-        = Ok <NumberToSymbols <Add s.1 s.2>>;
-    }
-  };
+  (Symbol Number s.Left) e.Right
+    , <ArithmOneArg e.Right> : Ok e.Right^
+    = Ok (Const s.Left) (e.Right);
 
-  e._  = MakeColdCall;
+  e._ = Fails;
+}
+
+ArithmOneArg {
+  (ColdCallBrackets (Symbol Name e.Name) e.Arg)
+    , <ArithmeticFunctions> : e._ (e.Name) e._
+    = Ok ArithmResult (ColdCallBrackets (Symbol Name e.Name) e.Arg);
+
+  e.Number, <Number-Check e.Number> : True
+    = Ok Const <Add 0 <SymbolsToNumber e.Number>>;
+
+  e._ = Fails;
 }
 
 Number-Check {
@@ -598,259 +601,78 @@ ArithmeticFunctions {
   = ('Add') ('Div') ('Divmod') ('Mod') ('Mul') ('Sub') ('Numb');
 }
 
-SignedArithmeticResult {
-  s.Res e.ResSign
-    = e.ResSign
-    : {
-      s.ResSignChar = (Symbol Char s.ResSignChar) (Symbol Number s.Res);
-      = (Symbol Number s.Res)
-    }
-    : e.Result
-    = Ok e.Result
-}
-
 Intrinsic-Sub {
-  (Brackets e.Numbers1) e.Numbers2,
-  <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
-    = <Sub (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
-    : e.Result
-    = <NumberToSymbols e.Result> : e.Result^
-    = Ok e.Result;
+  e.Args
+    = <ArithmArgs e.Args>
+    : {
+        Ok (Const e.Left) (Const e.Right)
+          = Ok <NumberToSymbols <Sub (e.Left) e.Right>>;
 
-  (ColdCallBrackets (Symbol Name e.Name) e.Body) (Symbol Number 0),
-  <OneOf (e.Name) <ArithmeticFunctions>> : True =
-  Ok (ColdCallBrackets (Symbol Name e.Name) e.Body);
+        Ok (ArithmResult t.ArithmCall) (Const 0) = Ok t.ArithmCall;
 
-  e.Sign1 (Symbol Number s.1) e.Sign2 (Symbol Number s.2) =
-  e.Sign1 : {
-    (Symbol Char s.sign1)
-    = e.Sign2 : {
-      (Symbol Char s.sign2)
-        = <Sub s.sign1 s.1 s.sign2 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>;
-
-        = <Sub s.sign1 s.1 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>
-    };
-    = e.Sign2 : {
-      (Symbol Char s.sign2)
-        = <Sub s.1 s.sign2 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>;
-
-        = <Sub s.1 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>
-    }
-  };
-
-  e._  = MakeColdCall;
+        e._ = MakeColdCall;
+      };
 }
 
 Intrinsic-Mul {
-  (Brackets e.Numbers1) e.Numbers2,
-  <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
-    = <Mul (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
-    : e.Result
-    = <NumberToSymbols e.Result> : e.Result^
-    = Ok e.Result;
+  e.Args
+    = <ArithmArgs e.Args>
+    : {
+        Ok (Const e.Left) (Const e.Right)
+          = Ok <NumberToSymbols <Mul (e.Left) e.Right>>;
 
-  (ColdCallBrackets (Symbol Name e.Name) e.Body) (Symbol Number 1),
-  <OneOf (e.Name) <ArithmeticFunctions>> : True =
-  Ok (ColdCallBrackets (Symbol Name e.Name) e.Body);
+        Ok (Const 1) (ArithmResult t.ArithmCall) = Ok t.ArithmCall;
+        Ok (ArithmResult t.ArithmCall) (Const 1) = Ok t.ArithmCall;
 
-  (Symbol Number 1) (ColdCallBrackets (Symbol Name e.Name) e.Body),
-  <OneOf (e.Name) <ArithmeticFunctions>> : True =
-  Ok (ColdCallBrackets (Symbol Name e.Name) e.Body);
-
-  e.Sign1 (Symbol Number s.1) e.Sign2 (Symbol Number s.2) =
-  e.Sign1 : {
-    (Symbol Char s.sign1)
-    = e.Sign2 : {
-      (Symbol Char s.sign2)
-        = <Mul s.sign1 s.1 s.sign2 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>;
-
-        = <Mul s.sign1 s.1 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>
-    };
-    = e.Sign2 : {
-      (Symbol Char s.sign2)
-        = <Mul s.1 s.sign2 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>;
-
-        = Ok <NumberToSymbols <Mul s.1 s.2>>;
-    }
-  };
-
-  e._  = MakeColdCall;
+        e._ = MakeColdCall;
+      };
 }
 
 Intrinsic-Div {
-  (Brackets e.Numbers1) e.Numbers2,
-  <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
-  = <Div (<SymbolsToNumber e.Numbers1> ) <SymbolsToNumber e.Numbers2>>
-  : e.Result
-  = <NumberToSymbols e.Result> : e.Result^
-  = Ok e.Result;
+  e.Args
+    = <ArithmArgs e.Args>
+    : {
+        Ok (Const e.Left) (Const e.Right)
+          = Ok <NumberToSymbols <Div (e.Left) e.Right>>;
 
-  (ColdCallBrackets (Symbol Name e.Name) e.Body) (Symbol Number 1),
-  <OneOf (e.Name) <ArithmeticFunctions>> : True =
-  Ok (ColdCallBrackets (Symbol Name e.Name) e.Body);
+        Ok (ArithmResult t.ArithmCall) (Const 1) = Ok t.ArithmCall;
 
-  e.Sign1 (Symbol Number s.1) e.Sign2 (Symbol Number s.2) =
-  e.Sign1 : {
-    (Symbol Char s.sign1)
-    = e.Sign2 : {
-      (Symbol Char s.sign2)
-        = <Div s.sign1 s.1 s.sign2 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>;
-
-        = <Div s.sign1 s.1 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>
-    };
-    = e.Sign2 : {
-      (Symbol Char s.sign2)
-        = <Div s.1 s.sign2 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>;
-
-        = <Div s.1 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>
-    }
-  };
-
-  e._  = MakeColdCall;
+        e._ = MakeColdCall;
+      };
 }
 
 Intrinsic-Mod {
-  (Brackets e.Numbers1) e.Numbers2,
-  <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
-    = <Mod (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
-    : e.Result
-    = <NumberToSymbols e.Result> : e.Result^
-    = Ok e.Result;
+  e.Args
+    = <ArithmArgs e.Args>
+    : {
+        Ok (Const e.Left) (Const e.Right)
+          = Ok <NumberToSymbols <Mod (e.Left) e.Right>>;
 
-  e.Sign1 (Symbol Number s.1) e.Sign2 (Symbol Number s.2) =
-  e.Sign1 : {
-    (Symbol Char s.sign1)
-    = e.Sign2 : {
-      (Symbol Char s.sign2)
-        = <Mod s.sign1 s.1 s.sign2 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>;
-
-        = <Mod s.sign1 s.1 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>
-    };
-    = e.Sign2 : {
-      (Symbol Char s.sign2)
-        = <Mod s.1 s.sign2 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>;
-
-        = <Mod s.1 s.2> : e.ResSign s.Res
-        = <SignedArithmeticResult s.Res e.ResSign>
-    }
-  };
-
-  e._  = MakeColdCall;
+        e._ = MakeColdCall;
+      };
 }
 
 Intrinsic-Divmod {
-  (Brackets e.Numbers1) e.Numbers2,
-  <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
-    = <Divmod (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
-     : (e.Q) e.R
-    = <NumberToSymbols e.Q> : e.Q^
-    = <NumberToSymbols e.R> : e.R^
-    = Ok (Brackets e.Q) e.R;
-
-  (ColdCallBrackets (Symbol Name e.Name) e.Body) (Symbol Number 1),
-  <OneOf (e.Name) <ArithmeticFunctions>> : True =
-  Ok (Brackets (ColdCallBrackets (Symbol Name e.Name) e.Body))
-  (Symbol Number 0);
-
-  (Symbol Number s.1) (Symbol Number s.2) =
-  <Divmod s.1 s.2> : (s.Q) s.R
-  = Ok (Brackets (Symbol Number s.Q)) (Symbol Number s.R);
-
-  e.Sign1 (Symbol Number s.1) e.Sign2 (Symbol Number s.2) =
-  e.Sign1 : {
-    (Symbol Char s.sign1)
-    = e.Sign2 : {
-      (Symbol Char s.sign2)
-        = <Divmod s.sign1 s.1 s.sign2 s.2> : (e.Q) e.R
-        = <SignedResult-Divmod (e.Q) e.R>;
-
-        = <Divmod s.sign1 s.1 s.2> : (e.Q) e.R
-        = <SignedResult-Divmod (e.Q) e.R>
-    };
-    = e.Sign2 : {
-      (Symbol Char s.sign2)
-        = <Divmod s.1 s.sign2 s.2> : (e.Q) e.R
-        = <SignedResult-Divmod (e.Q) e.R>;
-
-        = <Divmod s.1 s.2> : (e.Q) e.R
-        = <SignedResult-Divmod (e.Q) e.R>
-    }
-  };
-
-  e._  = MakeColdCall;
-}
-
-SignedResult-Divmod {
-  (e.QSign s.Q) e.RSign s.R
-    = e.QSign
+  e.Args
+    = <ArithmArgs e.Args>
     : {
-        s.QSignChar
-          = e.RSign
-          : {
-              s.RSignChar
-                = (Brackets (Symbol Char s.QSignChar) (Symbol Number s.Q))
-                  (Symbol Char s.RSignChar) (Symbol Number s.R);
+        Ok (Const e.Left) (Const e.Right)
+          = <Divmod (e.Left) e.Right> : (e.Q) e.R
+          = Ok (Brackets <NumberToSymbols e.Q>) <NumberToSymbols e.R>;
 
-              /* пусто */
-                = (Brackets (Symbol Char s.QSignChar) (Symbol Number s.Q))
-                  (Symbol Number s.R)
-            };
+        Ok (ArithmResult t.ArithmCall) (Const 1)
+          = Ok (Brackets t.ArithmCall) (Symbol Number 0);
 
-        /* пусто */
-          = e.RSign
-          : {
-            s.RSignChar
-              = (Brackets (Symbol Number s.Q))
-                (Symbol Char s.RSignChar) (Symbol Number s.R);
-
-            /* пусто */
-              = (Brackets (Symbol Number s.Q)) (Symbol Number s.R)
-            };
-      }
-    : e.Res
-    = Ok e.Res;
+        e._ = MakeColdCall;
+      };
 }
 
 Intrinsic-Compare {
-  (Brackets e.Numbers1) e.Numbers2,
-  <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
-  = <Compare (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
-  : s.Result
-  = Ok (Symbol Char s.Result);
+  e.Args
+    , <ArithmArgs e.Args> : Ok (Const e.Left) (Const e.Right)
+    = Ok (Symbol Char <Compare (e.Left) e.Right>);
 
-  e.Sign1 (Symbol Number s.1) e.Sign2 (Symbol Number s.2) =
-  e.Sign1 : {
-    (Symbol Char s.sign1)
-    = e.Sign2 : {
-      (Symbol Char s.sign2)
-        = <Compare s.sign1 s.1 s.sign2 s.2>;
-
-        = <Compare s.sign1 s.1 s.2>
-    };
-    = e.Sign2 : {
-      (Symbol Char s.sign2)
-        = <Compare s.1 s.sign2 s.2>;
-
-        = <Compare s.1 s.2>
-    }
-  } : s.Result
-  = Ok (Symbol Char s.Result);
-
-  e._  = MakeColdCall;
+  e._ = MakeColdCall;
 }
 
 Intrinsic-Chr {
