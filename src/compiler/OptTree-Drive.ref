@@ -387,17 +387,17 @@ OptSentence-Aux {
         (s.DriveMode s.IntrinsicMode) ((e.Left) (e.Right))
         (e.Args) t.FunctionForDrive t.Metatables
       >
-    : e.SolutionPacks
+    : e.SubstitutionPacks
 
     = (e.OptFuncs)
       <MapAccum
         {
-          (e.NewFunctions) ((e.RS^) e.Solutions^ (e.NewFunction))
+          (e.NewFunctions) (e.Substitutions (e.NewFunction))
             = (e.NewFunctions e.NewFunction)
-              <ApplySolutions ((e.Left) (e.Right)) (e.RS) e.Solutions>;
+              <ApplySolutions ((e.Left) (e.Right)) e.Substitutions>;
         }
         (/* new functions */)
-        e.SolutionPacks
+        e.SubstitutionPacks
       >;
 }
 
@@ -405,7 +405,7 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
   t.IntrinsicFunction t.Metatables (e.Args) '__Meta_Mu'
     = <Intrinsic-Mu e.Args t.Metatables>
     : {
-        Ok e.Result = ( (e.Result) (() ()) () );
+        Ok e.Result = ((<eDRIVEN> ':' e.Result) (/* нет новых функций */));
         MakeColdCall = <MakeColdSolution t.IntrinsicFunction e.Args>;
       };
 
@@ -439,9 +439,13 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     : s.TransformFunction
     = <s.TransformFunction e.Args>
     : {
-        Ok e.Result = ( (e.Result) (() ()) () );
+        Ok e.Result = ((<eDRIVEN> ':' e.Result) (/* нет новых функций */));
         MakeColdCall = <MakeColdSolution t.IntrinsicFunction e.Args>;
       };
+}
+
+eDRIVEN {
+  = (TkVariable 'e' DRIVEN 0);
 }
 
 Intrinsic-Mu {
@@ -876,9 +880,11 @@ Intrinsic-Last {
   <OptSentence-MakeSubstitutions
     t.Mode (e.OriginSentence) (e.CallArgs) t.OptFunction t.Metatables
   >
-    == (e.SolutionsPack)*
-  e.SolutionsPack ::= (e.ReplacedExpr) t.Solution* (e.NewFunctions)
-  t.Solution ::= (e.Contractions) (e.Assignments)
+    == (e.Substitutions)*
+  e.Substitutions ::= e.Contractions
+
+  e.Contractions включают в себя сужение e.DRIVEN#0 для подстановки
+  правой части.
 */
 OptSentence-MakeSubstitutions {
   (s.DriveMode Intrinsic)
@@ -929,15 +935,13 @@ MakeColdSolution {
   (s.FuncMode s.ScopeClass (e.Name) s.BodyLabel e.Body) e.Args
     , e.Name : e.Prefix '*' s.Num
     = (
-        ((ColdCallBrackets (Symbol Name e.Name) e.Args))
-        ((/* нет присваиваний */) (/* нет сужений */))
+        (<eDRIVEN> ':' (ColdCallBrackets (Symbol Name e.Name) e.Args))
         ((NewFunction s.ScopeClass (e.Name) s.BodyLabel e.Body))
       );
 
   (s.FuncMode s.ScopeClass (e.Name) s.BodyLabel e.Body) e.Args
     = (
-        ((ColdCallBrackets (Symbol Name e.Name) e.Args))
-        ((/* нет присваиваний */) (/* нет сужений */))
+        (<eDRIVEN> ':' (ColdCallBrackets (Symbol Name e.Name) e.Args))
         (/* нет новых функций */)
       );
 }
@@ -956,20 +960,27 @@ DoOptSentence-MakeSubstitutions {
           В случае решения без сужений просто применяем замены.
         */
         Success (() (e.Assigns))
+          = <ApplyAssigns e.RS (e.Assigns)> : e.CallReplacer
           = e.Substitutions
-            ((e.RS) (() (e.Assigns)) (/* нет новых функций */));
+            ((<eDRIVEN> ':' e.CallReplacer) (/* нет новых функций */));
 
         /*
           «Грязное» решение допускаем только в случае прогонки.
         */
         Success e.M
           , s.Mode : Drive
+          = <Map
+              {
+                ((e.Contrs) (e.Assigns))
+                  = <ApplyAssigns e.RS (e.Assigns)> : e.CallReplacer
+                  = e.Contrs (<eDRIVEN> ':' e.CallReplacer) : e.Contrs^
+                  = (e.Contrs (/* нет новых функций */));
+              }
+              e.M
+            >
+          : e.NewSubsts
           = <DoOptSentence-MakeSubstitutions
-              s.Mode (e.SentenceVars) (e.Args)
-              (
-                e.Substitutions
-                ((e.RS) e.M (/* нет новых функций */))
-              )
+              s.Mode (e.SentenceVars) (e.Args) (e.Substitutions e.NewSubsts)
               (Function
                 GN-Local (<RemainderFuncIncName e.Name>) Sentences e.Rest
               )
@@ -1091,7 +1102,7 @@ FindOptimizedCall-Term {
               e.OptFuncNames-B (e.Name) e.OptFuncNames-E
               (CallBrackets (Symbol Name e.Name) e.Arg)
             )
-            (TkVariable 'e' DRIVEN 0);
+            <eDRIVEN>;
 
 *       Функция, не подлежащая оптимизации. Остужаем вызов.
         (e.OptFuncNames^ None) e.Arg^
@@ -1117,32 +1128,15 @@ FindOptimizedCall-Term {
 }
 
 /*
-  <ApplySolutions ((e.Left) (e.Right)) (e.RS) e.Solutions>
+  <ApplySolutions ((e.Left) (e.Right)) e.Contractions>
     == t.Sentence* t.FunctionInfo
 */
 
 ApplySolutions {
-  ((e.Left) (e.Right)) (e.RS) e.Solutions
-    = <Map
-        {
-          t.S = <ApplySolution ((e.Left) (e.Right)) (e.RS) t.S>
-        }
-        e.Solutions
-      >
-}
-
-/*
-  <ApplySolution ((e.Left) (e.Right)) (e.RS) ((e.Contrs) (e.Assigns))>
-    == t.Sentence
-*/
-
-ApplySolution {
-  ((e.Left) (e.Right)) (e.RS) ((e.Contrs) (e.Assigns))
-    = <ApplyAssigns e.RS (e.Assigns)>: e.CallReplacer
-    = e.Contrs ((TkVariable 'e' DRIVEN 0) ':' e.CallReplacer) : e.Contrs^
+  ((e.Left) (e.Right)) e.Contractions
     = (
-        (<ApplyContractions e.Left (e.Contrs)>)
-        (<ApplyContractions e.Right (e.Contrs)>)
+        (<ApplyContractions e.Left (e.Contractions)>)
+        (<ApplyContractions e.Right (e.Contractions)>)
       );
 }
 
