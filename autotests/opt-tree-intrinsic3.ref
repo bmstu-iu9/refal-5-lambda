@@ -52,6 +52,7 @@ $ENTRY Go {
     = <Last 1 s.x2 (1 2) b c> : (a (1 2) b) c
     = <ConstValue 2> : e.y2
     = <Last 1 e.y2 (1 2) b c> : (a (1 2) b) c
+    = <Last 3 a b c e.y2 z> : (a b) c a z
     = /* empty */
 }
 

@@ -49,4 +49,5 @@ $ENTRY First {
 
 $ENTRY Last {
   1 a (1 2) b c = (a (1 2) b) c;
+  3 e.1 t.2 t.3 t.4 = (e.1) t.2 t.3 t.4;
 }

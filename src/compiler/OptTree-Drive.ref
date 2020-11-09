@@ -864,8 +864,8 @@ FixedLength {
 
 Intrinsic-First {
   (Symbol Number s.N) e.Expr
-    , <FixedLength e.Expr> : True
-    = <First s.N e.Expr> : (e.Prefix) e.Suffix
+    , <First s.N e.Expr> : (e.Prefix) e.Suffix
+    , <FixedLength e.Prefix> : True
     = Ok (Brackets e.Prefix) e.Suffix;
 
   e._ = MakeColdCall;
@@ -873,8 +873,8 @@ Intrinsic-First {
 
 Intrinsic-Last {
   (Symbol Number s.N) e.Expr
-    , <FixedLength e.Expr> : True
-    = <Last s.N e.Expr> : (e.Prefix) e.Suffix
+    , <Last s.N e.Expr> : (e.Prefix) e.Suffix
+    , <FixedLength e.Suffix> : True
     = Ok (Brackets e.Prefix) e.Suffix;
 
   e._ = MakeColdCall;
