@@ -471,13 +471,7 @@ Intrinsic-Mu {
                 >;
 
             (Brackets e.Chars)
-              = <MapAccum
-                  {
-                    (e.Result) (Symbol Char s.1) e.Rest = (e.Result s.1) e.Rest;
-                  }
-                  () e.Chars
-                >
-              : (e.Name) e._
+              , <AllChars e.Chars> : Ok e.Name
               = <MakeSubstitution-FromMetatables
                   t.Metatables (e.MetatableName) (e.Args) (e.MuArg) e.Name
                 >;
@@ -496,6 +490,16 @@ ArithmeticSymbolToFunction {
   '*' = 'Mul';
   '%' = 'Mod';
   '?' = 'Residue'
+}
+
+AllChars {
+  e.Terms = <DoAllChars () e.Terms>;
+}
+
+DoAllChars {
+  (e.Chars) (Symbol Char s.Char) e.Rest = <DoAllChars (e.Chars s.Char) e.Rest>;
+  (e.Chars) /* empty */ = Ok e.Chars;
+  (e.Chars) e.Rest = Fails;
 }
 
 MakeSubstitution-FromMetatables {
