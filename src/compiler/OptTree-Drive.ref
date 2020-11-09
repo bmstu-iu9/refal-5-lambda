@@ -632,6 +632,8 @@ Intrinsic-Div {
   e.Args
     = <ArithmArgs e.Args>
     : {
+        Ok (e._) (Const 0) = MakeColdCall;
+
         Ok (Const e.Left) (Const e.Right)
           = Ok <NumberToSymbols <Div (e.Left) e.Right>>;
 
@@ -645,6 +647,8 @@ Intrinsic-Mod {
   e.Args
     = <ArithmArgs e.Args>
     : {
+        Ok (e._) (Const 0) = MakeColdCall;
+
         Ok (Const e.Left) (Const e.Right)
           = Ok <NumberToSymbols <Mod (e.Left) e.Right>>;
 
@@ -656,6 +660,8 @@ Intrinsic-Divmod {
   e.Args
     = <ArithmArgs e.Args>
     : {
+        Ok (e._) (Const 0) = MakeColdCall;
+
         Ok (Const e.Left) (Const e.Right)
           = <Divmod (e.Left) e.Right> : (e.Q) e.R
           = Ok (Brackets <NumberToSymbols e.Q>) <NumberToSymbols e.R>;

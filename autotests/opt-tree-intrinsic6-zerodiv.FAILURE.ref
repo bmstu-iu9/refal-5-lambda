@@ -1,0 +1,8 @@
+* TREE
+
+$EXTERN Div;
+$INTRINSIC Div;
+
+$ENTRY Go {
+  /* empty */ = <Div 7 0>;
+}
