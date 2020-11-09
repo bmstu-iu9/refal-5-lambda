@@ -595,7 +595,7 @@ NumberToSymbols {
 }
 
 ArithmeticFunctions {
-  = ('Add') ('Div') ('Divmod') ('Mod') ('Mul') ('Sub') ('Compare');
+  = ('Add') ('Div') ('Divmod') ('Mod') ('Mul') ('Sub') ('Numb');
 }
 
 SignedArithmeticResult {
