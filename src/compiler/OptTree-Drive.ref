@@ -593,8 +593,36 @@ ArithmeticSymbolToFunction {
 DoOptSentence-MakeSubstitutions-Intrinsic {
   t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName =
   e.BehaviorName : {
-    '__Meta_Mu' =
-      e.Args : {
+    '__Meta_Mu' = <Intrinsic-Mu t.IntrinsicFunction e.Args t.Metatables>;
+    'Add' = <Intrinsic-Add t.IntrinsicFunction e.Args>;
+    'Sub' = <Intrinsic-Sub t.IntrinsicFunction e.Args>;
+    'Mul' = <Intrinsic-Mul t.IntrinsicFunction e.Args>;
+    'Div' = <Intrinsic-Div t.IntrinsicFunction e.Args>;
+    'Mod' = <Intrinsic-Mod t.IntrinsicFunction e.Args>;
+    'Divmod' = <Intrinsic-Divmod t.IntrinsicFunction e.Args>;
+    'Compare' = <Intrinsic-Compare t.IntrinsicFunction e.Args>;
+    'Chr' = <Intrinsic-Chr t.IntrinsicFunction e.Args>;
+    'Ord' = <Intrinsic-Ord t.IntrinsicFunction e.Args>;
+    'Upper' = <Intrinsic-Upper t.IntrinsicFunction e.Args>;
+    'Lower' = <Intrinsic-Lower t.IntrinsicFunction e.Args>;
+    'Numb' = <Intrinsic-Numb t.IntrinsicFunction e.Args>;
+    'Symb' = <Intrinsic-Symb t.IntrinsicFunction e.Args>;
+    'Implode' = <Intrinsic-Implode t.IntrinsicFunction e.Args>;
+    'Implode_Ext' = <Intrinsic-Implode_Ext t.IntrinsicFunction e.Args>;
+    'Explode' = <Intrinsic-Explode t.IntrinsicFunction e.Args>;
+    'Explode_Ext' = <Intrinsic-Explode_Ext t.IntrinsicFunction e.Args>;
+    'Type' = <Intrinsic-Type t.IntrinsicFunction e.Args>;
+    'Lenw' = <Intrinsic-Lenw t.IntrinsicFunction e.Args>;
+    'First' = <Intrinsic-First t.IntrinsicFunction e.Args>;
+    'Last' = <Intrinsic-Last t.IntrinsicFunction e.Args>;
+
+    e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
+  }
+}
+
+Intrinsic-Mu {
+  t.IntrinsicFunction e.Args t.Metatables
+    = e.Args : {
       t.Function e.MuArg (Symbol Name e.MetatableName) =
       t.Function : {
         (Symbol Name e.Name) = (
@@ -640,8 +668,11 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
 
       e.Other = <MakeColdSolution t.IntrinsicFunction e.Args>
     };
+}
 
-    'Add' = e.Args : {
+Intrinsic-Add {
+  t.IntrinsicFunction e.Args
+    = e.Args : {
       (Brackets e.Numbers1) e.Numbers2,
       <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
         = <Add (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
@@ -688,8 +719,11 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
 
       e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
     };
+}
 
-    'Sub' = e.Args : {
+Intrinsic-Sub {
+  t.IntrinsicFunction e.Args
+    = e.Args : {
       (Brackets e.Numbers1) e.Numbers2,
       <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
         = <Sub (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
@@ -729,8 +763,11 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
 
       e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
     };
+}
 
-    'Mul' = e.Args : {
+Intrinsic-Mul {
+  t.IntrinsicFunction e.Args
+    = e.Args : {
       (Brackets e.Numbers1) e.Numbers2,
       <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
         = <Mul (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
@@ -777,8 +814,11 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
 
       e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
     };
+}
 
-    'Div' = e.Args : {
+Intrinsic-Div {
+  t.IntrinsicFunction e.Args
+    = e.Args : {
         (Brackets e.Numbers1) e.Numbers2,
         <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
         = <Div (<SymbolsToNumber e.Numbers1> ) <SymbolsToNumber e.Numbers2>>
@@ -818,8 +858,11 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
 
         e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
     };
+}
 
-    'Mod' = e.Args : {
+Intrinsic-Mod {
+  t.IntrinsicFunction e.Args
+    = e.Args : {
       (Brackets e.Numbers1) e.Numbers2,
       <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
         = <Mod (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
@@ -853,8 +896,11 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
 
       e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
     };
+}
 
-    'Divmod' = e.Args : {
+Intrinsic-Divmod {
+  t.IntrinsicFunction e.Args
+    = e.Args : {
       (Brackets e.Numbers1) e.Numbers2,
       <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
         = <Divmod (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
@@ -906,8 +952,11 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
 
       e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
     };
+}
 
-    'Compare' = e.Args : {
+Intrinsic-Compare {
+  t.IntrinsicFunction e.Args
+    = e.Args : {
       (Brackets e.Numbers1) e.Numbers2,
       <Number-Check e.Numbers1> : True, <Number-Check e.Numbers2> : True
       = <Compare (<SymbolsToNumber e.Numbers1>) <SymbolsToNumber e.Numbers2>>
@@ -938,32 +987,54 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
 
       e._  = <MakeColdSolution t.IntrinsicFunction e.Args>
     };
+}
 
-    'Chr', <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Number> : True
+Intrinsic-Chr {
+  t.IntrinsicFunction e.Args
+    , <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Number> : True
     = <StaticSubstitution (e.Args) ('Chr') &Chr Number Char> : e.Substitution
     = (
       (e.Substitution) (()()) ()
     );
 
-    'Ord', <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
+  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+}
+
+Intrinsic-Ord {
+  t.IntrinsicFunction e.Args
+    , <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
     = <StaticSubstitution (e.Args) ('Ord') &Ord Char Number> : e.Substitution
     = (
       (e.Substitution) (()()) ()
     );
 
-    'Upper', <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
+  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+}
+
+Intrinsic-Upper {
+  t.IntrinsicFunction e.Args
+    , <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
     = <StaticSubstitution (e.Args) ('Upper') &Upper Char Char> : e.Substitution
     = (
       (e.Substitution) (()()) ()
     );
 
-    'Lower', <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
+  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+}
+
+Intrinsic-Lower {
+  t.IntrinsicFunction e.Args
+    , <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
     = <StaticSubstitution (e.Args) ('Lower') &Lower Char Char> : e.Substitution
     = (
       (e.Substitution) (()()) ()
     );
 
-    'Numb'
+  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+}
+
+Intrinsic-Numb {
+  t.IntrinsicFunction e.Args
     , <CheckArgs-Intrinsic (e.Args) Char> : True
       = <NodeToChar e.Args> : e.Chars
       = <NumberToSymbols <Numb e.Chars>> : e.Result
@@ -971,7 +1042,11 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
         (e.Result) (()()) ()
       );
 
-    'Symb'
+  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+}
+
+Intrinsic-Symb {
+  t.IntrinsicFunction e.Args
     , <CheckArgs-Intrinsic-Symb e.Args> : True
       = <Symb <SymbolsToNumber e.Args>> : e.Numbers
       = <CharToNode e.Numbers> : e.Result
@@ -979,7 +1054,11 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
         (e.Result) (()()) ()
       );
 
-    'Implode'
+  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+}
+
+Intrinsic-Implode {
+  t.IntrinsicFunction e.Args
     , <CheckArgs-Intrinsic (e.Args) Char> : True
       = <NodeToChar e.Args> : e.Chars
       = <Implode e.Chars> : s.Ident e.NonIdent
@@ -991,14 +1070,22 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
         (e.Result <CharToNode e.NonIdent>) (()()) ()
       );
 
-    'Implode_Ext'
+  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+}
+
+Intrinsic-Implode_Ext {
+  t.IntrinsicFunction e.Args
     , <CheckArgs-Intrinsic (e.Args) Char> : True
       = <NodeToChar e.Args> : e.Chars
       = (
         ((Symbol Identifier e.Chars)) (()()) ()
       );
 
-    'Explode'
+  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+}
+
+Intrinsic-Explode {
+  t.IntrinsicFunction e.Args
     , <CheckArgs-Intrinsic (e.Args) Identifier> : True
       = e.Args : {
         (Symbol Identifier e.Name) = <CharToNode e.Name>
@@ -1007,7 +1094,11 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
         (e.Result) (()()) ()
       );
 
-    'Explode_Ext'
+  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+}
+
+Intrinsic-Explode_Ext {
+  t.IntrinsicFunction e.Args
     , <CheckArgs-Intrinsic (e.Args) Identifier> : True
       = e.Args : {
         (Symbol Identifier e.Name) = <CharToNode e.Name>
@@ -1016,7 +1107,11 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
         (e.Result) (()()) ()
       );
 
-    'Type'
+  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+}
+
+Intrinsic-Type {
+  t.IntrinsicFunction e.Args
     = e.Args : {
       (Symbol Number s.Num) e.Rest =
       <Type s.Num> : s.Type s.SubType e._
@@ -1071,15 +1166,21 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
 
       e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
     };
+}
 
-    'Lenw'
+Intrinsic-Lenw {
+  t.IntrinsicFunction e.Args
     , <CheckArgs-Intrinsic-EVariable e.Args> : True
     = <Lenw e.Args> : s.Len e._
     = (
       ((Symbol Number s.Len) e.Args) (()()) ()
     );
 
-    'First'
+  t.IntrinsicFunction e.Args = <MakeColdSolution t.IntrinsicFunction e.Args>;
+}
+
+Intrinsic-First {
+  t.IntrinsicFunction e.Args
     = e.Args : {
       (Symbol Number s.N) e.Expr
       , <CheckArgs-Intrinsic-EVariable e.Expr> : True
@@ -1090,8 +1191,10 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
 
       e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
     };
+}
 
-    'Last'
+Intrinsic-Last {
+  t.IntrinsicFunction e.Args
     = e.Args : {
       (Symbol Number s.N) e.Expr
       , <CheckArgs-Intrinsic-EVariable e.Expr> : True
@@ -1102,9 +1205,6 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
 
       e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
     };
-
-    e._ = <MakeColdSolution t.IntrinsicFunction e.Args>
-  }
 }
 
 /*
