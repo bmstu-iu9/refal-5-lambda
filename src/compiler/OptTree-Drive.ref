@@ -428,7 +428,7 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
         'Implode' = &Intrinsic-Implode;
         'Implode_Ext' = &Intrinsic-Implode_Ext;
         'Explode' = &Intrinsic-Explode;
-        'Explode_Ext' = &Intrinsic-Explode_Ext;
+        'Explode_Ext' = &Intrinsic-Explode;
         'Type' = &Intrinsic-Type;
         'Lenw' = &Intrinsic-Lenw;
         'First' = &Intrinsic-First;
@@ -758,9 +758,9 @@ Intrinsic-Lower {
 Intrinsic-Numb {
   e.Args
     , <CheckArgs-Intrinsic (e.Args) Char> : True
-      = <NodeToChar e.Args> : e.Chars
-      = <NumberToSymbols <Numb e.Chars>> : e.Result
-      = Ok e.Result;
+    = <NodeToChar e.Args> : e.Chars
+    = <NumberToSymbols <Numb e.Chars>> : e.Result
+    = Ok e.Result;
 
   e.Args = MakeColdCall;
 }
@@ -783,19 +783,12 @@ NodeToChar {
 
 Intrinsic-Symb {
   e.Args
-    , <CheckArgs-Intrinsic-Symb e.Args> : True
-      = <Symb <SymbolsToNumber e.Args>> : e.Numbers
-      = <CharToNode e.Numbers> : e.Result
-      = Ok e.Result;
+    , <ArithmOneArg e.Args> : Ok Const e._
+    = <Symb <SymbolsToNumber e.Args>> : e.Numbers
+    = <CharToNode e.Numbers> : e.Result
+    = Ok e.Result;
 
   e.Args = MakeColdCall;
-}
-
-CheckArgs-Intrinsic-Symb {
-  (Symbol Char e.Name) e.Rest = <CheckArgs-Intrinsic-Symb e.Rest>;
-  (Symbol Number e.Name) e.Rest = <CheckArgs-Intrinsic-Symb e.Rest>;
-  t.Other e.Rest = False;
-  = True;
 }
 
 CharToNode {
@@ -805,13 +798,15 @@ CharToNode {
 Intrinsic-Implode {
   e.Args
     , <CheckArgs-Intrinsic (e.Args) Char> : True
-      = <NodeToChar e.Args> : e.Chars
-      = <Implode e.Chars> : s.Ident e.NonIdent
-      = s.Ident : {
+    = <NodeToChar e.Args> : e.Chars
+    = <Implode e.Chars> : s.Ident e.NonIdent
+    = s.Ident
+    : {
         0 = (Symbol Number 0);
         e._ = (Symbol Identifier <Explode s.Ident>)
-      } : e.Result
-      = Ok e.Result <CharToNode e.NonIdent>;
+      }
+    : e.Result
+    = Ok e.Result <CharToNode e.NonIdent>;
 
   e.Args = MakeColdCall;
 }
@@ -819,110 +814,68 @@ Intrinsic-Implode {
 Intrinsic-Implode_Ext {
   e.Args
     , <CheckArgs-Intrinsic (e.Args) Char> : True
-      = <NodeToChar e.Args> : e.Chars
-      = Ok (Symbol Identifier e.Chars);
+    = <NodeToChar e.Args> : e.Chars
+    = Ok (Symbol Identifier e.Chars);
 
   e.Args = MakeColdCall;
 }
 
 Intrinsic-Explode {
-  e.Args
-    , <CheckArgs-Intrinsic (e.Args) Identifier> : True
-      = e.Args : {
-        (Symbol Identifier e.Name) = <CharToNode e.Name>
-      } : e.Result
-      = Ok e.Result;
+  (Symbol Identifier e.Name) = Ok <CharToNode e.Name>;
 
-  e.Args = MakeColdCall;
-}
-
-Intrinsic-Explode_Ext {
-  e.Args
-    , <CheckArgs-Intrinsic (e.Args) Identifier> : True
-      = e.Args : {
-        (Symbol Identifier e.Name) = <CharToNode e.Name>
-      } : e.Result
-      = Ok e.Result;
-
-  e.Args = MakeColdCall;
+  e._ = MakeColdCall;
 }
 
 Intrinsic-Type {
-  e.Args
-    = e.Args : {
-      (Symbol Number s.Num) e.Rest =
-      <Type s.Num> : s.Type s.SubType e._
-      = <CharToNode s.Type s.SubType> : e.Result
-      = Ok e.Result e.Args;
+  (CallBrackets e._) e._ = MakeColdCall;
 
-      (Symbol Char s.Char) e.Rest =
-      <Type s.Char> : s.Type s.SubType e._
-      = <CharToNode s.Type s.SubType> : e.Result
-      = Ok e.Result e.Args;
+  t.Term e.Rest
+    = t.Term
+    : {
+        (Symbol Number s._) = 'N0';
+        (Symbol Char s.Char) = <Type s.Char>;
+        (Symbol Identifier e.Name) = <Type <Implode_Ext e.Name>>;
+        (Symbol Name e._) = 'Fg';
+        (ClosureBrackets e._) = 'Fc';
+        (Brackets e._) = 'B0';
+        (ADT-Brackets (e._) e._) = 'Ba';
+      }
+    : s.Type s.SubType e._
+    = Ok (Symbol Char s.Type) (Symbol Char s.SubType) t.Term e.Rest;
 
-      (Symbol Identifier e.Name) e.Rest
-      = <Implode_Ext e.Name> : s.Ident
-      = <Type s.Ident> : s.Type s.SubType e._
-      = <CharToNode s.Type s.SubType> : e.Result
-      = Ok e.Result e.Args;
-
-      (Symbol Name e.Name) e.Rest
-      = <CharToNode 'Fg'> : e.Result
-      = Ok e.Result e.Args;
-
-      (ClosureBrackets e.Body) e.Rest
-      = <CharToNode 'Fc'> : e.Result
-      = Ok e.Result e.Args;
-
-      (Brackets e.Body) e.Rest
-      = <CharToNode 'B0'> : e.Result
-      = Ok e.Result e.Args;
-
-      (ADT-Brackets e.Body) e.Rest
-      = <CharToNode 'Ba'> : e.Result
-      = Ok e.Result e.Args;
-
-      = <CharToNode '*0'> : e.Result
-      = Ok e.Result e.Args;
-
-      e._ = MakeColdCall;
-    };
+  /* empty */ = Ok (Symbol Char '*') (Symbol Char '0');
 }
 
 Intrinsic-Lenw {
   e.Args
-    , <CheckArgs-Intrinsic-EVariable e.Args> : True
-    = <Lenw e.Args> : s.Len e._
+    , <FixedLength e.Args> : True
+    = <Lenw e.Args> : s.Len e.Args^
     = Ok (Symbol Number s.Len) e.Args;
 
-  e.Args = MakeColdCall;
+  e._ = MakeColdCall;
 }
 
-CheckArgs-Intrinsic-EVariable {
-  (Symbol s.SymbolName e.Name) e.Rest
-    = <CheckArgs-Intrinsic-EVariable e.Rest>;
-  (Brackets e.Body) e.Rest
-    = <CheckArgs-Intrinsic-EVariable e.Rest>;
-  (TkVariable s.Mode e.VarName) e.Rest, <OneOf s.Mode 't' 's'> : True
-    = <CheckArgs-Intrinsic-EVariable e.Rest>;
-  t.Other e.Rest = False;
-  = True;
+FixedLength {
+  e._ (TkVariable 'e' e._) e._ = False;
+  e._ (CallBrackets e._) e._ = False;
+
+  e._ = True;
 }
 
 Intrinsic-First {
   (Symbol Number s.N) e.Expr
-  , <CheckArgs-Intrinsic-EVariable e.Expr> : True
-  = <First s.N e.Expr> : (e.Prefix) e.Suffix
-  = Ok (Brackets e.Prefix) e.Suffix;
+    , <FixedLength e.Expr> : True
+    = <First s.N e.Expr> : (e.Prefix) e.Suffix
+    = Ok (Brackets e.Prefix) e.Suffix;
 
   e._ = MakeColdCall;
 }
 
 Intrinsic-Last {
   (Symbol Number s.N) e.Expr
-  , <CheckArgs-Intrinsic-EVariable e.Expr> : True
-  = <Last s.N e.Expr> : (e.Prefix) e.Suffix
-  = Ok (Brackets e.Prefix) e.Suffix;
+    , <FixedLength e.Expr> : True
+    = <Last s.N e.Expr> : (e.Prefix) e.Suffix
+    = Ok (Brackets e.Prefix) e.Suffix;
 
   e._ = MakeColdCall;
 }
