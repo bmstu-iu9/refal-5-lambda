@@ -1117,9 +1117,8 @@ FindOptimizedCall-Term {
 }
 
 /*
-  <ApplySolutions
-    ((e.Left) (e.Right)) (e.LS) (e.Solutions)
-  > == t.Sentence* t.FunctionInfo
+  <ApplySolutions ((e.Left) (e.Right)) (e.RS) e.Solutions>
+    == t.Sentence* t.FunctionInfo
 */
 
 ApplySolutions {
@@ -1133,21 +1132,22 @@ ApplySolutions {
 }
 
 /*
-  <ApplySolution
-    ((e.Left) (e.Right)) (e.LS) (e.Contrs) (e.Assigns)
-  > == t.Sentence
+  <ApplySolution ((e.Left) (e.Right)) (e.RS) ((e.Contrs) (e.Assigns))>
+    == t.Sentence
 */
 
 ApplySolution {
   ((e.Left) (e.Right)) (e.RS) ((e.Contrs) (e.Assigns))
     = <ApplyAssigns e.RS (e.Assigns)>: e.CallReplacer
-    = e.Contrs ((TkVariable 'e' DRIVEN 0) ':' e.CallReplacer): e.Contrs^
-    = ((<ApplyContractions e.Left (e.Contrs)>)
-       (<ApplyContractions e.Right (e.Contrs)>));
+    = e.Contrs ((TkVariable 'e' DRIVEN 0) ':' e.CallReplacer) : e.Contrs^
+    = (
+        (<ApplyContractions e.Left (e.Contrs)>)
+        (<ApplyContractions e.Right (e.Contrs)>)
+      );
 }
 
 /*
-  <ApplyAssigns (e.Expr) (e.Assigns)> == e.Expr^
+  <ApplyAssigns e.Expr (e.Assigns)> == e.Expr^
 */
 
 ApplyAssigns {
