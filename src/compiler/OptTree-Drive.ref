@@ -772,28 +772,11 @@ Intrinsic-Lower {
 
 Intrinsic-Numb {
   e.Args
-    , <CheckArgs-Intrinsic (e.Args) Char> : True
-    = <NodeToChar e.Args> : e.Chars
+    , <AllChars e.Args> : Ok e.Chars
     = <NumberToSymbols <Numb e.Chars>> : e.Result
     = Ok e.Result;
 
   e.Args = MakeColdCall;
-}
-
-CheckArgs-Intrinsic {
-  (e.Args) s.SymbolName
-    = e.Args
-    : {
-        (Symbol s.SymbolName e.Name) e.Rest
-          = <CheckArgs-Intrinsic (e.Rest) s.SymbolName>;
-
-        t.Other e.Rest = False;
-        = True;
-      }
-}
-
-NodeToChar {
-  e.Node = <Map { (Symbol Char s.a) = s.a } e.Node>
 }
 
 Intrinsic-Symb {
@@ -812,8 +795,7 @@ CharToNode {
 
 Intrinsic-Implode {
   e.Args
-    , <CheckArgs-Intrinsic (e.Args) Char> : True
-    = <NodeToChar e.Args> : e.Chars
+    , <AllChars e.Args> : Ok e.Chars
     = <Implode e.Chars> : s.Ident e.NonIdent
     = s.Ident
     : {
@@ -827,10 +809,7 @@ Intrinsic-Implode {
 }
 
 Intrinsic-Implode_Ext {
-  e.Args
-    , <CheckArgs-Intrinsic (e.Args) Char> : True
-    = <NodeToChar e.Args> : e.Chars
-    = Ok (Symbol Identifier e.Chars);
+  e.Args, <AllChars e.Args> : Ok e.Chars = Ok (Symbol Identifier e.Chars);
 
   e.Args = MakeColdCall;
 }
