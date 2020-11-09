@@ -446,41 +446,38 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
 
 Intrinsic-Mu {
   e.Args t.Metatables
-    = e.Args
+    , e.Args : t.Function e.MuArg (Symbol Name e.MetatableName)
+    = t.Function
     : {
-      t.Function e.MuArg (Symbol Name e.MetatableName)
-        = t.Function
-        : {
-            (Symbol Name e.Name)
-              = Ok (CallBrackets (Symbol Name e.Name) e.MuArg);
+        (Symbol Name e.Name)
+          = Ok (CallBrackets (Symbol Name e.Name) e.MuArg);
 
-            (ClosureBrackets e.Body)
-              = Ok (CallBrackets (ClosureBrackets e.Body) e.MuArg);
+        (ClosureBrackets e.Body)
+          = Ok (CallBrackets (ClosureBrackets e.Body) e.MuArg);
 
-            (Symbol Identifier s.Name)
-              , <ArithmeticSymbolToFunction s.Name> : True e.FunctionName
-              = Ok (CallBrackets (Symbol Name e.FunctionName) e.MuArg);
+        (Symbol Identifier s.Name)
+          , <ArithmeticSymbolToFunction s.Name> : True e.FunctionName
+          = Ok (CallBrackets (Symbol Name e.FunctionName) e.MuArg);
 
-            (Symbol Char s.Name)
-              , <ArithmeticSymbolToFunction s.Name> : True e.FunctionName
-              = Ok (CallBrackets (Symbol Name e.FunctionName) e.MuArg);
+        (Symbol Char s.Name)
+          , <ArithmeticSymbolToFunction s.Name> : True e.FunctionName
+          = Ok (CallBrackets (Symbol Name e.FunctionName) e.MuArg);
 
-            (Symbol Identifier e.Name)
-              = <MakeSubstitution-FromMetatables
-                  t.Metatables (e.MetatableName) (e.Args) (e.MuArg) e.Name
-                >;
+        (Symbol Identifier e.Name)
+          = <MakeSubstitution-FromMetatables
+              t.Metatables (e.MetatableName) (e.MuArg) e.Name
+            >;
 
-            (Brackets e.Chars)
-              , <AllChars e.Chars> : Ok e.Name
-              = <MakeSubstitution-FromMetatables
-                  t.Metatables (e.MetatableName) (e.Args) (e.MuArg) e.Name
-                >;
+        (Brackets e.Chars)
+          , <AllChars e.Chars> : Ok e.Name
+          = <MakeSubstitution-FromMetatables
+              t.Metatables (e.MetatableName) (e.MuArg) e.Name
+            >;
 
-            e._ = MakeColdCall;
-          };
+        t._ = MakeColdCall;
+      };
 
-      e.Other = MakeColdCall;
-    };
+  e._ = MakeColdCall;
 }
 
 ArithmeticSymbolToFunction {
@@ -505,18 +502,17 @@ DoAllChars {
 }
 
 MakeSubstitution-FromMetatables {
-  t.Metatables (e.MetatableName) (e.Args) (e.MuArg) e.Name
+  t.Metatables (e.MetatableName) (e.MuArg) e.Name
     = t.Metatables
     : {
-        (
-          e._
-          (Metatable
-            s.ScopeClass (e.MetatableName) Metatable
-            e.Left ((Symbol Identifier e.Name) t.SymbolName) e.Right
-          )
-          e._
-        )
-          = Ok (CallBrackets t.SymbolName e.MuArg);
+        (e._ (Metatable s._ (e.MetatableName) Metatable e.Map) e._)
+          = e.Map
+          : {
+              e._ ((Symbol Identifier e.Name) t.Pointer) e._
+                = Ok (CallBrackets t.Pointer e.MuArg);
+
+              e.Other = MakeColdCall;
+            };
 
         e.Other = MakeColdCall;
       }
@@ -895,7 +891,7 @@ OptSentence-MakeSubstitutions {
 
   t.Mode
   ((e.Left) (e.Expr)) (e.Args)
-  t.Function t._
+  t.Function t.Metatables
     /* Активные вызовы игнорируем */
     , <IsPassiveCall e.Args> : False
 
@@ -903,7 +899,7 @@ OptSentence-MakeSubstitutions {
 
   (s.DriveMode s.IntrinsicMode)
   ((e.Left) (e.Expr)) (e.Args)
-  (s.FuncMode s.ScopeClass (e.Name) Sentences e.Body) t._
+  (s.FuncMode s.ScopeClass (e.Name) Sentences e.Body) t.Metatables
     , <OneOf s.DriveMode Drive Inline> : True
 
     /* Если левая часть не L-выражение, допускаем только встраивание */
@@ -918,14 +914,14 @@ OptSentence-MakeSubstitutions {
     = <DecreaseMode s.DriveMode s.FuncMode> : s.DriveMode^
 
     = <DoOptSentence-MakeSubstitutions
-      s.DriveMode (e.SentenceVars) (e.Args)
+        s.DriveMode (e.SentenceVars) (e.Args)
         (/* substitutions */)
         (Function s.ScopeClass (e.Name) Sentences e.Body)
       >;
 
   t.Mode
   ((e.Left) (e.Expr)) (e.Args)
-  t.Function t._
+  t.Function t.Metatables
     = <MakeColdSolution t.Function e.Args>;
 }
 
