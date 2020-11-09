@@ -558,10 +558,16 @@ Intrinsic-Add {
 }
 
 Number-Check {
-  (Symbol Char s.Char) e.Rest = <Number-Check e.Rest>;
-  (Symbol Number s.n) e.Rest = <Number-Check e.Rest>;
-  t.Other e.Rest = False;
-  = True
+  (Symbol Char '+') e.Rest = <Number-Check-AllNumbers e.Rest>;
+  (Symbol Char '-') e.Rest = <Number-Check-AllNumbers e.Rest>;
+
+  e.Rest = <Number-Check-AllNumbers e.Rest>;
+}
+
+Number-Check-AllNumbers {
+  (Symbol Number s._) = True;
+  (Symbol Number s._) e.Rest = <Number-Check-AllNumbers e.Rest>;
+  e._ = False;
 }
 
 SymbolsToNumber {
