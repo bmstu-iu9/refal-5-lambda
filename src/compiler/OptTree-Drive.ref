@@ -681,6 +681,19 @@ Intrinsic-Compare {
   e._ = MakeColdCall;
 }
 
+/*
+  TODO: уточнить семантику функций Chr, Ord, Upper, Lower.
+
+  Функции не должны увеличивать число шагов рефал-машины.
+
+  Сейчас:
+  <Chr 48 e.X 48 <F> 48> → '@' <Chr e.X> '@' <Chr <F>> '@'
+  А должно быть:
+  <Chr 48 e.X 48 <F> 48> → '@' <Chr e.X 48 <F>> '@'
+
+  Кроме того, нужно поддерживать спуск внутрь структурных скобок
+  (сейчас не поддерживается).
+*/
 Intrinsic-Chr {
   e.Args
     , <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Number> : True
