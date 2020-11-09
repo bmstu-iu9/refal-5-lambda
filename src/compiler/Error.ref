@@ -16,7 +16,6 @@ $EXTERN Config-AllWarningIds;
   s.WarningId ::=
       screening
     | nul-in-compound
-    | init-final-entry
 */
 $ENUM ErrorList;
 

@@ -486,7 +486,7 @@ CheckDeclarations {
           &FindInvalidForwards
           &FindInvalidDriveInline
           &CheckRedefinitions
-          (&FindFinalInitEntry (e.WarningIds))
+          &FindFinalInitEntry
         >
       >
 }
@@ -634,19 +634,18 @@ FindInvalidForwards {
 }
 
 FindFinalInitEntry {
-  (e._ init-final-entry e._) e.Declarations
+  e.Declarations
     = <Map
         {
           (Define t.ScrPosDefine GN-Entry e.Name)
             , <OneOf (e.Name) ('__FINAL') ('__INIT')> : True
             = (Define t.ScrPosDefine GN-Entry e.Name)
-              (Warning init-final-entry t.ScrPosDefine InitFinalEntry e.Name);
+              (Error t.ScrPosDefine InitFinalEntry e.Name);
 
           t.OtherDeclaraion = t.OtherDeclaraion
         }
         e.Declarations
       >;
-  (e.WarningIds) e.Declarations = e.Declarations
 }
 
 CheckRedefinitions {
