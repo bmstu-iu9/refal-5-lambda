@@ -44,25 +44,13 @@ $ENTRY OptTree-Drive-Prepare {
     = <UpdateDriveInfo s.OptDrive s.OptIntrinsic (e.EmptyInfo) e.AST>;
 }
 
-/**
-  <OptTree-Drive (s.OptDrive s.OptIntrinsic) e.AST> == e.AST^
-*/
-$ENTRY OptTree-Drive {
-  (NoOpt NoOpt) e.AST = e.AST;
-
-  (s.OptDrive s.OptIntrinsic) e.AST-B (DriveInfo e.DriveInfo) e.AST-E
-    = <DriveInlineOptimizerTick
-        (e.DriveInfo) e.AST-B e.AST-E s.OptDrive s.OptIntrinsic
-      >
-}
-
 /* Функция генерирует имена остаточных прогоняемых функций */
 
 GenRemainderFuncNames {
-  s.Label e.Name 0 = /* пусто */;
+  s.Label e.Name 0 = (s.Label e.Name);
 
   s.Label e.Name s.LastCount
-    , e.Name
+    = e.Name
     : {
         e.ProperName SUF e.Suffix = e.Name '*' s.LastCount;
         e.ProperName = e.ProperName SUF '*' s.LastCount;
@@ -116,16 +104,15 @@ UpdateDriveInfo {
             (e.OptNames-B (Metatable e.Name) e.OptNames-E)
           )
           (Function s.ScopeClass (e.Name) Metatable e.Body)
-            =
-            (
-              (
-                e.OptFunctions
-                (Metatable s.ScopeClass (e.Name) Metatable e.Body)
+            = (
+                (
+                  e.OptFunctions
+                  (Metatable s.ScopeClass (e.Name) Metatable e.Body)
+                )
+                (e.RemNames (Metatable e.Name))
+                (e.OptNames-B e.OptNames-E)
               )
-              (e.RemNames (Metatable e.Name))
-              (e.OptNames-B e.OptNames-E)
-            )
-            (Function s.ScopeClass (e.Name) Metatable e.Body);
+              (Function s.ScopeClass (e.Name) Metatable e.Body);
 
           (
             (e.OptFunctions) (e.RemNames)
@@ -141,15 +128,13 @@ UpdateDriveInfo {
                 )
                 (
                   e.RemNames
-                  (s.Label e.Name)
                   <GenRemainderFuncNames s.Label e.Name s.CountSentences>
                 )
                 (e.OptNames-B e.OptNames-E)
               )
               (Function s.ScopeClass (e.Name) Sentences e.Sentences);
 
-          (e.OptInfo) t.Other
-            = (e.OptInfo) t.Other;
+          (e.OptInfo) t.Other = (e.OptInfo) t.Other;
         }
         (() () (e.OptNames)) e.AST
       >
@@ -176,6 +161,18 @@ SetNames-Reject {
       <SetNames-Reject (e.Minuent-E) (e.Subtr-B (s.Label e.Name) e.Subtr-E)>;
 
   (e.Minuent) (e.Subtrahend) = e.Minuent;
+}
+
+/**
+  <OptTree-Drive (s.OptDrive s.OptIntrinsic) e.AST> == e.AST^
+*/
+$ENTRY OptTree-Drive {
+  (NoOpt NoOpt) e.AST = e.AST;
+
+  (s.OptDrive s.OptIntrinsic) e.AST-B (DriveInfo e.DriveInfo) e.AST-E
+    = <DriveInlineOptimizerTick
+        (e.DriveInfo) e.AST-B e.AST-E s.OptDrive s.OptIntrinsic
+      >
 }
 
 OptSwitch {

@@ -11,9 +11,7 @@ $EXTERN ExtractVariables-Expr;
 
 
 /**
-  <OptTree-AutoMarkup-Spec (e.AST)> == e.AST
-
-  e.SpecPattern ::= e.Pattern
+  <OptTree-AutoMarkup-Spec e.AST> == e.AST
 */
 
 $ENTRY OptTree-AutoMarkup-Spec {
