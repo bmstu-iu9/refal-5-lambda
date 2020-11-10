@@ -37,24 +37,7 @@ $ENTRY OptTree-Drive-Prepare {
 
   (s.OptDrive s.OptIntrinsic)
   e.AST-B (DriveInfo e.DriveInfo) e.AST-E
-    = <UpdateDriveInfo s.OptDrive s.OptIntrinsic (e.DriveInfo) e.AST-B e.AST-E>
-
-    /*
-      TODO: УДАЛИТЬ ЭТОТ КОСТЫЛЬ!!!
-
-      Функция UpdateDriveInfo дублирует имена оптимизируемых функций,
-      из-за чего большой цикл «разметка-оптимизация-разметка» не завершается
-      (на каждой итерации в DriveInfo появляются новые дубликаты тех же имён).
-
-      Правильнее исправить функцию UpdateDriveInfo, однако она была обновлена
-      в ветке cstyler-intrinsic, которая ещё не объединена с master.
-      Если исправить логику в UpdateDriveInfo, то обнаружатся конфликты.
-
-      Поэтому вносим временный костыль, который будет удалён после слияния
-      cstyler-intrinsic и master.
-    */
-    : (DriveInfo (e.Names) e.Functions) e.AST
-    = (DriveInfo (<Unique e.Names>) <Unique e.Functions>) e.AST;
+    = <UpdateDriveInfo s.OptDrive s.OptIntrinsic (e.DriveInfo) e.AST-B e.AST-E>;
 
   (s.OptDrive s.OptIntrinsic) e.AST
     = (/* no names */) /* no info */ : e.EmptyInfo
@@ -76,16 +59,17 @@ $ENTRY OptTree-Drive {
 /* Функция генерирует имена остаточных прогоняемых функций */
 
 GenRemainderFuncNames {
-  e.Name 0 = /* пусто */;
+  s.Label e.Name 0 = /* пусто */;
 
-  e.Name s.LastCount
+  s.Label e.Name s.LastCount
     , e.Name
     : {
         e.ProperName SUF e.Suffix = e.Name '*' s.LastCount;
         e.ProperName = e.ProperName SUF '*' s.LastCount;
       }
     : e.NewName
-    = <GenRemainderFuncNames e.Name <Dec s.LastCount>> (e.NewName);
+    = <GenRemainderFuncNames s.Label e.Name <Dec s.LastCount>>
+       (s.Label e.NewName);
 }
 
 UpdateDriveInfo {
@@ -138,7 +122,7 @@ UpdateDriveInfo {
                 e.OptFunctions
                 (Metatable s.ScopeClass (e.Name) Metatable e.Body)
               )
-              (e.RemNames (e.Name))
+              (e.RemNames (Metatable e.Name))
               (e.OptNames-B e.OptNames-E)
             )
             (Function s.ScopeClass (e.Name) Metatable e.Body);
@@ -148,6 +132,7 @@ UpdateDriveInfo {
             (e.OptNames-B (s.Label e.Name) e.OptNames-E)
           )
           (Function s.ScopeClass (e.Name) Sentences e.Sentences)
+            , Inline Drive : e._ s.Label e._
             = <Lenw e.Sentences> : s.CountSentences e.Sentences^
             = (
                 (
@@ -156,8 +141,8 @@ UpdateDriveInfo {
                 )
                 (
                   e.RemNames
-                  (e.Name)
-                  <GenRemainderFuncNames e.Name s.CountSentences>
+                  (s.Label e.Name)
+                  <GenRemainderFuncNames s.Label e.Name s.CountSentences>
                 )
                 (e.OptNames-B e.OptNames-E)
               )
@@ -178,7 +163,7 @@ UpdateDriveInfo {
                   e.AccFuncs
                   (Intrinsic GN-Local (e.Name) Intrinsic e.Name)
                 )
-                (e.AccNames (e.Name))
+                (e.AccNames (Intrinsic e.Name))
               );
 
           ((e.AccFuncs) (e.AccNames)) t.Other = ((e.AccFuncs) (e.AccNames))
@@ -1097,9 +1082,9 @@ FindOptimizedCall-Term {
     = <FindOptimizedCall (e.OptFuncNames) e.Arg>
     : {
 *       Вызов оптимизируемой функции, извлекаем его наружу
-        (e.OptFuncNames-B (e.Name) e.OptFuncNames-E None) e.Arg^
+        (e.OptFuncNames-B (s.Label e.Name) e.OptFuncNames-E None) e.Arg^
           = (
-              e.OptFuncNames-B (e.Name) e.OptFuncNames-E
+              e.OptFuncNames-B (s.Label e.Name) e.OptFuncNames-E
               (CallBrackets (Symbol Name e.Name) e.Arg)
             )
             <eDRIVEN>;
