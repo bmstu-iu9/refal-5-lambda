@@ -829,8 +829,14 @@ ExtractNested-Result-Term {
     : {
         /* Случай функции без контекста, нативной функции в том числе */
         (/* нет захваченных переменных */) e.Body^
+          = e.Body
+          : {
+              Sentences e.Sentences = (Drive e.ClosureName);
+              NativeBody e.NativeBody = /* нет меток */;
+            }
+          : e.DriveLabelOpt
           = (Function GN-Local (e.ClosureName) e.Body)
-            (Drive e.ClosureName)
+            e.DriveLabelOpt
             (e.BorrowedVars)
             (Symbol Name e.ClosureName);
 

@@ -1,0 +1,12 @@
+$ENTRY Go {
+  = <Native>
+}
+
+$DRIVE Native;
+
+Native {
+%%
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
