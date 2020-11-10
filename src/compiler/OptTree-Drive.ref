@@ -410,7 +410,7 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
         'First' = &Intrinsic-First;
         'Last' = &Intrinsic-Last;
 
-        e._ = &MakeColdSolution
+        e._ = { e._ = MakeColdCall };
       }
     : s.TransformFunction
     = <s.TransformFunction e.Args>
