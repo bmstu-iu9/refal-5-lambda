@@ -47,112 +47,110 @@ $ENTRY OptTree-Drive-Prepare {
 /* Функция генерирует имена остаточных прогоняемых функций */
 
 GenRemainderFuncNames {
-  s.Label e.Name 0 = (s.Label e.Name);
+  s.Label e.Name s.End s.End = (s.Label <AddStarSuffix e.Name s.End>);
 
-  s.Label e.Name s.LastCount
-    = e.Name
-    : {
-        e.ProperName SUF e.Suffix = e.Name '*' s.LastCount;
-        e.ProperName = e.ProperName SUF '*' s.LastCount;
-      }
-    : e.NewName
-    = <GenRemainderFuncNames s.Label e.Name <Dec s.LastCount>>
-       (s.Label e.NewName);
+  s.Label e.Name s.Cur s.End
+    = (s.Label <AddStarSuffix e.Name s.Cur>)
+      <GenRemainderFuncNames s.Label e.Name <+ 1 s.Cur> s.End>;
+}
+
+AddStarSuffix {
+  e.Name 0 = e.Name;
+  e.Name SUF e.Suffix s.Count = e.Name SUF e.Suffix '*' s.Count;
+  e.Name s.Count = e.Name SUF '*' s.Count;
+}
+
+BaseName {
+  e.Name SUF '*' s.Count = e.Name s.Count;
+  e.Name '*' s.Count = e.Name s.Count;
+  e.Name /* нет суффикса */ = e.Name 0;
 }
 
 UpdateDriveInfo {
   s.OptDrive s.OptIntrinsic ((e.KnownNames) e.KnownFunctions) e.AST
+    = <ExtractLabels Drive e.AST> : (e.Drives) e.AST^
+    = <ExtractLabels Inline e.AST> : (e.Inlines) e.AST^
+    = <ExtractLabels Intrinsic e.AST> : (e.Intrinsics) e.AST^
+    = <ExtractMetatableNames e.AST> : (e.Metatables) e.AST^
 
-    /* Выносим все Drive, Inline, Intrinsic, Metatable из дерева */
-    = <MapAccum
-        {
-          (e.Optimizable) (s.Label e.Name)
-            , Drive Inline Intrinsic : e._ s.Label e._
-            = (e.Optimizable (s.Label e.Name)) /* удаляем метку из дерева */;
+    = <SetNames-Reject (e.Drives) (e.Intrinsics)> : e.Drives^
+    = <SetNames-Reject (e.Inlines) (e.Intrinsics)> : e.Inlines^
 
-          (e.Optimizable) (Function s.ScopeClass (e.Name) Metatable e.Body)
-            = (e.Optimizable (Metatable e.Name))
-              (Function s.ScopeClass (e.Name) Metatable e.Body);
+    = <SetNames-Reject (e.Drives) (e.KnownNames)> : e.Drives^
+    = <SetNames-Reject (e.Inlines) (e.KnownNames)> : e.Inlines^
+    = <SetNames-Reject (e.Intrinsics) (e.KnownNames)> : e.Intrinsics^
+    = <SetNames-Reject (e.Metatables) (e.KnownNames)> : e.Metatables^
 
-          (e.Optimizable) t.Other = (e.Optimizable) t.Other;
-        }
-        () e.AST
-      >
-    : (e.OptNames) e.AST^
-
-    = <SetNames-Reject (e.OptNames) (e.KnownNames)> : e.OptNames^
-
-    /*
-      Выделяем тела оптимизируемых функций,
-      копировать несколько имён в e.OptimizableNames не страшно
-
-      Используем MapAccum не смотря на то, что достаточно Map:
-      избегаем копирования дерева
-    */
     = <Map
         {
           (s.Label e.Name)
             = '$' <Upper <Explode s.Label>> : e.Label
             = <Log-PutLine 'New ' e.Label ' function: ' <DisplayName e.Name>>;
         }
-        e.OptNames
+        e.Drives e.Inlines e.Intrinsics e.Metatables
       >
-      <MapAccum
-        {
-          (
-            (e.OptFunctions) (e.RemNames)
-            (e.OptNames-B (Metatable e.Name) e.OptNames-E)
-          )
-          (Function s.ScopeClass (e.Name) Metatable e.Body)
-            = (
-                (
-                  e.OptFunctions
-                  (Metatable s.ScopeClass (e.Name) Metatable e.Body)
-                )
-                (e.RemNames (Metatable e.Name))
-                (e.OptNames-B e.OptNames-E)
-              )
-              (Function s.ScopeClass (e.Name) Metatable e.Body);
+    : /* пусто */
 
-          (
-            (e.OptFunctions) (e.RemNames)
-            (e.OptNames-B (s.Label e.Name) e.OptNames-E)
-          )
-          (Function s.ScopeClass (e.Name) Sentences e.Sentences)
-            , Inline Drive : e._ s.Label e._
-            = <Lenw e.Sentences> : s.CountSentences e.Sentences^
-            = (
-                (
-                  e.OptFunctions
-                  (s.Label s.ScopeClass (e.Name) Sentences e.Sentences)
-                )
-                (
-                  e.RemNames
-                  <GenRemainderFuncNames s.Label e.Name s.CountSentences>
-                )
-                (e.OptNames-B e.OptNames-E)
-              )
-              (Function s.ScopeClass (e.Name) Sentences e.Sentences);
+    = <ExtractBaseNames e.Drives e.Inlines e.Metatables> : e.ExtractedNames
+    = <ExtractExtractableFunctions (e.ExtractedNames) e.AST>
+    : (e.Extracted) e.AST^
 
-          (e.OptInfo) t.Other = (e.OptInfo) t.Other;
-        }
-        (() () (e.OptNames)) e.AST
-      >
-    : ((e.OptFunctions) (e.DrivenNames) (e.IntrinsicNames)) e.AST^
+    = <ExtractFuncLengths e.AST> : (e.Lengths) e.AST^
+    = <MultiplyRemainderNames (e.Lengths) e.Drives> : e.Drives^
+    = <MultiplyRemainderNames (e.Lengths) e.Inlines> : e.Inlines^
+
+    /*
+      Функция Func может быть помечена как $INLINE, рассахариватель условий
+      извлёк Func*k, авторазметка пометила её как $DRIVE.
+      Пометка $INLINE имеет приоритет.
+    */
+    = <SetNames-Reject (e.Drives) (e.Inlines)> : e.Drives^
+
+    = e.Drives e.Inlines e.Metatables : e.OptNames
+
+    = <FormatOptFunctions (e.OptNames) e.Extracted> : e.OptFunctions
 
     = <Map
         {
           (Intrinsic e.Name) = (Intrinsic GN-Local (e.Name) Intrinsic e.Name);
         }
-        e.IntrinsicNames
+        e.Intrinsics
       >
     : e.OptIntrinsicFuncs
 
     = (DriveInfo
-        (e.KnownNames e.DrivenNames e.IntrinsicNames)
+        (e.KnownNames e.OptNames e.Intrinsics)
         e.KnownFunctions e.OptFunctions e.OptIntrinsicFuncs
       )
       e.AST;
+}
+
+ExtractLabels {
+  s.Label e.AST
+    = <DoExtractLabels s.Label (/* метки */) (/* просканировано */) e.AST>;
+}
+
+DoExtractLabels {
+  s.Label (e.FoundLabels) (e.Scanned) e.AST-B (s.Label e.Name) e.AST-E
+    = <DoExtractLabels
+        s.Label (e.FoundLabels (s.Label e.Name)) (e.Scanned e.AST-B) e.AST-E
+      >;
+
+  s.Label (e.FoundLabels) (e.Scanned) e.AST = (e.FoundLabels) e.Scanned e.AST;
+}
+
+ExtractMetatableNames {
+  e.AST
+    = <MapAccum
+        {
+          (e.Metatables) (Function s.ScopeClass (e.Name) Metatable e.Body)
+            = (e.Metatables (Metatable e.Name))
+              (Function s.ScopeClass (e.Name) Metatable e.Body);
+
+          (e.Metatables) t.Other = (e.Metatables) t.Other;
+        }
+        (/* metatables */) e.AST
+      >;
 }
 
 SetNames-Reject {
@@ -161,6 +159,85 @@ SetNames-Reject {
       <SetNames-Reject (e.Minuent-E) (e.Subtr-B (s.Label e.Name) e.Subtr-E)>;
 
   (e.Minuent) (e.Subtrahend) = e.Minuent;
+}
+
+ExtractBaseNames {
+  e.OptNames
+    = <Map
+        {
+          (s.Label e.Name)
+            = <BaseName e.Name> : e.BaseName s.Num
+            = (s.Label e.BaseName);
+        }
+        e.OptNames
+      >
+    : e.BaseOptNames
+    = <Unique e.BaseOptNames>;
+}
+
+ExtractExtractableFunctions {
+  (e.Names) e.AST
+    = <MapAccum
+        {
+          (e.Extracted) (Function s.ScopeClass (e.Name) e.Body)
+            , e.Names : e._ (s._ e.Name) e._
+            = (e.Extracted (Function s.ScopeClass (e.Name) e.Body))
+              (Function s.ScopeClass (e.Name) e.Body);
+
+          (e.Extracted) t.Other = (e.Extracted) t.Other;
+        }
+        (/* extracted */) e.AST
+      >;
+}
+
+ExtractFuncLengths {
+  e.AST
+    = <MapAccum
+        {
+          (e.Lengths) (Function s.ScopeClass (e.Name) Sentences e.Sentences)
+            = <Lenw e.Sentences> : s.SentencesCount e.Sentences^
+            = (e.Lengths (e.Name s.SentencesCount))
+              (Function s.ScopeClass (e.Name) Sentences e.Sentences);
+
+          (e.Lengths) t.Other = (e.Lengths) t.Other;
+        }
+        (/* длины */) e.AST
+      >;
+}
+
+MultiplyRemainderNames {
+  (e.Lengths) e.FuncNames
+    = <Map
+        {
+          (s.Label e.OptName)
+            = <BaseName e.OptName> : e.BaseName s.StartNum
+            = e.Lengths : e._ (e.BaseName s.SentencesCount) e._
+            = <GenRemainderFuncNames
+                s.Label e.BaseName s.StartNum s.SentencesCount
+              >;
+        }
+        e.FuncNames
+      >
+}
+
+FormatOptFunctions {
+  (e.OptNames) e.Functions
+    = <MapAccum
+        {
+          (e.Names-B (Metatable e.Name) e.Names-E)
+          (Function s.ScopeClass (e.Name) Metatable e.Body)
+            = (e.Names-B e.Names-E)
+              (Metatable s.ScopeClass (e.Name) Metatable e.Body);
+
+          (e.Names-B (s.Label e.Name) e.Names-E)
+          (Function s.ScopeClass (e.Name) Sentences e.Sentences)
+            = (e.Names-B e.Names-E)
+              (s.Label s.ScopeClass (e.Name) Sentences e.Sentences);
+        }
+        (<ExtractBaseNames e.OptNames>) e.Functions
+      >
+    : (e._) e.OptFunctions
+    = e.OptFunctions;
 }
 
 /**
