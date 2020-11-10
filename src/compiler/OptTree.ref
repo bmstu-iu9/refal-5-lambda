@@ -35,12 +35,6 @@ $ENTRY OptTree {
     = <Config-GetOptIntrinsic t.Config> : s.OptIntrinsic
 
     = (s.OptDrive s.OptIntrinsic) : t.OptDrive
-    = t.OptDrive
-    : {
-        (NoOpt NoOpt) = NoOpt;
-        t.OptFlags = t.OptFlags;
-      }
-    : t.OptDriveFlags
 
     = <Int
         (define main
@@ -57,11 +51,9 @@ $ENTRY OptTree {
               (call &OptTree-Drive-Prepare t.OptDrive)
               (DriveLoop))
             (begin
-              (if t.OptDriveFlags
-                (begin
-                  (trace 'before Curing drives')
-                  (call &OptTree-AutoMarkup-CureDrives))
-                (begin))
+              (when (or s.OptDrive s.OptIntrinsic)
+                (trace 'before Curing drives')
+                (call &OptTree-AutoMarkup-CureDrives))
               (DriveSpecLoop)))
           (call &OptTree-CleanupMarkup))
 
@@ -81,7 +73,7 @@ $ENTRY OptTree {
               (DriveLoop))))
 
         (define DriveLoop
-          (if t.OptDriveFlags
+          (if (or s.OptDrive s.OptIntrinsic)
             (begin
               (loop-for-fix-point
                 (pass
@@ -227,11 +219,19 @@ Int-Command {
                 = <Dec s.Cycles> e.AST;
             };
 
-        if NoOpt t.Then t.Else
-          = <Int-Command (e.Defines) t.Else s.Cycles (e.AST)>;
+        if t.Cond t.Then t.Else
+          = <Int-Cond t.Cond>
+          : {
+              True = <Int-Command (e.Defines) t.Then s.Cycles (e.AST)>;
+              False = <Int-Command (e.Defines) t.Else s.Cycles (e.AST)>;
+            };
 
-        if t.Opt t.Then t.Else
-          = <Int-Command (e.Defines) t.Then s.Cycles (e.AST)>;
+        when t.Cond e.Then /* нет else */
+          = <Int-Cond t.Cond>
+          : {
+              True = <Int-Code (e.Defines) e.Then s.Cycles (e.AST)>;
+              False = s.Cycles e.AST;
+            };
 
         begin e.Code
           = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)>;
@@ -250,6 +250,38 @@ Int-Command {
           = <Int-Lookup s.Proc e.Defines> : e.Code
           = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)>;
       }
+}
+
+Int-Cond {
+  (or e.Flags) = <Int-Cond-Or e.Flags>;
+  (and e.Flags) = <Int-Cond-And e.Flags>;
+
+  NoOpt = False;
+  s.Opt = True;
+}
+
+$INLINE Int-Cond;
+
+Int-Cond-Or {
+  t.Cond e.Flags
+    = <Int-Cond t.Cond>
+    : {
+        True = True;
+        False = <Int-Cond-Or e.Flags>;
+      };
+
+  /* нет флагов */ = False;
+}
+
+Int-Cond-And {
+  t.Cond e.Flags
+    = <Int-Cond t.Cond>
+    : {
+        True = <Int-Cond-And e.Flags>;
+        False = False;
+      };
+
+  /* нет флагов */ = True;
 }
 
 Int-FixPoint {
