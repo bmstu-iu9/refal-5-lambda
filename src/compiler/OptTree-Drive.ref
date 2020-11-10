@@ -153,24 +153,15 @@ UpdateDriveInfo {
         }
         (() () (e.OptNames)) e.AST
       >
-    : ((e.OptFunctions) (e.DrivenNames) (e._)) e.AST^
+    : ((e.OptFunctions) (e.DrivenNames) (e.IntrinsicNames)) e.AST^
 
-    = <Reduce
+    = <Map
         {
-          ((e.AccFuncs) (e.AccNames)) (Intrinsic e.Name)
-            = (
-                (
-                  e.AccFuncs
-                  (Intrinsic GN-Local (e.Name) Intrinsic e.Name)
-                )
-                (e.AccNames (Intrinsic e.Name))
-              );
-
-          ((e.AccFuncs) (e.AccNames)) t.Other = ((e.AccFuncs) (e.AccNames))
+          (Intrinsic e.Name) = (Intrinsic GN-Local (e.Name) Intrinsic e.Name);
         }
-        (() ()) e.OptNames
+        e.IntrinsicNames
       >
-    : ((e.OptIntrinsicFuncs) (e.IntrinsicNames))
+    : e.OptIntrinsicFuncs
 
     = (DriveInfo
         (e.KnownNames e.DrivenNames e.IntrinsicNames)
