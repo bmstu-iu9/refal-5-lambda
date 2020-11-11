@@ -74,6 +74,7 @@ BuildImage-Terms {
 
 $ENTRY BuildImage-Term {
   (Symbol s.Type e.Info) = (Symbol s.Type e.Info);
+  (ClosureBrackets e._) = (TkVariable 's');
   (TkVariable 't' e.Index) = (TkVariable 't');
   (TkVariable 's' e.Index) = (TkVariable 's');
 
