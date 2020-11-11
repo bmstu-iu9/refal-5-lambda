@@ -906,6 +906,7 @@ Intrinsic-Lenw {
 FixedLength {
   e._ (TkVariable 'e' e._) e._ = False;
   e._ (CallBrackets e._) e._ = False;
+  e._ (ColdCallBrackets e._) e._ = False;
 
   e._ = True;
 }

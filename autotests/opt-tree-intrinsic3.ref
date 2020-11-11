@@ -40,6 +40,7 @@ $ENTRY Go {
     = <Lenw 'a' s.x 'c'> : 3 'abc'
     = <ConstValue 1> : e.y
     = <Lenw 'a' e.y 'c'> : 3 'abc'
+    = <Lenw 'a' <ConstValue 0> 'bc'> : 3 'abc'
 
     = <First 2 a (1 2) b c> : (a (1 2)) b c
     = <ConstValue 2> : s.x2
@@ -57,6 +58,7 @@ $ENTRY Go {
 }
 
 ConstValue {
+    0 = /* empty */;
     1 = 'b';
     2 = a
 }
