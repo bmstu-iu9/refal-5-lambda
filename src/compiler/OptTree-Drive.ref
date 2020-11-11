@@ -874,6 +874,8 @@ Intrinsic-Explode {
 
 Intrinsic-Type {
   (CallBrackets e._) e._ = MakeColdCall;
+  (ColdCallBrackets e._) e._ = MakeColdCall;
+  (TkVariable e._) e._ = MakeColdCall;
 
   t.Term e.Rest
     = t.Term
