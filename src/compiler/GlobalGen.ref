@@ -219,7 +219,7 @@ $ENTRY Collapse-Term {
 /* Возвращает набор ЛСО (s.Complexity e.LocalGen)* */
 LocalGen {
   s.Num (e.TermsL) (e.TermsR)
-    = <Lenw e.TermsR> : s.LenR e.Terms-R^
+    = <Lenw e.TermsR> : s.LenR e.TermsR^
     = <First <- s.Num s.LenR> e.TermsL> : (e.TermsL^) e.TermsL-Skipped
     = <DoLocalGen ((e.TermsL) e.TermsL-Skipped) ((e.TermsR))>;
 }
