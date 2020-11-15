@@ -68,6 +68,7 @@ MapAccum {
 }
 
 $SPEC MapAccum t.FUNC t.accum e.items;
+$INLINE MapAccum;
 
 DoMapAccum {
   t.Fn t.Acc (e.Scanned) t.Next e.Tail
