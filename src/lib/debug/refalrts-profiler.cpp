@@ -466,9 +466,11 @@ void refalrts::Profiler::print_profile(
         refalrts_switch_default_violation(counter);
     }
 
+#define DIV(x, y) ((y) != 0 ? (x) / (y) : 0)
+
     fprintf(
       profile, "(%.2f %%, += %.2f %%)   ",
-      100.0 * p->first / total[counter], 100.0 * pareto / total[counter]
+      100.0 * DIV(p->first, total[counter]), 100.0 * DIV(pareto, total[counter])
     );
 
     for (
@@ -480,8 +482,13 @@ void refalrts::Profiler::print_profile(
     const FuncItemValue& value = m_function_items[p->second];
     fprintf(
       profile, "rel step time %.2f\n",
-      value[FuncItemValue::TIME] / value[FuncItemValue::COUNT] / mean_step_time
+      DIV(
+        value[FuncItemValue::TIME] / value[FuncItemValue::COUNT],
+        mean_step_time
+      )
     );
+
+#undef DIV
   }
 
   fprintf(profile, "\n\n");
