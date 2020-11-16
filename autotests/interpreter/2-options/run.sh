@@ -15,4 +15,4 @@ if [[ ! -e dump.txt ]]; then
   exit 1
 fi
 
-rm -f test.rasl-module dump.txt
+rm -f test.rasl-module dump.txt *.lst

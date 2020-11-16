@@ -12,7 +12,7 @@ check_exist() {
 
 rm -f *.rasl-module *.rasl caller
 
-../../../bin/rlc --keep-rasls main.ref lib1.ref lib2.ref --log=log.txt
+../../../bin/rlc --keep-rasls -OG- main.ref lib1.ref lib2.ref --log=log.txt
 ./main
 if [[ $? -gt 0 ]]; then
   echo TEST FAILED!

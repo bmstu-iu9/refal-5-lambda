@@ -9,5 +9,5 @@ if [[ $? -gt 0 ]]; then
   exit 1
 else
   echo Test OK!
-  rm -f *.rasl-module *.rasl caller *.so *.cpp
+  rm -f *.rasl-module *.rasl caller *.so *.cpp *.lst
 fi

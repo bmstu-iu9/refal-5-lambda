@@ -14,4 +14,4 @@ if ! cmp REFAL1.DAT REFAL1.DAT-sample; then
   exit 1
 fi
 
-rm -f hello.rasl-module REFAL1.DAT
+rm -f hello.rasl-module REFAL1.DAT *.lst
