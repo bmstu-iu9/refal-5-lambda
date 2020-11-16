@@ -227,9 +227,12 @@ FindDivision {
     = <ImagedSentence e.FirstSentence> : (e.FirstImage) e.FirstSentence^
     = <MakeTrivialSubstImage e.FirstImage> : e.TrivialGCG
     = <DoFindDivision
+        <MAX-GROUP-LEN>
         (e.TrivialGCG) (e.FirstImage) ((e.FirstSentence)) e.Sentences
       >;
 }
+
+MAX-GROUP-LEN { = 50 }
 
 ImagedSentence {
   (e.Subst) e.Conditions (e.Result)
@@ -251,13 +254,27 @@ MakeTrivialSubstImage {
 }
 
 /*
-  <DoFindDivision (e.TrivialGCG) t.Image (e.FirstGroup) e.RestSentences>
+  <DoFindDivision
+    s.Counter (e.TrivialGCG) t.Image (e.FirstGroup) e.RestSentences
+  >
 
   Функция накапливает в e.FirstGroup подстановки до тех пор, пока их ГСО
-  будет отличаться от тривиального.
+  будет отличаться от тривиального, либо пока длина группы не превысит предел.
+
+  Причина ограничения длины на группы — для функций с похожими образцами
+  из огромного количества предложений может сгенерироваться команда перехода
+  на расстояние больше допустимого. Чтобы этого избежать, вводим принудительную
+  группировку на меньшие куски. Функции огромного количества предложений могут
+  получиться в результате необузданной прогонки.
 */
 DoFindDivision {
-  (e.TrivialGCG) (e.Image) (e.FirstGroup) (e.NextSentence) e.Sentences
+  s.Counter (e.TrivialGCG) (e.Image) (e.FirstGroup)
+    = ForAllSentences (<Subst-Collapse e.Image>) e.FirstGroup;
+
+  0 (e.TrivialGCG) (e.Image) (e.FirstGroup) e.SecondGroup
+    = ForGroup (<Subst-Collapse e.Image>) (e.FirstGroup) e.SecondGroup;
+
+  s.Counter (e.TrivialGCG) (e.Image) (e.FirstGroup) (e.NextSentence) e.Sentences
     = <ImagedSentence e.NextSentence> : (e.NextImage) e.NextSentence
     = <Subst-Generalization (e.Image) (e.NextImage)> : e.NewImage
     = e.NewImage
@@ -269,13 +286,11 @@ DoFindDivision {
 
         e.NewImage^
           = <DoFindDivision
+              <Dec s.Counter>
               (e.TrivialGCG) (e.NewImage) (e.FirstGroup (e.NextSentence))
               e.Sentences
             >;
       };
-
-  (e.TrivialGCG) (e.Image) (e.FirstGroup)
-    = ForAllSentences (<Subst-Collapse e.Image>) e.FirstGroup
 }
 
 
