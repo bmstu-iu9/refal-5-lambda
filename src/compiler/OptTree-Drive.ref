@@ -1007,6 +1007,7 @@ DecreaseMode {
 DoOptSentence-MakeSubstitutions {
   s.Mode (e.SentenceVars) (e.Args) (e.Substitutions)
   (Function s.ScopeClass (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+    = <Cleanup-Step-Drop e.RS> : e.RS^
     = <Solve (e.SentenceVars) ((e.Args) ':' (e.LS))>
     : {
         /*
@@ -1065,6 +1066,17 @@ DoOptSentence-MakeSubstitutions {
 
   s.Mode (e.SentenceVars) (e.Args) (e.Substitutions) t.RestFunction
     = e.Substitutions <MakeColdSolution t.RestFunction e.Args>;
+}
+
+Cleanup-Step-Drop {
+  /*
+    Считаем, что правильный <__Step-Drop> должен располагаться в начале
+    правой части. Так генерируется для метафункций. Если пользователь зачем-то
+    пишет __Step-Drop вручную и в другом месте — сам себе злобный буратино.
+  */
+  (CallBrackets (Symbol Name '__Step-Drop') /* пусто */) e.RS = e.RS;
+
+  e.RS = e.RS;
 }
 
 DropLeft {
@@ -1159,11 +1171,8 @@ FindOptimizedCall-Term {
 
 *       Функция, не подлежащая оптимизации. Остужаем вызов.
         (e.OptFuncNames^ None) e.Arg^
-          = e.Name : {
-            '__Step-Drop' = (e.OptFuncNames None);
-            e._ = (e.OptFuncNames None)
+          = (e.OptFuncNames None)
             (ColdCallBrackets (Symbol Name e.Name) e.Arg);
-          };
 
 *       Внутри аргумента найден оптимизируемый вызов
         (e.OptFuncNames^ t.Found) e.Arg^
