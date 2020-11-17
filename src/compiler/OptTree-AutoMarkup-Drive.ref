@@ -1,5 +1,9 @@
 $INCLUDE "LibraryEx";
 
+*$FROM TreeUtils
+$EXTERN HashName;
+
+
 /**
   <OptTree-AutoMarkup-Drive e.AST> == e.AST
 
@@ -320,7 +324,7 @@ MakeGraphHash {
     = <Map
         {
           (Func (e.Name) Children (e.Children))
-            = <HashName e.Name> : s.Hash e.Name^
+            = <HashName e.Name <BUCKET-SIZE>> : s.Hash
             = (s.Hash Func (e.Name) Children (e.Children));
         }
         e.Graph
@@ -328,6 +332,8 @@ MakeGraphHash {
     : e.Graph^
     = <MakeGraphHash-Buckets e.Graph>;
 }
+
+BUCKET-SIZE { = 101 }
 
 MakeGraphHash-Buckets {
   (s.Hash Func (e.Name) Children (e.Children)) e.Graph
@@ -351,20 +357,16 @@ MakeGraphHash-FillBucket {
   e.Graph (e.Bucket) = e.Graph (e.Bucket);
 }
 
-HashName {
-  e.Name
-    = <Ord e.Name>
-    : {
-        e.Base SUF e.Suffix = e.Base 997 e.Suffix;
-        e.Name^ = e.Name;
-      }
-    : e.NameAsNumbers
-    = <Mod (e.NameAsNumbers) 101> e.Name;
-}
-
 MarkChildren {
   e.FuncNames
-   = (Children <Map { (e.Name) = (<HashName e.Name>) } e.FuncNames>)
+   = (Children
+       <Map
+         {
+           (e.Name) = (<HashName e.Name <BUCKET-SIZE>> e.Name)
+         }
+         e.FuncNames
+       >
+     )
 }
 
 /*

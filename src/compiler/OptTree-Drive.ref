@@ -2,7 +2,7 @@ $INCLUDE "LibraryEx";
 
 
 *$FROM TreeUtils
-$EXTERN ExtractVariables;
+$EXTERN ExtractVariables, HashName;
 
 *$FROM GenericMatch
 $EXTERN Solve;
@@ -76,6 +76,8 @@ UpdateDriveInfo {
     = <SetNames-Reject (e.Drives) (e.Intrinsics)> : e.Drives^
     = <SetNames-Reject (e.Inlines) (e.Intrinsics)> : e.Inlines^
 
+    = <HashSet-AsChain e.KnownNames> : e.KnownNames^
+
     = <SetNames-Reject (e.Drives) (e.KnownNames)> : e.Drives^
     = <SetNames-Reject (e.Inlines) (e.KnownNames)> : e.Inlines^
     = <SetNames-Reject (e.Intrinsics) (e.KnownNames)> : e.Intrinsics^
@@ -118,8 +120,10 @@ UpdateDriveInfo {
       >
     : e.OptIntrinsicFuncs
 
+    = <HashSet e.KnownNames e.OptNames e.Intrinsics> : e.HashSetNames
+
     = (DriveInfo
-        (e.KnownNames e.OptNames e.Intrinsics)
+        (e.HashSetNames)
         e.KnownFunctions e.OptFunctions e.OptIntrinsicFuncs
       )
       e.AST;
@@ -239,6 +243,42 @@ FormatOptFunctions {
     : (e._) e.OptFunctions
     = e.OptFunctions;
 }
+
+HashSet {
+  e.Names
+    = <DoHashSet
+        <Map
+          {
+            (s.Label e.Name)
+              = (<HashName e.Name <BUCKET-SIZE>> s.Label e.Name)
+          }
+          e.Names
+        >
+      >;
+}
+
+BUCKET-SIZE { = 101 }
+
+DoHashSet {
+  (s.Hash e.Name) e.Names
+    = <DoHashSet-DoFillBucket e.Names (s.Hash (e.Name))> : e.Names^ (e.Bucket)
+    = (e.Bucket) <DoHashSet e.Names>;
+
+  /* нет имён */ = /* нет корзин */;
+}
+
+DoHashSet-DoFillBucket {
+  e.Names-OtherHash (s.Hash e.Name) e.UnscannedNames (s.Hash e.Bucket)
+    = e.Names-OtherHash
+      <DoHashSet-DoFillBucket e.UnscannedNames (s.Hash e.Bucket (e.Name))>;
+
+  e.Names-OtherHash (s.Hash e.Bucket) = e.Names-OtherHash (s.Hash e.Bucket);
+}
+
+HashSet-AsChain {
+  e.HashSet = <Map { (s.Hash e.Names) = e.Names } e.HashSet>
+}
+
 
 /**
   <OptTree-Drive (s.OptDrive s.OptIntrinsic) e.AST> == e.AST^
@@ -1156,12 +1196,23 @@ FindOptimizedCall-Term {
       (ADT-Brackets (e.Name) e.Expr);
 
   (e.OptFuncNames None) (CallBrackets (Symbol Name e.Name) e.Arg)
+    = <HashName e.Name <BUCKET-SIZE>> : s.Hash
     = <FindOptimizedCall (e.OptFuncNames) e.Arg>
     : {
 *       Вызов оптимизируемой функции, извлекаем его наружу
-        (e.OptFuncNames-B (s.Label e.Name) e.OptFuncNames-E None) e.Arg^
+        (
+          e.Buckets-B
+          (s.Hash e.OptFuncNames-B (s.Label e.Name) e.OptFuncNames-E)
+          e.Buckets-E
+
+          None
+        )
+        e.Arg^
           = (
-              e.OptFuncNames-B (s.Label e.Name) e.OptFuncNames-E
+              e.Buckets-B
+              (s.Hash (s.Label e.Name) e.OptFuncNames-B e.OptFuncNames-E)
+              e.Buckets-E
+
               (CallBrackets (Symbol Name e.Name) e.Arg)
             )
             <eDRIVEN>;

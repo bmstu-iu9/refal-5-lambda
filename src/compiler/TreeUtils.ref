@@ -137,3 +137,20 @@ $ENTRY AddSuffix {
   e.Name SUF e.Suffix (e.NewSuffix) = e.Name SUF e.Suffix e.NewSuffix;
   e.Name (e.NewSuffix) = e.Name SUF e.NewSuffix;
 }
+
+
+/**
+  <HashName e.Name s.Buckets> == s.Hash
+
+  s.Hash, s.Buckets ::= s.NUMBER
+*/
+$ENTRY HashName {
+  e.Name s.Buckets
+    = <Ord e.Name>
+    : {
+        e.Base SUF e.Suffix = e.Base 997 e.Suffix;
+        e.Name^ = e.Name;
+      }
+    : e.NameAsNumbers
+    = <Mod (e.NameAsNumbers) s.Buckets>
+}
