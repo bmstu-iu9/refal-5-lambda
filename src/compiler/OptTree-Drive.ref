@@ -490,8 +490,11 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
   t.IntrinsicFunction t.Metatables (e.Args) '__Meta_Mu'
     = <Intrinsic-Mu e.Args t.Metatables>
     : {
-        Ok e.Result = ((<eDRIVEN> ':' e.Result) (/* нет новых функций */));
-        MakeColdCall = <MakeColdSolution t.IntrinsicFunction e.Args>;
+        t.Metatables^ Ok e.Result
+          = t.Metatables ((<eDRIVEN> ':' e.Result) (/* нет новых функций */));
+
+        t.Metatables^ MakeColdCall
+          = t.Metatables <MakeColdSolution t.IntrinsicFunction e.Args>;
       };
 
   t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName
@@ -526,7 +529,9 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
     : {
         Ok e.Result = ((<eDRIVEN> ':' e.Result) (/* нет новых функций */));
         MakeColdCall = <MakeColdSolution t.IntrinsicFunction e.Args>;
-      };
+      }
+    : e.Substitutions
+    = t.Metatables e.Substitutions;
 }
 
 eDRIVEN {
@@ -539,18 +544,18 @@ Intrinsic-Mu {
     = t.Function
     : {
         (Symbol Name e.Name)
-          = Ok (CallBrackets (Symbol Name e.Name) e.MuArg);
+          = t.Metatables Ok (CallBrackets (Symbol Name e.Name) e.MuArg);
 
         (ClosureBrackets e.Body)
-          = Ok (CallBrackets (ClosureBrackets e.Body) e.MuArg);
+          = t.Metatables Ok (CallBrackets (ClosureBrackets e.Body) e.MuArg);
 
         (Symbol Identifier s.Name)
           , <ArithmeticSymbolToFunction s.Name> : True e.FunctionName
-          = Ok (CallBrackets (Symbol Name e.FunctionName) e.MuArg);
+          = t.Metatables Ok (CallBrackets (Symbol Name e.FunctionName) e.MuArg);
 
         (Symbol Char s.Name)
           , <ArithmeticSymbolToFunction s.Name> : True e.FunctionName
-          = Ok (CallBrackets (Symbol Name e.FunctionName) e.MuArg);
+          = t.Metatables Ok (CallBrackets (Symbol Name e.FunctionName) e.MuArg);
 
         (Symbol Identifier e.Name)
           = <MakeSubstitution-FromMetatables
@@ -563,10 +568,10 @@ Intrinsic-Mu {
               t.Metatables (e.MetatableName) (e.MuArg) e.Name
             >;
 
-        t._ = MakeColdCall;
+        t._ = t.Metatables MakeColdCall;
       };
 
-  e._ = MakeColdCall;
+  e._ t.Metatables = t.Metatables MakeColdCall;
 }
 
 ArithmeticSymbolToFunction {
@@ -594,16 +599,25 @@ MakeSubstitution-FromMetatables {
   t.Metatables (e.MetatableName) (e.MuArg) e.Name
     = t.Metatables
     : {
-        (Metatables e._ (s._ (e.MetatableName) Metatable e.Map) e._)
+        (Metatables
+          e.Tables-B (s.ScopeClass (e.MetatableName) Metatable e.Map) e.Tables-E
+        )
           = e.Map
           : {
               e._ ((Symbol Identifier e.Name) t.Pointer) e._
                 = Ok (CallBrackets t.Pointer e.MuArg);
 
               e.Other = MakeColdCall;
-            };
+            }
+          : e.Result
+          = (Metatables
+              e.Tables-B
+              (s.ScopeClass (e.MetatableName) Metatable e.Map)
+              e.Tables-E
+            )
+            e.Result;
 
-        e.Other = MakeColdCall;
+        t.Metatable^ = t.Metatable MakeColdCall;
       }
 }
 
@@ -979,8 +993,7 @@ OptSentence-MakeSubstitutions {
   ((e.Left) (e.Expr)) (e.Args)
   t.IntrinsicFunction t.Metatables
     , t.IntrinsicFunction : (Intrinsic s._ (e._) Intrinsic e.BehaviorName)
-    = t.Metatables
-      <DoOptSentence-MakeSubstitutions-Intrinsic
+    = <DoOptSentence-MakeSubstitutions-Intrinsic
         t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName
       >;
 
