@@ -211,25 +211,29 @@ InlineInlineReferences {
 
 InlineInlineReferences-Pass {
   e.Functions (e.Inlines)
-    = <Map
+    = <MapAccum
         {
-          ((e.Name) s.ScopeClass e.References)
-            = <AugmentReferences e.References (e.Inlines)> : (e.References^)
-            = ((e.Name) s.ScopeClass e.References);
+          (e.Inlines^) ((e.Name) s.ScopeClass e.References)
+            = <AugmentReferences e.References (e.Inlines)>
+            : (e.References^) e.Inlines^
+            = (e.Inlines) ((e.Name) s.ScopeClass e.References);
         }
-        e.Functions
+        (e.Inlines) e.Functions
       >
+    : (e._) e.Functions^
+    = e.Functions;
 }
 
 AugmentReferences {
   e.References (e.Inlines)
-    = <Reduce
+    = <MapAccum
         {
           (e.References^) ((e.Name) s.ScopeClass e.InlineChilden)
             , e.References : e._ (e.Name) e._
-            = (e.References <SetDifference e.InlineChilden (e.References)>);
+            = (e.References <SetDifference e.InlineChilden (e.References)>)
+              ((e.Name) s.ScopeClass e.InlineChilden);
 
-          (e.References^) t.InlineNode = (e.References);
+          (e.References^) t.InlineNode = (e.References) t.InlineNode;
         }
         (e.References) e.Inlines
       >
