@@ -311,7 +311,7 @@ BasicVertexes {
 }
 
 MarkChildren {
-  e.FuncNames = <Map { (e.Name) = (Child e.Name) } e.FuncNames>
+  e.FuncNames = (Children e.FuncNames)
 }
 
 /*
@@ -319,7 +319,7 @@ MarkChildren {
 
   e.ToDrive, e.Basics ::= (e.Name)*
   e.Stack ::= t.StackItem*
-  t.StackItem ::= (Child e.Name) | (Func e.Name)
+  t.StackItem ::= (Children (e.Name)*) | (Func e.Name)
 
   Функция совершает обход графа в глубину.
 
@@ -346,23 +346,30 @@ MarkChildren {
 */
 DoBasicVertexes {
 * Базисная вершина, удаляем пометку функции со стека.
-  (Child e.BasicName) e.Stack-B (Func e.BasicName) e.Stack-E
+  (Children (e.BasicName) e.Siblings) e.Stack-B (Func e.BasicName) e.Stack-E
   (e.Graph) (e.ToDrive) (e.Basics)
     = <DoBasicVertexes
+        (Children e.Siblings)
         e.Stack-B e.Stack-E (e.Graph) (e.ToDrive) (e.Basics (e.BasicName))
       >;
 
 * Обычная вершина.
-  (Child e.FuncName) e.Stack
+  (Children (e.FuncName) e.Siblings) e.Stack
   (e.Graph-B (Func (e.FuncName) Children (e.Children)) e.Graph-E)
   (e.ToDrive) (e.Basics)
     = <DoBasicVertexes
-        <MarkChildren e.Children> (Func e.FuncName) e.Stack
+        <MarkChildren e.Children> (Func e.FuncName)
+        (Children e.Siblings) e.Stack
         (e.Graph-B e.Graph-E) (e.ToDrive) (e.Basics)
       >;
 
 * Уже просканированная вершина или вызов внешней функции.
-  (Child e._) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
+  (Children (e._) e.Siblings) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
+    = <DoBasicVertexes
+        (Children e.Siblings) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
+      >;
+
+  (Children /* пусто */) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
     = <DoBasicVertexes e.Stack (e.Graph) (e.ToDrive) (e.Basics)>;
 
 * Всех детей функции просканировали.
@@ -382,6 +389,11 @@ DoBasicVertexes {
           e.Graph
         >
       );
+}
+
+WrapBucket {
+  s.Hash /* пусто */ = /* пусто */;
+  s.Hash e.Bucket = (s.Hash e.Bucket);
 }
 
 SetDifference {
