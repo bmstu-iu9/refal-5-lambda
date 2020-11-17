@@ -309,21 +309,70 @@ PrepareGraphFormat {
 */
 BasicVertexes {
   e.Graph (e.Roots)
+    = <MakeGraphHash e.Graph> : e.GraphHash
     = <DoBasicVertexes
-        <MarkChildren e.Roots> (e.Graph) (/* to drive */) (/* basic */)
+        <MarkChildren e.Roots> (e.GraphHash) (/* to drive */) (/* basic */)
       >;
 }
 
+MakeGraphHash {
+  e.Graph
+    = <Map
+        {
+          (Func (e.Name) Children (e.Children))
+            = <HashName e.Name> : s.Hash e.Name^
+            = (s.Hash Func (e.Name) Children (e.Children));
+        }
+        e.Graph
+      >
+    : e.Graph^
+    = <MakeGraphHash-Buckets e.Graph>;
+}
+
+MakeGraphHash-Buckets {
+  (s.Hash Func (e.Name) Children (e.Children)) e.Graph
+    = <MakeGraphHash-FillBucket
+        e.Graph (s.Hash (Func (e.Name) Children (e.Children)))
+      >
+    : e.Graph^ (e.Bucket)
+    = <MakeGraphHash-Buckets e.Graph> (e.Bucket);
+
+  /* граф опустел */ = /* нет корзин */;
+}
+
+MakeGraphHash-FillBucket {
+  e.Graph-B (s.Hash Func (e.Name) Children (e.Children)) e.Graph-E
+  (s.Hash e.Bucket)
+    = e.Graph-B
+      <MakeGraphHash-FillBucket
+        e.Graph-E (s.Hash e.Bucket (Func (e.Name) Children (e.Children)))
+      >;
+
+  e.Graph (e.Bucket) = e.Graph (e.Bucket);
+}
+
+HashName {
+  e.Name
+    = <Ord e.Name>
+    : {
+        e.Base SUF e.Suffix = e.Base 997 e.Suffix;
+        e.Name^ = e.Name;
+      }
+    : e.NameAsNumbers
+    = <Mod (e.NameAsNumbers) 101> e.Name;
+}
+
 MarkChildren {
-  e.FuncNames = (Children e.FuncNames)
+  e.FuncNames
+   = (Children <Map { (e.Name) = (<HashName e.Name>) } e.FuncNames>)
 }
 
 /*
-  <DoBasicVertexes e.Stack (e.Graph) (e.ToDrive) (e.Basics)>
+  <DoBasicVertexes e.Stack (e.GraphHash) (e.ToDrive) (e.Basics)>
 
   e.ToDrive, e.Basics ::= (e.Name)*
   e.Stack ::= t.StackItem*
-  t.StackItem ::= (Children (e.Name)*) | (Func e.Name)
+  t.StackItem ::= (Children (s.Hash e.Name)*) | (Func s.Hash e.Name)
 
   Функция совершает обход графа в глубину.
 
@@ -350,7 +399,8 @@ MarkChildren {
 */
 DoBasicVertexes {
 * Базисная вершина, удаляем пометку функции со стека.
-  (Children (e.BasicName) e.Siblings) e.Stack-B (Func e.BasicName) e.Stack-E
+  (Children (s.Hash e.BasicName) e.Siblings)
+  e.Stack-B (Func s.Hash e.BasicName) e.Stack-E
   (e.Graph) (e.ToDrive) (e.Basics)
     = <DoBasicVertexes
         (Children e.Siblings)
@@ -358,17 +408,22 @@ DoBasicVertexes {
       >;
 
 * Обычная вершина.
-  (Children (e.FuncName) e.Siblings) e.Stack
-  (e.Graph-B (Func (e.FuncName) Children (e.Children)) e.Graph-E)
+  (Children (s.Hash e.FuncName) e.Siblings) e.Stack
+  (
+    e.Buckets-B
+    (s.Hash e.Graph-B (Func (e.FuncName) Children (e.Children)) e.Graph-E)
+    e.Buckets-E
+  )
   (e.ToDrive) (e.Basics)
     = <DoBasicVertexes
-        <MarkChildren e.Children> (Func e.FuncName)
+        <MarkChildren e.Children> (Func s.Hash e.FuncName)
         (Children e.Siblings) e.Stack
-        (e.Graph-B e.Graph-E) (e.ToDrive) (e.Basics)
+        (e.Buckets-B <WrapBucket s.Hash e.Graph-B e.Graph-E> e.Buckets-E)
+        (e.ToDrive) (e.Basics)
       >;
 
 * Уже просканированная вершина или вызов внешней функции.
-  (Children (e._) e.Siblings) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
+  (Children (s._ e._) e.Siblings) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
     = <DoBasicVertexes
         (Children e.Siblings) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
       >;
@@ -378,7 +433,7 @@ DoBasicVertexes {
 
 * Всех детей функции просканировали.
 * Если сама метка функции не удалена со стека, значит она не была базисной.
-  (Func e.FuncName) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
+  (Func s.Hash e.FuncName) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
     = <DoBasicVertexes e.Stack (e.Graph) (e.ToDrive (e.FuncName)) (e.Basics)>;
 
 * Все функции просканировали.
@@ -388,7 +443,13 @@ DoBasicVertexes {
       (Unreachable
         <Map
           {
-            (Func (e.Name) Children (e._)) = (e.Name)
+            (s.Hash e.Bucket)
+              = <Map
+                  {
+                    (Func (e.Name) Children (e._)) = (e.Name)
+                  }
+                  e.Bucket
+                >
           }
           e.Graph
         >
