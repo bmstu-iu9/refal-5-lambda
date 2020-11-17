@@ -262,8 +262,9 @@ OptSwitch {
 /* Осуществляет прогонку или оптимизацию в зависимости от ключа */
 
 DriveInlineOptimizerTick {
-  t.OptInfo e.AST s.OptDrive s.OptIntrinsic
+  ((e.OptNames) e.OptInfo) e.AST s.OptDrive s.OptIntrinsic
     = (<OptSwitch s.OptDrive> <OptSwitch s.OptIntrinsic>) : t.Mode
+    = ((e.OptNames) <WithMetatables e.OptInfo>) : t.OptInfo
     = <MapAccum
         {
           t.OptInfo^ (Function s.ScopeClass (e.Name) Sentences e.Sentences)
@@ -278,7 +279,7 @@ DriveInlineOptimizerTick {
         t.OptInfo
         e.AST
       >
-    : (e.OptInfo) e.AST^
+    : ((e.OptNames^) t.Metatables e.OptInfo^) e.AST^
 
     = <MapAccum
         {
@@ -310,7 +311,7 @@ DriveInlineOptimizerTick {
       >
     : (e.NewFunctions^) e.AST^
 
-    = (DriveInfo e.OptInfo) e.AST e.NewFunctions;
+    = (DriveInfo (e.OptNames) e.OptInfo) e.AST e.NewFunctions;
 }
 
 IsPassiveCall {
@@ -423,23 +424,17 @@ OptSentence-Aux {
   (s.DriveMode s.IntrinsicMode)
   ((e.Left) (e.Right))
   (CallBrackets (Symbol Name e.Name) e.Args)
-  e.OptFuncs
+  t.Metatables e.OptFuncs
 
     /* Поиск информации для прогонки */
     = <FindOptInfo e.OptFuncs (e.Name)> : e.OptFuncs^ t.FunctionForDrive
-    = s.IntrinsicMode
-    : {
-        Intrinsic = <FindMetatables e.OptFuncs>;
-        s._ = () e.OptFuncs;
-      }
-    : t.Metatables e.OptFuncs^
     = <OptSentence-MakeSubstitutions
         (s.DriveMode s.IntrinsicMode) ((e.Left) (e.Right))
         (e.Args) t.FunctionForDrive t.Metatables
       >
-    : e.SubstitutionPacks
+    : t.Metatables^ e.SubstitutionPacks
 
-    = (e.OptFuncs)
+    = (t.Metatables e.OptFuncs)
       <MapAccum
         {
           (e.NewFunctions) (e.Substitutions (e.NewFunction))
@@ -559,7 +554,7 @@ MakeSubstitution-FromMetatables {
   t.Metatables (e.MetatableName) (e.MuArg) e.Name
     = t.Metatables
     : {
-        (e._ (Metatable s._ (e.MetatableName) Metatable e.Map) e._)
+        (Metatables e._ (s._ (e.MetatableName) Metatable e.Map) e._)
           = e.Map
           : {
               e._ ((Symbol Identifier e.Name) t.Pointer) e._
@@ -933,7 +928,7 @@ Intrinsic-Last {
   <OptSentence-MakeSubstitutions
     t.Mode (e.OriginSentence) (e.CallArgs) t.OptFunction t.Metatables
   >
-    == (e.Substitutions)*
+    == t.Metatables (e.Substitutions)*
   e.Substitutions ::= e.Contractions
 
   e.Contractions включают в себя сужение e.DRIVEN#0 для подстановки
@@ -944,7 +939,8 @@ OptSentence-MakeSubstitutions {
   ((e.Left) (e.Expr)) (e.Args)
   t.IntrinsicFunction t.Metatables
     , t.IntrinsicFunction : (Intrinsic s._ (e._) Intrinsic e.BehaviorName)
-    = <DoOptSentence-MakeSubstitutions-Intrinsic
+    = t.Metatables
+      <DoOptSentence-MakeSubstitutions-Intrinsic
         t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName
       >;
 
@@ -954,7 +950,7 @@ OptSentence-MakeSubstitutions {
     /* Активные вызовы игнорируем */
     , <IsPassiveCall e.Args> : False
 
-    = <MakeColdSolution t.Function e.Args>;
+    = t.Metatables <MakeColdSolution t.Function e.Args>;
 
   (s.DriveMode s.IntrinsicMode)
   ((e.Left) (e.Expr)) (e.Args)
@@ -972,7 +968,8 @@ OptSentence-MakeSubstitutions {
     = <ExtractVariables ((e.Left) (e.Expr))> : e.SentenceVars
     = <DecreaseMode s.DriveMode s.FuncMode> : s.DriveMode^
 
-    = <DoOptSentence-MakeSubstitutions
+    = t.Metatables
+      <DoOptSentence-MakeSubstitutions
         s.DriveMode (e.SentenceVars) (e.Args)
         (/* substitutions */)
         (Function s.ScopeClass (e.Name) Sentences e.Body)
@@ -981,7 +978,7 @@ OptSentence-MakeSubstitutions {
   t.Mode
   ((e.Left) (e.Expr)) (e.Args)
   t.Function t.Metatables
-    = <MakeColdSolution t.Function e.Args>;
+    = t.Metatables <MakeColdSolution t.Function e.Args>;
 }
 
 MakeColdSolution {
@@ -1121,16 +1118,16 @@ CutSUF {
   e.Prefix = e.Prefix;
 }
 
-FindMetatables {
+WithMetatables {
   e.OptFuncs
     = <MapAccum
         {
-          (e.Result) (Metatable e.Body)
-             = (e.Result (Metatable e.Body)) (Metatable e.Body);
+          (Metatables e.Result) (Metatable e.Body)
+             = (Metatables e.Result (e.Body)) (Metatable e.Body);
 
-          (e.Result) t.Other = (e.Result) t.Other;
+          (Metatables e.Result) t.Other = (Metatables e.Result) t.Other;
         }
-        () e.OptFuncs
+        (Metatables) e.OptFuncs
       >
 }
 
