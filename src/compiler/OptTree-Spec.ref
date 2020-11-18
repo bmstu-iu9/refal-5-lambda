@@ -47,31 +47,40 @@ $ENTRY OptTree-Spec-Prepare {
 Prepare-Aux {
   ((e.KnownNames) e.KnownInfo (e.KnownHistories)) e.AST
     = <Fetch
-        ((/* no names */) /* no info */) e.AST
+        ((/* no names */) /* no info */ (/* no histories */)) e.AST
         <Pipe
           (&MapAccum
             {
               /* Игнорируем новые $SPEC’и для известных функций */
-              ((e.Names) e.Info) (Spec t.Name e.Pattern)
+              ((e.Names) e.Info (e.Histories)) (Spec t.Name e.Pattern)
                 , e.KnownNames : e._B t.Name e._E
-                = ((e.Names) e.Info) /* пропускаем */;
+                = ((e.Names) e.Info (e.Histories)) /* пропускаем */;
 
-              ((e.Names) e.Info) (Spec t.Name e.Pattern)
+              ((e.Names) e.Info (e.Histories)) (Spec t.Name e.Pattern)
                 = t.Name : (e.Name)
-                = ((e.Names t.Name) e.Info (t.Name (e.Pattern)))
+                = (
+                    (e.Names t.Name)
+                    e.Info (t.Name (e.Pattern))
+                    (e.Histories <TrivialHistory e.Name (e.Pattern)>)
+                  )
                   <Log-PutLine
                     'New $SPEC function: ' <DisplayName e.Name> ' '
                     <Log-InlineExpr e.Pattern>
                   >;
 
-              ((e.Names) e.Info) t.Other = ((e.Names) e.Info) t.Other;
+              ((e.Names) e.Info (e.Histories)) t.Other
+                = ((e.Names) e.Info (e.Histories)) t.Other;
             }
           )
           (&MapAccum
             {
-              ((e.Names) e.Info-B (t.Name (e.Pattern)) e.Info-E)
+              ((e.Names) e.Info-B (t.Name (e.Pattern)) e.Info-E (e.Histories))
               (Function s.ScopeClass t.Name Sentences e.Body)
-                = ((e.Names) e.Info-B (t.Name (e.Pattern) (e.Body) 1) e.Info-E)
+                = (
+                    (e.Names)
+                    e.Info-B (t.Name (e.Pattern) (e.Body) 1) e.Info-E
+                    (e.Histories)
+                  )
                   (Function s.ScopeClass t.Name Sentences e.Body);
 
                ((e.Names) e.Info) t.Other = ((e.Names) e.Info) t.Other;
@@ -79,17 +88,36 @@ Prepare-Aux {
           )
         >
       >
-    : ((e.NewNames) e.NewInfo) e.AST^
+    : ((e.NewNames) e.NewInfo (e.NewHistories)) e.AST^
 
     = <CreateGuardFunctions e.NewInfo> : (e.GuardEnums) e.NewInfo^
 
     = <CreateRemainderFunctions e.NewInfo> : e.NewInfo^
 
     = (SpecInfo
-        (e.KnownNames e.NewNames) e.KnownInfo e.NewInfo (e.KnownHistories)
+        (e.KnownNames e.NewNames)
+        e.KnownInfo e.NewInfo
+        (e.KnownHistories e.NewHistories)
       )
       e.AST
       e.GuardEnums
+}
+
+TrivialHistory {
+  e.Name (e.Pattern)
+    = (<AddSuffix e.Name ('@' 0)>)
+      <Map
+        {
+          (s.Mode e.Index)
+            , <IsSpecStaticVar (s.Mode e.Index)> : True
+            = ((TkVariable s.Mode e.Index));
+
+          (s.Mode e.Index) = /* пропускаем */;
+        }
+        <ExtractVariables-Expr e.Pattern>
+      >
+    : e.HistoryRecord
+    = ((e.Name) (e.HistoryRecord));
 }
 
 * Добавляет вызов аварийной функции Func@0 в конец каждой специализируемой
