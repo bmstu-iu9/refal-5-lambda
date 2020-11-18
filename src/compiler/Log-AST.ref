@@ -170,6 +170,8 @@ Tail {
     = <Expression (e.Indent '= ') (e.Indent '  ') e.Result ';'>;
 }
 
+$SPEC Expression (e.prefix) (e.indent) e.expression;
+
 Expression {
   (e.Prefix) (e.Indent) /* пусто */
     = (e.Prefix '/* empty */');
@@ -177,6 +179,8 @@ Expression {
   (e.Prefix) (e.Indent) e.Expression
     = <DoExpression FIRST (e.Indent) (e.Prefix) e.Expression>;
 }
+
+$SPEC DoExpression s.POS (e.indent) (e.out-line) e.expression;
 
 DoExpression {
   s.Pos (e.Indent) (e.OutLine) /* пусто */ = (e.OutLine);
@@ -223,6 +227,8 @@ InlineTerm {
 
   ';' = ';';
 }
+
+$SPEC MultilineTerm s.pos (e.prefix) e.indent t.term (e.suffix);
 
 MultilineTerm {
   FIRST (e.Prefix) e.Indent t.Term (e.Suffix)
