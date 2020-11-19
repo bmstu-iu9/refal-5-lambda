@@ -469,7 +469,7 @@ TrySpecCall {
     = <SpecCall (e.Name) e.Info (e.Expression) (e.History)>
     : (e.Info^) t.NewCall e.NewFunction (e.NewHistory)
     = (
-        e.SpecInfo-B ((e.Name) e.Info) e.SpecInfo-E
+        ((e.Name) e.Info) e.SpecInfo-B e.SpecInfo-E
         (e.Histories e.NewHistory)
         (e.History)
         (e.NewFunctions e.NewFunction)
@@ -568,7 +568,7 @@ SpecCall-Aux {
 
     = <Spec-FindInSignatures (e.Signature) e.Signatures>
     : {
-        Found e.InstanceName
+        Found e.InstanceName (e.Signatures^)
           = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
             (CallBrackets
               (Symbol Name e.InstanceName) e.SpecializedFuncArgument
@@ -576,7 +576,7 @@ SpecCall-Aux {
             /* no new functions */
             (/* no new history */);
 
-        NotFound
+        NotFound e.Signatures^
 
           = s.NeedRelationCheck
           : {
@@ -859,11 +859,12 @@ ApplySubst-Expr {
 }
 
 Spec-FindInSignatures {
-  (e.Signature) e.Signatures-B ((e.InstanceName) e.Signature) e.Signatures-E
-    = Found e.InstanceName;
+  (e.Signature)
+  e.Signatures-B ((e.InstanceName) e.Signature) e.Signatures-E
+    = Found e.InstanceName
+      (((e.InstanceName) e.Signature) e.Signatures-B e.Signatures-E);
 
-  (e.Signature) e.Signatures
-    = NotFound;
+  (e.Signature) e.Signatures = NotFound e.Signatures;
 }
 
 /**

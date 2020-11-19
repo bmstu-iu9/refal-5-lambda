@@ -232,9 +232,14 @@ AugmentReferences {
   e.References (e.Inlines)
     = <MapAccum
         {
-          (e.References^) ((e.Name) s.ScopeClass e.InlineChilden)
-            , e.References : e._ (e.Name) e._
-            = (e.References <SetDifference e.InlineChilden (e.References)>)
+          (e.References-B (e.Name) e.References-E)
+          ((e.Name) s.ScopeClass e.InlineChilden)
+            = (
+                e.References-B (e.Name) e.References-E
+                <SetDifference
+                  e.InlineChilden (e.References-B (e.Name) e.References-E)
+                >
+              )
               ((e.Name) s.ScopeClass e.InlineChilden);
 
           (e.References^) t.InlineNode = (e.References) t.InlineNode;
