@@ -87,8 +87,16 @@ NormalizeToken {
 
   (#TkLiteral-Char s.Char) = (#TkChar s.Char);
 
+  (#TkLiteral-Code s.1 s.2 s.3 e.Overflow) =
+    (#TkChar <Chr <Numb-Overflow s.1 s.2 s.3>>)
+    <Map { s.Char = (#TkChar s.Char); } e.Overflow>;
+
   (#TkLiteral-Code e.DecCode) =
     (#TkChar <Chr <Numb-Overflow e.DecCode>>);
+
+  (#TkLiteral-OCode s.1 s.2 s.3 e.Overflow) =
+    (#TkChar <CharFromNum 8 s.1 s.2 s.3>)
+    <Map { s.Char = (#TkChar s.Char); } e.Overflow>;
 
   (#TkLiteral-OCode e.OctCode) =
     (#TkChar <CharFromNum 8 e.OctCode>);
@@ -307,32 +315,24 @@ $ENUM TokenError;
     '\\'    !#TkLiteral-Char                    StringLiteral             |
     '\''    !#TkLiteral-Char                    StringLiteral             |
     '"'     !#TkLiteral-Char                    StringLiteral             |
-    'd'     !-                                  StringLiteral-Escape-Code |
-    'D'     !-                                  StringLiteral-Escape-Code |
+    'd'     !-                                  StringLiteral-Escape-DCode|
+    'D'     !-                                  StringLiteral-Escape-DCode|
     :ODigit:                                    StringLiteral-Escape-OCode|
     'x'     !-                                  StringLiteral-Escape-XCode|
     'X'     !-                                  StringLiteral-Escape-XCode|
     '\n'    !"Unclosed quote"                   Main                      |
             !"Unexpected escape sequence"       StringLiteral             .
 
-  StringLiteral-Escape-Code =
-    :Digit:                                     SL-E-C1                   |
+  StringLiteral-Escape-DCode =
+    :Digit:                                     StringLiteral-Escape-DNext|
             !"Expected decimal digit"           StringLiteral             .
 
-  SL-E-C1 =
-    :Digit:                                     SL-E-C2                   |
-            !#TkLiteral-Code                    StringLiteral             .
-
-  SL-E-C2 =
-    :Digit: !#TkLiteral-Code                    StringLiteral             |
+  StringLiteral-Escape-DNext =
+    :Digit:                                     StringLiteral-Escape-DNext|
             !#TkLiteral-Code                    StringLiteral             .
 
   StringLiteral-Escape-OCode =
-    :ODigit:                                    SL-E-OC1                  |
-            !#TkLiteral-OCode                   StringLiteral             .
-
-  SL-E-OC1 =
-    :ODigit:!#TkLiteral-OCode                   StringLiteral             |
+    :ODigit:                                    StringLiteral-Escape-OCode|
             !#TkLiteral-OCode                   StringLiteral             .
 
   StringLiteral-Escape-XCode =
@@ -955,8 +955,8 @@ StringLiteral-Escape {
   (e.Accum) '\\' e.Text = (#TkLiteral-Char e.Accum '\\') <StringLiteral () e.Text>;
   (e.Accum) '\'' e.Text = (#TkLiteral-Char e.Accum '\'') <StringLiteral () e.Text>;
   (e.Accum) '\"' e.Text = (#TkLiteral-Char e.Accum '\"') <StringLiteral () e.Text>;
-  (e.Accum) 'd' e.Text = <StringLiteral-Escape-Code () e.Text>;
-  (e.Accum) 'D' e.Text = <StringLiteral-Escape-Code () e.Text>;
+  (e.Accum) 'd' e.Text = <StringLiteral-Escape-DCode () e.Text>;
+  (e.Accum) 'D' e.Text = <StringLiteral-Escape-DCode () e.Text>;
   (e.Accum) '0' e.Text = <StringLiteral-Escape-OCode (e.Accum '0') e.Text>;
   (e.Accum) '1' e.Text = <StringLiteral-Escape-OCode (e.Accum '1') e.Text>;
   (e.Accum) '2' e.Text = <StringLiteral-Escape-OCode (e.Accum '2') e.Text>;
@@ -1044,33 +1044,33 @@ Native-CheckEnd2 {
   (e.Accum) e.Text = <Native (e.Accum) e.Text>;
 }
 
-$SPEC StringLiteral-Escape-Code (e.acc) e.text;
+$SPEC StringLiteral-Escape-DCode (e.acc) e.text;
 
-StringLiteral-Escape-Code {
-  (e.Accum) '0' e.Text = <SL-E-C1 (e.Accum '0') e.Text>;
-  (e.Accum) '1' e.Text = <SL-E-C1 (e.Accum '1') e.Text>;
-  (e.Accum) '2' e.Text = <SL-E-C1 (e.Accum '2') e.Text>;
-  (e.Accum) '3' e.Text = <SL-E-C1 (e.Accum '3') e.Text>;
-  (e.Accum) '4' e.Text = <SL-E-C1 (e.Accum '4') e.Text>;
-  (e.Accum) '5' e.Text = <SL-E-C1 (e.Accum '5') e.Text>;
-  (e.Accum) '6' e.Text = <SL-E-C1 (e.Accum '6') e.Text>;
-  (e.Accum) '7' e.Text = <SL-E-C1 (e.Accum '7') e.Text>;
-  (e.Accum) '8' e.Text = <SL-E-C1 (e.Accum '8') e.Text>;
-  (e.Accum) '9' e.Text = <SL-E-C1 (e.Accum '9') e.Text>;
+StringLiteral-Escape-DCode {
+  (e.Accum) '0' e.Text = <StringLiteral-Escape-DNext (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <StringLiteral-Escape-DNext (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <StringLiteral-Escape-DNext (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <StringLiteral-Escape-DNext (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <StringLiteral-Escape-DNext (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <StringLiteral-Escape-DNext (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <StringLiteral-Escape-DNext (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <StringLiteral-Escape-DNext (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <StringLiteral-Escape-DNext (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <StringLiteral-Escape-DNext (e.Accum '9') e.Text>;
   (e.Accum) e.Text = (TokenError 'Expected decimal digit') <StringLiteral () e.Text>;
 }
 
 $SPEC StringLiteral-Escape-OCode (e.acc) e.text;
 
 StringLiteral-Escape-OCode {
-  (e.Accum) '0' e.Text = <SL-E-OC1 (e.Accum '0') e.Text>;
-  (e.Accum) '1' e.Text = <SL-E-OC1 (e.Accum '1') e.Text>;
-  (e.Accum) '2' e.Text = <SL-E-OC1 (e.Accum '2') e.Text>;
-  (e.Accum) '3' e.Text = <SL-E-OC1 (e.Accum '3') e.Text>;
-  (e.Accum) '4' e.Text = <SL-E-OC1 (e.Accum '4') e.Text>;
-  (e.Accum) '5' e.Text = <SL-E-OC1 (e.Accum '5') e.Text>;
-  (e.Accum) '6' e.Text = <SL-E-OC1 (e.Accum '6') e.Text>;
-  (e.Accum) '7' e.Text = <SL-E-OC1 (e.Accum '7') e.Text>;
+  (e.Accum) '0' e.Text = <StringLiteral-Escape-OCode (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <StringLiteral-Escape-OCode (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <StringLiteral-Escape-OCode (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <StringLiteral-Escape-OCode (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <StringLiteral-Escape-OCode (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <StringLiteral-Escape-OCode (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <StringLiteral-Escape-OCode (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <StringLiteral-Escape-OCode (e.Accum '7') e.Text>;
   (e.Accum) e.Text = (#TkLiteral-OCode e.Accum) <StringLiteral () e.Text>;
 }
 
@@ -1102,34 +1102,20 @@ StringLiteral-Escape-XCode {
   (e.Accum) e.Text = (TokenError 'Expected hexadecimal digit') <StringLiteral () e.Text>;
 }
 
-$SPEC SL-E-C1 (e.acc) e.text;
+$SPEC StringLiteral-Escape-DNext (e.acc) e.text;
 
-SL-E-C1 {
-  (e.Accum) '0' e.Text = <SL-E-C2 (e.Accum '0') e.Text>;
-  (e.Accum) '1' e.Text = <SL-E-C2 (e.Accum '1') e.Text>;
-  (e.Accum) '2' e.Text = <SL-E-C2 (e.Accum '2') e.Text>;
-  (e.Accum) '3' e.Text = <SL-E-C2 (e.Accum '3') e.Text>;
-  (e.Accum) '4' e.Text = <SL-E-C2 (e.Accum '4') e.Text>;
-  (e.Accum) '5' e.Text = <SL-E-C2 (e.Accum '5') e.Text>;
-  (e.Accum) '6' e.Text = <SL-E-C2 (e.Accum '6') e.Text>;
-  (e.Accum) '7' e.Text = <SL-E-C2 (e.Accum '7') e.Text>;
-  (e.Accum) '8' e.Text = <SL-E-C2 (e.Accum '8') e.Text>;
-  (e.Accum) '9' e.Text = <SL-E-C2 (e.Accum '9') e.Text>;
+StringLiteral-Escape-DNext {
+  (e.Accum) '0' e.Text = <StringLiteral-Escape-DNext (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <StringLiteral-Escape-DNext (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <StringLiteral-Escape-DNext (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <StringLiteral-Escape-DNext (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <StringLiteral-Escape-DNext (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <StringLiteral-Escape-DNext (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <StringLiteral-Escape-DNext (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <StringLiteral-Escape-DNext (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <StringLiteral-Escape-DNext (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <StringLiteral-Escape-DNext (e.Accum '9') e.Text>;
   (e.Accum) e.Text = (#TkLiteral-Code e.Accum) <StringLiteral () e.Text>;
-}
-
-$SPEC SL-E-OC1 (e.acc) e.text;
-
-SL-E-OC1 {
-  (e.Accum) '0' e.Text = (#TkLiteral-OCode e.Accum '0') <StringLiteral () e.Text>;
-  (e.Accum) '1' e.Text = (#TkLiteral-OCode e.Accum '1') <StringLiteral () e.Text>;
-  (e.Accum) '2' e.Text = (#TkLiteral-OCode e.Accum '2') <StringLiteral () e.Text>;
-  (e.Accum) '3' e.Text = (#TkLiteral-OCode e.Accum '3') <StringLiteral () e.Text>;
-  (e.Accum) '4' e.Text = (#TkLiteral-OCode e.Accum '4') <StringLiteral () e.Text>;
-  (e.Accum) '5' e.Text = (#TkLiteral-OCode e.Accum '5') <StringLiteral () e.Text>;
-  (e.Accum) '6' e.Text = (#TkLiteral-OCode e.Accum '6') <StringLiteral () e.Text>;
-  (e.Accum) '7' e.Text = (#TkLiteral-OCode e.Accum '7') <StringLiteral () e.Text>;
-  (e.Accum) e.Text = (#TkLiteral-OCode e.Accum) <StringLiteral () e.Text>;
 }
 
 $SPEC StringLiteral-Escape-Xnext (e.acc) e.text;
@@ -1158,20 +1144,4 @@ StringLiteral-Escape-Xnext {
   (e.Accum) 'e' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'e') e.Text>;
   (e.Accum) 'f' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'f') e.Text>;
   (e.Accum) e.Text = (#TkLiteral-XCode e.Accum) <StringLiteral () e.Text>;
-}
-
-$SPEC SL-E-C2 (e.acc) e.text;
-
-SL-E-C2 {
-  (e.Accum) '0' e.Text = (#TkLiteral-Code e.Accum '0') <StringLiteral () e.Text>;
-  (e.Accum) '1' e.Text = (#TkLiteral-Code e.Accum '1') <StringLiteral () e.Text>;
-  (e.Accum) '2' e.Text = (#TkLiteral-Code e.Accum '2') <StringLiteral () e.Text>;
-  (e.Accum) '3' e.Text = (#TkLiteral-Code e.Accum '3') <StringLiteral () e.Text>;
-  (e.Accum) '4' e.Text = (#TkLiteral-Code e.Accum '4') <StringLiteral () e.Text>;
-  (e.Accum) '5' e.Text = (#TkLiteral-Code e.Accum '5') <StringLiteral () e.Text>;
-  (e.Accum) '6' e.Text = (#TkLiteral-Code e.Accum '6') <StringLiteral () e.Text>;
-  (e.Accum) '7' e.Text = (#TkLiteral-Code e.Accum '7') <StringLiteral () e.Text>;
-  (e.Accum) '8' e.Text = (#TkLiteral-Code e.Accum '8') <StringLiteral () e.Text>;
-  (e.Accum) '9' e.Text = (#TkLiteral-Code e.Accum '9') <StringLiteral () e.Text>;
-  (e.Accum) e.Text = (#TkLiteral-Code e.Accum) <StringLiteral () e.Text>;
 }
