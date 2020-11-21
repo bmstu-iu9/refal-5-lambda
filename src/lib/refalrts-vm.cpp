@@ -520,7 +520,7 @@ void refalrts::VM::free_view_field() {
 
 #if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   if (m_diagnostic_config->print_statistics) {
-    fprintf(stderr, "Step count %d\n", m_step_counter);
+    fprintf(stderr, "Step count %u\n", m_step_counter);
   }
 #endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 }
