@@ -12,11 +12,12 @@ $EXTERN HashName;
 
 $ENTRY OptTree-AutoMarkup-Drive {
   e.AST
-    = <MetaInfo e.AST> : ((e.Forbidden) (e.Inlines) (e.UserdefDrives)) e.AST^
+    = <MetaInfo e.AST> : t.MetaInfo e.AST^
+    = t.MetaInfo : ((e.Forbidden) (e.Inlines) (e.UserdefDrives) (e.Entries))
 
-    = <BuldCallGraph e.AST (e.Inlines)> : (e.EntryPoints) (e.Indirects) e.Graph
+    = <BuldCallGraph e.AST (e.Inlines)> : (e.Indirects) e.Graph
 
-    = <Unique e.EntryPoints e.Indirects> : e.Roots
+    = <Unique ('__INIT') ('__FINAL') e.Entries e.Indirects> : e.Roots
     = <BasicVertexes e.Graph (e.Roots)>
     : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
     = <SetDifference e.ToDrive (e.Forbidden e.UserdefDrives)> : e.ToDrive^
@@ -37,13 +38,14 @@ BuldCallGraph {
     = <SeparateInlineGraphNodes e.Functions (e.Inlines)>
     : (e.InlinesRef) e.Functions^
     = <InlineInlineReferences e.Functions (e.InlinesRef)> : e.Functions^
-    = <PrepareGraphFormat e.Functions> : (e.EntryPoints) e.Graph
-    = (e.EntryPoints) (e.Indirects) e.Graph;
+    = <PrepareGraphFormat e.Functions> : e.Graph
+    = (e.Indirects) e.Graph;
 }
 
 MetaInfo {
   e.AST
-    = ((/* forbidden list */) (/* inlines */) (/* drives */)) : t.InitMetaInfo
+    = ((/* forbidden list */) (/* inlines */) (/* drives */) (/* entries */))
+    : t.InitMetaInfo
     = <MapAccum
         {
           t.MetaInfo (Inline e.Name)
@@ -56,9 +58,14 @@ MetaInfo {
             = <MetaInfo-AddForbidden t.MetaInfo e.Name> (Intrinsic e.Name);
 
           t.MetaInfo (Function s.Scope (e.FuncName) Sentences e.Body)
-            , <Lenw e.Body> : s.SentencesCount e.Body^
-            , <Compare s.SentencesCount 20> : '+'
-            = <MetaInfo-AddForbidden t.MetaInfo e.FuncName>
+            = <Lenw e.Body> : s.SentencesCount e.Body^
+            = <Compare s.SentencesCount 20>
+            : {
+                '+' = <MetaInfo-AddForbidden t.MetaInfo e.FuncName>;
+                s._ = t.MetaInfo;
+              }
+            : t.MetaInfo^
+            = <MetaInfo-AddEntry t.MetaInfo s.Scope e.FuncName>
               (Function s.Scope (e.FuncName) Sentences e.Body);
 
           t.MetaInfo t.Other = t.MetaInfo t.Other;
@@ -68,18 +75,26 @@ MetaInfo {
 }
 
 MetaInfo-AddInline {
-  ((e.Forbidden) (e.Inlines) (e.Drives)) e.Name
-    = ((e.Forbidden (e.Name)) (e.Inlines (e.Name)) (e.Drives));
+  ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries)) e.Name
+    = ((e.Forbidden (e.Name)) (e.Inlines (e.Name)) (e.Drives) (e.Entries));
 }
 
 MetaInfo-AddDrive {
-  ((e.Forbidden) (e.Inlines) (e.Drives)) e.Name
-    = ((e.Forbidden) (e.Inlines) (e.Drives (e.Name)));
+  ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries)) e.Name
+    = ((e.Forbidden) (e.Inlines) (e.Drives (e.Name)) (e.Entries));
 }
 
 MetaInfo-AddForbidden {
-  ((e.Forbidden) (e.Inlines) (e.Drives)) e.Name
-    = ((e.Forbidden (e.Name)) (e.Inlines) (e.Drives));
+  ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries)) e.Name
+    = ((e.Forbidden (e.Name)) (e.Inlines) (e.Drives) (e.Entries));
+}
+
+MetaInfo-AddEntry {
+  ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries)) GN-Entry e.Name
+    = ((e.Forbidden (e.Name)) (e.Inlines) (e.Drives) (e.Entries (e.Name)));
+
+  ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries)) GN-Local e.Name
+    = ((e.Forbidden (e.Name)) (e.Inlines) (e.Drives) (e.Entries));
 }
 
 SeparateMetatables {
@@ -305,19 +320,12 @@ InlineIndirects {
 
 PrepareGraphFormat {
   e.Functions
-    = <MapAccum
+    = <Map
         {
-          (e.EntryPoints) (Func (e.Name) s.ScopeClass Children (e.Children))
-            = e.Name s.ScopeClass
-            : {
-                e._ GN-Entry = (e.Name);
-                e._ s._ = /* пропускаем */;
-              }
-            : e.NewEntryName
-            = (e.EntryPoints e.NewEntryName)
-              (Func (e.Name) Children (e.Children));
+          (Func (e.Name) s.ScopeClass Children (e.Children))
+            = (Func (e.Name) Children (e.Children));
         }
-        (/* entry points */ ('__INIT') ('__FINAL')) e.Functions
+        e.Functions
       >
 }
 
@@ -510,9 +518,10 @@ UpdateAST {
 */
 $ENTRY OptTree-AutoMarkup-CureDrives {
   e.AST
-    = <MetaInfo e.AST> : ((e.Forbidden) (e.Inlines) (e.UserdefDrives)) e.AST^
+    = <MetaInfo e.AST> : t.MetaInfo e.AST^
+    = t.MetaInfo : ((e.Forbidden) (e.Inlines) (e.UserdefDrives) (e.Entries))
 
-    = <BuldCallGraph e.AST (e.Inlines)> : (e.EntryPoints) (e.Indirects) e.Graph
+    = <BuldCallGraph e.AST (e.Inlines)> : (e.Indirects) e.Graph
 
     = <MapAccum
         {
@@ -532,7 +541,10 @@ $ENTRY OptTree-AutoMarkup-CureDrives {
       >
     : (e.DrivenNodes) e.NamesCalledFromUndriven
 
-    = <Unique e.EntryPoints e.Indirects e.NamesCalledFromUndriven> : e.Roots
+    = <Unique
+        ('__INIT') ('__FINAL') e.Entries e.Indirects e.NamesCalledFromUndriven
+      >
+    : e.Roots
     = <SetIntersect (e.Roots) (e.UserdefDrives)> : e.Roots^
     = <BasicVertexes e.Graph (e.Roots)>
     : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
