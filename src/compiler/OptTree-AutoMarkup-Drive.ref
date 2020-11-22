@@ -38,7 +38,7 @@ BuldCallGraph {
     = <SeparateInlineGraphNodes e.Functions (e.Inlines)>
     : (e.InlinesRef) e.Functions^
     = <InlineInlineReferences e.Functions (e.InlinesRef)> : e.Functions^
-    = <PrepareGraphFormat e.Functions> : e.Graph
+    = e.Functions : e.Graph
     = (e.Indirects) e.Graph;
 }
 
@@ -125,12 +125,12 @@ MetatableGraphNodes {
         e.Metatable
       >
     : e.Children
-    = (Func (e.MetatableName) s.ScopeClass Children (e.Children (INDIRECT)));
+    = (Func (e.MetatableName) Children (e.Children (INDIRECT)));
 }
 
 FunctionGraphNodes {
   (Function s.ScopeClass (e.Name) Sentences e.Sentences)
-    = (Func (e.Name) s.ScopeClass Children (<Children-Body e.Sentences>))
+    = (Func (e.Name) Children (<Children-Body e.Sentences>))
 }
 
 Children-Body {
@@ -193,18 +193,12 @@ InlineMetatableGraphNodes {
 
 InlineOneMetatable {
   e.Functions-B
-  (Func
-    (e.Name) s.ScopeClass
-    Children (e.Children-B (Pointer e.MetatableName) e.Children-E)
-  )
+  (Func (e.Name) Children (e.Children-B (Pointer e.MetatableName) e.Children-E))
   e.Functions-E
   t.Metatable
-    , t.Metatable : (Func (e.MetatableName) s._ Children (e.MetatableNodes))
+    , t.Metatable : (Func (e.MetatableName) Children (e.MetatableNodes))
     = e.Functions-B
-      (Func
-        (e.Name) s.ScopeClass
-        Children (e.Children-B e.MetatableNodes e.Children-E)
-      )
+      (Func (e.Name) Children (e.Children-B e.MetatableNodes e.Children-E))
       <InlineOneMetatable e.Functions-E t.Metatable>;
 
   e.Functions t.Metatable = e.Functions;
@@ -215,8 +209,7 @@ SeparateInlineGraphNodes {
     = <MapAccum
         {
           (e.InlinesRef) t.GraphNode
-            , t.GraphNode
-            : (Func (e.Name) s.ScopeClass Children (e.Children))
+            , t.GraphNode : (Func (e.Name) Children (e.Children))
             , e.Inlines : e._ (e.Name) e._
             = (e.InlinesRef t.GraphNode) t.GraphNode;
 
@@ -240,10 +233,10 @@ InlineInlineReferences-Pass {
   e.Functions (e.Inlines)
     = <MapAccum
         {
-          (e.Inlines^) (Func (e.Name) s.ScopeClass Children (e.Children))
+          (e.Inlines^) (Func (e.Name) Children (e.Children))
             = <AugmentReferences e.Children (e.Inlines)>
             : (e.Children^) e.Inlines^
-            = (e.Inlines) (Func (e.Name) s.ScopeClass Children (e.Children));
+            = (e.Inlines) (Func (e.Name) Children (e.Children));
         }
         (e.Inlines) e.Functions
       >
@@ -256,14 +249,14 @@ AugmentReferences {
     = <MapAccum
         {
           (e.Children-B (e.Name) e.Children-E)
-          (Func (e.Name) s.ScopeClass Children (e.InlineChilden))
+          (Func (e.Name) Children (e.InlineChilden))
             = (
                 e.Children-B (e.Name) e.Children-E
                 <SetDifference
                   e.InlineChilden (e.Children-B (e.Name) e.Children-E)
                 >
               )
-              (Func (e.Name) s.ScopeClass Children (e.InlineChilden));
+              (Func (e.Name) Children (e.InlineChilden));
 
           (e.Children^) t.InlineNode = (e.Children) t.InlineNode;
         }
@@ -275,14 +268,13 @@ SeparateIndirects {
   e.Functions
     = <MapAccum
         {
-          (e.Indirects)
-          (Func (e.Name) s.ScopeClass Children (e.Children))
+          (e.Indirects) (Func (e.Name) Children (e.Children))
 
             = <SeparateIndirects-Children e.Children>
             : (e.FunctionIndirects) e.Children^
 
             = (e.Indirects e.FunctionIndirects)
-              (Func (e.Name) s.ScopeClass Children (<Unique e.Children>));
+              (Func (e.Name) Children (<Unique e.Children>));
         }
         (/* indirects */)
         e.Functions
@@ -305,28 +297,14 @@ SeparateIndirects-Children {
 
 InlineIndirects {
   e.Functions-B
-  (Func (e.Name) s.ScopeClass Children (e.Children-B INDIRECT e.Children-E))
+  (Func (e.Name) Children (e.Children-B INDIRECT e.Children-E))
   e.Functions-E
   (e.Indirects)
     = e.Functions-B
-      (Func
-        (e.Name) s.ScopeClass
-        Children (<Unique e.Children-B e.Indirects e.Children-E>)
-      )
+      (Func (e.Name) Children (<Unique e.Children-B e.Indirects e.Children-E>))
       <InlineIndirects e.Functions-E (e.Indirects)>;
 
   e.Functions (e.Indirects) = e.Functions;
-}
-
-PrepareGraphFormat {
-  e.Functions
-    = <Map
-        {
-          (Func (e.Name) s.ScopeClass Children (e.Children))
-            = (Func (e.Name) Children (e.Children));
-        }
-        e.Functions
-      >
 }
 
 /*
