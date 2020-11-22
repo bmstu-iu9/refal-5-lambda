@@ -238,8 +238,8 @@ ApplyInlines {
     = <MapAccum
         {
           (e.Inlines^) (Func (e.Name) Children (e.Children))
-            = <ApplyInlines-Children e.Children (e.Inlines)>
-            : (e.Children^) e.Inlines^
+            = <ApplyInlines-Children e.Inlines (e.Children)>
+            : e.Inlines^ (e.Children^)
             = (e.Inlines) (Func (e.Name) Children (e.Children));
         }
         (e.Inlines) e.Graph
@@ -249,23 +249,22 @@ ApplyInlines {
 }
 
 ApplyInlines-Children {
-  e.Children (e.Inlines)
-    = <MapAccum
-        {
-          (e.Children-B (e.Name) e.Children-E)
-          (Func (e.Name) Children (e.InlineChilden))
-            = (
-                e.Children-B (e.Name) e.Children-E
-                <SetDifference
-                  e.InlineChilden (e.Children-B (e.Name) e.Children-E)
-                >
-              )
-              (Func (e.Name) Children (e.InlineChilden));
+  e.Inlines-B (Func (e.Name) Children (e.InlineChilden)) e.Inlines-E
+  (e.Children-B (e.Name) e.Children-E)
+    = e.Children-B (e.Name) e.Children-E : e.Children
+    = <UnionChildren e.Children (e.InlineChilden)> : e.Children^
+    = e.Inlines-B (Func (e.Name) Children (e.InlineChilden))
+      <ApplyInlines-Children e.Inlines-E (e.Children)>;
 
-          (e.Children^) t.InlineNode = (e.Children) t.InlineNode;
-        }
-        (e.Children) e.Inlines
-      >
+  e.Inlines (e.Children) = e.Inlines (e.Children);
+}
+
+* <UnionChildren e.Set1 (e.Set2)> == e.Set1 e.Set2\Set1
+UnionChildren {
+  e.Unique t.Common e.NotScanned (e.New-B t.Common e.New-E)
+    = e.Unique t.Common <UnionChildren e.NotScanned (e.New-B e.New-E)>;
+
+  e.Unique (e.New) = e.Unique e.New;
 }
 
 SeparateIndirects {
