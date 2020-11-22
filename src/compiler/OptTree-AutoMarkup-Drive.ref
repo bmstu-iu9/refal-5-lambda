@@ -26,19 +26,18 @@ $ENTRY OptTree-AutoMarkup-Drive {
 BuldCallGraph {
   e.AST (e.Inlines)
     = <SeparateMetatables e.AST> : (e.Metatables) e.Functions
-    = <Map &MetatableReferences e.Metatables> : e.MetatablesRef
-    = <Map &FunctionReferences e.Functions> : e.FunctionsRef
+    = <Map &MetatableGraphNodes e.Metatables> : e.Metatables^
+    = <Map &FunctionGraphNodes e.Functions> : e.Functions^
 
-    = <InlineMetatableReferences e.FunctionsRef (e.MetatablesRef)>
-    : e.FunctionsRef^
+    = <InlineMetatableGraphNodes e.Functions (e.Metatables)> : e.Functions^
 
-    = <SeparateIndirects e.FunctionsRef> : (e.Indirects) e.FunctionsRef^
-    = <InlineIndirects e.FunctionsRef (e.Indirects)> : e.FunctionsRef^
+    = <SeparateIndirects e.Functions> : (e.Indirects) e.Functions^
+    = <InlineIndirects e.Functions (e.Indirects)> : e.Functions^
 
-    = <SeparateInlineReferences e.FunctionsRef (e.Inlines)>
-    : (e.InlinesRef) e.FunctionsRef^
-    = <InlineInlineReferences e.FunctionsRef (e.InlinesRef)> : e.FunctionsRef^
-    = <PrepareGraphFormat e.FunctionsRef> : (e.EntryPoints) e.Graph
+    = <SeparateInlineGraphNodes e.Functions (e.Inlines)>
+    : (e.InlinesRef) e.Functions^
+    = <InlineInlineReferences e.Functions (e.InlinesRef)> : e.Functions^
+    = <PrepareGraphFormat e.Functions> : (e.EntryPoints) e.Graph
     = (e.EntryPoints) (e.Indirects) e.Graph;
 }
 
@@ -94,7 +93,7 @@ SeparateMetatables {
       >
 }
 
-MetatableReferences {
+MetatableGraphNodes {
   (Function s.ScopeClass (e.MetatableName) Metatable e.Metatable)
     = <Map
         {
@@ -102,61 +101,61 @@ MetatableReferences {
         }
         e.Metatable
       >
-    : e.References
-    = (Func (e.MetatableName) s.ScopeClass Children (e.References (INDIRECT)));
+    : e.Children
+    = (Func (e.MetatableName) s.ScopeClass Children (e.Children (INDIRECT)));
 }
 
-FunctionReferences {
+FunctionGraphNodes {
   (Function s.ScopeClass (e.Name) Sentences e.Sentences)
-    = (Func (e.Name) s.ScopeClass Children (<References-Body e.Sentences>))
+    = (Func (e.Name) s.ScopeClass Children (<Children-Body e.Sentences>))
 }
 
-References-Body {
+Children-Body {
   e.Sentences
     = <Map
         {
           ((e.Pattern) e.Conditions (e.Result))
             = <Unique
-                <References-Expr e.Pattern>
+                <Children-Expr e.Pattern>
                 <Map
                   {
                     (Condition (e._) (e.CondResult) (e.CondPattern))
-                      = <References-Expr e.CondResult>
-                        <References-Expr e.CondPattern>
+                      = <Children-Expr e.CondResult>
+                        <Children-Expr e.CondPattern>
                   }
                 >
-                <References-Expr e.Result>
+                <Children-Expr e.Result>
               >
         }
         e.Sentences
       >;
 }
 
-References-Expr {
-  e.Expression = <Map &References-Term e.Expression>
+Children-Expr {
+  e.Expression = <Map &Children-Term e.Expression>
 }
 
-References-Term {
+Children-Term {
   (CallBrackets (Symbol Name e.Name) e.Expr)
-    = (Call e.Name) <References-Expr e.Expr>;
+    = (Call e.Name) <Children-Expr e.Expr>;
 
   (CallBrackets (ClosureBrackets (Symbol Name e.Name) e.Context) e.Expr)
-    = (Call e.Name) <References-Expr e.Context> <References-Expr e.Expr>;
+    = (Call e.Name) <Children-Expr e.Context> <Children-Expr e.Expr>;
 
-  (CallBrackets e.Expr) = (INDIRECT) <References-Expr e.Expr>;
+  (CallBrackets e.Expr) = (INDIRECT) <Children-Expr e.Expr>;
 
   (Symbol Name e.Name) = (Pointer e.Name);
 
-  (ADT-Brackets (e.Name) e.Expr) = <References-Expr e.Expr>;
+  (ADT-Brackets (e.Name) e.Expr) = <Children-Expr e.Expr>;
 
   (s.Brackets e.Expr)
     , Brackets ClosureBrackets : e._ s.Brackets e._
-    = <References-Expr e.Expr>;
+    = <Children-Expr e.Expr>;
 
   t.AnyOtherTerm = /* ничего интересного */;
 }
 
-InlineMetatableReferences {
+InlineMetatableGraphNodes {
   e.Functions (e.Metatables)
     = <Reduce
         {
@@ -173,32 +172,32 @@ InlineOneMetatable {
   e.Functions-B
   (Func
     (e.Name) s.ScopeClass
-    Children (e.References-B (Pointer e.MetatableName) e.References-E)
+    Children (e.Children-B (Pointer e.MetatableName) e.Children-E)
   )
   e.Functions-E
   t.Metatable
-    , t.Metatable : (Func (e.MetatableName) s._ Children (e.MetatableReferences))
+    , t.Metatable : (Func (e.MetatableName) s._ Children (e.MetatableNodes))
     = e.Functions-B
       (Func
         (e.Name) s.ScopeClass
-        Children (e.References-B e.MetatableReferences e.References-E)
+        Children (e.Children-B e.MetatableNodes e.Children-E)
       )
       <InlineOneMetatable e.Functions-E t.Metatable>;
 
   e.Functions t.Metatable = e.Functions;
 }
 
-SeparateInlineReferences {
+SeparateInlineGraphNodes {
   e.Functions (e.Inlines)
     = <MapAccum
         {
-          (e.InlinesRef) t.Reference
-            , t.Reference
-            : (Func (e.Name) s.ScopeClass Children (e.References))
+          (e.InlinesRef) t.GraphNode
+            , t.GraphNode
+            : (Func (e.Name) s.ScopeClass Children (e.Children))
             , e.Inlines : e._ (e.Name) e._
-            = (e.InlinesRef t.Reference) t.Reference;
+            = (e.InlinesRef t.GraphNode) t.GraphNode;
 
-          (e.InlinesRef) t.Reference = (e.InlinesRef) t.Reference;
+          (e.InlinesRef) t.GraphNode = (e.InlinesRef) t.GraphNode;
         }
         (/* inlines references */) e.Functions
       >
@@ -218,10 +217,10 @@ InlineInlineReferences-Pass {
   e.Functions (e.Inlines)
     = <MapAccum
         {
-          (e.Inlines^) (Func (e.Name) s.ScopeClass Children (e.References))
-            = <AugmentReferences e.References (e.Inlines)>
-            : (e.References^) e.Inlines^
-            = (e.Inlines) (Func (e.Name) s.ScopeClass Children (e.References));
+          (e.Inlines^) (Func (e.Name) s.ScopeClass Children (e.Children))
+            = <AugmentReferences e.Children (e.Inlines)>
+            : (e.Children^) e.Inlines^
+            = (e.Inlines) (Func (e.Name) s.ScopeClass Children (e.Children));
         }
         (e.Inlines) e.Functions
       >
@@ -230,22 +229,22 @@ InlineInlineReferences-Pass {
 }
 
 AugmentReferences {
-  e.References (e.Inlines)
+  e.Children (e.Inlines)
     = <MapAccum
         {
-          (e.References-B (e.Name) e.References-E)
+          (e.Children-B (e.Name) e.Children-E)
           (Func (e.Name) s.ScopeClass Children (e.InlineChilden))
             = (
-                e.References-B (e.Name) e.References-E
+                e.Children-B (e.Name) e.Children-E
                 <SetDifference
-                  e.InlineChilden (e.References-B (e.Name) e.References-E)
+                  e.InlineChilden (e.Children-B (e.Name) e.Children-E)
                 >
               )
               (Func (e.Name) s.ScopeClass Children (e.InlineChilden));
 
-          (e.References^) t.InlineNode = (e.References) t.InlineNode;
+          (e.Children^) t.InlineNode = (e.Children) t.InlineNode;
         }
-        (e.References) e.Inlines
+        (e.Children) e.Inlines
       >
 }
 
@@ -254,13 +253,13 @@ SeparateIndirects {
     = <MapAccum
         {
           (e.Indirects)
-          (Func (e.Name) s.ScopeClass Children (e.References))
+          (Func (e.Name) s.ScopeClass Children (e.Children))
 
-            = <SeparateIndirects-References e.References>
-            : (e.FunctionIndirects) e.References^
+            = <SeparateIndirects-Children e.Children>
+            : (e.FunctionIndirects) e.Children^
 
             = (e.Indirects e.FunctionIndirects)
-              (Func (e.Name) s.ScopeClass Children (<Unique e.References>));
+              (Func (e.Name) s.ScopeClass Children (<Unique e.Children>));
         }
         (/* indirects */)
         e.Functions
@@ -269,15 +268,15 @@ SeparateIndirects {
     = (<Unique e.Indirects>) e.Functions;
 }
 
-SeparateIndirects-References {
-  e.References
+SeparateIndirects-Children {
+  e.Children
     = <MapAccum
         {
           (e.Indirects) (Call e.Name) = (e.Indirects) (e.Name);
           (e.Indirects) (Pointer e.Name) = (e.Indirects (e.Name)) /* удаляем */;
           (e.Indirects) (INDIRECT) = (e.Indirects) INDIRECT;
         }
-        (/* indirects */) e.References
+        (/* indirects */) e.Children
       >
 }
 
