@@ -103,12 +103,12 @@ MetatableReferences {
         e.Metatable
       >
     : e.References
-    = ((e.MetatableName) s.ScopeClass e.References (INDIRECT));
+    = (Func (e.MetatableName) s.ScopeClass Children (e.References (INDIRECT)));
 }
 
 FunctionReferences {
   (Function s.ScopeClass (e.Name) Sentences e.Sentences)
-    = ((e.Name) s.ScopeClass <References-Body e.Sentences>)
+    = (Func (e.Name) s.ScopeClass Children (<References-Body e.Sentences>))
 }
 
 References-Body {
@@ -171,17 +171,17 @@ InlineMetatableReferences {
 
 InlineOneMetatable {
   e.Functions-B
-  (
+  (Func
     (e.Name) s.ScopeClass
-    e.References-B (Pointer e.MetatableName) e.References-E
+    Children (e.References-B (Pointer e.MetatableName) e.References-E)
   )
   e.Functions-E
   t.Metatable
-    , t.Metatable : ((e.MetatableName) s._ e.MetatableReferences)
+    , t.Metatable : (Func (e.MetatableName) s._ Children (e.MetatableReferences))
     = e.Functions-B
-      (
+      (Func
         (e.Name) s.ScopeClass
-        e.References-B e.MetatableReferences e.References-E
+        Children (e.References-B e.MetatableReferences e.References-E)
       )
       <InlineOneMetatable e.Functions-E t.Metatable>;
 
@@ -193,7 +193,8 @@ SeparateInlineReferences {
     = <MapAccum
         {
           (e.InlinesRef) t.Reference
-            , t.Reference : ((e.Name) s.ScopeClass e.References)
+            , t.Reference
+            : (Func (e.Name) s.ScopeClass Children (e.References))
             , e.Inlines : e._ (e.Name) e._
             = (e.InlinesRef t.Reference) t.Reference;
 
@@ -217,10 +218,10 @@ InlineInlineReferences-Pass {
   e.Functions (e.Inlines)
     = <MapAccum
         {
-          (e.Inlines^) ((e.Name) s.ScopeClass e.References)
+          (e.Inlines^) (Func (e.Name) s.ScopeClass Children (e.References))
             = <AugmentReferences e.References (e.Inlines)>
             : (e.References^) e.Inlines^
-            = (e.Inlines) ((e.Name) s.ScopeClass e.References);
+            = (e.Inlines) (Func (e.Name) s.ScopeClass Children (e.References));
         }
         (e.Inlines) e.Functions
       >
@@ -233,14 +234,14 @@ AugmentReferences {
     = <MapAccum
         {
           (e.References-B (e.Name) e.References-E)
-          ((e.Name) s.ScopeClass e.InlineChilden)
+          (Func (e.Name) s.ScopeClass Children (e.InlineChilden))
             = (
                 e.References-B (e.Name) e.References-E
                 <SetDifference
                   e.InlineChilden (e.References-B (e.Name) e.References-E)
                 >
               )
-              ((e.Name) s.ScopeClass e.InlineChilden);
+              (Func (e.Name) s.ScopeClass Children (e.InlineChilden));
 
           (e.References^) t.InlineNode = (e.References) t.InlineNode;
         }
@@ -253,13 +254,13 @@ SeparateIndirects {
     = <MapAccum
         {
           (e.Indirects)
-          ((e.Name) s.ScopeClass e.References)
+          (Func (e.Name) s.ScopeClass Children (e.References))
 
             = <SeparateIndirects-References e.References>
             : (e.FunctionIndirects) e.References^
 
             = (e.Indirects e.FunctionIndirects)
-              ((e.Name) s.ScopeClass <Unique e.References>);
+              (Func (e.Name) s.ScopeClass Children (<Unique e.References>));
         }
         (/* indirects */)
         e.Functions
@@ -282,11 +283,14 @@ SeparateIndirects-References {
 
 InlineIndirects {
   e.Functions-B
-  ((e.Name) s.ScopeClass e.Children-B INDIRECT e.Children-E)
+  (Func (e.Name) s.ScopeClass Children (e.Children-B INDIRECT e.Children-E))
   e.Functions-E
   (e.Indirects)
     = e.Functions-B
-      ((e.Name) s.ScopeClass <Unique e.Children-B e.Indirects e.Children-E>)
+      (Func
+        (e.Name) s.ScopeClass
+        Children (<Unique e.Children-B e.Indirects e.Children-E>)
+      )
       <InlineIndirects e.Functions-E (e.Indirects)>;
 
   e.Functions (e.Indirects) = e.Functions;
@@ -296,7 +300,7 @@ PrepareGraphFormat {
   e.Functions
     = <MapAccum
         {
-          (e.EntryPoints) ((e.Name) s.ScopeClass e.Children)
+          (e.EntryPoints) (Func (e.Name) s.ScopeClass Children (e.Children))
             = e.Name s.ScopeClass
             : {
                 e._ GN-Entry = (e.Name);
