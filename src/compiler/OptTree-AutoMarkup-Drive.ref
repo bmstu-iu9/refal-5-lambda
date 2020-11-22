@@ -303,14 +303,13 @@ PrepareGraphFormat {
             = e.Name s.ScopeClass
             : {
                 e._ GN-Entry = (e.Name);
-                e._ s._, ('__INIT') ('__FINAL') : e._ (e.Name) e._ = (e.Name);
                 e._ s._ = /* пропускаем */;
               }
             : e.NewEntryName
             = (e.EntryPoints e.NewEntryName)
               (Func (e.Name) Children (e.Children));
         }
-        (/* entry points */) e.Functions
+        (/* entry points */ ('__INIT') ('__FINAL')) e.Functions
       >
 }
 
