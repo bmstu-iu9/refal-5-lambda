@@ -28,17 +28,15 @@ BuldCallGraph {
   e.AST (e.Inlines)
     = <SeparateMetatables e.AST> : (e.Metatables) e.Functions
     = <Map &MetatableGraphNodes e.Metatables> : e.Metatables^
-    = <Map &FunctionGraphNodes e.Functions> : e.Functions^
+    = <Map &FunctionGraphNodes e.Functions> : e.Graph
 
-    = <InlineMetatableGraphNodes e.Functions (e.Metatables)> : e.Functions^
+    = <InlineMetatableGraphNodes e.Graph (e.Metatables)> : e.Graph^
 
-    = <SeparateIndirects e.Functions> : (e.Indirects) e.Functions^
-    = <InlineIndirects e.Functions (e.Indirects)> : e.Functions^
+    = <SeparateIndirects e.Graph> : (e.Indirects) e.Graph^
+    = <InlineIndirects e.Graph (e.Indirects)> : e.Graph^
 
-    = <SeparateInlineGraphNodes e.Functions (e.Inlines)>
-    : (e.InlinesRef) e.Functions^
-    = <InlineInlineReferences e.Functions (e.InlinesRef)> : e.Functions^
-    = e.Functions : e.Graph
+    = <SeparateInlineGraphNodes e.Graph (e.Inlines)> : (e.InlinesRef) e.Graph^
+    = <InlineInlineReferences e.Graph (e.InlinesRef)> : e.Graph^
     = (e.Indirects) e.Graph;
 }
 
@@ -179,16 +177,16 @@ Children-Term {
 }
 
 InlineMetatableGraphNodes {
-  e.Functions (e.Metatables)
+  e.Graph (e.Metatables)
     = <Reduce
         {
-          (e.Functions^) t.Metatable
-            = (<InlineOneMetatable e.Functions t.Metatable>)
+          (e.Graph^) t.Metatable
+            = (<InlineOneMetatable e.Graph t.Metatable>)
         }
-        (e.Functions) e.Metatables
+        (e.Graph) e.Metatables
       >
-    : (e.Functions^)
-    = e.Functions;
+    : (e.Graph^)
+    = e.Graph;
 }
 
 InlineOneMetatable {
@@ -205,7 +203,7 @@ InlineOneMetatable {
 }
 
 SeparateInlineGraphNodes {
-  e.Functions (e.Inlines)
+  e.Graph (e.Inlines)
     = <MapAccum
         {
           (e.InlinesRef) t.GraphNode
@@ -215,36 +213,36 @@ SeparateInlineGraphNodes {
 
           (e.InlinesRef) t.GraphNode = (e.InlinesRef) t.GraphNode;
         }
-        (/* inlines references */) e.Functions
+        (/* inlines references */) e.Graph
       >
 }
 
 InlineInlineReferences {
-  e.Functions (e.Inlines)
-    = <InlineInlineReferences-Pass e.Functions (e.Inlines)>
+  e.Graph (e.Inlines)
+    = <ApplyInlines e.Graph (e.Inlines)>
     : {
-        e.Functions /* same */ = e.Functions;
+        e.Graph /* same */ = e.Graph;
 
-        e.Functions^ = <InlineInlineReferences e.Functions (e.Inlines)>;
+        e.Graph^ = <InlineInlineReferences e.Graph (e.Inlines)>;
       }
 }
 
-InlineInlineReferences-Pass {
-  e.Functions (e.Inlines)
+ApplyInlines {
+  e.Graph (e.Inlines)
     = <MapAccum
         {
           (e.Inlines^) (Func (e.Name) Children (e.Children))
-            = <AugmentReferences e.Children (e.Inlines)>
+            = <ApplyInlines-Children e.Children (e.Inlines)>
             : (e.Children^) e.Inlines^
             = (e.Inlines) (Func (e.Name) Children (e.Children));
         }
-        (e.Inlines) e.Functions
+        (e.Inlines) e.Graph
       >
-    : (e._) e.Functions^
-    = e.Functions;
+    : (e._) e.Graph^
+    = e.Graph;
 }
 
-AugmentReferences {
+ApplyInlines-Children {
   e.Children (e.Inlines)
     = <MapAccum
         {
@@ -265,7 +263,7 @@ AugmentReferences {
 }
 
 SeparateIndirects {
-  e.Functions
+  e.Graph
     = <MapAccum
         {
           (e.Indirects) (Func (e.Name) Children (e.Children))
@@ -277,10 +275,10 @@ SeparateIndirects {
               (Func (e.Name) Children (<Unique e.Children>));
         }
         (/* indirects */)
-        e.Functions
+        e.Graph
       >
-    : (e.Indirects) e.Functions^
-    = (<Unique e.Indirects>) e.Functions;
+    : (e.Indirects) e.Graph^
+    = (<Unique e.Indirects>) e.Graph;
 }
 
 SeparateIndirects-Children {
@@ -296,15 +294,15 @@ SeparateIndirects-Children {
 }
 
 InlineIndirects {
-  e.Functions-B
+  e.Graph-B
   (Func (e.Name) Children (e.Children-B INDIRECT e.Children-E))
-  e.Functions-E
+  e.Graph-E
   (e.Indirects)
-    = e.Functions-B
+    = e.Graph-B
       (Func (e.Name) Children (<Unique e.Children-B e.Indirects e.Children-E>))
-      <InlineIndirects e.Functions-E (e.Indirects)>;
+      <InlineIndirects e.Graph-E (e.Indirects)>;
 
-  e.Functions (e.Indirects) = e.Functions;
+  e.Graph (e.Indirects) = e.Graph;
 }
 
 /*
