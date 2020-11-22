@@ -43,35 +43,43 @@ BuldCallGraph {
 
 MetaInfo {
   e.AST
+    = ((/* forbidden list */) (/* inlines */) (/* drives */)) : t.InitMetaInfo
     = <MapAccum
         {
-          ((e.Forbidden) (e.Inlines) (e.Drives))
-          (Inline e.Name)
-            = ((e.Forbidden (e.Name)) (e.Inlines (e.Name)) (e.Drives))
-              (Inline e.Name);
+          t.MetaInfo (Inline e.Name)
+            = <MetaInfo-AddInline t.MetaInfo e.Name> (Inline e.Name);
 
-          ((e.Forbidden) (e.Inlines) (e.Drives))
-          (Drive e.Name)
-            = ((e.Forbidden) (e.Inlines) (e.Drives (e.Name)))
-              (Drive e.Name);
+          t.MetaInfo (Drive e.Name)
+            = <MetaInfo-AddDrive t.MetaInfo e.Name> (Drive e.Name);
 
-          ((e.Forbidden) (e.Inlines) (e.Drives))
-          (Intrinsic e.Name)
-            = ((e.Forbidden (e.Name)) (e.Inlines) (e.Drives))
-              (Intrinsic e.Name);
+          t.MetaInfo (Intrinsic e.Name)
+            = <MetaInfo-AddForbidden t.MetaInfo e.Name> (Intrinsic e.Name);
 
-          ((e.Forbidden) (e.Inlines) (e.Drives))
-          (Function s.Scope (e.FuncName) Sentences e.Body)
+          t.MetaInfo (Function s.Scope (e.FuncName) Sentences e.Body)
             , <Lenw e.Body> : s.SentencesCount e.Body^
             , <Compare s.SentencesCount 20> : '+'
-            = ((e.Forbidden (e.FuncName)) (e.Inlines) (e.Drives))
+            = <MetaInfo-AddForbidden t.MetaInfo e.FuncName>
               (Function s.Scope (e.FuncName) Sentences e.Body);
 
-          ((e.Forbidden) (e.Inlines) (e.Drives)) t.Other
-            = ((e.Forbidden) (e.Inlines) (e.Drives)) t.Other;
+          t.MetaInfo t.Other = t.MetaInfo t.Other;
         }
-        ((/* forbidden list */) (/* inlines */) (/* drives */)) e.AST
+        t.InitMetaInfo e.AST
       >
+}
+
+MetaInfo-AddInline {
+  ((e.Forbidden) (e.Inlines) (e.Drives)) e.Name
+    = ((e.Forbidden (e.Name)) (e.Inlines (e.Name)) (e.Drives));
+}
+
+MetaInfo-AddDrive {
+  ((e.Forbidden) (e.Inlines) (e.Drives)) e.Name
+    = ((e.Forbidden) (e.Inlines) (e.Drives (e.Name)));
+}
+
+MetaInfo-AddForbidden {
+  ((e.Forbidden) (e.Inlines) (e.Drives)) e.Name
+    = ((e.Forbidden (e.Name)) (e.Inlines) (e.Drives));
 }
 
 SeparateMetatables {
