@@ -17,7 +17,7 @@ $ENTRY OptTree-AutoMarkup-Drive {
 
     = <BuldCallGraph e.AST (e.Inlines)> : (e.Indirects) e.Graph
 
-    = <Unique ('__INIT') ('__FINAL') e.Entries e.Indirects> : e.Roots
+    = <Unique e.Entries e.Indirects ('__INIT') ('__FINAL')> : e.Roots
     = <BasicVertexes e.Graph (e.Roots)>
     : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
     = <SetDifference e.ToDrive (e.Forbidden e.UserdefDrives)> : e.ToDrive^
@@ -542,7 +542,7 @@ $ENTRY OptTree-AutoMarkup-CureDrives {
     : (e.DrivenNodes) e.NamesCalledFromUndriven
 
     = <Unique
-        ('__INIT') ('__FINAL') e.Entries e.Indirects e.NamesCalledFromUndriven
+        e.Entries e.Indirects e.NamesCalledFromUndriven ('__INIT') ('__FINAL')
       >
     : e.Roots
     = <SetIntersect (e.Roots) (e.UserdefDrives)> : e.Roots^
