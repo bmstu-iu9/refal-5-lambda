@@ -219,11 +219,17 @@ SeparateInlineGraphNodes {
 
 InlineInlineReferences {
   e.Graph (e.Inlines)
+    = <MakeInlineClosure (e.Inlines) e.Inlines> : e.Inlines^
     = <ApplyInlines e.Graph (e.Inlines)>
-    : {
-        e.Graph /* same */ = e.Graph;
+}
 
-        e.Graph^ = <InlineInlineReferences e.Graph (e.Inlines)>;
+MakeInlineClosure {
+  (e.InlinesAcc) e.Inlines
+    = <ApplyInlines e.InlinesAcc (e.Inlines)>
+    : {
+        e.InlinesAcc /* same */ = e.InlinesAcc;
+
+        e.InlinesAcc^ = <MakeInlineClosure (e.InlinesAcc) e.Inlines>;
       }
 }
 
