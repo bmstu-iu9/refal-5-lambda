@@ -1,5 +1,8 @@
 $INCLUDE "LibraryEx";
 
+*$FROM Hash
+$EXTERN HashLittle2-Chars;
+
 
 /**
   <ExtractVariables e.Sentences> == e.Variables
@@ -146,11 +149,22 @@ $ENTRY AddSuffix {
 */
 $ENTRY HashName {
   e.Name s.Buckets
-    = <Ord e.Name>
+    = e.Name
     : {
-        e.Base SUF e.Suffix = e.Base 997 e.Suffix;
+        e.Base SUF e.Suffix = e.Base <HashName-Suffix e.Suffix>;
         e.Name^ = e.Name;
       }
-    : e.NameAsNumbers
-    = <Mod (e.NameAsNumbers) s.Buckets>
+    : e.NameAsStr
+*    base64 -w 8 /dev/urandom | \
+*      awk '/^[0-9a-fA-F]*$/ { print strtonum("0x" $1) }' | \
+*      head -2 | clip.exe
+    = <HashLittle2-Chars 3161351997 4067679699 e.NameAsStr> : s.Hash1 s.Hash2
+    = <Mod s.Hash1 s.Buckets>
+}
+
+HashName-Suffix {
+  s.SufChar s.SufNo e.Suffix
+    = s.SufChar <Symb s.SufNo> <HashName-Suffix e.Suffix>;
+
+  /* empty */ = /* empty */;
 }
