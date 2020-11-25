@@ -132,7 +132,7 @@ run_test_aux_with_flags() {
   LIBN=${SREF%.*}$(platform_lib_suffix)
   SATELITE=${SREF%.*}.SATELITE.ref
 
-  if ! -e "$SATELITE"; then
+  if ! [[ -e "$SATELITE" ]]; then
     SATELITE=
   fi
 
@@ -250,7 +250,7 @@ run_test_aux_with_flags.FAILURE() {
   LIBN=${SREF%.*}$(platform_lib_suffix)
   SATELITE=${SREF%.*}.SATELITE.ref
 
-  if ! -e "$SATELITE"; then
+  if ! [[ -e "$SATELITE" ]]; then
     SATELITE=
   fi
 
