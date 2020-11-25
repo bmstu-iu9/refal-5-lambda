@@ -260,11 +260,19 @@ FilterUnrepeatedStaticParams-RemoveBad {
 
 FilterSpecPatterns {
   e.SpecializableDict (e.Forbidden)
-    = <Map
+    = <MapAccum
         {
-          ((e.Name) e.Pattern), e.Forbidden : e._ (e.Name) e._ = /* пусто */;
-          ((e.Name) e.Pattern) = (Spec (e.Name) e.Pattern);
+          (e.Forbidden-B (e.Name) e.Forbidden-E)
+          ((e.Name) e.Pattern)
+            = (e.Forbidden-B (e.Name) e.Forbidden-E)
+              /* пропускаем */;
+
+          (e.Forbidden^) ((e.Name) e.Pattern)
+            = (e.Forbidden) (Spec (e.Name) e.Pattern);
         }
+        (e.Forbidden)
         e.SpecializableDict
       >
+    : (e._) e.SpecDirectives
+    = e.SpecDirectives
 }

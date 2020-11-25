@@ -476,16 +476,19 @@ SetDifference {
 
 UpdateAST {
   e.AST (e.FunctionsToDrive) (e.BasisVertexes)
-    = <Map
+    = <MapAccum
         {
+          (e.BasisVertexes-B (e.Name) e.BasisVertexes-E)
           (Drive e.Name)
-            , e.BasisVertexes : e._ (e.Name) e._
-            = /* пропускаем */;
+            = (e.BasisVertexes-B (e.Name) e.BasisVertexes-E)
+              /* пропускаем */;
 
-          t.Other = t.Other;
+          (e.BasisVertexes^) t.Other = (e.BasisVertexes) t.Other;
         }
-        e.AST
+        (e.BasisVertexes) e.AST
       >
+    : (e._) e.AST^
+    = e.AST
       <Map
         {
           (e.FuncName) = (Drive e.FuncName);
