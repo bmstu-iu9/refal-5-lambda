@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cleanup() {
-  rm -f *.rasl-module *.rasl test *.log
+  rm -f *.rasl-module *.rasl test *.log *.dump
 }
 
 run_test() {
@@ -25,6 +25,7 @@ run_test() {
   fi
 
   echo Test OK!
+  cleanup
 }
 
 cleanup
