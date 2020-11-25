@@ -1819,6 +1819,8 @@ LeadingZeros {
   e.Sign ::= {'+'|'-'}?
 */
 $ENTRY Symb {
+  s.Number = <__Step-Drop> <Symb-Digit s.Number>;
+
   s.First e.Tail
     = <__Step-Start> <NormNumber s.First e.Tail>
     : s.NormedSign e.NormedNumber
@@ -1832,11 +1834,11 @@ $ENTRY Symb {
 }
 
 Symb-Nat {
-  s.Number = <StrFromMacroDigit s.Number>;
+  s.Number = <Symb-Digit s.Number>;
 
   e.Number
     = <Divmod-Nat (e.Number) 1000000000 () ()> : (e.Div) s.Mod
-    = <Last 9 '000000000' <StrFromMacroDigit s.Mod>> : (e.Zeros) e.StrDigits
+    = <Last 9 '000000000' <Symb-Digit s.Mod>> : (e.Zeros) e.StrDigits
     = <Symb-Nat e.Div> e.StrDigits;
 }
 
@@ -2280,7 +2282,7 @@ Xxout-Scan {
     = '"' e.Chars '"' <Xxout-Scan <Type e.Tail>>;
 
   'N' s.0 s.Number e.Tail
-    = <StrFromMacroDigit s.Number> ' ' <Xxout-Scan <Type e.Tail>>;
+    = <Symb-Digit s.Number> ' ' <Xxout-Scan <Type e.Tail>>;
 
   'P' s.S s.Printable e.Tail
     = <Xxout-Chars () 'P' s.S s.Printable e.Tail> : (e.Chars) s.T s.S^ e.Tail^
@@ -3230,9 +3232,9 @@ GetFreeHandle {
 * Работа с типами символов
 
 /*
-  <StrFromMacroDigit s.MACRODIGIT> == s.DIGIT-CHAR+
+  <Symb-Digit s.MACRODIGIT> == s.DIGIT-CHAR+
 */
-StrFromMacroDigit {
+Symb-Digit {
 %%
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
