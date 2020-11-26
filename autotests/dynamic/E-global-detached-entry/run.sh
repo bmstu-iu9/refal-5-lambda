@@ -19,5 +19,5 @@ if [[ $? -gt 0 ]]; then
   exit 1
 else
   echo Test OK!
-  rm -f *.rasl-module *.rasl caller *-locals.lst log.txt
+  rm -f *.rasl-module *.rasl caller *-locals.lst log.txt main
 fi
