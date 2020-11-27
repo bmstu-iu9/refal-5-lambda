@@ -89,10 +89,10 @@ MetaInfo-AddForbidden {
 
 MetaInfo-AddEntry {
   ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries)) GN-Entry e.Name
-    = ((e.Forbidden (e.Name)) (e.Inlines) (e.Drives) (e.Entries (e.Name)));
+    = ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries (e.Name)));
 
   ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries)) GN-Local e.Name
-    = ((e.Forbidden (e.Name)) (e.Inlines) (e.Drives) (e.Entries));
+    = ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries));
 }
 
 SeparateMetatables {
