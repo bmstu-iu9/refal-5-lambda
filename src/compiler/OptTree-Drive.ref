@@ -1160,8 +1160,6 @@ FindOptInfo-Aux {
     = e.Body : Sentences e.Sentences
     = e.OptFuncs-B (s.Mode s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
       (s.Mode s.ScopeClass (e.Name) Sentences <DropLeft e.Sentences s.Drop>);
-
-  e.Other = ()
 }
 
 $DRIVE CutSUF;
