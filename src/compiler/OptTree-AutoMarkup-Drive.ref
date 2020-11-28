@@ -27,8 +27,8 @@ $ENTRY OptTree-AutoMarkup-Drive {
 BuldCallGraph {
   e.AST (e.Inlines)
     = <SeparateMetatables e.AST> : (e.Metatables) e.Functions
-    = <Map &MetatableGraphNodes e.Metatables> : e.Metatables^
-    = <Map &FunctionGraphNodes e.Functions> : e.Graph
+    = <Map &MakeGraphNode e.Metatables> : e.Metatables^
+    = <Map &MakeGraphNode e.Functions> : e.Graph
 
     = <InlineMetatableGraphNodes e.Graph (e.Metatables)> : e.Graph^
 
@@ -114,7 +114,7 @@ SeparateMetatables {
       >
 }
 
-MetatableGraphNodes {
+MakeGraphNode {
   (Function s.ScopeClass (e.MetatableName) Metatable e.Metatable)
     = <Map
         {
@@ -124,11 +124,11 @@ MetatableGraphNodes {
       >
     : e.Children
     = (Func (e.MetatableName) Children (e.Children (INDIRECT)));
-}
 
-FunctionGraphNodes {
   (Function s.ScopeClass (e.Name) Sentences e.Sentences)
-    = (Func (e.Name) Children (<Children-Body e.Sentences>))
+    = (Func (e.Name) Children (<Children-Body e.Sentences>));
+
+  t._ = /* пропускаем */;
 }
 
 Children-Body {
