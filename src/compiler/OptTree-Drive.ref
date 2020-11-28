@@ -1039,7 +1039,7 @@ MakeColdSolution {
     , e.Name : e.Prefix '*' s.Num
     = (
         (<eDRIVEN> ':' (ColdCallBrackets (Symbol Name e.Name) e.Args))
-        ((NewFunction s.ScopeClass (e.Name) s.BodyLabel e.Body))
+        ((NewFunction GN-Local (e.Name) s.BodyLabel e.Body))
       );
 
   (s.FuncMode s.ScopeClass (e.Name) s.BodyLabel e.Body) e.Args
