@@ -8,7 +8,8 @@ $EXTERN Config-GetTreeOptCycles, Config-GetOptDrive, Config-GetOptSpec,
 $EXTERN OptTree-AutoMarkup-Spec;
 
 *$FROM OptTree-AutoMarkup-Drive
-$EXTERN OptTree-AutoMarkup-Drive, OptTree-AutoMarkup-CureDrives;
+$EXTERN OptTree-AutoMarkup-Drive, OptTree-AutoMarkup-CureDrives,
+  OptTree-AutoMarkup-CleanupUnusedFunctions;
 
 *$FROM OptTree-Drive
 $EXTERN OptTree-Drive-Prepare, OptTree-Drive, OptTree-Drive-CleanupColdCalls;
@@ -55,6 +56,8 @@ $ENTRY OptTree {
                 (trace 'before Curing drives')
                 (call &OptTree-AutoMarkup-CureDrives))
               (DriveSpecLoop)))
+          (trace 'before Cleanup unused functions')
+          (call &OptTree-AutoMarkup-CleanupUnusedFunctions)
           (call &OptTree-CleanupMarkup))
 
         (define DriveSpecLoop

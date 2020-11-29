@@ -168,7 +168,7 @@ Children-Term {
 
   (Symbol Name e.Name) = (Pointer e.Name);
 
-  (ADT-Brackets (e.Name) e.Expr) = <Children-Expr e.Expr>;
+  (ADT-Brackets (e.Name) e.Expr) = (Pointer e.Name) <Children-Expr e.Expr>;
 
   (s.Brackets e.Expr)
     , Brackets ClosureBrackets : e._ s.Brackets e._
@@ -544,4 +544,57 @@ SetIntersect {
     = t.Common <SetIntersect (e.Set1-E) (e.Set2-B t.Set2-E)>;
 
   (e.Set1) (e.Set2) = /* пусто */;
+}
+
+
+/**
+  <OptTree-AutoMarkup-CleanupUnusedFunctions e.AST> == e.AST
+*/
+$ENTRY OptTree-AutoMarkup-CleanupUnusedFunctions {
+  e.AST
+    = <Map &MakeGraphNode e.AST> : e.Graph
+    = <Map &RemoveReferenceTagFromChildren e.Graph> : e.Graph^
+
+    = <MapAccum &UnsuffixedFunctions () e.Graph> : (e.Roots) e.Graph^
+    = <BasicVertexes e.Graph (e.Roots)>
+    : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
+
+    = <Map (&RemoveUnused e.Unreachable) e.AST>;
+}
+
+RemoveReferenceTagFromChildren {
+  (Func (e.FuncName) Children (e.Children))
+    = <Map
+        {
+          (INDIRECT) = /* пропускаем */;
+          (s._ e.ChildName) = (e.ChildName);
+        }
+        e.Children
+      >
+    : e.Children^
+    = (Func (e.FuncName) Children (e.Children));
+}
+
+UnsuffixedFunctions {
+  (e.Roots) t.Node
+    = t.Node : (Func (e.FuncName) Children (e.Children))
+    = e.FuncName
+    : {
+        e._ SUF e._ = e.Roots;
+        e._ = e.Roots (e.FuncName);
+      }
+    : e.Roots^
+    = (e.Roots) t.Node;
+}
+
+RemoveUnused {
+  e.Unused-B (e.Name) e.Unused-E
+  (Function s.ScopeClass (e.Name) Sentences e._)
+    = /* пропускаем */;
+
+  e.Unused-B (e.Name) e.Unused-E
+  (Function s.ScopeClass (e.Name) Metatable e._)
+    = /* пропускаем */;
+
+  e.Unised t.OtherItem = t.OtherItem; /* оставляем */
 }
