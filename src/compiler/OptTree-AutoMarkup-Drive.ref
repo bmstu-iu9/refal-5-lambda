@@ -144,6 +144,7 @@ Children-Body {
                       = <Children-Expr e.CondResult>
                         <Children-Expr e.CondPattern>
                   }
+                  e.Conditions
                 >
                 <Children-Expr e.Result>
               >
