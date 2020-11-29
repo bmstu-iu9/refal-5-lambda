@@ -90,7 +90,8 @@ Prepare-Aux {
       >
     : ((e.NewNames) e.NewInfo (e.NewHistories)) e.AST^
 
-    = <CreateGuardFunctions e.NewInfo> : (e.GuardEnums) e.NewInfo^
+    = <AddGuardSentences e.NewInfo> : e.NewInfo^
+    = <AddGuardEnums e.AST> : e.AST^
 
     = <CreateRemainderFunctions e.NewInfo> : e.NewInfo^
 
@@ -100,7 +101,6 @@ Prepare-Aux {
         (e.KnownHistories e.NewHistories)
       )
       e.AST
-      e.GuardEnums
 }
 
 TrivialHistory {
@@ -123,29 +123,48 @@ TrivialHistory {
 * Добавляет вызов аварийной функции Func@0 в конец каждой специализируемой
 * функции.Этот вызов облегчает отладку при аварийном завершении программы
 * в специализированной функции.
-CreateGuardFunctions {
+AddGuardSentences {
   e.Info
-    = <MapAccum
+    = <Map
         {
-          (e.GuardEnums)
           ((e.Name) (e.SpecPattern) (e.Sentences) e.Signatures)
             = <AddSuffix e.Name ('@' 0)> : e.GuardName
             = (e.SpecPattern)
               ((CallBrackets (Symbol Name e.GuardName) e.SpecPattern))
             : e.GuardSentence
             = (
-                e.GuardEnums
-                (Function GN-Local (e.GuardName) Sentences /* пусто */)
-              )
-              (
                 (e.Name)
                 (e.SpecPattern)
                 (e.Sentences (e.GuardSentence))
                 e.Signatures
               )
         }
-        (/* guard enums */) e.Info
+        e.Info
       >
+}
+
+AddGuardEnums {
+  e.AST
+    = <Map
+        {
+          (Function s.ScopeClass (e.Name) e.Body)
+            = (Function s.ScopeClass (e.Name) e.Body) <MakeGuardEnum e.Name>;
+
+          (Declaration s.ScopeClass e.Name)
+            = (Declaration s.ScopeClass e.Name) <MakeGuardEnum e.Name>;
+
+          t.OtherItem = t.OtherItem;
+        }
+        e.AST
+      >
+}
+
+GuardEnumName {
+  e.Name = <AddSuffix e.Name ('@' 0)>
+}
+
+MakeGuardEnum {
+  e.Name = (Function GN-Local (<GuardEnumName e.Name>) Sentences /* пусто */)
 }
 
 * Обеспечивает специализацию функций Func*n. Такие функции могут получаться
@@ -367,9 +386,17 @@ SpecTerm {
     /*
       Аргументы вызовов аварийных функций специализатора специализировать
       нельзя, они должны оставаться неизменными.
+
+      Вместо этого мы все ссылки на функции заменим ссылками на пустые функции —
+      это необходимо, чтобы инструмент удаления неиспользуемых функций удалил
+      те, по которым программа уже специализировалась.
+
+      Например, для <Map {{ &F\1 … }} …> в аварийном предложении останется
+      &F\1, которая сама может тянуть ненужные функции (и занимать собой
+      сгенерированный код). Мы заменим её на пустую функцию.
     */
     = (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
-      (CallBrackets (Symbol Name e.Name) e.Expression);
+      (CallBrackets (Symbol Name e.Name) <ReplaceToGuards e.Expression>);
 
   s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
   (CallBrackets (Symbol Name e.Name) e.Expression)
@@ -458,6 +485,28 @@ SpecTerm {
 
   s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions)) t.Other
    = (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions)) t.Other;
+}
+
+ReplaceToGuards {
+  e.Expression
+    = <Map
+        {
+          (s.Brackets e.Nested)
+            , Brackets CallBrackets ClosureBrackets : e._ s.Brackets e._
+            = (s.Brackets <ReplaceToGuards e.Nested>);
+
+          (ADT-Brackets (e.Name) e.Nested)
+            = (ADT-Brackets (e.Name) <ReplaceToGuards e.Nested>);
+
+          /* Уже пустая функция, ничего не делаем с ней */
+          (Symbol Name e.Name '@' 0) = (Symbol Name e.Name '@' 0);
+
+          (Symbol Name e.Name) = (Symbol Name <GuardEnumName e.Name>);
+
+          t.Other = t.Other;
+        }
+        e.Expression
+      >
 }
 
 TrySpecCall {
