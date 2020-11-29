@@ -47,7 +47,7 @@ $ENTRY OptTree {
                 (call &OptTree-AutoMarkup-Drive))
               (DriveSpecLoop)
               (pass
-                (trace 'before Driving transient instances')
+                (trace 'before Driving non-recursive instances')
                 (call &OptTree-AutoMarkup-Drive))
               (call &OptTree-Drive-Prepare t.OptDrive)
               (DriveLoop))
