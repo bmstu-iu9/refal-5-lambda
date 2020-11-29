@@ -924,13 +924,13 @@ Pass-CleanupRedudandExterns {
            = (e.DefinedFunctions (e.Name)) (Swap s.ScopeClass e.Name);
 
          (e.DefinedFunctions) (Inline e.Name)
-           = (e.DefinedFunctions (e.Name)) (Inline e.Name);
+           = (e.DefinedFunctions) (Inline e.Name);
 
          (e.DefinedFunctions) (Drive e.Name)
-           = (e.DefinedFunctions (e.Name)) (Drive e.Name);
+           = (e.DefinedFunctions) (Drive e.Name);
 
          (e.DefinedFunctions) (Intrinsic e.Name)
-           = (e.DefinedFunctions (e.Name)) (Intrinsic e.Name);
+           = (e.DefinedFunctions) (Intrinsic e.Name);
 
          (e.DefinedFunctions) (Declaration s.ScopeClass e.Name)
            = (e.DefinedFunctions) (Declaration s.ScopeClass e.Name);
