@@ -950,6 +950,24 @@ Pass-CleanupRedudandExterns {
     : (e.DefinedFunctions) e.AST^
     = <MapAccum &FilterDeclarations (e.DefinedFunctions) e.AST>
     : (e.DefinedFunctions^) e.AST^
+
+    = <MapAccum
+        {
+          (e.DeclaredFunctions-B (e.Name) e.DeclaredFunctions-E)
+          (Declaration s.ScopeClass e.Name)
+            = (e.DeclaredFunctions-B (e.Name) e.DeclaredFunctions-E)
+              /* пропускаем дублирующееся определение */;
+
+          (e.DeclaredFunctions) (Declaration s.ScopeClass e.Name)
+            = (e.DeclaredFunctions (e.Name))
+              (Declaration s.ScopeClass e.Name);
+
+          (e.DeclaredFunctions) t.Other
+            = (e.DeclaredFunctions) t.Other;
+        }
+        (/* declared functions */) e.AST
+      >
+    : (e._) e.AST^
     = e.AST;
 }
 
