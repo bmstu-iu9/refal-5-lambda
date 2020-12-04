@@ -223,7 +223,13 @@ AppendTerm {
 }
 
 InlineTerm {
-  (s.Type e.Value) = <Mu s.Type e.Value>;
+  (Symbol e.Value) = <Symbol e.Value>;
+  (TkVariable e.Value) = <TkVariable e.Value>;
+  (Brackets e.Value) = <Brackets e.Value>;
+  (ADT-Brackets e.Value) = <ADT-Brackets e.Value>;
+  (CallBrackets e.Value) = <CallBrackets e.Value>;
+  (ColdCallBrackets e.Value) = <ColdCallBrackets e.Value>;
+  (ClosureBrackets e.Value) = <ClosureBrackets e.Value>;
 
   ';' = ';';
 }
@@ -286,7 +292,7 @@ MultilineTerm-Prefix {
             (e.Indent '}}' e.Suffix);
 
         (s.Type e.Value)
-          = (e.Prefix <Mu s.Type e.Value> e.Suffix);
+          = (e.Prefix <InlineTerm (s.Type e.Value)> e.Suffix);
       };
 }
 
