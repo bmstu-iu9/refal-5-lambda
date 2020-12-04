@@ -559,7 +559,9 @@ $ENTRY OptTree-AutoMarkup-CleanupUnusedFunctions {
     = <BasicVertexes e.Graph (e.Roots)>
     : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
 
-    = <Map (&RemoveUnused e.Unreachable) e.AST>;
+    = <MapAccum &RemoveUnused (e.Unreachable) e.AST>
+    : (/* должно быть пусто */) e.AST^
+    = e.AST;
 }
 
 RemoveReferenceTagFromChildren {
@@ -588,13 +590,13 @@ UnsuffixedFunctions {
 }
 
 RemoveUnused {
-  e.Unused-B (e.Name) e.Unused-E
+  (e.Unused-B (e.Name) e.Unused-E)
   (Function s.ScopeClass (e.Name) Sentences e._)
-    = /* пропускаем */;
+    = (e.Unused-B e.Unused-E) /* пропускаем */;
 
-  e.Unused-B (e.Name) e.Unused-E
+  (e.Unused-B (e.Name) e.Unused-E)
   (Function s.ScopeClass (e.Name) Metatable e._)
-    = /* пропускаем */;
+    = (e.Unused-B e.Unused-E) /* пропускаем */;
 
-  e.Unised t.OtherItem = t.OtherItem; /* оставляем */
+  (e.Unused) t.OtherItem = (e.Unused) t.OtherItem; /* оставляем */
 }

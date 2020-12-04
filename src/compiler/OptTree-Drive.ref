@@ -183,15 +183,20 @@ ExtractExtractableFunctions {
   (e.Names) e.AST
     = <MapAccum
         {
-          (e.Extracted) (Function s.ScopeClass (e.Name) e.Body)
-            , e.Names : e._ (s._ e.Name) e._
-            = (e.Extracted (Function s.ScopeClass (e.Name) e.Body))
+          ((e.Names-B (s._ e.Name) e.Names-E) e.Extracted)
+          (Function s.ScopeClass (e.Name) e.Body)
+            = (
+                (e.Names-B e.Names-E)
+                e.Extracted (Function s.ScopeClass (e.Name) e.Body)
+              )
               (Function s.ScopeClass (e.Name) e.Body);
 
-          (e.Extracted) t.Other = (e.Extracted) t.Other;
+          ((e.Names^) e.Extracted) t.Other = ((e.Names) e.Extracted) t.Other;
         }
-        (/* extracted */) e.AST
-      >;
+        ((e.Names) /* extracted */) e.AST
+      >
+    : ((/* должно быть пусто */) e.Extracted) e.AST^
+    = (e.Extracted) e.AST;
 }
 
 ExtractFuncLengths {
@@ -211,17 +216,20 @@ ExtractFuncLengths {
 
 MultiplyRemainderNames {
   (e.Lengths) e.FuncNames
-    = <Map
+    = <MapAccum
         {
-          (s.Label e.OptName)
+          (e.Lengths^) (s.Label e.OptName)
             = <BaseName e.OptName> : e.BaseName s.StartNum
-            = e.Lengths : e._ (e.BaseName s.SentencesCount) e._
-            = <GenRemainderFuncNames
+            = e.Lengths : e.Lengths-B (e.BaseName s.SentencesCount) e.Lengths-E
+            = (e.Lengths-B (e.BaseName s.SentencesCount) e.Lengths-E)
+              <GenRemainderFuncNames
                 s.Label e.BaseName s.StartNum s.SentencesCount
               >;
         }
-        e.FuncNames
+        (e.Lengths) e.FuncNames
       >
+    : (e._) e.RemainderNames
+    = e.RemainderNames;
 }
 
 FormatOptFunctions {
