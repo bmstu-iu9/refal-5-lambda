@@ -402,6 +402,8 @@ InlineSubexpr {
   /* пусто */ = /* пусто */;
 }
 
+$SPEC DoInlineExpr (e.text) e.expr;
+
 DoInlineExpr {
   (e.Text) t.NextTerm e.Expr
     = <DoInlineExpr (<AppendTerm e.Text (<InlineTerm t.NextTerm>)>) e.Expr>;
