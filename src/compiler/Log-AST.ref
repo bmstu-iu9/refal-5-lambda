@@ -72,14 +72,22 @@ Function {
 
 ColdFunction {
   s.ColdBy (e.Name) s.Scope e.Body
-    = <Function-Aux ('* ' <DisplayName e.Name> ' *') s.Scope e.Body>
-    : () e.FunctionLines
-    = ()
-      ('/* Cold by ' <Explode s.ColdBy> ' */')
-      e.FunctionLines;
+    = <Function (e.Name) s.Scope e.Body>
+    : {
+        () e.FunctionLines
+          = ()
+            ('/* Cold by ' <Explode s.ColdBy> ' */')
+            e.FunctionLines;
+
+        (e.FunctionLine)
+          = (e.FunctionLine '  /* Cold by ' <Explode s.ColdBy> ' */');
+      }
 }
 
 Function-Aux {
+  (e.Name) s.Scope Sentences /* пусто */
+    = (<Entry s.Scope> e.Name ' { /* empty */ }');
+
   (e.Name) s.Scope Sentences e.Sentences
     = ()
       (<Entry s.Scope> e.Name ' {')
@@ -88,7 +96,7 @@ Function-Aux {
       ();
 
   (e.Name) s.Scope NativeBody t.SrcPos e.NativeBody
-    = (<Entry s.Scope> <DisplayName e.Name> ' { %% native %% }');
+    = (<Entry s.Scope> e.Name ' { %% native %% }');
 
   (e.Name) s.Scope Metatable e.Metatable
     = ()
