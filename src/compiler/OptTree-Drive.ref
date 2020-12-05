@@ -21,7 +21,7 @@ $EXTERN DisplayName;
   e.OptFuncNames ::= (e.Name)*
   e.OptFunctions ::= t.OptFunction
 
-  t.OptFunction ::= (s.Label s.ScopeClass (e.Name) e.OptBody)
+  t.OptFunction ::= (s.Label (e.Name) e.OptBody)
   e.OptBody ::= Sentences e.Sentences
 */
 
@@ -114,7 +114,7 @@ UpdateDriveInfo {
 
     = <Map
         {
-          (Intrinsic e.Name) = (Intrinsic GN-Local (e.Name) Intrinsic e.Name);
+          (Intrinsic e.Name) = (Intrinsic (e.Name) Intrinsic e.Name);
         }
         e.Intrinsics
       >
@@ -239,12 +239,12 @@ FormatOptFunctions {
           (e.Names-B (Metatable e.Name) e.Names-E)
           (Function s.ScopeClass (e.Name) Metatable e.Body)
             = (e.Names-B e.Names-E)
-              (Metatable s.ScopeClass (e.Name) Metatable e.Body);
+              (Metatable (e.Name) Metatable e.Body);
 
           (e.Names-B (s.Label e.Name) e.Names-E)
           (Function s.ScopeClass (e.Name) Sentences e.Sentences)
             = (e.Names-B e.Names-E)
-              (s.Label s.ScopeClass (e.Name) Sentences e.Sentences);
+              (s.Label (e.Name) Sentences e.Sentences);
         }
         (<ExtractBaseNames e.OptNames>) e.Functions
       >
@@ -608,7 +608,7 @@ MakeSubstitution-FromMetatables {
     = t.Metatables
     : {
         (Metatables
-          e.Tables-B (s.ScopeClass (e.MetatableName) Metatable e.Map) e.Tables-E
+          e.Tables-B ((e.MetatableName) Metatable e.Map) e.Tables-E
         )
           = e.Map
           : {
@@ -620,7 +620,7 @@ MakeSubstitution-FromMetatables {
           : e.Result
           = (Metatables
               e.Tables-B
-              (s.ScopeClass (e.MetatableName) Metatable e.Map)
+              ((e.MetatableName) Metatable e.Map)
               e.Tables-E
             )
             e.Result;
@@ -1000,7 +1000,7 @@ OptSentence-MakeSubstitutions {
   (s.DriveMode Intrinsic)
   ((e.Left) (e.Expr)) (e.Args)
   t.IntrinsicFunction t.Metatables
-    , t.IntrinsicFunction : (Intrinsic s._ (e._) Intrinsic e.BehaviorName)
+    , t.IntrinsicFunction : (Intrinsic (e._) Intrinsic e.BehaviorName)
     = <DoOptSentence-MakeSubstitutions-Intrinsic
         t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName
       >;
@@ -1015,7 +1015,7 @@ OptSentence-MakeSubstitutions {
 
   (s.DriveMode s.IntrinsicMode)
   ((e.Left) (e.Expr)) (e.Args)
-  (s.FuncMode s.ScopeClass (e.Name) Sentences e.Body) t.Metatables
+  (s.FuncMode (e.Name) Sentences e.Body) t.Metatables
     , <OneOf s.DriveMode Drive Inline> : True
 
     /* Если левая часть не L-выражение, допускаем только встраивание */
@@ -1033,7 +1033,7 @@ OptSentence-MakeSubstitutions {
       <DoOptSentence-MakeSubstitutions
         s.DriveMode (e.SentenceVars) (e.Args)
         (/* substitutions */)
-        (Function s.ScopeClass (e.Name) Sentences e.Body)
+        (Function (e.Name) Sentences e.Body)
       >;
 
   t.Mode
@@ -1043,14 +1043,14 @@ OptSentence-MakeSubstitutions {
 }
 
 MakeColdSolution {
-  (s.FuncMode s.ScopeClass (e.Name) s.BodyLabel e.Body) e.Args
+  (s.FuncMode (e.Name) s.BodyLabel e.Body) e.Args
     , e.Name : e.Prefix '*' s.Num
     = (
         (<eDRIVEN> ':' (ColdCallBrackets (Symbol Name e.Name) e.Args))
         ((NewFunction GN-Local (e.Name) s.BodyLabel e.Body))
       );
 
-  (s.FuncMode s.ScopeClass (e.Name) s.BodyLabel e.Body) e.Args
+  (s.FuncMode (e.Name) s.BodyLabel e.Body) e.Args
     = (
         (<eDRIVEN> ':' (ColdCallBrackets (Symbol Name e.Name) e.Args))
         (/* нет новых функций */)
@@ -1064,7 +1064,7 @@ DecreaseMode {
 
 DoOptSentence-MakeSubstitutions {
   s.Mode (e.SentenceVars) (e.Args) (e.Substitutions)
-  (Function s.ScopeClass (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+  (Function (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
     = <Cleanup-Step-Drop e.RS> : e.RS^
     = <Solve (e.SentenceVars) ((e.Args) ':' (e.LS))>
     : {
@@ -1093,9 +1093,7 @@ DoOptSentence-MakeSubstitutions {
           : e.NewSubsts
           = <DoOptSentence-MakeSubstitutions
               s.Mode (e.SentenceVars) (e.Args) (e.Substitutions e.NewSubsts)
-              (Function
-                GN-Local (<RemainderFuncIncName e.Name>) Sentences e.Rest
-              )
+              (Function (<RemainderFuncIncName e.Name>) Sentences e.Rest)
             >;
 
         /*
@@ -1105,9 +1103,7 @@ DoOptSentence-MakeSubstitutions {
         Failure
           = <DoOptSentence-MakeSubstitutions
               s.Mode (e.SentenceVars) (e.Args) (e.Substitutions)
-              (Function
-                GN-Local (<RemainderFuncIncName e.Name>) Sentences e.Rest
-              )
+              (Function (<RemainderFuncIncName e.Name>) Sentences e.Rest)
             >;
 
         /*
@@ -1117,7 +1113,7 @@ DoOptSentence-MakeSubstitutions {
         e.Other
           = e.Substitutions
             <MakeColdSolution
-              (Function s.ScopeClass (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+              (Function (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
               e.Args
             >;
       };
@@ -1144,7 +1140,7 @@ DropLeft {
 
 /*
   <FindOptInfo e.OptFuncs (e.Name)> == e.OptFuncs t.Function
-  t.Function ::= (s.Mode s.ScopeClass (e.Name) e.Body)
+  t.Function ::= (s.Mode (e.Name) e.Body)
 */
 FindOptInfo {
   e.OptFuncs (e.Name)
@@ -1158,16 +1154,16 @@ FindOptInfo {
 }
 
 FindOptInfo-Aux {
-  e.OptFuncs-B (Intrinsic s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
+  e.OptFuncs-B (Intrinsic (e.LookupName) e.Body) e.OptFuncs-E
   (e.Name) (e.LookupName) s._
-  = e.OptFuncs-B (Intrinsic s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
-    (Intrinsic s.ScopeClass (e.Name) e.Body);
+  = e.OptFuncs-B (Intrinsic (e.LookupName) e.Body) e.OptFuncs-E
+    (Intrinsic (e.Name) e.Body);
 
-  e.OptFuncs-B (s.Mode s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
+  e.OptFuncs-B (s.Mode (e.LookupName) e.Body) e.OptFuncs-E
   (e.Name) (e.LookupName) s.Drop
     = e.Body : Sentences e.Sentences
-    = e.OptFuncs-B (s.Mode s.ScopeClass (e.LookupName) e.Body) e.OptFuncs-E
-      (s.Mode s.ScopeClass (e.Name) Sentences <DropLeft e.Sentences s.Drop>);
+    = e.OptFuncs-B (s.Mode (e.LookupName) e.Body) e.OptFuncs-E
+      (s.Mode (e.Name) Sentences <DropLeft e.Sentences s.Drop>);
 }
 
 $DRIVE CutSUF;
