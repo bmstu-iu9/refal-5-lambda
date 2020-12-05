@@ -445,9 +445,18 @@ OptFunction {
         (t.OptInfo (/*sentences*/) (/*functions*/))
         e.Sentences
       >
-    : (t.OptInfo^ (e.Sentences^) (e.NewFunctions))
-    = t.OptInfo
-      (Function s.ScopeClass (e.Name) Sentences e.Sentences) e.NewFunctions;
+    : {
+        (t.OptInfo^ (e.Sentences /* SAME */) (/* пусто */))
+          = t.OptInfo
+            (ColdFunction DRIVE
+              s.ScopeClass (e.Name) Sentences <CleanupCold-Body e.Sentences>
+            );
+
+        (t.OptInfo^ (e.Sentences^) (e.NewFunctions))
+          = t.OptInfo
+            (Function s.ScopeClass (e.Name) Sentences e.Sentences)
+            e.NewFunctions;
+      }
 }
 
 /*

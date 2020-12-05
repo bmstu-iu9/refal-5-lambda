@@ -78,11 +78,12 @@ $ENTRY OptTree {
         (define DriveLoop
           (if (or s.OptDrive s.OptIntrinsic)
             (begin
-              (loop-for-fix-point
+              (loop-for-warm-functions
                 (pass
                   (trace 'before Drive')
                   (call &ExpandClosures)
                   (call &OptTree-Drive t.OptDrive)))
+              (call &WarmColdFunctions DRIVE)
               (call &OptTree-Drive-CleanupColdCalls))
             (call &ExpandClosures)))
 
@@ -200,7 +201,6 @@ ExpandClosures-ResultTerm {
 $SPEC Int-Code e.arg;
 $SPEC Int-Command e.arg;
 $SPEC Int-LoopForWarmFunctions e.arg;
-$SPEC Int-FixPoint e.arg;
 
 
 Int {
@@ -264,9 +264,6 @@ Int-Command {
         loop-for-warm-functions e.Code
           = <Int-LoopForWarmFunctions (e.Defines) e.Code s.Cycles (e.AST)>;
 
-        loop-for-fix-point e.Code
-          = <Int-FixPoint (e.Defines) e.Code s.Cycles (e.AST)>;
-
         s.Proc
           = <Int-Lookup s.Proc e.Defines> : e.Code
           = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)>;
@@ -318,21 +315,6 @@ Int-LoopForWarmFunctions {
     = <Int-LoopForWarmFunctions (e.Defines) e.Code s.Cycles (e.AST)>;
 
   (e.Defines) e.Code s.Cycles (e.AST) = s.Cycles e.AST;
-}
-
-Int-FixPoint {
-  (e.Defines) e.Code 0 (e.AST) = 0 e.AST;
-
-  (e.Defines) e.Code s.Cycles (e.AST)
-    = e.AST : e.OriginAST
-
-    = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)> : s.Cycles^ e.AST^
-
-    = e.AST
-    : {
-        e.OriginAST = s.Cycles e.OriginAST;
-        e.AST^ = <Int-FixPoint (e.Defines) e.Code s.Cycles (e.AST)>;
-      };
 }
 
 $INLINE Int-Lookup;
