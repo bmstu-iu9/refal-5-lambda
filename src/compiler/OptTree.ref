@@ -155,10 +155,10 @@ ExpandClosures-Sentence {
 }
 
 ExpandClosures-Result {
-  e.Result = <Map &ExpandClusures-ResultTerm e.Result>;
+  e.Result = <Map &ExpandClosures-ResultTerm e.Result>;
 }
 
-ExpandClusures-ResultTerm {
+ExpandClosures-ResultTerm {
   (Brackets e.Expr) = (Brackets <ExpandClosures-Result e.Expr>);
 
   (ADT-Brackets (e.Name) e.Expr)
