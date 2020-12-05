@@ -177,8 +177,8 @@ Tail {
 $SPEC Expression (e.prefix) (e.indent) e.expression (e.suffix);
 
 Expression {
-  (e.Prefix) (e.Indent) /* пусто */ (/* пусто */)
-    = (e.Prefix '/* empty */');
+  (e.Prefix) (e.Indent) /* пусто */ (e.Suffix)
+    = (e.Prefix '/* empty */' e.Suffix);
 
   (e.Prefix) (e.Indent) e.Expression (e.Suffix)
     = <DoExpression FIRST (e.Indent) (e.Prefix) e.Expression (e.Suffix)>;
@@ -203,7 +203,7 @@ DoExpression {
 
               True
                 = <MultilineTerm s.Pos (e.OutLine) e.Indent t.NextTerm ()>
-                  <DoExpression NEXT (e.Indent) (e.Indent) e.Expr (e.Suffix)>;
+                  <DoExpression FIRST (e.Indent) (e.Indent) e.Expr (e.Suffix)>;
 
               False
                 = (e.OutLine)
