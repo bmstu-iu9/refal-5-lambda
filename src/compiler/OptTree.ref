@@ -65,7 +65,7 @@ $ENTRY OptTree {
             (begin
               (call &OptTree-Drive-Prepare t.OptDrive)
               (call &OptTree-Spec-Prepare s.OptSpec)
-              (loop-for-fix-point
+              (loop-for-warm-functions
                 (DriveLoop)
                 (pass
                   (trace 'before Spec')
@@ -199,6 +199,7 @@ ExpandClosures-ResultTerm {
 * Сейчас компиляция в режиме -OADiS для этого файла требует десятки минут.
 $SPEC Int-Code e.arg;
 $SPEC Int-Command e.arg;
+$SPEC Int-LoopForWarmFunctions e.arg;
 $SPEC Int-FixPoint e.arg;
 
 
@@ -260,6 +261,9 @@ Int-Command {
           = <Log-AST ('Pass ' <Symb s.Cycles> ' (' e.Message ')') e.AST> : e.AST^
           = s.Cycles e.AST;
 
+        loop-for-warm-functions e.Code
+          = <Int-LoopForWarmFunctions (e.Defines) e.Code s.Cycles (e.AST)>;
+
         loop-for-fix-point e.Code
           = <Int-FixPoint (e.Defines) e.Code s.Cycles (e.AST)>;
 
@@ -299,6 +303,21 @@ Int-Cond-And {
       };
 
   /* нет флагов */ = True;
+}
+
+Int-LoopForWarmFunctions {
+  (e.Defines) e.Code 0 (e.AST) = 0 e.AST;
+
+  (e.Defines) e.Code s.Cycles
+  (e.AST-B (Function s.Scope (e.Name) Sentences e.Sentences) e.AST-E)
+
+    = e.AST-B (Function s.Scope (e.Name) Sentences e.Sentences) e.AST-E : e.AST^
+
+    = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)> : s.Cycles^ e.AST^
+
+    = <Int-LoopForWarmFunctions (e.Defines) e.Code s.Cycles (e.AST)>;
+
+  (e.Defines) e.Code s.Cycles (e.AST) = s.Cycles e.AST;
 }
 
 Int-FixPoint {
