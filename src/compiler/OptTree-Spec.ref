@@ -221,7 +221,7 @@ ColdAll {
     = <Map
         {
           (Function s.ScopeClass (e.Name) e.Body)
-            = (ColdFunction s.ScopeClass (e.Name) e.Body);
+            = (ColdFunction SPEC s.ScopeClass (e.Name) e.Body);
 
           t.OtherItem = t.OtherItem;
         }
@@ -274,7 +274,7 @@ SpecUnit {
       >
     : (e.SpecInfo^ (e.Histories) (e.History^) (e.NewFunctions^)) e.Sentences^
     = (e.SpecInfo (e.Histories) (e.NewFunctions))
-      (ColdFunction s.ScopeClass t.Name Sentences e.Sentences);
+      (ColdFunction SPEC s.ScopeClass t.Name Sentences e.Sentences);
 
   (e.SpecInfo (e.Histories) (e.NewFunctions))
   (Function s.ScopeClass t.Name Sentences e.Sentences)
@@ -286,7 +286,7 @@ SpecUnit {
     : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^))
       e.Sentences^
     = (e.SpecInfo (e.Histories) (e.NewFunctions))
-      (ColdFunction s.ScopeClass t.Name Sentences e.Sentences);
+      (ColdFunction SPEC s.ScopeClass t.Name Sentences e.Sentences);
 
   (e.SpecInfo (e.Histories) (e.NewFunctions)) t.Other
     = (e.SpecInfo (e.Histories) (e.NewFunctions)) t.Other;
@@ -1080,22 +1080,6 @@ PrepareSpecConditions {
         }
         e.Conditions
       >
-}
-
-/**
-  <OptTree-Spec-CleanupColdFunctions e.AST> == e.AST^
-*/
-$ENTRY OptTree-Spec-CleanupColdFunctions {
-  e.AST
-    = <Map
-        {
-          (ColdFunction s.ScopeClass (e.Name) e.Body)
-            = (Function s.ScopeClass (e.Name) e.Body);
-
-          t.OtherItem = t.OtherItem;
-        }
-        e.AST
-      >;
 }
 
 /*

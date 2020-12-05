@@ -348,10 +348,14 @@ DriveInlineOptimizerTick {
     = <MapAccum
         {
           (e.News-B (Function s.ScopeClass (e.Name) e._) e.News-E)
-          (s.Function s.ScopeClass (e.Name) e.Body)
-            , <OneOf s.Function Function ColdFunction> : True
+          (Function s.ScopeClass (e.Name) e.Body)
             = (e.News-B e.News-E)
-              (s.Function s.ScopeClass (e.Name) e.Body);
+              (Function s.ScopeClass (e.Name) e.Body);
+
+          (e.News-B (Function s.ScopeClass (e.Name) e._) e.News-E)
+          (ColdFunction s.ColdBy s.ScopeClass (e.Name) e.Body)
+            = (e.News-B e.News-E)
+              (ColdFunction s.ColdBy s.ScopeClass (e.Name) e.Body);
 
           (e.NewFunctions^) t.Other = (e.NewFunctions) t.Other;
         }

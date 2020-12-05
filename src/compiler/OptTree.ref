@@ -15,7 +15,7 @@ $EXTERN OptTree-AutoMarkup-Drive, OptTree-AutoMarkup-CureDrives,
 $EXTERN OptTree-Drive-Prepare, OptTree-Drive, OptTree-Drive-CleanupColdCalls;
 
 *$FROM OptTree-Spec
-$EXTERN OptTree-Spec-Prepare, OptTree-Spec, OptTree-Spec-CleanupColdFunctions;
+$EXTERN OptTree-Spec-Prepare, OptTree-Spec;
 
 *$FROM Log
 $EXTERN Log-AST;
@@ -70,7 +70,7 @@ $ENTRY OptTree {
                 (pass
                   (trace 'before Spec')
                   (call &OptTree-Spec s.OptSpec)))
-              (call &OptTree-Spec-CleanupColdFunctions))
+              (call &WarmColdFunctions SPEC))
             (begin
               (call &OptTree-Drive-Prepare t.OptDrive)
               (DriveLoop))))
@@ -112,6 +112,20 @@ $ENTRY OptTree-CleanupMarkup {
         }
         e.AST
       >
+}
+
+
+WarmColdFunctions {
+  s.ColdBy e.AST
+    = <Map
+        {
+          (ColdFunction s.ColdBy s.ScopeClass (e.Name) e.Body)
+            = (Function s.ScopeClass (e.Name) e.Body);
+
+          t.OtherItem = t.OtherItem;
+        }
+        e.AST
+      >;
 }
 
 
