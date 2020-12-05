@@ -348,9 +348,6 @@ FoldTileW {
       >
       (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) e.Items
     >;
-
-  /* Предложение не должно выполняться */
-  /* пусто */ = /* пусто */;
 }
 
 ReplaceTile {
