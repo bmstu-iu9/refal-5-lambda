@@ -96,14 +96,27 @@ PrepareMessage {
 
   Screening (e.FunName) (e.Screening) (e.Screened)
     = 'Function `' e.FunName '\': sentence ' e.Screening
-      ' screens sentence ' e.Screened
+      ' screens sentence ' e.Screened;
+
+  TaggedPseudofunction s.Tag e.Name
+    = 'Pseudofunction ' e.Name ' should not have optimization tag '
+      '$' <Upper <Explode s.Tag>>;
+
+  EntryPseudofunction e.Name
+    = 'Pseudofunction ' e.Name ' should be local, in other case function '
+      'can\'t be encountered as pseudofunction';
+
+  BadPseudofunctionBody e.Name
+    = 'Pseudofunction ' e.Name ' should have a body { e.X = e.X }, '
+      'in other case function can\'t be encountered as pseudofunction';
 }
 
 FindErrors {
   (e.WarningIds) e.AST
+    = <CheckPseudofunctions e.AST> : (e.PFErrors) e.AST^
     = <CheckSpecs e.AST> : (e.SpecErrors) e.AST^
     = <SeparateDefines e.AST> : (e.Declarations) e.FunctionBodies
-    = e.SpecErrors
+    = e.PFErrors e.SpecErrors
       <CheckValidUsings
         (<CheckDeclarations (e.WarningIds) e.Declarations>)
         <Map &CheckFunctionBody e.FunctionBodies>
@@ -111,12 +124,83 @@ FindErrors {
       <CheckScreening (e.WarningIds) (e.AST)>;
 }
 
+CheckPseudofunctions {
+  e.AST
+    = <Map
+        {
+          (s.Tag t.SrcPos s.ScopeClass e.Name)
+            , Drive Inline Intrinsic : e._ s.Tag e._
+            , <Pseudofunctions> : e._ (e.Name) e._
+            = (Error t.SrcPos TaggedPseudofunction s.Tag e.Name);
+
+          (Spec t.SrcPos (e.Name) e._)
+            , <Pseudofunctions> : e._ (e.Name) e._
+            = (Error t.SrcPos TaggedPseudofunction Spec e.Name);
+
+          (Entry t.SrcPos GN-Entry e.Name)
+            , <Pseudofunctions> : e._ (e.Name) e._
+            = (Warning pseudofunctions t.SrcPos EntryPseudofunction e.Name);
+
+          (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
+            , <Pseudofunctions> : e._ (e.Name) e._
+            = (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
+              <CheckPseudofunctions-Entry t.SrcPos e.Name s.ScopeClass>
+              <CheckPseudofunctions-Body t.SrcPos (e.Name) e.Body>;
+
+          t.Other = t.Other;
+        }
+        e.AST
+      >
+    : e.AST-and-messages
+    = <SeparateErrors e.AST-and-messages>;
+}
+
+SeparateErrors {
+  e.AST-and-messages
+    = <MapAccum
+        {
+          (e.Messages) (Error e.Error) = (e.Messages (Error e.Error));
+          (e.Messages) (Warning e.Warning) = (e.Messages (Warning e.Warning));
+
+          (e.Messages) t.Other = (e.Messages) t.Other;
+        }
+        (/* messages */) e.AST-and-messages
+      >
+}
+
+Pseudofunctions {
+  = ('gen_e__') ('gen-e__')
+}
+
+CheckPseudofunctions-Entry {
+  t.SrcPos e.Name GN-Local = /* нет ошибок */;
+
+  t.SrcPos e.Name GN-Entry
+    = (Warning pseudofunctions t.SrcPos EntryPseudofunction e.Name);
+}
+
+CheckPseudofunctions-Body {
+  t.SrcPos (e.Name) Sentences ((e.Pattern) (e.Result) (e.Blocks))
+    , <WholeEVar e.Pattern> : True e.Index
+    , <WholeEVar e.Pattern> : True e.Index /* SAME */
+    , e.Blocks : /* нет блоков */
+    = /* пусто, правильное тело gen-функции */;
+
+  t.SrcPos (e.Name) e._
+    = (Warning pseudofunctions t.SrcPos BadPseudofunctionBody e.Name);
+}
+
+WholeEVar {
+  (TkVariable t._pos 'e' e.Index) = True e.Index;
+  e._ = False;
+}
+
 CheckSpecs {
   e.AST
     = <CheckSpecs-Redefine e.AST> : e.AST-and-errors
     = <CheckSpecs-Formats e.AST-and-errors> : e.AST-and-errors^
     = <CheckSpecs-Functions e.AST-and-errors> : e.AST-and-errors^
-    = <CheckSpecs-SeparateErrors e.AST-and-errors>;
+    = <SeparateErrors e.AST-and-errors>;
 }
 
 * Проверка переопределения специализации
@@ -411,22 +495,6 @@ IsSpecStaticVar {
         'Lu' s._ = True;
         e._ = False;
       };
-}
-
-CheckSpecs-SeparateErrors {
-  e.AST
-    = <CheckSpecs-SeparateErrors-Rec (/* empty spec errror list*/) e.AST>;
-}
-
-CheckSpecs-SeparateErrors-Rec {
-  (e.SpecErrorList) e.AST-B (Error t.SrsPos t.SpecErrorType e.Name) e.AST-E
-    = <CheckSpecs-SeparateErrors-Rec
-        (e.SpecErrorList (Error t.SrsPos t.SpecErrorType e.Name))
-        e.AST-B e.AST-E
-      >;
-
-  (e.ErrorList) e.AST
-    = (e.ErrorList) e.AST;
 }
 
 SeparateDefines {

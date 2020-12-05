@@ -18,7 +18,7 @@ $ENTRY Config-Create {
           (/* конец командной строки для библиотек */)
         )
         (Optimize /* пусто */)
-        (WarningIds nul-in-compound)
+        (WarningIds nul-in-compound pseudofunctions)
         (WarningIdsAsErrors /* пусто */)
         (ErrorFile /* пусто */)
         (DebugMode NoMarkupContext NoDebugInfo)
@@ -531,6 +531,8 @@ WarningForName {
   'screening' = True screening;
   'nul-in-compound' = True nul-in-compound;
   'ignored-pseudocomments' = True ignored-pseudocomments;
+  'pseudofunctions' = True pseudofunctions;
+  'pseudofunction' = True pseudofunctions; /* синоним */
 
   e.Other = False
 }
