@@ -66,7 +66,7 @@ DigitFromChar {
 }
 
 $ENTRY UnEscapeString-SR {
-  e.String = <DoUnEscapeString-SR () e.String>;
+  e.String = <DoUnEscapeString-SR (<gen_e__>) e.String>;
 }
 
 OctDigits { = '01234567'; }
@@ -78,7 +78,7 @@ HexDigits { = '01234567AaBbCcDdEeFf'; }
   Иначе аккумулятор выводится как статический параметр и строятся экземпляры
   для e.Scanned '\n', e.Scanned '\r' и т.д.
 */
-$SPEC DoUnEscapeString-SR (e.scanned) e.text;
+gen_e__ { e.Arg = e.Arg }
 
 DoUnEscapeString-SR {
   (e.Scanned) '\\x' e.HexAndTail

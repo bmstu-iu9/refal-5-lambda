@@ -26,29 +26,18 @@ $ENTRY EL-Create {
 $ENTRY EL-AddError {
   [ErrorList (e.FileName) (e.Errors) t.Warnings] e.Message
     = [ErrorList
-        (e.FileName) (<gen e.Errors (NoPos e.Message)>) t.Warnings
+        (e.FileName) (<gen_e__ e.Errors (NoPos e.Message)>) t.Warnings
       ];
 }
 
-gen { e.Arg = <gen-aux '*' e.Arg> }
-
-$DRIVE gen;
-
-gen-aux {
-  s.Marker e.Arg
-    = s.Marker
-    : {
-        '*' = e.Arg;
-        '@' = <gen-aux '@' e.Arg>;  /* подавляем прогонку */
-      };
-}
-
-$SPEC gen-aux s.MARKER e.arg;
+gen_e__ { e.Arg = e.Arg }
 
 $ENTRY EL-AddWarning {
   [ErrorList (e.FileName) t.Errors (e.Warnings)] s.WarningId e.Message
     = [ErrorList
-        (e.FileName) t.Errors (<gen e.Warnings (s.WarningId NoPos e.Message)>)
+        (e.FileName)
+        t.Errors
+        (<gen_e__ e.Warnings (s.WarningId NoPos e.Message)>)
       ];
 }
 
@@ -56,7 +45,7 @@ $ENTRY EL-AddErrorAt {
   [ErrorList (e.FileName) (e.Errors) t.Warnings] t.SrcPos e.Message
     = [ErrorList
         (e.FileName)
-        (<gen e.Errors (<WithFileName t.SrcPos e.FileName> e.Message)>)
+        (<gen_e__ e.Errors (<WithFileName t.SrcPos e.FileName> e.Message)>)
         t.Warnings
       ];
 }
@@ -75,7 +64,7 @@ $ENTRY EL-AddWarningAt {
   e.Message
     = <WithFileName t.SrcPos e.FileName> : t.SrcPos^
     = e.Warnings (s.WarningId t.SrcPos e.Message) : e.Warnings^
-    = [ErrorList (e.FileName) t.Errors (<gen e.Warnings>)];
+    = [ErrorList (e.FileName) t.Errors (<gen_e__ e.Warnings>)];
 }
 
 $ENTRY EL-Concat {

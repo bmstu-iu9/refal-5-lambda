@@ -401,12 +401,12 @@ ClosureBrackets {
 }
 
 InlineSubexpr {
-  t.Term e.Expr = <DoInlineExpr (<InlineTerm t.Term>) e.Expr>;
+  t.Term e.Expr = <DoInlineExpr (<gen_e__ <InlineTerm t.Term>>) e.Expr>;
 
   /* пусто */ = /* пусто */;
 }
 
-$SPEC DoInlineExpr (e.text) e.expr;
+gen_e__ { e.Arg = e.Arg }
 
 DoInlineExpr {
   (e.Text) t.NextTerm e.Expr
