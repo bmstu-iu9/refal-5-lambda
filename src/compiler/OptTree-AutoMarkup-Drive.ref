@@ -57,10 +57,15 @@ MetaInfo {
 
           t.MetaInfo (Function s.Scope (e.FuncName) Sentences e.Body)
             = <Lenw e.Body> : s.SentencesCount e.Body^
-            = <Compare s.SentencesCount 20>
+            = /* пусто */
             : {
-                '+' = <MetaInfo-AddForbidden t.MetaInfo e.FuncName>;
-                s._ = t.MetaInfo;
+                /* пусто */, s.SentencesCount : 0
+                  = <MetaInfo-AddForbidden t.MetaInfo e.FuncName>;
+
+                /* пусто */, <Compare s.SentencesCount 20> : '+'
+                  = <MetaInfo-AddForbidden t.MetaInfo e.FuncName>;
+
+                /* пусто */ = t.MetaInfo;
               }
             : t.MetaInfo^
             = <MetaInfo-AddEntry t.MetaInfo s.Scope e.FuncName>
@@ -102,6 +107,9 @@ SeparateMetatables {
           (e.Metatables) t.Function
             , t.Function : (Function s._ (e._) Metatable e._)
             = (e.Metatables t.Function) /* пусто */;
+
+          (e.Metatables) (Function s._ (e._) Sentences /* пусто */)
+            = (e.Metatables) /* игнорируем пустые функции */;
 
           (e.Metatables) t.Function
             , t.Function : (Function s._ (e._) Sentences e._)

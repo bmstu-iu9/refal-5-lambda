@@ -47,7 +47,7 @@ $ENTRY OptTree-Drive-Prepare {
 /* Функция генерирует имена остаточных прогоняемых функций */
 
 GenRemainderFuncNames {
-  s.Label e.Name s.End s.End = (s.Label <AddStarSuffix e.Name s.End>);
+  s.Label e.Name s.End s.End = /* пусто — пустую функцию прогнать нельзя */;
 
   s.Label e.Name s.Cur s.End
     = (s.Label <AddStarSuffix e.Name s.Cur>)
