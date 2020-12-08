@@ -1,0 +1,10 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */ = /* empty */;
+  e.X = &w : s.F = <s.F s.F>
+}
+
+w {
+  s.F e.Arg = <s.F s.F (e.Arg) (e.Arg)>
+}

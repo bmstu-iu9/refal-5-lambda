@@ -10,5 +10,5 @@ if errorlevel 1 (
   echo TEST FAILED!
 ) else (
   echo Test OK!
-  erase *.rasl-module *.rasl *.exe *.dll *.obj *.tds *.exp *.lib *.cpp
+  erase *.rasl-module *.rasl *.exe *.dll *.obj *.tds *.exp *.lib *.cpp *.lst
 )

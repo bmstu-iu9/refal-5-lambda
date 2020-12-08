@@ -1,0 +1,19 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */ = /* empty */;
+
+  X = <Test '******************************' ()>;
+}
+
+Test {
+  e.Count (e.Acc) = <Test-D e.Count (<gen_e__ e.Acc>)>;
+}
+
+gen_e__ { e.Arg = e.Arg }
+
+Test-D {
+  '*' e.Count (e.Acc) = <Test e.Count ((e.Acc) (e.Acc))>;
+
+  /* empty */ (e.Acc) = e.Acc;
+}

@@ -1,0 +1,46 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */
+    = <EnumExprs 0 () (A B C D) () (X Y Z T)> : (e.Pat) (e.Res)
+    = e.Pat : (0 A) (1 B) (2 C) (3 D)
+    = e.Res : (0 X) (1 Y) (2 Z) (3 T)
+    = /* empty */;
+}
+
+$SPEC EnumExprs s.NUM (e.PAT) (e.pat) (e.RES) (e.res);
+
+EnumExprs {
+  s.Num
+  (e.ScannedPattern) (t.PatternItem e.Pattern)
+  (e.ScannedResult) (t.ResultItem e.Result)
+    = <EnumExprs
+        <+1 s.Num>
+        (e.ScannedPattern (s.Num t.PatternItem)) (e.Pattern)
+        (e.ScannedResult (s.Num t.ResultItem)) (e.Result)
+      >;
+
+  s.Num
+  (e.ScannedPattern) (/* пусто */)
+  (e.ScannedResult) (t.ResultItem e.Result)
+    = <EnumExprs
+        <+1 s.Num>
+        (e.ScannedPattern) (/* пусто */)
+        (e.ScannedResult (s.Num t.ResultItem)) (e.Result)
+      >;
+
+  s.Num
+  (e.ScannedPattern) (t.PatternItem e.Pattern)
+  (e.ScannedResult) (/* пусто */)
+    = <EnumExprs
+        <+1 s.Num>
+        (e.ScannedPattern (s.Num t.PatternItem)) (e.Pattern)
+        (e.ScannedResult) (/* пусто */)
+      >;
+
+  s.Num (e.ScannedPattern) (/* пусто */) (e.ScannedResult) (/* пусто */)
+    = (e.ScannedPattern) (e.ScannedResult);
+}
+
+$INTRINSIC Add;
+$EXTERN Add;

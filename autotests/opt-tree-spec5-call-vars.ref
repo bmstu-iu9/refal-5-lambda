@@ -1,0 +1,19 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */
+    = '*' : s.Sym
+    = <G (s.Sym) 'abcd'> : '*abcd'
+    = /* empty */;
+}
+
+$SPEC G (e.RES) e.str;
+
+G {
+  (e.Res) t.Term e.Tail = <G (e.Res <H t.Term>) e.Tail>;
+  (e.Res) /* empty */ = e.Res;
+}
+
+H {
+  e.X = e.X;
+}

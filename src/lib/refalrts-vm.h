@@ -223,7 +223,7 @@ public:
   }
 
 public:
-  // Операции сопоставления с образцом
+  // Операции сопоставления с образцом
 
   static void move_left(Iter& first, Iter& last) {
     // assert((first == 0) == (last == 0));
@@ -812,7 +812,7 @@ public:
 
   void copy_svar(Iter& svar_res, Iter svar_sample);
 
-  // TODO: а нафига она нужна?
+  // TODO: а нафига она нужна?
   void alloc_copy_evar(Iter& res, Iter evar_b_sample, Iter evar_e_sample) {
     if (empty_seq(evar_b_sample, evar_e_sample)) {
       res = 0;

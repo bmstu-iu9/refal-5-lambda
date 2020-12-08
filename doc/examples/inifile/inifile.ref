@@ -48,7 +48,7 @@ $ENTRY LoadIniFile {
 
             (s.LineNumber e.Other) = (s.LineNumber BadLine);
           })
-          /* Группируем параметры в секции */
+          /* Группируем параметры в секции */
           (&Reduce
             {
               (

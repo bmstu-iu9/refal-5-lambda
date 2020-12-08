@@ -1,0 +1,8 @@
+* TREE
+
+$EXTERN Add;
+$INTRINSIC Add;
+
+$ENTRY Go {
+  /* empty */ = <Add ('ab') 'cd'>;
+}

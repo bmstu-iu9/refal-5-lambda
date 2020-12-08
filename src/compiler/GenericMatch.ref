@@ -207,23 +207,6 @@ Solution-PostProcess {
       e.E
     = /* пусто, т.к. противоречие */;
 
-  /*
-    если есть идентичные сужения, то удаляем их
-  */
-
-  (e.Contractions) (e.Assigns)
-    , e.Contractions
-    : e.B
-      (e.Expr ':' (TkVariable e.HIndex))
-      e.M
-      (e.Expr ':' (TkVariable e.HIndex))
-      e.E
-    = <Solution-PostProcess
-        (e.Contractions)
-        (e.B (e.Expr ':' (TkVariable e.HIndex)) e.M e.E)
-      >;
-
-
   (e.Contractions) (e.Assigns)
     , e.Assigns
     : e.B

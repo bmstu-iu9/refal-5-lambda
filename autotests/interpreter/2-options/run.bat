@@ -18,3 +18,4 @@ if not exist dump.txt (
 )
 
 erase test.rasl-module dump.txt
+if exist *.lst erase *.lst

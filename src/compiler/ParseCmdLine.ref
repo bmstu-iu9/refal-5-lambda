@@ -293,7 +293,7 @@ $ENTRY ParseCommandLine {
                    (
                      s.Pos
                      'option -W expects \'all\', \'[no-]error[=...]\', '
-                     '\'[no-]screening\', \'[no-]init-final-entry\', '
+                     '\'[no-]screening\', \'[no-]pseudofunctions\' '
                      '\'[no-]nul-in-compound\', but got \'' e.BadValue '\''
                    );
 
@@ -373,10 +373,10 @@ PrintHelp {
 '          -Wall - show all warnings\n'
 '          -Wscreening, -Wno-... - check/don\'t screening sentences\n'
 '                                  (disabled by default)\n'
-'          -Winit-final-entry, -Wno-... - check/don\'t INIT or FINAL declared\n'
-'                                         $ENTRY (disabled by default)\n'
 '          -Wnul-in-compound, -Wno-... - check/don\'t nuls in compounds\n'
 '                                        (enabled by default)\n'
+'          -Wpseudofunctions, -Wno-... - check/don\'t pseudofunction\n'
+'                                        correctness (enabled by default)\n'
 '          -Werror[=...], -Wno-error[=...] - treat/don\'t all or only provided\n'
 '                                            warning(s) as error(s)\n'
 '-p, --prefix prefix-name\n'

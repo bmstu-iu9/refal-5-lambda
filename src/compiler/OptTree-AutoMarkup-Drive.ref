@@ -1,0 +1,631 @@
+$INCLUDE "LibraryEx";
+
+*$FROM TreeUtils
+$EXTERN HashName;
+
+
+/**
+  <OptTree-AutoMarkup-Drive e.AST> == e.AST
+
+  e.RootSet ::= (e.FuncName)*
+*/
+
+$ENTRY OptTree-AutoMarkup-Drive {
+  e.AST
+    = <MetaInfo e.AST> : t.MetaInfo e.AST^
+    = t.MetaInfo : ((e.Forbidden) (e.Inlines) (e.UserdefDrives) (e.Entries))
+
+    = <BuldCallGraph e.AST (e.Inlines)> : (e.Indirects) e.Graph
+
+    = <Unique e.Entries e.Indirects ('__INIT') ('__FINAL')> : e.Roots
+    = <BasicVertexes e.Graph (e.Roots)>
+    : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
+    = <SetDifference e.ToDrive (e.Forbidden e.UserdefDrives)> : e.ToDrive^
+    = <UpdateAST e.AST (e.ToDrive) (e.Basics)>
+}
+
+BuldCallGraph {
+  e.AST (e.Inlines)
+    = <SeparateMetatables e.AST> : (e.Metatables) e.Functions
+    = <Map &MakeGraphNode e.Metatables> : e.Metatables^
+    = <Map &MakeGraphNode e.Functions> : e.Graph
+
+    = <InlineMetatableGraphNodes e.Graph (e.Metatables)> : e.Graph^
+
+    = <SeparateIndirects e.Graph> : (e.Indirects) e.Graph^
+    = <InlineIndirects e.Graph (e.Indirects)> : e.Graph^
+
+    = <SeparateInlineGraphNodes e.Graph (e.Inlines)> : (e.InlinesRef) e.Graph^
+    = <InlineInlineReferences e.Graph (e.InlinesRef)> : e.Graph^
+    = (e.Indirects) e.Graph;
+}
+
+MetaInfo {
+  e.AST
+    = ((/* forbidden list */) (/* inlines */) (/* drives */) (/* entries */))
+    : t.InitMetaInfo
+    = <MapAccum
+        {
+          t.MetaInfo (Inline e.Name)
+            = <MetaInfo-AddInline t.MetaInfo e.Name> (Inline e.Name);
+
+          t.MetaInfo (Drive e.Name)
+            = <MetaInfo-AddDrive t.MetaInfo e.Name> (Drive e.Name);
+
+          t.MetaInfo (Intrinsic e.Name)
+            = <MetaInfo-AddForbidden t.MetaInfo e.Name> (Intrinsic e.Name);
+
+          t.MetaInfo
+          (Function
+            GN-Local (e.FuncName) Sentences
+            (((TkVariable 'e' e.Index)) /*=*/ ((TkVariable 'e' e.Index)))
+          )
+            , <Pseudofunction-gen_e e.FuncName> : True
+            = <MetaInfo-AddForbidden t.MetaInfo e.FuncName>
+              (Function
+                GN-Local (e.FuncName) Sentences
+                (((TkVariable 'e' e.Index)) /*=*/ ((TkVariable 'e' e.Index)))
+              );
+
+          t.MetaInfo (Function s.Scope (e.FuncName) Sentences e.Body)
+            = <Lenw e.Body> : s.SentencesCount e.Body^
+            = /* пусто */
+            : {
+                /* пусто */, s.SentencesCount : 0
+                  = <MetaInfo-AddForbidden t.MetaInfo e.FuncName>;
+
+                /* пусто */, <Compare s.SentencesCount 20> : '+'
+                  = <MetaInfo-AddForbidden t.MetaInfo e.FuncName>;
+
+                /* пусто */ = t.MetaInfo;
+              }
+            : t.MetaInfo^
+            = <MetaInfo-AddEntry t.MetaInfo s.Scope e.FuncName>
+              (Function s.Scope (e.FuncName) Sentences e.Body);
+
+          t.MetaInfo t.Other = t.MetaInfo t.Other;
+        }
+        t.InitMetaInfo e.AST
+      >
+}
+
+MetaInfo-AddInline {
+  ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries)) e.Name
+    = ((e.Forbidden (e.Name)) (e.Inlines (e.Name)) (e.Drives) (e.Entries));
+}
+
+MetaInfo-AddDrive {
+  ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries)) e.Name
+    = ((e.Forbidden) (e.Inlines) (e.Drives (e.Name)) (e.Entries));
+}
+
+MetaInfo-AddForbidden {
+  ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries)) e.Name
+    = ((e.Forbidden (e.Name)) (e.Inlines) (e.Drives) (e.Entries));
+}
+
+Pseudofunction-gen_e {
+  'gen_e__' = True;
+  'gen-e__' = True;
+  'gen_e__' SUF '~' s.N = True;
+  'gen-e__' SUF '~' s.N = True;
+
+  e._ = False;
+}
+
+MetaInfo-AddEntry {
+  ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries)) GN-Entry e.Name
+    = ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries (e.Name)));
+
+  ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries)) GN-Local e.Name
+    = ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries));
+}
+
+SeparateMetatables {
+  e.AST
+    = <MapAccum
+        {
+          (e.Metatables) t.Function
+            , t.Function : (Function s._ (e._) Metatable e._)
+            = (e.Metatables t.Function) /* пусто */;
+
+          (e.Metatables) (Function s._ (e._) Sentences /* пусто */)
+            = (e.Metatables) /* игнорируем пустые функции */;
+
+          (e.Metatables) t.Function
+            , t.Function : (Function s._ (e._) Sentences e._)
+            = (e.Metatables) t.Function;
+
+          (e.Metatables) t._ = (e.Metatables) /* пропускаем */;
+        }
+        (/* metatables */)
+        e.AST
+      >
+}
+
+MakeGraphNode {
+  (Function s.ScopeClass (e.MetatableName) Metatable e.Metatable)
+    = <Map
+        {
+          (t.FuncName-Word (Symbol Name e.Name)) = (Call e.Name);
+        }
+        e.Metatable
+      >
+    : e.Children
+    = (Func (e.MetatableName) Children (e.Children (INDIRECT)));
+
+  (Function s.ScopeClass (e.Name) Sentences e.Sentences)
+    = (Func (e.Name) Children (<Children-Body e.Sentences>));
+
+  t._ = /* пропускаем */;
+}
+
+Children-Body {
+  e.Sentences
+    = <Map
+        {
+          ((e.Pattern) e.Conditions (e.Result))
+            = <Unique
+                <Children-Expr e.Pattern>
+                <Map
+                  {
+                    (Condition (e._) (e.CondResult) (e.CondPattern))
+                      = <Children-Expr e.CondResult>
+                        <Children-Expr e.CondPattern>
+                  }
+                  e.Conditions
+                >
+                <Children-Expr e.Result>
+              >
+        }
+        e.Sentences
+      >;
+}
+
+Children-Expr {
+  e.Expression = <Map &Children-Term e.Expression>
+}
+
+Children-Term {
+  (CallBrackets (Symbol Name e.Name) e.Expr)
+    = (Call e.Name) <Children-Expr e.Expr>;
+
+  (CallBrackets (ClosureBrackets (Symbol Name e.Name) e.Context) e.Expr)
+    = (Call e.Name) <Children-Expr e.Context> <Children-Expr e.Expr>;
+
+  (CallBrackets e.Expr) = (INDIRECT) <Children-Expr e.Expr>;
+
+  (Symbol Name e.Name) = (Pointer e.Name);
+
+  (ADT-Brackets (e.Name) e.Expr) = (Pointer e.Name) <Children-Expr e.Expr>;
+
+  (s.Brackets e.Expr)
+    , Brackets ClosureBrackets : e._ s.Brackets e._
+    = <Children-Expr e.Expr>;
+
+  t.AnyOtherTerm = /* ничего интересного */;
+}
+
+InlineMetatableGraphNodes {
+  e.Graph (e.Metatables)
+    = <Reduce
+        {
+          (e.Graph^) t.Metatable
+            = (<InlineOneMetatable e.Graph t.Metatable>)
+        }
+        (e.Graph) e.Metatables
+      >
+    : (e.Graph^)
+    = e.Graph;
+}
+
+InlineOneMetatable {
+  e.Functions-B
+  (Func (e.Name) Children (e.Children-B (Pointer e.MetatableName) e.Children-E))
+  e.Functions-E
+  t.Metatable
+    , t.Metatable : (Func (e.MetatableName) Children (e.MetatableNodes))
+    = e.Functions-B
+      (Func (e.Name) Children (e.Children-B e.MetatableNodes e.Children-E))
+      <InlineOneMetatable e.Functions-E t.Metatable>;
+
+  e.Functions t.Metatable = e.Functions;
+}
+
+SeparateInlineGraphNodes {
+  e.Graph (e.Inlines)
+    = <MapAccum
+        {
+          (e.InlinesRef) t.GraphNode
+            , t.GraphNode : (Func (e.Name) Children (e.Children))
+            , e.Inlines : e._ (e.Name) e._
+            = (e.InlinesRef t.GraphNode) t.GraphNode;
+
+          (e.InlinesRef) t.GraphNode = (e.InlinesRef) t.GraphNode;
+        }
+        (/* inlines references */) e.Graph
+      >
+}
+
+InlineInlineReferences {
+  e.Graph (e.Inlines)
+    = <MakeInlineClosure (e.Inlines) e.Inlines> : e.Inlines^
+    = <ApplyInlines e.Graph (e.Inlines)>
+}
+
+MakeInlineClosure {
+  (e.InlinesAcc) e.Inlines
+    = <ApplyInlines e.InlinesAcc (e.Inlines)>
+    : {
+        e.InlinesAcc /* same */ = e.InlinesAcc;
+
+        e.InlinesAcc^ = <MakeInlineClosure (e.InlinesAcc) e.Inlines>;
+      }
+}
+
+ApplyInlines {
+  e.Graph (e.Inlines)
+    = <MapAccum
+        {
+          (e.Inlines^) (Func (e.Name) Children (e.Children))
+            = <ApplyInlines-Children e.Inlines (e.Children)>
+            : e.Inlines^ (e.Children^)
+            = (e.Inlines) (Func (e.Name) Children (e.Children));
+        }
+        (e.Inlines) e.Graph
+      >
+    : (e._) e.Graph^
+    = e.Graph;
+}
+
+ApplyInlines-Children {
+  e.Inlines-B (Func (e.Name) Children (e.InlineChilden)) e.Inlines-E
+  (e.Children-B (e.Name) e.Children-E)
+    = e.Children-B (e.Name) e.Children-E : e.Children
+    = <UnionChildren e.Children (e.InlineChilden)> : e.Children^
+    = e.Inlines-B (Func (e.Name) Children (e.InlineChilden))
+      <ApplyInlines-Children e.Inlines-E (e.Children)>;
+
+  e.Inlines (e.Children) = e.Inlines (e.Children);
+}
+
+* <UnionChildren e.Set1 (e.Set2)> == e.Set1 e.Set2\Set1
+UnionChildren {
+  e.Unique t.Common e.NotScanned (e.New-B t.Common e.New-E)
+    = e.Unique t.Common <UnionChildren e.NotScanned (e.New-B e.New-E)>;
+
+  e.Unique (e.New) = e.Unique e.New;
+}
+
+SeparateIndirects {
+  e.Graph
+    = <MapAccum
+        {
+          (e.Indirects) (Func (e.Name) Children (e.Children))
+
+            = <SeparateIndirects-Children e.Children>
+            : (e.FunctionIndirects) e.Children^
+
+            = (e.Indirects e.FunctionIndirects)
+              (Func (e.Name) Children (<Unique e.Children>));
+        }
+        (/* indirects */)
+        e.Graph
+      >
+    : (e.Indirects) e.Graph^
+    = (<Unique e.Indirects>) e.Graph;
+}
+
+SeparateIndirects-Children {
+  e.Children
+    = <MapAccum
+        {
+          (e.Indirects) (Call e.Name) = (e.Indirects) (e.Name);
+          (e.Indirects) (Pointer e.Name) = (e.Indirects (e.Name)) /* удаляем */;
+          (e.Indirects) (INDIRECT) = (e.Indirects) INDIRECT;
+        }
+        (/* indirects */) e.Children
+      >
+}
+
+InlineIndirects {
+  e.Graph-B
+  (Func (e.Name) Children (e.Children-B INDIRECT e.Children-E))
+  e.Graph-E
+  (e.Indirects)
+    = e.Graph-B
+      (Func (e.Name) Children (<Unique e.Children-B e.Indirects e.Children-E>))
+      <InlineIndirects e.Graph-E (e.Indirects)>;
+
+  e.Graph (e.Indirects) = e.Graph;
+}
+
+/*
+  <BasicVertexes e.Graph (e.Roots)>
+    == (ToDrive e.FuncNames) (Basics e.FuncNames) (Unreachable e.FuncNames)
+  e.FuncNames ::= (e.Name)*
+*/
+BasicVertexes {
+  e.Graph (e.Roots)
+    = <MakeGraphHash e.Graph> : e.GraphHash
+    = <DoBasicVertexes
+        <MarkChildren e.Roots> (e.GraphHash) (/* to drive */) (/* basic */)
+      >;
+}
+
+MakeGraphHash {
+  e.Graph
+    = <Map
+        {
+          (Func (e.Name) Children (e.Children))
+            = <HashName e.Name <BUCKET-SIZE>> : s.Hash
+            = (s.Hash Func (e.Name) Children (e.Children));
+        }
+        e.Graph
+      >
+    : e.Graph^
+    = <MakeGraphHash-Buckets e.Graph>;
+}
+
+BUCKET-SIZE { = 101 }
+
+MakeGraphHash-Buckets {
+  (s.Hash Func (e.Name) Children (e.Children)) e.Graph
+    = <MakeGraphHash-FillBucket
+        e.Graph (s.Hash (Func (e.Name) Children (e.Children)))
+      >
+    : e.Graph^ (e.Bucket)
+    = <MakeGraphHash-Buckets e.Graph> (e.Bucket);
+
+  /* граф опустел */ = /* нет корзин */;
+}
+
+MakeGraphHash-FillBucket {
+  e.Graph-B (s.Hash Func (e.Name) Children (e.Children)) e.Graph-E
+  (s.Hash e.Bucket)
+    = e.Graph-B
+      <MakeGraphHash-FillBucket
+        e.Graph-E (s.Hash e.Bucket (Func (e.Name) Children (e.Children)))
+      >;
+
+  e.Graph (e.Bucket) = e.Graph (e.Bucket);
+}
+
+MarkChildren {
+  e.FuncNames
+   = (Children
+       <Map
+         {
+           (e.Name) = (<HashName e.Name <BUCKET-SIZE>> e.Name)
+         }
+         e.FuncNames
+       >
+     )
+}
+
+/*
+  <DoBasicVertexes e.Stack (e.GraphHash) (e.ToDrive) (e.Basics)>
+
+  e.ToDrive, e.Basics ::= (e.Name)*
+  e.Stack ::= t.StackItem*
+  t.StackItem ::= (Children (s.Hash e.Name)*) | (Func s.Hash e.Name)
+
+  Функция совершает обход графа в глубину.
+
+  На стек кладутся потомки функции, а также имя самой функции. Когда со стека
+  снимается потомок, и эта функция ещё не сканирована (есть в графе),
+  на стек кладутся потомки потомка и имя самого потомка. Когда все потомки
+  функции просканированы, на верхушке остаётся имя самой функции, которое
+  можно снять. Для алгоритма обхода в чистом виде имена функций на стеке
+  не так уж и важны, они нужны для маркировки прогоняемых и базисных функций.
+
+  Интересно получается с базисными вершинами. Базисная вершина — это вершина,
+  в которую ведёт стрелка от потомка. Поэтому если на стеке есть имя функции,
+  совпадающей с очередным потомком, эта функция базисная. Вырезаем её
+  из стека и запоминаем как базисную. Если на вершине стека обнаружилось
+  имя функции, это значит, что ссылки из потомков на неё не было, она
+  не является базисной и пригодна для прогонки.
+
+  В графе находятся только функции с предложениями. Все имена функций из графа,
+  достижимые из корней, кладутся на стек (включая корни). Любое имя, оказавшееся
+  на стеке, либо переносится в карман базисных, либо прогоняемых. Функции,
+  оставшиеся в графе, являются недостижимыми. Таким образом, множество функций
+  из графа разбивается на три подмножества: базисные, прогоняемые
+  и недостижимые.
+*/
+DoBasicVertexes {
+* Базисная вершина, удаляем пометку функции со стека.
+  (Children (s.Hash e.BasicName) e.Siblings)
+  e.Stack-B (Func s.Hash e.BasicName) e.Stack-E
+  (e.Graph) (e.ToDrive) (e.Basics)
+    = <DoBasicVertexes
+        (Children e.Siblings)
+        e.Stack-B e.Stack-E (e.Graph) (e.ToDrive) (e.Basics (e.BasicName))
+      >;
+
+* Обычная вершина.
+  (Children (s.Hash e.FuncName) e.Siblings) e.Stack
+  (
+    e.Buckets-B
+    (s.Hash e.Graph-B (Func (e.FuncName) Children (e.Children)) e.Graph-E)
+    e.Buckets-E
+  )
+  (e.ToDrive) (e.Basics)
+    = <DoBasicVertexes
+        <MarkChildren e.Children> (Func s.Hash e.FuncName)
+        (Children e.Siblings) e.Stack
+        (e.Buckets-B <WrapBucket s.Hash e.Graph-B e.Graph-E> e.Buckets-E)
+        (e.ToDrive) (e.Basics)
+      >;
+
+* Уже просканированная вершина или вызов внешней функции.
+  (Children (s._ e._) e.Siblings) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
+    = <DoBasicVertexes
+        (Children e.Siblings) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
+      >;
+
+  (Children /* пусто */) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
+    = <DoBasicVertexes e.Stack (e.Graph) (e.ToDrive) (e.Basics)>;
+
+* Всех детей функции просканировали.
+* Если сама метка функции не удалена со стека, значит она не была базисной.
+  (Func s.Hash e.FuncName) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
+    = <DoBasicVertexes e.Stack (e.Graph) (e.ToDrive (e.FuncName)) (e.Basics)>;
+
+* Все функции просканировали.
+  /* пустой стек */ (e.Graph) (e.ToDrive) (e.Basics)
+    = (ToDrive e.ToDrive)
+      (Basics e.Basics)
+      (Unreachable
+        <Map
+          {
+            (s.Hash e.Bucket)
+              = <Map
+                  {
+                    (Func (e.Name) Children (e._)) = (e.Name)
+                  }
+                  e.Bucket
+                >
+          }
+          e.Graph
+        >
+      );
+}
+
+WrapBucket {
+  s.Hash /* пусто */ = /* пусто */;
+  s.Hash e.Bucket = (s.Hash e.Bucket);
+}
+
+SetDifference {
+  e.Set1-B t.Common e.Set1-E (e.Set2-B t.Common e.Set2-E)
+    = e.Set1-B <SetDifference e.Set1-E (e.Set2-B t.Common e.Set2-E)>;
+
+  e.Set1 (e.Set2) = e.Set1;
+}
+
+UpdateAST {
+  e.AST (e.FunctionsToDrive) (e.BasisVertexes)
+    = <MapAccum
+        {
+          (e.BasisVertexes-B (e.Name) e.BasisVertexes-E)
+          (Drive e.Name)
+            = (e.BasisVertexes-B (e.Name) e.BasisVertexes-E)
+              /* пропускаем */;
+
+          (e.BasisVertexes^) t.Other = (e.BasisVertexes) t.Other;
+        }
+        (e.BasisVertexes) e.AST
+      >
+    : (e._) e.AST^
+    = e.AST
+      <Map
+        {
+          (e.FuncName) = (Drive e.FuncName);
+        }
+        e.FunctionsToDrive
+      >
+}
+
+/**
+  <OptTree-AutoMarkup-CureDrives e.AST> == e.AST
+*/
+$ENTRY OptTree-AutoMarkup-CureDrives {
+  e.AST
+    = <MetaInfo e.AST> : t.MetaInfo e.AST^
+    = t.MetaInfo : ((e.Forbidden) (e.Inlines) (e.UserdefDrives) (e.Entries))
+
+    = <BuldCallGraph e.AST (e.Inlines)> : (e.Indirects) e.Graph
+
+    = <MapAccum
+        {
+          (e.DrivenNodes) (Func (e.Name) Children (e.Children))
+            , e.UserdefDrives : e._ (e.Name) e._
+            = (
+                e.DrivenNodes
+                (Func (e.Name) Children (e.Children))
+              )
+              /* пусто */;
+
+          (e.DrivenNodes) (Func (e.Name) Children (e.Children))
+             = (e.DrivenNodes) e.Children;
+        }
+        (/* driven nodes */)
+        e.Graph
+      >
+    : (e.DrivenNodes) e.NamesCalledFromUndriven
+
+    = <Unique
+        e.Entries e.Indirects e.NamesCalledFromUndriven ('__INIT') ('__FINAL')
+      >
+    : e.Roots
+    = <SetIntersect (e.Roots) (e.UserdefDrives)> : e.Roots^
+    = <BasicVertexes e.Graph (e.Roots)>
+    : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
+
+    /* новых функций для прогонки не добавляем */
+    = /* пусто */ : e.ToDrive^
+    = <UpdateAST e.AST (e.ToDrive) (e.Basics)>
+}
+
+SetIntersect {
+  (e.Set1-B t.Common e.Set1-E) (e.Set2-B t.Common t.Set2-E)
+    = t.Common <SetIntersect (e.Set1-E) (e.Set2-B t.Set2-E)>;
+
+  (e.Set1) (e.Set2) = /* пусто */;
+}
+
+
+/**
+  <OptTree-AutoMarkup-CleanupUnusedFunctions e.AST> == e.AST
+*/
+$ENTRY OptTree-AutoMarkup-CleanupUnusedFunctions {
+  e.AST
+    = <Map &MakeGraphNode e.AST> : e.Graph
+    = <Map &RemoveReferenceTagFromChildren e.Graph> : e.Graph^
+
+    = <MapAccum &UnsuffixedFunctions () e.Graph> : (e.Roots) e.Graph^
+    = <BasicVertexes e.Graph (e.Roots)>
+    : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
+
+    = <MapAccum &RemoveUnused (e.Unreachable) e.AST>
+    : (/* должно быть пусто */) e.AST^
+    = e.AST;
+}
+
+RemoveReferenceTagFromChildren {
+  (Func (e.FuncName) Children (e.Children))
+    = <Map
+        {
+          (INDIRECT) = /* пропускаем */;
+          (s._ e.ChildName) = (e.ChildName);
+        }
+        e.Children
+      >
+    : e.Children^
+    = (Func (e.FuncName) Children (e.Children));
+}
+
+UnsuffixedFunctions {
+  (e.Roots) t.Node
+    = t.Node : (Func (e.FuncName) Children (e.Children))
+    = e.FuncName
+    : {
+        e._ SUF e._ = e.Roots;
+        e._ = e.Roots (e.FuncName);
+      }
+    : e.Roots^
+    = (e.Roots) t.Node;
+}
+
+RemoveUnused {
+  (e.Unused-B (e.Name) e.Unused-E)
+  (Function s.ScopeClass (e.Name) Sentences e._)
+    = (e.Unused-B e.Unused-E) /* пропускаем */;
+
+  (e.Unused-B (e.Name) e.Unused-E)
+  (Function s.ScopeClass (e.Name) Metatable e._)
+    = (e.Unused-B e.Unused-E) /* пропускаем */;
+
+  (e.Unused) t.OtherItem = (e.Unused) t.OtherItem; /* оставляем */
+}

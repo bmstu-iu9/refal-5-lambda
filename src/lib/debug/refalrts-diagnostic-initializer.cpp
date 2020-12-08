@@ -7,7 +7,7 @@
 //FROM refalrts-debugger
 /*
   Не используем #include "refalrts-debugger.h" ради снижения времени
-  компиляции. В refalrts-debugger.h используются большие и тяжёлые
+  компиляции. В refalrts-debugger.h используются большие и тяжёлые
   заголовки STL, а нам нужна только функция-конструктор.
 */
 namespace refalrts {
@@ -343,7 +343,8 @@ const char *refalrts::DiagnosticConfig::help =
   "show-cookies [boolean], default true\n"
   "  Show scope cookies in the emergency dump\n\n"
   "show-hidden-steps [boolean], default false\n"
-  "  Show steps of INIT, FINAL and between __Step-Start and __Step-End in trace\n\n"
+  "  Show steps of __INIT, __FINAL and between __Step-Start and __Step-End in "
+  "trace\n\n"
   "enable-debugger [boolean], default false\n"
   "  Enables interactive debugger\n\n"
   "enable-profiler [boolean], default false\n"

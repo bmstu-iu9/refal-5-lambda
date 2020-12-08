@@ -1,0 +1,53 @@
+$ENTRY Numb {
+  '101' = 101;
+  '-101' = '-' 101
+}
+
+$ENTRY Symb {
+  101 = '101';
+  '-' 101 = '-101'
+}
+
+$ENTRY Implode {
+  'abcd' = abcd;
+  'Abcd10abc#$@#$' = Abcd10abc '#$@#$';
+  '!@#$%^&*()' = 0 '!@#$%^&*()'
+}
+
+$ENTRY Explode {
+  abcd = 'abcd'
+}
+
+$ENTRY Implode_Ext {
+  'abcd' = abcd;
+  'Abcd10abc#$@#$' = "Abcd10abc#$@#$"
+}
+
+$ENTRY Explode_Ext {
+  abcd = 'abcd'
+}
+
+$ENTRY Type {
+  'a' b 1 = 'Lla' b 1;
+  1 b 1 = 'N0' 1 b 1;
+  a b 1 = 'Wi' a b 1;
+  () () = 'B0' () ();
+  [Type] = 'Ba' [Type];
+  &Type = 'Fg' &Type;
+  = '*0';
+  "cada bra" = 'Wq' "cada bra";
+  s.Closure e.Rest = 'Fc' e.Rest
+}
+
+$ENTRY Lenw {
+  'abc' = 3 'abc';
+}
+
+$ENTRY First {
+  2 a (1 2) b c = (a (1 2)) b c;
+}
+
+$ENTRY Last {
+  1 a (1 2) b c = (a (1 2) b) c;
+  3 e.1 t.2 t.3 t.4 = (e.1) t.2 t.3 t.4;
+}

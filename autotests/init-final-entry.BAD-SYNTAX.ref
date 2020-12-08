@@ -1,9 +1,7 @@
-* WARNING init-final-entry
-
 $ENTRY Go {
   = /* пусто */
 }
 
-$ENTRY INIT {
+$ENTRY __INIT {
   = /* пусто */
 }

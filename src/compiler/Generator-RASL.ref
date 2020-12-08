@@ -477,7 +477,7 @@ ResolveLabeledDestinations {
           = <Divmod s.RelativeJump 256> : (s.JumpHigh) s.JumpLow
           = e.ReadyRASL
             <PutCommand CmdOnFailGoTo s.JumpLow s.JumpHigh 0>
-            <ResolveLabeledDestinations (e.Labels) e.UnscannedRASL>;
+            <ResolveLabeledDestinations (e.Labels-B e.Labels-E) e.UnscannedRASL>;
 
         s.Other
           = <PrintErr

@@ -2,10 +2,9 @@
 
 $INTRINSIC __Meta_Mu;
 $INTRINSIC Add, Div, Divmod, Mod, Mul, Sub, Compare;
+$EXTERN Add, Div, Divmod, Mod, Mul, Sub, Compare;
 
 $META Mu;
-
-$INLINE Residue;
 
 __Step-Drop { = }
 
@@ -78,86 +77,10 @@ Rev {
   /* empty */ = /* empty */;
 }
 
-__Meta_Mu {
-  Rev e.Arg s.Metatable = <Rev e.Arg>;
-  ('Rev') e.Arg s.Metatable = <Rev e.Arg>;
-  '+' e.Arg s.Metatable = <Add e.Arg>;
-  "+" e.Arg s.Metatable = <Add e.Arg>;
-  '?' e.Arg s.Metatable = <Residue e.Arg>;
-  s.Ptr e.Arg s.Metatable = <s.Ptr e.Arg>;
-}
-
 Residue {
   e.Arg = <Mu e.Arg>
 }
 
-Add {
-  1 2 = 3;
-  0 4 = 4;
-  (2 3) 1 = 2 4;
-  (1) 2 3 = 2 4;
-  '-' 1 2 = 1;
-  1 '-' 2 = '-' 1;
-  '-' 1 '-' 2 = '-' 3
-}
-
-Sub {
-  8 5 = 3;
-  '-' 8 5 = '-' 13;
-  8 '-' 5 = 13;
-  '-' 8 '-' 5 = '-' 3;
-  4 0 = 4
-}
-
-Numb {
-  '2' = 2;
-}
-
-Mul {
-  2 2 = 4;
-  '-' 3 3 = '-' 9;
-  3 '-' 3 = '-' 9;
-  '-' 3 '-' 3 = 9;
-  3 3 = 9;
-  1 4 = 4;
-  4 1 = 4;
-  (1 1) 1 1 = 1 2 1;
-}
-
-Div {
-  4 1 = 4;
-  12 4 = 3;
-  '-' 12 4 = '-' 3;
-  12 '-' 4 = '-' 3;
-  '-' 12 '-' 4 = 3;
-  (1 2) 1 1 = 1;
-}
-
-Divmod {
-  4 1 = (4) 0;
-  12 5 = (2) 2;
-  '-' 12 5 = ('-' 2) '-' 2;
-  12 '-' 5 = ('-' 2) 2;
-  '-' 12 '-' 5 = (2) '-' 2;
-  (1 2) 1 1 = (1) 1;
-}
-
-Mod {
-  4 1 = 0;
-  12 5 = 2;
-  '-' 12 5 = '-' 2;
-  12 '-' 5 = 2;
-  '-' 12 '-' 5 = '-' 2;
-  (1 2) 1 1 = 1;
-}
-
-Compare {
-  10 20 = '-';
-  '-' 10 20 = '-';
-  10 '-' 20 = '+';
-  '-' 10 '-' 20 = '+';
-  20 10 = '+';
-  10 10 = '0';
-  (1 2) 2 3 = '-';
-  ('-' 1 2) 2 3 = '-';
+$ENTRY Metatable {
+  = (Rev 'Rev' &Rev) (Residue 'Residue' &Residue);
 }

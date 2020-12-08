@@ -4,27 +4,28 @@ $INCLUDE "LibraryEx";
 $EXTERN Config-GetTreeOptCycles, Config-GetOptDrive, Config-GetOptSpec,
   Config-GetOptAutoMarkup, Config-GetOptIntrinsic;
 
-*$FROM OptTree-AutoMarkup
-$EXTERN OptTree-AutoMarkup, OptTree-AutoMarkup-CleanupTags;
+*$FROM OptTree-AutoMarkup-Spec
+$EXTERN OptTree-AutoMarkup-Spec;
+
+*$FROM OptTree-AutoMarkup-Drive
+$EXTERN OptTree-AutoMarkup-Drive, OptTree-AutoMarkup-CureDrives,
+  OptTree-AutoMarkup-CleanupUnusedFunctions;
 
 *$FROM OptTree-Drive
 $EXTERN OptTree-Drive-Prepare, OptTree-Drive, OptTree-Drive-CleanupColdCalls;
 
 *$FROM OptTree-Spec
-$EXTERN OptTree-Spec-Prepare, OptTree-Spec, OptTree-Spec-CleanupColdFunctions;
+$EXTERN OptTree-Spec-Prepare, OptTree-Spec;
 
 *$FROM Log
-$EXTERN Log-PutLine, Log-AST;
-
-*$FROM DisplayName
-$EXTERN DisplayName;
+$EXTERN Log-AST;
 
 
 /**
   <OptTree t.Config e.AST> == e.OptAST
 
-  e.OptAST не содержит разметки, описывающей прогоняемые, встраиваемые
-  и специализируемые функции.
+  e.OptAST не содержит разметки, описывающей прогоняемые, встраиваемые
+  и специализируемые функции.
 */
 $ENTRY OptTree {
   t.Config e.AST
@@ -33,97 +34,61 @@ $ENTRY OptTree {
     = <Config-GetOptSpec t.Config> : s.OptSpec
     = <Config-GetOptAutoMarkup t.Config> : s.OptAutoMarkup
     = <Config-GetOptIntrinsic t.Config> : s.OptIntrinsic
-    = <OptTree-Aux
-        s.Cycles (s.OptDrive s.OptIntrinsic) s.OptSpec s.OptAutoMarkup e.AST
+
+    = (s.OptDrive s.OptIntrinsic) : t.OptDrive
+
+    = <Int
+        (define main
+          (if s.OptAutoMarkup
+            (begin
+              (pass
+                (trace 'before Auto markup')
+                (call &OptTree-AutoMarkup-Spec)
+                (call &OptTree-AutoMarkup-Drive))
+              (DriveSpecLoop)
+              (pass
+                (trace 'before Driving non-recursive instances')
+                (call &OptTree-AutoMarkup-Drive))
+              (call &OptTree-Drive-Prepare t.OptDrive)
+              (DriveLoop))
+            (begin
+              (when (or s.OptDrive s.OptIntrinsic)
+                (trace 'before Curing drives')
+                (call &OptTree-AutoMarkup-CureDrives))
+              (DriveSpecLoop)))
+          (trace 'before Cleanup unused functions')
+          (call &OptTree-AutoMarkup-CleanupUnusedFunctions)
+          (call &OptTree-CleanupMarkup))
+
+        (define DriveSpecLoop
+          (if s.OptSpec
+            (begin
+              (call &OptTree-Drive-Prepare t.OptDrive)
+              (call &OptTree-Spec-Prepare s.OptSpec)
+              (loop-for-warm-functions
+                (DriveLoop)
+                (pass
+                  (trace 'before Spec')
+                  (call &OptTree-Spec s.OptSpec)))
+              (call &WarmColdFunctions SPEC))
+            (begin
+              (call &OptTree-Drive-Prepare t.OptDrive)
+              (DriveLoop))))
+
+        (define DriveLoop
+          (if (or s.OptDrive s.OptIntrinsic)
+            (begin
+              (loop-for-warm-functions
+                (pass
+                  (trace 'before Drive')
+                  (call &ExpandClosures)
+                  (call &OptTree-Drive t.OptDrive)))
+              (call &WarmColdFunctions DRIVE)
+              (call &OptTree-Drive-CleanupColdCalls))
+            (call &ExpandClosures)))
+
+        s.Cycles (e.AST)
       >
-    : s.Cycles^ e.AST^
-    = <OptTree-CleanupMarkup e.AST>;
-}
-
-OptTree-Aux {
-  s.Cycles t.OptDrive s.OptSpec NoOpt e.AST
-    = <DriveSpecLoop s.Cycles t.OptDrive s.OptSpec e.AST>;
-
-  s.Cycles t.OptDrive s.OptSpec s.OptAutoMarkup e.AST
-    = <DoOptTree s.Cycles t.OptDrive s.OptSpec s.OptAutoMarkup e.AST>;
-}
-
-DoOptTree {
-  0 t.OptDrive s.OptSpec s.OptAutoMarkup e.AST = 0 e.AST;
-
-  s.Cycles t.OptDrive s.OptSpec s.OptAutoMarkup e.AST
-    = <Log-AST ('Pass ' <Symb s.Cycles> ' (before Auto markup)') e.AST> : e.AST^
-    = e.AST : e.OriginAST
-
-    = <OptTree-AutoMarkup s.OptAutoMarkup e.AST> : e.AST^
-    = <Dec s.Cycles> : s.Cycles^
-
-    = <DriveSpecLoop s.Cycles t.OptDrive s.OptSpec e.AST> : s.Cycles^ e.AST^
-
-    = e.AST
-    : {
-        e.OriginAST = s.Cycles e.OriginAST;
-        e.AST^ = <DoOptTree s.Cycles t.OptDrive s.OptSpec s.OptAutoMarkup e.AST>;
-      }
-}
-
-DriveSpecLoop {
-  s.Cycles t.OptDrive NoOpt e.AST
-    = <OptTree-Drive-Prepare t.OptDrive e.AST> : e.AST^
-    = <DriveLoop s.Cycles t.OptDrive e.AST>;
-
-  s.Cycles t.OptDrive s.OptSpec e.AST
-    = <OptTree-Drive-Prepare t.OptDrive e.AST> : e.AST^
-    = <OptTree-Spec-Prepare s.OptSpec e.AST> : e.AST^
-    = <DoDriveSpecLoop s.Cycles t.OptDrive s.OptSpec e.AST> : s.Cycles^ e.AST^
-    = s.Cycles <OptTree-Spec-CleanupColdFunctions e.AST>;
-}
-
-DoDriveSpecLoop {
-  0 t.OptDrive s.OptSpec e.AST = 0 e.AST;
-
-  s.Cycles t.OptDrive s.OptSpec e.AST
-    = e.AST : e.OriginAST
-    = <DriveLoop s.Cycles t.OptDrive e.AST> : s.Cycles^ e.AST^
-    = <SpecPass s.Cycles s.OptSpec e.AST> : s.Cycles^ e.AST^
-    = e.AST
-    : {
-        e.OriginAST = s.Cycles e.OriginAST;
-        e.AST^ = <DoDriveSpecLoop s.Cycles t.OptDrive s.OptSpec e.AST>;
-      }
-}
-
-DriveLoop {
-  s.Cycles (NoOpt NoOpt) e.AST
-    = s.Cycles <ExpandClosures e.AST>;
-
-  s.Cycles t.OptDrive e.AST
-    = <DoDriveLoop s.Cycles t.OptDrive e.AST> : s.Cycles^ e.AST^
-    = s.Cycles <OptTree-Drive-CleanupColdCalls e.AST>;
-}
-
-DoDriveLoop {
-  0 t.OptDrive e.AST = 0 e.AST;
-
-  s.Cycles t.OptDrive e.AST
-    = <Log-AST ('Pass ' <Symb s.Cycles> ' (before Drive)') e.AST> : e.AST^
-    = e.AST : e.OriginAST
-    = <ExpandClosures e.AST> : e.AST^
-    = <OptTree-Drive t.OptDrive e.AST> : e.AST^
-    = <Dec s.Cycles> : s.Cycles^
-    = e.AST
-    : {
-        e.OriginAST = s.Cycles e.OriginAST;
-        e.AST^ = <DoDriveLoop s.Cycles t.OptDrive e.AST>;
-      };
-}
-
-SpecPass {
-  0 s.OptSpec e.AST = 0 e.AST;
-
-  s.Cycles s.OptSpec e.AST
-    = <Log-AST ('Pass ' <Symb s.Cycles> ' (before Spec)') e.AST> : e.AST^
-    = <Dec s.Cycles> <OptTree-Spec s.OptSpec e.AST>
 }
 
 
@@ -148,6 +113,20 @@ $ENTRY OptTree-CleanupMarkup {
         }
         e.AST
       >
+}
+
+
+WarmColdFunctions {
+  s.ColdBy e.AST
+    = <Map
+        {
+          (ColdFunction s.ColdBy s.ScopeClass (e.Name) e.Body)
+            = (Function s.ScopeClass (e.Name) e.Body);
+
+          t.OtherItem = t.OtherItem;
+        }
+        e.AST
+      >;
 }
 
 
@@ -191,10 +170,10 @@ ExpandClosures-Sentence {
 }
 
 ExpandClosures-Result {
-  e.Result = <Map &ExpandClusures-ResultTerm e.Result>;
+  e.Result = <Map &ExpandClosures-ResultTerm e.Result>;
 }
 
-ExpandClusures-ResultTerm {
+ExpandClosures-ResultTerm {
   (Brackets e.Expr) = (Brackets <ExpandClosures-Result e.Expr>);
 
   (ADT-Brackets (e.Name) e.Expr)
@@ -214,3 +193,133 @@ ExpandClusures-ResultTerm {
   t.OtherTerm = t.OtherTerm;
 }
 
+* Интерпретатор императивного кода оптимизаций
+
+
+* TODO: удалить следующие пометки после оптимизации алгоритма оптимизации!
+* Сейчас компиляция в режиме -OADiS для этого файла требует десятки минут.
+$SPEC Int-Code e.arg;
+$SPEC Int-Command e.arg;
+$SPEC Int-LoopForWarmFunctions e.arg;
+
+
+Int {
+  e.Defines s.Cycles (e.AST)
+    = e.Defines : (define s.StartPoint e._) e._
+    = <Int-Code (e.Defines) (s.StartPoint) s.Cycles (e.AST)> : s.Cycles^ e.AST^
+    = e.AST
+}
+
+Int-Code {
+  (e.Defines) e.Code s.Cycles (e.AST)
+    = e.Code
+    : {
+        t.Command e.Code^
+          = <Int-Command (e.Defines) t.Command s.Cycles (e.AST)>
+          : s.Cycles^ e.AST^
+          = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)>;
+
+        /* empty */ = s.Cycles e.AST;
+      }
+}
+
+Int-Command {
+  (e.Defines) (e.Command) s.Cycles (e.AST)
+    = e.Command
+    : {
+        pass e.Code
+          = s.Cycles
+          : {
+              0 = 0 e.AST;
+
+              s._
+                = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)> : s.Cycles^ e.AST^
+                = <Dec s.Cycles> e.AST;
+            };
+
+        if t.Cond t.Then t.Else
+          = <Int-Cond t.Cond>
+          : {
+              True = <Int-Command (e.Defines) t.Then s.Cycles (e.AST)>;
+              False = <Int-Command (e.Defines) t.Else s.Cycles (e.AST)>;
+            };
+
+        when t.Cond e.Then /* нет else */
+          = <Int-Cond t.Cond>
+          : {
+              True = <Int-Code (e.Defines) e.Then s.Cycles (e.AST)>;
+              False = s.Cycles e.AST;
+            };
+
+        begin e.Code
+          = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)>;
+
+        call s.Func e.Args
+          = s.Cycles <s.Func e.Args e.AST>;
+
+        trace e.Message
+          = <Log-AST ('Pass ' <Symb s.Cycles> ' (' e.Message ')') e.AST> : e.AST^
+          = s.Cycles e.AST;
+
+        loop-for-warm-functions e.Code
+          = <Int-LoopForWarmFunctions (e.Defines) e.Code s.Cycles (e.AST)>;
+
+        s.Proc
+          = <Int-Lookup s.Proc e.Defines> : e.Code
+          = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)>;
+      }
+}
+
+Int-Cond {
+  (or e.Flags) = <Int-Cond-Or e.Flags>;
+  (and e.Flags) = <Int-Cond-And e.Flags>;
+
+  NoOpt = False;
+  s.Opt = True;
+}
+
+$INLINE Int-Cond;
+
+Int-Cond-Or {
+  t.Cond e.Flags
+    = <Int-Cond t.Cond>
+    : {
+        True = True;
+        False = <Int-Cond-Or e.Flags>;
+      };
+
+  /* нет флагов */ = False;
+}
+
+Int-Cond-And {
+  t.Cond e.Flags
+    = <Int-Cond t.Cond>
+    : {
+        True = <Int-Cond-And e.Flags>;
+        False = False;
+      };
+
+  /* нет флагов */ = True;
+}
+
+Int-LoopForWarmFunctions {
+  (e.Defines) e.Code 0 (e.AST) = 0 e.AST;
+
+  (e.Defines) e.Code s.Cycles
+  (e.AST-B (Function s.Scope (e.Name) Sentences e.Sentences) e.AST-E)
+
+    = e.AST-B (Function s.Scope (e.Name) Sentences e.Sentences) e.AST-E : e.AST^
+
+    = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)> : s.Cycles^ e.AST^
+
+    = <Int-LoopForWarmFunctions (e.Defines) e.Code s.Cycles (e.AST)>;
+
+  (e.Defines) e.Code s.Cycles (e.AST) = s.Cycles e.AST;
+}
+
+$INLINE Int-Lookup;
+
+Int-Lookup {
+  s.ProcName (define s.ProcName e.Body) e._ = e.Body;
+  s.ProcName t._ e.Defines = <Int-Lookup s.ProcName e.Defines>;
+}

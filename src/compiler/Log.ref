@@ -80,6 +80,7 @@ $ENTRY Log-AST {
           = <Log-PutLine 'AST of file ' e.Message ':'>
             <Map
               {
+                () = <Putout s.FileHandle>;
                 (e.Line) = <Putout s.FileHandle '  ' e.Line>;
               }
               <Log-TextFromAST e.AST>

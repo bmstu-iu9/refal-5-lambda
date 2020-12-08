@@ -1,0 +1,87 @@
+$EXTERN Metatable;
+
+$ENTRY __Meta_Mu {
+  s.Name e.Arg s.Metatable
+    , <Metatable> : e._ (s.Name e._ s.Ptr) e._
+    = <s.Ptr e.Arg>;
+
+  (e.Name) e.Arg s.Metatable
+    , <Metatable> : e._ (s._ e.Name s.Ptr) e._
+    = <s.Ptr e.Arg>;
+
+  '+' e.Arg s.Metatable = <Add e.Arg>;
+  "+" e.Arg s.Metatable = <Add e.Arg>;
+  '?' e.Arg s.Metatable = <__Meta_Mu e.Arg s.Metatable>;
+  s.Ptr e.Arg s.Metatable = <s.Ptr e.Arg>;
+}
+
+$ENTRY Add {
+  1 2 = 3;
+  0 4 = 4;
+  (2 3) 1 = 2 4;
+  (1) 2 3 = 2 4;
+  '-' 1 2 = 1;
+  1 '-' 2 = '-' 1;
+  '-' 1 '-' 2 = '-' 3
+}
+
+$ENTRY Sub {
+  8 5 = 3;
+  '-' 8 5 = '-' 13;
+  8 '-' 5 = 13;
+  '-' 8 '-' 5 = '-' 3;
+  4 0 = 4
+}
+
+$ENTRY Numb {
+  '2' = 2;
+}
+
+$ENTRY Mul {
+  2 2 = 4;
+  '-' 3 3 = '-' 9;
+  3 '-' 3 = '-' 9;
+  '-' 3 '-' 3 = 9;
+  3 3 = 9;
+  1 4 = 4;
+  4 1 = 4;
+  (1 1) 1 1 = 1 2 1;
+}
+
+$ENTRY Div {
+  4 1 = 4;
+  12 4 = 3;
+  '-' 12 4 = '-' 3;
+  12 '-' 4 = '-' 3;
+  '-' 12 '-' 4 = 3;
+  (1 2) 1 1 = 1;
+}
+
+$ENTRY Divmod {
+  4 1 = (4) 0;
+  12 5 = (2) 2;
+  '-' 12 5 = ('-' 2) '-' 2;
+  12 '-' 5 = ('-' 2) 2;
+  '-' 12 '-' 5 = (2) '-' 2;
+  (1 2) 1 1 = (1) 1;
+}
+
+$ENTRY Mod {
+  4 1 = 0;
+  12 5 = 2;
+  '-' 12 5 = '-' 2;
+  12 '-' 5 = 2;
+  '-' 12 '-' 5 = '-' 2;
+  (1 2) 1 1 = 1;
+}
+
+$ENTRY Compare {
+  10 20 = '-';
+  '-' 10 20 = '-';
+  10 '-' 20 = '+';
+  '-' 10 '-' 20 = '+';
+  20 10 = '+';
+  10 10 = '0';
+  (1 2) 2 3 = '-';
+  ('-' 1 2) 2 3 = '-';
+}

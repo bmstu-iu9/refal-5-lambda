@@ -1,0 +1,40 @@
+$ENTRY Go {
+  /* empty */
+    = <Swap> : e.Saved
+    = e.Saved : s._ s._ s._
+    = <Mark '2-go'> <Swap e.Saved>
+}
+
+__INIT { = <Push '0'> }
+__FINAL { = <Pop '0'> }
+
+
+$SWAP Swap;
+
+$ENTRY Push {
+  s.New
+    = <Swap> : e.Saved
+    = e.Saved
+    : {
+        /* empty */ = <Mark '1-init'>;
+        e._ = /* do nothing */;
+      }
+    : /* empty */
+    = <Swap s.New e.Saved>;
+}
+
+Mark {
+  e.state = <Open 'w' 1 e.state '.ok'> <Close 1>
+}
+
+$ENTRY Pop {
+  s.Top
+    = <Swap> : s.Top e.Saved
+    = e.Saved
+    : {
+        /* empty */ = <Mark '3-final'>;
+        e._ = /* do nothing */;
+      }
+    : /* empty */
+    = <Swap e.Saved>
+}

@@ -520,7 +520,7 @@ void refalrts::VM::free_view_field() {
 
 #if REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED
   if (m_diagnostic_config->print_statistics) {
-    fprintf(stderr, "Step count %d\n", m_step_counter);
+    fprintf(stderr, "Step count %u\n", m_step_counter);
   }
 #endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
 }
@@ -619,7 +619,7 @@ JUMP_FROM_SCALE:
     Iter &res_b = context[val2];
     Iter &res_e = context[val2 + 1];
 
-    // Используется в case icAllocateBracket и case icReinitBracket
+    // Используется в case icAllocateBracket и case icReinitBracket
     static DataTag bracket_tag[] = {
       cDataOpenADT,
       cDataOpenBracket,
@@ -674,7 +674,7 @@ JUMP_FROM_SCALE:
           m_debugger->set_string_items(strings);
 #endif  /* REFAL_5_LAMBDA_DIAGNOSTIC_ENABLED */
         }
-        continue;  // пропускаем ++rasl в конце
+        continue;  // пропускаем ++rasl в конце
 
       case icProfileFunction:
         profiler()->start_generated_function();
@@ -1391,8 +1391,8 @@ JUMP_FROM_SCALE:
             }
 
             bool init_final = name
-              && (strcmp(name->name, "INIT") == 0
-                  || strcmp(name->name, "FINAL") == 0)
+              && (strcmp(name->name, "__INIT") == 0
+                  || strcmp(name->name, "__FINAL") == 0)
               && (name->cookie1 != 0 && name->cookie2 != 0);
             bool hidden_step = m_hide_steps || init_final;
 

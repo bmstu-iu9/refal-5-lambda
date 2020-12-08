@@ -19,3 +19,4 @@ if errorlevel 1 (
 )
 
 erase hello.rasl-module REFAL1.DAT
+if exist *.lst erase *.lst

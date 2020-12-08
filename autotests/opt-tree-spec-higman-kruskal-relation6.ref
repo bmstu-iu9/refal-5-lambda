@@ -1,0 +1,29 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */ = /* empty */;
+
+  s.FH e.RASL
+    = <Map
+        {
+          (e.Commands) = <Rec s.FH (' ') e.Commands>
+        }
+        e.RASL
+      >
+}
+
+Rec {
+  s.FH (e.Indent) e.Commands
+    = <Map
+        {
+          (A e.SubCommands) = <Rec s.FH (e.Indent 'a') e.SubCommands>;
+          (B e.SubCommands) = <Rec s.FH (e.Indent 'b') e.SubCommands>;
+        }
+        e.Commands
+      >;
+}
+
+Map {
+  s.Fn t.Next = <s.Fn t.Next>;
+  s.Fn /* empty */ = /* empty */;
+}

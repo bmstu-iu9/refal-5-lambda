@@ -25,8 +25,8 @@ UndoubleEmtpyLines {
 
 Element {
   (Function s.Scope (e.Name) e.Body) = <Function (e.Name) s.Scope e.Body>;
-  (ColdFunction s.Scope (e.Name) e.Body)
-    = <ColdFunction (e.Name) s.Scope e.Body>;
+  (ColdFunction s.ColdBy s.Scope (e.Name) e.Body)
+    = <ColdFunction s.ColdBy (e.Name) s.Scope e.Body>;
 
   (Swap GN-Entry e.Name) = ('$ESWAP ' <DisplayName e.Name> ';');
   (Swap GN-Local e.Name) = ('$SWAP ' <DisplayName e.Name> ';');
@@ -71,11 +71,23 @@ Function {
 }
 
 ColdFunction {
-  (e.Name) s.Scope e.Body
-    = <Function-Aux ('* ' <DisplayName e.Name> ' *') s.Scope e.Body>;
+  s.ColdBy (e.Name) s.Scope e.Body
+    = <Function (e.Name) s.Scope e.Body>
+    : {
+        () e.FunctionLines
+          = ()
+            ('/* Cold by ' <Explode s.ColdBy> ' */')
+            e.FunctionLines;
+
+        (e.FunctionLine)
+          = (e.FunctionLine '  /* Cold by ' <Explode s.ColdBy> ' */');
+      }
 }
 
 Function-Aux {
+  (e.Name) s.Scope Sentences /* пусто */
+    = (<Entry s.Scope> e.Name ' { /* empty */ }');
+
   (e.Name) s.Scope Sentences e.Sentences
     = ()
       (<Entry s.Scope> e.Name ' {')
@@ -84,7 +96,7 @@ Function-Aux {
       ();
 
   (e.Name) s.Scope NativeBody t.SrcPos e.NativeBody
-    = (<Entry s.Scope> <DisplayName e.Name> ' { %% native %% }');
+    = (<Entry s.Scope> e.Name ' { %% native %% }');
 
   (e.Name) s.Scope Metatable e.Metatable
     = ()
@@ -128,7 +140,7 @@ Sentence {
     = (e.OneLineSentence);
 
   (e.Indent) (e.Pattern) e.Tail
-    = <Expression (e.Indent) (e.Indent) e.Pattern>
+    = <Expression (e.Indent) (e.Indent) e.Pattern ()>
       <Tail (e.Indent '  ') e.Tail>;
 }
 
@@ -156,8 +168,8 @@ Tail {
     : {
         True
           = (e.Indent '  /* ' <DisplayName e.Name> ' */')
-            <Expression (e.Indent ', ') (e.Indent '  ') e.Result>
-            <Expression (e.Indent ': ') (e.Indent '  ') e.Pattern>
+            <Expression (e.Indent ', ') (e.Indent '  ') e.Result ()>
+            <Expression (e.Indent ': ') (e.Indent '  ') e.Pattern ()>
             <Tail (e.Indent) e.Tail>;
 
         False
@@ -167,23 +179,25 @@ Tail {
       };
 
   (e.Indent) (e.Result)
-    = <Expression (e.Indent '= ') (e.Indent '  ') e.Result ';'>;
+    = <Expression (e.Indent '= ') (e.Indent '  ') e.Result (';')>;
 }
+
+$SPEC Expression (e.prefix) (e.indent) e.expression (e.suffix);
 
 Expression {
-  (e.Prefix) (e.Indent) /* пусто */
-    = (e.Prefix '/* empty */');
+  (e.Prefix) (e.Indent) /* пусто */ (e.Suffix)
+    = (e.Prefix '/* empty */' e.Suffix);
 
-  (e.Prefix) (e.Indent) e.Expression
-    = <DoExpression FIRST (e.Indent) (e.Prefix) e.Expression>;
+  (e.Prefix) (e.Indent) e.Expression (e.Suffix)
+    = <DoExpression FIRST (e.Indent) (e.Prefix) e.Expression (e.Suffix)>;
 }
 
+$SPEC DoExpression s.POS (e.indent) (e.out-line) e.expression;
+
 DoExpression {
-  s.Pos (e.Indent) (e.OutLine) /* пусто */ = (e.OutLine);
+  s.Pos (e.Indent) (e.OutLine) /* пусто */ (e.Suffix) = (e.OutLine e.Suffix);
 
-  s.Pos (e.Indent) (e.OutLine) /* пусто */ ';' = (e.OutLine ';');
-
-  s.Pos (e.Indent) (e.OutLine) t.NextTerm e.Expr
+  s.Pos (e.Indent) (e.OutLine) t.NextTerm e.Expr (e.Suffix)
     = <InlineTerm t.NextTerm> : e.TextualTerm
     = <AppendTerm e.OutLine (e.TextualTerm)> : e.NewOutLine
     = <LongLine e.NewOutLine>
@@ -192,23 +206,20 @@ DoExpression {
           = e.Indent e.TextualTerm : e.OutLineTerm
           = <LongLine e.OutLineTerm>
           : {
-              True, e.Expr : ';'
-                = <MultilineTerm s.Pos (e.OutLine) e.Indent t.NextTerm (';')>;
-
               True, e.Expr : /* пусто */
-                = <MultilineTerm s.Pos (e.OutLine) e.Indent t.NextTerm ()>;
+                = <MultilineTerm s.Pos (e.OutLine) e.Indent t.NextTerm (e.Suffix)>;
 
               True
                 = <MultilineTerm s.Pos (e.OutLine) e.Indent t.NextTerm ()>
-                  <DoExpression NEXT (e.Indent) (e.Indent) e.Expr>;
+                  <DoExpression FIRST (e.Indent) (e.Indent) e.Expr (e.Suffix)>;
 
               False
                 = (e.OutLine)
-                  <DoExpression NEXT (e.Indent) (e.OutLineTerm) e.Expr>;
+                  <DoExpression NEXT (e.Indent) (e.OutLineTerm) e.Expr (e.Suffix)>;
             };
 
         False
-          = <DoExpression NEXT (e.Indent) (e.NewOutLine) e.Expr>;
+          = <DoExpression NEXT (e.Indent) (e.NewOutLine) e.Expr (e.Suffix)>;
       };
 }
 
@@ -219,10 +230,16 @@ AppendTerm {
 }
 
 InlineTerm {
-  (s.Type e.Value) = <Mu s.Type e.Value>;
-
-  ';' = ';';
+  (Symbol e.Value) = <Symbol e.Value>;
+  (TkVariable e.Value) = <TkVariable e.Value>;
+  (Brackets e.Value) = <Brackets e.Value>;
+  (ADT-Brackets e.Value) = <ADT-Brackets e.Value>;
+  (CallBrackets e.Value) = <CallBrackets e.Value>;
+  (ColdCallBrackets e.Value) = <ColdCallBrackets e.Value>;
+  (ClosureBrackets e.Value) = <ClosureBrackets e.Value>;
 }
+
+$SPEC MultilineTerm s.pos (e.prefix) e.indent t.term (e.suffix);
 
 MultilineTerm {
   FIRST (e.Prefix) e.Indent t.Term (e.Suffix)
@@ -239,48 +256,48 @@ MultilineTerm-Prefix {
     : {
         (Brackets e.Expr)
           = (e.Prefix '(')
-            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
+            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr ()>
             (e.Indent ')' e.Suffix);
 
         (ADT-Brackets (e.Name) e.Expr)
           = (e.Prefix '[' <DisplayName e.Name>)
-            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
+            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr ()>
             (e.Indent ']' e.Suffix);
 
         (CallBrackets (Symbol Name e.Function) e.Expr)
           = (e.Prefix '<' <DisplayName e.Function>)
-            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
+            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr ()>
             (e.Indent '>' e.Suffix);
 
         (CallBrackets (TkVariable e.Indirect) e.Expr)
           = (e.Prefix '<' <TkVariable e.Indirect>)
-            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
+            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr ()>
             (e.Indent '>' e.Suffix);
 
         (CallBrackets (ClosureBrackets (Symbol Name e.Function) e.Context) e.Expr)
           = (e.Prefix '< {{' <DisplayName e.Function>)
-            <Expression (e.Indent '    ') (e.Indent '    ') e.Context>
+            <Expression (e.Indent '    ') (e.Indent '    ') e.Context ()>
             (e.Indent '  }}')
-            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
+            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr ()>
             (e.Indent '>' e.Suffix);
 
         (CallBrackets e.Expr)
           = (e.Prefix '<')
-            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
+            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr ()>
             (e.Indent '>' e.Suffix);
 
         (ColdCallBrackets e.Expr)
           = (e.Prefix '<*')
-            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
+            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr ()>
             (e.Indent '*>' e.Suffix);
 
         (ClosureBrackets (Symbol Name e.Function) e.Expr)
           = (e.Prefix '{{' <DisplayName e.Function>)
-            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
+            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr ()>
             (e.Indent '}}' e.Suffix);
 
         (s.Type e.Value)
-          = (e.Prefix <Mu s.Type e.Value> e.Suffix);
+          = (e.Prefix <InlineTerm (s.Type e.Value)> e.Suffix);
       };
 }
 
@@ -353,6 +370,7 @@ HexDigit {
 
 TkVariable {
   s.Type e.Index s.Depth = s.Type '.' e.Index '#' <Symb s.Depth>;
+  s.Type e.Index = s.Type '.' e.Index;
 }
 
 Brackets {
@@ -384,10 +402,12 @@ ClosureBrackets {
 }
 
 InlineSubexpr {
-  t.Term e.Expr = <DoInlineExpr (<InlineTerm t.Term>) e.Expr>;
+  t.Term e.Expr = <DoInlineExpr (<gen_e__ <InlineTerm t.Term>>) e.Expr>;
 
   /* пусто */ = /* пусто */;
 }
+
+gen_e__ { e.Arg = e.Arg }
 
 DoInlineExpr {
   (e.Text) t.NextTerm e.Expr

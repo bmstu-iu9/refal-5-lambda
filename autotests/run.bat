@@ -99,7 +99,7 @@ goto :EOF
 
 :RUN_TEST_ALL_MODES
 setlocal
-  find "%%" %1 > NUL
+  find "%%%%" %1 > NUL
   if errorlevel 1 (
     set SRFLAGS_PLUS_INIT=%SRFLAGS_PREF%
   ) else (
@@ -248,9 +248,12 @@ setlocal
   set NATCPP=%~n1.cpp
   set LIBR=%~n1.rasl-module
   set LIBN=%~n1.dll
+  set SATELITE=%~n1.SATELITE.ref
+
+  if not exist "%SATELITE%" set SATELITE=
 
   ..\bin\rlc-core %SREF% --makelib %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
-    --keep-rasls 2> __error.txt
+    --keep-rasls %SATELITE% 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
@@ -276,6 +279,8 @@ setlocal
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt
   if exist __log.txt erase __log.txt
+  if exist *.SATELITE.rasl erase *.SATELITE.rasl
+  if exist *.SATELITE.cpp erase *.SATELITE.cpp
   echo.
 endlocal
 goto :EOF
@@ -295,9 +300,12 @@ setlocal
   set NATCPP=%~n1.cpp
   set LIBR=%~n1.rasl-module
   set LIBN=%~n1.dll
+  set SATELITE=%~n1.SATELITE.ref
+
+  if not exist "%SATELITE%" set SATELITE=
 
   ..\bin\rlc-core %SREF% --makelib %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
-    --keep-rasls 2> __error.txt
+    --keep-rasls %SATELITE% 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
@@ -323,6 +331,8 @@ setlocal
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt
   if exist __log.txt erase __log.txt
+  if exist *.SATELITE.rasl erase *.SATELITE.rasl
+  if exist *.SATELITE.cpp erase *.SATELITE.cpp
   echo Ok! This failure was normal and expected
   echo.
 endlocal
@@ -397,4 +407,8 @@ setlocal
   echo.
 
 endlocal
+goto :EOF
+
+:RUN_TEST_AUX.SATELITE
+  echo Skip satelite part %1...
 goto :EOF

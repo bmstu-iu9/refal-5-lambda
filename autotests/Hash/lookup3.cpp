@@ -36,7 +36,7 @@ on 1 byte), but shoehorning those bytes into integers efficiently is messy.
 //#define SELF_TEST 1
 
 /*
-  Для совместимости с BCC 5.5 и прочими
+  Для совместимости с BCC 5.5 и прочими
 */
 #if defined(_WIN32) || defined(__WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
 # include <windows.h>

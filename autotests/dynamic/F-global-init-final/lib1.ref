@@ -1,0 +1,4 @@
+$EXTERN Push, Pop;
+
+__INIT { = <Push '1'> }
+__FINAL { = <Pop '1'> }

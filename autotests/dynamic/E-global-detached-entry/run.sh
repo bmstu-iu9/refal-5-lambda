@@ -2,7 +2,7 @@
 
 rm -f *.rasl-module *.rasl caller
 
-../../../bin/rlc --keep-rasls main.ref lib.ref --log=log.txt
+../../../bin/rlc --keep-rasls -OG- main.ref lib.ref --log=log.txt
 ./main
 if [[ $? -gt 0 ]]; then
   echo TEST FAILED!
@@ -19,5 +19,5 @@ if [[ $? -gt 0 ]]; then
   exit 1
 else
   echo Test OK!
-  rm -f *.rasl-module *.rasl caller *-locals.lst log.txt
+  rm -f *.rasl-module *.rasl caller *-locals.lst log.txt main
 fi

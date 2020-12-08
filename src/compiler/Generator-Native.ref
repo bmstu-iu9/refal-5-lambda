@@ -474,6 +474,12 @@ GenCommand-Native {
       ' );'
     );
 
+  (e.Indent) (CmdInsertTile s.BeginEndOffset s.BeginEndOffset) =
+    (e.Indent)
+    (e.Indent
+      'res = refalrts::splice_elem( res, ' <ContextItem s.BeginEndOffset> ' );'
+    );
+
   (e.Indent) (CmdInsertTile s.BeginOffset s.EndOffset) =
     (e.Indent)
     (e.Indent
@@ -839,6 +845,6 @@ AllocatorFuncArgument {
 
   ElUnwrappedClosure s.HeadOffset = ', ' <ContextItem s.HeadOffset>;
 
-  /* Остальное — без аргументов (скобки и ElClosureHead) */
+  /* Остальное — без аргументов (скобки и ElClosureHead) */
   s.Other = ;
 }

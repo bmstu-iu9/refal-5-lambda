@@ -1,7 +1,7 @@
 #!/bin/bash
 
 platform_uname() {
-  # uname для Cygwin и MinGW выдаёт имя в виде CYGWIN_osver или MINGW32_osver,
+  # uname для Cygwin и MinGW выдаёт имя в виде CYGWIN_osver или MINGW32_osver,
   # номер версии обрезаем
   uname | sed 's/_.*$//'
 }

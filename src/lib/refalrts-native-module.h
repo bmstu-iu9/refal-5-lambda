@@ -6,7 +6,7 @@
 
 namespace refalrts {
 
-// Использовать class, public и private нельзя — требуется статическая
+// Использовать class, public и private нельзя — требуется статическая
 // инициализация:
 //   X x = { ... };
 struct NativeModule {

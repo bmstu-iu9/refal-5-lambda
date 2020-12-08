@@ -1,10 +1,10 @@
 //REFERENCE swap
 $EXTERN Swap;
 
-INIT {
+__INIT {
   = <Swap #Init>;
 }
 
-FINAL {
+__FINAL {
   = <Swap #Final>;
 }

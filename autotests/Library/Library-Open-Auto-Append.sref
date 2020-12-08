@@ -3,7 +3,7 @@ $EXTERN Open-Auto, Putout, Close, Get;
 
 $ENTRY Go {
   =
-    // «Обрезаем» файл на случай, если он уже существует
+    // «Обрезаем» файл на случай, если он уже существует
     <Close <Open-Auto 'w' '__written_file.txt'>>
 
     <AppendLine ('__written_file.txt') 'Hello'>

@@ -8,5 +8,5 @@ if errorlevel 1 (
   echo TEST FAILED!
 ) else (
   echo Test OK!
-  erase *.rasl-module *.rasl *.exe
+  erase *.rasl-module *.rasl *.exe *.lst
 )

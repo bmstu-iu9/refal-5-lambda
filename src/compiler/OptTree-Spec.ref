@@ -47,31 +47,40 @@ $ENTRY OptTree-Spec-Prepare {
 Prepare-Aux {
   ((e.KnownNames) e.KnownInfo (e.KnownHistories)) e.AST
     = <Fetch
-        ((/* no names */) /* no info */) e.AST
+        ((/* no names */) /* no info */ (/* no histories */)) e.AST
         <Pipe
           (&MapAccum
             {
               /* Игнорируем новые $SPEC’и для известных функций */
-              ((e.Names) e.Info) (Spec t.Name e.Pattern)
+              ((e.Names) e.Info (e.Histories)) (Spec t.Name e.Pattern)
                 , e.KnownNames : e._B t.Name e._E
-                = ((e.Names) e.Info) /* пропускаем */;
+                = ((e.Names) e.Info (e.Histories)) /* пропускаем */;
 
-              ((e.Names) e.Info) (Spec t.Name e.Pattern)
+              ((e.Names) e.Info (e.Histories)) (Spec t.Name e.Pattern)
                 = t.Name : (e.Name)
-                = ((e.Names t.Name) e.Info (t.Name (e.Pattern)))
+                = (
+                    (e.Names t.Name)
+                    e.Info (t.Name (e.Pattern))
+                    (e.Histories <TrivialHistory e.Name (e.Pattern)>)
+                  )
                   <Log-PutLine
                     'New $SPEC function: ' <DisplayName e.Name> ' '
                     <Log-InlineExpr e.Pattern>
                   >;
 
-              ((e.Names) e.Info) t.Other = ((e.Names) e.Info) t.Other;
+              ((e.Names) e.Info (e.Histories)) t.Other
+                = ((e.Names) e.Info (e.Histories)) t.Other;
             }
           )
           (&MapAccum
             {
-              ((e.Names) e.Info-B (t.Name (e.Pattern)) e.Info-E)
+              ((e.Names) e.Info-B (t.Name (e.Pattern)) e.Info-E (e.Histories))
               (Function s.ScopeClass t.Name Sentences e.Body)
-                = ((e.Names) e.Info-B (t.Name (e.Pattern) (e.Body) 1) e.Info-E)
+                = (
+                    (e.Names)
+                    e.Info-B (t.Name (e.Pattern) (e.Body) 1) e.Info-E
+                    (e.Histories)
+                  )
                   (Function s.ScopeClass t.Name Sentences e.Body);
 
                ((e.Names) e.Info) t.Other = ((e.Names) e.Info) t.Other;
@@ -79,50 +88,88 @@ Prepare-Aux {
           )
         >
       >
-    : ((e.NewNames) e.NewInfo) e.AST^
+    : ((e.NewNames) e.NewInfo (e.NewHistories)) e.AST^
 
-    = <CreateGuardFunctions e.NewInfo> : (e.GuardEnums) e.NewInfo^
+    = <AddGuardSentences e.NewInfo> : e.NewInfo^
+    = <AddGuardEnums e.AST> : e.AST^
 
     = <CreateRemainderFunctions e.NewInfo> : e.NewInfo^
 
     = (SpecInfo
-        (e.KnownNames e.NewNames) e.KnownInfo e.NewInfo (e.KnownHistories)
+        (e.KnownNames e.NewNames)
+        e.KnownInfo e.NewInfo
+        (e.KnownHistories e.NewHistories)
       )
       e.AST
-      e.GuardEnums
 }
 
-* Добавляет вызов аварийной функции Func@0 в конец каждой специализируемой
-* функции.Этот вызов облегчает отладку при аварийном завершении программы
-* в специализированной функции.
-CreateGuardFunctions {
-  e.Info
-    = <MapAccum
+TrivialHistory {
+  e.Name (e.Pattern)
+    = (<AddSuffix e.Name ('@' 0)>)
+      <Map
         {
-          (e.GuardEnums)
+          (s.Mode e.Index)
+            , <IsSpecStaticVar (s.Mode e.Index)> : True
+            = ((TkVariable s.Mode e.Index));
+
+          (s.Mode e.Index) = /* пропускаем */;
+        }
+        <ExtractVariables-Expr e.Pattern>
+      >
+    : e.HistoryRecord
+    = ((e.Name) (e.HistoryRecord));
+}
+
+* Добавляет вызов аварийной функции Func@0 в конец каждой специализируемой
+* функции.Этот вызов облегчает отладку при аварийном завершении программы
+* в специализированной функции.
+AddGuardSentences {
+  e.Info
+    = <Map
+        {
           ((e.Name) (e.SpecPattern) (e.Sentences) e.Signatures)
             = <AddSuffix e.Name ('@' 0)> : e.GuardName
             = (e.SpecPattern)
               ((CallBrackets (Symbol Name e.GuardName) e.SpecPattern))
             : e.GuardSentence
             = (
-                e.GuardEnums
-                (Function GN-Local (e.GuardName) Sentences /* пусто */)
-              )
-              (
                 (e.Name)
                 (e.SpecPattern)
                 (e.Sentences (e.GuardSentence))
                 e.Signatures
               )
         }
-        (/* guard enums */) e.Info
+        e.Info
       >
+}
+
+AddGuardEnums {
+  e.AST
+    = <Map
+        {
+          (Function s.ScopeClass (e.Name) e.Body)
+            = (Function s.ScopeClass (e.Name) e.Body) <MakeGuardEnum e.Name>;
+
+          (Declaration s.ScopeClass e.Name)
+            = (Declaration s.ScopeClass e.Name) <MakeGuardEnum e.Name>;
+
+          t.OtherItem = t.OtherItem;
+        }
+        e.AST
+      >
+}
+
+GuardEnumName {
+  e.Name = <AddSuffix e.Name ('@' 0)>
+}
+
+MakeGuardEnum {
+  e.Name = (Function GN-Local (<GuardEnumName e.Name>) Sentences /* пусто */)
 }
 
 * Обеспечивает специализацию функций Func*n. Такие функции могут получаться
 * при частичной прогонке функций, помеченных как прогоняемые
-* и специализированные одновременно. Этот остаток тоже имеет смысл
+* и специализированные одновременно. Этот остаток тоже имеет смысл
 * специализировать.
 CreateRemainderFunctions {
   e.Info = <Map (&CreateRemainderFunctions-OneFunction 0) e.Info>
@@ -159,7 +206,8 @@ $ENTRY OptTree-Spec {
   NoOpt e.AST = <ColdAll e.AST>;
 
   OptSpec e.AST-B (SpecInfo (e.Names) e.SpecInfo (e.Histories)) e.AST-E
-    = <MapAccum
+    = <PrintHistories e.Histories>
+      <MapAccum
         &SpecUnit
         (e.SpecInfo (e.Histories) (/* new functions */))
         e.AST-B e.AST-E
@@ -173,12 +221,42 @@ ColdAll {
     = <Map
         {
           (Function s.ScopeClass (e.Name) e.Body)
-            = (ColdFunction s.ScopeClass (e.Name) e.Body);
+            = (ColdFunction SPEC s.ScopeClass (e.Name) e.Body);
 
           t.OtherItem = t.OtherItem;
         }
         e.AST
       >;
+}
+
+PrintHistories {
+  e.Histories = <Map &PrintHistory e.Histories>;
+}
+
+PrintHistory {
+  ((e.Function) e.History)
+    = <Log-PutLine
+        'History of ' <DisplayName e.Function> '\n'
+        <Map
+          {
+            ((e.FuncName) e.StaticVarsVals)
+              = '    ' <DisplayName e.FuncName> ':'
+                ' [' <PrintSignature e.StaticVarsVals> ']\n';
+          }
+          e.History
+        >
+      >
+}
+
+PrintSignature {
+  /* пусто */ = /* пусто */;
+  t.First e.Last
+    = <PrintSignatureItem t.First>
+      <Map { t.Item = ', ' <PrintSignature t.Item> } e.Last>
+}
+
+PrintSignatureItem {
+  (e.Expr) = <Log-InlineExpr e.Expr>;
 }
 
 SpecUnit {
@@ -196,7 +274,7 @@ SpecUnit {
       >
     : (e.SpecInfo^ (e.Histories) (e.History^) (e.NewFunctions^)) e.Sentences^
     = (e.SpecInfo (e.Histories) (e.NewFunctions))
-      (ColdFunction s.ScopeClass t.Name Sentences e.Sentences);
+      (ColdFunction SPEC s.ScopeClass t.Name Sentences e.Sentences);
 
   (e.SpecInfo (e.Histories) (e.NewFunctions))
   (Function s.ScopeClass t.Name Sentences e.Sentences)
@@ -208,7 +286,7 @@ SpecUnit {
     : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^))
       e.Sentences^
     = (e.SpecInfo (e.Histories) (e.NewFunctions))
-      (ColdFunction s.ScopeClass t.Name Sentences e.Sentences);
+      (ColdFunction SPEC s.ScopeClass t.Name Sentences e.Sentences);
 
   (e.SpecInfo (e.Histories) (e.NewFunctions)) t.Other
     = (e.SpecInfo (e.Histories) (e.NewFunctions)) t.Other;
@@ -308,9 +386,17 @@ SpecTerm {
     /*
       Аргументы вызовов аварийных функций специализатора специализировать
       нельзя, они должны оставаться неизменными.
+
+      Вместо этого мы все ссылки на функции заменим ссылками на пустые функции —
+      это необходимо, чтобы инструмент удаления неиспользуемых функций удалил
+      те, по которым программа уже специализировалась.
+
+      Например, для <Map {{ &F\1 … }} …> в аварийном предложении останется
+      &F\1, которая сама может тянуть ненужные функции (и занимать собой
+      сгенерированный код). Мы заменим её на пустую функцию.
     */
     = (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
-      (CallBrackets (Symbol Name e.Name) e.Expression);
+      (CallBrackets (Symbol Name e.Name) <ReplaceToGuards e.Expression>);
 
   s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
   (CallBrackets (Symbol Name e.Name) e.Expression)
@@ -401,6 +487,28 @@ SpecTerm {
    = (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions)) t.Other;
 }
 
+ReplaceToGuards {
+  e.Expression
+    = <Map
+        {
+          (s.Brackets e.Nested)
+            , Brackets CallBrackets ClosureBrackets : e._ s.Brackets e._
+            = (s.Brackets <ReplaceToGuards e.Nested>);
+
+          (ADT-Brackets (e.Name) e.Nested)
+            = (ADT-Brackets (e.Name) <ReplaceToGuards e.Nested>);
+
+          /* Уже пустая функция, ничего не делаем с ней */
+          (Symbol Name e.Name '@' 0) = (Symbol Name e.Name '@' 0);
+
+          (Symbol Name e.Name) = (Symbol Name <GuardEnumName e.Name>);
+
+          t.Other = t.Other;
+        }
+        e.Expression
+      >
+}
+
 TrySpecCall {
   (
     e.SpecInfo-B ((e.Name) e.Info) e.SpecInfo-E
@@ -410,7 +518,7 @@ TrySpecCall {
     = <SpecCall (e.Name) e.Info (e.Expression) (e.History)>
     : (e.Info^) t.NewCall e.NewFunction (e.NewHistory)
     = (
-        e.SpecInfo-B ((e.Name) e.Info) e.SpecInfo-E
+        ((e.Name) e.Info) e.SpecInfo-B e.SpecInfo-E
         (e.Histories e.NewHistory)
         (e.History)
         (e.NewFunctions e.NewFunction)
@@ -509,7 +617,7 @@ SpecCall-Aux {
 
     = <Spec-FindInSignatures (e.Signature) e.Signatures>
     : {
-        Found e.InstanceName
+        Found e.InstanceName (e.Signatures^)
           = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
             (CallBrackets
               (Symbol Name e.InstanceName) e.SpecializedFuncArgument
@@ -517,13 +625,13 @@ SpecCall-Aux {
             /* no new functions */
             (/* no new history */);
 
-        NotFound
+        NotFound e.Signatures^
 
           = s.NeedRelationCheck
           : {
               True
                 = <HasHigmanKruskalRelation
-                    (e.Name) (<RemoveSignatureVarsNames e.Signature>)
+                    (e.Name) (<CanonizeSignature e.Signature>)
                     e.History
                   >;
 
@@ -539,7 +647,7 @@ SpecCall-Aux {
                     (e.Signature) (e.HistorySignature) (e.Argument)
                     (e.SpecPattern) (e.StaticMatches) (e.Name)
                     (e.Body) s.NextNumber (e.Signatures) (e.DynamicMatches)
-                    (e.History)
+                    (e.History) (e.Calls)
                   >;
 
               False
@@ -800,11 +908,12 @@ ApplySubst-Expr {
 }
 
 Spec-FindInSignatures {
-  (e.Signature) e.Signatures-B ((e.InstanceName) e.Signature) e.Signatures-E
-    = Found e.InstanceName;
+  (e.Signature)
+  e.Signatures-B ((e.InstanceName) e.Signature) e.Signatures-E
+    = Found e.InstanceName
+      (((e.InstanceName) e.Signature) e.Signatures-B e.Signatures-E);
 
-  (e.Signature) e.Signatures
-    = NotFound;
+  (e.Signature) e.Signatures = NotFound e.Signatures;
 }
 
 /**
@@ -973,22 +1082,6 @@ PrepareSpecConditions {
       >
 }
 
-/**
-  <OptTree-Spec-CleanupColdFunctions e.AST> == e.AST^
-*/
-$ENTRY OptTree-Spec-CleanupColdFunctions {
-  e.AST
-    = <Map
-        {
-          (ColdFunction s.ScopeClass (e.Name) e.Body)
-            = (Function s.ScopeClass (e.Name) e.Body);
-
-          t.OtherItem = t.OtherItem;
-        }
-        e.AST
-      >;
-}
-
 /*
   Вспомогательные функции модуля
 */
@@ -1074,26 +1167,22 @@ MapGenericMatches {
 */
 HasHigmanKruskalRelation {
   (e.Name) (e.Signature) e.History ((e.InstanceName) e.HistorySignature)
-    = e.InstanceName
-    : {
-        e.Name SUF e.InstanceName-Rest
-          , <RemoveSignatureVarsNames e.HistorySignature>
-          : e.HistorySignatureWithoutNames
-          , <CheckSignaturesPairForRelation
-              (e.Signature) e.HistorySignatureWithoutNames
-            >
-          : {
-              True = True e.HistorySignature;
-              False = <HasHigmanKruskalRelation
-                        (e.Name) (e.Signature) e.History
-                      >;
-            };
+    , <SourceNameOfInstance e.InstanceName> : e.Name
+    , <CheckSignaturesPairForRelation
+        (e.Signature) <CanonizeSignature e.HistorySignature>
+      >
+    : True
+    = True e.HistorySignature;
 
-        e.OtherName
-          = <HasHigmanKruskalRelation (e.Name) (e.Signature) e.History>;
-      };
+  (e.Name) (e.Signature) e.History ((e.InstanceName) e.HistorySignature)
+    = <HasHigmanKruskalRelation (e.Name) (e.Signature) e.History>;
 
   (e.Name) (e.Signature) /* пустая история */ = False;
+}
+
+SourceNameOfInstance {
+  e.Name SUF '@' s._ = e.Name;
+  e.Name '@' s._ = e.Name;
 }
 
 /**
@@ -1128,19 +1217,35 @@ CheckSignaturesPairForRelation {
     , e.HistorySignature
     : (e.HistorySignature-CurVar) e.HistorySignature-Rest
 
+    , <CheckSignaturesPairForRelation-OneVar
+        (e.CurrentSignature-CurVar) e.HistorySignature-CurVar
+      >
+    : {
+        True
+          = <CheckSignaturesPairForRelation
+              (e.CurrentSignature-Rest) e.HistorySignature-Rest
+            >;
+
+        False = False;
+    };
+}
+
+CheckSignaturesPairForRelation-OneVar {
+  (e.CurrentSignature-CurVar) e.HistorySignature-CurVar
     /* Разделяем текущую сигнатуру на две части  */
     , e.CurrentSignature-CurVar : t.Term e.OtherPart
 
-    , <DoCheckSignaturesPairForRelation
+    = <DoCheckSignaturesPairForRelation
         (t.Term) (e.OtherPart) e.HistorySignature-CurVar
-      >
-      : True
-
-    = <CheckSignaturesPairForRelation
-        (e.CurrentSignature-Rest) e.HistorySignature-Rest
       >;
 
-  (e.CurrentSignature) e.HistorySignature = False;
+  (e.CurrentSignature-CurVar) e.HistorySignature-CurVar
+    , e.CurrentSignature-CurVar : /* пусто */
+    = e.HistorySignature-CurVar
+    : {
+        /* пусто */ = True;
+        e._ = False;
+      };
 }
 
 /**
@@ -1199,6 +1304,21 @@ DoCheckSignaturesPairForRelation {
 ContainsSignature {
   (e.Expr-B e.Signature e.Expr-E) e.Signature
     = True;
+
+  /*
+    Если выражение и сигнатура из истории начинаются на одинаковый терм,
+    то выражение вкладывается в сигнатуру тогда и только тогда, когда
+    вкладываются их хвосты.
+  */
+  (t.Common e.Expr) t.Common e.Signature
+    = <ContainsSignature (e.Expr) e.Signature>;
+
+  /*
+    Оптимизация частнoго случая: аналогично можно поступить и с последним
+    общим термом.
+  */
+  (e.Expr t.Common) e.Signature t.Common
+    = <ContainsSignature (e.Expr) e.Signature>;
 
   /*
     Если первый токен у обеих сигнатур - скобки,
@@ -1364,20 +1484,21 @@ PartiallyContainsSignature {
   (e.Expr) e.Signature-Part t.LastTerm
     = <PartiallyContainsSignature
         (e.Expr) e.Signature-Part
-      > t.LastTerm;
+      >
+      t.LastTerm;
 }
 
 /**
-  <RemoveSignatureVarsNames e.Signature> == e.Signature^
+  <CanonizeSignature e.Signature> == e.Signature^
 
-  Убирает имена переменных в сигнатуре, оставляет их типы данных.
+  * Убирает имена переменных в сигнатуре, оставляет их типы данных.
 */
-RemoveSignatureVarsNames {
+CanonizeSignature {
   e.Signature
     = <Map
         {
           (e.SignaturePart)
-            = <RemoveSignatureVarsNames-Expr e.SignaturePart>
+            = <CanonizeSignature-Expr e.SignaturePart>
             : e.SignaturePart^
             = (e.SignaturePart);
         }
@@ -1387,22 +1508,24 @@ RemoveSignatureVarsNames {
     = e.Signature;
 }
 
-RemoveSignatureVarsNames-Expr {
-  e.Expr = <Map &RemoveSignatureVarsNames-Term e.Expr>;
+CanonizeSignature-Expr {
+  e.Expr = <Map &CanonizeSignature-Term e.Expr>;
 }
 
-RemoveSignatureVarsNames-Term {
+CanonizeSignature-Term {
   (TkVariable s.Mode e.Index)
     = (TkVariable s.Mode);
 
   (s.BracketsTag e.Expr)
     , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
-    = <RemoveSignatureVarsNames-Expr e.Expr> : e.Expr^
+    = <CanonizeSignature-Expr e.Expr> : e.Expr^
     = (s.BracketsTag e.Expr);
 
   (ADT-Brackets (e.Name) e.Expr)
-    = <RemoveSignatureVarsNames-Expr e.Expr> : e.Expr^
+    = <CanonizeSignature-Expr e.Expr> : e.Expr^
     = (ADT-Brackets (e.Name) e.Expr);
+
+  (Symbol Number s._) = (Symbol Number);
 
   t.OtherTerm = t.OtherTerm;
 }
@@ -1412,7 +1535,7 @@ MakeGeneralization {
   (e.Signature) (e.HistorySignature) (e.Argument)
   (e.SpecPattern) (e.StaticMatches) (e.Name)
   (e.Body) s.NextNumber (e.Signatures) (e.DynamicMatches)
-  (e.History)
+  (e.History) (e.Calls)
 
     /* Получаем обобщение двух сигнатур */
     = <GetSignaturesGeneralization
@@ -1469,6 +1592,7 @@ MakeGeneralization {
 
     /* К новому вызову применяем подстановку*/
     = <ApplySubst-Expr (e.RealSubst) t.NewCall> : t.NewCall^
+    = <ApplySubst-Expr (e.Calls) t.NewCall> : t.NewCall^
 
     = t.Info
       t.NewCall
@@ -1558,20 +1682,20 @@ GetSignaturesGeneralizationMatches {
 
 GetRealSubst {
   (e.StaticMatches-B (e.Val1 ':' (TkVariable e.Var)) e.StaticMatches-E)
-  (e.GenStaticMatches-B (e.Val2 ':' (TkVariable e.Var)) e.StaticMatches-E)
+  (e.GenStaticMatches-B (e.Val2 ':' (TkVariable e.Var)) e.GenStaticMatches-E)
     = <GenericMatch (e.Val1) (e.Val2)>
     : {
         Clear e.Expr
           = e.Expr
             <GetRealSubst
               (e.StaticMatches-B e.StaticMatches-E)
-              (e.GenStaticMatches-B e.StaticMatches-E)
+              (e.GenStaticMatches-B e.GenStaticMatches-E)
             >;
 
         e.Other
           = <GetRealSubst
               (e.StaticMatches-B e.StaticMatches-E)
-              (e.GenStaticMatches-B e.StaticMatches-E)
+              (e.GenStaticMatches-B e.GenStaticMatches-E)
             >;
       };
 

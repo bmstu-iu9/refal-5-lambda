@@ -66,6 +66,9 @@ PrepareMessage {
 
   DanglingDrive e.Name = '$DRIVE ' e.Name '; drive label for missed function';
 
+  NativeOptimizable s.Label e.Name
+    = 'Function ' e.Name ' can\'t be $' <Upper <Explode s.Label>>;
+
   /* Ошибки специализации */
   RedefineSpec e.FnName = 'Specialization of function ' e.FnName 'is redefined';
 
@@ -93,14 +96,27 @@ PrepareMessage {
 
   Screening (e.FunName) (e.Screening) (e.Screened)
     = 'Function `' e.FunName '\': sentence ' e.Screening
-      ' screens sentence ' e.Screened
+      ' screens sentence ' e.Screened;
+
+  TaggedPseudofunction s.Tag e.Name
+    = 'Pseudofunction ' e.Name ' should not have optimization tag '
+      '$' <Upper <Explode s.Tag>>;
+
+  EntryPseudofunction e.Name
+    = 'Pseudofunction ' e.Name ' should be local, in other case function '
+      'can\'t be encountered as pseudofunction';
+
+  BadPseudofunctionBody e.Name
+    = 'Pseudofunction ' e.Name ' should have a body { e.X = e.X }, '
+      'in other case function can\'t be encountered as pseudofunction';
 }
 
 FindErrors {
   (e.WarningIds) e.AST
+    = <CheckPseudofunctions e.AST> : (e.PFErrors) e.AST^
     = <CheckSpecs e.AST> : (e.SpecErrors) e.AST^
     = <SeparateDefines e.AST> : (e.Declarations) e.FunctionBodies
-    = e.SpecErrors
+    = e.PFErrors e.SpecErrors
       <CheckValidUsings
         (<CheckDeclarations (e.WarningIds) e.Declarations>)
         <Map &CheckFunctionBody e.FunctionBodies>
@@ -108,12 +124,83 @@ FindErrors {
       <CheckScreening (e.WarningIds) (e.AST)>;
 }
 
+CheckPseudofunctions {
+  e.AST
+    = <Map
+        {
+          (s.Tag t.SrcPos s.ScopeClass e.Name)
+            , Drive Inline Intrinsic : e._ s.Tag e._
+            , <Pseudofunctions> : e._ (e.Name) e._
+            = (Error t.SrcPos TaggedPseudofunction s.Tag e.Name);
+
+          (Spec t.SrcPos (e.Name) e._)
+            , <Pseudofunctions> : e._ (e.Name) e._
+            = (Error t.SrcPos TaggedPseudofunction Spec e.Name);
+
+          (Entry t.SrcPos GN-Entry e.Name)
+            , <Pseudofunctions> : e._ (e.Name) e._
+            = (Warning pseudofunctions t.SrcPos EntryPseudofunction e.Name);
+
+          (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
+            , <Pseudofunctions> : e._ (e.Name) e._
+            = (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
+              <CheckPseudofunctions-Entry t.SrcPos e.Name s.ScopeClass>
+              <CheckPseudofunctions-Body t.SrcPos (e.Name) e.Body>;
+
+          t.Other = t.Other;
+        }
+        e.AST
+      >
+    : e.AST-and-messages
+    = <SeparateErrors e.AST-and-messages>;
+}
+
+SeparateErrors {
+  e.AST-and-messages
+    = <MapAccum
+        {
+          (e.Messages) (Error e.Error) = (e.Messages (Error e.Error));
+          (e.Messages) (Warning e.Warning) = (e.Messages (Warning e.Warning));
+
+          (e.Messages) t.Other = (e.Messages) t.Other;
+        }
+        (/* messages */) e.AST-and-messages
+      >
+}
+
+Pseudofunctions {
+  = ('gen_e__') ('gen-e__')
+}
+
+CheckPseudofunctions-Entry {
+  t.SrcPos e.Name GN-Local = /* нет ошибок */;
+
+  t.SrcPos e.Name GN-Entry
+    = (Warning pseudofunctions t.SrcPos EntryPseudofunction e.Name);
+}
+
+CheckPseudofunctions-Body {
+  t.SrcPos (e.Name) Sentences ((e.Pattern) (e.Result) (e.Blocks))
+    , <WholeEVar e.Pattern> : True e.Index
+    , <WholeEVar e.Pattern> : True e.Index /* SAME */
+    , e.Blocks : /* нет блоков */
+    = /* пусто, правильное тело gen-функции */;
+
+  t.SrcPos (e.Name) e._
+    = (Warning pseudofunctions t.SrcPos BadPseudofunctionBody e.Name);
+}
+
+WholeEVar {
+  (TkVariable t._pos 'e' e.Index) = True e.Index;
+  e._ = False;
+}
+
 CheckSpecs {
   e.AST
     = <CheckSpecs-Redefine e.AST> : e.AST-and-errors
     = <CheckSpecs-Formats e.AST-and-errors> : e.AST-and-errors^
     = <CheckSpecs-Functions e.AST-and-errors> : e.AST-and-errors^
-    = <CheckSpecs-SeparateErrors e.AST-and-errors>;
+    = <SeparateErrors e.AST-and-errors>;
 }
 
 * Проверка переопределения специализации
@@ -258,7 +345,7 @@ CheckSpecs-Functions {
   e.AST-B
   (Spec t.SrcPos1 (e.Name) e.Pattern) e.AST-M
   (Function t.SrcPos2 s.ScopeClass (e.Name) e.Body) e.AST-E
-    = <ValidBodyForSpec (e.Pattern) e.Body>
+    = <ValidBodyForSpec (e.Name) (e.Pattern) e.Body>
     : {
         True =
           e.AST-B e.AST-M
@@ -284,7 +371,7 @@ CheckSpecs-Functions {
   e.AST-B
   (Function t.SrcPos1 s.ScopeClass (e.Name) e.Body) e.AST-M
   (Spec t.SrcPos2 (e.Name) e.Pattern) e.AST-E
-    = <ValidBodyForSpec (e.Pattern) e.Body>
+    = <ValidBodyForSpec (e.Name) (e.Pattern) e.Body>
     : {
         True =
           e.AST-B
@@ -316,7 +403,7 @@ CheckSpecs-Functions {
 }
 
 ValidBodyForSpec {
-  t.Pattern Sentences e.Sentences
+  (e.Name) t.Pattern Sentences e.Sentences
     = <Reduce
         (&ValidBodyForSpec-CheckSentensePattern t.Pattern)
         (True /* for messages */) e.Sentences
@@ -324,7 +411,7 @@ ValidBodyForSpec {
     : (s.BoolResult e.Messages)
     = s.BoolResult e.Messages;
 
-  t.Pattern NativeBody e.Code = False;
+  (e.Name) t.Pattern NativeBody e.Code = False (NativeOptimizable Spec e.Name);
 }
 
 ValidBodyForSpec-CheckSentensePattern {
@@ -410,30 +497,22 @@ IsSpecStaticVar {
       };
 }
 
-CheckSpecs-SeparateErrors {
-  e.AST
-    = <CheckSpecs-SeparateErrors-Rec (/* empty spec errror list*/) e.AST>;
-}
-
-CheckSpecs-SeparateErrors-Rec {
-  (e.SpecErrorList) e.AST-B (Error t.SrsPos t.SpecErrorType e.Name) e.AST-E
-    = <CheckSpecs-SeparateErrors-Rec
-        (e.SpecErrorList (Error t.SrsPos t.SpecErrorType e.Name))
-        e.AST-B e.AST-E
-      >;
-
-  (e.ErrorList) e.AST
-    = (e.ErrorList) e.AST;
-}
-
 SeparateDefines {
   e.AST
     = <MapAccum
         {
           (e.Declarations)
-          (Function t.SrcPos s.ScopeClass (e.Name) e.Body) =
+          (Function t.SrcPos s.ScopeClass (e.Name) Sentences e.Body) =
             (e.Declarations (Define t.SrcPos s.ScopeClass e.Name))
-            (e.Body);
+            (Sentences e.Body);
+
+          (e.Declarations)
+          (Function t.SrcPos s.ScopeClass (e.Name) NativeBody e.Body) =
+            (
+              e.Declarations
+              (Define t.SrcPos s.ScopeClass e.Name) (NativeBody e.Name)
+            )
+            (NativeBody e.Body);
 
           (e.Declarations) (Swap t.SrcPos s.ScopeClass e.Name) =
             (e.Declarations (Define t.SrcPos s.ScopeClass e.Name));
@@ -486,7 +565,7 @@ CheckDeclarations {
           &FindInvalidForwards
           &FindInvalidDriveInline
           &CheckRedefinitions
-          (&FindFinalInitEntry (e.WarningIds))
+          &FindFinalInitEntry
         >
       >
 }
@@ -510,6 +589,24 @@ FindInvalidDriveInline {
         e.Declarations
       >
     : (e.DriveInline) e.Declarations^
+
+    /* Проверяем, что метки $DRIVE и $INLINE не назначены нативным функциям */
+    = <Map
+        {
+          (NativeBody e.Name)
+            = e.DriveInline
+            : {
+                e._ (s.Label t.SrcPos e.Name) e._
+                  = (Error t.SrcPos NativeOptimizable s.Label e.Name);
+
+                e._ = /* пропускаем */;
+              };
+
+          t.Other = t.Other;
+        }
+        e.Declarations
+      >
+    : e.Declarations^
 
     /* Удаляем валидные $DRIVE и $INLINE */
     = <MapAccum
@@ -545,8 +642,8 @@ FindInvalidDriveInline {
 
 CleanupValidEntry {
   /*
-    При помощи $ENTRY Foo, Bar; можно объявлять и $ENTRY Foo { ... },
-    поэтому и s.ScopeClass в Define. Но потом для определения устанавливаем
+    При помощи $ENTRY Foo, Bar; можно объявлять и $ENTRY Foo { ... },
+    поэтому и s.ScopeClass в Define. Но потом для определения устанавливаем
     GN-Entry.
   */
   e.Declarations-B
@@ -634,19 +731,18 @@ FindInvalidForwards {
 }
 
 FindFinalInitEntry {
-  (e._ init-final-entry e._) e.Declarations
+  e.Declarations
     = <Map
         {
           (Define t.ScrPosDefine GN-Entry e.Name)
-            , <OneOf (e.Name) ('FINAL') ('INIT')> : True
+            , <OneOf (e.Name) ('__FINAL') ('__INIT')> : True
             = (Define t.ScrPosDefine GN-Entry e.Name)
-              (Warning init-final-entry t.ScrPosDefine InitFinalEntry e.Name);
+              (Error t.ScrPosDefine InitFinalEntry e.Name);
 
           t.OtherDeclaraion = t.OtherDeclaraion
         }
         e.Declarations
       >;
-  (e.WarningIds) e.Declarations = e.Declarations
 }
 
 CheckRedefinitions {

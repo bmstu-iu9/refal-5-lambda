@@ -34,7 +34,7 @@ CompareTypes {
     <EQ <SymbCompare '5' '5'>>
     <GT <SymbCompare 'Z' 'A'>>
 
-    // сравнение функций: сначала по имени, потом по указателю
+    // сравнение функций: сначала по имени, потом по указателю
     <LT <SymbCompare EQ LT>>
     <EQ <SymbCompare EQ EQ>>
     <GT <SymbCompare GT EQ>>

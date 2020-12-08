@@ -396,6 +396,8 @@ Pass-NameNestedFuncs {
     >;
 }
 
+gen_e__ { e.Arg = e.Arg }
+
 NameNestedBody {
   (e.MainName) Sentences ((e.Pattern) e.Assigns (e.Result) (e.Blocks))
      = Sentences
@@ -412,7 +414,7 @@ NameNestedBody {
         <MapAccum
           {
             s.SentenceNumber ((e.Pattern) e.Assigns (e.Result) (e.Blocks^))
-              = e.MainName '$' s.SentenceNumber: e.MainName^
+              = <gen_e__ e.MainName '$' s.SentenceNumber> : e.MainName^
               = <Inc s.SentenceNumber>
                 (
                   (e.Pattern)
@@ -436,7 +438,7 @@ NameNestedBlocks {
     = <MapAccum
         {
           s.BlockNumber (e.Body)
-            = e.MainName ':' s.BlockNumber : e.MainName^
+            = <gen_e__ e.MainName ':' s.BlockNumber> : e.MainName^
             = <Inc s.BlockNumber>
               ((e.MainName) <NameNestedBody (e.MainName) e.Body>);
         }
@@ -453,7 +455,7 @@ NameNestedAssigns {
           {
             s.AssignId (s.ChainType (e.Result) (e.Blocks) (e.Pattern))
               = <ChainTypeMarker s.ChainType> : s.Marker
-              = e.MainName s.Marker s.AssignId : e.MainName^
+              = <gen_e__ e.MainName s.Marker s.AssignId> : e.MainName^
               = <Inc s.AssignId>
                 (s.ChainType
                   (e.MainName)
@@ -506,7 +508,7 @@ NameNestedResultRec-Term {
     = <Inc s.NextNumber>
       (Closure
         (e.MainName '\\' s.NextNumber)
-        <NameNestedBody (e.MainName '\\' s.NextNumber) e.Sentences>
+        <NameNestedBody (<gen_e__ e.MainName '\\' s.NextNumber>) e.Sentences>
       );
 
   e.MainName s.NextNumber t.OtherTerm = s.NextNumber t.OtherTerm;
@@ -829,8 +831,14 @@ ExtractNested-Result-Term {
     : {
         /* Случай функции без контекста, нативной функции в том числе */
         (/* нет захваченных переменных */) e.Body^
+          = e.Body
+          : {
+              Sentences e.Sentences = (Drive e.ClosureName);
+              NativeBody e.NativeBody = /* нет меток */;
+            }
+          : e.DriveLabelOpt
           = (Function GN-Local (e.ClosureName) e.Body)
-            (Drive e.ClosureName)
+            e.DriveLabelOpt
             (e.BorrowedVars)
             (Symbol Name e.ClosureName);
 
@@ -903,13 +911,13 @@ Pass-CleanupRedudandExterns {
            = (e.DefinedFunctions (e.Name)) (Swap s.ScopeClass e.Name);
 
          (e.DefinedFunctions) (Inline e.Name)
-           = (e.DefinedFunctions (e.Name)) (Inline e.Name);
+           = (e.DefinedFunctions) (Inline e.Name);
 
          (e.DefinedFunctions) (Drive e.Name)
-           = (e.DefinedFunctions (e.Name)) (Drive e.Name);
+           = (e.DefinedFunctions) (Drive e.Name);
 
          (e.DefinedFunctions) (Intrinsic e.Name)
-           = (e.DefinedFunctions (e.Name)) (Intrinsic e.Name);
+           = (e.DefinedFunctions) (Intrinsic e.Name);
 
          (e.DefinedFunctions) (Declaration s.ScopeClass e.Name)
            = (e.DefinedFunctions) (Declaration s.ScopeClass e.Name);
@@ -929,6 +937,24 @@ Pass-CleanupRedudandExterns {
     : (e.DefinedFunctions) e.AST^
     = <MapAccum &FilterDeclarations (e.DefinedFunctions) e.AST>
     : (e.DefinedFunctions^) e.AST^
+
+    = <MapAccum
+        {
+          (e.DeclaredFunctions-B (e.Name) e.DeclaredFunctions-E)
+          (Declaration s.ScopeClass e.Name)
+            = (e.DeclaredFunctions-B (e.Name) e.DeclaredFunctions-E)
+              /* пропускаем дублирующееся определение */;
+
+          (e.DeclaredFunctions) (Declaration s.ScopeClass e.Name)
+            = (e.DeclaredFunctions (e.Name))
+              (Declaration s.ScopeClass e.Name);
+
+          (e.DeclaredFunctions) t.Other
+            = (e.DeclaredFunctions) t.Other;
+        }
+        (/* declared functions */) e.AST
+      >
+    : (e._) e.AST^
     = e.AST;
 }
 

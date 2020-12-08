@@ -693,7 +693,9 @@ $ENTRY GlobalASTStorage-Create {
     = 1 : s.NextLocalId
     = /* пусто */ : e.Entries
     = /* пусто */ : e.ASTs
-    = ((s.NextLocalId e.Entries) e.ASTs);
+    = /* пусто */ : e.Inits
+    = /* пусто */ : e.Finals
+    = ((s.NextLocalId e.Entries) e.ASTs (e.Inits) (e.Finals));
 }
 
 
@@ -701,7 +703,7 @@ $ENTRY GlobalASTStorage-Create {
   <GlobalASTStorage-AddAST t.ASTStorage e.AST> == t.ASTStorage^ s.Id
 */
 $ENTRY GlobalASTStorage-AddAST {
-  ((s.NextLocalId e.Entries) e.ASTs) e.AST
+  ((s.NextLocalId e.Entries) e.ASTs (e.Inits) (e.Finals)) e.AST
     = <MapAccum
         {
           t.Accum (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
@@ -726,7 +728,7 @@ $ENTRY GlobalASTStorage-AddAST {
     = {
         SrcPos t.SrcPos = t.SrcPos;
 
-        Name e.Name, e.Locals : e._ (e.Name) e._
+        Name e.Name, e.Locals : e._ (e.Name t._) e._
           = e.Name SUF '~' s.NextLocalId;
 
         Name e.Name = e.Name;
@@ -736,6 +738,14 @@ $ENTRY GlobalASTStorage-AddAST {
     = (
         (<Inc s.NextLocalId> e.Entries)
         e.ASTs <PatchAST s.FnPatch e.AST>
+          (
+            e.Inits
+            <AddInitFinalFunc e.Locals ('__INIT') s.NextLocalId>
+          )
+          (
+            <AddInitFinalFunc e.Locals ('__FINAL') s.NextLocalId>
+            e.Finals
+          )
       )
       s.NextLocalId;
 }
@@ -745,15 +755,24 @@ UpdateAccum {
     = ((e.Entries ((e.Name) t.SrcPos))  (e.Locals));
 
   ((e.Entries) (e.Locals)) t.SrcPos GN-Local e.Name
-    = ((e.Entries)  (e.Locals (e.Name)));
+    = ((e.Entries)  (e.Locals (e.Name t.SrcPos)));
 }
 
 CleanupLocals {
-  e.Locals-B (e.Name) e.Locals-E (e.Entries)
+  e.Locals-B (e.Name t._) e.Locals-E (e.Entries)
     , e.Entries : e._ ((e.Name) t.SrcPos) e._
     = e.Locals-B <CleanupLocals e.Locals-E (e.Entries)>;
 
   e.Locals (e.Entries) = e.Locals;
+}
+
+AddInitFinalFunc {
+  e.Locals (e.FuncName) s.LocalId
+    = e.Locals
+    : {
+        e._ (e.FuncName t.SrcPos) e._ = (e.FuncName SUF '~' s.LocalId t.SrcPos);
+        e._ = /* пусто */;
+      }
 }
 
 /**
@@ -762,10 +781,15 @@ CleanupLocals {
     == Fails
 */
 $ENTRY GlobalASTStorage-Check {
-  ((s.NextLocalId e.Entries) e.AST)
+  ((s.NextLocalId e.Entries) e.AST (e.Inits) (e.Finals))
     = <EL-CheckEntryDuplicates e.Entries>
     : {
-        EL-NoErrors = Success <ExtendMetatables (e.Entries) e.AST>;
+        EL-NoErrors
+          = Success
+            <ExtendMetatables (e.Entries) e.AST>
+            <MakeInitFinalFunc ('__INIT') e.Inits>
+            <MakeInitFinalFunc ('__FINAL') e.Finals>;
+
         EL-HasErrors = Fails;
       }
 }
@@ -805,4 +829,23 @@ CleanupDuplicates {
   t.MT-Item e.Metatable = t.MT-Item <CleanupDuplicates e.Metatable>;
 
   /* пусто */ = /* пусто */;
+}
+
+MakeInitFinalFunc {
+  (e.FuncName) /* пусто */ = /* пусто */;
+
+  (e.FuncName) e.CallSequence
+    = e.CallSequence : (e._ t.FirstSrcPos) e._
+    = <Map
+        {
+          (e.Name t.SrcPos)
+            = (CallBrackets (Symbol Name t.SrcPos e.Name) /* пустой аргумент */)
+        }
+        e.CallSequence
+      >
+    : e.ResultExpr
+    = (Function
+        t.FirstSrcPos GN-Local (e.FuncName) Sentences
+        ((/* образец */) /* условия */ (e.ResultExpr) (/* блоки */))
+      )
 }

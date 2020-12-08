@@ -6,22 +6,17 @@ $EXTERN GlobalGen;
 *$FROM GenericMatch
 $EXTERN GenericMatch;
 
-*$FROM Log
-$EXTERN Log-PutLine;
-
 *$FROM TreeUtils
 $EXTERN ExtractVariables-Expr;
 
 
 /**
-  <OptTree-AutoMarkup-GetSpecializableDict (e.AST)>
-    == ((e.Name) e.SpecPattern)*
-
-  e.SpecPattern ::= e.Pattern
+  <OptTree-AutoMarkup-Spec e.AST> == e.AST
 */
 
-$ENTRY OptTree-AutoMarkup-GetSpecializableDict {
+$ENTRY OptTree-AutoMarkup-Spec {
   e.AST
+    = <ForbiddenToSpecFunctions e.AST> : (e.Forbidden) e.AST^
     = <Map
         {
           (Function s.ScopeClass (e.Name) Sentences /* нет предложений */)
@@ -40,7 +35,32 @@ $ENTRY OptTree-AutoMarkup-GetSpecializableDict {
           t.Other = /* пусто */;
         }
         e.AST
-      >;
+      >
+    : e.SpecPatterns
+    = e.AST
+      <FilterSpecPatterns e.SpecPatterns (e.Forbidden)>;
+}
+
+ForbiddenToSpecFunctions {
+  e.AST
+    = <MapAccum
+        {
+          (e.Forbidden)
+          (Spec (e.Name) e.SpecPattern)
+            = (e.Forbidden (e.Name))
+              (Spec (e.Name) e.SpecPattern);
+
+          /* экземпляры повторно не специализируем */
+          (e.Forbidden)
+          (Function s.ScopeClass (e.FuncName) Sentences e.Body)
+            , (e.FuncName) : (e._ SUF e._ '@' s._ e._)
+            = (e.Forbidden (e.FuncName))
+              (Function s.ScopeClass (e.FuncName) Sentences e.Body);
+
+          (e.Forbidden) t.OtherItem = (e.Forbidden) t.OtherItem;
+        }
+        (/* forbidden */) e.AST
+      >
 }
 
 GetSpecifiedPattern {
@@ -236,4 +256,23 @@ FilterUnrepeatedStaticParams-RemoveBad {
       >;
 
   e.StaticCandidates (e.GenericMatches) = e.StaticCandidates;
+}
+
+FilterSpecPatterns {
+  e.SpecializableDict (e.Forbidden)
+    = <MapAccum
+        {
+          (e.Forbidden-B (e.Name) e.Forbidden-E)
+          ((e.Name) e.Pattern)
+            = (e.Forbidden-B (e.Name) e.Forbidden-E)
+              /* пропускаем */;
+
+          (e.Forbidden^) ((e.Name) e.Pattern)
+            = (e.Forbidden) (Spec (e.Name) e.Pattern);
+        }
+        (e.Forbidden)
+        e.SpecializableDict
+      >
+    : (e._) e.SpecDirectives
+    = e.SpecDirectives
 }

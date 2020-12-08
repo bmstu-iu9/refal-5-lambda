@@ -84,6 +84,8 @@ PrepareFunctionsRASL {
 
     = <RemoveDebugInfo s.DebugInfo e.FunctionBody> : e.FunctionBody^
 
+    = s.NextLabel : s.FunctionLabel
+
     = <ConvertInterpretCommands <Inc s.NextLabel> e.FunctionBody>
     : s.NextLabel^ e.RASLCommands^
 
@@ -95,7 +97,7 @@ PrepareFunctionsRASL {
       (CmdInterpretFuncDescr
         s.ScopeClass
         (e.Name)
-        (LABEL s.NextLabel)
+        (LABEL s.FunctionLabel)
         (CmdProfileFunction)
         (CmdLoadConstants)
         e.RASLCommands
