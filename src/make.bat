@@ -7,8 +7,8 @@ setlocal
     set RLMAKE_FLAGS_PLUS=-X--markup-context -X--debug-info -X-OC
     set DEFAULT_SCRIPT_FLAGS=--rich --debug
   ) else (
-    set RLC_FLAGS_PLUS=-OCdDPRS
-    set RLMAKE_FLAGS_PLUS=-X-OCdDPRS
+    set RLC_FLAGS_PLUS=-OCdiADPRS --opt-tree-cycles=300
+    set RLMAKE_FLAGS_PLUS=-X-OCdiADPRS -X--opt-tree-cycles=300
     set DEFAULT_SCRIPT_FLAGS=--scratch
   )
 

@@ -18,8 +18,8 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     RLMAKE_FLAGS_PLUS="-X--markup-context -X--debug-info -X-OC"
     DEFAULT_SCRIPT_FLAGS="--rich --debug"
   else
-    RLC_FLAGS_PLUS=-OCdDPRS
-    RLMAKE_FLAGS_PLUS=-X-OCdDPRS
+    RLC_FLAGS_PLUS="-OCdiADPRS --opt-tree-cycles=300"
+    RLMAKE_FLAGS_PLUS="-X-OCdiADPRS -X--opt-tree-cycles=300"
     DEFAULT_SCRIPT_FLAGS=--scratch
   fi
 
