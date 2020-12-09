@@ -39,6 +39,7 @@ $ENTRY Config-Create {
         (TempDir /* пусто */)
         (OverwriteExistRasls True)
         (NoSources False)
+        (Verbose 0)
       ];
 }
 
@@ -1016,4 +1017,33 @@ $ENTRY Config-GetNoSources {
 $ENTRY Config-SetNoSources {
   [Config e.Params-B (NoSources s.OldValue) e.Params-E] s.NewValue
     = Success [Config e.Params-B (NoSources s.NewValue) e.Params-E];
+}
+
+
+/**
+  <Config-GetVerbose t.Config> == s.NUMBER
+*/
+$ENTRY Config-GetVerbose {
+  [Config e.Params-B (Verbose s.Level) e.Params-E] = s.Level
+}
+
+/**
+  <Config-IncVerbose t.Config> == Success t.Config
+*/
+$ENTRY Config-IncVerbose {
+  [Config e.Params-B (Verbose s.Level) e.Params-E]
+    = Success [Config e.Params-B (Verbose <+1 s.Level>) e.Params-E];
+}
+
+/**
+  <Config-SetVerbose t.Config e.VerboseLevel>
+    == Success t.Config
+    == Fails BadValue-MustBeNumber e.VerboseLevel
+*/
+$ENTRY Config-SetVerbose {
+  [Config e.Params-B (Verbose s.Level) e.Params-E] e.NewLevel
+    , <ParseNumber e.NewLevel> : Success s.NewLevel
+    = Success [Config e.Params-B (Verbose s.NewLevel) e.Params-E];
+
+  t.Config e.BadLevel = Fails BadValue-MustBeNumber e.BadLevel;
 }

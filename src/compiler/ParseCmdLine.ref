@@ -12,7 +12,8 @@ $EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
   Config-SetChmodXCommand, Config-SetPrelude, Config-SetR5Mode,
   Config-SetLogFile, Config-SetTreeOptCycles, Config-SetIncorporated,
   Config-SetKeepRasls, Config-SetTempDir, Config-SetOverwriteExistRasls,
-  Config-SetCppCompilerSuf, Config-SetNoSources, Config-SetWarning;
+  Config-SetCppCompilerSuf, Config-SetNoSources, Config-SetWarning,
+  Config-IncVerbose, Config-SetVerbose;
 
 *$FROM Version
 $EXTERN PrintVersion;
@@ -61,7 +62,7 @@ $ENTRY ParseCommandLine {
           (Log Required ('log'))
           (TreeOptCycles Required ('opt-tree-cycles'))
           (Help None 'h?' ('help'))
-          (Version None 'v' ('version'))
+          (Version None ('version'))
           (KeepRasls None ('keep-rasl') ('keep-rasls'))
           (DontKeepRasls None ('dont-keep-rasl') ('dont-keep-rasls'))
           (TempDir Required ('tmp-dir') ('temp-dir'))
@@ -75,6 +76,8 @@ $ENTRY ParseCommandLine {
           (CppCompilerSuf-Exe Required ('cpp-command-exe-suf'))
           (CppCompilerSuf-Lib Required ('cpp-command-lib-suf'))
           (NoSources None ('no-sources'))
+          (VerboseInc None 'v')
+          (VerboseSet Required ('verbose'))
         )
         e.Arguments
       >
@@ -244,6 +247,12 @@ $ENTRY ParseCommandLine {
 
             (t.Config e.Errors) (NoSources s.Num)
               = <Update t.Config (e.Errors) &Config-SetNoSources s.Num True>;
+
+            (t.Config e.Errors) (VerboseInc s.Num)
+              = <Update t.Config (e.Errors) &Config-IncVerbose s.Num>;
+
+            (t.Config e.Errors) (VerboseSet s.Num e.Value)
+              = <Update t.Config (e.Errors) &Config-SetVerbose s.Num e.Value>;
 
             (t.Config e.Errors) t.Option
               = (t.Config e.Errors) t.Option;
@@ -427,6 +436,9 @@ PrintHelp {
 '        new file use new name\n'
 '--no-sources\n'
 '        Don\'t show error when there are no sources in command line\n'
+'-v      Increment log level\n'
+'--verbose=N\n'
+'        Set log level to N.\n'
 '\n'
 'Long keys with params may be used with equation:\n'
 '--tmp-dir dirname or --tmp-dir=dirname\n'
