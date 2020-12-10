@@ -1,6 +1,6 @@
 #!/bin/bash
 (
-  VERSION=3.1
+  VERSION=3.2
 
   echo $(date): "*** Installing Refal-5λ $VERSION ***" | cat
   echo $(date): 'Prepare directory ~/.local/share/refal-5-lambda' | cat
