@@ -6,4 +6,6 @@ c-plus-plus.conf.sh
 /make-setup/_setup
 /make-setup/_tmp
 
+CMakeLists.txt
+
 .idea/
