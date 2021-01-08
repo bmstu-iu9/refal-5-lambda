@@ -52,6 +52,9 @@ static const char *const s_NOTR = "notr";
 static const char *const s_NOTRACE = "notrace";
 static const char *const s_Q = "q";
 static const char *const s_QUIT = "quit";
+static const char *const s_V = "v";
+static const char *const s_VIEW = "view";
+static const char *const s_VIEWFIELD = "viewfield";
 
 enum { cMaxLen = 1024 };
 void close_out(FILE*);
@@ -712,6 +715,10 @@ void refalrts::debugger::RefalDebugger::print_res_option(FILE *out) {
   }
 }
 
+void refalrts::debugger::RefalDebugger::print_view_field_option(FILE *out) {
+  m_vm->print_view_field(out, true);
+}
+
 bool refalrts::debugger::RefalDebugger::print_var_option(
   const char *var_name, FILE *out
 ) {
@@ -845,6 +852,12 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
         break_set.print(out);
       } else if (str_equal(strparam, s_TR) || str_equal(strparam, s_TRACE)) {
         func_trace_table.print(out);
+      } else if (
+        str_equal(strparam, s_V) ||
+        str_equal(strparam, s_VIEW) ||
+        str_equal(strparam, s_VIEWFIELD)
+      ){
+        print_view_field_option(out);
       } else if (! print_var_option(strparam, out)) {
         fprintf(
           stderr,

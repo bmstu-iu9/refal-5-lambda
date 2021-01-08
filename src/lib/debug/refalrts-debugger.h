@@ -122,6 +122,7 @@ public:
   void print_callee_option(Iter begin, Iter end, FILE *out = stdout);
   void print_arg_option(Iter begin, Iter end, FILE *out = stdout);
   void print_res_option(FILE *out);
+  void print_view_field_option(FILE *out);
   bool print_var_option(const char *var_name, FILE *out = stdout);
   refalrts::FnResult debugger_loop(Iter begin, Iter end);
 
