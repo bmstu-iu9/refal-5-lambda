@@ -3,11 +3,17 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <sstream>
+#include <vector>
+#include <map>
+#include <cstdarg>
 
 //FROM refalrts-dynamic
 #include "refalrts-dynamic.h"
 //FROM refalrts-vm
 #include "refalrts-vm.h"
+
+#define MAX_COMMAND_LEN 2048
 
 
 //=============================================================================
@@ -55,9 +61,30 @@ static const char *const s_QUIT = "quit";
 static const char *const s_V = "v";
 static const char *const s_VIEW = "view";
 static const char *const s_VIEWFIELD = "viewfield";
+static const char *const s_ONELINE = "oneline";
+static const char *const s_MULTILINE = "multiline";
+static const char *const s_SKELETON = "skeleton";
+static const char *const s_FULL = "full";
 
 enum { cMaxLen = 1024 };
 void close_out(FILE*);
+
+// префиксы влияют на стиль печати
+const char * opposite_prefix(const char * prefix) {
+  if (strcmp(prefix, s_MULTILINE) == 0) {
+    return s_ONELINE;
+  }
+  if (strcmp(prefix, s_ONELINE) == 0) {
+    return s_MULTILINE;
+  }
+  if (strcmp(prefix, s_SKELETON) == 0) {
+    return s_FULL;
+  }
+  if (strcmp(prefix, s_FULL) == 0) {
+    return s_SKELETON;
+  }
+  return NULL;
+}
 
 } // namespace debugger
 
@@ -204,21 +231,21 @@ void refalrts::debugger::VariableDebugTable::set_context(Iter *context) {
 //  Таблица трассируемых функций
 
 void refalrts::debugger::TracedFunctionTable::trace_func(
-  const char *func_name, FILE *trace_out
+  const std::string &func_name, FILE *trace_out
 ) {
   m_traced_func_table.insert(
-    std::pair<std::string, FILE*>(std::string(func_name), trace_out)
+    std::pair<std::string, FILE*>(func_name, trace_out)
   );
 }
 
 void refalrts::debugger::TracedFunctionTable::notrace_func(
-  const char *func_name
+  const std::string &func_name
 ) {
   std::map<std::string, FILE*>::iterator found =
-    m_traced_func_table.find(std::string(func_name));
+    m_traced_func_table.find(func_name);
   if (found != m_traced_func_table.end()) {
     close_out(found->second);
-    m_traced_func_table.erase(std::string(func_name));
+    m_traced_func_table.erase(func_name);
   }
 }
 
@@ -282,16 +309,20 @@ void refalrts::debugger::BreakpointSet::add_breakpoint(int step_numb) {
   m_step_breaks.insert(step_numb);
 }
 
-void refalrts::debugger::BreakpointSet::add_breakpoint(const char *func_name) {
-  m_func_breaks.insert(std::string(func_name));
+void refalrts::debugger::BreakpointSet::add_breakpoint(
+  const std::string &func_name
+) {
+  m_func_breaks.insert(func_name);
 }
 
 void refalrts::debugger::BreakpointSet::rm_breakpoint(int step_numb) {
   m_step_breaks.erase(step_numb);
 }
 
-void refalrts::debugger::BreakpointSet::rm_breakpoint(const char *func_name) {
-  m_func_breaks.erase(std::string(func_name));
+void refalrts::debugger::BreakpointSet::rm_breakpoint(
+  const std::string &func_name
+) {
+  m_func_breaks.erase(func_name);
 }
 
 bool refalrts::debugger::BreakpointSet::is_breakpoint(
@@ -516,6 +547,116 @@ void refalrts::debugger::close_out(FILE *out) {
   }
 }
 
+namespace {
+// в стандартной библиотеке нет trim, весело :)
+// обрезает пробельные символы в начале и в конце строки
+std::string trim(std::string s) {
+  const std::string spaces = " \n\r\t";
+  size_t begin_of_not_spaces = s.find_first_not_of(spaces);
+  s.erase(0, begin_of_not_spaces);
+  size_t end_of_not_spaces = s.find_last_not_of(spaces);
+  return s.erase(end_of_not_spaces + 1);
+}
+
+// в стандартной библиотеке нет split :)
+std::vector<std::string> split(const std::string &s, char c) {
+  std::string::const_iterator end = s.end();
+  std::string::const_iterator start = end;
+
+  std::vector<std::string> v;
+  for (std::string::const_iterator it = s.begin(); it != end; ++it) {
+    if (*it != c) {
+      if (start == end) {
+        start = it;
+      }
+      continue;
+    }
+    if (start != end) {
+      v.push_back(std::string(start, it));
+      start = end;
+    }
+  }
+  if (start != end) {
+    v.push_back(std::string(start, end));
+  }
+  return v;
+}
+
+} // безымянное namespace
+
+std::string refalrts::debugger::Cmd::toString() {
+  if (!prefixes.empty()) {
+    std::string prefix_concat;
+    for (size_t i = 0; i < prefixes.size(); i++) {
+      if (i == prefixes.size() - 1) {
+        prefix_concat += prefixes[i];
+      } else {
+        prefix_concat += prefixes[i] + " ";
+      }
+    }
+    return prefix_concat + ": " + cmd + " " + param;
+  } else {
+    return cmd + " " + param;
+  }
+}
+
+bool refalrts::debugger::Cmd::hasParam() {
+  return param.length() != 0;
+}
+
+bool refalrts::debugger::Cmd::hasPrefix(const std::string &prefix) {
+  for (size_t i = 0; i < prefixes.size(); i++) {
+    if (prefixes[i] == prefix) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool refalrts::debugger::Cmd::hasPrefix(const char *prefix) {
+  return hasPrefix(std::string(prefix));
+}
+
+// разделяет строку на три части по схеме "prefix: cmd param"
+// ни одна из частей не является обязательной
+
+refalrts::debugger::Cmd refalrts::debugger::RefalDebugger::parse_input_line(
+  const std::string &line
+) {
+  std::string cmd, param;
+  std::vector<std::string> prefixes;
+  size_t colon_pos = line.find(':');
+  size_t begin_of_cmd_tail = 0;
+  if (colon_pos != std::string::npos) {
+    begin_of_cmd_tail = colon_pos + 1;
+    prefixes = split(line.substr(0, colon_pos), ' ');
+  }
+  std::string cmd_and_param = trim(line.substr(begin_of_cmd_tail));
+  size_t first_space_pos = cmd_and_param.find(' ');
+  if (first_space_pos != std::string::npos) {
+    cmd = cmd_and_param.substr(0, first_space_pos);
+    param = trim(cmd_and_param.substr(first_space_pos + 1));
+  } else {
+    cmd = cmd_and_param;
+  }
+  return Cmd(
+    prefixes,
+    cmd,
+    param
+  );
+}
+
+std::string refalrts::debugger::RefalDebugger::ask_for_param(
+  const std::string &appeal
+) {
+  printf("%s\n", appeal.c_str());
+  printf("param>");
+
+  char param[MAX_COMMAND_LEN] = {0};
+  fgets(param, MAX_COMMAND_LEN - 1, m_in);
+  return trim(std::string(param));
+}
+
 //=============================================================================
 //  Класс отладчика
 
@@ -660,22 +801,71 @@ void refalrts::debugger::RefalDebugger::help_option() {
   printf("================================================================\n");
 }
 
-void refalrts::debugger::RefalDebugger::break_option(const char *arg) {
-  if (arg[0] == '#') {
-    int step_break = atoi(arg+1);
+void refalrts::debugger::RefalDebugger::break_option(Cmd &cmd) {
+  if (!cmd.hasParam()) {
+    cmd.param = ask_for_param(
+      "enter function name (example: Prout) or step number (example: #23)"
+    );
+  }
+  if (cmd.param[0] == '#') {
+    int step_break = atoi(cmd.param.substr(1).c_str());
     break_set.add_breakpoint(step_break);
   } else {
-    break_set.add_breakpoint(arg);
+    break_set.add_breakpoint(cmd.param);
   }
 }
 
-void refalrts::debugger::RefalDebugger::clear_option(const char *arg) {
-  if (arg[0] == '#') {
-    int step_break = atoi(arg+1);
+void refalrts::debugger::RefalDebugger::clear_option(Cmd &cmd) {
+  if (!cmd.hasParam()) {
+    cmd.param = ask_for_param(
+      "enter function name (example: Prout) or step number (example: #23)"
+    );
+  }
+  if (cmd.param[0] == '#') {
+    int step_break = atoi(cmd.param.substr(1).c_str());
     break_set.rm_breakpoint(step_break);
   } else {
-    break_set.rm_breakpoint(arg);
+    break_set.rm_breakpoint(cmd.param);
   }
+}
+
+void refalrts::debugger::RefalDebugger::step_limit_option(Cmd &cmd) {
+  if (!cmd.hasParam()) {
+    cmd.param = ask_for_param(
+      "enter step limit (example: 400)"
+    );
+  }
+  int step_limit = atoi(cmd.param.c_str());
+  break_set.add_breakpoint(m_vm->step_counter()+step_limit);
+}
+
+void refalrts::debugger::RefalDebugger::memory_limit_option(Cmd &cmd) {
+  if (!cmd.hasParam()) {
+    cmd.param = ask_for_param(
+      "enter memory limit in nodes (example: 500)"
+    );
+  }
+  m_memory_limit = atoi(cmd.param.c_str());
+}
+
+void refalrts::debugger::RefalDebugger::trace_option(
+  Cmd &cmd, FILE *out
+) {
+  if (!cmd.hasParam()) {
+    cmd.param = ask_for_param(
+      "enter function name"
+    );
+  }
+  func_trace_table.trace_func(cmd.param, out);
+}
+
+void refalrts::debugger::RefalDebugger::no_trace_option(Cmd &cmd) {
+  if (!cmd.hasParam()) {
+    cmd.param = ask_for_param(
+      "enter function name"
+    );
+  }
+  func_trace_table.notrace_func(cmd.param);
 }
 
 void refalrts::debugger::RefalDebugger::print_callee_option(
@@ -748,126 +938,112 @@ bool str_equal(const char *lhs, const char *rhs) {
   return strcmp(lhs, rhs) == 0;
 }
 
+bool oneOf(const std::string &s, int num_of_commands, ...) {
+  va_list commands;
+  va_start(commands, num_of_commands);
+  for (int i = 0; i < num_of_commands; i++) {
+    if (strcmp(s.c_str(), va_arg(commands, const char *)) == 0) {
+      va_end(commands);
+      return true;
+    }
+  }
+  va_end(commands);
+  return false;
+}
+
 } // безымянное namespace
 
 refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
   refalrts::Iter begin, refalrts::Iter end
 ) {
-  char debcmd[16] = {0};
-  char strparam[cMaxLen] = {0};
+  char command[MAX_COMMAND_LEN] = {0};
   for ( ; ; ) {
     printf("debug>");
-    bool ok = fscanf(m_in, "%15s", debcmd) == 1;
-    if (! ok) {
-      break;
-    }
-    if (str_equal(debcmd, s_H) || str_equal(debcmd, s_HELP)) {
+    fgets(command, MAX_COMMAND_LEN - 1, m_in);
+    Cmd cmd = parse_input_line(std::string(command));
+    if (oneOf(cmd.cmd, 2, s_H, s_HELP)) {
       help_option();
+    } else if (oneOf(cmd.cmd, 3, s_B, s_BREAK, s_BREAKPOINT)) {
+      break_option(cmd);
+    } else if (oneOf(cmd.cmd, 3, s_CL, s_CLEAR, s_RM)) {
+      clear_option(cmd);
+    } else if (oneOf(cmd.cmd, 1, s_STEPLIMIT)) {
+      step_limit_option(cmd);
+    } else if (oneOf(cmd.cmd, 1, s_MEMORYLIMIT)) {
+      memory_limit_option(cmd);
+    } else if (oneOf(cmd.cmd, 2, s_TR, s_TRACE)) {
+      trace_option(cmd, get_out());
+    } else if (oneOf(cmd.cmd, 2, s_NOTR, s_NOTRACE)) {
+      no_trace_option(cmd);
     } else if (
-      str_equal(debcmd, s_B)
-      || str_equal(debcmd, s_BREAK)
-      || str_equal(debcmd, s_BREAKPOINT)
-    ) {
-      ok = fscanf(m_in, "%1023s", strparam) == 1;
-      if (ok) {
-        break_option(strparam);
-      }
-    } else if (
-      str_equal(debcmd, s_CL)
-      || str_equal(debcmd, s_CLEAR)
-      || str_equal(debcmd, s_RM)
-    ) {
-      ok = fscanf(m_in, "%1023s", strparam) == 1;
-      if (ok) {
-        clear_option(strparam);
-      }
-    } else if (str_equal(debcmd, s_STEPLIMIT)) {
-      int step_lim = 0;
-      ok = fscanf(m_in, "%d", &step_lim) == 1;
-      if (ok) {
-        break_set.add_breakpoint(m_vm->step_counter()+step_lim);
-      }
-    } else if (str_equal(debcmd, s_MEMORYLIMIT)) {
-      ok = fscanf(m_in, "%u", &m_memory_limit) == 1;
-      (void) ok;
-    } else if (str_equal(debcmd, s_TR) || str_equal(debcmd, s_TRACE)) {
-      ok = fscanf(m_in, "%1023s", strparam) == 1;
-      if (ok) {
-        func_trace_table.trace_func(strparam, get_out());
-      }
-    } else if (str_equal(debcmd, s_NOTR) || str_equal(debcmd, s_NOTRACE)) {
-      ok = fscanf(m_in, "%1023s", strparam) == 1;
-      if (ok) {
-        func_trace_table.notrace_func(strparam);
-      }
-    } else if (
-      str_equal(debcmd, s_R)
-      || str_equal(debcmd, s_RUN)
-      || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_RUN))
+      oneOf(cmd.cmd, 2, s_R, s_RUN)
+      || (str_equal(cmd.cmd.c_str(), s_DOT) && str_equal(m_dot, s_RUN))
     ) {
       m_dot = s_RUN;
       break;
     } else if (
-      str_equal(debcmd, s_S)
-      || str_equal(debcmd, s_STEP)
-      || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_STEP))
+      oneOf(cmd.cmd, 2, s_S, s_STEP)
+      || (str_equal(cmd.cmd.c_str(), s_DOT) && str_equal(m_dot, s_STEP))
     ) {
       m_step_numb = m_vm->step_counter()+1;
       m_dot = s_STEP;
       break;
-    } else if (str_equal(debcmd, s_Q) || str_equal(debcmd, s_QUIT)) {
+    } else if (oneOf(cmd.cmd, 2, s_Q, s_QUIT)) {
       m_vm->set_return_code(0);
       return cExit;
     } else if (
-      str_equal(debcmd, s_N)
-      || str_equal(debcmd, s_NEXT)
-      || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_NEXT))
+      oneOf(cmd.cmd, 2, s_N, s_NEXT)
+      || (str_equal(cmd.cmd.c_str(), s_DOT) && str_equal(m_dot, s_NEXT))
     ) {
       m_next_expr = m_vm->stack_ptr();
       m_dot = s_NEXT;
       break;
-    } else if (str_equal(debcmd, s_VARS)) {
+    } else if (oneOf(cmd.cmd, 1, s_VARS)) {
       FILE *out = get_out();
       var_debug_table.print(out);
       close_out(out);
-    } else if (str_equal(debcmd, s_P) || str_equal(debcmd, s_PRINT)) {
-      ok = fscanf(m_in, "%1023s", strparam) == 1;
-      if (! ok) {
-        continue;
+    } else if (oneOf(cmd.cmd, 2, s_P, s_PRINT)) {
+      if (!cmd.hasParam()) {
+        char appeal[512] = {0};
+        sprintf(
+          appeal,
+          "available options to print are: %s, %s, %s, %s, %s, %s, %s, varname",
+          s_ARG, s_CALL, s_CALL, s_RES, s_BREAKPOINT, s_TRACE, s_VIEWFIELD
+        );
+        cmd.param = ask_for_param(
+          std::string(appeal)
+        );
       }
       FILE *out = get_out();
-      if (str_equal(strparam, s_ARG)) {
+      if (oneOf(cmd.param, 1, s_ARG)) {
         print_arg_option(begin, end, out);
-      } else if (str_equal(strparam, s_CALL)) {
+      } else if (oneOf(cmd.param, 1, s_CALL)) {
         m_vm->print_seq(out, begin, end, true);
-      } else if (str_equal(strparam, s_CALLEE)) {
+      } else if (oneOf(cmd.param, 1, s_CALLEE)) {
         print_callee_option(begin, end, out);
-      } else if (str_equal(strparam, s_RES)) {
+      } else if (oneOf(cmd.param, 1, s_RES)) {
         print_res_option(out);
-      } else if (
-        str_equal(strparam, s_B)
-        || str_equal(strparam, s_BREAK)
-        || str_equal(strparam, s_BREAKPOINT)
-      ) {
+      } else if (oneOf(cmd.param, 3, s_B, s_BREAK, s_BREAKPOINT)) {
         break_set.print(out);
-      } else if (str_equal(strparam, s_TR) || str_equal(strparam, s_TRACE)) {
+      } else if (oneOf(cmd.param, 2, s_TR, s_TRACE)) {
         func_trace_table.print(out);
-      } else if (
-        str_equal(strparam, s_V) ||
-        str_equal(strparam, s_VIEW) ||
-        str_equal(strparam, s_VIEWFIELD)
-      ){
+      } else if (oneOf(cmd.param, 3, s_V, s_VIEW, s_VIEWFIELD)){
         print_view_field_option(out);
-      } else if (! print_var_option(strparam, out)) {
+      } else if (! print_var_option(cmd.param.c_str(), out)) {
         fprintf(
           stderr,
           "Unrecognised print option is found: %s \"%s\"\n",
-          debcmd, strparam
+          cmd.cmd.c_str(), cmd.param.c_str()
         );
       }
       close_out(out);
-    } else if (! print_var_option(debcmd, get_out())) {
-      fprintf(stderr, "Unrecognised option is found: \"%s\"\n", debcmd);
+    } else {
+      fprintf(
+        stderr,
+        "Unrecognised option: \"%s\"\n"
+        "enter help to see the list of available commands\n",
+        cmd.cmd.c_str()
+      );
     }
   }
   return refalrts::cSuccess;

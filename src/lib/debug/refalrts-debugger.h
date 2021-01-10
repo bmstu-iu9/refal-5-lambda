@@ -54,8 +54,8 @@ public:
 class TracedFunctionTable {
   std::map<std::string, FILE*> m_traced_func_table;
 public:
-  void trace_func(const char *func_name, FILE *trace_out);
-  void notrace_func(const char *func_name);
+  void trace_func(const std::string &func_name, FILE *trace_out);
+  void notrace_func(const std::string &func_name);
   void clear();
   bool is_traced_func(const char *func_name);
   FILE *get_trace_outstream(const char *func_name);
@@ -67,11 +67,38 @@ class BreakpointSet {
   std::set<std::string> m_func_breaks;
 public:
   void add_breakpoint(int step_numb);
-  void add_breakpoint(const char *func_name);
+  void add_breakpoint(const std::string &func_name);
   void rm_breakpoint(int step_numb);
-  void rm_breakpoint(const char *func_name);
+  void rm_breakpoint(const std::string &func_name);
   bool is_breakpoint(int cur_step_numb, const char *cur_func_name);
   void print(FILE *out = stdout);
+};
+
+// класс для удобной работой с введеной пользователем командой
+class Cmd {
+public:
+  std::vector<std::string> prefixes;
+  std::string cmd, param;
+
+  Cmd(
+    std::vector<std::string> &prefixes,
+    std::string &cmd,
+    std::string &param
+  ) :
+    prefixes(prefixes),
+    cmd(cmd),
+    param(param)
+  {
+    /* пусто */
+  }
+
+  std::string toString();
+
+  bool hasParam();
+
+  bool hasPrefix(const std::string &prefix);
+
+  bool hasPrefix(const char *prefix);
 };
 
 class RefalDebugger: public Debugger {
@@ -106,6 +133,7 @@ public:
     func_trace_table.clear();
   }
 
+  std::string ask_for_param(const std::string &appeal);
   FILE *get_out();
   bool next_cond(Iter begin);
   bool run_cond(RefalFunction *callee);
@@ -117,8 +145,12 @@ public:
   void set_step_res(Iter begin, Iter end);
 
   void help_option();
-  void break_option(const char *arg);
-  void clear_option(const char *arg);
+  void break_option(Cmd &cmd);
+  void clear_option(Cmd &cmd);
+  void step_limit_option(Cmd &cmd);
+  void memory_limit_option(Cmd &cmd);
+  void trace_option(Cmd &cmd, FILE *out = stdout);
+  void no_trace_option(Cmd &cmd);
   void print_callee_option(Iter begin, Iter end, FILE *out = stdout);
   void print_arg_option(Iter begin, Iter end, FILE *out = stdout);
   void print_res_option(FILE *out);
@@ -143,6 +175,7 @@ public:
   static void write_byte (char **from, char **out, char **str_p, char val);
   static int parse2hex (unsigned char *in);
   static bool quotation_mark_parse(char *from, char *out);
+  static Cmd parse_input_line(const std::string &line);
 
   virtual void set_context(Iter *context) {
     var_debug_table.set_context(context);
