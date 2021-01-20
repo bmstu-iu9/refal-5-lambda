@@ -356,188 +356,20 @@ void refalrts::debugger::BreakpointSet::print(FILE *out) {
 //=============================================================================
 //  Работа с потоками вывода и парсинг строки
 
-refalrts::debugger::RefalDebugger::RedirectionType
-refalrts::debugger::RefalDebugger::parse_redirection(char **line) {
-  char *line_ptr = *line;
-
-  skip_space(&line_ptr);
-
-  RedirectionType result = check_bracket(&line_ptr);
-  if (result == cRedirectionType_None) {
-    return cRedirectionType_None;
-  }
-
-  refalrts::debugger::RefalDebugger::skip_space(&line_ptr);
-
-  if (*line_ptr == '"') {
-    if (! quotation_mark_parse(line_ptr+1, *line)) {
-      return cRedirectionType_None;
-    }
-  } else {
-    *line = line_ptr;
-    char *end = skip_nonspace(line_ptr);
-    *end = '\0';
-  }
-
-  return result;
-}
-
-void refalrts::debugger::RefalDebugger::skip_space(char **ptr) {
-  while (**ptr == '\n' || **ptr == '\t' || **ptr == ' ') {
-    (*ptr)++;
-  }
-}
-
-char *refalrts::debugger::RefalDebugger::skip_nonspace(char *ptr) {
-  while (*ptr != '\n' && *ptr != '\t' && *ptr != ' ') {
-    ptr++;
-  }
-
-  return ptr;
-}
-
-refalrts::debugger::RefalDebugger::RedirectionType
-refalrts::debugger::RefalDebugger::check_bracket(char **ptr) {
-  if (**ptr == '>') {
-    (*ptr)++;
-    if (**ptr == '>') {
-      (*ptr)++;
-      return cRedirectionType_Append;
-    }
-    return cRedirectionType_Write;
-  }
-  return cRedirectionType_None;
-}
-
-// from - источкник, из которого копируем строку
-// out - назначение, по которому копируется строка
-// и дописывается 1 байт val (от эскейп-последовательности)
-// str_p - адрес, до которого происходит копирование из from
-// (*str_p - *from) - количество байт, которое копируем
-void refalrts::debugger::RefalDebugger::write_byte(
-  char **from, char **out, char **str_p, char val
-) {
-  memmove(*out, *from, *str_p - *from);
-  *out += (*str_p - *from) + 1;
-  *(*out - 1) = val;
-  *str_p += 2;
-  *from = *str_p;
-}
-
-int refalrts::debugger::RefalDebugger::parse2hex(unsigned char *in) {
-  unsigned char ret;
-  if ( (*in - '0') <= 9){
-    ret = static_cast<unsigned char>(*in - '0');
-  } else if ( (*in & ~(1 << 5)) - 'A' <= 'F' - 'A') {
-    // обнулением 6-го бита, мы переводим маленькие латинские буквы в большие
-    // см. ASCII table
-    ret = static_cast<unsigned char>(((*in & ~(1 << 5)) - 'A') + 10);
-  } else {
-    return cBadHexVal;
-  }
-  ret <<= 4;
-
-  if ( (*(in+1) - '0') <= 9) {
-    ret |= static_cast<unsigned char>(*(in+1) - '0');
-  } else if ( (*(in+1) & ~(1 << 5)) - 'A' <= 'F' - 'A') {
-    ret |= static_cast<unsigned char>((*(in+1) & ~(1 << 5)) - 'A' + 10);
-  } else {
-    return cBadHexVal;
-  }
-  return ret;
-}
-
-bool refalrts::debugger::RefalDebugger::quotation_mark_parse(
-  char *from, char *out
-) {
-  char *str_p = from;
-
-  for (;;) {
-    switch (*str_p) {
-    case '"':
-      switch (*(str_p + 1)) {
-      case '\n':
-      case '\t':
-      case ' ':
-      case '\0':
-        memmove(out, from, str_p - from);
-        *(out + (str_p - from)) = '\0';
-        return true;
-
-      case 'a':
-        write_byte(&from, &out, &str_p, '\a');
-        continue;
-
-      case 'b':
-        write_byte(&from, &out, &str_p, '\b');
-        continue;
-
-      case 'f':
-        write_byte(&from, &out, &str_p, '\f');
-        continue;
-
-      case 'n':
-        write_byte(&from, &out, &str_p, '\n');
-        continue;
-
-      case 'r':
-        write_byte(&from, &out, &str_p, '\r');
-        continue;
-
-      case 't':
-        write_byte(&from, &out, &str_p, '\t');
-        continue;
-
-      case 'v':
-        write_byte(&from, &out, &str_p, '\v');
-        continue;
-
-      case '"':
-        write_byte(&from, &out, &str_p, '"');
-        continue;
-
-      case 'x':
-        {
-          int hexval = parse2hex((unsigned char *)str_p + 2);
-          if (hexval == cBadHexVal) {
-            return false;
-          }
-          memmove(out, from, str_p - from);
-          out += (str_p - from) + 1;
-          *(out-1) = static_cast<char>(hexval);
-          str_p += 4;
-          from = str_p;
-          continue;
-        }
-
-      default:
-        return false;
-      }
-
-    case '\0':
-      return false;
-
-    default :
-      str_p++;
-      continue;
-    }
-  }
-}
-
-
-FILE *refalrts::debugger::RefalDebugger::get_out() {
-  char line[cMaxLen] = {0};
-  char *line_ptr = line;
-  if (fgets(line, cMaxLen, m_in) == 0) {
+FILE *refalrts::debugger::RefalDebugger::get_out(Cmd &cmd) {
+  if (cmd.file.empty()) {
     return stdout;
-  }
-  RedirectionType type = parse_redirection(&line_ptr);
-  if (type == cRedirectionType_Append) {
-    return fopen(line_ptr, "a");
-  } else if (type == cRedirectionType_Write) {
-    return fopen(line_ptr, "w");
   } else {
-    return stdout;
+    FILE *out;
+    if (cmd.isFileAppend) {
+      out = fopen(cmd.file.c_str(), "a");
+    } else {
+      out = fopen(cmd.file.c_str(), "w");
+    }
+    if (!out) {
+      return stdout;
+    }
+    return out;
   }
 }
 
@@ -584,27 +416,35 @@ std::vector<std::string> split(const std::string &s, char c) {
 
 } // безымянное namespace
 
-std::string refalrts::debugger::Cmd::toString() {
+const std::string refalrts::debugger::Cmd::toString() {
+  std::string result;
   if (!prefixes.empty()) {
     std::string prefix_concat;
     for (size_t i = 0; i < prefixes.size(); i++) {
       if (i == prefixes.size() - 1) {
-        prefix_concat += prefixes[i];
+        result += prefixes[i];
       } else {
-        prefix_concat += prefixes[i] + " ";
+        result += prefixes[i] + " ";
       }
     }
-    return prefix_concat + ": " + cmd + " " + param;
-  } else {
-    return cmd + " " + param;
+    result += ": ";
   }
+  result += cmd + " " + param;
+  if (!file.empty()) {
+    if (isFileAppend) {
+      result += " >> " + file;
+    } else {
+      result += " > " + file;
+    }
+  }
+  return result;
 }
 
-bool refalrts::debugger::Cmd::hasParam() {
+const bool refalrts::debugger::Cmd::hasParam() {
   return param.length() != 0;
 }
 
-bool refalrts::debugger::Cmd::hasPrefix(const std::string &prefix) {
+const bool refalrts::debugger::Cmd::hasPrefix(const std::string &prefix) {
   for (size_t i = 0; i < prefixes.size(); i++) {
     if (prefixes[i] == prefix) {
       return true;
@@ -613,36 +453,184 @@ bool refalrts::debugger::Cmd::hasPrefix(const std::string &prefix) {
   return false;
 }
 
-bool refalrts::debugger::Cmd::hasPrefix(const char *prefix) {
+const bool refalrts::debugger::Cmd::hasPrefix(const char *prefix) {
   return hasPrefix(std::string(prefix));
+}
+
+std::pair<std::string, std::string>
+refalrts::debugger::RefalDebugger::parse_file_name(
+  const std::string &fileString
+) {
+  if (fileString.empty()) {
+    return std::make_pair("", "");
+  }
+  std::ostringstream file;
+  std::ostringstream error;
+  bool isQuotationMark = false;
+  size_t i = 0;
+  for (;;) {
+    if (i >= fileString.size()) {
+      if (isQuotationMark) {
+        error << "unclosed quotation mark";
+        return std::make_pair("", error.str());
+      } else {
+        return std::make_pair(file.str(), "");
+      }
+    }
+    switch (fileString[i]) {
+      // запрещенные символы для имен файлов Windows/Unix <>:;,?"*
+      case '<':
+      case '>':
+      case ':':
+      case ';':
+      case ',':
+      case '?':
+      case '*':
+        error << "file names cannot contain \"" << fileString[i] << "\"";
+        return std::make_pair("", error.str());
+      case '"':
+        if (isQuotationMark) {
+          return std::make_pair(file.str(), "");
+        } else {
+          isQuotationMark = true;
+        }
+        i++;
+        continue;
+      case '\\':
+        if (i + 1 < fileString.size()) {
+          i += 2; // чтобы не писать i+=2 в каждом из case
+          switch (fileString[i - 1]) {
+            case 'a':
+              file << '\a';
+              continue;
+            case 'b':
+              file << '\b';
+              continue;
+            case 'f':
+              file << '\f';
+              continue;
+            case 'n':
+              file << '\n';
+              continue;
+            case 'r':
+              file << '\r';
+              continue;
+            case 't':
+              file << '\t';
+              continue;
+            case 'v':
+              file << '\v';
+              continue;
+            case '\\':
+              file << '\\';
+              continue;
+            case '\'':
+              file << '\'';
+              continue;
+            case '\"':
+              file << '\"';
+              continue;
+            case '\?':
+              file << '\?';
+              continue;
+            case 'x':
+              if (i + 2 < fileString.size()) {
+                unsigned int symbolCode;
+                std::stringstream ss;
+                std::string hexNum = fileString.substr(i, 2);
+                ss << std::hex << hexNum;
+                ss >> symbolCode;
+                file << (char)symbolCode;
+                i+=2; // в итоге от начала switch i+=4
+                continue;
+              } else {
+                error << "unexpected end of file name";
+                return std::make_pair("", error.str());
+              }
+            default:
+              error << "unexpected escaped character \""
+                    << fileString[i - 1] << "\"";
+              return std::make_pair("", error.str());
+          }
+        } else {
+          error << "file name unexpectedly ended on \"\\\"";
+          return std::make_pair("", error.str());
+        }
+      default:
+        file << fileString[i];
+        i++;
+        continue;
+    }
+  }
 }
 
 // разделяет строку на три части по схеме "prefix: cmd param"
 // ни одна из частей не является обязательной
-
-refalrts::debugger::Cmd refalrts::debugger::RefalDebugger::parse_input_line(
+// возвращает пару (Cmd*, ошибка)
+std::pair<refalrts::debugger::Cmd *, std::string>
+  refalrts::debugger::RefalDebugger::parse_input_line(
   const std::string &line
 ) {
   std::string cmd, param;
-  std::vector<std::string> prefixes;
+  bool isFileAppend = false;
+  std::vector<std::string> prefixes, parseErrors;
   size_t colon_pos = line.find(':');
   size_t begin_of_cmd_tail = 0;
   if (colon_pos != std::string::npos) {
     begin_of_cmd_tail = colon_pos + 1;
     prefixes = split(line.substr(0, colon_pos), ' ');
   }
-  std::string cmd_and_param = trim(line.substr(begin_of_cmd_tail));
-  size_t first_space_pos = cmd_and_param.find(' ');
-  if (first_space_pos != std::string::npos) {
-    cmd = cmd_and_param.substr(0, first_space_pos);
-    param = trim(cmd_and_param.substr(first_space_pos + 1));
-  } else {
-    cmd = cmd_and_param;
+  std::string cmd_with_param_and_file = trim(line.substr(begin_of_cmd_tail));
+  size_t first_space_pos = cmd_with_param_and_file.find(' ');
+  size_t out_stream_symbol_pos = cmd_with_param_and_file.find('>');
+  if (first_space_pos > out_stream_symbol_pos) {
+    first_space_pos = out_stream_symbol_pos;
   }
-  return Cmd(
-    prefixes,
-    cmd,
-    param
+  cmd = cmd_with_param_and_file.substr(0, first_space_pos);
+  if (out_stream_symbol_pos - first_space_pos > 1) {
+    param = trim(
+      cmd_with_param_and_file.substr(
+        first_space_pos + 1,
+        out_stream_symbol_pos - first_space_pos - 1
+      )
+    );
+  }
+  size_t skipSecondBracket = 0;
+  if (
+    out_stream_symbol_pos + 1 < cmd_with_param_and_file.size() &&
+    cmd_with_param_and_file[out_stream_symbol_pos + 1] == '>'
+    ) {
+    isFileAppend = true;
+    skipSecondBracket++;
+  }
+  std::pair<std::string, std::string> fileAndErr("", "");
+  if (out_stream_symbol_pos != std::string::npos) {
+    fileAndErr = parse_file_name(
+      trim(
+        cmd_with_param_and_file.substr(
+          out_stream_symbol_pos + 1 + skipSecondBracket
+        )
+      )
+    );
+    if (!fileAndErr.second.empty()) {
+      return std::make_pair((Cmd *) NULL, fileAndErr.second);
+    }
+    if (fileAndErr.first.empty()) {
+      return std::make_pair(
+        (Cmd *) NULL,
+        "file name is required after \">\" symbol"
+      );
+    }
+  }
+  return std::make_pair(
+    new Cmd(
+      prefixes,
+      cmd,
+      param,
+      fileAndErr.first,
+      isFileAppend
+    ),
+    ""
   );
 }
 
@@ -960,7 +948,13 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
   for ( ; ; ) {
     printf("debug>");
     fgets(command, MAX_COMMAND_LEN - 1, m_in);
-    Cmd cmd = parse_input_line(std::string(command));
+    std::pair<Cmd *, std::string> cmdAndError = parse_input_line(
+      std::string(command));
+    if (!cmdAndError.second.empty()) {
+      printf("Error: %s\n", cmdAndError.second.c_str());
+      continue;
+    }
+    Cmd &cmd = *cmdAndError.first;
     if (oneOf(cmd.cmd, 2, s_H, s_HELP)) {
       help_option();
     } else if (oneOf(cmd.cmd, 3, s_B, s_BREAK, s_BREAKPOINT)) {
@@ -972,7 +966,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
     } else if (oneOf(cmd.cmd, 1, s_MEMORYLIMIT)) {
       memory_limit_option(cmd);
     } else if (oneOf(cmd.cmd, 2, s_TR, s_TRACE)) {
-      trace_option(cmd, get_out());
+      trace_option(cmd, get_out(cmd));
     } else if (oneOf(cmd.cmd, 2, s_NOTR, s_NOTRACE)) {
       no_trace_option(cmd);
     } else if (
@@ -999,7 +993,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       m_dot = s_NEXT;
       break;
     } else if (oneOf(cmd.cmd, 1, s_VARS)) {
-      FILE *out = get_out();
+      FILE *out = get_out(cmd);
       var_debug_table.print(out);
       close_out(out);
     } else if (oneOf(cmd.cmd, 2, s_P, s_PRINT)) {
@@ -1014,7 +1008,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
           std::string(appeal)
         );
       }
-      FILE *out = get_out();
+      FILE *out = get_out(cmd);
       if (oneOf(cmd.param, 1, s_ARG)) {
         print_arg_option(begin, end, out);
       } else if (oneOf(cmd.param, 1, s_CALL)) {

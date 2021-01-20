@@ -78,27 +78,32 @@ public:
 class Cmd {
 public:
   std::vector<std::string> prefixes;
-  std::string cmd, param;
+  std::string cmd, param, file;
+  bool isFileAppend;
 
   Cmd(
     std::vector<std::string> &prefixes,
     std::string &cmd,
-    std::string &param
+    std::string &param,
+    std::string &file,
+    bool isFileAppend
   ) :
     prefixes(prefixes),
     cmd(cmd),
-    param(param)
+    param(param),
+    file(file),
+    isFileAppend(isFileAppend)
   {
     /* пусто */
   }
 
-  std::string toString();
+  const std::string toString();
 
-  bool hasParam();
+  const bool hasParam();
 
-  bool hasPrefix(const std::string &prefix);
+  const bool hasPrefix(const std::string &prefix);
 
-  bool hasPrefix(const char *prefix);
+  const bool hasPrefix(const char *prefix);
 };
 
 class RefalDebugger: public Debugger {
@@ -134,7 +139,7 @@ public:
   }
 
   std::string ask_for_param(const std::string &appeal);
-  FILE *get_out();
+  FILE *get_out(Cmd &cmd);
   bool next_cond(Iter begin);
   bool run_cond(RefalFunction *callee);
   bool step_cond();
@@ -168,14 +173,10 @@ public:
     cBadHexVal = -1
   };
 
-  static RedirectionType parse_redirection(char **line);
-  static void skip_space (char **ptr);
-  static char *skip_nonspace (char *ptr);
-  static RedirectionType check_bracket (char **ptr);
-  static void write_byte (char **from, char **out, char **str_p, char val);
-  static int parse2hex (unsigned char *in);
-  static bool quotation_mark_parse(char *from, char *out);
-  static Cmd parse_input_line(const std::string &line);
+  static std::pair<refalrts::debugger::Cmd *, std::string>
+    parse_input_line(const std::string &line);
+  static std::pair<std::string, std::string>
+    parse_file_name(const std::string &fileString);
 
   virtual void set_context(Iter *context) {
     var_debug_table.set_context(context);
