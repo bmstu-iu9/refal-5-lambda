@@ -97,6 +97,8 @@ public:
     /* пусто */
   }
 
+  Cmd() : isFileAppend(false) {};
+
   const std::string toString();
 
   const bool hasParam();
@@ -173,7 +175,7 @@ public:
     cBadHexVal = -1
   };
 
-  static std::pair<refalrts::debugger::Cmd *, std::string>
+  static std::pair<refalrts::debugger::Cmd, std::string>
     parse_input_line(const std::string &line);
   static std::pair<std::string, std::string>
     parse_file_name(const std::string &fileString);

@@ -567,7 +567,7 @@ refalrts::debugger::RefalDebugger::parse_file_name(
 // разделяет строку на три части по схеме "prefix: cmd param"
 // ни одна из частей не является обязательной
 // возвращает пару (Cmd*, ошибка)
-std::pair<refalrts::debugger::Cmd *, std::string>
+std::pair<refalrts::debugger::Cmd, std::string>
   refalrts::debugger::RefalDebugger::parse_input_line(
   const std::string &line
 ) {
@@ -613,17 +613,17 @@ std::pair<refalrts::debugger::Cmd *, std::string>
       )
     );
     if (!fileAndErr.second.empty()) {
-      return std::make_pair((Cmd *) NULL, fileAndErr.second);
+      return std::make_pair(Cmd(), fileAndErr.second);
     }
     if (fileAndErr.first.empty()) {
       return std::make_pair(
-        (Cmd *) NULL,
+        Cmd(),
         "file name is required after \">\" symbol"
       );
     }
   }
   return std::make_pair(
-    new Cmd(
+    Cmd(
       prefixes,
       cmd,
       param,
@@ -948,13 +948,13 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
   for ( ; ; ) {
     printf("debug>");
     fgets(command, MAX_COMMAND_LEN - 1, m_in);
-    std::pair<Cmd *, std::string> cmdAndError = parse_input_line(
+    std::pair<Cmd, std::string> cmdAndError = parse_input_line(
       std::string(command));
     if (!cmdAndError.second.empty()) {
       printf("Error: %s\n", cmdAndError.second.c_str());
       continue;
     }
-    Cmd &cmd = *cmdAndError.first;
+    Cmd &cmd = cmdAndError.first;
     if (oneOf(cmd.cmd, 2, s_H, s_HELP)) {
       help_option();
     } else if (oneOf(cmd.cmd, 3, s_B, s_BREAK, s_BREAKPOINT)) {
