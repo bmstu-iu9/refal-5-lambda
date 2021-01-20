@@ -69,22 +69,6 @@ static const char *const s_FULL = "full";
 enum { cMaxLen = 1024 };
 void close_out(FILE*);
 
-// префиксы влияют на стиль печати
-const char * opposite_prefix(const char * prefix) {
-  if (strcmp(prefix, s_MULTILINE) == 0) {
-    return s_ONELINE;
-  }
-  if (strcmp(prefix, s_ONELINE) == 0) {
-    return s_MULTILINE;
-  }
-  if (strcmp(prefix, s_SKELETON) == 0) {
-    return s_FULL;
-  }
-  if (strcmp(prefix, s_FULL) == 0) {
-    return s_SKELETON;
-  }
-  return NULL;
-}
 
 } // namespace debugger
 
@@ -540,6 +524,10 @@ refalrts::debugger::RefalDebugger::parse_file_name(
                 std::string hexNum = fileString.substr(i, 2);
                 ss << std::hex << hexNum;
                 ss >> symbolCode;
+                if (!symbolCode) {
+                  error << "invalid hex in escaped sequence \"\\x...\"";
+                  return std::make_pair("", error.str());
+                }
                 file << (char)symbolCode;
                 i+=2; // в итоге от начала switch i+=4
                 continue;
@@ -893,8 +881,12 @@ void refalrts::debugger::RefalDebugger::print_res_option(FILE *out) {
   }
 }
 
-void refalrts::debugger::RefalDebugger::print_view_field_option(FILE *out) {
-  m_vm->print_view_field(out, true);
+void refalrts::debugger::RefalDebugger::print_view_field_option(
+  FILE *out,
+  bool multiline,
+  bool skeleton
+) {
+  m_vm->print_view_field(out, multiline);
 }
 
 bool refalrts::debugger::RefalDebugger::print_var_option(
@@ -918,6 +910,32 @@ bool refalrts::debugger::RefalDebugger::print_var_option(
   // не может быть именем переменной
   close_out(out);
   return false;
+}
+
+bool refalrts::debugger::RefalDebugger::isCmdMultiline(Cmd &cmd) {
+  if (m_multiline) {
+    if (cmd.hasPrefix(s_ONELINE)) {
+      return false;
+    }
+  } else {
+    if (cmd.hasPrefix(s_MULTILINE)) {
+      return true;
+    }
+  }
+  return m_multiline;
+}
+
+bool refalrts::debugger::RefalDebugger::isCmdSkeleton(Cmd &cmd) {
+  if (m_skeleton) {
+    if (cmd.hasPrefix(s_FULL)) {
+      return false;
+    }
+  } else {
+    if (cmd.hasPrefix(s_SKELETON)) {
+      return true;
+    }
+  }
+  return m_skeleton;
 }
 
 namespace {
@@ -955,6 +973,8 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       continue;
     }
     Cmd &cmd = cmdAndError.first;
+    bool multiline = isCmdMultiline(cmd);
+    bool skeleton = isCmdSkeleton(cmd);
     if (oneOf(cmd.cmd, 2, s_H, s_HELP)) {
       help_option();
     } else if (oneOf(cmd.cmd, 3, s_B, s_BREAK, s_BREAKPOINT)) {
@@ -1022,7 +1042,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       } else if (oneOf(cmd.param, 2, s_TR, s_TRACE)) {
         func_trace_table.print(out);
       } else if (oneOf(cmd.param, 3, s_V, s_VIEW, s_VIEWFIELD)){
-        print_view_field_option(out);
+        print_view_field_option(out, multiline, skeleton);
       } else if (! print_var_option(cmd.param.c_str(), out)) {
         fprintf(
           stderr,
@@ -1031,6 +1051,14 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
         );
       }
       close_out(out);
+    } else if (oneOf(cmd.cmd, 1, s_MULTILINE)) {
+      m_multiline = true;
+    } else if (oneOf(cmd.cmd, 1, s_ONELINE)) {
+      m_multiline = false;
+    } else if (oneOf(cmd.cmd, 1, s_SKELETON)) {
+      m_skeleton = true;
+    } else if (oneOf(cmd.cmd, 1, s_FULL)) {
+      m_skeleton = false;
     } else {
       fprintf(
         stderr,

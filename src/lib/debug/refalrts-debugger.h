@@ -117,6 +117,9 @@ class RefalDebugger: public Debugger {
   Iter m_res_begin;
   Iter m_res_end;
   VM *m_vm;
+  // параметры печати
+  bool m_multiline;
+  bool m_skeleton;
 
 public:
   VariableDebugTable var_debug_table;
@@ -132,6 +135,8 @@ public:
     , m_res_begin(0)
     , m_res_end(0)
     , m_vm(vm)
+    , m_multiline(true)
+    , m_skeleton(false)
     , var_debug_table(m_vm)
   {
     /* пусто */
@@ -161,19 +166,11 @@ public:
   void print_callee_option(Iter begin, Iter end, FILE *out = stdout);
   void print_arg_option(Iter begin, Iter end, FILE *out = stdout);
   void print_res_option(FILE *out);
-  void print_view_field_option(FILE *out);
+  void print_view_field_option(FILE *out, bool multiline, bool skeleton);
   bool print_var_option(const char *var_name, FILE *out = stdout);
+  bool isCmdMultiline(Cmd &cmd);
+  bool isCmdSkeleton(Cmd &cmd);
   refalrts::FnResult debugger_loop(Iter begin, Iter end);
-
-  enum RedirectionType {
-    cRedirectionType_None = -1,
-    cRedirectionType_Write = 0,
-    cRedirectionType_Append = 1,
-  };
-
-  enum {
-    cBadHexVal = -1
-  };
 
   static std::pair<refalrts::debugger::Cmd, std::string>
     parse_input_line(const std::string &line);
