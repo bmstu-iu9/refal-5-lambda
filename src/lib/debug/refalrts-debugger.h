@@ -135,8 +135,8 @@ public:
     , m_res_begin(0)
     , m_res_end(0)
     , m_vm(vm)
-    , m_multiline(true)
-    , m_skeleton(false)
+    , m_multiline(false)
+    , m_skeleton(true)
     , var_debug_table(m_vm)
   {
     /* пусто */
@@ -168,6 +168,7 @@ public:
   void print_res_option(FILE *out);
   void print_view_field_option(FILE *out, bool multiline, bool skeleton);
   bool print_var_option(const char *var_name, FILE *out = stdout);
+  void backtrace_option(FILE *out, bool multiline, bool skeleton);
   bool isCmdMultiline(Cmd &cmd);
   bool isCmdSkeleton(Cmd &cmd);
   refalrts::FnResult debugger_loop(Iter begin, Iter end);

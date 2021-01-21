@@ -65,6 +65,8 @@ static const char *const s_ONELINE = "oneline";
 static const char *const s_MULTILINE = "multiline";
 static const char *const s_SKELETON = "skeleton";
 static const char *const s_FULL = "full";
+static const char *const s_BACKTRACE = "backtrace";
+static const char *const s_BT = "bt";
 
 enum { cMaxLen = 1024 };
 void close_out(FILE*);
@@ -552,7 +554,7 @@ refalrts::debugger::RefalDebugger::parse_file_name(
   }
 }
 
-// разделяет строку на три части по схеме "prefix: cmd param"
+// разделяет строку на три части по схеме "prefix: cmd param > filename"
 // ни одна из частей не является обязательной
 // возвращает пару (Cmd*, ошибка)
 std::pair<refalrts::debugger::Cmd, std::string>
@@ -561,7 +563,7 @@ std::pair<refalrts::debugger::Cmd, std::string>
 ) {
   std::string cmd, param;
   bool isFileAppend = false;
-  std::vector<std::string> prefixes, parseErrors;
+  std::vector<std::string> prefixes;
   size_t colon_pos = line.find(':');
   size_t begin_of_cmd_tail = 0;
   if (colon_pos != std::string::npos) {
@@ -912,6 +914,66 @@ bool refalrts::debugger::RefalDebugger::print_var_option(
   return false;
 }
 
+void refalrts::debugger::RefalDebugger::backtrace_option(
+  FILE *out, bool multiline, bool skeleton
+) {
+  Iter stack_ptr = m_vm->stack_ptr();
+  if (stack_ptr == 0) {
+    fprintf(out, "call stack is empty\n");
+    return;
+  }
+
+  // Сначала получается соответствие закрыващих скобок вызова
+  // количеству активных подвыражений, содержащих первичное и содержащихся
+  // в рассматриваемом (которому принадлежит закрывающая скобка).
+  std::map<NodePtr, int> close_call_level;
+
+  int level = 0;
+  int maxLevel = -1;
+  for (
+    Iter current = stack_ptr;
+    current->next != 0;
+    current = current->next
+  ) {
+    if (current->tag == refalrts::cDataOpenCall) {
+      level -= 1;
+    } else if (current->tag == refalrts::cDataCloseCall) {
+      level += 1;
+      if (level > maxLevel) {
+        // встречена закрывающая скобка "объемлещего подвыражения
+        maxLevel = level;
+        close_call_level.insert(std::make_pair(current, level));
+      }
+    }
+  }
+  int call_number = 0;
+  for (
+    Iter stack_head = stack_ptr;
+    stack_head != 0;
+    stack_head = stack_head->link_info->link_info
+  ) {
+    Iter begin = stack_head;
+    NodePtr end = stack_head->link_info;
+    Iter function = begin->next;
+    int call_level = close_call_level[end];
+    fprintf(out, "@%-3d ^%-3d ", call_number, call_level);
+    if (break_set.is_breakpoint(-1, function->function_info->name.name)) {
+      fprintf(out, "*");
+    } else {
+      fprintf(out, " ");
+    }
+    if (skeleton) {
+      fprintf(out, "<%s ...>\n", function->function_info->name.name);
+    } else {
+      m_vm->print_seq(out, begin, end, multiline);
+      if (multiline) {
+        fprintf(out, "\n");
+      }
+    }
+    call_number++;
+  }
+}
+
 bool refalrts::debugger::RefalDebugger::isCmdMultiline(Cmd &cmd) {
   if (m_multiline) {
     if (cmd.hasPrefix(s_ONELINE)) {
@@ -1059,6 +1121,10 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       m_skeleton = true;
     } else if (oneOf(cmd.cmd, 1, s_FULL)) {
       m_skeleton = false;
+    } else if (oneOf(cmd.cmd, 2, s_BACKTRACE, s_BT)) {
+      FILE *out = get_out(cmd);
+      backtrace_option(out, multiline, skeleton);
+      close_out(out);
     } else {
       fprintf(
         stderr,
