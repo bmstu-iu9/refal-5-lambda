@@ -445,9 +445,9 @@ const bool refalrts::debugger::Cmd::hasPrefix(const char *prefix) {
 
 std::pair<std::string, std::string>
 refalrts::debugger::RefalDebugger::parse_file_name(
-  const std::string &fileString
+  const std::string &file_string
 ) {
-  if (fileString.empty()) {
+  if (file_string.empty()) {
     return std::make_pair("", "");
   }
   std::ostringstream file;
@@ -455,7 +455,7 @@ refalrts::debugger::RefalDebugger::parse_file_name(
   bool isQuotationMark = false;
   size_t i = 0;
   for (;;) {
-    if (i >= fileString.size()) {
+    if (i >= file_string.size()) {
       if (isQuotationMark) {
         error << "unclosed quotation mark";
         return std::make_pair("", error.str());
@@ -463,7 +463,7 @@ refalrts::debugger::RefalDebugger::parse_file_name(
         return std::make_pair(file.str(), "");
       }
     }
-    switch (fileString[i]) {
+    switch (file_string[i]) {
       // запрещенные символы для имен файлов Windows/Unix <>:;,?"*
       case '<':
       case '>':
@@ -472,7 +472,7 @@ refalrts::debugger::RefalDebugger::parse_file_name(
       case ',':
       case '?':
       case '*':
-        error << "file names cannot contain \"" << fileString[i] << "\"";
+        error << "file names cannot contain \"" << file_string[i] << "\"";
         return std::make_pair("", error.str());
       case '"':
         if (isQuotationMark) {
@@ -483,9 +483,9 @@ refalrts::debugger::RefalDebugger::parse_file_name(
         i++;
         continue;
       case '\\':
-        if (i + 1 < fileString.size()) {
+        if (i + 1 < file_string.size()) {
           i += 2; // чтобы не писать i+=2 в каждом из case
-          switch (fileString[i - 1]) {
+          switch (file_string[i - 1]) {
             case 'a':
               file << '\a';
               continue;
@@ -520,10 +520,10 @@ refalrts::debugger::RefalDebugger::parse_file_name(
               file << '\?';
               continue;
             case 'x':
-              if (i + 2 < fileString.size()) {
+              if (i + 2 < file_string.size()) {
                 unsigned int symbolCode;
                 std::stringstream ss;
-                std::string hexNum = fileString.substr(i, 2);
+                std::string hexNum = file_string.substr(i, 2);
                 ss << std::hex << hexNum;
                 ss >> symbolCode;
                 if (!symbolCode) {
@@ -539,7 +539,7 @@ refalrts::debugger::RefalDebugger::parse_file_name(
               }
             default:
               error << "unexpected escaped character \""
-                    << fileString[i - 1] << "\"";
+                    << file_string[i - 1] << "\"";
               return std::make_pair("", error.str());
           }
         } else {
@@ -547,7 +547,7 @@ refalrts::debugger::RefalDebugger::parse_file_name(
           return std::make_pair("", error.str());
         }
       default:
-        file << fileString[i];
+        file << file_string[i];
         i++;
         continue;
     }
@@ -940,7 +940,7 @@ void refalrts::debugger::RefalDebugger::backtrace_option(
     } else if (current->tag == refalrts::cDataCloseCall) {
       level += 1;
       if (level > maxLevel) {
-        // встречена закрывающая скобка "объемлещего подвыражения
+        // встречена закрывающая скобка "объемлющего подвыражения"
         maxLevel = level;
         close_call_level.insert(std::make_pair(current, level));
       }
@@ -971,6 +971,95 @@ void refalrts::debugger::RefalDebugger::backtrace_option(
       }
     }
     call_number++;
+  }
+}
+
+// возвращает открывающую скобку вызова активного подвыражения с указанным
+// номером (может иметь вид @N или ^N)
+refalrts::NodePtr refalrts::debugger::RefalDebugger::find_call_stack_elem(
+  const std::string &elem_number
+) {
+  Iter stack_ptr = m_vm->stack_ptr();
+  if (stack_ptr == 0) {
+    return 0;
+  }
+  if (elem_number[0] == '@') {
+    // поиск N-го элемента стека
+    int required_call_number = atoi(elem_number.substr(1).c_str());
+    int call_number = 0;
+    for (
+      Iter stack_head = stack_ptr;
+      stack_head != 0;
+      stack_head = stack_head->link_info->link_info
+      ) {
+      if (call_number == required_call_number) {
+        return stack_head;
+      }
+      call_number++;
+    }
+  } else if (elem_number[0] == '^') {
+    // поиск активного подвыражения, содержащего первичное активное
+    // и N других, тоже содержащих первичное
+    int required_call_level = atoi(elem_number.substr(1).c_str());
+    int level = 0;
+    int maxLevel = -1;
+    // сначала идет поиск закрывающий скобки вызова
+    // искомого активного подвыражения
+    NodePtr close_call_bracket = 0;
+    for (
+      Iter current = stack_ptr;
+      current->next != 0;
+      current = current->next
+      ) {
+      if (current->tag == refalrts::cDataOpenCall) {
+        level -= 1;
+      } else if (current->tag == refalrts::cDataCloseCall) {
+        level += 1;
+        if (level > maxLevel) {
+          // встречена закрывающая скобка "объемлющего подвыражения"
+          maxLevel = level;
+          if (level == required_call_level) {
+            close_call_bracket = current;
+            break;
+          }
+        }
+      }
+    }
+    if (close_call_bracket == 0) {
+      return 0;
+    }
+    // затем для закрывающей скобки ищется открывающая
+    for (
+      Iter stack_head = stack_ptr;
+      stack_head != 0;
+      stack_head = stack_head->link_info->link_info
+      ) {
+      if (stack_head->link_info == close_call_bracket) {
+        return stack_head;
+      }
+    }
+  }
+  return 0;
+}
+
+void refalrts::debugger::RefalDebugger::print_call_stack_option(
+  const std::string &elem_number, FILE *out, bool multiline, bool skeleton
+) {
+  NodePtr open_call_bracket = find_call_stack_elem(elem_number);
+  if (open_call_bracket != 0) {
+    if (skeleton) {
+      Iter function = open_call_bracket->next;
+      fprintf(out, "<%s ...>\n", function->function_info->name.name);
+    } else {
+      m_vm->print_seq(
+        out,
+        open_call_bracket,
+        open_call_bracket->link_info,
+        multiline
+      );
+    }
+  } else {
+    fprintf(out, "call stack is empty\n");
   }
 }
 
@@ -1103,8 +1192,13 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
         break_set.print(out);
       } else if (oneOf(cmd.param, 2, s_TR, s_TRACE)) {
         func_trace_table.print(out);
-      } else if (oneOf(cmd.param, 3, s_V, s_VIEW, s_VIEWFIELD)){
+      } else if (oneOf(cmd.param, 3, s_V, s_VIEW, s_VIEWFIELD)) {
         print_view_field_option(out, multiline, skeleton);
+      } else if (
+        cmd.param.size() > 1 &&
+        (cmd.param[0] == '^' || cmd.param[0] == '@')
+      ) {
+        print_call_stack_option(cmd.param, out, multiline, skeleton);
       } else if (! print_var_option(cmd.param.c_str(), out)) {
         fprintf(
           stderr,
