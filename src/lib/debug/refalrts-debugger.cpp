@@ -923,29 +923,33 @@ void refalrts::debugger::RefalDebugger::backtrace_option(
     return;
   }
   if (stack_ptr->tag != refalrts::cDataOpenCall) {
-    fprintf(out, "cannot print call stack");
+    fprintf(out, "cannot print call stack\n");
     return;
   }
-  // Сначала получается соответствие закрыващих скобок вызова
+  // Сначала получается соответствие открывающих скобок вызова
   // количеству активных подвыражений, содержащих первичное и содержащихся
-  // в рассматриваемом (которому принадлежит закрывающая скобка).
-  std::map<NodePtr, int> close_call_level;
+  // в рассматриваемом (которому принадлежит открывающая скобка).
+  std::map<NodePtr, int> open_call_level;
 
-  int level = 0;
+  int level = -1;
   int maxLevel = -1;
   for (
     Iter current = stack_ptr;
-    current->next != 0;
-    current = current->next
+    current->prev != 0;
+    current = current->prev
   ) {
-    if (current->tag == refalrts::cDataOpenCall) {
+    if (current->tag == refalrts::cDataCloseCall) {
+      // вообще, сюда не должно никогда попасть
+      // так как первичное активное подвыражение является самым левым,
+      // не содержащим других.
+      // Однако для общности алгоритма пусть будет
       level -= 1;
-    } else if (current->tag == refalrts::cDataCloseCall) {
+    } else if (current->tag == refalrts::cDataOpenCall) {
       level += 1;
       if (level > maxLevel) {
-        // встречена закрывающая скобка "объемлющего подвыражения"
+        // встречена открывающая скобка "объемлющего подвыражения"
         maxLevel = level;
-        close_call_level.insert(std::make_pair(current, level));
+        open_call_level.insert(std::make_pair(current, level));
       }
     }
   }
@@ -958,7 +962,7 @@ void refalrts::debugger::RefalDebugger::backtrace_option(
     Iter begin = stack_head;
     NodePtr end = stack_head->link_info;
     Iter function = begin->next;
-    int call_level = close_call_level[end];
+    int call_level = open_call_level[begin];
     fprintf(out, "@%-3d ^%-3d ", call_number, call_level);
     if (break_set.is_breakpoint(-1, function->function_info->name.name)) {
       fprintf(out, "*");
@@ -1007,41 +1011,28 @@ refalrts::NodePtr refalrts::debugger::RefalDebugger::find_call_stack_elem(
     // поиск активного подвыражения, содержащего первичное активное
     // и N других, тоже содержащих первичное
     int required_call_level = atoi(elem_number.substr(1).c_str());
-    int level = 0;
+    int level = -1;
     int maxLevel = -1;
-    // сначала идет поиск закрывающий скобки вызова
-    // искомого активного подвыражения
-    NodePtr close_call_bracket = 0;
     for (
       Iter current = stack_ptr;
-      current->next != 0;
-      current = current->next
+      current->prev != 0;
+      current = current->prev
       ) {
-      if (current->tag == refalrts::cDataOpenCall) {
+      if (current->tag == refalrts::cDataCloseCall) {
+        // вообще, сюда не должно никогда попасть
+        // так как первичное активное подвыражение является самым левым,
+        // не содержащим других.
+        // Однако для общности алгоритма пусть будет
         level -= 1;
-      } else if (current->tag == refalrts::cDataCloseCall) {
+      } else if (current->tag == refalrts::cDataOpenCall) {
         level += 1;
         if (level > maxLevel) {
-          // встречена закрывающая скобка "объемлющего подвыражения"
+          // встречена открывающая скобка "объемлющего подвыражения"
           maxLevel = level;
           if (level == required_call_level) {
-            close_call_bracket = current;
-            break;
+            return current;
           }
         }
-      }
-    }
-    if (close_call_bracket == 0) {
-      return 0;
-    }
-    // затем для закрывающей скобки ищется открывающая
-    for (
-      Iter stack_head = stack_ptr;
-      stack_head != 0;
-      stack_head = stack_head->link_info->link_info
-      ) {
-      if (stack_head->link_info == close_call_bracket) {
-        return stack_head;
       }
     }
   }
