@@ -915,14 +915,17 @@ bool refalrts::debugger::RefalDebugger::print_var_option(
 }
 
 void refalrts::debugger::RefalDebugger::backtrace_option(
-  FILE *out, bool multiline, bool skeleton
+  Iter begin, FILE *out, bool multiline, bool skeleton
 ) {
-  Iter stack_ptr = m_vm->stack_ptr();
+  Iter stack_ptr = begin;
   if (stack_ptr == 0) {
     fprintf(out, "call stack is empty\n");
     return;
   }
-
+  if (stack_ptr->tag != refalrts::cDataOpenCall) {
+    fprintf(out, "cannot print call stack");
+    return;
+  }
   // Сначала получается соответствие закрыващих скобок вызова
   // количеству активных подвыражений, содержащих первичное и содержащихся
   // в рассматриваемом (которому принадлежит закрывающая скобка).
@@ -977,10 +980,13 @@ void refalrts::debugger::RefalDebugger::backtrace_option(
 // возвращает открывающую скобку вызова активного подвыражения с указанным
 // номером (может иметь вид @N или ^N)
 refalrts::NodePtr refalrts::debugger::RefalDebugger::find_call_stack_elem(
-  const std::string &elem_number
+  Iter begin, const std::string &elem_number
 ) {
-  Iter stack_ptr = m_vm->stack_ptr();
+  Iter stack_ptr = begin;
   if (stack_ptr == 0) {
+    return 0;
+  }
+  if (stack_ptr->tag != refalrts::cDataOpenCall) {
     return 0;
   }
   if (elem_number[0] == '@') {
@@ -1043,9 +1049,13 @@ refalrts::NodePtr refalrts::debugger::RefalDebugger::find_call_stack_elem(
 }
 
 void refalrts::debugger::RefalDebugger::print_call_stack_option(
-  const std::string &elem_number, FILE *out, bool multiline, bool skeleton
+  Iter begin,
+  const std::string &elem_number,
+  FILE *out,
+  bool multiline,
+  bool skeleton
 ) {
-  NodePtr open_call_bracket = find_call_stack_elem(elem_number);
+  NodePtr open_call_bracket = find_call_stack_elem(begin, elem_number);
   if (open_call_bracket != 0) {
     if (skeleton) {
       Iter function = open_call_bracket->next;
@@ -1059,7 +1069,7 @@ void refalrts::debugger::RefalDebugger::print_call_stack_option(
       );
     }
   } else {
-    fprintf(out, "call stack is empty\n");
+    fprintf(out, "no such stack element\n");
   }
 }
 
@@ -1198,7 +1208,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
         cmd.param.size() > 1 &&
         (cmd.param[0] == '^' || cmd.param[0] == '@')
       ) {
-        print_call_stack_option(cmd.param, out, multiline, skeleton);
+        print_call_stack_option(begin, cmd.param, out, multiline, skeleton);
       } else if (! print_var_option(cmd.param.c_str(), out)) {
         fprintf(
           stderr,
@@ -1217,7 +1227,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       m_skeleton = false;
     } else if (oneOf(cmd.cmd, 2, s_BACKTRACE, s_BT)) {
       FILE *out = get_out(cmd);
-      backtrace_option(out, multiline, skeleton);
+      backtrace_option(begin, out, multiline, skeleton);
       close_out(out);
     } else {
       fprintf(

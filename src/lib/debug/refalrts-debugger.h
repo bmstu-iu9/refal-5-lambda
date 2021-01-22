@@ -168,10 +168,14 @@ public:
   void print_res_option(FILE *out);
   void print_view_field_option(FILE *out, bool multiline, bool skeleton);
   bool print_var_option(const char *var_name, FILE *out = stdout);
-  void backtrace_option(FILE *out, bool multiline, bool skeleton);
-  NodePtr find_call_stack_elem(const std::string &elem_number);
+  void backtrace_option(Iter begin, FILE *out, bool multiline, bool skeleton);
+  NodePtr find_call_stack_elem(Iter begin, const std::string &elem_number);
   void print_call_stack_option(
-    const std::string &elem_number, FILE *out, bool multiline, bool skeleton
+    Iter begin,
+    const std::string &elem_number,
+    FILE *out,
+    bool multiline,
+    bool skeleton
   );
   bool isCmdMultiline(Cmd &cmd);
   bool isCmdSkeleton(Cmd &cmd);
