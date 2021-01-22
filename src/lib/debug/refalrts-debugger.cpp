@@ -51,7 +51,7 @@ static const char *const s_ARG = "arg";
 static const char *const s_CALL = "call";
 static const char *const s_CALLEE = "callee";
 static const char *const s_RES = "res";
-static const char *const s_DOT = ".";
+static const char *const s_EMPTY = "";
 static const char *const s_TR = "tr";
 static const char *const s_TRACE = "trace";
 static const char *const s_NOTR = "notr";
@@ -795,7 +795,7 @@ void refalrts::debugger::RefalDebugger::help_option() {
     s_B, s_BREAK, s_BREAKPOINT, "print set of all placed breakpoints"
   );
   printf("  %s, %s\t\t%s\n", s_TR, s_TRACE, "print table of all traced functions");
-  printf("%s\t\t\t%s\n", s_DOT, "repeat previous debugger command");
+  printf("%s\t\t\t%s\n", s_EMPTY, "repeat previous debugger command");
   printf("\n");
   printf("================================================================\n");
 }
@@ -1209,13 +1209,13 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       no_trace_option(cmd);
     } else if (
       oneOf(cmd.cmd, 2, s_R, s_RUN)
-      || (str_equal(cmd.cmd.c_str(), s_DOT) && str_equal(m_dot, s_RUN))
+      || (str_equal(cmd.cmd.c_str(), s_EMPTY) && str_equal(m_dot, s_RUN))
     ) {
       m_dot = s_RUN;
       break;
     } else if (
       oneOf(cmd.cmd, 2, s_S, s_STEP)
-      || (str_equal(cmd.cmd.c_str(), s_DOT) && str_equal(m_dot, s_STEP))
+      || (str_equal(cmd.cmd.c_str(), s_EMPTY) && str_equal(m_dot, s_STEP))
     ) {
       m_step_numb = m_vm->step_counter()+1;
       m_dot = s_STEP;
@@ -1225,7 +1225,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       return cExit;
     } else if (
       oneOf(cmd.cmd, 2, s_N, s_NEXT)
-      || (str_equal(cmd.cmd.c_str(), s_DOT) && str_equal(m_dot, s_NEXT))
+      || (str_equal(cmd.cmd.c_str(), s_EMPTY) && str_equal(m_dot, s_NEXT))
     ) {
       next_option(cmd, begin);
       break;
