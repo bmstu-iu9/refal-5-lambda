@@ -169,6 +169,7 @@ public:
   void memory_limit_option(Cmd &cmd);
   void trace_option(Cmd &cmd, FILE *out = stdout);
   void no_trace_option(Cmd &cmd);
+  void next_option(Cmd &cmd, Iter begin);
   void print_callee_option(Iter begin, Iter end, FILE *out = stdout);
   void print_arg_option(Iter begin, Iter end, FILE *out = stdout);
   void print_res_option(FILE *out);

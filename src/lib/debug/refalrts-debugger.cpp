@@ -887,6 +887,26 @@ void refalrts::debugger::RefalDebugger::no_trace_option(Cmd &cmd) {
   func_trace_table.notrace_func(cmd.param);
 }
 
+void refalrts::debugger::RefalDebugger::next_option(Cmd &cmd, Iter begin) {
+  if (cmd.hasParam()) {
+    if (cmd.param[0] == '^' || cmd.param[0] == '@') {
+      Iter open_call_bracket = find_call_stack_elem(begin, cmd.param);
+      if (open_call_bracket == 0) {
+        printf("no such stack element\n");
+      } else {
+        m_next_expr = open_call_bracket;
+      }
+    } else {
+      printf(
+        "only 'next' without params, 'next @N' or 'next ^N' are available\n"
+      );
+    }
+  } else {
+    m_next_expr = m_vm->stack_ptr();
+  }
+  m_dot = s_NEXT;
+}
+
 void refalrts::debugger::RefalDebugger::print_callee_option(
   refalrts::Iter begin, refalrts::Iter end, FILE *out
 ) {
@@ -1207,8 +1227,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       oneOf(cmd.cmd, 2, s_N, s_NEXT)
       || (str_equal(cmd.cmd.c_str(), s_DOT) && str_equal(m_dot, s_NEXT))
     ) {
-      m_next_expr = m_vm->stack_ptr();
-      m_dot = s_NEXT;
+      next_option(cmd, begin);
       break;
     } else if (oneOf(cmd.cmd, 1, s_VARS)) {
       FILE *out = get_out(cmd);
