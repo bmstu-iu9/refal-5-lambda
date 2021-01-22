@@ -65,12 +65,18 @@ public:
 class BreakpointSet {
   std::set<int> m_step_breaks;
   std::set<std::string> m_func_breaks;
+  // точки остановки на элементах стека предполагаются одноразовыми.
+  // Т.е. после первой остановки программы точка удаляется.
+  std::set<Iter> m_stack_breaks; // набор открывающих скобок активации
 public:
   void add_breakpoint(int step_numb);
   void add_breakpoint(const std::string &func_name);
+  // для stack_breaks
+  void add_breakpoint(Iter open_call_bracket);
   void rm_breakpoint(int step_numb);
   void rm_breakpoint(const std::string &func_name);
-  bool is_breakpoint(int cur_step_numb, const char *cur_func_name);
+  void rm_breakpoint(Iter open_call_bracket);
+  bool is_breakpoint(int cur_step_numb, Iter begin);
   void print(FILE *out = stdout);
 };
 
@@ -148,7 +154,7 @@ public:
   std::string ask_for_param(const std::string &appeal);
   FILE *get_out(Cmd &cmd);
   bool next_cond(Iter begin);
-  bool run_cond(RefalFunction *callee);
+  bool run_cond(Iter begin);
   bool step_cond();
   bool mem_cond();
 
@@ -157,8 +163,8 @@ public:
   void set_step_res(Iter begin, Iter end);
 
   void help_option();
-  void break_option(Cmd &cmd);
-  void clear_option(Cmd &cmd);
+  void break_option(Cmd &cmd, Iter begin);
+  void clear_option(Cmd &cmd, Iter begin);
   void step_limit_option(Cmd &cmd);
   void memory_limit_option(Cmd &cmd);
   void trace_option(Cmd &cmd, FILE *out = stdout);
@@ -169,7 +175,7 @@ public:
   void print_view_field_option(FILE *out, bool multiline, bool skeleton);
   bool print_var_option(const char *var_name, FILE *out = stdout);
   void backtrace_option(Iter begin, FILE *out, bool multiline, bool skeleton);
-  NodePtr find_call_stack_elem(Iter begin, const std::string &elem_number);
+  Iter find_call_stack_elem(Iter begin, const std::string &elem_number);
   void print_call_stack_option(
     Iter begin,
     const std::string &elem_number,

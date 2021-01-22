@@ -301,6 +301,12 @@ void refalrts::debugger::BreakpointSet::add_breakpoint(
   m_func_breaks.insert(func_name);
 }
 
+void refalrts::debugger::BreakpointSet::add_breakpoint(
+  Iter open_call_bracket
+) {
+  m_stack_breaks.insert(open_call_bracket);
+}
+
 void refalrts::debugger::BreakpointSet::rm_breakpoint(int step_numb) {
   m_step_breaks.erase(step_numb);
 }
@@ -311,13 +317,26 @@ void refalrts::debugger::BreakpointSet::rm_breakpoint(
   m_func_breaks.erase(func_name);
 }
 
-bool refalrts::debugger::BreakpointSet::is_breakpoint(
-  int cur_step_numb, const char *cur_func_name
+void refalrts::debugger::BreakpointSet::rm_breakpoint(
+  Iter open_call_bracket
 ) {
-  std::set<int>::iterator step_found = m_step_breaks.find(cur_step_numb);
-  std::set<std::string>::iterator func_found =
-    m_func_breaks.find(std::string(cur_func_name));
-  return step_found != m_step_breaks.end() || func_found != m_func_breaks.end();
+  m_stack_breaks.erase(open_call_bracket);
+}
+
+bool refalrts::debugger::BreakpointSet::is_breakpoint(
+  int cur_step_numb, Iter begin
+) {
+  bool step_found = m_step_breaks.find(cur_step_numb) != m_step_breaks.end();
+  bool func_found = false;
+  bool stack_found = false;
+  if (begin != 0 && begin->tag == refalrts::cDataOpenCall) {
+    Iter function = begin->next;
+    const char *cur_func_name = function->function_info->name.name;
+    func_found =
+      m_func_breaks.find(std::string(cur_func_name)) != m_func_breaks.end();
+    stack_found = m_stack_breaks.find(begin) != m_stack_breaks.end();
+  }
+  return step_found || func_found || stack_found;
 }
 
 void refalrts::debugger::BreakpointSet::print(FILE *out) {
@@ -657,13 +676,15 @@ bool refalrts::debugger::RefalDebugger::next_cond(Iter begin) {
   return stop;
 }
 
-bool refalrts::debugger::RefalDebugger::run_cond(RefalFunction *callee) {
+bool refalrts::debugger::RefalDebugger::run_cond(Iter begin) {
   m_dot = s_RUN;
   bool stop = break_set.is_breakpoint(
-    m_vm->step_counter(), callee == 0 ? "" : callee->name.name
+    m_vm->step_counter(), begin
   );
   if (stop) {
     printf("stopped on function breakpoint\n");
+    // точки остановки на элементы стека одноразовые
+    break_set.rm_breakpoint(begin);
   }
   return stop;
 }
@@ -683,7 +704,7 @@ bool refalrts::debugger::RefalDebugger::is_debug_stop(
 ) {
   bool stop = step_cond();
   stop = next_cond(begin) || stop;
-  stop = run_cond(callee) || stop;
+  stop = run_cond(begin) || stop;
   stop = mem_cond() || stop;
   return stop;
 }
@@ -779,7 +800,9 @@ void refalrts::debugger::RefalDebugger::help_option() {
   printf("================================================================\n");
 }
 
-void refalrts::debugger::RefalDebugger::break_option(Cmd &cmd) {
+void refalrts::debugger::RefalDebugger::break_option(
+  Cmd &cmd, Iter begin
+) {
   if (!cmd.hasParam()) {
     cmd.param = ask_for_param(
       "enter function name (example: Prout) or step number (example: #23)"
@@ -788,12 +811,21 @@ void refalrts::debugger::RefalDebugger::break_option(Cmd &cmd) {
   if (cmd.param[0] == '#') {
     int step_break = atoi(cmd.param.substr(1).c_str());
     break_set.add_breakpoint(step_break);
+  } else if (cmd.param[0] == '@' || cmd.param[0] == '^') {
+    Iter open_call_bracket = find_call_stack_elem(begin, cmd.param);
+    if (open_call_bracket != 0) {
+      break_set.add_breakpoint(open_call_bracket);
+    } else {
+      printf("no such stack element\n");
+    }
   } else {
     break_set.add_breakpoint(cmd.param);
   }
 }
 
-void refalrts::debugger::RefalDebugger::clear_option(Cmd &cmd) {
+void refalrts::debugger::RefalDebugger::clear_option(
+  Cmd &cmd, Iter begin
+) {
   if (!cmd.hasParam()) {
     cmd.param = ask_for_param(
       "enter function name (example: Prout) or step number (example: #23)"
@@ -802,6 +834,15 @@ void refalrts::debugger::RefalDebugger::clear_option(Cmd &cmd) {
   if (cmd.param[0] == '#') {
     int step_break = atoi(cmd.param.substr(1).c_str());
     break_set.rm_breakpoint(step_break);
+  } else if (cmd.param[0] == '@' || cmd.param[0] == '^') {
+    Iter open_call_bracket = find_call_stack_elem(begin, cmd.param);
+    if (open_call_bracket != 0) {
+      break_set.rm_breakpoint(open_call_bracket);
+    } else {
+      printf(
+        "no such stack element\ncall stack numbers change during execution\n"
+      );
+    }
   } else {
     break_set.rm_breakpoint(cmd.param);
   }
@@ -929,7 +970,7 @@ void refalrts::debugger::RefalDebugger::backtrace_option(
   // Сначала получается соответствие открывающих скобок вызова
   // количеству активных подвыражений, содержащих первичное и содержащихся
   // в рассматриваемом (которому принадлежит открывающая скобка).
-  std::map<NodePtr, int> open_call_level;
+  std::map<Iter, int> open_call_level;
 
   int level = -1;
   int maxLevel = -1;
@@ -960,11 +1001,16 @@ void refalrts::debugger::RefalDebugger::backtrace_option(
     stack_head = stack_head->link_info->link_info
   ) {
     Iter begin = stack_head;
-    NodePtr end = stack_head->link_info;
+    Iter end = stack_head->link_info;
     Iter function = begin->next;
-    int call_level = open_call_level[begin];
-    fprintf(out, "@%-3d ^%-3d ", call_number, call_level);
-    if (break_set.is_breakpoint(-1, function->function_info->name.name)) {
+    fprintf(out, "@%-3d ", call_number);
+    if (open_call_level.find(begin) != open_call_level.end()) {
+      int call_level = open_call_level[begin];
+      fprintf(out, "^%-3d ", call_level);
+    } else {
+      fprintf(out, "     ");
+    }
+    if (break_set.is_breakpoint(-1, begin)) {
       fprintf(out, "*");
     } else {
       fprintf(out, " ");
@@ -983,7 +1029,7 @@ void refalrts::debugger::RefalDebugger::backtrace_option(
 
 // возвращает открывающую скобку вызова активного подвыражения с указанным
 // номером (может иметь вид @N или ^N)
-refalrts::NodePtr refalrts::debugger::RefalDebugger::find_call_stack_elem(
+refalrts::Iter refalrts::debugger::RefalDebugger::find_call_stack_elem(
   Iter begin, const std::string &elem_number
 ) {
   Iter stack_ptr = begin;
@@ -1046,7 +1092,7 @@ void refalrts::debugger::RefalDebugger::print_call_stack_option(
   bool multiline,
   bool skeleton
 ) {
-  NodePtr open_call_bracket = find_call_stack_elem(begin, elem_number);
+  Iter open_call_bracket = find_call_stack_elem(begin, elem_number);
   if (open_call_bracket != 0) {
     if (skeleton) {
       Iter function = open_call_bracket->next;
@@ -1130,9 +1176,9 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
     if (oneOf(cmd.cmd, 2, s_H, s_HELP)) {
       help_option();
     } else if (oneOf(cmd.cmd, 3, s_B, s_BREAK, s_BREAKPOINT)) {
-      break_option(cmd);
+      break_option(cmd, begin);
     } else if (oneOf(cmd.cmd, 3, s_CL, s_CLEAR, s_RM)) {
-      clear_option(cmd);
+      clear_option(cmd, begin);
     } else if (oneOf(cmd.cmd, 1, s_STEPLIMIT)) {
       step_limit_option(cmd);
     } else if (oneOf(cmd.cmd, 1, s_MEMORYLIMIT)) {
