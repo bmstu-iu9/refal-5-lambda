@@ -803,7 +803,7 @@ void refalrts::debugger::RefalDebugger::help_option() {
 void refalrts::debugger::RefalDebugger::break_option(
   Cmd &cmd, Iter begin
 ) {
-  if (!cmd.hasParam()) {
+  for (;!cmd.hasParam();) {
     cmd.param = ask_for_param(
       "enter function name (example: Prout) or step number (example: #23)"
     );
@@ -826,7 +826,7 @@ void refalrts::debugger::RefalDebugger::break_option(
 void refalrts::debugger::RefalDebugger::clear_option(
   Cmd &cmd, Iter begin
 ) {
-  if (!cmd.hasParam()) {
+  for(;!cmd.hasParam();) {
     cmd.param = ask_for_param(
       "enter function name (example: Prout) or step number (example: #23)"
     );
@@ -849,7 +849,7 @@ void refalrts::debugger::RefalDebugger::clear_option(
 }
 
 void refalrts::debugger::RefalDebugger::step_limit_option(Cmd &cmd) {
-  if (!cmd.hasParam()) {
+  for (;!cmd.hasParam();) {
     cmd.param = ask_for_param(
       "enter step limit (example: 400)"
     );
@@ -859,7 +859,7 @@ void refalrts::debugger::RefalDebugger::step_limit_option(Cmd &cmd) {
 }
 
 void refalrts::debugger::RefalDebugger::memory_limit_option(Cmd &cmd) {
-  if (!cmd.hasParam()) {
+  for (;!cmd.hasParam();) {
     cmd.param = ask_for_param(
       "enter memory limit in nodes (example: 500)"
     );
@@ -870,7 +870,7 @@ void refalrts::debugger::RefalDebugger::memory_limit_option(Cmd &cmd) {
 void refalrts::debugger::RefalDebugger::trace_option(
   Cmd &cmd, FILE *out
 ) {
-  if (!cmd.hasParam()) {
+  for (;!cmd.hasParam();) {
     cmd.param = ask_for_param(
       "enter function name"
     );
@@ -879,7 +879,7 @@ void refalrts::debugger::RefalDebugger::trace_option(
 }
 
 void refalrts::debugger::RefalDebugger::no_trace_option(Cmd &cmd) {
-  if (!cmd.hasParam()) {
+  for (;!cmd.hasParam();) {
     cmd.param = ask_for_param(
       "enter function name"
     );
@@ -1234,7 +1234,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       var_debug_table.print(out);
       close_out(out);
     } else if (oneOf(cmd.cmd, 2, s_P, s_PRINT)) {
-      if (!cmd.hasParam()) {
+      for (;!cmd.hasParam();) {
         char appeal[512] = {0};
         sprintf(
           appeal,
