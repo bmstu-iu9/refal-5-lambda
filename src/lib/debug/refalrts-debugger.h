@@ -51,10 +51,16 @@ public:
   void set_context(Iter *cont);
 };
 
+struct FileAndName {
+  FILE * out;
+  std::string name;
+  bool isAppend;
+};
+
 class TracedFunctionTable {
-  std::map<std::string, FILE*> m_traced_func_table;
+  std::map<std::string, struct FileAndName> m_traced_func_table;
 public:
-  void trace_func(const std::string &func_name, FILE *trace_out);
+  void trace_func(const std::string &func_name, const struct FileAndName &file);
   void notrace_func(const std::string &func_name);
   void clear();
   bool is_traced_func(const char *func_name);

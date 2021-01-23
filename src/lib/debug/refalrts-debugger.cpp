@@ -217,31 +217,32 @@ void refalrts::debugger::VariableDebugTable::set_context(Iter *context) {
 //  Таблица трассируемых функций
 
 void refalrts::debugger::TracedFunctionTable::trace_func(
-  const std::string &func_name, FILE *trace_out
+  const std::string &func_name, const struct FileAndName &file
 ) {
   m_traced_func_table.insert(
-    std::pair<std::string, FILE*>(func_name, trace_out)
+    std::pair<std::string, struct FileAndName>(func_name, file)
   );
 }
 
 void refalrts::debugger::TracedFunctionTable::notrace_func(
   const std::string &func_name
 ) {
-  std::map<std::string, FILE*>::iterator found =
+  std::map<std::string, struct FileAndName>::iterator found =
     m_traced_func_table.find(func_name);
   if (found != m_traced_func_table.end()) {
-    close_out(found->second);
+    close_out(found->second.out);
     m_traced_func_table.erase(func_name);
   }
 }
 
 void refalrts::debugger::TracedFunctionTable::clear() {
   for (
-    std::map<std::string, FILE*>::iterator it = m_traced_func_table.begin();
+    std::map<std::string, struct FileAndName>::iterator it =
+      m_traced_func_table.begin();
     it != m_traced_func_table.end();
     ++it
   ) {
-    close_out(it->second);
+    close_out(it->second.out);
   }
   m_traced_func_table.clear();
 }
@@ -257,12 +258,12 @@ bool refalrts::debugger::TracedFunctionTable::is_traced_func(
 FILE *refalrts::debugger::TracedFunctionTable::get_trace_outstream (
   const char * func_name
 ) {
-  std::map<std::string, FILE*>::iterator found =
+  std::map<std::string, struct FileAndName>::iterator found =
     m_traced_func_table.find(std::string(func_name));
   if (found == m_traced_func_table.end()) {
     return 0;
   }
-  return found->second;
+  return found->second.out;
 }
 
 void refalrts::debugger::TracedFunctionTable::print(FILE *out) {
@@ -271,15 +272,21 @@ void refalrts::debugger::TracedFunctionTable::print(FILE *out) {
     "=========================Traced function table=========================\n"
   );
   for (
-    std::map<std::string, FILE*>::iterator it = m_traced_func_table.begin();
+    std::map<std::string, struct FileAndName>::iterator it = m_traced_func_table.begin();
     it != m_traced_func_table.end();
     ++it
   ) {
     fprintf(out, "  \"%.20s\"", it->first.c_str());
-    if (it->second == stdout) {
+    if (it->second.out == stdout) {
       fprintf(out, "\tin stdout\n");
     } else {
-      fprintf(out, "\tin file\n");
+      fprintf(out, "\t ");
+      if (it->second.isAppend) {
+        fprintf(out, ">>");
+      } else {
+        fprintf(out, " >");
+      }
+      fprintf(out, " %s\n", it->second.name.c_str());
     }
   }
   fprintf(
@@ -875,7 +882,12 @@ void refalrts::debugger::RefalDebugger::trace_option(
       "enter function name"
     );
   }
-  func_trace_table.trace_func(cmd.param, out);
+  struct FileAndName file = {
+    out,
+    cmd.file,
+    cmd.isFileAppend,
+  };
+  func_trace_table.trace_func(cmd.param, file);
 }
 
 void refalrts::debugger::RefalDebugger::no_trace_option(Cmd &cmd) {
