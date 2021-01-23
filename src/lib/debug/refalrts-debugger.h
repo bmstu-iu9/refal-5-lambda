@@ -54,7 +54,7 @@ public:
 struct FileAndName {
   FILE * out;
   std::string name;
-  bool isAppend;
+  bool is_append;
 };
 
 class TracedFunctionTable {
@@ -91,37 +91,37 @@ class Cmd {
 public:
   std::vector<std::string> prefixes;
   std::string cmd, param, file;
-  bool isFileAppend;
+  bool is_file_append;
 
   Cmd(
     std::vector<std::string> &prefixes,
     std::string &cmd,
     std::string &param,
     std::string &file,
-    bool isFileAppend
+    bool is_file_append
   ) :
     prefixes(prefixes),
     cmd(cmd),
     param(param),
     file(file),
-    isFileAppend(isFileAppend)
+    is_file_append(is_file_append)
   {
     /* пусто */
   }
 
-  Cmd() : isFileAppend(false) {};
+  Cmd() : is_file_append(false) {};
 
-  const std::string toString();
+  const std::string to_string();
 
-  const bool hasParam();
+  const bool has_param();
 
-  const bool hasPrefix(const std::string &prefix);
+  const bool has_prefix(const std::string &prefix);
 
-  const bool hasPrefix(const char *prefix);
+  const bool has_prefix(const char *prefix);
 };
 
 class RefalDebugger: public Debugger {
-  const char *m_dot;
+  const char *m_last_option;
   unsigned m_step_numb;
   unsigned m_memory_limit;
   FILE *m_in;
@@ -139,7 +139,7 @@ public:
   BreakpointSet break_set;
 
   RefalDebugger(VM *vm)
-    : m_dot(s_STEP)
+    : m_last_option(s_STEP)
     , m_step_numb(0)
     , m_memory_limit(-1)
     , m_in(stdin)

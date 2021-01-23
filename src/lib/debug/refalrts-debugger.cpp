@@ -45,8 +45,8 @@ static const char *const s_S = "s";
 static const char *const s_NEXT = "next";
 static const char *const s_N = "n";
 static const char *const s_VARS = "vars";
-static const char *const s_P = "p";
-static const char *const s_PRINT = "print";
+static const char *const s_L = "l";
+static const char *const s_LIST = "list";
 static const char *const s_ARG = "arg";
 static const char *const s_CALL = "call";
 static const char *const s_CALLEE = "callee";
@@ -281,7 +281,7 @@ void refalrts::debugger::TracedFunctionTable::print(FILE *out) {
       fprintf(out, "\tin stdout\n");
     } else {
       fprintf(out, "\t ");
-      if (it->second.isAppend) {
+      if (it->second.is_append) {
         fprintf(out, ">>");
       } else {
         fprintf(out, " >");
@@ -373,7 +373,7 @@ FILE *refalrts::debugger::RefalDebugger::get_out(Cmd &cmd) {
     return stdout;
   } else {
     FILE *out;
-    if (cmd.isFileAppend) {
+    if (cmd.is_file_append) {
       out = fopen(cmd.file.c_str(), "a");
     } else {
       out = fopen(cmd.file.c_str(), "w");
@@ -428,7 +428,7 @@ std::vector<std::string> split(const std::string &s, char c) {
 
 } // безымянное namespace
 
-const std::string refalrts::debugger::Cmd::toString() {
+const std::string refalrts::debugger::Cmd::to_string() {
   std::string result;
   if (!prefixes.empty()) {
     std::string prefix_concat;
@@ -443,7 +443,7 @@ const std::string refalrts::debugger::Cmd::toString() {
   }
   result += cmd + " " + param;
   if (!file.empty()) {
-    if (isFileAppend) {
+    if (is_file_append) {
       result += " >> " + file;
     } else {
       result += " > " + file;
@@ -452,11 +452,11 @@ const std::string refalrts::debugger::Cmd::toString() {
   return result;
 }
 
-const bool refalrts::debugger::Cmd::hasParam() {
+const bool refalrts::debugger::Cmd::has_param() {
   return param.length() != 0;
 }
 
-const bool refalrts::debugger::Cmd::hasPrefix(const std::string &prefix) {
+const bool refalrts::debugger::Cmd::has_prefix(const std::string &prefix) {
   for (size_t i = 0; i < prefixes.size(); i++) {
     if (prefixes[i] == prefix) {
       return true;
@@ -465,8 +465,8 @@ const bool refalrts::debugger::Cmd::hasPrefix(const std::string &prefix) {
   return false;
 }
 
-const bool refalrts::debugger::Cmd::hasPrefix(const char *prefix) {
-  return hasPrefix(std::string(prefix));
+const bool refalrts::debugger::Cmd::has_prefix(const char *prefix) {
+  return has_prefix(std::string(prefix));
 }
 
 std::pair<std::string, std::string>
@@ -588,7 +588,7 @@ std::pair<refalrts::debugger::Cmd, std::string>
   const std::string &line
 ) {
   std::string cmd, param;
-  bool isFileAppend = false;
+  bool is_file_append = false;
   std::vector<std::string> prefixes;
   size_t colon_pos = line.find(':');
   size_t begin_of_cmd_tail = 0;
@@ -616,7 +616,7 @@ std::pair<refalrts::debugger::Cmd, std::string>
     out_stream_symbol_pos + 1 < cmd_with_param_and_file.size() &&
     cmd_with_param_and_file[out_stream_symbol_pos + 1] == '>'
     ) {
-    isFileAppend = true;
+    is_file_append = true;
     skipSecondBracket++;
   }
   std::pair<std::string, std::string> fileAndErr("", "");
@@ -644,7 +644,7 @@ std::pair<refalrts::debugger::Cmd, std::string>
       cmd,
       param,
       fileAndErr.first,
-      isFileAppend
+      is_file_append
     ),
     ""
   );
@@ -674,7 +674,6 @@ bool refalrts::debugger::RefalDebugger::mem_cond() {
 }
 
 bool refalrts::debugger::RefalDebugger::next_cond(Iter begin) {
-  m_dot = s_NEXT;
   bool stop = begin == m_next_expr;
   if (stop) {
     printf("stopped on next\n");
@@ -684,7 +683,6 @@ bool refalrts::debugger::RefalDebugger::next_cond(Iter begin) {
 }
 
 bool refalrts::debugger::RefalDebugger::run_cond(Iter begin) {
-  m_dot = s_RUN;
   bool stop = break_set.is_breakpoint(
     m_vm->step_counter(), begin
   );
@@ -699,7 +697,6 @@ bool refalrts::debugger::RefalDebugger::run_cond(Iter begin) {
 bool refalrts::debugger::RefalDebugger::step_cond() {
   bool scond = (m_vm->step_counter() == m_step_numb);
   m_step_numb = m_vm->step_counter();
-  m_dot = s_STEP;
   if (scond) {
     printf("stopped on step\n");
   }
@@ -748,14 +745,23 @@ void refalrts::debugger::RefalDebugger::help_option() {
   printf(
     "%s, %s, %s\t%s\n",
     s_B, s_BREAK, s_BREAKPOINT,
-    "set breakpoint by function name\n"
-    "\t\t\t  or step number (\'#\'ddd)"
+    "set breakpoint\n"
+    "\t\t\t  by function name or step number (\'#\'ddd)\n"
+    "\t\t\t  by call stack pos (\'@\'ddd or \'^\'ddd)"
   );
   printf(
     "%s, %s, %s\t\t%s\n",
     s_CL, s_CLEAR, s_RM,
     "remove breakpoint from function by its name\n"
-    "\t\t\t  or from step by its number (\'#\'ddd)"
+    "\t\t\t  or from step by its number (\'#\'ddd)\n"
+    "\t\t\t  or from call stack pos (\'@\'|\'^\'ddd)"
+  );
+  printf(
+    "%s, %s\t\t%s\n",
+    s_BT, s_BACKTRACE,
+    "prints call stack\n"
+    "\t\t\t  \'@\'ddd is pos in stack, \'^\'ddd is parent number\n"
+    "\t\t\t  symbol '*' means there is a breakpoint"
   );
   printf(
     "%s\t\t%s\n",
@@ -780,13 +786,19 @@ void refalrts::debugger::RefalDebugger::help_option() {
   );
   printf(
     "%s, %s\t\t\t%s\n",
-    s_N, s_NEXT, "execute next active function until passive result"
+    s_N, s_NEXT,
+    "execute next active function until passive result\n"
+    "\t\t\t  \'next @N\' is equal to \'break @N\' and \'run\'"
   );
   printf("%s\t\t\t%s\n", s_VARS, "print the variable debug table");
-  printf("%s, %s\t\t\t%s\n", s_P, s_PRINT, "print by parameter commands");
+  printf("%s, %s\t\t\t%s\n", s_L, s_LIST, "print by parameter commands");
   printf(
     "  %s\t%s\n",
     "\'e.\'|\'t.\'|\'s.\'nnn", "print variable value by its name"
+  );
+  printf(
+    "  %s\t%s\n",
+    "\'@\'|\'^\'ddd", "print call stack element"
   );
   printf("  %s\t\t\t%s\n", s_CALL, "print current active expression");
   printf("  %s\t\t%s\n", s_CALLEE, "print the therm after \'<\'");
@@ -802,7 +814,25 @@ void refalrts::debugger::RefalDebugger::help_option() {
     s_B, s_BREAK, s_BREAKPOINT, "print set of all placed breakpoints"
   );
   printf("  %s, %s\t\t%s\n", s_TR, s_TRACE, "print table of all traced functions");
-  printf("%s\t\t\t%s\n", s_EMPTY, "repeat previous debugger command");
+  printf(
+    "  %s, %s, %s\t%s\n",
+    s_V, s_VIEW, s_VIEWFIELD,
+    "print current view field"
+  );
+  printf("%s\t\t\t%s\n", s_EMPTY, "(empty line) repeat previous debugger command");
+  printf("\n");
+  printf("Prefixes are used as prefix: command (\'%s: print view\')\n", s_FULL);
+  printf("%s, %s\t\t%s\n",
+    s_ONELINE, s_MULTILINE,
+    "prefixes control \'\\n\' in output"
+  );
+  printf("%s, %s\t\t%s\n",
+         s_FULL, s_SKELETON,
+         "prefixes control expressiveness"
+  );
+  printf("\n");
+  printf("Files can be used with %s, %s, %s\n", s_LIST, s_TRACE, s_BACKTRACE);
+  printf("  enter \'>\'|\'>>\' fileName after command\n");
   printf("\n");
   printf("================================================================\n");
 }
@@ -810,7 +840,7 @@ void refalrts::debugger::RefalDebugger::help_option() {
 void refalrts::debugger::RefalDebugger::break_option(
   Cmd &cmd, Iter begin
 ) {
-  for (;!cmd.hasParam();) {
+  for (;!cmd.has_param();) {
     cmd.param = ask_for_param(
       "enter function name (example: Prout) or step number (example: #23)"
     );
@@ -833,7 +863,7 @@ void refalrts::debugger::RefalDebugger::break_option(
 void refalrts::debugger::RefalDebugger::clear_option(
   Cmd &cmd, Iter begin
 ) {
-  for(;!cmd.hasParam();) {
+  for(;!cmd.has_param();) {
     cmd.param = ask_for_param(
       "enter function name (example: Prout) or step number (example: #23)"
     );
@@ -856,7 +886,7 @@ void refalrts::debugger::RefalDebugger::clear_option(
 }
 
 void refalrts::debugger::RefalDebugger::step_limit_option(Cmd &cmd) {
-  for (;!cmd.hasParam();) {
+  for (;!cmd.has_param();) {
     cmd.param = ask_for_param(
       "enter step limit (example: 400)"
     );
@@ -866,7 +896,7 @@ void refalrts::debugger::RefalDebugger::step_limit_option(Cmd &cmd) {
 }
 
 void refalrts::debugger::RefalDebugger::memory_limit_option(Cmd &cmd) {
-  for (;!cmd.hasParam();) {
+  for (;!cmd.has_param();) {
     cmd.param = ask_for_param(
       "enter memory limit in nodes (example: 500)"
     );
@@ -877,7 +907,7 @@ void refalrts::debugger::RefalDebugger::memory_limit_option(Cmd &cmd) {
 void refalrts::debugger::RefalDebugger::trace_option(
   Cmd &cmd, FILE *out
 ) {
-  for (;!cmd.hasParam();) {
+  for (;!cmd.has_param();) {
     cmd.param = ask_for_param(
       "enter function name"
     );
@@ -885,13 +915,13 @@ void refalrts::debugger::RefalDebugger::trace_option(
   struct FileAndName file = {
     out,
     cmd.file,
-    cmd.isFileAppend,
+    cmd.is_file_append,
   };
   func_trace_table.trace_func(cmd.param, file);
 }
 
 void refalrts::debugger::RefalDebugger::no_trace_option(Cmd &cmd) {
-  for (;!cmd.hasParam();) {
+  for (;!cmd.has_param();) {
     cmd.param = ask_for_param(
       "enter function name"
     );
@@ -900,7 +930,7 @@ void refalrts::debugger::RefalDebugger::no_trace_option(Cmd &cmd) {
 }
 
 void refalrts::debugger::RefalDebugger::next_option(Cmd &cmd, Iter begin) {
-  if (cmd.hasParam()) {
+  if (cmd.has_param()) {
     if (cmd.param[0] == '^' || cmd.param[0] == '@') {
       Iter open_call_bracket = find_call_stack_elem(begin, cmd.param);
       if (open_call_bracket == 0) {
@@ -916,7 +946,7 @@ void refalrts::debugger::RefalDebugger::next_option(Cmd &cmd, Iter begin) {
   } else {
     m_next_expr = m_vm->stack_ptr();
   }
-  m_dot = s_NEXT;
+  m_last_option = s_NEXT;
 }
 
 void refalrts::debugger::RefalDebugger::print_callee_option(
@@ -1144,11 +1174,11 @@ void refalrts::debugger::RefalDebugger::print_call_stack_option(
 
 bool refalrts::debugger::RefalDebugger::isCmdMultiline(Cmd &cmd) {
   if (m_multiline) {
-    if (cmd.hasPrefix(s_ONELINE)) {
+    if (cmd.has_prefix(s_ONELINE)) {
       return false;
     }
   } else {
-    if (cmd.hasPrefix(s_MULTILINE)) {
+    if (cmd.has_prefix(s_MULTILINE)) {
       return true;
     }
   }
@@ -1157,11 +1187,11 @@ bool refalrts::debugger::RefalDebugger::isCmdMultiline(Cmd &cmd) {
 
 bool refalrts::debugger::RefalDebugger::isCmdSkeleton(Cmd &cmd) {
   if (m_skeleton) {
-    if (cmd.hasPrefix(s_FULL)) {
+    if (cmd.has_prefix(s_FULL)) {
       return false;
     }
   } else {
-    if (cmd.hasPrefix(s_SKELETON)) {
+    if (cmd.has_prefix(s_SKELETON)) {
       return true;
     }
   }
@@ -1174,7 +1204,7 @@ bool str_equal(const char *lhs, const char *rhs) {
   return strcmp(lhs, rhs) == 0;
 }
 
-bool oneOf(const std::string &s, int num_of_commands, ...) {
+bool one_of(const std::string &s, int num_of_commands, ...) {
   va_list commands;
   va_start(commands, num_of_commands);
   for (int i = 0; i < num_of_commands; i++) {
@@ -1185,6 +1215,15 @@ bool oneOf(const std::string &s, int num_of_commands, ...) {
   }
   va_end(commands);
   return false;
+}
+
+bool same_as_last(
+  const std::string &s,
+  const char *repeat_last_command,
+  const char *last,
+  const char *command
+) {
+  return str_equal(s.c_str(), repeat_last_command) && str_equal(last, command);
 }
 
 } // безымянное namespace
@@ -1205,48 +1244,48 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
     Cmd &cmd = cmdAndError.first;
     bool multiline = isCmdMultiline(cmd);
     bool skeleton = isCmdSkeleton(cmd);
-    if (oneOf(cmd.cmd, 2, s_H, s_HELP)) {
+    if (one_of(cmd.cmd, 2, s_H, s_HELP)) {
       help_option();
-    } else if (oneOf(cmd.cmd, 3, s_B, s_BREAK, s_BREAKPOINT)) {
+    } else if (one_of(cmd.cmd, 3, s_B, s_BREAK, s_BREAKPOINT)) {
       break_option(cmd, begin);
-    } else if (oneOf(cmd.cmd, 3, s_CL, s_CLEAR, s_RM)) {
+    } else if (one_of(cmd.cmd, 3, s_CL, s_CLEAR, s_RM)) {
       clear_option(cmd, begin);
-    } else if (oneOf(cmd.cmd, 1, s_STEPLIMIT)) {
+    } else if (one_of(cmd.cmd, 1, s_STEPLIMIT)) {
       step_limit_option(cmd);
-    } else if (oneOf(cmd.cmd, 1, s_MEMORYLIMIT)) {
+    } else if (one_of(cmd.cmd, 1, s_MEMORYLIMIT)) {
       memory_limit_option(cmd);
-    } else if (oneOf(cmd.cmd, 2, s_TR, s_TRACE)) {
+    } else if (one_of(cmd.cmd, 2, s_TR, s_TRACE)) {
       trace_option(cmd, get_out(cmd));
-    } else if (oneOf(cmd.cmd, 2, s_NOTR, s_NOTRACE)) {
+    } else if (one_of(cmd.cmd, 2, s_NOTR, s_NOTRACE)) {
       no_trace_option(cmd);
     } else if (
-      oneOf(cmd.cmd, 2, s_R, s_RUN)
-      || (str_equal(cmd.cmd.c_str(), s_EMPTY) && str_equal(m_dot, s_RUN))
+      one_of(cmd.cmd, 2, s_R, s_RUN)
+      || same_as_last(cmd.cmd, s_EMPTY, m_last_option, s_RUN)
     ) {
-      m_dot = s_RUN;
+      m_last_option = s_RUN;
       break;
     } else if (
-      oneOf(cmd.cmd, 2, s_S, s_STEP)
-      || (str_equal(cmd.cmd.c_str(), s_EMPTY) && str_equal(m_dot, s_STEP))
+      one_of(cmd.cmd, 2, s_S, s_STEP)
+      || same_as_last(cmd.cmd, s_EMPTY, m_last_option, s_STEP)
     ) {
       m_step_numb = m_vm->step_counter()+1;
-      m_dot = s_STEP;
+      m_last_option = s_STEP;
       break;
-    } else if (oneOf(cmd.cmd, 2, s_Q, s_QUIT)) {
+    } else if (one_of(cmd.cmd, 2, s_Q, s_QUIT)) {
       m_vm->set_return_code(0);
       return cExit;
     } else if (
-      oneOf(cmd.cmd, 2, s_N, s_NEXT)
-      || (str_equal(cmd.cmd.c_str(), s_EMPTY) && str_equal(m_dot, s_NEXT))
+      one_of(cmd.cmd, 2, s_N, s_NEXT)
+      || same_as_last(cmd.cmd, s_EMPTY, m_last_option, s_NEXT)
     ) {
       next_option(cmd, begin);
       break;
-    } else if (oneOf(cmd.cmd, 1, s_VARS)) {
+    } else if (one_of(cmd.cmd, 1, s_VARS)) {
       FILE *out = get_out(cmd);
       var_debug_table.print(out);
       close_out(out);
-    } else if (oneOf(cmd.cmd, 2, s_P, s_PRINT)) {
-      for (;!cmd.hasParam();) {
+    } else if (one_of(cmd.cmd, 2, s_L, s_LIST)) {
+      for (;!cmd.has_param();) {
         char appeal[512] = {0};
         sprintf(
           appeal,
@@ -1258,19 +1297,19 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
         );
       }
       FILE *out = get_out(cmd);
-      if (oneOf(cmd.param, 1, s_ARG)) {
+      if (one_of(cmd.param, 1, s_ARG)) {
         print_arg_option(begin, end, out);
-      } else if (oneOf(cmd.param, 1, s_CALL)) {
+      } else if (one_of(cmd.param, 1, s_CALL)) {
         m_vm->print_seq(out, begin, end, true);
-      } else if (oneOf(cmd.param, 1, s_CALLEE)) {
+      } else if (one_of(cmd.param, 1, s_CALLEE)) {
         print_callee_option(begin, end, out);
-      } else if (oneOf(cmd.param, 1, s_RES)) {
+      } else if (one_of(cmd.param, 1, s_RES)) {
         print_res_option(out);
-      } else if (oneOf(cmd.param, 3, s_B, s_BREAK, s_BREAKPOINT)) {
+      } else if (one_of(cmd.param, 3, s_B, s_BREAK, s_BREAKPOINT)) {
         break_set.print(out);
-      } else if (oneOf(cmd.param, 2, s_TR, s_TRACE)) {
+      } else if (one_of(cmd.param, 2, s_TR, s_TRACE)) {
         func_trace_table.print(out);
-      } else if (oneOf(cmd.param, 3, s_V, s_VIEW, s_VIEWFIELD)) {
+      } else if (one_of(cmd.param, 3, s_V, s_VIEW, s_VIEWFIELD)) {
         print_view_field_option(out, multiline, skeleton);
       } else if (
         cmd.param.size() > 1 &&
@@ -1285,15 +1324,15 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
         );
       }
       close_out(out);
-    } else if (oneOf(cmd.cmd, 1, s_MULTILINE)) {
+    } else if (one_of(cmd.cmd, 1, s_MULTILINE)) {
       m_multiline = true;
-    } else if (oneOf(cmd.cmd, 1, s_ONELINE)) {
+    } else if (one_of(cmd.cmd, 1, s_ONELINE)) {
       m_multiline = false;
-    } else if (oneOf(cmd.cmd, 1, s_SKELETON)) {
+    } else if (one_of(cmd.cmd, 1, s_SKELETON)) {
       m_skeleton = true;
-    } else if (oneOf(cmd.cmd, 1, s_FULL)) {
+    } else if (one_of(cmd.cmd, 1, s_FULL)) {
       m_skeleton = false;
-    } else if (oneOf(cmd.cmd, 2, s_BACKTRACE, s_BT)) {
+    } else if (one_of(cmd.cmd, 2, s_BACKTRACE, s_BT)) {
       FILE *out = get_out(cmd);
       backtrace_option(begin, out, multiline, skeleton);
       close_out(out);
