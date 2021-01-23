@@ -754,7 +754,7 @@ void refalrts::debugger::RefalDebugger::help_option() {
     s_CL, s_CLEAR, s_RM,
     "remove breakpoint from function by its name\n"
     "\t\t\t  or from step by its number (\'#\'ddd)\n"
-    "\t\t\t  or from call stack pos (\'@\'|\'^\'ddd)"
+    "\t\t\t  or from call stack by pos (\'@\'|\'^\'ddd)"
   );
   printf(
     "%s, %s\t\t%s\n",
@@ -797,7 +797,7 @@ void refalrts::debugger::RefalDebugger::help_option() {
     "\'e.\'|\'t.\'|\'s.\'nnn", "print variable value by its name"
   );
   printf(
-    "  %s\t%s\n",
+    "  %s\t\t%s\n",
     "\'@\'|\'^\'ddd", "print call stack element"
   );
   printf("  %s\t\t\t%s\n", s_CALL, "print current active expression");
@@ -822,7 +822,7 @@ void refalrts::debugger::RefalDebugger::help_option() {
   printf("%s\t\t\t%s\n", s_EMPTY, "(empty line) repeat previous debugger command");
   printf("\n");
   printf("Prefixes are used as prefix: command (\'%s: print view\')\n", s_FULL);
-  printf("%s, %s\t\t%s\n",
+  printf("%s, %s\t%s\n",
     s_ONELINE, s_MULTILINE,
     "prefixes control \'\\n\' in output"
   );
