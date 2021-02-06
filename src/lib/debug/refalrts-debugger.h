@@ -51,11 +51,17 @@ public:
   void set_context(Iter *cont);
 };
 
+struct FileAndName {
+  FILE * out;
+  std::string name;
+  bool is_append;
+};
+
 class TracedFunctionTable {
-  std::map<std::string, FILE*> m_traced_func_table;
+  std::map<std::string, struct FileAndName> m_traced_func_table;
 public:
-  void trace_func(const char *func_name, FILE *trace_out);
-  void notrace_func(const char *func_name);
+  void trace_func(const std::string &func_name, const struct FileAndName &file);
+  void notrace_func(const std::string &func_name);
   void clear();
   bool is_traced_func(const char *func_name);
   FILE *get_trace_outstream(const char *func_name);
@@ -65,17 +71,57 @@ public:
 class BreakpointSet {
   std::set<int> m_step_breaks;
   std::set<std::string> m_func_breaks;
+  // точки остановки на элементах стека предполагаются одноразовыми.
+  // Т.е. после первой остановки программы точка удаляется.
+  std::set<Iter> m_stack_breaks; // набор открывающих скобок активации
 public:
   void add_breakpoint(int step_numb);
-  void add_breakpoint(const char *func_name);
+  void add_breakpoint(const std::string &func_name);
+  // для stack_breaks
+  void add_breakpoint(Iter open_call_bracket);
   void rm_breakpoint(int step_numb);
-  void rm_breakpoint(const char *func_name);
-  bool is_breakpoint(int cur_step_numb, const char *cur_func_name);
+  void rm_breakpoint(const std::string &func_name);
+  void rm_breakpoint(Iter open_call_bracket);
+  bool is_breakpoint(int cur_step_numb, Iter begin);
   void print(FILE *out = stdout);
 };
 
+// класс для удобной работой с введеной пользователем командой
+class Cmd {
+public:
+  std::vector<std::string> prefixes;
+  std::string cmd, param, file;
+  bool is_file_append;
+
+  Cmd(
+    std::vector<std::string> &prefixes,
+    std::string &cmd,
+    std::string &param,
+    std::string &file,
+    bool is_file_append
+  ) :
+    prefixes(prefixes),
+    cmd(cmd),
+    param(param),
+    file(file),
+    is_file_append(is_file_append)
+  {
+    /* пусто */
+  }
+
+  Cmd() : is_file_append(false) {};
+
+  const std::string to_string();
+
+  const bool has_param();
+
+  const bool has_prefix(const std::string &prefix);
+
+  const bool has_prefix(const char *prefix);
+};
+
 class RefalDebugger: public Debugger {
-  const char *m_dot;
+  const char *m_last_option;
   unsigned m_step_numb;
   unsigned m_memory_limit;
   FILE *m_in;
@@ -83,6 +129,9 @@ class RefalDebugger: public Debugger {
   Iter m_res_begin;
   Iter m_res_end;
   VM *m_vm;
+  // параметры печати
+  bool m_multiline;
+  bool m_skeleton;
 
 public:
   VariableDebugTable var_debug_table;
@@ -90,7 +139,7 @@ public:
   BreakpointSet break_set;
 
   RefalDebugger(VM *vm)
-    : m_dot(s_STEP)
+    : m_last_option(s_STEP)
     , m_step_numb(0)
     , m_memory_limit(-1)
     , m_in(stdin)
@@ -98,6 +147,8 @@ public:
     , m_res_begin(0)
     , m_res_end(0)
     , m_vm(vm)
+    , m_multiline(false)
+    , m_skeleton(true)
     , var_debug_table(m_vm)
   {
     /* пусто */
@@ -106,9 +157,10 @@ public:
     func_trace_table.clear();
   }
 
-  FILE *get_out();
+  std::string ask_for_param(const std::string &appeal);
+  FILE *get_out(Cmd &cmd);
   bool next_cond(Iter begin);
-  bool run_cond(RefalFunction *callee);
+  bool run_cond(Iter begin);
   bool step_cond();
   bool mem_cond();
 
@@ -117,31 +169,35 @@ public:
   void set_step_res(Iter begin, Iter end);
 
   void help_option();
-  void break_option(const char *arg);
-  void clear_option(const char *arg);
+  void break_option(Cmd &cmd, Iter begin);
+  void clear_option(Cmd &cmd, Iter begin);
+  void step_limit_option(Cmd &cmd);
+  void memory_limit_option(Cmd &cmd);
+  void trace_option(Cmd &cmd, FILE *out = stdout);
+  void no_trace_option(Cmd &cmd);
+  void next_option(Cmd &cmd, Iter begin);
   void print_callee_option(Iter begin, Iter end, FILE *out = stdout);
   void print_arg_option(Iter begin, Iter end, FILE *out = stdout);
   void print_res_option(FILE *out);
+  void print_view_field_option(FILE *out, bool multiline, bool skeleton);
   bool print_var_option(const char *var_name, FILE *out = stdout);
+  void backtrace_option(Iter begin, FILE *out, bool multiline, bool skeleton);
+  Iter find_call_stack_elem(Iter begin, const std::string &elem_number);
+  void print_call_stack_option(
+    Iter begin,
+    const std::string &elem_number,
+    FILE *out,
+    bool multiline,
+    bool skeleton
+  );
+  bool isCmdMultiline(Cmd &cmd);
+  bool isCmdSkeleton(Cmd &cmd);
   refalrts::FnResult debugger_loop(Iter begin, Iter end);
 
-  enum RedirectionType {
-    cRedirectionType_None = -1,
-    cRedirectionType_Write = 0,
-    cRedirectionType_Append = 1,
-  };
-
-  enum {
-    cBadHexVal = -1
-  };
-
-  static RedirectionType parse_redirection(char **line);
-  static void skip_space (char **ptr);
-  static char *skip_nonspace (char *ptr);
-  static RedirectionType check_bracket (char **ptr);
-  static void write_byte (char **from, char **out, char **str_p, char val);
-  static int parse2hex (unsigned char *in);
-  static bool quotation_mark_parse(char *from, char *out);
+  static std::pair<refalrts::debugger::Cmd, std::string>
+    parse_input_line(const std::string &line);
+  static std::pair<std::string, std::string>
+    parse_file_name(const std::string &fileString);
 
   virtual void set_context(Iter *context) {
     var_debug_table.set_context(context);

@@ -3,11 +3,17 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <sstream>
+#include <vector>
+#include <map>
+#include <cstdarg>
 
 //FROM refalrts-dynamic
 #include "refalrts-dynamic.h"
 //FROM refalrts-vm
 #include "refalrts-vm.h"
+
+#define MAX_COMMAND_LEN 2048
 
 
 //=============================================================================
@@ -39,22 +45,32 @@ static const char *const s_S = "s";
 static const char *const s_NEXT = "next";
 static const char *const s_N = "n";
 static const char *const s_VARS = "vars";
-static const char *const s_P = "p";
-static const char *const s_PRINT = "print";
+static const char *const s_L = "l";
+static const char *const s_LIST = "list";
 static const char *const s_ARG = "arg";
 static const char *const s_CALL = "call";
 static const char *const s_CALLEE = "callee";
 static const char *const s_RES = "res";
-static const char *const s_DOT = ".";
+static const char *const s_EMPTY = "";
 static const char *const s_TR = "tr";
 static const char *const s_TRACE = "trace";
 static const char *const s_NOTR = "notr";
 static const char *const s_NOTRACE = "notrace";
 static const char *const s_Q = "q";
 static const char *const s_QUIT = "quit";
+static const char *const s_V = "v";
+static const char *const s_VIEW = "view";
+static const char *const s_VIEWFIELD = "viewfield";
+static const char *const s_ONELINE = "oneline";
+static const char *const s_MULTILINE = "multiline";
+static const char *const s_SKELETON = "skeleton";
+static const char *const s_FULL = "full";
+static const char *const s_BACKTRACE = "backtrace";
+static const char *const s_BT = "bt";
 
 enum { cMaxLen = 1024 };
 void close_out(FILE*);
+
 
 } // namespace debugger
 
@@ -201,31 +217,32 @@ void refalrts::debugger::VariableDebugTable::set_context(Iter *context) {
 //  Таблица трассируемых функций
 
 void refalrts::debugger::TracedFunctionTable::trace_func(
-  const char *func_name, FILE *trace_out
+  const std::string &func_name, const struct FileAndName &file
 ) {
   m_traced_func_table.insert(
-    std::pair<std::string, FILE*>(std::string(func_name), trace_out)
+    std::pair<std::string, struct FileAndName>(func_name, file)
   );
 }
 
 void refalrts::debugger::TracedFunctionTable::notrace_func(
-  const char *func_name
+  const std::string &func_name
 ) {
-  std::map<std::string, FILE*>::iterator found =
-    m_traced_func_table.find(std::string(func_name));
+  std::map<std::string, struct FileAndName>::iterator found =
+    m_traced_func_table.find(func_name);
   if (found != m_traced_func_table.end()) {
-    close_out(found->second);
-    m_traced_func_table.erase(std::string(func_name));
+    close_out(found->second.out);
+    m_traced_func_table.erase(func_name);
   }
 }
 
 void refalrts::debugger::TracedFunctionTable::clear() {
   for (
-    std::map<std::string, FILE*>::iterator it = m_traced_func_table.begin();
+    std::map<std::string, struct FileAndName>::iterator it =
+      m_traced_func_table.begin();
     it != m_traced_func_table.end();
     ++it
   ) {
-    close_out(it->second);
+    close_out(it->second.out);
   }
   m_traced_func_table.clear();
 }
@@ -241,12 +258,12 @@ bool refalrts::debugger::TracedFunctionTable::is_traced_func(
 FILE *refalrts::debugger::TracedFunctionTable::get_trace_outstream (
   const char * func_name
 ) {
-  std::map<std::string, FILE*>::iterator found =
+  std::map<std::string, struct FileAndName>::iterator found =
     m_traced_func_table.find(std::string(func_name));
   if (found == m_traced_func_table.end()) {
     return 0;
   }
-  return found->second;
+  return found->second.out;
 }
 
 void refalrts::debugger::TracedFunctionTable::print(FILE *out) {
@@ -255,15 +272,21 @@ void refalrts::debugger::TracedFunctionTable::print(FILE *out) {
     "=========================Traced function table=========================\n"
   );
   for (
-    std::map<std::string, FILE*>::iterator it = m_traced_func_table.begin();
+    std::map<std::string, struct FileAndName>::iterator it = m_traced_func_table.begin();
     it != m_traced_func_table.end();
     ++it
   ) {
     fprintf(out, "  \"%.20s\"", it->first.c_str());
-    if (it->second == stdout) {
+    if (it->second.out == stdout) {
       fprintf(out, "\tin stdout\n");
     } else {
-      fprintf(out, "\tin file\n");
+      fprintf(out, "\t ");
+      if (it->second.is_append) {
+        fprintf(out, ">>");
+      } else {
+        fprintf(out, " >");
+      }
+      fprintf(out, " %s\n", it->second.name.c_str());
     }
   }
   fprintf(
@@ -279,25 +302,48 @@ void refalrts::debugger::BreakpointSet::add_breakpoint(int step_numb) {
   m_step_breaks.insert(step_numb);
 }
 
-void refalrts::debugger::BreakpointSet::add_breakpoint(const char *func_name) {
-  m_func_breaks.insert(std::string(func_name));
+void refalrts::debugger::BreakpointSet::add_breakpoint(
+  const std::string &func_name
+) {
+  m_func_breaks.insert(func_name);
+}
+
+void refalrts::debugger::BreakpointSet::add_breakpoint(
+  Iter open_call_bracket
+) {
+  m_stack_breaks.insert(open_call_bracket);
 }
 
 void refalrts::debugger::BreakpointSet::rm_breakpoint(int step_numb) {
   m_step_breaks.erase(step_numb);
 }
 
-void refalrts::debugger::BreakpointSet::rm_breakpoint(const char *func_name) {
-  m_func_breaks.erase(std::string(func_name));
+void refalrts::debugger::BreakpointSet::rm_breakpoint(
+  const std::string &func_name
+) {
+  m_func_breaks.erase(func_name);
+}
+
+void refalrts::debugger::BreakpointSet::rm_breakpoint(
+  Iter open_call_bracket
+) {
+  m_stack_breaks.erase(open_call_bracket);
 }
 
 bool refalrts::debugger::BreakpointSet::is_breakpoint(
-  int cur_step_numb, const char *cur_func_name
+  int cur_step_numb, Iter begin
 ) {
-  std::set<int>::iterator step_found = m_step_breaks.find(cur_step_numb);
-  std::set<std::string>::iterator func_found =
-    m_func_breaks.find(std::string(cur_func_name));
-  return step_found != m_step_breaks.end() || func_found != m_func_breaks.end();
+  bool step_found = m_step_breaks.find(cur_step_numb) != m_step_breaks.end();
+  bool func_found = false;
+  bool stack_found = false;
+  if (begin != 0 && begin->tag == refalrts::cDataOpenCall) {
+    Iter function = begin->next;
+    const char *cur_func_name = function->function_info->name.name;
+    func_found =
+      m_func_breaks.find(std::string(cur_func_name)) != m_func_breaks.end();
+    stack_found = m_stack_breaks.find(begin) != m_stack_breaks.end();
+  }
+  return step_found || func_found || stack_found;
 }
 
 void refalrts::debugger::BreakpointSet::print(FILE *out) {
@@ -322,188 +368,20 @@ void refalrts::debugger::BreakpointSet::print(FILE *out) {
 //=============================================================================
 //  Работа с потоками вывода и парсинг строки
 
-refalrts::debugger::RefalDebugger::RedirectionType
-refalrts::debugger::RefalDebugger::parse_redirection(char **line) {
-  char *line_ptr = *line;
-
-  skip_space(&line_ptr);
-
-  RedirectionType result = check_bracket(&line_ptr);
-  if (result == cRedirectionType_None) {
-    return cRedirectionType_None;
-  }
-
-  refalrts::debugger::RefalDebugger::skip_space(&line_ptr);
-
-  if (*line_ptr == '"') {
-    if (! quotation_mark_parse(line_ptr+1, *line)) {
-      return cRedirectionType_None;
-    }
-  } else {
-    *line = line_ptr;
-    char *end = skip_nonspace(line_ptr);
-    *end = '\0';
-  }
-
-  return result;
-}
-
-void refalrts::debugger::RefalDebugger::skip_space(char **ptr) {
-  while (**ptr == '\n' || **ptr == '\t' || **ptr == ' ') {
-    (*ptr)++;
-  }
-}
-
-char *refalrts::debugger::RefalDebugger::skip_nonspace(char *ptr) {
-  while (*ptr != '\n' && *ptr != '\t' && *ptr != ' ') {
-    ptr++;
-  }
-
-  return ptr;
-}
-
-refalrts::debugger::RefalDebugger::RedirectionType
-refalrts::debugger::RefalDebugger::check_bracket(char **ptr) {
-  if (**ptr == '>') {
-    (*ptr)++;
-    if (**ptr == '>') {
-      (*ptr)++;
-      return cRedirectionType_Append;
-    }
-    return cRedirectionType_Write;
-  }
-  return cRedirectionType_None;
-}
-
-// from - источкник, из которого копируем строку
-// out - назначение, по которому копируется строка
-// и дописывается 1 байт val (от эскейп-последовательности)
-// str_p - адрес, до которого происходит копирование из from
-// (*str_p - *from) - количество байт, которое копируем
-void refalrts::debugger::RefalDebugger::write_byte(
-  char **from, char **out, char **str_p, char val
-) {
-  memmove(*out, *from, *str_p - *from);
-  *out += (*str_p - *from) + 1;
-  *(*out - 1) = val;
-  *str_p += 2;
-  *from = *str_p;
-}
-
-int refalrts::debugger::RefalDebugger::parse2hex(unsigned char *in) {
-  unsigned char ret;
-  if ( (*in - '0') <= 9){
-    ret = static_cast<unsigned char>(*in - '0');
-  } else if ( (*in & ~(1 << 5)) - 'A' <= 'F' - 'A') {
-    // обнулением 6-го бита, мы переводим маленькие латинские буквы в большие
-    // см. ASCII table
-    ret = static_cast<unsigned char>(((*in & ~(1 << 5)) - 'A') + 10);
-  } else {
-    return cBadHexVal;
-  }
-  ret <<= 4;
-
-  if ( (*(in+1) - '0') <= 9) {
-    ret |= static_cast<unsigned char>(*(in+1) - '0');
-  } else if ( (*(in+1) & ~(1 << 5)) - 'A' <= 'F' - 'A') {
-    ret |= static_cast<unsigned char>((*(in+1) & ~(1 << 5)) - 'A' + 10);
-  } else {
-    return cBadHexVal;
-  }
-  return ret;
-}
-
-bool refalrts::debugger::RefalDebugger::quotation_mark_parse(
-  char *from, char *out
-) {
-  char *str_p = from;
-
-  for (;;) {
-    switch (*str_p) {
-    case '"':
-      switch (*(str_p + 1)) {
-      case '\n':
-      case '\t':
-      case ' ':
-      case '\0':
-        memmove(out, from, str_p - from);
-        *(out + (str_p - from)) = '\0';
-        return true;
-
-      case 'a':
-        write_byte(&from, &out, &str_p, '\a');
-        continue;
-
-      case 'b':
-        write_byte(&from, &out, &str_p, '\b');
-        continue;
-
-      case 'f':
-        write_byte(&from, &out, &str_p, '\f');
-        continue;
-
-      case 'n':
-        write_byte(&from, &out, &str_p, '\n');
-        continue;
-
-      case 'r':
-        write_byte(&from, &out, &str_p, '\r');
-        continue;
-
-      case 't':
-        write_byte(&from, &out, &str_p, '\t');
-        continue;
-
-      case 'v':
-        write_byte(&from, &out, &str_p, '\v');
-        continue;
-
-      case '"':
-        write_byte(&from, &out, &str_p, '"');
-        continue;
-
-      case 'x':
-        {
-          int hexval = parse2hex((unsigned char *)str_p + 2);
-          if (hexval == cBadHexVal) {
-            return false;
-          }
-          memmove(out, from, str_p - from);
-          out += (str_p - from) + 1;
-          *(out-1) = static_cast<char>(hexval);
-          str_p += 4;
-          from = str_p;
-          continue;
-        }
-
-      default:
-        return false;
-      }
-
-    case '\0':
-      return false;
-
-    default :
-      str_p++;
-      continue;
-    }
-  }
-}
-
-
-FILE *refalrts::debugger::RefalDebugger::get_out() {
-  char line[cMaxLen] = {0};
-  char *line_ptr = line;
-  if (fgets(line, cMaxLen, m_in) == 0) {
+FILE *refalrts::debugger::RefalDebugger::get_out(Cmd &cmd) {
+  if (cmd.file.empty()) {
     return stdout;
-  }
-  RedirectionType type = parse_redirection(&line_ptr);
-  if (type == cRedirectionType_Append) {
-    return fopen(line_ptr, "a");
-  } else if (type == cRedirectionType_Write) {
-    return fopen(line_ptr, "w");
   } else {
-    return stdout;
+    FILE *out;
+    if (cmd.is_file_append) {
+      out = fopen(cmd.file.c_str(), "a");
+    } else {
+      out = fopen(cmd.file.c_str(), "w");
+    }
+    if (!out) {
+      return stdout;
+    }
+    return out;
   }
 }
 
@@ -511,6 +389,276 @@ void refalrts::debugger::close_out(FILE *out) {
   if (out != stdout) {
     fclose(out);
   }
+}
+
+namespace {
+// в стандартной библиотеке нет trim, весело :)
+// обрезает пробельные символы в начале и в конце строки
+std::string trim(std::string s) {
+  const std::string spaces = " \n\r\t";
+  size_t begin_of_not_spaces = s.find_first_not_of(spaces);
+  s.erase(0, begin_of_not_spaces);
+  size_t end_of_not_spaces = s.find_last_not_of(spaces);
+  return s.erase(end_of_not_spaces + 1);
+}
+
+// в стандартной библиотеке нет split :)
+std::vector<std::string> split(const std::string &s, char c) {
+  std::string::const_iterator end = s.end();
+  std::string::const_iterator start = end;
+
+  std::vector<std::string> v;
+  for (std::string::const_iterator it = s.begin(); it != end; ++it) {
+    if (*it != c) {
+      if (start == end) {
+        start = it;
+      }
+      continue;
+    }
+    if (start != end) {
+      v.push_back(std::string(start, it));
+      start = end;
+    }
+  }
+  if (start != end) {
+    v.push_back(std::string(start, end));
+  }
+  return v;
+}
+
+} // безымянное namespace
+
+const std::string refalrts::debugger::Cmd::to_string() {
+  std::string result;
+  if (!prefixes.empty()) {
+    std::string prefix_concat;
+    for (size_t i = 0; i < prefixes.size(); i++) {
+      if (i == prefixes.size() - 1) {
+        result += prefixes[i];
+      } else {
+        result += prefixes[i] + " ";
+      }
+    }
+    result += ": ";
+  }
+  result += cmd + " " + param;
+  if (!file.empty()) {
+    if (is_file_append) {
+      result += " >> " + file;
+    } else {
+      result += " > " + file;
+    }
+  }
+  return result;
+}
+
+const bool refalrts::debugger::Cmd::has_param() {
+  return param.length() != 0;
+}
+
+const bool refalrts::debugger::Cmd::has_prefix(const std::string &prefix) {
+  for (size_t i = 0; i < prefixes.size(); i++) {
+    if (prefixes[i] == prefix) {
+      return true;
+    }
+  }
+  return false;
+}
+
+const bool refalrts::debugger::Cmd::has_prefix(const char *prefix) {
+  return has_prefix(std::string(prefix));
+}
+
+std::pair<std::string, std::string>
+refalrts::debugger::RefalDebugger::parse_file_name(
+  const std::string &file_string
+) {
+  if (file_string.empty()) {
+    return std::make_pair("", "");
+  }
+  std::ostringstream file;
+  std::ostringstream error;
+  bool isQuotationMark = false;
+  size_t i = 0;
+  for (;;) {
+    if (i >= file_string.size()) {
+      if (isQuotationMark) {
+        error << "unclosed quotation mark";
+        return std::make_pair("", error.str());
+      } else {
+        return std::make_pair(file.str(), "");
+      }
+    }
+    switch (file_string[i]) {
+      // запрещенные символы для имен файлов Windows/Unix <>:;,?"*
+      case '<':
+      case '>':
+      case ':':
+      case ';':
+      case ',':
+      case '?':
+      case '*':
+        error << "file names cannot contain \"" << file_string[i] << "\"";
+        return std::make_pair("", error.str());
+      case '"':
+        if (isQuotationMark) {
+          return std::make_pair(file.str(), "");
+        } else {
+          isQuotationMark = true;
+        }
+        i++;
+        continue;
+      case '\\':
+        if (i + 1 < file_string.size()) {
+          i += 2; // чтобы не писать i+=2 в каждом из case
+          switch (file_string[i - 1]) {
+            case 'a':
+              file << '\a';
+              continue;
+            case 'b':
+              file << '\b';
+              continue;
+            case 'f':
+              file << '\f';
+              continue;
+            case 'n':
+              file << '\n';
+              continue;
+            case 'r':
+              file << '\r';
+              continue;
+            case 't':
+              file << '\t';
+              continue;
+            case 'v':
+              file << '\v';
+              continue;
+            case '\\':
+              file << '\\';
+              continue;
+            case '\'':
+              file << '\'';
+              continue;
+            case '\"':
+              file << '\"';
+              continue;
+            case '\?':
+              file << '\?';
+              continue;
+            case 'x':
+              if (i + 2 < file_string.size()) {
+                unsigned int symbolCode;
+                std::stringstream ss;
+                std::string hexNum = file_string.substr(i, 2);
+                ss << std::hex << hexNum;
+                ss >> symbolCode;
+                if (!symbolCode) {
+                  error << "invalid hex in escaped sequence \"\\x...\"";
+                  return std::make_pair("", error.str());
+                }
+                file << (char)symbolCode;
+                i+=2; // в итоге от начала switch i+=4
+                continue;
+              } else {
+                error << "unexpected end of file name";
+                return std::make_pair("", error.str());
+              }
+            default:
+              error << "unexpected escaped character \""
+                    << file_string[i - 1] << "\"";
+              return std::make_pair("", error.str());
+          }
+        } else {
+          error << "file name unexpectedly ended on \"\\\"";
+          return std::make_pair("", error.str());
+        }
+      default:
+        file << file_string[i];
+        i++;
+        continue;
+    }
+  }
+}
+
+// разделяет строку на три части по схеме "prefix: cmd param > filename"
+// ни одна из частей не является обязательной
+// возвращает пару (Cmd*, ошибка)
+std::pair<refalrts::debugger::Cmd, std::string>
+  refalrts::debugger::RefalDebugger::parse_input_line(
+  const std::string &line
+) {
+  std::string cmd, param;
+  bool is_file_append = false;
+  std::vector<std::string> prefixes;
+  size_t colon_pos = line.find(':');
+  size_t begin_of_cmd_tail = 0;
+  if (colon_pos != std::string::npos) {
+    begin_of_cmd_tail = colon_pos + 1;
+    prefixes = split(line.substr(0, colon_pos), ' ');
+  }
+  std::string cmd_with_param_and_file = trim(line.substr(begin_of_cmd_tail));
+  size_t first_space_pos = cmd_with_param_and_file.find(' ');
+  size_t out_stream_symbol_pos = cmd_with_param_and_file.find('>');
+  if (first_space_pos > out_stream_symbol_pos) {
+    first_space_pos = out_stream_symbol_pos;
+  }
+  cmd = cmd_with_param_and_file.substr(0, first_space_pos);
+  if (out_stream_symbol_pos - first_space_pos > 1) {
+    param = trim(
+      cmd_with_param_and_file.substr(
+        first_space_pos + 1,
+        out_stream_symbol_pos - first_space_pos - 1
+      )
+    );
+  }
+  size_t skipSecondBracket = 0;
+  if (
+    out_stream_symbol_pos + 1 < cmd_with_param_and_file.size() &&
+    cmd_with_param_and_file[out_stream_symbol_pos + 1] == '>'
+    ) {
+    is_file_append = true;
+    skipSecondBracket++;
+  }
+  std::pair<std::string, std::string> fileAndErr("", "");
+  if (out_stream_symbol_pos != std::string::npos) {
+    fileAndErr = parse_file_name(
+      trim(
+        cmd_with_param_and_file.substr(
+          out_stream_symbol_pos + 1 + skipSecondBracket
+        )
+      )
+    );
+    if (!fileAndErr.second.empty()) {
+      return std::make_pair(Cmd(), fileAndErr.second);
+    }
+    if (fileAndErr.first.empty()) {
+      return std::make_pair(
+        Cmd(),
+        "file name is required after \">\" symbol"
+      );
+    }
+  }
+  return std::make_pair(
+    Cmd(
+      prefixes,
+      cmd,
+      param,
+      fileAndErr.first,
+      is_file_append
+    ),
+    ""
+  );
+}
+
+std::string refalrts::debugger::RefalDebugger::ask_for_param(
+  const std::string &appeal
+) {
+  printf("%s\n", appeal.c_str());
+  printf("param>");
+
+  char param[MAX_COMMAND_LEN] = {0};
+  fgets(param, MAX_COMMAND_LEN - 1, m_in);
+  return trim(std::string(param));
 }
 
 //=============================================================================
@@ -526,7 +674,6 @@ bool refalrts::debugger::RefalDebugger::mem_cond() {
 }
 
 bool refalrts::debugger::RefalDebugger::next_cond(Iter begin) {
-  m_dot = s_NEXT;
   bool stop = begin == m_next_expr;
   if (stop) {
     printf("stopped on next\n");
@@ -535,13 +682,14 @@ bool refalrts::debugger::RefalDebugger::next_cond(Iter begin) {
   return stop;
 }
 
-bool refalrts::debugger::RefalDebugger::run_cond(RefalFunction *callee) {
-  m_dot = s_RUN;
+bool refalrts::debugger::RefalDebugger::run_cond(Iter begin) {
   bool stop = break_set.is_breakpoint(
-    m_vm->step_counter(), callee == 0 ? "" : callee->name.name
+    m_vm->step_counter(), begin
   );
   if (stop) {
     printf("stopped on function breakpoint\n");
+    // точки остановки на элементы стека одноразовые
+    break_set.rm_breakpoint(begin);
   }
   return stop;
 }
@@ -549,7 +697,6 @@ bool refalrts::debugger::RefalDebugger::run_cond(RefalFunction *callee) {
 bool refalrts::debugger::RefalDebugger::step_cond() {
   bool scond = (m_vm->step_counter() == m_step_numb);
   m_step_numb = m_vm->step_counter();
-  m_dot = s_STEP;
   if (scond) {
     printf("stopped on step\n");
   }
@@ -561,7 +708,7 @@ bool refalrts::debugger::RefalDebugger::is_debug_stop(
 ) {
   bool stop = step_cond();
   stop = next_cond(begin) || stop;
-  stop = run_cond(callee) || stop;
+  stop = run_cond(begin) || stop;
   stop = mem_cond() || stop;
   return stop;
 }
@@ -598,14 +745,23 @@ void refalrts::debugger::RefalDebugger::help_option() {
   printf(
     "%s, %s, %s\t%s\n",
     s_B, s_BREAK, s_BREAKPOINT,
-    "set breakpoint by function name\n"
-    "\t\t\t  or step number (\'#\'ddd)"
+    "set breakpoint\n"
+    "\t\t\t  by function name or step number (\'#\'ddd)\n"
+    "\t\t\t  by call stack pos (\'@\'ddd or \'^\'ddd)"
   );
   printf(
     "%s, %s, %s\t\t%s\n",
     s_CL, s_CLEAR, s_RM,
     "remove breakpoint from function by its name\n"
-    "\t\t\t  or from step by its number (\'#\'ddd)"
+    "\t\t\t  or from step by its number (\'#\'ddd)\n"
+    "\t\t\t  or from call stack by pos (\'@\'|\'^\'ddd)"
+  );
+  printf(
+    "%s, %s\t\t%s\n",
+    s_BT, s_BACKTRACE,
+    "prints call stack\n"
+    "\t\t\t  \'@\'ddd is pos in stack, \'^\'ddd is parent number\n"
+    "\t\t\t  symbol '*' means there is a breakpoint"
   );
   printf(
     "%s\t\t%s\n",
@@ -630,13 +786,19 @@ void refalrts::debugger::RefalDebugger::help_option() {
   );
   printf(
     "%s, %s\t\t\t%s\n",
-    s_N, s_NEXT, "execute next active function until passive result"
+    s_N, s_NEXT,
+    "execute next active function until passive result\n"
+    "\t\t\t  \'next @N\' is equal to \'break @N\' and \'run\'"
   );
   printf("%s\t\t\t%s\n", s_VARS, "print the variable debug table");
-  printf("%s, %s\t\t\t%s\n", s_P, s_PRINT, "print by parameter commands");
+  printf("%s, %s\t\t\t%s\n", s_L, s_LIST, "print by parameter commands");
   printf(
     "  %s\t%s\n",
     "\'e.\'|\'t.\'|\'s.\'nnn", "print variable value by its name"
+  );
+  printf(
+    "  %s\t\t%s\n",
+    "\'@\'|\'^\'ddd", "print call stack element"
   );
   printf("  %s\t\t\t%s\n", s_CALL, "print current active expression");
   printf("  %s\t\t%s\n", s_CALLEE, "print the therm after \'<\'");
@@ -652,27 +814,139 @@ void refalrts::debugger::RefalDebugger::help_option() {
     s_B, s_BREAK, s_BREAKPOINT, "print set of all placed breakpoints"
   );
   printf("  %s, %s\t\t%s\n", s_TR, s_TRACE, "print table of all traced functions");
-  printf("%s\t\t\t%s\n", s_DOT, "repeat previous debugger command");
+  printf(
+    "  %s, %s, %s\t%s\n",
+    s_V, s_VIEW, s_VIEWFIELD,
+    "print current view field"
+  );
+  printf("%s\t\t\t%s\n", s_EMPTY, "(empty line) repeat previous debugger command");
+  printf("\n");
+  printf("Prefixes are used as prefix: command (\'%s: print view\')\n", s_FULL);
+  printf("%s, %s\t%s\n",
+    s_ONELINE, s_MULTILINE,
+    "prefixes control \'\\n\' in output"
+  );
+  printf("%s, %s\t\t%s\n",
+         s_FULL, s_SKELETON,
+         "prefixes control expressiveness"
+  );
+  printf("\n");
+  printf("Files can be used with %s, %s, %s\n", s_LIST, s_TRACE, s_BACKTRACE);
+  printf("  enter \'>\'|\'>>\' fileName after command\n");
   printf("\n");
   printf("================================================================\n");
 }
 
-void refalrts::debugger::RefalDebugger::break_option(const char *arg) {
-  if (arg[0] == '#') {
-    int step_break = atoi(arg+1);
+void refalrts::debugger::RefalDebugger::break_option(
+  Cmd &cmd, Iter begin
+) {
+  for (;!cmd.has_param();) {
+    cmd.param = ask_for_param(
+      "enter function name (example: Prout) or step number (example: #23)"
+    );
+  }
+  if (cmd.param[0] == '#') {
+    int step_break = atoi(cmd.param.substr(1).c_str());
     break_set.add_breakpoint(step_break);
+  } else if (cmd.param[0] == '@' || cmd.param[0] == '^') {
+    Iter open_call_bracket = find_call_stack_elem(begin, cmd.param);
+    if (open_call_bracket != 0) {
+      break_set.add_breakpoint(open_call_bracket);
+    } else {
+      printf("no such stack element\n");
+    }
   } else {
-    break_set.add_breakpoint(arg);
+    break_set.add_breakpoint(cmd.param);
   }
 }
 
-void refalrts::debugger::RefalDebugger::clear_option(const char *arg) {
-  if (arg[0] == '#') {
-    int step_break = atoi(arg+1);
-    break_set.rm_breakpoint(step_break);
-  } else {
-    break_set.rm_breakpoint(arg);
+void refalrts::debugger::RefalDebugger::clear_option(
+  Cmd &cmd, Iter begin
+) {
+  for(;!cmd.has_param();) {
+    cmd.param = ask_for_param(
+      "enter function name (example: Prout) or step number (example: #23)"
+    );
   }
+  if (cmd.param[0] == '#') {
+    int step_break = atoi(cmd.param.substr(1).c_str());
+    break_set.rm_breakpoint(step_break);
+  } else if (cmd.param[0] == '@' || cmd.param[0] == '^') {
+    Iter open_call_bracket = find_call_stack_elem(begin, cmd.param);
+    if (open_call_bracket != 0) {
+      break_set.rm_breakpoint(open_call_bracket);
+    } else {
+      printf(
+        "no such stack element\ncall stack numbers change during execution\n"
+      );
+    }
+  } else {
+    break_set.rm_breakpoint(cmd.param);
+  }
+}
+
+void refalrts::debugger::RefalDebugger::step_limit_option(Cmd &cmd) {
+  for (;!cmd.has_param();) {
+    cmd.param = ask_for_param(
+      "enter step limit (example: 400)"
+    );
+  }
+  int step_limit = atoi(cmd.param.c_str());
+  break_set.add_breakpoint(m_vm->step_counter()+step_limit);
+}
+
+void refalrts::debugger::RefalDebugger::memory_limit_option(Cmd &cmd) {
+  for (;!cmd.has_param();) {
+    cmd.param = ask_for_param(
+      "enter memory limit in nodes (example: 500)"
+    );
+  }
+  m_memory_limit = atoi(cmd.param.c_str());
+}
+
+void refalrts::debugger::RefalDebugger::trace_option(
+  Cmd &cmd, FILE *out
+) {
+  for (;!cmd.has_param();) {
+    cmd.param = ask_for_param(
+      "enter function name"
+    );
+  }
+  struct FileAndName file = {
+    out,
+    cmd.file,
+    cmd.is_file_append,
+  };
+  func_trace_table.trace_func(cmd.param, file);
+}
+
+void refalrts::debugger::RefalDebugger::no_trace_option(Cmd &cmd) {
+  for (;!cmd.has_param();) {
+    cmd.param = ask_for_param(
+      "enter function name"
+    );
+  }
+  func_trace_table.notrace_func(cmd.param);
+}
+
+void refalrts::debugger::RefalDebugger::next_option(Cmd &cmd, Iter begin) {
+  if (cmd.has_param()) {
+    if (cmd.param[0] == '^' || cmd.param[0] == '@') {
+      Iter open_call_bracket = find_call_stack_elem(begin, cmd.param);
+      if (open_call_bracket == 0) {
+        printf("no such stack element\n");
+      } else {
+        m_next_expr = open_call_bracket;
+      }
+    } else {
+      printf(
+        "only 'next' without params, 'next @N' or 'next ^N' are available\n"
+      );
+    }
+  } else {
+    m_next_expr = m_vm->stack_ptr();
+  }
+  m_last_option = s_NEXT;
 }
 
 void refalrts::debugger::RefalDebugger::print_callee_option(
@@ -712,6 +986,14 @@ void refalrts::debugger::RefalDebugger::print_res_option(FILE *out) {
   }
 }
 
+void refalrts::debugger::RefalDebugger::print_view_field_option(
+  FILE *out,
+  bool multiline,
+  bool skeleton
+) {
+  m_vm->print_view_field(out, multiline);
+}
+
 bool refalrts::debugger::RefalDebugger::print_var_option(
   const char *var_name, FILE *out
 ) {
@@ -735,10 +1017,213 @@ bool refalrts::debugger::RefalDebugger::print_var_option(
   return false;
 }
 
+void refalrts::debugger::RefalDebugger::backtrace_option(
+  Iter begin, FILE *out, bool multiline, bool skeleton
+) {
+  Iter stack_ptr = begin;
+  if (stack_ptr == 0) {
+    fprintf(out, "call stack is empty\n");
+    return;
+  }
+  if (stack_ptr->tag != refalrts::cDataOpenCall) {
+    fprintf(out, "cannot print call stack\n");
+    return;
+  }
+  // Сначала получается соответствие открывающих скобок вызова
+  // количеству активных подвыражений, содержащих первичное и содержащихся
+  // в рассматриваемом (которому принадлежит открывающая скобка).
+  std::map<Iter, int> open_call_level;
+
+  int level = -1;
+  int maxLevel = -1;
+  for (
+    Iter current = stack_ptr;
+    current->prev != 0;
+    current = current->prev
+  ) {
+    if (current->tag == refalrts::cDataCloseCall) {
+      // вообще, сюда не должно никогда попасть
+      // так как первичное активное подвыражение является самым левым,
+      // не содержащим других.
+      // Однако для общности алгоритма пусть будет
+      level -= 1;
+    } else if (current->tag == refalrts::cDataOpenCall) {
+      level += 1;
+      if (level > maxLevel) {
+        // встречена открывающая скобка "объемлющего подвыражения"
+        maxLevel = level;
+        open_call_level.insert(std::make_pair(current, level));
+      }
+    }
+  }
+  int call_number = 0;
+  for (
+    Iter stack_head = stack_ptr;
+    stack_head != 0;
+    stack_head = stack_head->link_info->link_info
+  ) {
+    Iter begin = stack_head;
+    Iter end = stack_head->link_info;
+    Iter function = begin->next;
+    fprintf(out, "@%-3d ", call_number);
+    if (open_call_level.find(begin) != open_call_level.end()) {
+      int call_level = open_call_level[begin];
+      fprintf(out, "^%-3d ", call_level);
+    } else {
+      fprintf(out, "     ");
+    }
+    if (break_set.is_breakpoint(-1, begin)) {
+      fprintf(out, "*");
+    } else {
+      fprintf(out, " ");
+    }
+    if (skeleton) {
+      fprintf(out, "<%s ...>\n", function->function_info->name.name);
+    } else {
+      m_vm->print_seq(out, begin, end, multiline);
+      if (multiline) {
+        fprintf(out, "\n");
+      }
+    }
+    call_number++;
+  }
+}
+
+// возвращает открывающую скобку вызова активного подвыражения с указанным
+// номером (может иметь вид @N или ^N)
+refalrts::Iter refalrts::debugger::RefalDebugger::find_call_stack_elem(
+  Iter begin, const std::string &elem_number
+) {
+  Iter stack_ptr = begin;
+  if (stack_ptr == 0) {
+    return 0;
+  }
+  if (stack_ptr->tag != refalrts::cDataOpenCall) {
+    return 0;
+  }
+  if (elem_number[0] == '@') {
+    // поиск N-го элемента стека
+    int required_call_number = atoi(elem_number.substr(1).c_str());
+    int call_number = 0;
+    for (
+      Iter stack_head = stack_ptr;
+      stack_head != 0;
+      stack_head = stack_head->link_info->link_info
+      ) {
+      if (call_number == required_call_number) {
+        return stack_head;
+      }
+      call_number++;
+    }
+  } else if (elem_number[0] == '^') {
+    // поиск активного подвыражения, содержащего первичное активное
+    // и N других, тоже содержащих первичное
+    int required_call_level = atoi(elem_number.substr(1).c_str());
+    int level = -1;
+    int maxLevel = -1;
+    for (
+      Iter current = stack_ptr;
+      current->prev != 0;
+      current = current->prev
+      ) {
+      if (current->tag == refalrts::cDataCloseCall) {
+        // вообще, сюда не должно никогда попасть
+        // так как первичное активное подвыражение является самым левым,
+        // не содержащим других.
+        // Однако для общности алгоритма пусть будет
+        level -= 1;
+      } else if (current->tag == refalrts::cDataOpenCall) {
+        level += 1;
+        if (level > maxLevel) {
+          // встречена открывающая скобка "объемлющего подвыражения"
+          maxLevel = level;
+          if (level == required_call_level) {
+            return current;
+          }
+        }
+      }
+    }
+  }
+  return 0;
+}
+
+void refalrts::debugger::RefalDebugger::print_call_stack_option(
+  Iter begin,
+  const std::string &elem_number,
+  FILE *out,
+  bool multiline,
+  bool skeleton
+) {
+  Iter open_call_bracket = find_call_stack_elem(begin, elem_number);
+  if (open_call_bracket != 0) {
+    if (skeleton) {
+      Iter function = open_call_bracket->next;
+      fprintf(out, "<%s ...>\n", function->function_info->name.name);
+    } else {
+      m_vm->print_seq(
+        out,
+        open_call_bracket,
+        open_call_bracket->link_info,
+        multiline
+      );
+    }
+  } else {
+    fprintf(out, "no such stack element\n");
+  }
+}
+
+bool refalrts::debugger::RefalDebugger::isCmdMultiline(Cmd &cmd) {
+  if (m_multiline) {
+    if (cmd.has_prefix(s_ONELINE)) {
+      return false;
+    }
+  } else {
+    if (cmd.has_prefix(s_MULTILINE)) {
+      return true;
+    }
+  }
+  return m_multiline;
+}
+
+bool refalrts::debugger::RefalDebugger::isCmdSkeleton(Cmd &cmd) {
+  if (m_skeleton) {
+    if (cmd.has_prefix(s_FULL)) {
+      return false;
+    }
+  } else {
+    if (cmd.has_prefix(s_SKELETON)) {
+      return true;
+    }
+  }
+  return m_skeleton;
+}
+
 namespace {
 
 bool str_equal(const char *lhs, const char *rhs) {
   return strcmp(lhs, rhs) == 0;
+}
+
+bool one_of(const std::string &s, int num_of_commands, ...) {
+  va_list commands;
+  va_start(commands, num_of_commands);
+  for (int i = 0; i < num_of_commands; i++) {
+    if (strcmp(s.c_str(), va_arg(commands, const char *)) == 0) {
+      va_end(commands);
+      return true;
+    }
+  }
+  va_end(commands);
+  return false;
+}
+
+bool same_as_last(
+  const std::string &s,
+  const char *repeat_last_command,
+  const char *last,
+  const char *command
+) {
+  return str_equal(s.c_str(), repeat_last_command) && str_equal(last, command);
 }
 
 } // безымянное namespace
@@ -746,115 +1231,118 @@ bool str_equal(const char *lhs, const char *rhs) {
 refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
   refalrts::Iter begin, refalrts::Iter end
 ) {
-  char debcmd[16] = {0};
-  char strparam[cMaxLen] = {0};
+  char command[MAX_COMMAND_LEN] = {0};
   for ( ; ; ) {
     printf("debug>");
-    bool ok = fscanf(m_in, "%15s", debcmd) == 1;
-    if (! ok) {
-      break;
+    fgets(command, MAX_COMMAND_LEN - 1, m_in);
+    std::pair<Cmd, std::string> cmdAndError = parse_input_line(
+      std::string(command));
+    if (!cmdAndError.second.empty()) {
+      printf("Error: %s\n", cmdAndError.second.c_str());
+      continue;
     }
-    if (str_equal(debcmd, s_H) || str_equal(debcmd, s_HELP)) {
+    Cmd &cmd = cmdAndError.first;
+    bool multiline = isCmdMultiline(cmd);
+    bool skeleton = isCmdSkeleton(cmd);
+    if (one_of(cmd.cmd, 2, s_H, s_HELP)) {
       help_option();
+    } else if (one_of(cmd.cmd, 3, s_B, s_BREAK, s_BREAKPOINT)) {
+      break_option(cmd, begin);
+    } else if (one_of(cmd.cmd, 3, s_CL, s_CLEAR, s_RM)) {
+      clear_option(cmd, begin);
+    } else if (one_of(cmd.cmd, 1, s_STEPLIMIT)) {
+      step_limit_option(cmd);
+    } else if (one_of(cmd.cmd, 1, s_MEMORYLIMIT)) {
+      memory_limit_option(cmd);
+    } else if (one_of(cmd.cmd, 2, s_TR, s_TRACE)) {
+      trace_option(cmd, get_out(cmd));
+    } else if (one_of(cmd.cmd, 2, s_NOTR, s_NOTRACE)) {
+      no_trace_option(cmd);
     } else if (
-      str_equal(debcmd, s_B)
-      || str_equal(debcmd, s_BREAK)
-      || str_equal(debcmd, s_BREAKPOINT)
+      one_of(cmd.cmd, 2, s_R, s_RUN)
+      || same_as_last(cmd.cmd, s_EMPTY, m_last_option, s_RUN)
     ) {
-      ok = fscanf(m_in, "%1023s", strparam) == 1;
-      if (ok) {
-        break_option(strparam);
-      }
-    } else if (
-      str_equal(debcmd, s_CL)
-      || str_equal(debcmd, s_CLEAR)
-      || str_equal(debcmd, s_RM)
-    ) {
-      ok = fscanf(m_in, "%1023s", strparam) == 1;
-      if (ok) {
-        clear_option(strparam);
-      }
-    } else if (str_equal(debcmd, s_STEPLIMIT)) {
-      int step_lim = 0;
-      ok = fscanf(m_in, "%d", &step_lim) == 1;
-      if (ok) {
-        break_set.add_breakpoint(m_vm->step_counter()+step_lim);
-      }
-    } else if (str_equal(debcmd, s_MEMORYLIMIT)) {
-      ok = fscanf(m_in, "%u", &m_memory_limit) == 1;
-      (void) ok;
-    } else if (str_equal(debcmd, s_TR) || str_equal(debcmd, s_TRACE)) {
-      ok = fscanf(m_in, "%1023s", strparam) == 1;
-      if (ok) {
-        func_trace_table.trace_func(strparam, get_out());
-      }
-    } else if (str_equal(debcmd, s_NOTR) || str_equal(debcmd, s_NOTRACE)) {
-      ok = fscanf(m_in, "%1023s", strparam) == 1;
-      if (ok) {
-        func_trace_table.notrace_func(strparam);
-      }
-    } else if (
-      str_equal(debcmd, s_R)
-      || str_equal(debcmd, s_RUN)
-      || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_RUN))
-    ) {
-      m_dot = s_RUN;
+      m_last_option = s_RUN;
       break;
     } else if (
-      str_equal(debcmd, s_S)
-      || str_equal(debcmd, s_STEP)
-      || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_STEP))
+      one_of(cmd.cmd, 2, s_S, s_STEP)
+      || same_as_last(cmd.cmd, s_EMPTY, m_last_option, s_STEP)
     ) {
       m_step_numb = m_vm->step_counter()+1;
-      m_dot = s_STEP;
+      m_last_option = s_STEP;
       break;
-    } else if (str_equal(debcmd, s_Q) || str_equal(debcmd, s_QUIT)) {
+    } else if (one_of(cmd.cmd, 2, s_Q, s_QUIT)) {
       m_vm->set_return_code(0);
       return cExit;
     } else if (
-      str_equal(debcmd, s_N)
-      || str_equal(debcmd, s_NEXT)
-      || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_NEXT))
+      one_of(cmd.cmd, 2, s_N, s_NEXT)
+      || same_as_last(cmd.cmd, s_EMPTY, m_last_option, s_NEXT)
     ) {
-      m_next_expr = m_vm->stack_ptr();
-      m_dot = s_NEXT;
+      next_option(cmd, begin);
       break;
-    } else if (str_equal(debcmd, s_VARS)) {
-      FILE *out = get_out();
+    } else if (one_of(cmd.cmd, 1, s_VARS)) {
+      FILE *out = get_out(cmd);
       var_debug_table.print(out);
       close_out(out);
-    } else if (str_equal(debcmd, s_P) || str_equal(debcmd, s_PRINT)) {
-      ok = fscanf(m_in, "%1023s", strparam) == 1;
-      if (! ok) {
-        continue;
+    } else if (one_of(cmd.cmd, 2, s_L, s_LIST)) {
+      for (;!cmd.has_param();) {
+        char appeal[512] = {0};
+        sprintf(
+          appeal,
+          "available options to print are: %s, %s, %s, %s, %s, %s, %s, varname",
+          s_ARG, s_CALL, s_CALL, s_RES, s_BREAKPOINT, s_TRACE, s_VIEWFIELD
+        );
+        cmd.param = ask_for_param(
+          std::string(appeal)
+        );
       }
-      FILE *out = get_out();
-      if (str_equal(strparam, s_ARG)) {
+      FILE *out = get_out(cmd);
+      if (one_of(cmd.param, 1, s_ARG)) {
         print_arg_option(begin, end, out);
-      } else if (str_equal(strparam, s_CALL)) {
+      } else if (one_of(cmd.param, 1, s_CALL)) {
         m_vm->print_seq(out, begin, end, true);
-      } else if (str_equal(strparam, s_CALLEE)) {
+      } else if (one_of(cmd.param, 1, s_CALLEE)) {
         print_callee_option(begin, end, out);
-      } else if (str_equal(strparam, s_RES)) {
+      } else if (one_of(cmd.param, 1, s_RES)) {
         print_res_option(out);
-      } else if (
-        str_equal(strparam, s_B)
-        || str_equal(strparam, s_BREAK)
-        || str_equal(strparam, s_BREAKPOINT)
-      ) {
+      } else if (one_of(cmd.param, 3, s_B, s_BREAK, s_BREAKPOINT)) {
         break_set.print(out);
-      } else if (str_equal(strparam, s_TR) || str_equal(strparam, s_TRACE)) {
+      } else if (one_of(cmd.param, 2, s_TR, s_TRACE)) {
         func_trace_table.print(out);
-      } else if (! print_var_option(strparam, out)) {
+      } else if (one_of(cmd.param, 3, s_V, s_VIEW, s_VIEWFIELD)) {
+        print_view_field_option(out, multiline, skeleton);
+      } else if (
+        cmd.param.size() > 1 &&
+        (cmd.param[0] == '^' || cmd.param[0] == '@')
+      ) {
+        print_call_stack_option(begin, cmd.param, out, multiline, skeleton);
+      } else if (! print_var_option(cmd.param.c_str(), out)) {
         fprintf(
           stderr,
           "Unrecognised print option is found: %s \"%s\"\n",
-          debcmd, strparam
+          cmd.cmd.c_str(), cmd.param.c_str()
         );
       }
       close_out(out);
-    } else if (! print_var_option(debcmd, get_out())) {
-      fprintf(stderr, "Unrecognised option is found: \"%s\"\n", debcmd);
+    } else if (one_of(cmd.cmd, 1, s_MULTILINE)) {
+      m_multiline = true;
+    } else if (one_of(cmd.cmd, 1, s_ONELINE)) {
+      m_multiline = false;
+    } else if (one_of(cmd.cmd, 1, s_SKELETON)) {
+      m_skeleton = true;
+    } else if (one_of(cmd.cmd, 1, s_FULL)) {
+      m_skeleton = false;
+    } else if (one_of(cmd.cmd, 2, s_BACKTRACE, s_BT)) {
+      FILE *out = get_out(cmd);
+      backtrace_option(begin, out, multiline, skeleton);
+      close_out(out);
+    } else {
+      fprintf(
+        stderr,
+        "Unrecognised option: \"%s\"\n"
+        "enter help to see the list of available commands\n",
+        cmd.cmd.c_str()
+      );
     }
   }
   return refalrts::cSuccess;

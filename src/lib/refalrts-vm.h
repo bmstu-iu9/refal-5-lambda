@@ -202,6 +202,10 @@ public:
     bool multiline = true, unsigned max_node = -1
   );
 
+  void print_view_field(
+    FILE *output, bool multiline = true
+  );
+
   void free_states_stack();
 
   void read_counters(double counters[]);

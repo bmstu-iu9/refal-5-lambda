@@ -470,6 +470,10 @@ void refalrts::VM::print_seq(
   fprintf(output, "\n");
 }
 
+void refalrts::VM::print_view_field(FILE *output, bool multiline) {
+  print_seq(output, &m_first_marker, &m_last_marker, multiline);
+}
+
 void refalrts::VM::make_dump(refalrts::Iter begin, refalrts::Iter end) {
   fprintf(dump_stream(), "\nSTEP NUMBER %u\n", m_step_counter);
   fprintf(dump_stream(), "\nPRIMARY ACTIVE EXPRESSION:\n");
