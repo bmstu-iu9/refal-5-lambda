@@ -67,6 +67,8 @@ static const char *const s_SKELETON = "skeleton";
 static const char *const s_FULL = "full";
 static const char *const s_BACKTRACE = "backtrace";
 static const char *const s_BT = "bt";
+static const char *const s_M = "m";
+static const char *const s_MODE = "mode";
 
 enum { cMaxLen = 1024 };
 void close_out(FILE*);
@@ -1172,6 +1174,22 @@ void refalrts::debugger::RefalDebugger::print_call_stack_option(
   }
 }
 
+void refalrts::debugger::RefalDebugger::mode_option() {
+  const char *line_setting;
+  const char *skeleton_or_full;
+  if (m_multiline) {
+    line_setting = s_MULTILINE;
+  } else {
+    line_setting = s_ONELINE;
+  }
+  if (m_skeleton) {
+    skeleton_or_full = s_SKELETON;
+  } else {
+    skeleton_or_full = s_FULL;
+  }
+  printf("Current settings are: %s %s\n", line_setting, skeleton_or_full);
+}
+
 bool refalrts::debugger::RefalDebugger::isCmdMultiline(Cmd &cmd) {
   if (m_multiline) {
     if (cmd.has_prefix(s_ONELINE)) {
@@ -1338,6 +1356,8 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       FILE *out = get_out(cmd);
       backtrace_option(begin, out, multiline, skeleton);
       close_out(out);
+    } else if (one_of(cmd.cmd, 2, s_MODE, s_M)) {
+      mode_option();
     } else {
       fprintf(
         stderr,

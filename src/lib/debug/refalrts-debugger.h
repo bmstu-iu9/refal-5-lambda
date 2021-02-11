@@ -196,6 +196,7 @@ public:
     bool multiline,
     bool skeleton
   );
+  void mode_option();
   bool isCmdMultiline(Cmd &cmd);
   bool isCmdSkeleton(Cmd &cmd);
   refalrts::FnResult debugger_loop(Iter begin, Iter end);
