@@ -45,8 +45,8 @@ public:
   void insert_var(const RASLCommand *next);
   void clear();
   std::map<int, int> find_var(const char *var_name);
-  void print(FILE *out);
-  void print_var(const char *var_name, FILE *out);
+  void print(FILE *out, bool multiline);
+  void print_var(const char *var_name, FILE *out, bool multiline);
   void set_string_items(const StringItem *items);
   void set_context(Iter *cont);
 };
@@ -184,7 +184,9 @@ public:
   void print_arg_option(Iter begin, Iter end, FILE *out = stdout);
   void print_res_option(FILE *out);
   void print_view_field_option(FILE *out, bool multiline, bool skeleton);
-  bool print_var_option(const char *var_name, FILE *out = stdout);
+  bool print_var_option(
+    const char *var_name, FILE *out = stdout, bool multiline = false
+  );
   void backtrace_option(Iter begin, FILE *out, bool multiline, bool skeleton);
   Iter find_call_stack_elem(Iter begin, const std::string &elem_number);
   void print_call_stack_option(
