@@ -142,7 +142,6 @@ public:
     : m_last_option(s_STEP)
     , m_step_numb(0)
     , m_memory_limit(-1)
-    , m_in(stdin)
     , m_next_expr(0)
     , m_res_begin(0)
     , m_res_end(0)
@@ -151,7 +150,12 @@ public:
     , m_skeleton(true)
     , var_debug_table(m_vm)
   {
-    /* пусто */
+    FILE *in = find_debugger_flag();
+    if (in) {
+      m_in = in;
+    } else {
+      m_in = stdin;
+    }
   }
   ~RefalDebugger() {
     func_trace_table.clear();
@@ -199,6 +203,8 @@ public:
   static std::pair<std::string, std::string>
     parse_file_name(const std::string &fileString);
 
+  FILE* find_debugger_flag();
+
   virtual void set_context(Iter *context) {
     var_debug_table.set_context(context);
   }
@@ -217,8 +223,6 @@ public:
 };
 
 Debugger *create_debugger(VM *vm);
-
-int find_debugger_flag(int argc, char **argv);
 
 } // namespace debugger
 

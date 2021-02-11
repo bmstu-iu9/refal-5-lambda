@@ -1234,11 +1234,13 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
   char command[MAX_COMMAND_LEN] = {0};
   for ( ; ; ) {
     printf("debug>");
-    fgets(command, MAX_COMMAND_LEN - 1, m_in);
+    if (fgets(command, MAX_COMMAND_LEN - 1, m_in) == 0) {
+      break;
+    }
     std::pair<Cmd, std::string> cmdAndError = parse_input_line(
       std::string(command));
     if (!cmdAndError.second.empty()) {
-      printf("Error: %s\n", cmdAndError.second.c_str());
+      fprintf(stderr, "Error: %s\n", cmdAndError.second.c_str());
       continue;
     }
     Cmd &cmd = cmdAndError.first;
@@ -1372,15 +1374,18 @@ refalrts::Debugger *refalrts::debugger::create_debugger(refalrts::VM *vm) {
   return new RefalDebugger(vm);
 }
 
-int refalrts::debugger::find_debugger_flag(int argc, char **argv) {
-  int i = 1;
-  while (i < argc && ! str_equal(argv[i], "++enable+debugger++")) {
+FILE *refalrts::debugger::RefalDebugger::find_debugger_flag() {
+  unsigned int i = 1;
+  char file[MAX_COMMAND_LEN] = {0};
+  FILE *in = 0;
+  while (
+    m_vm->arg(i) &&
+    !sscanf(m_vm->arg(i), "++enable-debugger = %2047s", file)
+    ) {
     ++i;
   }
-
-  if (i < argc) {
-    return i;
-  } else {
-    return -1;
+  if (file[0]) {
+    in = fopen(file, "r");
   }
+  return in;
 }
