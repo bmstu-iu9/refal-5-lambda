@@ -132,6 +132,7 @@ class RefalDebugger: public Debugger {
   // параметры печати
   bool m_multiline;
   bool m_skeleton;
+  bool m_has_debugger_script;
 
 public:
   VariableDebugTable var_debug_table;
@@ -142,7 +143,6 @@ public:
     : m_last_option(s_STEP)
     , m_step_numb(0)
     , m_memory_limit(-1)
-    , m_in(stdin)
     , m_next_expr(0)
     , m_res_begin(0)
     , m_res_end(0)
@@ -151,7 +151,13 @@ public:
     , m_skeleton(true)
     , var_debug_table(m_vm)
   {
-    /* пусто */
+    m_in = open_debugger_script();
+    if (m_in) {
+      m_has_debugger_script = true;
+    } else {
+      m_in = stdin;
+      m_has_debugger_script = false;
+    }
   }
   ~RefalDebugger() {
     func_trace_table.clear();
@@ -196,6 +202,7 @@ public:
   bool isCmdMultiline(Cmd &cmd);
   bool isCmdSkeleton(Cmd &cmd);
   refalrts::FnResult debugger_loop(Iter begin, Iter end);
+  FILE *open_debugger_script();
 
   static std::pair<refalrts::debugger::Cmd, std::string>
     parse_input_line(const std::string &line);
@@ -220,8 +227,6 @@ public:
 };
 
 Debugger *create_debugger(VM *vm);
-
-int find_debugger_flag(int argc, char **argv);
 
 } // namespace debugger
 

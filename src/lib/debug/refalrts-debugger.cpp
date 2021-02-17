@@ -1252,7 +1252,13 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
   char command[MAX_COMMAND_LEN] = {0};
   for ( ; ; ) {
     printf("debug>");
-    fgets(command, MAX_COMMAND_LEN - 1, m_in);
+    if (m_has_debugger_script) {
+      if (fgets(command, MAX_COMMAND_LEN - 1, m_in) == 0) {
+        break;
+      }
+    } else {
+      fgets(command, MAX_COMMAND_LEN - 1, m_in);
+    }
     std::pair<Cmd, std::string> cmdAndError = parse_input_line(
       std::string(command));
     if (!cmdAndError.second.empty()) {
@@ -1388,19 +1394,22 @@ refalrts::debugger::RefalDebugger::handle_function_call(
   return refalrts::cSuccess;
 }
 
-refalrts::Debugger *refalrts::debugger::create_debugger(refalrts::VM *vm) {
-  return new RefalDebugger(vm);
+FILE *refalrts::debugger::RefalDebugger::open_debugger_script() {
+  FILE *in = 0;
+  char *path_to_script = m_vm->diagnostic_config()->debugger_script;
+  if (path_to_script[0]) {
+    in = fopen(path_to_script, "r");
+    if (!in) {
+      fprintf(
+        stderr,
+        "cannot open debugger_script file \"%s\"\n",
+        path_to_script
+      );
+    }
+  }
+  return in;
 }
 
-int refalrts::debugger::find_debugger_flag(int argc, char **argv) {
-  int i = 1;
-  while (i < argc && ! str_equal(argv[i], "++enable+debugger++")) {
-    ++i;
-  }
-
-  if (i < argc) {
-    return i;
-  } else {
-    return -1;
-  }
+refalrts::Debugger *refalrts::debugger::create_debugger(refalrts::VM *vm) {
+  return new RefalDebugger(vm);
 }
