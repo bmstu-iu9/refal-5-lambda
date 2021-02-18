@@ -26,6 +26,7 @@ struct DiagnosticConfig {
   bool enable_profiler;
   DebuggerFactory debugger_factory;
   char dump_file[FILENAME_MAX];
+  char debugger_script[FILENAME_MAX];
 
   DiagnosticConfig()
     : idents_limit(0)

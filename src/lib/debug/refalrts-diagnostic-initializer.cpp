@@ -320,6 +320,7 @@ refalrts::DiagnosticConfig::set_parameter(char *name, char *value) {
   }
 
   set_string_param(dump_file);
+  set_string_param(debugger_script);
 #undef set_string_param
 #undef set_boolean_param
 #undef set_number_param

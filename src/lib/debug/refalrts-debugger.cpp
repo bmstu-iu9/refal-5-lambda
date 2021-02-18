@@ -67,6 +67,8 @@ static const char *const s_SKELETON = "skeleton";
 static const char *const s_FULL = "full";
 static const char *const s_BACKTRACE = "backtrace";
 static const char *const s_BT = "bt";
+static const char *const s_M = "m";
+static const char *const s_MODE = "mode";
 
 enum { cMaxLen = 1024 };
 void close_out(FILE*);
@@ -166,7 +168,7 @@ std::map<int, int> refalrts::debugger::VariableDebugTable::find_var(
   return var_depth_offset_map;
 }
 
-void refalrts::debugger::VariableDebugTable::print(FILE *out) {
+void refalrts::debugger::VariableDebugTable::print(FILE *out, bool multiline) {
   fprintf(
     out,
     "==========================Variable debug table=========================\n"
@@ -177,7 +179,7 @@ void refalrts::debugger::VariableDebugTable::print(FILE *out) {
     refalrts::Iter var_begin = 0;
     refalrts::Iter var_end = 0;
     variable_bounds(var_begin, var_end, var_name[0], it->bracket);
-    m_vm->print_seq(out, var_begin, var_end, false);
+    m_vm->print_seq(out, var_begin, var_end, multiline);
   }
   fprintf(
     out,
@@ -186,7 +188,7 @@ void refalrts::debugger::VariableDebugTable::print(FILE *out) {
 }
 
 void refalrts::debugger::VariableDebugTable::print_var(
-  const char *var_name, FILE *out
+  const char *var_name, FILE *out, bool multiline
 ) {
   std::map<int, int> var_depth_offset_map = find_var(var_name);
   std::pair<std::string, int> var_parse_name = parse_var_name(var_name);
@@ -199,7 +201,7 @@ void refalrts::debugger::VariableDebugTable::print_var(
     refalrts::Iter var_begin = 0;
     refalrts::Iter var_end = 0;
     variable_bounds(var_begin, var_end, var_name[0], it->second);
-    m_vm->print_seq(out, var_begin, var_end, false);
+    m_vm->print_seq(out, var_begin, var_end, multiline);
   }
 }
 
@@ -995,14 +997,14 @@ void refalrts::debugger::RefalDebugger::print_view_field_option(
 }
 
 bool refalrts::debugger::RefalDebugger::print_var_option(
-  const char *var_name, FILE *out
+  const char *var_name, FILE *out, bool multiline
 ) {
   if (var_name[1] == '.') {
     switch(var_name[0]) {
       case 'e':
       case 's':
       case 't':
-        var_debug_table.print_var(var_name, out);
+        var_debug_table.print_var(var_name, out, multiline);
         break;
       default:
         refalrts_switch_default_violation(var_name[0]);
@@ -1172,6 +1174,22 @@ void refalrts::debugger::RefalDebugger::print_call_stack_option(
   }
 }
 
+void refalrts::debugger::RefalDebugger::mode_option() {
+  const char *line_setting;
+  const char *skeleton_or_full;
+  if (m_multiline) {
+    line_setting = s_MULTILINE;
+  } else {
+    line_setting = s_ONELINE;
+  }
+  if (m_skeleton) {
+    skeleton_or_full = s_SKELETON;
+  } else {
+    skeleton_or_full = s_FULL;
+  }
+  printf("Current settings are: %s %s\n", line_setting, skeleton_or_full);
+}
+
 bool refalrts::debugger::RefalDebugger::isCmdMultiline(Cmd &cmd) {
   if (m_multiline) {
     if (cmd.has_prefix(s_ONELINE)) {
@@ -1234,7 +1252,13 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
   char command[MAX_COMMAND_LEN] = {0};
   for ( ; ; ) {
     printf("debug>");
-    fgets(command, MAX_COMMAND_LEN - 1, m_in);
+    if (m_has_debugger_script) {
+      if (fgets(command, MAX_COMMAND_LEN - 1, m_in) == 0) {
+        break;
+      }
+    } else {
+      fgets(command, MAX_COMMAND_LEN - 1, m_in);
+    }
     std::pair<Cmd, std::string> cmdAndError = parse_input_line(
       std::string(command));
     if (!cmdAndError.second.empty()) {
@@ -1282,7 +1306,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       break;
     } else if (one_of(cmd.cmd, 1, s_VARS)) {
       FILE *out = get_out(cmd);
-      var_debug_table.print(out);
+      var_debug_table.print(out, multiline);
       close_out(out);
     } else if (one_of(cmd.cmd, 2, s_L, s_LIST)) {
       for (;!cmd.has_param();) {
@@ -1316,7 +1340,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
         (cmd.param[0] == '^' || cmd.param[0] == '@')
       ) {
         print_call_stack_option(begin, cmd.param, out, multiline, skeleton);
-      } else if (! print_var_option(cmd.param.c_str(), out)) {
+      } else if (! print_var_option(cmd.param.c_str(), out, multiline)) {
         fprintf(
           stderr,
           "Unrecognised print option is found: %s \"%s\"\n",
@@ -1336,6 +1360,8 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       FILE *out = get_out(cmd);
       backtrace_option(begin, out, multiline, skeleton);
       close_out(out);
+    } else if (one_of(cmd.cmd, 2, s_MODE, s_M)) {
+      mode_option();
     } else {
       fprintf(
         stderr,
@@ -1368,19 +1394,22 @@ refalrts::debugger::RefalDebugger::handle_function_call(
   return refalrts::cSuccess;
 }
 
-refalrts::Debugger *refalrts::debugger::create_debugger(refalrts::VM *vm) {
-  return new RefalDebugger(vm);
+FILE *refalrts::debugger::RefalDebugger::open_debugger_script() {
+  FILE *in = 0;
+  char *path_to_script = m_vm->diagnostic_config()->debugger_script;
+  if (path_to_script[0]) {
+    in = fopen(path_to_script, "r");
+    if (!in) {
+      fprintf(
+        stderr,
+        "cannot open debugger_script file \"%s\"\n",
+        path_to_script
+      );
+    }
+  }
+  return in;
 }
 
-int refalrts::debugger::find_debugger_flag(int argc, char **argv) {
-  int i = 1;
-  while (i < argc && ! str_equal(argv[i], "++enable+debugger++")) {
-    ++i;
-  }
-
-  if (i < argc) {
-    return i;
-  } else {
-    return -1;
-  }
+refalrts::Debugger *refalrts::debugger::create_debugger(refalrts::VM *vm) {
+  return new RefalDebugger(vm);
 }
