@@ -774,7 +774,7 @@ CheckFunctionBodyRec {
 CheckSentence {
   e.ScopeVars ((e.Pattern) e.Assignments (e.Result) (e.Blocks))
 
-    = <CheckPattern (e.ScopeVars) <FlatExpr e.Pattern>>
+    = <CheckPattern (e.ScopeVars) e.Pattern>
     : (e.ScopeVars^) e.PatternFunctionsAndErrors
 
     = <DoCheckAssignments (e.Assignments) (e.ScopeVars) /* нет ошибок */>
@@ -812,7 +812,7 @@ DoCheckAssignments {
 
     = <CheckBlocks (e.ScopeVars) e.Blocks> : e.BlocksFunctionsAndErrors
 
-    = <CheckPattern (e.ScopeVars) <FlatExpr e.Pattern>>
+    = <CheckPattern (e.ScopeVars) e.Pattern>
     : (e.ScopeVars^) e.PatternFunctionsAndErrors
 
     = <DoCheckAssignments
@@ -855,8 +855,13 @@ FlatExpr {
 }
 
 CheckPattern {
+  (e.ScopeVars) e.Pattern
+    = <CheckPattern-Flatten (e.ScopeVars) <FlatExpr e.Pattern>>;
+}
+
+CheckPattern-Flatten {
   (e.ScopeVars) e.Items-B (TkNewVariable t.SrcPos s.Mode '_' e.Index) e.Items-E
-    = <CheckPattern
+    = <CheckPattern-Flatten
         (e.ScopeVars)
         e.Items-B
         (TkVariable t.SrcPos s.Mode '_' e.Index)
@@ -867,7 +872,7 @@ CheckPattern {
   (e.ScopeVars)
   e.Items-B (TkVariable t.SrcPos1 s.Mode1 e.Index) e.Items-M
   (TkNewVariable t.SrcPos2 s.Mode2 e.Index) e.Items-E =
-    <CheckPattern
+    <CheckPattern-Flatten
       (e.ScopeVars)
       e.Items-B (TkVariable t.SrcPos1 s.Mode1 e.Index) e.Items-M
       (TkVariable t.SrcPos2 s.Mode2 e.Index)
