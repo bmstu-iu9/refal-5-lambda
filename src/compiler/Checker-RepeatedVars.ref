@@ -1,6 +1,6 @@
 
 $ENTRY CheckRepeatedVars {
- (e.WarningIds) (e.AST), <Prout e.WarningIds> :,  <IsBothWarningsEnabled ()e.WarningIds> : True
+ (e.WarningIds) (e.AST), <Prout e.WarningIds> :,  <IsBothWarningsEnabled (e.WarningIds)> : True
   = <Prout 'full repeated vars search enabled'>;
   (e._ repeated e._) (e.AST)
   = <Prout 'repeated vars in assignments only search enabled'>;
