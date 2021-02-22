@@ -15,6 +15,9 @@ $EXTERN ExtractVariables-Expr;
 *$FROM Checker-Screening
 $EXTERN CheckScreening;
 
+*$FROM Checker-RepeatedVars
+$EXTERN CheckRepeatedVars;
+
 $ENTRY CheckProgram {
   (e.WarningIds) t.ErrorList e.AST
     = <Reduce
@@ -127,7 +130,8 @@ FindErrors {
         (<CheckDeclarations (e.WarningIds) e.Declarations>)
         <Map &CheckFunctionBody e.FunctionBodies>
       >
-      <CheckScreening (e.WarningIds) (e.AST)>;
+      <CheckScreening (e.WarningIds) (e.AST)>
+      <CheckRepeatedVars (e.WarningIds) (e.AST)>;
 }
 
 CheckPseudofunctions {

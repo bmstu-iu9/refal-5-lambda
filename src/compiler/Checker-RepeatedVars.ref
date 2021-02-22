@@ -1,0 +1,38 @@
+
+$ENTRY CheckRepeatedVars {
+ (e._ repeated repeated-maybe e._) (e.AST)
+   = <Prout 'full repeated vars search enabled'>;
+ (e._ repeated e._) (e.AST)
+    = <Prout 'repeated vars in assignments only search enabled'>;
+ (e._ repeated-maybe e._) (e.AST)
+     = <Prout 'repeated vars in last sentences only search enabled'>;
+ (e._) (e.AST) = <Prout 'no matched warningsIds, skipping repeated vars search'>;
+ = <Prout 'repeated vars empty args'>
+}
+
+CheckRepeatedInLastSentences {
+    = ;
+}
+
+CheckRepeatedInAssignments {
+    = ;
+}
+
+CreateRepeatedVariableWarning {
+  repeated t.SrcPos s.Mode e.Index
+    = (Warning
+        repeated
+        t.SrcPos
+        RepeatedVariable
+        s.Mode
+        e.Index
+      );
+  repeated-maybe t.SrcPos s.Mode e.Index
+      = (Warning
+          repeated-maybe
+          t.SrcPos
+          RepeatedVariableMaybe
+          s.Mode
+          e.Index
+        );
+}
