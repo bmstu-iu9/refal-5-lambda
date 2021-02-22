@@ -82,6 +82,12 @@ PrepareMessage {
   RepVarInSpecPattern s.Mode e.Index
     = 'Repeated variable ' s.Mode '.' e.Index ' in specialization pattern';
 
+  RepeatedVariable s.Mode e.Index
+      = 'Repeated variable ' s.Mode '.' e.Index ' in assignment';
+
+  RepeatedVariableMaybe s.Mode e.Index
+      = 'Maybe repeated variable ' s.Mode '.' e.Index ' in last sentence';
+
   UnnamedVariableInSpecPattern s.Mode e.Index
     = 'Unnamed variable ' s.Mode '.' e.Index ' can\'t appear '
       'in $SPEC pattern';

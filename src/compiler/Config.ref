@@ -431,7 +431,7 @@ $ENTRY Config-GetWarningIds {
 
   e.WarningName ::= 'no-'? e.Error | 'no-'? e.WarningIdName | 'all'
   e.Error ::= 'error' ('=' e.WarningName)?
-  e.WarningIdName :: = 'screening' | 'nul-in-compound'
+  e.WarningIdName :: = 'screening' | 'nul-in-compound' | 'repeated' | 'repeated-maybe'
 
 */
 $ENTRY Config-SetWarning {
@@ -534,12 +534,14 @@ WarningForName {
   'ignored-pseudocomments' = True ignored-pseudocomments;
   'pseudofunctions' = True pseudofunctions;
   'pseudofunction' = True pseudofunctions; /* синоним */
+  'repeated' = True repeated;
+  'repeated-maybe' = True repeated-maybe;
 
   e.Other = False
 }
 
 $ENTRY Config-AllWarningIds {
-  /* пусто */ = (screening nul-in-compound)
+  /* пусто */ = (screening nul-in-compound repeated repeated-maybe)
 }
 
 WarningIds-Add {
