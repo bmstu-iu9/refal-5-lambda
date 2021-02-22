@@ -1,13 +1,14 @@
 
 $ENTRY CheckRepeatedVars {
- (e._ repeated repeated-maybe e._) (e.AST)
-   = <Prout 'full repeated vars search enabled'>;
- (e._ repeated e._) (e.AST)
-    = <Prout 'repeated vars in assignments only search enabled'>;
- (e._ repeated-maybe e._) (e.AST)
-     = <Prout 'repeated vars in last sentences only search enabled'>;
- (e._) (e.AST) = <Prout 'no matched warningsIds, skipping repeated vars search'>;
- = <Prout 'repeated vars empty args'>
+ (e.WarningIds) (e.AST), <Prout e.WarningIds> :,  <IsBothWarningsEnabled ()e.WarningIds> : True
+  = <Prout 'full repeated vars search enabled'>;
+  (e._ repeated e._) (e.AST)
+  = <Prout 'repeated vars in assignments only search enabled'>;
+  (e._ repeated-maybe e._) (e.AST)
+  = <Prout 'repeated vars in last sentences only search enabled'>;
+  (e._) (e.AST)
+  = <Prout 'no matched warningsIds, skipping repeated vars search'>;
+  = <Prout 'repeated vars empty args'>
 }
 
 CheckRepeatedInLastSentences {
@@ -16,6 +17,12 @@ CheckRepeatedInLastSentences {
 
 CheckRepeatedInAssignments {
     = ;
+}
+
+IsBothWarningsEnabled {
+  (e._ repeated e._ repeated-maybe e._) = True;
+  (e._ repeated-maybe e._ repeated e._) = True;
+  e._ = False;
 }
 
 CreateRepeatedVariableWarning {
