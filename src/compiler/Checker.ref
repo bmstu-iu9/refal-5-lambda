@@ -779,16 +779,16 @@ CheckFunctionBodyRec {
 
 CheckSentenceRec {
   (e.ScopeVars) t.LastSentence
-    = <CheckSentence e.ScopeVars t.LastSentence LastSentenceMarker> ;
+    = <CheckSentence e.ScopeVars t.LastSentence LastSentenceFlag> ;
   (e.ScopeVars) t.Sentence e.Sentences
     = <CheckSentence e.ScopeVars t.Sentence>
       <CheckSentenceRec (e.ScopeVars) e.Sentences>;
 }
 
 CheckSentence {
-  e.ScopeVars ((e.Pattern) e.Assignments (e.Result) (e.Blocks))
+  e.ScopeVars ((e.Pattern) e.Assignments (e.Result) (e.Blocks)) e.Marker
 
-    = <CheckPattern (e.ScopeVars) e.Pattern>
+    = <CheckPattern (e.ScopeVars) (e.Pattern) e.Marker>
     : (e.ScopeVars^) e.PatternFunctionsAndErrors
 
     = <DoCheckAssignments (e.Assignments) (e.ScopeVars) /* нет ошибок */>
@@ -826,7 +826,7 @@ DoCheckAssignments {
 
     = <CheckBlocks (e.ScopeVars) e.Blocks> : e.BlocksFunctionsAndErrors
 
-    = <CheckPattern (e.ScopeVars) e.Pattern>
+    = <CheckPattern (e.ScopeVars) (e.Pattern) AssignmentFlag>
     : (e.ScopeVars^) e.PatternFunctionsAndErrors
 
     = <DoCheckAssignments
@@ -869,13 +869,24 @@ FlatExpr {
 }
 
 CheckPattern {
-  (e.ScopeVars) e.Pattern
-    = <CheckPattern-WarnRepeated (e.ScopeVars) e.Pattern>
+  (e.ScopeVars) (e.Pattern) e.Flag
+    = <CheckPattern-WarnRepeated
+        (e.ScopeVars)
+        (e.Pattern)
+        <GetWarningIdByFlag e.Flag>
+      >
       <CheckPattern-Flatten (e.ScopeVars) <FlatExpr e.Pattern>>;
 }
 
 CheckPattern-WarnRepeated {
- e._ =;
+ (e.ScopeVars) (e.Pattern) s.WarningId = <Prout checking for warning repeated>;
+ (e._) (e._) = /* пусто */;
+}
+
+GetWarningIdByFlag {
+  LastSentenceFlag = RepeatedVariableMaybe;
+  AssignmentFlag = RepeatedVariable;
+  /* пусто */ = /* пусто */;
 }
 
 CheckPattern-Flatten {
