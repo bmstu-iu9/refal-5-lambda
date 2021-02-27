@@ -170,7 +170,7 @@ public:
   bool step_cond();
   bool mem_cond();
 
-  bool is_debug_stop(Iter begin, RefalFunction *callee);
+  bool is_debug_stop(Iter begin);
   void debug_trace(Iter begin, Iter end, RefalFunction *callee);
   void set_step_res(Iter begin, Iter end);
 

@@ -705,9 +705,7 @@ bool refalrts::debugger::RefalDebugger::step_cond() {
   return scond;
 }
 
-bool refalrts::debugger::RefalDebugger::is_debug_stop(
-  Iter begin, RefalFunction *callee
-) {
+bool refalrts::debugger::RefalDebugger::is_debug_stop(Iter begin) {
   bool stop = step_cond();
   stop = next_cond(begin) || stop;
   stop = run_cond(begin) || stop;
@@ -991,7 +989,7 @@ void refalrts::debugger::RefalDebugger::print_res_option(FILE *out) {
 void refalrts::debugger::RefalDebugger::print_view_field_option(
   FILE *out,
   bool multiline,
-  bool skeleton
+  bool /* skeleton */
 ) {
   m_vm->print_view_field(out, multiline);
 }
@@ -1379,7 +1377,7 @@ refalrts::debugger::RefalDebugger::handle_function_call(
   refalrts::Iter begin, refalrts::Iter end, refalrts::RefalFunction *callee
 ) {
   debug_trace(begin, end, callee);
-  if (is_debug_stop(begin, callee)) {
+  if (is_debug_stop(begin)) {
     printf(
       "Step #%d; Function <%s ...>\n",
       m_vm->step_counter(), callee == 0 ? "" : callee->name.name
