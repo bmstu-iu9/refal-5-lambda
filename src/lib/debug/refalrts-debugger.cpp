@@ -912,11 +912,10 @@ void refalrts::debugger::RefalDebugger::trace_option(
       "enter function name"
     );
   }
-  struct FileAndName file = {
-    out,
-    cmd.file,
-    cmd.is_file_append,
-  };
+  FileAndName file;
+  file.out = out;
+  file.name = cmd.file;
+  file.is_append = cmd.is_file_append;
   func_trace_table.trace_func(cmd.param, file);
 }
 
