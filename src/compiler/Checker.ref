@@ -786,9 +786,9 @@ CheckSentenceRec {
 }
 
 CheckSentence {
-  e.ScopeVars ((e.Pattern) e.Assignments (e.Result) (e.Blocks)) e.Marker
+  e.ScopeVars ((e.Pattern) e.Assignments (e.Result) (e.Blocks)) e.Flag
 
-    = <CheckPattern (e.ScopeVars) (e.Pattern) e.Marker>
+    = <CheckPattern (e.ScopeVars) (e.Pattern) e.Flag>
     : (e.ScopeVars^) e.PatternFunctionsAndErrors
 
     = <DoCheckAssignments (e.Assignments) (e.ScopeVars) /* нет ошибок */>
@@ -872,21 +872,62 @@ CheckPattern {
   (e.ScopeVars) (e.Pattern) e.Flag
     = <CheckPattern-WarnRepeated
         (e.ScopeVars)
-        (e.Pattern)
         <GetWarningIdByFlag e.Flag>
+        (e.Pattern)
       >
       <CheckPattern-Flatten (e.ScopeVars) <FlatExpr e.Pattern>>;
 }
 
 CheckPattern-WarnRepeated {
- (e.ScopeVars) (e.Pattern) s.WarningId = <Prout checking for warning repeated>;
- (e._) (e._) = /* пусто */;
+ (e.ScopeVars) s.WarningId (e.Pattern)
+   = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Pattern)>;
+ (e._) (e._) = /* не нужно проверять */;
+}
+
+CheckPattern-WarnRepeatedRec {
+  (e.ScopeVars) s.WarningId
+  (e.B (TkVariable t.Pos 'e' e.Index) e.M (TkVariable t.Pos2 'e' e.Index2) e.E)
+    = <CheckPattern-WarnRepeatedRec
+        (e.ScopeVars) s.WarningId
+        <ReducePattern e.B (TkVariable t.Pos 'e' e.Index)
+          e.M (TkVariable t.Pos2 'e' e.Index2) e.E>
+      >;
+  e.Any = /* временная заглушка */;
+}
+
+
+ReducePattern {
+  e.Pattern
+    = <FindLastE e.Pattern> : t.LastE
+    = <ReplaceInterval t.LastE e.Pattern>;
+}
+
+FindLastE {
+  e.Pattern
+    = <Reduce
+        {
+          t.LastElem (TkVariable t.Pos 'e' e.Index)
+            = (TkVariable t.Pos 'e' e.Index);
+          t.LastElem (e.Another) = t.LastElem;
+        }
+        ()
+        e.Pattern
+      >
+}
+
+ReplaceInterval {
+  t.LastElem e.B (TkVariable t.Pos 'e' e.Index) e.M t.LastElem e.E
+    = e.B (TkVariable t.Pos 'e' '_') e.E;
 }
 
 GetWarningIdByFlag {
   LastSentenceFlag = RepeatedVariableMaybe;
   AssignmentFlag = RepeatedVariable;
   /* пусто */ = /* пусто */;
+}
+
+CheckVariableRepeating {
+  e._ = ;
 }
 
 CheckPattern-Flatten {
