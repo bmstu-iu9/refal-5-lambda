@@ -779,7 +779,7 @@ CheckFunctionBodyRec {
 
 CheckSentenceRec {
   (e.ScopeVars) t.LastSentence
-    = <CheckSentence e.ScopeVars t.LastSentence LastSentenceFlag> ;
+    = <CheckSentence e.ScopeVars t.LastSentence LastSentence> ;
   (e.ScopeVars) t.Sentence e.Sentences
     = <CheckSentence e.ScopeVars t.Sentence>
       <CheckSentenceRec (e.ScopeVars) e.Sentences>;
@@ -827,7 +827,7 @@ DoCheckAssignments {
 
     = <CheckBlocks (e.ScopeVars) e.Blocks> : e.BlocksFunctionsAndErrors
 
-    = <CheckPattern (e.ScopeVars) (e.Pattern) AssignmentFlag>
+    = <CheckPattern (e.ScopeVars) (e.Pattern) s.ChainType>
     : (e.ScopeVars^) e.PatternFunctionsAndErrors
 
     = <DoCheckAssignments
@@ -944,8 +944,9 @@ ReplaceInterval {
 }
 
 WarningIdByFlag {
-  LastSentenceFlag = RepeatedVariableMaybe;
-  AssignmentFlag = RepeatedVariable;
+  Assign = RepeatedVariable;
+  LastSentence = RepeatedVariableMaybe;
+  Condition = /* для условий предупреждения не выдаются */;
   /* пусто */ = /* пусто */;
 }
 
