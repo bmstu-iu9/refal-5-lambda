@@ -132,13 +132,14 @@
     s.Mode ::= Classic | Extended
 
     t.Unit ::= t.Function | t.Extern | t.SingleDeclaration | t.Include
-      | t.NativeBlock | t.Ident
+      | t.NativeBlock | t.Ident | t.SpecUnit
     t.Extern ::= (Declaration t.Pos GN-Entry e.Name)
     t.SingleDeclaration ::= (s.SingleDeclarationTag t.Pos s.ScopeClass e.Name)
     s.SingleDeclarationTag ::= Enum | Swap | Inline | Drive | Meta
     t.Include ::= (Include t.Pos e.Name)
     t.NativeBlock ::= (NativeBlock t.Pos e.Code)
     t.Ident ::= (Ident t.SrcPos e.Name)
+    t.SpecUnit ::= (Spec t.Pos (e.Name) e.Pattern)
 
     t.Function ::= (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
     e.Body ::=
@@ -146,11 +147,10 @@
       | NativeBody t.Pos e.Code
     s.ScopeClass ::= GN-Entry | GN-Local
     t.Sentence ::=
-      (t.Pattern (s.Chain t.Result (e.Blocks) t.Pattern)* e.SentenceTail)
+      (t.Pattern (s.Chain t.Result (e.Blocks) t.Pattern)* t.Result (e.Blocks))
     s.Chain ::= Condition | Assign
-    e.SentenceTail ::= t.Result (e.Blocks)
     e.Blocks ::= (e.Body)*
-    e.Code ::= (s.Char*)*
+    e.Code ::= (s.CHAR*)*
 
     t.Pattern, t.Result ::= (t.Term*)
     t.Term ::=
@@ -158,16 +158,18 @@
       | (TkVariable t.SrcPos s.VarType e.Index)
       | (Brackets t.Term*)
       | (CallBrackets (Symbol Name t.SrcPos e.Function)? t.Term*)
-      | (Closure Sentences t.Sentence*)
+      | (Closure e.Body)
       | (TkNewVariable t.SrcPos s.VarType e.Index)
       | (ADT-Brackets t.SrcPos (e.ADT-Name) t.Term*)
     s.SymType e.SymInfo ::=
-        Char s.Char
+        Char s.CHAR
       | Number s.Number
       | Name t.SrcPos s.Char*
       | Identifier s.Char*
     e.ADT-Name ::= s.CHAR* | UnnamedADT
     s.VarType ::= 's' | 't' | 'e'
+
+    s.Number ::= s.NUMBER | Cookie1 | Cookie2
 
 Проходы 2А и 2Б порождают структурно одно и то же синтаксическое дерево,
 однако их содержимое незначительно различается. Например, в Рефале-5λ
@@ -222,7 +224,7 @@
       | (TkNewVariable t.SrcPos s.Mode e.Index)
       | (Closure e.Body)
     s.SymType e.SymInfo ::=
-        Char s.Char
+        Char s.CHAR
       | Number s.Number
       | Name t.SrcPos e.Name
       | Identifier e.Name
