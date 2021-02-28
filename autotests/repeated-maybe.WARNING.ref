@@ -1,0 +1,19 @@
+* WARNING repeated-maybe
+
+*$FROM LibraryEx
+$EXTERN Map;
+
+$ENTRY Go {
+  = <TestLastSentence (one 'a') (two 'a') (three 'c') 'a'>
+}
+
+TestLastSentence {
+  e.List s.Symbol
+    = <Map
+        {
+          (s.Num s.Symbol) = (s.Num 'default symbol');
+          (s.Num s.Symbol) = (s.Num 'not default symbol (should be)') ;
+        }
+        e.List
+      >
+}

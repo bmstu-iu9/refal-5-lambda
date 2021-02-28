@@ -1,0 +1,33 @@
+* NO-WARNINGS
+
+$ENTRY Go {
+  = <TestAssignment ('a') 'a'>
+    <TestAssignment2 ('a') 'a'>
+    <TestAssignment3 ('a') 'a'>
+    <TestAssignment4 ('a') 'a'>
+    <TestAssignment5 ('a') 'a'>
+}
+
+TestAssignment {
+  t.X s.Y = <SomeProcessing t.X s.Y> : t.X^ s.Y^ = /* пусто */ ;
+}
+
+TestAssignment2 {
+  t.X s.Y = <SomeProcessing t.X s.Y> : t.X^ e.B s.Y e.E = /* пусто */ ;
+}
+
+TestAssignment3 {
+  t.X s.Y = <SomeProcessing t.X s.Y> : e.B t.X e.E s.Y^ = /* пусто */ ;
+}
+
+TestAssignment4 {
+  t.X s.Y = <SomeProcessing t.X s.Y> : e.B s.Y e.E = /* пусто */ ;
+}
+
+TestAssignment5 {
+  t.X s.Y = <SomeProcessing t.X s.Y> : e.B t.X s.Y e.E = /* пусто */ ;
+}
+
+SomeProcessing {
+  e.Any = e.Any
+}

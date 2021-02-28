@@ -783,6 +783,7 @@ CheckSentenceRec {
   (e.ScopeVars) t.Sentence e.Sentences
     = <CheckSentence e.ScopeVars t.Sentence>
       <CheckSentenceRec (e.ScopeVars) e.Sentences>;
+  (e.ScopeVars) /* предложений нет */ = /* пусто */ ;
 }
 
 CheckSentence {
@@ -908,8 +909,8 @@ CheckPattern-WarnRepeatedRec {
       <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
 
   (e.ScopeVars) s.WarningId ((ADT-Brackets t.SrcPos (e.Name) e.InBrackets) e.Tail)
-      = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.InBrackets)>
-        <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
+    = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.InBrackets)>
+      <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
 
   (e.ScopeVars) s.WarningId ((TkVariable t.Pos s.Mode e.Index))
     = <CheckVariableRepeating (e.ScopeVars) (TkVariable t.Pos s.Mode e.Index)>;
