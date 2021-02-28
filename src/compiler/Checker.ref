@@ -870,12 +870,12 @@ FlatExpr {
 
 CheckPattern {
   (e.ScopeVars) (e.Pattern) e.Flag
-    = <CheckPattern-WarnRepeated
-        (e.ScopeVars)
-        <GetWarningIdByFlag e.Flag>
-        (e.Pattern)
-      >
-      <CheckPattern-Flatten (e.ScopeVars) <FlatExpr e.Pattern>>;
+    = <CheckPattern-Flatten (e.ScopeVars) <FlatExpr e.Pattern>>
+      <CheckPattern-WarnRepeated
+       (e.ScopeVars)
+       <WarningIdByFlag e.Flag>
+       (e.Pattern)
+      >;
 }
 
 CheckPattern-WarnRepeated {
@@ -892,7 +892,29 @@ CheckPattern-WarnRepeatedRec {
         <ReducePattern e.B (TkVariable t.Pos 'e' e.Index)
           e.M (TkVariable t.Pos2 'e' e.Index2) e.E>
       >;
-  e.Any = /* временная заглушка */;
+
+  (e.ScopeVars) s.WarningId ((TkVariable e.Info) e.Tail)
+    = <CheckVariableRepeating (e.ScopeVars) s.WarningId (TkVariable e.Info)>
+      <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
+
+  (e.ScopeVars) s.WarningId ((TkNewVariable e.Info) e.Tail)
+    = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
+
+  (e.ScopeVars) s.WarningId ((Symbol e.Info) e.Tail)
+    = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
+
+  (e.ScopeVars) s.WarningId ((Brackets e.InBrackets) e.Tail)
+    = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.InBrackets)>
+      <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
+
+  (e.ScopeVars) s.WarningId ((ADT-Brackets t.SrcPos (e.Name) e.InBrackets) e.Tail)
+      = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.InBrackets)>
+        <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
+
+  (e.ScopeVars) s.WarningId ((TkVariable t.Pos s.Mode e.Index))
+    = <CheckVariableRepeating (e.ScopeVars) (TkVariable t.Pos s.Mode e.Index)>;
+
+  (e.ScopeVars) s.WarningId () = /* временная заглушка */;
 }
 
 
@@ -917,17 +939,29 @@ FindLastE {
 
 ReplaceInterval {
   t.LastElem e.B (TkVariable t.Pos 'e' e.Index) e.M t.LastElem e.E
-    = e.B (TkVariable t.Pos 'e' '_') e.E;
+    = (e.B (TkVariable t.Pos 'e' '_') e.E);
 }
 
-GetWarningIdByFlag {
+WarningIdByFlag {
   LastSentenceFlag = RepeatedVariableMaybe;
   AssignmentFlag = RepeatedVariable;
   /* пусто */ = /* пусто */;
 }
 
 CheckVariableRepeating {
+  (e.ScopeVars) s.WarningId (TkVariable t.SrcPos s.Mode '_' e.Index) = ;
+
+  (e.Vars-B (s.Mode e.Index) e.Vars-E) s.WarningId
+  (TkVariable t.SrcPos s.Mode e.Index)
+    = (Warning <WarningNameForId s.WarningId>
+        t.SrcPos s.WarningId s.Mode e.Index);
+
   e._ = ;
+}
+
+WarningNameForId {
+  RepeatedVariable = repeated;
+  RepeatedVariableMaybe = repeated-maybe;
 }
 
 CheckPattern-Flatten {
@@ -1059,6 +1093,13 @@ CheckValidUsings {
       (e.DeclarationsAndErrors (Error t.SrcPos s.Type e.Info))
       e.NameRefsAndErrors
     >;
+
+  (e.DeclarationsAndErrors)
+    (Warning s.WarningId t.SrcPos s.Type e.Info) e.NameRefsAndErrors =
+      <CheckValidUsings
+        (e.DeclarationsAndErrors (Warning s.WarningId t.SrcPos s.Type e.Info))
+        e.NameRefsAndErrors
+      >;
 
   (e.DeclarationsAndErrors) /* кончились ошибки и имена */ =
     <Map
