@@ -83,10 +83,10 @@ PrepareMessage {
     = 'Repeated variable ' s.Mode '.' e.Index ' in specialization pattern';
 
   RepeatedVariable s.Mode e.Index
-      = 'Repeated variable ' s.Mode '.' e.Index ' in assignment';
+      = 'Repeated variable ' s.Mode '.' e.Index ' in assignment/last sentence';
 
   RepeatedVariableMaybe s.Mode e.Index
-      = 'Maybe repeated variable ' s.Mode '.' e.Index ' in last sentence';
+      = 'Maybe repeated variable ' s.Mode '.' e.Index;
 
   UnnamedVariableInSpecPattern s.Mode e.Index
     = 'Unnamed variable ' s.Mode '.' e.Index ' can\'t appear '
@@ -781,7 +781,7 @@ CheckSentenceRec {
   (e.ScopeVars) t.LastSentence
     = <CheckSentence e.ScopeVars t.LastSentence LastSentence> ;
   (e.ScopeVars) t.Sentence e.Sentences
-    = <CheckSentence e.ScopeVars t.Sentence>
+    = <CheckSentence e.ScopeVars t.Sentence NotLastSentence>
       <CheckSentenceRec (e.ScopeVars) e.Sentences>;
   (e.ScopeVars) /* предложений нет */ = /* пусто */ ;
 }
@@ -945,8 +945,9 @@ ReplaceInterval {
 
 WarningIdByFlag {
   Assign = RepeatedVariable;
-  LastSentence = RepeatedVariableMaybe;
-  Condition = /* для условий предупреждения не выдаются */;
+  LastSentence = RepeatedVariable;
+  NotLastSentence = RepeatedVariableMaybe;
+  Condition = RepeatedVariableMaybe;
   /* пусто */ = /* пусто */;
 }
 
