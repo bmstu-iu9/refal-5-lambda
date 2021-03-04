@@ -783,7 +783,7 @@ CheckSentenceRec {
   (e.ScopeVars) t.Sentence e.Sentences
     = <CheckSentence e.ScopeVars t.Sentence NotLastSentence>
       <CheckSentenceRec (e.ScopeVars) e.Sentences>;
-  (e.ScopeVars) /* предложений нет */ = /* пусто */ ;
+  (e.ScopeVars) /* предложений нет (пустая лямбда) */ = /* пусто */ ;
 }
 
 CheckSentence {
@@ -912,10 +912,7 @@ CheckPattern-WarnRepeatedRec {
     = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.InBrackets)>
       <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
 
-  (e.ScopeVars) s.WarningId ((TkVariable t.Pos s.Mode e.Index))
-    = <CheckVariableRepeating (e.ScopeVars) (TkVariable t.Pos s.Mode e.Index)>;
-
-  (e.ScopeVars) s.WarningId () = /* временная заглушка */;
+  (e.ScopeVars) s.WarningId () = /* предложения кончились */;
 }
 
 
@@ -939,7 +936,8 @@ FindLastE {
 }
 
 ReplaceInterval {
-  t.LastElem e.B (TkVariable t.Pos 'e' e.Index) e.M t.LastElem e.E
+  t.LastElem
+  e.B (TkVariable t.Pos 'e' e.Index) e.M t.LastElem e.E
     = (e.B (TkVariable t.Pos 'e' '_') e.E);
 }
 
@@ -947,7 +945,7 @@ WarningIdByFlag {
   Assign = RepeatedVariable;
   LastSentence = RepeatedVariable;
   NotLastSentence = RepeatedVariableMaybe;
-  Condition = RepeatedVariableMaybe;
+  Condition = /* пусто */;
   /* пусто */ = /* пусто */;
 }
 

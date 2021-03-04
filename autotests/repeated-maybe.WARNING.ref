@@ -4,16 +4,21 @@
 $EXTERN Map;
 
 $ENTRY Go {
-  = <TestLastSentence (one 'a') (two 'a') (three 'c') 'a'>
+  = <TestNotLastSentence (1 2 3) 'a'>
 }
 
-TestLastSentence {
+
+TestNotLastSentence {
   e.List s.Symbol
     = <Map
         {
-          (s.Num s.Symbol) = (s.Num 'default symbol');
-          (s.Num s.Symbol) = (s.Num 'not default symbol (should be)') ;
+          (s.Num s.Symbol) = 'not last sentence';
+          (s.Num s.Symbol^) = 'last sentence';
         }
         e.List
       >
+}
+
+SomeProcessing {
+  e.Any = e.Any
 }

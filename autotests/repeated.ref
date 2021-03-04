@@ -1,4 +1,3 @@
-* NO-WARNINGS
 
 $ENTRY Go {
   = <TestAssignment ('a') 'a'>
@@ -6,7 +5,6 @@ $ENTRY Go {
     <TestAssignment3 ('a') 'a'>
     <TestAssignment4 ('a') 'a'>
     <TestAssignment5 ('a') 'a'>
-    <TestCondition ('a') 'a'>
 }
 
 TestAssignment {
@@ -27,10 +25,6 @@ TestAssignment4 {
 
 TestAssignment5 {
   t.X s.Y = <SomeProcessing t.X s.Y> : e.B t.X s.Y e.E = /* пусто */ ;
-}
-
-TestCondition {
-  t.X s.Y, <SomeProcessing t.X s.Y> : t.X s.Y = /* пусто */ ;
 }
 
 SomeProcessing {

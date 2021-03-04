@@ -1,10 +1,13 @@
 * WARNING repeated
 
+*$FROM LibraryEx
+$EXTERN Map;
+
 $ENTRY Go {
   = <TestAssignment ('a') 'a'>
     <TestAssignment2 ('a') 'a'>
     <TestAssignment3 ('a') 'a'>
-
+    <TestLastSentence (1 2 3) 'a'>
 }
 
 TestAssignment {
@@ -17,6 +20,17 @@ TestAssignment2 {
 
 TestAssignment3 {
   t.X s.Y = <SomeProcessing t.X s.Y> : e.B t.X e.E s.Y = /* пусто */ ;
+}
+
+TestLastSentence {
+  e.List s.Symbol
+    = <Map
+        {
+          (s.Num s.Symbol) = (s.Num 'default symbol');
+          (s.Num s.Symbol) = (s.Num 'not default symbol (should be)') ;
+        }
+        e.List
+      >
 }
 
 SomeProcessing {
