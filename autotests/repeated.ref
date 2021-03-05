@@ -1,3 +1,4 @@
+* NO-WARNINGS
 
 $ENTRY Go {
   = <TestAssignment ('a') 'a'>
