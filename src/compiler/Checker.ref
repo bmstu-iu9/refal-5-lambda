@@ -82,6 +82,12 @@ PrepareMessage {
   RepVarInSpecPattern s.Mode e.Index
     = 'Repeated variable ' s.Mode '.' e.Index ' in specialization pattern';
 
+  RepeatedVariable s.Mode e.Index
+      = 'Repeated variable ' s.Mode '.' e.Index ' in assignment/last sentence';
+
+  RepeatedVariableMaybe s.Mode e.Index
+      = 'Maybe repeated variable ' s.Mode '.' e.Index;
+
   UnnamedVariableInSpecPattern s.Mode e.Index
     = 'Unnamed variable ' s.Mode '.' e.Index ' can\'t appear '
       'in $SPEC pattern';
@@ -765,16 +771,25 @@ CheckFunctionBody {
 
 CheckFunctionBodyRec {
   (e.ScopeVars) Sentences e.Sentences =
-    <Map (&CheckSentence e.ScopeVars) e.Sentences>;
+    <CheckSentenceRec (e.ScopeVars) e.Sentences>;
 
   (e.ScopeVars) NativeBody e.Code =
     /* пусто, нет ни имён функций, ни ошибок внутри */;
 }
 
-CheckSentence {
-  e.ScopeVars ((e.Pattern) e.Assignments (e.Result) (e.Blocks))
+CheckSentenceRec {
+  (e.ScopeVars) t.LastSentence
+    = <CheckSentence e.ScopeVars t.LastSentence LastSentence> ;
+  (e.ScopeVars) t.Sentence e.Sentences
+    = <CheckSentence e.ScopeVars t.Sentence NotLastSentence>
+      <CheckSentenceRec (e.ScopeVars) e.Sentences>;
+  (e.ScopeVars) /* предложений нет (пустая лямбда) */ = /* пусто */ ;
+}
 
-    = <CheckPattern (e.ScopeVars) <FlatExpr e.Pattern>>
+CheckSentence {
+  e.ScopeVars ((e.Pattern) e.Assignments (e.Result) (e.Blocks)) e.Flag
+
+    = <CheckPattern (e.ScopeVars) (e.Pattern) e.Flag>
     : (e.ScopeVars^) e.PatternFunctionsAndErrors
 
     = <DoCheckAssignments (e.Assignments) (e.ScopeVars) /* нет ошибок */>
@@ -812,7 +827,7 @@ DoCheckAssignments {
 
     = <CheckBlocks (e.ScopeVars) e.Blocks> : e.BlocksFunctionsAndErrors
 
-    = <CheckPattern (e.ScopeVars) <FlatExpr e.Pattern>>
+    = <CheckPattern (e.ScopeVars) (e.Pattern) s.ChainType>
     : (e.ScopeVars^) e.PatternFunctionsAndErrors
 
     = <DoCheckAssignments
@@ -855,8 +870,104 @@ FlatExpr {
 }
 
 CheckPattern {
+  (e.ScopeVars) (e.Pattern) e.Flag
+    = <CheckPattern-Flatten (e.ScopeVars) <FlatExpr e.Pattern>>
+      <CheckPattern-WarnRepeated
+       (e.ScopeVars)
+       <WarningIdByFlag e.Flag>
+       (e.Pattern)
+      >;
+}
+
+CheckPattern-WarnRepeated {
+ (e.ScopeVars) s.WarningId (e.Pattern)
+   = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Pattern)>;
+ (e._) (e._) = /* не нужно проверять */;
+}
+
+CheckPattern-WarnRepeatedRec {
+  (e.ScopeVars) s.WarningId
+  (e.B (TkVariable t.Pos 'e' e.Index) e.M (TkVariable t.Pos2 'e' e.Index2) e.E)
+    = <CheckPattern-WarnRepeatedRec
+        (e.ScopeVars) s.WarningId
+        <ReducePattern e.B (TkVariable t.Pos 'e' e.Index)
+          e.M (TkVariable t.Pos2 'e' e.Index2) e.E>
+      >;
+
+  (e.ScopeVars) s.WarningId ((TkVariable e.Info) e.Tail)
+    = <CheckVariableRepeating (e.ScopeVars) s.WarningId (TkVariable e.Info)>
+      <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
+
+  (e.ScopeVars) s.WarningId ((TkNewVariable e.Info) e.Tail)
+    = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
+
+  (e.ScopeVars) s.WarningId ((Symbol e.Info) e.Tail)
+    = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
+
+  (e.ScopeVars) s.WarningId ((Brackets e.InBrackets) e.Tail)
+    = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.InBrackets)>
+      <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
+
+  (e.ScopeVars) s.WarningId ((ADT-Brackets t.SrcPos (e.Name) e.InBrackets) e.Tail)
+    = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.InBrackets)>
+      <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
+
+  (e.ScopeVars) s.WarningId () = /* предложения кончились */;
+}
+
+
+ReducePattern {
+  e.Pattern
+    = <FindLastE e.Pattern> : t.LastE
+    = <ReplaceInterval t.LastE e.Pattern>;
+}
+
+FindLastE {
+  e.Pattern
+    = <Reduce
+        {
+          t.LastElem (TkVariable t.Pos 'e' e.Index)
+            = (TkVariable t.Pos 'e' e.Index);
+          t.LastElem (e.Another) = t.LastElem;
+        }
+        ()
+        e.Pattern
+      >
+}
+
+ReplaceInterval {
+  t.LastElem
+  e.B (TkVariable t.Pos 'e' e.Index) e.M t.LastElem e.E
+    = (e.B (TkVariable t.Pos 'e' '_') e.E);
+}
+
+WarningIdByFlag {
+  Assign = RepeatedVariable;
+  LastSentence = RepeatedVariable;
+  NotLastSentence = RepeatedVariableMaybe;
+  Condition = /* пусто */;
+  /* пусто */ = /* пусто */;
+}
+
+CheckVariableRepeating {
+  (e.ScopeVars) s.WarningId (TkVariable t.SrcPos s.Mode '_' e.Index) = ;
+
+  (e.Vars-B (s.Mode e.Index) e.Vars-E) s.WarningId
+  (TkVariable t.SrcPos s.Mode e.Index)
+    = (Warning <WarningNameForId s.WarningId>
+        t.SrcPos s.WarningId s.Mode e.Index);
+
+  e._ = ;
+}
+
+WarningNameForId {
+  RepeatedVariable = repeated;
+  RepeatedVariableMaybe = repeated-maybe;
+}
+
+CheckPattern-Flatten {
   (e.ScopeVars) e.Items-B (TkNewVariable t.SrcPos s.Mode '_' e.Index) e.Items-E
-    = <CheckPattern
+    = <CheckPattern-Flatten
         (e.ScopeVars)
         e.Items-B
         (TkVariable t.SrcPos s.Mode '_' e.Index)
@@ -867,7 +978,7 @@ CheckPattern {
   (e.ScopeVars)
   e.Items-B (TkVariable t.SrcPos1 s.Mode1 e.Index) e.Items-M
   (TkNewVariable t.SrcPos2 s.Mode2 e.Index) e.Items-E =
-    <CheckPattern
+    <CheckPattern-Flatten
       (e.ScopeVars)
       e.Items-B (TkVariable t.SrcPos1 s.Mode1 e.Index) e.Items-M
       (TkVariable t.SrcPos2 s.Mode2 e.Index)
@@ -983,6 +1094,13 @@ CheckValidUsings {
       (e.DeclarationsAndErrors (Error t.SrcPos s.Type e.Info))
       e.NameRefsAndErrors
     >;
+
+  (e.DeclarationsAndErrors)
+    (Warning s.WarningId t.SrcPos s.Type e.Info) e.NameRefsAndErrors =
+      <CheckValidUsings
+        (e.DeclarationsAndErrors (Warning s.WarningId t.SrcPos s.Type e.Info))
+        e.NameRefsAndErrors
+      >;
 
   (e.DeclarationsAndErrors) /* кончились ошибки и имена */ =
     <Map
