@@ -161,7 +161,7 @@ ParseSpec {
     = <ParsePattern t.ErrorList e.Tail >
     : t.ErrorList^ (e.Pattern^) e.Tail^
     = <Expect #TkSemicolon (';') t.ErrorList e.Tail>
-    : t.ErrorList e.Tail^
+    : t.ErrorList^ e.Tail^
     = ((#Spec s.LnNum (e.Name) e.Pattern)) t.ErrorList e.Tail;
 
   t.ErrorList t.Unexpected e.Tail

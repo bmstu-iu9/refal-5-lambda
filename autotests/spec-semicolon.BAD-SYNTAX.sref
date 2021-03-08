@@ -1,0 +1,7 @@
+$SPEC F e.X
+
+F { e.X = e.X; }
+
+$ENTRY Go {
+  = <F 'e.X'>;
+}
