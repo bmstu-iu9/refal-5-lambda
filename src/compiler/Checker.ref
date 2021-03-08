@@ -787,9 +787,9 @@ CheckSentenceRec {
 }
 
 CheckSentence {
-  e.ScopeVars ((e.Pattern) e.Assignments (e.Result) (e.Blocks)) e.Flag
+  e.ScopeVars ((e.Pattern) e.Assignments (e.Result) (e.Blocks)) s.Flag
 
-    = <CheckPattern (e.ScopeVars) (e.Pattern) e.Flag>
+    = <CheckPattern (e.ScopeVars) (e.Pattern) s.Flag>
     : (e.ScopeVars^) e.PatternFunctionsAndErrors
 
     = <DoCheckAssignments (e.Assignments) (e.ScopeVars) /* нет ошибок */>
@@ -870,28 +870,28 @@ FlatExpr {
 }
 
 CheckPattern {
-  (e.ScopeVars) (e.Pattern) e.Flag
+  (e.ScopeVars) (e.Pattern) s.Flag
     = <CheckPattern-Flatten (e.ScopeVars) <FlatExpr e.Pattern>>
       <CheckPattern-WarnRepeated
        (e.ScopeVars)
-       <WarningIdByFlag e.Flag>
+       <WarningIdByFlag s.Flag>
        (e.Pattern)
       >;
 }
 
 CheckPattern-WarnRepeated {
+ (e._) SKIP (e._) = /* не нужно проверять */;
+
  (e.ScopeVars) s.WarningId (e.Pattern)
    = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Pattern)>;
- (e._) (e._) = /* не нужно проверять */;
 }
 
 CheckPattern-WarnRepeatedRec {
-  (e.ScopeVars) s.WarningId
-  (e.B (TkVariable t.Pos 'e' e.Index) e.M (TkVariable t.Pos2 'e' e.Index2) e.E)
+  (e.ScopeVars) s.WarningId (e.OpenEPattern)
+    , e.OpenEPattern
+    : e._ (TkVariable t._ 'e' e._) e._ (TkVariable t._ 'e' e._) e._
     = <CheckPattern-WarnRepeatedRec
-        (e.ScopeVars) s.WarningId
-        <ReducePattern e.B (TkVariable t.Pos 'e' e.Index)
-          e.M (TkVariable t.Pos2 'e' e.Index2) e.E>
+        (e.ScopeVars) s.WarningId (<ReducePattern e.OpenEPattern>)
       >;
 
   (e.ScopeVars) s.WarningId ((TkVariable e.Info) e.Tail)
@@ -917,36 +917,17 @@ CheckPattern-WarnRepeatedRec {
 
 
 ReducePattern {
-  e.Pattern
-    = <FindLastE e.Pattern> : t.LastE
-    = <ReplaceInterval t.LastE e.Pattern>;
-}
+  e.Begin (TkVariable t.Pos1 'e' e._) e._ (TkVariable t.Pos2 'e' e._) e.End
+    = e.Begin <ReducePattern (TkVariable t.Pos1 'e' '_') e.End>;
 
-FindLastE {
-  e.Pattern
-    = <Reduce
-        {
-          t.LastElem (TkVariable t.Pos 'e' e.Index)
-            = (TkVariable t.Pos 'e' e.Index);
-          t.LastElem (e.Another) = t.LastElem;
-        }
-        ()
-        e.Pattern
-      >
-}
-
-ReplaceInterval {
-  t.LastElem
-  e.B (TkVariable t.Pos 'e' e.Index) e.M t.LastElem e.E
-    = (e.B (TkVariable t.Pos 'e' '_') e.E);
+  e.ReducedPattern = e.ReducedPattern;
 }
 
 WarningIdByFlag {
   Assign = RepeatedVariable;
   LastSentence = RepeatedVariable;
   NotLastSentence = RepeatedVariableMaybe;
-  Condition = /* пусто */;
-  /* пусто */ = /* пусто */;
+  Condition = SKIP;
 }
 
 CheckVariableRepeating {
