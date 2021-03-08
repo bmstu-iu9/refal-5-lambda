@@ -1,0 +1,7 @@
+* WARNING pseudofunctions
+
+$ENTRY Go { = <gen_e__> }
+
+gen_e__ {
+  e.Arg = e.Arg e.Arg;
+}

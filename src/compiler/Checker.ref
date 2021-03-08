@@ -188,7 +188,7 @@ CheckPseudofunctions-Entry {
 CheckPseudofunctions-Body {
   t.SrcPos (e.Name) Sentences ((e.Pattern) (e.Result) (e.Blocks))
     , <WholeEVar e.Pattern> : True e.Index
-    , <WholeEVar e.Pattern> : True e.Index /* SAME */
+    , <WholeEVar e.Result> : True e.Index /* SAME */
     , e.Blocks : /* нет блоков */
     = /* пусто, правильное тело gen-функции */;
 
