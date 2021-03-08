@@ -446,18 +446,18 @@ Block-AfterSentence {
             (Sentences e.Sentences t.NextSentence)
             e.Tokens;
 
-        (TkCloseBlock t.Pos) t.Token2
+        (TkCloseBlock t.Pos) t._
           = t.ErrorList
             (Sentences e.Sentences t.NextSentence)
             t.Token2 e.Tokens;
 
-        (TkSemicolon t.Pos) t.Token2
+        (TkSemicolon t.Pos) t._
           = <Block-AfterSentence
               s.Mode (e.Sentences t.NextSentence)
               <Sentence t.ErrorList s.Mode t.Token2 e.Tokens>
             >;
 
-        t.Token1 t.Token2
+        t._ t._
           = <UnexpectedToken t.ErrorList t.Token1 '\';\' or \'}\', skipped'>
           : t.ErrorList^
           = <Block-AfterSentence

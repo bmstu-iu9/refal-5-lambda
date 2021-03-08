@@ -328,7 +328,7 @@ SpecSentence {
         (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
         e.Result
       >
-    : (e.SpecInfo^ (e.Histories^) (e.History) (e.NewFunctions^)) e.Result^
+    : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^)) e.Result^
     = (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
       ((e.Pattern) e.Conditions (e.Result));
 }
@@ -350,7 +350,7 @@ SpecResult {
         Functions (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
         e.Result
       >
-    : (e.SpecInfo^ (e.Histories^) (e.History) (e.NewFunctions^)) e.Result^
+    : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^)) e.Result^
     = <SpecResult-Pass
         Closures (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
         e.Result
@@ -1143,7 +1143,7 @@ MapGenericMatches {
         ((e.ArgStaticMatches) (/* for result */))
         e.PatternStaticMatches
       >
-    : ((e.ArgStaticMatches) (e.ResultMatches))
+    : ((e._) (e.ResultMatches))
     = e.ResultMatches;
 }
 

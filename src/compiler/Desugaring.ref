@@ -843,7 +843,7 @@ ExtractNested-Result-Term {
             (Symbol Name e.ClosureName);
 
         /* Случай функции с контекстом */
-        (e.NestedBorrowedVars) Sentences e.Sentences
+        (e.NestedBorrowedVars^) Sentences e.Sentences
           = <CreateContext s.MarkupContext e.NestedBorrowedVars> : e.Context
           = (Function
               GN-Local (e.ClosureName)

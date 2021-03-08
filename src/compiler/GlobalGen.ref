@@ -248,7 +248,7 @@ GlobalGenFromLocalGen {
             = <Max s.NumAcc s.NumNext>
             : {
                 s.NumAcc = (s.NumAcc e.SentenceAcc);
-                s.NumNext = (s.NumNext e.SentenceNext);
+                s._ = (s.NumNext e.SentenceNext);
               };
         }
         t.Sentence

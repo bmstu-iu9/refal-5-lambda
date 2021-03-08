@@ -275,7 +275,7 @@ DoFindDivision {
     = ForGroup (<Subst-Collapse e.Image>) (e.FirstGroup) e.SecondGroup;
 
   s.Counter (e.TrivialGCG) (e.Image) (e.FirstGroup) (e.NextSentence) e.Sentences
-    = <ImagedSentence e.NextSentence> : (e.NextImage) e.NextSentence
+    = <ImagedSentence e.NextSentence> : (e.NextImage) e.NextSentence^
     = <Subst-Generalization (e.Image) (e.NextImage)> : e.NewImage
     = e.NewImage
     : {
