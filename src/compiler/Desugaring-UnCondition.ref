@@ -45,9 +45,7 @@ UnCondition-Unit-Sentence {
   e.Name s.MarkupContext (s.SkipNo e.RemNames (e.NewFunctions)) (e.Sentence)
     , e.Sentence : (e._) (Condition (e.ConditionName) (e._) (e._)) e._
     = <AddSuffix e.Name ('*' s.SkipNo)> : e.RemName
-    = <UnCondition-Sentence
-        s.MarkupContext (e.ConditionName) (e.RemName) e.Sentence
-      >
+    = <UnCondition-Sentence s.MarkupContext (e.RemName) e.Sentence>
     : (e.Sentence^) e.NewSentenceFunctions
     = (
         <Inc s.SkipNo> e.RemNames (e.RemName)
@@ -428,13 +426,11 @@ DoT0 {
 }
 
 /**
-  <UnCondition-Sentence
-    s.MarkupContext (e.ConditionName) (e.ContName) e.Sentence
-  >
+  <UnCondition-Sentence s.MarkupContext (e.ContName) e.Sentence>
     == (e.TransformedSentence) e.SubFunctions
 */
 UnCondition-Sentence {
-  s.MarkupContext (e.ConditionName) t.ContName e.Sentence
+  s.MarkupContext t.ContName e.Sentence
     , e.Sentence
     : (e.Pattern)
       (Condition (e.ConditionName) (e.CondResult) (e.CondPattern))
