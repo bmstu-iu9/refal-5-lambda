@@ -83,10 +83,7 @@ PrepareMessage {
     = 'Repeated variable ' s.Mode '.' e.Index ' in specialization pattern';
 
   RepeatedVariable s.Mode e.Index
-      = 'Repeated variable ' s.Mode '.' e.Index ' in assignment/last sentence';
-
-  RepeatedVariableMaybe s.Mode e.Index
-      = 'Maybe repeated variable ' s.Mode '.' e.Index;
+    = 'Suspicious repeated variable ' s.Mode '.' e.Index;
 
   UnnamedVariableInSpecPattern s.Mode e.Index
     = 'Unnamed variable ' s.Mode '.' e.Index ' can\'t appear '
@@ -907,47 +904,43 @@ FlatExpr {
 CheckPattern {
   (e.ScopeVars) (e.Pattern) s.Backtrack
     = <CheckPattern-Flatten (e.ScopeVars) <FlatExpr e.Pattern>>
-      <CheckPattern-WarnRepeated
-       (e.ScopeVars)
-       <WarningIdByFlag s.Backtrack>
-       (e.Pattern)
-      >;
+      <CheckPattern-WarnRepeated (e.ScopeVars) s.Backtrack (e.Pattern)>;
 }
 
 CheckPattern-WarnRepeated {
- (e._) SKIP (e._) = /* не нужно проверять */;
+ (e.ScopeVars) OneWay (e.Pattern)
+   = <CheckPattern-WarnRepeatedRec (e.ScopeVars) (e.Pattern)>;
 
- (e.ScopeVars) s.WarningId (e.Pattern)
-   = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Pattern)>;
+ (e.ScopeVars) WithBacktrack (e.Pattern) = /* не выдаём предупреждений */;
 }
 
 CheckPattern-WarnRepeatedRec {
-  (e.ScopeVars) s.WarningId (e.OpenEPattern)
+  (e.ScopeVars) (e.OpenEPattern)
     , e.OpenEPattern
     : e._ (TkVariable t._ 'e' e._) e._ (TkVariable t._ 'e' e._) e._
     = <CheckPattern-WarnRepeatedRec
-        (e.ScopeVars) s.WarningId (<ReducePattern e.OpenEPattern>)
+        (e.ScopeVars) (<ReducePattern e.OpenEPattern>)
       >;
 
-  (e.ScopeVars) s.WarningId ((TkVariable e.Info) e.Tail)
-    = <CheckVariableRepeating (e.ScopeVars) s.WarningId (TkVariable e.Info)>
-      <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
+  (e.ScopeVars) ((TkVariable e.Info) e.Tail)
+    = <CheckVariableRepeating (e.ScopeVars) (TkVariable e.Info)>
+      <CheckPattern-WarnRepeatedRec (e.ScopeVars) (e.Tail)>;
 
-  (e.ScopeVars) s.WarningId ((TkNewVariable e.Info) e.Tail)
-    = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
+  (e.ScopeVars) ((TkNewVariable e.Info) e.Tail)
+    = <CheckPattern-WarnRepeatedRec (e.ScopeVars) (e.Tail)>;
 
-  (e.ScopeVars) s.WarningId ((Symbol e.Info) e.Tail)
-    = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
+  (e.ScopeVars) ((Symbol e.Info) e.Tail)
+    = <CheckPattern-WarnRepeatedRec (e.ScopeVars) (e.Tail)>;
 
-  (e.ScopeVars) s.WarningId ((Brackets e.InBrackets) e.Tail)
-    = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.InBrackets)>
-      <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
+  (e.ScopeVars) ((Brackets e.InBrackets) e.Tail)
+    = <CheckPattern-WarnRepeatedRec (e.ScopeVars) (e.InBrackets)>
+      <CheckPattern-WarnRepeatedRec (e.ScopeVars) (e.Tail)>;
 
-  (e.ScopeVars) s.WarningId ((ADT-Brackets t.SrcPos (e.Name) e.InBrackets) e.Tail)
-    = <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.InBrackets)>
-      <CheckPattern-WarnRepeatedRec (e.ScopeVars) s.WarningId (e.Tail)>;
+  (e.ScopeVars) ((ADT-Brackets t.SrcPos (e.Name) e.InBrackets) e.Tail)
+    = <CheckPattern-WarnRepeatedRec (e.ScopeVars) (e.InBrackets)>
+      <CheckPattern-WarnRepeatedRec (e.ScopeVars) (e.Tail)>;
 
-  (e.ScopeVars) s.WarningId () = /* предложения кончились */;
+  (e.ScopeVars) () = /* предложения кончились */;
 }
 
 
@@ -958,25 +951,14 @@ ReducePattern {
   e.ReducedPattern = e.ReducedPattern;
 }
 
-WarningIdByFlag {
-  OneWay = RepeatedVariable;
-  WithBacktrack = RepeatedVariableMaybe;
-}
-
 CheckVariableRepeating {
-  (e.ScopeVars) s.WarningId (TkVariable t.SrcPos s.Mode '_' e.Index) = ;
+  (e.ScopeVars) (TkVariable t.SrcPos s.Mode '_' e.Index)
+    = /* не выдаём предупреждения на безымянные переменные */;
 
-  (e.Vars-B (s.Mode e.Index) e.Vars-E) s.WarningId
-  (TkVariable t.SrcPos s.Mode e.Index)
-    = (Warning <WarningNameForId s.WarningId>
-        t.SrcPos s.WarningId s.Mode e.Index);
+  (e.Vars-B (s.Mode e.Index) e.Vars-E) (TkVariable t.SrcPos s.Mode e.Index)
+    = (Warning repeated t.SrcPos RepeatedVariable s.Mode e.Index);
 
-  e._ = ;
-}
-
-WarningNameForId {
-  RepeatedVariable = repeated;
-  RepeatedVariableMaybe = repeated-maybe;
+  (e.ScopeVars) t.OtherVariable = /* не предупреждаем */;
 }
 
 CheckPattern-Flatten {
