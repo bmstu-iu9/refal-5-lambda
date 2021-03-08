@@ -6,6 +6,7 @@ $ENTRY Go {
     <TestAssignment3 ('a') 'a'>
     <TestAssignment4 ('a') 'a'>
     <TestAssignment5 ('a') 'a'>
+    <TestConditionOpenE ('abcd') 'a'>
 }
 
 TestAssignment {
@@ -30,4 +31,8 @@ TestAssignment5 {
 
 SomeProcessing {
   e.Any = e.Any
+}
+
+TestConditionOpenE {
+  (e._ s.X e._) s.Y, s.X : s.Y = /* пусто */;
 }

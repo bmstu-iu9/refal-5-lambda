@@ -779,20 +779,25 @@ CheckFunctionBodyRec {
 
 CheckSentenceRec {
   (e.ScopeVars) t.LastSentence
-    = <CheckSentence e.ScopeVars t.LastSentence LastSentence> ;
+    = <CheckSentence e.ScopeVars t.LastSentence OneWay> ;
+
   (e.ScopeVars) t.Sentence e.Sentences
-    = <CheckSentence e.ScopeVars t.Sentence NotLastSentence>
+    = <CheckSentence e.ScopeVars t.Sentence WithBacktrack>
       <CheckSentenceRec (e.ScopeVars) e.Sentences>;
+
   (e.ScopeVars) /* предложений нет (пустая лямбда) */ = /* пусто */ ;
 }
 
 CheckSentence {
-  e.ScopeVars ((e.Pattern) e.Assignments (e.Result) (e.Blocks)) s.Flag
+  e.ScopeVars ((e.Pattern) e.Assignments (e.Result) (e.Blocks)) s.Backtrack
 
-    = <CheckPattern (e.ScopeVars) (e.Pattern) s.Flag>
+    = <CheckPattern (e.ScopeVars) (e.Pattern) s.Backtrack>
     : (e.ScopeVars^) e.PatternFunctionsAndErrors
 
-    = <DoCheckAssignments (e.Assignments) (e.ScopeVars) /* нет ошибок */>
+    = <DoCheckAssignments
+        (e.Assignments) (e.ScopeVars) /* нет ошибок */
+        <FixBacktrackForOpenEVars e.Pattern s.Backtrack>
+      >
     : (e.ScopeVars^) e.AssignmentsFunctionsAndErrors
 
     = <CheckResult (e.ScopeVars) <FlatExpr e.Result>>
@@ -817,18 +822,27 @@ CheckBlocks {
 }
 
 DoCheckAssignments {
-  () (e.ScopeVars) e.Errors = (e.ScopeVars) e.Errors;
+  () (e.ScopeVars) e.Errors s.Backtrack = (e.ScopeVars) e.Errors;
 
   ((s.ChainType (e.Result) (e.Blocks) (e.Pattern)) e.Assignments)
-  (e.ScopeVars) e.Errors
+  (e.ScopeVars) e.Errors s.Backtrack
 
     = <CheckResult (e.ScopeVars) <FlatExpr e.Result>>
     : e.ResultFunctionsAndErrors
 
     = <CheckBlocks (e.ScopeVars) e.Blocks> : e.BlocksFunctionsAndErrors
 
-    = <CheckPattern (e.ScopeVars) (e.Pattern) s.ChainType>
+    = s.ChainType
+    : {
+        Assign = OneWay;
+        Condition = s.Backtrack;
+      }
+    : s.Backtrack^
+
+    = <CheckPattern (e.ScopeVars) (e.Pattern) s.Backtrack>
     : (e.ScopeVars^) e.PatternFunctionsAndErrors
+
+    = <FixBacktrackForOpenEVars e.Pattern s.Backtrack> : s.Backtrack^
 
     = <DoCheckAssignments
         (e.Assignments) (e.ScopeVars)
@@ -836,6 +850,27 @@ DoCheckAssignments {
         e.ResultFunctionsAndErrors
         e.BlocksFunctionsAndErrors
         e.PatternFunctionsAndErrors
+        s.Backtrack
+      >;
+}
+
+FixBacktrackForOpenEVars {
+  e.Pattern OneWay, <FindOpenEVars e.Pattern> : /* пусто */ = OneWay;
+
+  e.Pattern s.Backtrack = WithBacktrack;
+}
+
+FindOpenEVars {
+  e._ (TkVariable t._ 'e' e._) e._ (TkVariable t._ 'e' e._) e._ = OpenE;
+
+  e.Terms
+    = <Map
+        {
+          (Brackets e.Inner) = <FindOpenEVars e.Inner>;
+          (ADT-Brackets t.Pos (e.Name) e.Inner) = <FindOpenEVars e.Inner>;
+          t.Other = /* нет открытых переменных */;
+        }
+        e.Terms
       >;
 }
 
@@ -870,11 +905,11 @@ FlatExpr {
 }
 
 CheckPattern {
-  (e.ScopeVars) (e.Pattern) s.Flag
+  (e.ScopeVars) (e.Pattern) s.Backtrack
     = <CheckPattern-Flatten (e.ScopeVars) <FlatExpr e.Pattern>>
       <CheckPattern-WarnRepeated
        (e.ScopeVars)
-       <WarningIdByFlag s.Flag>
+       <WarningIdByFlag s.Backtrack>
        (e.Pattern)
       >;
 }
@@ -924,10 +959,8 @@ ReducePattern {
 }
 
 WarningIdByFlag {
-  Assign = RepeatedVariable;
-  LastSentence = RepeatedVariable;
-  NotLastSentence = RepeatedVariableMaybe;
-  Condition = SKIP;
+  OneWay = RepeatedVariable;
+  WithBacktrack = RepeatedVariableMaybe;
 }
 
 CheckVariableRepeating {
