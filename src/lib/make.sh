@@ -11,8 +11,10 @@ compile_separated() {
 
   for s in ${LIBS}; do
     # shellcheck disable=SC2086
-    ../../bin/rlc-core -C ${RLC_FLAGS} "$s" -d common --prelude=refal5-builtins.refi
-    ../../bin/rlc-core --no-sources -R -o inco.bin --incorporated="$s"
+    ../../bin/rlc-core -C ${RLC_FLAGS} "$s" -d common \
+      --prelude=refal5-builtins.refi || exit 1
+    ../../bin/rlc-core --no-sources -R -o inco.bin \
+      --incorporated="$s" || exit 1
     grep '//FROM' < "$s".ref > "$TARGET/$s".rasl.froms
     [[ -e "$s".cpp ]] && mv "$s".cpp "$TARGET"
     cat inco.bin >> "$s".rasl
@@ -23,10 +25,10 @@ compile_separated() {
 
 compile_scratch() {
   SCRATCHDIR=../../lib/scratch
-  compile_separated "$SCRATCHDIR/exe" "LibraryEx Hash GetOpt"
+  compile_separated "$SCRATCHDIR/exe" "LibraryEx Hash GetOpt" || exit 1
 
   SCRATCHDIR=../../lib/scratch-rt
-  compile_separated "$SCRATCHDIR/exe" "Library Platform"
+  compile_separated "$SCRATCHDIR/exe" "Library Platform" || exit 1
 
   for d in . platform-* exe platform-*/lib debug debug-stubs; do
     if [[ -d "$d" ]]; then
@@ -48,7 +50,7 @@ compile_slim() {
   SLIMDIR=../../lib/slim
   mkdir -p ${SLIMDIR}/exe
   RLC_FLAGS="$RLC_FLAGS -Od-" \
-    compile_separated "$SLIMDIR/exe" "LibraryEx GetOpt"
+    compile_separated "$SLIMDIR/exe" "LibraryEx GetOpt" || exit 1
 }
 
 prepare_common() {
@@ -61,7 +63,7 @@ compile_references() {
 
   for s in ${LIBRARIES}; do
     ../../bin/rlc-core --no-sources -R \
-      -o ../../lib/references/"$s".rasl --reference="$s"
+      -o ../../lib/references/"$s".rasl --reference="$s" || exit 1
   done
 }
 
@@ -77,7 +79,7 @@ compile_dynamic() {
     cd tmp && for l in ${LIBRARIES}; do
       cp ../"$l".ref .
       ../../../bin/rlmake --scratch --makelib \
-        -o ../../../lib/"$l$(platform_lib_suffix)" "$l".ref
+        -o ../../../lib/"$l$(platform_lib_suffix)" "$l".ref || exit 1
         rm -- "$l".ref
     done
   )
@@ -94,10 +96,10 @@ compile_dynamic() {
     cp "$s".ref ../../lib/src
   done
 
-  prepare_common
-  compile_scratch
-  compile_references
-  compile_slim
-  compile_prefixes
-  compile_dynamic
+  prepare_common || exit 1
+  compile_scratch || exit 1
+  compile_references || exit 1
+  compile_slim || exit 1
+  compile_prefixes || exit 1
+  compile_dynamic || exit 1
 )

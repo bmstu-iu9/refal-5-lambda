@@ -18,7 +18,7 @@ if not exist bin\nul mkdir bin
 
 echo Compile sources...
 cd src
-call make.bat
+call make.bat || exit /b 1
 
 if not "%1"=="--no-tests" (
   echo Starting autotests...

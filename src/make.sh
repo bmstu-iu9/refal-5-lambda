@@ -25,21 +25,21 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
 
   if [[ -z "$1" ]]; then
     mkdir -p ../bin
-    make_subdir scripts install-scripts.sh
-    make_subdir rasl-constants make.sh
-    make_subdir compiler makeself-s.sh
-    make_subdir lexgen makeself-s.sh
-    make_subdir make make-s.sh
+    make_subdir scripts install-scripts.sh || exit 1
+    make_subdir rasl-constants make.sh || exit 1
+    make_subdir compiler makeself-s.sh || exit 1
+    make_subdir lexgen makeself-s.sh || exit 1
+    make_subdir make make-s.sh || exit 1
     (
       export RLC_FLAGS="$RLC_FLAGS $RLC_FLAGS_PLUS"
       make_subdir lib make.sh
-    )
-    make_subdir make make.sh
-    make_subdir lexgen makeself.sh
-    make_subdir compiler makeself.sh
-    make_subdir interpreter make.sh
-    make_subdir nemytykh-random-program-generator make.sh
-    make_subdir rsl-decompiler make.sh
+    ) || exit 1
+    make_subdir make make.sh || exit 1
+    make_subdir lexgen makeself.sh || exit 1
+    make_subdir compiler makeself.sh || exit 1
+    make_subdir interpreter make.sh || exit 1
+    make_subdir nemytykh-random-program-generator make.sh || exit 1
+    make_subdir rsl-decompiler make.sh || exit 1
   else
     DIR=$1
     TARGET=$2
@@ -65,8 +65,9 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
       export RLMAKE_FLAGS="$RLMAKE_FLAGS $RLMAKE_FLAGS_PLUS"
 
       ${PATH_TO_RLC}/bin/rlmake \
-        ${SCRIPT_FLAGS} --keep-rasls -d ../common "$MAINSRC" -o"$TARGET"
-    )
+        ${SCRIPT_FLAGS} --keep-rasls -d ../common "$MAINSRC" \
+        -o"$TARGET"
+    ) || exit 1
     mv "$TARGET" "../../bin/$TARGET$TARGET_SUFFIX"
 
     mkdir -p "../../build/$DIR"

@@ -18,18 +18,18 @@ setlocal
   if not {%1}=={} goto :MAKE_PROJECT
 
   if not exist ..\bin\nul mkdir ..\bin
-  call :MAKE_SUBDIR scripts install-scripts.bat
-  call :MAKE_SUBDIR rasl-constants make.bat
-  call :MAKE_SUBDIR compiler makeself-s.bat
-  call :MAKE_SUBDIR lexgen makeself-s.bat
-  call :MAKE_SUBDIR make make-s.bat
-  call :MAKE_SUBDIR lib make.bat
-  call :MAKE_SUBDIR make make.bat
-  call :MAKE_SUBDIR lexgen makeself.bat
-  call :MAKE_SUBDIR compiler makeself.bat
-  call :MAKE_SUBDIR interpreter make.bat
-  call :MAKE_SUBDIR nemytykh-random-program-generator make.bat
-  call :MAKE_SUBDIR rsl-decompiler make.bat
+  call :MAKE_SUBDIR scripts install-scripts.bat || exit /b 1
+  call :MAKE_SUBDIR rasl-constants make.bat || exit /b 1
+  call :MAKE_SUBDIR compiler makeself-s.bat || exit /b 1
+  call :MAKE_SUBDIR lexgen makeself-s.bat || exit /b 1
+  call :MAKE_SUBDIR make make-s.bat || exit /b 1
+  call :MAKE_SUBDIR lib make.bat || exit /b 1
+  call :MAKE_SUBDIR make make.bat || exit /b 1
+  call :MAKE_SUBDIR lexgen makeself.bat || exit /b 1
+  call :MAKE_SUBDIR compiler makeself.bat || exit /b 1
+  call :MAKE_SUBDIR interpreter make.bat || exit /b 1
+  call :MAKE_SUBDIR nemytykh-random-program-generator make.bat || exit /b 1
+  call :MAKE_SUBDIR rsl-decompiler make.bat || exit /b 1
 
   goto :END
 
@@ -50,8 +50,9 @@ setlocal
   if not exist ..\..\build\%DIR%\nul mkdir ..\..\build\%DIR%
   if exist ..\..\build\%DIR%\*.* erase /Q ..\..\build\%DIR%\*.*
   call %PATH_TO_RLC%\bin\rlmake ^
-    %SCRIPT_FLAGS% --keep-rasls -d ..\common %MAINSRC% -o %TARGET%%TARGET_SUFFIX%
-  move %TARGET%%TARGET_SUFFIX% ..\..\bin
+    %SCRIPT_FLAGS% --keep-rasls -d ..\common %MAINSRC% ^
+    -o _%TARGET%%TARGET_SUFFIX% || exit /b 1
+  move _%TARGET%%TARGET_SUFFIX% ..\..\bin\%TARGET%%TARGET_SUFFIX%
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   move *.rasl ..\..\build\%DIR% >NUL
@@ -73,7 +74,7 @@ setlocal
   set DIR=%1
   set MAKE=%2
   pushd %DIR%
-  call %MAKE%
+  call %MAKE% || exit /b 1
   popd
 endlocal
 goto :EOF

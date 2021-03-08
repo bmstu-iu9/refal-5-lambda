@@ -57,10 +57,26 @@ setlocal
   if "%BIND%"=="STATIC" set D=%D% -d "%LIBDIR%\%PREFIX%\exe"
   set D=%D% -D "%LIBDIR%\%PREFIX%-rt" -d "%LIBDIR%\references"
 
+  if "%PREFIX%"=="scratch" (
+    call "%DISTRDIR%\scripts\load-config.bat" || exit /b 1
+  )
+
   if not "%PREFIX%"=="scratch" (
-    call :INIT_PREFIXED
+    set CPP=
+    set RT=
+    if "%DEBUG%"=="TRUE" (
+      set PREFIX=--prefix=%PREFIX%-debug
+    ) else (
+      set PREFIX=--prefix=%PREFIX%
+    )
   ) else (
-    call :INIT_SCRATCH
+    set PREFIX=
+    set D=-D "%LIBDIR%\scratch-rt\platform-Windows" %D%
+    set CPP=--cpp-command-exe="%CPPLINEE%" ^
+      --cpp-command-lib="%CPPLINEL%" ^
+      --cpp-command-exe-suf="%CPPLINEESUF%" ^
+      --cpp-command-lib-suf="%CPPLINELSUF%"
+    set RT=--runtime=refalrts-main
   )
 
   set PATH=%BINDIR%;%PATH%
@@ -79,26 +95,6 @@ setlocal
       %PREFIX% %D% -d "%LIBDIR%" %RT% %ARGS%
   ) else (
     echo BAD SCRIPT NAME %BAT%, expected rlc.bat or rlmake.bat
+    exit /b 1
   )
 endlocal
-
-:INIT_PREFIXED
-  set CPP=
-  set RT=
-  if "%DEBUG%"=="TRUE" (
-    set PREFIX=--prefix=%PREFIX%-debug
-  ) else (
-    set PREFIX=--prefix=%PREFIX%
-  )
-goto :EOF
-
-:INIT_SCRATCH
-  set PREFIX=
-  call "%DISTRDIR%\scripts\load-config.bat" || exit /b 1
-  set D=-D "%LIBDIR%\scratch-rt\platform-Windows" %D%
-  set CPP=--cpp-command-exe="%CPPLINEE%" ^
-    --cpp-command-lib="%CPPLINEL%" ^
-    --cpp-command-exe-suf="%CPPLINEESUF%" ^
-    --cpp-command-lib-suf="%CPPLINELSUF%"
-  set RT=--runtime=refalrts-main
-goto :EOF

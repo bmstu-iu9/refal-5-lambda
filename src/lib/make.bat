@@ -10,12 +10,12 @@ setlocal
   copy LICENSE ..\..\lib
   for %%s in (%LIBRARIES%) do copy %%s.ref ..\..\lib\src
 
-  call :PREPARE_COMMON
-  call :COMPILE_SCRATCH
-  call :COMPILE_REFERENCES
-  call :COMPILE_SLIM
-  call :COMPILE_PREFIXES
-  call :COMPILE_DYNAMIC
+  call :PREPARE_COMMON || exit /b 1
+  call :COMPILE_SCRATCH || exit /b 1
+  call :COMPILE_REFERENCES || exit /b 1
+  call :COMPILE_SLIM || exit /b 1
+  call :COMPILE_PREFIXES || exit /b 1
+  call :COMPILE_DYNAMIC || exit /b 1
 endlocal
 goto :EOF
 
@@ -28,8 +28,10 @@ setlocal
   rmdir %TARGET%\x
 
   for %%s in (%LIBS%) do (
-    ..\..\bin\rlc-core -C %RLC_FLAGS% %%s -d common --prelude=refal5-builtins.refi
-    ..\..\bin\rlc-core --no-sources -R -o inco.bin --incorporated=%%~ns
+    ..\..\bin\rlc-core -C %RLC_FLAGS% %%s -d common ^
+      --prelude=refal5-builtins.refi || exit /b 1
+    ..\..\bin\rlc-core --no-sources -R -o inco.bin ^
+      --incorporated=%%~ns || exit /b 1
     find "//FROM" < %%s.ref > %TARGET%\%%s.rasl.froms
     if exist %%s.cpp move %%s.cpp %TARGET%
     copy /b %%s.rasl+inco.bin %TARGET%\%%s.rasl
@@ -40,10 +42,10 @@ goto :EOF
 
 :COMPILE_SCRATCH
   set SCRATCHDIR=..\..\lib\scratch
-  call :COMPILE_SEPARATED "%SCRATCHDIR%\exe" "LibraryEx Hash GetOpt"
+  call :COMPILE_SEPARATED "%SCRATCHDIR%\exe" "LibraryEx Hash GetOpt" || exit /b 1
 
   set SCRATCHDIR=..\..\lib\scratch-rt
-  call :COMPILE_SEPARATED "%SCRATCHDIR%\exe" "Library Platform"
+  call :COMPILE_SEPARATED "%SCRATCHDIR%\exe" "Library Platform" || exit /b 1
 
   for /d %%d in ( ^
     . platform-* exe platform-Windows\lib platform-POSIX\lib debug ^
@@ -69,7 +71,7 @@ setlocal
   rmdir %SLIMDIR%\exe\x
 
   set RLC_FLAGS=%RLC_FLAGS% -Od-
-  call :COMPILE_SEPARATED "%SLIMDIR%\exe" "LibraryEx GetOpt"
+  call :COMPILE_SEPARATED "%SLIMDIR%\exe" "LibraryEx GetOpt" || exit /b 1
 endlocal
 goto :EOF
 
@@ -83,14 +85,14 @@ setlocal
 
   for %%s in (%LIBRARIES%) do (
     ..\..\bin\rlc-core --no-sources -R ^
-       -o ..\..\lib\references\%%s.rasl --reference=%%s
+       -o ..\..\lib\references\%%s.rasl --reference=%%s || exit /b 1
   )
 endlocal
 goto :EOF
 
 :COMPILE_PREFIXES
   pushd prefixes
-  call make.bat
+  call make.bat || exit /b 1
   popd
 goto :EOF
 
@@ -101,7 +103,8 @@ setlocal
   pushd tmp
   for %%l in (%LIBRARIES%) do (
     copy ..\%%l.ref .
-    call ..\..\..\bin\rlmake --scratch --makelib -o ..\..\..\lib\%%l.dll %%l.ref
+    call ..\..\..\bin\rlmake --scratch --makelib ^
+      -o ..\..\..\lib\%%l.dll %%l.ref || exit /b 1
     erase %%l.ref
   )
   popd
