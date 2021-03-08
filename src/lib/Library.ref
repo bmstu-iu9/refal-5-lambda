@@ -1501,6 +1501,10 @@ refalrts::FnResult cookie_ns::fwrite_line(
     return refalrts::cRecognitionImpossible;
   }
 
+  if (stderr == handle) {
+    fflush(stdout);
+  }
+
   int printf_res = 0;
 
   for (
