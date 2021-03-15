@@ -51,6 +51,10 @@ setlocal
     2>%FILE%.err >%FILE%.out
   if errorlevel 100 (
     echo ...COMPILER FAILS ON %FILE%, see %FILE%.err
+    echo FILE %FILE%.ref:
+    echo ============================================================
+    type %FILE%.ref
+    echo ============================================================
     exit /b 1
   )
   if exist %FILE%.rasl erase %FILE%.rasl

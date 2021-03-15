@@ -112,6 +112,10 @@ run_test() {
     2>"$FILE.err$FLAGS" >"$FILE.out$FLAGS"
 
   if [[ ! -e "$FILE.rasl" ]]; then
+    echo FILE "$FILE.ref":
+    echo ============================================================
+    cat "$FILE.ref"
+    echo ============================================================
     return 1
   fi
   rm -f "$FILE.rasl"

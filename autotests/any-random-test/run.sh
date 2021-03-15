@@ -48,6 +48,10 @@ run_test() {
 
   if [[ $? -gt 99 ]]; then
     echo "...COMPILER FAILS ON $FILE, see $FILE.err"
+    echo FILE "$FILE.ref":
+    echo ============================================================
+    cat "$FILE.ref"
+    echo ============================================================
     return 1
   fi
   rm -f "$FILE.rasl"

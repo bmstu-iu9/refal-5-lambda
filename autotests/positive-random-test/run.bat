@@ -110,7 +110,13 @@ setlocal
   ..\..\bin\rlc-core --classic -C %FILE% --prelude=prelude-for-test %FLAGS% ^
     2>%FILE%.err%FLAGS% >%FILE%.out%FLAGS%
 
-  if not exist %FILE%.rasl exit /b 1
+  if not exist %FILE%.rasl (
+    echo FILE %FILE%.ref:
+    echo ============================================================
+    type %FILE%.ref
+    echo ============================================================
+    exit /b 1
+  )
   erase %FILE%.rasl
 endlocal
 goto :EOF
