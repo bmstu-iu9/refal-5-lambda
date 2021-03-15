@@ -61,21 +61,28 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
     fi
 
     mkdir -p ../../bin
-    (
+    if (
       export RLMAKE_FLAGS="$RLMAKE_FLAGS $RLMAKE_FLAGS_PLUS"
 
       ${PATH_TO_RLC}/bin/rlmake \
         ${SCRIPT_FLAGS} --keep-rasls -d ../common "$MAINSRC" \
         -o"$TARGET"
-    ) || exit 1
-    mv "$TARGET" "../../bin/$TARGET$TARGET_SUFFIX"
+    ); then
+      mv "$TARGET" "../../bin/$TARGET$TARGET_SUFFIX"
 
-    mkdir -p "../../build/$DIR"
-    rm -f "../../build/$DIR/"*
-    find . ../common \
-      \( -name '*.rasl' -o -name '*.cpp' -o -name '*-locals.lst' \) \
-      -exec mv '{}' "../../build/$DIR" \;
-    cp ${PATH_TO_RLC}/lib/scratch{/exe,-rt{/debug-stubs,/exe,}}/*.{rasl,cpp} \
-      "../../build/$DIR"
+      mkdir -p "../../build/$DIR"
+      rm -f "../../build/$DIR/"*
+      find . ../common \
+        \( -name '*.rasl' -o -name '*.cpp' -o -name '*-locals.lst' \) \
+        -exec mv '{}' "../../build/$DIR" \;
+      cp ${PATH_TO_RLC}/lib/scratch{/exe,-rt{/debug-stubs,/exe,}}/*.{rasl,cpp} \
+        "../../build/$DIR"
+    else
+      rm -f "$TARGET"
+      find . ../common \
+        \( -name '*.rasl' -o -name '*.cpp' -o -name '*-locals.lst' \) \
+        -delete
+      exit 1
+    fi
   fi
 )

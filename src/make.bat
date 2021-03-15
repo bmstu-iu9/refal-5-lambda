@@ -51,7 +51,18 @@ setlocal
   if exist ..\..\build\%DIR%\*.* erase /Q ..\..\build\%DIR%\*.*
   call %PATH_TO_RLC%\bin\rlmake ^
     %SCRIPT_FLAGS% --keep-rasls -d ..\common %MAINSRC% ^
-    -o _%TARGET%%TARGET_SUFFIX% || exit /b 1
+    -o _%TARGET%%TARGET_SUFFIX%
+  if errorlevel 1 (
+    if exist _%TARGET%%TARGET_SUFFIX% erase _%TARGET%%TARGET_SUFFIX%
+    if exist *.obj erase *.obj
+    if exist *.tds erase *.tds
+    if exist *.rasl erase *.rasl
+    if exist *.cpp erase *.cpp
+    if exist *-locals.lst erase *-locals.lst
+    if exist ..\common\*.rasl erase ..\common\*.rasl
+    if exist ..\common\*.cpp erase ..\common\*.cpp
+    exit /b 1
+  )
   move _%TARGET%%TARGET_SUFFIX% ..\..\bin\%TARGET%%TARGET_SUFFIX%
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
