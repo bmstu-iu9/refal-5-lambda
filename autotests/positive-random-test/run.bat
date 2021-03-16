@@ -59,6 +59,7 @@ setlocal
   echo start (%NOW%, x%LOOPS%) %TIME%>>time.txt
   set NOW=%NOW::=-%
   set NOW=%NOW: =_%
+  set NOW=%NOW:/=-%
   ..\..\bin\nemytykh-random-program-generator.exe %LOOPS% _%NOW%
   echo gen (%NOW%) %TIME%>>time.txt
   for %%r in (test-*.ref) do (

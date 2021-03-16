@@ -55,7 +55,7 @@ regression() {
 }
 
 new_tests() {
-  NOW=$(LC_ALL=C date | sed 's/[ :]/-/g')
+  NOW=$(LC_ALL=C date | sed 's|[ :/]|-|g')
   echo "start ($NOW, x$LOOPS) $(date)" >> time.txt
 
   ../../bin/nemytykh-random-program-generator "$LOOPS" "_$NOW"
