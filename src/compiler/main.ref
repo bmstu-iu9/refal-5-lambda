@@ -702,7 +702,7 @@ Link-CppCompile {
     = e.CommandLineSuf
     : {
         /* пусто */ = /* пусто */;
-        e.CommandLineSuf^ = ' "' e.CommandLineSuf '"';
+        e.CommandLineSuf^ = ' "' <Trim e.CommandLineSuf> '"';
       }
     : e.CommandLineSuf^
     = <Link-Aux

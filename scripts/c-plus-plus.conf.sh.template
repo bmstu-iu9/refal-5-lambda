@@ -5,6 +5,7 @@ if [[ "$(uname)" =~ MINGW ]]; then
   LIBDL=''
 fi
 
+
 ## Раскомментируйте строчку ниже в зависимости от используемого
 ## компилятора C++
 
@@ -41,4 +42,16 @@ if [ -z "$CPPLINEE" ]; then
   CPPLINEESUF="$LIBDL"
   CPPLINEL='g++ -shared -fpic -g -Wall -o'
   CPPLINELSUF=''
+fi
+
+
+## .def file for linking dynamic libraries on MinGW
+if [[ "$(uname)" =~ MINGW ]]; then
+  DEFFILE="$1/lib/scratch-rt/platform-Windows/lib/refalrts-main.def"
+  if [[ ! -e "$DEFFILE" ]]; then
+     DEFFILE="$1/../src/lib/platform-Windows/lib/refalrts-main.def"
+  fi
+
+  CPPLINEL="${CPPLINEL//-o/-Wl,--enable-stdcall-fixup -o}"
+  CPPLINELSUF="$CPPLINELSUF $DEFFILE"
 fi
