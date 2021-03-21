@@ -5,12 +5,12 @@ main() {
   CMP=cmp
   DIFF=diff
   SEP=/
-  if [ "$UNAME" == "MINGW32" -o "$UNAME" == "CYGWIN" ]; then
+  if [[ "$UNAME" =~ MINGW.. || "$UNAME" == "CYGWIN" ]]; then
     CMP="diff --strip-trailing-cr"
     DIFF="diff --strip-trailing-cr"
   fi
 
-  if [ "$UNAME" == "MINGW32" ]; then
+  if [[ "$UNAME" =~ MINGW.. ]]; then
     SEP=\\
   fi
 
