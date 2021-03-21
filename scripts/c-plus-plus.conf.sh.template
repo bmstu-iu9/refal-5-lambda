@@ -1,21 +1,28 @@
+## MinGW uses Windows DLL API, libdl.a don’t supported on it.
+
+LIBDL='-ldl'
+if [[ "$(uname)" =~ MINGW ]]; then
+  LIBDL=''
+fi
+
 ## Раскомментируйте строчку ниже в зависимости от используемого
 ## компилятора C++
 
 ## Компилятор GNU C++
 # CPPLINEE='g++ -Wall -g -o'
-# CPPLINEESUF='-ldl'
+# CPPLINEESUF="$LIBDL"
 # CPPLINEL='g++ -shared -fpic -Wall -g -o'
 # CPPLINELSUF=''
 
 ## Компилятор Clang:
 # CPPLINEE='clang++ -Wall -g -o'
-# CPPLINEESUF='-ldl'
+# CPPLINEESUF="$LIBDL"
 # CPPLINEL='clang++ -shared -fpic -Wall -g -o'
 # CPPLINELSUF=''
 
 ## Компилятор Zapcc:
 # CPPLINEE='/home/username/zapcc-build/bin/zapcc++ -Wall -g -o'
-# CPPLINEESUF='-ldl'
+# CPPLINEESUF="$LIBDL"
 # CPPLINEL='c/home/username/zapcc-build/bin/zapcc++ -shared -fpic -Wall -g -o'
 # CPPLINELSUF=''
 
@@ -31,7 +38,7 @@ echo>/dev/null
 ## По умолчанию используем GNU C++:
 if [ -z "$CPPLINEE" ]; then
   CPPLINEE='g++ -Wall -g -o'
-  CPPLINEESUF='-ldl'
+  CPPLINEESUF="$LIBDL"
   CPPLINEL='g++ -shared -fpic -g -Wall -o'
   CPPLINELSUF=''
 fi
