@@ -1,0 +1,35 @@
+name: CI-posix
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  bootstrap-sh:
+    strategy:
+      matrix:
+
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        ccomp: [gcc, clang]
+        exclude:
+          # clang отсутствует на сервере сборки для Windows
+          - os: windows-latest
+            ccomp: clang
+          # на macOS gcc — синоним для clang, дважды можно не запускать
+          - os: macos-latest
+            ccomp: gcc
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Bootstrapping on ${{ matrix.os }} with ${{ matrix.ccomp }}
+        run: |
+          cp .github/workflows/conf-template-${{ matrix.ccomp }}.bash c-plus-plus.conf.sh
+          ./bootstrap.sh
+        shell: bash

@@ -1,0 +1,26 @@
+name: CI-windows
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  bootstrap-bat:
+    strategy:
+      matrix:
+        ccomp: [ msvc, gcc ]
+
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Bootstrapping with ${{ matrix.ccomp }}
+        run: |
+          copy .github\workflows\conf-template-${{ matrix.ccomp }}.bat c-plus-plus.conf.bat
+          bootstrap.bat
+        shell: cmd

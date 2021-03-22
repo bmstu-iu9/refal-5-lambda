@@ -1,5 +1,10 @@
 # Refal-5λ
 
+* [![CI-windows][WI]][WU] — full bootstrapping with autotests on Windows with
+  Microsoft Visual C++ and GNU C++.
+* [![CI-posix][PI]][PU] — full bootstrapping with autotests on Ubuntu, macOS
+  and MSys mocking POSIX environment with GNU C++ and Clang.
+
 > This is translation of [README.md](README.md) from Russian.
 
 # About the language and the compiler
@@ -492,3 +497,7 @@ rational.
 [5]: http://refal.net/~belous/refal2-r.htm
 [6]: https://github.com/bmstu-iu9/refal-5-lambda/releases/latest
 [7]: https://bmstu-iu9.github.io/refal-5-lambda/
+[WI]: https://github.com/bmstu-iu9/refal-5-lambda/workflows/CI-windows/badge.svg
+[WU]: https://github.com/bmstu-iu9/refal-5-lambda/actions?query=workflow:CI-windows
+[PI]: https://github.com/bmstu-iu9/refal-5-lambda/workflows/CI-posix/badge.svg
+[PU]: https://github.com/bmstu-iu9/refal-5-lambda/actions?query=workflow:CI-posix

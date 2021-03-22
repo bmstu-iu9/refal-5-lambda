@@ -1,5 +1,11 @@
 # Рефал-5λ
 
+* [![CI-windows][WI]][WU] — полная сборка с автотестами на Windows
+  с использованием Microsoft Visual C++ и GNU C++.
+* [![CI-posix][PI]][PU] — полная сборка с автотестами на Ubuntu, macOS
+  и среде MSys, имитирующей POSIX-окружение, с использованием компиляторов
+  GNU C++ и Clang.
+
 > English translation of README.md is available [here](README.en.md).
 
 # О языке и компиляторе
@@ -493,3 +499,7 @@ s-переменную сразу после угловой скобки:
 [5]: http://refal.net/~belous/refal2-r.htm
 [6]: https://github.com/bmstu-iu9/refal-5-lambda/releases/latest
 [7]: https://bmstu-iu9.github.io/refal-5-lambda/
+[WI]: https://github.com/bmstu-iu9/refal-5-lambda/workflows/CI-windows/badge.svg
+[WU]: https://github.com/bmstu-iu9/refal-5-lambda/actions?query=workflow:CI-windows
+[PI]: https://github.com/bmstu-iu9/refal-5-lambda/workflows/CI-posix/badge.svg
+[PU]: https://github.com/bmstu-iu9/refal-5-lambda/actions?query=workflow:CI-posix
