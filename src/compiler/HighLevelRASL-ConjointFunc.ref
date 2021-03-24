@@ -27,7 +27,7 @@ $ENTRY HighLevelRASL-Function-Conjoint {
       >
     : e.SentencesWithSubst
 
-    = <GenPattern s.FnGenSubst (e.Name) (TkVariable 'enew' 0)>
+    = <GenPattern s.FnGenSubst (e.Name) (Var 'enew' 0)>
     : s.ContextSize (e.Vars) (e.MarkedPattern) e.CommonMatchCommands
 
     = <FindDivisionAndGenerate
@@ -165,7 +165,7 @@ GenerateSingleSentence {
 
 /* Перебирает переменные в обобщении и заменяет на значения подстановок */
 ComposeVars {
-  (e.MarkedPattern-B (TkVariable s.Mode e.Name s.Offset) e.MarkedPattern-E)
+  (e.MarkedPattern-B (Var s.Mode e.Name s.Offset) e.MarkedPattern-E)
   (e.Substitute-B ( e.Subst ':' (s.Mode e.Name) ) e.Substitute-E)
     = s.Mode : { 's' = S; 't' = T; 'e' = E; } : s.Mode^
     = (Junk e.MarkedPattern-B) (s.Mode s.Offset e.Subst)
@@ -182,8 +182,8 @@ EnumerateVarsRec {
   s.NextNumber e.Expr
     = <MapAccum
         {
-          s.Next (TkVariable s.Type)
-            = <Inc s.Next> (TkVariable s.Type 'new' s.Next);
+          s.Next (Var s.Type)
+            = <Inc s.Next> (Var s.Type 'new' s.Next);
 
           s.Next (Brackets e.Nested)
             = <EnumerateVarsRec s.Next e.Nested> : s.Next^ e.Nested^
@@ -247,7 +247,7 @@ MakeTrivialSubstImage {
           (t.Image ':' ('e' e.Index))
             = ((MN ':' 0 ',' () ',' ()) ':' ('e' e.Index));
 
-          (t.Image ':' (s.ST e.Index)) = ((TkVariable s.ST) ':' (s.ST e.Index));
+          (t.Image ':' (s.ST e.Index)) = ((Var s.ST) ':' (s.ST e.Index));
         }
         e.SubstImage
       >;
@@ -353,7 +353,7 @@ Subst-Generalization {
   /* Разные символы или символ vs s-переменная — обобщаем */
   ((t.Image1 ':' ('s' e.Index)) e.Images1)
   ((t.Image2 ':' ('s' e.Index)) e.Images2)
-    = ((TkVariable 's') ':' ('s' e.Index))
+    = ((Var 's') ':' ('s' e.Index))
       <Subst-Generalization (e.Images1) (e.Images2)>;
 
   (/* пусто */) (/* пусто */) = /* пусто */;

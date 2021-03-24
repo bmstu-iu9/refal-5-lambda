@@ -231,7 +231,7 @@ AppendTerm {
 
 InlineTerm {
   (Symbol e.Value) = <Symbol e.Value>;
-  (TkVariable e.Value) = <TkVariable e.Value>;
+  (Var e.Value) = <Var e.Value>;
   (Brackets e.Value) = <Brackets e.Value>;
   (ADT-Brackets e.Value) = <ADT-Brackets e.Value>;
   (CallBrackets e.Value) = <CallBrackets e.Value>;
@@ -269,8 +269,8 @@ MultilineTerm-Prefix {
             <Expression (e.Indent '  ') (e.Indent '  ') e.Expr ()>
             (e.Indent '>' e.Suffix);
 
-        (CallBrackets (TkVariable e.Indirect) e.Expr)
-          = (e.Prefix '<' <TkVariable e.Indirect>)
+        (CallBrackets (Var e.Indirect) e.Expr)
+          = (e.Prefix '<' <Var e.Indirect>)
             <Expression (e.Indent '  ') (e.Indent '  ') e.Expr ()>
             (e.Indent '>' e.Suffix);
 
@@ -368,7 +368,7 @@ HexDigit {
     = s.Digit
 }
 
-TkVariable {
+Var {
   s.Type e.Index s.Depth = s.Type '.' e.Index '#' <Symb s.Depth>;
   s.Type e.Index = s.Type '.' e.Index;
 }
@@ -387,8 +387,7 @@ CallBrackets {
   (Symbol Name e.Function) e.Expr
     = '<' <DisplayName e.Function> ' ' <InlineSubexpr e.Expr> '>';
 
-  (TkVariable e.Indirect) e.Expr
-    = '<' <TkVariable e.Indirect> ' ' <InlineSubexpr e.Expr> '>';
+  (Var e.Indirect) e.Expr = '<' <Var e.Indirect> ' ' <InlineSubexpr e.Expr> '>';
 
   e.Expr = '< ' <InlineSubexpr e.Expr> '>';
 }

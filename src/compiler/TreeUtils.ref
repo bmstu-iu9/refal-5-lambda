@@ -32,7 +32,7 @@ ExtractVariables-Tail {
 }
 
 $ENTRY ExtractVariables-Expr {
-  (TkVariable s.VarType e.Index) e.Terms
+  (Var s.VarType e.Index) e.Terms
     = (s.VarType e.Index) <ExtractVariables-Expr e.Terms>;
 
   (Brackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
@@ -84,8 +84,8 @@ IncName {
   <CreateContext s.MarkupContext t.Variable> == t.ContextVariable*
 
   t.ContextVariable ::=
-      (TkVariable s.ModeTS e.Index s.Depth)
-    | (Brackets (TkVariable 'e' e.Index s.Depth))
+      (Var s.ModeTS e.Index s.Depth)
+    | (Brackets (Var 'e' e.Index s.Depth))
     | (Symbol Name e.Name)
 */
 $ENTRY CreateContext {
@@ -94,11 +94,11 @@ $ENTRY CreateContext {
       {
         ('e' e.Index) =
           (Symbol Identifier VAR 'e' e.Index)
-          (Brackets (TkVariable 'e' e.Index));
+          (Brackets (Var 'e' e.Index));
 
         (s.Mode e.Index) =
           (Symbol Identifier VAR s.Mode e.Index)
-          (TkVariable s.Mode e.Index);
+          (Var s.Mode e.Index);
       }
       e.Context
     >;
@@ -106,8 +106,8 @@ $ENTRY CreateContext {
   NoMarkupContext e.Context =
     <Map
       {
-        ('e' e.Index) = (Brackets (TkVariable 'e' e.Index));
-        (s.Mode e.Index) = (TkVariable s.Mode e.Index);
+        ('e' e.Index) = (Brackets (Var 'e' e.Index));
+        (s.Mode e.Index) = (Var s.Mode e.Index);
       }
       e.Context
     >;
@@ -122,14 +122,14 @@ $ENTRY CreateSpecPatternForContext {
         {
           (Symbol Identifier e.Ident) = (Symbol Identifier e.Ident);
 
-          (TkVariable s.Mode e.Index) = (TkVariable s.Mode 'STAT_' e.Index);
+          (Var s.Mode e.Index) = (Var s.Mode 'STAT_' e.Index);
 
-          (Brackets (TkVariable 'e' e.Index))
-            = (Brackets (TkVariable 'eSTAT_' e.Index));
+          (Brackets (Var 'e' e.Index))
+            = (Brackets (Var 'eSTAT_' e.Index));
         }
         e.Context
       >
-      (TkVariable 'edyn' 0)
+      (Var 'edyn' 0)
 }
 
 

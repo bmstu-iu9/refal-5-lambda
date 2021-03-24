@@ -109,15 +109,15 @@ FillIndexesRec {
   (e.StartIndex) (e.GlobalGen) s.Type
     = <MapAccum
         {
-          (e.CurrentIndex) (TkVariable s.Type)
-            = TkVariable s.Type e.CurrentIndex
+          (e.CurrentIndex) (Var s.Type)
+            = Var s.Type e.CurrentIndex
               : e.IndexedVariable
             = <Add e.CurrentIndex 1>
               : e.NewIndex
             = (e.NewIndex) (e.IndexedVariable);
 
-          (e.CurrentIndex) (TkVariable e.Other)
-            = (e.CurrentIndex) (TkVariable e.Other);
+          (e.CurrentIndex) (Var e.Other)
+            = (e.CurrentIndex) (Var e.Other);
 
           (e.CurrentIndex) (Brackets e.Nested)
             = <FillIndexesRec
@@ -176,7 +176,7 @@ GetVariableMatches-FillBag {
 }
 
 VarsSameIndex {
-  s.Mode ((TkVariable s.Mode e._)) e.Matches = <VarsSameIndex s.Mode e.Matches>;
+  s.Mode ((Var s.Mode e._)) e.Matches = <VarsSameIndex s.Mode e.Matches>;
   s.Mode /* пусто */ = True;
   s.Mode e._ = False;
 }
@@ -199,11 +199,11 @@ MarkupVarsInPattern {
   (e.StaticParams) e.Pattern
     = <Map
         {
-          (TkVariable s.Mode s.Index)
+          (Var s.Mode s.Index)
             , e.StaticParams : e._ (s.Mode s.Index) e._
-            = (TkVariable s.Mode 'STAT' s.Index);
+            = (Var s.Mode 'STAT' s.Index);
 
-          (TkVariable s.Mode s.Index) = (TkVariable s.Mode 'dyn' s.Index);
+          (Var s.Mode s.Index) = (Var s.Mode 'dyn' s.Index);
 
           (Symbol e.Info) = (Symbol e.Info);
 

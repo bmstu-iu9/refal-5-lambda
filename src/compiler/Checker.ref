@@ -194,7 +194,7 @@ CheckPseudofunctions-Body {
 }
 
 WholeEVar {
-  (TkVariable t._pos 'e' e.Index) = True e.Index;
+  (Var t._pos 'e' e.Index) = True e.Index;
   e._ = False;
 }
 
@@ -249,10 +249,10 @@ CheckSpecs-Formats {
 IsHardPattern {
   /* empty */ = True;
 
-  (TkVariable t.SrcPos1 'e' e.Index) = True;
+  (Var t.SrcPos1 'e' e.Index) = True;
 
-  (TkVariable t.SrcPos1 'e' e.Index1) e.Pattern-M
-  (TkVariable t.SrcPos2 'e' e.Index2) e.Pattern-E
+  (Var t.SrcPos1 'e' e.Index1) e.Pattern-M
+  (Var t.SrcPos2 'e' e.Index2) e.Pattern-E
     = False;
 
   (Brackets e.PatternPart1) e.PatternPart2
@@ -295,9 +295,9 @@ IsHardPattern {
 IsHardTerm {
   (Symbol s.Type e.Info) = True;
 
-  (TkVariable t.SrcPos 's' e.Index) = True;
+  (Var t.SrcPos 's' e.Index) = True;
 
-  (TkVariable t.SrcPos 't' e.Index) = True;
+  (Var t.SrcPos 't' e.Index) = True;
 
   t.Term = False;
 }
@@ -309,16 +309,16 @@ CheckRepeatedVariables {
 
 ErrorsForRepeatedVariables {
   e.VarList-B
-  (TkVariable t.SrcPos1 s.Mode e.Index) e.VarList-M
-  (TkVariable t.SrcPos2 s.Mode e.Index) e.VarList-E
+  (Var t.SrcPos1 s.Mode e.Index) e.VarList-M
+  (Var t.SrcPos2 s.Mode e.Index) e.VarList-E
     = <ErrorsForRepeatedVariables
         e.VarList-B
-        (TkVariable t.SrcPos1 s.Mode e.Index) e.VarList-M
+        (Var t.SrcPos1 s.Mode e.Index) e.VarList-M
         e.VarList-E
       >
       (Error t.SrcPos2 RepVarInSpecPattern s.Mode e.Index);
 
-  e.VarList-B (TkVariable t.SrcPos s.Mode '_' e.Index) e.VarList-E
+  e.VarList-B (Var t.SrcPos s.Mode '_' e.Index) e.VarList-E
     = <ErrorsForRepeatedVariables e.VarList-B e.VarList-E>
       (Error t.SrcPos UnnamedVariableInSpecPattern s.Mode '_' e.Index);
 
@@ -329,8 +329,8 @@ FindVariables {
   e.Pattern
     = <Map
         {
-          (TkVariable t.SrcPos s.Mode e.Index)
-            = (TkVariable t.SrcPos s.Mode e.Index);
+          (Var t.SrcPos s.Mode e.Index)
+            = (Var t.SrcPos s.Mode e.Index);
 
           (Brackets e.InBrackets) = <FindVariables e.InBrackets>;
 
@@ -475,7 +475,7 @@ ValidBodyForSpec-CheckSentensePattern {
 }
 
 CheckSpec-VarTypeMatching {
-  ((TkVariable s.Mode e.Val)) (s.Mode e.Var) = True;
+  ((Var s.Mode e.Val)) (s.Mode e.Var) = True;
 
   (e.Val) (e.Var) = False;
 }
@@ -858,7 +858,7 @@ FixBacktrackForOpenEVars {
 }
 
 FindOpenEVars {
-  e._ (TkVariable t._ 'e' e._) e._ (TkVariable t._ 'e' e._) e._ = OpenE;
+  e._ (Var t._ 'e' e._) e._ (Var t._ 'e' e._) e._ = OpenE;
 
   e.Terms
     = <Map
@@ -875,11 +875,11 @@ FlatExpr {
   e.Expr =
     <Map
       {
-        (TkVariable t.SrcPos s.Mode e.Index) =
-          (TkVariable t.SrcPos s.Mode e.Index);
+        (Var t.SrcPos s.Mode e.Index) =
+          (Var t.SrcPos s.Mode e.Index);
 
-        (TkNewVariable t.SrcPos s.Mode e.Index) =
-          (TkNewVariable t.SrcPos s.Mode e.Index);
+        (NewVar t.SrcPos s.Mode e.Index) =
+          (NewVar t.SrcPos s.Mode e.Index);
 
         (Symbol Name t.SrcPos e.Name) = (Symbol Name t.SrcPos e.Name);
 
@@ -917,16 +917,16 @@ CheckPattern-WarnRepeated {
 CheckPattern-WarnRepeatedRec {
   (e.ScopeVars) (e.OpenEPattern)
     , e.OpenEPattern
-    : e._ (TkVariable t._ 'e' e._) e._ (TkVariable t._ 'e' e._) e._
+    : e._ (Var t._ 'e' e._) e._ (Var t._ 'e' e._) e._
     = <CheckPattern-WarnRepeatedRec
         (e.ScopeVars) (<ReducePattern e.OpenEPattern>)
       >;
 
-  (e.ScopeVars) ((TkVariable e.Info) e.Tail)
-    = <CheckVariableRepeating (e.ScopeVars) (TkVariable e.Info)>
+  (e.ScopeVars) ((Var e.Info) e.Tail)
+    = <CheckVariableRepeating (e.ScopeVars) (Var e.Info)>
       <CheckPattern-WarnRepeatedRec (e.ScopeVars) (e.Tail)>;
 
-  (e.ScopeVars) ((TkNewVariable e.Info) e.Tail)
+  (e.ScopeVars) ((NewVar e.Info) e.Tail)
     = <CheckPattern-WarnRepeatedRec (e.ScopeVars) (e.Tail)>;
 
   (e.ScopeVars) ((Symbol e.Info) e.Tail)
@@ -945,39 +945,39 @@ CheckPattern-WarnRepeatedRec {
 
 
 ReducePattern {
-  e.Begin (TkVariable t.Pos1 'e' e._) e._ (TkVariable t.Pos2 'e' e._) e.End
-    = e.Begin <ReducePattern (TkVariable t.Pos1 'e' '_') e.End>;
+  e.Begin (Var t.Pos1 'e' e._) e._ (Var t.Pos2 'e' e._) e.End
+    = e.Begin <ReducePattern (Var t.Pos1 'e' '_') e.End>;
 
   e.ReducedPattern = e.ReducedPattern;
 }
 
 CheckVariableRepeating {
-  (e.ScopeVars) (TkVariable t.SrcPos s.Mode '_' e.Index)
+  (e.ScopeVars) (Var t.SrcPos s.Mode '_' e.Index)
     = /* не выдаём предупреждения на безымянные переменные */;
 
-  (e.Vars-B (s.Mode e.Index) e.Vars-E) (TkVariable t.SrcPos s.Mode e.Index)
+  (e.Vars-B (s.Mode e.Index) e.Vars-E) (Var t.SrcPos s.Mode e.Index)
     = (Warning repeated t.SrcPos RepeatedVariable s.Mode e.Index);
 
   (e.ScopeVars) t.OtherVariable = /* не предупреждаем */;
 }
 
 CheckPattern-Flatten {
-  (e.ScopeVars) e.Items-B (TkNewVariable t.SrcPos s.Mode '_' e.Index) e.Items-E
+  (e.ScopeVars) e.Items-B (NewVar t.SrcPos s.Mode '_' e.Index) e.Items-E
     = <CheckPattern-Flatten
         (e.ScopeVars)
         e.Items-B
-        (TkVariable t.SrcPos s.Mode '_' e.Index)
+        (Var t.SrcPos s.Mode '_' e.Index)
         (Error t.SrcPos UnnamedNewVariable s.Mode '_' e.Index)
         e.Items-E
       >;
 
   (e.ScopeVars)
-  e.Items-B (TkVariable t.SrcPos1 s.Mode1 e.Index) e.Items-M
-  (TkNewVariable t.SrcPos2 s.Mode2 e.Index) e.Items-E =
+  e.Items-B (Var t.SrcPos1 s.Mode1 e.Index) e.Items-M
+  (NewVar t.SrcPos2 s.Mode2 e.Index) e.Items-E =
     <CheckPattern-Flatten
       (e.ScopeVars)
-      e.Items-B (TkVariable t.SrcPos1 s.Mode1 e.Index) e.Items-M
-      (TkVariable t.SrcPos2 s.Mode2 e.Index)
+      e.Items-B (Var t.SrcPos1 s.Mode1 e.Index) e.Items-M
+      (Var t.SrcPos2 s.Mode2 e.Index)
       (Error t.SrcPos2 AlreadyBounded s.Mode2 e.Index)
       e.Items-E
     >;
@@ -986,13 +986,13 @@ CheckPattern-Flatten {
     <MapAccum
       {
         (e.KnownVars-B (s.Mode e.Index) e.KnownVars-E)
-        (TkVariable t.SrcPos s.Mode e.Index) =
+        (Var t.SrcPos s.Mode e.Index) =
           (e.KnownVars-B (s.Mode e.Index) e.KnownVars-E);
 
-        (e.KnownVars) (TkVariable t.SrcPos s.Mode e.Index) =
+        (e.KnownVars) (Var t.SrcPos s.Mode e.Index) =
           (e.KnownVars (s.Mode e.Index));
 
-        (e.KnownVars) (TkNewVariable t.SrcPos s.Mode e.Index) =
+        (e.KnownVars) (NewVar t.SrcPos s.Mode e.Index) =
           (<FixupKnownVars e.KnownVars (s.Mode e.Index)>);
 
         (e.KnownVars) (Symbol Name t.SrcPos e.Name) =
@@ -1017,18 +1017,18 @@ CheckResult {
     <Map
       (
         {
-          e.KnownVars (TkVariable t.SrcPos s.Mode '_' e.Index)
+          e.KnownVars (Var t.SrcPos s.Mode '_' e.Index)
             = (Error t.SrcPos UnnamedVariableInResult s.Mode '_' e.Index);
 
           e.KnownVars-B (s.Mode e.Index) e.KnownVars-E
-          (TkVariable t.SrcPos s.Mode e.Index) =
+          (Var t.SrcPos s.Mode e.Index) =
             /* пропускаем, правильная переменная */;
 
           e.KnownVars-B (s.OldMode e.Index) e.KnownVars-E
-          (TkVariable t.SrcPos s.NewMode e.Index) =
+          (Var t.SrcPos s.NewMode e.Index) =
             (Error t.SrcPos InvalidMode s.OldMode s.NewMode e.Index);
 
-          e.KnownVars (TkVariable t.SrcPos s.Mode e.Index) =
+          e.KnownVars (Var t.SrcPos s.Mode e.Index) =
             (Error t.SrcPos VariableNotFound s.Mode e.Index);
 
           e.KnownVars (Symbol Name t.SrcPos e.Name) =

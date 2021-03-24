@@ -513,11 +513,11 @@ PatchAST-Expr {
   s.FnPatch e.Expression
     = <Map
         {
-          (TkVariable t.SrcPos s.Mode e.Index)
-            = (TkVariable <s.FnPatch SrcPos t.SrcPos> s.Mode e.Index);
+          (Var t.SrcPos s.Mode e.Index)
+            = (Var <s.FnPatch SrcPos t.SrcPos> s.Mode e.Index);
 
-          (TkNewVariable t.SrcPos s.Mode e.Index)
-            = (TkNewVariable <s.FnPatch SrcPos t.SrcPos> s.Mode e.Index);
+          (NewVar t.SrcPos s.Mode e.Index)
+            = (NewVar <s.FnPatch SrcPos t.SrcPos> s.Mode e.Index);
 
           (Symbol Name t.SrcPos e.Name)
             = (Symbol Name <s.FnPatch SrcPos t.SrcPos> <s.FnPatch Name e.Name>);
@@ -617,12 +617,12 @@ CreateMetaFunctions {
               (Function
                 t.SrcPos s.ScopeClass (e.Name) Sentences
                 (
-                  ((TkVariable t.SrcPos 'eArg'))
+                  ((Var t.SrcPos 'eArg'))
                   (
                     (CallBrackets (Symbol Name t.SrcPos '__Step-Drop'))
                     (CallBrackets
                       (Symbol Name t.SrcPos '__Meta_' e.Name)
-                      (TkVariable t.SrcPos 'eArg')
+                      (Var t.SrcPos 'eArg')
                       (Symbol Name t.SrcPos '$table')
                     )
                   )

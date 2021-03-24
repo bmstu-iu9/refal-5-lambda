@@ -155,11 +155,11 @@
     t.Pattern, t.Result ::= (t.Term*)
     t.Term ::=
         (Symbol s.SymType e.SymInfo)
-      | (TkVariable t.SrcPos s.VarType e.Index)
+      | (Var t.SrcPos s.VarType e.Index)
       | (Brackets t.Term*)
       | (CallBrackets (Symbol Name t.SrcPos e.Function)? t.Term*)
       | (Closure e.Body)
-      | (TkNewVariable t.SrcPos s.VarType e.Index)
+      | (NewVar t.SrcPos s.VarType e.Index)
       | (ADT-Brackets t.SrcPos (e.ADT-Name) t.Term*)
     s.SymType e.SymInfo ::=
         Char s.CHAR
@@ -220,8 +220,8 @@
       | (Brackets e.Expression)
       | (ADT-Brackets t.SrcPos (e.ADTName) e.Expression)
       | (CallBrackets e.Expression)
-      | (TkVariable t.SrcPos s.Mode e.Index)
-      | (TkNewVariable t.SrcPos s.Mode e.Index)
+      | (Var t.SrcPos s.Mode e.Index)
+      | (NewVar t.SrcPos s.Mode e.Index)
       | (Closure e.Body)
     s.SymType e.SymInfo ::=
         Char s.CHAR
@@ -267,8 +267,8 @@
     которая является тегом для абстрактных скобок.
   * `CallBrackets` — терм активации. Содержит подвыражение. Может находиться
     только в правой части.
-  * `TkVariable` — переменная.
-  * `TkNewVariable` — переменная, помеченная знаком переопределения.
+  * `Var` — переменная.
+  * `NewVar` — переменная, помеченная знаком переопределения.
   * `Closure` — тело вложенной функции.
 * `e.ADTName` — значение `UnnamedADT` используется в случае синтаксической
   ошибки: отсутствия метки АТД-терма после квадратной скобки.
@@ -342,7 +342,7 @@
       | (Brackets e.ReducedExpression)
       | (ADT-Brackets (e.Name) e.Expression)
       | (CallBrackets e.Expression)
-      | (TkVariable s.Mode e.Index s.Depth)
+      | (Var s.Mode e.Index s.Depth)
       | (ClosureBrackets e.ClosureContent)
     s.SymType e.SymInfo-Reduced ::=
         Char s.Char
@@ -351,8 +351,8 @@
       | Identifier e.Name
     e.ClosureContent ::= (TkName e.Name) t.ContextVariable*
     t.ContextVariable ::=
-        (TkVariable s.ModeTS e.Index s.Depth)
-      | (Brackets (TkVariable 'e' e.Index s.Depth))
+        (Var s.ModeTS e.Index s.Depth)
+      | (Brackets (Var 'e' e.Index s.Depth))
       | (Symbol Name e.Name)
     s.ModeTS ::= 't' | 's'
 
@@ -374,11 +374,11 @@
   за исключением `Separator` — он при генерации даёт пустую строку (за счёт
   чего сгенерированный код читается лучше).
 * `t.ReducedTerm` — некоторые виды термов уже не несут позицию в исходном
-  тексте, `TkNewVariable` и `Closure` отсутствуют. Переменные имеют
+  тексте, `NewVar` и `Closure` отсутствуют. Переменные имеют
   дополнительный атрибут `s.Depth` — глубина вложенности вложенной функции,
   в которой эта переменная впервые определена. Для именованных функций
-  `s.Depth` равен нулю. Таким образом, `TkNewVariable` превращается
-  в `TkVariable` с индексом глубины, равным глубине самой функции.
+  `s.Depth` равен нулю. Таким образом, `NewVar` превращается
+  в `Var` с индексом глубины, равным глубине самой функции.
   Вложенные функции из `Closure` превращаются в глобальные функции
   в `t.ReducedProgramElement`,
 * `ClosureBrackets` сворачиваются в объекты замыкания,

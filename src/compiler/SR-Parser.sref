@@ -462,14 +462,14 @@ DoParsePattern {
   e.Tail =
     <DoParsePattern
       t.ErrorList (e.MultiBracket)
-      (e.Scanned (#TkNewVariable s.LnNumVar s.Mode e.Index)) e.Tail
+      (e.Scanned (#NewVar s.LnNumVar s.Mode e.Index)) e.Tail
     >;
 
   t.ErrorList (e.MultiBracket)
   (e.Scanned) (#TkVariable s.LnNum s.Mode e.Index) e.Tail =
     <DoParsePattern
       t.ErrorList (e.MultiBracket)
-      (e.Scanned (#TkVariable s.LnNum s.Mode e.Index)) e.Tail
+      (e.Scanned (#Var s.LnNum s.Mode e.Index)) e.Tail
     >;
 
   t.ErrorList (e.MultiBracket)
@@ -676,7 +676,7 @@ DoParseResult {
   (e.MultiBracket) (e.Scanned) (#TkVariable s.LnNum s.Mode e.Index) e.Tail =
     <DoParseResult
       t.ErrorList (e.MultiBracket)
-      (e.Scanned (#TkVariable s.LnNum s.Mode e.Index)) e.Tail
+      (e.Scanned (#Var s.LnNum s.Mode e.Index)) e.Tail
     >;
 
   /*

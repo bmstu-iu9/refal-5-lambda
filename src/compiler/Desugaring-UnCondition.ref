@@ -108,10 +108,10 @@ DoPatternSteps {
             >;
 
         /* Закрытая e-переменная */
-        e.HolesAndItems-B (HOLE (TkVariable 'e' e.Index)) e.HolesAndItems-E
+        e.HolesAndItems-B (HOLE (Var 'e' e.Index)) e.HolesAndItems-E
           = <DoPatternSteps
               t.UsedVariables (e.BoundEVariables (e.Index))
-              e.HolesAndItems-B (TkVariable 'e' e.Index) e.HolesAndItems-E
+              e.HolesAndItems-B (Var 'e' e.Index) e.HolesAndItems-E
             >;
 
          /* Пустая дырка */
@@ -176,7 +176,7 @@ DoPatternSteps {
 
          /* Открытая e-переменная */
          e.HolesAndItems-B
-         (HOLE (TkVariable 'e' e.Index) e.Pattern)
+         (HOLE (Var 'e' e.Index) e.Pattern)
          e.HolesAndItems-E
            = <DoPatternSteps
                t.UsedVariables (e.BoundEVariables (e.Index))
@@ -208,13 +208,13 @@ DoPatternSteps {
 HardItem {
   (e.BoundEVariables) (Symbol s.Type e.Info) = True;
 
-  (e.BoundEVariables) (TkVariable 's' e.Index) = True;
-  (e.BoundEVariables) (TkVariable 't' e.Index) = True;
+  (e.BoundEVariables) (Var 's' e.Index) = True;
+  (e.BoundEVariables) (Var 't' e.Index) = True;
 
   (e.BoundEVariables-B (e.Index) e.BoundEVariables-E)
-  (TkVariable 'e' e.Index) = True;
+  (Var 'e' e.Index) = True;
 
-  (e.BoundEVariables) (TkVariable 'e' e.Index) = False;
+  (e.BoundEVariables) (Var 'e' e.Index) = False;
   (e.BoundEVariables) (Brackets e.Pattern) = False;
   (e.BoundEVariables) (ADT-Brackets (e.Name) e.Pattern) = False;
 }
@@ -227,14 +227,14 @@ DoBindBrackets {
   (t.MultiBracket e.Scanned) (Symbol s.Type e.Info) e.Tail
     = <DoBindBrackets (t.MultiBracket e.Scanned (Symbol s.Type e.Info)) e.Tail>;
 
-  (t.MultiBracket e.Scanned) (TkVariable s.Type e.Index) e.Tail
+  (t.MultiBracket e.Scanned) (Var s.Type e.Index) e.Tail
     = <DoBindBrackets
-        (t.MultiBracket e.Scanned (TkVariable s.Type e.Index)) e.Tail
+        (t.MultiBracket e.Scanned (Var s.Type e.Index)) e.Tail
       >;
 
   (t.MultiBracket e.Scanned) (OpenE s.Type e.Index) e.Tail
     = <DoBindBrackets
-        (t.MultiBracket e.Scanned (Brackets (TkVariable s.Type e.Index)))
+        (t.MultiBracket e.Scanned (Brackets (Var s.Type e.Index)))
         e.Tail
       >;
 
@@ -268,27 +268,27 @@ DoBindBrackets {
 
 T1 {
   t.UsedVars
-  e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
+  e.Items (HOLE (Var 'e' e.Index) e.Pattern) e.ItemsAndHoles
     , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
     , <NewVarNameSuf t.UsedVars1 't' e.Index ('_next')> : t.UsedVars2 e.tX_next
     , <NewVarNameSuf t.UsedVars2 'e' e.Index ('_rest')> : t.UsedVars3 e.eX_rest
     = (
         e.Items
-        (Brackets (TkVariable e.eX_fix))
-        (TkVariable e.tX_next)
-        (TkVariable e.eX_rest)
+        (Brackets (Var e.eX_fix))
+        (Var e.tX_next)
+        (Var e.eX_rest)
         <PassiveHoles t.UsedVars3 e.ItemsAndHoles>
       );
 }
 
 PassiveHoles {
   t.UsedVariables
-  e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern)
+  e.Items (HOLE (Var 'e' e.Index) e.Pattern)
   e.ItemsAndHoles
     , <NewVarNameSuf t.UsedVariables 'e' e.Index ('_rest')>
     : t.NewVars e.eX_rest
     = e.Items
-      (TkVariable e.eX_rest)
+      (Var e.eX_rest)
       <PassiveHoles t.NewVars e.ItemsAndHoles>;
 
   t.UsedVariables e.Items = e.Items;
@@ -296,42 +296,42 @@ PassiveHoles {
 
 T2 {
   t.UsedVars
-  e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
+  e.Items (HOLE (Var 'e' e.Index) e.Pattern) e.ItemsAndHoles
     , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
     , <NewVarNameSuf t.UsedVars1 't' e.Index ('_next')> : t.UsedVars2 e.tX_next
     , <NewVarNameSuf t.UsedVars2 'e' e.Index ('_rest')> : t.UsedVars3 e.eX_rest
     = (
         e.Items
-        (Brackets (TkVariable e.eX_fix) (TkVariable e.tX_next))
-        (TkVariable e.eX_rest)
+        (Brackets (Var e.eX_fix) (Var e.tX_next))
+        (Var e.eX_rest)
         <PassiveHoles t.UsedVars3 e.ItemsAndHoles>
       );
 }
 
 T3 {
   t.UsedVars
-  e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
+  e.Items (HOLE (Var 'e' e.Index) e.Pattern) e.ItemsAndHoles
     , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
     = (
         e.Items
-        (Brackets (TkVariable e.eX_fix))
+        (Brackets (Var e.eX_fix))
         <PassiveHoles t.UsedVars1 e.ItemsAndHoles>
       );
 }
 
 T4 {
   t.UsedVars
-  e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
+  e.Items (HOLE (Var 'e' e.Index) e.Pattern) e.ItemsAndHoles
     , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
     = (
-        e.Items (TkVariable e.eX_fix)
+        e.Items (Var e.eX_fix)
         <PassiveHoles t.UsedVars1 e.ItemsAndHoles>
       );
 }
 
 T5 {
   t.UsedVars
-  e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
+  e.Items (HOLE (Var 'e' e.Index) e.Pattern) e.ItemsAndHoles
     , <T5-sub t.UsedVars e.Index> : (t.SourceVar t.eX_fix t.eX_var)
     = (
         e.Items (Brackets t.eX_fix) t.eX_var
@@ -352,13 +352,13 @@ T5-sub {
   t.UsedVars e.Index
     , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
     , <NewVarNameSuf t.UsedVars 'e' e.Index ('_var')> : t.UsedVars2 e.eX_var
-    = ((TkVariable 'e' e.Index) (TkVariable e.eX_fix) (TkVariable e.eX_var));
+    = ((Var 'e' e.Index) (Var e.eX_fix) (Var e.eX_var));
 }
 
 Substitute {
-  (TkVariable s.Type e.Index) e.Tail ((TkVariable s.Type e.Index) e.Expr)
+  (Var s.Type e.Index) e.Tail ((Var s.Type e.Index) e.Expr)
     = e.Expr
-      <Substitute e.Tail ((TkVariable s.Type e.Index) e.Expr)>;
+      <Substitute e.Tail ((Var s.Type e.Index) e.Expr)>;
 
   (Brackets e.InBrackets) e.Tail (t.Variable e.Expr)
     = (Brackets <Substitute e.InBrackets (t.Variable e.Expr)>)
@@ -385,25 +385,25 @@ Substitute {
 
 T6 {
   t.UsedVars
-  e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
+  e.Items (HOLE (Var 'e' e.Index) e.Pattern) e.ItemsAndHoles
     , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
     , <NewVarNameSuf t.UsedVars1 'e' e.Index ('_rest')> : t.UsedVars2 e.eX_rest
     = (
         e.Items
-        (Brackets (TkVariable e.eX_fix))
-        (TkVariable e.eX_rest)
+        (Brackets (Var e.eX_fix))
+        (Var e.eX_rest)
         <PassiveHoles t.UsedVars2 e.ItemsAndHoles>
       );
 }
 
 T7 {
   t.UsedVars
-  e.Items (HOLE (TkVariable 'e' e.Index) e.Pattern) e.ItemsAndHoles
+  e.Items (HOLE (Var 'e' e.Index) e.Pattern) e.ItemsAndHoles
     , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
     , <NewVarNameSuf t.UsedVars1 'e' e.Index ('_rest')> : t.UsedVars2 e.eX_rest
     = (
         e.Items
-        (TkVariable e.eX_fix) (TkVariable e.eX_rest)
+        (Var e.eX_fix) (Var e.eX_rest)
         <PassiveHoles t.UsedVars2 e.ItemsAndHoles>
       );
 }
@@ -414,7 +414,7 @@ T0 {
 
 DoT0 {
   (OpenE 'e' e.Index) e.Tail
-    = (Brackets (TkVariable 'e' e.Index)) <DoT0 e.Tail>;
+    = (Brackets (Var 'e' e.Index)) <DoT0 e.Tail>;
 
   (Brackets e.InBrackets) e.Tail = (Brackets <DoT0 e.InBrackets>) <DoT0 e.Tail>;
   (ADT-Brackets (e.Name) e.InBrackets) e.Tail
@@ -475,7 +475,7 @@ OpenEChain {
     , <NewVarName (e.VarNames) 'eOther' 0> : (e.NewVarNames) e.eOther
     = (
         (
-          (e.Context (TkVariable e.eOther))
+          (e.Context (Var e.eOther))
           ((CallBrackets (Symbol Name e.ContName) e.T0))
         )
       )
@@ -494,7 +494,7 @@ OpenEChain {
     , <NewVarName (e.VarNames) 'eOther' 0> : (e.NewVarNames) e.eOther
     = (
         (
-          (e.Context (TkVariable e.eOther))
+          (e.Context (Var e.eOther))
           ((CallBrackets (Symbol Name e.NextForward) e.T0))
         )
       )

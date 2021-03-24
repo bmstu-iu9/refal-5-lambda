@@ -73,10 +73,10 @@ $ENTRY TextFromExpr {
         (TkString e.String s.Offset) =
           '"' <Map &EscapeChar e.String> '"' <Offset s.Offset>;
 
-        (TkVariable s.Mode e.Index s.Depth s.Offset) =
+        (Var s.Mode e.Index s.Depth s.Offset) =
           ' ' <PrintVar s.Mode e.Index s.Depth> <Offset s.Offset>;
 
-        (TkVariableCopy s.Mode e.Index s.Depth s.SampleOffset s.CopyOffset) =
+        (VarCopy s.Mode e.Index s.Depth s.SampleOffset s.CopyOffset) =
           ' ' <PrintVar s.Mode e.Index s.Depth>
           <Offset s.SampleOffset> <Offset s.CopyOffset>;
 
@@ -344,8 +344,8 @@ $ENTRY MakeSavers {
             а оставлен закомментированным.
           */
 *!!       /* Тривиальная подстановка не изменяет диапазоны */
-*!!       (s.ContextOffset e.CmdSaves) (E s.Num (TkVariable 'e' e.Index))
-*!!         = (s.ContextOffset e.CmdSaves) (E s.Num (TkVariable 'e' e.Index));
+*!!       (s.ContextOffset e.CmdSaves) (E s.Num (Var 'e' e.Index))
+*!!         = (s.ContextOffset e.CmdSaves) (E s.Num (Var 'e' e.Index));
 
           /* В остальных случаях подстановки могут изменять диапазон */
           (s.ContextOffset e.CmdSaves) (E s.Num e.Range)

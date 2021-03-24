@@ -114,16 +114,13 @@ $ENTRY RemovePos-Expr {
   e.Expr =
     <Map
       {
-        (TkVariable t.SrcPos s.Mode e.Index) =
-          (TkVariable s.Mode e.Index);
+        (Var t.SrcPos s.Mode e.Index) = (Var s.Mode e.Index);
 
-        (TkNewVariable t.SrcPos s.Mode e.Index) =
-          (TkNewVariable s.Mode e.Index);
+        (NewVar t.SrcPos s.Mode e.Index) = (NewVar s.Mode e.Index);
 
         (Symbol Name t.SrcPos e.Name) = (Symbol Name e.Name);
 
-        (Brackets e.InBrackets) =
-          (Brackets <RemovePos-Expr e.InBrackets>);
+        (Brackets e.InBrackets) = (Brackets <RemovePos-Expr e.InBrackets>);
 
         (ADT-Brackets t.SrcPos (e.Name) e.InBrackets) =
           (ADT-Brackets (e.Name) <RemovePos-Expr e.InBrackets>);
@@ -320,23 +317,23 @@ EnumerateVars-Expr {
   s.Depth (e.OriginScopeVars) e.Expr =
     <MapAccum
       {
-        (e.ScopeVars) (TkVariable s.Mode '_' e.Index)
+        (e.ScopeVars) (Var s.Mode '_' e.Index)
           = <NewVarName (e.ScopeVars) s.Mode '_' e.Index s.Depth>
           : (e.ScopeVars^) e.NewVar
-          = (e.ScopeVars) (TkVariable e.NewVar);
+          = (e.ScopeVars) (Var e.NewVar);
 
         (e.ScopeVars-B (s.Mode e.Index s.Depth^) e.ScopeVars-E)
-        (TkVariable s.Mode e.Index) =
+        (Var s.Mode e.Index) =
           (e.ScopeVars-B (s.Mode e.Index s.Depth) e.ScopeVars-E)
-          (TkVariable s.Mode e.Index s.Depth);
+          (Var s.Mode e.Index s.Depth);
 
-        (e.ScopeVars) (TkVariable s.Mode e.Index) =
+        (e.ScopeVars) (Var s.Mode e.Index) =
           ((s.Mode e.Index s.Depth) e.ScopeVars)
-          (TkVariable s.Mode e.Index s.Depth);
+          (Var s.Mode e.Index s.Depth);
 
-        (e.ScopeVars) (TkNewVariable s.Mode e.Index) =
+        (e.ScopeVars) (NewVar s.Mode e.Index) =
           ((s.Mode e.Index s.Depth) e.ScopeVars)
-          (TkVariable s.Mode e.Index s.Depth);
+          (Var s.Mode e.Index s.Depth);
 
         (e.ScopeVars) (Brackets e.InBrackets) =
           <Fetch
@@ -737,7 +734,7 @@ ExtractNested-Pattern {
 }
 
 ExtractAllVars {
-  (TkVariable s.Mode e.Index) e.Tail =
+  (Var s.Mode e.Index) e.Tail =
     (s.Mode e.Index) <ExtractAllVars e.Tail>;
 
   (Brackets e.Inner) e.Tail = <ExtractAllVars e.Inner e.Tail>;
@@ -783,12 +780,12 @@ ExtractNested-Result {
 
 ExtractNested-Result-Term {
   s.MarkupContext (e.ScopeVars) (e.LocalVars)
-  ((e.NestedFuncs) (e.BorrowedVars)) (TkVariable s.Mode e.Index) =
+  ((e.NestedFuncs) (e.BorrowedVars)) (Var s.Mode e.Index) =
     (
       (e.NestedFuncs)
       <CheckBorrowed (e.ScopeVars) (e.BorrowedVars) (s.Mode e.Index)>
     )
-    (TkVariable s.Mode e.Index);
+    (Var s.Mode e.Index);
 
   s.MarkupContext (e.ScopeVars) (e.LocalVars)
   ((e.NestedFuncs) (e.BorrowedVars)) (Brackets e.InBrackets)

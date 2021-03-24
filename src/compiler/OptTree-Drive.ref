@@ -405,14 +405,14 @@ IsLexpr {
   t.IsLexpr-Aux-Item ::= OpenE | ('e' e.Index) | ('t' e.Index)
 */
 IsLexpr-Aux {
-  e.Expr-B (TkVariable 'e' e.Index1) e.Expr-M (TkVariable 'e' e.Index2) e.Expr-E
+  e.Expr-B (Var 'e' e.Index1) e.Expr-M (Var 'e' e.Index2) e.Expr-E
     = OpenE;
 
   e.Expr
     = <Map
         {
-          (TkVariable 'e' e.Index) = ('e' e.Index);
-          (TkVariable 't' e.Index) = ('t' e.Index);
+          (Var 'e' e.Index) = ('e' e.Index);
+          (Var 't' e.Index) = ('t' e.Index);
 
           (Brackets e.InBrackets) = <IsLexpr-Aux e.InBrackets>;
           (ADT-Brackets (e.Name) e.InBrackets) = <IsLexpr-Aux e.InBrackets>;
@@ -556,7 +556,7 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
 }
 
 eDRIVEN {
-  = (TkVariable 'e' DRIVEN 0);
+  = (Var 'e' DRIVEN 0);
 }
 
 Intrinsic-Mu {
@@ -834,7 +834,7 @@ CheckArgs-Intrinsic-StaticSubstitution {
         (Symbol s.SymbolName e.Name) e.Rest
           = <CheckArgs-Intrinsic-StaticSubstitution (e.Rest) s.SymbolName>;
 
-        (TkVariable e.Var) e.Rest
+        (Var e.Var) e.Rest
           = <CheckArgs-Intrinsic-StaticSubstitution (e.Rest) s.SymbolName>;
 
         (ColdCallBrackets e.Body) e.Rest
@@ -853,8 +853,8 @@ StaticSubstitution {
           (Symbol s.SymbolFrom s.n)
             = (Symbol s.SymbolTo <s.Func s.n>);
 
-          (TkVariable e.Var)
-            = (ColdCallBrackets (Symbol Name e.FuncName) (TkVariable e.Var));
+          (Var e.Var)
+            = (ColdCallBrackets (Symbol Name e.FuncName) (Var e.Var));
 
           (ColdCallBrackets e.Body)
             = (ColdCallBrackets
@@ -945,7 +945,7 @@ Intrinsic-Explode {
 Intrinsic-Type {
   (CallBrackets e._) e._ = MakeColdCall;
   (ColdCallBrackets e._) e._ = MakeColdCall;
-  (TkVariable e._) e._ = MakeColdCall;
+  (Var e._) e._ = MakeColdCall;
 
   t.Term e.Rest
     = t.Term
@@ -974,7 +974,7 @@ Intrinsic-Lenw {
 }
 
 FixedLength {
-  e._ (TkVariable 'e' e._) e._ = False;
+  e._ (Var 'e' e._) e._ = False;
   e._ (CallBrackets e._) e._ = False;
   e._ (ColdCallBrackets e._) e._ = False;
 

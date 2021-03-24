@@ -57,8 +57,7 @@ FormatAssigns {
   e.Assigns =
     <Map
       {
-        (e.Left ':' (TkVariable e.Index))
-          = (e.Left ':' (e.Index))
+        (e.Left ':' (Var e.Index)) = (e.Left ':' (e.Index))
       }
       e.Assigns
     >
@@ -66,7 +65,7 @@ FormatAssigns {
 
 IsSVarSubset {
   (Symbol s.Type e.Info) = True;
-  (TkVariable 's' e.Tindex) = True;
+  (Var 's' e.Tindex) = True;
   (Closure e.Body) = True;
   (ClosureBrackets e.Context) = True;
 
@@ -109,14 +108,10 @@ Solution-PostProcess {
   */
   (e.Contractions) (e.Assigns)
     , e.Assigns
-    : e.B
-      (e.Expr ':' (TkVariable e.HIndex))
-      e.M
-      (e.Expr ':' (TkVariable e.HIndex))
-      e.E
+    : e.B (e.Expr ':' (Var e.HIndex)) e.M (e.Expr ':' (Var e.HIndex)) e.E
     = <Solution-PostProcess
         (e.Contractions)
-        (e.B (e.Expr ':' (TkVariable e.HIndex)) e.M e.E)
+        (e.B (e.Expr ':' (Var e.HIndex)) e.M e.E)
       >;
 
   /*
@@ -128,15 +123,15 @@ Solution-PostProcess {
   (e.Contractions) (e.Assigns)
     , e.Assigns
     : e.B
-      ((TkVariable 's' e.Index1) ':' (TkVariable e.HIndex))
+      ((Var 's' e.Index1) ':' (Var e.HIndex))
       e.M
-      ((TkVariable 's' e.Index2) ':' (TkVariable e.HIndex))
+      ((Var 's' e.Index2) ':' (Var e.HIndex))
       e.E
     = <Solution-PostProcess
         <AddContraction
-          ((TkVariable 's' e.Index2) ':' (TkVariable 's' e.Index1))
+          ((Var 's' e.Index2) ':' (Var 's' e.Index1))
           (e.Contractions)
-          (e.B ((TkVariable 's' e.Index1) ':' (TkVariable e.HIndex)) e.M e.E)
+          (e.B ((Var 's' e.Index1) ':' (Var e.HIndex)) e.M e.E)
         >
       >;
 
@@ -149,30 +144,30 @@ Solution-PostProcess {
   (e.Contractions) (e.Assigns)
     , e.Assigns
     : e.B
-      ((TkVariable 's' e.PIndex) ':' (TkVariable e.HIndex))
+      ((Var 's' e.PIndex) ':' (Var e.HIndex))
       e.M
-      ((Symbol s.Type e.Info) ':' (TkVariable e.HIndex))
+      ((Symbol s.Type e.Info) ':' (Var e.HIndex))
       e.E
     = <Solution-PostProcess
         <AddContraction
-          ((TkVariable 's' e.PIndex) ':' (Symbol s.Type e.Info))
+          ((Var 's' e.PIndex) ':' (Symbol s.Type e.Info))
           (e.Contractions)
-          (e.B ((Symbol s.Type e.Info) ':' (TkVariable e.HIndex)) e.M e.E)
+          (e.B ((Symbol s.Type e.Info) ':' (Var e.HIndex)) e.M e.E)
         >
       >;
 
   (e.Contractions) (e.Assigns)
     , e.Assigns
     : e.B
-      ((Symbol s.Type e.Info) ':' (TkVariable e.HIndex))
+      ((Symbol s.Type e.Info) ':' (Var e.HIndex))
       e.M
-      ((TkVariable 's' e.PIndex) ':' (TkVariable e.HIndex))
+      ((Var 's' e.PIndex) ':' (Var e.HIndex))
       e.E
     = <Solution-PostProcess
         <AddContraction
-          ((TkVariable 's' e.PIndex) ':' (Symbol s.Type e.Info))
+          ((Var 's' e.PIndex) ':' (Symbol s.Type e.Info))
           (e.Contractions)
-          (e.B ((Symbol s.Type e.Info) ':' (TkVariable e.HIndex)) e.M e.E)
+          (e.B ((Symbol s.Type e.Info) ':' (Var e.HIndex)) e.M e.E)
         >
       >;
 
@@ -184,13 +179,13 @@ Solution-PostProcess {
   (e.Contractions) (e.Assigns)
     , e.Assigns
     : e.B
-      ((Symbol s.Type e.Info) ':' (TkVariable e.HIndex))
+      ((Symbol s.Type e.Info) ':' (Var e.HIndex))
       e.M
-      ((Symbol s.Type e.Info) ':' (TkVariable e.HIndex))
+      ((Symbol s.Type e.Info) ':' (Var e.HIndex))
       e.E
     = <Solution-PostProcess
         (e.Contractions)
-        (e.B ((Symbol s.Type e.Info) ':' (TkVariable e.HIndex)) e.M e.E)
+        (e.B ((Symbol s.Type e.Info) ':' (Var e.HIndex)) e.M e.E)
       >;
 
   /*
@@ -201,9 +196,9 @@ Solution-PostProcess {
   (e.Contractions) (e.Assigns)
     , e.Assigns
     : e.B
-      ((Symbol e.Info1) ':' (TkVariable e.HIndex))
+      ((Symbol e.Info1) ':' (Var e.HIndex))
       e.M
-      ((Symbol e.Info2) ':' (TkVariable e.HIndex))
+      ((Symbol e.Info2) ':' (Var e.HIndex))
       e.E
     = /* пусто, т.к. противоречие */;
 
@@ -214,22 +209,22 @@ Solution-PostProcess {
   (e.Contractions) (e.Assigns)
     , e.Contractions
     : e.B
-      (e.Expr ':' (TkVariable e.HIndex))
+      (e.Expr ':' (Var e.HIndex))
       e.M
-      (e.Expr ':' (TkVariable e.HIndex))
+      (e.Expr ':' (Var e.HIndex))
       e.E
     = <Solution-PostProcess
         (e.Contractions)
-        (e.B (e.Expr ':' (TkVariable e.HIndex)) e.M e.E)
+        (e.B (e.Expr ':' (Var e.HIndex)) e.M e.E)
       >;
 
 
   (e.Contractions) (e.Assigns)
     , e.Assigns
     : e.B
-      (e.Expr1 ':' (TkVariable e.HIndex))
+      (e.Expr1 ':' (Var e.HIndex))
       e.M
-      (e.Expr2 ':' (TkVariable e.HIndex))
+      (e.Expr2 ':' (Var e.HIndex))
       e.E
     = Undefined;
 
@@ -285,13 +280,13 @@ Solve-Aux {
 
   /* Если уравнение имеет вид Expr: e.x, добавляем присванивание
      вида Expr <- e.x */
-  (e.UsedVars) (e.Contrs) ((e.Pe) ':' ((TkVariable 'e' e.Idx)))
+  (e.UsedVars) (e.Contrs) ((e.Pe) ':' ((Var 'e' e.Idx)))
   e.Equations (e.Assigns)
     = <Solve-Aux
         (e.UsedVars)
         (e.Contrs)
         e.Equations
-        (e.Assigns (e.Pe ':' (TkVariable 'e' e.Idx)))
+        (e.Assigns (e.Pe ':' (Var 'e' e.Idx)))
       >;
 
   /* Если уравнение имеет вид e.i* : empty, возвращаем результат,
@@ -426,7 +421,7 @@ Solve-TermEquation {
   /* P - символ, H - s-переменная */
   (e.UsedVars) t.Symbol t.Svar (e.Contrs) e.Equations (e.Assigns)
     , <IsSVarSubset t.Symbol> : True
-    , t.Svar : (TkVariable 's' e.Hindex)
+    , t.Svar : (Var 's' e.Hindex)
     = Success
       (e.UsedVars)
       (e.Contrs) e.Equations
@@ -435,7 +430,7 @@ Solve-TermEquation {
   /* P - s-переменная, H - s-переменная */
   (e.UsedVars) t.PSvar t.HSvar (e.Contrs) e.Equations (e.Assigns)
     , t.PSvar t.HSvar
-    : (TkVariable 's' e.Pindex) (TkVariable 's' e.Hindex)
+    : (Var 's' e.Pindex) (Var 's' e.Hindex)
     = Success
       (e.UsedVars)
       (e.Contrs)
@@ -445,7 +440,7 @@ Solve-TermEquation {
 
   /* P - s-переменная, H - символ */
   (e.UsedVars) t.Svar t.Symbol (e.Contrs) e.Equations (e.Assigns)
-    , t.Svar : (TkVariable 's' e.Pindex)
+    , t.Svar : (Var 's' e.Pindex)
     , <IsSVarSubset t.Symbol> : True
     = Success
       (e.UsedVars)
@@ -458,24 +453,24 @@ Solve-TermEquation {
 
   /* P - терм, H - t-переменная */
   (e.UsedVars) t.PVar t.HVar (e.Contrs) e.Equations (e.Assigns)
-    , t.HVar: (TkVariable 't' e.Tindex)
+    , t.HVar: (Var 't' e.Tindex)
     = Success
       (e.UsedVars)
       (e.Contrs)
       e.Equations
-      (e.Assigns (t.PVar':'(TkVariable 't' e.Tindex)));
+      (e.Assigns (t.PVar':'(Var 't' e.Tindex)));
 
   /* P - t-переменная, H - скобочный терм */
   (e.UsedVars) t.PTvar (Brackets e.HBody) (e.Contrs) e.Equations (e.Assigns)
-    , t.PTvar : (TkVariable 't' e.Pindex)
+    , t.PTvar : (Var 't' e.Pindex)
     = <NewVarName (e.UsedVars) 'e' 0>
       : t.NewVars 'e' e.NewIndex
       = Success
         t.NewVars
         <AddContraction
-          (t.PTvar ':' (Brackets (TkVariable 'e' e.NewIndex)))
+          (t.PTvar ':' (Brackets (Var 'e' e.NewIndex)))
           (e.Contrs)
-          e.Equations (((TkVariable 'e' e.NewIndex)) ':' (e.HBody))
+          e.Equations (((Var 'e' e.NewIndex)) ':' (e.HBody))
           (e.Assigns)
         >;
 
@@ -483,22 +478,22 @@ Solve-TermEquation {
   (e.UsedVars)
   t.PTvar (ADT-Brackets (e.Name) e.HBody)
   (e.Contrs) e.Equations (e.Assigns)
-    , t.PTvar : (TkVariable 't' e.Pindex)
+    , t.PTvar : (Var 't' e.Pindex)
     = <NewVarName (e.UsedVars) 'e' 0>
     : t.NewVars 'e' e.NewIndex
     = Success
       t.NewVars
       <AddContraction
-        (t.PTvar ':' (ADT-Brackets (e.Name) (TkVariable 'e' e.NewIndex)))
+        (t.PTvar ':' (ADT-Brackets (e.Name) (Var 'e' e.NewIndex)))
         (e.Contrs)
-        e.Equations (((TkVariable 'e' e.NewIndex)) ':' (e.HBody))
+        e.Equations (((Var 'e' e.NewIndex)) ':' (e.HBody))
         (e.Assigns)
       >;
 
   /* P - t-переменная, H - символ */
   (e.UsedVars) t.PTvar t.Symbol (e.Contrs) e.Equations (e.Assigns)
     , t.PTvar t.Symbol
-    : (TkVariable 't' e.Pindex) (Symbol s.Type e.Info)
+    : (Var 't' e.Pindex) (Symbol s.Type e.Info)
     = Success
       (e.UsedVars)
       <AddContraction
@@ -511,15 +506,15 @@ Solve-TermEquation {
   /* P - t-переменная, H - s-переменная */
   (e.UsedVars) t.PTvar t.HSvar (e.Contrs) e.Equations (e.Assigns)
     , t.PTvar t.HSvar
-    : (TkVariable 't' e.Pindex) (TkVariable 's' e.Hindex)
+    : (Var 't' e.Pindex) (Var 's' e.Hindex)
     = <NewVarName (e.UsedVars) 's' e.Hindex> : (e.UsedVars^) 's' e.sIdx
     = Success
       (e.UsedVars)
       <AddContraction
-        (t.PTvar ':' (TkVariable 's' e.sIdx))
+        (t.PTvar ':' (Var 's' e.sIdx))
         (e.Contrs)
         e.Equations
-        (e.Assigns ((TkVariable 's' e.sIdx) ':' t.HSvar))
+        (e.Assigns ((Var 's' e.sIdx) ':' t.HSvar))
       >;
 
   /* H является (H′) */
@@ -543,7 +538,7 @@ Solve-TermEquation {
 }
 
 IsTerm {
-  (TkVariable 'e' e.Index) = False;
+  (Var 'e' e.Index) = False;
 
   /* Рассматриваем для оптимизаций встраивания, прогонки и специализации */
   (CallBrackets e.Nested) = False;
@@ -554,7 +549,7 @@ IsTerm {
 }
 
 IsEVar {
-  (TkVariable 'e' e._) = True;
+  (Var 'e' e._) = True;
   t._ = False;
 }
 
@@ -658,7 +653,7 @@ ApplyContraction-toExpr {
 IsFreeVariableSeq {
    /* пусто */ = True;
 
-   (TkVariable 'e' e.Idx) e.Rem = <IsFreeVariableSeq e.Rem>;
+   (Var 'e' e.Idx) e.Rem = <IsFreeVariableSeq e.Rem>;
 
    t.Other e.Rem = False
 }

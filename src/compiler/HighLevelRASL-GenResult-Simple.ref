@@ -252,7 +252,7 @@ DoGenResult {
     e.Vars-E
   )
   (e.AllocCommands) (e.Commands)
-  s.Counter (TkVariable s.Mode e.Index) e.Result =
+  s.Counter (Var s.Mode e.Index) e.Result =
     <DoGenResult
       (
         e.Vars-B
@@ -266,7 +266,7 @@ DoGenResult {
 
   (e.Vars-B (s.Mode (e.Index) (e.ResultVars s.Sample)) e.Vars-E)
   (e.AllocCommands) (e.Commands)
-  s.Counter (TkVariable s.Mode e.Index) e.Result =
+  s.Counter (Var s.Mode e.Index) e.Result =
     <DoGenResult
       (e.Vars-B (s.Mode (e.Index) (e.ResultVars s.Sample s.Counter)) e.Vars-E)
       (e.AllocCommands (CmdCopyVar s.Mode s.Counter s.Sample))

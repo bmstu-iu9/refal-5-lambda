@@ -7,7 +7,7 @@ $INCLUDE "LibraryEx";
   Результат обобщения является по форме жёстким выражением,
   т.е. на каждом скобочном уровне находится не более одной e-переменной,
   при этом у всех переменных стёрты индексы. Т.е. переменные в обобщении
-  имеют вид (TkVariable s.Mode <пусто>).
+  имеют вид (Var s.Mode <пусто>).
 */
 $ENTRY GlobalGen {
   e.HardSentences
@@ -25,9 +25,9 @@ $ENTRY GlobalGen {
   e.Pattern ::= t.PatterTerm*
   t.PatternTerm ::=
       (Symbol s.SymType e.SymInfo)
-    | (TkVariable 't' e.Index)
-    | (TkVariable 's' e.Index)
-    | (TkVariable 'e' e.Index)
+    | (Var 't' e.Index)
+    | (Var 's' e.Index)
+    | (Var 'e' e.Index)
     | (ADT-Brackets t.Name t.Term*)
     | (Brackets t.Term*)
     | (Closure t.Term*)
@@ -44,13 +44,13 @@ $ENTRY GlobalGen {
 
   t.TermImage ::=
       t.Symbol
-    | (TkVariable 't')
-    | (TkVariable 's')
+    | (Var 't')
+    | (Var 's')
     | (ADT-Brackets t.Name t.Image*)
     | (Brackets t.Image)
 */
 $ENTRY BuildImage {
-  e.Pattern-B (TkVariable 'e' e.Index) e.Pattern-E
+  e.Pattern-B (Var 'e' e.Index) e.Pattern-E
     = <Lenw <BuildImage-Terms e.Pattern-B>> : s.LeftLen e.Left
     = <CutE e.Pattern-E> : e.Pattern-E^
     = <Lenw <BuildImage-Terms e.Pattern-E>> : s.RightLen e.Right
@@ -63,7 +63,7 @@ $ENTRY BuildImage {
 
 CutE {
   /* тут бы пригодилось удлинение справа-налево */
-  e.Pattern-B (TkVariable 'e' e.Index) e.Pattern-E = <CutE e.Pattern-E>;
+  e.Pattern-B (Var 'e' e.Index) e.Pattern-E = <CutE e.Pattern-E>;
 
   e.Pattern = e.Pattern;
 }
@@ -74,9 +74,9 @@ BuildImage-Terms {
 
 $ENTRY BuildImage-Term {
   (Symbol s.Type e.Info) = (Symbol s.Type e.Info);
-  (ClosureBrackets e._) = (TkVariable 's');
-  (TkVariable 't' e.Index) = (TkVariable 't');
-  (TkVariable 's' e.Index) = (TkVariable 's');
+  (ClosureBrackets e._) = (Var 's');
+  (Var 't' e.Index) = (Var 't');
+  (Var 's' e.Index) = (Var 's');
 
   (ADT-Brackets t.Name e.Rest) = (ADT-Brackets t.Name <BuildImage e.Rest>);
   (Brackets e.Rest) = (Brackets <BuildImage e.Rest>);
@@ -134,7 +134,7 @@ $ENTRY Generalization-Term {
   t.Term1 t.Term2
     , <IsSVarSubset t.Term1> : True
     , <IsSVarSubset t.Term2> : True
-    = (TkVariable 's');
+    = (Var 's');
 
   (Brackets e.BodyL) (Brackets e.BodyR)
     = (Brackets <Generalization e.BodyL e.BodyR>);
@@ -142,7 +142,7 @@ $ENTRY Generalization-Term {
   (ADT-Brackets t.Name e.BodyL) (ADT-Brackets t.Name e.BodyR)
     = (ADT-Brackets t.Name <Generalization e.BodyL e.BodyR>);
 
-  t.Term1 t.Term2 = (TkVariable 't');
+  t.Term1 t.Term2 = (Var 't');
 }
 
 GeneralizationInPairs {
@@ -171,7 +171,7 @@ GeneralizationInPairs-Right {
 
 IsSVarSubset {
   (Symbol s.Type e.Info) = True;
-  (TkVariable 's') = True;
+  (Var 's') = True;
   (Closure e.Body) = True;
 
   t.OtherTerm = False;
@@ -209,8 +209,8 @@ Collapse-Terms {
 
 $ENTRY Collapse-Term {
   (Symbol s.Type e.Info) = (Symbol s.Type e.Info);
-  (TkVariable 't') = (TkVariable 't');
-  (TkVariable 's') = (TkVariable 's');
+  (Var 't') = (Var 't');
+  (Var 's') = (Var 's');
 
   (Brackets t.Image) = (Brackets <Collapse t.Image>);
   (ADT-Brackets t.Name t.Image) = (ADT-Brackets t.Name <Collapse t.Image>);
@@ -226,7 +226,7 @@ LocalGen {
 
 DoLocalGen {
   ((e.TermsL) t.NextL e.TermsL-Skipped) (e.TermsR-Skipped (t.NextR e.TermsR))
-    = e.TermsL (TkVariable 'e') t.NextR e.TermsR : e.LocalGen
+    = e.TermsL (Var 'e') t.NextR e.TermsR : e.LocalGen
     = (<CalcComplexity e.LocalGen> e.LocalGen) : t.Result
     = t.Result
       <DoLocalGen
@@ -235,7 +235,7 @@ DoLocalGen {
       >;
 
   ((e.TermsL)) (e.TermsR-Skipped (e.TermsR))
-    = e.TermsL (TkVariable 'e') e.TermsR : e.LocalGen
+    = e.TermsL (Var 'e') e.TermsR : e.LocalGen
     = (<CalcComplexity e.LocalGen> e.LocalGen);
 }
 
@@ -268,9 +268,9 @@ $ENTRY CalcComplexity {
 }
 
 CalcTermComplexity {
-  (TkVariable 't') = 1;
-  (TkVariable 's') = 2;
-  (TkVariable 'e') = ('-' 1);
+  (Var 't') = 1;
+  (Var 's') = 2;
+  (Var 'e') = ('-' 1);
 
   (Symbol s.Type e.Info) = 3;
 

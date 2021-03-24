@@ -31,11 +31,11 @@ $EXTERN EL-AddErrorAt, EL-AddWarningAt;
   t.Pattern, t.Result ::= (t.Term*)
   t.Term ::=
       (Symbol s.SymType e.SymInfo)
-    | (TkVariable t.SrcPos s.VarType e.Index)
+    | (Var t.SrcPos s.VarType e.Index)
     | (Brackets t.Term*)
     | (CallBrackets (Symbol Name t.SrcPos e.Function)? t.Term*)
     | (Closure Sentences t.Sentence*)
-    | (TkNewVariable t.SrcPos s.VarType e.Index)
+    | (NewVar t.SrcPos s.VarType e.Index)
     | (ADT-Brackets t.SrcPos (e.ADT-Name) t.Term*)
   s.SymType e.SymInfo ::=
       Char s.Char
@@ -730,7 +730,7 @@ DoTokenChain {
         (TkVariable t.Pos s.VarType e.Index)
           = <DoTokenChain
               s.Mode s.Kind t.ErrorList
-              (e.Collected (TkVariable t.Pos s.VarType e.Index)) e.Tokens
+              (e.Collected (Var t.Pos s.VarType e.Index)) e.Tokens
             >;
 
         (TkOpenBracket t.Pos)
@@ -918,8 +918,8 @@ DoTokenChain-AfterCall {
 
 DoTokenChain-AddRedefinition {
   Pattern t.ErrorList
-  (e.Collected (TkVariable t.VarPos s.VarType e.Index)) t.Pos
-    = t.ErrorList (e.Collected (TkNewVariable t.VarPos s.VarType e.Index));
+  (e.Collected (Var t.VarPos s.VarType e.Index)) t.Pos
+    = t.ErrorList (e.Collected (NewVar t.VarPos s.VarType e.Index));
 
   Pattern t.ErrorList (e.Collected) t.Pos
     = <EL-AddErrorAt

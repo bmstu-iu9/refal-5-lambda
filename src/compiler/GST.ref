@@ -438,21 +438,21 @@ DoModify {
 
 /* возвращает вес перекрытия */
 OverlapItem {
-  (TkVariable 'e' e.Index s.Offset) (TkVariable 'e' e.Index) =
+  (Var 'e' e.Index s.Offset) (Var 'e' e.Index) =
     3 AsIsE;
 
   (s.AnyType e.Info s.Offset) (s.AnyType e.Info) =
     3 AsIs;
 
-  (TkVariable s.Mode e.Index s.Offset) t.AnyItem =
+  (Var s.Mode e.Index s.Offset) t.AnyItem =
     NoOverlap;
 
 * Любой символ или любая скобка
-  (s.AnyType e.Info s.Offset) (TkVariable 's' e.Index) =
+  (s.AnyType e.Info s.Offset) (Var 's' e.Index) =
     1 HalfReuse;
 
 * Любой символ или любая скобка
-  (s.AnyType e.Info s.Offset) (TkVariable s.Mode e.Index) =
+  (s.AnyType e.Info s.Offset) (Var s.Mode e.Index) =
     NoOverlap;
 
   (s.Type1 e.Info1 s.Offset) (LEFT-EDGE) =

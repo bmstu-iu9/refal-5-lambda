@@ -591,9 +591,9 @@ RenameVars {
     = <DelAccumulator
         <MapAccum
           {
-            s.Count (TkVariable s.Type e.Index)
+            s.Count (Var s.Type e.Index)
               = <Inc s.Count>
-                (TkVariable s.Type e.Index e.Prefix 's' <Symb s.Count>);
+                (Var s.Type e.Index e.Prefix 's' <Symb s.Count>);
             s.Count (Brackets e.Other)
               = <Inc s.Count>
                 (Brackets <RenameVars (e.Prefix 'p' <Symb s.Count>) e.Other>);
@@ -655,46 +655,46 @@ DeleteMarkup {
 */
 InsertFakeEVars {
   e.Prefix
-  (TkVariable 'e' e.Index1) (TkVariable 't' e.Index2) (TkVariable 'e' e.Index3)
+  (Var 'e' e.Index1) (Var 't' e.Index2) (Var 'e' e.Index3)
   e.Suffix
     = <InsertFakeEVars
         e.Prefix
-        (TkVariable 'e' e.Index1)
-        (Float (TkVariable 't' e.Index2))
-        (TkVariable 'e' e.Index3)
+        (Var 'e' e.Index1)
+        (Float (Var 't' e.Index2))
+        (Var 'e' e.Index3)
         e.Suffix
       >;
 
   e.Prefix
-  (TkVariable 'e' e.Index1) (TkVariable 't' e.Index2)
+  (Var 'e' e.Index1) (Var 't' e.Index2)
   e.Suffix
     = <InsertFakeEVars
         e.Prefix
-        (TkVariable 'e' e.Index1)
-        (Float (TkVariable 't' e.Index2))
-        (TkVariable 'e' e.Index2 'fake')
+        (Var 'e' e.Index1)
+        (Float (Var 't' e.Index2))
+        (Var 'e' e.Index2 'fake')
         e.Suffix
       >;
 
   e.Prefix
-  (TkVariable 't' e.Index2) (TkVariable 'e' e.Index3)
+  (Var 't' e.Index2) (Var 'e' e.Index3)
   e.Suffix
     = <InsertFakeEVars
         e.Prefix
-        (TkVariable 'e' e.Index2 'fake')
-        (Float (TkVariable 't' e.Index2))
-        (TkVariable 'e' e.Index3)
+        (Var 'e' e.Index2 'fake')
+        (Float (Var 't' e.Index2))
+        (Var 'e' e.Index3)
         e.Suffix
       >;
 
   e.Prefix
-  (TkVariable 't' e.Index2)
+  (Var 't' e.Index2)
   e.Suffix
     = <InsertFakeEVars
         e.Prefix
-        (TkVariable 'e' e.Index2 'fake1')
-        (Float (TkVariable 't' e.Index2))
-        (TkVariable 'e' e.Index2 'fake2')
+        (Var 'e' e.Index2 'fake1')
+        (Float (Var 't' e.Index2))
+        (Var 'e' e.Index2 'fake2')
         e.Suffix
       >;
 
@@ -723,11 +723,11 @@ MarkupNeighbourAnchorTVars {
 }
 
 MarkupNeighbourHelper {
-  (e.Prefix) ((TkVariable 't' e.Index) e.Suffix)
+  (e.Prefix) ((Var 't' e.Index) e.Suffix)
     , <HasAnchorsPrefix e.Prefix> : True
     , <HasAnchorsSuffix e.Suffix> : True
     = <MarkupNeighbourHelper
-        (e.Prefix (Anchor (TkVariable 't' e.Index)))
+        (e.Prefix (Anchor (Var 't' e.Index)))
         (e.Suffix)
       >;
 
@@ -760,13 +760,13 @@ MarkupNeighbourHelper {
   (2-ая часть определения)
 */
 HasAnchorsPrefix {
-  e.Prefix (Anchor (TkVariable 't' e.Index))
+  e.Prefix (Anchor (Var 't' e.Index))
     = True;
 
   e.Prefix (Symbol s.Mode e.Index)
     = True;
 
-  e.Prefix (TkVariable 'e' e.Index)
+  e.Prefix (Var 'e' e.Index)
     = False;
 
   e.Prefix (Brackets e._)
@@ -788,13 +788,13 @@ HasAnchorsPrefix {
   (2-ая часть определения)
 */
 HasAnchorsSuffix {
-  (Anchor (TkVariable 't' e.Index)) e.Suffix
+  (Anchor (Var 't' e.Index)) e.Suffix
     = True;
 
   (Symbol s.Mode e.Index) e.Suffix
     = True;
 
-  (TkVariable 'e' e.Index) e.Suffix
+  (Var 'e' e.Index) e.Suffix
     = False;
 
   (Brackets e._) e.Suffix
@@ -817,9 +817,9 @@ MarkupMultipleAnchorTVars {
   (e.Pattern) t.Multiplicity
     = <Map
         {
-          (TkVariable 't' e.Index)
-            , <HasMultiplicity (TkVariable 't' e.Index) t.Multiplicity> : True
-            = (Anchor (TkVariable 't' e.Index));
+          (Var 't' e.Index)
+            , <HasMultiplicity (Var 't' e.Index) t.Multiplicity> : True
+            = (Anchor (Var 't' e.Index));
 
           (Brackets e.Brackets)
             = (Brackets
@@ -843,9 +843,9 @@ CountTVarsMultiplicity {
   e.FlatPattern
     = <MapAccum
         {
-          (e.Accum) (TkVariable 't' e.Index)
+          (e.Accum) (Var 't' e.Index)
             = <IncMultiplicity
-                (TkVariable 't' e.Index)
+                (Var 't' e.Index)
                 (e.Accum)
               >
               /* пусто */;
@@ -868,10 +868,10 @@ CountTVarsMultiplicity {
   иначе False.
 */
 HasMultiplicity {
-  (TkVariable 't' e.Index)
+  (Var 't' e.Index)
   (
     e.Accum-L
-    ((TkVariable 't' e.Index) s.Count)
+    ((Var 't' e.Index) s.Count)
     e.Accum-R
   )
     = s.Count
@@ -890,17 +890,17 @@ HasMultiplicity {
   в списке на 1.
 */
 IncMultiplicity {
-  (TkVariable 't' e.Index)
+  (Var 't' e.Index)
   (
     e.Accum-L
-    ((TkVariable 't' e.Index) s.Count)
+    ((Var 't' e.Index) s.Count)
     e.Accum-R
   )
-    = (e.Accum-L ((TkVariable 't' e.Index) <Inc s.Count>) e.Accum-R);
+    = (e.Accum-L ((Var 't' e.Index) <Inc s.Count>) e.Accum-R);
 
-  (TkVariable 't' e.Index)
+  (Var 't' e.Index)
   (e.Accum)
-    = (e.Accum ((TkVariable 't' e.Index) 1));
+    = (e.Accum ((Var 't' e.Index) 1));
 }
 
 /*
@@ -912,7 +912,7 @@ IncMultiplicity {
   иначе False.
 */
 HasPatternTVars {
-  (e._ (TkVariable 't' e._) e._)
+  (e._ (Var 't' e._) e._)
     = True;
   (e._)
     = False;
@@ -927,7 +927,7 @@ HasPatternTVars {
   (не имеет повторных e-переменных), иначе False.
 */
 IsPatternLinear {
-  e._ (TkVariable 'e' e.VarName) e._ (TkVariable 'e' e.VarName) e._
+  e._ (Var 'e' e.VarName) e._ (Var 'e' e.VarName) e._
     = False;
   e._
     = True;

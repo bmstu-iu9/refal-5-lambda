@@ -116,10 +116,10 @@ GenResult-Allocations {
       {
         (Tile e.Tile) = ;
 
-        (TkVariableCopy 't' e.Index s.Level s.SampleOffset s.Offset) =
+        (VarCopy 't' e.Index s.Level s.SampleOffset s.Offset) =
           (CmdCopyVar 'e' s.Offset s.SampleOffset);
 
-        (TkVariableCopy s.Mode e.Index s.Level s.SampleOffset s.Offset) =
+        (VarCopy s.Mode e.Index s.Level s.SampleOffset s.Offset) =
           (CmdCopyVar s.Mode s.Offset s.SampleOffset);
 
         (TkString e.String s.Offset) =
@@ -140,7 +140,7 @@ GenResult-ReinitUpdate {
             {
               (AsIs t.Item) = /* пусто */;
 
-              (HalfReuse (TkVariable 's' e.Index s.SampleOffset s.Offset)) =
+              (HalfReuse (Var 's' e.Index s.SampleOffset s.Offset)) =
                 (CmdReinitSVar s.Offset s.SampleOffset);
 
               (HalfReuse (e.Elem)) =
@@ -261,7 +261,7 @@ GenSplices {
     (CmdSetRes <CalcRes e.RightTile>)
     <Map
       {
-        ((AsIs (TkVariable 'e' e.Index s.Depth s.Offset))) =
+        ((AsIs (Var 'e' e.Index s.Depth s.Offset))) =
           (CmdInsertVar 'e' s.Offset);
 
         (t.OneItem) =
@@ -298,12 +298,12 @@ CollectTiles {
 }
 
 CollectTiles-Alloc {
-  (TkVariableCopy 'e' e.Index s.Level s.Sample s.Offset) e.Alloc =
+  (VarCopy 'e' e.Index s.Level s.Sample s.Offset) e.Alloc =
     <CollectTiles-Alloc e.Alloc>
-    ((TkVariableCopy 'e' e.Index s.Level s.Sample s.Offset));
+    ((VarCopy 'e' e.Index s.Level s.Sample s.Offset));
 
-  e.Alloc (TkVariableCopy 'e' e.Index s.Level s.Sample s.Offset) =
-    ((TkVariableCopy 'e' e.Index s.Level s.Sample s.Offset))
+  e.Alloc (VarCopy 'e' e.Index s.Level s.Sample s.Offset) =
+    ((VarCopy 'e' e.Index s.Level s.Sample s.Offset))
     <CollectTiles-Alloc e.Alloc>;
 
   /* пусто */ = /* пусто */;
@@ -338,11 +338,11 @@ EndOffset {
   (HalfReuse t.Item) = <EndOffset t.Item>;
   (Reuse t.Item) = <EndOffset t.Item>;
 
-  (TkVariable 's' e.Index s.Depth s.Offset) = s.Offset;
-  (TkVariableCopy 's' e.Index s.Depth s.Sample s.Offset) = s.Offset;
+  (Var 's' e.Index s.Depth s.Offset) = s.Offset;
+  (VarCopy 's' e.Index s.Depth s.Sample s.Offset) = s.Offset;
 
-  (TkVariable s.Mode e.Index s.Depth s.Offset) = <Inc s.Offset>;
-  (TkVariableCopy s.Mode e.Index s.Depth s.Sample s.Offset) = <Inc s.Offset>;
+  (Var s.Mode e.Index s.Depth s.Offset) = <Inc s.Offset>;
+  (VarCopy s.Mode e.Index s.Depth s.Sample s.Offset) = <Inc s.Offset>;
 
   (TkString e.String s.Offset) = <Inc s.Offset>;
 
@@ -366,9 +366,9 @@ AddOffsets {
           (Tile
             <Map
               {
-                (HalfReuse (TkVariable 's' e.Index s.Level s.Offset^)) =
+                (HalfReuse (Var 's' e.Index s.Level s.Offset^)) =
                   (HalfReuse
-                    (TkVariable
+                    (Var
                       <GetSampleOffset e.PatternVars ('s' e.Index s.Level)>
                       s.Offset
                     )
@@ -380,21 +380,21 @@ AddOffsets {
             >
           );
 
-        s.Offset (TkVariable 's' e.Index s.Level) =
+        s.Offset (Var 's' e.Index s.Level) =
           <Add s.Offset 1>
-          (TkVariableCopy
+          (VarCopy
             <GetSampleOffset e.PatternVars ('s' e.Index s.Level)> s.Offset
           );
 
-        s.Offset (TkVariable 't' e.Index s.Level) =
+        s.Offset (Var 't' e.Index s.Level) =
           <Add s.Offset 2>
-          (TkVariableCopy
+          (VarCopy
             <GetSampleOffset e.PatternVars ('t' e.Index s.Level)> s.Offset
           );
 
-        s.Offset (TkVariable 'e' e.Index s.Level) =
+        s.Offset (Var 'e' e.Index s.Level) =
           <Add s.Offset 2>
-          (TkVariableCopy
+          (VarCopy
             <GetSampleOffset e.PatternVars ('e' e.Index s.Level)> s.Offset
           );
 

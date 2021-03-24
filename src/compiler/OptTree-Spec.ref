@@ -110,7 +110,7 @@ TrivialHistory {
         {
           (s.Mode e.Index)
             , <IsSpecStaticVar (s.Mode e.Index)> : True
-            = ((TkVariable s.Mode e.Index));
+            = ((Var s.Mode e.Index));
 
           (s.Mode e.Index) = /* пропускаем */;
         }
@@ -446,10 +446,10 @@ SpecTerm {
 
     = <s.TrySpecCall
         (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
-        (CallBrackets e.ClosureContent (TkVariable 'e@' 0))
+        (CallBrackets e.ClosureContent (Var 'e@' 0))
       >
     : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^))
-      (CallBrackets e.ClosureContent^ (TkVariable 'e@' 0))
+      (CallBrackets e.ClosureContent^ (Var 'e@' 0))
 
     = e.ClosureContent
     : {
@@ -729,7 +729,7 @@ ExtractCalls-Term {
   (e.Calls (e.UsedVars)) (CallBrackets e.Expr)
     = <NewVarName (e.UsedVars) 'eCall' 0> : (e.UsedVars^) e.NewVar
     = (e.Calls ((CallBrackets e.Expr) ':' (e.NewVar)) (e.UsedVars))
-      (TkVariable e.NewVar);
+      (Var e.NewVar);
 
   (e.Calls (e.UsedVars)) (Brackets e.Expr)
     = <ExtractCalls-Expr (e.Calls (e.UsedVars)) e.Expr>
@@ -779,7 +779,7 @@ FindClosuresInPatterns-Pattern {
 
 FindClosuresInPatterns-Term {
   (Symbol s.Type e.Info) = /* пусто */;
-  (TkVariable s.Type e.Index) = /* пусто */;
+  (Var s.Type e.Index) = /* пусто */;
 
   (Brackets e.Pattern)
     = <FindClosuresInPatterns-Pattern e.Pattern>;
@@ -801,7 +801,7 @@ PrepareSignature-SortVars {
   e.StaticMatches (e.SpecPatternVars)
     = <MapAccum
         {
-          (e.Vars-B (e.Val ':' (TkVariable e.Index)) e.Vars-E) (e.Index)
+          (e.Vars-B (e.Val ':' (Var e.Index)) e.Vars-E) (e.Index)
             = (e.Vars-B e.Vars-E) (e.Val);
 
           /*
@@ -839,15 +839,15 @@ RenameSignatureVars-Expr {
 }
 
 RenameSignatureVars-Term {
-  (e.KnownVariables s.NextId) (TkVariable s.Mode e.OldIndex)
+  (e.KnownVariables s.NextId) (Var s.Mode e.OldIndex)
     , e.KnownVariables : e._B (s.Mode e.OldIndex (e.NewIndex)) e._E
     = (e.KnownVariables s.NextId)
-      (TkVariable s.Mode e.NewIndex);
+      (Var s.Mode e.NewIndex);
 
-  (e.KnownVariables s.NextId) (TkVariable s.Mode e.OldIndex)
+  (e.KnownVariables s.NextId) (Var s.Mode e.OldIndex)
     = <Symb s.NextId> 0 : e.NewIndex
     = (e.KnownVariables (s.Mode e.OldIndex (e.NewIndex)) <Inc s.NextId>)
-      (TkVariable s.Mode e.NewIndex);
+      (Var s.Mode e.NewIndex);
 
   t.State (s.BracketsTag e.Expr)
     , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
@@ -881,7 +881,7 @@ ApplySubst-Expr {
   (e.Substitution) e.Expression
     = <Map
         {
-          (TkVariable e.ModeIndex)
+          (Var e.ModeIndex)
             , e.Substitution : e.Subst-B (e.Value ':' (e.ModeIndex)) e.Subst-E
             = e.Value;
 
@@ -925,10 +925,10 @@ IsTrivialSubstitutions {
         {
           False t.Any = False;
 
-          True ((TkVariable s.Mode e.Index1) ':' (TkVariable s.Mode e.Index2))
+          True ((Var s.Mode e.Index1) ':' (Var s.Mode e.Index2))
             = True;
 
-          True ((TkVariable s.Mode e.Index1) ':' (s.Mode e.Index2))
+          True ((Var s.Mode e.Index1) ':' (s.Mode e.Index2))
             = True;
 
           True t.OtherSubstitution = False;
@@ -953,7 +953,7 @@ PrepareArgOrPattern {
         {
           (e.KnownVarsFromStatic) (s.Mode e.Index)
             , e.StaticMatches
-            : e._B (e.Expr ':' (TkVariable s.Mode e.Index)) e._E
+            : e._B (e.Expr ':' (Var s.Mode e.Index)) e._E
             = <MapAccum
                 {
                   (e.KnownVarsFromStatic^) (s.Mode^ e.Index^)
@@ -963,7 +963,7 @@ PrepareArgOrPattern {
 
                   (e.KnownVarsFromStatic^) (s.Mode^ e.Index^)
                     = (e.KnownVarsFromStatic (s.Mode e.Index))
-                      <WrapVar s.Mode (TkVariable s.Mode e.Index)>;
+                      <WrapVar s.Mode (Var s.Mode e.Index)>;
                 }
                 (e.KnownVarsFromStatic)
                 <ExtractVariables-Expr e.Expr>
@@ -971,7 +971,7 @@ PrepareArgOrPattern {
 
           (e.KnownVarsFromStatic) (s.Mode e.Index)
             , e.DynamicMatches
-            : e._B (e.Expr ':' (TkVariable s.Mode e.Index)) e._E
+            : e._B (e.Expr ':' (Var s.Mode e.Index)) e._E
             = (e.KnownVarsFromStatic) <WrapVar s.Mode e.Expr>;
         }
         (/* Known vars from static */)
@@ -1022,7 +1022,7 @@ RenameGenericMatch {
             = <NewVarName (e.VarsFromBody) e.CurrentVarName>
             : (e.VarsFromBody^) e.NewVarName
             = (e.VarsFromBody)
-              ((TkVariable e.NewVarName) ':' (e.CurrentVarName))
+              ((Var e.NewVarName) ':' (e.CurrentVarName))
         }
         (e.VarsFromBody)
         e.VarsFromMatch
@@ -1096,12 +1096,12 @@ GenericMatch-Wrapper {
                 (e.StaticMatches) (e.Val ':' (e.Var))
                   , e.Var : s.Mode e.Index
                   , <IsSpecStaticVar (e.Var)> : True
-                  = (e.StaticMatches (e.Val ':' (TkVariable e.Var)))
+                  = (e.StaticMatches (e.Val ':' (Var e.Var)))
                     /* пусто */;
 
                 (e.StaticMatches) (e.Val ':' (e.Var))
                   = (e.StaticMatches)
-                    (e.Val ':' (TkVariable e.Var));
+                    (e.Val ':' (Var e.Var));
               }
               (/* for statics */)
               e.VarsMatches
@@ -1131,7 +1131,7 @@ MapGenericMatches {
             (e.ArgStaticMatches-B (e.ArgVal ':' t.SpecVar) e.ArgStaticMatches-E)
             (e.MappedMatches)
           )
-          ((TkVariable s.Mode e.Index) ':' t.SpecVar)
+          ((Var s.Mode e.Index) ':' t.SpecVar)
             = (
                 (
                   e.ArgStaticMatches-B (e.ArgVal ':' t.SpecVar)
@@ -1197,9 +1197,9 @@ SourceNameOfInstance {
   t.StaticVarVals ::= (t.Term*)
   t.Term ::=
       (Symbol s.SymType e.SymInfo)
-    | (TkVariable 't' e.Index)
-    | (TkVariable 's' e.Index)
-    | (TkVariable 'e' e.Index)
+    | (Var 't' e.Index)
+    | (Var 's' e.Index)
+    | (Var 'e' e.Index)
     | (ADT-Brackets t.Name t.Term*)
     | (Brackets t.Term*)
     | (ClosureBrackets t.Term*)
@@ -1423,7 +1423,7 @@ ContainsSignature {
               (t.Inner-FirstTerm) (e.Inner-Rest e.RestExpr) e.Signature
             >;
 
-        TkVariable
+        Var
           = <DoCheckSignaturesPairForRelation
               (/* пусто */) (e.RestExpr) e.Signature
             >;
@@ -1513,8 +1513,7 @@ CanonizeSignature-Expr {
 }
 
 CanonizeSignature-Term {
-  (TkVariable s.Mode e.Index)
-    = (TkVariable s.Mode);
+  (Var s.Mode e.Index) = (Var s.Mode);
 
   (s.BracketsTag e.Expr)
     , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
@@ -1625,10 +1624,10 @@ NameSignatureVars-Expr {
 }
 
 NameSignatureVars-Term {
-  (e.KnownVars) (TkVariable s.Mode)
+  (e.KnownVars) (Var s.Mode)
     = <NewVarName (e.KnownVars) s.Mode 'X' 0> : (e.KnownVars^) e.Index
     = (e.KnownVars)
-      (TkVariable e.Index);
+      (Var e.Index);
 
   t.State (s.BracketsTag e.Expr)
     , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
@@ -1665,7 +1664,7 @@ GetSignaturesGeneralizationMatches {
     : {
         True
           , t.Var : (e.VarInner)
-          = (e.GenSignature-First ':' (TkVariable e.VarInner))
+          = (e.GenSignature-First ':' (Var e.VarInner))
             <GetSignaturesGeneralizationMatches
               (e.Vars) e.GenSignature-E
             >;
@@ -1681,8 +1680,8 @@ GetSignaturesGeneralizationMatches {
 }
 
 GetRealSubst {
-  (e.StaticMatches-B (e.Val1 ':' (TkVariable e.Var)) e.StaticMatches-E)
-  (e.GenStaticMatches-B (e.Val2 ':' (TkVariable e.Var)) e.GenStaticMatches-E)
+  (e.StaticMatches-B (e.Val1 ':' (Var e.Var)) e.StaticMatches-E)
+  (e.GenStaticMatches-B (e.Val2 ':' (Var e.Var)) e.GenStaticMatches-E)
     = <GenericMatch (e.Val1) (e.Val2)>
     : {
         Clear e.Expr

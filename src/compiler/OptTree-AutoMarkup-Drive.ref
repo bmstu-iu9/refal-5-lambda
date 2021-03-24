@@ -58,13 +58,13 @@ MetaInfo {
           t.MetaInfo
           (Function
             GN-Local (e.FuncName) Sentences
-            (((TkVariable 'e' e.Index)) /*=*/ ((TkVariable 'e' e.Index)))
+            (((Var 'e' e.Index)) /*=*/ ((Var 'e' e.Index)))
           )
             , <Pseudofunction-gen_e e.FuncName> : True
             = <MetaInfo-AddForbidden t.MetaInfo e.FuncName>
               (Function
                 GN-Local (e.FuncName) Sentences
-                (((TkVariable 'e' e.Index)) /*=*/ ((TkVariable 'e' e.Index)))
+                (((Var 'e' e.Index)) /*=*/ ((Var 'e' e.Index)))
               );
 
           t.MetaInfo (Function s.Scope (e.FuncName) Sentences e.Body)
