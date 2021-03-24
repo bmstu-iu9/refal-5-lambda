@@ -1,6 +1,6 @@
 $INCLUDE "LibraryEx";
 
-*$FROM HighLevelRASL-Common
+*$FROM HighLevelRASL-Common+Condition
 $EXTERN Inc2, PrintVar, MakeSavers, TextFromExpr;
 
 

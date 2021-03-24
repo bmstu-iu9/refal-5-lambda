@@ -1,7 +1,7 @@
 *$FROM HighLevelRASL-GenResult-Simple
 $EXTERN GenResult-Condition;
 
-*$FROM HighLevelRASL-Common
+*$FROM HighLevelRASL-Common+Condition
 $EXTERN Inc2, GenInitSubst, FoldOpenELoops, PutVariableDebugTable;
 
 $INCLUDE "LibraryEx";
