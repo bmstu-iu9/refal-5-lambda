@@ -6,7 +6,7 @@ $EXTERN DisplayName;
 *$FROM Escape
 $EXTERN EscapeChar;
 
-*$FROM HighLevelRASL-Condition
+*$FROM HighLevelRASL-Common+Condition
 $EXTERN SentenceTail;
 
 
