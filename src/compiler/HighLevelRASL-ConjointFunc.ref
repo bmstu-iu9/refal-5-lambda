@@ -1,6 +1,6 @@
 $INCLUDE "LibraryEx";
 
-*$FROM HighLevelRASL-Common+Condition
+*$FROM HighLevelRASL-Common
 $EXTERN GenPattern, MakeSavers, GenResult;
 
 *$FROM GenericMatch

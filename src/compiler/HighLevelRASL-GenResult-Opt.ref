@@ -3,7 +3,7 @@ $INCLUDE "LibraryEx";
 *$FROM GST
 $EXTERN GST;
 
-*$FROM HighLevelRASL-Common+Condition
+*$FROM HighLevelRASL-Common
 $EXTERN TextFromExpr, Inc2, CollectStrings;
 
 
