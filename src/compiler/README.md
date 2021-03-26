@@ -342,7 +342,7 @@
       | (Brackets e.ReducedExpression)
       | (ADT-Brackets (e.Name) e.Expression)
       | (CallBrackets e.Expression)
-      | (Var s.Mode e.Index s.Depth)
+      | (Var s.Mode e.Index)
       | (ClosureBrackets e.ClosureContent)
     s.SymType e.SymInfo-Reduced ::=
         Char s.Char
@@ -351,8 +351,8 @@
       | Identifier e.Name
     e.ClosureContent ::= (TkName e.Name) t.ContextVariable*
     t.ContextVariable ::=
-        (Var s.ModeTS e.Index s.Depth)
-      | (Brackets (Var 'e' e.Index s.Depth))
+        (Var s.ModeTS e.Index)
+      | (Brackets (Var 'e' e.Index))
       | (Symbol Name e.Name)
     s.ModeTS ::= 't' | 's'
 
@@ -374,11 +374,7 @@
   за исключением `Separator` — он при генерации даёт пустую строку (за счёт
   чего сгенерированный код читается лучше).
 * `t.ReducedTerm` — некоторые виды термов уже не несут позицию в исходном
-  тексте, `NewVar` и `Closure` отсутствуют. Переменные имеют
-  дополнительный атрибут `s.Depth` — глубина вложенности вложенной функции,
-  в которой эта переменная впервые определена. Для именованных функций
-  `s.Depth` равен нулю. Таким образом, `NewVar` превращается
-  в `Var` с индексом глубины, равным глубине самой функции.
+  тексте, `NewVar` и `Closure` отсутствуют.
   Вложенные функции из `Closure` превращаются в глобальные функции
   в `t.ReducedProgramElement`,
 * `ClosureBrackets` сворачиваются в объекты замыкания,

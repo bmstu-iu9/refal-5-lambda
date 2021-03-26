@@ -446,10 +446,10 @@ SpecTerm {
 
     = <s.TrySpecCall
         (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
-        (CallBrackets e.ClosureContent (Var 'e@' 0))
+        (CallBrackets e.ClosureContent (Var 'e@'))
       >
     : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^))
-      (CallBrackets e.ClosureContent^ (Var 'e@' 0))
+      (CallBrackets e.ClosureContent^ (Var 'e@'))
 
     = e.ClosureContent
     : {
@@ -727,7 +727,7 @@ ExtractCalls-Expr {
 
 ExtractCalls-Term {
   (e.Calls (e.UsedVars)) (CallBrackets e.Expr)
-    = <NewVarName (e.UsedVars) 'eCall' 0> : (e.UsedVars^) e.NewVar
+    = <NewVarName (e.UsedVars) 'eCall'> : (e.UsedVars^) e.NewVar
     = (e.Calls ((CallBrackets e.Expr) ':' (e.NewVar)) (e.UsedVars))
       (Var e.NewVar);
 
@@ -845,7 +845,7 @@ RenameSignatureVars-Term {
       (Var s.Mode e.NewIndex);
 
   (e.KnownVariables s.NextId) (Var s.Mode e.OldIndex)
-    = <Symb s.NextId> 0 : e.NewIndex
+    = <Symb s.NextId> : e.NewIndex
     = (e.KnownVariables (s.Mode e.OldIndex (e.NewIndex)) <Inc s.NextId>)
       (Var s.Mode e.NewIndex);
 
@@ -1625,7 +1625,7 @@ NameSignatureVars-Expr {
 
 NameSignatureVars-Term {
   (e.KnownVars) (Var s.Mode)
-    = <NewVarName (e.KnownVars) s.Mode 'X' 0> : (e.KnownVars^) e.Index
+    = <NewVarName (e.KnownVars) s.Mode 'X'> : (e.KnownVars^) e.Index
     = (e.KnownVars)
       (Var e.Index);
 

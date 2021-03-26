@@ -270,8 +270,8 @@ Solve-Aux {
   e.Equations (e.Assigns)
     , <IsTerm t.Ht> : True
     , t.Pt : (Var 'e' e.Index)
-    = <NewVarName (e.UsedVars) 't' 0> : (e.UsedVars^) 't' e.tIdx
-    = <NewVarName (e.UsedVars) 'e' 0> : (e.UsedVars^) 'e' e.eIdx
+    = <NewVarName (e.UsedVars) 't'> : (e.UsedVars^) 't' e.tIdx
+    = <NewVarName (e.UsedVars) 'e'> : (e.UsedVars^) 'e' e.eIdx
     = <AddContraction
         (t.Pt ':' )
         (e.Contrs)
@@ -298,8 +298,8 @@ Solve-Aux {
   e.Equations (e.Assigns)
     , <IsTerm t.Ht> : True
     , t.Pt : (Var 'e' e.Index)
-    = <NewVarName (e.UsedVars) 't' 0> : (e.UsedVars^) 't' e.tIdx
-    = <NewVarName (e.UsedVars) 'e' 0> : (e.UsedVars^) 'e' e.eIdx
+    = <NewVarName (e.UsedVars) 't'> : (e.UsedVars^) 't' e.tIdx
+    = <NewVarName (e.UsedVars) 'e'> : (e.UsedVars^) 'e' e.eIdx
     = <AddContraction
         (t.Pt ':' )
         (e.Contrs)
@@ -430,7 +430,7 @@ Solve-TermEquation {
   /* P - t-переменная, H - скобочный терм */
   (e.UsedVars) t.PTvar (Brackets e.HBody) (e.Contrs) e.Equations (e.Assigns)
     , t.PTvar : (Var 't' e.Pindex)
-    = <NewVarName (e.UsedVars) 'e' 0>
+    = <NewVarName (e.UsedVars) 'e'>
       : t.NewVars 'e' e.NewIndex
       = Success
         t.NewVars
@@ -446,7 +446,7 @@ Solve-TermEquation {
   t.PTvar (ADT-Brackets (e.Name) e.HBody)
   (e.Contrs) e.Equations (e.Assigns)
     , t.PTvar : (Var 't' e.Pindex)
-    = <NewVarName (e.UsedVars) 'e' 0>
+    = <NewVarName (e.UsedVars) 'e'>
     : t.NewVars 'e' e.NewIndex
     = Success
       t.NewVars

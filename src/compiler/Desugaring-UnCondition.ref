@@ -269,9 +269,9 @@ DoBindBrackets {
 T1 {
   t.UsedVars
   e.Items (HOLE (Var 'e' e.Index) e.Pattern) e.ItemsAndHoles
-    , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
-    , <NewVarNameSuf t.UsedVars1 't' e.Index ('_next')> : t.UsedVars2 e.tX_next
-    , <NewVarNameSuf t.UsedVars2 'e' e.Index ('_rest')> : t.UsedVars3 e.eX_rest
+    , <NewVarName t.UsedVars 'e' e.Index '_fix'> : t.UsedVars1 e.eX_fix
+    , <NewVarName t.UsedVars1 't' e.Index '_next'> : t.UsedVars2 e.tX_next
+    , <NewVarName t.UsedVars2 'e' e.Index '_rest'> : t.UsedVars3 e.eX_rest
     = (
         e.Items
         (Brackets (Var e.eX_fix))
@@ -285,8 +285,7 @@ PassiveHoles {
   t.UsedVariables
   e.Items (HOLE (Var 'e' e.Index) e.Pattern)
   e.ItemsAndHoles
-    , <NewVarNameSuf t.UsedVariables 'e' e.Index ('_rest')>
-    : t.NewVars e.eX_rest
+    , <NewVarName t.UsedVariables 'e' e.Index '_rest'> : t.NewVars e.eX_rest
     = e.Items
       (Var e.eX_rest)
       <PassiveHoles t.NewVars e.ItemsAndHoles>;
@@ -297,9 +296,9 @@ PassiveHoles {
 T2 {
   t.UsedVars
   e.Items (HOLE (Var 'e' e.Index) e.Pattern) e.ItemsAndHoles
-    , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
-    , <NewVarNameSuf t.UsedVars1 't' e.Index ('_next')> : t.UsedVars2 e.tX_next
-    , <NewVarNameSuf t.UsedVars2 'e' e.Index ('_rest')> : t.UsedVars3 e.eX_rest
+    , <NewVarName t.UsedVars 'e' e.Index '_fix'> : t.UsedVars1 e.eX_fix
+    , <NewVarName t.UsedVars1 't' e.Index '_next'> : t.UsedVars2 e.tX_next
+    , <NewVarName t.UsedVars2 'e' e.Index '_rest'> : t.UsedVars3 e.eX_rest
     = (
         e.Items
         (Brackets (Var e.eX_fix) (Var e.tX_next))
@@ -311,7 +310,7 @@ T2 {
 T3 {
   t.UsedVars
   e.Items (HOLE (Var 'e' e.Index) e.Pattern) e.ItemsAndHoles
-    , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
+    , <NewVarName t.UsedVars 'e' e.Index '_fix'> : t.UsedVars1 e.eX_fix
     = (
         e.Items
         (Brackets (Var e.eX_fix))
@@ -322,7 +321,7 @@ T3 {
 T4 {
   t.UsedVars
   e.Items (HOLE (Var 'e' e.Index) e.Pattern) e.ItemsAndHoles
-    , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
+    , <NewVarName t.UsedVars 'e' e.Index '_fix'> : t.UsedVars1 e.eX_fix
     = (
         e.Items (Var e.eX_fix)
         <PassiveHoles t.UsedVars1 e.ItemsAndHoles>
@@ -350,8 +349,8 @@ T5-UnHole {
 
 T5-sub {
   t.UsedVars e.Index
-    , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
-    , <NewVarNameSuf t.UsedVars 'e' e.Index ('_var')> : t.UsedVars2 e.eX_var
+    , <NewVarName t.UsedVars 'e' e.Index '_fix'> : t.UsedVars1 e.eX_fix
+    , <NewVarName t.UsedVars 'e' e.Index '_var'> : t.UsedVars2 e.eX_var
     = ((Var 'e' e.Index) (Var e.eX_fix) (Var e.eX_var));
 }
 
@@ -386,8 +385,8 @@ Substitute {
 T6 {
   t.UsedVars
   e.Items (HOLE (Var 'e' e.Index) e.Pattern) e.ItemsAndHoles
-    , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
-    , <NewVarNameSuf t.UsedVars1 'e' e.Index ('_rest')> : t.UsedVars2 e.eX_rest
+    , <NewVarName t.UsedVars 'e' e.Index '_fix'> : t.UsedVars1 e.eX_fix
+    , <NewVarName t.UsedVars1 'e' e.Index '_rest'> : t.UsedVars2 e.eX_rest
     = (
         e.Items
         (Brackets (Var e.eX_fix))
@@ -399,8 +398,8 @@ T6 {
 T7 {
   t.UsedVars
   e.Items (HOLE (Var 'e' e.Index) e.Pattern) e.ItemsAndHoles
-    , <NewVarNameSuf t.UsedVars 'e' e.Index ('_fix')> : t.UsedVars1 e.eX_fix
-    , <NewVarNameSuf t.UsedVars1 'e' e.Index ('_rest')> : t.UsedVars2 e.eX_rest
+    , <NewVarName t.UsedVars 'e' e.Index '_fix'> : t.UsedVars1 e.eX_fix
+    , <NewVarName t.UsedVars1 'e' e.Index '_rest'> : t.UsedVars2 e.eX_rest
     = (
         e.Items
         (Var e.eX_fix) (Var e.eX_rest)
@@ -549,14 +548,4 @@ MakeOpenE-ForwardNext {
         )
         ((e.T6) ((CallBrackets (Symbol Name e.ContName) e.T7)))
       );
-}
-
-
-/*
-  <NewVarNameSuf (e.Variables) s.Mode e.Prefix s.Depth (e.Suffix)>
-    == (e.Variables^) s.Mode e.NewIndex s.Depth
-*/
-NewVarNameSuf {
-  (e.Variables) s.Mode e.Prefix s.Depth (e.Suffix)
-    = <NewVarName (e.Variables) s.Mode e.Prefix e.Suffix s.Depth>;
 }

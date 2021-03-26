@@ -7,7 +7,7 @@ $EXTERN HashLittle2-Chars;
 /**
   <ExtractVariables e.Sentences> == e.Variables
 
-  e.Variables ::= (s.Mode e.Index s.Depth)*
+  e.Variables ::= (s.Mode e.Index)*
 */
 $ENTRY ExtractVariables {
   e.Sentences = <Unique <ExtractVariables-Sentences e.Sentences>>;
@@ -50,7 +50,7 @@ $ENTRY ExtractVariables-Expr {
 /**
   <NewVarName (e.Variables) e.Variable> == (e.Variables^) e.Variable^
 
-  e.Variable ::= s.Mode e.Index s.Depth
+  e.Variable ::= s.Mode e.Index
 */
 $ENTRY NewVarName {
   (e.Vars-B (e.Variable) e.Vars-E) e.Variable
@@ -61,9 +61,9 @@ $ENTRY NewVarName {
 
 DoNewVarName {
   (e.Vars) e.Variable
-    = e.Variable : s.Mode e.Index s.Depth
+    = e.Variable : s.Mode e.Index
     = <IncName e.Index> : e.NewIndex
-    = s.Mode e.NewIndex s.Depth : e.NewVar
+    = s.Mode e.NewIndex : e.NewVar
     , e.Vars
     : {
         e.Vars-B (e.NewVar) e.Vars-E
@@ -84,8 +84,8 @@ IncName {
   <CreateContext s.MarkupContext t.Variable> == t.ContextVariable*
 
   t.ContextVariable ::=
-      (Var s.ModeTS e.Index s.Depth)
-    | (Brackets (Var 'e' e.Index s.Depth))
+      (Var s.ModeTS e.Index)
+    | (Brackets (Var 'e' e.Index))
     | (Symbol Name e.Name)
 */
 $ENTRY CreateContext {
@@ -129,7 +129,7 @@ $ENTRY CreateSpecPatternForContext {
         }
         e.Context
       >
-      (Var 'edyn' 0)
+      (Var 'edyn')
 }
 
 

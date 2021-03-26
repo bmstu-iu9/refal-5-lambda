@@ -463,7 +463,7 @@ Solve-TermEquation {
   /* P - t-переменная, H - скобочный терм */
   (e.UsedVars) t.PTvar (Brackets e.HBody) (e.Contrs) e.Equations (e.Assigns)
     , t.PTvar : (Var 't' e.Pindex)
-    = <NewVarName (e.UsedVars) 'e' 0>
+    = <NewVarName (e.UsedVars) 'e'>
       : t.NewVars 'e' e.NewIndex
       = Success
         t.NewVars
@@ -479,7 +479,7 @@ Solve-TermEquation {
   t.PTvar (ADT-Brackets (e.Name) e.HBody)
   (e.Contrs) e.Equations (e.Assigns)
     , t.PTvar : (Var 't' e.Pindex)
-    = <NewVarName (e.UsedVars) 'e' 0>
+    = <NewVarName (e.UsedVars) 'e'>
     : t.NewVars 'e' e.NewIndex
     = Success
       t.NewVars

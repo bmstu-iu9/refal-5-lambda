@@ -302,8 +302,6 @@ ReplicateVar {
 }
 
 MakeVariableComment {
-  (s.Offset s.Mode e.Index s.Depth) =
-    (CmdComment
-      Offset s.Offset ': ' <PrintVar s.Mode e.Index s.Depth>
-    );
+  (s.Offset s.Mode e.Index)
+    = (CmdComment Offset s.Offset ': ' <PrintVar s.Mode e.Index>);
 }

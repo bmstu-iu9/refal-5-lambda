@@ -242,15 +242,10 @@ $ENTRY Pass-EnumerateVariables {
   e.AST =
     <Map
       {
-        (Spec t.Name e.Pattern)
-          = <EnumerateVars-Expr 0 (/* переменные */) e.Pattern>
-          : t.ScopeVars e.EnumeratedPattern
-          = (Spec t.Name e.EnumeratedPattern);
-
         (Function s.ScopeClass (e.Name) e.Body)
           = (Function
               s.ScopeClass (e.Name)
-              <EnumerateVars-Body 1 (/* переменные */) e.Body>
+              <EnumerateVars-Body (/* переменные */) e.Body>
             );
 
         t.OtherProgramElement = t.OtherProgramElement;
@@ -260,121 +255,130 @@ $ENTRY Pass-EnumerateVariables {
 }
 
 EnumerateVars-Body {
-  s.Depth (e.ScopeVars) Sentences e.Sentences =
+  (e.ScopeVars) Sentences e.Sentences =
     Sentences
     <Map
       {
         ((e.Pattern) e.Assigns (e.Result) (e.Blocks))
-          = <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern>
+          = <EnumerateVars-Expr (e.ScopeVars) e.Pattern>
           : (e.ScopeVars^) e.Pattern^
-          = <EnumerateVars-Assignments () s.Depth (e.ScopeVars) e.Assigns>
-          : (e.ScopeVars^) s.Depth^ e.Assigns^
-          = <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result>
+          = <EnumerateVars-Assignments () (e.ScopeVars) e.Assigns>
+          : (e.ScopeVars^) e.Assigns^
+          = <EnumerateVars-Expr (e.ScopeVars) e.Result>
           : (e.ScopeVars^) e.Result^
-          = <EnumerateVars-Blocks <Inc s.Depth> (e.ScopeVars) e.Blocks>
+          = <EnumerateVars-Blocks (e.ScopeVars) e.Blocks>
           : e.Blocks^
           = ((e.Pattern) e.Assigns (e.Result) (e.Blocks));
       }
       e.Sentences
     >;
 
-  s.Depth (e.ScopeVars) NativeBody t.SrcPos e.Code =
-    NativeBody t.SrcPos e.Code;
-
-  s.Depth (e.ScopeVars) Metatable e.Metatable = Metatable e.Metatable;
+  (e.ScopeVars) NativeBody t.SrcPos e.Code = NativeBody t.SrcPos e.Code;
+  (e.ScopeVars) Metatable e.Metatable = Metatable e.Metatable;
 }
 
 EnumerateVars-Blocks {
-  s.Depth (e.ScopeVars) e.Blocks
+  (e.ScopeVars) e.Blocks
     = <Map
         {
-          (e.Body) = (<EnumerateVars-Body s.Depth (e.ScopeVars) e.Body>);
+          (e.Body) = (<EnumerateVars-Body (e.ScopeVars) e.Body>);
         }
         e.Blocks
       >;
 }
 
 EnumerateVars-Assignments {
-  (e.RAssignments) s.Depth (e.ScopeVars) /* пусто */ =
-     (e.ScopeVars) s.Depth e.RAssignments;
+  (e.RAssignments) (e.ScopeVars) /* пусто */ = (e.ScopeVars) e.RAssignments;
 
-  (e.RAssignments) s.Depth (e.ScopeVars)
+  (e.RAssignments) (e.ScopeVars)
   (s.ChainType (e.Result) (e.Blocks) (e.Pattern)) e.Assignments
     = <AssignOrCondition s.ChainType> : /* пусто */
-    = <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result>
-    : (e.ScopeVars^) e.Result^
-    = <Inc s.Depth> : s.Depth^
-    = <EnumerateVars-Blocks s.Depth (e.ScopeVars) e.Blocks> : e.Blocks^
-    = <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern>
-    : (e.ScopeVars^) e.Pattern^
+    = <EnumerateVars-Expr (e.ScopeVars) e.Result> : (e.ScopeVars^) e.Result^
+    = <EnumerateVars-Blocks (e.ScopeVars) e.Blocks> : e.Blocks^
+    = <EnumerateVars-Expr (e.ScopeVars) e.Pattern> : (e.ScopeVars^) e.Pattern^
     = <EnumerateVars-Assignments
         (e.RAssignments (s.ChainType (e.Result) (e.Blocks) (e.Pattern)))
-        s.Depth (e.ScopeVars) e.Assignments
+        (e.ScopeVars) e.Assignments
       >;
 }
 
 EnumerateVars-Expr {
-  s.Depth (e.OriginScopeVars) e.Expr =
+  (e.OriginScopeVars) e.Expr =
     <MapAccum
       {
         (e.ScopeVars) (Var s.Mode '_' e.Index)
-          = <NewVarName (e.ScopeVars) s.Mode '_' e.Index s.Depth>
+          = <NewVarName (e.ScopeVars) s.Mode '_' e.Index>
           : (e.ScopeVars^) e.NewVar
           = (e.ScopeVars) (Var e.NewVar);
 
-        (e.ScopeVars-B (s.Mode e.Index s.Depth^) e.ScopeVars-E)
-        (Var s.Mode e.Index) =
-          (e.ScopeVars-B (s.Mode e.Index s.Depth) e.ScopeVars-E)
-          (Var s.Mode e.Index s.Depth);
+        (e.ScopeVars) (Var s.Mode e.Index)
+          = <LastDollarVar (e.ScopeVars) s.Mode e.Index> : e.NewIndex
+          = (e.ScopeVars) (Var s.Mode e.NewIndex);
 
-        (e.ScopeVars) (Var s.Mode e.Index) =
-          ((s.Mode e.Index s.Depth) e.ScopeVars)
-          (Var s.Mode e.Index s.Depth);
+        (e.ScopeVars) (NewVar s.Mode e.Index)
+          = <NewDollarVar (e.ScopeVars) s.Mode e.Index>
+          : (e.ScopeVars^) e.NewIndex
+          = (e.ScopeVars) (Var s.Mode e.NewIndex);
 
-        (e.ScopeVars) (NewVar s.Mode e.Index) =
-          ((s.Mode e.Index s.Depth) e.ScopeVars)
-          (Var s.Mode e.Index s.Depth);
+        (e.ScopeVars) (Brackets e.InBrackets)
+          = <EnumerateVars-Expr (e.ScopeVars) e.InBrackets>
+          : (e.ScopeVars^) e.InBrackets^
+          = (e.ScopeVars) (Brackets e.InBrackets);
 
-        (e.ScopeVars) (Brackets e.InBrackets) =
-          <Fetch
-            <EnumerateVars-Expr s.Depth (e.ScopeVars) e.InBrackets>
-            {
-              (e.ScopeVars^) e.InBrackets^ =
-                (e.ScopeVars) (Brackets e.InBrackets);
-            }
-          >;
+        (e.ScopeVars) (ADT-Brackets (e.Name) e.InBrackets)
+          = <EnumerateVars-Expr (e.ScopeVars) e.InBrackets>
+          : (e.ScopeVars^) e.InBrackets^
+          = (e.ScopeVars) (ADT-Brackets (e.Name) e.InBrackets);
 
-        (e.ScopeVars) (ADT-Brackets (e.Name) e.InBrackets) =
-          <Fetch
-            <EnumerateVars-Expr s.Depth (e.ScopeVars) e.InBrackets>
-            {
-              (e.ScopeVars^) e.InBrackets^ =
-                (e.ScopeVars) (ADT-Brackets (e.Name) e.InBrackets);
-            }
-          >;
+        (e.ScopeVars) (CallBrackets e.InBrackets)
+          = <EnumerateVars-Expr (e.ScopeVars) e.InBrackets>
+          : (e.ScopeVars^) e.InBrackets^
+          = (e.ScopeVars) (CallBrackets e.InBrackets);
 
-        (e.ScopeVars) (CallBrackets e.InBrackets) =
-          <Fetch
-            <EnumerateVars-Expr s.Depth (e.ScopeVars) e.InBrackets>
-            {
-              (e.ScopeVars^) e.InBrackets^ =
-                (e.ScopeVars) (CallBrackets e.InBrackets);
-            }
-          >;
-
-        (e.ScopeVars) (Closure e.Sentences) =
-          <Fetch
-            <EnumerateVars-Body <Inc s.Depth> (e.ScopeVars) e.Sentences>
-            {
-              e.Sentences^ =
-                (e.ScopeVars) (Closure e.Sentences);
-            }
-          >;
+        (e.ScopeVars) (Closure e.Sentences)
+          = <EnumerateVars-Body (e.ScopeVars) e.Sentences>
+          : e.Sentences^
+          = (e.ScopeVars) (Closure e.Sentences);
 
         (e.ScopeVars) t.OtherTerm = (e.ScopeVars) t.OtherTerm;
       }
       (e.OriginScopeVars) e.Expr
     >;
+}
+
+LastDollarVar {
+  (e.ScopeVars) s.Mode e.Index
+    = <NextDollarIndex e.Index> : e.NextIndex
+    = e.ScopeVars
+    : {
+        e._ (s.Mode e.NextIndex) e._
+          = <LastDollarVar (e.ScopeVars) s.Mode e.NextIndex>;
+
+        e._ = e.Index;
+      }
+}
+
+NewDollarVar {
+  (e.ScopeVars) s.Mode e.Index
+    = <NextDollarIndex e.Index> : e.NextIndex
+    = e.ScopeVars
+    : {
+        e._ (s.Mode e.NextIndex) e._
+          = <NewDollarVar (e.ScopeVars) s.Mode e.NextIndex>;
+
+        e.ScopeVars = (e.ScopeVars (s.Mode e.NextIndex)) e.NextIndex;
+      }
+}
+
+NextDollarIndex {
+  e.Index '$' e.Suffix = e.Index '$' <IncDollarSuffix e.Suffix>;
+  e.Index = e.Index '$a';
+}
+
+IncDollarSuffix {
+  e.Suffix s.Last, 'abcdefghij' : e._ s.Last s.Next e._ = e.Suffix s.Next;
+  e.Suffix 'j' = <IncDollarSuffix e.Suffix> 'a';
+  /* пусто */ = 'a';
 }
 
 Pass-NameNestedFuncs {

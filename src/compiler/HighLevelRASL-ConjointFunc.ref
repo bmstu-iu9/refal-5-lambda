@@ -21,13 +21,13 @@ $ENTRY HighLevelRASL-Function-Conjoint {
     = <Map
         {
           ((e.Pattern) e.Conditions (e.Result))
-            = (((e.Pattern ':' ('enew' 0))) e.Conditions (e.Result));
+            = (((e.Pattern ':' ('enew'))) e.Conditions (e.Result));
         }
         e.Sentences
       >
     : e.SentencesWithSubst
 
-    = <GenPattern s.FnGenSubst (e.Name) (Var 'enew' 0)>
+    = <GenPattern s.FnGenSubst (e.Name) (Var 'enew')>
     : s.ContextSize (e.Vars) (e.MarkedPattern) e.CommonMatchCommands
 
     = <FindDivisionAndGenerate
@@ -183,7 +183,7 @@ EnumerateVarsRec {
     = <MapAccum
         {
           s.Next (Var s.Type)
-            = <Inc s.Next> (Var s.Type 'new' s.Next);
+            = <Inc s.Next> (Var s.Type 'new' <Symb s.Next>);
 
           s.Next (Brackets e.Nested)
             = <EnumerateVarsRec s.Next e.Nested> : s.Next^ e.Nested^

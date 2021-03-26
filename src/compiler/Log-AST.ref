@@ -369,7 +369,6 @@ HexDigit {
 }
 
 Var {
-  s.Type e.Index s.Depth = s.Type '.' e.Index '#' <Symb s.Depth>;
   s.Type e.Index = s.Type '.' e.Index;
 }
 

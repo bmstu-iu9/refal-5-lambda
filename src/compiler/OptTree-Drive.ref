@@ -556,7 +556,7 @@ DoOptSentence-MakeSubstitutions-Intrinsic {
 }
 
 eDRIVEN {
-  = (Var 'e' DRIVEN 0);
+  = (Var 'e' DRIVEN);
 }
 
 Intrinsic-Mu {

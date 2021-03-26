@@ -126,7 +126,7 @@ RemoveDebugInfoRec {
     )
     <RemoveDebugInfoRec e.Tail>;
 
-  (CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset) e.Tail =
+  (CmdVariableDebugTable s.Mode e.Index s.Offset) e.Tail =
     <RemoveDebugInfoRec e.Tail>;
 
   t.Command e.Tail = t.Command <RemoveDebugInfoRec e.Tail>;
@@ -144,10 +144,8 @@ ConvertOneInterpretCommand-Simple {
 
   (CmdUseRes) = /* пусто */;
 
-  (CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset)
-    = (CmdVariableDebugTable
-        s.Mode '.' e.Index '#' <Symb s.Depth> s.Offset
-      );
+  (CmdVariableDebugTable s.Mode e.Index s.Offset)
+    = (CmdVariableDebugTable s.Mode '.' e.Index '#' s.Offset);
 
   (CmdCallCondition) =
     (CmdPushState)

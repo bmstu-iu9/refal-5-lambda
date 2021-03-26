@@ -24,9 +24,7 @@ $ENTRY IncVarOffset {
 }
 
 $ENTRY PrintVar {
-  s.Mode e.Index NoDepth = s.Mode '.' e.Index;
-
-  s.Mode e.Index s.Depth = s.Mode '.' e.Index '#' <Symb s.Depth>;
+  s.Mode e.Index = s.Mode '.' e.Index;
 }
 
 $ENTRY TextFromExpr {
@@ -73,11 +71,11 @@ $ENTRY TextFromExpr {
         (TkString e.String s.Offset) =
           '"' <Map &EscapeChar e.String> '"' <Offset s.Offset>;
 
-        (Var s.Mode e.Index s.Depth s.Offset) =
-          ' ' <PrintVar s.Mode e.Index s.Depth> <Offset s.Offset>;
+        (Var s.Mode e.Index s.Offset) =
+          ' ' <PrintVar s.Mode e.Index> <Offset s.Offset>;
 
-        (VarCopy s.Mode e.Index s.Depth s.SampleOffset s.CopyOffset) =
-          ' ' <PrintVar s.Mode e.Index s.Depth>
+        (VarCopy s.Mode e.Index s.SampleOffset s.CopyOffset) =
+          ' ' <PrintVar s.Mode e.Index>
           <Offset s.SampleOffset> <Offset s.CopyOffset>;
 
         (Symbol Identifier e.Name s.Offset) =

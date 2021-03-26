@@ -201,9 +201,9 @@ MarkupVarsInPattern {
         {
           (Var s.Mode s.Index)
             , e.StaticParams : e._ (s.Mode s.Index) e._
-            = (Var s.Mode 'STAT' s.Index);
+            = (Var s.Mode 'STAT' <Symb s.Index>);
 
-          (Var s.Mode s.Index) = (Var s.Mode 'dyn' s.Index);
+          (Var s.Mode s.Index) = (Var s.Mode 'dyn' <Symb s.Index>);
 
           (Symbol e.Info) = (Symbol e.Info);
 

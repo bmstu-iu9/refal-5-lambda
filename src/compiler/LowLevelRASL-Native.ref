@@ -123,10 +123,8 @@ ConvertDirectCommands {
       (CmdOpenedE-End AlgLeft s.BracketNum s.VarNumber)
       <ConvertDirectCommands e.Tail>;
 
-  (CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset) e.Tail
-    = (CmdComment
-        'DEBUG: ' s.Mode '.' e.Index '#' <Symb s.Depth> ': ' <Symb s.Offset>
-      )
+  (CmdVariableDebugTable s.Mode e.Index s.Offset) e.Tail
+    = (CmdComment 'DEBUG: ' s.Mode '.' e.Index ': ' <Symb s.Offset>)
       <ConvertDirectCommands e.Tail>;
 
   t.Command e.Tail

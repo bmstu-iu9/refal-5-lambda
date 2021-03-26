@@ -7,7 +7,7 @@ $INCLUDE "LibraryEx";
 $ENTRY DisplayName {
   e.Name Hash s.Cookie1 s.Cookie2 =
     <DisplayName e.Name> '#' <Symb s.Cookie1> ':' <Symb s.Cookie2>;
-  VAR s.Mode e.Index s.Depth = s.Mode '.' e.Index '#' <Symb s.Depth> ':';
+  VAR s.Mode e.Index = s.Mode '.' e.Index ':';
   e.Name SUF e.Suffix = e.Name <DisplayNameSuf e.Suffix>;
   e.Name = e.Name;
 }
@@ -24,8 +24,7 @@ $ENTRY DisplayCName {
 $ENTRY CName {
   e.Name Hash s.Cookie1 s.Cookie2 =
     <CName e.Name> '_' <Symb s.Cookie1> '_' <Symb s.Cookie2>;
-  VAR s.Mode e.Index s.Depth =
-    'var_' s.Mode <CName e.Index> '_' <Symb s.Depth>;
+  VAR s.Mode e.Index = 'var_' s.Mode <CName e.Index>;
   e.Name SUF e.Suffix = 'gen_' <CName e.Name> '_' <CNameSuf e.Suffix>;
   e.Name = <DecorateChars e.Name>;
 }
