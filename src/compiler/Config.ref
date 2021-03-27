@@ -540,7 +540,7 @@ WarningForName {
 }
 
 $ENTRY Config-AllWarningIds {
-  /* пусто */ = (screening nul-in-compound repeated)
+  /* пусто */ = (screening nul-in-compound pseudofunctions repeated)
 }
 
 WarningIds-Add {
