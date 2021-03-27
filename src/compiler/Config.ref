@@ -18,7 +18,7 @@ $ENTRY Config-Create {
           (/* конец командной строки для библиотек */)
         )
         (Optimize /* пусто */)
-        (WarningIds nul-in-compound pseudofunctions)
+        (WarningIds nul-in-compound pseudofunctions repeated)
         (WarningIdsAsErrors /* пусто */)
         (ErrorFile /* пусто */)
         (DebugMode NoMarkupContext NoDebugInfo)
@@ -431,7 +431,7 @@ $ENTRY Config-GetWarningIds {
 
   e.WarningName ::= 'no-'? e.Error | 'no-'? e.WarningIdName | 'all'
   e.Error ::= 'error' ('=' e.WarningName)?
-  e.WarningIdName :: = 'screening' | 'nul-in-compound' | 'repeated' | 'repeated-maybe'
+  e.WarningIdName :: = 'screening' | 'nul-in-compound' | 'repeated'
 
 */
 $ENTRY Config-SetWarning {
@@ -535,13 +535,12 @@ WarningForName {
   'pseudofunctions' = True pseudofunctions;
   'pseudofunction' = True pseudofunctions; /* синоним */
   'repeated' = True repeated;
-  'repeated-maybe' = True repeated-maybe;
 
   e.Other = False
 }
 
 $ENTRY Config-AllWarningIds {
-  /* пусто */ = (screening nul-in-compound repeated repeated-maybe)
+  /* пусто */ = (screening nul-in-compound repeated)
 }
 
 WarningIds-Add {

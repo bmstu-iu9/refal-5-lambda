@@ -17,7 +17,6 @@ $EXTERN Config-AllWarningIds;
       screening
     | nul-in-compound
     | repeated
-    | repeated-maybe
 */
 $ENUM ErrorList;
 
