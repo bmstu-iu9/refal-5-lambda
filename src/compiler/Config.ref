@@ -431,7 +431,7 @@ $ENTRY Config-GetWarningIds {
 
   e.WarningName ::= 'no-'? e.Error | 'no-'? e.WarningIdName | 'all'
   e.Error ::= 'error' ('=' e.WarningName)?
-  e.WarningIdName :: = 'screening' | 'nul-in-compound' | 'repeated'
+  e.WarningIdName ::= s.CHAR*
 
 */
 $ENTRY Config-SetWarning {
