@@ -1,0 +1,898 @@
+$INCLUDE "LibraryEx";
+
+
+*$FROM TreeUtils
+$EXTERN HashName;
+
+*$FROM GenericMatch
+$EXTERN Solve;
+
+
+BUCKET-SIZE { = 101 }
+
+IsPassiveCall {
+  e.Expr
+    = <Reduce
+        {
+           True t.Term = <IsPassiveCall-Aux t.Term>;
+           False t.Term = False;
+        }
+        True
+        e.Expr
+      >
+
+}
+
+IsPassiveCall-Aux {
+  (Brackets e.Expr) = <IsPassiveCall e.Expr>;
+  (ADT-Brackets e.Expr) = <IsPassiveCall e.Expr>;
+
+  (CallBrackets e.Expr) = False;
+  (ColdCallBrackets e.Expr) = False;
+
+  t.Other = True;
+}
+
+
+/**
+  <OptTree-Drive-Expr (e.UsedVars) t.DriveInfo e.Expr t.Mode>
+    == t.OptInfo^ e.Branches (e.NewFunctions)
+
+  e.Branches ::= (e.Contractions (e.DrivenExpr))*
+*/
+$ENTRY OptTree-Drive-Expr {
+  (e.UsedVars) ((e.OptFuncNames) e.OptFuncs) e.Right t.Mode
+     = <FindOptimizedCall (e.OptFuncNames) e.Right>
+     : {
+         (e.OptFuncNames^ None) e.Right^
+           = ((e.OptFuncNames) e.OptFuncs) (/* нет сужений */ (e.Right)) ();
+
+         (e.OptFuncNames^ t.Call) e.Right^
+           = <OptExpr-Aux (e.UsedVars) t.Mode (e.Right) t.Call e.OptFuncs>
+           : (e.OptFuncs^) (e.NewFunctions) e.Branches
+           = ((e.OptFuncNames) e.OptFuncs) e.Branches (e.NewFunctions);
+       };
+}
+
+OptExpr-Aux {
+  (e.UsedVars) (s.DriveMode s.IntrinsicMode) (e.Right)
+  (CallBrackets (Symbol Name e.Name) e.Args)
+  t.Metatables e.OptFuncs
+
+    /* Поиск информации для прогонки */
+    = <FindOptInfo e.OptFuncs (e.Name)> : e.OptFuncs^ t.FunctionForDrive
+    = <OptExpr-MakeSubstitutions
+        (e.UsedVars) (s.DriveMode s.IntrinsicMode) (e.Right) (e.Args)
+        t.FunctionForDrive t.Metatables
+      >
+    : t.Metatables^ e.SubstitutionPacks
+
+    = (t.Metatables e.OptFuncs)
+      <MapAccum
+        {
+          (e.NewFunctions) (e.Contractions (e.NewFunction))
+            = (e.NewFunctions e.NewFunction)
+              (e.Contractions (<ApplyContractions e.Right (e.Contractions)>));
+        }
+        (/* new functions */)
+        e.SubstitutionPacks
+      >;
+}
+
+IntrinsicCall {
+  t.IntrinsicFunction t.Metatables (e.Args) '__Meta_Mu'
+    = <Intrinsic-Mu e.Args t.Metatables>
+    : {
+        t.Metatables^ Ok e.Result
+          = t.Metatables ((<eDRIVEN> ':' e.Result) (/* нет новых функций */));
+
+        t.Metatables^ MakeColdCall
+          = t.Metatables <MakeColdSolution t.IntrinsicFunction e.Args>;
+      };
+
+  t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName
+    = e.BehaviorName
+    : {
+        'Add' = &Intrinsic-Add;
+        'Sub' = &Intrinsic-Sub;
+        'Mul' = &Intrinsic-Mul;
+        'Div' = &Intrinsic-Div;
+        'Mod' = &Intrinsic-Mod;
+        'Divmod' = &Intrinsic-Divmod;
+        'Compare' = &Intrinsic-Compare;
+        'Chr' = &Intrinsic-Chr;
+        'Ord' = &Intrinsic-Ord;
+        'Upper' = &Intrinsic-Upper;
+        'Lower' = &Intrinsic-Lower;
+        'Numb' = &Intrinsic-Numb;
+        'Symb' = &Intrinsic-Symb;
+        'Implode' = &Intrinsic-Implode;
+        'Implode_Ext' = &Intrinsic-Implode_Ext;
+        'Explode' = &Intrinsic-Explode;
+        'Explode_Ext' = &Intrinsic-Explode;
+        'Type' = &Intrinsic-Type;
+        'Lenw' = &Intrinsic-Lenw;
+        'First' = &Intrinsic-First;
+        'Last' = &Intrinsic-Last;
+
+        e._ = { e._ = MakeColdCall };
+      }
+    : s.TransformFunction
+    = <s.TransformFunction e.Args>
+    : {
+        Ok e.Result = ((<eDRIVEN> ':' e.Result) (/* нет новых функций */));
+        MakeColdCall = <MakeColdSolution t.IntrinsicFunction e.Args>;
+      }
+    : e.Substitutions
+    = t.Metatables e.Substitutions;
+}
+
+eDRIVEN {
+  = (Var 'e' DRIVEN);
+}
+
+Intrinsic-Mu {
+  e.Args t.Metatables
+    , e.Args : t.Function e.MuArg (Symbol Name e.MetatableName)
+    = t.Function
+    : {
+        (Symbol Name e.Name)
+          = t.Metatables Ok (CallBrackets (Symbol Name e.Name) e.MuArg);
+
+        (ClosureBrackets e.Body)
+          = t.Metatables Ok (CallBrackets (ClosureBrackets e.Body) e.MuArg);
+
+        (Symbol Identifier s.Name)
+          , <ArithmeticSymbolToFunction s.Name> : True e.FunctionName
+          = t.Metatables Ok (CallBrackets (Symbol Name e.FunctionName) e.MuArg);
+
+        (Symbol Char s.Name)
+          , <ArithmeticSymbolToFunction s.Name> : True e.FunctionName
+          = t.Metatables Ok (CallBrackets (Symbol Name e.FunctionName) e.MuArg);
+
+        (Symbol Identifier e.Name)
+          = <MakeSubstitution-FromMetatables
+              t.Metatables (e.MetatableName) (e.MuArg) e.Name
+            >;
+
+        (Brackets e.Chars)
+          , <AllChars e.Chars> : Ok e.Name
+          = <MakeSubstitution-FromMetatables
+              t.Metatables (e.MetatableName) (e.MuArg) e.Name
+            >;
+
+        t._ = t.Metatables MakeColdCall;
+      };
+
+  e._ t.Metatables = t.Metatables MakeColdCall;
+}
+
+ArithmeticSymbolToFunction {
+  '+' = True 'Add';
+  '-' = True 'Sub';
+  '/' = True 'Div';
+  '*' = True 'Mul';
+  '%' = True 'Mod';
+  '?' = True 'Residue';
+
+  s._ = False;
+}
+
+AllChars {
+  e.Terms = <DoAllChars () e.Terms>;
+}
+
+DoAllChars {
+  (e.Chars) (Symbol Char s.Char) e.Rest = <DoAllChars (e.Chars s.Char) e.Rest>;
+  (e.Chars) /* empty */ = Ok e.Chars;
+  (e.Chars) e.Rest = Fails;
+}
+
+MakeSubstitution-FromMetatables {
+  t.Metatables (e.MetatableName) (e.MuArg) e.Name
+    = t.Metatables
+    : {
+        (Metatables
+          e.Tables-B ((e.MetatableName) Metatable e.Map) e.Tables-E
+        )
+          = e.Map
+          : {
+              e._ ((Symbol Identifier e.Name) t.Pointer) e._
+                = Ok (CallBrackets t.Pointer e.MuArg);
+
+              e.Other = MakeColdCall;
+            }
+          : e.Result
+          = (Metatables
+              e.Tables-B
+              ((e.MetatableName) Metatable e.Map)
+              e.Tables-E
+            )
+            e.Result;
+
+        t.Metatable^ = t.Metatable MakeColdCall;
+      }
+}
+
+Intrinsic-Add {
+  e.Args
+    = <ArithmArgs e.Args>
+    : {
+        Ok (Const e.Left) (Const e.Right)
+          = Ok <NumberToSymbols <Add (e.Left) e.Right>>;
+
+        Ok (Const 0) (ArithmResult t.ArithmCall) = Ok t.ArithmCall;
+        Ok (ArithmResult t.ArithmCall) (Const 0) = Ok t.ArithmCall;
+
+        e._ = MakeColdCall;
+      };
+}
+
+ArithmArgs {
+  (Brackets e.Left) e.Right
+    , <ArithmOneArg e.Left> : Ok e.Left^
+    , <ArithmOneArg e.Right> : Ok e.Right^
+    = Ok (e.Left) (e.Right);
+
+  (Symbol Char s.Sign) (Symbol Number s.Left) e.Right
+    , <ArithmOneArg e.Right> : Ok e.Right^
+    = Ok (Const s.Sign s.Left) (e.Right);
+
+  (Symbol Number s.Left) e.Right
+    , <ArithmOneArg e.Right> : Ok e.Right^
+    = Ok (Const s.Left) (e.Right);
+
+  e._ = Fails;
+}
+
+ArithmOneArg {
+  (ColdCallBrackets (Symbol Name e.Name) e.Arg)
+    , <ArithmeticFunctions> : e._ (e.Name) e._
+    = Ok ArithmResult (ColdCallBrackets (Symbol Name e.Name) e.Arg);
+
+  e.Number, <Number-Check e.Number> : True
+    = Ok Const <Add 0 <SymbolsToNumber e.Number>>;
+
+  e._ = Fails;
+}
+
+Number-Check {
+  (Symbol Char '+') e.Rest = <Number-Check-AllNumbers e.Rest>;
+  (Symbol Char '-') e.Rest = <Number-Check-AllNumbers e.Rest>;
+
+  e.Rest = <Number-Check-AllNumbers e.Rest>;
+}
+
+Number-Check-AllNumbers {
+  (Symbol Number s._) = True;
+  (Symbol Number s._) e.Rest = <Number-Check-AllNumbers e.Rest>;
+  e._ = False;
+}
+
+SymbolsToNumber {
+  e.Symbols
+    = <Map
+        {
+          (Symbol Char '-') = '-';
+          (Symbol Char '+') = '+';
+          (Symbol Number s.n) = s.n
+        }
+        e.Symbols
+      >
+}
+
+NumberToSymbols {
+  e.Number
+    = <Map
+        {
+          '-' = (Symbol Char '-');
+          '+' = (Symbol Char '+');
+          s.n = (Symbol Number s.n)
+        }
+        e.Number
+      >
+}
+
+ArithmeticFunctions {
+  = ('Add') ('Div') ('Divmod') ('Mod') ('Mul') ('Sub') ('Numb');
+}
+
+Intrinsic-Sub {
+  e.Args
+    = <ArithmArgs e.Args>
+    : {
+        Ok (Const e.Left) (Const e.Right)
+          = Ok <NumberToSymbols <Sub (e.Left) e.Right>>;
+
+        Ok (ArithmResult t.ArithmCall) (Const 0) = Ok t.ArithmCall;
+
+        e._ = MakeColdCall;
+      };
+}
+
+Intrinsic-Mul {
+  e.Args
+    = <ArithmArgs e.Args>
+    : {
+        Ok (Const e.Left) (Const e.Right)
+          = Ok <NumberToSymbols <Mul (e.Left) e.Right>>;
+
+        Ok (Const 1) (ArithmResult t.ArithmCall) = Ok t.ArithmCall;
+        Ok (ArithmResult t.ArithmCall) (Const 1) = Ok t.ArithmCall;
+
+        e._ = MakeColdCall;
+      };
+}
+
+Intrinsic-Div {
+  e.Args
+    = <ArithmArgs e.Args>
+    : {
+        Ok (e._) (Const 0) = MakeColdCall;
+
+        Ok (Const e.Left) (Const e.Right)
+          = Ok <NumberToSymbols <Div (e.Left) e.Right>>;
+
+        Ok (ArithmResult t.ArithmCall) (Const 1) = Ok t.ArithmCall;
+
+        e._ = MakeColdCall;
+      };
+}
+
+Intrinsic-Mod {
+  e.Args
+    = <ArithmArgs e.Args>
+    : {
+        Ok (e._) (Const 0) = MakeColdCall;
+
+        Ok (Const e.Left) (Const e.Right)
+          = Ok <NumberToSymbols <Mod (e.Left) e.Right>>;
+
+        e._ = MakeColdCall;
+      };
+}
+
+Intrinsic-Divmod {
+  e.Args
+    = <ArithmArgs e.Args>
+    : {
+        Ok (e._) (Const 0) = MakeColdCall;
+
+        Ok (Const e.Left) (Const e.Right)
+          = <Divmod (e.Left) e.Right> : (e.Q) e.R
+          = Ok (Brackets <NumberToSymbols e.Q>) <NumberToSymbols e.R>;
+
+        Ok (ArithmResult t.ArithmCall) (Const 1)
+          = Ok (Brackets t.ArithmCall) (Symbol Number 0);
+
+        e._ = MakeColdCall;
+      };
+}
+
+Intrinsic-Compare {
+  e.Args
+    , <ArithmArgs e.Args> : Ok (Const e.Left) (Const e.Right)
+    = Ok (Symbol Char <Compare (e.Left) e.Right>);
+
+  e._ = MakeColdCall;
+}
+
+/*
+  TODO: уточнить семантику функций Chr, Ord, Upper, Lower.
+
+  Функции не должны увеличивать число шагов рефал-машины.
+
+  Сейчас:
+  <Chr 48 e.X 48 <F> 48> → '@' <Chr e.X> '@' <Chr <F>> '@'
+  А должно быть:
+  <Chr 48 e.X 48 <F> 48> → '@' <Chr e.X 48 <F>> '@'
+
+  Кроме того, нужно поддерживать спуск внутрь структурных скобок
+  (сейчас не поддерживается).
+*/
+Intrinsic-Chr {
+  e.Args
+    , <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Number> : True
+    = <StaticSubstitution (e.Args) ('Chr') &Chr Number Char> : e.Substitution
+    = Ok e.Substitution;
+
+  e.Args = MakeColdCall;
+}
+
+CheckArgs-Intrinsic-StaticSubstitution {
+  (e.Args) s.SymbolName
+    = e.Args
+    : {
+        (Symbol s.SymbolName e.Name) e.Rest
+          = <CheckArgs-Intrinsic-StaticSubstitution (e.Rest) s.SymbolName>;
+
+        (Var e.Var) e.Rest
+          = <CheckArgs-Intrinsic-StaticSubstitution (e.Rest) s.SymbolName>;
+
+        (ColdCallBrackets e.Body) e.Rest
+          = <CheckArgs-Intrinsic-StaticSubstitution (e.Rest) s.SymbolName>;
+
+        t.Other e.Rest = False;
+
+        /* пусто */ = True;
+      }
+}
+
+StaticSubstitution {
+  (e.Args) (e.FuncName) s.Func s.SymbolFrom s.SymbolTo
+    = <Map
+        {
+          (Symbol s.SymbolFrom s.n)
+            = (Symbol s.SymbolTo <s.Func s.n>);
+
+          (Var e.Var)
+            = (ColdCallBrackets (Symbol Name e.FuncName) (Var e.Var));
+
+          (ColdCallBrackets e.Body)
+            = (ColdCallBrackets
+                (Symbol Name e.FuncName) (ColdCallBrackets e.Body)
+              );
+        }
+        e.Args
+      >
+}
+
+Intrinsic-Ord {
+  e.Args
+    , <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
+    = <StaticSubstitution (e.Args) ('Ord') &Ord Char Number> : e.Substitution
+    = Ok e.Substitution;
+
+  e.Args = MakeColdCall;
+}
+
+Intrinsic-Upper {
+  e.Args
+    , <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
+    = <StaticSubstitution (e.Args) ('Upper') &Upper Char Char> : e.Substitution
+    = Ok e.Substitution;
+
+  e.Args = MakeColdCall;
+}
+
+Intrinsic-Lower {
+  e.Args
+    , <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
+    = <StaticSubstitution (e.Args) ('Lower') &Lower Char Char> : e.Substitution
+    = Ok e.Substitution;
+
+  e.Args = MakeColdCall;
+}
+
+Intrinsic-Numb {
+  e.Args
+    , <AllChars e.Args> : Ok e.Chars
+    = <NumberToSymbols <Numb e.Chars>> : e.Result
+    = Ok e.Result;
+
+  e.Args = MakeColdCall;
+}
+
+Intrinsic-Symb {
+  e.Args
+    , <ArithmOneArg e.Args> : Ok Const e._
+    = <Symb <SymbolsToNumber e.Args>> : e.Numbers
+    = <CharToNode e.Numbers> : e.Result
+    = Ok e.Result;
+
+  e.Args = MakeColdCall;
+}
+
+CharToNode {
+  e.Char = <Map { s.a = (Symbol Char s.a) } e.Char>
+}
+
+Intrinsic-Implode {
+  e.Args
+    , <AllChars e.Args> : Ok e.Chars
+    = <Implode e.Chars> : s.Ident e.NonIdent
+    = s.Ident
+    : {
+        0 = (Symbol Number 0);
+        e._ = (Symbol Identifier <Explode s.Ident>)
+      }
+    : e.Result
+    = Ok e.Result <CharToNode e.NonIdent>;
+
+  e.Args = MakeColdCall;
+}
+
+Intrinsic-Implode_Ext {
+  e.Args, <AllChars e.Args> : Ok e.Chars = Ok (Symbol Identifier e.Chars);
+
+  e.Args = MakeColdCall;
+}
+
+Intrinsic-Explode {
+  (Symbol Identifier e.Name) = Ok <CharToNode e.Name>;
+
+  e._ = MakeColdCall;
+}
+
+Intrinsic-Type {
+  (CallBrackets e._) e._ = MakeColdCall;
+  (ColdCallBrackets e._) e._ = MakeColdCall;
+  (Var e._) e._ = MakeColdCall;
+
+  t.Term e.Rest
+    = t.Term
+    : {
+        (Symbol Number s._) = 'N0';
+        (Symbol Char s.Char) = <Type s.Char>;
+        (Symbol Identifier e.Name) = <Type <Implode_Ext e.Name>>;
+        (Symbol Name e._) = 'Fg';
+        (ClosureBrackets e._) = 'Fc';
+        (Brackets e._) = 'B0';
+        (ADT-Brackets (e._) e._) = 'Ba';
+      }
+    : s.Type s.SubType e._
+    = Ok (Symbol Char s.Type) (Symbol Char s.SubType) t.Term e.Rest;
+
+  /* empty */ = Ok (Symbol Char '*') (Symbol Char '0');
+}
+
+Intrinsic-Lenw {
+  e.Args
+    , <FixedLength e.Args> : True
+    = <Lenw e.Args> : s.Len e.Args^
+    = Ok (Symbol Number s.Len) e.Args;
+
+  e._ = MakeColdCall;
+}
+
+FixedLength {
+  e._ (Var 'e' e._) e._ = False;
+  e._ (CallBrackets e._) e._ = False;
+  e._ (ColdCallBrackets e._) e._ = False;
+
+  e._ = True;
+}
+
+Intrinsic-First {
+  (Symbol Number s.N) e.Expr
+    , <First s.N e.Expr> : (e.Prefix) e.Suffix
+    , <FixedLength e.Prefix> : True
+    = Ok (Brackets e.Prefix) e.Suffix;
+
+  e._ = MakeColdCall;
+}
+
+Intrinsic-Last {
+  (Symbol Number s.N) e.Expr
+    , <Last s.N e.Expr> : (e.Prefix) e.Suffix
+    , <FixedLength e.Suffix> : True
+    = Ok (Brackets e.Prefix) e.Suffix;
+
+  e._ = MakeColdCall;
+}
+
+/*
+  <OptExpr-MakeSubstitutions
+    (e.UsedVars) t.Mode (e.Expr) (e.CallArgs) t.OptFunction t.Metatables
+  >
+    == t.Metatables (e.Substitutions)*
+  e.Substitutions ::= e.Contractions
+
+  e.Contractions включают в себя сужение e.DRIVEN#0 для подстановки
+  правой части.
+*/
+OptExpr-MakeSubstitutions {
+  (e.UsedVars) (s.DriveMode Intrinsic) (e.Expr) (e.Args)
+  t.IntrinsicFunction t.Metatables
+    , t.IntrinsicFunction : (Intrinsic (e._) Intrinsic e.BehaviorName)
+    = <IntrinsicCall t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName>;
+
+  (e.UsedVars) t.Mode (e.Expr) (e.Args) t.Function t.Metatables
+    /* Активные вызовы игнорируем */
+    , <IsPassiveCall e.Args> : False
+
+    = t.Metatables <MakeColdSolution t.Function e.Args>;
+
+  (e.UsedVars) (s.DriveMode s.IntrinsicMode) (e.Expr) (e.Args)
+  (s.FuncMode (e.Name) Sentences e.Body) t.Metatables
+    , <OneOf s.DriveMode Drive Inline> : True
+
+    = <DecreaseMode s.DriveMode s.FuncMode> : s.DriveMode^
+
+    = t.Metatables
+      <DoOptExpr-MakeSubstitutions
+        s.DriveMode (e.UsedVars) (e.Args)
+        (/* substitutions */)
+        (Function (e.Name) Sentences e.Body)
+      >;
+
+  (e.UsedVars) t.Mode (e.Expr) (e.Args)
+  t.Function t.Metatables
+    = t.Metatables <MakeColdSolution t.Function e.Args>;
+}
+
+MakeColdSolution {
+  (s.FuncMode (e.Name) s.BodyLabel e.Body) e.Args
+    , e.Name : e.Prefix '*' s.Num
+    = (
+        (<eDRIVEN> ':' (ColdCallBrackets (Symbol Name e.Name) e.Args))
+        ((NewFunction GN-Local (e.Name) s.BodyLabel e.Body))
+      );
+
+  (s.FuncMode (e.Name) s.BodyLabel e.Body) e.Args
+    = (
+        (<eDRIVEN> ':' (ColdCallBrackets (Symbol Name e.Name) e.Args))
+        (/* нет новых функций */)
+      );
+}
+
+DecreaseMode {
+  Inline s.Mode = Inline;
+  Drive s.Mode = s.Mode;
+}
+
+DoOptExpr-MakeSubstitutions {
+  s.Mode (e.SentenceVars) (e.Args) (e.Substitutions)
+  (Function (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+    = <Cleanup-Step-Drop e.RS> : e.RS^
+    = <Solve (e.SentenceVars) ((e.Args) ':' (e.LS))>
+    : {
+        /*
+          В случае решения без сужений просто применяем замены.
+        */
+        Success (() (e.Assigns))
+          = <ApplyAssigns e.RS (e.Assigns)> : e.CallReplacer
+          = e.Substitutions
+            ((<eDRIVEN> ':' e.CallReplacer) (/* нет новых функций */));
+
+        /*
+          «Грязное» решение допускаем только в случае прогонки.
+        */
+        Success e.M
+          , s.Mode : Drive
+          = <Map
+              {
+                ((e.Contrs) (e.Assigns))
+                  = <ApplyAssigns e.RS (e.Assigns)> : e.CallReplacer
+                  = e.Contrs (<eDRIVEN> ':' e.CallReplacer) : e.Contrs^
+                  = (e.Contrs (/* нет новых функций */));
+              }
+              e.M
+            >
+          : e.NewSubsts
+          = <DoOptExpr-MakeSubstitutions
+              s.Mode (e.SentenceVars) (e.Args) (e.Substitutions e.NewSubsts)
+              (Function (<RemainderFuncIncName e.Name>) Sentences e.Rest)
+            >;
+
+        /*
+          При неудаче переходим к следующему предложению, к подстановкам
+          ничего не добавляем.
+        */
+        Failure
+          = <DoOptExpr-MakeSubstitutions
+              s.Mode (e.SentenceVars) (e.Args) (e.Substitutions)
+              (Function (<RemainderFuncIncName e.Name>) Sentences e.Rest)
+            >;
+
+        /*
+          Здесь либо Undefined, либо грязное решение в режиме встраивания,
+          в обоих случаях добавляем холодный вызов остаточной функции.
+        */
+        e.Other
+          = e.Substitutions
+            <MakeColdSolution
+              (Function (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+              e.Args
+            >;
+      };
+
+  s.Mode (e.SentenceVars) (e.Args) (e.Substitutions) t.RestFunction
+    = e.Substitutions <MakeColdSolution t.RestFunction e.Args>;
+}
+
+Cleanup-Step-Drop {
+  /*
+    Считаем, что правильный <__Step-Drop> должен располагаться в начале
+    правой части. Так генерируется для метафункций. Если пользователь зачем-то
+    пишет __Step-Drop вручную и в другом месте — сам себе злобный буратино.
+  */
+  (CallBrackets (Symbol Name '__Step-Drop') /* пусто */) e.RS = e.RS;
+
+  e.RS = e.RS;
+}
+
+DropLeft {
+  e.List 0 =  e.List;
+  t.Head e.Tail s.N = <DropLeft e.Tail <Sub s.N 1>>
+}
+
+/*
+  <FindOptInfo e.OptFuncs (e.Name)> == e.OptFuncs t.Function
+  t.Function ::= (s.Mode (e.Name) e.Body)
+*/
+FindOptInfo {
+  e.OptFuncs (e.Name)
+    = e.Name
+    : {
+        e.Prefix '*' s.N = <CutSUF e.Prefix> s.N;
+        e.Name^ = e.Name 0;
+      }
+    : e.LookupName s.Drop
+    = <FindOptInfo-Aux e.OptFuncs (e.Name) (e.LookupName) s.Drop>;
+}
+
+FindOptInfo-Aux {
+  e.OptFuncs-B (Intrinsic (e.LookupName) e.Body) e.OptFuncs-E
+  (e.Name) (e.LookupName) s._
+  = e.OptFuncs-B (Intrinsic (e.LookupName) e.Body) e.OptFuncs-E
+    (Intrinsic (e.Name) e.Body);
+
+  e.OptFuncs-B (s.Mode (e.LookupName) e.Body) e.OptFuncs-E
+  (e.Name) (e.LookupName) s.Drop
+    = e.Body : Sentences e.Sentences
+    = e.OptFuncs-B (s.Mode (e.LookupName) e.Body) e.OptFuncs-E
+      (s.Mode (e.Name) Sentences <DropLeft e.Sentences s.Drop>);
+}
+
+$DRIVE CutSUF;
+
+CutSUF {
+  e.Prefix SUF = e.Prefix;
+  e.Prefix = e.Prefix;
+}
+
+/*
+  <FindOptimizedCall (e.OptFuncNames) e.Expr>
+    == (e.OptFuncNames t.Found) e.Expr
+
+  t.Found ::= None | (CallBrackets e.Arg)
+*/
+
+FindOptimizedCall {
+  (e.OptFuncNames) e.Expr
+    = <MapAccum &FindOptimizedCall-Term (e.OptFuncNames None) e.Expr>;
+}
+
+FindOptimizedCall-Term {
+  (e.OptFuncNames None) (Brackets e.Expr)
+    = <FindOptimizedCall (e.OptFuncNames) e.Expr>
+    : (e.OptFuncNames^ t.Found) e.Expr^
+    = (e.OptFuncNames t.Found) (Brackets e.Expr);
+
+  (e.OptFuncNames None) (ADT-Brackets (e.Name) e.Expr)
+    = <FindOptimizedCall (e.OptFuncNames) e.Expr>
+    : (e.OptFuncNames^ t.Found) e.Expr^
+    = (e.OptFuncNames t.Found)
+      (ADT-Brackets (e.Name) e.Expr);
+
+  (e.OptFuncNames None) (CallBrackets (Symbol Name e.Name) e.Arg)
+    = <HashName e.Name <BUCKET-SIZE>> : s.Hash
+    = <FindOptimizedCall (e.OptFuncNames) e.Arg>
+    : {
+*       Вызов оптимизируемой функции, извлекаем его наружу
+        (
+          e.Buckets-B
+          (s.Hash e.OptFuncNames-B (s.Label e.Name) e.OptFuncNames-E)
+          e.Buckets-E
+
+          None
+        )
+        e.Arg^
+          = (
+              e.Buckets-B
+              (s.Hash (s.Label e.Name) e.OptFuncNames-B e.OptFuncNames-E)
+              e.Buckets-E
+
+              (CallBrackets (Symbol Name e.Name) e.Arg)
+            )
+            <eDRIVEN>;
+
+*       Функция, не подлежащая оптимизации. Остужаем вызов.
+        (e.OptFuncNames^ None) e.Arg^
+          = (e.OptFuncNames None)
+            (ColdCallBrackets (Symbol Name e.Name) e.Arg);
+
+*       Внутри аргумента найден оптимизируемый вызов
+        (e.OptFuncNames^ t.Found) e.Arg^
+          = (e.OptFuncNames t.Found)
+            (CallBrackets (Symbol Name e.Name) e.Arg);
+      };
+
+  (e.OptFuncNames None) (CallBrackets e.Expr)
+    = <FindOptimizedCall (e.OptFuncNames) e.Expr>
+    : (e.OptFuncNames^ t.Found) e.Expr^
+    = (e.OptFuncNames t.Found) (CallBrackets e.Expr);
+
+  (e.OptFuncNames t.Found) t.AnyTerm
+    = (e.OptFuncNames t.Found) t.AnyTerm;
+}
+
+/*
+  <ApplyAssigns e.Expr (e.Assigns)> == e.Expr^
+*/
+
+ApplyAssigns {
+  e.Expr (e.Assigns)
+    = <Map
+        {
+          t.T = <ApplyAssigns-Term t.T (e.Assigns)>
+        }
+        e.Expr
+      >
+}
+
+ApplyAssigns-Term {
+  (Brackets e.Expr) (e.Assigns) = (Brackets <ApplyAssigns e.Expr (e.Assigns)>);
+
+  (CallBrackets e.Args) (e.Assigns)
+    = (CallBrackets <ApplyAssigns e.Args (e.Assigns)>);
+
+  (ColdCallBrackets e.Args) (e.Assigns)
+    = (ColdCallBrackets <ApplyAssigns e.Args (e.Assigns)>);
+
+  (ClosureBrackets e.Args) (e.Assigns)
+    = (ClosureBrackets <ApplyAssigns e.Args (e.Assigns)>);
+
+  (ADT-Brackets (e.Name) e.Expr) (e.Assigns)
+    = (ADT-Brackets (e.Name) <ApplyAssigns e.Expr (e.Assigns)>);
+
+  t.T (e.B (e.Asgn ':' t.T) e.E)
+    =  e.Asgn;
+
+  t.T (e.Assigns) = t.T;
+}
+
+/**
+  <ApplyContractions (e.Expr) (e.Contrs) == e.Expr^
+*/
+$ENTRY ApplyContractions {
+  e.Expr (e.Contrs)
+    = <Map
+        {
+          t.T = <ApplyContractions-Term t.T (e.Contrs)>
+        }
+        e.Expr
+      >;
+}
+
+ApplyContractions-Term {
+  (Brackets e.Expr) (e.Contrs)
+    = (Brackets <ApplyContractions e.Expr (e.Contrs)>);
+
+  (CallBrackets e.Args) (e.Contrs)
+    = (CallBrackets <ApplyContractions e.Args (e.Contrs)>);
+
+  (ColdCallBrackets e.OriginArgs) (e.Contrs)
+    = <ApplyContractions e.OriginArgs (e.Contrs)>
+    : {
+*       Содержимое холодных скобок не изменилось, оставляем их холодными
+        e.OriginArgs = (ColdCallBrackets e.OriginArgs);
+
+*       Содержимое обновилось, оттаиваем скобки
+        e.ChangedArgs = (CallBrackets e.ChangedArgs);
+      };
+
+  (ClosureBrackets e.Args) (e.Contrs)
+    = (ClosureBrackets <ApplyContractions e.Args (e.Contrs)>);
+
+  (ADT-Brackets (e.Name) e.Expr) (e.Contrs)
+    = (ADT-Brackets (e.Name) <ApplyContractions e.Expr (e.Contrs)>);
+
+  t.Term (e.B (t.Term ':' e.Contr) e.E)
+    = <ApplyContractions e.Contr (e.B (t.Term ':' e.Contr) e.E)>;
+
+  t.T (e.Contrs) = t.T
+}
+
+/*
+  <RemainderFuncIncName e.Name> == e.Name
+*/
+
+RemainderFuncIncName {
+  e.Name SUF e.Suffixes '*' s.N = e.Name SUF e.Suffixes '*' <Add s.N 1>;
+
+  e.Name SUF e.Suffixes = e.Name SUF e.Suffixes '*' 1;
+
+  e.Name = e.Name SUF '*' 1;
+}
