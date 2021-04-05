@@ -366,7 +366,7 @@ NewDollarVar {
         e._ (s.Mode e.NextIndex) e._
           = <NewDollarVar (e.ScopeVars) s.Mode e.NextIndex>;
 
-        e.ScopeVars = (e.ScopeVars (s.Mode e.NextIndex)) e.NextIndex;
+        e.ScopeVars^ = (e.ScopeVars (s.Mode e.NextIndex)) e.NextIndex;
       }
 }
 
