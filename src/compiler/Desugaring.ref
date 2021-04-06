@@ -376,8 +376,8 @@ NextDollarIndex {
 }
 
 IncDollarSuffix {
-  e.Suffix s.Last, 'abcdefghij' : e._ s.Last s.Next e._ = e.Suffix s.Next;
-  e.Suffix 'j' = <IncDollarSuffix e.Suffix> 'a';
+  e.Suffix s.Last, 'oabcdefghi' : e._ s.Last s.Next e._ = e.Suffix s.Next;
+  e.Suffix 'i' = <IncDollarSuffix e.Suffix> 'o';
   /* пусто */ = 'a';
 }
 
