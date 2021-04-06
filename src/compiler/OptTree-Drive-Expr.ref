@@ -39,28 +39,28 @@ IsPassiveCall-Aux {
   e.Branches ::= (e.Contractions (e.DrivenExpr))*
 */
 $ENTRY OptTree-Drive-Expr {
-  (e.UsedVars) ((e.OptFuncNames) e.OptFuncs) e.Right t.Mode
-     = <FindOptimizedCall (e.OptFuncNames) e.Right>
+  (e.UsedVars) ((e.OptFuncNames) e.OptFuncs) e.Expr t.Mode
+     = <FindOptimizedCall (e.OptFuncNames) e.Expr>
      : {
-         (e.OptFuncNames^ None) e.Right^
-           = ((e.OptFuncNames) e.OptFuncs) (/* нет сужений */ (e.Right)) ();
+         (e.OptFuncNames^ None) e.Expr^
+           = ((e.OptFuncNames) e.OptFuncs) (/* нет сужений */ (e.Expr)) ();
 
-         (e.OptFuncNames^ t.Call) e.Right^
-           = <OptExpr-Aux (e.UsedVars) t.Mode (e.Right) t.Call e.OptFuncs>
+         (e.OptFuncNames^ t.Call) e.Expr^
+           = <OptExpr-Aux (e.UsedVars) t.Mode (e.Expr) t.Call e.OptFuncs>
            : (e.OptFuncs^) (e.NewFunctions) e.Branches
            = ((e.OptFuncNames) e.OptFuncs) e.Branches (e.NewFunctions);
        };
 }
 
 OptExpr-Aux {
-  (e.UsedVars) (s.DriveMode s.IntrinsicMode) (e.Right)
+  (e.UsedVars) (s.DriveMode s.IntrinsicMode) (e.Expr)
   (CallBrackets (Symbol Name e.Name) e.Args)
   t.Metatables e.OptFuncs
 
     /* Поиск информации для прогонки */
     = <FindOptInfo e.OptFuncs (e.Name)> : e.OptFuncs^ t.FunctionForDrive
     = <OptExpr-MakeSubstitutions
-        (e.UsedVars) (s.DriveMode s.IntrinsicMode) (e.Right) (e.Args)
+        (e.UsedVars) (s.DriveMode s.IntrinsicMode) (e.Expr) (e.Args)
         t.FunctionForDrive t.Metatables
       >
     : t.Metatables^ e.SubstitutionPacks
@@ -70,7 +70,7 @@ OptExpr-Aux {
         {
           (e.NewFunctions) (e.Contractions (e.NewFunction))
             = (e.NewFunctions e.NewFunction)
-              (e.Contractions (<ApplyContractions e.Right (e.Contractions)>));
+              (e.Contractions (<ApplyContractions e.Expr (e.Contractions)>));
         }
         (/* new functions */)
         e.SubstitutionPacks
