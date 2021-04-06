@@ -18,8 +18,10 @@ $EXTERN OptTree-Drive-Expr, ApplyContractions;
   В дерево добавляется узел (DriveInfo e.DriveInfo).
 
   e.DriveInfo ::= (e.OptFuncNames (e.OptFunctions))
-  e.OptFuncNames ::= (e.Name)*
-  e.OptFunctions ::= t.OptFunction
+  e.OptFuncNames ::= e.HashSet
+  e.HashSet ::= s.BucketSize (e.Bucket)*
+  e.Bucket ::= (s.Hash (s.Label e.Name)*)
+  e.OptFunctions ::= t.OptFunction*
 
   t.OptFunction ::= (s.Label (e.Name) e.OptBody)
   e.OptBody ::= Sentences e.Sentences
@@ -40,7 +42,7 @@ $ENTRY OptTree-Drive-Prepare {
     = <UpdateDriveInfo s.OptDrive s.OptIntrinsic (e.DriveInfo) e.AST-B e.AST-E>;
 
   (s.OptDrive s.OptIntrinsic) e.AST
-    = (/* no names */) /* no info */ : e.EmptyInfo
+    = (<BUCKET-SIZE> /* no names */) /* no info */ : e.EmptyInfo
     = <UpdateDriveInfo s.OptDrive s.OptIntrinsic (e.EmptyInfo) e.AST>;
 }
 
@@ -254,7 +256,8 @@ FormatOptFunctions {
 
 HashSet {
   e.Names
-    = <DoHashSet
+    = <BUCKET-SIZE>
+      <DoHashSet
         <Map
           {
             (s.Label e.Name)
@@ -284,7 +287,7 @@ DoHashSet-DoFillBucket {
 }
 
 HashSet-AsChain {
-  e.HashSet = <Map { (s.Hash e.Names) = e.Names } e.HashSet>
+  s.BucketSize e.HashSet = <Map { (s.Hash e.Names) = e.Names } e.HashSet>
 }
 
 

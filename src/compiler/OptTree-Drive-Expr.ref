@@ -8,8 +8,6 @@ $EXTERN HashName;
 $EXTERN Solve;
 
 
-BUCKET-SIZE { = 101 }
-
 IsPassiveCall {
   e.Expr
     = <Reduce
@@ -767,31 +765,32 @@ FindOptimizedCall-Term {
       (ADT-Brackets (e.Name) e.Expr);
 
   (e.OptFuncNames None) (CallBrackets (Symbol Name e.Name) e.Arg)
-    = <HashName e.Name <BUCKET-SIZE>> : s.Hash
     = <FindOptimizedCall (e.OptFuncNames) e.Arg>
     : {
-*       Вызов оптимизируемой функции, извлекаем его наружу
-        (
-          e.Buckets-B
-          (s.Hash e.OptFuncNames-B (s.Label e.Name) e.OptFuncNames-E)
-          e.Buckets-E
-
-          None
-        )
-        e.Arg^
-          = (
-              e.Buckets-B
-              (s.Hash (s.Label e.Name) e.OptFuncNames-B e.OptFuncNames-E)
-              e.Buckets-E
-
-              (CallBrackets (Symbol Name e.Name) e.Arg)
-            )
-            <eDRIVEN>;
-
-*       Функция, не подлежащая оптимизации. Остужаем вызов.
         (e.OptFuncNames^ None) e.Arg^
-          = (e.OptFuncNames None)
-            (ColdCallBrackets (Symbol Name e.Name) e.Arg);
+          = e.OptFuncNames : s.BucketSize e.Buckets
+          = <HashName e.Name s.BucketSize> : s.Hash
+          = e.Buckets
+          : {
+*             Вызов оптимизируемой функции, извлекаем его наружу
+              e.Buckets-B
+              (s.Hash e.OptFuncNames-B (s.Label e.Name) e.OptFuncNames-E)
+              e.Buckets-E
+                = (
+                    s.BucketSize
+                    e.Buckets-B
+                    (s.Hash (s.Label e.Name) e.OptFuncNames-B e.OptFuncNames-E)
+                    e.Buckets-E
+
+                    (CallBrackets (Symbol Name e.Name) e.Arg)
+                  )
+                  <eDRIVEN>;
+
+*               Функция, не подлежащая оптимизации. Остужаем вызов.
+                e.Buckets^
+                  = (s.BucketSize e.Buckets None)
+                    (ColdCallBrackets (Symbol Name e.Name) e.Arg);
+            };
 
 *       Внутри аргумента найден оптимизируемый вызов
         (e.OptFuncNames^ t.Found) e.Arg^
