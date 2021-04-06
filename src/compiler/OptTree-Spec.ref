@@ -15,8 +15,8 @@ $EXTERN DisplayName;
 *$FROM GlobalGen
 $EXTERN GlobalGen;
 
-*$FROM OptTree-Relation
-$EXTERN OptTree-CanonizeTuple, OptTree-CheckTupleRelation;
+*$FROM OptTree-StopRelation
+$EXTERN OptTree-CanonizeTuple, OptTree-CheckTupleStopRelation;
 
 
 /**
@@ -1172,7 +1172,7 @@ MapGenericMatches {
 HasHigmanKruskalRelation {
   (e.Name) (e.Signature) e.History ((e.InstanceName) e.HistorySignature)
     , <SourceNameOfInstance e.InstanceName> : e.Name
-    , <OptTree-CheckTupleRelation
+    , <OptTree-CheckTupleStopRelation
         (e.Signature) <OptTree-CanonizeTuple e.HistorySignature>
       >
     : True

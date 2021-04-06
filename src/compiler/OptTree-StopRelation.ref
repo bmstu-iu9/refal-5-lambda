@@ -5,7 +5,7 @@ $INCLUDE "LibraryEx";
 */
 
 /**
-  <OptTree-CheckTupleRelation (e.CurrentTuple) e.HistoryTuple>
+  <OptTree-CheckTupleStopRelation (e.CurrentTuple) e.HistoryTuple>
     == True
     == False
 
@@ -26,16 +26,16 @@ $INCLUDE "LibraryEx";
     | (ClosureBrackets t.CanonizedTerm*)
     | (CallBrackets t.Name t.CanonizedTerm*)
 */
-$ENTRY OptTree-CheckTupleRelation {
+$ENTRY OptTree-CheckTupleStopRelation {
   (/* пусто */) /* пусто */ = True;
 
   (e.CurrentTuple) e.HistoryTuple
     , e.CurrentTuple : (e.CurrentExpr) e.CurrentTuple-Rest
     , e.HistoryTuple : (e.HistoryExpr) e.HistoryTuple-Rest
-    , <OptTree-CheckExprRelation (e.CurrentExpr) e.HistoryExpr>
+    , <OptTree-CheckExprStopRelation (e.CurrentExpr) e.HistoryExpr>
     : {
         True
-          = <OptTree-CheckTupleRelation
+          = <OptTree-CheckTupleStopRelation
               (e.CurrentTuple-Rest) e.HistoryTuple-Rest
             >;
 
@@ -44,13 +44,13 @@ $ENTRY OptTree-CheckTupleRelation {
 }
 
 /**
-  <OptTree-CheckExprRelation (e.CurrentExpr) e.HistoryExpr>
+  <OptTree-CheckExprStopRelation (e.CurrentExpr) e.HistoryExpr>
     == True
     == False
 
   e.CurrentExpr, e.HistoryExpr ::= e.CanonizedExpr
 */
-$ENTRY OptTree-CheckExprRelation {
+$ENTRY OptTree-CheckExprStopRelation {
   (e.CurrentExpr) e.HistoryExpr
     /* Разделяем текущую сигнатуру на две части  */
     , e.CurrentExpr : t.Term e.OtherPart
@@ -70,7 +70,7 @@ $ENTRY OptTree-CheckExprRelation {
     == True
     == False
 
-  Одна итерация функции OptTree-CheckExprRelation.
+  Одна итерация функции OptTree-CheckExprStopRelation.
 
   e.CurSig1 ::= t.Term*
   e.CurSig2 ::= t.Term*
