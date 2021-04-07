@@ -206,6 +206,11 @@ setlocal
     call :%2 %1 || exit /b 1
     set SRFLAGS=-OiACDS
     call :%2 %1 || exit /b 1
+    set SRFLAGS_PLUS=%SRFLAGS_NAT_LIB%
+    set SRFLAGS=-OdiACDS
+    call :%2 %1 || exit /b 1
+    set SRFLAGS=-OCdiADPRS
+    call :%2 %1 || exit /b 1
     echo Special tree tests is passed
   )
 endlocal

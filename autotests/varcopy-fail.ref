@@ -1,0 +1,44 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */
+    = <MapAccum
+        {
+	  (e.A) A = (e.A A);
+	  (e.A) B = (e.A) B;
+	}
+	(/* empty */) <gen_e__ A B A B A B>
+      >
+    : (A A A) B B B
+    = /* empty */
+}
+
+gen_e__ { e.X = e.X }
+
+Apply {
+  s.Fn e.Argument = <s.Fn e.Argument>;
+
+  (t.Closure e.Bounded) e.Argument
+    = <Apply t.Closure e.Bounded e.Argument>;
+}
+
+MapAccum {
+  t.Fn t.Acc e.Tail = <DoMapAccum t.Fn t.Acc () e.Tail>;
+}
+
+$SPEC MapAccum t.FUNC t.accum e.items;
+$INLINE MapAccum;
+
+DoMapAccum {
+  t.Fn t.Acc (e.Scanned) t.Next e.Tail
+    = <Apply t.Fn t.Acc t.Next> : t.Acc^ e.StepScanned
+    = <DoMapAccum
+        t.Fn t.Acc (e.Scanned e.StepScanned) e.Tail
+      >;
+
+  t.Fn t.Acc (e.Scanned) /* пусто */ = t.Acc e.Scanned;
+}
+
+$SPEC DoMapAccum t.FUNC t.acc (e.scanned) e.items;
+
+

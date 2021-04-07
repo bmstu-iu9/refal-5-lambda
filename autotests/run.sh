@@ -98,6 +98,9 @@ run_test_all_modes() {
     SRFLAGS=-OADS $2 $1
     SRFLAGS=-OACDS $2 $1
     SRFLAGS=-OiACDS $2 $1
+    SRFLAGS_PLUS="$SRFLAGS_NAT_LIB"
+    SRFLAGS=-OdiACDS $2 $1
+    SRFLAGS=-OCdiADPRS $2 $1
     echo "Special tree tests is passed"
   fi
 }

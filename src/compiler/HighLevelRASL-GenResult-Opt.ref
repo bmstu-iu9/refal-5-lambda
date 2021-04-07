@@ -116,10 +116,10 @@ GenResult-Allocations {
       {
         (Tile e.Tile) = ;
 
-        (VarCopy 't' e.Index s.Level s.SampleOffset s.Offset) =
+        (VarCopy 't' e.Index s.SampleOffset s.Offset) =
           (CmdCopyVar 'e' s.Offset s.SampleOffset);
 
-        (VarCopy s.Mode e.Index s.Level s.SampleOffset s.Offset) =
+        (VarCopy s.Mode e.Index s.SampleOffset s.Offset) =
           (CmdCopyVar s.Mode s.Offset s.SampleOffset);
 
         (TkString e.String s.Offset) =
@@ -297,12 +297,12 @@ CollectTiles {
 }
 
 CollectTiles-Alloc {
-  (VarCopy 'e' e.Index s.Level s.Sample s.Offset) e.Alloc =
+  (VarCopy 'e' e.Index s.Sample s.Offset) e.Alloc =
     <CollectTiles-Alloc e.Alloc>
-    ((VarCopy 'e' e.Index s.Level s.Sample s.Offset));
+    ((VarCopy 'e' e.Index s.Sample s.Offset));
 
-  e.Alloc (VarCopy 'e' e.Index s.Level s.Sample s.Offset) =
-    ((VarCopy 'e' e.Index s.Level s.Sample s.Offset))
+  e.Alloc (VarCopy 'e' e.Index s.Sample s.Offset) =
+    ((VarCopy 'e' e.Index s.Sample s.Offset))
     <CollectTiles-Alloc e.Alloc>;
 
   /* пусто */ = /* пусто */;
