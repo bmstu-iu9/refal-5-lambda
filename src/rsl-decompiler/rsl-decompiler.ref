@@ -142,7 +142,15 @@ ReadEntryPoints {
 
 Disassemble {
   (e.Words) (e.FunctionStarts) (e.Entries) (e.Externs) s.BytecodeSize e.Bytes
-    = <DecodeCommands 0 e.Bytes> : e.Code s.BytecodeSize
+    = <DecodeCommands 0 e.Bytes>
+    : {
+        e.Code s.BytecodeSize = e.Code;
+
+        /* При несовпадении размеров байткода программа падает с ошибкой */
+        e.Code s.OtherBytecodeSize
+          = <{ X = s.BytecodeSize s.OtherBytecodeSize }>;
+      }
+    : e.Code
     = <ResolveWords (e.Words) e.Code> : e.Code^
     = <SplitByFunctions e.Code> : e.Functions
     = <MakeFunctionTable (e.Externs) e.Functions> : (e.FunctionTable) e.Functions^

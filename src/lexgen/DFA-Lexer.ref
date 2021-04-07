@@ -189,8 +189,8 @@ CollectDigits {
 
   Literal-DecCode =
     :Digits:                                          Literal            |
-                    !"Expected digits"                Root               |
-                    !"Unexpected end of file"                            .
+                    !"Unexpected end of file"                            |
+                    !"Expected digits"                Root               .
 
   Literal-Quote =
     '\''                                              Literal            |
@@ -634,6 +634,6 @@ Literal-DecCode {
   (e.Accum) '7' e.Text = <Literal (e.Accum '7') e.Text>;
   (e.Accum) '8' e.Text = <Literal (e.Accum '8') e.Text>;
   (e.Accum) '9' e.Text = <Literal (e.Accum '9') e.Text>;
-  (e.Accum) e.Text = (TokenError 'Expected digits') <Root () e.Text>;
   (e.Accum) = (TokenError 'Unexpected end of file');
+  (e.Accum) e.Text = (TokenError 'Expected digits') <Root () e.Text>;
 }

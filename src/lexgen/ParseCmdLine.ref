@@ -63,7 +63,7 @@ $ENTRY ParseCommandLine {
           <Prout 'Command line error: unrecognized command line'>
           <HelpOnError>;
 
-        (e.Errors) e.AnyOther =
+        (e.Errors^) e.AnyOther =
           <Map
             {
               (s.Pos NoRequiredParam e.Opt) =
