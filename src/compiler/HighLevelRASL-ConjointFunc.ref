@@ -151,7 +151,7 @@ GenerateSingleSentence {
     = <CodeForSubst
         s.FnGenSubst s.ContextSize (e.MarkedPattern) e.Substitute s.Depth
       >
-    : s.ContextSize^ (e.Vars^) (e.MarkedPattern^) e.PatternCommands
+    : s.ContextSize^ (e.Vars) (e.MarkedPattern^) e.PatternCommands
 
     = <GenResult
         s.FnGenResult (e.Conditions) (e.Result)

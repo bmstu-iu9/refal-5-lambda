@@ -414,7 +414,7 @@ NameNestedBody {
       <DelAccumulator
         <MapAccum
           {
-            s.SentenceNumber ((e.Pattern) e.Assigns (e.Result) (e.Blocks^))
+            s.SentenceNumber ((e.Pattern) e.Assigns (e.Result) (e.Blocks))
               = <gen_e__ e.MainName '$' s.SentenceNumber> : e.MainName^
               = <Inc s.SentenceNumber>
                 (

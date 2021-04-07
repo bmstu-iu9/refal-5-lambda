@@ -484,7 +484,7 @@ PatchAST-Chain {
   s.FnPatch s.FnPatchExpr e.ConditionsAndAssigns
     = <Map
         {
-          (s.ChainType (e.Result^) (e.Blocks) (e.Pattern^))
+          (s.ChainType (e.Result) (e.Blocks) (e.Pattern))
             = (s.ChainType
                 (<s.FnPatchExpr e.Result>)
                 (<PatchAST-Blocks s.FnPatch e.Blocks>)
@@ -644,7 +644,7 @@ CreateMetaFunctions {
         (/* function names */)
         e.AST-B (Meta e.MetaInfo) e.AST-E
       >
-    : (e.FunctionNames) e.AST^
+    : (e.FunctionNames) e.AST
     = e.MetaInfo : t.MetaSrcPos s._ScopeClass e._Name
     = e.AST
       (Function

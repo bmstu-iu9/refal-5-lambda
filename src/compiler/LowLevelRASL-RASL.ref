@@ -87,7 +87,7 @@ PrepareFunctionsRASL {
     = s.NextLabel : s.FunctionLabel
 
     = <ConvertInterpretCommands <Inc s.NextLabel> e.FunctionBody>
-    : s.NextLabel^ e.RASLCommands^
+    : s.NextLabel^ e.RASLCommands
 
     = <AddBacktrackStackAllocationCommand e.RASLCommands> : e.RASLCommands^
 

@@ -208,7 +208,7 @@ MakeSubstitution-FromMetatables {
             )
             e.Result;
 
-        t.Metatable^ = t.Metatable MakeColdCall;
+        t.Metatables^ = t.Metatables MakeColdCall;
       }
 }
 
