@@ -3,12 +3,12 @@ setlocal
   if {%RELEASE%}=={} (
     rem Максимум 40 000 000 байт (x32), 80 000 000 байт (x64)
     rem RLC_FLAGS используются только для сборки библиотек
-    set RLC_FLAGS_PLUS=--markup-context --debug-info -OC
-    set RLMAKE_FLAGS_PLUS=-X--markup-context -X--debug-info -X-OC
+    set RLC_FLAGS_PLUS=--markup-context --debug-info -OC -Werror
+    set RLMAKE_FLAGS_PLUS=-X--markup-context -X--debug-info -X-OC -X-Werror
     set DEFAULT_SCRIPT_FLAGS=--rich --debug
   ) else (
-    set RLC_FLAGS_PLUS=-OCdiADPRS --opt-tree-cycles=300
-    set RLMAKE_FLAGS_PLUS=-X-OCdiADPRS -X--opt-tree-cycles=300
+    set RLC_FLAGS_PLUS=-OCdiADPRS --opt-tree-cycles=300 -Werror
+    set RLMAKE_FLAGS_PLUS=-X-OCdiADPRS -X--opt-tree-cycles=300 -X-Werror
     set DEFAULT_SCRIPT_FLAGS=--scratch
   )
 

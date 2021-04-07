@@ -14,12 +14,12 @@ TARGET_SUFFIX=${TARGET_SUFFIX:-}
   if [[ -z "$RELEASE" ]]; then
     # Максимум 40 000 000 байт (x32), 80 000 000 байт (x64)
     # RLC_FLAGS используются только для сборки библиотек
-    RLC_FLAGS_PLUS="--markup-context --debug-info -OC"
-    RLMAKE_FLAGS_PLUS="-X--markup-context -X--debug-info -X-OC"
+    RLC_FLAGS_PLUS="--markup-context --debug-info -OC -Werror"
+    RLMAKE_FLAGS_PLUS="-X--markup-context -X--debug-info -X-OC -X-Werror"
     DEFAULT_SCRIPT_FLAGS="--rich --debug"
   else
-    RLC_FLAGS_PLUS="-OCdiADPRS --opt-tree-cycles=300"
-    RLMAKE_FLAGS_PLUS="-X-OCdiADPRS -X--opt-tree-cycles=300"
+    RLC_FLAGS_PLUS="-OCdiADPRS --opt-tree-cycles=300 -Werror"
+    RLMAKE_FLAGS_PLUS="-X-OCdiADPRS -X--opt-tree-cycles=300 -X-Werror"
     DEFAULT_SCRIPT_FLAGS=--scratch
   fi
 
