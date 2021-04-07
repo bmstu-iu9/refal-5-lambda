@@ -166,7 +166,9 @@ ValidDirective {
   'LABEL' = (#TkDirective #Ident);
   'INCLUDE' = (#TkDirective #Include);
   'EASTEREGG' = <Map { s.Char = (#TkChar s.Char); } $EASTEREGG>;
-  'SCOPEID' = (#TkNumber #Cookie1) (#TkNumber #Cookie2);
+  'SCOPEID'
+     = (#TkNumber #Cookie1) (#TkNumber #Cookie2)
+       (#TkWarning #deprecated '$SCOPEID is deprecated');
   'SPEC' = (#TkDirective #Spec);
   'META' = (#TkDirective #Meta);
   e.Other = (#TkError 'Unknown directive $' e.Other);

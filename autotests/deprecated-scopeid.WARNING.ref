@@ -1,0 +1,14 @@
+* WARNING deprecated
+
+$ENTRY Go {
+  = $SCOPEID : s.Number1 s.Number2
+  = s.Number1 s.Number2 : $SCOPEID
+  = <Left-Right $SCOPEID A> : '<F' $SCOPEID 'a>'
+  = ;
+}
+
+Left-Right {
+  $SCOPEID 0 = ;
+  $SCOPEID A = '<F' $SCOPEID 'a>';
+  $SCOPEID 'a' = ;
+}
