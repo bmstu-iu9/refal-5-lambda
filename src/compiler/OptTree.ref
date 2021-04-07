@@ -308,7 +308,7 @@ Int-LoopForWarmFunctions {
   (e.Defines) e.Code s.Cycles
   (e.AST-B (Function s.Scope (e.Name) Sentences e.Sentences) e.AST-E)
 
-    = e.AST-B (Function s.Scope (e.Name) Sentences e.Sentences) e.AST-E : e.AST^
+    = e.AST-B (Function s.Scope (e.Name) Sentences e.Sentences) e.AST-E : e.AST
 
     = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)> : s.Cycles^ e.AST^
 

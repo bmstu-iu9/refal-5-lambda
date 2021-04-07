@@ -366,7 +366,7 @@ NewDollarVar {
         e._ (s.Mode e.NextIndex) e._
           = <NewDollarVar (e.ScopeVars) s.Mode e.NextIndex>;
 
-        e.ScopeVars = (e.ScopeVars (s.Mode e.NextIndex)) e.NextIndex;
+        e.ScopeVars^ = (e.ScopeVars (s.Mode e.NextIndex)) e.NextIndex;
       }
 }
 
@@ -376,8 +376,8 @@ NextDollarIndex {
 }
 
 IncDollarSuffix {
-  e.Suffix s.Last, 'abcdefghij' : e._ s.Last s.Next e._ = e.Suffix s.Next;
-  e.Suffix 'j' = <IncDollarSuffix e.Suffix> 'a';
+  e.Suffix s.Last, 'oabcdefghi' : e._ s.Last s.Next e._ = e.Suffix s.Next;
+  e.Suffix 'i' = <IncDollarSuffix e.Suffix> 'o';
   /* пусто */ = 'a';
 }
 
@@ -414,7 +414,7 @@ NameNestedBody {
       <DelAccumulator
         <MapAccum
           {
-            s.SentenceNumber ((e.Pattern) e.Assigns (e.Result) (e.Blocks^))
+            s.SentenceNumber ((e.Pattern) e.Assigns (e.Result) (e.Blocks))
               = <gen_e__ e.MainName '$' s.SentenceNumber> : e.MainName^
               = <Inc s.SentenceNumber>
                 (

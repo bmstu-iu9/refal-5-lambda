@@ -177,7 +177,7 @@ SelectConstantsOutliner {
       (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code)
       e.Items-E;
 
-  e.Items^ = &OutlineConstants-RASLOnly e.Items;
+  e.Items = &OutlineConstants-RASLOnly e.Items;
 }
 
 OutlineConstants-WithNative {

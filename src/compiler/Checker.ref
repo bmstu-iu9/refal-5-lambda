@@ -82,6 +82,9 @@ PrepareMessage {
   RepVarInSpecPattern s.Mode e.Index
     = 'Repeated variable ' s.Mode '.' e.Index ' in specialization pattern';
 
+  RedundantCaret s.Mode e.Index
+    = 'Useless sign ^: no old variable ' s.Mode '.' e.Index ' in current scope';
+
   RepeatedVariable s.Mode e.Index
     = 'Suspicious repeated variable ' s.Mode '.' e.Index;
 
@@ -992,8 +995,16 @@ CheckPattern-Flatten {
         (e.KnownVars) (Var t.SrcPos s.Mode e.Index) =
           (e.KnownVars (s.Mode e.Index));
 
-        (e.KnownVars) (NewVar t.SrcPos s.Mode e.Index) =
-          (<FixupKnownVars e.KnownVars (s.Mode e.Index)>);
+        (e.KnownVars) (NewVar t.SrcPos s.NewMode e.Index)
+          = e.KnownVars
+          : {
+              e.KnownVars-B (s.OldMode e.Index) e.KnownVars-E
+                = (e.KnownVars-B (s.NewMode e.Index) e.KnownVars-E);
+
+              e.KnownVars^
+                = (e.KnownVars (s.NewMode e.Index))
+                  (Warning deprecated t.SrcPos RedundantCaret s.NewMode e.Index);
+            };
 
         (e.KnownVars) (Symbol Name t.SrcPos e.Name) =
           (e.KnownVars) (Symbol Name t.SrcPos e.Name);
@@ -1003,13 +1014,6 @@ CheckPattern-Flatten {
       }
       (e.ScopeVars) e.Items
     >;
-}
-
-FixupKnownVars {
-  e.KnownVars-B (s.OldMode e.Index) e.KnownVars-E (s.NewMode e.Index) =
-    e.KnownVars-B (s.NewMode e.Index) e.KnownVars-E;
-
-  e.KnownVars (s.Mode e.Index) = e.KnownVars (s.Mode e.Index);
 }
 
 CheckResult {

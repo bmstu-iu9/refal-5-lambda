@@ -234,7 +234,7 @@ CheckEntries {
 }
 
 AddEntryError {
-  e.Name t.ErrorList^ t.Pos
+  e.Name t.ErrorList t.Pos
     = <EL-AddErrorAt
         t.ErrorList t.Pos 'Entry function ' e.Name ' is multiple defined'
       >;

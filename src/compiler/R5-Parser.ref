@@ -783,7 +783,7 @@ DoTokenChain {
               (TkCloseADT t.ClosePos) e.Tokens^
                 = t.ErrorList e.Tokens;
 
-              (s.Type t.Pos^ e.Value) e.Tokens^
+              (s.Type t.Pos e.Value) e.Tokens^
                 = <EL-AddErrorAt t.ErrorList t.Pos 'Missed \']\''>
                   (s.Type t.Pos e.Value) e.Tokens;
             }

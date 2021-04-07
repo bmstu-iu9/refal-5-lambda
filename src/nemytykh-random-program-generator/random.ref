@@ -595,7 +595,7 @@ SentsForCrefal {
 
 Entry {
  = TransformOfModule;
- = TransformOfFunction;
+* = TransformOfFunction;
 }
 
 MainFileName   {

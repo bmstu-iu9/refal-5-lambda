@@ -159,7 +159,7 @@ ParseElement-SwDirective {
 ParseSpec {
   t.ErrorList (#TkName s.LnNum e.Name) e.Tail
     = <ParsePattern t.ErrorList e.Tail >
-    : t.ErrorList^ (e.Pattern^) e.Tail^
+    : t.ErrorList^ (e.Pattern) e.Tail^
     = <Expect #TkSemicolon (';') t.ErrorList e.Tail>
     : t.ErrorList^ e.Tail^
     = ((#Spec s.LnNum (e.Name) e.Pattern)) t.ErrorList e.Tail;
@@ -315,7 +315,7 @@ DoParseBlock {
       (#TkEOF s.LnNum) e.Tail;
 
   t.ErrorList (e.Sentences) e.Tokens
-    = <ParseSentence t.ErrorList e.Tokens> : (e.Sentence) t.ErrorList^ e.Tail^
+    = <ParseSentence t.ErrorList e.Tokens> : (e.Sentence) t.ErrorList^ e.Tail
     = <DoParseBlock t.ErrorList (e.Sentences (e.Sentence)) e.Tail>;
 }
 

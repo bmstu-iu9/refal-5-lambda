@@ -15,6 +15,10 @@ $EXTERN DisplayName;
 *$FROM GlobalGen
 $EXTERN GlobalGen;
 
+*$FROM OptTree-StopRelation
+$EXTERN OptTree-CanonizeTuple, OptTree-CheckTupleStopRelation;
+
+
 /**
   <OptTree-Spec-Prepare s.OptSpec e.AST> == e.AST^
 
@@ -283,7 +287,7 @@ SpecUnit {
         (e.SpecInfo (e.Histories) (/* empty history */) (e.NewFunctions))
         e.Sentences
       >
-    : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^))
+    : (e.SpecInfo^ (e.Histories^) (e.History) (e.NewFunctions^))
       e.Sentences^
     = (e.SpecInfo (e.Histories) (e.NewFunctions))
       (ColdFunction SPEC s.ScopeClass t.Name Sentences e.Sentences);
@@ -631,7 +635,7 @@ SpecCall-Aux {
           : {
               True
                 = <HasHigmanKruskalRelation
-                    (e.Name) (<CanonizeSignature e.Signature>)
+                    (e.Name) (<OptTree-CanonizeTuple e.Signature>)
                     e.History
                   >;
 
@@ -1168,8 +1172,8 @@ MapGenericMatches {
 HasHigmanKruskalRelation {
   (e.Name) (e.Signature) e.History ((e.InstanceName) e.HistorySignature)
     , <SourceNameOfInstance e.InstanceName> : e.Name
-    , <CheckSignaturesPairForRelation
-        (e.Signature) <CanonizeSignature e.HistorySignature>
+    , <OptTree-CheckTupleStopRelation
+        (e.Signature) <OptTree-CanonizeTuple e.HistorySignature>
       >
     : True
     = True e.HistorySignature;
@@ -1183,350 +1187,6 @@ HasHigmanKruskalRelation {
 SourceNameOfInstance {
   e.Name SUF '@' s._ = e.Name;
   e.Name '@' s._ = e.Name;
-}
-
-/**
-  <CheckSignaturesPairForRelation (e.CurrentSignature) e.HistorySignature>
-    == True
-    == False
-
-  Проверяет выполнение отношения Хигмана-Крускала для двух сигнатур.
-  Возвращает True, если отношение выполняется, и False в ином случае.
-
-  e.CurrentSignature, e.HistorySignature ::= t.StaticVarVals*
-  t.StaticVarVals ::= (t.Term*)
-  t.Term ::=
-      (Symbol s.SymType e.SymInfo)
-    | (Var 't' e.Index)
-    | (Var 's' e.Index)
-    | (Var 'e' e.Index)
-    | (ADT-Brackets t.Name t.Term*)
-    | (Brackets t.Term*)
-    | (ClosureBrackets t.Term*)
-    | (CallBrackets t.Name t.Term*)
-*/
-CheckSignaturesPairForRelation {
-  (/* пусто */) /* пусто */ = True;
-
-  (e.CurrentSignature) e.HistorySignature
-
-    /* Берём часть сигнатур для одной статической переменной */
-    , e.CurrentSignature
-    : (e.CurrentSignature-CurVar) e.CurrentSignature-Rest
-
-    , e.HistorySignature
-    : (e.HistorySignature-CurVar) e.HistorySignature-Rest
-
-    , <CheckSignaturesPairForRelation-OneVar
-        (e.CurrentSignature-CurVar) e.HistorySignature-CurVar
-      >
-    : {
-        True
-          = <CheckSignaturesPairForRelation
-              (e.CurrentSignature-Rest) e.HistorySignature-Rest
-            >;
-
-        False = False;
-    };
-}
-
-CheckSignaturesPairForRelation-OneVar {
-  (e.CurrentSignature-CurVar) e.HistorySignature-CurVar
-    /* Разделяем текущую сигнатуру на две части  */
-    , e.CurrentSignature-CurVar : t.Term e.OtherPart
-
-    = <DoCheckSignaturesPairForRelation
-        (t.Term) (e.OtherPart) e.HistorySignature-CurVar
-      >;
-
-  (e.CurrentSignature-CurVar) e.HistorySignature-CurVar
-    , e.CurrentSignature-CurVar : /* пусто */
-    = e.HistorySignature-CurVar
-    : {
-        /* пусто */ = True;
-        e._ = False;
-      };
-}
-
-/**
-  <DoCheckSignaturesPairForRelation
-    (e.CurSig1) (e.CurSig2) e.HistorySignature
-  >
-    == True
-    == False
-
-  Одна итерация функции CheckSignaturesPairForRelation.
-
-  e.CurSig1 ::= t.Term*
-  e.CurSig2 ::= t.Term*
-  e.HistorySignature ::= t.Term*
-*/
-DoCheckSignaturesPairForRelation {
-  (e.CurSig1) (e.CurSig2) e.HistorySignature
-
-    /* Проверяем, содержится ли полностью в e.CurSig1 */
-    , <ContainsSignature (e.CurSig1) e.HistorySignature> : True
-
-    = True;
-
-  (e.CurSig1) (e.CurSig2) e.HistorySignature
-
-    /* Проверяем, содержится ли полностью в e.CurSig2 */
-    , <ContainsSignature (e.CurSig2) e.HistorySignature> : True
-
-    = True;
-
-  (e.CurSig1) (e.CurSig2) e.HistorySignature
-
-    /* Проверяем, что часть e.HistorySignature содержится в e.CurSig1 */
-    , <PartiallyContainsSignature (e.CurSig1) e.HistorySignature>
-    : True e.HistorySignature-Rest
-
-    /* Проверяем, что оставшаяся часть содержится в e.CurSig2 */
-    , <ContainsSignature (e.CurSig2) e.HistorySignature-Rest>
-    : True
-
-    = True;
-
-  (e.CurSig1) (e.CurSig2) e.HistorySignature = False;
-}
-
-/**
-  <ContainsSignature (e.Expr) e.Signature>
-    == True
-    == False
-
-  Проверяет, что выражение содержит сигнатуру.
-
-  e.Expr ::= t.Term*
-  e.Signature ::= t.Term*
-*/
-ContainsSignature {
-  (e.Expr-B e.Signature e.Expr-E) e.Signature
-    = True;
-
-  /*
-    Если выражение и сигнатура из истории начинаются на одинаковый терм,
-    то выражение вкладывается в сигнатуру тогда и только тогда, когда
-    вкладываются их хвосты.
-  */
-  (t.Common e.Expr) t.Common e.Signature
-    = <ContainsSignature (e.Expr) e.Signature>;
-
-  /*
-    Оптимизация частнoго случая: аналогично можно поступить и с последним
-    общим термом.
-  */
-  (e.Expr t.Common) e.Signature t.Common
-    = <ContainsSignature (e.Expr) e.Signature>;
-
-  /*
-    Если первый токен у обеих сигнатур - скобки,
-    пытаемся их убрать у обеих сигнатур и посмотреть,
-    есть ли вложение без них
-  */
-  ((s.TermType e.Inner) e.RestExpr) (s.TermType e.OtherInner) e.OtherRestExpr
-    , e.Inner : t.Inner-FirstTerm e.Inner-Rest
-    , e.OtherInner : t.OtherInner-FirstTerm e.OtherInner-Rest
-
-    /*
-      Проверяем, что первый элемент - скобки, и
-      в зависимости от типа скобок определяем
-      её внутреннее выражение
-    */
-    , s.TermType :
-      {
-        Brackets
-          = True e.Inner;
-
-        ClosureBrackets
-          = True e.Inner;
-
-        ADT-Brackets
-          , e.Inner
-          : (e.Name) e.ADT-Brackets-Inner-Rest
-          = True e.ADT-Brackets-Inner-Rest;
-
-        CallBrackets
-          , e.Inner
-          : (e.SymbolName) e.Argument
-          = True e.Argument;
-
-        e.OtherTermType
-          = False;
-      }
-    : True e.Inner^
-
-    , e.Inner :
-      {
-        t.Inner-FirstTerm^ e.Inner-Rest^
-          = <DoCheckSignaturesPairForRelation
-              (t.Inner-FirstTerm) (e.Inner-Rest) e.OtherInner
-            >;
-
-        e.Expr
-          = <DoCheckSignaturesPairForRelation
-              (e.Expr) (/* пусто */) e.OtherInner
-            >;
-      }
-    : s.InnerCheckResult
-
-    , s.InnerCheckResult
-    : True
-
-    , e.RestExpr :
-      {
-        t.RestExpr-Term e.RestExpr-Rest
-          = <DoCheckSignaturesPairForRelation
-              (t.RestExpr-Term) (e.RestExpr-Rest) e.OtherRestExpr
-            >;
-
-        e.Expr
-          = <DoCheckSignaturesPairForRelation
-              (e.Expr) (/* пусто */) e.OtherRestExpr
-            >;
-      }
-    : s.RestExprCheckResult
-
-    , s.RestExprCheckResult
-    : True
-
-    = True;
-
-  ((s.TermType e.Inner) e.RestExpr) e.Signature
-    , e.Inner : t.Inner-FirstTerm e.Inner-Rest
-    = s.TermType
-    :  {
-        Brackets
-          = <DoCheckSignaturesPairForRelation
-              (t.Inner-FirstTerm) (e.Inner-Rest e.RestExpr) e.Signature
-            >;
-
-        ADT-Brackets
-          , e.Inner
-          : (e.Name) t.ADT-Brackets-Inner-FirstTerm e.ADT-Brackets-Inner-Rest
-          = <DoCheckSignaturesPairForRelation
-              (t.ADT-Brackets-Inner-FirstTerm)
-              (e.ADT-Brackets-Inner-Rest e.RestExpr) e.Signature
-            >;
-
-        CallBrackets
-          , e.Inner : (e.SymbolName) e.Argument
-          , e.Argument : t.Argument-FirstTerm e.Argument-RestExpr
-          = <DoCheckSignaturesPairForRelation
-              (t.Argument-FirstTerm) (e.Argument-RestExpr e.RestExpr)
-              e.Signature
-            >;
-
-        ClosureBrackets
-          = <DoCheckSignaturesPairForRelation
-              (t.Inner-FirstTerm) (e.Inner-Rest e.RestExpr) e.Signature
-            >;
-
-        Var
-          = <DoCheckSignaturesPairForRelation
-              (/* пусто */) (e.RestExpr) e.Signature
-            >;
-
-        Symbol
-          = <DoCheckSignaturesPairForRelation
-              (/* пусто */) (e.RestExpr) e.Signature
-            >;
-
-        s.OtherTermType
-          = False;
-      };
-
-  (e.Expr) e.Signature = False;
-}
-
-/**
-  <PartiallyContainsSignature (e.Expr) e.Signature>
-    == True e.SignaturePart
-    == False
-
-  Проверяет, что выражение частично содержит сигнатуру.
-  Если была обнаружена часть сигнатуры,
-  содержащаяся в выражении, возвращает True, за которым
-  следует остальная часть сигнатуры.
-  Иначе возвращает False.
-
-  e.Expr ::= t.Term*
-  e.Signature ::= t.Term*
-*/
-PartiallyContainsSignature {
-  (e.Expr) e.Signature
-    /* Если выражение из истории пусто, возвращаем False */
-    , e.Signature : /*пусто*/
-    = False;
-
-  (e.Expr) e.Signature
-
-    /* Разделяем сигнатуру из истории на две части */
-    , e.Signature : e.Signature-Part t.LastTerm
-
-    /* Проверяем, что e.Signature-Part не пусто */
-    , e.Signature-Part : t.FirstTerm e.OtherPart
-
-    /*
-      Если текущая сигнатура содержит часть сигнатуры из истории,
-      возвращаем True и остальную часть, которую она не содержит.
-    */
-    , <ContainsSignature (e.Expr) e.Signature-Part>
-    : True
-
-    = True t.LastTerm;
-
-  /*
-    Отщепляем последний терм от сигнатуры из истории и вызываем рекурсию,
-    в конце добавляем последний терм, который отщепили.
-   */
-  (e.Expr) e.Signature-Part t.LastTerm
-    = <PartiallyContainsSignature
-        (e.Expr) e.Signature-Part
-      >
-      t.LastTerm;
-}
-
-/**
-  <CanonizeSignature e.Signature> == e.Signature^
-
-  * Убирает имена переменных в сигнатуре, оставляет их типы данных.
-*/
-CanonizeSignature {
-  e.Signature
-    = <Map
-        {
-          (e.SignaturePart)
-            = <CanonizeSignature-Expr e.SignaturePart>
-            : e.SignaturePart^
-            = (e.SignaturePart);
-        }
-        e.Signature
-      >
-    : e.Signature^
-    = e.Signature;
-}
-
-CanonizeSignature-Expr {
-  e.Expr = <Map &CanonizeSignature-Term e.Expr>;
-}
-
-CanonizeSignature-Term {
-  (Var s.Mode e.Index) = (Var s.Mode);
-
-  (s.BracketsTag e.Expr)
-    , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
-    = <CanonizeSignature-Expr e.Expr> : e.Expr^
-    = (s.BracketsTag e.Expr);
-
-  (ADT-Brackets (e.Name) e.Expr)
-    = <CanonizeSignature-Expr e.Expr> : e.Expr^
-    = (ADT-Brackets (e.Name) e.Expr);
-
-  (Symbol Number s._) = (Symbol Number);
-
-  t.OtherTerm = t.OtherTerm;
 }
 
 /* Выполняет обобщение */

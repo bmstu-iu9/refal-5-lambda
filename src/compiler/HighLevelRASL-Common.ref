@@ -359,6 +359,6 @@ $ENTRY MakeSavers {
         (s.OriginContextOffset /* CmdSave's */)
         e.SubstitutesAndJunks
       >
-    : (s.ContextOffset^ e.CmdSaves) e.SubstitutesAndJunks^
+    : (s.ContextOffset e.CmdSaves) e.SubstitutesAndJunks^
     = s.ContextOffset (e.CmdSaves) e.SubstitutesAndJunks;
 }
