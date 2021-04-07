@@ -303,7 +303,7 @@ $ENTRY ParseCommandLine {
                      s.Pos
                      'option -W expects \'all\', \'[no-]error[=...]\', '
                      '\'[no-]screening\', \'[no-]pseudofunctions\' '
-                     '\'[no-]repeated\''
+                     '\'[no-]repeated\', \'[no-]deprecated\', '
                      '\'[no-]nul-in-compound\', but got \'' e.BadValue '\''
                    );
 
@@ -389,6 +389,8 @@ PrintHelp {
 '                                        correctness (enabled by default)\n'
 '          -Wrepeated, -Wno-... - check/don\'t suspicious repeated variables\n'
 '                                 (enabled by default)\n'
+'          -Wdeprecated, -Wno-... - warn/don\'t about deprecated syntax\n'
+'                                   (enabled by default)\n'
 '          -Werror[=...], -Wno-error[=...] - treat/don\'t all or only provided\n'
 '                                            warning(s) as error(s)\n'
 '-p, --prefix prefix-name\n'
