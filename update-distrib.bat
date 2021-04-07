@@ -5,12 +5,13 @@ echo * U P D A T E   V E R S I O N   N U M B E R !!! *
 echo *       file: docs/setup.sh                     *
 echo *       file: src/common/Version.ref            *
 echo *       file: src/interpreter/main.ref          *
+echo *       file: NEWS.md                           *
 echo * * * * * * * * * * * * * * * * * * * * * * * * *
 
 pushd src
 setlocal
 set RELEASE=1
-call make.bat
+call make.bat || exit /b 1
 endlocal
 popd
 
@@ -52,8 +53,7 @@ copy ..\docs\*.ref docs
 copy ..\docs\*.yml docs
 copy ..\docs\*.js docs
 copy ..\LICENSE .
-copy ..\README.md .
-copy ..\README.en.md .
+copy ..\*.md .
 md editors
 xcopy /e /i /y ..\editors editors
 call bootstrap.bat
@@ -64,4 +64,5 @@ echo * U P D A T E   V E R S I O N   N U M B E R !!! *
 echo *       file: docs/setup.sh                     *
 echo *       file: src/common/Version.ref            *
 echo *       file: src/interpreter/main.ref          *
+echo *       file: NEWS.md                           *
 echo * * * * * * * * * * * * * * * * * * * * * * * * *

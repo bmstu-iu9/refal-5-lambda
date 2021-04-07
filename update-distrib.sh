@@ -5,9 +5,10 @@ echo "* U P D A T E   V E R S I O N   N U M B E R !!! *"
 echo "*       file: docs/setup.sh                     *"
 echo "*       file: src/common/Version.ref            *"
 echo "*       file: src/interpreter/main.ref          *"
+echo "*       file: NEWS.md                           *"
 echo "* * * * * * * * * * * * * * * * * * * * * * * * *"
 
-( cd src && RELEASE=1 ./make.sh )
+( cd src && RELEASE=1 ./make.sh || exit 1 )
 
 pushd distrib || exit
 rm -rf bin scripts compiler doc docs lexgen lib make editors rsl-decompiler
@@ -43,8 +44,7 @@ cp ../docs/*.ref docs
 cp ../docs/*.yml docs
 cp ../docs/*.js docs
 cp ../LICENSE .
-cp ../README.md .
-cp ../README.en.md .
+cp ../*.md .
 mkdir editors
 cp -R ../editors/* editors
 ./bootstrap.sh
@@ -55,4 +55,5 @@ echo "* U P D A T E   V E R S I O N   N U M B E R !!! *"
 echo "*       file: docs/setup.sh                     *"
 echo "*       file: src/common/Version.ref            *"
 echo "*       file: src/interpreter/main.ref          *"
+echo "*       file: NEWS.md                           *"
 echo "* * * * * * * * * * * * * * * * * * * * * * * * *"
