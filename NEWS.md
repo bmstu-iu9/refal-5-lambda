@@ -1,5 +1,5 @@
-# [НОВОЕ] — 2021-xx-xx
-## `NEWS.md`, пошаговый отладчик, `-Wrepeated`
+# [3.3] — 2021-04-07
+## `NEWS.md`, пошаговый отладчик, `-Wrepeated`, `e.X$a`, `-Wdeprecated`
 
 ### Файл `NEWS.md`
 

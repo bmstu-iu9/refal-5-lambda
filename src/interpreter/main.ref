@@ -8,14 +8,14 @@ $EXTERN Module-Load, Module-LookupFunction, Module-Unload;
 #include "refalrts-diagnostic-defs.h"
 #include "refalrts-vm.h"
 
-#define VERSION "3.2"
+#define VERSION "3.3"
 
 static void version(FILE *output) {
   fprintf(
     output,
     "rlgo, a part of Refal-5-lambda compiler toolkit, version " VERSION "\n"
     "Copyright (c) 2008-2016, Alexander Konovalov, "
-    "2016-2020, BMSTU IU9 Department\n"
+    "2016-2021, BMSTU IU9 Department\n"
     "All rights reserved.\n\n"
   );
 }
