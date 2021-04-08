@@ -49,7 +49,7 @@ goto :EOF
 
   for /d %%d in ( ^
     . platform-* exe platform-Windows\lib platform-POSIX\lib debug ^
-    debug-stubs ^
+    platform-MINGW32\lib platform-MINGW64\lib debug-stubs ^
   ) do (
     if not exist %SCRATCHDIR%\%%d\NUL (
       mkdir %SCRATCHDIR%\%%d
