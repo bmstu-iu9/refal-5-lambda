@@ -5,7 +5,7 @@ $INCLUDE "LibraryEx";
 $EXTERN HashName;
 
 *$FROM GenericMatch
-$EXTERN Solve;
+$EXTERN Solve-Drive;
 
 
 IsPassiveCall {
@@ -633,7 +633,7 @@ DoOptExpr-MakeSubstitutions {
   s.Mode (e.SentenceVars) (e.Args) (e.Substitutions)
   (Function (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
     = <Cleanup-Step-Drop e.RS> : e.RS^
-    = <Solve (e.SentenceVars) ((e.Args) ':' (e.LS))>
+    = <Solve-Drive (e.SentenceVars) ((e.Args) ':' (e.LS))>
     : {
         /*
           В случае решения без сужений просто применяем замены.

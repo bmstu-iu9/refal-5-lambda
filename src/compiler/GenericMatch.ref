@@ -31,7 +31,7 @@ FormatAssigns {
 
 $ENTRY GenericMatch {
   (e.Pattern) (e.LPattern)
-    = <Solve
+    = <Solve-Drive
         (<ExtractVariables ((e.Pattern e.LPattern) (/* пусто */))>)
         ((e.Pattern) ':' (e.LPattern))
       >
@@ -53,7 +53,7 @@ IsSVarSubset {
 }
 
 /*
-  <Solve (e.UsedVars) t.Equation>
+  <Solve-Drive (e.UsedVars) t.Equation>
     == Success t.Result* | Undefined | Failure
 
     t.Contr ::= (t.Var ':' e.Val)
@@ -62,7 +62,7 @@ IsSVarSubset {
     t.Result ::= ((t.Contr*) (t.Assign*))
 */
 
-$ENTRY Solve {
+$ENTRY Solve-Drive {
   (e.UsedVars) ((e.Expr) ':' (e.Lexpr))
     = <Solve-Aux (e.UsedVars) () ((e.Expr) ':' (e.Lexpr)) ()>
     : {
@@ -72,7 +72,7 @@ $ENTRY Solve {
     };
 }
 
-/* Преобразует формат результата функции Solve-Aux к формату Solve */
+/* Преобразует формат результата функции Solve-Aux к формату Solve-Drive */
 
 CombineResults {
   (e.Solutions) Success (e.Contrs) (e.Assigns) e.Rest
