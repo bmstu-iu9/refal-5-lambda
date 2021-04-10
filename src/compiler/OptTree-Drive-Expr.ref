@@ -33,34 +33,36 @@ IsPassiveCall-Aux {
 
 
 /**
-  <OptTree-Drive-Expr (e.UsedVars) t.DriveInfo e.Expr t.Mode>
+  <OptTree-Drive-Expr (e.UsedVars) (e.WholeVars) t.DriveInfo e.Expr>
     == t.OptInfo^ e.Branches (e.NewFunctions)
 
   e.Branches ::= (e.Contractions (e.DrivenExpr))*
+  e.UsedVars, e.WholeVars ::= (s.Mode e.Index)*
 */
 $ENTRY OptTree-Drive-Expr {
-  (e.UsedVars) ((e.OptFuncNames) e.OptFuncs) e.Expr t.Mode
+  (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr
+     = t.OptInfo : ((e.OptFuncNames) e.OptFuncs)
      = <FindOptimizedCall (e.OptFuncNames) e.Expr>
      : {
          (e.OptFuncNames^ None) e.Expr^
            = ((e.OptFuncNames) e.OptFuncs) (/* нет сужений */ (e.Expr)) ();
 
          (e.OptFuncNames^ t.Call) e.Expr^
-           = <OptExpr-Aux (e.UsedVars) t.Mode (e.Expr) t.Call e.OptFuncs>
+           = <OptExpr-Aux (e.UsedVars) (e.WholeVars) (e.Expr) t.Call e.OptFuncs>
            : (e.OptFuncs^) (e.NewFunctions) e.Branches
            = ((e.OptFuncNames) e.OptFuncs) e.Branches (e.NewFunctions);
        };
 }
 
 OptExpr-Aux {
-  (e.UsedVars) (s.DriveMode s.IntrinsicMode) (e.Expr)
+  (e.UsedVars) (e.WholeVars) (e.Expr)
   (CallBrackets (Symbol Name e.Name) e.Args)
   t.Metatables e.OptFuncs
 
     /* Поиск информации для прогонки */
     = <FindOptInfo e.OptFuncs (e.Name)> : e.OptFuncs^ t.FunctionForDrive
     = <OptExpr-MakeSubstitutions
-        (e.UsedVars) (s.DriveMode s.IntrinsicMode) (e.Expr) (e.Args)
+        (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args)
         t.FunctionForDrive t.Metatables
       >
     : t.Metatables^ e.SubstitutionPacks
@@ -571,7 +573,7 @@ Intrinsic-Last {
 
 /*
   <OptExpr-MakeSubstitutions
-    (e.UsedVars) t.Mode (e.Expr) (e.CallArgs) t.OptFunction t.Metatables
+    (e.UsedVars) (e.WholeVars) (e.Expr) (e.CallArgs) t.OptFunction t.Metatables
   >
     == t.Metatables (e.Substitutions)*
   e.Substitutions ::= e.Contractions
@@ -580,32 +582,34 @@ Intrinsic-Last {
   правой части.
 */
 OptExpr-MakeSubstitutions {
-  (e.UsedVars) (s.DriveMode Intrinsic) (e.Expr) (e.Args)
-  t.IntrinsicFunction t.Metatables
+  (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args) t.IntrinsicFunction t.Metatables
     , t.IntrinsicFunction : (Intrinsic (e._) Intrinsic e.BehaviorName)
     = <IntrinsicCall t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName>;
 
-  (e.UsedVars) t.Mode (e.Expr) (e.Args) t.Function t.Metatables
+  (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args) t.Function t.Metatables
     /* Активные вызовы игнорируем */
     , <IsPassiveCall e.Args> : False
 
     = t.Metatables <MakeColdSolution t.Function e.Args>;
 
-  (e.UsedVars) (s.DriveMode s.IntrinsicMode) (e.Expr) (e.Args)
+  (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args)
   (s.FuncMode (e.Name) Sentences e.Body) t.Metatables
-    , <OneOf s.DriveMode Drive Inline> : True
 
-    = <DecreaseMode s.DriveMode s.FuncMode> : s.DriveMode^
+    = s.FuncMode
+    : {
+        Drive = e.WholeVars;
+        Inline = e.UsedVars;
+      }
+    : e.WholeVars^
 
     = t.Metatables
       <DoOptExpr-MakeSubstitutions
-        s.DriveMode (e.UsedVars) (e.Args)
+        (e.UsedVars) (e.WholeVars) (e.Args)
         (/* substitutions */)
         (Function (e.Name) Sentences e.Body)
       >;
 
-  (e.UsedVars) t.Mode (e.Expr) (e.Args)
-  t.Function t.Metatables
+  (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args) t.Function t.Metatables
     = t.Metatables <MakeColdSolution t.Function e.Args>;
 }
 
@@ -624,13 +628,8 @@ MakeColdSolution {
       );
 }
 
-DecreaseMode {
-  Inline s.Mode = Inline;
-  Drive s.Mode = s.Mode;
-}
-
 DoOptExpr-MakeSubstitutions {
-  s.Mode (e.SentenceVars) (e.Args) (e.Substitutions)
+  (e.SentenceVars) (e.WholeVars) (e.Args) (e.Substitutions)
   (Function (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
     = <Cleanup-Step-Drop e.RS> : e.RS^
     = <Solve-Drive (e.SentenceVars) ((e.Args) ':' (e.LS))>
@@ -646,8 +645,8 @@ DoOptExpr-MakeSubstitutions {
         /*
           «Грязное» решение допускаем только в случае прогонки.
         */
-        Success e.M
-          , s.Mode : Drive
+        Success e.Solutions
+          , <SafeContractions e.Solutions (e.WholeVars)> : True
           = <Map
               {
                 ((e.Contrs) (e.Assigns))
@@ -655,11 +654,12 @@ DoOptExpr-MakeSubstitutions {
                   = e.Contrs (<eDRIVEN> ':' e.CallReplacer) : e.Contrs^
                   = (e.Contrs (/* нет новых функций */));
               }
-              e.M
+              e.Solutions
             >
-          : e.NewSubsts
+          : e.NewSubstitutions
+          = e.Substitutions e.NewSubstitutions : e.Substitutions^
           = <DoOptExpr-MakeSubstitutions
-              s.Mode (e.SentenceVars) (e.Args) (e.Substitutions e.NewSubsts)
+              (e.SentenceVars) (e.WholeVars) (e.Args) (e.Substitutions)
               (Function (<RemainderFuncIncName e.Name>) Sentences e.Rest)
             >;
 
@@ -669,7 +669,7 @@ DoOptExpr-MakeSubstitutions {
         */
         Failure
           = <DoOptExpr-MakeSubstitutions
-              s.Mode (e.SentenceVars) (e.Args) (e.Substitutions)
+              (e.SentenceVars) (e.WholeVars) (e.Args) (e.Substitutions)
               (Function (<RemainderFuncIncName e.Name>) Sentences e.Rest)
             >;
 
@@ -685,7 +685,7 @@ DoOptExpr-MakeSubstitutions {
             >;
       };
 
-  s.Mode (e.SentenceVars) (e.Args) (e.Substitutions) t.RestFunction
+  (e.SentenceVars) (e.WholeVars) (e.Args) (e.Substitutions) t.RestFunction
     = e.Substitutions <MakeColdSolution t.RestFunction e.Args>;
 }
 
@@ -698,6 +698,16 @@ Cleanup-Step-Drop {
   (CallBrackets (Symbol Name '__Step-Drop') /* пусто */) e.RS = e.RS;
 
   e.RS = e.RS;
+}
+
+SafeContractions {
+  e.Solutions-B
+  ((e.Contrs-B ((Var s.Mode e.Index) ':' e._) e.Contrs-E) (e.Assigns))
+  e.Solutions-E
+  (e.WholeVars-B (s.Mode e.Index) e.WholeVars-E)
+    = False;
+
+  e.Solutions (e.WholeVars) = False;
 }
 
 DropLeft {

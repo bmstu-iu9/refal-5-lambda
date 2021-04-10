@@ -95,6 +95,22 @@ UpdateDriveInfo {
       >
     : /* пусто */
 
+    = s.OptDrive
+    : {
+        NoOpt = /* пусто */;
+        OptInline = <Map { (Drive e.Name) = (Inline e.Name) } e.Drives>;
+        OptDrive = e.Drives;
+      }
+    : e.Drives^
+
+    = s.OptDrive
+    : {
+        NoOpt = /* пусто */;
+        OptInline = e.Inlines;
+        OptDrive = e.Inlines;
+      }
+    : e.Inlines^
+
     = <ExtractBaseNames e.Drives e.Inlines e.Metatables> : e.ExtractedNames
     = <ExtractExtractableFunctions (e.ExtractedNames) e.AST>
     : (e.Extracted) e.AST^
@@ -113,6 +129,13 @@ UpdateDriveInfo {
     = e.Drives e.Inlines e.Metatables : e.OptNames
 
     = <FormatOptFunctions (e.OptNames) e.Extracted> : e.OptFunctions
+
+    = s.OptIntrinsic
+    : {
+        NoOpt = /* пусто */;
+        OptIntrinsic = e.Intrinsics;
+      }
+    : e.Intrinsics^
 
     = <Map
         {
@@ -292,29 +315,17 @@ HashSet-AsChain {
 
 
 /**
-  <OptTree-Drive (s.OptDrive s.OptIntrinsic) e.AST> == e.AST^
+  <OptTree-Drive e.AST> == e.AST^
 */
 $ENTRY OptTree-Drive {
-  (NoOpt NoOpt) e.AST = e.AST;
-
-  (s.OptDrive s.OptIntrinsic) e.AST-B (DriveInfo e.DriveInfo) e.AST-E
-    = <DriveInlineOptimizerTick
-        (e.DriveInfo) e.AST-B e.AST-E s.OptDrive s.OptIntrinsic
-      >
-}
-
-OptSwitch {
-  OptDrive = Drive;
-  OptInline = Inline;
-  OptIntrinsic = Intrinsic;
-  NoOpt = None
+  e.AST-B (DriveInfo e.DriveInfo) e.AST-E
+    = <DriveInlineOptimizerTick (e.DriveInfo) e.AST-B e.AST-E>
 }
 
 /* Осуществляет прогонку или оптимизацию в зависимости от ключа */
 
 DriveInlineOptimizerTick {
-  ((e.OptNames) e.OptInfo) e.AST s.OptDrive s.OptIntrinsic
-    = (<OptSwitch s.OptDrive> <OptSwitch s.OptIntrinsic>) : t.Mode
+  ((e.OptNames) e.OptInfo) e.AST
     = ((e.OptNames) <WithMetatables e.OptInfo>) : t.OptInfo
     = <MapAccum
         {
@@ -322,7 +333,6 @@ DriveInlineOptimizerTick {
             = <OptFunction
                 (Function s.ScopeClass (e.Name) Sentences e.Sentences)
                 t.OptInfo
-                t.Mode
               >;
 
           t.OptInfo^ t.Other = t.OptInfo t.Other
@@ -405,7 +415,7 @@ IsLexpr-Aux {
 
 /*
   Осуществляет попытку прогонки или встраивания в функции
-  <OptFunction t.Function t.DriveInfo s.Mode>
+  <OptFunction t.Function t.DriveInfo>
     == t.DriveInfo t.OptimizedFunction t.Function*
 
   Возвращает модифицированную функцию
@@ -413,12 +423,11 @@ IsLexpr-Aux {
 */
 
 OptFunction {
-  (Function s.ScopeClass (e.Name) Sentences e.Sentences)
-  t.OptInfo t.Mode
+  (Function s.ScopeClass (e.Name) Sentences e.Sentences) t.OptInfo
     = <Reduce
         {
           (t.OptInfo^ (e.SntAcc) (e.FunAcc)) t.Sentence
-            = <OptSentence t.Sentence t.OptInfo t.Mode>
+            = <OptSentence t.Sentence t.OptInfo>
             : t.OptInfo^ (e.NewFunctions) e.NewSentences
             = (t.OptInfo (e.SntAcc e.NewSentences) (e.FunAcc e.NewFunctions));
         }
@@ -440,26 +449,25 @@ OptFunction {
 }
 
 /*
-   <OptSentence t.Sentence t.OptInfo s.Mode>
+   <OptSentence t.Sentence t.OptInfo>
    == t.OptInfo (t.Func?) t.Sentence*
 */
 
 OptSentence {
   /* Оптимизируем только предложения вида Pat = Res */
-  ((e.Left) (e.Right)) t.OptInfo t.Mode
-     = t.Mode : (s.DriveMode s.IntrinsicMode)
-
-    /* Если левая часть не L-выражение, допускаем только встраивание */
-    = <IsLexpr e.Left>
-    : {
-        True = t.Mode;
-        False = (Inline s.IntrinsicMode);
-      }
-    : t.Mode^
+  ((e.Left) (e.Right)) t.OptInfo
 
     = <ExtractVariables ((e.Left) (e.Right))> : e.SentenceVars
 
-     = <OptTree-Drive-Expr (e.SentenceVars) t.OptInfo e.Right t.Mode>
+    /* Если левая часть не L-выражение, сужения запрещаем */
+    = <IsLexpr e.Left>
+    : {
+        True = /* пусто */;
+        False = e.SentenceVars;
+      }
+    : e.WholeVars
+
+     = <OptTree-Drive-Expr (e.SentenceVars) (e.WholeVars) t.OptInfo e.Right>
      : t.OptInfo^ e.Branches (e.NewFunctions)
 
      = t.OptInfo (e.NewFunctions)
@@ -471,7 +479,7 @@ OptSentence {
          e.Branches
        >;
 
-  t.Sentence t.OptInfo t.Mode = t.OptInfo () t.Sentence
+  t.Sentence t.OptInfo = t.OptInfo () t.Sentence
 }
 
 WithMetatables {
