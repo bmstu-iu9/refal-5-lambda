@@ -82,7 +82,7 @@ $ENTRY OptTree {
                 (pass
                   (trace 'before Drive')
                   (call &ExpandClosures)
-                  (call &OptTree-Drive t.OptDrive)))
+                  (call &OptTree-Drive)))
               (call &WarmColdFunctions DRIVE)
               (call &OptTree-Drive-CleanupColdCalls))
             (call &ExpandClosures)))
