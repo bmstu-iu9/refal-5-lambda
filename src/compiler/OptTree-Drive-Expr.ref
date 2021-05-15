@@ -34,7 +34,7 @@ IsPassiveCall-Aux {
 
 /**
   <OptTree-Drive-Expr (e.UsedVars) (e.WholeVars) t.DriveInfo e.Expr>
-    == t.OptInfo^ e.Branches (e.NewFunctions)
+    == t.DriveInfo^ e.Branches (e.NewFunctions)
 
   e.Branches ::= (e.Contractions (e.DrivenExpr))*
   e.UsedVars, e.WholeVars ::= (s.Mode e.Index)*
@@ -576,9 +576,9 @@ Intrinsic-Last {
     (e.UsedVars) (e.WholeVars) (e.Expr) (e.CallArgs) t.OptFunction t.Metatables
   >
     == t.Metatables (e.Substitutions)*
-  e.Substitutions ::= e.Contractions
+  e.Substitutions ::= e.Contractions (e.NewFunctions)
 
-  e.Contractions включают в себя сужение e.DRIVEN#0 для подстановки
+  e.Contractions включают в себя сужение e.DRIVEN для подстановки
   правой части.
 */
 OptExpr-MakeSubstitutions {
