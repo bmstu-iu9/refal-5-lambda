@@ -707,7 +707,7 @@ SafeContractions {
   (e.WholeVars-B (s.Mode e.Index) e.WholeVars-E)
     = False;
 
-  e.Solutions (e.WholeVars) = False;
+  e.Solutions (e.WholeVars) = True;
 }
 
 DropLeft {
