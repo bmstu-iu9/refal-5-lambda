@@ -518,6 +518,8 @@ Solve-TermEquation {
 
   <AddCoordinateLabels e.Expr> == e.Expr^
   <AddCoordinateLabels-Helper (e.Expr) s.CoordsNumber> == e.Expr^
+
+  CoordinateLabel ::= ('{'s.CoordNumber'}')
 */
 
 AddCoordinateLabels {
@@ -944,13 +946,293 @@ Solve-Aux-Spec {
     , <IsTerm t.T> : True
     = /* решений нет */;
 
-  /* Продолжение следует...
-
+  /* клэши закончились */
   (e.UsedVars) (e.Contrs) (e.Assigns)
-    = <Solution-PostProcess (e.Contrs) (e.Assigns)>;
+    = /* TODO: переходим на второй этап алгоритма */;
 
-  e.Other = Undefined
+  /* E1 {m} E2* e.X! E3* {n} E4  :  e.L P e.R  ↦  обобщаем {m–n} */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  ((e.E1 ('{'s.M'}') e.E2 t.eX e.E3 ('{'s.N'}') e.E4) ':' (t.eL e.P t.eR))
+  e.ClashesEnd (e.Assigns)
+    , <HasTopLevelCoordinateLabels e.E2> : False
+    , t.eX : (Var 'e' e.XIndex)
+    , <HasTopLevelCoordinateLabels e.E3> : False
+    , t.eL : (Var 'e' e.LIndex)
+    , t.eR : (Var 'e' e.RIndex)
+    = /* TODO: обобщаем {m–n} */;
+
+  /* остались клэши вида E : e.X P e.Y */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  ((e.E) ':' (t.eX e.P t.eY))
+  e.ClashesEnd (e.Assigns)
+    , t.eX : (Var 'e' e.XIndex)
+    , t.eY : (Var 'e' e.YIndex)
+    = <SplitLeftPart e.E> : (e.Parts)
+    = <Map
+        { t.Part = (t.Part ':' (t.eX e.P t.eY)) }
+        e.Parts
+      >
+    : e.SplittedClashes
+    = <DoSplitSolve
+        (e.UsedVars) (e.Contrs) (e.ClashesStart)
+        (e.SplittedClashes)
+        (e.ClashesEnd) (e.Assigns)
+      >;
+}
+
+/*
+  Разбивает левую часть клэша на список выражений,
+  каждое из которых содержит одну точку разбиения
+
+  <SplitLeftPart e.LeftPart>
+    == (t.Part*)
+  <SplitLeftPart-Aux (e.Begin) (e.Expr) (e.Parts)>
+    == (t.Part*)
+
+  SplitPoint ::= ('sp' e.Content)
+*/
+
+SplitLeftPart {
+  /* Если E начинается на терм, то точка разбиения добавляется в начало */
+  ('{'s.BeginCoord'}') t.T e.Rest
+    , <IsTerm t.T> : True
+    = <SplitLeftPart-Aux
+        (('{'s.BeginCoord'}'))
+        (t.T e.Rest)
+        ((('sp' ('{'s.BeginCoord'}')) t.T e.Rest))
+      >;
+
+  ('{'s.BeginCoord'}') e.Rest
+    = <SplitLeftPart-Aux
+        (('{'s.BeginCoord'}'))
+        (e.Rest)
+        ()
+      >;
+
+  /* пусто */ = ((('sp')));
+}
+
+SplitLeftPart-Aux {
+  /* Точки разбиения добавляются между двумя смежными термами */
+  (e.Begin) (t.T1 t.T2 e.Rest) (e.Parts)
+    , <IsTerm t.T1> : True
+    , <IsTerm t.T2> : True
+    = <SplitLeftPart-Aux
+        (e.Begin t.T1)
+        (t.T2 e.Rest)
+        (e.Parts (e.Begin t.T1 ('sp') t.T2 e.Rest))
+      >;
+
+  /* Точки разбиения добавляются между двумя смежными термами */
+  (e.Begin) (t.T1 ('{'s.Coord'}') t.T2 e.Rest) (e.Parts)
+    , <IsTerm t.T1> : True
+    , <IsTerm t.T2> : True
+    = <SplitLeftPart-Aux
+        (e.Begin t.T1 ('{'s.Coord'}'))
+        (t.T2 e.Rest)
+        (e.Parts (e.Begin t.T1 ('sp' ('{'s.Coord'}')) t.T2 e.Rest))
+      >;
+
+  /* Если E заканчивается на терм, то точка разбиения добавляется в конец */
+  (e.Begin) (t.T ('{'s.Coord'}')) (e.Parts)
+    , <IsTerm t.T> : True
+    = (e.Parts (e.Begin t.T ('sp' ('{'s.Coord'}'))));
+
+  (e.Begin) (t.T e.Rest) (e.Parts)
+    , <IsTerm t.T> : True
+    = <SplitLeftPart-Aux
+        (e.Begin t.T)
+        (e.Rest)
+        (e.Parts)
+      >;
+
+  /* Точки разбиения находятся «внутри» e-параметров */
+  (e.Begin) (t.eX e.Rest) (e.Parts)
+    , t.eX : (Var 'e' e.XIndex)
+    = <SplitLeftPart-Aux
+        (e.Begin t.eX)
+        (e.Rest)
+        (e.Parts (e.Begin ('sp' t.eX) e.Rest))
+      >;
+
+  (e.Begin) (('{'s.Coord'}') e.Rest) (e.Parts)
+    = <SplitLeftPart-Aux
+        (e.Begin ('{'s.Coord'}'))
+        (e.Rest)
+        (e.Parts)
+      >;
+
+  (e.Begin) () (e.Parts)
+    = (e.Parts);
+}
+
+/* TODO: документация функций */
+
+DoSplitSolve {
+  /* TODO:
+    - обработка результата DoSplitSolve-Aux (запросы на обобщение и тд)
+    - если решатель вернул более чем одно решение,
+      обобщаем следующий клэш в системе
+    - база рекурсии
   */
+
+  (e.UsedVars) (e.Contrs) (e.ClashesStart)
+  (t.ClashWithSplitPoint e.Rest)
+  (e.ClashesEnd) (e.Assigns)
+    = <DoSplitSolve-Aux
+        (e.UsedVars) (e.Contrs) (e.ClashesStart)
+        t.ClashWithSplitPoint
+        (e.ClashesEnd) (e.Assigns)
+      >;
+}
+
+DoSplitSolve-Aux {
+  *  {m} E {n} : e.X P e.Y  ↦  ε ← e.X,  {m} E {n} : P e.Y
+  *   ↑
+  (e.UsedVars) (e.Contrs) (e.ClashesStart)
+  ((('sp' ('{'s.M'}')) e.E ('{'s.N'}')) ':' (t.eX e.P t.eY))
+  (e.ClashesEnd) (e.Assigns)
+    , t.eX : (Var 'e' e.XIndex)
+    , t.eY : (Var 'e' e.YIndex)
+    = <Solve-Aux-Spec
+        (e.UsedVars) (e.Contrs) e.ClashesStart
+        ((('{'s.M'}') e.E ('{'s.N'}')) ':' (e.P t.eY))
+        e.ClashesEnd (e.Assigns (/* пусто */ ':' t.eX))
+      >;
+
+  *  {k} E1 T2 {m} T3 E4 {n} : e.X P e.Y  ↦  {k} E1 T2 {m} ← e.X,
+  *             ↑                            {m} T3 E4 {n} : P e.Y
+  (e.UsedVars) (e.Contrs) (e.ClashesStart)
+  (
+    (
+      ('{'s.K'}') e.E1 t.T2
+      ('sp' ('{'s.M'}'))
+      t.T3 e.E4 ('{'s.N'}')
+    )
+    ':' (t.eX e.P t.eY)
+  )
+  (e.ClashesEnd) (e.Assigns)
+    , <IsTerm t.T2> : True
+    , <IsTerm t.T3> : True
+    , t.eX : (Var 'e' e.XIndex)
+    , t.eY : (Var 'e' e.YIndex)
+    = <Solve-Aux-Spec
+        (e.UsedVars) (e.Contrs) e.ClashesStart
+        ((('{'s.M'}') t.T3 e.E4 ('{'s.N'}')) ':' (e.P t.eY))
+        e.ClashesEnd (e.Assigns (('{'s.K'}') e.E1 t.T2 ('{'s.M'}') ':' t.eX))
+      >;
+
+  *  E1 {m} E2* T3 . T4 E5* {n} E6 : e.X P e.Y  ↦  E1 {m} E2* T3 {n} ← e.X,
+  *                ↑                               {m} T4 E5* {n} E6 : P e.Y
+  (e.UsedVars) (e.Contrs) (e.ClashesStart)
+  (
+    (
+      e.E1 ('{'s.M'}') e.E2
+      t.T3 ('sp') t.T4
+      e.E5 ('{'s.N'}') e.E6
+    )
+    ':' (t.eX e.P t.eY)
+  )
+  (e.ClashesEnd) (e.Assigns)
+    , <HasTopLevelCoordinateLabels e.E2> : False
+    , <IsTerm t.T3> : True
+    , <IsTerm t.T4> : True
+    , <HasTopLevelCoordinateLabels e.E5> : False
+    , t.eX : (Var 'e' e.XIndex)
+    , t.eY : (Var 'e' e.YIndex)
+    = <Solve-Aux-Spec
+        (e.UsedVars) (e.Contrs) e.ClashesStart
+        ((('{'s.M'}') t.T4 e.E5 ('{'s.N'}') e.E6) ':' (e.P t.eY))
+        e.ClashesEnd
+        (e.Assigns (e.E1 ('{'s.M'}') e.E2 t.T3 ('{'s.N'}') ':' t.eX))
+      >;
+
+  *  {m} E {n} : e.X P e.Y  ↦  {m} E {n} ← e.X,  ε : P e.Y
+  *         ↑
+  (e.UsedVars) (e.Contrs) (e.ClashesStart)
+  (
+    (('{'s.M'}') e.E ('sp' ('{'s.N'}')))
+    ':' (t.eX e.P t.eY)
+  )
+  (e.ClashesEnd) (e.Assigns)
+    , t.eX : (Var 'e' e.XIndex)
+    , t.eY : (Var 'e' e.YIndex)
+    = <Solve-Aux-Spec
+        (e.UsedVars) (e.Contrs) e.ClashesStart
+        ((/* пусто */) ':' (e.P t.eY))
+        e.ClashesEnd (e.Assigns (('{'s.M'}') e.E ('{'s.N'}') ':' t.eX))
+      >;
+
+  *  ε : e.X P e.Y  ↦  ε ← e.X, ε : P e.Y
+  *  ↑
+  (e.UsedVars) (e.Contrs) (e.ClashesStart)
+  ((('sp')) ':' (t.eX e.P t.eY))
+  (e.ClashesEnd) (e.Assigns)
+    , t.eX : (Var 'e' e.XIndex)
+    , t.eY : (Var 'e' e.YIndex)
+    = <Solve-Aux-Spec
+        (e.UsedVars) (e.Contrs) e.ClashesStart
+        ((/* пусто */) ':' (e.P t.eY))
+        e.ClashesEnd (e.Assigns (/* пусто */ ':' t.eX))
+      >;
+
+  *  E1 e.X {m} e.Y E2 : e.L P e.R  ↦  e.X → e.NEW1! t.NEW2 e.NEW3,
+  *      ↑                              E1 e.NEW1! {m} ← e.L,
+  *                                     {n} t.NEW2 e.NEW3 E2 : P e.R
+  *                  где E1 = E3 {n} E4*
+  (e.UsedVars) (e.Contrs) (e.ClashesStart)
+  ((e.E1 ('sp' t.eX) ('{'s.M'}') t.eY e.E2) ':' (t.eL e.P t.eR))
+  (e.ClashesEnd) (e.Assigns)
+    , e.E1 : e.E3 ('{'s.N'}') e.E4
+    , <HasTopLevelCoordinateLabels e.E4> : False
+    , t.eX : (Var 'e' e.XIndex)
+    , t.eY : (Var 'e' e.YIndex)
+    , t.eL : (Var 'e' e.LIndex)
+    , t.eR : (Var 'e' e.RIndex)
+    = <NewVarName (e.UsedVars) 'e' e.XIndex> : (e.UsedVars^) 'e' e.New1
+    = <NewVarName (e.UsedVars) 't' e.XIndex> : (e.UsedVars^) 't' e.New2
+    = <NewVarName (e.UsedVars) 'e' e.XIndex> : (e.UsedVars^) 'e' e.New3
+    = t.eNew1 : (Var 'e' e.New1)
+    = t.tNew2 : (Var 't' e.New2)
+    = t.eNew3 : (Var 'e' e.New3)
+    = <Solve-Aux-Spec
+        (e.UsedVars)
+        <AddContraction-Spec
+          (t.eX ':' t.eNew1 t.tNew2 t.eNew3)
+          (e.Contrs) e.ClashesStart
+          ((('{'s.N'}') t.tNew2 t.eNew3 e.E2) ':' (e.P t.eR))
+          e.ClashesEnd (e.Assigns (e.E1 t.eNew1 ('{'s.M'}') ':' t.eL))
+        >
+      >;
+
+  *  E1 e.X E2 : e.L P e.R  ↦  e.X → e.NEW1! e.NEW2,
+  *      ↑                  E1 e.NEW1! {m} ← e.L,
+  *                         {n} e.NEW2 E2 : P e.R
+  *                  где E1 = E3 {n} E4*
+  *                      E2 = E5* {m} E6
+  (e.UsedVars) (e.Contrs) (e.ClashesStart)
+  ((e.E1 ('sp' t.eX) e.E2) ':' (t.eL e.P t.eR))
+  (e.ClashesEnd) (e.Assigns)
+    , e.E1 : e.E3 ('{'s.N'}') e.E4
+    , <HasTopLevelCoordinateLabels e.E4> : False
+    , t.eX : (Var 'e' e.XIndex)
+    , e.E2 : e.E5 ('{'s.M'}') e.E6
+    , <HasTopLevelCoordinateLabels e.E5> : False
+    , t.eL : (Var 'e' e.LIndex)
+    , t.eR : (Var 'e' e.RIndex)
+    = <NewVarName (e.UsedVars) 'e' e.XIndex> : (e.UsedVars^) 'e' e.New1
+    = <NewVarName (e.UsedVars) 'e' e.XIndex> : (e.UsedVars^) 'e' e.New2
+    = t.eNew1 : (Var 'e' e.New1)
+    = t.eNew2 : (Var 'e' e.New2)
+    = <Solve-Aux-Spec
+        (e.UsedVars)
+        <AddContraction-Spec
+          (t.eX ':' t.eNew1 t.eNew2)
+          (e.Contrs) e.ClashesStart
+          ((('{'s.N'}') t.eNew2 e.E2) ':' (e.P t.eR))
+          e.ClashesEnd (e.Assigns (e.E1 t.eNew1 ('{'s.M'}') ':' t.eL))
+        >
+      >;
 }
 
 IsTerm {
@@ -959,6 +1241,9 @@ IsTerm {
   /* Рассматриваем для оптимизаций встраивания, прогонки и специализации */
   (CallBrackets e.Nested) = False;
   (ColdCallBrackets e.Nested) = False;
+
+  /* Метки координат не будем считать термами */
+  ('{'s.Coord'}') = False;
 
   /* s-, t-переменная, скобки обоих видов, символ */
   t.OtherTerm = True;
