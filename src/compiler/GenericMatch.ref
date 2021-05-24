@@ -519,7 +519,7 @@ Solve-TermEquation {
   <AddCoordinateLabels e.Expr> == e.Expr^
   <AddCoordinateLabels-Helper (e.Expr) s.CoordsNumber> == e.Expr^
 
-  CoordinateLabel ::= ('{'s.CoordNumber'}')
+  t.CoordinateLabel ::= ('{'s.CoordNumber'}')
 */
 
 AddCoordinateLabels {
@@ -950,17 +950,6 @@ Solve-Aux-Spec {
   (e.UsedVars) (e.Contrs) (e.Assigns)
     = /* TODO: переходим на второй этап алгоритма */;
 
-  /* E1 {m} E2* e.X! E3* {n} E4  :  e.L P e.R  ↦  обобщаем {m–n} */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((e.E1 ('{'s.M'}') e.E2 t.eX e.E3 ('{'s.N'}') e.E4) ':' (t.eL e.P t.eR))
-  e.ClashesEnd (e.Assigns)
-    , <HasTopLevelCoordinateLabels e.E2> : False
-    , t.eX : (Var 'e' e.XIndex)
-    , <HasTopLevelCoordinateLabels e.E3> : False
-    , t.eL : (Var 'e' e.LIndex)
-    , t.eR : (Var 'e' e.RIndex)
-    = /* TODO: обобщаем {m–n} */;
-
   /* остались клэши вида E : e.X P e.Y */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   ((e.E) ':' (t.eX e.P t.eY))
@@ -989,7 +978,8 @@ Solve-Aux-Spec {
   <SplitLeftPart-Aux (e.Begin) (e.Expr) (e.Parts)>
     == (t.Part*)
 
-  SplitPoint ::= ('sp' e.Content)
+  t.Part ::= (e.LeftPartWithSplitPoint)
+  t.SplitPoint ::= ('sp' e.Content)
 */
 
 SplitLeftPart {
@@ -1178,7 +1168,7 @@ DoSplitSolve-Aux {
 
   *  E1 e.X {m} e.Y E2 : e.L P e.R  ↦  e.X → e.NEW1! t.NEW2 e.NEW3,
   *      ↑                              E1 e.NEW1! {m} ← e.L,
-  *                                     {n} t.NEW2 e.NEW3 E2 : P e.R
+  *                                     {n} t.NEW2 e.NEW3 {m} e.Y E2 : P e.R
   *                  где E1 = E3 {n} E4*
   (e.UsedVars) (e.Contrs) (e.ClashesStart)
   ((e.E1 ('sp' t.eX) ('{'s.M'}') t.eY e.E2) ':' (t.eL e.P t.eR))
@@ -1200,7 +1190,7 @@ DoSplitSolve-Aux {
         <AddContraction-Spec
           (t.eX ':' t.eNew1 t.tNew2 t.eNew3)
           (e.Contrs) e.ClashesStart
-          ((('{'s.N'}') t.tNew2 t.eNew3 e.E2) ':' (e.P t.eR))
+          ((('{'s.N'}') t.tNew2 t.eNew3 ('{'s.M'}') t.eY e.E2) ':' (e.P t.eR))
           e.ClashesEnd (e.Assigns (e.E1 t.eNew1 ('{'s.M'}') ':' t.eL))
         >
       >;
