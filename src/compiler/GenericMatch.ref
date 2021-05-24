@@ -1225,6 +1225,103 @@ DoSplitSolve-Aux {
       >;
 }
 
+/*
+  Формирует по списку присваиваний список симметричных клэшей
+  и обновленный список присваиваний
+
+  <CreateSymmClashes (t.Assign*)>
+    == (t.Assign*) (t.SymmClash*)
+  <CreateSymmClashes-Aux (t.Assign*) (t.SymmClash*) (t.Assign*)>
+    == (t.Assign*) (t.SymmClash*)
+
+  t.SymmClash ::= (e.L '=' e.R)
+*/
+
+CreateSymmClashes {
+  (e.Assigns)
+    = <CreateSymmClashes-Aux (e.Assigns) () ()>;
+}
+
+CreateSymmClashes-Aux {
+  ((e.Left ':' t.Var) e.Rest) (e.SymmClashes) (e.NewAssigns)
+    = <GroupAssignsByVar (e.Rest) t.Var ()> : (e.Rest^) (e.Group)
+    = <CreateSymmClashes-Aux
+        (e.Rest)
+        (<CreateSymmClashesFromGroup
+          (e.Left ':' t.Var)
+          (e.Group)
+          (e.SymmClashes)
+        >)
+        (e.NewAssigns (e.Left ':' t.Var))
+      >;
+
+  () (e.SymmClashes) (e.NewAssigns)
+    = (e.NewAssigns) (e.SymmClashes);
+}
+
+/*
+  Группирует присваивания с одинаковой переменной в правой части.
+  Возвращает сформированную группу и список присваиваний без
+  участия присваиваний, которые попали в группу
+
+  <GroupAssignsByVar (t.Assign*) t.Var t.Group> == (t.Assign*) t.Group
+
+  t.Var ::= (Var s.Type e.Index)
+  t.Group ::= (t.Assign*)
+*/
+
+GroupAssignsByVar {
+  (e.Begin (e.Left ':' t.Var) e.End) t.Var (e.Group)
+    = <GroupAssignsByVar
+        (e.Begin e.End)
+        t.Var
+        (e.Group (e.Left ':' t.Var))
+      >;
+
+  (e.Assigns) t.Var (e.Group)
+    = (e.Assigns) (e.Group);
+}
+
+/*
+  Формирует список симметричных клэшей на основании группы из
+  присваиваний с одинаковыми переменными в правой части
+
+  <CreateSymmClashesFromGroup t.FirstAssign t.Group (t.SymmClash*)>
+    == t.SymmClash*
+  <CreateSymmClashesFromGroup-Aux t.CurrentAssign t.Group (t.SymmClash*)>
+    == t.SymmClash*
+
+  t.FirstAssign, t.CurrentAssign ::= t.Assign
+*/
+
+CreateSymmClashesFromGroup {
+  (e.E1 ':' t.Var) ((e.Ei ':' t.Var) e.Rest) (e.SymmClashes)
+    = <CreateSymmClashesFromGroup
+        (e.E1 ':' t.Var)
+        (e.Rest)
+        (<CreateSymmClashesFromGroup-Aux
+            (e.Ei ':' t.Var)
+            (e.Rest)
+            (e.SymmClashes (e.E1 '=' e.Ei))
+        >)
+      >;
+
+  t.FirstAssign () (e.SymmClashes)
+    = e.SymmClashes;
+}
+
+CreateSymmClashesFromGroup-Aux {
+  (e.Ei ':' t.Var) ((e.Ej ':' t.Var) e.Rest) (e.SymmClashes)
+    = <CreateSymmClashesFromGroup-Aux
+        (e.Ei ':' t.Var)
+        (e.Rest)
+        (e.SymmClashes (e.Ei '=' e.Ej))
+      >;
+
+  t.CurrentAssign () (e.SymmClashes)
+    = e.SymmClashes;
+}
+
 IsTerm {
   (Var 'e' e.Index) = False;
 
