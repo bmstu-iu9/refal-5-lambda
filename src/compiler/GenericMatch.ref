@@ -90,7 +90,7 @@ CombineResults {
 }
 
 Eq {
-  (e.X) (s.X) = True;
+  (e.X) (e.X) = True;
   e.Other = False
 }
 
@@ -577,9 +577,21 @@ SimplifyCoordinates {
       (<Map &SimplifyCoordinates-Assign e.Assigns>)
 }
 
+SimplifyCoordinates-Symm {
+  (e.Contrs) e.SymmClashes (e.Assigns)
+    = (e.Contrs)
+      <Map &SimplifyCoordinates-SymmClash e.SymmClashes>
+      (<Map &SimplifyCoordinates-Assign e.Assigns>)
+}
+
 SimplifyCoordinates-Clash {
   ((e.Left) ':' (e.Right))
     = ((<SimplifyCoordinates-Expr e.Left>) ':' (e.Right))
+}
+
+SimplifyCoordinates-SymmClash {
+  (e.L '=' e.R)
+    = (<SimplifyCoordinates-Expr e.L> '=' <SimplifyCoordinates-Expr e.R>)
 }
 
 SimplifyCoordinates-Assign {
@@ -1239,7 +1251,9 @@ DoSplitSolve-Aux {
 
 CreateSymmClashes {
   (e.Assigns)
-    = <CreateSymmClashes-Aux (e.Assigns) () ()>;
+    = <CreateSymmClashes-Aux (e.Assigns) () ()>
+    : (e.Assigns^) (e.SymmClashes)
+    = (e.Assigns) (<RemoveTautologies e.SymmClashes>);
 }
 
 CreateSymmClashes-Aux {
@@ -1322,6 +1336,103 @@ CreateSymmClashesFromGroup-Aux {
     = e.SymmClashes;
 }
 
+/*
+  Удаляет все координаты из выражения
+
+  <ClearCoordinates e.Expr> == e.ExprWithoutCoordinates
+*/
+
+ClearCoordinates {
+  e.Begin ('{'s.M'}') e.End
+    = <ClearCoordinates e.Begin e.End>;
+
+  e.Begin (Brackets e.E) e.End
+    = <ClearCoordinates e.Begin>
+      (Brackets <ClearCoordinates e.E>)
+      <ClearCoordinates e.End>;
+
+  e.Begin (ADT-Brackets (e.Name) e.E) e.End
+    = <ClearCoordinates e.Begin>
+      (ADT-Brackets (e.Name) <ClearCoordinates e.E>)
+      <ClearCoordinates e.End>;
+
+  e.Expr = e.Expr;
+}
+
+/*
+  Вспомогательные функции отделения термов от выражений
+  (отделений слева и справа соответственно)
+
+  <SeparateTermLeft e.Expr>
+    == (t.CoordinateLabel t.Term t.CoordinateLabel)
+       (e.RestExpr)
+
+  <SeparateTermRight e.Expr>
+    == (e.RestExpr)
+       (t.CoordinateLabel t.Term t.CoordinateLabel)
+*/
+
+SeparateTermLeft {
+  *  {a} T {b} E  ↦  {a} T {b}, {b} E
+  ('{'s.A'}') t.T ('{'s.B'}') e.E
+    , <IsTerm t.T> : True
+    = (('{'s.A'}') t.T ('{'s.B'}'))
+      (('{'s.B'}') e.E);
+
+  *  {a} T E1* {b} E2  ↦  {a} T {b}, {a} E1* {b} E2
+  ('{'s.A'}') t.T e.E1 ('{'s.B'}') e.E2
+    , <IsTerm t.T> : True
+    , <HasTopLevelCoordinateLabels e.E1> : False
+    = (('{'s.A'}') t.T ('{'s.B'}'))
+      (('{'s.A'}') e.E1 ('{'s.B'}') e.E2);
+}
+
+SeparateTermRight {
+  *  E {a} T {b}  ↦  E {a}, {a} T {b}
+  e.E ('{'s.A'}') t.T ('{'s.B'}')
+    , <IsTerm t.T> : True
+    = (e.E ('{'s.A'}'))
+      (('{'s.A'}') t.T ('{'s.B'}'));
+
+  *  E1 {a} E2* T {b}  ↦  E1 {a} E2* {b}, {a} T {b}
+  e.E1 ('{'s.A'}') e.E2 t.T ('{'s.B'}')
+    , <HasTopLevelCoordinateLabels e.E2> : False
+    , <IsTerm t.T> : True
+    = (e.E1 ('{'s.A'}') e.E2 ('{'s.B'}'))
+      (('{'s.A'}') t.T ('{'s.B'}'));
+}
+
+/*
+  Проверяет, является ли симметричный клэш тавтологией
+
+  <IsTautology t.SymmClash> == True | False
+*/
+
+IsTautology {
+  (e.L '=' e.R)
+    = <ClearCoordinates e.L> : e.LWithoutCoords
+    = <ClearCoordinates e.R> : e.RWithoutCoords
+    = <Eq (e.LWithoutCoords) (e.RWithoutCoords)>
+}
+
+/*
+  Отфильтровывает тавтологии из списка симметричных клэшей
+
+  <RemoveTautologies t.SymmClash*> == t.SymmClash*
+*/
+
+RemoveTautologies {
+  e.SymmClashes
+    = <Map
+        {
+          t.SymmClash, <IsTautology t.SymmClash> : True = /* пусто */;
+
+          t.SymmClash = t.SymmClash;
+        }
+        e.SymmClashes
+      >
+}
+
 IsTerm {
   (Var 'e' e.Index) = False;
 
@@ -1358,6 +1469,21 @@ AddContractions {
    () e.PRTC = e.PRTC;
 }
 
+AddContractions-Spec-Symm {
+  (t.toAdd e.Rest) (e.Contrs) e.SymmClashes (e.Assigns)
+    = <AddContractions-Spec-Symm
+        (e.Rest)
+        <AddContraction-Spec-Symm
+          t.toAdd
+          (e.Contrs)
+          e.SymmClashes
+          (e.Assigns)
+        >
+      >;
+
+  () e.PRTC = e.PRTC;
+}
+
 /*
   Добавление сужения к PRTC
 
@@ -1375,6 +1501,15 @@ AddContraction-Spec {
     = <SimplifyCoordinates
         (<Map (&ApplyContraction-toContraction t.toAdd) e.Contractions> t.toAdd)
         <Map (&ApplyContraction-toEquation t.toAdd) e.Clashes>
+        (<Map (&ApplyContraction-toAssign t.toAdd) e.Assigns>)
+      >
+}
+
+AddContraction-Spec-Symm {
+  t.toAdd (e.Contrs) e.SymmClashes (e.Assigns)
+    = <SimplifyCoordinates-Symm
+        (<Map (&ApplyContraction-toContraction t.toAdd) e.Contrs> t.toAdd)
+        <Map (&ApplyContraction-toSymmClash t.toAdd) e.SymmClashes>
         (<Map (&ApplyContraction-toAssign t.toAdd) e.Assigns>)
       >
 }
@@ -1423,6 +1558,21 @@ ApplyContraction-toAssign {
 ApplyContraction-toEquation {
    t.Contraction ((e.Expr) ':' (e.Lexpr)) =
      ((<ApplyContraction-toExpr t.Contraction e.Expr>) ':' (e.Lexpr))
+}
+
+ApplyContraction-toSymmClash {
+  t.Contr (e.L '=' e.R)
+    = (
+        <ApplyContraction-toExpr t.Contr e.L>
+        '='
+        <ApplyContraction-toExpr t.Contr e.R>
+      )
+    : {
+        /* стираем тавтологию */
+        t.SymmClash, <IsTautology t.SymmClash> : True = /* пусто */;
+
+        t.SymmClash = t.SymmClash;
+      }
 }
 
 /*
