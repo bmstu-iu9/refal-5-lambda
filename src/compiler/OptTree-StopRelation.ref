@@ -323,7 +323,7 @@ CanonizeExpr-Term {
   (Var s.Mode e.Index) = (Var s.Mode);
 
   (s.BracketsTag e.Expr)
-    , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
+    , <OneOf s.BracketsTag CallBrackets ColdCallBrackets ClosureBrackets Brackets> : True
     = <OptTree-CanonizeExpr e.Expr> : e.Expr^
     = (s.BracketsTag e.Expr);
 

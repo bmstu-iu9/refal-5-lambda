@@ -40,6 +40,7 @@ $ENTRY ExtractVariables-Expr {
     = <ExtractVariables-Expr e.Inner e.Terms>;
 
   (CallBrackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
+  (ColdCallBrackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
   (ClosureBrackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
 
   t.Other e.Terms = <ExtractVariables-Expr e.Terms>;
