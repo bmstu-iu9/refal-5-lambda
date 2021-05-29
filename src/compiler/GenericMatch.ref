@@ -693,6 +693,8 @@ Solve-TermEquation {
 */
 
 AddCoordinateLabels {
+  /* пусто */ = /* пусто */;
+
   e.Expr = ('{'1'}') <AddCoordinateLabels-Aux (e.Expr) 2>
 }
 
@@ -707,6 +709,10 @@ AddCoordinateLabels-Aux {
 
   ((ClosureBrackets e.Inner) e.Rest) s.CoordNumber
     = (ClosureBrackets e.Inner) ('{'s.CoordNumber'}')
+      <AddCoordinateLabels-Aux (e.Rest) <Add s.CoordNumber 1>>;
+
+  ((CallBrackets e.Inner) e.Rest) s.CoordNumber
+    = (CallBrackets e.Inner) ('{'s.CoordNumber'}')
       <AddCoordinateLabels-Aux (e.Rest) <Add s.CoordNumber 1>>;
 
   ((Brackets e.Expr) e.Rest) s.CoordNumber
@@ -877,6 +883,30 @@ Solve-Clashes {
         >
         e.ClashesEnd (e.Assigns)
       >;
+
+  /* {m} [(Name1) E] {n} : [(Name2) P]  ↦  нет решений */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  ((('{'s.M'}') t.L ('{'s.N'}')) ':' (t.R))
+  e.ClashesEnd (e.Assigns)
+    , t.L : (ADT-Brackets e._)
+    , t.R : (ADT-Brackets e._)
+    = /* нет решений */;
+
+  /* {m} [E] {n} : (P)  ↦  нет решений */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  ((('{'s.M'}') t.L ('{'s.N'}')) ':' (t.R))
+  e.ClashesEnd (e.Assigns)
+    , t.L : (ADT-Brackets e._)
+    , t.R : (Brackets e._)
+    = /* нет решений */;
+
+  /* {m} (E) {n} : [P]  ↦  нет решений */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  ((('{'s.M'}') t.L ('{'s.N'}')) ':' (t.R))
+  e.ClashesEnd (e.Assigns)
+    , t.R : (ADT-Brackets e._)
+    , t.L : (Brackets e._)
+    = /* нет решений */;
 
   /* {m} (E) {n} : Psym  ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
@@ -1081,15 +1111,15 @@ Solve-Clashes {
     = <Solve-Clashes t.NewVars2 e.Branch1>
       <Solve-Clashes (e.UsedVars) e.Branch2>;
 
-  /* {m} E {n} : e.X  ↦  {m} E {n} ← e.X */
+  /* E : e.X  ↦  E ← e.X */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') e.E ('{'s.N'}')) ':' (t.X))
+  ((e.E) ':' (t.X))
   e.ClashesEnd (e.Assigns)
     , t.X : (Var 'e' e.XIndex)
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs)
         e.ClashesStart e.ClashesEnd
-        (e.Assigns (('{'s.M'}') e.E ('{'s.N'}') ':' t.X))
+        (e.Assigns (e.E ':' t.X))
       >;
 
   /* {m} e.X E {n} : ε  ↦  e.X → ε */
