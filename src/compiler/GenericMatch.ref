@@ -43,7 +43,7 @@ $ENTRY GenericMatch {
       }
 }
 
-/*
+/**
   <Solve-Drive (e.UsedVars) t.Equation>
     == Success t.Result* | Undefined | Failure
 
@@ -84,8 +84,8 @@ IsFlagOpen {
   /* пусто */ = False;
 }
 
-/*
-  <Solve-Spec (e.Left) (e.Right)>
+/**
+  <Solve-Spec (e.UsedVars) (e.Left) (e.Right)>
     == Success ((t.Contr*) (t.Assign*))* (t.Assign*) (e.Left^)
     |  Failure
 
@@ -94,9 +94,8 @@ IsFlagOpen {
 */
 
 $ENTRY Solve-Spec {
-  (e.Left) (e.Right)
+  (e.UsedVars) (e.Left) (e.Right)
     = <AddCoordinateLabels e.Left> : e.Left^
-    = (<ExtractVariables ((e.Left e.Right) ())>) : (e.UsedVars)
     = <Solve-Spec-Aux
         (e.UsedVars)
         ((e.Left) ':' (e.Right))
@@ -131,10 +130,10 @@ Solve-Spec-Aux {
 /*
   Преобразует решения в нужный формат для Solve-Drive и Solve-Spec
 
-  <CombineResults (t.Sol*) t.RawSol*> == t.Sol*
+  <CombineResults (t.Sol*) e.RawSol*> == t.Sol*
 
   t.Sol ::= ((t.Contr*) (t.Assign*))
-  t.RawSol ::= Success s.OpenFlag (t.Contr*) (t.Assign*)
+  e.RawSol ::= Success s.OpenFlag (t.Contr*) (t.Assign*)
 */
 
 CombineResults {
@@ -687,7 +686,7 @@ Solve-TermEquation {
   Добавляет в левую часть уравнения метки координат
 
   <AddCoordinateLabels e.Expr> == e.Expr^
-  <AddCoordinateLabels-Aux (e.Expr) s.CoordsNumber> == e.Expr^
+  <DoAddCoordinateLabels (e.Expr) s.CoordsNumber> == e.Expr^
 
   t.CoordinateLabel ::= ('{'s.CoordNumber'}')
 */
@@ -695,44 +694,44 @@ Solve-TermEquation {
 AddCoordinateLabels {
   /* пусто */ = /* пусто */;
 
-  e.Expr = ('{'1'}') <AddCoordinateLabels-Aux (e.Expr) 2>
+  e.Expr = ('{'1'}') <DoAddCoordinateLabels (e.Expr) 2>
 }
 
-AddCoordinateLabels-Aux {
+DoAddCoordinateLabels {
   ((Symbol s.SymType e.SymInfo) e.Rest) s.CoordNumber
     = (Symbol s.SymType e.SymInfo) ('{'s.CoordNumber'}')
-      <AddCoordinateLabels-Aux (e.Rest) <Add s.CoordNumber 1>>;
+      <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
 
   ((Var s.Mode e.Index) e.Rest) s.CoordNumber
     = (Var s.Mode e.Index) ('{'s.CoordNumber'}')
-      <AddCoordinateLabels-Aux (e.Rest) <Add s.CoordNumber 1>>;
+      <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
 
   ((ClosureBrackets e.Inner) e.Rest) s.CoordNumber
     = (ClosureBrackets e.Inner) ('{'s.CoordNumber'}')
-      <AddCoordinateLabels-Aux (e.Rest) <Add s.CoordNumber 1>>;
+      <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
 
   ((CallBrackets e.Inner) e.Rest) s.CoordNumber
     = (CallBrackets e.Inner) ('{'s.CoordNumber'}')
-      <AddCoordinateLabels-Aux (e.Rest) <Add s.CoordNumber 1>>;
+      <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
 
   ((Brackets e.Expr) e.Rest) s.CoordNumber
     = (Brackets ('{'s.CoordNumber'}')
-      <AddCoordinateLabels-Aux (e.Expr) <Add s.CoordNumber 1>>)
+      <DoAddCoordinateLabels (e.Expr) <Add s.CoordNumber 1>>)
     : {
         (Brackets e.Inner ('{'s.LastCoord'}'))
           = (Brackets e.Inner ('{'s.LastCoord'}'))
             ('{'<Add s.LastCoord 1>'}')
-            <AddCoordinateLabels-Aux (e.Rest) <Add s.LastCoord 2>>
+            <DoAddCoordinateLabels (e.Rest) <Add s.LastCoord 2>>
       };
 
   ((ADT-Brackets (e.Name) e.Expression) e.Rest) s.CoordNumber
     = (ADT-Brackets (e.Name) ('{'s.CoordNumber'}')
-      <AddCoordinateLabels-Aux (e.Expression) <Add s.CoordNumber 1>>)
+      <DoAddCoordinateLabels (e.Expression) <Add s.CoordNumber 1>>)
     : {
         (ADT-Brackets e.Inner ('{'s.LastCoord'}'))
           = (ADT-Brackets e.Inner ('{'s.LastCoord'}'))
             ('{'<Add s.LastCoord 1>'}')
-            <AddCoordinateLabels-Aux (e.Rest) <Add s.LastCoord 2>>
+            <DoAddCoordinateLabels (e.Rest) <Add s.LastCoord 2>>
       };
 
   (e.Other) s.CoordNumber
@@ -869,7 +868,7 @@ Solve-Clashes {
         e.ClashesEnd (e.Assigns)
       >;
 
-  /* {m} [E] {n} : [P]   ↦  {m} E {n} : P */
+  /* {m} [X E] {n} : [X P]   ↦  {m} E {n} : P */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   ((('{'s.M'}') t.L ('{'s.N'}')) ':' (t.R))
   e.ClashesEnd (e.Assigns)
@@ -884,7 +883,7 @@ Solve-Clashes {
         e.ClashesEnd (e.Assigns)
       >;
 
-  /* {m} [(Name1) E] {n} : [(Name2) P]  ↦  нет решений */
+  /* {m} [X E] {n} : [Y P]  ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   ((('{'s.M'}') t.L ('{'s.N'}')) ':' (t.R))
   e.ClashesEnd (e.Assigns)
@@ -1193,7 +1192,6 @@ Solve-Clashes {
   /* клэши закончились */
   (e.UsedVars) (e.Contrs) (e.Assigns)
     = <CreateSymmClashes (e.Assigns)> : (e.Assigns^) (e.SymmClashes)
-    = <RemoveTautologies e.SymmClashes> : e.SymmClashes^
     = <Solve-SymmClashes
         (e.UsedVars) (e.Contrs)
         e.SymmClashes
@@ -1677,6 +1675,15 @@ RemoveTautologies {
 */
 
 Solve-SymmClashes {
+  (e.UsedVars) (e.Contrs) e.SymmClashes (e.Assigns)
+    = <RemoveTautologies e.SymmClashes> : e.SymmClashes^
+    = <Solve-SymmClashes-Aux
+        (e.UsedVars) (e.Contrs)
+        e.SymmClashes (e.Assigns)
+      >;
+}
+
+Solve-SymmClashes-Aux {
   /* {a} e.X {b} = {c} e.Y {d}  ↦  e.X → e.NEW, e.Y → e.NEW */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   (('{'s.A'}') t.eX ('{'s.B'}') '=' ('{'s.C'}') t.eY ('{'s.D'}'))
@@ -1963,6 +1970,22 @@ Solve-SymmClashes {
     , t.Closure : (ClosureBrackets e._)
     = /* решений нет */;
 
+  /* {a} [E1] {b} = {c} (E2) {d}  ↦  решений нет */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (('{'s.A'}') t.Br1 ('{'s.B'}') '=' ('{'s.C'}') t.Br2 ('{'s.D'}'))
+  e.ClashesEnd (e.Assigns)
+    , t.Br1 : (ADT-Brackets e._)
+    , t.Br2 : (Brackets e._)
+    = /* решений нет */;
+
+  /* {c} (E2) {d} = {a} [E1] {b}  ↦  решений нет */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (('{'s.C'}') t.Br2 ('{'s.D'}') '=' ('{'s.A'}') t.Br1 ('{'s.B'}'))
+  e.ClashesEnd (e.Assigns)
+    , t.Br1 : (ADT-Brackets e._)
+    , t.Br2 : (Brackets e._)
+    = /* решений нет */;
+
   /* {a} t.X {b} = {c} X {d}  ↦  t.X → X */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   (('{'s.A'}') t.tX ('{'s.B'}') '=' ('{'s.C'}') t.X ('{'s.D'}'))
@@ -2045,15 +2068,13 @@ Solve-SymmClashes {
     = <Solve-SymmClashes
         (e.UsedVars)
         (e.Contrs) e.ClashesStart
-        <RemoveTautologies
-          <SimplifyCoordinates-SymmClash
-            (('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
-          >
+        <SimplifyCoordinates-SymmClash
+          (('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
         >
         e.ClashesEnd (e.Assigns)
       >;
 
-  /* {a} [E1] {b} = {c} [E2] {d}  ↦  {a} E1 {b} = {c} E2 {d} */
+  /* {a} [X E1] {b} = {c} [X E2] {d}  ↦  {a} E1 {b} = {c} E2 {d} */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   (('{'s.A'}') t.Br1 ('{'s.B'}') '=' ('{'s.C'}') t.Br2 ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
@@ -2062,13 +2083,19 @@ Solve-SymmClashes {
     = <Solve-SymmClashes
         (e.UsedVars)
         (e.Contrs) e.ClashesStart
-        <RemoveTautologies
-          <SimplifyCoordinates-SymmClash
-            (('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
-          >
+        <SimplifyCoordinates-SymmClash
+          (('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
         >
         e.ClashesEnd (e.Assigns)
       >;
+
+  /* {a} [X E1] {b} = {c} [Y E2] {d}  ↦  нет решений */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (('{'s.A'}') t.Br1 ('{'s.B'}') '=' ('{'s.C'}') t.Br2 ('{'s.D'}'))
+  e.ClashesEnd (e.Assigns)
+    , t.Br1 : (ADT-Brackets e._)
+    , t.Br2 : (ADT-Brackets e._)
+    = /* нет решений */;
 
   /* {a} ({b} E {c}) {d} = {e} t.X {f}  ↦  t.X → (e.NEW) */
   (e.UsedVars) (e.Contrs) e.ClashesStart
@@ -2221,9 +2248,7 @@ Solve-SymmClashes {
     = <SeparateTermLeft ('{'s.B'}') t.T2 e.E2> : (e.Right1) (e.Right2)
     = <Solve-SymmClashes
         (e.UsedVars) (e.Contrs) e.ClashesStart
-        <RemoveTautologies
-          (e.Left1 '=' e.Right1) (e.Left2 '=' e.Right2)
-        >
+        (e.Left1 '=' e.Right1) (e.Left2 '=' e.Right2)
         e.ClashesEnd (e.Assigns)
       >;
 
@@ -2241,9 +2266,7 @@ Solve-SymmClashes {
     = <SeparateTermRight e.E2 t.T2 ('{'s.B'}')> : (e.Right1) (e.Right2)
     = <Solve-SymmClashes
         (e.UsedVars) (e.Contrs) e.ClashesStart
-        <RemoveTautologies
-          (e.Left1 '=' e.Right1) (e.Left2 '=' e.Right2)
-        >
+        (e.Left1 '=' e.Right1) (e.Left2 '=' e.Right2)
         e.ClashesEnd (e.Assigns)
       >;
 
