@@ -46,7 +46,8 @@ $ENTRY OptTree-Drive-Expr {
   (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr
     = <MakeDriveTree (0) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr (0)>
     : ((s._CntNodes) t.OptInfo^ (e.NewFunctions)) e.DriveTree
-    = t.OptInfo <ColdTree <MapUnBracket <FlatDriveTree e.DriveTree>>> (e.NewFunctions);
+    = t.OptInfo <ColdTree <MapUnBracket <FlatDriveTree e.DriveTree>>>
+      (e.NewFunctions);
 }
 
 MapUnBracket {
@@ -65,19 +66,20 @@ ColdTree {
 }
 
 ColdAll {
-  (e.B (CallBrackets e.Expr) e.E)
-    = (<ColdAll e.B> (ColdCallBrackets e.Expr) <ColdAll e.E>);
-  (e.B t.Term e.E)
-    = (<ColdAll e.B> <ColdAll t.Term> <ColdAll e.E>);
-  (e.X) = (<ColdAll e.X>);
+  CallBrackets e.Expr
+    = ColdCallBrackets e.Expr;
+  ColdCallBrackets e.Expr
+    = ColdCallBrackets e.Expr;
+  e.B (e.Expr) e.E
+    = <ColdAll e.B> (<ColdAll e.Expr>) <ColdAll e.E>;
   e.X = e.X;
 }
 
-MaxCntNodes { = 50 }
+MaxCntNodes { = 100 }
 
 $DRIVE MaxCntNodes;
 
-MaxTreeDepth { = 10 }
+MaxTreeDepth { = 20 }
 
 $DRIVE MaxTreeDepth;
 
@@ -95,65 +97,89 @@ CheckExprsLength {
 
 MakeDriveTree {
   (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr (s.TreeDepth e.canoninzedExprs)
-    = e.canoninzedExprs (<OptTree-CanonizeExpr e.Expr>) : e.canoninzedExprs^
-    = <IncWithMax <MaxCntNodes> s.CntNodes> <IncWithMax <MaxTreeDepth> s.TreeDepth>
+    = (<OptTree-CanonizeExpr e.Expr>) e.canoninzedExprs : e.canoninzedExprs^
+    = <IncWithMax s.CntNodes <MaxCntNodes>> <IncWithMax s.TreeDepth <MaxTreeDepth>>
     : s.CntNodes^ s.TreeDepth^
-    = t.OptInfo
-    : ((e.OptFuncNames) e.OptFuncs)
     = <CheckExprsStopRelation e.canoninzedExprs>
     : {
+        True s.Cnt
+          = Generalize s.Cnt;
         s._ s._, <MaxCntNodes> : s.CntNodes
           = ((s.CntNodes) t.OptInfo (/* нет функций */))
             (/* нет сужений */ (e.Expr) (/* пустое дерево */) );
         s._ s._, <MaxTreeDepth> : s.TreeDepth
           = ((s.CntNodes) t.OptInfo (/* нет функций */))
             (/* нет сужений */ (e.Expr) (/* пустое дерево */) );
-        True s.Cnt
-          = ((s.CntNodes) t.OptInfo (/* нет функций */))
-            (/* нет сужений */ (e.Expr) (/* пустое дерево */) );
         False s._Cnt
-          = <FindOptimizedCall (e.OptFuncNames) e.Expr>
-          : {
-              (e.OptFuncNames^ None) e.Expr^
-                = ((s.CntNodes) ((e.OptFuncNames) e.OptFuncs) (/* нет функций */))
-                  (/* нет сужений */ (e.Expr) (/* пустое дерево */));
-
-              (e.OptFuncNames^ t.Call) e.Expr^
-                = <OptExpr-Aux (e.UsedVars) (e.WholeVars) (e.Expr) t.Call e.OptFuncs>
-                : (e.OptFuncs^) (e.NewFunctions) e.Branches
-                = e.UsedVars <BranchesVars e.Branches>
-                : e.UsedVars^
-                = <MapAccum
-                    {
-                      ((s.CntNodes^) t.OptInfo^ (e.NewFunctionsAccum)) (e.Contractions (e.DrivenRight))
-                        = <MakeDriveTree
-                            (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.DrivenRight
-                            (s.TreeDepth e.canoninzedExprs)
-                          >
-                        : ((s.CntNodes^) t.OptInfo^ (e.NewFunctions^)) e.Branches^
-                        = ((s.CntNodes) t.OptInfo  (e.NewFunctionsAccum e.NewFunctions))
-                          (e.Contractions (e.DrivenRight) (e.Branches));
-                    }
-                    ((s.CntNodes) ((e.OptFuncNames) e.OptFuncs) (e.NewFunctions))
-                    e.Branches
-                  >;
-            };
+          = <GrowDriveTree
+              (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr
+              (s.TreeDepth e.canoninzedExprs)
+            >;
     };
 }
 
+GrowDriveTree {
+  (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr
+  (s.TreeDepth e.canoninzedExprs)
+    = t.OptInfo
+    : ((e.OptFuncNames) e.OptFuncs)
+    = <FindOptimizedCall (e.OptFuncNames) e.Expr>
+    : {
+        (e.OptFuncNames^ None) e.Expr^
+          = ((s.CntNodes) ((e.OptFuncNames) e.OptFuncs) (/* нет функций */))
+            (/* нет сужений */ (e.Expr) (/* пустое дерево */));
+
+        (e.OptFuncNames^ t.Call) e.Expr^
+          = <OptExpr-Aux (e.UsedVars) (e.WholeVars) (e.Expr) t.Call e.OptFuncs>
+          : (e.OptFuncs^) (e.NewFunctions) e.Branches
+          = e.UsedVars <BranchesVars e.Branches>
+          : e.UsedVars^
+          = <MapAccum
+              {
+                ((s.CntNodes^) t.OptInfo^ (e.NewFunctionsAccum)) (e.Contractions (e.DrivenRight))
+                  = <MakeDriveTree
+                      (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.DrivenRight
+                      (s.TreeDepth e.canoninzedExprs)
+                    >
+                  : {
+                      ((s.CntNodes^) t.OptInfo^ (e.NewFunctions^)) e.Branches^
+                        = ((s.CntNodes) t.OptInfo  (e.NewFunctionsAccum e.NewFunctions))
+                          (e.Contractions (e.DrivenRight) (e.Branches));
+                      Generalize s.Cnt
+                        = (Generalize s.Cnt);
+                    };
+                (Generalize s.Cnt) (e.Contractions (e.DrivenRight))
+                  = (Generalize s.Cnt);
+              }
+              ((s.CntNodes) ((e.OptFuncNames) e.OptFuncs) (e.NewFunctions))
+              e.Branches
+            >
+          : {
+              (Generalize 1) e._DeletedTree
+                = <GrowDriveTree
+                    (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo
+                    <RestoreDrivenCall t.Call e.Expr>
+                    (s.TreeDepth e.canoninzedExprs)
+                  >;
+              (Generalize s.Cnt) e._DeletedTree
+                = Generalize <Sub s.Cnt 1>;
+              e.Tree = e.Tree;
+            };
+      };
+}
+
+RestoreDrivenCall {
+  t.Call e.Expr
+    = <ApplyContractions e.Expr ((<eDRIVEN> ':' <ColdAll t.Call>)) >
+}
+
 CheckExprsStopRelation {
-  e.historyExprs (e.currentExpr)
-    = <Reduce
-        {
-          (True s.Cnt) t._ = (True s.Cnt);
-          (False s.Cnt) (e.historyExpr)
-            = (<OptTree-CheckExprStopRelation (e.currentExpr) e.historyExpr> <Add s.Cnt 1>);
-        }
-        (False 0)
-        e.historyExprs
-     >
-    : (s.Res s.Cnt)
-    = s.Res s.Cnt;
+  (e.currentExpr) e.historyExprs-B (e.historyExpr) e.historyExprs-E
+    , <OptTree-CheckExprStopRelation (e.currentExpr) e.historyExpr> : True
+    = <Lenw e.historyExprs-B> : s.Len e._
+    = True <Inc s.Len>;
+
+  (e.currentExpr) e.historyExprs = False 0;
 }
 
 BranchesVars {
@@ -204,7 +230,10 @@ FlatDriveTreeSingle {
             = <Map
                 {
                   (e.BrachContractions (e.BranchDrivenRight))
-                    = (<ComposeContractions (e.Contractions) (e.BrachContractions)> (e.BranchDrivenRight))
+                    = (
+                        <ComposeContractions (e.Contractions) (e.BrachContractions)>
+                        (e.BranchDrivenRight)
+                      )
                 }
                 e.Branches
               >;
