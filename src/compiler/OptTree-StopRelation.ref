@@ -224,11 +224,8 @@ ContainsSignature {
             >;
 
         CallBrackets
-          , e.Inner : (e.SymbolName) e.Argument
-          , e.Argument : t.Argument-FirstTerm e.Argument-RestExpr
           = <DoCheckExprPairForRelation
-              (t.Argument-FirstTerm) (e.Argument-RestExpr e.RestExpr)
-              e.Signature
+              (t.Inner-FirstTerm) (e.Inner-Rest e.RestExpr) e.Signature
             >;
 
         ClosureBrackets
