@@ -163,9 +163,7 @@ ContainsSignature {
           = True e.ADT-Brackets-Inner-Rest;
 
         CallBrackets
-          , e.Inner
-          : (e.SymbolName) e.Argument
-          = True e.Argument;
+          = True e.Inner;
 
         e.OtherTermType
           = False;
