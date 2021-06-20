@@ -1,0 +1,15 @@
+* TREE
+
+$SPEC Rot e.dyn;
+
+Rot {
+  e.1 s.2 = s.2 e.1;
+}
+
+Example {
+  (e.X) (e.Y) = <Rot 'A' e.X e.Y>;
+}
+
+$ENTRY Go {
+  = <Example (1 'a' 2) (3 'b' 4)>;
+}

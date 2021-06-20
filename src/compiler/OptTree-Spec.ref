@@ -252,22 +252,11 @@ PrintHistory {
           {
             ((e.FuncName) e.StaticVarsVals)
               = '    ' <DisplayName e.FuncName> ':'
-                ' [' <PrintSignature e.StaticVarsVals> ']\n';
+                ' [' <Log-InlineExpr e.StaticVarsVals> ']\n';
           }
           e.History
         >
       >
-}
-
-PrintSignature {
-  /* пусто */ = /* пусто */;
-  t.First e.Last
-    = <PrintSignatureItem t.First>
-      <Map { t.Item = ', ' <PrintSignature t.Item> } e.Last>
-}
-
-PrintSignatureItem {
-  (e.Expr) = <Log-InlineExpr e.Expr>;
 }
 
 SpecUnit {
@@ -930,24 +919,24 @@ Spec-FindInSignatures {
 /**
   <IsTrivialSubstitutions e.StaticMatches>
 */
-*IsTrivialSubstitutions {
-*  e.StaticMatches
-*    = <Reduce
-*        {
-*          False t.Any = False;
-*
-*          True ((Var s.Mode e.Index1) ':' (Var s.Mode e.Index2))
-*            = True;
-*
-*          True ((Var s.Mode e.Index1) ':' (s.Mode e.Index2))
-*            = True;
-*
-*          True t.OtherSubstitution = False;
-*        }
-*        True
-*        e.StaticMatches
-*      >;
-*}
+IsTrivialSubstitutions {
+  e.StaticMatches
+    = <Reduce
+        {
+          False t.Any = False;
+
+          True ((Var s.Mode e.Index1) ':' (Var s.Mode e.Index2))
+            = True;
+
+          True ((Var s.Mode e.Index1) ':' (s.Mode e.Index2))
+            = True;
+
+          True t.OtherSubstitution = False;
+        }
+        True
+        e.StaticMatches
+      >;
+}
 
 *PrepareArgOrPattern {
 *  (e.StaticMatches) (e.DynamicMatches) e.SpecPattern
@@ -1286,27 +1275,27 @@ SourceNameOfInstance {
 *    = e.Signature;
 *}
 
-*NameSignatureVars-Expr {
-*  t.State e.Expr = <MapAccum &NameSignatureVars-Term t.State e.Expr>;
-*}
+NameSignatureVars-Expr {
+  t.State e.Expr = <MapAccum &NameSignatureVars-Term t.State e.Expr>;
+}
 
-*NameSignatureVars-Term {
-*  (e.KnownVars) (Var s.Mode)
-*    = <NewVarName (e.KnownVars) s.Mode 'X'> : (e.KnownVars^) e.Index
-*    = (e.KnownVars)
-*      (Var e.Index);
-*
-*  t.State (s.BracketsTag e.Expr)
-*    , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
-*    = <NameSignatureVars-Expr t.State e.Expr> : t.State^ e.Expr^
-*    = t.State (s.BracketsTag e.Expr);
-*
-*  t.State (ADT-Brackets (e.Name) e.Expr)
-*    = <NameSignatureVars-Expr t.State e.Expr> : t.State^ e.Expr^
-*    = t.State (ADT-Brackets (e.Name) e.Expr);
-*
-*  t.State t.OtherTerm = t.State t.OtherTerm;
-*}
+NameSignatureVars-Term {
+  (e.KnownVars) (Var s.Mode)
+    = <NewVarName (e.KnownVars) s.Mode 'X'> : (e.KnownVars^) e.Index
+    = (e.KnownVars)
+      (Var e.Index);
+
+  t.State (s.BracketsTag e.Expr)
+    , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
+    = <NameSignatureVars-Expr t.State e.Expr> : t.State^ e.Expr^
+    = t.State (s.BracketsTag e.Expr);
+
+  t.State (ADT-Brackets (e.Name) e.Expr)
+    = <NameSignatureVars-Expr t.State e.Expr> : t.State^ e.Expr^
+    = t.State (ADT-Brackets (e.Name) e.Expr);
+
+  t.State t.OtherTerm = t.State t.OtherTerm;
+}
 
 /*
   Получает обобщённую сигнатуру для двух сигнатур.
@@ -1373,91 +1362,68 @@ SourceNameOfInstance {
   Новая реализация специализации
 */
 
-/* TODO: документация функций */
+/**
+  <SpecCall
+    (e.Name) (e.SpecPattern) (e.Body)
+    s.CurrentNumber e.Signatures (e.Argument) (e.History)
+  >
+    == ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures t.NewSignature)
+        t.NewCall t.NewFunction (e.NewHistory)
+
+  Функция пытается выполнить специализацию для заданного вызова:
+  # ищет среди сигнатур готовых специализированных функций похожую
+    * если сигнатура найдена, заменяем исходный вызов на вызов найденной функции
+    * если сигнатура не найдена выполняем специализацию для аргументов вызова
+      # формируем новый вызов
+      # формируем определение новой специализированной функции
+  # возвращает e.Info с новой сигнатурой,
+    новый вызов
+    определение новой специализированной функции
+*/
 
 SpecCall {
   (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
   (e.Argument) (e.History)
-    /*
-      Приводим аргумент к пассивному виду и переименовываем
-      переменные в теле функции, чтобы они не пересекались с
-      переменными в аргументе
-    */
     = <ExtractVariables ((e.Argument) (/* пусто */))> : e.UsedVars
     = <ExtractCalls-Expr (/* пусто */ (e.UsedVars)) e.Argument>
-    : (e.Sg (e.UsedVars^)) e.NewArgument
-    = <RenameVars-Sentences (e.UsedVars) e.Body> : e.Body^
+    : (e.ExtractedCalls (e.UsedVars^)) e.NewArgument
     /* ищем динамическое обобщение для аргумента и образцов */
     = <DynGenArg
-        (e.NewArgument) (e.Sg) (/* пусто */)
+        (e.NewArgument) (e.ExtractedCalls) (/* пусто */)
         (/* пусто */) e.Body
       >
-    : (e.NewArgument^) (e.Sg^) (e.Solutions)
+    : (e.NewArgument^) (e.Sg) (e.Solutions)
     = <SpecCall-Aux
         (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
         (e.Argument) (e.NewArgument) (e.Sg) (e.Solutions) (e.History)
+        True
       >;
-}
-
-RenameVars-Sentences {
-  (e.KnownVars) ((e.Pattern) e.Tail) e.Sentences
-    = (
-        (<RenameVars-Expr (e.KnownVars) e.Pattern>)
-        <RenameVars-Tail (e.KnownVars) e.Tail>
-      )
-      <RenameVars-Sentences (e.KnownVars) e.Sentences>;
-
-  (e.KnownVars) /* пусто */ = /* пусто */;
-}
-
-RenameVars-Tail {
-  (e.KnownVars) (Condition (e.ConditionName) (e.Result) (e.Pattern)) e.Tail
-    = (
-        Condition (e.ConditionName)
-        (<RenameVars-Expr (e.KnownVars) e.Result>)
-        (<RenameVars-Expr (e.KnownVars) e.Pattern>)
-      )
-      <RenameVars-Tail (e.KnownVars) e.Tail>;
-
-  (e.KnownVars) (e.Result) = (<RenameVars-Expr (e.KnownVars) e.Result>);
-}
-
-RenameVars-Expr {
-  (e.KnownVars) (Var e.ModeIndex) e.Terms
-    = <NewVarName (e.KnownVars) e.ModeIndex> : (e.KnownVars^) e.New
-    = (Var e.New) <RenameVars-Expr (e.KnownVars) e.Terms>;
-
-  (e.KnownVars) (s.BracketsTag e.Inner) e.Terms
-    , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
-    = (s.BracketsTag <RenameVars-Expr (e.KnownVars) e.Inner>)
-      <RenameVars-Expr (e.KnownVars) e.Terms>;
-
-  (e.KnownVars) (ADT-Brackets (e.Name) e.Inner) e.Terms
-    = (ADT-Brackets (e.Name) <RenameVars-Expr (e.KnownVars) e.Inner>)
-      <RenameVars-Expr (e.KnownVars) e.Terms>;
-
-  (e.KnownVars) t.Other e.Terms
-    = t.Other <RenameVars-Expr (e.KnownVars) e.Terms>;
-
-  (e.KnownVars) /* пусто */ = /* пусто */;
 }
 
 DynGenArg {
   (e.Arg) (e.Sg) (e.Sol) (e.Begin)
   ((e.Pat) e.Tail) e.Sentences
-    = <ExtractVariables ((e.Arg e.Pat) (/* пусто */))> : e.UsedVars
+    = <ExtractVariables ((e.Arg e.Pat) e.Tail)> : e.UsedVars
+    = <NewVarName (e.UsedVars) 'eNew'> : (e.UsedVars^) e.eNew
+    = e.Arg (Brackets (Var e.eNew)) : e.Arg^
+    = <WrappedCondVars e.Tail> : e.WrappedCondVars
+    = e.Pat (Brackets e.WrappedCondVars) : e.Pat^
     = <Solve-Spec (e.UsedVars) (e.Arg) (e.Pat)>
     : {
         Success e.Solutions (e.SgNew) (e.ArgNew)
           , e.SgNew : /* пусто */
+          , e.ArgNew : e.ArgNew^ (Brackets e._)
+          , e.Pat : e.Pat^ (Brackets e._)
           = <DynGenArg
-              (e.Arg) (e.Sg) (e.Sol (e.Solutions))
+              (e.ArgNew) (e.Sg) (e.Sol (e.Solutions))
               (e.Begin ((e.Pat) e.Tail)) e.Sentences
             >;
 
         Success e.Solutions (e.SgNew) (e.ArgNew)
+          , e.ArgNew : e.ArgNew^ (Brackets e._)
+          , e.Pat : e.Pat^ (Brackets e._)
           = <DynGenArg
-              (e.ArgNew) (<ApplySubst-Subst (e.Sg) e.SgNew>)
+              (e.ArgNew) (e.Sg <ApplySubst-Subst (e.Sg) e.SgNew>)
               (/* пусто */) (/* пусто */)
               e.Begin ((e.Pat) e.Tail) e.Sentences
             >;
@@ -1466,14 +1432,38 @@ DynGenArg {
         Failure = ((Var 'e')) (/* пусто */) (/* пусто */);
       };
 
-  (e.Arg) (e.Sg) (e.Sol) (e.Begin)
+  (e.Arg) (e.Sg) (e.Sol) (e.Begin) /* пусто */
     = (e.Arg) (e.Sg) (e.Sol);
+}
+
+WrappedCondVars {
+  e.Tail
+    = <Reduce
+        {
+          (e.CondVars) (Condition (e.ConditionName) (e.Result) (e.Pattern))
+            = (e.CondVars <ExtractVariables-Expr e.Pattern>);
+
+          (e.CondVars) (e.Result)
+            = (e.CondVars);
+        }
+        (/* пусто */)
+        e.Tail
+      >
+    : (e.CondVars)
+    = <Unique e.CondVars> : e.CondVars^
+    = <Map
+        { (s.Mode e.Index) = <WrapVar s.Mode (Var s.Mode e.Index)> }
+        e.CondVars
+      >
+    : e.CondVars^
+    = <RemoveLastGhostBracket e.CondVars>;
 }
 
 SpecCall-Aux {
   /* тривиальная сигнатура */
   (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
   (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
+  s.NeedRelationCheck
     , <IsTrivialSignature e.NewArg> : True
     = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
       (CallBrackets (Symbol Name e.Name) e.OldArg)
@@ -1482,8 +1472,9 @@ SpecCall-Aux {
   /* проверяем, известна ли сигнатура */
   (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
   (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
+  s.NeedRelationCheck
     = <RenameSignatureVars-Expr (/* пусто */ 0) e.NewArg>
-    : t.State e.Signature
+    : t._ e.Signature
     = <Spec-FindInSignatures (e.Signature) e.Signatures>
     : {
         Found e.InstanceName (e.Signatures^)
@@ -1496,27 +1487,44 @@ SpecCall-Aux {
 
         /* проверяем на зацикливание */
         NotFound e.Signatures^
-          = <HasHigmanKruskalRelation
-              (e.Name) (<OptTree-CanonizeExpr e.Signature>)
-              e.History
-            >
+          = s.NeedRelationCheck
+          : {
+              True
+                = <HasHigmanKruskalRelation
+                    (e.Name) (<OptTree-CanonizeExpr e.Signature>)
+                    e.History
+                  >;
+
+              False = False;
+            }
           : {
               True e.HistorySignature
                 = <GlobalGen (e.Signature) (e.HistorySignature)> : e.GenSignature
                 = <ExtractVariables ((e.NewArg) (/* пусто */))> : e.ArgVars
-                = <RenameVars-Expr (e.ArgVars) e.GenSignature> : e.GenSignature^
-                = <GenericMatch (e.NewArg) (e.GenSignature)>
+                = <NameSignatureVars-Expr (e.ArgVars) e.GenSignature>
+                : t._ e.GenSignature^
+                = <GenericMatch (e.NewArg) (e.GenSignature)> : Clear e.NewSg
+                = <IsTrivialSubstitutions e.NewSg>
                 : {
-                    Clear e.NewSg = e.NewSg;
+                    /*
+                      Если подстановка e.NewSg является тривиальной,
+                      проверку отношения Хигмана-Крускала
+                      в рекурсивном вызове не выполняем
+                    */
+                    True = False;
 
-                    e.Other = /* пусто */;
+                    False = True;
                   }
-                : e.NewSg
+                : s.NeedRelationCheck^
+                = <DynGenArg
+                    (e.GenSignature) (<ApplySubst-Subst (e.Sg) e.NewSg>)
+                    (/* пусто */) (/* пусто */) e.Body
+                  >
+                : (e.NewArg^) (e.Sg^) (e.Solutions^)
                 = <SpecCall-Aux
                     (e.Name) (e.SpecPattern) (e.Body) s.NextNumber
-                    e.Signatures (e.OldArg) (e.GenSignature)
-                    (<ApplySubst-Subst (e.Sg) e.NewSg>)
-                    (e.Solutions) (e.History)
+                    e.Signatures (e.OldArg) (e.NewArg)
+                    (e.Sg) (e.Solutions) (e.History) s.NeedRelationCheck
                   >;
 
               False
@@ -1567,21 +1575,10 @@ WrapVars {
 }
 
 OrderUniqueVars {
-  e.Vars
-    = <Reduce
-        {
-          (e.UniqueVars) (e.ModeIndex)
-            , e.UniqueVars : e.Begin (e.ModeIndex) e.End
-            = (e.UniqueVars);
+  e.Vars-B t.Var e.Vars-M t.Var e.Vars-E
+    = e.Vars-B <OrderUniqueVars t.Var e.Vars-M e.Vars-E>;
 
-          (e.UniqueVars) (e.ModeIndex)
-            = (e.UniqueVars (e.ModeIndex));
-        }
-        (/* пусто */)
-        e.Vars
-      >
-    : (e.Vars^)
-    = e.Vars;
+  e.Variables = e.Variables;
 }
 
 HasHigmanKruskalRelation {

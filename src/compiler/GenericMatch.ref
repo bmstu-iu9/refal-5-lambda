@@ -109,7 +109,7 @@ Solve-Spec-Aux {
     : {
         e.Begin Generalize (e.Intervals) e.End
           = <DoGeneralize
-              (e.UsedVars) (e.Intervals)
+              (e.UsedVars) <UnionIfIntersect (e.Intervals)>
               (e.L) (e.GenAssigns)
             >
           : (e.UsedVars^) (e.L^) (e.GenAssigns^)
@@ -125,6 +125,52 @@ Solve-Spec-Aux {
             (e.GenAssigns)
             (<ClearCoordinates e.L>);
       }
+}
+
+/*
+  Объединяет два интервала, если они пересекаются.
+  В остальных случаях возвращает исходный список интервалов.
+
+  <UnionIfIntersect (e.Intervals)> == (e.Intervals^)
+
+  e.Intervals ::= t.Interval+
+  t.Interval ::= ('{' s.BeginCoord s.EndCoord '}')
+*/
+
+UnionIfIntersect {
+  (t.Interval-1 t.Interval-2)
+    , <HasIntersection (t.Interval-1 t.Interval-2)> : True
+    = t.Interval-1 : ('{' s.A s.B '}')
+    = t.Interval-2 : ('{' s.C s.D '}')
+    = <GetExtremum s.A '+' (s.B s.C s.D)> : s.Min
+    = <GetExtremum s.A '-' (s.B s.C s.D)> : s.Max
+    = (('{' s.Min s.Max '}'));
+
+  t.Intervals = t.Intervals;
+}
+
+HasIntersection {
+  (('{' s.A s.B '}') ('{' s.C s.D '}'))
+    , <Compare s.C s.B> : '+'
+    = False;
+
+  (('{' s.A s.B '}') ('{' s.C s.D '}'))
+    , <Compare s.A s.D> : '+'
+    = False;
+
+  t.Intervals = True;
+}
+
+GetExtremum {
+  s.Extremum s.Sign (s.CurrentCoord e.Rest)
+    , <Compare s.Extremum s.CurrentCoord> : s.Sign
+    = <GetExtremum s.CurrentCoord s.Sign (e.Rest)>;
+
+  s.Extremum s.Sign (s.CurrentCoord e.Rest)
+    = <GetExtremum s.Extremum s.Sign (e.Rest)>;
+
+  s.Extremum s.Sign (/* пусто */)
+    = s.Extremum;
 }
 
 /*
@@ -255,10 +301,10 @@ ApplyAssignments-toExpr {
 }
 
 ApplyAssignment-toExpr {
-  (e.Val ':' t.Var) e.Begin t.Var e.End
-    = <ApplyAssignment-toExpr (e.Val ':' t.Var) e.Begin>
+  (e.Val ':' (s.Type e.Index)) e.Begin (Var s.Type e.Index) e.End
+    = <ApplyAssignment-toExpr (e.Val ':' (s.Type e.Index)) e.Begin>
       e.Val
-      <ApplyAssignment-toExpr (e.Val ':' t.Var) e.End>;
+      <ApplyAssignment-toExpr (e.Val ':' (s.Type e.Index)) e.End>;
 
   t.Assign e.Begin (Brackets e.E) e.End
     = <ApplyAssignment-toExpr t.Assign  e.Begin>
@@ -2475,18 +2521,15 @@ AddContraction {
 
 AddContraction-Spec {
   t.toAdd (s.OpenFlag e.Contrs) e.Clashes (e.Assigns)
-    , t.toAdd : ((Var 'e' e._) ':' (Var 'e' e._) (Var 'e' e._))
-    = <SimplifyCoordinates
-        (
-          AfterOpen
-          <Map (&ApplyContraction-toContraction t.toAdd) e.Contrs>
-          t.toAdd
-        )
-        <Map (&ApplyContraction-toEquation t.toAdd) e.Clashes>
-        (<Map (&ApplyContraction-toAssign t.toAdd) e.Assigns>)
-      >;
+    = t.toAdd
+    : {
+        ((Var 'e' e._) ':' (Var 'e' e._) (Var 'e' e._)) = AfterOpen;
 
-  t.toAdd (s.OpenFlag e.Contrs) e.Clashes (e.Assigns)
+        ((Var 'e' e._) ':' (Var 'e' e._) (Var 't' e._) (Var 'e' e._)) = AfterOpen;
+
+        t._ = s.OpenFlag;
+      }
+    : s.OpenFlag^
     = <SimplifyCoordinates
         (
           s.OpenFlag
