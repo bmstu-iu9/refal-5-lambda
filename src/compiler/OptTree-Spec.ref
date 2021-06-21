@@ -1412,24 +1412,29 @@ DynGenArg {
     : {
         Success e.Solutions (e.SgNew) (e.ArgNew)
           , e.SgNew : /* пусто */
-          , e.ArgNew : e.ArgNew^ (Brackets e._)
-          , e.Pat : e.Pat^ (Brackets e._)
+          = e.ArgNew : e.ArgNew^ (Brackets e._)
+          = e.Pat : e.Pat^ (Brackets e._)
           = <DynGenArg
               (e.ArgNew) (e.Sg) (e.Sol (e.Solutions))
               (e.Begin ((e.Pat) e.Tail)) e.Sentences
             >;
 
         Success e.Solutions (e.SgNew) (e.ArgNew)
-          , e.ArgNew : e.ArgNew^ (Brackets e._)
-          , e.Pat : e.Pat^ (Brackets e._)
+          = e.ArgNew : e.ArgNew^ (Brackets e._)
+          = e.Pat : e.Pat^ (Brackets e._)
           = <DynGenArg
               (e.ArgNew) (e.Sg <ApplySubst-Subst (e.Sg) e.SgNew>)
               (/* пусто */) (/* пусто */)
               e.Begin ((e.Pat) e.Tail) e.Sentences
             >;
 
-        /* возвращаем тривиальную сигнатуру */
-        Failure = ((Var 'e')) (/* пусто */) (/* пусто */);
+        Failure
+          = e.Arg : e.Arg^ (Brackets e._)
+          = e.Pat : e.Pat^ (Brackets e._)
+          = <DynGenArg
+              (e.Arg) (e.Sg) (e.Sol (Failure))
+              (e.Begin ((e.Pat) e.Tail)) e.Sentences
+            >;
       };
 
   (e.Arg) (e.Sg) (e.Sol) (e.Begin) /* пусто */
@@ -1610,7 +1615,10 @@ CreateNewSentences {
                   (<ApplySubst-Expr (e.Contrs) <WrapVars e.Arg>>)
                   <ApplySubst-Tail (e.Assigns) e.Tail>
                 )
-              )
+              );
+
+          (e.NewSentences^) Failure
+            = (e.NewSentences);
         }
         (e.NewSentences)
         e.Sol
