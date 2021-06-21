@@ -1217,6 +1217,15 @@ Solve-Clashes {
     = Generalize (('{' s.M s.N '}'));
 
   (e.UsedVars) (e.Contrs)
+  ((('{'s.M'}') t.eVar ('{'s.N'}')) ':' (t.eX e.P t.eY))
+  e.ClashesEnd (e.Assigns)
+    , t.eVar : (Var 'e' e.Index)
+    , t.eX : (Var 'e' e.XIndex)
+    , t.eY : (Var 'e' e.YIndex)
+    , <IsVarInAssigns t.eVar (e.Assigns)> : True
+    = Generalize (('{' s.M s.N '}'));
+
+  (e.UsedVars) (e.Contrs)
   ((e.E) ':' (t.eX e.P t.eY))
   e.ClashesEnd (e.Assigns)
     , t.eX : (Var 'e' e.XIndex)
@@ -1260,6 +1269,45 @@ IsLeftPartTrivial {
   /* пусто */ = True;
 
   e.Other = False;
+}
+
+/*
+  Проверяет, встречается ли переменная в левой части какого-нибудь присваивания
+
+  <IsVarInAssigns t.Var (t.Assign*)> == True | False
+*/
+
+IsVarInAssigns {
+  t.Var ((e.Expr ':' t._) e.Assigns)
+    = <IsVarInExpr t.Var (e.Expr)>
+    : {
+        True = True;
+
+        False = <IsVarInAssigns t.Var (e.Assigns)>;
+      };
+
+  t.Var (/* пусто */)
+    = False;
+}
+
+IsVarInExpr {
+  t.Var (t.Var e.End)
+    = True;
+
+  t.Var ((s.BracketsTag e.E) e.End)
+    , <OneOf s.BracketsTag Brackets ADT-Brackets> : True
+    = <IsVarInExpr t.Var (e.E)>
+    : {
+        True = True;
+
+        False = <IsVarInExpr t.Var (e.End)>;
+      };
+
+  t.Var (t.Term e.End)
+    = <IsVarInExpr t.Var (e.End)>;
+
+  t.Var (/* пусто */)
+    = False;
 }
 
 /*
