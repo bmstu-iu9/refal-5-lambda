@@ -55,8 +55,14 @@ $ENTRY GenericMatch {
 
 $ENTRY Solve-Drive {
   (e.UsedVars) ((e.Expr) ':' (e.Lexpr))
+    = <InitContractions e.Expr> : e.Contrs
     = <AddCoordinateLabels e.Expr> : e.Expr^
-    = <Solve-Clashes (e.UsedVars) (None) ((e.Expr) ':' (e.Lexpr)) ()>
+    = <Solve-Clashes
+        (e.UsedVars)
+        (None e.Contrs)
+        ((e.Expr) ':' (e.Lexpr))
+        (/* пусто */)
+      >
     : {
         e.Begin Generalize (e.Intervals) e.End = Undefined;
 
@@ -105,7 +111,12 @@ $ENTRY Solve-Spec {
 
 Solve-Spec-Aux {
   (e.UsedVars) ((e.L) ':' (e.R)) (e.GenAssigns)
-    = <Solve-Clashes (e.UsedVars) (None) ((e.L) ':' (e.R)) ()>
+    = <Solve-Clashes
+        (e.UsedVars)
+        (None <InitContractions e.L>)
+        ((e.L) ':' (e.R))
+        (/* пусто */)
+      >
     : {
         e.Begin Generalize (e.Intervals) e.End
           = <DoGeneralize
@@ -125,6 +136,39 @@ Solve-Spec-Aux {
             (e.GenAssigns)
             (<ClearCoordinates e.L>);
       }
+}
+
+/*
+  Инициализирует список сужений тривиальными сужениями
+
+  <InitContractions e.Expr> == t.Contr*
+*/
+
+InitContractions {
+  e.Expr
+    = <ExtractVariables ((e.Expr) (/* пусто */))> : e.Vars
+    = <Map
+        { (e.ModeIndex) = ((Var e.ModeIndex) ':' (Var e.ModeIndex)) }
+        e.Vars
+      >
+}
+
+/*
+  Удаляет тривиальные сужения из набора сужений
+
+  <RemoveTrivialContractions t.Contr*> == t.Contr*
+*/
+
+RemoveTrivialContractions {
+  e.Contrs
+    = <Map
+        {
+          ((Var e.ModeIndex) ':' (Var e.ModeIndex)) = /* пусто */;
+
+          t.Contr = t.Contr;
+        }
+        e.Contrs
+      >
 }
 
 /*
@@ -189,7 +233,7 @@ CombineResults {
         (
           e.Solutions
           (
-            (e.Contrs)
+            (<RemoveTrivialContractions e.Contrs>)
             (<Map
               {
                 (e.Val ':' t.Var)
@@ -2147,7 +2191,6 @@ AddContraction-Spec {
         (
           s.OpenFlag
           <Map (&ApplyContraction-toContraction t.toAdd) e.Contrs>
-          t.toAdd
         )
         <Map (&ApplyContraction-toEquation t.toAdd) e.Clashes>
         (<Map (&ApplyContraction-toAssign t.toAdd) e.Assigns>)
@@ -2169,7 +2212,6 @@ AddContraction-Spec-Symm {
         (
           s.OpenFlag
           <Map (&ApplyContraction-toContraction t.toAdd) e.Contrs>
-          t.toAdd
         )
         <Map (&ApplyContraction-toSymmClash t.toAdd) e.SymmClashes>
         (<Map (&ApplyContraction-toAssign t.toAdd) e.Assigns>)
