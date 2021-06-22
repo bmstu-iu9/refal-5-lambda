@@ -37,9 +37,11 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: failure()
         with:
-          name: log-info
+          name: log-info-posix
           path: |
             autotests/__error.txt
             autotests/__dump.txt
             autotests/__log.txt
+            bin
+            src
           retention-days: 5
