@@ -1,4 +1,4 @@
-![Banner](https://github.com/bmstu-iu9/refal-5-lambda/tree/master/docs/banner.png) 
+![Banner](banner.png) 
 
 # Рефал-5λ
 
