@@ -1,3 +1,5 @@
+![Banner](https://github.com/bmstu-iu9/refal-5-lambda/tree/master/docs/banner.png)
+
 # Refal-5λ
 
 * [![CI-windows][WI]][WU] — full bootstrapping with autotests on Windows with

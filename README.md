@@ -1,3 +1,5 @@
+![Banner](https://github.com/bmstu-iu9/refal-5-lambda/tree/master/docs/banner.png)
+
 # Рефал-5λ
 
 * [![CI-windows][WI]][WU] — полная сборка с автотестами на Windows
