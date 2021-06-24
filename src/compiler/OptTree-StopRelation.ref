@@ -163,9 +163,7 @@ ContainsSignature {
           = True e.ADT-Brackets-Inner-Rest;
 
         CallBrackets
-          , e.Inner
-          : (e.SymbolName) e.Argument
-          = True e.Argument;
+          = True e.Inner;
 
         e.OtherTermType
           = False;
@@ -226,11 +224,8 @@ ContainsSignature {
             >;
 
         CallBrackets
-          , e.Inner : (e.SymbolName) e.Argument
-          , e.Argument : t.Argument-FirstTerm e.Argument-RestExpr
           = <DoCheckExprPairForRelation
-              (t.Argument-FirstTerm) (e.Argument-RestExpr e.RestExpr)
-              e.Signature
+              (t.Inner-FirstTerm) (e.Inner-Rest e.RestExpr) e.Signature
             >;
 
         ClosureBrackets
@@ -323,7 +318,7 @@ CanonizeExpr-Term {
   (Var s.Mode e.Index) = (Var s.Mode);
 
   (s.BracketsTag e.Expr)
-    , <OneOf s.BracketsTag CallBrackets ClosureBrackets Brackets> : True
+    , <OneOf s.BracketsTag CallBrackets ColdCallBrackets ClosureBrackets Brackets> : True
     = <OptTree-CanonizeExpr e.Expr> : e.Expr^
     = (s.BracketsTag e.Expr);
 
