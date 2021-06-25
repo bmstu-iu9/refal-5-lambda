@@ -542,6 +542,14 @@ SkipSpecCall {
 */
 
 SpecCall {
+  /* TODO: убрать этот хак в рамках задачи #332 */
+  (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
+  (e.Argument) (e.History)
+    , s.NextNumber : 100
+    = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
+      (CallBrackets (Symbol Name e.Name) e.Argument)
+      /* пусто */ (/* пусто */);
+
   (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
   (e.Argument) (e.History)
     = <ExtractVariables ((e.Argument) (/* пусто */))> : e.UsedVars
