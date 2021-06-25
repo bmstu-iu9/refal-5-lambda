@@ -1,3 +1,5 @@
+![Banner](docs/banner.png)
+
 # Рефал-5λ
 
 * [![CI-windows][WI]][WU] — полная сборка с автотестами на Windows
