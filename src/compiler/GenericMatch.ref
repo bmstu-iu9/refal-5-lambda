@@ -707,6 +707,56 @@ Solve-Clashes {
     , t.Y : (Symbol e._)
     = /* нет решений */;
 
+  /* E : e.X  ↦  E ← e.X */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  ((e.E) ':' (t.X))
+  e.ClashesEnd (e.Assigns)
+    , t.X : (Var 'e' e.XIndex)
+    = <Solve-Clashes
+        (e.UsedVars) (e.Contrs)
+        e.ClashesStart e.ClashesEnd
+        (e.Assigns (e.E ':' t.X))
+      >;
+
+  /* {m} e.X E {n} : ε  ↦  e.X → ε */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  ((('{'s.M'}') t.X e.E ('{'s.N'}')) ':' (/* пусто */))
+  e.ClashesEnd (e.Assigns)
+    , t.X : (Var 'e' e.XIndex)
+    = <Solve-Clashes
+        (e.UsedVars)
+        <AddContraction-Spec
+          (t.X ':' /* пусто */)
+          (e.Contrs) e.ClashesStart
+          ((('{'s.M'}') t.X e.E ('{'s.N'}')) ':' (/* пусто */))
+          e.ClashesEnd (e.Assigns)
+        >
+      >;
+
+  /* {m}  T E  {n} : ε  ↦  решений нет */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  ((('{'s.M'}') t.T e.E ('{'s.N'}')) ':' (/* пусто */))
+  e.ClashesEnd (e.Assigns)
+    , <IsTerm t.T> : True
+    = /* решений нет */;
+
+  /* ε : E1 Pt E2  ↦  решений нет */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  ((/* пусто */) ':' (e.E1 t.Pt e.E2))
+  e.ClashesEnd (e.Assigns)
+    , <IsTerm t.Pt> : True
+    = /* решений нет */;
+
+  /* ε : ε  ↦  стираем */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  ((/* пусто */) ':' (/* пусто */))
+  e.ClashesEnd (e.Assigns)
+    = <Solve-Clashes
+        (e.UsedVars) (e.Contrs)
+        e.ClashesStart e.ClashesEnd
+        (e.Assigns)
+      >;
+
   /* {m} T {n} E : Pt P   ↦  {m} T {n} : Pt  &&  {n} E : P */
   /* {m} T E* {n} E : Pt P   ↦  {m} T {n} : Pt  &&  {m} E* {n} E : P */
   (e.UsedVars) (e.Contrs) e.ClashesStart
@@ -790,56 +840,6 @@ Solve-Clashes {
     : e.Branch2
     = <Solve-Clashes t.NewVars2 e.Branch1>
       <Solve-Clashes (e.UsedVars) e.Branch2>;
-
-  /* E : e.X  ↦  E ← e.X */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((e.E) ':' (t.X))
-  e.ClashesEnd (e.Assigns)
-    , t.X : (Var 'e' e.XIndex)
-    = <Solve-Clashes
-        (e.UsedVars) (e.Contrs)
-        e.ClashesStart e.ClashesEnd
-        (e.Assigns (e.E ':' t.X))
-      >;
-
-  /* {m} e.X E {n} : ε  ↦  e.X → ε */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.X e.E ('{'s.N'}')) ':' (/* пусто */))
-  e.ClashesEnd (e.Assigns)
-    , t.X : (Var 'e' e.XIndex)
-    = <Solve-Clashes
-        (e.UsedVars)
-        <AddContraction-Spec
-          (t.X ':' /* пусто */)
-          (e.Contrs) e.ClashesStart
-          ((('{'s.M'}') t.X e.E ('{'s.N'}')) ':' (/* пусто */))
-          e.ClashesEnd (e.Assigns)
-        >
-      >;
-
-  /* {m}  T E  {n} : ε  ↦  решений нет */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.T e.E ('{'s.N'}')) ':' (/* пусто */))
-  e.ClashesEnd (e.Assigns)
-    , <IsTerm t.T> : True
-    = /* решений нет */;
-
-  /* ε : E1 Pt E2  ↦  решений нет */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((/* пусто */) ':' (e.E1 t.Pt e.E2))
-  e.ClashesEnd (e.Assigns)
-    , <IsTerm t.Pt> : True
-    = /* решений нет */;
-
-  /* ε : ε  ↦  стираем */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((/* пусто */) ':' (/* пусто */))
-  e.ClashesEnd (e.Assigns)
-    = <Solve-Clashes
-        (e.UsedVars) (e.Contrs)
-        e.ClashesStart e.ClashesEnd
-        (e.Assigns)
-      >;
 
   /* могли остаться только клэши вида E : e.X P e.Y */
   (e.UsedVars) (s.OpenFlag e.Contrs)
