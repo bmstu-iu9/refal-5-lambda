@@ -1,0 +1,19 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */
+    = <F ('A') ('B') ('C') ('D')> : '1'
+    = <F ('A') ('_') ('C') ('D')> : '2'
+    = /* empty */;
+}
+
+F {
+  (e.A) (e.B) (e.C) (e.D) = <S (e.A) e.B 'A' (e.C e.D)>;
+}
+
+$SPEC S (e.S) e.d;
+
+S {
+  (e.A) 'B' e.A e.E, e.E : e.E = '1';
+  (e.A) e._ e.A e.E = '2';
+}
