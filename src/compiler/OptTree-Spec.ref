@@ -591,7 +591,13 @@ DynGenArg {
           = e.ArgNew : e.ArgNew^ (Brackets e._)
           = e.Pat : e.Pat^ (Brackets e._)
           = <DynGenArg
-              (e.ArgNew) (e.Sg <ApplySubst-Subst (e.Sg) e.SgNew>)
+              (e.ArgNew)
+              (
+                <RemoveAssignByLeftPart
+                    ((Var e.eNew))
+                    e.Sg <ApplySubst-Subst (e.Sg) e.SgNew>
+                >
+              )
               (/* пусто */) (/* пусто */)
               e.Begin ((e.Pat) e.Tail) e.Sentences
             >;
@@ -630,6 +636,18 @@ WrappedCondVars {
       >
     : e.CondVars^
     = <RemoveLastGhostBracket e.CondVars>;
+}
+
+RemoveAssignByLeftPart {
+  (e.Left) e.Assigns
+    = <Map
+        {
+          (e.Left ':' t.Var) = /* пусто */;
+
+          t.Assign = t.Assign;
+        }
+        e.Assigns
+      >;
 }
 
 SpecCall-Aux {
