@@ -427,12 +427,27 @@ SpecTerm {
       }
     : s.TrySpecCall
 
+    = <ExtractVariables-Expr e.ClosureContent> : e.UsedVars
+    = <NewVarName (e.UsedVars) 'eClosureArg'> : (e._) e.eClosureArg
     = <s.TrySpecCall
         (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
-        (CallBrackets e.ClosureContent (Var 'e@'))
+        (CallBrackets e.ClosureContent (Var e.eClosureArg))
       >
     : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^))
-      (CallBrackets e.ClosureContent^ (Var 'e@'))
+      (CallBrackets e.ClosureContent^ (Var e.eClosureArgOut))
+
+    /*
+      Проверка на то, что e.eClosureArg и e.eClosureArgOut равны. Проверить
+      через повторную переменную нельзя, т.к. стоит режим -Werror для
+      сборки исходников.
+      TODO: исправить при реализации подавления предупреждений.
+    */
+    = e.eClosureArgOut
+    : {
+        e.eClosureArg = /* пусто */;
+        e._ = <{}>
+      }
+    : /* пусто */
 
     = e.ClosureContent
     : {
