@@ -116,7 +116,7 @@ HighLevelRASL-Function {
         {
           (e.CondName) = (CmdConditionFunc GN-Local e.CondName);
         }
-        e.CondNames
+        <Unique e.CondNames>
       >
       <HighLevelRASL-Function-Aux
         <GenSentenceFunc s.Joint>

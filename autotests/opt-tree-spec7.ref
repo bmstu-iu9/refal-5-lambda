@@ -1,0 +1,12 @@
+* TREE
+
+$ENTRY Go {
+  e.X = <S { = e.X }> : False = /* empty */;
+}
+
+$SPEC S s.X;
+
+S {
+  s.X, A : s.X = True;
+  s._ = False;
+}

@@ -1,0 +1,30 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */
+    = <F () ('AABBAACC' 9 'DD')>   : ('AA') ('BB') ('CC') ('DD')
+    = <F ('A') ('ABBAACC' 9 'DD')> : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AA') ('BBAACC' 9 'DD')> : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AAB') ('BAACC' 9 'DD')> : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AABB') ('AACC' 9 'DD')> : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AABBA') ('ACC' 9 'DD')> : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AABBAA') ('CC' 9 'DD')> : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AABBAAC') ('C' 9 'DD')> : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AABBAACC') (9 'DD')>    : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AABBAACC' 9) ('DD')>    : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AABBAACC' 9 'D') ('D')> : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AABBAACC' 9 'DD') ()>   : ('AA') ('BB') ('CC') ('DD')
+    = /* empty */;
+}
+
+F {
+  (e.1) (e.2) = <S e.1 e.2>;
+}
+
+$SPEC S e.arg;
+
+S {
+  e.A e.B e.A e.C 9 e.D
+    , e.A : s._ s._
+    = (e.A) (e.B) (e.C) (e.D);
+}

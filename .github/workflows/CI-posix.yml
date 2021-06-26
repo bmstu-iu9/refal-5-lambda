@@ -13,8 +13,8 @@ jobs:
     strategy:
       matrix:
 
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        ccomp: [gcc, clang]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        ccomp: [ gcc, clang ]
         exclude:
           # clang отсутствует на сервере сборки для Windows
           - os: windows-latest
@@ -33,3 +33,15 @@ jobs:
           cp .github/workflows/conf-template-${{ matrix.ccomp }}.bash c-plus-plus.conf.sh
           ./bootstrap.sh
         shell: bash
+
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: log-info-posix
+          path: |
+            autotests/__error.txt
+            autotests/__dump.txt
+            autotests/__log.txt
+            bin
+            src
+          retention-days: 5

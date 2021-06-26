@@ -1,0 +1,12 @@
+* TREE
+
+$ENTRY Go {
+  e.X = <Eq (A e.X) (e.X A)>;
+}
+
+$SPEC Eq e.arg;
+
+Eq {
+  t.X t.X = True t.X;
+  t.Y t.Z = False t.Y t.Z;
+}
