@@ -1,0 +1,9 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */ = /* empty */;
+  ZZ = <D>;
+}
+
+$DRIVE D;
+D {}

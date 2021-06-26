@@ -270,6 +270,9 @@ FormatOptFunctions {
           (Function s.ScopeClass (e.Name) Sentences e.Sentences)
             = (e.Names-B e.Names-E)
               (s.Label (e.Name) Sentences e.Sentences);
+
+          (e.Names) (Function s._ (e._) Sentences /* пусто */)
+            = (e.Names) /* функции без предложений пропускаем */;
         }
         (<ExtractBaseNames e.OptNames>) e.Functions
       >
