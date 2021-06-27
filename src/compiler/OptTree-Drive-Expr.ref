@@ -104,8 +104,7 @@ MakeDriveTree {
     : s.CntNodes^ s.TreeDepth^
     = <CheckExprsStopRelation e.canoninzedExprs>
     : {
-        True s.Cnt
-          = Generalize s.Cnt;
+        True s.Cnt = Generalize t.OptInfo s.Cnt;
 
         s._ s._, <MaxCntNodes> : s.CntNodes
           = ((s.CntNodes) t.OptInfo (/* нет функций */))
@@ -162,27 +161,25 @@ GrowDriveTree-Call {
                   = ((s.CntNodes) t.OptInfo (e.NewFunctionsAccum e.NewFunctions))
                     (e.Contractions (e.DrivenRight) (e.Branches));
 
-                Generalize s.Cnt
-                  = (Generalize s.Cnt);
+                Generalize t.OptInfo^ s.Cnt = (Generalize t.OptInfo s.Cnt);
               };
 
-          (Generalize s.Cnt) (e.Contractions (e.DrivenRight))
-            = (Generalize s.Cnt);
+          (Generalize t.OptInfo s.Cnt) (e.Contractions (e.DrivenRight))
+            = (Generalize t.OptInfo s.Cnt);
         }
         ((s.CntNodes) ((e.OptFuncNames) e.OptFuncs) (e.NewFunctions))
         e.Branches
       >
     : {
-        (Generalize 1) e._DeletedTree
-          = ((e.OptFuncNames) e.OptFuncs) : t.OptInfo
+        (Generalize t.OptInfo 1) e._DeletedTree
           = <GrowDriveTree
               (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo
               <RestoreDrivenCall t.Call e.Expr>
               (s.TreeDepth e.canoninzedExprs)
             >;
 
-        (Generalize s.Cnt) e._DeletedTree
-          = Generalize <Sub s.Cnt 1>;
+        (Generalize t.OptInfo s.Cnt) e._DeletedTree
+          = Generalize t.OptInfo <Sub s.Cnt 1>;
 
         e.Tree = e.Tree;
       };
