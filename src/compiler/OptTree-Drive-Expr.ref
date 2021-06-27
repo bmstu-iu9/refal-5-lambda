@@ -121,8 +121,7 @@ MakeDriveTree {
 GrowDriveTree {
   (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr
   (s.TreeDepth e.canoninzedExprs)
-    = t.OptInfo
-    : ((e.OptFuncNames) e.OptFuncs)
+    = t.OptInfo : ((e.OptFuncNames) e.OptFuncs)
     = <FindOptimizedCall (e.OptFuncNames) e.Expr>
     : {
         (e.OptFuncNames^ None) e.Expr^
@@ -130,42 +129,52 @@ GrowDriveTree {
             (/* нет сужений */ (e.Expr) (/* пустое дерево */));
 
         (e.OptFuncNames^ t.Call) e.Expr^
-          = <OptExpr-Aux (e.UsedVars) (e.WholeVars) (e.Expr) t.Call e.OptFuncs>
-          : (e.OptFuncs^) (e.NewFunctions) e.Branches
-          = e.UsedVars <BranchesVars e.Branches>
-          : e.UsedVars^
-          = <MapAccum
-              {
-                ((s.CntNodes^) t.OptInfo^ (e.NewFunctionsAccum)) (e.Contractions (e.DrivenRight))
-                  = <MakeDriveTree
-                      (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.DrivenRight
-                      (s.TreeDepth e.canoninzedExprs)
-                    >
-                  : {
-                      ((s.CntNodes^) t.OptInfo^ (e.NewFunctions^)) e.Branches^
-                        = ((s.CntNodes) t.OptInfo  (e.NewFunctionsAccum e.NewFunctions))
-                          (e.Contractions (e.DrivenRight) (e.Branches));
-                      Generalize s.Cnt
-                        = (Generalize s.Cnt);
-                    };
-                (Generalize s.Cnt) (e.Contractions (e.DrivenRight))
+          = <GrowDriveTree-Call
+              (s.CntNodes) (e.UsedVars) (e.WholeVars)
+              ((e.OptFuncNames) e.OptFuncs) e.Expr
+              (s.TreeDepth e.canoninzedExprs) t.Call
+            >;
+      };
+}
+
+GrowDriveTree-Call {
+  (s.CntNodes) (e.UsedVars) (e.WholeVars) ((e.OptFuncNames) e.OptFuncs) e.Expr
+  (s.TreeDepth e.canoninzedExprs) t.Call
+    = <OptExpr-Aux (e.UsedVars) (e.WholeVars) (e.Expr) t.Call e.OptFuncs>
+    : (e.OptFuncs^) (e.NewFunctions) e.Branches
+    = e.UsedVars <BranchesVars e.Branches>
+    : e.UsedVars^
+    = <MapAccum
+        {
+          ((s.CntNodes^) t.OptInfo (e.NewFunctionsAccum)) (e.Contractions (e.DrivenRight))
+            = <MakeDriveTree
+                (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.DrivenRight
+                (s.TreeDepth e.canoninzedExprs)
+              >
+            : {
+                ((s.CntNodes^) t.OptInfo^ (e.NewFunctions^)) e.Branches^
+                  = ((s.CntNodes) t.OptInfo  (e.NewFunctionsAccum e.NewFunctions))
+                    (e.Contractions (e.DrivenRight) (e.Branches));
+                Generalize s.Cnt
                   = (Generalize s.Cnt);
-              }
-              ((s.CntNodes) ((e.OptFuncNames) e.OptFuncs) (e.NewFunctions))
-              e.Branches
-            >
-          : {
-              (Generalize 1) e._DeletedTree
-                = ((e.OptFuncNames) e.OptFuncs) : t.OptInfo^
-                = <GrowDriveTree
-                    (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo
-                    <RestoreDrivenCall t.Call e.Expr>
-                    (s.TreeDepth e.canoninzedExprs)
-                  >;
-              (Generalize s.Cnt) e._DeletedTree
-                = Generalize <Sub s.Cnt 1>;
-              e.Tree = e.Tree;
-            };
+              };
+          (Generalize s.Cnt) (e.Contractions (e.DrivenRight))
+            = (Generalize s.Cnt);
+        }
+        ((s.CntNodes) ((e.OptFuncNames) e.OptFuncs) (e.NewFunctions))
+        e.Branches
+      >
+    : {
+        (Generalize 1) e._DeletedTree
+          = ((e.OptFuncNames) e.OptFuncs) : t.OptInfo
+          = <GrowDriveTree
+              (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo
+              <RestoreDrivenCall t.Call e.Expr>
+              (s.TreeDepth e.canoninzedExprs)
+            >;
+        (Generalize s.Cnt) e._DeletedTree
+          = Generalize <Sub s.Cnt 1>;
+        e.Tree = e.Tree;
       };
 }
 

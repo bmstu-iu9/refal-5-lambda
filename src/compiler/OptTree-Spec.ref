@@ -692,74 +692,105 @@ SpecCall-Aux {
 
         /* проверяем на зацикливание */
         NotFound e.Signatures^
-          = s.NeedRelationCheck
-          : {
-              True
-                = <HasHigmanKruskalRelation
-                    (e.Name) (<OptTree-CanonizeExpr e.Signature>)
-                    e.History
-                  >;
-
-              False = False;
-            }
-          : {
-              True e.HistorySignature
-                /* Получает обобщённую сигнатуру для двух сигнатур */
-                = <GlobalGen (e.Signature) (e.HistorySignature)> : e.GenSignature
-                = <ExtractVariables ((e.NewArg) (/* пусто */))> : e.ArgVars
-                = <NameSignatureVars-Expr (e.ArgVars) e.GenSignature>
-                : t._ e.GenSignature^
-                = <GenericMatch (e.NewArg) (e.GenSignature)> : Clear e.NewSg
-                = <IsTrivialSubstitutions e.NewSg>
-                : {
-                    /*
-                      Если подстановка e.NewSg является тривиальной,
-                      проверку отношения Хигмана-Крускала
-                      в рекурсивном вызове не выполняем
-                    */
-                    True = False;
-
-                    False = True;
-                  }
-                : s.NeedRelationCheck^
-                = <DynGenArg
-                    (e.GenSignature) (<ApplySubst-Subst (e.Sg) e.NewSg>)
-                    (/* пусто */) (/* пусто */) e.Body
-                  >
-                : (e.NewArg^) (e.Sg^) (e.Solutions^)
-                = <SpecCall-Aux
-                    (e.Name) (e.SpecPattern) (e.Body) s.NextNumber
-                    e.Signatures (e.OldArg) (e.NewArg)
-                    (e.Sg) (e.Solutions) (e.History) s.NeedRelationCheck
-                  >;
-
-              False
-                = <CreateNewSentences
-                    (e.NewArg) (/* пусто */)
-                    (e.Solutions) (e.Body)
-                  >
-                : e.NewSentences
-                = <AddSuffix e.Name ('@' s.NextNumber)> : e.InstanceName
-                = (
-                    (e.SpecPattern) (e.Body) <Inc s.NextNumber>
-                    e.Signatures ((e.InstanceName) e.Signature)
-                  )
-                  (CallBrackets
-                    (Symbol Name e.InstanceName)
-                    <ApplySubst-Expr (e.Sg) <WrapVars e.NewArg>>
-                  )
-                  (Function
-                    GN-Local (e.InstanceName)
-                    Sentences e.NewSentences
-                  )
-                  (
-                    (
-                      (e.InstanceName) e.History
-                      ((e.InstanceName) e.Signature)
-                    )
-                  );
-            }
+          = <SpecCall-NewSignature
+              (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
+              (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
+              s.NeedRelationCheck (e.Signature)
+            >;
       };
+}
+
+SpecCall-NewSignature {
+  (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
+  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
+  s.NeedRelationCheck (e.Signature)
+    = s.NeedRelationCheck
+    : {
+        True
+          = <HasHigmanKruskalRelation
+              (e.Name) (<OptTree-CanonizeExpr e.Signature>)
+              e.History
+            >;
+
+        False = False;
+      }
+    : {
+        True e.HistorySignature
+          = <SpecCall-NewSignature-Generalize
+              (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
+              (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
+              (e.Signature) (e.HistorySignature)
+            >;
+
+        False
+          = <SpecCall-NewSignature-MakeFunction
+              (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
+              (e.NewArg) (e.Sg) (e.Solutions) (e.History) (e.Signature)
+            >;
+      }
+}
+
+SpecCall-NewSignature-Generalize {
+  (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
+  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
+  (e.Signature) (e.HistorySignature)
+      /* Получает обобщённую сигнатуру для двух сигнатур */
+      = <GlobalGen (e.Signature) (e.HistorySignature)> : e.GenSignature
+      = <ExtractVariables ((e.NewArg) (/* пусто */))> : e.ArgVars
+      = <NameSignatureVars-Expr (e.ArgVars) e.GenSignature>
+      : t._ e.GenSignature^
+      = <GenericMatch (e.NewArg) (e.GenSignature)> : Clear e.NewSg
+      = <IsTrivialSubstitutions e.NewSg>
+      : {
+          /*
+            Если подстановка e.NewSg является тривиальной,
+            проверку отношения Хигмана-Крускала
+            в рекурсивном вызове не выполняем
+          */
+          True = False;
+
+          False = True;
+        }
+      : s.NeedRelationCheck
+      = <DynGenArg
+          (e.GenSignature) (<ApplySubst-Subst (e.Sg) e.NewSg>)
+          (/* пусто */) (/* пусто */) e.Body
+        >
+      : (e.NewArg^) (e.Sg^) (e.Solutions^)
+      = <SpecCall-Aux
+          (e.Name) (e.SpecPattern) (e.Body) s.NextNumber
+          e.Signatures (e.OldArg) (e.NewArg)
+          (e.Sg) (e.Solutions) (e.History) s.NeedRelationCheck
+        >;
+}
+
+SpecCall-NewSignature-MakeFunction {
+  (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
+  (e.NewArg) (e.Sg) (e.Solutions) (e.History) (e.Signature)
+    = <CreateNewSentences
+        (e.NewArg) (/* пусто */)
+        (e.Solutions) (e.Body)
+      >
+    : e.NewSentences
+    = <AddSuffix e.Name ('@' s.NextNumber)> : e.InstanceName
+    = (
+        (e.SpecPattern) (e.Body) <Inc s.NextNumber>
+        e.Signatures ((e.InstanceName) e.Signature)
+      )
+      (CallBrackets
+        (Symbol Name e.InstanceName)
+        <ApplySubst-Expr (e.Sg) <WrapVars e.NewArg>>
+      )
+      (Function
+        GN-Local (e.InstanceName)
+        Sentences e.NewSentences
+      )
+      (
+        (
+          (e.InstanceName) e.History
+          ((e.InstanceName) e.Signature)
+        )
+      );
 }
 
 ExtractCalls-Expr {
