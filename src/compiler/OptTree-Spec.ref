@@ -708,8 +708,7 @@ SpecCall-NewSignature {
     : {
         True
           = <HasHigmanKruskalRelation
-              (e.Name) (<OptTree-CanonizeExpr e.Signature>)
-              e.History
+              (e.Name) (<OptTree-CanonizeExpr e.Signature>) e.History
             >;
 
         False = False;
@@ -767,10 +766,7 @@ SpecCall-NewSignature-Generalize {
 SpecCall-NewSignature-MakeFunction {
   (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
   (e.NewArg) (e.Sg) (e.Solutions) (e.History) (e.Signature)
-    = <CreateNewSentences
-        (e.NewArg) (/* пусто */)
-        (e.Solutions) (e.Body)
-      >
+    = <CreateNewSentences (e.NewArg) (/* пусто */) (e.Solutions) (e.Body)>
     : e.NewSentences
     = <AddSuffix e.Name ('@' s.NextNumber)> : e.InstanceName
     = (
@@ -781,15 +777,9 @@ SpecCall-NewSignature-MakeFunction {
         (Symbol Name e.InstanceName)
         <ApplySubst-Expr (e.Sg) <WrapVars e.NewArg>>
       )
-      (Function
-        GN-Local (e.InstanceName)
-        Sentences e.NewSentences
-      )
+      (Function GN-Local (e.InstanceName) Sentences e.NewSentences)
       (
-        (
-          (e.InstanceName) e.History
-          ((e.InstanceName) e.Signature)
-        )
+        ((e.InstanceName) e.History ((e.InstanceName) e.Signature))
       );
 }
 

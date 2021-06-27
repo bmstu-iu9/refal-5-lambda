@@ -2182,7 +2182,8 @@ AddContraction-Spec {
     : {
         ((Var 'e' e._) ':' (Var 'e' e._) (Var 'e' e._)) = AfterOpen;
 
-        ((Var 'e' e._) ':' (Var 'e' e._) (Var 't' e._) (Var 'e' e._)) = AfterOpen;
+        ((Var 'e' e._) ':' (Var 'e' e._) (Var 't' e._) (Var 'e' e._))
+          = AfterOpen;
 
         t._ = s.OpenFlag;
       }
@@ -2203,7 +2204,8 @@ AddContraction-Spec-Symm {
     : {
         ((Var 'e' e._) ':' (Var 'e' e._) (Var 'e' e._)) = AfterOpen;
 
-        ((Var 'e' e._) ':' (Var 'e' e._) (Var 't' e._) (Var 'e' e._)) = AfterOpen;
+        ((Var 'e' e._) ':' (Var 'e' e._) (Var 't' e._) (Var 'e' e._))
+          = AfterOpen;
 
         t._ = s.OpenFlag;
       }

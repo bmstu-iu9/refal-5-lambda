@@ -84,8 +84,8 @@ MaxTreeDepth { = 20 }
 $DRIVE MaxTreeDepth;
 
 IncWithMax {
-  s.Cnt s.Max, <Compare s.Max s.Cnt> : '+'
-    = <Add s.Cnt 1>;
+  s.Cnt s.Max, <Compare s.Max s.Cnt> : '+' = <Add s.Cnt 1>;
+
   s.Cnt s.Max = s.Max;
 }
 
@@ -96,20 +96,25 @@ CheckExprsLength {
 }
 
 MakeDriveTree {
-  (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr (s.TreeDepth e.canoninzedExprs)
+  (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr
+  (s.TreeDepth e.canoninzedExprs)
     = (<OptTree-CanonizeExpr e.Expr>) e.canoninzedExprs : e.canoninzedExprs^
-    = <IncWithMax s.CntNodes <MaxCntNodes>> <IncWithMax s.TreeDepth <MaxTreeDepth>>
+    = <IncWithMax s.CntNodes <MaxCntNodes>>
+      <IncWithMax s.TreeDepth <MaxTreeDepth>>
     : s.CntNodes^ s.TreeDepth^
     = <CheckExprsStopRelation e.canoninzedExprs>
     : {
         True s.Cnt
           = Generalize s.Cnt;
+
         s._ s._, <MaxCntNodes> : s.CntNodes
           = ((s.CntNodes) t.OptInfo (/* нет функций */))
             (/* нет сужений */ (e.Expr) (/* пустое дерево */) );
+
         s._ s._, <MaxTreeDepth> : s.TreeDepth
           = ((s.CntNodes) t.OptInfo (/* нет функций */))
             (/* нет сужений */ (e.Expr) (/* пустое дерево */) );
+
         False s._Cnt
           = <GrowDriveTree
               (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr
@@ -146,18 +151,21 @@ GrowDriveTree-Call {
     : e.UsedVars^
     = <MapAccum
         {
-          ((s.CntNodes^) t.OptInfo (e.NewFunctionsAccum)) (e.Contractions (e.DrivenRight))
+          ((s.CntNodes^) t.OptInfo (e.NewFunctionsAccum))
+          (e.Contractions (e.DrivenRight))
             = <MakeDriveTree
                 (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.DrivenRight
                 (s.TreeDepth e.canoninzedExprs)
               >
             : {
                 ((s.CntNodes^) t.OptInfo^ (e.NewFunctions^)) e.Branches^
-                  = ((s.CntNodes) t.OptInfo  (e.NewFunctionsAccum e.NewFunctions))
+                  = ((s.CntNodes) t.OptInfo (e.NewFunctionsAccum e.NewFunctions))
                     (e.Contractions (e.DrivenRight) (e.Branches));
+
                 Generalize s.Cnt
                   = (Generalize s.Cnt);
               };
+
           (Generalize s.Cnt) (e.Contractions (e.DrivenRight))
             = (Generalize s.Cnt);
         }
@@ -172,8 +180,10 @@ GrowDriveTree-Call {
               <RestoreDrivenCall t.Call e.Expr>
               (s.TreeDepth e.canoninzedExprs)
             >;
+
         (Generalize s.Cnt) e._DeletedTree
           = Generalize <Sub s.Cnt 1>;
+
         e.Tree = e.Tree;
       };
 }
@@ -241,7 +251,9 @@ FlatDriveTreeSingle {
                 {
                   (e.BrachContractions (e.BranchDrivenRight))
                     = (
-                        <ComposeContractions (e.Contractions) (e.BrachContractions)>
+                        <ComposeContractions
+                          (e.Contractions) (e.BrachContractions)
+                        >
                         (e.BranchDrivenRight)
                       )
                 }
