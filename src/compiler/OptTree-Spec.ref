@@ -707,7 +707,7 @@ SpecCall-NewSignature {
     = s.NeedRelationCheck
     : {
         True
-          = <HasHigmanKruskalRelation
+          = <HasStopRelation
               (e.Name) (<OptTree-CanonizeExpr e.Signature>) e.History
             >;
 
@@ -1018,26 +1018,13 @@ OrderUniqueVars {
   e.Variables = e.Variables;
 }
 
-/*
-  Функции, относящиеся к проверке отношения Хигмана-Крускала
-*/
-
 /**
-  <HasHigmanKruskalRelation (e.Name) (e.Signature) e.History>
+  <HasStopRelation (e.Name) (e.Signature) e.History>
     == True e.HistorySignature
     == False
-
-  Функция проверяет, выполняется ли отношение Хигмана-Крускала
-  для одной из сигнатур в e.History и сигнатуры e.Signature,
-  то есть проверяется, можно ли вложить одну сигнатуру в другую,
-  удалив некоторые элементы.
-  В случае, если в истории сигнатур удаётся найти сигнатуру,
-  для которой выполняется указанное отношение,
-  функция возвращает True и соответствующий e.HistorySignature.
-  В ином случае возвращается False.
 */
 
-HasHigmanKruskalRelation {
+HasStopRelation {
   (e.Name) (e.Signature) e.History ((e.InstanceName) e.HistorySignature)
     , <SourceNameOfInstance e.InstanceName> : e.Name
     , <OptTree-CheckExprStopRelation
@@ -1047,7 +1034,7 @@ HasHigmanKruskalRelation {
     = True e.HistorySignature;
 
   (e.Name) (e.Signature) e.History ((e.InstanceName) e.HistorySignature)
-    = <HasHigmanKruskalRelation (e.Name) (e.Signature) e.History>;
+    = <HasStopRelation (e.Name) (e.Signature) e.History>;
 
   (e.Name) (e.Signature) /* пустая история */ = False;
 }
