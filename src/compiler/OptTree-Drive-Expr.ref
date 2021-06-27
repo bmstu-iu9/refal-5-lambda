@@ -156,6 +156,7 @@ GrowDriveTree {
             >
           : {
               (Generalize 1) e._DeletedTree
+                = ((e.OptFuncNames) e.OptFuncs) : t.OptInfo^
                 = <GrowDriveTree
                     (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo
                     <RestoreDrivenCall t.Call e.Expr>
