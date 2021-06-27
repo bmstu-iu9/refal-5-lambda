@@ -5,16 +5,16 @@ $INCLUDE "LibraryEx";
 */
 
 /**
-  <OptTree-CheckTupleStopRelation (e.CurrentTuple) e.HistoryTuple>
+  <OptTree-CheckExprStopRelation (e.CurrentExpr) e.HistoryExpr>
     == True
     == False
 
-  Проверяет выполнение отношения Хигмана-Крускала для двух кортежей.
+  Проверяет выполнение отношения Хигмана-Крускала для двух выражений.
   Возвращает True, если отношение выполняется, и False в ином случае.
 
-  Предполагается, что оба кортежа в канонической форме.
+  Предполагается, что оба выражения в канонической форме.
 
-  e.CurrentTuple, e.HistoryTuple ::= (e.CanonizedExpr)*
+  e.CurrentExpr, e.HistoryExpr ::= e.CanonizedExpr
   e.CanonizedExpr ::= t.CanonizedTerm*
   t.CanonizedTerm ::=
       (Symbol s.SymType e.SymInfo)
@@ -25,30 +25,6 @@ $INCLUDE "LibraryEx";
     | (Brackets t.CanonizedTerm*)
     | (ClosureBrackets t.CanonizedTerm*)
     | (CallBrackets t.Name t.CanonizedTerm*)
-*/
-$ENTRY OptTree-CheckTupleStopRelation {
-  (/* пусто */) /* пусто */ = True;
-
-  (e.CurrentTuple) e.HistoryTuple
-    , e.CurrentTuple : (e.CurrentExpr) e.CurrentTuple-Rest
-    , e.HistoryTuple : (e.HistoryExpr) e.HistoryTuple-Rest
-    , <OptTree-CheckExprStopRelation (e.CurrentExpr) e.HistoryExpr>
-    : {
-        True
-          = <OptTree-CheckTupleStopRelation
-              (e.CurrentTuple-Rest) e.HistoryTuple-Rest
-            >;
-
-        False = False;
-    };
-}
-
-/**
-  <OptTree-CheckExprStopRelation (e.CurrentExpr) e.HistoryExpr>
-    == True
-    == False
-
-  e.CurrentExpr, e.HistoryExpr ::= e.CanonizedExpr
 */
 $ENTRY OptTree-CheckExprStopRelation {
   (e.CurrentExpr) e.HistoryExpr
@@ -296,15 +272,6 @@ PartiallyContainsSignature {
         (e.Expr) e.Signature-Part
       >
       t.LastTerm;
-}
-
-/**
-  <OptTree-CanonizeTuple (e.Expr)*> == (e.CanonizedExpr)*
-
-  * Убирает имена переменных в сигнатуре, оставляет их типы данных.
-*/
-$ENTRY OptTree-CanonizeTuple {
-  e.Tuple = <Map { (e.Expr) = (<OptTree-CanonizeExpr e.Expr>) } e.Tuple>
 }
 
 /**

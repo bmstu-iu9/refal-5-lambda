@@ -16,8 +16,7 @@ $EXTERN DisplayName;
 $EXTERN GlobalGen;
 
 *$FROM OptTree-StopRelation
-$EXTERN OptTree-CanonizeTuple, OptTree-CanonizeExpr;
-$EXTERN OptTree-CheckTupleStopRelation, OptTree-CheckExprStopRelation;
+$EXTERN OptTree-CanonizeExpr, OptTree-CheckExprStopRelation;
 
 /**
   <OptTree-Spec-Prepare s.OptSpec e.AST> == e.AST^
