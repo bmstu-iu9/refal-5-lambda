@@ -40,4 +40,5 @@
   fi
 
   echo $(date): Installation finished
+  echo Restart your console window for applying changes
 )
