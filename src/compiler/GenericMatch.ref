@@ -36,7 +36,7 @@ $ENTRY GenericMatch {
         ((e.Pattern) ':' (e.LPattern))
       >
     : {
-        Success (() (e.Assigns)) = Clear <FormatAssigns e.Assigns>;
+        Success (e._ () (e.Assigns)) = Clear <FormatAssigns e.Assigns>;
         Success e.Solutions = Contracted e.Solutions;
         Failure = Failure;
         Undefined = Undefined;
@@ -50,7 +50,7 @@ $ENTRY GenericMatch {
     t.Contr ::= (t.Var ':' e.Val)
     t.Equation ::= ((e.Expr) ':' (e.LExpr))
     t.Assign ::= (e.Val ':' t.Var)
-    t.Result ::= ((t.Contr*) (t.Assign*))
+    t.Result ::= (e.UsedVars^ (t.Contr*) (t.Assign*))
 */
 
 $ENTRY Solve-Drive {
@@ -73,7 +73,7 @@ $ENTRY Solve-Drive {
           : {
               True = Undefined;
 
-              False = Success <CombineResults e.Success>;
+              False = Success <CombineResults-Drive e.Success>;
             };
       };
 }
@@ -81,9 +81,36 @@ $ENTRY Solve-Drive {
 /* Проверка на наличие поднятого флага в решениях */
 
 IsFlagOpen {
-  e._ (Success AfterOpen (e.Contrs) (e.Assigns)) e._ = True;
+  e._ (Success (e._) AfterOpen (e._) (e._)) e._ = True;
 
   e._ = False;
+}
+
+/*
+  Преобразует решения в нужный формат для Solve-Drive
+
+  <CombineResults-Drive e.RawSol*> == t.Sol*
+
+  t.Sol ::= (e.UsedVars (t.Contr*) (t.Assign*))
+  e.RawSol ::= (Success (e.UsedVars) s.OpenFlag (t.Contr*) (t.Assign*))
+*/
+CombineResults-Drive {
+  e.RawSolutions
+    = <Map
+        {
+          (Success (e.UsedVars) s.OpenFlag (e.Contrs) (e.Assigns))
+            = <RemoveTrivialContractions e.Contrs> : e.Contrs^
+            = <Map
+                {
+                  (e.Val ':' t.Var) = (<ClearCoordinates e.Val> ':' t.Var)
+                }
+                e.Assigns
+              >
+            : e.Assigns^
+            = (e.UsedVars (e.Contrs) (e.Assigns));
+        }
+        e.RawSolutions
+      >;
 }
 
 /**
@@ -128,7 +155,7 @@ Solve-Spec-DoFindGeneralization {
 
         e.Success
           = Success
-            <CombineResults e.Success>
+            <CombineResults-Spec e.Success>
             (e.GenAssigns)
             (<ClearCoordinates e.L>);
       }
@@ -214,19 +241,19 @@ GetExtremum {
 }
 
 /*
-  Преобразует решения в нужный формат для Solve-Drive и Solve-Spec
+  Преобразует решения в нужный формат для Solve-Spec
 
-  <CombineResults e.RawSol*> == t.Sol*
+  <CombineResults-Spec e.RawSol*> == t.Sol*
 
   t.Sol ::= ((t.Contr*) (t.Assign*))
-  e.RawSol ::= (Success s.OpenFlag (t.Contr*) (t.Assign*))
+  e.RawSol ::= (Success (e.UsedVars) s.OpenFlag (t.Contr*) (t.Assign*))
 */
 
-CombineResults {
+CombineResults-Spec {
   e.RawSolutions
     = <Map
         {
-          (Success s.OpenFlag (e.Contrs) (e.Assigns))
+          (Success (e.UsedVars) s.OpenFlag (e.Contrs) (e.Assigns))
             = <RemoveTrivialContractions e.Contrs> : e.Contrs^
             = <Map
                 {
@@ -494,7 +521,7 @@ SimplifyCoordinates-Expr-Inner {
     t.Clash ::= ((e.L) ':' (e.R))
     t.Assign ::= (e.Val ':' t.Var)
     t.Result
-      ::= (Success s.OpenFlag (t.Contr*) (t.Assign*))
+      ::= (Success (e.UsedVars) s.OpenFlag (t.Contr*) (t.Assign*))
       |   (Generalize ( ('{' s.BeginCoord s.EndCoord '}')+ ))
 */
 
@@ -2107,7 +2134,7 @@ Solve-SymmClashes-Aux {
 
 *  Если клэши кончились, возвращаем решение
   (e.UsedVars) (s.OpenFlag e.Contrs) (e.Assigns)
-    = (Success s.OpenFlag (e.Contrs) (e.Assigns));
+    = (Success (e.UsedVars) s.OpenFlag (e.Contrs) (e.Assigns));
 }
 
 /* Проверка на эквивалентность */
