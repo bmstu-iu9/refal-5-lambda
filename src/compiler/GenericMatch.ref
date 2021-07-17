@@ -487,28 +487,9 @@ SimplifyCoordinates-Expr {
   ('{'s.M'}') ('{'s.N'}')
     = /* пусто */;
 
-  ('{'s.M'}') e.E ('{'s.N'}')
-    = ('{'s.M'}') <SimplifyCoordinates-Expr-Inner e.E> ('{'s.N'}');
+  ('{'s.M'}') e.E ('{'s.N'}') = ('{'s.M'}') e.E ('{'s.N'}');
 
-  e.E = <SimplifyCoordinates-Expr-Inner e.E>;
-}
-
-SimplifyCoordinates-Expr-Inner {
-  /* Ê1{k} {m} {n}Ê2  ↦  Ê1{k} {n}Ê2 */
-  e.E1 ('{'s.K'}') ('{'s.M'}') ('{'s.N'}') e.E2
-    = <SimplifyCoordinates-Expr-Inner e.E1 ('{'s.K'}') ('{'s.N'}') e.E2>;
-
-  e.Begin (Brackets e.E) e.End
-    = <SimplifyCoordinates-Expr-Inner e.Begin>
-      (Brackets <SimplifyCoordinates-Expr e.E>)
-      <SimplifyCoordinates-Expr-Inner e.End>;
-
-  e.Begin (ADT-Brackets (e.Name) e.E) e.End
-    = <SimplifyCoordinates-Expr-Inner e.Begin>
-      (ADT-Brackets (e.Name) <SimplifyCoordinates-Expr e.E>)
-      <SimplifyCoordinates-Expr-Inner e.End>;
-
-  e.E = e.E;
+  /* пусто */ = /* пусто */;
 }
 
 /*
