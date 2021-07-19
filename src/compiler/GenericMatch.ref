@@ -748,9 +748,7 @@ Solve-Clashes {
   e.ClashesEnd (e.Assigns)
     , <IsTerm t.T> : True
     , <IsTerm t.Pt> : True
-    , <HasTopLevelCoordinateLabels e.E> : True
-    = <SeparateTermLeft ('{'s.M'}') t.T e.E>
-    : (e.Left1) (e.Left2)
+    = <SeparateTermLeft ('{'s.M'}') t.T e.E> : (e.Left1) (e.Left2)
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs) e.ClashesStart
         ((e.Left1) ':' (t.Pt))
@@ -765,9 +763,7 @@ Solve-Clashes {
   e.ClashesEnd (e.Assigns)
     , <IsTerm t.T> : True
     , <IsTerm t.Pt> : True
-    , <HasTopLevelCoordinateLabels e.E> : True
-    = <SeparateTermRight e.E t.T ('{'s.N'}')>
-    : (e.Left1) (e.Left2)
+    = <SeparateTermRight e.E t.T ('{'s.N'}')> : (e.Left1) (e.Left2)
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs) e.ClashesStart
         ((e.Left1) ':' (e.P))
@@ -1304,41 +1300,39 @@ ClearCoordinates {
 */
 
 SeparateTermLeft {
-*  {a} T {b} E  ↦  {a} T {b}, {b} E
-  ('{'s.A'}') t.T ('{'s.B'}') e.E
-    , <IsTerm t.T> : True
-    = <Eq (e.E) (/* пусто */)>
-    : {
-        True = (('{'s.A'}') t.T ('{'s.B'}')) (/* пусто */);
+*  {a} T {b} ε  ↦  {a} T {b}, ε
+  ('{'s.A'}') t.T ('{'s.B'}') /* пусто */
+    = (('{'s.A'}') t.T ('{'s.B'}')) (/* пусто */);
 
-        False = (('{'s.A'}') t.T ('{'s.B'}')) (('{'s.B'}') e.E);
-      };
+  ('{'s.A'}') t.T ('{'s.B'}') e.E
+    = (('{'s.A'}') t.T ('{'s.B'}')) (('{'s.B'}') e.E);
 
 *  {a} T E1* {b} E2  ↦  {a} T {b}, {a} E1* {b} E2
   ('{'s.A'}') t.T e.E1 ('{'s.B'}') e.E2
-    , <IsTerm t.T> : True
-    , <HasTopLevelCoordinateLabels e.E1> : False
     = (('{'s.A'}') t.T ('{'s.B'}'))
       (('{'s.A'}') e.E1 ('{'s.B'}') e.E2);
 }
 
 SeparateTermRight {
+*  ε {a} T {b}  ↦  ε, {a} T {b}
+  /* пусто */ ('{'s.A'}') t.T ('{'s.B'}')
+    = (/* пусто */) (('{'s.A'}') t.T ('{'s.B'}'));
+
 *  E {a} T {b}  ↦  E {a}, {a} T {b}
   e.E ('{'s.A'}') t.T ('{'s.B'}')
-    , <IsTerm t.T> : True
-    = <Eq (e.E) (/* пусто */)>
-    : {
-        True = (/* пусто */) (('{'s.A'}') t.T ('{'s.B'}'));
-
-        False = (e.E ('{'s.A'}')) (('{'s.A'}') t.T ('{'s.B'}'));
-      };
+    = (e.E ('{'s.A'}')) (('{'s.A'}') t.T ('{'s.B'}'));
 
 *  E1 {a} E2* T {b}  ↦  E1 {a} E2* {b}, {a} T {b}
-  e.E1 ('{'s.A'}') e.E2 t.T ('{'s.B'}')
-    , <HasTopLevelCoordinateLabels e.E2> : False
-    , <IsTerm t.T> : True
-    = (e.E1 ('{'s.A'}') e.E2 ('{'s.B'}'))
-      (('{'s.A'}') t.T ('{'s.B'}'));
+  e.Expr t.T ('{'s.B'}')
+    = <LastCoordinate e.Expr> : e.Expr^ s.A
+    = (e.Expr ('{'s.B'}')) (('{'s.A'}') t.T ('{'s.B'}'));
+}
+
+LastCoordinate {
+  ('{'s.A'}') e.Begin ('{'s.B'}') e.End
+    = ('{'s.A'}') e.Begin <LastCoordinate ('{'s.B'}') e.End>;
+
+  ('{'s.A'}') e.Expr = ('{'s.A'}') e.Expr s.A;
 }
 
 /*
