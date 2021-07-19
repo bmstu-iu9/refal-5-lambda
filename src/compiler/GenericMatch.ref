@@ -693,6 +693,20 @@ Solve-Clashes {
   e.ClashesEnd (e.Assigns)
     = /* нет решений */;
 
+  /*
+    {m} {{ &F e.X }} {n} : Pt  ↦  нет решений
+
+    Случаи
+    — {m} {{ &F e.X }} {n} : t.X
+    — {m} {{ &F e.X }} {n} : s.X
+    перехватываются предложениями выше
+  */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  ((('{'s.M'}') (ClosureBrackets e._) ('{'s.N'}')) ':' (t.T))
+  e.ClashesEnd (e.Assigns)
+    , <IsTerm t.T> : True
+    = /* решений нет */;
+
   /* E : e.X  ↦  E ← e.X */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   ((e.E) ':' ((Var 'e' e.Index)))
