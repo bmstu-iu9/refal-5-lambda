@@ -2274,6 +2274,11 @@ ApplyContraction-toExpr {
      (ADT-Brackets <ApplyContraction-toExpr t.Contraction e.M>)
      <ApplyContraction-toExpr t.Contraction e.E>;
 
+   t.Contraction e.B (ClosureBrackets e.M) e.E =
+     <ApplyContraction-toExpr t.Contraction e.B>
+     (ClosureBrackets <ApplyContraction-toExpr t.Contraction e.M>)
+     <ApplyContraction-toExpr t.Contraction e.E>;
+
    t.Contraction e.Expr = e.Expr
 }
 
