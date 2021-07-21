@@ -178,27 +178,22 @@ FlatDriveTree {
   e.Branches
     = <Map
         {
-          (e.Contractions (e.DrivenRight) (e.Branches^))
-            = <FlatDriveTree e.Branches> : e.FlatBranches
-            = <FlatDriveTreeSingle
-                e.Contractions (e.DrivenRight) (e.FlatBranches)
+          /* лист */
+          (e.Contractions (e.DrivenRight) (/* нет детей */))
+            = (e.Contractions (e.DrivenRight));
+
+          /* внутренний узел */
+          (e.Contractions (e._SkippedDrivenRight) (e.ChildBranches))
+            = <FlatDriveTree e.ChildBranches> : e.FlatBranches
+            = <Map
+                {
+                  (e.BrachContractions (e.DrivenRight))
+                    = (e.Contractions e.BrachContractions (e.DrivenRight))
+                }
+                e.FlatBranches
               >;
         }
         e.Branches
-      >;
-}
-
-FlatDriveTreeSingle {
-  e.Contractions (e.DrivenRight) (/* пустое дерево */)
-    = (e.Contractions (e.DrivenRight));
-
-  e.Contractions (e.DrivenRight) (e.FlatBranches)
-    = <Map
-        {
-          (e.BrachContractions (e.BranchDrivenRight))
-            = (e.Contractions e.BrachContractions (e.BranchDrivenRight))
-        }
-        e.FlatBranches
       >;
 }
 
