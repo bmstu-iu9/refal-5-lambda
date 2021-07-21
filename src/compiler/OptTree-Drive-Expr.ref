@@ -11,7 +11,7 @@ $EXTERN OptTree-Drive-Intrinsic;
 $EXTERN Solve-Drive;
 
 *$FROM TreeUtils
-$EXTERN IsPassiveExpr, HashName;
+$EXTERN ExpandClosures-Result, IsPassiveExpr, HashName;
 
 
 /**
@@ -23,6 +23,7 @@ $EXTERN IsPassiveExpr, HashName;
 */
 $ENTRY OptTree-Drive-Expr {
   (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr
+    = <ExpandClosures-Result e.Expr> : e.Expr^
     = <MakeDriveTree (0) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr (0)>
     : ((s._CntNodes) t.OptInfo^ (e.NewFunctions)) e.DriveTree
     = t.OptInfo <FlatDriveTree e.DriveTree> (e.NewFunctions);
@@ -214,12 +215,10 @@ OptExpr-Aux {
       <MapAccum
         {
           (e.NewFunctions) ((e.UsedVars^) e.Contractions (e.NewFunction))
+            = <ApplyContractions e.Expr (e.Contractions)> : e.DrivenRight
+            = <ExpandClosures-Result e.DrivenRight> : e.DrivenRight^
             = (e.NewFunctions e.NewFunction)
-              (
-                (e.UsedVars)
-                e.Contractions
-                (<ApplyContractions e.Expr (e.Contractions)>)
-              );
+              ((e.UsedVars) e.Contractions (e.DrivenRight));
         }
         (/* new functions */)
         e.SubstitutionPacks

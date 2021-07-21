@@ -84,7 +84,6 @@ $ENTRY OptTree {
               (loop-for-warm-functions
                 (pass
                   (trace 'before Drive')
-                  (call &ExpandClosures)
                   (call &OptTree-Drive)))
               (call &WarmColdFunctions DRIVE)
               (call &OptTree-Drive-CleanupColdCalls))

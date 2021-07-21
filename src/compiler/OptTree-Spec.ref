@@ -365,6 +365,13 @@ SpecResult-Pass {
 */
 SpecTerm {
   s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
+  (CallBrackets (ClosureBrackets e.ClosureContent) e.Argument)
+    = <SpecTerm
+        s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
+        (CallBrackets e.ClosureContent e.Argument)
+      >;
+
+  s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
   (CallBrackets (Symbol Name e.Name) e.Expression)
     , e.Name : e._ '@' 0
     /*
