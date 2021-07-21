@@ -242,9 +242,7 @@ eDRIVEN {
 OptExpr-MakeSubstitutions {
   (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args) t.IntrinsicFunction t.Metatables
     , t.IntrinsicFunction : (Intrinsic (e._) Intrinsic e.BehaviorName)
-    = <OptTree-Drive-Intrinsic
-        (e.UsedVars) t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName
-      >
+    = <OptTree-Drive-Intrinsic t.Metatables (e.Args) e.BehaviorName>
     : {
         t.Metatables^ Ok e.Result
           = t.Metatables

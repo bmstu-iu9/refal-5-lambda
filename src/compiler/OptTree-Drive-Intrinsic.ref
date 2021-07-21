@@ -1,11 +1,19 @@
 $INCLUDE "LibraryEx";
 
 
+/**
+  <OptTree-Drive-Intrinsic t.Metatables (e.Args) e.Behavior>
+    == t.Metatables Ok e.Result
+    == t.Metatables MakeColdCall
+
+  t.Metatables ::= (t.Metatable*)
+  e.Args, e.Result ::= e.ReducedExpression
+*/
 $ENTRY OptTree-Drive-Intrinsic {
-  (e.UsedVars) t.IntrinsicFunction t.Metatables (e.Args) '__Meta_Mu'
+  t.Metatables (e.Args) '__Meta_Mu'
     = <Intrinsic-Mu e.Args t.Metatables>;
 
-  (e.UsedVars) t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName
+  t.Metatables (e.Args) e.BehaviorName
     = e.BehaviorName
     : {
         'Add' = &Intrinsic-Add;
