@@ -22,12 +22,8 @@ $ENTRY OptTree-Drive-Expr {
   (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr
     = <MakeDriveTree (0) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr (0)>
     : ((s._CntNodes) t.OptInfo^ (e.NewFunctions)) e.DriveTree
-    = t.OptInfo <ColdTree <MapUnBracket <FlatDriveTree e.DriveTree>>>
+    = t.OptInfo <ColdTree <FlatDriveTree e.DriveTree>>
       (e.NewFunctions);
-}
-
-MapUnBracket {
-  e.Sequence = <Map &UnBracket e.Sequence>;
 }
 
 ColdTree {
@@ -161,7 +157,7 @@ GrowDriveTree-Call {
 
 RestoreDrivenCall {
   t.Call e.Expr
-    = <ApplyContractions e.Expr ((<eDRIVEN> ':' <ColdAll t.Call>)) >
+    = <ApplyContractions e.Expr ((<eDRIVEN> ':' <ColdAll t.Call>))>
 }
 
 CheckExprsStopRelation {
@@ -177,8 +173,7 @@ FlatDriveTree {
   e.Branches
     = <Map
         {
-          (e.Branch)
-            = (<FlatDriveTreeAux (e.Branch)>)
+          (e.Branch) = <FlatDriveTreeAux (e.Branch)>
         }
         e.Branches
       >;
@@ -186,32 +181,24 @@ FlatDriveTree {
 
 FlatDriveTreeAux {
   (e.Contractions (e.DrivenRight) (e.Branches))
-    = <FlatDriveTree e.Branches> : e.BrachPacks
-    = <FlatDriveTreeSingle (e.Contractions (e.DrivenRight) (e.BrachPacks))>;
+    = <FlatDriveTree e.Branches> : e.Branches^
+    = <FlatDriveTreeSingle e.Contractions (e.DrivenRight) (e.Branches)>;
 }
 
 FlatDriveTreeSingle {
-  (e.Contractions (e.DrivenRight) (/* пустое дерево */))
+  e.Contractions (e.DrivenRight) (/* пустое дерево */)
     = (e.Contractions (e.DrivenRight));
 
-  (e.Contractions (e.DrivenRight) (e.BrachPacks))
+  e.Contractions (e.DrivenRight) (e.Branches)
     = <Map
         {
-          (e.Branches)
-            = <Map
-                {
-                  (e.BrachContractions (e.BranchDrivenRight))
-                    = (
-                        <ComposeContractions
-                          (e.Contractions) (e.BrachContractions)
-                        >
-                        (e.BranchDrivenRight)
-                      )
-                }
-                e.Branches
-              >;
+          (e.BrachContractions (e.BranchDrivenRight))
+            = (
+                <ComposeContractions (e.Contractions) (e.BrachContractions)>
+                (e.BranchDrivenRight)
+              )
         }
-        e.BrachPacks
+        e.Branches
       >;
 }
 
@@ -232,7 +219,8 @@ ComposeContractions {
               );
         }
         e.A
-      > e.B;
+      >
+      e.B;
 }
 
 OptExpr-Aux {
@@ -266,16 +254,7 @@ OptExpr-Aux {
 
 IntrinsicCall {
   (e.UsedVars) t.IntrinsicFunction t.Metatables (e.Args) '__Meta_Mu'
-    = <Intrinsic-Mu e.Args t.Metatables>
-    : {
-        t.Metatables^ Ok e.Result
-          = t.Metatables
-            ((e.UsedVars) (<eDRIVEN> ':' e.Result) (/* нет новых функций */));
-
-        t.Metatables^ MakeColdCall
-          = t.Metatables
-            <MakeColdSolution (e.UsedVars) t.IntrinsicFunction e.Args>;
-      };
+    = <Intrinsic-Mu e.Args t.Metatables>;
 
   (e.UsedVars) t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName
     = e.BehaviorName
@@ -305,16 +284,7 @@ IntrinsicCall {
         e._ = { e._ = MakeColdCall };
       }
     : s.TransformFunction
-    = <s.TransformFunction e.Args>
-    : {
-        Ok e.Result
-          = ((e.UsedVars) (<eDRIVEN> ':' e.Result) (/* нет новых функций */));
-
-        MakeColdCall
-          = <MakeColdSolution (e.UsedVars) t.IntrinsicFunction e.Args>;
-      }
-    : e.Substitutions
-    = t.Metatables e.Substitutions;
+    = t.Metatables <s.TransformFunction e.Args>;
 }
 
 eDRIVEN {
@@ -776,7 +746,16 @@ OptExpr-MakeSubstitutions {
     , t.IntrinsicFunction : (Intrinsic (e._) Intrinsic e.BehaviorName)
     = <IntrinsicCall
         (e.UsedVars) t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName
-      >;
+      >
+    : {
+        t.Metatables^ Ok e.Result
+          = t.Metatables
+            ((e.UsedVars) (<eDRIVEN> ':' e.Result) (/* нет новых функций */));
+
+        t.Metatables^ MakeColdCall
+          = t.Metatables
+            <MakeColdSolution (e.UsedVars) t.IntrinsicFunction e.Args>;
+      };
 
   (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args) t.Function t.Metatables
     /* Активные вызовы игнорируем */
