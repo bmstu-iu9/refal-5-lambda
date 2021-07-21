@@ -171,14 +171,14 @@ HashName-Suffix {
 }
 
 /**
-  <ExprType e.Expr> == HardPattern | LPattern | Pattern | Expr
+  <ExprType e.Expr> == HardPattern | LPattern | Pattern | Result
 */
 $ENTRY ExprType {
   e.Expr
     = <ExprType-Rec e.Expr>
     : {
-        e._ OpenE e._ = Expr;
-        e._ Forbidden e._ = Expr;
+        e._ Forbidden e._ = Result;
+        e._ OpenE e._ = Pattern;
         e._ ('e' e.Index) e._ ('e' e.Index) e._ = Pattern;
         e._ ('t' e.Index) e._ ('t' e.Index) e._ = Pattern;
         e._ ('s' e.Index) e._ ('s' e.Index) e._ = LPattern;
