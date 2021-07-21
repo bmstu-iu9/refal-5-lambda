@@ -1,23 +1,24 @@
 $INCLUDE "LibraryEx";
 
-*$FROM TreeUtils
-$EXTERN ExtractVariables, ExtractVariables-Expr, NewVarName, AddSuffix,
-  IsHardExpr;
-
-*$FROM GenericMatch
-$EXTERN GenericMatch, Solve-Spec;
-
 *$FROM Log
 $EXTERN Log-PutLine, Log-InlineExpr;
 
 *$FROM DisplayName
 $EXTERN DisplayName;
 
-*$FROM GlobalGen
-$EXTERN GlobalGen;
+*$FROM TreeUtils
+$EXTERN AddSuffix, ExtractVariables-Expr, NewVarName, ExtractVariables,
+  IsHardExpr;
+
+*$FROM GenericMatch
+$EXTERN Solve-Spec, GenericMatch;
 
 *$FROM OptTree-StopRelation
 $EXTERN OptTree-CanonizeExpr, OptTree-CheckExprStopRelation;
+
+*$FROM GlobalGen
+$EXTERN GlobalGen;
+
 
 /**
   <OptTree-Spec-Prepare s.OptSpec e.AST> == e.AST^

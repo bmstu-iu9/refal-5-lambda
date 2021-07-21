@@ -1,16 +1,15 @@
 $INCLUDE "LibraryEx";
 
 
-*$FROM TreeUtils
-$EXTERN HashName;
-$EXTERN ExtractVariables-Expr;
+*$FROM OptTree-StopRelation
+$EXTERN OptTree-CanonizeExpr, OptTree-CheckExprStopRelation;
 
 *$FROM GenericMatch
 $EXTERN Solve-Drive;
 
-*$FROM OptTree-StopRelation
-$EXTERN OptTree-CanonizeExpr;
-$EXTERN OptTree-CheckExprStopRelation;
+*$FROM TreeUtils
+$EXTERN HashName;
+
 
 IsPassiveCall {
   e.Expr

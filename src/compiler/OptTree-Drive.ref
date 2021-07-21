@@ -1,14 +1,14 @@
 $INCLUDE "LibraryEx";
 
 
-*$FROM TreeUtils
-$EXTERN ExtractVariables, HashName, IsLExpr;
-
 *$FROM Log
 $EXTERN Log-PutLine;
 
 *$FROM DisplayName
 $EXTERN DisplayName;
+
+*$FROM TreeUtils
+$EXTERN HashName, ExtractVariables, IsLExpr;
 
 *$FROM OptTree-Drive-Expr
 $EXTERN OptTree-Drive-Expr, ApplyContractions;
