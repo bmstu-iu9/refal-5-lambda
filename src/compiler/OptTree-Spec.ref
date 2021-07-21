@@ -1,7 +1,8 @@
 $INCLUDE "LibraryEx";
 
 *$FROM TreeUtils
-$EXTERN ExtractVariables, ExtractVariables-Expr, NewVarName, AddSuffix;
+$EXTERN ExtractVariables, ExtractVariables-Expr, NewVarName, AddSuffix,
+  IsHardExpr;
 
 *$FROM GenericMatch
 $EXTERN GenericMatch, Solve-Spec;
@@ -1022,39 +1023,6 @@ DoIsTrivialSignature {
 
   e.Arg (e.ScannedSentences) (e.Sentences)
     = False (e.Arg) (e.ScannedSentences e.Sentences);
-}
-
-IsHardExpr {
-  e.Expr
-    , <IsHardExpr-Aux e.Expr>
-    : {
-        e._ OpenE e._ = False;
-        e._ Closure e._ = False;
-        e._ (s.Mode e.Index) e._ (s.Mode e.Index) e._ = False;
-        e._ = True;
-      }
-}
-
-/*
-  <IsHardExpr-Aux e.Expr> == t.IsHardExpr-Aux*
-  t.IsHardExpr-Aux ::= OpenE | (s.Mode e.Index) | Closure
-*/
-IsHardExpr-Aux {
-  e.Expr-B (Var 'e' e.Index1) e.Expr-M (Var 'e' e.Index2) e.Expr-E = OpenE;
-
-  e.Expr
-    = <Map
-        {
-          (Var s.Mode e.Index) = (s.Mode e.Index);
-
-          (Brackets e.InBrackets) = <IsHardExpr-Aux e.InBrackets>;
-          (ADT-Brackets (e.Name) e.InBrackets) = <IsHardExpr-Aux e.InBrackets>;
-          (ClosureBrackets e._) = Closure;
-
-          t.Other = /* пропускаем */;
-        }
-        e.Expr
-      >;
 }
 
 OrderUniqueVars {

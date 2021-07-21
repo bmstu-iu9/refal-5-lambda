@@ -169,3 +169,67 @@ HashName-Suffix {
 
   /* empty */ = /* empty */;
 }
+
+/**
+  <ExprType e.Expr> == HardPattern | LPattern | Pattern | Expr
+*/
+$ENTRY ExprType {
+  e.Expr
+    = <ExprType-Rec e.Expr>
+    : {
+        e._ OpenE e._ = Expr;
+        e._ Forbidden e._ = Expr;
+        e._ ('e' e.Index) e._ ('e' e.Index) e._ = Pattern;
+        e._ ('t' e.Index) e._ ('t' e.Index) e._ = Pattern;
+        e._ ('s' e.Index) e._ ('s' e.Index) e._ = LPattern;
+        e._ = HardPattern;
+      }
+}
+
+/*
+  <ExprType-Rec e.Expr> == t.ExprType*
+  t.ExprType ::= OpenE | (s.Mode e.Index) | Forbidden
+*/
+ExprType-Rec {
+  e._ (Var 'e' e._) e._ (Var 'e' e._) e._ = OpenE;
+
+  e.Expr
+    = <Map
+        {
+          (Var s.Mode e.Index) = (s.Mode e.Index);
+
+          (Brackets e.InBrackets) = <ExprType-Rec e.InBrackets>;
+          (ADT-Brackets (e.Name) e.InBrackets) = <ExprType-Rec e.InBrackets>;
+
+          (s.Brackets e.InBrackets)
+            , ClosureBrackets CallBrackets ColdCallBrackets : e._ s.Brackets e._
+            = Forbidden;
+
+          t.Other = /* пропускаем */;
+        }
+        e.Expr
+      >;
+}
+
+/*
+  <IsLExpr e.Expr> == True | False
+  <IsHardExpr e.Expr> == True | False
+*/
+$ENTRY IsLExpr {
+  e.Expr
+    = <ExprType e.Expr>
+    : {
+        HardPattern = True;
+        LPattern = True;
+        s._ = False;
+      }
+}
+
+$ENTRY IsHardExpr {
+  e.Expr
+    = <ExprType e.Expr>
+    : {
+        HardPattern = True;
+        s._ = False;
+      }
+}

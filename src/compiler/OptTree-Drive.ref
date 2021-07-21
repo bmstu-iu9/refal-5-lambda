@@ -2,7 +2,7 @@ $INCLUDE "LibraryEx";
 
 
 *$FROM TreeUtils
-$EXTERN ExtractVariables, HashName;
+$EXTERN ExtractVariables, HashName, IsLExpr;
 
 *$FROM Log
 $EXTERN Log-PutLine;
@@ -382,40 +382,6 @@ DriveInlineOptimizerTick {
     = (DriveInfo (e.OptNames) e.OptInfo) e.AST e.NewFunctions;
 }
 
-IsLexpr {
-  e.Expr
-    , <IsLexpr-Aux e.Expr>
-    : {
-        e.Res-B OpenE e.Res-E = False;
-        e.Res-B (s.Mode e.Index) e.Res-M (s.Mode e.Index) e.Res-E = False;
-        e.Other = True;
-      }
-}
-
-/*
-  <IsLexpr-Aux e.Expr> == t.IsLexpr-Aux-Item*
-
-  t.IsLexpr-Aux-Item ::= OpenE | ('e' e.Index) | ('t' e.Index)
-*/
-IsLexpr-Aux {
-  e.Expr-B (Var 'e' e.Index1) e.Expr-M (Var 'e' e.Index2) e.Expr-E
-    = OpenE;
-
-  e.Expr
-    = <Map
-        {
-          (Var 'e' e.Index) = ('e' e.Index);
-          (Var 't' e.Index) = ('t' e.Index);
-
-          (Brackets e.InBrackets) = <IsLexpr-Aux e.InBrackets>;
-          (ADT-Brackets (e.Name) e.InBrackets) = <IsLexpr-Aux e.InBrackets>;
-
-          t.Other = /* пропускаем */;
-        }
-        e.Expr
-      >;
-}
-
 /*
   Осуществляет попытку прогонки или встраивания в функции
   <OptFunction t.Function t.DriveInfo>
@@ -463,7 +429,7 @@ OptSentence {
     = <ExtractVariables ((e.Left) (e.Right))> : e.SentenceVars
 
     /* Если левая часть не L-выражение, сужения запрещаем */
-    = <IsLexpr e.Left>
+    = <IsLExpr e.Left>
     : {
         True = /* пусто */;
         False = e.SentenceVars;
