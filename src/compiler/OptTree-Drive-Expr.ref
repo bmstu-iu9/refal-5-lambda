@@ -196,34 +196,10 @@ FlatDriveTreeSingle {
     = <Map
         {
           (e.BrachContractions (e.BranchDrivenRight))
-            = (
-                <ComposeContractions (e.Contractions) (e.BrachContractions)>
-                (e.BranchDrivenRight)
-              )
+            = (e.Contractions e.BrachContractions (e.BranchDrivenRight))
         }
         e.FlatBranches
       >;
-}
-
-ComposeContractions {
-  (e.A) (e.B)
-    = <Map
-        {
-          ((e.ALeft) ':' e.ARight)
-            = (
-                (e.ALeft) ':'
-                <Map
-                  {
-                    e.ARightPart
-                      = <ApplyContractions e.ARightPart (e.B)>;
-                  }
-                  e.ARight
-                >
-              );
-        }
-        e.A
-      >
-      e.B;
 }
 
 OptExpr-Aux {
