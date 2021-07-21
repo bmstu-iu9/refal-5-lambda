@@ -403,6 +403,10 @@ DoAddCoordinateLabels {
     = (CallBrackets e.Inner) ('{'s.CoordNumber'}')
       <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
 
+  ((ColdCallBrackets e.Inner) e.Rest) s.CoordNumber
+    = (CallBrackets e.Inner) ('{'s.CoordNumber'}')
+      <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
+
   ((Brackets e.Expr) e.Rest) s.CoordNumber
     = (Brackets
         ('{'s.CoordNumber'}')
@@ -427,8 +431,7 @@ DoAddCoordinateLabels {
             <DoAddCoordinateLabels (e.Rest) <Add s.LastCoord 2>>
       };
 
-  (e.Other) s.CoordNumber
-    = e.Other;
+  (/* пусто */) s.CoordNumber = /* пусто */;
 }
 
 /*

@@ -192,7 +192,8 @@ $ENTRY ExprType {
   t.ExprType ::= OpenE | (s.Mode e.Index) | Forbidden
 */
 ExprType-Rec {
-  e._ (Var 'e' e._) e._ (Var 'e' e._) e._ = OpenE;
+  e.Begin (Var 'e' e._) e.Middle (Var 'e' e._) e.End
+    = OpenE <ExprType-Rec e.Begin e.Middle e.End>;
 
   e.Expr
     = <Map
