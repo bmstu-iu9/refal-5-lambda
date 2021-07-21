@@ -115,14 +115,14 @@ GrowDriveTree {
               (s.TreeDepth e.canoninzedExprs) (e.NewFunctions) e.Branches
             >
           : {
-              Generalize t.OptInfo 1
+              Generalize t.OptInfo^ 1
                 = <GrowDriveTree
                     (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo
                     <RestoreDrivenCall t.Call e.Expr>
                     (s.TreeDepth e.canoninzedExprs)
                   >;
 
-              Generalize t.OptInfo s.Cnt = Generalize t.OptInfo <Dec s.Cnt>;
+              Generalize t.OptInfo^ s.Cnt = Generalize t.OptInfo <Dec s.Cnt>;
 
               Tree t.DriveTreeState e.Branches^ = t.DriveTreeState e.Branches;
             };
@@ -155,7 +155,7 @@ GrowDriveTree-DriveBranches {
         e.Branches
       >
     : {
-        (Generalize t.OptInfo s.Cnt) e._tree = Generalize t.OptInfo s.Cnt;
+        (Generalize t.OptInfo^ s.Cnt) e._tree = Generalize t.OptInfo s.Cnt;
 
         t.DriveTreeState e.Tree = Tree t.DriveTreeState e.Tree;
       };
