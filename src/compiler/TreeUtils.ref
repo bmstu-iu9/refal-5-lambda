@@ -201,14 +201,12 @@ ExprType-Rec {
           (Var s.Mode e.Index) = (s.Mode e.Index);
 
           (Brackets e.InBrackets) = <ExprType-Rec e.InBrackets>;
-          (ADT-Brackets (e.Name) e.InBrackets) = <ExprType-Rec e.InBrackets>;
+          (ADT-Brackets (e._) e.InBrackets) = <ExprType-Rec e.InBrackets>;
 
-          (ClosureBrackets e.InBrackets)
-            = ClosureBrackets;
+          (ClosureBrackets e._) = ClosureBrackets;
 
-          (s.CallBrackets e.InBrackets)
-            , CallBrackets ColdCallBrackets : e._ s.CallBrackets e._
-            = CallBrackets;
+          (CallBrackets e._) = CallBrackets;
+          (ColdCallBrackets e._) = CallBrackets;
 
           t.Other = /* пропускаем */;
         }
