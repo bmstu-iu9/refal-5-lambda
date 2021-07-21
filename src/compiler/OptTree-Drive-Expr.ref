@@ -8,31 +8,8 @@ $EXTERN OptTree-CanonizeExpr, OptTree-CheckExprStopRelation;
 $EXTERN Solve-Drive;
 
 *$FROM TreeUtils
-$EXTERN HashName;
+$EXTERN IsPassiveExpr, HashName;
 
-
-IsPassiveCall {
-  e.Expr
-    = <Reduce
-        {
-           True t.Term = <IsPassiveCall-Aux t.Term>;
-           False t.Term = False;
-        }
-        True
-        e.Expr
-      >
-
-}
-
-IsPassiveCall-Aux {
-  (Brackets e.Expr) = <IsPassiveCall e.Expr>;
-  (ADT-Brackets e.Expr) = <IsPassiveCall e.Expr>;
-
-  (CallBrackets e.Expr) = False;
-  (ColdCallBrackets e.Expr) = False;
-
-  t.Other = True;
-}
 
 /**
   <OptTree-Drive-Expr (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr>
@@ -803,7 +780,7 @@ OptExpr-MakeSubstitutions {
 
   (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args) t.Function t.Metatables
     /* Активные вызовы игнорируем */
-    , <IsPassiveCall e.Args> : False
+    , <IsPassiveExpr e.Args> : False
 
     = t.Metatables <MakeColdSolution (e.UsedVars) t.Function e.Args>;
 

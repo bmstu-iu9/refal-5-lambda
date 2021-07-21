@@ -171,13 +171,14 @@ HashName-Suffix {
 }
 
 /**
-  <ExprType e.Expr> == HardPattern | LPattern | Pattern | Result
+  <ExprType e.Expr> == HardPattern | LPattern | Pattern | Result | ActiveResut
 */
 $ENTRY ExprType {
   e.Expr
     = <ExprType-Rec e.Expr>
     : {
-        e._ Forbidden e._ = Result;
+        e._ CallBrackets e._ = ActiveResut;
+        e._ ClosureBrackets e._ = Result;
         e._ OpenE e._ = Pattern;
         e._ ('e' e.Index) e._ ('e' e.Index) e._ = Pattern;
         e._ ('t' e.Index) e._ ('t' e.Index) e._ = Pattern;
@@ -201,9 +202,12 @@ ExprType-Rec {
           (Brackets e.InBrackets) = <ExprType-Rec e.InBrackets>;
           (ADT-Brackets (e.Name) e.InBrackets) = <ExprType-Rec e.InBrackets>;
 
-          (s.Brackets e.InBrackets)
-            , ClosureBrackets CallBrackets ColdCallBrackets : e._ s.Brackets e._
-            = Forbidden;
+          (ClosureBrackets e.InBrackets)
+            = ClosureBrackets;
+
+          (s.CallBrackets e.InBrackets)
+            , CallBrackets ColdCallBrackets : e._ s.CallBrackets e._
+            = CallBrackets;
 
           t.Other = /* пропускаем */;
         }
@@ -214,6 +218,7 @@ ExprType-Rec {
 /*
   <IsLExpr e.Expr> == True | False
   <IsHardExpr e.Expr> == True | False
+  <IsPassiveExpr e.Expr> == True | False
 */
 $ENTRY IsLExpr {
   e.Expr
@@ -231,6 +236,15 @@ $ENTRY IsHardExpr {
     : {
         HardPattern = True;
         s._ = False;
+      }
+}
+
+$ENTRY IsPassiveExpr {
+  e.Expr
+    = <ExprType e.Expr>
+    : {
+        ActiveResut = False;
+        s._ = True;
       }
 }
 
