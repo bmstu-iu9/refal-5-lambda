@@ -10,7 +10,7 @@ $EXTERN DisplayName;
 *$FROM TreeUtils
 $EXTERN HashName, ExtractVariables, IsLExpr;
 
-*$FROM OptTree-Drive-Expr
+*$FROM OptTree-Drive-Intrinsic
 $EXTERN OptTree-Drive-Expr, ApplyContractions;
 
 
