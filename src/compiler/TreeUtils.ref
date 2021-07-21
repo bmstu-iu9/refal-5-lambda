@@ -233,3 +233,30 @@ $ENTRY IsHardExpr {
         s._ = False;
       }
 }
+
+/**
+  <ExpandClosures-Result e.Expr> == e.Expr
+*/
+$ENTRY ExpandClosures-Result {
+  e.Result = <Map &ExpandClosures-ResultTerm e.Result>;
+}
+
+ExpandClosures-ResultTerm {
+  (Brackets e.Expr) = (Brackets <ExpandClosures-Result e.Expr>);
+
+  (ADT-Brackets (e.Name) e.Expr)
+    = (ADT-Brackets (e.Name) <ExpandClosures-Result e.Expr>);
+
+  (CallBrackets (ClosureBrackets e.Content) e.Expr)
+    = (CallBrackets <ExpandClosures-Result e.Content e.Expr>);
+
+  (CallBrackets e.Expr) = (CallBrackets <ExpandClosures-Result e.Expr>);
+
+  /*
+    Анализировать холодные вызовы (ColdCallBrackets …) не нужно,
+    поскольку они были проанализированы на предыдущих проходах
+    и с тех пор не менялись.
+  */
+
+  t.OtherTerm = t.OtherTerm;
+}
