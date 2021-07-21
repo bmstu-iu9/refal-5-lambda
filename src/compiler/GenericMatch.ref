@@ -278,26 +278,20 @@ CombineResults-Spec {
 */
 
 DoGeneralize {
-  (e.UsedVars) (t.Interval e.Intervals)
-  (e.Expr) (e.Assigns)
-    = <DoGeneralize-Aux
-        (e.UsedVars) t.Interval ()
-        (e.Expr) (e.Assigns)
+  (e.UsedVars) (t.Interval e.Intervals) (e.Expr) (e.Assigns)
+    = <DoGeneralize-Rec
+        (e.UsedVars) t.Interval (/* scanned */) (e.Expr) (e.Assigns)
       >
     : (e.UsedVars^) (e.Expr^) (e.Assigns^)
-    = <DoGeneralize
-        (e.UsedVars) (e.Intervals)
-        (e.Expr) (e.Assigns)
-      >;
+    = <DoGeneralize (e.UsedVars) (e.Intervals) (e.Expr) (e.Assigns)>;
 
-  (e.UsedVars) ()
-  (e.Expr) (e.Assigns)
+  (e.UsedVars) (/* кончились интервалы */) (e.Expr) (e.Assigns)
     = (e.UsedVars) (e.Expr) (e.Assigns);
 }
 
-DoGeneralize-Aux {
-  (e.UsedVars) ('{' s.A s.B '}') (e.Begin)
-  (e.E1 ('{'s.A'}') e.Inner ('{'s.B'}') e.E2) (e.Assigns)
+DoGeneralize-Rec {
+  (e.UsedVars) ('{' s.A s.B '}')
+  (e.Begin) (e.E1 ('{'s.A'}') e.Inner ('{'s.B'}') e.E2) (e.Assigns)
     = <GetVarType e.Inner> : s.VarType
     = <ClearCoordinates
         <ApplyAssignments-toExpr (e.Assigns) e.Inner>
@@ -305,42 +299,37 @@ DoGeneralize-Aux {
     : e.VarVal
     = <NewVarName (e.UsedVars) s.VarType> : (e.UsedVars^) s.VarType^ e.New
     = (e.UsedVars)
-      (e.E1 ('{'s.A'}') (Var s.VarType e.New) ('{'s.B'}') e.E2)
+      (e.Begin e.E1 ('{'s.A'}') (Var s.VarType e.New) ('{'s.B'}') e.E2)
       (e.Assigns (e.VarVal ':' (s.VarType e.New)));
 
-  (e.UsedVars) t.Interval (e.Begin)
-  ((Brackets e.E) e.Rest) (e.Assigns)
-    = <DoGeneralize-Aux
-        (e.UsedVars) t.Interval ()
-        (e.E) (e.Assigns)
+  (e.UsedVars) t.Interval
+  (e.Begin) ((Brackets e.Nested) e.Rest) (e.Assigns)
+    = <DoGeneralize-Rec
+        (e.UsedVars) t.Interval (/* scanned */) (e.Nested) (e.Assigns)
       >
-    : (e.UsedVars^) (e.E^) (e.Assigns^)
-    = <DoGeneralize-Aux
-        (e.UsedVars) t.Interval (e.Begin (Brackets e.E))
-        (e.Rest) (e.Assigns)
+    : (e.UsedVars^) (e.Nested^) (e.Assigns^)
+    = <DoGeneralize-Rec
+        (e.UsedVars) t.Interval
+        (e.Begin (Brackets e.Nested)) (e.Rest) (e.Assigns)
       >;
 
   (e.UsedVars) t.Interval (e.Begin)
-  ((ADT-Brackets (e.Name) e.E) e.Rest) (e.Assigns)
-    = <DoGeneralize-Aux
-        (e.UsedVars) t.Interval ()
-        (e.E) (e.Assigns)
+  ((ADT-Brackets (e.Name) e.Nested) e.Rest) (e.Assigns)
+    = <DoGeneralize-Rec
+        (e.UsedVars) t.Interval (/* scanned */) (e.Nested) (e.Assigns)
       >
-    : (e.UsedVars^) (e.E^) (e.Assigns^)
-    = <DoGeneralize-Aux
-        (e.UsedVars) t.Interval (e.Begin (ADT-Brackets (e.Name) e.E))
-        (e.Rest) (e.Assigns)
+    : (e.UsedVars^) (e.Nested^) (e.Assigns^)
+    = <DoGeneralize-Rec
+        (e.UsedVars) t.Interval
+        (e.Begin (ADT-Brackets (e.Name) e.Nested)) (e.Rest) (e.Assigns)
       >;
 
-  (e.UsedVars) t.Interval (e.Begin)
-  (t.T e.Rest) (e.Assigns)
-    = <DoGeneralize-Aux
-        (e.UsedVars) t.Interval (e.Begin t.T)
-        (e.Rest) (e.Assigns)
+  (e.UsedVars) t.Interval (e.Begin) (t.T e.Rest) (e.Assigns)
+    = <DoGeneralize-Rec
+        (e.UsedVars) t.Interval (e.Begin t.T) (e.Rest) (e.Assigns)
       >;
 
-  (e.UsedVars) t.Interval (e.Begin)
-  () (e.Assigns)
+  (e.UsedVars) t.Interval (e.Begin) () (e.Assigns)
     = (e.UsedVars) (e.Begin) (e.Assigns);
 }
 
@@ -415,8 +404,10 @@ DoAddCoordinateLabels {
       <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
 
   ((Brackets e.Expr) e.Rest) s.CoordNumber
-    = (Brackets ('{'s.CoordNumber'}')
-      <DoAddCoordinateLabels (e.Expr) <Add s.CoordNumber 1>>)
+    = (Brackets
+        ('{'s.CoordNumber'}')
+        <DoAddCoordinateLabels (e.Expr) <Add s.CoordNumber 1>>
+      )
     : {
         (Brackets e.Inner ('{'s.LastCoord'}'))
           = (Brackets e.Inner ('{'s.LastCoord'}'))
@@ -425,8 +416,10 @@ DoAddCoordinateLabels {
       };
 
   ((ADT-Brackets (e.Name) e.Expression) e.Rest) s.CoordNumber
-    = (ADT-Brackets (e.Name) ('{'s.CoordNumber'}')
-      <DoAddCoordinateLabels (e.Expression) <Add s.CoordNumber 1>>)
+    = (ADT-Brackets
+        (e.Name) ('{'s.CoordNumber'}')
+        <DoAddCoordinateLabels (e.Expression) <Add s.CoordNumber 1>>
+      )
     : {
         (ADT-Brackets e.Inner ('{'s.LastCoord'}'))
           = (ADT-Brackets e.Inner ('{'s.LastCoord'}'))
