@@ -106,10 +106,10 @@ GrowDriveTree {
           = <DriveStateWithLeaf s.CntNodes t.OptInfo e.Expr>;
 
         (e.OptFuncNames^ t.Call) e.Expr^
-          = ((e.OptFuncNames) e.OptFuncs) : t.OptInfo^
-
           = <OptExpr-Aux (e.UsedVars) (e.WholeVars) (e.Expr) t.Call e.OptFuncs>
           : (e.OptFuncs^) (e.NewFunctions) e.Branches
+
+          = ((e.OptFuncNames) e.OptFuncs) : t.OptInfo^
 
           = <GrowDriveTree-DriveBranches
               (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo
