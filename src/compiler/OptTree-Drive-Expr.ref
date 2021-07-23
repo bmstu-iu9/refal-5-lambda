@@ -102,9 +102,11 @@ GrowDriveTree {
     = <FindOptimizedCall (e.OptFuncNames) e.Expr>
     : {
         (e.OptFuncNames^ None) e.Expr^
+          = ((e.OptFuncNames) e.OptFuncs) : t.OptInfo^
           = <DriveStateWithLeaf s.CntNodes t.OptInfo e.Expr>;
 
         (e.OptFuncNames^ t.Call) e.Expr^
+          = ((e.OptFuncNames) e.OptFuncs) : t.OptInfo^
 
           = <OptExpr-Aux (e.UsedVars) (e.WholeVars) (e.Expr) t.Call e.OptFuncs>
           : (e.OptFuncs^) (e.NewFunctions) e.Branches
@@ -531,41 +533,45 @@ ApplyAssigns-Term {
 */
 $ENTRY ApplyContractions {
   e.Expr (e.Contrs)
-    = <Map
-        {
-          t.T = <ApplyContractions-Term t.T (e.Contrs)>
-        }
-        e.Expr
-      >;
+    = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e._) e.Expr^
+    = e.Expr;
+}
+
+ApplyContractions-Expr {
+  (e.Contrs) e.Expr = <MapAccum &ApplyContractions-Term (e.Contrs) e.Expr>;
 }
 
 ApplyContractions-Term {
-  (Brackets e.Expr) (e.Contrs)
-    = (Brackets <ApplyContractions e.Expr (e.Contrs)>);
+  (e.Contrs) (Brackets e.Expr)
+    = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e.Contrs^) e.Expr^
+    = (e.Contrs) (Brackets e.Expr);
 
-  (CallBrackets e.Args) (e.Contrs)
-    = (CallBrackets <ApplyContractions e.Args (e.Contrs)>);
+  (e.Contrs) (CallBrackets e.Expr)
+    = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e.Contrs^) e.Expr^
+    = (e.Contrs) (CallBrackets e.Expr);
 
-  (ColdCallBrackets e.OriginArgs) (e.Contrs)
-    = <ApplyContractions e.OriginArgs (e.Contrs)>
+  (e.Contrs) (ColdCallBrackets e.OriginArgs)
+    = <ApplyContractions-Expr (e.Contrs) e.OriginArgs>
     : {
 *       Содержимое холодных скобок не изменилось, оставляем их холодными
-        e.OriginArgs = (ColdCallBrackets e.OriginArgs);
+        (e.Contrs^) e.OriginArgs = (e.Contrs) (ColdCallBrackets e.OriginArgs);
 
 *       Содержимое обновилось, оттаиваем скобки
-        e.ChangedArgs = (CallBrackets e.ChangedArgs);
+        (e.Contrs^) e.ChangedArgs = (e.Contrs) (CallBrackets e.ChangedArgs);
       };
 
-  (ClosureBrackets e.Args) (e.Contrs)
-    = (ClosureBrackets <ApplyContractions e.Args (e.Contrs)>);
+  (e.Contrs) (ClosureBrackets e.Expr)
+    = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e.Contrs^) e.Expr^
+    = (e.Contrs) (ClosureBrackets e.Expr);
 
-  (ADT-Brackets (e.Name) e.Expr) (e.Contrs)
-    = (ADT-Brackets (e.Name) <ApplyContractions e.Expr (e.Contrs)>);
+  (e.Contrs) (ADT-Brackets (e.Name) e.Expr)
+    = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e.Contrs^) e.Expr^
+    = (e.Contrs) (ADT-Brackets (e.Name) e.Expr);
 
-  t.Term (e.B (t.Term ':' e.Contr) e.E)
-    = <ApplyContractions e.Contr (e.B (t.Term ':' e.Contr) e.E)>;
+  (e.B (t.Term ':' e.Contr) e.E) t.Term
+    = <ApplyContractions-Expr (e.B (t.Term ':' e.Contr) e.E) e.Contr>;
 
-  t.T (e.Contrs) = t.T
+  (e.Contrs) t.T = (e.Contrs) t.T;
 }
 
 /*
