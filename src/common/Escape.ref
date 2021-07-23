@@ -48,7 +48,7 @@ $ENTRY CharFromNum {
         {
           s.Accum s.Next = <Add <Mul s.Accum s.Base> s.Next>;
         }
-        0 <Map &DigitFromChar e.Chars>
+        0 <Map &DigitFromChar <gen_e__ e.Chars>>
       >
     >;
 }
@@ -83,22 +83,22 @@ gen_e__ { e.Arg = e.Arg }
 DoUnEscapeString-SR {
   (e.Scanned) '\\x' e.HexAndTail
     = <DoUnEscapeString-SR-Hex
-        (e.Scanned) (<HexDigits>) (/* scanned number */) e.HexAndTail
+        (e.Scanned) (<HexDigits>) (<gen_e__ /* scanned number */>) e.HexAndTail
       >;
 
   (e.Scanned) '\\X' e.HexAndTail
     = <DoUnEscapeString-SR-Hex
-        (e.Scanned) (<HexDigits>) (/* scanned number */) e.HexAndTail
+        (e.Scanned) (<HexDigits>) (<gen_e__ /* scanned number */>) e.HexAndTail
       >;
 
   (e.Scanned) '\\d' e.DecAndTail
     = <DoUnEscapeString-SR-DecOct
-        (e.Scanned) (10 <DecDigits>) (/* scanned number */) e.DecAndTail
+        (e.Scanned) (10 <DecDigits>) (<gen_e__ /* scanned number */>) e.DecAndTail
       >;
 
   (e.Scanned) '\\D' e.DecAndTail
     = <DoUnEscapeString-SR-DecOct
-        (e.Scanned) (10 <DecDigits>) (/* scanned number */) e.DecAndTail
+        (e.Scanned) (10 <DecDigits>) (<gen_e__ /* scanned number */>) e.DecAndTail
       >;
 
   (e.Scanned) '\\' e.EscapedAndTail
@@ -156,7 +156,7 @@ DoUnEscapeString-SR-DecOct {
 DoUnEscapeString-SR-Escape {
   (e.Scanned) (e.Octs-B s.Oct e.Octs-E) s.Oct e.Tail
     = <DoUnEscapeString-SR-DecOct
-        (e.Scanned) (8 e.Octs-B s.Oct e.Octs-E) (s.Oct) e.Tail
+        (e.Scanned) (8 e.Octs-B s.Oct e.Octs-E) (<gen_e__ s.Oct>) e.Tail
       >;
 
   (e.Scanned) (e.Octs) s.Next e.Tail
