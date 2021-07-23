@@ -28,7 +28,47 @@ $INCLUDE "LibraryEx";
 */
 $ENTRY OptTree-CheckExprStopRelation {
   (e.CurrentExpr) e.HistoryExpr
-    = <CheckHKRelation e.CurrentExpr (e.HistoryExpr)>;
+    , <CheckSubsequenceRelation
+        <Tokenize e.CurrentExpr> (<Tokenize e.HistoryExpr>)
+      >
+    : True
+    = <Trace True <CheckHKRelation e.CurrentExpr (e.HistoryExpr)>>;
+
+  (e.CurrentExpr) e.HistoryExpr = <Trace False False>;
+}
+
+*$DRIVE Trace;
+
+Trace {
+*/*
+  s.SubseqRes e.HKRes = e.HKRes;
+/*/
+  s.SubseqRes e.HKRes = <Putout 21 s.SubseqRes e.HKRes> e.HKRes;
+*/
+}
+
+CheckSubsequenceRelation {
+  e._ t.Common e.CurrentExpr (t.Common e.HistoryExpr)
+    = <CheckSubsequenceRelation e.CurrentExpr (e.HistoryExpr)>;
+
+  e.CurrentExpr (/* пусто */) = True;
+  e.CurrentExpr (e.HistoryExpr) = False;
+}
+
+Tokenize {
+  e.Expression
+    = <Map
+        {
+          (Brackets e.Inner) = ('(') <Tokenize e.Inner> (')');
+          (ADT-Brackets (e.Name) e.Inner) = ('[' e.Name) <Tokenize e.Inner> (']');
+          (CallBrackets e.Inner) = ('<') <Tokenize e.Inner> ('>');
+          (ColdCallBrackets e.Inner) = ('<*') <Tokenize e.Inner> ('*>');
+          (ClosureBrackets e.Inner) = ('{{') <Tokenize e.Inner> ('}}');
+
+          t.Other = t.Other;
+        }
+        e.Expression
+      >
 }
 
 CheckHKRelation {
