@@ -29,6 +29,7 @@ Map {
   t.Fn /* пусто */ = /* пусто */;
 }
 
+$INLINE Map;
 $SPEC Map t.FUNC e.items;
 
 
@@ -46,6 +47,7 @@ Reduce {
   t.Fn t.Acc /* пусто */ = t.Acc;
 }
 
+$INLINE Reduce;
 $SPEC Reduce t.FUNC t.accum e.items;
 
 
@@ -80,6 +82,7 @@ DoMapAccum {
   t.Fn t.Acc (e.Scanned) /* пусто */ = t.Acc e.Scanned;
 }
 
+$INLINE DoMapAccum;
 $SPEC DoMapAccum t.FUNC t.acc (e.scanned) e.items;
 
 
