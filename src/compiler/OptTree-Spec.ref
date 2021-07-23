@@ -333,11 +333,6 @@ SpecResult {
     = <SpecResult-Pass
         Functions (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
         e.Result
-      >
-    : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^)) e.Result^
-    = <SpecResult-Pass
-        Closures (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
-        e.Result
       >;
 }
 
@@ -391,23 +386,21 @@ SpecTerm {
 
   s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
   (CallBrackets (Symbol Name e.Name) e.Expression)
+    = <TrySpecCall
+        (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
+        (CallBrackets (Symbol Name e.Name) e.Expression)
+      >
+    : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^))
+      (CallBrackets (Symbol Name e.Name^) e.Expression^)  /* SAME */
+
     = <SpecResult-Pass
         s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
         e.Expression
       >
     : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^)) e.Expression^
 
-    = s.Pass
-    : {
-        Functions = &TrySpecCall;
-        Closures = &SkipSpecCall;
-      }
-    : s.TrySpecCall
-
-    = <s.TrySpecCall
-        (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
-        (CallBrackets (Symbol Name e.Name) e.Expression)
-      >;
+    = (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
+      (CallBrackets (Symbol Name e.Name) e.Expression);
 
   s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
   (CallBrackets e.Expression)
@@ -416,28 +409,15 @@ SpecTerm {
         e.Expression
       >
     : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^)) e.Expression^
+
     = (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
       (CallBrackets e.Expression);
 
   s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
   (ClosureBrackets e.ClosureContent)
-    = <SpecResult-Pass
-        s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
-        e.ClosureContent
-      >
-    : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^))
-      e.ClosureContent^
-
-    = s.Pass
-    : {
-        Functions = &SkipSpecCall;
-        Closures = &TrySpecCall;
-      }
-    : s.TrySpecCall
-
     = <ExtractVariables-Expr e.ClosureContent> : e.UsedVars
     = <NewVarName (e.UsedVars) 'eClosureArg'> : (e._) e.eClosureArg
-    = <s.TrySpecCall
+    = <TrySpecCall
         (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
         (CallBrackets e.ClosureContent (Var e.eClosureArg))
       >
@@ -464,6 +444,13 @@ SpecTerm {
             (Symbol Name e.OptName);
 
         e.ClosureContent^
+          = <SpecResult-Pass
+              s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
+              e.ClosureContent
+            >
+          : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^))
+            e.ClosureContent^
+
           = (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
             (ClosureBrackets e.ClosureContent);
       };
@@ -538,11 +525,6 @@ TrySpecCall {
   (CallBrackets (Symbol Name e.Name) e.Expression)
     = (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
       (CallBrackets (Symbol Name e.Name) e.Expression);
-}
-
-SkipSpecCall {
-  (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions)) t.CallTerm
-    = (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions)) t.CallTerm;
 }
 
 /**
