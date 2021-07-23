@@ -330,22 +330,8 @@ SpecSentence {
 */
 SpecResult {
   (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions)) e.Result
-    = <SpecResult-Pass
-        Functions (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
-        e.Result
-      >;
-}
-
-SpecResult-Pass {
-  s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions)) e.Result
     = <MapAccum
-        {
-          (e.Info (e.CurHistories) (e.CurHistory) (e.NewFuncs)) t.Result-T
-            = <SpecTerm
-                s.Pass (e.Info (e.CurHistories) (e.CurHistory) (e.NewFuncs))
-                t.Result-T
-              >;
-        }
+        &SpecTerm
         (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
         e.Result
       >;
@@ -359,14 +345,14 @@ SpecResult-Pass {
   и пытается выполнить специализацию для него
 */
 SpecTerm {
-  s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
+  (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
   (CallBrackets (ClosureBrackets e.ClosureContent) e.Argument)
     = <SpecTerm
-        s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
+        (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
         (CallBrackets e.ClosureContent e.Argument)
       >;
 
-  s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
+  (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
   (CallBrackets (Symbol Name e.Name) e.Expression)
     , e.Name : e._ '@' 0
     /*
@@ -384,7 +370,7 @@ SpecTerm {
     = (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
       (CallBrackets (Symbol Name e.Name) <ReplaceToGuards e.Expression>);
 
-  s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
+  (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
   (CallBrackets (Symbol Name e.Name) e.Expression)
     = <TrySpecCall
         (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
@@ -393,27 +379,25 @@ SpecTerm {
     : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^))
       (CallBrackets (Symbol Name e.Name^) e.Expression^)  /* SAME */
 
-    = <SpecResult-Pass
-        s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
-        e.Expression
+    = <SpecResult
+        (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions)) e.Expression
       >
     : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^)) e.Expression^
 
     = (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
       (CallBrackets (Symbol Name e.Name) e.Expression);
 
-  s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
+  (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
   (CallBrackets e.Expression)
-    = <SpecResult-Pass
-        s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
-        e.Expression
+    = <SpecResult
+        (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions)) e.Expression
       >
     : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^)) e.Expression^
 
     = (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
       (CallBrackets e.Expression);
 
-  s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
+  (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
   (ClosureBrackets e.ClosureContent)
     = <ExtractVariables-Expr e.ClosureContent> : e.UsedVars
     = <NewVarName (e.UsedVars) 'eClosureArg'> : (e._) e.eClosureArg
@@ -444,8 +428,8 @@ SpecTerm {
             (Symbol Name e.OptName);
 
         e.ClosureContent^
-          = <SpecResult-Pass
-              s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
+          = <SpecResult
+              (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
               e.ClosureContent
             >
           : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^))
@@ -456,27 +440,25 @@ SpecTerm {
       };
 
 
-  s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
+  (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
     (Brackets e.Expression)
-    = <SpecResult-Pass
-        s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
-        e.Expression
+    = <SpecResult
+        (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions)) e.Expression
       >
     : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^)) e.Expression^
     = (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
       (Brackets e.Expression);
 
-  s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
+  (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
     (ADT-Brackets (e.Name) e.Expression)
-    = <SpecResult-Pass
-        s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
-        e.Expression
+    = <SpecResult
+        (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions)) e.Expression
       >
     : (e.SpecInfo^ (e.Histories^) (e.History^) (e.NewFunctions^)) e.Expression^
     = (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions))
       (ADT-Brackets (e.Name) e.Expression);
 
-  s.Pass (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions)) t.Other
+  (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions)) t.Other
    = (e.SpecInfo (e.Histories) (e.History) (e.NewFunctions)) t.Other;
 }
 
