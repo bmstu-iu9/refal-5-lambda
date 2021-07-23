@@ -112,8 +112,7 @@ GrowDriveTree {
           : (e.OptFuncs^) (e.NewFunctions) e.Branches
 
           = <GrowDriveTree-DriveBranches
-              (s.CntNodes) (e.UsedVars) (e.WholeVars)
-              ((e.OptFuncNames) e.OptFuncs)
+              (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo
               (s.TreeDepth e.canoninzedExprs) (e.NewFunctions) e.Branches
             >
           : {
