@@ -293,6 +293,8 @@ DoScan-BuildKeyword {
     <DoScan <IncCol t.Pos Len e.KeywordChars> (e.Line) e.Lines>;
 }
 
+$INLINE EasterEgg;
+
 EasterEgg {
   t.Pos s.Char e.Text = (TkChar t.Pos s.Char) <EasterEgg t.Pos e.Text>;
 
@@ -477,6 +479,8 @@ HexDigit {
         s.Other = /* пусто */;
       };
 }
+
+$INLINE DoHexDigit;
 
 DoHexDigit {
   s.Digit e.Samples s.Val s.Digit = s.Val;

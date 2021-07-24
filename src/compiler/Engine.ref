@@ -202,6 +202,13 @@ LoadAST {
 }
 
 ResolveIncludes {
+  t.Config (e.BadIncludes) e.Units
+    = <ResolveIncludes-Gen t.Config (<gen_e__ e.BadIncludes>) <gen_e__ e.Units>>
+}
+
+gen_e__ { e.Arg = e.Arg }
+
+ResolveIncludes-Gen {
   t.Config (e.BadIncludes-B (e.IncludeName) e.BadIncludes-E)
   e.Units-B
   (

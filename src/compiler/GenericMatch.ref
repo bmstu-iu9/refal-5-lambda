@@ -4,6 +4,9 @@ $INCLUDE "LibraryEx";
 $EXTERN ExtractVariables, NewVarName;
 
 
+gen_e__ { e.arg = e.arg }
+
+
 /**
   <GenericMatch (e.Pattern) (e.LPattern)>
     == Clear (e.Val ':' t.Var)*
@@ -61,7 +64,7 @@ $ENTRY Solve-Drive {
         (e.UsedVars)
         (None e.Contrs)
         ((e.Expr) ':' (e.Lexpr))
-        (/* пусто */)
+        (<gen_e__ /* пусто */>)
       >
     : {
         e._ (Generalize (e.Intervals)) e._ = Undefined;
@@ -144,7 +147,7 @@ Solve-Spec-DoFindGeneralization {
         e._ (Generalize (e.Intervals)) e._
           = <DoGeneralize
               (e.UsedVars) <UnionIfIntersect (e.Intervals)>
-              (e.L) (e.GenAssigns)
+              (<gen_e__ e.L>) (<gen_e__ e.GenAssigns>)
             >
           : (e.UsedVars^) (e.L^) (e.GenAssigns^)
           = <Solve-Spec-DoFindGeneralization
@@ -280,7 +283,7 @@ CombineResults-Spec {
 DoGeneralize {
   (e.UsedVars) (t.Interval e.Intervals) (e.Expr) (e.Assigns)
     = <DoGeneralize-Rec
-        (e.UsedVars) t.Interval (/* scanned */) (e.Expr) (e.Assigns)
+        (e.UsedVars) t.Interval (<gen_e__ /* scanned */>) (e.Expr) (e.Assigns)
       >
     : (e.UsedVars^) (e.Expr^) (e.Assigns^)
     = <DoGeneralize (e.UsedVars) (e.Intervals) (e.Expr) (e.Assigns)>;
@@ -512,7 +515,7 @@ Solve-Clashes {
         (e.UsedVars)
         (e.Contrs)
         e.ClashesStart e.ClashesEnd
-        (e.Assigns (('{'s.M'}') t.T ('{'s.N'}') ':' (Var 't' e.Index)))
+        (<gen_e__ e.Assigns (('{'s.M'}') t.T ('{'s.N'}') ':' (Var 't' e.Index))>)
       >;
 
   /* {m} Sym {n} : s.X   ↦  {m} Sym {n} ← s.X */
@@ -524,7 +527,11 @@ Solve-Clashes {
         (e.UsedVars)
         (e.Contrs)
         e.ClashesStart e.ClashesEnd
-        (e.Assigns (('{'s.M'}') t.Sym ('{'s.N'}') ':' (Var 's' e.Index)))
+        (
+          <gen_e__
+            e.Assigns (('{'s.M'}') t.Sym ('{'s.N'}') ':' (Var 's' e.Index))
+          >
+        )
       >;
 
   /* {m} (E) {n} : (P)   ↦  {m} E {n} : P */
@@ -710,7 +717,7 @@ Solve-Clashes {
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs)
         e.ClashesStart e.ClashesEnd
-        (e.Assigns (e.E ':' (Var 'e' e.Index)))
+        (<gen_e__ e.Assigns (e.E ':' (Var 'e' e.Index))>)
       >;
 
   /* {m} e.X E {n} : ε  ↦  e.X → ε */
@@ -760,10 +767,14 @@ Solve-Clashes {
     , <IsTerm t.Pt> : True
     = <SeparateTermLeft ('{'s.M'}') t.T e.E> : (e.Left1) (e.Left2)
     = <Solve-Clashes
-        (e.UsedVars) (e.Contrs) e.ClashesStart
-        ((e.Left1) ':' (t.Pt))
-        ((e.Left2) ':' (e.P))
-        e.ClashesEnd (e.Assigns)
+        (e.UsedVars) (e.Contrs)
+        <gen_e__
+          e.ClashesStart
+          ((e.Left1) ':' (t.Pt))
+          ((e.Left2) ':' (e.P))
+          e.ClashesEnd
+        >
+        (e.Assigns)
       >;
 
   /* E {m} T {n} : P  Pt  ↦  E {m} : P   &&  {m} T {n} : Pt */
@@ -775,10 +786,14 @@ Solve-Clashes {
     , <IsTerm t.Pt> : True
     = <SeparateTermRight e.E t.T ('{'s.N'}')> : (e.Left1) (e.Left2)
     = <Solve-Clashes
-        (e.UsedVars) (e.Contrs) e.ClashesStart
-        ((e.Left1) ':' (e.P))
-        ((e.Left2) ':' (t.Pt))
-        e.ClashesEnd (e.Assigns)
+        (e.UsedVars) (e.Contrs)
+        <gen_e__
+          e.ClashesStart
+          ((e.Left1) ':' (e.P))
+          ((e.Left2) ':' (t.Pt))
+          e.ClashesEnd
+        >
+        (e.Assigns)
       >;
 
   /* {m} e.X E {n} : Pt P   ↦  e.X → t.NEW1 e.NEW2  ||  e.X → ε */
@@ -790,16 +805,24 @@ Solve-Clashes {
     = <NewVarName t.NewVars1 'e' e.Index> : t.NewVars2 'e' e.New2
     = <AddContraction-Spec
         ((Var 'e' e.Index) ':' (Var 't' e.New1) (Var 'e' e.New2))
-        (e.Contrs) e.ClashesStart
-        ((('{'s.M'}') (Var 'e' e.Index) e.E ('{'s.N'}')) ':' (t.Pt e.P))
-        e.ClashesEnd (e.Assigns)
+        (e.Contrs)
+        <gen_e__
+          e.ClashesStart
+          ((('{'s.M'}') (Var 'e' e.Index) e.E ('{'s.N'}')) ':' (t.Pt e.P))
+          e.ClashesEnd
+        >
+        (e.Assigns)
       >
     : e.Branch1
     = <AddContraction-Spec
         ((Var 'e' e.Index) ':' /* пусто */)
-        (e.Contrs) e.ClashesStart
-        ((('{'s.M'}') (Var 'e' e.Index) e.E ('{'s.N'}')) ':' (t.Pt e.P))
-        e.ClashesEnd (e.Assigns)
+        (e.Contrs)
+        <gen_e__
+          e.ClashesStart
+          ((('{'s.M'}') (Var 'e' e.Index) e.E ('{'s.N'}')) ':' (t.Pt e.P))
+          e.ClashesEnd
+        >
+        (e.Assigns)
       >
     : e.Branch2
     = <Solve-Clashes t.NewVars2 e.Branch1>
@@ -814,16 +837,24 @@ Solve-Clashes {
     = <NewVarName t.NewVars1 't' e.Index> : t.NewVars2 't' e.New2
     = <AddContraction-Spec
         ((Var 'e' e.Index) ':' (Var 'e' e.New1) (Var 't' e.New2))
-        (e.Contrs) e.ClashesStart
-        ((('{'s.M'}') e.E (Var 'e' e.Index) ('{'s.N'}')) ':' (e.P t.Pt))
-        e.ClashesEnd (e.Assigns)
+        (e.Contrs)
+        <gen_e__
+          e.ClashesStart
+          ((('{'s.M'}') e.E (Var 'e' e.Index) ('{'s.N'}')) ':' (e.P t.Pt))
+          e.ClashesEnd
+        >
+        (e.Assigns)
       >
     : e.Branch1
     = <AddContraction-Spec
         ((Var 'e' e.Index) ':' /* пусто */)
-        (e.Contrs) e.ClashesStart
-        ((('{'s.M'}') e.E (Var 'e' e.Index) ('{'s.N'}')) ':' (e.P t.Pt))
-        e.ClashesEnd (e.Assigns)
+        (e.Contrs)
+        <gen_e__
+          e.ClashesStart
+          ((('{'s.M'}') e.E (Var 'e' e.Index) ('{'s.N'}')) ':' (e.P t.Pt))
+          e.ClashesEnd
+        >
+        (e.Assigns)
       >
     : e.Branch2
     = <Solve-Clashes t.NewVars2 e.Branch1>
@@ -855,7 +886,7 @@ Solve-Clashes {
             = <SplitSolve
                 (e.UsedVars) (e.Contrs)
                 (t.Part ':' ((Var 'e' e.OpenIndex) e.P (Var 'e' e.ClosedIndex)))
-                e.ClashesEnd (e.Assigns)
+                e.ClashesEnd (<gen_e__ e.Assigns>)
               >
         }
         e.Parts
@@ -967,9 +998,9 @@ SplitLeftPart-Aux {
     , <IsTerm t.T1> : True
     , <IsTerm t.T2> : True
     = <SplitLeftPart-Aux
-        (e.Begin t.T1)
+        (<gen_e__ e.Begin t.T1>)
         (t.T2 e.Rest)
-        (e.Parts (e.Begin t.T1 ('sp') t.T2 e.Rest))
+        (<gen_e__ e.Parts (e.Begin t.T1 ('sp') t.T2 e.Rest)>)
       >;
 
   /* Точки разбиения добавляются между двумя смежными термами */
@@ -977,9 +1008,9 @@ SplitLeftPart-Aux {
     , <IsTerm t.T1> : True
     , <IsTerm t.T2> : True
     = <SplitLeftPart-Aux
-        (e.Begin t.T1 ('{'s.Coord'}'))
+        (<gen_e__ e.Begin t.T1 ('{'s.Coord'}')>)
         (t.T2 e.Rest)
-        (e.Parts (e.Begin t.T1 ('sp' ('{'s.Coord'}')) t.T2 e.Rest))
+        (<gen_e__ e.Parts (e.Begin t.T1 ('sp' ('{'s.Coord'}')) t.T2 e.Rest)>)
       >;
 
   /* Если E заканчивается на терм, то точка разбиения добавляется в конец */
@@ -990,7 +1021,7 @@ SplitLeftPart-Aux {
   (e.Begin) (t.T e.Rest) (e.Parts)
     , <IsTerm t.T> : True
     = <SplitLeftPart-Aux
-        (e.Begin t.T)
+        (<gen_e__ e.Begin t.T>)
         (e.Rest)
         (e.Parts)
       >;
@@ -999,14 +1030,14 @@ SplitLeftPart-Aux {
   (e.Begin) (t.eX e.Rest) (e.Parts)
     , t.eX : (Var 'e' e.XIndex)
     = <SplitLeftPart-Aux
-        (e.Begin t.eX)
+        (<gen_e__ e.Begin t.eX>)
         (e.Rest)
-        (e.Parts (e.Begin ('sp' t.eX) e.Rest))
+        (<gen_e__ e.Parts (e.Begin ('sp' t.eX) e.Rest)>)
       >;
 
   (e.Begin) (('{'s.Coord'}') e.Rest) (e.Parts)
     = <SplitLeftPart-Aux
-        (e.Begin ('{'s.Coord'}'))
+        (<gen_e__ e.Begin ('{'s.Coord'}')>)
         (e.Rest)
         (e.Parts)
       >;
@@ -1035,8 +1066,8 @@ SplitSolve {
     , t.eY : (Var 'e' e.YIndex)
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs)
-        ((('{'s.M'}') e.E ('{'s.N'}')) ':' (e.P t.eY))
-        e.ClashesEnd (e.Assigns (/* пусто */ ':' t.eX))
+        <gen_e__ ((('{'s.M'}') e.E ('{'s.N'}')) ':' (e.P t.eY)) e.ClashesEnd>
+        (<gen_e__ e.Assigns (/* пусто */ ':' t.eX)>)
       >;
 
 *  {k} E1 T2 {m} T3 E4 {n} : e.X P e.Y  ↦  {k} E1 T2 {m} ← e.X,
@@ -1057,8 +1088,10 @@ SplitSolve {
     , t.eY : (Var 'e' e.YIndex)
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs)
-        ((('{'s.M'}') t.T3 e.E4 ('{'s.N'}')) ':' (e.P t.eY))
-        e.ClashesEnd (e.Assigns (('{'s.K'}') e.E1 t.T2 ('{'s.M'}') ':' t.eX))
+        <gen_e__
+          ((('{'s.M'}') t.T3 e.E4 ('{'s.N'}')) ':' (e.P t.eY)) e.ClashesEnd
+        >
+        (<gen_e__ e.Assigns (('{'s.K'}') e.E1 t.T2 ('{'s.M'}') ':' t.eX)>)
       >;
 
 *  E1 {m} E2* T3 . T4 E5* {n} E6 : e.X P e.Y  ↦  E1 {m} E2* T3 {n} ← e.X,
@@ -1081,9 +1114,10 @@ SplitSolve {
     , t.eY : (Var 'e' e.YIndex)
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs)
-        ((('{'s.M'}') t.T4 e.E5 ('{'s.N'}') e.E6) ':' (e.P t.eY))
-        e.ClashesEnd
-        (e.Assigns (e.E1 ('{'s.M'}') e.E2 t.T3 ('{'s.N'}') ':' t.eX))
+        <gen_e__
+          ((('{'s.M'}') t.T4 e.E5 ('{'s.N'}') e.E6) ':' (e.P t.eY)) e.ClashesEnd
+        >
+        (<gen_e__ e.Assigns (e.E1 ('{'s.M'}') e.E2 t.T3 ('{'s.N'}') ':' t.eX)>)
       >;
 
 *  {m} E {n} : e.X P e.Y  ↦  {m} E {n} ← e.X,  ε : P e.Y
@@ -1098,8 +1132,8 @@ SplitSolve {
     , t.eY : (Var 'e' e.YIndex)
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs)
-        ((/* пусто */) ':' (e.P t.eY))
-        e.ClashesEnd (e.Assigns (('{'s.M'}') e.E ('{'s.N'}') ':' t.eX))
+        <gen_e__ ((/* пусто */) ':' (e.P t.eY)) e.ClashesEnd>
+        (<gen_e__ e.Assigns (('{'s.M'}') e.E ('{'s.N'}') ':' t.eX)>)
       >;
 
 *  ε : e.X P e.Y  ↦  ε ← e.X, ε : P e.Y
@@ -1111,8 +1145,8 @@ SplitSolve {
     , t.eY : (Var 'e' e.YIndex)
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs)
-        ((/* пусто */) ':' (e.P t.eY))
-        e.ClashesEnd (e.Assigns (/* пусто */ ':' t.eX))
+        <gen_e__ ((/* пусто */) ':' (e.P t.eY)) e.ClashesEnd>
+        (<gen_e__ e.Assigns (/* пусто */ ':' t.eX)>)
       >;
 
 *  E1 e.X {m} e.Y E2 : e.L P e.R  ↦  e.X → e.NEW1! t.NEW2 e.NEW3,
@@ -1139,8 +1173,11 @@ SplitSolve {
         <AddContraction-Spec
           (t.eX ':' t.eNew1 t.tNew2 t.eNew3)
           (e.Contrs)
-          ((('{'s.N'}') t.tNew2 t.eNew3 ('{'s.M'}') t.eY e.E2) ':' (e.P t.eR))
-          e.ClashesEnd (e.Assigns (e.E1 t.eNew1 ('{'s.M'}') ':' t.eL))
+          <gen_e__
+            ((('{'s.N'}') t.tNew2 t.eNew3 ('{'s.M'}') t.eY e.E2) ':' (e.P t.eR))
+            e.ClashesEnd
+          >
+          (<gen_e__ e.Assigns (e.E1 t.eNew1 ('{'s.M'}') ':' t.eL)>)
         >
       >;
 
@@ -1168,8 +1205,8 @@ SplitSolve {
         <AddContraction-Spec
           (t.eX ':' t.eNew1 t.eNew2)
           (e.Contrs)
-          ((('{'s.N'}') t.eNew2 e.E2) ':' (e.P t.eR))
-          e.ClashesEnd (e.Assigns (e.E1 t.eNew1 ('{'s.M'}') ':' t.eL))
+          <gen_e__ ((('{'s.N'}') t.eNew2 e.E2) ':' (e.P t.eR)) e.ClashesEnd>
+          (<gen_e__ e.Assigns (e.E1 t.eNew1 ('{'s.M'}') ':' t.eL)>)
         >
       >;
 }
@@ -1387,8 +1424,7 @@ Solve-SymmClashes {
   (e.UsedVars) (e.Contrs) e.SymmClashes (e.Assigns)
     = <RemoveTautologies e.SymmClashes> : e.SymmClashes^
     = <Solve-SymmClashes-Aux
-        (e.UsedVars) (e.Contrs)
-        e.SymmClashes (e.Assigns)
+        (e.UsedVars) (<gen_e__ e.Contrs>) e.SymmClashes (e.Assigns)
       >;
 }
 
@@ -2155,6 +2191,7 @@ AddContractions-Spec-Symm {
   <AddContraction t.toAdd (t.Contraction*) t.Equation* (t.Assign*)>
    == PRTC
 */
+$DRIVE AddContraction-Spec, AddContraction-Spec-Symm;
 
 AddContraction-Spec {
   t.toAdd (s.OpenFlag e.Contrs) e.Clashes (e.Assigns)
@@ -2171,9 +2208,9 @@ AddContraction-Spec {
     = <SimplifyCoordinates
         (
           s.OpenFlag
-          <Map (&ApplyContraction-toContraction t.toAdd) e.Contrs>
+          <gen_e__ <Map (&ApplyContraction-toContraction t.toAdd) e.Contrs>>
         )
-        <Map (&ApplyContraction-toEquation t.toAdd) e.Clashes>
+        <gen_e__ <Map (&ApplyContraction-toEquation t.toAdd) e.Clashes>>
         (<Map (&ApplyContraction-toAssign t.toAdd) e.Assigns>)
       >;
 }
@@ -2193,9 +2230,9 @@ AddContraction-Spec-Symm {
     = <SimplifyCoordinates-Symm
         (
           s.OpenFlag
-          <Map (&ApplyContraction-toContraction t.toAdd) e.Contrs>
+          <gen_e__ <Map (&ApplyContraction-toContraction t.toAdd) e.Contrs>>
         )
-        <Map (&ApplyContraction-toSymmClash t.toAdd) e.SymmClashes>
+        <gen_e__ <Map (&ApplyContraction-toSymmClash t.toAdd) e.SymmClashes>>
         (<Map (&ApplyContraction-toAssign t.toAdd) e.Assigns>)
       >;
 }

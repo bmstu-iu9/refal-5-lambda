@@ -220,7 +220,7 @@ CheckBlocks {
                 <CheckSentences
                   t.SrcPos
                   (e.FuncName)
-                  (e.Prefix ':' <Symb s.Num>)
+                  (<gen_e__ e.Prefix ':' <Symb s.Num>>)
                   (e.ContextVars)
                   (e.Sentences)
                 >;
@@ -231,6 +231,8 @@ CheckBlocks {
         >
       >;
 }
+
+gen_e__ { e.Arg = e.Arg }
 
 /*
   <CheckSentenceAssignsAndConditions
@@ -257,7 +259,7 @@ CheckSentenceAssignsAndConditions {
                   Condition = '?'
                 }
               : s.AssignOrCondition^
-              = e.Prefix s.AssignOrCondition <Symb s.Num> : e.Prefix^
+              = <gen_e__ e.Prefix s.AssignOrCondition <Symb s.Num>> : e.Prefix^
               = (<Inc s.Num> e.ContextVars e.Pattern)
                 <CheckBlocks
                   t.SrcPos
@@ -364,7 +366,7 @@ CheckExpression {
                 <CheckSentences
                   t.SrcPos
                   (e.FuncName)
-                  (e.Prefix '\\' <Symb s.Num>)
+                  (<gen_e__ e.Prefix '\\' <Symb s.Num>>)
                   (e.ContextVars)
                   (e.Sentences)
                 >;
