@@ -72,6 +72,8 @@ Main-SwValidCommandLine {
     = <ReportErrors t.CommandLineSource NoConfig e.Errors>;
 }
 
+$INLINE ReportErrors, ReportWarnings, ReportMessages;
+
 ReportErrors {
   t.CommandLineSource t.Config e.Errors
     = <ReportMessages (&OnErrors 'Error') t.CommandLineSource t.Config e.Errors>;
