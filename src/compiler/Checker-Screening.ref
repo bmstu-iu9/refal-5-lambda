@@ -115,7 +115,7 @@ CheckSentences {
           {
             s.Num ((e.Pattern) e.AssignsOrConds (e.Result) (e.Blocks))
               = e.Prefix '$' <Symb s.Num> : e.Prefix^
-              = e.ContextVars e.Pattern : e.ContextVars^
+              = <gen_e__ e.ContextVars e.Pattern> : e.ContextVars^
               = <Map
                   {
                     (s.AssignOrCond (e.Result^) (e.Blocks^) (e.Pattern^))

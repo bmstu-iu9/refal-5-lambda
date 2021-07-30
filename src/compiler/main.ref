@@ -665,8 +665,9 @@ Link-R {
 
 Link-WithPrefix {
   (e.PrefixFileName) t.Config e.Files
+    = <Config-GetTargetMode t.Config> : s.TargetMode
     = <Link-Aux
-        <Config-GetTargetMode t.Config>
+        s.TargetMode
         {
           e.IntermediateName
             = <CopyPrefix (e.PrefixFileName) (e.IntermediateName)>
@@ -707,8 +708,9 @@ Link-CppCompile {
         e.CommandLineSuf^ = ' "' <Trim e.CommandLineSuf> '"';
       }
     : e.CommandLineSuf^
+    = <Config-GetTargetMode t.Config> : s.TargetMode
     = <Link-Aux
-        <Config-GetTargetMode t.Config>
+        s.TargetMode
         {
           e.IntermediateName
             = <System
@@ -928,6 +930,8 @@ CopyPrefix {
   (e.OriginalPrefixName) (e.NewExeName)
     = <SaveBytes (e.NewExeName) <LoadBytes e.OriginalPrefixName>>;
 }
+
+$INLINE LinkError;
 
 LinkError {
   t.Config e.Message

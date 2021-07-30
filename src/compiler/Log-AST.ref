@@ -239,9 +239,17 @@ InlineTerm {
   (ClosureBrackets e.Value) = <ClosureBrackets e.Value>;
 }
 
-$SPEC MultilineTerm s.pos (e.prefix) e.indent t.term (e.suffix);
-
 MultilineTerm {
+  s.pos (e.prefix) e.indent t.term (e.suffix)
+    = <MultilineTerm-Gen
+        s.pos (<gen_e__ e.prefix>) e.indent <gen_t__ t.term> (<gen_e__ e.suffix>)
+      >;
+}
+
+* TODO: исправить после реализации gen_t__
+gen_t__ { e.Arg = <gen_e__ e.Arg> }
+
+MultilineTerm-Gen {
   FIRST (e.Prefix) e.Indent t.Term (e.Suffix)
     = <MultilineTerm-Prefix (e.Prefix) e.Indent t.Term (e.Suffix)>;
 

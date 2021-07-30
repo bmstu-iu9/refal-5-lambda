@@ -162,7 +162,9 @@ DoUnEscapeString-SR-Escape {
   (e.Scanned) (e.Octs) s.Next e.Tail
     = <SingularEscape s.Next>
     : {
-        Success s.Char = <DoUnEscapeString-SR (e.Scanned s.Char) e.Tail>;
+        Success s.Char
+          = <DoUnEscapeString-SR (<gen_e__ e.Scanned s.Char>) e.Tail>;
+
         Fails = Fails BadEscapeSymbol '\\' s.Next;
       };
 

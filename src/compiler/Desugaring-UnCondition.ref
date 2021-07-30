@@ -84,9 +84,12 @@ UnCondition-RemFunctions {
 PatternSteps {
   (e.UsedVariables) e.Pattern
     = <DoPatternSteps
-        (e.UsedVariables) (/* bound variables */) (HOLE e.Pattern)
+        (e.UsedVariables) (<gen_e__ /* bound variables */>)
+        <gen_e__ (HOLE e.Pattern)>
       >;
 }
+
+gen_e__ { e.arg = e.arg }
 
 DoPatternSteps {
   t.UsedVariables (e.BoundEVariables) e.HolesAndItems

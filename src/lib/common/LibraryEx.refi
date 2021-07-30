@@ -66,8 +66,10 @@ $SPEC Fetch e.arg t.FUNC;
   t.Accum′ ::= t.Accum
 */
 MapAccum {
-  t.Fn t.Acc e.Tail = <DoMapAccum t.Fn t.Acc () e.Tail>;
+  t.Fn t.Acc e.Tail = <DoMapAccum t.Fn t.Acc (<gen-e__>) e.Tail>;
 }
+
+gen-e__ { e.arg = e.arg }
 
 $SPEC MapAccum t.FUNC t.accum e.items;
 $INLINE MapAccum;

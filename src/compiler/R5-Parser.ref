@@ -696,8 +696,12 @@ Expression {
 
 TokenChain {
   t.ErrorList s.Mode s.Kind e.Tokens
-    = <DoTokenChain s.Mode s.Kind t.ErrorList (/* collected */) e.Tokens>
+    = <DoTokenChain
+        s.Mode s.Kind t.ErrorList (<gen_e__ /* collected */>) e.Tokens
+      >
 }
+
+gen_e__ { e.arg = e.arg }
 
 DoTokenChain {
   s.Mode s.Kind t.ErrorList (e.Collected) t.NextToken e.Tokens
