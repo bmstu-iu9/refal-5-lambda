@@ -979,22 +979,18 @@ RemoveLastGhostBracket {
 }
 
 IsTrivialSignature {
-  e.Arg (e.Body), <IsHardExpr e.Arg> : False = False (e.Arg) (e.Body);
-  e.Arg (e.Body) = <DoIsTrivialSignature e.Arg (/* scanned */) (e.Body)>;
+  e.Arg (e.Body), <IsHardExpr e.Arg> : False = False;
+  e.Arg (e.Body t.GuardSentence) = <DoIsTrivialSignature e.Arg (e.Body)>;
 }
 
 DoIsTrivialSignature {
-  e.Arg (e.ScannedSentences) (/* кончились предложения */)
-    = True (e.Arg) (e.ScannedSentences);
+  e.Arg (/* кончились предложения */) = True;
 
-  e.Arg (e.ScannedSentences) (((e.Pattern) e.Tail) e.Sentences)
+  e.Arg (((e.Pattern) e.Tail) e.Sentences)
     , <GenericMatch (e.Pattern) (e.Arg)> : Clear e._
-    = <DoIsTrivialSignature
-        e.Arg (e.ScannedSentences ((e.Pattern) e.Tail)) (e.Sentences)
-      >;
+    = <DoIsTrivialSignature e.Arg (e.Sentences)>;
 
-  e.Arg (e.ScannedSentences) (e.Sentences)
-    = False (e.Arg) (e.ScannedSentences e.Sentences);
+  e.Arg (e.Sentences) = False;
 }
 
 OrderUniqueVars {
