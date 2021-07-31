@@ -646,7 +646,7 @@ Pass-FlatNestedFuncs {
 ExtractNested {
   s.MarkupContext e.Sentences
     = <ExtractNestedRec
-        s.MarkupContext (/* внешних переменных нет */) e.Sentences
+        s.MarkupContext (<gen_e__ /* внешних переменных нет */>) e.Sentences
       >
     : (/* заимстовованных переменных нет */) (e.NestedFuncs) e.Sentences^
     = (e.NestedFuncs) e.Sentences;
@@ -656,7 +656,10 @@ ExtractNestedRec {
   s.MarkupContext (e.ScopeVars) Sentences e.Sentences
     = <MapAccum
         (&ExtractNested-Sentence s.MarkupContext e.ScopeVars)
-        ((/* вложенные функции */) (/* заимствованные переменные */))
+        (
+          (<gen_e__ /* вложенные функции */>)
+          (<gen_e__ /* заимствованные переменные */>)
+        )
         e.Sentences
       >
     : ((e.NestedFuncs) (e.BorrowedVars)) e.Sentences^

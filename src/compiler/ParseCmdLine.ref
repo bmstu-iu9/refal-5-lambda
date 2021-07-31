@@ -151,7 +151,7 @@ $ENTRY ParseCommandLine {
                   t.Config (e.Errors)
                   &Config-SetCompilerFlags s.Num ' -I"' e.Path '"'
                 >
-                (SearchFolder s.Num e.Path);
+                <gen_e__ (SearchFolder s.Num e.Path)>;
 
             (t.Config e.Errors) (TargetFileName s.Num e.FileName)
               = <Update
@@ -221,7 +221,7 @@ $ENTRY ParseCommandLine {
               = <Update t.Config (e.Errors) &Config-SetTempDir s.Num e.Name>;
 
             (t.Config e.Errors) (REF5RSL-Env s.Num)
-              = (t.Config e.Errors) (REF5RSL-Env s.Num);
+              = (t.Config e.Errors) <gen_e__ (REF5RSL-Env s.Num)>;
 
             (t.Config e.Errors) (OverwriteExistRasls s.Num)
               = <Update
@@ -255,16 +255,16 @@ $ENTRY ParseCommandLine {
               = <Update t.Config (e.Errors) &Config-SetVerbose s.Num e.Value>;
 
             (t.Config e.Errors) t.Option
-              = (t.Config e.Errors) t.Option;
+              = (t.Config e.Errors) <gen_e__ t.Option>;
           }
         )
         (&MapAccum
           {
             (t.Config e.Errors) (SearchFolder s.Num e.Folder)
-              = (<Config-SetSearchFolder t.Config e.Folder> e.Errors);
+              = (<gen_e__ <Config-SetSearchFolder t.Config e.Folder> e.Errors>);
 
             (t.Config e.Errors) (REF5RSL-Env s.Num)
-              = (<Config-SetSearchFolder t.Config REF5RSL> e.Errors);
+              = (<gen_e__ <Config-SetSearchFolder t.Config REF5RSL> e.Errors>);
 
             (t.Config e.Errors) (FILE s.Num e.FileName)
               = (t.Config e.Errors) (s.Num e.FileName);
@@ -325,6 +325,8 @@ $ENTRY ParseCommandLine {
       >
     >;
 }
+
+gen_e__ { e.arg = e.arg }
 
 Update {
   t.Config (e.Errors) s.Updater s.LineNum e.Option

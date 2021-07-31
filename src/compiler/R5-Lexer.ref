@@ -111,6 +111,8 @@ IncLine {
   (RowCol s.Line s.Col) = (RowCol <Inc s.Line> 1);
 }
 
+$DRIVE IncCol;
+
 IncCol {
   (RowCol s.Line s.Col) = (RowCol s.Line <Inc s.Col>);
 

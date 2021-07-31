@@ -555,7 +555,7 @@ SeparateDefines {
           (e.Declarations) (NativeBlock e.Block) =
             (e.Declarations);
         }
-        (/* объявления */)
+        (<gen_e__ /* объявления */>)
         e.AST
       >;
 }
@@ -766,7 +766,7 @@ CheckRedefinitions {
 
 CheckFunctionBody {
   (e.Body) =
-    <CheckFunctionBodyRec (/* vars */) e.Body>;
+    <CheckFunctionBodyRec (<gen_e__ /* vars */>) e.Body>;
 }
 
 CheckFunctionBodyRec {
@@ -846,13 +846,17 @@ DoCheckAssignments {
 
     = <DoCheckAssignments
         (e.Assignments) (e.ScopeVars)
-        e.Errors
-        e.ResultFunctionsAndErrors
-        e.BlocksFunctionsAndErrors
-        e.PatternFunctionsAndErrors
+        <gen_e__
+          e.Errors
+          e.ResultFunctionsAndErrors
+          e.BlocksFunctionsAndErrors
+          e.PatternFunctionsAndErrors
+        >
         s.Backtrack
       >;
 }
+
+gen_e__ { e.arg = e.arg }
 
 FixBacktrackForOpenEVars {
   e.Pattern OneWay, <FindOpenEVars e.Pattern> : /* пусто */ = OneWay;

@@ -2205,6 +2205,7 @@ AddContraction-Spec {
         t._ = s.OpenFlag;
       }
     : s.OpenFlag^
+    = <gen_t__ t.toAdd> : t.toAdd^
     = <SimplifyCoordinates
         (
           s.OpenFlag
@@ -2214,6 +2215,8 @@ AddContraction-Spec {
         (<Map (&ApplyContraction-toAssign t.toAdd) e.Assigns>)
       >;
 }
+
+gen_t__ { e.arg = <gen_e__ e.arg> }
 
 AddContraction-Spec-Symm {
   t.toAdd (s.OpenFlag e.Contrs) e.SymmClashes (e.Assigns)

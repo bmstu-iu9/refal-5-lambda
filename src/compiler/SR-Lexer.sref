@@ -165,7 +165,7 @@ ValidDirective {
   'ESWAP' = (#TkDirective #ESwap);
   'LABEL' = (#TkDirective #Ident);
   'INCLUDE' = (#TkDirective #Include);
-  'EASTEREGG' = <Map { s.Char = (#TkChar s.Char); } $EASTEREGG>;
+  'EASTEREGG' = <Map { s.Char = (#TkChar s.Char); } <gen_e__ $EASTEREGG>>;
   'SCOPEID'
      = (#TkNumber #Cookie1) (#TkNumber #Cookie2)
        (#TkWarning #deprecated '$SCOPEID is deprecated');

@@ -192,18 +192,23 @@ Expression {
     = <DoExpression FIRST (e.Indent) (e.Prefix) e.Expression (e.Suffix)>;
 }
 
-$SPEC DoExpression s.POS (e.indent) (e.out-line) e.expression;
-
 DoExpression {
+  s.POS (e.indent) (e.out-line) e.expression
+    = <DoExpression-GEN
+        s.POS (<gen_e__ e.indent>) (<gen_e__ e.out-line>) <gen_e__ e.expression>
+      >;
+}
+
+DoExpression-GEN {
   s.Pos (e.Indent) (e.OutLine) /* пусто */ (e.Suffix) = (e.OutLine e.Suffix);
 
   s.Pos (e.Indent) (e.OutLine) t.NextTerm e.Expr (e.Suffix)
-    = <InlineTerm t.NextTerm> : e.TextualTerm
-    = <AppendTerm e.OutLine (e.TextualTerm)> : e.NewOutLine
+    = <InlineTerm <gen_e__ t.NextTerm>> : e.TextualTerm
+    = <AppendTerm <gen_e__ e.OutLine> (e.TextualTerm)> : e.NewOutLine
     = <LongLine e.NewOutLine>
     : {
         True
-          = e.Indent e.TextualTerm : e.OutLineTerm
+          = <gen_e__ e.Indent e.TextualTerm> : e.OutLineTerm
           = <LongLine e.OutLineTerm>
           : {
               True, e.Expr : /* пусто */

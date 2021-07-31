@@ -243,10 +243,9 @@ NameList-DoNames {
     t.ErrorList (e.Units) e.Tokens;
 
   t.ErrorList s.Tag (e.Units) (TkComma t.Pos) e.Tokens
-    = <NameList-DoNames
-        <EL-AddErrorAt t.ErrorList t.Pos 'expected name after comma'>
-        s.Tag (e.Units) e.Tokens
-      >;
+    = <EL-AddErrorAt t.ErrorList t.Pos 'expected name after comma'>
+    : t.ErrorList^
+    = <NameList-DoNames t.ErrorList s.Tag (e.Units) e.Tokens>;
 
   t.ErrorList s.Tag (e.Units)
   (TkName t.NamePos e.Name) (TkOpenBlock t.BracketPos) e.Tokens
@@ -254,19 +253,20 @@ NameList-DoNames {
         t.ErrorList t.NamePos
         'missed semicolon after previous ' <TokName s.Tag> ' declaration'
       >
+    : t.ErrorList^
+    = t.ErrorList
       (e.Units) (TkName t.NamePos e.Name) (TkOpenBlock t.BracketPos) e.Tokens;
 
   t.ErrorList s.Tag (e.Units) (TkName t.Pos e.Name) e.Tokens
-    = <NameList-DoNames
-        <EL-AddErrorAt t.ErrorList t.Pos 'missed comma after the external name'>
-        s.Tag (e.Units) e.Tokens
-      >;
+    = <EL-AddErrorAt t.ErrorList t.Pos 'missed comma after the external name'>
+    : t.ErrorList^
+    = <NameList-DoNames t.ErrorList s.Tag (e.Units) e.Tokens>;
 
   t.ErrorList s.Tag (e.Units) t.NextToken e.Tokens
     , t.NextToken : (s.Type t.Pos e.Value)
     , <OneOf s.Type TkExtern TkEntry TkEOF> : True
-    = <EL-AddErrorAt t.ErrorList t.Pos 'semicolon'>
-      (e.Units) t.NextToken e.Tokens;
+    = <EL-AddErrorAt t.ErrorList t.Pos 'semicolon'> : t.ErrorList^
+    = t.ErrorList (e.Units) t.NextToken e.Tokens;
 
   t.ErrorList s.Tag (e.Units) t.NextToken e.Tokens
     = <NameList-DoNames
@@ -524,18 +524,15 @@ SentenceTail {
 
 CheckExceedBlocks {
   t.ErrorList s.Mode e.ExceedBlocks
-    = <DoCheckExceedBlocks s.Mode t.ErrorList () e.ExceedBlocks>;
+    = <DoCheckExceedBlocks s.Mode t.ErrorList (<gen_e__>) e.ExceedBlocks>;
 }
 
 DoCheckExceedBlocks {
   s.Mode t.ErrorList (e.ScannedBlocks) (t.Pos e.Body) e.RestBlocks
+    = <ClassicError t.ErrorList s.Mode t.Pos 'Exceed block in this position'>
+    : t.ErrorList^
     = <DoCheckExceedBlocks
-        s.Mode
-        <ClassicError
-          t.ErrorList s.Mode t.Pos 'Exceed block in this position'
-        >
-        (e.ScannedBlocks (e.Body))
-        e.RestBlocks
+        s.Mode t.ErrorList (e.ScannedBlocks (e.Body)) e.RestBlocks
       >;
 
   s.Mode t.ErrorList (e.ScannedBlocks) /* empty */
@@ -633,7 +630,8 @@ Pattern {
 Result {
   t.ErrorList s.Mode e.Tokens
     = <Result-Blocks
-        s.Mode (/* blocks */) <Expression t.ErrorList s.Mode Result e.Tokens>
+        s.Mode (<gen_e__ /* blocks */>)
+        <Expression t.ErrorList s.Mode Result e.Tokens>
       >;
 }
 
@@ -694,10 +692,12 @@ Expression {
       >;
 }
 
+$INLINE TokenChain, Expression;
+
 TokenChain {
   t.ErrorList s.Mode s.Kind e.Tokens
     = <DoTokenChain
-        s.Mode s.Kind t.ErrorList (<gen_e__ /* collected */>) e.Tokens
+        s.Mode s.Kind t.ErrorList (<gen_e__ /* collected */>) <gen_e__ e.Tokens>
       >
 }
 
@@ -762,12 +762,14 @@ DoTokenChain {
               t.ErrorList s.Mode t.Pos 'Identifier expected after \'<\''
             >
           : t.ErrorList^
+          = <gen_e__ e.Collected> : e.Collected^
           = <DoTokenChain-AfterCall
               s.Mode s.Kind (e.Collected) t.Pos (/* no func name */)
               <TokenChain t.ErrorList s.Mode s.Kind e.Tokens>
             >;
 
         (TkOpenCall t.Pos e.FuncName)
+          = <gen_e__ e.Collected> : e.Collected^
           = <DoTokenChain-AfterCall
               s.Mode s.Kind (e.Collected) t.Pos ((Symbol Name t.Pos e.FuncName))
               <TokenChain t.ErrorList s.Mode s.Kind e.Tokens>
@@ -956,6 +958,7 @@ Expression-CheckBrackets {
     = t.ErrorList t.Expression e.Tokens;
 }
 
+$DRIVE ClassicError;
 
 ClassicError {
   t.ErrorList Classic t.Pos e.Message

@@ -408,9 +408,13 @@ ParseSentencePart {
 ParsePattern {
   t.ErrorList e.Tokens
     = <DoParsePattern
-        t.ErrorList (/* мультискобки */) (/* просканировано */) e.Tokens
+        t.ErrorList
+        (<gen_e__ /* мультискобки */>) (<gen_e__ /* просканировано */>)
+        e.Tokens
       >;
 }
+
+gen_e__ { e.arg = e.arg; }
 
 DoParsePattern {
   // Обработка литералов атомов
@@ -612,7 +616,9 @@ StrFromBracket {
 ParseResult {
   t.ErrorList e.Tokens
     = <DoParseResult
-        t.ErrorList (/* мультискобки */) (/* просканировано */) e.Tokens
+        t.ErrorList
+        (<gen_e__ /* мультискобки */>) (<gen_e__ /* просканировано */>)
+        e.Tokens
       >
     : t.ErrorList^ (e.Result) e.Tail
     = <ParseBlocks t.ErrorList e.Tail> : t.ErrorList^ (e.Blocks) e.Tail^

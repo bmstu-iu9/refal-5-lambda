@@ -80,7 +80,7 @@ MakePairs {
 */
 CheckFunction {
   ((Function s.ScopeClass (e.Name) Sentences e.Sentences) t.SrcPos)
-    = <CheckSentences t.SrcPos (e.Name) () () (e.Sentences)>
+    = <CheckSentences t.SrcPos (e.Name) (<gen_e__>) (<gen_e__>) (e.Sentences)>
 }
 
 /*
@@ -114,7 +114,7 @@ CheckSentences {
         <MapAccum
           {
             s.Num ((e.Pattern) e.AssignsOrConds (e.Result) (e.Blocks))
-              = e.Prefix '$' <Symb s.Num> : e.Prefix^
+              = <gen_e__ e.Prefix '$' <Symb s.Num>> : e.Prefix^
               = <gen_e__ e.ContextVars e.Pattern> : e.ContextVars^
               = <Map
                   {
@@ -136,14 +136,14 @@ CheckSentences {
                   t.SrcPos
                   (e.FuncName)
                   (e.Prefix)
-                  (e.ContextVars e.ContextAllAssignsOrConds)
+                  (<gen_e__ e.ContextVars e.ContextAllAssignsOrConds>)
                   ((e.Pattern) e.AssignsOrConds (e.Result) (e.Blocks))
                 >
                 <CheckSentenceBlocks
                   t.SrcPos
                   (e.FuncName)
                   (e.Prefix)
-                  (e.ContextVars e.ContextAllAssignsOrConds)
+                  (<gen_e__ e.ContextVars e.ContextAllAssignsOrConds>)
                   ((e.Pattern) e.AssignsOrConds (e.Result) (e.Blocks))
                 >
           }
