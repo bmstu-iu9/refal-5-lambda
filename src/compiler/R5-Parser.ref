@@ -92,7 +92,8 @@ UnitStartToken {
 }
 
 NameListTags {
-  = TkExtern TkEnum TkEEnum TkSwap TkESwap TkLabel TkInline TkDrive TkMeta TkIntrinsic
+  = TkExtern TkEnum TkEEnum TkSwap TkESwap TkLabel TkInline TkDrive TkMeta
+    TkIntrinsic
 }
 
 OneOf {
@@ -366,7 +367,9 @@ Function {
     = <Function t.ErrorList s.NewMode (TkEntry t.EntryPos) e.Tokens>;
 
   t.ErrorList s.Mode (TkEntry t.Pos) e.Tokens
-    = <EL-AddErrorAt t.ErrorList t.Pos '$ENTRY without the function name, skipped'>
+    = <EL-AddErrorAt
+        t.ErrorList t.Pos '$ENTRY without the function name, skipped'
+      >
       (/* none */) e.Tokens;
 }
 
