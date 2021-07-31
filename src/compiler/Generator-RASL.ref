@@ -471,9 +471,9 @@ ResolveLabeledDestinations {
 
     = <Sub s.DestinationOffset s.CommandOffset> : s.RelativeJump
 
-    = <TermCompare s.RelativeJump 65536>
+    = <Compare s.RelativeJump 65536>
     : {
-        '<'
+        '-'
           = <Divmod s.RelativeJump 256> : (s.JumpHigh) s.JumpLow
           = e.ReadyRASL
             <PutCommand CmdOnFailGoTo s.JumpLow s.JumpHigh 0>

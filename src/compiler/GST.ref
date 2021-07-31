@@ -242,9 +242,9 @@ FindHeavyTile {
       {
         (s.MaxWeight s.IndexP s.IndexR e.MaxItems)
         (s.Weight s.CurIndexP s.CurIndexR e.Items)
-          = <TermCompare s.MaxWeight s.Weight>
+          = <Compare s.MaxWeight s.Weight>
           : {
-              '<' =
+              '-' =
                 (s.Weight s.CurIndexP s.CurIndexR e.Items)
                 (s.MaxWeight s.IndexP s.IndexR e.MaxItems);
 
