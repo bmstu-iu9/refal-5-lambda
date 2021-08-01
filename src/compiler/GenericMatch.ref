@@ -1,7 +1,7 @@
 $INCLUDE "LibraryEx";
 
 *$FROM TreeUtils
-$EXTERN ExtractVariables, NewVarName;
+$EXTERN ExtractVariables, NewVarName, ApplyContractions;
 
 
 gen_e__ { e.arg = e.arg }
@@ -58,13 +58,12 @@ $ENTRY GenericMatch {
 
 $ENTRY Solve-Drive {
   (e.UsedVars) ((e.Expr) ':' (e.Lexpr))
-    = <InitContractions e.Expr> : e.Contrs
     = <AddCoordinateLabels e.Expr> : e.Expr^
     = <Solve-Clashes
         (e.UsedVars)
-        (None e.Contrs)
+        (None <gen_e__ /* сужения */>)
         ((e.Expr) ':' (e.Lexpr))
-        (<gen_e__ /* пусто */>)
+        (<gen_e__ /* присваивания */>)
       >
     : {
         e._ (Generalize (e.Intervals)) e._ = Undefined;
@@ -102,7 +101,6 @@ CombineResults-Drive {
     = <Map
         {
           (Success (e.UsedVars) s.OpenFlag (e.Contrs) (e.Assigns))
-            = <RemoveTrivialContractions e.Contrs> : e.Contrs^
             = <Map
                 {
                   (e.Val ':' t.Var) = (<ClearCoordinates e.Val> ':' t.Var)
@@ -139,9 +137,9 @@ Solve-Spec-DoFindGeneralization {
   (e.UsedVars) ((e.L) ':' (e.R)) (e.GenAssigns)
     = <Solve-Clashes
         (e.UsedVars)
-        (None <InitContractions e.L>)
+        (None /* сужения */)
         ((e.L) ':' (e.R))
-        (/* пусто */)
+        (/* присваивания */)
       >
     : {
         e._ (Generalize (e.Intervals)) e._
@@ -162,39 +160,6 @@ Solve-Spec-DoFindGeneralization {
             (e.GenAssigns)
             (<ClearCoordinates e.L>);
       }
-}
-
-/*
-  Инициализирует список сужений тривиальными сужениями
-
-  <InitContractions e.Expr> == t.Contr*
-*/
-
-InitContractions {
-  e.Expr
-    = <ExtractVariables ((e.Expr) (/* пусто */))> : e.Vars
-    = <Map
-        { (e.ModeIndex) = ((Var e.ModeIndex) ':' (Var e.ModeIndex)) }
-        e.Vars
-      >
-}
-
-/*
-  Удаляет тривиальные сужения из набора сужений
-
-  <RemoveTrivialContractions t.Contr*> == t.Contr*
-*/
-
-RemoveTrivialContractions {
-  e.Contrs
-    = <Map
-        {
-          ((Var e.ModeIndex) ':' (Var e.ModeIndex)) = /* пусто */;
-
-          t.Contr = t.Contr;
-        }
-        e.Contrs
-      >
 }
 
 /*
@@ -257,7 +222,6 @@ CombineResults-Spec {
     = <Map
         {
           (Success (e.UsedVars) s.OpenFlag (e.Contrs) (e.Assigns))
-            = <RemoveTrivialContractions e.Contrs> : e.Contrs^
             = <Map
                 {
                   (e.Val ':' t.Var) = (<ClearCoordinates e.Val> ':' t.Var)
@@ -862,7 +826,7 @@ Solve-Clashes {
 
   /* клэши закончились */
   (e.UsedVars) (e.Contrs) (e.Assigns)
-    = <CreateSymmClashes (e.Assigns)> : (e.Assigns^) (e.SymmClashes)
+    = <CreateSymmClashes (e.Contrs) (e.Assigns)> : (e.Assigns^) (e.SymmClashes)
     = <Solve-SymmClashes
         (e.UsedVars) (e.Contrs)
         e.SymmClashes
@@ -1183,7 +1147,7 @@ SplitSolve {
   Формирует по списку присваиваний список симметричных клэшей
   и обновленный список присваиваний
 
-  <CreateSymmClashes (t.Assign*)>
+  <CreateSymmClashes (e.Contrs) (t.Assign*)>
     == (t.Assign*) (t.SymmClash*)
   <CreateSymmClashes-Aux (t.Assign*) (t.SymmClash*) (t.Assign*)>
     == (t.Assign*) (t.SymmClash*)
@@ -1192,7 +1156,8 @@ SplitSolve {
 */
 
 CreateSymmClashes {
-  (e.Assigns)
+  (e.Contrs) (e.Assigns)
+    = <ApplyContractions-toAssigns (e.Contrs) (e.Assigns)> : e.Assigns^
     = <CreateSymmClashes-Aux (e.Assigns) () ()>
     : (e.Assigns^) (e.SymmClashes)
     = (e.Assigns) (<RemoveTautologies e.SymmClashes>);
@@ -2100,6 +2065,7 @@ Solve-SymmClashes-Aux {
 
 *  Если клэши кончились, возвращаем решение
   (e.UsedVars) (s.OpenFlag e.Contrs) (e.Assigns)
+    = <ApplyContractions-toAssigns (e.Contrs) (e.Assigns)> : e.Assigns^
     = (Success (e.UsedVars) s.OpenFlag (e.Contrs) (e.Assigns));
 }
 
@@ -2174,12 +2140,9 @@ AddContraction-Spec {
       }
     : s.OpenFlag^
     = <gen_t__ t.toAdd> : t.toAdd^
-    = (
-        s.OpenFlag
-        <gen_e__ <Map (&ApplyContraction-toContraction t.toAdd) e.Contrs>>
-      )
-      <gen_e__ <Map (&ApplyContraction-toEquation t.toAdd) e.Clashes>>
-      (<Map (&ApplyContraction-toAssign t.toAdd) e.Assigns>)
+    = (s.OpenFlag e.Contrs t.toAdd)
+      <Map (&ApplyContraction-toEquation t.toAdd) e.Clashes>
+      (e.Assigns);
 }
 
 gen_t__ { e.arg = <gen_e__ e.arg> }
@@ -2196,36 +2159,27 @@ AddContraction-Spec-Symm {
         t._ = s.OpenFlag;
       }
     : s.OpenFlag^
-    = (
-        s.OpenFlag
-        <gen_e__ <Map (&ApplyContraction-toContraction t.toAdd) e.Contrs>>
-      )
-      <gen_e__ <Map (&ApplyContraction-toSymmClash t.toAdd) e.SymmClashes>>
-      (<Map (&ApplyContraction-toAssign t.toAdd) e.Assigns>)
-}
-
-/*
-  Применение сужения к другому сужению
-
-  <ApplyContraction-toContraction t.Contr t.OtherContr> == t.OtherContr^
-*/
-
-ApplyContraction-toContraction {
-  t.Contr (t.Var ':' e.Right)
-    = (t.Var ':' <ApplyContraction-toExpr t.Contr e.Right>);
+    = (s.OpenFlag e.Contrs t.toAdd)
+      <Map (&ApplyContraction-toSymmClash t.toAdd) e.SymmClashes>
+      (e.Assigns);
 }
 
 /*
   Применение сужения к присваиванию
 
-  <ApplyContraction-toAssign t.Contraction t.Assign == t.Assign
+  <ApplyContractions-toAssigns (e.Contrs) (e.Assigns)> == e.Assigns^
 */
-
-ApplyContraction-toAssign {
-   t.Contraction (e.Expr ':' t.Rval)
-     = <ApplyContraction-toExpr t.Contraction e.Expr> : e.Expr^
-     = <SimplifyCoordinates e.Expr> : e.Expr^
-     = (e.Expr ':' t.Rval);
+ApplyContractions-toAssigns {
+  (e.Contrs) (e.Assigns)
+    = <Map
+        {
+          (e.Expr ':' t.Var)
+            = <ApplyContractions e.Expr (e.Contrs)> : e.Expr^
+            = <SimplifyCoordinates e.Expr> : e.Expr^
+            = (e.Expr ':' t.Var)
+        }
+        e.Assigns
+      >
 }
 
 /*

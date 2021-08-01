@@ -8,7 +8,7 @@ $EXTERN DisplayName;
 
 *$FROM TreeUtils
 $EXTERN AddSuffix, ExtractVariables-Expr, NewVarName, ExtractVariables,
-  IsHardExpr;
+  ApplyContractions, IsHardExpr;
 
 *$FROM GenericMatch
 $EXTERN Solve-Spec, GenericMatch;
@@ -941,9 +941,8 @@ CreateNewSentences {
     = <Reduce
         {
           (e.NewSentences^) ((e.Contrs) (e.Assigns))
-            = <FormatContractions e.Contrs> : e.Contrs^
             = <FormatAssigns e.Assigns> : e.Assigns^
-            = <ApplySubst-Expr (e.Contrs) e.PatternTemplate> : e.Pat^
+            = <ApplyContractions e.PatternTemplate (e.Contrs)> : e.Pat^
             = <ApplySubst-Tail (e.Assigns) e.Tail> : e.Tail^
             = (e.NewSentences ((e.Pat) e.Tail));
 
@@ -962,13 +961,6 @@ CreateNewSentences {
   (e.Arg) (e.NewSentences)
   (/* пусто */) (/* пусто */)
     = e.NewSentences;
-}
-
-FormatContractions {
-  ((Var e.ModeIndex) ':' e.Val) e.Contrs
-    = (e.Val ':' (e.ModeIndex)) <FormatContractions e.Contrs>;
-
-  /* пусто */ = /* пусто */;
 }
 
 FormatAssigns {
