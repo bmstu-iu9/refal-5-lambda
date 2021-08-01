@@ -417,7 +417,7 @@ SpecTerm {
     = e.eClosureArgOut
     : {
         e.eClosureArg = /* пусто */;
-        e._ = <{}>
+        e._ = <{X = e.eClosureArg e.eClosureArgOut}>
       }
     : /* пусто */
 
