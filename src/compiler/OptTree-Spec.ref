@@ -542,17 +542,71 @@ SpecCall {
     = <ExtractVariables ((e.Argument) (/* пусто */))> : e.UsedVars
     = <ExtractCalls-Expr (/* пусто */ (e.UsedVars)) e.Argument>
     : (e.ExtractedCalls (e.UsedVars^)) e.NewArgument
+
+      /* Обобщаем участки аргумента вида e.1 … e.2 */
+    = <GenEE e.NewArgument (e.UsedVars) (/* пусто */)>
+    : e.NewArgument^ (e.UsedVars^) (e.Sg)
+
+    = e.ExtractedCalls <ApplySubst-Subst (e.ExtractedCalls) e.Sg> : e.Sg^
+
     /* ищем динамическое обобщение для аргумента и образцов */
-    = <DynGenArg
-        (e.NewArgument) (e.ExtractedCalls) (/* пусто */)
-        (/* пусто */) e.Body
-      >
-    : (e.NewArgument^) (e.Sg) (e.Solutions)
+    = <DynGenArg (e.NewArgument) (e.Sg) (/* пусто */) (/* пусто */) e.Body>
+    : (e.NewArgument^) (e.Sg^) (e.Solutions)
     = <SpecCall-Aux
         (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
         (e.Argument) (e.NewArgument) (e.Sg) (e.Solutions) (e.History)
         True
       >;
+}
+
+/*
+  Функция обобщает участки между двумя e-параметрами:
+  … e.1 … e.2 …  →  … e.New …, e.1 … e.2 ← e.New
+*/
+GenEE {
+  /* пусто */ (e.UsedVars) (e.Sg) = /* пусто */ (e.UsedVars) (e.Sg);
+  (Var 'e' e.Index) (e.UsedVars) (e.Sg) = (Var 'e' e.Index) (e.UsedVars) (e.Sg);
+
+  (Var 'e' e.Left) e.Expr (Var 'e' e.Right) (e.UsedVars) (e.Sg)
+    = <NewVarName (e.UsedVars) 'e' e.Left> : (e.UsedVars^) 'e' e.eGen
+    = (Var 'e' e.eGen) (e.UsedVars)
+      (e.Sg ((Var 'e' e.Left) e.Expr (Var 'e' e.Right) ':' ('e' e.eGen)));
+
+  (s.Brackets e.Nested) e.Expr (e.UsedVars) (e.Sg)
+    , Brackets ClosureBrackets : e._ s.Brackets e._
+    = <GenEE e.Nested (e.UsedVars) (e.Sg)> : e.Nested^ (e.UsedVars^) (e.Sg^)
+    = (s.Brackets e.Nested) <GenEE e.Expr (e.UsedVars) (e.Sg)>;
+
+  (ADT-Brackets (e.Name) e.Nested) e.Expr (e.UsedVars) (e.Sg)
+    = <GenEE e.Nested (e.UsedVars) (e.Sg)> : e.Nested^ (e.UsedVars^) (e.Sg^)
+    = (ADT-Brackets (e.Name) e.Nested) <GenEE e.Expr (e.UsedVars) (e.Sg)>;
+
+  (Symbol e.Symbol) e.Expr (e.UsedVars) (e.Sg)
+    = (Symbol e.Symbol) <GenEE e.Expr (e.UsedVars) (e.Sg)>;
+
+  (Var s.Mode e.Index) e.Expr (e.UsedVars) (e.Sg)
+    , 'st' : e._ s.Mode e._
+    = (Var s.Mode e.Index) <GenEE e.Expr (e.UsedVars) (e.Sg)>;
+
+  e.Expr (s.Brackets e.Nested) (e.UsedVars) (e.Sg)
+    , Brackets ClosureBrackets : e._ s.Brackets e._
+    = <GenEE e.Expr (e.UsedVars) (e.Sg)> : e.Expr^ (e.UsedVars^) (e.Sg^)
+    = <GenEE e.Nested (e.UsedVars) (e.Sg)> : e.Nested^ (e.UsedVars^) (e.Sg^)
+    = e.Expr (s.Brackets e.Nested) (e.UsedVars) (e.Sg);
+
+  e.Expr (ADT-Brackets (e.Name) e.Nested) (e.UsedVars) (e.Sg)
+    = <GenEE e.Expr (e.UsedVars) (e.Sg)> : e.Expr^ (e.UsedVars^) (e.Sg^)
+    = <GenEE e.Nested (e.UsedVars) (e.Sg)> : e.Nested^ (e.UsedVars^) (e.Sg^)
+    = e.Expr (ADT-Brackets (e.Name) e.Nested) (e.UsedVars) (e.Sg);
+
+  e.Expr (Symbol e.Symbol) (e.UsedVars) (e.Sg)
+    = <GenEE e.Expr (e.UsedVars) (e.Sg)> : e.Expr^ (e.UsedVars^) (e.Sg^)
+    = e.Expr (Symbol e.Symbol) (e.UsedVars) (e.Sg);
+
+  e.Expr (Var s.Mode e.Index) (e.UsedVars) (e.Sg)
+    , 'st' : e._ s.Mode e._
+    = <GenEE e.Expr (e.UsedVars) (e.Sg)> : e.Expr^ (e.UsedVars^) (e.Sg^)
+    = e.Expr (Var s.Mode e.Index) (e.UsedVars) (e.Sg);
 }
 
 DynGenArg {
