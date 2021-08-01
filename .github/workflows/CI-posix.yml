@@ -45,3 +45,9 @@ jobs:
             bin
             src
           retention-days: 5
+
+      - name: Bootstrapping on ${{ matrix.os }} with ${{ matrix.ccomp }} and -OiADPRS
+        run: |
+          cp .github/workflows/conf-template-${{ matrix.ccomp }}.bash c-plus-plus.conf.sh
+          RLMAKE_FLAGS="-X-OiADPRS" ./bootstrap.sh --no-tests
+        shell: bash
