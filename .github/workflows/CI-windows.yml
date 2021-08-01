@@ -42,5 +42,5 @@ jobs:
         run: |
           copy .github\workflows\conf-template-${{ matrix.ccomp }}.bat c-plus-plus.conf.bat
           set RLMAKE_FLAGS=-X-OiADPRS
-          bootstrap.bat
+          bootstrap.bat --no-tests
         shell: cmd
