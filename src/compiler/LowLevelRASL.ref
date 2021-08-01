@@ -56,6 +56,15 @@ Canonize {
 }
 
 CalcDigest {
+  t.Hashes t.Element
+    = <CalcDigest-Aux t.Hashes t.Element> : t.Hashes^ t.Element^
+    = t.Hashes <gen_t__ t.Element>;
+}
+
+gen_t__ { e.arg = <gen_e__ e.arg> }
+gen_e__ { e.arg = e.arg }
+
+CalcDigest-Aux {
   (s.Hash1 s.Hash2) (UnitName e.SrcName) =
     (<HashLittle2-Chars s.Hash1 s.Hash2 e.SrcName>)
     (UnitName e.SrcName);

@@ -707,6 +707,13 @@ TokenChain {
 gen_e__ { e.arg = e.arg }
 
 DoTokenChain {
+  s.Mode s.Kind t.ErrorList (e.Collected) e.Tokens
+    = <DoTokenChain-GEN
+        s.Mode s.Kind t.ErrorList (<gen_e__ e.Collected>) e.Tokens
+      >
+}
+
+DoTokenChain-GEN {
   s.Mode s.Kind t.ErrorList (e.Collected) t.NextToken e.Tokens
     = t.NextToken
     : {

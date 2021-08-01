@@ -417,6 +417,13 @@ ParsePattern {
 gen_e__ { e.arg = e.arg; }
 
 DoParsePattern {
+  t.ErrorList (e.MultiBracket) (e.Scanned) e.Tokens
+    = <DoParsePattern-GEN
+        t.ErrorList (<gen_e__ e.MultiBracket>) (<gen_e__ e.Scanned>) e.Tokens
+      >;
+}
+
+DoParsePattern-GEN {
   // Обработка литералов атомов
 
   t.ErrorList (e.MultiBrackets) (e.Scanned) (#TkChar s.LnNum s.Char) e.Tail =
@@ -638,6 +645,13 @@ ParseBlocks {
   <DoParseResult t.ErrorList (e.MultiBracket) (e.Scanned) e.Tail>
 */
 DoParseResult {
+  t.ErrorList (e.MultiBracket) (e.Scanned) e.Tokens
+    = <DoParseResult-GEN
+        t.ErrorList (<gen_e__ e.MultiBracket>) (<gen_e__ e.Scanned>) e.Tokens
+      >;
+}
+
+DoParseResult-GEN {
   // Обработка литералов атомов
 
   t.ErrorList (e.MultiBracket) (e.Scanned) (#TkChar s.LnNum s.Char) e.Tail =

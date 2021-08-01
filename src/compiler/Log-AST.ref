@@ -104,8 +104,8 @@ Function-Aux {
       ('* metatable function')
       <Map
         {
-          (t.Ident t.Name)
-            = ('  ' <InlineTerm t.Ident> ' :: ' <InlineTerm t.Name>);
+          ((Symbol Identifier e.Ident) (Symbol Name e.Name^))
+            = ('  ' <Symbol Identifier e.Ident> ' :: ' <Symbol Name e.Name>);
         }
         e.Metatable
       >
