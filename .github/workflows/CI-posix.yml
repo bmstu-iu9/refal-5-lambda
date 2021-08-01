@@ -43,7 +43,6 @@ jobs:
             autotests/__dump.txt
             autotests/__log.txt
             bin
-            src
           retention-days: 5
 
       - name: Bootstrapping on ${{ matrix.os }} with ${{ matrix.ccomp }} and -OiADPRS
