@@ -439,48 +439,20 @@ DoAddCoordinateLabels {
 
 /*
   Упрощение координат (редуцирование их бессмысленного скопления)
-
-  <SimplifyCoordinates (e.Contractions) t.Clash* (t.Assign*)>
-    == (e.Contractions) t.Clash^* (t.Assign^*)
 */
 
-SimplifyCoordinates {
-  (e.Contrs) e.Clashes (e.Assigns)
-    = (e.Contrs)
-      <Map &SimplifyCoordinates-Clash e.Clashes>
-      (<Map &SimplifyCoordinates-Assign e.Assigns>)
-}
-
-SimplifyCoordinates-Symm {
-  (e.Contrs) e.SymmClashes (e.Assigns)
-    = (e.Contrs)
-      <Map &SimplifyCoordinates-SymmClash e.SymmClashes>
-      (<Map &SimplifyCoordinates-Assign e.Assigns>)
-}
-
-SimplifyCoordinates-Clash {
-  ((e.Left) ':' (e.Right))
-    = ((<SimplifyCoordinates-Expr e.Left>) ':' (e.Right))
-}
-
 SimplifyCoordinates-SymmClash {
-  (e.L '=' e.R)
-    = (<SimplifyCoordinates-Expr e.L> '=' <SimplifyCoordinates-Expr e.R>)
+  (e.L '=' e.R) = (<SimplifyCoordinates e.L> '=' <SimplifyCoordinates e.R>)
 }
 
-SimplifyCoordinates-Assign {
-  (e.Left ':' t.Right)
-    = (<SimplifyCoordinates-Expr e.Left> ':' t.Right)
-}
-
-SimplifyCoordinates-Expr {
+SimplifyCoordinates {
   /* {k} {m} E {n}  ↦  {m} E {n} */
   ('{'s.K'}') ('{'s.M'}') e.E ('{'s.N'}')
-    = <SimplifyCoordinates-Expr ('{'s.M'}') e.E ('{'s.N'}')>;
+    = <SimplifyCoordinates ('{'s.M'}') e.E ('{'s.N'}')>;
 
   /* {k} E {m} {n}  ↦  {k} E {m} */
   ('{'s.K'}') e.E ('{'s.M'}') ('{'s.N'}')
-    = <SimplifyCoordinates-Expr ('{'s.K'}') e.E ('{'s.M'}')>;
+    = <SimplifyCoordinates ('{'s.K'}') e.E ('{'s.M'}')>;
 
   /* {m} {n}  ↦  ε */
   ('{'s.M'}') ('{'s.N'}')
@@ -541,9 +513,7 @@ Solve-Clashes {
     = <Solve-Clashes
         (e.UsedVars)
         (e.Contrs) e.ClashesStart
-        <SimplifyCoordinates-Clash
-          ((('{'s.M'}') e.LBody ('{'s.N'}')) ':' (e.RBody))
-        >
+        ((<SimplifyCoordinates ('{'s.M'}') e.LBody ('{'s.N'}')>) ':' (e.RBody))
         e.ClashesEnd (e.Assigns)
       >;
 
@@ -557,9 +527,7 @@ Solve-Clashes {
     = <Solve-Clashes
         (e.UsedVars)
         (e.Contrs) e.ClashesStart
-        <SimplifyCoordinates-Clash
-          ((('{'s.M'}') e.LBody ('{'s.N'}')) ':' (e.RBody))
-        >
+        ((<SimplifyCoordinates ('{'s.M'}') e.LBody ('{'s.N'}')>) ':' (e.RBody))
         e.ClashesEnd (e.Assigns)
       >;
 
@@ -2206,14 +2174,12 @@ AddContraction-Spec {
       }
     : s.OpenFlag^
     = <gen_t__ t.toAdd> : t.toAdd^
-    = <SimplifyCoordinates
-        (
-          s.OpenFlag
-          <gen_e__ <Map (&ApplyContraction-toContraction t.toAdd) e.Contrs>>
-        )
-        <gen_e__ <Map (&ApplyContraction-toEquation t.toAdd) e.Clashes>>
-        (<Map (&ApplyContraction-toAssign t.toAdd) e.Assigns>)
-      >;
+    = (
+        s.OpenFlag
+        <gen_e__ <Map (&ApplyContraction-toContraction t.toAdd) e.Contrs>>
+      )
+      <gen_e__ <Map (&ApplyContraction-toEquation t.toAdd) e.Clashes>>
+      (<Map (&ApplyContraction-toAssign t.toAdd) e.Assigns>)
 }
 
 gen_t__ { e.arg = <gen_e__ e.arg> }
@@ -2230,14 +2196,12 @@ AddContraction-Spec-Symm {
         t._ = s.OpenFlag;
       }
     : s.OpenFlag^
-    = <SimplifyCoordinates-Symm
-        (
-          s.OpenFlag
-          <gen_e__ <Map (&ApplyContraction-toContraction t.toAdd) e.Contrs>>
-        )
-        <gen_e__ <Map (&ApplyContraction-toSymmClash t.toAdd) e.SymmClashes>>
-        (<Map (&ApplyContraction-toAssign t.toAdd) e.Assigns>)
-      >;
+    = (
+        s.OpenFlag
+        <gen_e__ <Map (&ApplyContraction-toContraction t.toAdd) e.Contrs>>
+      )
+      <gen_e__ <Map (&ApplyContraction-toSymmClash t.toAdd) e.SymmClashes>>
+      (<Map (&ApplyContraction-toAssign t.toAdd) e.Assigns>)
 }
 
 /*
@@ -2258,8 +2222,10 @@ ApplyContraction-toContraction {
 */
 
 ApplyContraction-toAssign {
-   t.Contraction (e.M ':' t.Rval)
-     = (<ApplyContraction-toExpr t.Contraction e.M> ':' t.Rval);
+   t.Contraction (e.Expr ':' t.Rval)
+     = <ApplyContraction-toExpr t.Contraction e.Expr> : e.Expr^
+     = <SimplifyCoordinates e.Expr> : e.Expr^
+     = (e.Expr ':' t.Rval);
 }
 
 /*
@@ -2269,17 +2235,17 @@ ApplyContraction-toAssign {
 */
 
 ApplyContraction-toEquation {
-   t.Contraction ((e.Expr) ':' (e.Lexpr)) =
-     ((<ApplyContraction-toExpr t.Contraction e.Expr>) ':' (e.Lexpr))
+   t.Contraction ((e.Expr) ':' (e.Lexpr))
+     = <ApplyContraction-toExpr t.Contraction e.Expr> : e.Expr^
+     = <SimplifyCoordinates e.Expr> : e.Expr^
+     = ((e.Expr) ':' (e.Lexpr))
 }
 
 ApplyContraction-toSymmClash {
   t.Contr (e.L '=' e.R)
-    = (
-        <ApplyContraction-toExpr t.Contr e.L>
-        '='
-        <ApplyContraction-toExpr t.Contr e.R>
-      )
+    = <ApplyContraction-toExpr t.Contr e.L> : e.L^
+    = <ApplyContraction-toExpr t.Contr e.R> : e.R^
+    = <SimplifyCoordinates-SymmClash (e.L '=' e.R)>
     : {
         /* стираем тавтологию */
         t.SymmClash, <IsTautology t.SymmClash> : True = /* пусто */;
