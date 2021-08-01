@@ -11,7 +11,7 @@ $EXTERN OptTree-Drive-Intrinsic;
 $EXTERN Solve-Drive;
 
 *$FROM TreeUtils
-$EXTERN ExpandClosures-Result, IsPassiveExpr, HashName;
+$EXTERN ExpandClosures-Result, ApplyContractions, IsPassiveExpr, HashName;
 
 
 /**
@@ -525,52 +525,6 @@ ApplyAssigns-Term {
     =  e.Asgn;
 
   t.T (e.Assigns) = t.T;
-}
-
-/**
-  <ApplyContractions (e.Expr) (e.Contrs) == e.Expr^
-*/
-$ENTRY ApplyContractions {
-  e.Expr (e.Contrs)
-    = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e._) e.Expr^
-    = e.Expr;
-}
-
-ApplyContractions-Expr {
-  (e.Contrs) e.Expr = <MapAccum &ApplyContractions-Term (e.Contrs) e.Expr>;
-}
-
-ApplyContractions-Term {
-  (e.Contrs) (Brackets e.Expr)
-    = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e.Contrs^) e.Expr^
-    = (e.Contrs) (Brackets e.Expr);
-
-  (e.Contrs) (CallBrackets e.Expr)
-    = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e.Contrs^) e.Expr^
-    = (e.Contrs) (CallBrackets e.Expr);
-
-  (e.Contrs) (ColdCallBrackets e.OriginArgs)
-    = <ApplyContractions-Expr (e.Contrs) e.OriginArgs>
-    : {
-*       Содержимое холодных скобок не изменилось, оставляем их холодными
-        (e.Contrs^) e.OriginArgs = (e.Contrs) (ColdCallBrackets e.OriginArgs);
-
-*       Содержимое обновилось, оттаиваем скобки
-        (e.Contrs^) e.ChangedArgs = (e.Contrs) (CallBrackets e.ChangedArgs);
-      };
-
-  (e.Contrs) (ClosureBrackets e.Expr)
-    = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e.Contrs^) e.Expr^
-    = (e.Contrs) (ClosureBrackets e.Expr);
-
-  (e.Contrs) (ADT-Brackets (e.Name) e.Expr)
-    = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e.Contrs^) e.Expr^
-    = (e.Contrs) (ADT-Brackets (e.Name) e.Expr);
-
-  (e.B (t.Term ':' e.Contr) e.E) t.Term
-    = <ApplyContractions-Expr (e.B (t.Term ':' e.Contr) e.E) e.Contr>;
-
-  (e.Contrs) t.T = (e.Contrs) t.T;
 }
 
 /*

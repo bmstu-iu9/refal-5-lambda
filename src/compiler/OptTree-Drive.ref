@@ -8,10 +8,10 @@ $EXTERN Log-PutLine;
 $EXTERN DisplayName;
 
 *$FROM TreeUtils
-$EXTERN HashName, ExtractVariables, IsLExpr;
+$EXTERN HashName, ExtractVariables, IsLExpr, ApplyContractions;
 
 *$FROM OptTree-Drive-Expr
-$EXTERN OptTree-Drive-Expr, ApplyContractions;
+$EXTERN OptTree-Drive-Expr;
 
 
 /*
