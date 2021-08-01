@@ -275,7 +275,7 @@ ExpandClosures-ResultTerm {
 }
 
 /**
-  <ApplyContractions (e.Expr) (e.Contrs) == e.Expr^
+  <ApplyContractions e.Expr (e.Contrs) == e.Expr^
 */
 $ENTRY ApplyContractions {
   e.Expr (e.Contrs)
