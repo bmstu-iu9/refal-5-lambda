@@ -540,6 +540,7 @@ SpecCall {
   (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
   (e.Argument) (e.History)
     = <ExtractVariables ((e.Argument) (/* пусто */))> : e.UsedVars
+
     = <ExtractCalls-Expr (/* пусто */ (e.UsedVars)) e.Argument>
     : (e.ExtractedCalls (e.UsedVars^)) e.NewArgument
 
@@ -549,9 +550,10 @@ SpecCall {
 
     = e.ExtractedCalls <ApplySubst-Subst (e.ExtractedCalls) e.Sg> : e.Sg^
 
-    /* ищем динамическое обобщение для аргумента и образцов */
+      /* ищем динамическое обобщение для аргумента и образцов */
     = <DynGenArg (e.NewArgument) (e.Sg) (/* пусто */) (/* пусто */) e.Body>
     : (e.NewArgument^) (e.Sg^) (e.Solutions)
+
     = <SpecCall-Aux
         (e.Name) (e.SpecPattern) (e.Body) s.NextNumber e.Signatures
         (e.Argument) (e.NewArgument) (e.Sg) (e.Solutions) (e.History)
@@ -619,8 +621,7 @@ DynGenArg {
     = e.Pat (Brackets e.WrappedCondVars) : e.Pat^
     = <Solve-Spec (e.UsedVars) (e.Arg) (e.Pat)>
     : {
-        Success e.Solutions (e.SgNew) (e.ArgNew)
-          , e.SgNew : /* пусто */
+        Success e.Solutions (/* нет обобщений */) (e.ArgNew)
           = e.ArgNew : e.ArgNew^ (Brackets e._)
           = e.Pat : e.Pat^ (Brackets e._)
           = <DynGenArg
@@ -631,15 +632,10 @@ DynGenArg {
         Success e.Solutions (e.SgNew) (e.ArgNew)
           = e.ArgNew : e.ArgNew^ (Brackets e._)
           = e.Pat : e.Pat^ (Brackets e._)
+          = e.Sg <ApplySubst-Subst (e.Sg) e.SgNew> : e.Sg^
+          = <RemoveAssignByLeftPart ((Var e.eNew)) e.Sg> : e.Sg^
           = <DynGenArg
-              (e.ArgNew)
-              (
-                <RemoveAssignByLeftPart
-                    ((Var e.eNew))
-                    e.Sg <ApplySubst-Subst (e.Sg) e.SgNew>
-                >
-              )
-              (/* пусто */) (/* пусто */)
+              (e.ArgNew) (e.Sg) (/* пусто */) (/* пусто */)
               e.Begin ((e.Pat) e.Tail) e.Sentences
             >;
 
