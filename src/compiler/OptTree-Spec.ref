@@ -937,18 +937,15 @@ IsTrivialSubstitutions {
 CreateNewSentences {
   (e.Arg) (e.NewSentences)
   ((e.Sol) e.Solutions) (((e.Pat) e.Tail) e.Body)
+    = <WrapVars e.Arg> : e.PatternTemplate
     = <Reduce
         {
           (e.NewSentences^) ((e.Contrs) (e.Assigns))
             = <FormatContractions e.Contrs> : e.Contrs^
             = <FormatAssigns e.Assigns> : e.Assigns^
-            = (
-                e.NewSentences
-                (
-                  (<ApplySubst-Expr (e.Contrs) <WrapVars e.Arg>>)
-                  <ApplySubst-Tail (e.Assigns) e.Tail>
-                )
-              );
+            = <ApplySubst-Expr (e.Contrs) e.PatternTemplate> : e.Pat^
+            = <ApplySubst-Tail (e.Assigns) e.Tail> : e.Tail^
+            = (e.NewSentences ((e.Pat) e.Tail));
 
           (e.NewSentences^) Failure
             = (e.NewSentences);
