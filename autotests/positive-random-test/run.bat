@@ -114,10 +114,6 @@ setlocal
     2>%FILE%.err%FLAGS% >%FILE%.out%FLAGS%
 
   if not exist %FILE%.rasl (
-    echo FILE %FILE%.ref:
-    echo ============================================================
-    type %FILE%.ref
-    echo ============================================================
     exit /b 1
   )
   erase %FILE%.rasl

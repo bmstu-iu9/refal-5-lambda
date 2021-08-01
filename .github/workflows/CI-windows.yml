@@ -33,6 +33,8 @@ jobs:
             autotests\__error.txt
             autotests\__dump.txt
             autotests\__log.txt
+            autotests\any-random-test
+            autotests\positive-random-test
             bin
           retention-days: 5
 
