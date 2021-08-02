@@ -267,7 +267,7 @@ DoGeneralize-Rec {
     = <NewVarName (e.UsedVars) s.VarType> : (e.UsedVars^) s.VarType^ e.New
     = (e.UsedVars)
       (e.Begin e.E1 ('{'s.A'}') (Var s.VarType e.New) ('{'s.B'}') e.E2)
-      (e.Assigns (e.VarVal ':' (s.VarType e.New)));
+      ((e.VarVal ':' (Var s.VarType e.New)) e.Assigns);
 
   (e.UsedVars) t.Interval
   (e.Begin) ((Brackets e.Nested) e.Rest) (e.Assigns)

@@ -548,7 +548,7 @@ SpecCall {
     = <GenEE e.NewArgument (e.UsedVars) (/* пусто */)>
     : e.NewArgument^ (e.UsedVars^) (e.Sg)
 
-    = e.ExtractedCalls <ApplySubst-Subst (e.ExtractedCalls) e.Sg> : e.Sg^
+    = e.Sg e.ExtractedCalls : e.Sg^
 
       /* ищем динамическое обобщение для аргумента и образцов */
     = <DynGenArg (e.NewArgument) (e.Sg) (/* пусто */) (/* пусто */) e.Body>
@@ -572,7 +572,7 @@ GenEE {
   (Var 'e' e.Left) e.Expr (Var 'e' e.Right) (e.UsedVars) (e.Sg)
     = <NewVarName (e.UsedVars) 'e' e.Left> : (e.UsedVars^) 'e' e.eGen
     = (Var 'e' e.eGen) (e.UsedVars)
-      (e.Sg ((Var 'e' e.Left) e.Expr (Var 'e' e.Right) ':' ('e' e.eGen)));
+      (e.Sg ((Var 'e' e.Left) e.Expr (Var 'e' e.Right) ':' (Var 'e' e.eGen)));
 
   (s.Brackets e.Nested) e.Expr (e.UsedVars) (e.Sg)
     , Brackets ClosureBrackets : e._ s.Brackets e._
@@ -632,7 +632,7 @@ DynGenArg {
         Success e.Solutions (e.SgNew) (e.ArgNew)
           = e.ArgNew : e.ArgNew^ (Brackets e._)
           = e.Pat : e.Pat^ (Brackets e._)
-          = e.Sg <ApplySubst-Subst (e.Sg) e.SgNew> : e.Sg^
+          = e.SgNew e.Sg : e.Sg^
           = <RemoveAssignByLeftPart ((Var e.eNew)) e.Sg> : e.Sg^
           = <DynGenArg
               (e.ArgNew) (e.Sg) (/* пусто */) (/* пусто */)
@@ -709,7 +709,7 @@ SpecCall-Aux {
           = ((e.SpecPattern) (e.Body) s.NextNumber e.Signatures)
             (CallBrackets
               (Symbol Name e.InstanceName)
-              <ApplySubst-Expr (e.Sg) <WrapVars e.NewArg>>
+              <ApplySequentalAssigns <WrapVars e.NewArg> (e.Sg)>
             )
             /* пусто */ (/* пусто */);
 
@@ -758,7 +758,7 @@ SpecCall-NewSignature-Generalize {
   (e.Signature) (e.HistorySignature)
       /* Получает обобщённую сигнатуру для двух сигнатур */
       = <GlobalGen (e.Signature) (e.HistorySignature)> : e.GenSignature
-      = <ExtractVariables ((e.NewArg) (/* пусто */))> : e.ArgVars
+      = <ExtractVariables ((e.OldArg e.NewArg) (/* пусто */))> : e.ArgVars
       = <NameSignatureVars-Expr (e.ArgVars) e.GenSignature>
       : t._ e.GenSignature^
       = <GenericMatch (e.NewArg) (e.GenSignature)> : Clear e.NewSg
@@ -774,9 +774,15 @@ SpecCall-NewSignature-Generalize {
           False = True;
         }
       : s.NeedRelationCheck
+      = <Map
+          {
+            (e.Expr ':' (s.Mode e.Index)) = (e.Expr ':' (Var s.Mode e.Index))
+          }
+          e.NewSg
+        >
+      : e.NewSg^
       = <DynGenArg
-          (e.GenSignature) (<ApplySubst-Subst (e.Sg) e.NewSg>)
-          (/* пусто */) (/* пусто */) e.Body
+          (e.GenSignature) (e.NewSg e.Sg) (/* пусто */) (/* пусто */) e.Body
         >
       : (e.NewArg^) (e.Sg^) (e.Solutions^)
       = <SpecCall-Aux
@@ -798,7 +804,7 @@ SpecCall-NewSignature-MakeFunction {
       )
       (CallBrackets
         (Symbol Name e.InstanceName)
-        <ApplySubst-Expr (e.Sg) <WrapVars e.NewArg>>
+        <ApplySequentalAssigns <WrapVars e.NewArg> (e.Sg)>
       )
       (Function GN-Local (e.InstanceName) Sentences e.NewSentences)
       (
@@ -814,7 +820,7 @@ ExtractCalls-Expr {
 ExtractCalls-Term {
   (e.Calls (e.UsedVars)) (CallBrackets e.Expr)
     = <NewVarName (e.UsedVars) 'eCall'> : (e.UsedVars^) e.NewVar
-    = (e.Calls ((CallBrackets e.Expr) ':' (e.NewVar)) (e.UsedVars))
+    = (e.Calls ((CallBrackets e.Expr) ':' (Var e.NewVar)) (e.UsedVars))
       (Var e.NewVar);
 
   (e.Calls (e.UsedVars)) (Brackets e.Expr)
@@ -857,50 +863,16 @@ RenameSignatureVars-Term {
   t.State t.OtherTerm = t.State t.OtherTerm;
 }
 
-/*
-  Применяем левую подстановку к левым частям правой.
-  Это не совсем композиция подстановок, поскольку для композиции нужно
-  также объединять домены подстановок.
-*/
-ApplySubst-Subst {
-  (e.FromSubstitution) e.ToSubstitution
+ApplySequentalAssigns {
+  e.Expression (e.Assigns)
     = <Map
         {
-          (e.Expr ':' t.Var)
-            = (<ApplySubst-Expr (e.FromSubstitution) e.Expr> ':' t.Var);
+          (e.Expr ':' t.Var) = (t.Var ':' e.Expr)
         }
-        e.ToSubstitution
-      >;
-}
-
-ApplySubst-Expr {
-  (e.Substitution) e.Expression
-    = <Map
-        {
-          (Var e.ModeIndex)
-            , e.Substitution : e.Subst-B (e.Value ':' (e.ModeIndex)) e.Subst-E
-            = e.Value;
-
-          (Brackets e.Nested)
-            = (Brackets <ApplySubst-Expr (e.Substitution) e.Nested>);
-
-          (ADT-Brackets (e.Name) e.Nested)
-            = (ADT-Brackets
-                (e.Name) <ApplySubst-Expr (e.Substitution) e.Nested>
-              );
-
-          (CallBrackets e.Nested)
-            = (CallBrackets <ApplySubst-Expr (e.Substitution) e.Nested>);
-
-          (ClosureBrackets e.ClosureContent)
-            = (ClosureBrackets
-                <ApplySubst-Expr (e.Substitution) e.ClosureContent>
-              );
-
-          t.OtherTerm = t.OtherTerm;
-        }
-        e.Expression
-      >;
+        e.Assigns
+      >
+    : e.Contractions
+    = <ApplyContractions e.Expression (e.Contractions)>
 }
 
 Spec-FindInSignatures {
