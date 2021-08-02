@@ -319,3 +319,36 @@ ApplyContractions-Term {
 
   (e.Contrs) t.T = (e.Contrs) t.T;
 }
+
+/**
+  <ApplyAssigns e.Expr (e.Assigns)> == e.Expr^
+*/
+$ENTRY ApplyAssigns {
+  e.Expr (e.Assigns)
+    = <Map
+        {
+          t.T = <ApplyAssigns-Term t.T (e.Assigns)>
+        }
+        e.Expr
+      >
+}
+
+ApplyAssigns-Term {
+  (Brackets e.Expr) (e.Assigns) = (Brackets <ApplyAssigns e.Expr (e.Assigns)>);
+
+  (CallBrackets e.Args) (e.Assigns)
+    = (CallBrackets <ApplyAssigns e.Args (e.Assigns)>);
+
+  (ColdCallBrackets e.Args) (e.Assigns)
+    = (ColdCallBrackets <ApplyAssigns e.Args (e.Assigns)>);
+
+  (ClosureBrackets e.Args) (e.Assigns)
+    = (ClosureBrackets <ApplyAssigns e.Args (e.Assigns)>);
+
+  (ADT-Brackets (e.Name) e.Expr) (e.Assigns)
+    = (ADT-Brackets (e.Name) <ApplyAssigns e.Expr (e.Assigns)>);
+
+  t.T (e.B (e.Expr ':' t.T) e.E) =  e.Expr;
+
+  t.T (e.Assigns) = t.T;
+}

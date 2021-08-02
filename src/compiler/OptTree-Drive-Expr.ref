@@ -11,7 +11,8 @@ $EXTERN OptTree-Drive-Intrinsic;
 $EXTERN Solve-Drive;
 
 *$FROM TreeUtils
-$EXTERN ExpandClosures-Result, ApplyContractions, IsPassiveExpr, HashName;
+$EXTERN ExpandClosures-Result, ApplyContractions, IsPassiveExpr, ApplyAssigns,
+  HashName;
 
 
 /**
@@ -490,41 +491,6 @@ FindOptimizedCall-Term {
 
   (e.OptFuncNames t.Found) t.AnyTerm
     = (e.OptFuncNames t.Found) t.AnyTerm;
-}
-
-/*
-  <ApplyAssigns e.Expr (e.Assigns)> == e.Expr^
-*/
-
-ApplyAssigns {
-  e.Expr (e.Assigns)
-    = <Map
-        {
-          t.T = <ApplyAssigns-Term t.T (e.Assigns)>
-        }
-        e.Expr
-      >
-}
-
-ApplyAssigns-Term {
-  (Brackets e.Expr) (e.Assigns) = (Brackets <ApplyAssigns e.Expr (e.Assigns)>);
-
-  (CallBrackets e.Args) (e.Assigns)
-    = (CallBrackets <ApplyAssigns e.Args (e.Assigns)>);
-
-  (ColdCallBrackets e.Args) (e.Assigns)
-    = (ColdCallBrackets <ApplyAssigns e.Args (e.Assigns)>);
-
-  (ClosureBrackets e.Args) (e.Assigns)
-    = (ClosureBrackets <ApplyAssigns e.Args (e.Assigns)>);
-
-  (ADT-Brackets (e.Name) e.Expr) (e.Assigns)
-    = (ADT-Brackets (e.Name) <ApplyAssigns e.Expr (e.Assigns)>);
-
-  t.T (e.B (e.Asgn ':' t.T) e.E)
-    =  e.Asgn;
-
-  t.T (e.Assigns) = t.T;
 }
 
 /*

@@ -8,7 +8,7 @@ $EXTERN DisplayName;
 
 *$FROM TreeUtils
 $EXTERN AddSuffix, ExtractVariables-Expr, NewVarName, ExtractVariables,
-  ApplyContractions, IsHardExpr;
+  ApplyContractions, ApplyAssigns, IsHardExpr;
 
 *$FROM GenericMatch
 $EXTERN Solve-Spec, GenericMatch;
@@ -941,7 +941,6 @@ CreateNewSentences {
     = <Reduce
         {
           (e.NewSentences^) ((e.Contrs) (e.Assigns))
-            = <FormatAssigns e.Assigns> : e.Assigns^
             = <ApplyContractions e.PatternTemplate (e.Contrs)> : e.Pat^
             = <ApplySubst-Tail (e.Assigns) e.Tail> : e.Tail^
             = (e.NewSentences ((e.Pat) e.Tail));
@@ -963,24 +962,16 @@ CreateNewSentences {
     = e.NewSentences;
 }
 
-FormatAssigns {
-  (e.Val ':' (Var e.ModeIndex)) e.Assigns
-    = (e.Val ':' (e.ModeIndex)) <FormatAssigns e.Assigns>;
-
-  /* пусто */ = /* пусто */;
-}
-
 ApplySubst-Tail {
-  (e.Substitution) (Condition (e.ConditionName) (e.Result) (e.Pattern)) e.Tail
+  (e.Assigns) (Condition (e.ConditionName) (e.Result) (e.Pattern)) e.Tail
     = (
         Condition (e.ConditionName)
-        (<ApplySubst-Expr (e.Substitution) e.Result>)
-        (<ApplySubst-Expr (e.Substitution) e.Pattern>)
+        (<ApplyAssigns e.Result (e.Assigns)>)
+        (<ApplyAssigns e.Pattern (e.Assigns)>)
       )
-      <ApplySubst-Tail (e.Substitution) e.Tail>;
+      <ApplySubst-Tail (e.Assigns) e.Tail>;
 
-  (e.Substitution) (e.Result)
-    = (<ApplySubst-Expr (e.Substitution) e.Result>);
+  (e.Assigns) (e.Result) = (<ApplyAssigns e.Result (e.Assigns)>);
 }
 
 WrapVars {
