@@ -3,9 +3,6 @@ $INCLUDE "LibraryEx";
 *$FROM GenericMatch
 $EXTERN GenericMatch;
 
-*$FROM GlobalGen
-$EXTERN GlobalGen;
-
 *$FROM Desugaring
 $EXTERN CreateContext, RemovePos-Expr, ExtractVariables-Expr,
         Pass-EnumerateVariables, Pass-RemovePos;
@@ -454,7 +451,8 @@ PatternLanguagesCheck {
     , <FlattenPattern e.Pattern-R> : e.FlattenedPattern-R
     , <IsPatternLinear e.FlattenedPattern-R> : True
     = <Normalize e.Pattern-R> : e.Pattern-R^
-    = <ObjectMatch (e.Pattern-L) (e.Pattern-R)>
+    = <ScreenVars e.Pattern-L> : e.Pattern-L^
+    = <GenericMatch (e.Pattern-L) (e.Pattern-R)>
     : {
         Clear e._ = True;
         e._ = False;
@@ -462,44 +460,6 @@ PatternLanguagesCheck {
 
   (e.Pattern-L) (e.Pattern-R)
     = False;
-}
-
-
-/*
-  <CheckEveryMatch t.Tuple* (e.Assigns)>
-    == True
-    == False
-
-  t.Tuple ::= (t.Pattern-L t.Pattern-R)
-
-  CheckEveryMatch сверяет пары кортежей.
-  Возвращает True, если все совпали, иначе False.
-*/
-CheckEveryMatch {
-  ((e.Pattern-L) (e.Pattern-R)) e.Tuples (e.Assigns)
-    = <ObjectMatch (e.Pattern-L) (e.Pattern-R)>
-    : {
-        Clear e.NewAssigns
-          = <AppendAssigns (e.Assigns) e.NewAssigns>
-          : {
-              Success e.UpdatedAssigns
-                = <CheckEveryMatch e.Tuples (e.UpdatedAssigns)>;
-
-              Fails
-                = False;
-            };
-
-        e.Other
-          = False;
-      };
-
-  /* пусто */ (e.Assigns) = True (e.Assigns);
-}
-
-ObjectMatch {
-  (e.Pattern) (e.LPattern)
-    = <ScreenVars e.Pattern> : e.Pattern^
-    = <GenericMatch (e.Pattern) (e.LPattern)>
 }
 
 ScreenVars {
@@ -516,95 +476,6 @@ ScreenVars {
           t.Other = t.Other;
         }
         e.Expression
-      >;
-}
-
-/*
-  <AppendAssigns (t.Assign*) t.Assign*>
-    == Success t.Assign*
-    == Fails
-
-  AppendAssigns пополняет список присваиваний новыми.
-  Если новое присваивание содержится в списке, список не изменяется.
-  Если новое присваивание противоречит старрому, возвращается Fails.
-*/
-AppendAssigns {
-  /* если старое значение совпало с новым */
-  (e.Assigns-L (e.Vars-L ':' e.Vars-R) e.Assigns-R)
-  (e.Vars-L ':' e.Vars-R) e.NewAssignsTail
-    = <AppendAssigns
-        (e.Assigns-L (e.Vars-L ':' e.Vars-R) e.Assigns-R)
-        e.NewAssignsTail
-      >;
-
-  /* если старое не совпало с новым */
-  (e.Assigns-L (e.Vars-L ':' e.Vars-R) e.Assigns-R)
-  (e.Vars-L-Other ':' e.Vars-R) e.NewAssignsTail
-    = Fails;
-
-  /* если новая переменная */
-  (e.Assigns)
-  (e.Vars-L ':' e.Vars-R) e.NewAssignsTail
-    = <AppendAssigns
-        (e.Assigns (e.Vars-L ':' e.Vars-R))
-        e.NewAssignsTail
-      >;
-
-  (e.Assigns) /* пусто */ = Success e.Assigns;
-}
-
-/*
-  <CreateTuplePairs (t.Assign-L*) (t.Assign-R*)>
-    == t.Tuple*
-
-  t.Assign ::= ((t.Pattern*) ':' (t.Pattern*))
-
-  CreateTuplePairs сверяет пары кортежей,
-  возвращает True, если все совпали, иначе False.
-  Правая часть выражения нормализуется.
-*/
-CreateTuplePairs {
-  (e.Tuple-L) (e.Tuple-R)
-    = <DelAccumulator
-        <MapAccum
-          {
-            (t.L e.Tail-L) t.R
-              , t.L : (e.Vars-L ':' e._)
-              , t.R : (e.Vars-R ':' e._)
-              = (e.Tail-L) ((e.Vars-L) (e.Vars-R));
-          }
-          (e.Tuple-L) e.Tuple-R
-        >
-      >;
-}
-
-/*
-  <RenameVars (e.Prefix) e.Pattern>
-    == e.Pattern
-
-  RenameVars добавляет суффиксы переменным, полученным из ГСО.
-*/
-RenameVars {
-  (e.Prefix) e.Pattern
-    = <DelAccumulator
-        <MapAccum
-          {
-            s.Count (Var s.Type e.Index)
-              = <Inc s.Count>
-                (Var s.Type e.Index e.Prefix 's' <Symb s.Count>);
-            s.Count (Brackets e.Other)
-              = <Inc s.Count>
-                (Brackets <RenameVars (e.Prefix 'p' <Symb s.Count>) e.Other>);
-            s.Count (ADT-Brackets (e.Name) e.Other)
-              = <Inc s.Count>
-                (ADT-Brackets (e.Name)
-                  <RenameVars (e.Prefix 'p' <Symb s.Count>) e.Other>
-                );
-            s.Count t.Other
-              = s.Count t.Other;
-          }
-          1 e.Pattern
-        >
       >;
 }
 
@@ -962,21 +833,6 @@ IsPatternLinear {
 }
 
 /*
-  <IsPatternFlat (e.Pattern)>
-    == True
-    == False
-
-  IsPatternFlat возвращает True, если образец e.Pattern - плоский
-  (не содержит круглых скобок), иначе False.
-*/
-IsPatternFlat {
-  e._ (Brackets e._) e._
-    = False;
-  e._
-    = True;
-}
-
-/*
   <FlattenPattern (e.Pattern)>
     == (e.FlatPattern)
 
@@ -995,18 +851,6 @@ FlattenPattern {
         }
         e.Pattern
       >
-}
-
-/*
-  <Generalize (e.Pattern-L) (e.Pattern-R)>
-    == e.GeneralizedPattern
-
-  Generalize реконструирует общий формат двух образцов (ГСО)
-*/
-Generalize {
-  (e.Pattern-L) (e.Pattern-R)
-    = <GlobalGen (e.Pattern-L) (e.Pattern-R)> : e.GlobalComplexGeneralization
-    = e.GlobalComplexGeneralization
 }
 
 /*
