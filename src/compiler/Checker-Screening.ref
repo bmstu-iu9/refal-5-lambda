@@ -492,7 +492,7 @@ ReplaceADTBrackets {
 
 
 /*
-  <CheckEveryMatch t.Tuple*>
+  <CheckEveryMatch t.Tuple* (e.Assigns)>
     == True
     == False
 

@@ -511,7 +511,7 @@ Solve-Clashes {
         e.ClashesEnd (e.Assigns)
       >;
 
-  /* {m} [X E] {n} : [X P]   ↦  {m} E {n} : P */
+  /* {m} [X E] {n} : [X P]   ↦  {m} [X E] {n} : P */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   (
     (('{'s.M'}') (ADT-Brackets (e.Name) e.LBody) ('{'s.N'}'))
@@ -570,7 +570,7 @@ Solve-Clashes {
   e.ClashesEnd (e.Assigns)
     = /* нет решений */;
 
-  /* {m} Sym {n} : [P]  ↦  нет решений */
+  /* {m} Sym {n} : [X P]  ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   ((('{'s.M'}') t.Sym ('{'s.N'}')) ':' ((ADT-Brackets e._)))
   e.ClashesEnd (e.Assigns)
