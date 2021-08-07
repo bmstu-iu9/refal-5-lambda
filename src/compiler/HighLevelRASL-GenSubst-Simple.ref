@@ -470,7 +470,7 @@ DoGenSubst-GEN {
       (e.Vars ('e' (e.Index) s.Num))
       (e.Commands
         (CmdComment
-          { = ' closed ' <PrintVar 'e' e.Index> ' as range ' Offset s.Num }
+          { = ' closed ' <PrintVar 'e' e.Index> ' as range ' <Symb s.Num> }
         )
       )
     >;
