@@ -1,7 +1,7 @@
 $INCLUDE "LibraryEx";
 
 *$FROM Log
-$EXTERN Log-PutLine, Log-InlineExpr;
+$EXTERN Log-PutLine, Log-PutLine-Lazy, Log-InlineExpr;
 
 *$FROM DisplayName
 $EXTERN DisplayName;
@@ -230,8 +230,12 @@ PrintHistories {
 
 PrintHistory {
   ((e.Function) e.History)
-    = <Log-PutLine
-        'History of ' <DisplayName e.Function> '\n'
+    = <Log-PutLine-Lazy { = <PrintHistory-Aux (e.Function) e.History> }>
+}
+
+PrintHistory-Aux {
+  (e.Function) e.History
+      = 'History of ' <DisplayName e.Function> '\n'
         <Map
           {
             ((e.FuncName) e.StaticVarsVals)
@@ -240,7 +244,6 @@ PrintHistory {
           }
           e.History
         >
-      >
 }
 
 SpecUnit {

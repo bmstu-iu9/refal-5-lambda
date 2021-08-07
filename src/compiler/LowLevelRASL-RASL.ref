@@ -140,7 +140,7 @@ ConvertInterpretCommands {
 }
 
 ConvertOneInterpretCommand-Simple {
-  (CmdComment e.Text) = /* skip comment command */;
+  (CmdComment s.FnText) = /* skip comment command */;
 
   (CmdUseRes) = /* пусто */;
 

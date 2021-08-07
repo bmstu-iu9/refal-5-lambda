@@ -129,8 +129,8 @@ GenCommand-Native {
   /* -------------------------------------------------------------------------*/
   /* Создания глобальных объектов, общие команды */
 
-  (e.Indent) (CmdComment e.Text)
-    = (e.Indent) (e.Indent '//' <FormatOffsets e.Text>);
+  (e.Indent) (CmdComment s.FnText)
+    = (e.Indent) (e.Indent '//' <FormatOffsets <s.FnText>>);
 
   (e.Indent) (CmdCEnum-Start e.Prefix)
     = (e.Indent) () (e.Indent 'enum ' e.Prefix ' {');

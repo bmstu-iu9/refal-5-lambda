@@ -470,7 +470,7 @@ DoGenSubst-GEN {
       (e.Vars ('e' (e.Index) s.Num))
       (e.Commands
         (CmdComment
-          ' closed ' <PrintVar 'e' e.Index> ' as range ' Offset s.Num
+          { = ' closed ' <PrintVar 'e' e.Index> ' as range ' Offset s.Num }
         )
       )
     >;
@@ -557,6 +557,6 @@ DoGenSubst-GEN {
   /* Завершение разбора. */
   s.ContextOffset (Junk e.MarkedPattern) (e.Vars) (e.Commands) =
     s.ContextOffset (e.Vars) (e.MarkedPattern)
-    (CmdComment <TextFromExpr e.MarkedPattern>)
+    (CmdComment { = <TextFromExpr e.MarkedPattern> })
     e.Commands;
 }

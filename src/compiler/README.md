@@ -433,7 +433,7 @@
       | (CmdInitB0)
       | (CmdInitB0-Lite)
       | (CmdSave s.OldOffset s.NewOffset)
-      | (CmdComment e.Text)
+      | (CmdComment s.FnText)
       | (CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset)
       | (CmdResetAllocator)
       | (CmdCopyVar s.Mode s.VarOffset s.SampleOffset
@@ -492,6 +492,7 @@
 
     s.VarOffset, s.SampleOffset ::= s.Offset
     s.OldOffset, s.NewOffset ::= s.Offset
+    <s.FnText> == s.CHAR*
     s.LeftOffset, s.RightOffset ::= s.Offset
     s.SaveOffset ::= s.Offset
     s.R-Offset ::= ARG-BEGIN | s.Offset | RIGHT-EDGE
@@ -566,9 +567,10 @@
       сохраняют сопоставленный элемент на контексте по смещению `s.Offset`.
   * `(CmdSave s.OldOffset s.NewOffset)` — копирование границ диапазона
     `s.OldOffset` в `s.NewOffset`.
-  * `(CmdComment e.Text)` — соответствует однострочному комментарию
-    в сгенерированном коде. Содержимое `e.Text` предваряется `// `
-    и выписывается в целевой файл без изменений.
+  * `(CmdComment s.FnText)` — соответствует однострочному комментарию
+    в сгенерированном коде. Вызывается функция `<s.FnText>` без параметров,
+    результат вызова предваряется `// ` и выписывается в целевой файл
+    без изменений.
   * `(CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset)` — формирует
     запись отладочной таблицы переменных (для интерактивного просмотра
     значений переменных в отладчике).

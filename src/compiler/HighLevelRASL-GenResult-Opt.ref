@@ -85,8 +85,8 @@ FlatResult {
 GenResult-Aux {
   (e.Trash) (e.MarkedResult)
 
-    = (CmdComment 'TRASH:' <TextFromExpr e.Trash>)
-      (CmdComment 'RESULT:' <TextFromExpr e.MarkedResult>)
+    = (CmdComment { = 'TRASH:' <TextFromExpr e.Trash> })
+      (CmdComment { = 'RESULT:' <TextFromExpr e.MarkedResult> })
 
       /* Генерируем команды аллокаций */
       <GenResult-Allocations e.MarkedResult>

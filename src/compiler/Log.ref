@@ -68,6 +68,20 @@ $ENTRY Log-PutLine {
 
 
 /**
+  <Log-PutLine-Lazy s.FnLine> == []
+*/
+$ENTRY Log-PutLine-Lazy {
+  s.FnMessage
+    = <LogHandle>
+    : {
+        /* none */ = /* do nothing */;
+
+        s.FileHandle = <Putout s.FileHandle <Time> ': ' <s.FnMessage>>;
+      };
+}
+
+
+/**
   <Log-AST (e.Message) e.AST> == e.AST
 */
 $ENTRY Log-AST {
@@ -184,8 +198,8 @@ PutRASLCommands {
               <PutRASLCommands s.FileHandle (e.Indent '  ') e.SubCommands>
               <Putout s.FileHandle e.Indent ')  // CmdOpenELoop'>;
 
-          (CmdComment e.Message)
-            = <Putout s.FileHandle e.Indent '// ' e.Message>;
+          (CmdComment s.FnMessage)
+            = <Putout s.FileHandle e.Indent '// ' <s.FnMessage>>;
 
           /* TODO: pretty print */
           (s.Command e.Args)

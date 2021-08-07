@@ -124,7 +124,7 @@ ConvertDirectCommands {
       <ConvertDirectCommands e.Tail>;
 
   (CmdVariableDebugTable s.Mode e.Index s.Offset) e.Tail
-    = (CmdComment 'DEBUG: ' s.Mode '.' e.Index ': ' <Symb s.Offset>)
+    = (CmdComment { = 'DEBUG: ' s.Mode '.' e.Index ': ' <Symb s.Offset> })
       <ConvertDirectCommands e.Tail>;
 
   t.Command e.Tail
