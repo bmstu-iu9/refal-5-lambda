@@ -454,13 +454,11 @@ PatternLanguagesCheck {
     , <FlattenPattern e.Pattern-R> : e.FlattenedPattern-R
     , <IsPatternLinear e.FlattenedPattern-R> : True
     = <Normalize e.Pattern-R> : e.Pattern-R^
-    = <Generalize (e.Pattern-L) (e.Pattern-R)> : e.Generalized
-    = <RenameVars () e.Generalized> : e.Generalized^
-    = <GenericMatch (e.Pattern-R) (e.Generalized) > : Clear e.Tuple-R
-    = <GenericMatch (e.Pattern-L) (e.Generalized) > : Clear e.Tuple-L
-    = <CreateTuplePairs (e.Tuple-L) (e.Tuple-R)> : e.Tuples
-    = <CheckEveryMatch e.Tuples ()>;
-
+    = <ObjectMatch (e.Pattern-L) (e.Pattern-R)>
+    : {
+        Clear e._ = True;
+        e._ = False;
+      };
 
   (e.Pattern-L) (e.Pattern-R)
     = False;
