@@ -401,13 +401,6 @@ CheckPatternPairs {
               (e.ContextVars e.Pattern-R)
             >
           : {
-              e._, (e.Pattern-L) (e.Pattern-R) : () ()
-                = <CreateScreeningWarning
-                    t.SrcPos
-                    (e.FuncName)
-                    (e.Prefix '$' <Symb s.Num-R>)
-                    (e.Prefix '$' <Symb s.Num-L>)
-                  >;
               Clear e._
                 = <CreateScreeningWarning
                     t.SrcPos
