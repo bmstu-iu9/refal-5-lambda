@@ -396,36 +396,24 @@ CheckPatternPairs {
           (((e.Pattern-L) e._ (e._) (e._)) s.Num-L)
           (((e.Pattern-R) e._ (e._) (e._)) s.Num-R)
         )
-          = <GenericMatch
-              (e.ContextVars e.Pattern-L)
-              (e.ContextVars e.Pattern-R)
-            >
+          = e.ContextVars e.Pattern-L : e.Pattern-L^
+          = e.ContextVars e.Pattern-R : e.Pattern-R^
+          = e.Prefix '$' <Symb s.Num-R> : e.R-id
+          = e.Prefix '$' <Symb s.Num-L> : e.L-id
+          = /* пусто */
           : {
-              Clear e._
+              , <GenericMatch (e.Pattern-L) (e.Pattern-R)> : Clear e._
                 = <CreateScreeningWarning
-                    t.SrcPos
-                    (e.FuncName)
-                    (e.Prefix '$' <Symb s.Num-R>)
-                    (e.Prefix '$' <Symb s.Num-L>)
+                    t.SrcPos (e.FuncName) (e.R-id) (e.L-id)
                   >;
 
-              e._
-                = <PatternLanguagesCheck
-                    (e.ContextVars e.Pattern-L)
-                    (e.ContextVars e.Pattern-R)
-                  >
-                : {
-                    True e.Other
-                      = <CreateScreeningWarning
-                          t.SrcPos
-                          (e.FuncName)
-                          (e.Prefix '$' <Symb s.Num-R>)
-                          (e.Prefix '$' <Symb s.Num-L>)
-                        >;
+              , <PatternLanguagesCheck (e.Pattern-L) (e.Pattern-R)> : True
+                = <CreateScreeningWarning
+                    t.SrcPos (e.FuncName) (e.R-id) (e.L-id)
+                  >;
 
-                    False = /* пусто */;
-                }
-            }
+              = /* нет предупреждений */;
+          }
       }
       e.Pairs
     >;
@@ -434,8 +422,7 @@ CheckPatternPairs {
 }
 
 /*
-  <PatternLanguagesCheck (e.ContextVars) (e.Pattern-L) (e.Pattern-R)>
-    == t.Warning*
+  <PatternLanguagesCheck (e.ContextVars) (e.Pattern-L) (e.Pattern-R)> == s.Bool
 
   PatternLanguagesCheck проверяет пару предложений
   на экранирование алгоритмом, основанном на языках образцов.
