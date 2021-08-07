@@ -39,10 +39,30 @@ $ENTRY GenericMatch {
         ((e.Pattern) ':' (e.LPattern))
       >
     : {
-        Success (e._ () (e.Assigns)) = Clear <FormatAssigns e.Assigns>;
+        /* Если все решения без сужений, то берём первое */
+        Success (e._ () (e.Assigns)) e.OtherSolutions
+          , <AllUncontracted e.OtherSolutions> : True
+          = Clear <FormatAssigns e.Assigns>;
+
         Success e.Solutions = Contracted e.Solutions;
+
         Failure = Failure;
         Undefined = Undefined;
+      }
+}
+
+AllUncontracted {
+  e.Solutions
+    = <Map
+        {
+          (e._ (/* нет суженй */) (e._)) = /* пропускаем */;
+          t.OtherSolution = t.OtherSolution; /* оставляем */
+        }
+        e.Solutions
+      >
+    : {
+        /* пусто */ = True;
+        e._ = False;
       }
 }
 
@@ -362,6 +382,10 @@ DoAddCoordinateLabels {
     = (Var s.Mode e.Index) ('{'s.CoordNumber'}')
       <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
 
+  ((ScrVar s.Mode e.Index) e.Rest) s.CoordNumber
+    = (ScrVar s.Mode e.Index) ('{'s.CoordNumber'}')
+      <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
+
   ((ClosureBrackets e.Inner) e.Rest) s.CoordNumber
     = (ClosureBrackets e.Inner) ('{'s.CoordNumber'}')
       <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
@@ -470,6 +494,12 @@ Solve-Clashes {
         )
       >;
 
+  /* {m} #var {n} : s.X   ↦  нет решений */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  ((('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((Var 's' e.Index)))
+  e.ClashesEnd (e.Assigns)
+    = /* нет решений */;
+
   /* {m} (E) {n} : (P)   ↦  {m} E {n} : P */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   ((('{'s.M'}') (Brackets e.LBody) ('{'s.N'}')) ':' ((Brackets e.RBody)))
@@ -534,11 +564,23 @@ Solve-Clashes {
     , <IsSVarSubset t.Sym> : True
     = /* нет решений */;
 
+  /* {m} #var {n} : (P)  ↦  нет решений */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  ((('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((Brackets e._)))
+  e.ClashesEnd (e.Assigns)
+    = /* нет решений */;
+
   /* {m} Sym {n} : [P]  ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   ((('{'s.M'}') t.Sym ('{'s.N'}')) ':' ((ADT-Brackets e._)))
   e.ClashesEnd (e.Assigns)
     , <IsSVarSubset t.Sym> : True
+    = /* нет решений */;
+
+  /* {m} #var {n} : [X P]  ↦  нет решений */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  ((('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((ADT-Brackets e._)))
+  e.ClashesEnd (e.Assigns)
     = /* нет решений */;
 
   /* {m} t.X {n} : (P)  ↦  t.X → (e.NEW) */
@@ -625,6 +667,12 @@ Solve-Clashes {
   /*  {m} X {n}  :  Y    ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   ((('{'s.M'}') (Symbol e._) ('{'s.N'}')) ':' ((Symbol e._)))
+  e.ClashesEnd (e.Assigns)
+    = /* нет решений */;
+
+  /*  {m} #var {n}  :  Y    ↦  нет решений */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  ((('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((Symbol e._)))
   e.ClashesEnd (e.Assigns)
     = /* нет решений */;
 
@@ -907,7 +955,7 @@ IsVarInExpr {
 SplitLeftPart {
   /* Если E начинается на терм, то точка разбиения добавляется в начало */
   ('{'s.BeginCoord'}') t.T e.Rest
-    , <IsTerm t.T> : True
+    , <IsTermOrScreenVar t.T> : True
     = <SplitLeftPart-Aux
         (('{'s.BeginCoord'}'))
         (t.T e.Rest)
@@ -924,11 +972,16 @@ SplitLeftPart {
   /* пусто */ = ((('sp')));
 }
 
+IsTermOrScreenVar {
+  (ScrVar e._) = True;
+  t.Other = <IsTerm t.Other>;
+}
+
 SplitLeftPart-Aux {
   /* Точки разбиения добавляются между двумя смежными термами */
   (e.Begin) (t.T1 t.T2 e.Rest) (e.Parts)
-    , <IsTerm t.T1> : True
-    , <IsTerm t.T2> : True
+    , <IsTermOrScreenVar t.T1> : True
+    , <IsTermOrScreenVar t.T2> : True
     = <SplitLeftPart-Aux
         (<gen_e__ e.Begin t.T1>)
         (t.T2 e.Rest)
@@ -937,8 +990,8 @@ SplitLeftPart-Aux {
 
   /* Точки разбиения добавляются между двумя смежными термами */
   (e.Begin) (t.T1 ('{'s.Coord'}') t.T2 e.Rest) (e.Parts)
-    , <IsTerm t.T1> : True
-    , <IsTerm t.T2> : True
+    , <IsTermOrScreenVar t.T1> : True
+    , <IsTermOrScreenVar t.T2> : True
     = <SplitLeftPart-Aux
         (<gen_e__ e.Begin t.T1 ('{'s.Coord'}')>)
         (t.T2 e.Rest)
@@ -947,11 +1000,11 @@ SplitLeftPart-Aux {
 
   /* Если E заканчивается на терм, то точка разбиения добавляется в конец */
   (e.Begin) (t.T ('{'s.Coord'}')) (e.Parts)
-    , <IsTerm t.T> : True
+    , <IsTermOrScreenVar t.T> : True
     = (e.Parts (e.Begin t.T ('sp' ('{'s.Coord'}'))));
 
   (e.Begin) (t.T e.Rest) (e.Parts)
-    , <IsTerm t.T> : True
+    , <IsTermOrScreenVar t.T> : True
     = <SplitLeftPart-Aux
         (<gen_e__ e.Begin t.T>)
         (e.Rest)
@@ -1014,8 +1067,8 @@ SplitSolve {
     ':' (t.eX e.P t.eY)
   )
   e.ClashesEnd (e.Assigns)
-    , <IsTerm t.T2> : True
-    , <IsTerm t.T3> : True
+    , <IsTermOrScreenVar t.T2> : True
+    , <IsTermOrScreenVar t.T3> : True
     , t.eX : (Var 'e' e.XIndex)
     , t.eY : (Var 'e' e.YIndex)
     = <Solve-Clashes
@@ -1039,8 +1092,8 @@ SplitSolve {
   )
   e.ClashesEnd (e.Assigns)
     , <HasTopLevelCoordinateLabels e.E2> : False
-    , <IsTerm t.T3> : True
-    , <IsTerm t.T4> : True
+    , <IsTermOrScreenVar t.T3> : True
+    , <IsTermOrScreenVar t.T4> : True
     , <HasTopLevelCoordinateLabels e.E5> : False
     , t.eX : (Var 'e' e.XIndex)
     , t.eY : (Var 'e' e.YIndex)
@@ -1523,6 +1576,48 @@ Solve-SymmClashes-Aux {
           (e.Assigns)
         >
       >;
+
+  /* {a} #var E1 {b} = {c} #var E2 {d}  ↦  {a} E1 {b} = {c} E2 {d} */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (('{'s.A'}') t.Var e.E1 ('{'s.B'}') '=' ('{'s.C'}') t.Var e.E2 ('{'s.D'}'))
+  e.ClashesEnd (e.Assigns)
+    , t.Var : (ScrVar e.Var)
+    = <Solve-SymmClashes
+        (e.UsedVars) (e.Contrs) e.ClashesStart
+        <SimplifyCoordinates-SymmClash
+          (('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
+        >
+        e.ClashesEnd (e.Assigns)
+      >;
+
+  /* {a} #var1 E1 {b} = {c} #var2 E2 {d}  ↦  решений нет */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (('{'s.A'}') t.Var1 e.E1 ('{'s.B'}') '=' ('{'s.C'}') t.Var2 e.E2 ('{'s.D'}'))
+  e.ClashesEnd (e.Assigns)
+    , t.Var1 : (ScrVar e._)
+    , t.Var2 : (ScrVar e._)
+    = /* решений нет */;
+
+  /* {a} E1 #var {b} = {c} E2 #var {d}  ↦  {a} E1 {b} = {c} E2 {d} */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (('{'s.A'}') e.E1 t.Var ('{'s.B'}') '=' ('{'s.C'}') e.E2 t.Var ('{'s.D'}'))
+  e.ClashesEnd (e.Assigns)
+    , t.Var : (ScrVar e.Var)
+    = <Solve-SymmClashes
+        (e.UsedVars) (e.Contrs) e.ClashesStart
+        <SimplifyCoordinates-SymmClash
+          (('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
+        >
+        e.ClashesEnd (e.Assigns)
+      >;
+
+  /* {a} E1 #var1 {b} = {c} E2 #var2 {d}  ↦  решений нет*/
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (('{'s.A'}') e.E1 t.Var1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 t.Var2 ('{'s.D'}'))
+  e.ClashesEnd (e.Assigns)
+    , t.Var1 : (ScrVar e._)
+    , t.Var2 : (ScrVar e._)
+    = /* решений нет */;
 
   /* ε = {m} e.X E {n}  ↦  e.X → ε, ε = {m} E {n} */
   (e.UsedVars) (e.Contrs) e.ClashesStart
@@ -2082,6 +2177,7 @@ Eq {
 IsSVarSubset {
   (Symbol s.Type e.Info) = True;
   (Var 's' e.Tindex) = True;
+  (ScrVar 's' e.Tindex) = True;
   (Closure e.Body) = True;
   (ClosureBrackets e.Context) = True;
 
@@ -2092,6 +2188,7 @@ IsSVarSubset {
 
 IsTerm {
   (Var 'e' e.Index) = False;
+  (ScrVar 'e' e.Index) = False;
 
   /* Рассматриваем для оптимизаций встраивания, прогонки и специализации */
   (CallBrackets e.Nested) = False;

@@ -1,5 +1,8 @@
 $INCLUDE "LibraryEx";
 
+*$FROM GenericMatch
+$EXTERN GenericMatch;
+
 *$FROM TreeUtils
 $EXTERN ExtractVariables, NewVarName;
 
@@ -20,6 +23,29 @@ $EXTERN ExtractVariables, NewVarName;
 */
 
 $ENTRY ObjectMatch {
+  (e.Pattern) (e.LPattern)
+    = <ScreenVars e.Pattern> : e.Pattern^
+    = <GenericMatch (e.Pattern) (e.LPattern)>
+}
+
+ScreenVars {
+  e.Expression
+    = <Map
+        {
+          (Var s.Mode e.Index) = (ScrVar s.Mode e.Index);
+
+          (Brackets e.Nested) = (Brackets <ScreenVars e.Nested>);
+
+          (ADT-Brackets (e.Name) e.Nested)
+            = (ADT-Brackets (e.Name) <ScreenVars e.Nested>);
+
+          t.Other = t.Other;
+        }
+        e.Expression
+      >;
+}
+
+$ENTRY ObjectMatch_ {
   (e.Pattern) (e.LPattern)
     = <Solve
         (<ExtractVariables ((e.Pattern e.LPattern) (/* пусто */))>)
