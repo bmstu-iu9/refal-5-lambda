@@ -453,8 +453,6 @@ PatternLanguagesCheck {
   (e.Pattern-L) (e.Pattern-R)
     , <FlattenPattern e.Pattern-R> : e.FlattenedPattern-R
     , <IsPatternLinear e.FlattenedPattern-R> : True
-    = <ReplaceADTBrackets e.Pattern-R> : e.Pattern-R^
-    = <ReplaceADTBrackets e.Pattern-L> : e.Pattern-L^
     = <Normalize e.Pattern-R> : e.Pattern-R^
     = <Generalize (e.Pattern-L) (e.Pattern-R)> : e.Generalized
     = <RenameVars () e.Generalized> : e.Generalized^
@@ -466,25 +464,6 @@ PatternLanguagesCheck {
 
   (e.Pattern-L) (e.Pattern-R)
     = False;
-}
-
-/*
-  Заменяет АДТ-скобки
-*/
-ReplaceADTBrackets {
-  e.Pattern
-    = <Map
-        {
-          (ADT-Brackets (e.Name) e.Inner)
-            = (Brackets (Symbol Identifier e.Name) (Brackets <ReplaceADTBrackets e.Inner>));
-
-          (Brackets e.Inner)
-            = (Brackets (Symbol Char '*') <ReplaceADTBrackets e.Inner>);
-
-          t.Other = t.Other;
-        }
-        e.Pattern
-      >;
 }
 
 
@@ -618,6 +597,11 @@ RenameVars {
             s.Count (Brackets e.Other)
               = <Inc s.Count>
                 (Brackets <RenameVars (e.Prefix 'p' <Symb s.Count>) e.Other>);
+            s.Count (ADT-Brackets (e.Name) e.Other)
+              = <Inc s.Count>
+                (ADT-Brackets (e.Name)
+                  <RenameVars (e.Prefix 'p' <Symb s.Count>) e.Other>
+                );
             s.Count t.Other
               = s.Count t.Other;
           }
@@ -661,6 +645,8 @@ DeleteMarkup {
           (Float t.Item) = t.Item;
           (Anchor t.Item) = t.Item;
           (MarkedBrackets e.Brackets) = (Brackets <DeleteMarkup e.Brackets>);
+          (MarkedADTBrackets (e.Name) e.Brackets)
+            = (ADT-Brackets (e.Name) <DeleteMarkup e.Brackets>);
 
           t.Item = t.Item;
         }
@@ -728,6 +714,15 @@ InsertFakeEVars {
         e.Suffix
       >;
 
+  e.Prefix
+  (ADT-Brackets (e.Name) e.Brackets)
+  e.Suffix
+    = <InsertFakeEVars
+        e.Prefix
+        (MarkedADTBrackets (e.Name) <InsertFakeEVars e.Brackets>)
+        e.Suffix
+      >;
+
    e.Other = e.Other;
 }
 
@@ -757,6 +752,15 @@ MarkupNeighbourHelper {
         (
           e.Prefix
           (Brackets <MarkupNeighbourHelper () (e.Brackets)>)
+        )
+        (e.Suffix)
+      >;
+
+  (e.Prefix) ((ADT-Brackets (e.Name) e.Brackets) e.Suffix)
+    = <MarkupNeighbourHelper
+        (
+          e.Prefix
+          (ADT-Brackets (e.Name) <MarkupNeighbourHelper () (e.Brackets)>)
         )
         (e.Suffix)
       >;
@@ -844,6 +848,11 @@ MarkupMultipleAnchorTVars {
 
           (Brackets e.Brackets)
             = (Brackets
+                <MarkupMultipleAnchorTVars (e.Brackets) t.Multiplicity>
+              );
+
+          (ADT-Brackets (e.Name) e.Brackets)
+            = (ADT-Brackets (e.Name)
                 <MarkupMultipleAnchorTVars (e.Brackets) t.Multiplicity>
               );
 
@@ -981,6 +990,8 @@ FlattenPattern {
         {
           (Brackets e.Inner)
             = <FlattenPattern e.Inner>;
+
+          (ADT-Brackets (e.Name) e.Inner) = <FlattenPattern e.Inner>;
 
           t.Other = t.Other;
         }
