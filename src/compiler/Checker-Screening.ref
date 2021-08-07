@@ -3,9 +3,6 @@ $INCLUDE "LibraryEx";
 *$FROM GenericMatch
 $EXTERN GenericMatch;
 
-*$FROM ObjectMatch
-$EXTERN ObjectMatch;
-
 *$FROM GlobalGen
 $EXTERN GlobalGen;
 
@@ -522,6 +519,28 @@ CheckEveryMatch {
   /* пусто */ (e.Assigns) = True (e.Assigns);
 }
 
+ObjectMatch {
+  (e.Pattern) (e.LPattern)
+    = <ScreenVars e.Pattern> : e.Pattern^
+    = <GenericMatch (e.Pattern) (e.LPattern)>
+}
+
+ScreenVars {
+  e.Expression
+    = <Map
+        {
+          (Var s.Mode e.Index) = (ScrVar s.Mode e.Index);
+
+          (Brackets e.Nested) = (Brackets <ScreenVars e.Nested>);
+
+          (ADT-Brackets (e.Name) e.Nested)
+            = (ADT-Brackets (e.Name) <ScreenVars e.Nested>);
+
+          t.Other = t.Other;
+        }
+        e.Expression
+      >;
+}
 
 /*
   <AppendAssigns (t.Assign*) t.Assign*>
