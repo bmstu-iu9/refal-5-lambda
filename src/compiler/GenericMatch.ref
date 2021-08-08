@@ -1414,163 +1414,26 @@ Solve-SymmClashes {
       >;
 }
 
+MinMode {
+  e._ ('s' e.Index) e._ = 's' e.Index;
+  e._ ('t' e.Index) e._ = 't' e.Index;
+  ('e' e.Index) ('e' e._) = 'e' e.Index;
+}
+
 Solve-SymmClashes-Aux {
-  /* {a} e.X {b} = {c} e.Y {d}  ↦  e.X → e.NEW, e.Y → e.NEW */
+  /* {a} u.X {b} = {c} v.Y {d}  ↦  u.X → w.NEW, v.Y → w.NEW, w = min(u,v) */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.eX ('{'s.B'}') '=' ('{'s.C'}') t.eY ('{'s.D'}'))
+  (('{'s.A'}') t.uX ('{'s.B'}') '=' ('{'s.C'}') t.vY ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
-    , t.eX : (Var 'e' e.XIndex)
-    , t.eY : (Var 'e' e.YIndex)
-    = <NewVarName (e.UsedVars) 'e' e.XIndex> : (e.UsedVars^) 'e' e.New
-    = (Var 'e' e.New) : t.eNew
+    , t.uX : (Var s.uMode e.XIndex)
+    , t.vY : (Var s.vMode e.YIndex)
+    = <MinMode (s.uMode e.XIndex) (s.vMode e.YIndex)> : s.wMode e.wIndex
+    = <NewVarName (e.UsedVars) s.wMode e.wIndex> : (e.UsedVars^) e.wNew
+    = (Var e.wNew) : t.wNew
     = <Solve-SymmClashes
         (e.UsedVars)
         <AddContractions-Spec-Symm
-          ((t.eX ':' t.eNew) (t.eY ':' t.eNew))
-          (e.Contrs)
-          e.ClashesStart e.ClashesEnd
-          (e.Assigns)
-        >
-      >;
-
-  /* {a} e.X {b} = {c} t.Y {d}  ↦  e.X → t.NEW, t.Y → t.NEW */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.eX ('{'s.B'}') '=' ('{'s.C'}') t.tY ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.eX : (Var 'e' e.XIndex)
-    , t.tY : (Var 't' e.YIndex)
-    = <NewVarName (e.UsedVars) 't' e.YIndex> : (e.UsedVars^) 't' e.New
-    = (Var 't' e.New) : t.tNew
-    = <Solve-SymmClashes
-        (e.UsedVars)
-        <AddContractions-Spec-Symm
-          ((t.eX ':' t.tNew) (t.tY ':' t.tNew))
-          (e.Contrs)
-          e.ClashesStart e.ClashesEnd
-          (e.Assigns)
-        >
-      >;
-
-  /* {a} t.Y {b} = {c} e.X {d}  ↦  t.Y → t.NEW, e.X → t.NEW */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.tY ('{'s.B'}') '=' ('{'s.C'}') t.eX ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.eX : (Var 'e' e.XIndex)
-    , t.tY : (Var 't' e.YIndex)
-    = <NewVarName (e.UsedVars) 't' e.YIndex> : (e.UsedVars^) 't' e.New
-    = (Var 't' e.New) : t.tNew
-    = <Solve-SymmClashes
-        (e.UsedVars)
-        <AddContractions-Spec-Symm
-          ((t.tY ':' t.tNew) (t.eX ':' t.tNew))
-          (e.Contrs)
-          e.ClashesStart e.ClashesEnd
-          (e.Assigns)
-        >
-      >;
-
-  /* {a} e.X {b} = {c} s.Y {d}  ↦  e.X → s.NEW, s.Y → s.NEW */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.eX ('{'s.B'}') '=' ('{'s.C'}') t.sY ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.eX : (Var 'e' e.XIndex)
-    , t.sY : (Var 's' e.YIndex)
-    = <NewVarName (e.UsedVars) 's' e.YIndex> : (e.UsedVars^) 's' e.New
-    = (Var 's' e.New) : t.sNew
-    = <Solve-SymmClashes
-        (e.UsedVars)
-        <AddContractions-Spec-Symm
-          ((t.eX ':' t.sNew) (t.sY ':' t.sNew))
-          (e.Contrs)
-          e.ClashesStart e.ClashesEnd
-          (e.Assigns)
-        >
-      >;
-
-  /* {a} s.Y {b} = {c} e.X {d}  ↦  s.Y → s.NEW, e.X → s.NEW */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.sY ('{'s.B'}') '=' ('{'s.C'}') t.eX ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.eX : (Var 'e' e.XIndex)
-    , t.sY : (Var 's' e.YIndex)
-    = <NewVarName (e.UsedVars) 's' e.YIndex> : (e.UsedVars^) 's' e.New
-    = (Var 's' e.New) : t.sNew
-    = <Solve-SymmClashes
-        (e.UsedVars)
-        <AddContractions-Spec-Symm
-          ((t.sY ':' t.sNew) (t.eX ':' t.sNew))
-          (e.Contrs)
-          e.ClashesStart e.ClashesEnd
-          (e.Assigns)
-        >
-      >;
-
-  /* {a} t.X {b} = {c} t.Y {d}  ↦  t.X → t.NEW, t.Y → t.NEW */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.tX ('{'s.B'}') '=' ('{'s.C'}') t.tY ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.tX : (Var 't' e.XIndex)
-    , t.tY : (Var 't' e.YIndex)
-    = <NewVarName (e.UsedVars) 't' e.XIndex> : (e.UsedVars^) 't' e.New
-    = (Var 't' e.New) : t.tNew
-    = <Solve-SymmClashes
-        (e.UsedVars)
-        <AddContractions-Spec-Symm
-          ((t.tX ':' t.tNew) (t.tY ':' t.tNew))
-          (e.Contrs)
-          e.ClashesStart e.ClashesEnd
-          (e.Assigns)
-        >
-      >;
-
-  /* {a} t.X {b} = {c} s.Y {d}  ↦  t.X → s.NEW, s.Y → s.NEW */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.tX ('{'s.B'}') '=' ('{'s.C'}') t.sY ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.tX : (Var 't' e.XIndex)
-    , t.sY : (Var 's' e.YIndex)
-    = <NewVarName (e.UsedVars) 's' e.YIndex> : (e.UsedVars^) 's' e.New
-    = (Var 's' e.New) : t.sNew
-    = <Solve-SymmClashes
-        (e.UsedVars)
-        <AddContractions-Spec-Symm
-          ((t.tX ':' t.sNew) (t.sY ':' t.sNew))
-          (e.Contrs)
-          e.ClashesStart e.ClashesEnd
-          (e.Assigns)
-        >
-      >;
-
-  /* {a} s.Y {b} = {c} t.X {d}  ↦  s.Y → s.NEW, t.X → s.NEW */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.sY ('{'s.B'}') '=' ('{'s.C'}') t.tX ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.tX : (Var 't' e.XIndex)
-    , t.sY : (Var 's' e.YIndex)
-    = <NewVarName (e.UsedVars) 's' e.YIndex> : (e.UsedVars^) 's' e.New
-    = (Var 's' e.New) : t.sNew
-    = <Solve-SymmClashes
-        (e.UsedVars)
-        <AddContractions-Spec-Symm
-          ((t.sY ':' t.sNew) (t.tX ':' t.sNew))
-          (e.Contrs)
-          e.ClashesStart e.ClashesEnd
-          (e.Assigns)
-        >
-      >;
-
-  /* {a} s.X {b} = {c} s.Y {d}  ↦  s.X → s.NEW, s.Y → s.NEW */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.sX ('{'s.B'}') '=' ('{'s.C'}') t.sY ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.sX : (Var 's' e.XIndex)
-    , t.sY : (Var 's' e.YIndex)
-    = <NewVarName (e.UsedVars) 's' e.XIndex> : (e.UsedVars^) 's' e.New
-    = (Var 's' e.New) : t.sNew
-    = <Solve-SymmClashes
-        (e.UsedVars)
-        <AddContractions-Spec-Symm
-          ((t.sX ':' t.sNew) (t.sY ':' t.sNew))
+          ((t.uX ':' t.wNew) (t.vY ':' t.wNew))
           (e.Contrs)
           e.ClashesStart e.ClashesEnd
           (e.Assigns)
