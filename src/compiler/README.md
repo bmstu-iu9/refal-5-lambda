@@ -320,7 +320,6 @@
 
     t.ReducedProgramElement ::=
         (Function s.ScopeClass (e.Name) e.ReducedBody)
-      | (Swap s.ScopeClass e.Name)
       | (Declaration s.ScopeClass e.Name)
       | (Ident e.Name)
       | (NativeBlock t.SrcPos e.Code)
@@ -330,6 +329,7 @@
         Sentences t.ReducedSentence*
       | NativeBody t.SrcPos e.Code
       | Metatable e.ReducedMetatable
+      | Swap
     t.ReducedSentence ::=
         ((e.ReducedPattern) t.ReducedCondition* (e.ReducedResult))
     t.ReducedCondition ::=

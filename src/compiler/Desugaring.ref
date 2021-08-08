@@ -14,6 +14,7 @@ $ENTRY Desugar {
       e.AST
       <Pipe
         &Pass-RemovePos
+        &Pass-UnfoldEnumsAndSwaps
         &Pass-AttachEntries
         &Pass-RemoveRedundantDriveInlineIntrinsic
         &Pass-EnumerateVariables
@@ -28,7 +29,6 @@ $ENTRY Desugar {
           }
         >
         &Pass-CleanupRedudandExterns
-        &Pass-UnfoldEnums
       >
     >;
 }
@@ -135,6 +135,22 @@ $ENTRY RemovePos-Expr {
     >;
 }
 
+Pass-UnfoldEnumsAndSwaps {
+  e.AST
+    = <Map
+        {
+          (Enum s.ScopeClass e.Name)
+            = (Function s.ScopeClass (e.Name) Sentences /* пусто */);
+
+          (Swap s.ScopeClass e.Name)
+            = (Function s.ScopeClass (e.Name) Swap);
+
+          t.Other = t.Other;
+        }
+        e.AST
+      >;
+}
+
 Pass-AttachEntries {
   e.AST
     = <MapAccum
@@ -152,14 +168,6 @@ Pass-AttachEntries {
           (Function s.ScopeClass (e.Name) e.Body)
             , e.Entries : e._ (e.Name) e._
             = (Function GN-Entry (e.Name) e.Body);
-
-          (Enum s.ScopeClass e.Name)
-            , e.Entries : e._ (e.Name) e._
-            = (Enum GN-Entry e.Name);
-
-          (Swap s.ScopeClass e.Name)
-            , e.Entries : e._ (e.Name) e._
-            = (Swap GN-Entry e.Name);
 
           (Declaration s.ScopeClass e.Name)
             , e.Entries : e._ (e.Name) e._
@@ -273,6 +281,7 @@ EnumerateVars-Body {
 
   (e.ScopeVars) NativeBody t.SrcPos e.Code = NativeBody t.SrcPos e.Code;
   (e.ScopeVars) Metatable e.Metatable = Metatable e.Metatable;
+  (e.ScopeVars) Swap = Swap;
 }
 
 EnumerateVars-Blocks {
@@ -428,6 +437,7 @@ NameNestedBody {
 
   (e.MainName) NativeBody t.SrcPos e.Code = NativeBody t.SrcPos e.Code;
   (e.MainName) Metatable e.Metatable = Metatable e.Metatable;
+  (e.MainName) Swap = Swap;
 }
 
 NameNestedBlocks {
@@ -531,6 +541,7 @@ RemoveAssigns-Body {
   Sentences e.Sentences = Sentences <Map &RemoveAssigns-Sentence e.Sentences>;
   NativeBody t.SrcPos e.Code = NativeBody t.SrcPos e.Code;
   Metatable e.Metatable = Metatable e.Metatable;
+  Swap = Swap;
 }
 
 RemoveAssigns-Sentence {
@@ -655,6 +666,10 @@ ExtractNestedRec {
   s.MarkupContext (e.ScopeVars) Metatable e.Metatable
     = (/* нет заимстовованных переменных */) (/* нет вложенных функций */)
       Metatable e.Metatable;
+
+  s.MarkupContext (e.ScopeVars) Swap
+    = (/* нет заимстовованных переменных */) (/* нет вложенных функций */)
+      Swap;
 }
 
 ExtractNested-Sentence {
@@ -871,12 +886,6 @@ Pass-CleanupRedudandExterns {
            = (e.DefinedFunctions (e.Name))
              (Function s.ScopeClass (e.Name) e.Body);
 
-         (e.DefinedFunctions) (Enum s.ScopeClass e.Name)
-           = (e.DefinedFunctions (e.Name)) (Enum s.ScopeClass e.Name);
-
-         (e.DefinedFunctions) (Swap s.ScopeClass e.Name)
-           = (e.DefinedFunctions (e.Name)) (Swap s.ScopeClass e.Name);
-
          (e.DefinedFunctions) (Inline e.Name)
            = (e.DefinedFunctions) (Inline e.Name);
 
@@ -932,17 +941,4 @@ RemoveRedundantDeclarations {
       /* пусто */;
 
   (e.DefinedFunctions) t.OtherItem = (e.DefinedFunctions) t.OtherItem;
-}
-
-Pass-UnfoldEnums {
-  e.AST
-    = <Map
-        {
-          (Enum s.ScopeClass e.Name) =
-            (Function s.ScopeClass (e.Name) Sentences /* пусто */);
-
-          t.Other = t.Other;
-        }
-        e.AST
-      >;
 }

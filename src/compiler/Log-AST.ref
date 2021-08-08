@@ -28,9 +28,6 @@ Element {
   (ColdFunction s.ColdBy s.Scope (e.Name) e.Body)
     = <ColdFunction s.ColdBy (e.Name) s.Scope e.Body>;
 
-  (Swap GN-Entry e.Name) = ('$ESWAP ' <DisplayName e.Name> ';');
-  (Swap GN-Local e.Name) = ('$SWAP ' <DisplayName e.Name> ';');
-
   (Declaration GN-Entry e.Name) = ('$EXTERN ' <DisplayName e.Name> ';');
   (Declaration GN-Local e.Name) = ('$FORWARD ' <DisplayName e.Name> ';');
 
@@ -111,6 +108,9 @@ Function-Aux {
       >
       ('}')
       ();
+
+  (e.Name) GN-Entry Swap = ('$ESWAP ' <DisplayName e.Name> ';');
+  (e.Name) GN-Local Swap = ('$SWAP ' <DisplayName e.Name> ';');
 };
 
 Entry {
