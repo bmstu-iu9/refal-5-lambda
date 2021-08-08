@@ -10,7 +10,7 @@ $EXTERN DisplayName;
 $EXTERN EscapeString;
 
 *$FROM Log-AST
-$EXTERN Log-TextFromAST, Log-FormatIdentFuncMapTableLines, Log-EntryList;
+$EXTERN Log-TextFromAST, Log-EntryList;
 
 
 /**

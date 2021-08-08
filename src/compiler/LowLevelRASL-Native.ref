@@ -48,46 +48,31 @@ SetCookies {
   e.Entries s.Hash1 s.Hash2 (UnitName e.SrcName) = /* пропускаем */;
 
   e.Entries s.Hash1 s.Hash2
-  (Function-ToRASL (e.Name) e.Commands) =
-    /* пропускаем */;
+  (Function-ToRASL (e.Name) e.Commands)
+    = /* пропускаем */;
 
   e.Entries s.Hash1 s.Hash2
-  (Function-ToNative (e.Name) e.Commands) =
-    (Function-ToNative
-      (<MingleName (e.Entries) e.Name s.Hash1 s.Hash2>)
-      e.Commands
-    );
+  (Function-ToNative (e.Name) e.Commands)
+    = (Function-ToNative
+        (<MingleName (e.Entries) e.Name s.Hash1 s.Hash2>)
+        e.Commands
+      );
 
   e.Entries s.Hash1 s.Hash2
-  (CmdNativeFunction (e.Name) t.SrcPos e.Code) =
-    (CmdNativeFunction
-      (<MingleName (e.Entries) e.Name s.Hash1 s.Hash2>)
-      t.SrcPos e.Code
-    );
+  (CmdNativeFunction (e.Name) t.SrcPos e.Code)
+    = (CmdNativeFunction
+        (<MingleName (e.Entries) e.Name s.Hash1 s.Hash2>)
+        t.SrcPos e.Code
+      );
 
-  e.Entries s.Hash1 s.Hash2
-  (CmdMetatable (e.Name) e.Metatable) =
-    /* пропускаем */;
-
-  e.Entries s.Hash1 s.Hash2 (CmdEnum e.Name) =
-    /* пропускаем */;
-
-  e.Entries s.Hash1 s.Hash2 (CmdSwap e.Name) =
-    /* пропускаем */;
-
-  e.Entries s.Hash1 s.Hash2
-  (CmdConditionFunc-ToRASL e.Name) =
-    /* пропускаем */;
-
-  e.Entries s.Hash1 s.Hash2
-  (CmdConditionFunc-ToNative e.Name) =
-    /* пропускаем */;
-
-  e.Entries s.Hash1 s.Hash2 (CmdDeclaration e.Name) =
-    /* пропускаем */;
-
-  e.Entries s.Hash1 s.Hash2 (CmdEmitNativeCode t.SrcPos e.Code) =
-    (CmdEmitNativeCode t.SrcPos e.Code);
+  e.Entries s.Hash1 s.Hash2 (CmdMetatable (e.Name) e.Metatable) = /* пропускаем */;
+  e.Entries s.Hash1 s.Hash2 (CmdEnum e.Name) = /* пропускаем */;
+  e.Entries s.Hash1 s.Hash2 (CmdSwap e.Name) = /* пропускаем */;
+  e.Entries s.Hash1 s.Hash2 (CmdConditionFunc-ToRASL e.Name) = /* пропускаем */;
+  e.Entries s.Hash1 s.Hash2 (CmdConditionFunc-ToNative e.Name) = /* пропускаем */;
+  e.Entries s.Hash1 s.Hash2 (CmdDeclaration e.Name) = /* пропускаем */;
+  e.Entries s.Hash1 s.Hash2 (CmdEmitNativeCode t.SrcPos e.Code)
+    = (CmdEmitNativeCode t.SrcPos e.Code);
 }
 
 MingleName {

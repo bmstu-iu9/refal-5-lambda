@@ -54,13 +54,12 @@ $ENTRY HighLevelRASL {
 
           (Function (e.Name) Swap) = (CmdSwap e.Name);
 
-          (Declaration s.ScopeClass e.Name) =
-            (CmdDeclaration s.ScopeClass e.Name);
+          (Declaration s.ScopeClass e.Name)
+            = (CmdDeclaration s.ScopeClass e.Name);
 
           (Ident e.Name) = (CmdDefineIdent e.Name);
 
-          (NativeBlock t.SrcPos e.Code) =
-            (CmdEmitNativeCode t.SrcPos e.Code);
+          (NativeBlock t.SrcPos e.Code) = (CmdEmitNativeCode t.SrcPos e.Code);
         }
         e.ProgramElements
       >;

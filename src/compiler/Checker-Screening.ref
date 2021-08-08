@@ -4,8 +4,8 @@ $INCLUDE "LibraryEx";
 $EXTERN GenericMatch;
 
 *$FROM Desugaring
-$EXTERN CreateContext, RemovePos-Expr, ExtractVariables-Expr,
-        Pass-EnumerateVariables, Pass-RemovePos, Pass-ExtractEntries;
+$EXTERN Pass-RemovePos, Pass-EnumerateVariables, Pass-ExtractEntries,
+  ExtractVariables-Expr, CreateContext;
 
 /*
   <CheckScreening (t.WarningId*) (e.AST)
@@ -14,15 +14,15 @@ $EXTERN CreateContext, RemovePos-Expr, ExtractVariables-Expr,
   CheckScreening осуществляет попарную проверку экранирования образцов.
 */
 $ENTRY CheckScreening {
- (e._ screening e._) (e.AST)
-   = <FindFunctionsPosInAST e.AST> : (e.FunctionsPos) e.AST^
-   = <Pass-RemovePos e.AST> : e.AST^
-   = <Pass-ExtractEntries e.AST> : e.AST-B (Entries e.Entries) e.AST-E
-   = <Pass-EnumerateVariables e.AST-B e.AST-E> : e.AST^
-   = <Zip (e.AST) (e.FunctionsPos)> : e.FunctionsWithPos
-   = <Map &CheckFunction e.FunctionsWithPos>;
+  (e._ screening e._) (e.AST)
+    = <FindFunctionsPosInAST e.AST> : (e.FunctionsPos) e.AST^
+    = <Pass-RemovePos e.AST> : e.AST^
+    = <Pass-ExtractEntries e.AST> : e.AST-B (Entries e.Entries) e.AST-E
+    = <Pass-EnumerateVariables e.AST-B e.AST-E> : e.AST^
+    = <Zip (e.AST) (e.FunctionsPos)> : e.FunctionsWithPos
+    = <Map &CheckFunction e.FunctionsWithPos>;
 
- (e._) (e.AST) = /* пусто */
+  (e._) (e.AST) = /* пусто */
 }
 
 /*
@@ -39,7 +39,7 @@ FindFunctionsPosInAST {
           (e.Positions)
           (Function t.SrcPos s.ScopeClass (e.Name) Sentences e.Sentences)
             = (e.Positions t.SrcPos)
-             (Function t.SrcPos s.ScopeClass (e.Name) Sentences e.Sentences);
+              (Function t.SrcPos s.ScopeClass (e.Name) Sentences e.Sentences);
 
           (e.Positions) t.Other = (e.Positions) /* пусто */
         }
@@ -575,7 +575,7 @@ InsertFakeEVars {
         e.Suffix
       >;
 
-   e.Other = e.Other;
+  e.Other = e.Other;
 }
 
 /*

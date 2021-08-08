@@ -84,13 +84,11 @@ CalcDigest-Aux {
     = (<HashFuncName s.Hash1 s.Hash2 e.Name 'R'>)
       (Function (e.Name) e.Commands);
 
-  (s.Hash1 s.Hash2)
-  (CmdNativeFunction (e.Name) t.SrcPos e.Code)
+  (s.Hash1 s.Hash2) (CmdNativeFunction (e.Name) t.SrcPos e.Code)
     = (<HashFuncName s.Hash1 s.Hash2 e.Name 'N'>)
       (CmdNativeFunction (e.Name) t.SrcPos e.Code);
 
-  (s.Hash1 s.Hash2)
-  (CmdMetatable (e.Name) e.Metatable)
+  (s.Hash1 s.Hash2) (CmdMetatable (e.Name) e.Metatable)
     = (<HashFuncName s.Hash1 s.Hash2 e.Name 'T'>)
       (CmdMetatable (e.Name) e.Metatable);
 
@@ -106,20 +104,20 @@ CalcDigest-Aux {
     = (<HashFuncName s.Hash1 s.Hash2 e.Name 'C'>)
       (CmdConditionFunc e.Name);
 
-  (s.Hash1 s.Hash2) (CmdDeclaration s.ScopeClass e.Name) =
-    (<HashFuncName s.Hash1 s.Hash2 e.Name 'D'>)
-    (CmdDeclaration s.ScopeClass e.Name);
+  (s.Hash1 s.Hash2) (CmdDeclaration s.ScopeClass e.Name)
+    = (<HashFuncName s.Hash1 s.Hash2 e.Name 'D'>)
+      (CmdDeclaration s.ScopeClass e.Name);
 
-  (s.Hash1 s.Hash2) (CmdDefineIdent e.Name) =
-    (s.Hash1 s.Hash2) (CmdDefineIdent e.Name);
+  (s.Hash1 s.Hash2) (CmdDefineIdent e.Name)
+    = (s.Hash1 s.Hash2) (CmdDefineIdent e.Name);
 
-  (s.Hash1 s.Hash2) (CmdEmitNativeCode t.SrcPos e.Code) =
-    (s.Hash1 s.Hash2) (CmdEmitNativeCode t.SrcPos e.Code);
+  (s.Hash1 s.Hash2) (CmdEmitNativeCode t.SrcPos e.Code)
+    = (s.Hash1 s.Hash2) (CmdEmitNativeCode t.SrcPos e.Code);
 }
 
 HashFuncName {
   s.Hash1 s.Hash2 e.Name s.Sign
-    = <HashLittle2-Chars s.Hash1 s.Hash2 <DisplayName e.Name> s.Sign ','>;
+    = <HashLittle2-Chars s.Hash1 s.Hash2 <DisplayName e.Name> s.Sign>;
 }
 
 SetScopeIDs {
