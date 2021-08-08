@@ -1453,14 +1453,6 @@ Solve-SymmClashes-Aux {
         e.ClashesEnd (e.Assigns)
       >;
 
-  /* {a} #var1 E1 {b} = {c} #var2 E2 {d}  ↦  решений нет */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.Var1 e.E1 ('{'s.B'}') '=' ('{'s.C'}') t.Var2 e.E2 ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.Var1 : (ScrVar e._)
-    , t.Var2 : (ScrVar e._)
-    = /* решений нет */;
-
   /* {a} E1 #var {b} = {c} E2 #var {d}  ↦  {a} E1 {b} = {c} E2 {d} */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   (('{'s.A'}') e.E1 t.Var ('{'s.B'}') '=' ('{'s.C'}') e.E2 t.Var ('{'s.D'}'))
@@ -1474,12 +1466,28 @@ Solve-SymmClashes-Aux {
         e.ClashesEnd (e.Assigns)
       >;
 
-  /* {a} E1 #var1 {b} = {c} E2 #var2 {d}  ↦  решений нет*/
+  /* {a} #var E1 {b} = {c} E2 {d}  ↦  решений нет */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') e.E1 t.Var1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 t.Var2 ('{'s.D'}'))
+  (('{'s.A'}') (ScrVar e._) e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
-    , t.Var1 : (ScrVar e._)
-    , t.Var2 : (ScrVar e._)
+    = /* решений нет */;
+
+  /* {a} E1 {b} = {c} #var E2 {d}  ↦  решений нет */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') (ScrVar e._) e.E2 ('{'s.D'}'))
+  e.ClashesEnd (e.Assigns)
+    = /* решений нет */;
+
+  /* {a} E1 #var {b} = {c} E2 {d}  ↦  решений нет*/
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (('{'s.A'}') e.E1 (ScrVar e._) ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
+  e.ClashesEnd (e.Assigns)
+    = /* решений нет */;
+
+  /* {a} E1 {b} = {c} E2 #var2 {d}  ↦  решений нет*/
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 (ScrVar e._) ('{'s.D'}'))
+  e.ClashesEnd (e.Assigns)
     = /* решений нет */;
 
   /* ε = {m} e.X E {n}  ↦  e.X → ε, ε = {m} E {n} */
