@@ -4,7 +4,8 @@ $INCLUDE "LibraryEx";
 $EXTERN Pass-UnCondition;
 
 *$FROM TreeUtils
-$EXTERN NewVarName, AddSuffix, CreateContext, CreateSpecPatternForContext;
+$EXTERN NewVarName, AddSuffix, CreateContext, CreateSpecPatternForContext,
+  ExtractVariables-Expr;
 
 
 $ENTRY Desugar {
@@ -23,7 +24,6 @@ $ENTRY Desugar {
           s.ConditionsMode
           {
             Conditions-Native = /* no pass */;
-
             Conditions-Transform = (&Pass-UnCondition s.MarkupContext);
           }
         >
@@ -40,11 +40,9 @@ $ENTRY Pass-RemovePos {
           (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
             = (Function s.ScopeClass (e.Name) <RemovePos-Body e.Body>);
 
-          (Ident t.SrcPos e.Name)
-            = (Ident e.Name);
+          (Ident t.SrcPos e.Name) = (Ident e.Name);
 
-          (NativeBlock t.SrcPos e.Code)
-            = (NativeBlock t.SrcPos e.Code);
+          (NativeBlock t.SrcPos e.Code) = (NativeBlock t.SrcPos e.Code);
 
           (Spec t.SrcPos (e.Name) e.Pattern)
             = (Spec (e.Name) <RemovePos-Expr e.Pattern>);
@@ -428,9 +426,7 @@ NameNestedBody {
         >
       >;
 
-  (e.MainName) NativeBody t.SrcPos e.Code
-    = NativeBody t.SrcPos e.Code;
-
+  (e.MainName) NativeBody t.SrcPos e.Code = NativeBody t.SrcPos e.Code;
   (e.MainName) Metatable e.Metatable = Metatable e.Metatable;
 }
 
@@ -522,7 +518,7 @@ Pass-RemoveBlocksAndAssigns {
         (Function s.ScopeClass (e.Name) e.Body) =
           (Function
             s.ScopeClass (e.Name)
-            <RemoveAssigns-Sentences e.Body>
+            <RemoveAssigns-Body e.Body>
           );
 
         t.OtherProgramElement = t.OtherProgramElement;
@@ -531,24 +527,16 @@ Pass-RemoveBlocksAndAssigns {
     >;
 }
 
-RemoveAssigns-Sentences {
-  Sentences e.Sentences =
-    Sentences
-    <Map
-      &RemoveAssigns-Sentence
-      e.Sentences
-    >;
-
-  NativeBody t.SrcPos e.Code =
-    NativeBody t.SrcPos e.Code;
-
+RemoveAssigns-Body {
+  Sentences e.Sentences = Sentences <Map &RemoveAssigns-Sentence e.Sentences>;
+  NativeBody t.SrcPos e.Code = NativeBody t.SrcPos e.Code;
   Metatable e.Metatable = Metatable e.Metatable;
 }
 
 RemoveAssigns-Sentence {
   /*
     Присваивание есть синтаксический сахар — выражается через блок:
-    … = R : { B }… P …  --->  … = R : { B }… : { P … }
+    … = R : { B }… : P …  --->  … = R : { B }… : { P … }
   */
   (
     (e.Pattern) e.Conditions
@@ -581,15 +569,10 @@ RemoveAssigns-Conditions {
   e.Conditions
     = <Map
         {
-          (Condition
-            (e.ConditionName) (e.Result) (e.Blocks) (e.Pattern)
-          )
+          (Condition (e.ConditionName) (e.Result) (e.Blocks) (e.Pattern))
             = <RemoveAssigns-WindBlocks (e.Result) e.Blocks> : (e.Result^)
-            = (Condition
-                (e.ConditionName)
-                (<RemoveAssigns-Result e.Result>)
-                (e.Pattern)
-              );
+            = <RemoveAssigns-Result e.Result> : e.Result^
+            = (Condition (e.ConditionName) (e.Result) (e.Pattern));
         }
         e.Conditions
       >;
@@ -620,7 +603,7 @@ RemoveAssigns-Result {
             = (CallBrackets <RemoveAssigns-Result e.InBrackets>);
 
           (Closure (e.ClosureName) e.Sentences)
-            = (Closure (e.ClosureName) <RemoveAssigns-Sentences e.Sentences>);
+            = (Closure (e.ClosureName) <RemoveAssigns-Body e.Sentences>);
 
           t.OtherTerm = t.OtherTerm;
         }
@@ -712,7 +695,7 @@ ExtractNested-Conditions {
     = <ExtractNested-Pattern (e.ScopeVars) (e.BorrowedVars) e.Pattern>
     : (e.BorrowedVars^) e.PatternLocalVars
 
-    = <Uniq e.LocalVars e.PatternLocalVars> : e.LocalVars^
+    = <Unique e.LocalVars e.PatternLocalVars> : e.LocalVars^
 
     = <ExtractNested-Conditions
         s.MarkupContext (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
@@ -734,29 +717,10 @@ ExtractNested-Pattern {
     <MapAccum
       (&UpdateBorrowedVars e.ScopeVars)
       (e.BorrowedVars)
-      <Uniq
-        <ExtractAllVars e.Pattern>
+      <Unique
+        <ExtractVariables-Expr e.Pattern>
       >
     >;
-}
-
-ExtractAllVars {
-  (Var s.Mode e.Index) e.Tail =
-    (s.Mode e.Index) <ExtractAllVars e.Tail>;
-
-  (Brackets e.Inner) e.Tail = <ExtractAllVars e.Inner e.Tail>;
-  (ADT-Brackets e.Inner) e.Tail = <ExtractAllVars e.Inner e.Tail>;
-
-  t.OtherTerm e.Tail = <ExtractAllVars e.Tail>;
-
-  /* пусто */ = /* пусто */;
-}
-
-Uniq {
-  e.Uniqs t.Repeated e.NotScanned-M t.Repeated e.NotScanned-E =
-    e.Uniqs <Uniq e.NotScanned-M t.Repeated e.NotScanned-E>;
-
-  e.Uniqs = e.Uniqs;
 }
 
 UpdateBorrowedVars {
@@ -889,8 +853,7 @@ CheckBorrowed {
   (s.Mode e.Index) =
     (e.BorrowedVars (s.Mode e.Index));
 
-  (e.ScopeVars) (e.BorrowedVars) (s.Mode e.Index) =
-    (e.BorrowedVars);
+  (e.ScopeVars) (e.BorrowedVars) (s.Mode e.Index) = (e.BorrowedVars);
 }
 
 Pass-CleanupRedudandExterns {
@@ -939,7 +902,7 @@ Pass-CleanupRedudandExterns {
        e.AST
       >
     : (e.DefinedFunctions) e.AST^
-    = <MapAccum &FilterDeclarations (e.DefinedFunctions) e.AST>
+    = <MapAccum &RemoveRedundantDeclarations (e.DefinedFunctions) e.AST>
     : (e.DefinedFunctions^) e.AST^
 
     = <MapAccum
@@ -962,7 +925,7 @@ Pass-CleanupRedudandExterns {
     = e.AST;
 }
 
-FilterDeclarations {
+RemoveRedundantDeclarations {
   (e.DefinedFunctions-B (e.Name) e.DefinedFunctions-E)
   (Declaration s.ScopeClass e.Name)
     = (e.DefinedFunctions-B (e.Name) e.DefinedFunctions-E)
