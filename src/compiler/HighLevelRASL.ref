@@ -60,8 +60,6 @@ $ENTRY HighLevelRASL {
 
           (NativeBlock t.SrcPos e.Code) =
             (CmdEmitNativeCode t.SrcPos e.Code);
-
-          (Spec t.Name e.Pattern) = ;
         }
         e.ProgramElements
       >;
