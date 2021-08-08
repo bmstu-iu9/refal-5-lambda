@@ -17,11 +17,7 @@ $INCLUDE "LibraryEx";
 $ENTRY LowLevelRASL-RASL {
   s.DebugInfo s.Hash1 s.Hash2 (t.FuncTable t.IdentTable) e.Items
 
-    = <MapAccum
-        &ClassifyItems
-        (/* Области видимости функций */)
-        e.Items
-      >
+    = <MapAccum &ClassifyItems (/* Области видимости функций */) e.Items>
     : (e.FuncScopeClass) e.Definitions
 
     = <MapAccum (&PrepareFunctionsRASL s.DebugInfo) 0 e.Definitions>
