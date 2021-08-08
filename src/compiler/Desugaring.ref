@@ -15,7 +15,7 @@ $ENTRY Desugar {
       <Pipe
         &Pass-RemovePos
         &Pass-UnfoldEnumsAndSwaps
-        &Pass-AttachEntries
+        &Pass-ExtractEntries
         &Pass-RemoveRedundantDriveInlineIntrinsic
         &Pass-EnumerateVariables
         &Pass-NameNestedFuncs
@@ -151,36 +151,34 @@ Pass-UnfoldEnumsAndSwaps {
       >;
 }
 
-Pass-AttachEntries {
+$ENTRY Pass-ExtractEntries {
   e.AST
     = <MapAccum
         {
           (e.Entries) (Entry GN-Entry e.Name)
             = (e.Entries (e.Name)) /* удаляем из дерева */;
 
+          (e.Entries) (Function s.ScopeClass (e.Name) e.Body)
+            = (e.Entries <Entry s.ScopeClass e.Name>)
+              (Function (e.Name) e.Body);
+
+          (e.Entries) (Drive s.ScopeClass e.Name) = (e.Entries) (Drive e.Name);
+          (e.Entries) (Inline s.ScopeClass e.Name) = (e.Entries) (Inline e.Name);
+          (e.Entries) (Intrinsic s.ScopeClass e.Name)
+            = (e.Entries) (Intrinsic e.Name);
+
           (e.Entries) t.Other = (e.Entries) t.Other;
         }
-        (/* entries */) e.AST
+        (/* имена entry-функций */)
+        e.AST
       >
     : (e.Entries) e.AST^
-    = <Map
-        {
-          (Function s.ScopeClass (e.Name) e.Body)
-            , e.Entries : e._ (e.Name) e._
-            = (Function GN-Entry (e.Name) e.Body);
+    = (Entries <Unique e.Entries>) e.AST;
+}
 
-          (Declaration s.ScopeClass e.Name)
-            , e.Entries : e._ (e.Name) e._
-            = (Declaration GN-Entry e.Name);
-
-          (Drive s.ScopeClass e.Name) = (Drive e.Name);
-          (Inline s.ScopeClass e.Name) = (Inline e.Name);
-          (Intrinsic s.ScopeClass e.Name) = (Intrinsic e.Name);
-
-          t.Other = t.Other;
-        }
-        e.AST
-      >;
+Entry {
+  GN-Entry e.Name = (e.Name);
+  GN-Local e.Name = /* пропускаем */;
 }
 
 Pass-RemoveRedundantDriveInlineIntrinsic {
@@ -248,11 +246,8 @@ $ENTRY Pass-EnumerateVariables {
   e.AST =
     <Map
       {
-        (Function s.ScopeClass (e.Name) e.Body)
-          = (Function
-              s.ScopeClass (e.Name)
-              <EnumerateVars-Body (/* переменные */) e.Body>
-            );
+        (Function (e.Name) e.Body)
+          = (Function (e.Name) <EnumerateVars-Body (/* переменные */) e.Body>);
 
         t.OtherProgramElement = t.OtherProgramElement;
       }
@@ -392,11 +387,8 @@ Pass-NameNestedFuncs {
   e.AST =
     <Map
       {
-        (Function s.ScopeClass (e.Name) e.Body) =
-          (Function
-            s.ScopeClass (e.Name)
-            <NameNestedBody (<AddSuffix e.Name ()>) e.Body>
-          );
+        (Function (e.Name) e.Body)
+          = (Function (e.Name) <NameNestedBody (<AddSuffix e.Name ()>) e.Body>);
 
         t.OtherProgramElement = t.OtherProgramElement;
       }
@@ -525,11 +517,8 @@ Pass-RemoveBlocksAndAssigns {
   e.AST =
     <Map
       {
-        (Function s.ScopeClass (e.Name) e.Body) =
-          (Function
-            s.ScopeClass (e.Name)
-            <RemoveAssigns-Body e.Body>
-          );
+        (Function (e.Name) e.Body)
+          = (Function (e.Name) <RemoveAssigns-Body e.Body>);
 
         t.OtherProgramElement = t.OtherProgramElement;
       }
@@ -626,10 +615,10 @@ Pass-FlatNestedFuncs {
   s.MarkupContext e.AST =
     <Map
       {
-        (Function s.ScopeClass (e.Name) e.Body)
+        (Function (e.Name) e.Body)
           = <ExtractNested s.MarkupContext e.Body> : (e.NestedFuncs) e.Body^
           = e.NestedFuncs
-            (Function s.ScopeClass (e.Name) e.Body);
+            (Function (e.Name) e.Body);
 
         t.OtherProgramElement = t.OtherProgramElement;
       }
@@ -820,7 +809,7 @@ ExtractNested-Result-Term {
               NativeBody e.NativeBody = /* нет меток */;
             }
           : e.DriveLabelOpt
-          = (Function GN-Local (e.ClosureName) e.Body)
+          = (Function (e.ClosureName) e.Body)
             e.DriveLabelOpt
             (e.BorrowedVars)
             (Symbol Name e.ClosureName);
@@ -829,7 +818,7 @@ ExtractNested-Result-Term {
         (e.NestedBorrowedVars^) Sentences e.Sentences
           = <CreateContext s.MarkupContext e.NestedBorrowedVars> : e.Context
           = (Function
-              GN-Local (e.ClosureName)
+              (e.ClosureName)
               Sentences
               <Map
                 {
@@ -881,10 +870,11 @@ Pass-CleanupRedudandExterns {
   e.AST
     = <MapAccum
        {
-         (e.DefinedFunctions)
-         (Function s.ScopeClass (e.Name) e.Body)
-           = (e.DefinedFunctions (e.Name))
-             (Function s.ScopeClass (e.Name) e.Body);
+         (e.DefinedFunctions) (Entries e.Names)
+           = (e.DefinedFunctions) (Entries e.Names);
+
+         (e.DefinedFunctions) (Function (e.Name) e.Body)
+           = (e.DefinedFunctions (e.Name)) (Function (e.Name) e.Body);
 
          (e.DefinedFunctions) (Inline e.Name)
            = (e.DefinedFunctions) (Inline e.Name);

@@ -15,7 +15,8 @@ $INCLUDE "LibraryEx";
 */
 $ENTRY LowLevelRASL-Native {
   s.Hash1 s.Hash2 (t.FuncTable t.IdentTable) e.Items
-    = <Map (&SetCookies s.Hash1 s.Hash2) e.Items>
+    = <GetEntries e.Items> : (e.Entries) e.Items^
+    = <Map (&SetCookies e.Entries s.Hash1 s.Hash2) e.Items>
     : {
         /* нет нативных определений */ = /* нет нативного RASL’а */;
 
@@ -30,6 +31,10 @@ $ENTRY LowLevelRASL-Native {
       };
 }
 
+GetEntries {
+  e.Items-B (Entries e.Entries) e.Items-E = (e.Entries) e.Items-B e.Items-E
+}
+
 PrepareTable {
   e.Prefix (0 /* пусто */) = /* пусто */;
 
@@ -40,54 +45,54 @@ PrepareTable {
 }
 
 SetCookies {
-  s.Hash1 s.Hash2 (UnitName e.SrcName) = /* пропускаем */;
+  e.Entries s.Hash1 s.Hash2 (UnitName e.SrcName) = /* пропускаем */;
 
-  s.Hash1 s.Hash2
-  (Function-ToRASL s.ScopeClass (e.Name) e.Commands) =
+  e.Entries s.Hash1 s.Hash2
+  (Function-ToRASL (e.Name) e.Commands) =
     /* пропускаем */;
 
-  s.Hash1 s.Hash2
-  (Function-ToNative s.ScopeClass (e.Name) e.Commands) =
+  e.Entries s.Hash1 s.Hash2
+  (Function-ToNative (e.Name) e.Commands) =
     (Function-ToNative
-      (<MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>)
+      (<MingleName (e.Entries) e.Name s.Hash1 s.Hash2>)
       e.Commands
     );
 
-  s.Hash1 s.Hash2
-  (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
+  e.Entries s.Hash1 s.Hash2
+  (CmdNativeFunction (e.Name) t.SrcPos e.Code) =
     (CmdNativeFunction
-      (<MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>)
+      (<MingleName (e.Entries) e.Name s.Hash1 s.Hash2>)
       t.SrcPos e.Code
     );
 
-  s.Hash1 s.Hash2
-  (CmdMetatable s.ScopeClass (e.Name) e.Metatable) =
+  e.Entries s.Hash1 s.Hash2
+  (CmdMetatable (e.Name) e.Metatable) =
     /* пропускаем */;
 
-  s.Hash1 s.Hash2 (CmdEnum s.ScopeClass e.Name) =
+  e.Entries s.Hash1 s.Hash2 (CmdEnum e.Name) =
     /* пропускаем */;
 
-  s.Hash1 s.Hash2 (CmdSwap s.ScopeClass e.Name) =
+  e.Entries s.Hash1 s.Hash2 (CmdSwap e.Name) =
     /* пропускаем */;
 
-  s.Hash1 s.Hash2
-  (CmdConditionFunc-ToRASL s.ScopeClass e.Name) =
+  e.Entries s.Hash1 s.Hash2
+  (CmdConditionFunc-ToRASL e.Name) =
     /* пропускаем */;
 
-  s.Hash1 s.Hash2
-  (CmdConditionFunc-ToNative s.ScopeClass e.Name) =
+  e.Entries s.Hash1 s.Hash2
+  (CmdConditionFunc-ToNative e.Name) =
     /* пропускаем */;
 
-  s.Hash1 s.Hash2 (CmdDeclaration s.ScopeClass e.Name) =
+  e.Entries s.Hash1 s.Hash2 (CmdDeclaration e.Name) =
     /* пропускаем */;
 
-  s.Hash1 s.Hash2 (CmdEmitNativeCode t.SrcPos e.Code) =
+  e.Entries s.Hash1 s.Hash2 (CmdEmitNativeCode t.SrcPos e.Code) =
     (CmdEmitNativeCode t.SrcPos e.Code);
 }
 
 MingleName {
-  GN-Entry e.Name s.Hash1 s.Hash2 = e.Name Hash 0 0;
-  GN-Local e.Name s.Hash1 s.Hash2 = e.Name Hash s.Hash1 s.Hash2;
+  (e._ (e.Name) e._) e.Name s.Hash1 s.Hash2 = e.Name Hash 0 0;
+  (e.Entries) e.Name s.Hash1 s.Hash2 = e.Name Hash s.Hash1 s.Hash2;
 }
 
 PrepareFunctionsRASL {

@@ -10,7 +10,7 @@ $EXTERN DisplayName;
 $EXTERN EscapeString;
 
 *$FROM Log-AST
-$EXTERN Log-TextFromAST, Log-FormatIdentFuncMapTableLines;
+$EXTERN Log-TextFromAST, Log-FormatIdentFuncMapTableLines, Log-EntryList;
 
 
 /**
@@ -92,15 +92,14 @@ $ENTRY Log-AST {
 
         s.FileHandle
           = <Log-PutLine 'AST of file ' e.Message ':'>
-            <Map
-              {
-                () = <Putout s.FileHandle>;
-                (e.Line) = <Putout s.FileHandle '  ' e.Line>;
-              }
-              <Log-TextFromAST e.AST>
-            >
+            <Map (&IndentedPutout s.FileHandle) <Log-TextFromAST e.AST>>
             e.AST;
       };
+}
+
+IndentedPutout {
+  s.FileHandle () = <Putout s.FileHandle>;
+  s.FileHandle (e.Line) = <Putout s.FileHandle '  ' e.Line>;
 }
 
 
@@ -122,18 +121,22 @@ $ENTRY Log-HighLevelRASL {
 
 PutProgramElement {
   s.FileHandle
-  (Function s.ScopeClass (e.Name) e.Commands)
-    = <PutRASLFunction s.FileHandle s.ScopeClass (e.Name) e.Commands>;
+  (Entries e.Names)
+    = <Map (&IndentedPutout s.FileHandle) <Log-EntryList e.Names>>;
 
   s.FileHandle
-  (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code)
-    = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: native {'>
+  (Function (e.Name) e.Commands)
+    = <PutRASLFunction s.FileHandle (e.Name) e.Commands>;
+
+  s.FileHandle
+  (CmdNativeFunction (e.Name) t.SrcPos e.Code)
+    = <Putout s.FileHandle '  ' <DisplayName e.Name> ' :: native {'>
       <PutCode s.FileHandle t.SrcPos e.Code>
       <Putout s.FileHandle '  }\n'>;
 
   s.FileHandle
-  (CmdMetatable s.ScopeClass (e.Name) e.Metatable)
-    = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: metatable {'>
+  (CmdMetatable (e.Name) e.Metatable)
+    = <Putout s.FileHandle '  ' <DisplayName e.Name> ' :: metatable {'>
       <Map
         {
           ((Symbol Identifier e.Ident) (Symbol Name e.Function))
@@ -143,17 +146,17 @@ PutProgramElement {
       >
       <Putout s.FileHandle '  }\n'>;
 
-  s.FileHandle (CmdEnum s.ScopeClass e.Name)
-    = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: enum'>;
+  s.FileHandle (CmdEnum e.Name)
+    = <Putout s.FileHandle '  ' <DisplayName e.Name> ' :: enum'>;
 
-  s.FileHandle (CmdSwap s.ScopeClass e.Name)
-    = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: swap'>;
+  s.FileHandle (CmdSwap e.Name)
+    = <Putout s.FileHandle '  ' <DisplayName e.Name> ' :: swap'>;
 
-  s.FileHandle (CmdConditionFunc s.ScopeClass e.Name)
-    = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: condition'>;
+  s.FileHandle (CmdConditionFunc e.Name)
+    = <Putout s.FileHandle '  ' <DisplayName e.Name> ' :: condition'>;
 
-  s.FileHandle (CmdDeclaration s.ScopeClass e.Name)
-    = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' :: extern'>;
+  s.FileHandle (CmdDeclaration e.Name)
+    = <Putout s.FileHandle '  ' <DisplayName e.Name> ' :: extern'>;
 
   s.FileHandle (CmdDefineIdent e.Name)
     = <Putout s.FileHandle '$LABEL ' <DisplayName e.Name>>;
@@ -169,15 +172,10 @@ PutProgramElement {
 }
 
 PutRASLFunction {
-  s.FileHandle s.ScopeClass (e.Name) e.Commands
-    = <Putout s.FileHandle <FnName s.ScopeClass e.Name> ' {'>
+  s.FileHandle (e.Name) e.Commands
+    = <Putout s.FileHandle '  ' <DisplayName e.Name> ' {'>
       <PutRASLCommands s.FileHandle ('    ') e.Commands>
       <Putout s.FileHandle '  }\n'>;
-}
-
-FnName {
-  GN-Local e.Name = '  ' <DisplayName e.Name>;
-  GN-Entry e.Name = '  $ENTRY ' <DisplayName e.Name>;
 }
 
 PutRASLCommands {

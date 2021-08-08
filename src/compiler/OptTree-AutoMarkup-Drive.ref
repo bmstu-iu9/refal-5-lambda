@@ -42,8 +42,8 @@ BuldCallGraph {
 
 MetaInfo {
   e.AST
-    = ((/* forbidden list */) (/* inlines */) (/* drives */) (/* entries */))
-    : t.InitMetaInfo
+    = e.AST : e.AST-B (Entries e.Entries) e.AST-E
+    = ((/* forbidden list */) (/* inlines */) (/* drives */)) : t.InitMetaInfo
     = <MapAccum
         {
           t.MetaInfo (Inline e.Name)
@@ -57,17 +57,17 @@ MetaInfo {
 
           t.MetaInfo
           (Function
-            GN-Local (e.FuncName) Sentences
+            (e.FuncName) Sentences
             (((Var 'e' e.Index)) /*=*/ ((Var 'e' e.Index)))
           )
             , <Pseudofunction-gen_e e.FuncName> : True
             = <MetaInfo-AddForbidden t.MetaInfo e.FuncName>
               (Function
-                GN-Local (e.FuncName) Sentences
+                (e.FuncName) Sentences
                 (((Var 'e' e.Index)) /*=*/ ((Var 'e' e.Index)))
               );
 
-          t.MetaInfo (Function s.Scope (e.FuncName) Sentences e.Body)
+          t.MetaInfo (Function (e.FuncName) Sentences e.Body)
             = <Lenw e.Body> : s.SentencesCount e.Body^
             = /* пусто */
             : {
@@ -80,28 +80,30 @@ MetaInfo {
                 /* пусто */ = t.MetaInfo;
               }
             : t.MetaInfo^
-            = <MetaInfo-AddEntry t.MetaInfo s.Scope e.FuncName>
-              (Function s.Scope (e.FuncName) Sentences e.Body);
+            = t.MetaInfo (Function (e.FuncName) Sentences e.Body);
 
           t.MetaInfo t.Other = t.MetaInfo t.Other;
         }
-        t.InitMetaInfo e.AST
+        t.InitMetaInfo e.AST-B e.AST-E
       >
+    : ((e.Forbidden) (e.Inlines) (e.Drives)) e.AST^
+    = ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries))
+      (Entries e.Entries) e.AST
 }
 
 MetaInfo-AddInline {
-  ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries)) e.Name
-    = ((e.Forbidden (e.Name)) (e.Inlines (e.Name)) (e.Drives) (e.Entries));
+  ((e.Forbidden) (e.Inlines) (e.Drives)) e.Name
+    = ((e.Forbidden (e.Name)) (e.Inlines (e.Name)) (e.Drives));
 }
 
 MetaInfo-AddDrive {
-  ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries)) e.Name
-    = ((e.Forbidden) (e.Inlines) (e.Drives (e.Name)) (e.Entries));
+  ((e.Forbidden) (e.Inlines) (e.Drives)) e.Name
+    = ((e.Forbidden) (e.Inlines) (e.Drives (e.Name)));
 }
 
 MetaInfo-AddForbidden {
-  ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries)) e.Name
-    = ((e.Forbidden (e.Name)) (e.Inlines) (e.Drives) (e.Entries));
+  ((e.Forbidden) (e.Inlines) (e.Drives)) e.Name
+    = ((e.Forbidden (e.Name)) (e.Inlines) (e.Drives));
 }
 
 Pseudofunction-gen_e {
@@ -111,14 +113,6 @@ Pseudofunction-gen_e {
   'gen-e__' SUF '~' s.N = True;
 
   e._ = False;
-}
-
-MetaInfo-AddEntry {
-  ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries)) GN-Entry e.Name
-    = ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries (e.Name)));
-
-  ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries)) GN-Local e.Name
-    = ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries));
 }
 
 SeparateMetatables {
@@ -144,7 +138,7 @@ SeparateMetatables {
 }
 
 MakeGraphNode {
-  (Function s.ScopeClass (e.MetatableName) Metatable e.Metatable)
+  (Function (e.MetatableName) Metatable e.Metatable)
     = <Map
         {
           (t.FuncName-Word (Symbol Name e.Name)) = (Call e.Name);
@@ -154,7 +148,7 @@ MakeGraphNode {
     : e.Children
     = (Func (e.MetatableName) Children (e.Children (INDIRECT)));
 
-  (Function s.ScopeClass (e.Name) Sentences e.Sentences)
+  (Function (e.Name) Sentences e.Sentences)
     = (Func (e.Name) Children (<Children-Body e.Sentences>));
 
   t._ = /* пропускаем */;
@@ -620,11 +614,11 @@ UnsuffixedFunctions {
 
 RemoveUnused {
   (e.Unused-B (e.Name) e.Unused-E)
-  (Function s.ScopeClass (e.Name) Sentences e._)
+  (Function (e.Name) Sentences e._)
     = (e.Unused-B e.Unused-E) /* пропускаем */;
 
   (e.Unused-B (e.Name) e.Unused-E)
-  (Function s.ScopeClass (e.Name) Metatable e._)
+  (Function (e.Name) Metatable e._)
     = (e.Unused-B e.Unused-E) /* пропускаем */;
 
   (e.Unused) t.OtherItem = (e.Unused) t.OtherItem; /* оставляем */

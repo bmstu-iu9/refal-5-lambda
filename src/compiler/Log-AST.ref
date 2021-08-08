@@ -24,9 +24,11 @@ UndoubleEmtpyLines {
 }
 
 Element {
-  (Function s.Scope (e.Name) e.Body) = <Function (e.Name) s.Scope e.Body>;
-  (ColdFunction s.ColdBy s.Scope (e.Name) e.Body)
-    = <ColdFunction s.ColdBy (e.Name) s.Scope e.Body>;
+  (Entries e.Names) = <Log-EntryList e.Names> ();
+
+  (Function (e.Name) e.Body) = <Function (e.Name) e.Body>;
+  (ColdFunction s.ColdBy (e.Name) e.Body)
+    = <ColdFunction s.ColdBy (e.Name) e.Body>;
 
   (Declaration GN-Entry e.Name) = ('$EXTERN ' <DisplayName e.Name> ';');
   (Declaration GN-Local e.Name) = ('$FORWARD ' <DisplayName e.Name> ';');
@@ -62,14 +64,48 @@ LongLine {
 }
 
 
+$ENTRY Log-EntryList {
+  e.Names = <NameList ('$ENTRY') e.Names>;
+}
+
+NameList {
+  (e.OutLine) e.Names
+    , <LongLine e.OutLine> : True
+    = (e.OutLine) <NameList-Next e.Names>;
+
+  (e.OutLine) (e.Name) e.Names
+    = <CommaOrSemicolon e.Names> : s.SEP
+    = e.OutLine ' ' e.Name s.SEP : e.NewOutLine
+    = <LongLine e.OutLine ' ' e.Name>
+    : {
+        True = (e.OutLine) <NameList-Next e.Names>;
+        False = <NameList (e.NewOutLine) e.Names>;
+      };
+
+  (e.OutLine) /* пусто */ = (e.OutLine);
+}
+
+CommaOrSemicolon {
+  /* empty */ = ';';
+  e.Names = ',';
+}
+
+NameList-Next {
+  (e.NextName) e.Names
+    = <CommaOrSemicolon e.Names> : s.SEP
+    = <NameList ('  ' e.NextName s.SEP) e.Names>;
+
+  /* пусто */ = /* пусто */;
+}
+
+
 Function {
-  (e.Name) s.Scope e.Body
-    = <Function-Aux (<DisplayName e.Name>) s.Scope e.Body>;
+  (e.Name) e.Body = <Function-Aux (<DisplayName e.Name>) e.Body>;
 }
 
 ColdFunction {
-  s.ColdBy (e.Name) s.Scope e.Body
-    = <Function (e.Name) s.Scope e.Body>
+  s.ColdBy (e.Name) e.Body
+    = <Function (e.Name) e.Body>
     : {
         () e.FunctionLines
           = ()
@@ -82,22 +118,20 @@ ColdFunction {
 }
 
 Function-Aux {
-  (e.Name) s.Scope Sentences /* пусто */
-    = (<Entry s.Scope> e.Name ' { /* empty */ }');
+  (e.Name) Sentences /* пусто */ = (e.Name ' { /* empty */ }');
 
-  (e.Name) s.Scope Sentences e.Sentences
+  (e.Name) Sentences e.Sentences
     = ()
-      (<Entry s.Scope> e.Name ' {')
+      (e.Name ' {')
       <Sentences ('  ') e.Sentences>
       ('}')
       ();
 
-  (e.Name) s.Scope NativeBody t.SrcPos e.NativeBody
-    = (<Entry s.Scope> e.Name ' { %% native %% }');
+  (e.Name) NativeBody t.SrcPos e.NativeBody = (e.Name ' { %% native %% }');
 
-  (e.Name) s.Scope Metatable e.Metatable
+  (e.Name) Metatable e.Metatable
     = ()
-      (<Entry s.Scope> e.Name ' {')
+      (e.Name ' {')
       ('* metatable function')
       <Map
         {
@@ -109,14 +143,8 @@ Function-Aux {
       ('}')
       ();
 
-  (e.Name) GN-Entry Swap = ('$ESWAP ' <DisplayName e.Name> ';');
-  (e.Name) GN-Local Swap = ('$SWAP ' <DisplayName e.Name> ';');
+  (e.Name) Swap = ('$SWAP ' <DisplayName e.Name> ';');
 };
-
-Entry {
-  GN-Entry = '$ENTRY ';
-  GN-Local = /* пусто */;
-}
 
 Sentences {
   (e.Indent) (e.Sentence) = <Sentence (e.Indent) e.Sentence>;

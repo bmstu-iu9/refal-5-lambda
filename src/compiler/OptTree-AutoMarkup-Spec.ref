@@ -19,10 +19,10 @@ $ENTRY OptTree-AutoMarkup-Spec {
     = <ForbiddenToSpecFunctions e.AST> : (e.Forbidden) e.AST^
     = <Map
         {
-          (Function s.ScopeClass (e.Name) Sentences /* нет предложений */)
+          (Function (e.Name) Sentences /* нет предложений */)
             = /* пусто */;
 
-          (Function s.ScopeClass (e.Name) Sentences e.Body)
+          (Function (e.Name) Sentences e.Body)
             = <Map
                 {
                   ((e.Pattern) e.Conditions (e.Result)) = (e.Pattern);
@@ -52,10 +52,10 @@ ForbiddenToSpecFunctions {
 
           /* экземпляры повторно не специализируем */
           (e.Forbidden)
-          (Function s.ScopeClass (e.FuncName) Sentences e.Body)
+          (Function (e.FuncName) Sentences e.Body)
             , (e.FuncName) : (e._ SUF e._ '@' s._ e._)
             = (e.Forbidden (e.FuncName))
-              (Function s.ScopeClass (e.FuncName) Sentences e.Body);
+              (Function (e.FuncName) Sentences e.Body);
 
           (e.Forbidden) t.OtherItem = (e.Forbidden) t.OtherItem;
         }

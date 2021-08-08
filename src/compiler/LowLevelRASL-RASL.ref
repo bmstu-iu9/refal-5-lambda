@@ -16,11 +16,14 @@ $INCLUDE "LibraryEx";
 */
 $ENTRY LowLevelRASL-RASL {
   s.DebugInfo s.Hash1 s.Hash2 (t.FuncTable t.IdentTable) e.Items
+    = <GetEntries e.Items> : (e.Entries) e.Items^
 
     = <MapAccum &ClassifyItems (/* Области видимости функций */) e.Items>
-    : (e.FuncScopeClass) e.Definitions
+    : (e.DefinedFunctions) e.Definitions
 
-    = <MapAccum (&PrepareFunctionsRASL s.DebugInfo) 0 e.Definitions>
+    = <MarkEntries (e.Entries) e.DefinedFunctions> : e.FuncScopeClass
+
+    = <MapAccum (&PrepareFunctionsRASL s.DebugInfo e.Entries) 0 e.Definitions>
     : s.MaxLabel e.Definitions^
 
     = (
@@ -31,52 +34,66 @@ $ENTRY LowLevelRASL-RASL {
       );
 }
 
+GetEntries {
+  e.Items-B (Entries e.Entries) e.Items-E = (e.Entries) e.Items-B e.Items-E
+}
+
 ClassifyItems {
-  (e.FuncScopeClass) (UnitName e.SrcName) =
-    (e.FuncScopeClass) (UnitName e.SrcName);
+  (e.DefinedFunctions) (UnitName e.SrcName)
+    = (e.DefinedFunctions) (UnitName e.SrcName);
 
-  (e.FuncScopeClass) (Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody) =
-    (e.FuncScopeClass (s.ScopeClass e.Name))
-    (Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody);
+  (e.DefinedFunctions) (Function-ToRASL (e.Name) e.FunctionBody)
+    = (e.DefinedFunctions (e.Name))
+      (Function-ToRASL (e.Name) e.FunctionBody);
 
-  (e.FuncScopeClass) (Function-ToNative s.ScopeClass (e.Name) e.Commands) =
-    (e.FuncScopeClass (s.ScopeClass e.Name))
-    (CmdNativeFuncDescr s.ScopeClass e.Name);
+  (e.DefinedFunctions) (Function-ToNative (e.Name) e.Commands)
+    = (e.DefinedFunctions (e.Name))
+      (CmdNativeFuncDescr e.Name);
 
-  (e.FuncScopeClass) (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
-    (e.FuncScopeClass (s.ScopeClass e.Name))
-    (CmdNativeFuncDescr s.ScopeClass e.Name);
+  (e.DefinedFunctions) (CmdNativeFunction (e.Name) t.SrcPos e.Code)
+    = (e.DefinedFunctions (e.Name))
+      (CmdNativeFuncDescr e.Name);
 
-  (e.FuncScopeClass) (CmdMetatable s.ScopeClass (e.Name) e.Metatable) =
-    (e.FuncScopeClass (s.ScopeClass e.Name))
-    (CmdMetatable s.ScopeClass (e.Name) e.Metatable);
+  (e.DefinedFunctions) (CmdMetatable (e.Name) e.Metatable)
+    = (e.DefinedFunctions (e.Name))
+      (CmdMetatable (e.Name) e.Metatable);
 
-  (e.FuncScopeClass) (CmdEnum s.ScopeClass e.Name) =
-    (e.FuncScopeClass (s.ScopeClass e.Name))
-    (CmdEnumDescr s.ScopeClass e.Name);
+  (e.DefinedFunctions) (CmdEnum e.Name)
+    = (e.DefinedFunctions (e.Name))
+      (CmdEnumDescr e.Name);
 
-  (e.FuncScopeClass) (CmdSwap s.ScopeClass e.Name) =
-    (e.FuncScopeClass (s.ScopeClass e.Name))
-    (CmdSwapDescr s.ScopeClass e.Name);
+  (e.DefinedFunctions) (CmdSwap e.Name)
+    = (e.DefinedFunctions (e.Name))
+      (CmdSwapDescr e.Name);
 
-  (e.FuncScopeClass) (CmdConditionFunc-ToRASL s.ScopeClass e.Name) =
-    (e.FuncScopeClass (s.ScopeClass e.Name))
-    (CmdConditionFuncDecsrRasl s.ScopeClass e.Name);
+  (e.DefinedFunctions) (CmdConditionFunc-ToRASL e.Name)
+    = (e.DefinedFunctions (e.Name))
+      (CmdConditionFuncDecsrRasl e.Name);
 
-  (e.FuncScopeClass) (CmdConditionFunc-ToNative s.ScopeClass e.Name) =
-    (e.FuncScopeClass (s.ScopeClass e.Name))
-    (CmdConditionFuncDecsrNative s.ScopeClass e.Name);
+  (e.DefinedFunctions) (CmdConditionFunc-ToNative e.Name)
+    = (e.DefinedFunctions (e.Name))
+      (CmdConditionFuncDecsrNative e.Name);
 
-  (e.FuncScopeClass) (CmdDeclaration s.ScopeClass e.Name) =
-    (e.FuncScopeClass (s.ScopeClass e.Name)) /* skip */;
+  (e.DefinedFunctions) (CmdDeclaration e.Name)
+    = (e.DefinedFunctions (e.Name)) /* skip */;
 
-  (e.FuncScopeClass) (CmdEmitNativeCode t.SrcPos e.Code) =
-    (e.FuncScopeClass) /* skip */;
+  (e.DefinedFunctions) (CmdEmitNativeCode t.SrcPos e.Code)
+    = (e.DefinedFunctions) /* skip */;
+}
+
+MarkEntries {
+  (e.Entries) e.Names
+    = <Map
+        {
+          (e.Name) = (<Scope e.Entries (e.Name)> e.Name);
+        }
+        e.Names
+      >
 }
 
 PrepareFunctionsRASL {
-  s.DebugInfo s.NextLabel
-  (Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody)
+  s.DebugInfo e.Entries s.NextLabel
+  (Function-ToRASL (e.Name) e.FunctionBody)
 
     = <RemoveDebugInfo s.DebugInfo e.FunctionBody> : e.FunctionBody^
 
@@ -89,6 +106,8 @@ PrepareFunctionsRASL {
 
     = <AddFunctionNameComment (e.Name) e.RASLCommands> : e.RASLCommands^
 
+    = <Scope e.Entries (e.Name)> : s.ScopeClass
+
     = s.NextLabel
       (CmdInterpretFuncDescr
         s.ScopeClass
@@ -99,7 +118,12 @@ PrepareFunctionsRASL {
         e.RASLCommands
       );
 
-  s.DebugInfo s.NextLabel t.OtherItem = s.NextLabel t.OtherItem;
+  s.DebugInfo e.Entries s.NextLabel (s.CmdDescr e.Name)
+    , CmdNativeFuncDescr CmdEnumDescr CmdSwapDescr : e._ s.CmdDescr e._
+    = <Scope e.Entries (e.Name)> : s.ScopeClass
+    = s.NextLabel (s.CmdDescr s.ScopeClass e.Name);
+
+  s.DebugInfo e.Entries s.NextLabel t.OtherItem = s.NextLabel t.OtherItem;
 }
 
 RemoveDebugInfo {
@@ -211,6 +235,11 @@ AddFunctionNameComment {
         }
         e.RASLCommands
       >;
+}
+
+Scope {
+  e._ (e.Name) e._ (e.Name) = GN-Entry;
+  e.Entries (e.Name) = GN-Local;
 }
 
 PrepareCommonRASL {

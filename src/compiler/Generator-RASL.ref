@@ -149,12 +149,12 @@ GenCommand-Globals {
         <PutWordLE s.Offset>
       >;
 
-  (e.Labels) (CmdMetatable s.ScopeClass (e.Name) e.Table)
+  (e.Labels) (CmdMetatable (e.Name) e.Table)
     = <Lenw e.Table> : s.Count e.Table^
     = (e.Labels)
       <PutBlock
         Metatable
-        <NameWithSign-Bytes s.ScopeClass e.Name>
+        <NameWithSign-Bytes GN-Local e.Name>
         <PutWordLE s.Count>
         <Map
           {
@@ -168,13 +168,13 @@ GenCommand-Globals {
   (e.Labels) (CmdSwapDescr s.ScopeClass e.Name)
     = (e.Labels) <PutBlock Swap <NameWithSign-Bytes s.ScopeClass e.Name>>;
 
-  (e.Labels) (CmdConditionFuncDecsrRasl  s.ScopeClass e.Name)
+  (e.Labels) (CmdConditionFuncDecsrRasl e.Name)
     = (e.Labels)
-      <PutBlock ConditionRasl <NameWithSign-Bytes s.ScopeClass e.Name>>;
+      <PutBlock ConditionRasl <NameWithSign-Bytes GN-Local e.Name>>;
 
-  (e.Labels) (CmdConditionFuncDecsrNative  s.ScopeClass e.Name)
+  (e.Labels) (CmdConditionFuncDecsrNative e.Name)
     = (e.Labels)
-      <PutBlock ConditionNative <NameWithSign-Bytes s.ScopeClass e.Name>>;
+      <PutBlock ConditionNative <NameWithSign-Bytes GN-Local e.Name>>;
 
   (e.Labels) (CmdNativeFuncDescr s.ScopeClass e.Name)
     = (e.Labels)

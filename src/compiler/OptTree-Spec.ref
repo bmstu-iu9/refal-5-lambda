@@ -79,13 +79,13 @@ Prepare-Aux {
           (&MapAccum
             {
               ((e.Names) e.Info-B (t.Name (e.Pattern)) e.Info-E (e.Histories))
-              (Function s.ScopeClass t.Name Sentences e.Body)
+              (Function t.Name Sentences e.Body)
                 = (
                     (e.Names)
                     e.Info-B (t.Name (e.Pattern) (e.Body) 1) e.Info-E
                     (e.Histories)
                   )
-                  (Function s.ScopeClass t.Name Sentences e.Body);
+                  (Function t.Name Sentences e.Body);
 
                ((e.Names) e.Info) t.Other = ((e.Names) e.Info) t.Other;
             }
@@ -142,8 +142,8 @@ AddGuardEnums {
   e.AST
     = <Map
         {
-          (Function s.ScopeClass (e.Name) e.Body)
-            = (Function s.ScopeClass (e.Name) e.Body) <MakeGuardEnum e.Name>;
+          (Function (e.Name) e.Body)
+            = (Function (e.Name) e.Body) <MakeGuardEnum e.Name>;
 
           (Declaration s.ScopeClass e.Name)
             = (Declaration s.ScopeClass e.Name) <MakeGuardEnum e.Name>;
@@ -159,7 +159,7 @@ GuardEnumName {
 }
 
 MakeGuardEnum {
-  e.Name = (Function GN-Local (<GuardEnumName e.Name>) Sentences /* пусто */)
+  e.Name = (Function (<GuardEnumName e.Name>) Sentences /* пусто */)
 }
 
 * Обеспечивает специализацию функций Func*n. Такие функции могут получаться
@@ -215,8 +215,8 @@ ColdAll {
   e.AST
     = <Map
         {
-          (Function s.ScopeClass (e.Name) e.Body)
-            = (ColdFunction SPEC s.ScopeClass (e.Name) e.Body);
+          (Function (e.Name) e.Body)
+            = (ColdFunction SPEC (e.Name) e.Body);
 
           t.OtherItem = t.OtherItem;
         }
@@ -250,7 +250,7 @@ SpecUnit {
   (e.SpecInfo
     (e.Histories-B (t.Name e.History) e.Histories-E) (e.NewFunctions)
   )
-  (Function s.ScopeClass t.Name Sentences e.Sentences)
+  (Function t.Name Sentences e.Sentences)
     = <MapAccum
         &SpecSentence
         (
@@ -261,10 +261,10 @@ SpecUnit {
       >
     : (e.SpecInfo^ (e.Histories) (e.History^) (e.NewFunctions^)) e.Sentences^
     = (e.SpecInfo (e.Histories) (e.NewFunctions))
-      (ColdFunction SPEC s.ScopeClass t.Name Sentences e.Sentences);
+      (ColdFunction SPEC t.Name Sentences e.Sentences);
 
   (e.SpecInfo (e.Histories) (e.NewFunctions))
-  (Function s.ScopeClass t.Name Sentences e.Sentences)
+  (Function t.Name Sentences e.Sentences)
     = <MapAccum
         &SpecSentence
         (e.SpecInfo (e.Histories) (/* empty history */) (e.NewFunctions))
@@ -273,7 +273,7 @@ SpecUnit {
     : (e.SpecInfo^ (e.Histories^) (e.History) (e.NewFunctions^))
       e.Sentences^
     = (e.SpecInfo (e.Histories) (e.NewFunctions))
-      (ColdFunction SPEC s.ScopeClass t.Name Sentences e.Sentences);
+      (ColdFunction SPEC t.Name Sentences e.Sentences);
 
   (e.SpecInfo (e.Histories) (e.NewFunctions)) t.Other
     = (e.SpecInfo (e.Histories) (e.NewFunctions)) t.Other;
@@ -809,7 +809,7 @@ SpecCall-NewSignature-MakeFunction {
         (Symbol Name e.InstanceName)
         <ApplySequentalAssigns <WrapVars e.NewArg> (e.Sg)>
       )
-      (Function GN-Local (e.InstanceName) Sentences e.NewSentences)
+      (Function (e.InstanceName) Sentences e.NewSentences)
       (
         ((e.InstanceName) e.History ((e.InstanceName) e.Signature))
       );

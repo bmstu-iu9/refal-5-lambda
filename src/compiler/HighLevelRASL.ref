@@ -24,9 +24,9 @@ $EXTERN GenResult-Opt;
 
   e.RASLAST ::= t.RASLFunction*
   t.RASLFunction ::=
-      (Function s.ScopeClass (e.Name) t.HiRASLCommand*)
-    | (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code)
-    | (s.SingularItem s.ScopeClass e.Name)
+      (Function (e.Name) t.HiRASLCommand*)
+    | (CmdNativeFunction (e.Name) t.SrcPos e.Code)
+    | (s.SingularItem e.Name)
     | (CmdDefineIdent e.Name)
     | (CmdEmitNativeCode t.SrcPos e.Code)
   s.SingularItem ::= CmdEnum | CmdSwap | CmdDeclaration
@@ -39,19 +39,20 @@ $ENTRY HighLevelRASL {
   s.Joint s.OptResult e.ProgramElements
     = <Map
         {
-          (Function s.ScopeClass (e.Name) Sentences e.Sentences)
+          (Entries e.Names) = (Entries e.Names);
+
+          (Function (e.Name) Sentences e.Sentences)
             = <HighLevelRASL-Function
-                s.Joint s.OptResult s.ScopeClass (e.Name) e.Sentences
+                s.Joint s.OptResult (e.Name) e.Sentences
               >;
 
-          (Function s.ScopeClass (e.Name) NativeBody t.SrcPos e.Code) =
-            (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
+          (Function (e.Name) NativeBody t.SrcPos e.Code)
+            = (CmdNativeFunction (e.Name) t.SrcPos e.Code);
 
-          (Function s.ScopeClass (e.Name) Metatable e.Metatable) =
-            (CmdMetatable s.ScopeClass (e.Name) e.Metatable);
+          (Function (e.Name) Metatable e.Metatable)
+            = (CmdMetatable (e.Name) e.Metatable);
 
-          (Function s.ScopeClass (e.Name) Swap) =
-            (CmdSwap s.ScopeClass e.Name);
+          (Function (e.Name) Swap) = (CmdSwap e.Name);
 
           (Declaration s.ScopeClass e.Name) =
             (CmdDeclaration s.ScopeClass e.Name);
@@ -66,7 +67,7 @@ $ENTRY HighLevelRASL {
 }
 
 HighLevelRASL-Function {
-  s.Joint s.OptResult s.ScopeClass (e.Name) e.Sentences
+  s.Joint s.OptResult (e.Name) e.Sentences
 
     /*
       Исправляем суффиксы функций-условий.
@@ -112,14 +113,14 @@ HighLevelRASL-Function {
 
     = <Map
         {
-          (e.CondName) = (CmdConditionFunc GN-Local e.CondName);
+          (e.CondName) = (CmdConditionFunc e.CondName);
         }
         <Unique e.CondNames>
       >
       <HighLevelRASL-Function-Aux
         <GenSentenceFunc s.Joint>
         <GenResultFuncs s.OptResult>
-        s.ScopeClass (e.Name) e.Sentences
+        (e.Name) e.Sentences
       >;
 }
 
@@ -138,23 +139,18 @@ FixupName-Suf {
 }
 
 HighLevelRASL-Function-Aux {
-  s.FnGenFunction s.FnGenSubst s.FnGenResult
-  s.ScopeClass (e.Name) /* нет предложений */
-    = (CmdEnum s.ScopeClass e.Name);
+  s.FnGenFunction s.FnGenSubst s.FnGenResult (e.Name) /* нет предложений */
+    = (CmdEnum e.Name);
 
-  s.FnGenFunction s.FnGenSubst s.FnGenResult
-  s.ScopeClass (e.Name) t.OneSentence
+  s.FnGenFunction s.FnGenSubst s.FnGenResult (e.Name) t.OneSentence
     /* Нет смысла вызывать оптимизацию совместного сопоставления с образцом */
     = <HighLevelRASL-Function-Disjoint
-        s.FnGenSubst s.FnGenResult
-        s.ScopeClass (e.Name) t.OneSentence
+        s.FnGenSubst s.FnGenResult (e.Name) t.OneSentence
       >;
 
-  s.FnGenFunction s.FnGenSubst s.FnGenResult
-  s.ScopeClass (e.Name) e.Sentences
+  s.FnGenFunction s.FnGenSubst s.FnGenResult (e.Name) e.Sentences
     = <s.FnGenFunction
-        s.FnGenSubst s.FnGenResult
-        s.ScopeClass (e.Name) e.Sentences
+        s.FnGenSubst s.FnGenResult (e.Name) e.Sentences
       >;
 }
 

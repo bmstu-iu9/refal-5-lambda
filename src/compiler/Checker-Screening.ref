@@ -5,7 +5,7 @@ $EXTERN GenericMatch;
 
 *$FROM Desugaring
 $EXTERN CreateContext, RemovePos-Expr, ExtractVariables-Expr,
-        Pass-EnumerateVariables, Pass-RemovePos;
+        Pass-EnumerateVariables, Pass-RemovePos, Pass-ExtractEntries;
 
 /*
   <CheckScreening (t.WarningId*) (e.AST)
@@ -17,7 +17,8 @@ $ENTRY CheckScreening {
  (e._ screening e._) (e.AST)
    = <FindFunctionsPosInAST e.AST> : (e.FunctionsPos) e.AST^
    = <Pass-RemovePos e.AST> : e.AST^
-   = <Pass-EnumerateVariables e.AST> : e.AST^
+   = <Pass-ExtractEntries e.AST> : e.AST-B (Entries e.Entries) e.AST-E
+   = <Pass-EnumerateVariables e.AST-B e.AST-E> : e.AST^
    = <Zip (e.AST) (e.FunctionsPos)> : e.FunctionsWithPos
    = <Map &CheckFunction e.FunctionsWithPos>;
 
@@ -73,7 +74,7 @@ MakePairs {
   CheckFunction проверяет тело функции на экранирование.
 */
 CheckFunction {
-  ((Function s.ScopeClass (e.Name) Sentences e.Sentences) t.SrcPos)
+  ((Function (e.Name) Sentences e.Sentences) t.SrcPos)
     = <CheckSentences t.SrcPos (e.Name) (<gen_e__>) (<gen_e__>) (e.Sentences)>
 }
 

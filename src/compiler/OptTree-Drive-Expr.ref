@@ -288,7 +288,7 @@ MakeColdSolution {
     = (
         (e.UsedVars)
         (<eDRIVEN> ':' (ColdCallBrackets (Symbol Name e.Name) e.Args))
-        ((NewFunction GN-Local (e.Name) s.BodyLabel e.Body))
+        ((NewFunction (e.Name) s.BodyLabel e.Body))
       );
 
   (e.UsedVars) (s.FuncMode (e.Name) s.BodyLabel e.Body) e.Args

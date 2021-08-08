@@ -65,38 +65,49 @@ gen_t__ { e.arg = <gen_e__ e.arg> }
 gen_e__ { e.arg = e.arg }
 
 CalcDigest-Aux {
-  (s.Hash1 s.Hash2) (UnitName e.SrcName) =
-    (<HashLittle2-Chars s.Hash1 s.Hash2 e.SrcName>)
-    (UnitName e.SrcName);
+  (s.Hash1 s.Hash2) (Entries e.Names)
+    = <MapAccum
+        {
+          (s.Hash1^ s.Hash2^) (e.Name)
+            = (<HashFuncName s.Hash1 s.Hash2 e.Name 'e'>) (e.Name);
+        }
+        (s.Hash1 s.Hash2) e.Names
+      >
+    : (s.Hash1^ s.Hash2^) e.Names^
+    = (s.Hash1 s.Hash2) (Entries e.Names);
 
-  (s.Hash1 s.Hash2) (Function s.ScopeClass (e.Name) e.Commands) =
-    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'R'>)
-    (Function s.ScopeClass (e.Name) e.Commands);
+  (s.Hash1 s.Hash2) (UnitName e.SrcName)
+    = (<HashLittle2-Chars s.Hash1 s.Hash2 e.SrcName>)
+      (UnitName e.SrcName);
+
+  (s.Hash1 s.Hash2) (Function (e.Name) e.Commands)
+    = (<HashFuncName s.Hash1 s.Hash2 e.Name 'R'>)
+      (Function (e.Name) e.Commands);
 
   (s.Hash1 s.Hash2)
-  (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
-    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'N'>)
-    (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
+  (CmdNativeFunction (e.Name) t.SrcPos e.Code)
+    = (<HashFuncName s.Hash1 s.Hash2 e.Name 'N'>)
+      (CmdNativeFunction (e.Name) t.SrcPos e.Code);
 
   (s.Hash1 s.Hash2)
-  (CmdMetatable s.ScopeClass (e.Name) e.Metatable) =
-    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'T'>)
-    (CmdMetatable s.ScopeClass (e.Name) e.Metatable);
+  (CmdMetatable (e.Name) e.Metatable)
+    = (<HashFuncName s.Hash1 s.Hash2 e.Name 'T'>)
+      (CmdMetatable (e.Name) e.Metatable);
 
-  (s.Hash1 s.Hash2) (CmdEnum s.ScopeClass e.Name) =
-    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'E'>)
-    (CmdEnum s.ScopeClass e.Name);
+  (s.Hash1 s.Hash2) (CmdEnum e.Name)
+    = (<HashFuncName s.Hash1 s.Hash2 e.Name 'E'>)
+      (CmdEnum e.Name);
 
-  (s.Hash1 s.Hash2) (CmdSwap s.ScopeClass e.Name) =
-    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'S'>)
-    (CmdSwap s.ScopeClass e.Name);
+  (s.Hash1 s.Hash2) (CmdSwap e.Name)
+    = (<HashFuncName s.Hash1 s.Hash2 e.Name 'S'>)
+      (CmdSwap e.Name);
 
-  (s.Hash1 s.Hash2) (CmdConditionFunc s.ScopeClass e.Name) =
-    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'C'>)
-    (CmdConditionFunc s.ScopeClass e.Name);
+  (s.Hash1 s.Hash2) (CmdConditionFunc e.Name)
+    = (<HashFuncName s.Hash1 s.Hash2 e.Name 'C'>)
+      (CmdConditionFunc e.Name);
 
   (s.Hash1 s.Hash2) (CmdDeclaration s.ScopeClass e.Name) =
-    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'D'>)
+    (<HashFuncName s.Hash1 s.Hash2 e.Name 'D'>)
     (CmdDeclaration s.ScopeClass e.Name);
 
   (s.Hash1 s.Hash2) (CmdDefineIdent e.Name) =
@@ -107,24 +118,13 @@ CalcDigest-Aux {
 }
 
 HashFuncName {
-  s.Hash1 s.Hash2 s.ScopeClass e.Name s.Sign =
-    <HashLittle2-Chars
-      s.Hash1 s.Hash2
-      <CharFromScopeClass s.ScopeClass> <DisplayName e.Name> s.Sign
-    >;
-}
-
-CharFromScopeClass {
-  GN-Entry = 'E';
-  GN-Local = 'L';
+  s.Hash1 s.Hash2 e.Name s.Sign
+    = <HashLittle2-Chars s.Hash1 s.Hash2 <DisplayName e.Name> s.Sign ','>;
 }
 
 SetScopeIDs {
-  s.Hash1 s.Hash2 (Function s.ScopeClass (e.Name) e.Commands)
-    = (Function
-        s.ScopeClass (e.Name)
-        <SetScopeIDs-Commands s.Hash1 s.Hash2 e.Commands>
-      );
+  s.Hash1 s.Hash2 (Function (e.Name) e.Commands)
+    = (Function (e.Name) <SetScopeIDs-Commands s.Hash1 s.Hash2 e.Commands>);
 
   s.Hash1 s.Hash2 t.OtherItem = t.OtherItem;
 }
@@ -180,36 +180,42 @@ SelectConstantsOutliner {
     = &OutlineConstants-WithNative
       e.Items-B (NativeBlock t.SrcPos e.Code) e.Items-E;
 
-  e.Items-B (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) e.Items-E
+  e.Items-B (CmdNativeFunction (e.Name) t.SrcPos e.Code) e.Items-E
     = &OutlineConstants-WithNative
       e.Items-B
-      (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code)
+      (CmdNativeFunction (e.Name) t.SrcPos e.Code)
       e.Items-E;
 
   e.Items = &OutlineConstants-RASLOnly e.Items;
 }
 
 OutlineConstants-WithNative {
+  t.Tables (Entries e.Entries) = t.Tables (Entries e.Entries);
+
   t.Tables (UnitName e.SrcName) = t.Tables (UnitName e.SrcName);
 
-  t.Tables (Function s.ScopeClass (e.Name) e.Commands)
+  t.Tables (Function (e.Name) e.Commands)
     = <UpdateFuncTable t.Tables e.Name> : t.Tables^ s.Id
     = <OutlineConstants-Commands t.Tables e.Commands> : t.Tables^ e.Commands^
-    = t.Tables (Function s.ScopeClass (e.Name) e.Commands);
+    = t.Tables (Function (e.Name) e.Commands);
 
-  t.Tables (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code)
+  t.Tables (CmdNativeFunction (e.Name) t.SrcPos e.Code)
     = <UpdateFuncTable t.Tables e.Name> : t.Tables^ s.Id
-    = t.Tables (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
+    = t.Tables (CmdNativeFunction (e.Name) t.SrcPos e.Code);
 
-  t.Tables (CmdMetatable s.ScopeClass (e.Name) e.Metatable)
+  t.Tables (CmdMetatable (e.Name) e.Metatable)
     = <OutlineConstants-Metatable t.Tables e.Metatable> : t.Tables^ e.Metatable^
     = t.Tables
-      (CmdMetatable s.ScopeClass (e.Name) e.Metatable);
+      (CmdMetatable (e.Name) e.Metatable);
 
-  t.Tables (s.Definition s.ScopeClass e.Name)
-    , <OneOf s.Definition CmdEnum CmdSwap CmdConditionFunc CmdDeclaration> : True
+  t.Tables (s.Definition e.Name)
+    , <OneOf s.Definition CmdEnum CmdSwap CmdConditionFunc> : True
     = <UpdateFuncTable t.Tables e.Name> : t.Tables^ s.Id
-    = t.Tables (s.Definition s.ScopeClass e.Name);
+    = t.Tables (s.Definition e.Name);
+
+  t.Tables (CmdDeclaration s.ScopeClass e.Name)
+    = <UpdateFuncTable t.Tables e.Name> : t.Tables^ s.Id
+    = t.Tables (CmdDeclaration s.ScopeClass e.Name);
 
   t.Tables (CmdDefineIdent e.Name)
     = <UpdateIdentTable t.Tables e.Name> : t.Tables^ s.Id
@@ -220,16 +226,16 @@ OutlineConstants-WithNative {
 }
 
 OutlineConstants-RASLOnly {
-  t.Tables (Function s.ScopeClass (e.Name) e.Commands)
+  t.Tables (Function (e.Name) e.Commands)
     = <OutlineConstants-Commands t.Tables e.Commands> : t.Tables^ e.Commands^
-    = t.Tables (Function s.ScopeClass (e.Name) e.Commands);
+    = t.Tables (Function (e.Name) e.Commands);
 
   t.Tables (CmdDefineIdent e.Name) = t.Tables /* пропускаем */;
 
-  t.Tables (CmdMetatable s.ScopeClass (e.Name) e.Metatable)
+  t.Tables (CmdMetatable (e.Name) e.Metatable)
     = <OutlineConstants-Metatable t.Tables e.Metatable> : t.Tables^ e.Metatable^
     = t.Tables
-      (CmdMetatable s.ScopeClass (e.Name) e.Metatable);
+      (CmdMetatable (e.Name) e.Metatable);
 
   t.Tables t.OtherItem = t.Tables t.OtherItem;
 }
@@ -317,17 +323,17 @@ UpdateTable {
 }
 
 MarkFunctionGenMode {
-  OnlyInterpret (Function s.ScopeClass (e.Name) e.Commands) =
-    (Function-ToRASL s.ScopeClass (e.Name) e.Commands);
+  OnlyInterpret (Function (e.Name) e.Commands)
+    = (Function-ToRASL (e.Name) e.Commands);
 
-  OnlyDirect (Function s.ScopeClass (e.Name) e.Commands) =
-    (Function-ToNative s.ScopeClass (e.Name) e.Commands);
+  OnlyDirect (Function (e.Name) e.Commands)
+    = (Function-ToNative (e.Name) e.Commands);
 
-  OnlyInterpret (CmdConditionFunc s.ScopeClass e.Name) =
-    (CmdConditionFunc-ToRASL s.ScopeClass e.Name);
+  OnlyInterpret (CmdConditionFunc e.Name)
+    = (CmdConditionFunc-ToRASL e.Name);
 
-  OnlyDirect (CmdConditionFunc s.ScopeClass e.Name) =
-    (CmdConditionFunc-ToNative s.ScopeClass e.Name);
+  OnlyDirect (CmdConditionFunc e.Name)
+    = (CmdConditionFunc-ToNative e.Name);
 
   s.GenMode (s.Type e.Info) = (s.Type e.Info);
 }

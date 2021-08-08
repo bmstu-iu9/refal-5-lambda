@@ -12,7 +12,7 @@ $EXTERN BuildImage, BuildImage-Term, Generalization, Generalization-Term,
 
 
 $ENTRY HighLevelRASL-Function-Conjoint {
-  s.FnGenSubst s.FnGenResult s.ScopeClass (e.Name) e.Sentences
+  s.FnGenSubst s.FnGenResult (e.Name) e.Sentences
 
     /*
       Функция FindDivisionAndGenerate работает с подстановками,
@@ -47,7 +47,7 @@ $ENTRY HighLevelRASL-Function-Conjoint {
     : e.ResultCommands^
 
     = (Function
-        s.ScopeClass (e.Name)
+        (e.Name)
         (CmdIssueMemory s.MaxContextSize)
         e.CommonMatchCommands
         e.ResultCommands

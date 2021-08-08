@@ -122,9 +122,7 @@ WarmColdFunctions {
   s.ColdBy e.AST
     = <Map
         {
-          (ColdFunction s.ColdBy s.ScopeClass (e.Name) e.Body)
-            = (Function s.ScopeClass (e.Name) e.Body);
-
+          (ColdFunction s.ColdBy (e.Name) e.Body) = (Function (e.Name) e.Body);
           t.OtherItem = t.OtherItem;
         }
         e.AST
@@ -136,11 +134,8 @@ ExpandClosures {
   e.AST
     = <Map
         {
-          (Function s.ScopeClass (e.Name) Sentences e.Body)
-            = (Function
-                s.ScopeClass (e.Name) Sentences
-                <ExpandClosures-Body e.Body>
-              );
+          (Function (e.Name) Sentences e.Body)
+            = (Function (e.Name) Sentences <ExpandClosures-Body e.Body>);
 
           t.OtherItem = t.OtherItem;
         }
@@ -285,9 +280,9 @@ Int-LoopForWarmFunctions {
   (e.Defines) e.Code 0 (e.AST) = 0 e.AST;
 
   (e.Defines) e.Code s.Cycles
-  (e.AST-B (Function s.Scope (e.Name) Sentences e.Sentences) e.AST-E)
+  (e.AST-B (Function (e.Name) Sentences e.Sentences) e.AST-E)
 
-    = e.AST-B (Function s.Scope (e.Name) Sentences e.Sentences) e.AST-E : e.AST
+    = e.AST-B (Function (e.Name) Sentences e.Sentences) e.AST-E : e.AST
 
     = <Int-Code (e.Defines) e.Code s.Cycles (e.AST)> : s.Cycles^ e.AST^
 

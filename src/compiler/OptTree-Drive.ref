@@ -172,9 +172,9 @@ ExtractMetatableNames {
   e.AST
     = <MapAccum
         {
-          (e.Metatables) (Function s.ScopeClass (e.Name) Metatable e.Body)
+          (e.Metatables) (Function (e.Name) Metatable e.Body)
             = (e.Metatables (Metatable e.Name))
-              (Function s.ScopeClass (e.Name) Metatable e.Body);
+              (Function (e.Name) Metatable e.Body);
 
           (e.Metatables) t.Other = (e.Metatables) t.Other;
         }
@@ -209,12 +209,12 @@ ExtractExtractableFunctions {
     = <MapAccum
         {
           ((e.Names-B (s._ e.Name) e.Names-E) e.Extracted)
-          (Function s.ScopeClass (e.Name) e.Body)
+          (Function (e.Name) e.Body)
             = (
                 (e.Names-B e.Names-E)
-                e.Extracted (Function s.ScopeClass (e.Name) e.Body)
+                e.Extracted (Function (e.Name) e.Body)
               )
-              (Function s.ScopeClass (e.Name) e.Body);
+              (Function (e.Name) e.Body);
 
           ((e.Names^) e.Extracted) t.Other = ((e.Names) e.Extracted) t.Other;
         }
@@ -228,10 +228,10 @@ ExtractFuncLengths {
   e.AST
     = <MapAccum
         {
-          (e.Lengths) (Function s.ScopeClass (e.Name) Sentences e.Sentences)
+          (e.Lengths) (Function (e.Name) Sentences e.Sentences)
             = <Lenw e.Sentences> : s.SentencesCount e.Sentences^
             = (e.Lengths (e.Name s.SentencesCount))
-              (Function s.ScopeClass (e.Name) Sentences e.Sentences);
+              (Function (e.Name) Sentences e.Sentences);
 
           (e.Lengths) t.Other = (e.Lengths) t.Other;
         }
@@ -262,16 +262,16 @@ FormatOptFunctions {
     = <MapAccum
         {
           (e.Names-B (Metatable e.Name) e.Names-E)
-          (Function s.ScopeClass (e.Name) Metatable e.Body)
+          (Function (e.Name) Metatable e.Body)
             = (e.Names-B e.Names-E)
               (Metatable (e.Name) Metatable e.Body);
 
           (e.Names-B (s.Label e.Name) e.Names-E)
-          (Function s.ScopeClass (e.Name) Sentences e.Sentences)
+          (Function (e.Name) Sentences e.Sentences)
             = (e.Names-B e.Names-E)
               (s.Label (e.Name) Sentences e.Sentences);
 
-          (e.Names) (Function s._ (e._) Sentences /* пусто */)
+          (e.Names) (Function (e._) Sentences /* пусто */)
             = (e.Names) /* функции без предложений пропускаем */;
         }
         (<ExtractBaseNames e.OptNames>) e.Functions
@@ -332,9 +332,9 @@ DriveInlineOptimizerTick {
     = ((e.OptNames) <WithMetatables e.OptInfo>) : t.OptInfo
     = <MapAccum
         {
-          t.OptInfo^ (Function s.ScopeClass (e.Name) Sentences e.Sentences)
+          t.OptInfo^ (Function (e.Name) Sentences e.Sentences)
             = <OptFunction
-                (Function s.ScopeClass (e.Name) Sentences e.Sentences)
+                (Function (e.Name) Sentences e.Sentences)
                 t.OptInfo
               >;
 
@@ -347,13 +347,13 @@ DriveInlineOptimizerTick {
 
     = <MapAccum
         {
-          (e.News-B (Function s.ScopeClass (e.Name) e.Body) e.News-E)
-          (NewFunction s.ScopeClass (e.Name) e._)
-            = (e.News-B (Function s.ScopeClass (e.Name) e.Body) e.News-E)
+          (e.News-B (Function (e.Name) e.Body) e.News-E)
+          (NewFunction (e.Name) e._)
+            = (e.News-B (Function (e.Name) e.Body) e.News-E)
               /* пропускаем */;
 
-          (e.NewFunctions) (NewFunction s.ScopeClass (e.Name) e.Body)
-            = (e.NewFunctions (Function s.ScopeClass (e.Name) e.Body));
+          (e.NewFunctions) (NewFunction (e.Name) e.Body)
+            = (e.NewFunctions (Function (e.Name) e.Body));
 
           (e.NewFunctions) t.Other = (e.NewFunctions) t.Other;
         }
@@ -363,15 +363,15 @@ DriveInlineOptimizerTick {
 
     = <MapAccum
         {
-          (e.News-B (Function s.ScopeClass (e.Name) e._) e.News-E)
-          (Function s.ScopeClass (e.Name) e.Body)
+          (e.News-B (Function (e.Name) e._) e.News-E)
+          (Function (e.Name) e.Body)
             = (e.News-B e.News-E)
-              (Function s.ScopeClass (e.Name) e.Body);
+              (Function (e.Name) e.Body);
 
-          (e.News-B (Function s.ScopeClass (e.Name) e._) e.News-E)
-          (ColdFunction s.ColdBy s.ScopeClass (e.Name) e.Body)
+          (e.News-B (Function (e.Name) e._) e.News-E)
+          (ColdFunction s.ColdBy (e.Name) e.Body)
             = (e.News-B e.News-E)
-              (ColdFunction s.ColdBy s.ScopeClass (e.Name) e.Body);
+              (ColdFunction s.ColdBy (e.Name) e.Body);
 
           (e.NewFunctions^) t.Other = (e.NewFunctions) t.Other;
         }
@@ -392,7 +392,7 @@ DriveInlineOptimizerTick {
 */
 
 OptFunction {
-  (Function s.ScopeClass (e.Name) Sentences e.Sentences) t.OptInfo
+  (Function (e.Name) Sentences e.Sentences) t.OptInfo
     = <Reduce
         {
           (t.OptInfo^ (e.SntAcc) (e.FunAcc)) t.Sentence
@@ -407,12 +407,12 @@ OptFunction {
         (t.OptInfo^ (e.Sentences /* SAME */) (/* пусто */))
           = t.OptInfo
             (ColdFunction DRIVE
-              s.ScopeClass (e.Name) Sentences <CleanupCold-Body e.Sentences>
+              (e.Name) Sentences <CleanupCold-Body e.Sentences>
             );
 
         (t.OptInfo^ (e.Sentences^) (e.NewFunctions))
           = t.OptInfo
-            (Function s.ScopeClass (e.Name) Sentences e.Sentences)
+            (Function (e.Name) Sentences e.Sentences)
             e.NewFunctions;
       }
 }
@@ -471,9 +471,9 @@ $ENTRY OptTree-Drive-CleanupColdCalls {
   e.AST
     = <Map
         {
-          (Function s.ScopeClass (e.Name) Sentences e.Body)
+          (Function (e.Name) Sentences e.Body)
             = (Function
-                s.ScopeClass (e.Name) Sentences <CleanupCold-Body e.Body>
+                (e.Name) Sentences <CleanupCold-Body e.Body>
               );
 
           t.OtherItem = t.OtherItem;

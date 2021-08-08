@@ -319,7 +319,8 @@
     e.ReducedAST ::= t.ReducedProgramElement*
 
     t.ReducedProgramElement ::=
-        (Function s.ScopeClass (e.Name) e.ReducedBody)
+        (Entries (e.Name)*)
+      | (Function (e.Name) e.ReducedBody)
       | (Declaration s.ScopeClass e.Name)
       | (Ident e.Name)
       | (NativeBlock t.SrcPos e.Code)
@@ -402,18 +403,19 @@
 
     e.RASLAST ::= t.RASLAST-Item*
     t.RASLAST-Item ::=
-        (Function s.ScopeClass (e.Name) e.HiCommands)
-      | (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code)
+        (Entries (e.Name)*)
+      | (Function (e.Name) e.HiCommands)
+      | (CmdNativeFunction (e.Name) t.SrcPos e.Code)
       | t.CmdTopLevelItem
 
     t.CmdTopLevelItem ::=
-        (CmdEnum s.ScopeClass e.Name)
-      | (CmdSwap s.ScopeClass e.Name)
+        (CmdEnum e.Name)
+      | (CmdSwap e.Name)
       | (CmdDeclaration s.ScopeClass e.Name)
-      | (CmdConditionFunc s.ScopeClass e.Name)
+      | (CmdConditionFunc e.Name)
       | (CmdDefineIdent e.Name)
       | (CmdEmitNativeCode t.SrcPos e.Code)
-      | (CmdMetatable s.ScopeClass (e.Name) e.ReducedMetatable)
+      | (CmdMetatable (e.Name) e.ReducedMetatable)
 
     e.HiCommands ::= t.HiCommand*
     t.HiCommand ::=
@@ -691,9 +693,9 @@ e-переменные, распределяемые последователь�
       | (CmdInterpretFuncDescr e.CookiedName s.LabelId)
       | (CmdSwapDescr e.CookiedName)
       | (CmdNativeFuncDescr s.ScopeClass e.Name)
-      | (CmdConditionFuncDescrRasl s.ScopeClass e.Name)
-      | (CmdConditionFuncDescrNative s.ScopeClass e.Name)
-      | (CmdMetatable s.ScopeClass (e.Name) e.LowMetatable)
+      | (CmdConditionFuncDescrRasl e.Name)
+      | (CmdConditionFuncDescrNative e.Name)
+      | (CmdMetatable (e.Name) e.LowMetatable)
 
     e.CookiedName ::= e.Name Hash s.Cookie1 s.Cookie2
     s.Cookie1, s.Cookie2 ::= s.NUMBER
