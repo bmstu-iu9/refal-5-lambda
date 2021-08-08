@@ -165,8 +165,10 @@ FilterConditions {
 
           (
             t.NumberedSentence-L
-            ((t.Pattern e._ (e._ (CallBrackets e.1) e._) ((Sentences e.2) e._)) s.Num)
-
+            (
+              (t.Pattern e._ (e._ (CallBrackets e._) e._) ((Sentences e._) e._))
+              s.Num
+            )
           )
             = /* пусто */;
 
