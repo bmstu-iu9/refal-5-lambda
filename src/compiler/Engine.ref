@@ -436,7 +436,7 @@ PatchAST-Item {
   s.FnPatch (Include t.SrcPos e.IncludeName) = /* пропускаем */;
 
   s.FnPatch (s.Label t.SrcPos s.ScopeClass e.Name)
-    , <OneOf s.Label Enum Swap Declaration Entry Inline Drive Intrinsic Meta> : True
+    , Enum Swap Declaration Entry Inline Drive Intrinsic Meta : e._ s.Label e._
     = (s.Label
         <s.FnPatch SrcPos t.SrcPos>
         s.ScopeClass
