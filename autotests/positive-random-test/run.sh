@@ -14,6 +14,8 @@ main() {
 }
 
 regression() {
+  ls -l saved-test-*.ref
+  df -h .
   for r in saved-test-*.ref; do
     if run_test "$r" \
       && run_test "$r" -Wall \
@@ -61,6 +63,9 @@ new_tests() {
 
   ../../bin/nemytykh-random-program-generator "$LOOPS" "_$NOW"
   echo "gen ($NOW) $(date)" >> time.txt
+
+  ls -l test-*.ref
+  df -h .
 
   for r in test-*.ref; do
     if run_test "$r" \

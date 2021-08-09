@@ -14,6 +14,7 @@ goto :EOF
 
 :REGRESSION
 setlocal
+  dir saved-test-*.ref
   for %%r in (saved-test-*.ref) do (
     call :RUN_TEST "%%r" ^
       && call :RUN_TEST "%%r" -Wall ^
@@ -63,6 +64,7 @@ setlocal
   set NOW=%NOW:/=-%
   ..\..\bin\nemytykh-random-program-generator.exe %LOOPS% _%NOW%
   echo gen (%NOW%) %TIME%>>time.txt
+  dir test-*.ref
   for %%r in (test-*.ref) do (
     call :RUN_TEST "%%r" ^
       && call :RUN_TEST "%%r" -Wall ^
