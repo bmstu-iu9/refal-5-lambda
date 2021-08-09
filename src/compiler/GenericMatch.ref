@@ -1338,7 +1338,7 @@ SeparateTermLeft {
     = (('{'s.A'}') t.T ('{'s.B'}')) (/* пусто */);
 
   ('{'s.A'}') t.T ('{'s.B'}') e.E
-    = (('{'s.A'}') t.T ('{'s.B'}')) (('{'s.B'}') e.E);
+    = (('{'s.A'}') t.T ('{'s.B'}')) (<SimplifyCoordinates ('{'s.B'}') e.E>);
 
 *  {a} T E1* {b} E2  ↦  {a} T {b}, {a} E1* {b} E2
   ('{'s.A'}') t.T e.E1 ('{'s.B'}') e.E2
@@ -1353,7 +1353,7 @@ SeparateTermRight {
 
 *  E {a} T {b}  ↦  E {a}, {a} T {b}
   e.E ('{'s.A'}') t.T ('{'s.B'}')
-    = (e.E ('{'s.A'}')) (('{'s.A'}') t.T ('{'s.B'}'));
+    = (<SimplifyCoordinates e.E ('{'s.A'}')>) (('{'s.A'}') t.T ('{'s.B'}'));
 
 *  E1 {a} E2* T {b}  ↦  E1 {a} E2* {b}, {a} T {b}
   e.Expr t.T ('{'s.B'}')
