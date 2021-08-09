@@ -19,6 +19,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Check free space
+        run: |
+          dir
+        shell: cmd
+
       - name: Bootstrapping with ${{ matrix.ccomp }}
         run: |
           copy .github\workflows\conf-template-${{ matrix.ccomp }}.bat c-plus-plus.conf.bat

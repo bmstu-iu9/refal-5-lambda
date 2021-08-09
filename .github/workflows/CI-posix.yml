@@ -28,6 +28,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Check free space
+        run: |
+          df -h
+        shell: bash
+
       - name: Bootstrapping on ${{ matrix.os }} with ${{ matrix.ccomp }}
         run: |
           cp .github/workflows/conf-template-${{ matrix.ccomp }}.bash c-plus-plus.conf.sh
