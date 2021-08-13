@@ -114,25 +114,6 @@ $ENTRY CreateContext {
     >;
 }
 
-/**
-  <CreateSpecPatternForContext t.ContextVariable*> == e.Expression
-*/
-$ENTRY CreateSpecPatternForContext {
-  e.Context
-    = <Map
-        {
-          (Symbol Identifier e.Ident) = (Symbol Identifier e.Ident);
-
-          (Var s.Mode e.Index) = (Var s.Mode 'STAT_' e.Index);
-
-          (Brackets (Var 'e' e.Index))
-            = (Brackets (Var 'eSTAT_' e.Index));
-        }
-        e.Context
-      >
-      (Var 'edyn')
-}
-
 
 /**
   <AddSuffix e.Name (e.NewSuffix)> == e.Name

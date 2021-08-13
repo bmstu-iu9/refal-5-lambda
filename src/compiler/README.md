@@ -330,6 +330,7 @@
       | Drives
       | Inlines
       | Intrinsics
+      | Specs
 
     e.ReducedBody ::=
         Sentences t.ReducedSentence*

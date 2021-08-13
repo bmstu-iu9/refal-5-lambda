@@ -49,22 +49,30 @@ $ENTRY OptTree-Spec-Prepare {
 
 Prepare-Aux {
   ((e.KnownNames) e.KnownInfo (e.KnownHistories)) e.AST
-    = <MapAccum
+    = e.AST
+    : {
+        e.AST-B (Specs e.Names) e.AST-E = (e.Names) e.AST-B e.AST-E;
+        e.AST^ = (/* пусто */) e.AST;
+      }
+    : (e.NewNames) e.AST^
+
+    = <Map
         {
           /* Игнорируем новые $SPEC’и для известных функций */
-          (e.Names) (Spec (e.Name) e._Pattern)
-            , e.KnownNames : e._B (e.Name) e._E
-            = (e.Names) /* пропускаем */;
-
-          (e.Names) (Spec (e.Name) e._Pattern)
-            = (e.Names (e.Name))
-              <Log-PutLine 'New $SPEC function ' <DisplayName e.Name>>;
-
-          (e.Names) t.Other = (e.Names) t.Other;
+          (e.Name), e.KnownNames : e._B (e.Name) e._E = /* пропускаем */;
+          (e.Name) = (e.Name);
         }
-        (/* no names */) e.AST
+        e.NewNames
       >
-    : (e.NewNames) e.AST^
+    : e.NewNames^
+
+    = <Map
+        {
+          (e.Name) = <Log-PutLine 'New $SPEC function ' <DisplayName e.Name>>
+        }
+        e.NewNames
+      >
+    : /* пусто */
 
     = <MapAccum
         {

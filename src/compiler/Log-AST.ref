@@ -39,8 +39,7 @@ Element {
 
   (NativeBlock t.SrcPos e.Code) = ('%% native block %%');
 
-  (Spec (e.Name) e.Pattern)
-    = ('$SPEC ' <DisplayName e.Name> ' ' <InlineExpr e.Pattern> ';');
+  (Specs e.Names) = <NameList ('$SPEC') e.Names> ();
 
   (DriveInfo e.DriveInfo) = ('(DriveInfo ...)');
   (SpecInfo e.SpecInfo) = ('(SpecInfo ...)');

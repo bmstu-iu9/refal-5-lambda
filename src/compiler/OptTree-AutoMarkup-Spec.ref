@@ -37,18 +37,24 @@ $ENTRY OptTree-AutoMarkup-Spec {
         e.AST
       >
     : e.SpecPatterns
-    = e.AST
-      <FilterSpecPatterns e.SpecPatterns (e.Forbidden)>;
+    = <MapAccum
+        {
+          (Specs e.Specs) (Specs e.KnownNames) = (Specs e.Specs e.KnownNames);
+          (Specs e.Specs) (Spec (e.Name) e._Pattern) = (Specs e.Specs (e.Name));
+
+          (Specs e.Specs) t.Other = (Specs e.Specs) t.Other;
+        }
+        (Specs /* пусто */)
+        e.AST
+        <FilterSpecPatterns e.SpecPatterns (e.Forbidden)>
+      >
 }
 
 ForbiddenToSpecFunctions {
   e.AST
     = <MapAccum
         {
-          (e.Forbidden)
-          (Spec (e.Name) e.SpecPattern)
-            = (e.Forbidden (e.Name))
-              (Spec (e.Name) e.SpecPattern);
+          (e.Forbidden) (Specs e.Names) = (e.Forbidden e.Names) (Specs e.Names);
 
           /* экземпляры повторно не специализируем */
           (e.Forbidden)

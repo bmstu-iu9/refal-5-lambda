@@ -4,8 +4,7 @@ $INCLUDE "LibraryEx";
 $EXTERN Pass-UnCondition;
 
 *$FROM TreeUtils
-$EXTERN NewVarName, AddSuffix, CreateContext, CreateSpecPatternForContext,
-  ExtractVariables-Expr;
+$EXTERN NewVarName, AddSuffix, CreateContext, ExtractVariables-Expr;
 
 
 $ENTRY Desugar {
@@ -43,8 +42,7 @@ $ENTRY Pass-RemovePos {
 
           (NativeBlock t.SrcPos e.Code) = (NativeBlock t.SrcPos e.Code);
 
-          (Spec t.SrcPos (e.Name) e.Pattern)
-            = (Spec (e.Name) <RemovePos-Expr e.Pattern>);
+          (Spec t.SrcPos (e.Name) e.Pattern) = (Spec e.Name);
 
           (s.EnumSwapDeclaration t.SrcPos s.ScopeClass e.Name)
             = (s.EnumSwapDeclaration s.ScopeClass e.Name);
@@ -767,7 +765,7 @@ ExtractNested-Result-Term {
               >
             )
             (Drive e.ClosureName)
-            (Spec (e.ClosureName) <CreateSpecPatternForContext e.Context>)
+            (Spec e.ClosureName)
             <Reduce
               (&CheckBorrowed (e.ScopeVars))
               (e.BorrowedVars) e.NestedBorrowedVars
@@ -808,6 +806,7 @@ Pass-CollectDeclarations {
           (Drive e.Name) = (GROUP Drives (e.Name));
           (Inline e.Name) = (GROUP Inlines (e.Name));
           (Intrinsic e.Name) = (GROUP Intrinsics (e.Name));
+          (Spec e.Name) = (GROUP Specs (e.Name));
 
           (Function (e.Name) e.Body)
             = (GROUP DefinedFunctions (e.Name)) (Function (e.Name) e.Body);
@@ -824,6 +823,7 @@ Pass-CollectDeclarations {
         (GROUP Drives)
         (GROUP Inlines)
         (GROUP Intrinsics)
+        (GROUP Specs)
         (GROUP DefinedFunctions)
       >
     : e.AST^
@@ -831,12 +831,14 @@ Pass-CollectDeclarations {
       (GROUP Drives e.Drives)
       (GROUP Inlines e.Inlines)
       (GROUP Intrinsics e.Intrinsics)
+      (GROUP Specs e.Specs)
       (GROUP DefinedFunctions e.DefinedFunctions)
 
     = <Unique e.Externs> : e.Externs^
     = <Unique e.Drives> : e.Drives^
     = <Unique e.Inlines> : e.Inlines^
     = <Unique e.Intrinsics> : e.Intrinsics^
+    = <Unique e.Specs> : e.Specs^
 
     = <Set-Reject (e.Externs) (e.DefinedFunctions)> : e.Externs^
     = <Set-Reject (e.Inlines) (e.Drives)> : e.Inlines^
@@ -844,6 +846,7 @@ Pass-CollectDeclarations {
 
     = (Externs e.Externs)
       (Drives e.Drives) (Inlines e.Inlines) (Intrinsics e.Intrinsics)
+      (Specs e.Specs)
       e.AST
 }
 

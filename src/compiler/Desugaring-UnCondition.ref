@@ -1,7 +1,7 @@
 $INCLUDE "LibraryEx";
 
 *$FROM TreeUtils
-$EXTERN AddSuffix, ExtractVariables, CreateSpecPatternForContext,
+$EXTERN AddSuffix, ExtractVariables,
   CreateContext, ExtractVariables-Expr, NewVarName;
 
 
@@ -461,7 +461,7 @@ UnCondition-Sentence {
         )
       )
       (Drive e.CheckFunction)
-      (Spec (e.CheckFunction) <CreateSpecPatternForContext e.Context>)
+      (Spec e.CheckFunction)
       t.CheckFunction e.OpenEFunctions;
 }
 
