@@ -319,12 +319,17 @@
     e.ReducedAST ::= t.ReducedProgramElement*
 
     t.ReducedProgramElement ::=
-        (Entries (e.Name)*)
+        (s.DeclarationListNode (e.Name)*)
       | (Function (e.Name) e.ReducedBody)
-      | (Declaration s.ScopeClass e.Name)
       | (Ident e.Name)
       | (NativeBlock t.SrcPos e.Code)
 
+    s.DeclarationListNode ::=
+        Entries
+      | Externs
+      | Drives
+      | Inlines
+      | Intrinsics
 
     e.ReducedBody ::=
         Sentences t.ReducedSentence*

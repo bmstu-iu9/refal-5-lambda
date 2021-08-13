@@ -145,8 +145,9 @@ AddGuardEnums {
           (Function (e.Name) e.Body)
             = (Function (e.Name) e.Body) <MakeGuardEnum e.Name>;
 
-          (Declaration s.ScopeClass e.Name)
-            = (Declaration s.ScopeClass e.Name) <MakeGuardEnum e.Name>;
+          (Externs e.Names)
+            = (Externs e.Names)
+              <Map { (e.Name) = <MakeGuardEnum e.Name> } e.Names>;
 
           t.OtherItem = t.OtherItem;
         }

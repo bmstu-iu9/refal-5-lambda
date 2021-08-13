@@ -42,19 +42,13 @@ BuldCallGraph {
 
 MetaInfo {
   e.AST
-    = e.AST : e.AST-B (Entries e.Entries) e.AST-E
-    = ((/* forbidden list */) (/* inlines */) (/* drives */)) : t.InitMetaInfo
+    = <MetaInfo-ExtractNode Entries e.AST> : (e.Entries) e.AST^
+    = <MetaInfo-ExtractNode Drives e.AST> : (e.Drives) e.AST^
+    = <MetaInfo-ExtractNode Inlines e.AST> : (e.Inlines) e.AST^
+    = <MetaInfo-ExtractNode Intrinsics e.AST> : (e.Intrinsics) e.AST^
+    = (/* forbidden list */) : t.InitMetaInfo
     = <MapAccum
         {
-          t.MetaInfo (Inline e.Name)
-            = <MetaInfo-AddInline t.MetaInfo e.Name> (Inline e.Name);
-
-          t.MetaInfo (Drive e.Name)
-            = <MetaInfo-AddDrive t.MetaInfo e.Name> (Drive e.Name);
-
-          t.MetaInfo (Intrinsic e.Name)
-            = <MetaInfo-AddForbidden t.MetaInfo e.Name> (Intrinsic e.Name);
-
           t.MetaInfo
           (Function
             (e.FuncName) Sentences
@@ -84,26 +78,24 @@ MetaInfo {
 
           t.MetaInfo t.Other = t.MetaInfo t.Other;
         }
-        t.InitMetaInfo e.AST-B e.AST-E
+        t.InitMetaInfo e.AST
       >
-    : ((e.Forbidden) (e.Inlines) (e.Drives)) e.AST^
-    = ((e.Forbidden) (e.Inlines) (e.Drives) (e.Entries))
-      (Entries e.Entries) e.AST
+    : (e.Forbidden) e.AST^
+    = ((e.Intrinsics e.Forbidden) (e.Inlines) (e.Drives) (e.Entries))
+      (Entries e.Entries)
+      (Drives e.Drives)
+      (Inlines e.Inlines)
+      (Intrinsics e.Intrinsics)
+      e.AST
 }
 
-MetaInfo-AddInline {
-  ((e.Forbidden) (e.Inlines) (e.Drives)) e.Name
-    = ((e.Forbidden (e.Name)) (e.Inlines (e.Name)) (e.Drives));
-}
-
-MetaInfo-AddDrive {
-  ((e.Forbidden) (e.Inlines) (e.Drives)) e.Name
-    = ((e.Forbidden) (e.Inlines) (e.Drives (e.Name)));
+MetaInfo-ExtractNode {
+  s.Node e.AST-B (s.Node e.Names) e.AST-E = (e.Names) e.AST-B e.AST-E;
+  s.Node e.AST = (/* пусто */) e.AST;
 }
 
 MetaInfo-AddForbidden {
-  ((e.Forbidden) (e.Inlines) (e.Drives)) e.Name
-    = ((e.Forbidden (e.Name)) (e.Inlines) (e.Drives));
+  (e.Forbidden) e.Name = (e.Forbidden (e.Name));
 }
 
 Pseudofunction-gen_e {
@@ -499,26 +491,10 @@ SetDifference {
 }
 
 UpdateAST {
-  e.AST (e.FunctionsToDrive) (e.BasisVertexes)
-    = <MapAccum
-        {
-          (e.BasisVertexes-B (e.Name) e.BasisVertexes-E)
-          (Drive e.Name)
-            = (e.BasisVertexes-B (e.Name) e.BasisVertexes-E)
-              /* пропускаем */;
-
-          (e.BasisVertexes^) t.Other = (e.BasisVertexes) t.Other;
-        }
-        (e.BasisVertexes) e.AST
-      >
-    : (e._) e.AST^
-    = e.AST
-      <Map
-        {
-          (e.FuncName) = (Drive e.FuncName);
-        }
-        e.FunctionsToDrive
-      >
+  e.AST-B (Drives e.Drives) e.AST-E (e.NewDrives) (e.BasisVertexes)
+    = e.AST-B
+      (Drives <SetDifference e.Drives (e.BasisVertexes)> e.NewDrives)
+      e.AST-E
 }
 
 /**

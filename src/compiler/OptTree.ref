@@ -103,9 +103,9 @@ $ENTRY OptTree-CleanupMarkup {
   e.AST
     = <Map
         {
-          (Drive e.Name) = /* пропускаем */;
-          (Inline e.Name) = /* пропускаем */;
-          (Intrinsic e.Name) = /* пропускаем */;
+          (Drives e.Names) = /* пропускаем */;
+          (Inlines e.Names) = /* пропускаем */;
+          (Intrinsics e.Names) = /* пропускаем */;
           (Spec (e.Name) e.Pattern) = /* пропускаем */;
 
           (DriveInfo e.Info) = /* пропускаем */;

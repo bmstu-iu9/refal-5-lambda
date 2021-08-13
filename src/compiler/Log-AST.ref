@@ -30,14 +30,10 @@ Element {
   (ColdFunction s.ColdBy (e.Name) e.Body)
     = <ColdFunction s.ColdBy (e.Name) e.Body>;
 
-  (Declaration GN-Entry e.Name) = ('$EXTERN ' <DisplayName e.Name> ';');
-  (Declaration GN-Local e.Name) = ('$FORWARD ' <DisplayName e.Name> ';');
-
-  (Inline e.Name) = ('$INLINE ' <DisplayName e.Name> ';');
-
-  (Drive e.Name) = ('$DRIVE ' <DisplayName e.Name> ';');
-
-  (Intrinsic e.Name) = ('$INTRINSIC ' <DisplayName e.Name> ';');
+  (Externs e.Names) = <Log-ExternList e.Names> ();
+  (Inlines e.Names) = <NameList ('$INLINE') e.Names> ();
+  (Drives e.Names) = <NameList ('$DRIVE') e.Names> ();
+  (Intrinsics e.Names) = <NameList ('$INTRINSIC') e.Names> ();
 
   (Ident e.Name) = ('$LABEL ' <DisplayName e.Name> ';');
 
@@ -66,6 +62,10 @@ LongLine {
 
 $ENTRY Log-EntryList {
   e.Names = <NameList ('$ENTRY') e.Names>;
+}
+
+$ENTRY Log-ExternList {
+  e.Names = <NameList ('$EXTERN') e.Names>;
 }
 
 NameList {

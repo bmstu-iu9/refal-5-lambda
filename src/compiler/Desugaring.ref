@@ -16,7 +16,6 @@ $ENTRY Desugar {
         &Pass-RemovePos
         &Pass-UnfoldEnumsAndSwaps
         &Pass-ExtractEntries
-        &Pass-RemoveRedundantDriveInlineIntrinsic
         &Pass-EnumerateVariables
         &Pass-NameNestedFuncs
         &Pass-RemoveBlocksAndAssigns
@@ -28,7 +27,7 @@ $ENTRY Desugar {
             Conditions-Transform = (&Pass-UnCondition s.MarkupContext);
           }
         >
-        &Pass-CleanupRedudandExterns
+        &Pass-CollectDeclarations
       >
     >;
 }
@@ -179,67 +178,6 @@ $ENTRY Pass-ExtractEntries {
 Entry {
   GN-Entry e.Name = (e.Name);
   GN-Local e.Name = /* пропускаем */;
-}
-
-Pass-RemoveRedundantDriveInlineIntrinsic {
-  e.AST
-    = <MapAccum
-        {
-          (e.Labels-B (e.Name s.KnownLabel) e.Labels-E) (Drive e.Name)
-            = (e.Labels-B (e.Name Drive) e.Labels-E)
-              (Drive e.Name);
-
-          (e.Labels-B (e.Name Drive) e.Labels-E) (Inline e.Name)
-            = (e.Labels-B (e.Name Drive) e.Labels-E)
-              (Inline e.Name);
-
-          (e.Labels-B (e.Name Intrinsic) e.Labels-E) (Inline e.Name)
-            = (e.Labels-B (e.Name Inline) e.Labels-E)
-              (Inline e.Name);
-
-          (e.Labels-B (e.Name s.KnownLabel) e.Labels-E) (Intrinsic e.Name)
-            = (e.Labels-B (e.Name s.KnownLabel) e.Labels-E)
-              (Intrinsic e.Name);
-
-          (e.Labels) (Drive e.Name)
-            = (e.Labels (e.Name Drive)) (Drive e.Name);
-
-          (e.Labels) (Inline e.Name)
-            = (e.Labels (e.Name Inline)) (Inline e.Name);
-
-          (e.Labels) (Intrinsic e.Name)
-            = (e.Labels (e.Name Intrinsic)) (Intrinsic e.Name);
-
-          (e.Labels) t.Other = (e.Labels) t.Other;
-        }
-        (/* labels */) e.AST
-      >
-    : (e.Labels) e.AST^
-
-    = <MapAccum
-        {
-          (e.Labels-B (e.Name s.Label) e.Labels-E) (s.Label e.Name)
-            = (e.Labels-B e.Labels-E) (s.Label e.Name);
-
-          (e.Labels-B (e.Name Drive) e.Labels-E) (Inline e.Name)
-            = (e.Labels-B (e.Name Drive) e.Labels-E) /* пропускаем */;
-
-          (e.Labels-B (e.Name Drive) e.Labels-E) (Intrinsic e.Name)
-            = (e.Labels-B (e.Name Drive) e.Labels-E) /* пропускаем */;
-
-          (e.Labels-B (e.Name Inline) e.Labels-E) (Intrinsic e.Name)
-            = (e.Labels-B (e.Name Inline) e.Labels-E) /* пропускаем */;
-
-          (e.Labels^) (Drive e.Name) = (e.Labels) /* пропускаем */;
-          (e.Labels^) (Inline e.Name) = (e.Labels) /* пропускаем */;
-          (e.Labels^) (Intrinsic e.Name) = (e.Labels) /* пропускаем */;
-
-          (e.Labels^) t.Other = (e.Labels) t.Other;
-        }
-        (e.Labels) e.AST
-      >
-    : () e.AST^
-    = e.AST;
 }
 
 $ENTRY Pass-EnumerateVariables {
@@ -860,75 +798,68 @@ CheckBorrowed {
   (e.ScopeVars) (e.BorrowedVars) (s.Mode e.Index) = (e.BorrowedVars);
 }
 
-Pass-CleanupRedudandExterns {
-  /*
-    Проход Checker проверил корректность использования $FORWARD’ов
-    и $EXTERN’ов, поэтому здесь мы их упрощаем не взирая на область
-    видимости.
-  */
-
+Pass-CollectDeclarations {
   e.AST
-    = <MapAccum
-       {
-         (e.DefinedFunctions) (Entries e.Names)
-           = (e.DefinedFunctions) (Entries e.Names);
-
-         (e.DefinedFunctions) (Function (e.Name) e.Body)
-           = (e.DefinedFunctions (e.Name)) (Function (e.Name) e.Body);
-
-         (e.DefinedFunctions) (Inline e.Name)
-           = (e.DefinedFunctions) (Inline e.Name);
-
-         (e.DefinedFunctions) (Drive e.Name)
-           = (e.DefinedFunctions) (Drive e.Name);
-
-         (e.DefinedFunctions) (Intrinsic e.Name)
-           = (e.DefinedFunctions) (Intrinsic e.Name);
-
-         (e.DefinedFunctions) (Declaration s.ScopeClass e.Name)
-           = (e.DefinedFunctions) (Declaration s.ScopeClass e.Name);
-
-         (e.DefinedFunctions) (Ident e.Name)
-           = (e.DefinedFunctions) (Ident e.Name);
-
-         (e.DefinedFunctions) (NativeBlock t.SrcPos e.Code)
-           = (e.DefinedFunctions) (NativeBlock t.SrcPos e.Code);
-
-         (e.DefinedFunctions) (Spec t.SrcPos t.Name e.Pattern)
-           = (e.DefinedFunctions) (Spec t.SrcPos t.Name e.Pattern)
-       }
-       (/* defined functions */)
-       e.AST
-      >
-    : (e.DefinedFunctions) e.AST^
-    = <MapAccum &RemoveRedundantDeclarations (e.DefinedFunctions) e.AST>
-    : (e.DefinedFunctions^) e.AST^
-
-    = <MapAccum
+    = <Map
         {
-          (e.DeclaredFunctions-B (e.Name) e.DeclaredFunctions-E)
-          (Declaration s.ScopeClass e.Name)
-            = (e.DeclaredFunctions-B (e.Name) e.DeclaredFunctions-E)
-              /* пропускаем дублирующееся определение */;
+          (Declaration GN-Local e._) = /* игнорируем */;
+          (Declaration GN-Entry e.Name) = (GROUP Externs (e.Name));
 
-          (e.DeclaredFunctions) (Declaration s.ScopeClass e.Name)
-            = (e.DeclaredFunctions (e.Name))
-              (Declaration s.ScopeClass e.Name);
+          (Drive e.Name) = (GROUP Drives (e.Name));
+          (Inline e.Name) = (GROUP Inlines (e.Name));
+          (Intrinsic e.Name) = (GROUP Intrinsics (e.Name));
 
-          (e.DeclaredFunctions) t.Other
-            = (e.DeclaredFunctions) t.Other;
+          (Function (e.Name) e.Body)
+            = (GROUP DefinedFunctions (e.Name)) (Function (e.Name) e.Body);
+
+          t.Other = t.Other
         }
-        (/* declared functions */) e.AST
+        e.AST
       >
-    : (e._) e.AST^
-    = e.AST;
+    : e.AST^
+
+    = <CollectDeclarations-Group
+        e.AST
+        (GROUP Externs)
+        (GROUP Drives)
+        (GROUP Inlines)
+        (GROUP Intrinsics)
+        (GROUP DefinedFunctions)
+      >
+    : e.AST^
+      (GROUP Externs e.Externs)
+      (GROUP Drives e.Drives)
+      (GROUP Inlines e.Inlines)
+      (GROUP Intrinsics e.Intrinsics)
+      (GROUP DefinedFunctions e.DefinedFunctions)
+
+    = <Unique e.Externs> : e.Externs^
+    = <Unique e.Drives> : e.Drives^
+    = <Unique e.Inlines> : e.Inlines^
+    = <Unique e.Intrinsics> : e.Intrinsics^
+
+    = <Set-Reject (e.Externs) (e.DefinedFunctions)> : e.Externs^
+    = <Set-Reject (e.Inlines) (e.Drives)> : e.Inlines^
+    = <Set-Reject (e.Intrinsics) (e.Drives e.Inlines)> : e.Intrinsics^
+
+    = (Externs e.Externs)
+      (Drives e.Drives) (Inlines e.Inlines) (Intrinsics e.Intrinsics)
+      e.AST
 }
 
-RemoveRedundantDeclarations {
-  (e.DefinedFunctions-B (e.Name) e.DefinedFunctions-E)
-  (Declaration s.ScopeClass e.Name)
-    = (e.DefinedFunctions-B (e.Name) e.DefinedFunctions-E)
-      /* пусто */;
+CollectDeclarations-Group {
+  e.AST-B (GROUP s.Group e.Names-B) e.AST-M (GROUP s.Group e.Names-E) e.AST-E
+    = e.AST-B
+      <CollectDeclarations-Group
+        e.AST-M (GROUP s.Group e.Names-B e.Names-E) e.AST-E
+      >;
 
-  (e.DefinedFunctions) t.OtherItem = (e.DefinedFunctions) t.OtherItem;
+  e.AST = e.AST;
+}
+
+Set-Reject {
+  (e.Minuent-B t.Repeated e.Minuent-E) (e.Subtr-B t.Repeated e.Subtr-E)
+    = e.Minuent-B <Set-Reject (e.Minuent-E) (e.Subtr-B t.Repeated e.Subtr-E)>;
+
+  (e.Minuent) (e.Subtrahend) = e.Minuent;
 }

@@ -70,9 +70,9 @@ BaseName {
 
 UpdateDriveInfo {
   s.OptDrive s.OptIntrinsic ((e.KnownNames) e.KnownFunctions) e.AST
-    = <ExtractLabels Drive e.AST> : (e.Drives) e.AST^
-    = <ExtractLabels Inline e.AST> : (e.Inlines) e.AST^
-    = <ExtractLabels Intrinsic e.AST> : (e.Intrinsics) e.AST^
+    = <ExtractLabels Drive Drives e.AST> : (e.Drives) e.AST^
+    = <ExtractLabels Inline Inlines e.AST> : (e.Inlines) e.AST^
+    = <ExtractLabels Intrinsic Intrinsics e.AST> : (e.Intrinsics) e.AST^
     = <ExtractMetatableNames e.AST> : (e.Metatables) e.AST^
 
     = <SetNames-Reject (e.Drives) (e.Intrinsics)> : e.Drives^
@@ -155,17 +155,17 @@ UpdateDriveInfo {
 }
 
 ExtractLabels {
-  s.Label e.AST
-    = <DoExtractLabels s.Label (/* метки */) (/* просканировано */) e.AST>;
-}
+  s.Label s.Node e.AST-B (s.Node e.Names) e.AST-E
+    = <Map
+        {
+          (e.Name) = (s.Label e.Name);
+        }
+        e.Names
+      >
+    : e.Names^
+    = (e.Names) e.AST-B e.AST-E;
 
-DoExtractLabels {
-  s.Label (e.FoundLabels) (e.Scanned) e.AST-B (s.Label e.Name) e.AST-E
-    = <DoExtractLabels
-        s.Label (e.FoundLabels (s.Label e.Name)) (e.Scanned e.AST-B) e.AST-E
-      >;
-
-  s.Label (e.FoundLabels) (e.Scanned) e.AST = (e.FoundLabels) e.Scanned e.AST;
+  s.Label s.Node e.AST = (/* пусто */) e.AST;
 }
 
 ExtractMetatableNames {

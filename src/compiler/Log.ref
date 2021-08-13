@@ -10,7 +10,7 @@ $EXTERN DisplayName;
 $EXTERN EscapeString;
 
 *$FROM Log-AST
-$EXTERN Log-TextFromAST, Log-EntryList;
+$EXTERN Log-TextFromAST, Log-EntryList, Log-ExternList;
 
 
 /**
@@ -125,6 +125,10 @@ PutProgramElement {
     = <Map (&IndentedPutout s.FileHandle) <Log-EntryList e.Names>>;
 
   s.FileHandle
+  (Externs e.Names)
+    = <Map (&IndentedPutout s.FileHandle) <Log-ExternList e.Names>>;
+
+  s.FileHandle
   (Function (e.Name) e.Commands)
     = <PutRASLFunction s.FileHandle (e.Name) e.Commands>;
 
@@ -154,9 +158,6 @@ PutProgramElement {
 
   s.FileHandle (CmdConditionFunc e.Name)
     = <Putout s.FileHandle '  ' <DisplayName e.Name> ' :: condition'>;
-
-  s.FileHandle (CmdDeclaration e.Name)
-    = <Putout s.FileHandle '  ' <DisplayName e.Name> ' :: extern'>;
 
   s.FileHandle (CmdDefineIdent e.Name)
     = <Putout s.FileHandle '$LABEL ' <DisplayName e.Name>>;

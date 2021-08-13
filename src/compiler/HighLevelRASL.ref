@@ -54,7 +54,7 @@ $ENTRY HighLevelRASL {
 
           (Function (e.Name) Swap) = (CmdSwap e.Name);
 
-          (Declaration s.ScopeClass e.Name) = /* пусто */;
+          (Externs e.Names) = /* пусто */;
 
           (Ident e.Name) = (CmdDefineIdent e.Name);
 
