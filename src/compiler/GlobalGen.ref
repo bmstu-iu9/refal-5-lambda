@@ -278,3 +278,38 @@ CalcTermComplexity {
   (Brackets e.Terms) = <Add <CalcComplexity e.Terms> 2>;
   (ADT-Brackets t.Name e.Terms) = <Add <CalcComplexity e.Terms> 2>;
 }
+
+
+/**
+  <GlobalGen-NamedVars (e.Pattern)+> == e.Pattern
+
+  Аналогично GlobalGen, но переменные получают последовательные числовые
+  индексы: s.1 e.2 t.3...
+*/
+$ENTRY GlobalGen-NamedVars {
+  e.Patterns = <NameVariables <GlobalGen e.Patterns>>;
+}
+
+NameVariables {
+  e.Pattern
+    = <NameVariables-Rec 1 e.Pattern> : s._ e.Pattern^
+    = e.Pattern
+}
+
+NameVariables-Rec {
+  s.NextId e.Terms = <MapAccum &NameVariables-Term s.NextId e.Terms>
+}
+
+NameVariables-Term {
+  s.NextId (Var s.Mode) = <Inc s.NextId> (Var s.Mode <Symb s.NextId>);
+
+  s.NextId (Brackets e.Nested)
+    = <NameVariables-Rec s.NextId e.Nested> : s.NextId^ e.Nested^
+    = s.NextId (Brackets e.Nested);
+
+  s.NextId (ADT-Brackets (e.Name) e.Nested)
+    = <NameVariables-Rec s.NextId e.Nested> : s.NextId^ e.Nested^
+    = s.NextId (ADT-Brackets (e.Name) e.Nested);
+
+  s.NextId t.Other = s.NextId t.Other;
+}
