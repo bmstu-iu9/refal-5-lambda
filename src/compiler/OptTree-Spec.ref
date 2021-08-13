@@ -17,7 +17,7 @@ $EXTERN Solve-Spec, GenericMatch;
 $EXTERN OptTree-CanonizeExpr, OptTree-CheckExprStopRelation;
 
 *$FROM GlobalGen
-$EXTERN GlobalGen-NamedVars, GlobalGen;
+$EXTERN GlobalGen-NameVariables, GlobalGen;
 
 
 /**
@@ -114,14 +114,15 @@ TrivialHistory {
 
 BottomSignature {
   e.Sentences
-    = <GlobalGen-NamedVars
-        <Map
-          {
-            ((e.Pattern) e._Tail) = (e.Pattern);
-          }
-          e.Sentences
-        >
+    = <Map
+        {
+          ((e.Pattern) e._Tail) = (e.Pattern);
+        }
+        e.Sentences
       >
+    : e.Patterns
+    = <GlobalGen e.Patterns> : e.GlobalGen
+    = <GlobalGen-NameVariables e.GlobalGen>
 }
 
 * Добавляет вызов аварийной функции Func@0 в конец каждой специализируемой
