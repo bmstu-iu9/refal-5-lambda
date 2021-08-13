@@ -49,47 +49,46 @@ $ENTRY OptTree-Spec-Prepare {
 
 Prepare-Aux {
   ((e.KnownNames) e.KnownInfo (e.KnownHistories)) e.AST
-    = <Fetch
-        ((/* no names */) /* no info */ (/* no histories */)) e.AST
-        <Pipe
-          (&MapAccum
-            {
-              /* Игнорируем новые $SPEC’и для известных функций */
-              ((e.Names) e.Info (e.Histories)) (Spec t.Name e._Pattern)
-                , e.KnownNames : e._B t.Name e._E
-                = ((e.Names) e.Info (e.Histories)) /* пропускаем */;
+    = <MapAccum
+        {
+          /* Игнорируем новые $SPEC’и для известных функций */
+          (e.Names) (Spec (e.Name) e._Pattern)
+            , e.KnownNames : e._B (e.Name) e._E
+            = (e.Names) /* пропускаем */;
 
-              ((e.Names) e.Info (e.Histories)) (Spec t.Name e._Pattern)
-                = t.Name : (e.Name)
-                = (
-                    (e.Names t.Name)
-                    e.Info (t.Name) (e.Histories)
-                  )
-                  <Log-PutLine 'New $SPEC function ' <DisplayName e.Name>>;
+          (e.Names) (Spec (e.Name) e._Pattern)
+            = (e.Names (e.Name))
+              <Log-PutLine 'New $SPEC function ' <DisplayName e.Name>>;
 
-              ((e.Names) e.Info (e.Histories)) t.Other
-                = ((e.Names) e.Info (e.Histories)) t.Other;
-            }
-          )
-          (&MapAccum
-            {
-              ((e.Names) e.Info-B (t.Name) e.Info-E (e.Histories))
-              (Function t.Name Sentences e.Body)
-                = t.Name : (e.Name)
-                = <BottomSignature e.Body> : e.Pattern
-                = (
-                    (e.Names)
-                    e.Info-B (t.Name (e.Body) 1) e.Info-E
-                    (e.Histories <TrivialHistory e.Name (e.Pattern)>)
-                  )
-                  (Function t.Name Sentences e.Body);
-
-               ((e.Names) e.Info) t.Other = ((e.Names) e.Info) t.Other;
-            }
-          )
-        >
+          (e.Names) t.Other = (e.Names) t.Other;
+        }
+        (/* no names */) e.AST
       >
-    : ((e.NewNames) e.NewInfo (e.NewHistories)) e.AST^
+    : (e.NewNames) e.AST^
+
+    = <MapAccum
+        {
+          (e.Info) (Function (e.Name) Sentences e.Body)
+            , e.NewNames : e._ (e.Name) e._
+            = (e.Info ((e.Name) (e.Body) 1))
+              (Function (e.Name) Sentences e.Body);
+
+           (e.Info) t.Other = (e.Info) t.Other;
+        }
+        (/* no info */) e.AST
+      >
+    : (e.NewInfo) e.AST^
+
+    = <Map
+        {
+          ((e.Name) (e.Body) 1 /* нет сигнатур */)
+            = <BottomSignature e.Body> : e.Pattern
+            = (<AddSuffix e.Name ('@' 0)>) e.Pattern : e.HistoryRecord
+            = ((e.Name) (e.HistoryRecord));
+        }
+        e.NewInfo
+      >
+    : e.NewHistories
 
     = <AddGuardSentences e.NewInfo> : e.NewInfo^
     = <AddGuardEnums e.AST> : e.AST^
@@ -102,14 +101,6 @@ Prepare-Aux {
         (e.KnownHistories e.NewHistories)
       )
       e.AST
-}
-
-TrivialHistory {
-  e.Name (e.Pattern)
-    = (<AddSuffix e.Name ('@' 0)>)
-      e.Pattern
-    : e.HistoryRecord
-    = ((e.Name) (e.HistoryRecord));
 }
 
 BottomSignature {
