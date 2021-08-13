@@ -29,7 +29,7 @@ $EXTERN GenResult-Opt;
     | (s.SingularItem e.Name)
     | (CmdDefineIdent e.Name)
     | (CmdEmitNativeCode t.SrcPos e.Code)
-  s.SingularItem ::= CmdEnum | CmdSwap | CmdDeclaration
+  s.SingularItem ::= CmdEnum | CmdSwap
   t.HiRASLCommand ::=
       (Cmd… e.Value)
     | (CmdSentence t.HiRASLCommand*)
@@ -54,8 +54,7 @@ $ENTRY HighLevelRASL {
 
           (Function (e.Name) Swap) = (CmdSwap e.Name);
 
-          (Declaration s.ScopeClass e.Name)
-            = (CmdDeclaration s.ScopeClass e.Name);
+          (Declaration s.ScopeClass e.Name) = /* пусто */;
 
           (Ident e.Name) = (CmdDefineIdent e.Name);
 

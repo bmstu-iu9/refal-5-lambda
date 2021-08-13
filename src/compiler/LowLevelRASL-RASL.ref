@@ -74,9 +74,6 @@ ClassifyItems {
     = (e.DefinedFunctions (e.Name))
       (CmdConditionFuncDecsrNative e.Name);
 
-  (e.DefinedFunctions) (CmdDeclaration e.Name)
-    = (e.DefinedFunctions (e.Name)) /* skip */;
-
   (e.DefinedFunctions) (CmdEmitNativeCode t.SrcPos e.Code)
     = (e.DefinedFunctions) /* skip */;
 }

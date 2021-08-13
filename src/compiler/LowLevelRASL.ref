@@ -104,10 +104,6 @@ CalcDigest-Aux {
     = (<HashFuncName s.Hash1 s.Hash2 e.Name 'C'>)
       (CmdConditionFunc e.Name);
 
-  (s.Hash1 s.Hash2) (CmdDeclaration s.ScopeClass e.Name)
-    = (<HashFuncName s.Hash1 s.Hash2 e.Name 'D'>)
-      (CmdDeclaration s.ScopeClass e.Name);
-
   (s.Hash1 s.Hash2) (CmdDefineIdent e.Name)
     = (s.Hash1 s.Hash2) (CmdDefineIdent e.Name);
 
@@ -210,10 +206,6 @@ OutlineConstants-WithNative {
     , <OneOf s.Definition CmdEnum CmdSwap CmdConditionFunc> : True
     = <UpdateFuncTable t.Tables e.Name> : t.Tables^ s.Id
     = t.Tables (s.Definition e.Name);
-
-  t.Tables (CmdDeclaration s.ScopeClass e.Name)
-    = <UpdateFuncTable t.Tables e.Name> : t.Tables^ s.Id
-    = t.Tables (CmdDeclaration s.ScopeClass e.Name);
 
   t.Tables (CmdDefineIdent e.Name)
     = <UpdateIdentTable t.Tables e.Name> : t.Tables^ s.Id

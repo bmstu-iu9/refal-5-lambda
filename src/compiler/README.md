@@ -411,7 +411,6 @@
     t.CmdTopLevelItem ::=
         (CmdEnum e.Name)
       | (CmdSwap e.Name)
-      | (CmdDeclaration s.ScopeClass e.Name)
       | (CmdConditionFunc e.Name)
       | (CmdDefineIdent e.Name)
       | (CmdEmitNativeCode t.SrcPos e.Code)
@@ -510,7 +509,6 @@
   * (`CmdNativeFunction` — функция, написанная на целевом коде),
   * `CmdEnum` — пустая функция,
   * `CmdSwap` — статический ящик,
-  * `CmdDeclaration` — объявление функции,
   * `CmdConditionFunc` — определение функции-замыкания,
   * `CmdDefineIdent` — определение идентификатора,
   * `CmdEmitNativeCode` — кусок целевого кода, выводимый как есть.

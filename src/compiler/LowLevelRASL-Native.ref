@@ -70,7 +70,6 @@ SetCookies {
   e.Entries s.Hash1 s.Hash2 (CmdSwap e.Name) = /* пропускаем */;
   e.Entries s.Hash1 s.Hash2 (CmdConditionFunc-ToRASL e.Name) = /* пропускаем */;
   e.Entries s.Hash1 s.Hash2 (CmdConditionFunc-ToNative e.Name) = /* пропускаем */;
-  e.Entries s.Hash1 s.Hash2 (CmdDeclaration e.Name) = /* пропускаем */;
   e.Entries s.Hash1 s.Hash2 (CmdEmitNativeCode t.SrcPos e.Code)
     = (CmdEmitNativeCode t.SrcPos e.Code);
 }
