@@ -1,0 +1,11 @@
+* TREE
+
+$ENTRY Go {
+  (e.A) (e.B) (e.C) (e.D) (e.E) (e.F) (e.G 'a' H e.H e.H) e.K e.E
+    , : e.G
+    , e.B e.A ADAC : e.H
+    , : G
+    = /* empty */;
+
+  /* empty */ = /* empty */;
+}

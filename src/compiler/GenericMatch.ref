@@ -130,7 +130,7 @@ CombineResults-Drive {
 
 /**
   <Solve-Spec (e.UsedVars) (e.Left) (e.Right)>
-    == ((t.Contr*) (t.Assign*))* (t.Assign*) (e.Left^)
+    == (e.UsedVars^) ((t.Contr*) (t.Assign*))* (t.Assign*) (e.Left^)
 
   t.Contr ::= (t.Var ':' e.Val)
   t.Assign ::= (e.Val ':' t.Var)
@@ -166,7 +166,8 @@ Solve-Spec-DoFindGeneralization {
             >;
 
         e.Success
-          = <CombineResults-Spec e.Success>
+          = (e.UsedVars)
+            <CombineResults-Spec e.Success>
             (e.GenAssigns)
             (<ClearCoordinates e.L>);
       }
