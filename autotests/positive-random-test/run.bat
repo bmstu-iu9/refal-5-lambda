@@ -7,6 +7,7 @@ goto :EOF
 
 :MAIN
 setlocal
+  if exist __dump.txt erase __dump.txt
   call :REGRESSION || exit /b 1
   call :NEW_TESTS || exit /b 1
 endlocal
@@ -116,6 +117,9 @@ setlocal
     2>%FILE%.err%FLAGS% >%FILE%.out%FLAGS%
 
   if not exist %FILE%.rasl (
+    exit /b 1
+  )
+  if exist __dump.txt (
     exit /b 1
   )
   erase %FILE%.rasl

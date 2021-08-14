@@ -9,6 +9,7 @@ if [[ -n "$1" ]]; then
 fi
 
 main() {
+  rm -f __dump.txt
   regression || return 1
   new_tests || return 1
 }
@@ -118,7 +119,7 @@ run_test() {
   ../../bin/rlc-core --classic -C "$FILE" --prelude=prelude-for-test "$FLAGS" \
     2>"$FILE.err$FLAGS" >"$FILE.out$FLAGS"
 
-  if [[ ! -e "$FILE.rasl" ]]; then
+  if [[ ! -e "$FILE.rasl" ]] || [[ -e __dump.txt ]]; then
     return 1
   fi
   rm -f "$FILE.rasl"

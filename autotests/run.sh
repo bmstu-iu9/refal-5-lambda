@@ -23,7 +23,7 @@ prepare_prefix() {
     ../bin/rlc-core -o _test_prefix.exe-prefix \
       "${COMMON_SRFLAGS[@]}" ${SRFLAGS_NAT} 2>__error.txt
       if [[ $? -ge 100 ]] || [[ ! -e _test_prefix.exe-prefix ]]; then
-        echo "CAN'T CREATE COMMON PREFIX, SEE __error.txt"
+        echo "CAN'T CREATE COMMON PREFIX, SEE __error.txt or __dump_rlc-core.txt"
         exit 1
       fi
     echo
@@ -115,7 +115,8 @@ prepare_int_test() {
     "${COMMON_SRFLAGS[@]}" ${SRFLAGS_PREF} \
     --reference=${REFERENCE} >__out.txt 2>__error.txt
   if [[ $? -ge 100 ]] || [[ ! -e ${INT} ]]; then
-    echo COMPILER FAILS ON CREATING ${INT}, SEE __error.txt
+    echo COMPILER FAILS ON CREATING ${INT}, \
+      SEE __error.txt or __dump_rlc-core.txt
     exit 1
   fi
   rm __out.txt __error.txt
@@ -139,10 +140,11 @@ run_test_aux_with_flags() {
     SATELITE=
   fi
 
+  rm -f __dump_rlc-core.txt
   ../bin/rlc-core --keep-rasls ${SREF} --makelib "${COMMON_SRFLAGS[@]}" \
     ${SRFLAGS} ${SRFLAGS_PLUS} "$SATELITE" 2>__error.txt
   if [[ $? -ge 100 ]]; then
-    echo COMPILER ON ${SREF} FAILS, SEE __error.txt
+    echo COMPILER ON ${SREF} FAILS, SEE __error.txt or __dump_rlc-core.txt
     exit 1
   elif [[ ! -e ${LIBR} ]] && [[ ! -e ${LIBN} ]]; then
     echo COMPILATION FAILED, __error.txt:
@@ -174,10 +176,11 @@ run_test_aux.BAD-SYNTAX() {
   RASL=${SREF%.*}.rasl
   EXE=${SREF%.*}$(platform_exe_suffix)
 
+  rm -f __dump_rlc-core.txt
   ../bin/rlc-core --prelude=test-prelude.srefi -C ${SRFLAGS} ${SREF} \
     2>__error.txt
   if [[ $? -ge 100 ]]; then
-    echo COMPILER ON ${SREF} FAILS, SEE __error.txt
+    echo COMPILER ON ${SREF} FAILS, SEE __error.txt or __dump_rlc-core.txt
     exit 1
   fi
   if [[ -e ${RASL} ]]; then
@@ -202,10 +205,11 @@ run_test_aux.WARNING() {
   RASL=${SREF%.*}.rasl
   EXE=${SREF%.*}$(platform_exe_suffix)
 
+  rm -f __dump_rlc-core.txt
   ../bin/rlc-core ${WARN} --prelude=test-prelude.srefi -C ${SRFLAGS} ${SREF} \
     2>__error.txt
   if [[ $? -ge 100 ]]; then
-    echo COMPILER ON ${SREF} FAILS, SEE __error.txt
+    echo COMPILER ON ${SREF} FAILS, SEE __error.txt or __dump_rlc-core.txt
     exit 1
   fi
   if [[ ! -e ${RASL} ]]; then
@@ -221,10 +225,11 @@ run_test_aux.WARNING() {
 
   WARN="-Werror=${array[2]}"
   echo Passing $1 \(flags "${WARN}"\)...
+  rm -f __dump_rlc-core.txt
   ../bin/rlc-core ${WARN} --prelude=test-prelude.srefi -C ${SRFLAGS} ${SREF} \
     2>__error.txt
   if [[ $? -ge 100 ]]; then
-    echo COMPILER ON ${SREF} FAILS, SEE __error.txt
+    echo COMPILER ON ${SREF} FAILS, SEE __error.txt or __dump_rlc-core.txt
     exit 1
   fi
   if [[ -e ${RASL} ]]; then
@@ -257,10 +262,11 @@ run_test_aux_with_flags.FAILURE() {
     SATELITE=
   fi
 
+  rm -f __dump_rlc-core.txt
   ../bin/rlc-core --keep-rasls ${SREF} --makelib "${COMMON_SRFLAGS[@]}" \
     ${SRFLAGS} ${SRFLAGS_PLUS} "$SATELITE" 2>__error.txt
   if [[ $? -ge 100 ]] || [[ ! -e ${LIBR} ]] && [[ ! -e ${LIBN} ]]; then
-    echo COMPILER ON ${SREF} FAILS, SEE __error.txt
+    echo COMPILER ON ${SREF} FAILS, SEE __error.txt or __dump_rlc-core.txt
     exit 1
   fi
   rm __error.txt
