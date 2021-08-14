@@ -54,6 +54,8 @@ $ENTRY ExtractVariables-Expr {
   e.Variable ::= s.Mode e.Index
 */
 $ENTRY NewVarName {
+  (e.Vars) s.Mode /* нет индекса */ = <NewVarName (e.Vars) s.Mode '0'>;
+
   (e.Vars-B (e.Variable) e.Vars-E) e.Variable
     = <DoNewVarName ((e.Variable) e.Vars-B e.Vars-E) e.Variable>;
 
