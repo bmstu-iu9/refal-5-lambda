@@ -76,16 +76,31 @@ Prepare-Aux {
 
     = <MapAccum
         {
-          (e.Info) (Function (e.Name) Sentences e.Body)
-            , e.NewNames : e._ (e.Name) e._
-            = (e.Info ((e.Name) (e.Body) 1))
-              (Function (e.Name) Sentences e.Body);
+          ((e.Names-B (e.Name) e.Names-E) e.Info)
+          (Function (e.Name) e.Body)
+            = e.Body
+            : {
+                Sentences /* нет предложений — функцию не специализируем */
+                  = ((e.Names-B e.Names-E) e.Info)
+                    (Function (e.Name) Sentences /* пусто */);
+
+                Sentences e.Sentences
+                  = (
+                      (e.Names-B (e.Name) e.Names-E)
+                       e.Info ((e.Name) (e.Sentences) 1)
+                    )
+                    (Function (e.Name) Sentences e.Sentences);
+
+                e.Body^ /* другие типы функций не специализируем */
+                  = ((e.Names-B e.Names-E) e.Info)
+                    (Function (e.Name) e.Body);
+                };
 
            (e.Info) t.Other = (e.Info) t.Other;
         }
-        (/* no info */) e.AST
+        ((e.NewNames) /* no info */) e.AST
       >
-    : (e.NewInfo) e.AST^
+    : ((e.NewNames^) e.NewInfo) e.AST^
 
     = <Map
         {
