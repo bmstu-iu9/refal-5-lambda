@@ -577,7 +577,9 @@ SpecCall {
     = e.Sg e.ExtractedCalls : e.Sg^
 
       /* ищем динамическое обобщение для аргумента и образцов */
-    = <DynGenArg (e.NewArgument) (e.Sg) (/* пусто */) (/* пусто */) e.Body>
+    = <DynGenArg
+        (e.UsedVars) (e.NewArgument) (e.Sg) (/* пусто */) (/* пусто */) e.Body
+      >
     : (e.NewArgument^) (e.Sg^) (e.Solutions)
 
     = <SpecCall-Aux
@@ -638,9 +640,10 @@ GenEE {
 }
 
 DynGenArg {
-  (e.Arg) (e.Sg) (e.Sol) (e.Begin)
+  (e.UsedVars) (e.Arg) (e.Sg) (e.Sol) (e.Begin)
   ((e.Pat) e.Tail) e.Sentences
-    = <ExtractVariables ((e.Arg e.Pat) e.Tail)> : e.UsedVars
+    = e.UsedVars <ExtractVariables ((e.Arg e.Pat) e.Tail)> : e.UsedVars^
+    = <Unique e.UsedVars> : e.UsedVars^
     = <NewVarName (e.UsedVars) 'eNew'> : (e.UsedVars^) e.eNew
     = e.Arg (Brackets (Var e.eNew)) : e.Arg^
     = <WrappedCondVars e.Tail> : e.WrappedCondVars
@@ -651,7 +654,7 @@ DynGenArg {
           = e.ArgNew : e.ArgNew^ (Brackets e._)
           = e.Pat : e.Pat^ (Brackets e._)
           = <DynGenArg
-              (e.ArgNew) (e.Sg) (e.Sol (e.Solutions))
+              (e.UsedVars) (e.ArgNew) (e.Sg) (e.Sol (e.Solutions))
               (e.Begin ((e.Pat) e.Tail)) e.Sentences
             >;
 
@@ -661,7 +664,7 @@ DynGenArg {
           = e.SgNew e.Sg : e.Sg^
           = <RemoveAssignByLeftPart ((Var e.eNew)) e.Sg> : e.Sg^
           = <DynGenArg
-              (e.ArgNew) (e.Sg) (/* пусто */) (/* пусто */)
+              (e.UsedVars) (e.ArgNew) (e.Sg) (/* пусто */) (/* пусто */)
               e.Begin ((e.Pat) e.Tail) e.Sentences
             >;
 
@@ -669,12 +672,12 @@ DynGenArg {
           = e.Arg : e.Arg^ (Brackets e._)
           = e.Pat : e.Pat^ (Brackets e._)
           = <DynGenArg
-              (e.Arg) (e.Sg) (e.Sol (Failure))
+              (e.UsedVars) (e.Arg) (e.Sg) (e.Sol (Failure))
               (e.Begin ((e.Pat) e.Tail)) e.Sentences
             >;
       };
 
-  (e.Arg) (e.Sg) (e.Sol) (e.Begin) /* пусто */
+  (e.UsedVars) (e.Arg) (e.Sg) (e.Sol) (e.Begin) /* пусто */
     = (e.Arg) (e.Sg) (e.Sol);
 }
 
@@ -808,7 +811,8 @@ SpecCall-NewSignature-Generalize {
         >
       : e.NewSg^
       = <DynGenArg
-          (e.GenSignature) (e.NewSg e.Sg) (/* пусто */) (/* пусто */) e.Body
+          (e.ArgVars) (e.GenSignature) (e.NewSg e.Sg) (/* пусто */)
+          (/* пусто */) e.Body
         >
       : (e.NewArg^) (e.Sg^) (e.Solutions^)
       = <SpecCall-Aux
