@@ -44,9 +44,10 @@ $ENTRY GenericMatch {
           , <AllUncontracted e.OtherSolutions> : True
           = Clear <FormatAssigns e.Assigns>;
 
+        Success /* пусто */ = Failure;
+
         Success e.Solutions = Contracted e.Solutions;
 
-        Failure = Failure;
         Undefined = Undefined;
       }
 }
@@ -68,7 +69,7 @@ AllUncontracted {
 
 /**
   <Solve-Drive (e.UsedVars) t.Equation>
-    == Success t.Result* | Undefined | Failure
+    == Success t.Result* | Undefined
 
     t.Contr ::= (t.Var ':' e.Val)
     t.Equation ::= ((e.Expr) ':' (e.LExpr))
@@ -87,16 +88,9 @@ $ENTRY Solve-Drive {
       >
     : {
         e._ (Generalize (e.Intervals)) e._ = Undefined;
+        e._ (Success (e._) AfterOpen (e._) (e._)) e._ = Undefined;
 
-        /* пусто */ = Failure;
-
-        e.Success
-          = <IsFlagOpen e.Success>
-          : {
-              True = Undefined;
-
-              False = Success <CombineResults-Drive e.Success>;
-            };
+        e.Success = Success <CombineResults-Drive e.Success>;
       };
 }
 
@@ -136,8 +130,7 @@ CombineResults-Drive {
 
 /**
   <Solve-Spec (e.UsedVars) (e.Left) (e.Right)>
-    == Success ((t.Contr*) (t.Assign*))* (t.Assign*) (e.Left^)
-    |  Failure
+    == ((t.Contr*) (t.Assign*))* (t.Assign*) (e.Left^)
 
   t.Contr ::= (t.Var ':' e.Val)
   t.Assign ::= (e.Val ':' t.Var)
@@ -172,11 +165,8 @@ Solve-Spec-DoFindGeneralization {
               (e.UsedVars) ((e.L) ':' (e.R)) (e.GenAssigns)
             >;
 
-        /* пусто */ = Failure;
-
         e.Success
-          = Success
-            <CombineResults-Spec e.Success>
+          = <CombineResults-Spec e.Success>
             (e.GenAssigns)
             (<ClearCoordinates e.L>);
       }

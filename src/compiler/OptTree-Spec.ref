@@ -577,9 +577,7 @@ SpecCall {
     = e.Sg e.ExtractedCalls : e.Sg^
 
       /* ищем динамическое обобщение для аргумента и образцов */
-    = <DynGenArg
-        (e.UsedVars) (e.NewArgument) (e.Sg) (/* пусто */) (/* пусто */) e.Body
-      >
+    = <DynGenArg (e.UsedVars) (e.NewArgument) (e.Sg) e.Body>
     : (e.NewArgument^) (e.Sg^) (e.Solutions)
 
     = <SpecCall-Aux
@@ -640,8 +638,16 @@ GenEE {
 }
 
 DynGenArg {
-  (e.UsedVars) (e.Arg) (e.Sg) (e.Sol) (e.Begin)
-  ((e.Pat) e.Tail) e.Sentences
+  (e.UsedVars) (e.Arg) (e.Sg) e.Sentences
+    = <DoDynGenArg
+        (e.UsedVars) (e.Arg) (e.Sg) (/* solutions */)
+        (/* scanned */) e.Sentences
+      >;
+}
+
+DoDynGenArg {
+  (e.UsedVars) (e.Arg) (e.Sg) (e.Sol)
+  (e.Begin) ((e.Pat) e.Tail) e.Sentences
     = e.UsedVars <ExtractVariables ((e.Arg e.Pat) e.Tail)> : e.UsedVars^
     = <Unique e.UsedVars> : e.UsedVars^
     = <NewVarName (e.UsedVars) 'eNew'> : (e.UsedVars^) e.eNew
@@ -650,30 +656,22 @@ DynGenArg {
     = e.Pat (Brackets e.WrappedCondVars) : e.Pat^
     = <Solve-Spec (e.UsedVars) (e.Arg) (e.Pat)>
     : {
-        Success e.Solutions (/* нет обобщений */) (e.ArgNew)
+        e.Solutions (/* нет обобщений */) (e.ArgNew)
           = e.ArgNew : e.ArgNew^ (Brackets e._)
           = e.Pat : e.Pat^ (Brackets e._)
-          = <DynGenArg
+          = <DoDynGenArg
               (e.UsedVars) (e.ArgNew) (e.Sg) (e.Sol (e.Solutions))
               (e.Begin ((e.Pat) e.Tail)) e.Sentences
             >;
 
-        Success e.Solutions (e.SgNew) (e.ArgNew)
+        e.Solutions (e.SgNew) (e.ArgNew)
           = e.ArgNew : e.ArgNew^ (Brackets e._)
           = e.Pat : e.Pat^ (Brackets e._)
           = e.SgNew e.Sg : e.Sg^
           = <RemoveAssignByLeftPart ((Var e.eNew)) e.Sg> : e.Sg^
           = <DynGenArg
-              (e.UsedVars) (e.ArgNew) (e.Sg) (/* пусто */) (/* пусто */)
+              (e.UsedVars) (e.ArgNew) (e.Sg)
               e.Begin ((e.Pat) e.Tail) e.Sentences
-            >;
-
-        Failure
-          = e.Arg : e.Arg^ (Brackets e._)
-          = e.Pat : e.Pat^ (Brackets e._)
-          = <DynGenArg
-              (e.UsedVars) (e.Arg) (e.Sg) (e.Sol (Failure))
-              (e.Begin ((e.Pat) e.Tail)) e.Sentences
             >;
       };
 
@@ -788,9 +786,12 @@ SpecCall-NewSignature-Generalize {
       /* Получает обобщённую сигнатуру для двух сигнатур */
       = <GlobalGen (e.Signature) (e.HistorySignature)> : e.GenSignature
       = <ExtractVariables ((e.OldArg e.NewArg) (/* пусто */))> : e.ArgVars
+
       = <NameSignatureVars-Expr (e.ArgVars) e.GenSignature>
       : t._ e.GenSignature^
+
       = <GenericMatch (e.NewArg) (e.GenSignature)> : Clear e.NewSg
+
       = <IsTrivialSubstitutions e.NewSg>
       : {
           /*
@@ -803,6 +804,7 @@ SpecCall-NewSignature-Generalize {
           False = True;
         }
       : s.NeedRelationCheck
+
       = <Map
           {
             (e.Expr ':' (s.Mode e.Index)) = (e.Expr ':' (Var s.Mode e.Index))
@@ -810,11 +812,10 @@ SpecCall-NewSignature-Generalize {
           e.NewSg
         >
       : e.NewSg^
-      = <DynGenArg
-          (e.ArgVars) (e.GenSignature) (e.NewSg e.Sg) (/* пусто */)
-          (/* пусто */) e.Body
-        >
+
+      = <DynGenArg (e.ArgVars) (e.GenSignature) (e.NewSg e.Sg) e.Body>
       : (e.NewArg^) (e.Sg^) (e.Solutions^)
+
       = <SpecCall-Aux
           (e.Name) (e.Body) s.NextNumber
           e.Signatures (e.OldArg) (e.NewArg)
@@ -946,22 +947,14 @@ CreateNewSentences {
             = <ApplyContractions e.PatternTemplate (e.Contrs)> : e.Pat^
             = <ApplySubst-Tail (e.Assigns) e.Tail> : e.Tail^
             = (e.NewSentences ((e.Pat) e.Tail));
-
-          (e.NewSentences^) Failure
-            = (e.NewSentences);
         }
         (e.NewSentences)
         e.Sol
       >
     : (e.NewSentences^)
-    = <CreateNewSentences
-        (e.Arg) (e.NewSentences)
-        (e.Solutions) (e.Body)
-      >;
+    = <CreateNewSentences (e.Arg) (e.NewSentences) (e.Solutions) (e.Body)>;
 
-  (e.Arg) (e.NewSentences)
-  (/* пусто */) (/* пусто */)
-    = e.NewSentences;
+  (e.Arg) (e.NewSentences) (/* пусто */) (/* пусто */) = e.NewSentences;
 }
 
 ApplySubst-Tail {

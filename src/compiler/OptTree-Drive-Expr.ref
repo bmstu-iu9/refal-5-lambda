@@ -339,16 +339,6 @@ DoOptExpr-MakeSubstitutions {
             >;
 
         /*
-          При неудаче переходим к следующему предложению, к подстановкам
-          ничего не добавляем.
-        */
-        Failure
-          = <DoOptExpr-MakeSubstitutions
-              (e.SentenceVars) (e.WholeVars) (e.Args) (e.Substitutions)
-              (Function (<RemainderFuncIncName e.Name>) Sentences e.Rest)
-            >;
-
-        /*
           Здесь либо Undefined, либо грязное решение в режиме встраивания,
           в обоих случаях добавляем холодный вызов остаточной функции.
         */
