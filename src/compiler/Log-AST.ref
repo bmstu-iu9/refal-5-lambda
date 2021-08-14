@@ -24,22 +24,22 @@ UndoubleEmtpyLines {
 }
 
 Element {
-  (Entries e.Names) = <Log-EntryList e.Names> ();
+  (Entries e.Names) = <Log-EntryList e.Names>;
 
   (Function (e.Name) e.Body) = <Function (e.Name) e.Body>;
   (ColdFunction s.ColdBy (e.Name) e.Body)
     = <ColdFunction s.ColdBy (e.Name) e.Body>;
 
-  (Externs e.Names) = <Log-ExternList e.Names> ();
-  (Inlines e.Names) = <NameList ('$INLINE') e.Names> ();
-  (Drives e.Names) = <NameList ('$DRIVE') e.Names> ();
-  (Intrinsics e.Names) = <NameList ('$INTRINSIC') e.Names> ();
+  (Externs e.Names) = <Log-ExternList e.Names>;
+  (Inlines e.Names) = <NameList ('$INLINE') e.Names>;
+  (Drives e.Names) = <NameList ('$DRIVE') e.Names>;
+  (Intrinsics e.Names) = <NameList ('$INTRINSIC') e.Names>;
 
   (Ident e.Name) = ('$LABEL ' <DisplayName e.Name> ';');
 
   (NativeBlock t.SrcPos e.Code) = ('%% native block %%');
 
-  (Specs e.Names) = <NameList ('$SPEC') e.Names> ();
+  (Specs e.Names) = <NameList ('$SPEC') e.Names>;
 
   (DriveInfo e.DriveInfo) = ('(DriveInfo ...)');
   (SpecInfo e.SpecInfo) = ('(SpecInfo ...)');
@@ -68,17 +68,22 @@ $ENTRY Log-ExternList {
 }
 
 NameList {
+  (e.Keyword) /* нет имён */ = /* пусто */;
+  (e.Keyword) e.Names = <DoNameList (e.Keyword) e.Names> ();
+}
+
+DoNameList {
   (e.OutLine) e.Names
     , <LongLine e.OutLine> : True
-    = (e.OutLine) <NameList-Next e.Names>;
+    = (e.OutLine) <DoNameList-Next e.Names>;
 
   (e.OutLine) (e.Name) e.Names
     = <CommaOrSemicolon e.Names> : s.SEP
-    = e.OutLine ' ' e.Name s.SEP : e.NewOutLine
-    = <LongLine e.OutLine ' ' e.Name>
+    = e.OutLine ' ' <DisplayName e.Name> : e.NewOutLine
+    = <LongLine e.NewOutLine>
     : {
-        True = (e.OutLine) <NameList-Next e.Names>;
-        False = <NameList (e.NewOutLine) e.Names>;
+        True = (e.OutLine) <DoNameList-Next e.Names>;
+        False = <DoNameList (e.NewOutLine s.SEP) e.Names>;
       };
 
   (e.OutLine) /* пусто */ = (e.OutLine);
@@ -89,10 +94,10 @@ CommaOrSemicolon {
   e.Names = ',';
 }
 
-NameList-Next {
+DoNameList-Next {
   (e.NextName) e.Names
     = <CommaOrSemicolon e.Names> : s.SEP
-    = <NameList ('  ' e.NextName s.SEP) e.Names>;
+    = <DoNameList ('  ' <DisplayName e.NextName> s.SEP) e.Names>;
 
   /* пусто */ = /* пусто */;
 }
