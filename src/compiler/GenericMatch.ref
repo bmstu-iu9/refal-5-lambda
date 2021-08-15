@@ -487,7 +487,7 @@ Solve-Clashes {
 
   /* {m} #var {n} : s.X   ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (s._ (('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((Var 's' e.Index)))
+  (T (('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((Var 's' e.Index)))
   e.ClashesEnd (e.Assigns)
     = /* нет решений */;
 
@@ -560,7 +560,7 @@ Solve-Clashes {
 
   /* {m} #var {n} : (P)  ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (s._ (('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((Brackets e._)))
+  (T (('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((Brackets e._)))
   e.ClashesEnd (e.Assigns)
     = /* нет решений */;
 
@@ -573,7 +573,7 @@ Solve-Clashes {
 
   /* {m} #var {n} : [X P]  ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (s._ (('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((ADT-Brackets e._)))
+  (T (('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((ADT-Brackets e._)))
   e.ClashesEnd (e.Assigns)
     = /* нет решений */;
 
@@ -668,7 +668,7 @@ Solve-Clashes {
 
   /*  {m} #var {n}  :  Y    ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (s._ (('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((Symbol e._)))
+  (T (('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((Symbol e._)))
   e.ClashesEnd (e.Assigns)
     = /* нет решений */;
 
