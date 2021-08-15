@@ -928,7 +928,20 @@ GlueNames {
 
 CopyPrefix {
   (e.OriginalPrefixName) (e.NewExeName)
-    = <SaveBytes (e.NewExeName) <LoadBytes e.OriginalPrefixName>>;
+    = <Open-Auto "rb" e.OriginalPrefixName> : s.SrcHandle
+    = <Open-Auto "wb" e.NewExeName> : s.DestHandle
+    = <DoCopyPrefix s.SrcHandle s.DestHandle>
+}
+
+DoCopyPrefix {
+  s.SrcHandle s.DestHandle
+    = <ReadBytes s.SrcHandle 4096>
+    : {
+        /* пусто */ = <Close s.SrcHandle> <Close s.DestHandle>;
+        e.Bytes
+          = <WriteBytes s.DestHandle e.Bytes>
+            <DoCopyPrefix s.SrcHandle s.DestHandle>;
+      }
 }
 
 $INLINE LinkError;
