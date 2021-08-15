@@ -937,13 +937,20 @@ IsTrivialSubstitutions {
 }
 
 CreateNewSentences {
-  (e.Arg) (e.NewSentences)
-  ((e.Sol) e.Solutions) (((e.Pat) e.Tail) e.Body)
+  (e.Arg) (e.NewSentences) (e.Solutions) (e.Body)
     = <WrapVars e.Arg> : e.PatternTemplate
+    = <DoCreateNewSentences
+        (e.PatternTemplate) (e.NewSentences) (e.Solutions) (e.Body)
+      >
+}
+
+DoCreateNewSentences {
+  (e.PatTemplate) (e.NewSentences)
+  ((e.Sol) e.Solutions) (((e.Pat) e.Tail) e.Body)
     = <Reduce
         {
           (e.NewSentences^) ((e.Contrs) (e.Assigns))
-            = <ApplyContractions e.PatternTemplate (e.Contrs)> : e.Pat^
+            = <ApplyContractions e.PatTemplate (e.Contrs)> : e.Pat^
             = <ApplySubst-Tail (e.Assigns) e.Tail> : e.Tail^
             = (e.NewSentences ((e.Pat) e.Tail));
         }
@@ -951,9 +958,23 @@ CreateNewSentences {
         e.Sol
       >
     : (e.NewSentences^)
-    = <CreateNewSentences (e.Arg) (e.NewSentences) (e.Solutions) (e.Body)>;
+    = <DoCreateNewSentences
+        (e.PatTemplate) (e.NewSentences) (e.Solutions) (e.Body)
+      >;
 
-  (e.Arg) (e.NewSentences) (/* пусто */) (/* пусто */) = e.NewSentences;
+  (e.PatTemplate) (e.NewSentences) (/* пусто */) (/* пусто */)
+    = e.NewSentences
+    : {
+        /*
+          Если образец одного из предложений совпадает с шаблоном
+          (к нему не применилось ни одно из сужений) и условий нет,
+          то это предложение экранирует все последующие.
+        */
+        e.Prefix ((e.PatTemplate) (e.Result)) e.ScreenedSentences
+          = e.Prefix ((e.PatTemplate) (e.Result));
+
+        e.NewSentences^ = e.NewSentences;
+      };
 }
 
 ApplySubst-Tail {
