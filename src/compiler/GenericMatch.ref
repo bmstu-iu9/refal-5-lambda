@@ -806,8 +806,28 @@ Solve-Clashes {
         (e.Assigns)
       >
     : e.Branch2
+    /*
+      Сначала ищем решение для более короткой ветки вычислений (где
+      переменная стирается), а затем для более длинной. Если сначала
+      решать уравнения для более длинной ветки, то в патологических
+      случаях вида
+          e.X : 'abc...xyz'
+      размер поля зрения в пике будет квадратичным:
+         <Solve-Clashes ... (e.i : 'z') ...>
+         <Solve-Clashes ... (ε : 'z') ...>
+         <Solve-Clashes ... (ε : 'yz') ...>
+         <Solve-Clashes ... (ε : 'xyz') ...>
+         ...
+         <Solve-Clashes ... (ε : 'abc...xyz') ...>
+      но при этом все ветви, кроме первой, обрежутся.
+
+      Поэтому сначала решаем вторую ветвь, а потом первую. При этом
+      относительный порядок решений важен — решения второй ветви
+      должны располагаться после решений первой.
+    */
+    = <Solve-Clashes (e.UsedVars) e.Branch2> : e.Solutions2
     = <Solve-Clashes t.NewVars2 e.Branch1>
-      <Solve-Clashes (e.UsedVars) e.Branch2>;
+      e.Solutions2;
 
   /* {m} E e.X {n} : P  Pt  ↦  e.X → e.NEW1 t.NEW2  ||  e.X → ε */
   (e.UsedVars) (e.Contrs) e.ClashesStart
@@ -843,8 +863,10 @@ Solve-Clashes {
         (e.Assigns)
       >
     : e.Branch2
+    /* См. комментарий в предыдущем предложении. */
+    = <Solve-Clashes (e.UsedVars) e.Branch2> : e.Solutions2
     = <Solve-Clashes t.NewVars2 e.Branch1>
-      <Solve-Clashes (e.UsedVars) e.Branch2>;
+      e.Solutions2;
 
   /* могли остаться только клэши вида E : e.X P e.Y */
   (e.UsedVars) (s.OpenFlag e.Contrs)
