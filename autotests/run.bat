@@ -226,9 +226,9 @@ setlocal
   ..\bin\rlc-core --no-sources -o _int_test.exe ^
     %COMMON_SRFLAGS% %SRFLAGS_PREF% ^
     --reference=%REFERENCE% >__out.txt 2> __error.txt
+  set MSG=COMPILER FAILS ON CREATING _int_test.exe
+  set MSG=%MSG%, SEE __error.txt or __dump_rlc-core.txt
   if errorlevel 100 (
-    set MSG=COMPILER FAILS ON CREATING _int_test.exe
-    set MSG=%MSG%, SEE __error.txt or __dump_rlc-core.txt
     echo %MSG%
     exit /b 1
   )

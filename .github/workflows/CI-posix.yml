@@ -47,6 +47,7 @@ jobs:
             autotests/__error.txt
             autotests/__dump.txt
             autotests/__log.txt
+            autotests/__dump_rlc-core.txt
             autotests/any-random-test
             autotests/positive-random-test
             bin
