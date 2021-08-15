@@ -609,8 +609,8 @@ Solve-Clashes {
           ((Var 't' e.Index) ':' (ADT-Brackets (e.Name) (Var 'e' e.NewIndex)))
           (e.Contrs) e.ClashesStart
           (T
-            (('{'s.M'}') (Var 't' e.Index) ('{'s.N'}'))
-            ':' ((ADT-Brackets (e.Name) e.PBody))
+            (('{'s.M'}') (Var 't' e.Index) ('{'s.N'}')) ':'
+            ((ADT-Brackets (e.Name) e.PBody))
           )
           e.ClashesEnd (e.Assigns)
         >
@@ -837,7 +837,7 @@ Solve-Clashes {
         (e.Contrs)
         <gen_e__
           e.ClashesStart
-          (E (('{'s.M'}') e.E (Var 'e' e.Index) ('{'s.N'}')) ':' (e.P t.Pt))
+          (E (('{'s.M'}') e.E ('{'s.N'}')) ':' (e.P t.Pt))
           e.ClashesEnd
         >
         (e.Assigns)
