@@ -16,6 +16,33 @@ $EXTERN ExtractVariables-Expr;
 
 $ENTRY OptTree-AutoMarkup-Spec {
   e.AST
+    = <MapAccum
+        {
+          (Specs e.Specs) (Function (e.FuncName) Sentences e.Body)
+            , (e.FuncName) : (e._ SUF e._ '@' s._ e._)
+            = (Specs e.Specs)
+              (Function (e.FuncName) Sentences e.Body);
+
+          /* пустые функции не специализируем */
+          (Specs e.Specs) (Function (e.FuncName) Sentences /* пусто */)
+            = (Specs e.Specs) (Function (e.FuncName) Sentences /* пусто */);
+
+          (Specs e.Specs) (Function (e.FuncName) Sentences e.Body)
+            = (Specs e.Specs (e.FuncName))
+              (Function (e.FuncName) Sentences e.Body);
+
+          /* пользовательскую разметку игнорируем */
+          (Specs e.Specs) (Specs e._)
+            = (Specs e.Specs) /* игнорируем */;
+
+          (Specs e.Specs) t.Other = (Specs e.Specs) t.Other;
+        }
+        (Specs /* пусто */) e.AST
+      >
+}
+
+$ENTRY OptTree-AutoMarkup-Spec-OLD {
+  e.AST
     = <ForbiddenToSpecFunctions e.AST> : (e.Forbidden) e.AST^
     = <Map
         {

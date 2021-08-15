@@ -4,6 +4,7 @@
 $ENTRY Go {
   = <RESULT
       <OutlineConstants
+        <gen_e__>
         (0 )
         (0 )
         (0 )
@@ -52,9 +53,12 @@ $ENTRY Go {
         (#LABEL 145 )
         (#CmdProfilerStopSentence )
         (#CmdEmpty #AlgLeft 2 )
+        <gen_e__>
       >
     >;
 }
+
+gen_e__ { e.arg = e.arg; }
 
 RESULT {
   (#CmdFuncArray 6
