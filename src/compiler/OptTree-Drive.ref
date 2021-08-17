@@ -71,14 +71,14 @@ BaseName {
 UpdateDriveInfo {
   s.OptDrive s.OptIntrinsic ((e.KnownNames) e.KnownFunctions) e.AST
     = <ExtractLabels Drive Drives e.AST> : (e.Drives) e.AST^
-    = <ExtractLabels Inline Inlines e.AST> : (e.Inlines) e.AST^
+    = <ExtractLabels Drive Inlines e.AST> : (e.DrivesI) e.AST^
     = <ExtractLabels Intrinsic Intrinsics e.AST> : (e.Intrinsics) e.AST^
     = <ExtractMetatableNames e.AST> : (e.Metatables) e.AST^
+    = e.Drives e.DrivesI : e.Drives^
 
     = <HashSet-AsChain e.KnownNames> : e.KnownNames^
 
     = <SetNames-Reject (e.Drives) (e.KnownNames)> : e.Drives^
-    = <SetNames-Reject (e.Inlines) (e.KnownNames)> : e.Inlines^
     = <SetNames-Reject (e.Intrinsics) (e.KnownNames)> : e.Intrinsics^
     = <SetNames-Reject (e.Metatables) (e.KnownNames)> : e.Metatables^
 
@@ -88,7 +88,7 @@ UpdateDriveInfo {
             = '$' <Upper <Explode s.Label>> : e.Label
             = <Log-PutLine 'New ' e.Label ' function: ' <DisplayName e.Name>>;
         }
-        e.Drives e.Inlines e.Intrinsics e.Metatables
+        e.Drives e.Intrinsics e.Metatables
       >
     : /* пусто */
 
@@ -100,30 +100,14 @@ UpdateDriveInfo {
       }
     : e.Drives^
 
-    = s.OptDrive
-    : {
-        NoOpt = /* пусто */;
-        OptInline = e.Inlines;
-        OptDrive = e.Inlines;
-      }
-    : e.Inlines^
-
-    = <ExtractBaseNames e.Drives e.Inlines e.Metatables> : e.ExtractedNames
+    = <ExtractBaseNames e.Drives e.Metatables> : e.ExtractedNames
     = <ExtractExtractableFunctions (e.ExtractedNames) e.AST>
     : (e.Extracted) e.AST^
 
     = <ExtractFuncLengths e.AST> : (e.Lengths) e.AST^
     = <MultiplyRemainderNames (e.Lengths) e.Drives> : e.Drives^
-    = <MultiplyRemainderNames (e.Lengths) e.Inlines> : e.Inlines^
 
-    /*
-      Функция Func может быть помечена как $INLINE, рассахариватель условий
-      извлёк Func*k, авторазметка пометила её как $DRIVE.
-      Пометка $INLINE имеет приоритет.
-    */
-    = <SetNames-Reject (e.Drives) (e.Inlines)> : e.Drives^
-
-    = e.Drives e.Inlines e.Metatables : e.OptNames
+    = e.Drives e.Metatables : e.OptNames
 
     = <FormatOptFunctions (e.OptNames) e.Extracted> : e.OptFunctions
 
