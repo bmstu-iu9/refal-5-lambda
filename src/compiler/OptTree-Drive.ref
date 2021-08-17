@@ -126,7 +126,7 @@ UpdateDriveInfo {
       >
     : e.OptIntrinsicFuncs
 
-    = <HashSet e.KnownNames e.OptNames e.Intrinsics> : e.HashSetNames
+    = <HashSet e.KnownNames e.Drives e.Intrinsics> : e.HashSetNames
 
     = (DriveInfo
         (e.HashSetNames)
