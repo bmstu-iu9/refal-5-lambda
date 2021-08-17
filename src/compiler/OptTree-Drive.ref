@@ -88,7 +88,7 @@ UpdateDriveInfo {
             = '$' <Upper <Explode s.Label>> : e.Label
             = <Log-PutLine 'New ' e.Label ' function: ' <DisplayName e.Name>>;
         }
-        e.Drives e.Intrinsics e.Metatables
+        e.Drives e.Intrinsics
       >
     : /* пусто */
 
