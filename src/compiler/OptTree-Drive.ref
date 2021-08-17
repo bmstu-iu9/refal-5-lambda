@@ -17,14 +17,15 @@ $EXTERN OptTree-Drive-Expr;
 /*
   В дерево добавляется узел (DriveInfo e.DriveInfo).
 
-  e.DriveInfo ::= (e.OptFuncNames (e.OptFunctions))
+  e.DriveInfo ::= (e.OptFuncNames) e.OptFunctions
   e.OptFuncNames ::= e.HashSet
   e.HashSet ::= s.BucketSize (e.Bucket)*
   e.Bucket ::= (s.Hash (s.Label e.Name)*)
-  e.OptFunctions ::= t.OptFunction*
+  e.OptFunctions ::= s.ContractMode (Metatables s.Metatable*) t.OptFunction*
 
-  t.OptFunction ::= (s.Label (e.Name) e.OptBody)
-  e.OptBody ::= Sentences e.Sentences
+  s.ContractMode ::= Contractions-Enabled | Contractions-Disabled
+  t.OptFunction ::= ((e.Name) Sentences e.Sentences)
+  t.Metatable ::= ((e.Name) e.Metatable)
 */
 
 
@@ -42,7 +43,9 @@ $ENTRY OptTree-Drive-Prepare {
     = <UpdateDriveInfo s.OptDrive s.OptIntrinsic (e.DriveInfo) e.AST-B e.AST-E>;
 
   (s.OptDrive s.OptIntrinsic) e.AST
-    = (<BUCKET-SIZE> /* no names */) /* no info */ : e.EmptyInfo
+    = (<BUCKET-SIZE> /* no names */)
+      Contractions-Enabled (/* no metatables */) /* no info */
+    : e.EmptyInfo
     = <UpdateDriveInfo s.OptDrive s.OptIntrinsic (e.EmptyInfo) e.AST>;
 }
 
@@ -70,17 +73,16 @@ BaseName {
 
 UpdateDriveInfo {
   s.OptDrive s.OptIntrinsic ((e.KnownNames) e.KnownFunctions) e.AST
+    = e.KnownFunctions : s._ (e._) e.KnownFunctions^
     = <ExtractLabels Drive Drives e.AST> : (e.Drives) e.AST^
     = <ExtractLabels Drive Inlines e.AST> : (e.DrivesI) e.AST^
     = <ExtractLabels Intrinsic Intrinsics e.AST> : (e.Intrinsics) e.AST^
-    = <ExtractMetatableNames e.AST> : (e.Metatables) e.AST^
     = e.Drives e.DrivesI : e.Drives^
 
     = <HashSet-AsChain e.KnownNames> : e.KnownNames^
 
     = <SetNames-Reject (e.Drives) (e.KnownNames)> : e.Drives^
     = <SetNames-Reject (e.Intrinsics) (e.KnownNames)> : e.Intrinsics^
-    = <SetNames-Reject (e.Metatables) (e.KnownNames)> : e.Metatables^
 
     = <Map
         {
@@ -100,16 +102,14 @@ UpdateDriveInfo {
       }
     : e.Drives^
 
-    = <ExtractBaseNames e.Drives e.Metatables> : e.ExtractedNames
-    = <ExtractExtractableFunctions (e.ExtractedNames) e.AST>
-    : (e.Extracted) e.AST^
+    = <ExtractBaseNames e.Drives> : e.DrivesBaseNames
+    = <ExtractExtractableFunctions (e.DrivesBaseNames) e.AST>
+    : (e.DriveFuncs) e.AST^
+
+    = <ExtractMetatables  e.AST> : (e.Metatables) e.AST^
 
     = <ExtractFuncLengths e.AST> : (e.Lengths) e.AST^
     = <MultiplyRemainderNames (e.Lengths) e.Drives> : e.Drives^
-
-    = e.Drives e.Metatables : e.OptNames
-
-    = <FormatOptFunctions (e.OptNames) e.Extracted> : e.OptFunctions
 
     = s.OptIntrinsic
     : {
@@ -120,7 +120,7 @@ UpdateDriveInfo {
 
     = <Map
         {
-          (Intrinsic e.Name) = (Intrinsic (e.Name) Intrinsic e.Name);
+          (Intrinsic e.Name) = ((e.Name) Intrinsic e.Name);
         }
         e.Intrinsics
       >
@@ -128,9 +128,18 @@ UpdateDriveInfo {
 
     = <HashSet e.KnownNames e.Drives e.Intrinsics> : e.HashSetNames
 
+    = s.OptDrive
+    : {
+        NoOpt = Contractions-Disabled;
+        OptInline = Contractions-Disabled;
+        OptDrive = Contractions-Enabled;
+      }
+    : s.ContractionsMode
+
     = (DriveInfo
         (e.HashSetNames)
-        e.KnownFunctions e.OptFunctions e.OptIntrinsicFuncs
+        s.ContractionsMode (e.Metatables)
+        e.KnownFunctions e.DriveFuncs e.OptIntrinsicFuncs
       )
       e.AST;
 }
@@ -193,7 +202,7 @@ ExtractExtractableFunctions {
           (Function (e.Name) e.Body)
             = (
                 (e.Names-B e.Names-E)
-                e.Extracted (Function (e.Name) e.Body)
+                e.Extracted ((e.Name) e.Body)
               )
               (Function (e.Name) e.Body);
 
@@ -236,29 +245,6 @@ MultiplyRemainderNames {
       >
     : (e._) e.RemainderNames
     = e.RemainderNames;
-}
-
-FormatOptFunctions {
-  (e.OptNames) e.Functions
-    = <MapAccum
-        {
-          (e.Names-B (Metatable e.Name) e.Names-E)
-          (Function (e.Name) Metatable e.Body)
-            = (e.Names-B e.Names-E)
-              (Metatable (e.Name) Metatable e.Body);
-
-          (e.Names-B (s.Label e.Name) e.Names-E)
-          (Function (e.Name) Sentences e.Sentences)
-            = (e.Names-B e.Names-E)
-              (s.Label (e.Name) Sentences e.Sentences);
-
-          (e.Names) (Function (e._) Sentences /* пусто */)
-            = (e.Names) /* функции без предложений пропускаем */;
-        }
-        (<ExtractBaseNames e.OptNames>) e.Functions
-      >
-    : (e._) e.OptFunctions
-    = e.OptFunctions;
 }
 
 HashSet {
@@ -309,8 +295,7 @@ $ENTRY OptTree-Drive {
 /* Осуществляет прогонку или оптимизацию в зависимости от ключа */
 
 DriveInlineOptimizerTick {
-  ((e.OptNames) e.OptInfo) e.AST
-    = ((e.OptNames) <WithMetatables e.OptInfo>) : t.OptInfo
+  t.OptInfo e.AST
     = <MapAccum
         {
           t.OptInfo^ (Function (e.Name) Sentences e.Sentences)
@@ -324,7 +309,7 @@ DriveInlineOptimizerTick {
         t.OptInfo
         e.AST
       >
-    : ((e.OptNames^) t.Metatables e.OptInfo^) e.AST^
+    : ((e.OptNames) e.OptFunctions) e.AST^
 
     = <MapAccum
         {
@@ -360,7 +345,7 @@ DriveInlineOptimizerTick {
       >
     : (e.NewFunctions^) e.AST^
 
-    = (DriveInfo (e.OptNames) e.OptInfo) e.AST e.NewFunctions;
+    = (DriveInfo (e.OptNames) e.OptFunctions) e.AST e.NewFunctions;
 }
 
 /*
@@ -432,12 +417,13 @@ OptSentence {
   t.Sentence t.OptInfo = t.OptInfo () t.Sentence
 }
 
-WithMetatables {
+ExtractMetatables {
   e.OptFuncs
     = <MapAccum
         {
-          (Metatables e.Result) (Metatable e.Body)
-             = (Metatables e.Result (e.Body)) (Metatable e.Body);
+          (Metatables e.Result) (Function (e.Name) Metatable e.Body)
+             = (Metatables e.Result ((e.Name) Metatable e.Body))
+               (Function (e.Name) Metatable e.Body);
 
           (Metatables e.Result) t.Other = (Metatables e.Result) t.Other;
         }
