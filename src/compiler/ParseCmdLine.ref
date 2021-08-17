@@ -271,57 +271,57 @@ $ENTRY ParseCommandLine {
           }
         )
         {
-          (t.Config /* нет ошибок */) e.FileNames =
-            Success t.Config e.FileNames;
+          (t.Config /* нет ошибок */) e.FileNames
+            = Success t.Config e.FileNames;
 
-          (t.Config e.Errors) e.FileNames =
-            Fails
-            <Map
-              {
-                (s.Pos NoRequiredParam e.Param) =
-                  (s.Pos 'option ' e.Param ' expects parameter');
+          (t.Config e.Errors) e.FileNames
+            = Fails
+              <Map
+                {
+                  (s.Pos NoRequiredParam e.Param)
+                    = (s.Pos 'option ' e.Param ' expects parameter');
 
-                (s.Pos UnknownShortOption s.Option) =
-                  (s.Pos 'unknown option -' s.Option);
+                  (s.Pos UnknownShortOption s.Option)
+                    = (s.Pos 'unknown option -' s.Option);
 
-                (s.Pos UnknownLongOption e.Option) =
-                  (s.Pos 'unknown option --' e.Option);
+                  (s.Pos UnknownLongOption e.Option)
+                    = (s.Pos 'unknown option --' e.Option);
 
-                /* У нас все опции с параметрами, не должно возникать */
-                /* (s.Pos UnexpectedLongOptionParam (e.Option) e.Param) = */
+                  /* У нас все опции с параметрами, не должно возникать */
+                  /* (s.Pos UnexpectedLongOptionParam (e.Option) e.Param) = */
 
-                (s.Pos BadValue-Opt e.BadValue) =
-                  (
-                    s.Pos
-                    'option -O expects \'d\', \'C\', \'D\', \'I\', \'P\', '
-                    '\'R\', \'S\', \'T\' or it\'s combination, '
-                    'but got \'' e.BadValue '\''
-                  );
+                  (s.Pos BadValue-Opt e.BadValue)
+                    = (
+                        s.Pos
+                        'option -O expects \'d\', \'C\', \'D\', \'I\', \'P\', '
+                        '\'R\', \'S\', \'T\' or it\'s combination, '
+                        'but got \'' e.BadValue '\''
+                      );
 
-                (s.Pos BadValue-Warning e.BadValue) =
-                   (
-                     s.Pos
-                     'option -W expects \'all\', \'[no-]error[=...]\', '
-                     '\'[no-]screening\', \'[no-]pseudofunctions\' '
-                     '\'[no-]repeated\', \'[no-]deprecated\', '
-                     '\'[no-]nul-in-compound\', \'[no-]intrinsic\', '
-                     'but got \'' e.BadValue '\''
-                   );
+                  (s.Pos BadValue-Warning e.BadValue)
+                    = (
+                        s.Pos
+                        'option -W expects \'all\', \'[no-]error[=...]\', '
+                        '\'[no-]screening\', \'[no-]pseudofunctions\' '
+                        '\'[no-]repeated\', \'[no-]deprecated\', '
+                        '\'[no-]nul-in-compound\', \'[no-]intrinsic\', '
+                        'but got \'' e.BadValue '\''
+                      );
 
-                (s.Pos EmptyErrorFileName)
-                  = (s.Pos 'option --error-file expects a non-empty argument');
+                  (s.Pos EmptyErrorFileName)
+                    = (s.Pos 'option --error-file expects a non-empty argument');
 
-                (s.Pos TargetModeAlreadySet)
-                  = (s.Pos
-                      'options --makeexe (-x), --makelib (-l) and -R '
-                      'should appear once'
-                    );
+                  (s.Pos TargetModeAlreadySet)
+                    = (s.Pos
+                        'options --makeexe (-x), --makelib (-l) and -R '
+                        'should appear once'
+                      );
 
-                (s.Pos BadValue-MustBeNumber e.Cycles)
-                  = (s.Pos 'option --opt-tree-cycles expects a number parameter');
-              }
-              e.Errors
-            >;
+                  (s.Pos BadValue-MustBeNumber e.Cycles)
+                    = (s.Pos 'option --opt-tree-cycles expects a number parameter');
+                }
+                e.Errors
+              >;
         }
       >
     >;

@@ -1089,62 +1089,62 @@ CheckValidUsings {
     (Declare t.SrcPos s.ScopeClass e.Name)
     e.DeclarationsAndErrors-E
   )
-  (Symbol Name t.SrcPosName e.Name) e.NameRefsAndErrors =
-    <CheckValidUsings
-      (
-        e.DeclarationsAndErrors-B
-        (Declare t.SrcPos s.ScopeClass e.Name)
-        e.DeclarationsAndErrors-E
-      )
-      e.NameRefsAndErrors
-    >;
+  (Symbol Name t.SrcPosName e.Name) e.NameRefsAndErrors
+    = <CheckValidUsings
+        (
+          e.DeclarationsAndErrors-B
+          (Declare t.SrcPos s.ScopeClass e.Name)
+          e.DeclarationsAndErrors-E
+        )
+        e.NameRefsAndErrors
+      >;
 
   (
     e.DeclarationsAndErrors-B
     (Define t.SrcPos s.ScopeClass e.Name)
     e.DeclarationsAndErrors-E
   )
-  (Symbol Name t.SrcPosName e.Name) e.NameRefsAndErrors =
-    <CheckValidUsings
-      (
-        e.DeclarationsAndErrors-B
-        (Define t.SrcPos s.ScopeClass e.Name)
-        e.DeclarationsAndErrors-E
-      )
-      e.NameRefsAndErrors
-    >;
+  (Symbol Name t.SrcPosName e.Name) e.NameRefsAndErrors
+    = <CheckValidUsings
+        (
+          e.DeclarationsAndErrors-B
+          (Define t.SrcPos s.ScopeClass e.Name)
+          e.DeclarationsAndErrors-E
+        )
+        e.NameRefsAndErrors
+      >;
 
   (e.DeclarationsAndErrors)
-  (Symbol Name t.SrcPos e.Name) e.NameRefsAndErrors =
-    <CheckValidUsings
-      (e.DeclarationsAndErrors (Error t.SrcPos NotDefined e.Name))
-      e.NameRefsAndErrors
-    >;
+  (Symbol Name t.SrcPos e.Name) e.NameRefsAndErrors
+    = <CheckValidUsings
+        (e.DeclarationsAndErrors (Error t.SrcPos NotDefined e.Name))
+        e.NameRefsAndErrors
+      >;
 
   (e.DeclarationsAndErrors)
-  (Error t.SrcPos s.Type e.Info) e.NameRefsAndErrors =
-    <CheckValidUsings
-      (e.DeclarationsAndErrors (Error t.SrcPos s.Type e.Info))
-      e.NameRefsAndErrors
-    >;
+  (Error t.SrcPos s.Type e.Info) e.NameRefsAndErrors
+    = <CheckValidUsings
+        (e.DeclarationsAndErrors (Error t.SrcPos s.Type e.Info))
+        e.NameRefsAndErrors
+      >;
 
   (e.DeclarationsAndErrors)
-    (Warning s.WarningId t.SrcPos s.Type e.Info) e.NameRefsAndErrors =
-      <CheckValidUsings
+  (Warning s.WarningId t.SrcPos s.Type e.Info) e.NameRefsAndErrors
+    = <CheckValidUsings
         (e.DeclarationsAndErrors (Warning s.WarningId t.SrcPos s.Type e.Info))
         e.NameRefsAndErrors
       >;
 
-  (e.DeclarationsAndErrors) /* кончились ошибки и имена */ =
-    <Map
-      {
-        (Error t.SrcPos s.Type e.Info)
-          = (Error t.SrcPos s.Type e.Info);
-        (Warning s.WarningId t.SrcPos s.Type e.Info)
-          = (Warning s.WarningId t.SrcPos s.Type e.Info);
+  (e.DeclarationsAndErrors) /* кончились ошибки и имена */
+    = <Map
+        {
+          (Error t.SrcPos s.Type e.Info)
+            = (Error t.SrcPos s.Type e.Info);
+          (Warning s.WarningId t.SrcPos s.Type e.Info)
+            = (Warning s.WarningId t.SrcPos s.Type e.Info);
 
-        t.OtherItem = /* пропускаем */;
-      }
-      e.DeclarationsAndErrors
-    >;
+          t.OtherItem = /* пропускаем */;
+        }
+        e.DeclarationsAndErrors
+      >;
 }
