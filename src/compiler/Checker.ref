@@ -115,6 +115,10 @@ PrepareMessage {
   BadPseudofunctionBody e.Name
     = 'Pseudofunction ' e.Name ' should have a body { e.X = e.X }, '
       'in other case function can\'t be encountered as pseudofunction';
+
+  IntrinsicForDefined e.Name
+    = 'Function ' e.Name ' is defined, '
+      '$INTRINSIC declaration for it will be ignored';
 }
 
 FindErrors {
@@ -572,6 +576,7 @@ CheckDeclarations {
           &FindInvalidDriveInline
           &CheckRedefinitions
           &FindFinalInitEntry
+          &CheckIntrinsics
         >
       >
 }
@@ -760,6 +765,30 @@ CheckRedefinitions {
       (Define t.SrcPos1 s.ScopeClass1 e.Name) e.Declarations-M
       (Error t.SrcPos2 AlreadyDefined e.Name) e.Declarations-E
     >;
+
+  e.Declarations = e.Declarations;
+}
+
+CheckIntrinsics {
+  e.Declarations-B
+  (Intrinsic t.SrcPosIntrinsic e.Name) e.Declarations-M
+  (Define t.SrcPosDefine s.ScopeClass e.Name) e.Declarations-E
+    = <CheckIntrinsics
+        e.Declarations-B
+        (Warning intrinsic t.SrcPosIntrinsic IntrinsicForDefined e.Name)
+        e.Declarations-M
+        (Define t.SrcPosDefine GN-Entry e.Name) e.Declarations-E
+      >;
+
+  e.Declarations-B
+  (Define t.SrcPosDefine s.ScopeClass e.Name) e.Declarations-M
+  (Intrinsic t.SrcPosIntrinsic e.Name) e.Declarations-E
+    = <CheckIntrinsics
+        e.Declarations-B
+        (Define t.SrcPosDefine GN-Entry e.Name) e.Declarations-M
+        (Warning intrinsic t.SrcPosIntrinsic IntrinsicForDefined e.Name)
+        e.Declarations-E
+      >;
 
   e.Declarations = e.Declarations;
 }

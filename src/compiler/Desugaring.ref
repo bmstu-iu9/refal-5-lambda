@@ -842,7 +842,7 @@ Pass-CollectDeclarations {
 
     = <Set-Reject (e.Externs) (e.DefinedFunctions)> : e.Externs^
     = <Set-Reject (e.Inlines) (e.Drives)> : e.Inlines^
-    = <Set-Reject (e.Intrinsics) (e.Drives e.Inlines)> : e.Intrinsics^
+    = <Set-Reject (e.Intrinsics) (e.DefinedFunctions)> : e.Intrinsics^
 
     = (Externs e.Externs)
       (Drives e.Drives) (Inlines e.Inlines) (Intrinsics e.Intrinsics)

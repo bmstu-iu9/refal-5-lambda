@@ -75,9 +75,6 @@ UpdateDriveInfo {
     = <ExtractLabels Intrinsic Intrinsics e.AST> : (e.Intrinsics) e.AST^
     = <ExtractMetatableNames e.AST> : (e.Metatables) e.AST^
 
-    = <SetNames-Reject (e.Drives) (e.Intrinsics)> : e.Drives^
-    = <SetNames-Reject (e.Inlines) (e.Intrinsics)> : e.Inlines^
-
     = <HashSet-AsChain e.KnownNames> : e.KnownNames^
 
     = <SetNames-Reject (e.Drives) (e.KnownNames)> : e.Drives^

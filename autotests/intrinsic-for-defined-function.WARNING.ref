@@ -1,0 +1,9 @@
+* WARNING intrinsic
+
+$INTRINSIC Add;
+
+$ENTRY Go {
+  = <Add 100 500>
+}
+
+Add { 100 500 = 100500 }

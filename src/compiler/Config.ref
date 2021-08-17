@@ -18,7 +18,9 @@ $ENTRY Config-Create {
           (/* конец командной строки для библиотек */)
         )
         (Optimize /* пусто */)
-        (WarningIds nul-in-compound pseudofunctions repeated deprecated)
+        (WarningIds
+          nul-in-compound pseudofunctions repeated deprecated intrinsic
+        )
         (WarningIdsAsErrors /* пусто */)
         (ErrorFile /* пусто */)
         (DebugMode NoMarkupContext NoDebugInfo)
@@ -536,6 +538,7 @@ WarningForName {
   'pseudofunction' = True pseudofunctions; /* синоним */
   'repeated' = True repeated;
   'deprecated' = True deprecated;
+  'intrinsic' = True intrinsic;
 
   e.Other = False
 }
