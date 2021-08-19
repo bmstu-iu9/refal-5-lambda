@@ -43,11 +43,14 @@ $ENTRY OptTree-Drive-Prepare {
     = <UpdateDriveInfo s.OptDrive s.OptIntrinsic (e.DriveInfo) e.AST-B e.AST-E>;
 
   (s.OptDrive s.OptIntrinsic) e.AST
-    = (<BUCKET-SIZE> /* no names */)
-      Contractions-Enabled (/* no metatables */) /* no info */
+    = (<BUCKET-SIZE> <gen_e__ /* no names */>)
+      Contractions-Enabled (<gen_e__ /* no metatables */>)
+      <gen_e__ /* no info */>
     : e.EmptyInfo
     = <UpdateDriveInfo s.OptDrive s.OptIntrinsic (e.EmptyInfo) e.AST>;
 }
+
+gen_e__ { e.arg = e.arg }
 
 /* Функция генерирует имена остаточных прогоняемых функций */
 

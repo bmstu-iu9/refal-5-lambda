@@ -41,6 +41,7 @@ $ENTRY OptTree {
     = (s.OptDrive s.OptIntrinsic) : t.OptDrive
 
     = <Int
+        <gen_e__>
         (define main
           (if s.OptAutoMarkup
             (begin
@@ -88,10 +89,13 @@ $ENTRY OptTree {
               (call &WarmColdFunctions DRIVE)
               (call &OptTree-Drive-CleanupColdCalls))
             (call &ExpandClosures)))
+        <gen_e__>
 
         s.Cycles (e.AST)
       >
 }
+
+gen_e__ { e.arg = e.arg }
 
 
 /**

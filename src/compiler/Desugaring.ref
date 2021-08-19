@@ -235,7 +235,7 @@ EnumerateVars-Assignments {
     = <EnumerateVars-Blocks (e.ScopeVars) e.Blocks> : e.Blocks^
     = <EnumerateVars-Expr (e.ScopeVars) e.Pattern> : (e.ScopeVars^) e.Pattern^
     = <EnumerateVars-Assignments
-        (e.RAssignments (s.ChainType (e.Result) (e.Blocks) (e.Pattern)))
+        (<gen_e__ e.RAssignments (s.ChainType (e.Result) (e.Blocks) (e.Pattern))>)
         (e.ScopeVars) e.Assignments
       >;
 }

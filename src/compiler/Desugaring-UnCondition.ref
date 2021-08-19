@@ -223,7 +223,7 @@ HardItem {
 }
 
 BindBrackets {
-  (e.Expr) = (<DoBindBrackets ('$') e.Expr>);
+  (e.Expr) = (<DoBindBrackets ('$' <gen_e__>) e.Expr>);
 }
 
 DoBindBrackets {

@@ -193,6 +193,10 @@ PutComment {
 }
 
 Tail {
+  (e.Indent) e.Tail = <Tail-GEN (e.Indent) <gen_e__ e.Tail>>;
+}
+
+Tail-GEN {
   (e.Indent) (Condition (e.Name) (e.Result) (e.Pattern)) e.Tail
     = e.Indent ', ' <InlineExpr e.Result> ' : ' <InlineExpr e.Pattern>
     : e.OneLineCondition
@@ -297,7 +301,7 @@ MultilineTerm-Gen {
 
 MultilineTerm-Prefix {
   (e.Prefix) e.Indent t.Term (e.Suffix)
-    = t.Term
+    = <gen_t__ t.Term>
     : {
         (Brackets e.Expr)
           = (e.Prefix '(')
@@ -445,7 +449,8 @@ ClosureBrackets {
 }
 
 InlineSubexpr {
-  t.Term e.Expr = <DoInlineExpr (<gen_e__ <InlineTerm t.Term>>) e.Expr>;
+  t.Term e.Expr
+    = <DoInlineExpr (<gen_e__ <InlineTerm t.Term>>) <gen_e__ e.Expr>>;
 
   /* пусто */ = /* пусто */;
 }

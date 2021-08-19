@@ -72,11 +72,14 @@ TileCandidates {
       {
         (e.AlignedPattern t.Last) (t.First e.AlignedResult) =
           <DoOverlapOffsets
-            (e.AlignedPattern) (t.Last) (t.First) (e.AlignedResult)
+            (e.AlignedPattern) (<gen_e__ t.Last>)
+            (<gen_e__ t.First>) (e.AlignedResult)
           >;
       }
     >;
 }
+
+gen_e__ { e.arg = e.arg }
 
 EnumExprs {
   s.Num

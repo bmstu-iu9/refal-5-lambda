@@ -96,6 +96,8 @@ DriveStateWithLeaf {
       (/* нет сужений */ (e.Expr) (/* пустое дерево */));
 }
 
+gen_e__ { e.arg = e.arg }
+
 GrowDriveTree {
   (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr
   (s.TreeDepth e.canoninzedExprs)
@@ -107,7 +109,9 @@ GrowDriveTree {
           = <DriveStateWithLeaf s.CntNodes t.OptInfo e.Expr>;
 
         (e.OptFuncNames^ t.Call) e.Expr^
-          = <OptExpr-Aux (e.UsedVars) (e.WholeVars) (e.Expr) t.Call e.OptFuncs>
+          = <OptExpr-Aux
+              (e.UsedVars) (e.WholeVars) (e.Expr) <gen_e__> t.Call e.OptFuncs
+            >
           : (e.OptFuncs^) (e.NewFunctions) e.Branches
 
           = ((e.OptFuncNames) e.OptFuncs) : t.OptInfo^

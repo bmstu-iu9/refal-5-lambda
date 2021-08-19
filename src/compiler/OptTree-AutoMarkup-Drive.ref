@@ -347,9 +347,12 @@ BasicVertexes {
   e.Graph (e.Roots)
     = <MakeGraphHash e.Graph> : e.GraphHash
     = <DoBasicVertexes
-        <MarkChildren e.Roots> (e.GraphHash) (/* to drive */) (/* basic */)
+        <gen_e__ <MarkChildren e.Roots> (e.GraphHash)>
+        (/* to drive */) (/* basic */)
       >;
 }
+
+gen_e__ { e.arg = e.arg }
 
 MakeGraphHash {
   e.Graph

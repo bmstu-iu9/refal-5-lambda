@@ -352,8 +352,10 @@ $INLINE AddNumSuffix;
 
 AddNumSuffix {
   0 e.Output = e.Output;
-  s.Num e.Output = e.Output '@' <Symb s.Num>;
+  s.Num e.Output = e.Output '@' <gen_e__ <Symb s.Num>>;
 }
+
+gen_e__ { e.arg = e.arg }
 
 FindFreeName {
   s.Num e.Output
