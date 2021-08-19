@@ -17,6 +17,19 @@ $ENTRY OptTree-AutoMarkup-Spec {
           (Specs e.Specs) (Function (e.FuncName) Sentences /* пусто */)
             = (Specs e.Specs) (Function (e.FuncName) Sentences /* пусто */);
 
+          /* gen-функции не специализируем */
+          (Specs e.Specs)
+          (Function
+            (e.FuncName) Sentences
+            (((Var 'e' e.Index)) /*=*/ ((Var 'e' e.Index)))
+          )
+            , <Pseudofunction-gen_e e.FuncName> : True
+            = (Specs e.Specs)
+              (Function
+                (e.FuncName) Sentences
+                (((Var 'e' e.Index)) /*=*/ ((Var 'e' e.Index)))
+              );
+
           (Specs e.Specs) (Function (e.FuncName) Sentences e.Body)
             = (Specs e.Specs (e.FuncName))
               (Function (e.FuncName) Sentences e.Body);
@@ -29,4 +42,13 @@ $ENTRY OptTree-AutoMarkup-Spec {
         }
         (Specs /* пусто */) e.AST
       >
+}
+
+Pseudofunction-gen_e {
+  'gen_e__' = True;
+  'gen-e__' = True;
+  'gen_e__' SUF '~' s.N = True;
+  'gen-e__' SUF '~' s.N = True;
+
+  e._ = False;
 }
