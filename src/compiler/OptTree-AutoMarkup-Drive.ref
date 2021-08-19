@@ -15,13 +15,25 @@ $ENTRY OptTree-AutoMarkup-Drive {
     = <MetaInfo e.AST> : t.MetaInfo e.AST^
     = t.MetaInfo : ((e.Forbidden) (e.Inlines) (e.UserdefDrives) (e.Entries))
 
-    = <BuldCallGraph e.AST (e.Inlines)> : (e.Indirects) e.Graph
+    = <MapAccum
+        {
+          (Drives e.Drives) (Function (e.Name) Sentences e.Body)
+            = e.Forbidden
+            : {
+                e._ (e.Name) e._ = e.Drives;
+                e._ = e.Drives (e.Name);
+              }
+            : e.Drives^
+            = (Drives e.Drives) (Function (e.Name) Sentences e.Body);
 
-    = <Unique e.Entries e.Indirects ('__INIT') ('__FINAL')> : e.Roots
-    = <BasicVertexes e.Graph (e.Roots)>
-    : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
-    = <SetDifference e.ToDrive (e.Forbidden e.UserdefDrives)> : e.ToDrive^
-    = <UpdateAST e.AST (e.ToDrive) (e.Basics)>
+          /* пользовательскую разметку игнорируем */
+          (Drives e.Drives) (Drives e._)
+            = (Drives e.Drives) /* игнорируем */;
+
+          (Drives e.Drives) t.Other = (Drives e.Drives) t.Other;
+        }
+        (Drives /* пусто */) e.AST
+      >
 }
 
 BuldCallGraph {
@@ -501,41 +513,7 @@ UpdateAST {
   <OptTree-AutoMarkup-CureDrives e.AST> == e.AST
 */
 $ENTRY OptTree-AutoMarkup-CureDrives {
-  e.AST
-    = <MetaInfo e.AST> : t.MetaInfo e.AST^
-    = t.MetaInfo : ((e.Forbidden) (e.Inlines) (e.UserdefDrives) (e.Entries))
-
-    = <BuldCallGraph e.AST (e.Inlines)> : (e.Indirects) e.Graph
-
-    = <MapAccum
-        {
-          (e.DrivenNodes) (Func (e.Name) Children (e.Children))
-            , e.UserdefDrives : e._ (e.Name) e._
-            = (
-                e.DrivenNodes
-                (Func (e.Name) Children (e.Children))
-              )
-              /* пусто */;
-
-          (e.DrivenNodes) (Func (e.Name) Children (e.Children))
-             = (e.DrivenNodes) e.Children;
-        }
-        (/* driven nodes */)
-        e.Graph
-      >
-    : (e.DrivenNodes) e.NamesCalledFromUndriven
-
-    = <Unique
-        e.Entries e.Indirects e.NamesCalledFromUndriven ('__INIT') ('__FINAL')
-      >
-    : e.Roots
-    = <SetIntersect (e.Roots) (e.UserdefDrives)> : e.Roots^
-    = <BasicVertexes e.Graph (e.Roots)>
-    : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
-
-    /* новых функций для прогонки не добавляем */
-    = /* пусто */ : e.ToDrive^
-    = <UpdateAST e.AST (e.ToDrive) (e.Basics)>
+  e.AST = e.AST;
 }
 
 SetIntersect {
