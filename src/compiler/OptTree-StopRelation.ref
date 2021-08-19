@@ -62,7 +62,6 @@ Tokenize {
           (Brackets e.Inner) = ('(') <Tokenize e.Inner> (')');
           (ADT-Brackets (e.Name) e.Inner) = ('[' e.Name) <Tokenize e.Inner> (']');
           (CallBrackets e.Inner) = ('<') <Tokenize e.Inner> ('>');
-          (ColdCallBrackets e.Inner) = ('<*') <Tokenize e.Inner> ('*>');
           (ClosureBrackets e.Inner) = ('{{') <Tokenize e.Inner> ('}}');
 
           t.Other = t.Other;
@@ -94,7 +93,7 @@ CheckHKRelation {
 }
 
 AllBrackets {
-  = Brackets CallBrackets ColdCallBrackets ClosureBrackets;
+  = Brackets CallBrackets ClosureBrackets;
 }
 
 CheckHKRelation-Term {
@@ -117,6 +116,11 @@ $ENTRY OptTree-CanonizeExpr {
 
 CanonizeExpr-Term {
   (Var s.Mode e.Index) = (Var s.Mode);
+
+  /* Не различаем замороженные и обычные скобки */
+  (ColdCallBrackets e.Expr)
+    = <OptTree-CanonizeExpr e.Expr> : e.Expr^
+    = (CallBrackets e.Expr);
 
   (s.BracketsTag e.Expr)
     , <AllBrackets> : e._ s.BracketsTag e._

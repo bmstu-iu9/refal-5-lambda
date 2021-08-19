@@ -1,0 +1,53 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */
+    = <gen_e__ (Num1 A A) RemovedTile1 (Tile1 'hello')> : e.Trash
+    = <gen_e__ (Num2 B B) RemovedTile2 (Tile2 'world')> : e.MarkedResult
+    = <GST3 (e.Trash) (e.MarkedResult)>
+    : (a RemovedTile (Tile 'hello')) (b RemovedTile (Tile 'world'))
+    = /* empty */
+}
+
+gen_e__ { e.arg = e.arg }
+
+GST3 {
+  (e.Trash) (e.MarkedResult)
+    = (<Mapa1 e.Trash>) (<Mapa1 e.MarkedResult>);
+}
+
+$DRIVE Mapa1, Boom;
+
+Mapa1 {
+  (Num1 s.Trash1 t.Trash2) e.Trash0 = <Boom t.Trash2> <Mapa1 e.Trash0>;
+  RemovedTile1 e.Trash0 = RemovedTile <Mapa1 e.Trash0>;
+  (Tile1 e.Trash1) e.Trash0 = (Tile e.Trash1) <Mapa1 e.Trash0>;
+
+  (Num2 s.Trash1 t.Trash2) e.Trash0 = <Boom t.Trash2> <Mapa1 e.Trash0>;
+  RemovedTile2 e.Trash0 = RemovedTile <Mapa1 e.Trash0>;
+  (Tile2 e.Trash1) e.Trash0 = (Tile e.Trash1) <Mapa1 e.Trash0>;
+
+  (Num3 s.Trash1 t.Trash2) e.Trash0 = <Boom t.Trash2> <Mapa1 e.Trash0>;
+  RemovedTile3 e.Trash0 = RemovedTile <Mapa1 e.Trash0>;
+  (Tile3 e.Trash1) e.Trash0 = (Tile e.Trash1) <Mapa1 e.Trash0>;
+
+  (Num4 s.Trash1 t.Trash2) e.Trash0 = <Boom t.Trash2> <Mapa1 e.Trash0>;
+  RemovedTile4 e.Trash0 = RemovedTile <Mapa1 e.Trash0>;
+  (Tile4 e.Trash1) e.Trash0 = (Tile e.Trash1) <Mapa1 e.Trash0>;
+
+  (Num5 s.Trash1 t.Trash2) e.Trash0 = <Boom t.Trash2> <Mapa1 e.Trash0>;
+  RemovedTile5 e.Trash0 = RemovedTile <Mapa1 e.Trash0>;
+  (Tile5 e.Trash1) e.Trash0 = (Tile e.Trash1) <Mapa1 e.Trash0>;
+
+  (Num6 s.Trash1 t.Trash2) e.Trash0 = <Boom t.Trash2> <Mapa1 e.Trash0>;
+  RemovedTile6 e.Trash0 = RemovedTile <Mapa1 e.Trash0>;
+  (Tile6 e.Trash1) e.Trash0 = (Tile e.Trash1) <Mapa1 e.Trash0>;
+
+  Z e.X = Z <Mapa1 e.X>;
+
+  /* empty */ = /* empty */;
+}
+
+Boom {
+  A = a; B = b; C = c; D = d; E = e; F = f; G = g; H = h;
+}
