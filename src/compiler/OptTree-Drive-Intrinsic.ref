@@ -431,6 +431,7 @@ Intrinsic-Type {
   (CallBrackets e._) e._ = MakeColdCall;
   (ColdCallBrackets e._) e._ = MakeColdCall;
   (Var e._) e._ = MakeColdCall;
+  (WhVar e._) e._ = MakeColdCall;
 
   t.Term e.Rest
     = t.Term
