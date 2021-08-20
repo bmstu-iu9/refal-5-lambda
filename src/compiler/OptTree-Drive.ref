@@ -408,14 +408,16 @@ OptSentence {
      = <OptTree-Drive-Expr (e.SentenceVars) (e.WholeVars) t.OptInfo e.Right>
      : t.OptInfo^ e.Branches (e.NewFunctions)
 
-     = t.OptInfo (e.NewFunctions)
-       <Map
+     = <Map
          {
            (e.Contractions (e.DrivenRight))
              = ((<ApplyContractions e.Left (e.Contractions)>) (e.DrivenRight));
          }
          e.Branches
-       >;
+       >
+     : e.NewSentences
+
+     = t.OptInfo (e.NewFunctions) e.NewSentences;
 
   t.Sentence t.OptInfo = t.OptInfo () t.Sentence
 }

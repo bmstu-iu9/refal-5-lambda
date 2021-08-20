@@ -109,7 +109,7 @@ GrowDriveTree {
           = <DriveStateWithLeaf s.CntNodes t.OptInfo e.Expr>;
 
         (e.OptFuncNames^ t.Call) e.Expr^
-          = <OptExpr-Aux
+          = <OptOneCall
               (e.UsedVars) (e.WholeVars) (e.Expr) <gen_e__> t.Call e.OptFuncs
             >
           : (e.OptFuncs^) (e.NewFunctions) e.Branches
@@ -204,7 +204,7 @@ FlatDriveTree {
       >;
 }
 
-OptExpr-Aux {
+OptOneCall {
   (e.UsedVars) (e.WholeVars) (e.Expr)
   (CallBrackets (Symbol Name e.Name) e.Args)
   s.Contractions-Mode t.Metatables e.OptFuncs
