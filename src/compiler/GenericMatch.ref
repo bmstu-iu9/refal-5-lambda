@@ -88,6 +88,7 @@ $ENTRY Solve-Drive {
       >
     : {
         e._ (Generalize (e.Intervals)) e._ = Undefined;
+        e._ Undefined e._ = Undefined;
         e._ (Success (e._) AfterOpen (e._) (e._)) e._ = Undefined;
 
         e.Success = Success <CombineResults-Drive e.Success>;
@@ -377,6 +378,10 @@ DoAddCoordinateLabels {
     = (ScrVar s.Mode e.Index) ('{'s.CoordNumber'}')
       <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
 
+  ((WhVar s.Mode e.Index) e.Rest) s.CoordNumber
+    = (WhVar s.Mode e.Index) ('{'s.CoordNumber'}')
+      <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
+
   ((ClosureBrackets e.Inner) e.Rest) s.CoordNumber
     = (ClosureBrackets e.Inner) ('{'s.CoordNumber'}')
       <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
@@ -492,6 +497,12 @@ Solve-Clashes {
   e.ClashesEnd (e.Assigns)
     = /* нет решений */;
 
+  /* {m} !var {n} : s.X   ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') (WhVar e._) ('{'s.N'}')) ':' ((Var 's' e.Index)))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
+
   /* {m} (E) {n} : (P)   ↦  {m} E {n} : P */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   (T (('{'s.M'}') (Brackets e.LBody) ('{'s.N'}')) ':' ((Brackets e.RBody)))
@@ -565,6 +576,12 @@ Solve-Clashes {
   e.ClashesEnd (e.Assigns)
     = /* нет решений */;
 
+  /* {m} !var {n} : (P)  ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') (WhVar e._) ('{'s.N'}')) ':' ((Brackets e._)))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
+
   /* {m} Sym {n} : [X P]  ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   (T (('{'s.M'}') t.Sym ('{'s.N'}')) ':' ((ADT-Brackets e._)))
@@ -577,6 +594,12 @@ Solve-Clashes {
   (T (('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((ADT-Brackets e._)))
   e.ClashesEnd (e.Assigns)
     = /* нет решений */;
+
+  /* {m} !var {n} : [X P]  ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') (WhVar e._) ('{'s.N'}')) ':' ((ADT-Brackets e._)))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
 
   /* {m} t.X {n} : (P)  ↦  t.X → (e.NEW) */
   (e.UsedVars) (e.Contrs) e.ClashesStart
@@ -595,6 +618,12 @@ Solve-Clashes {
           e.ClashesEnd (e.Assigns)
         >
       >;
+
+  /* {m} !t.X {n} : (P)  ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') (WhVar 't' e.Index) ('{'s.N'}')) ':' ((Brackets e.PBody)))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
 
   /* {m} t.X {n} : [X P]   ↦  t.X → [X e.NEW] */
   (e.UsedVars) (e.Contrs) e.ClashesStart
@@ -617,6 +646,14 @@ Solve-Clashes {
         >
       >;
 
+  /* {m} !t.X {n} : [X P]   ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T
+    (('{'s.M'}') (WhVar 't' e.Index) ('{'s.N'}'))
+    ':' ((ADT-Brackets (e.Name) e.PBody))
+  )
+    = Undefined;
+
   /* {m} t.X {n} : Psym  ↦  t.X → s.NEW */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   (T (('{'s.M'}') (Var 't' e.Index) ('{'s.N'}')) ':' (t.Psym))
@@ -633,6 +670,12 @@ Solve-Clashes {
         >
       >;
 
+  /* {m} t.X {n} : Psym  ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') (WhVar 't' e.Index) ('{'s.N'}')) ':' (t.Psym))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
+
   /* {m} s.X {n} :  X  ↦  s.X → X */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   (T (('{'s.M'}') (Var 's' e.Index) ('{'s.N'}')) ':' ((Symbol s.Type e.Info)))
@@ -646,6 +689,12 @@ Solve-Clashes {
           (e.Assigns)
         >
       >;
+
+  /* {m} s.X {n} :  X  ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') (WhVar 's' e.Index) ('{'s.N'}')) ':' ((Symbol s.Type e.Info)))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
 
   /*  {m} X {n}  :  X    ↦  стираем */
   (e.UsedVars) (e.Contrs) e.ClashesStart
@@ -672,6 +721,12 @@ Solve-Clashes {
   (T (('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((Symbol e._)))
   e.ClashesEnd (e.Assigns)
     = /* нет решений */;
+
+  /*  {m} !var {n}  :  Y    ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') (WhVar e._) ('{'s.N'}')) ':' ((Symbol e._)))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
 
   /*
     {m} {{ &F e.X }} {n} : Pt  ↦  нет решений
@@ -710,6 +765,12 @@ Solve-Clashes {
           e.ClashesEnd (e.Assigns)
         >
       >;
+
+  /* {m} !e.X E {n} : ε  ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (E (('{'s.M'}') (WhVar 'e' e.Index) e.E ('{'s.N'}')) ':' (/* пусто */))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
 
   /* {m}  T E  {n} : ε  ↦  решений нет */
   (e.UsedVars) (e.Contrs) e.ClashesStart
@@ -869,7 +930,24 @@ Solve-Clashes {
     = <Solve-Clashes t.NewVars2 e.Branch1>
       e.Solutions2;
 
+  /* {m} !e.X E {n} : Pt P   ↦  e.X → t.NEW1 e.NEW2  ||  e.X → ε */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (E (('{'s.M'}') (WhVar 'e' e.Index) e.E ('{'s.N'}')) ':' (t.Pt e.P))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
+
+  /* {m} E !e.X {n} : P  Pt  ↦  e.X → e.NEW1 t.NEW2  ||  e.X → ε */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (E (('{'s.M'}') e.E (WhVar 'e' e.Index) ('{'s.N'}')) ':' (e.P t.Pt))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
+
   /* могли остаться только клэши вида E : e.X P e.Y */
+  (e.UsedVars) (s.OpenFlag e.Contrs)
+  (E (e._ (WhVar e._) e._) ':' ((Var 'e' e._) e.P (Var 'e' e._)))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
+
   (e.UsedVars) (s.OpenFlag e.Contrs)
   (E (e.E) ':' ((Var 'e' e._) e.P (Var 'e' e._)))
   e.ClashesEnd (e.Assigns)
@@ -1545,6 +1623,13 @@ Solve-SymmClashes-Aux {
         >
       >;
 
+  /* ε = {m} !e.X E {n}  ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (E /* пусто */ '=' ('{'s.M'}') t.eX e.E ('{'s.N'}'))
+  e.ClashesEnd (e.Assigns)
+    , t.eX : (WhVar 'e' e.XIndex)
+    = Undefined;
+
   /* {m} e.X E {n} = ε  ↦  e.X → ε, {m} E {n} = ε */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   (E ('{'s.M'}') t.eX e.E ('{'s.N'}') '=' /* пусто */)
@@ -1559,6 +1644,13 @@ Solve-SymmClashes-Aux {
           e.ClashesEnd (e.Assigns)
         >
       >;
+
+  /* {m} !e.X E {n} = ε  ↦  e.X → ε, {m} E {n} = ε */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (E ('{'s.M'}') t.eX e.E ('{'s.N'}') '=' /* пусто */)
+  e.ClashesEnd (e.Assigns)
+    , t.eX : (WhVar 'e' e.XIndex)
+    = Undefined;
 
   /* ε = {m} T E {n}  ↦  решений нет */
   (e.UsedVars) (e.Contrs) e.ClashesStart
@@ -2089,6 +2181,7 @@ IsSVarSubset {
   (Symbol s.Type e.Info) = True;
   (Var 's' e.Tindex) = True;
   (ScrVar 's' e.Tindex) = True;
+  (WhVar 's' e.Tindex) = True;
   (Closure e.Body) = True;
   (ClosureBrackets e.Context) = True;
 
@@ -2100,6 +2193,7 @@ IsSVarSubset {
 IsTerm {
   (Var 'e' e.Index) = False;
   (ScrVar 'e' e.Index) = False;
+  (WhVar 'e' e.Index) = False;
 
   /* Рассматриваем для оптимизаций встраивания, прогонки и специализации */
   (CallBrackets e.Nested) = False;

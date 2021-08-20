@@ -8,7 +8,8 @@ $EXTERN Log-PutLine;
 $EXTERN DisplayName;
 
 *$FROM TreeUtils
-$EXTERN HashName, ExtractVariables, IsLExpr, ApplyContractions;
+$EXTERN HashName, ExtractVariables, IsLExpr, MarkAllVarsAsWhole,
+  ApplyContractions, UnmarkWholeVars;
 
 *$FROM OptTree-Drive-Expr
 $EXTERN OptTree-Drive-Expr;
@@ -400,18 +401,21 @@ OptSentence {
     /* Если левая часть не L-выражение, сужения запрещаем */
     = <IsLExpr e.Left>
     : {
-        True = /* пусто */;
-        False = e.SentenceVars;
+        True = e.Right;
+        False = <MarkAllVarsAsWhole e.Right>;
       }
-    : e.WholeVars
+    : e.Right^
 
-     = <OptTree-Drive-Expr (e.SentenceVars) (e.WholeVars) t.OptInfo e.Right>
+     = <OptTree-Drive-Expr (e.SentenceVars) t.OptInfo e.Right>
      : t.OptInfo^ e.Branches (e.NewFunctions)
 
      = <Map
          {
            (e.Contractions (e.DrivenRight))
-             = ((<ApplyContractions e.Left (e.Contractions)>) (e.DrivenRight));
+             = <ApplyContractions e.Left (e.Contractions)> : e.Left^
+             = <UnmarkWholeVars e.Left> : e.Left^
+             = <UnmarkWholeVars e.DrivenRight> : e.DrivenRight^
+             = ((e.Left) (e.DrivenRight));
          }
          e.Branches
        >

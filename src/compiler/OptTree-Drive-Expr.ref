@@ -12,20 +12,20 @@ $EXTERN GenericMatch, Solve-Drive;
 
 *$FROM TreeUtils
 $EXTERN ExpandClosures-Result, ApplyContractions, ExtractVariables-Expr,
-  CreateContext, IsPassiveExpr, ApplyAssigns, HashName;
+  CreateContext, IsPassiveExpr, MarkAllVarsAsWhole, ApplyAssigns, HashName;
 
 
 /**
-  <OptTree-Drive-Expr (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr>
+  <OptTree-Drive-Expr (e.UsedVars) t.OptInfo e.Expr>
     == t.OptInfo^ e.FlatBranches (e.NewFunctions)
 
   e.FlatBranches ::= (e.Contractions (e.DrivenExpr))*
   e.UsedVars, e.WholeVars ::= (s.Mode e.Index)*
 */
 $ENTRY OptTree-Drive-Expr {
-  (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr
+  (e.UsedVars) t.OptInfo e.Expr
     = <ExpandClosures-Result e.Expr> : e.Expr^
-    = <MakeDriveTree (0) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr (0)>
+    = <MakeDriveTree (0) (e.UsedVars) t.OptInfo e.Expr (0)>
     : ((s._CntNodes) t.OptInfo^ (e.NewFunctions)) e.DriveTree
     = t.OptInfo <FlatDriveTree e.DriveTree> (e.NewFunctions);
 }
@@ -62,7 +62,7 @@ IncWithMax {
   t.TreeBranch ::= (e.Contractions (e.DrivenRight) (t.TreeBranch*))
 */
 MakeDriveTree {
-  (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr
+  (s.CntNodes) (e.UsedVars) t.OptInfo e.Expr
   (s.TreeDepth e.canoninzedExprs)
     = (<OptTree-CanonizeExpr e.Expr>) e.canoninzedExprs : e.canoninzedExprs^
     = <IncWithMax s.CntNodes <MaxCntNodes>>
@@ -80,7 +80,7 @@ MakeDriveTree {
 
         False s._Cnt
           = <GrowDriveTree
-              (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr
+              (s.CntNodes) (e.UsedVars) t.OptInfo e.Expr
               (s.TreeDepth e.canoninzedExprs)
             >;
     };
@@ -99,7 +99,7 @@ DriveStateWithLeaf {
 gen_e__ { e.arg = e.arg }
 
 GrowDriveTree {
-  (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr
+  (s.CntNodes) (e.UsedVars) t.OptInfo e.Expr
   (s.TreeDepth e.canoninzedExprs)
     = t.OptInfo : ((e.OptFuncNames) e.OptFuncs)
     = <FindOptimizedCall (e.OptFuncNames) e.Expr>
@@ -110,20 +110,20 @@ GrowDriveTree {
 
         (e.OptFuncNames^ t.Call) e.Expr^
           = <OptOneCall
-              (e.UsedVars) (e.WholeVars) (e.Expr) <gen_e__> t.Call e.OptFuncs
+              (e.UsedVars) (e.Expr) <gen_e__> t.Call e.OptFuncs
             >
           : (e.OptFuncs^) (e.NewFunctions) e.Branches
 
           = ((e.OptFuncNames) e.OptFuncs) : t.OptInfo^
 
           = <GrowDriveTree-DriveBranches
-              (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo
+              (s.CntNodes) (e.UsedVars) t.OptInfo
               (s.TreeDepth e.canoninzedExprs) (e.NewFunctions) e.Branches
             >
           : {
               Generalize t.OptInfo^ 1
                 = <GrowDriveTree
-                    (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo
+                    (s.CntNodes) (e.UsedVars) t.OptInfo
                     <RestoreDrivenCall t.Call e.Expr>
                     (s.TreeDepth e.canoninzedExprs)
                   >;
@@ -136,14 +136,14 @@ GrowDriveTree {
 }
 
 GrowDriveTree-DriveBranches {
-  (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo
+  (s.CntNodes) (e.UsedVars) t.OptInfo
   (s.TreeDepth e.canoninzedExprs) (e.NewFunctions) e.Branches
     = <MapAccum
         {
           ((s.CntNodes^) t.OptInfo^ (e.NewFunctionsAccum))
           ((e.UsedVars^) e.Contractions (e.DrivenRight))
             = <MakeDriveTree
-                (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.DrivenRight
+                (s.CntNodes) (e.UsedVars) t.OptInfo e.DrivenRight
                 (s.TreeDepth e.canoninzedExprs)
               >
             : {
@@ -205,14 +205,14 @@ FlatDriveTree {
 }
 
 OptOneCall {
-  (e.UsedVars) (e.WholeVars) (e.Expr)
+  (e.UsedVars) (e.Expr)
   (CallBrackets (Symbol Name e.Name) e.Args)
   s.Contractions-Mode t.Metatables e.OptFuncs
 
     /* Поиск информации для прогонки */
     = <FindOptInfo e.OptFuncs (e.Name)> : e.OptFuncs^ t.FunctionForDrive
     = <OptExpr-MakeSubstitutions
-        s.Contractions-Mode (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args)
+        s.Contractions-Mode (e.UsedVars) (e.Expr) (e.Args)
         t.FunctionForDrive t.Metatables
       >
     : t.Metatables^ e.SubstitutionPacks
@@ -304,7 +304,7 @@ eDRIVEN {
 /*
   <OptExpr-MakeSubstitutions
     s.Contractions-Mode
-    (e.UsedVars) (e.WholeVars) (e.Expr) (e.CallArgs) t.OptFunction t.Metatables
+    (e.UsedVars) (e.Expr) (e.CallArgs) t.OptFunction t.Metatables
   >
     == t.Metatables (e.Substitutions)*
   e.Substitutions ::= e.Contractions (e.NewFunctions)
@@ -314,7 +314,7 @@ eDRIVEN {
 */
 OptExpr-MakeSubstitutions {
   s.Contractions-Mode
-  (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args) t.IntrinsicFunction t.Metatables
+  (e.UsedVars) (e.Expr) (e.Args) t.IntrinsicFunction t.Metatables
     , t.IntrinsicFunction : ((e._) Intrinsic e.BehaviorName)
     = <OptTree-Drive-Intrinsic t.Metatables (e.Args) e.BehaviorName>
     : {
@@ -327,31 +327,30 @@ OptExpr-MakeSubstitutions {
             <MakeColdSolution (e.UsedVars) t.IntrinsicFunction e.Args>;
       };
 
-  s.Contractions-Mode (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args)
+  s.Contractions-Mode (e.UsedVars) (e.Expr) (e.Args)
   t.Function t.Metatables
     /* Активные вызовы игнорируем */
     , <IsPassiveExpr e.Args> : False
 
     = t.Metatables <MakeColdSolution (e.UsedVars) t.Function e.Args>;
 
-  s.Contractions-Mode (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args)
+  s.Contractions-Mode (e.UsedVars) (e.Expr) (e.Args)
   ((e.Name) Sentences e.Body) t.Metatables
 
     = s.Contractions-Mode
     : {
-        Contractions-Enabled = e.WholeVars;
-        Contractions-Disabled = e.UsedVars;
+        Contractions-Enabled = e.Args;
+        Contractions-Disabled = <MarkAllVarsAsWhole e.Args>;
       }
-    : e.WholeVars^
+    : e.Args^
 
     = t.Metatables
       <DoOptExpr-MakeSubstitutions
-        (e.UsedVars) (e.WholeVars) (e.Args)
-        (/* substitutions */)
+        (e.UsedVars) (e.Args) (/* substitutions */)
         ((e.Name) Sentences e.Body)
       >;
 
-  t.Contractions-Mode (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args)
+  t.Contractions-Mode (e.UsedVars) (e.Expr) (e.Args)
   t.Function t.Metatables
     = t.Metatables <MakeColdSolution (e.UsedVars) t.Function e.Args>;
 }
@@ -374,7 +373,7 @@ MakeColdSolution {
 }
 
 DoOptExpr-MakeSubstitutions {
-  (e.SentenceVars) (e.WholeVars) (e.Args) (e.Substitutions)
+  (e.SentenceVars) (e.Args) (e.Substitutions)
   ((e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
     = <Cleanup-Step-Drop e.RS> : e.RS^
     = <Solve-Drive (e.SentenceVars) ((e.Args) ':' (e.LS))>
@@ -395,7 +394,6 @@ DoOptExpr-MakeSubstitutions {
           «Грязное» решение допускаем только в случае прогонки.
         */
         Success e.Solutions
-          , <SafeContractions e.Solutions (e.WholeVars)> : True
           = <Map
               {
                 (e.UsedVars (e.Contrs) (e.Assigns))
@@ -408,7 +406,7 @@ DoOptExpr-MakeSubstitutions {
           : e.NewSubstitutions
           = e.Substitutions e.NewSubstitutions : e.Substitutions^
           = <DoOptExpr-MakeSubstitutions
-              (e.SentenceVars) (e.WholeVars) (e.Args) (e.Substitutions)
+              (e.SentenceVars) (e.Args) (e.Substitutions)
               ((<RemainderFuncIncName e.Name>) Sentences e.Rest)
             >;
 
@@ -425,7 +423,7 @@ DoOptExpr-MakeSubstitutions {
             >;
       };
 
-  (e.SentenceVars) (e.WholeVars) (e.Args) (e.Substitutions) t.RestFunction
+  (e.SentenceVars) (e.Args) (e.Substitutions) t.RestFunction
     = e.Substitutions <MakeColdSolution (e.SentenceVars) t.RestFunction e.Args>;
 }
 
@@ -438,16 +436,6 @@ Cleanup-Step-Drop {
   (CallBrackets (Symbol Name '__Step-Drop') /* пусто */) e.RS = e.RS;
 
   e.RS = e.RS;
-}
-
-SafeContractions {
-  e.Solutions-B
-  (e.UsedVars (e.Contrs-B ((Var s.Mode e.Index) ':' e._) e.Contrs-E) (e.Assigns))
-  e.Solutions-E
-  (e.WholeVars-B (s.Mode e.Index) e.WholeVars-E)
-    = False;
-
-  e.Solutions (e.WholeVars) = True;
 }
 
 DropLeft {

@@ -35,6 +35,9 @@ $ENTRY ExtractVariables-Expr {
   (Var s.VarType e.Index) e.Terms
     = (s.VarType e.Index) <ExtractVariables-Expr e.Terms>;
 
+  (WhVar s.VarType e.Index) e.Terms
+    = (s.VarType e.Index) <ExtractVariables-Expr e.Terms>;
+
   (Brackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
   (ADT-Brackets (e.Name) e.Inner) e.Terms
     = <ExtractVariables-Expr e.Inner e.Terms>;
@@ -334,4 +337,50 @@ ApplyAssigns-Term {
   t.T (e.B (e.Expr ':' t.T) e.E) =  e.Expr;
 
   t.T (e.Assigns) = t.T;
+}
+
+/**
+  <MarkAllVarsAsWhole e.Expr> == e.Expr^
+*/
+$ENTRY MarkAllVarsAsWhole {
+  e.Expr
+    = <Map
+        {
+          (s.Brackets e.Nested)
+            , Brackets CallBrackets ColdCallBrackets ClosureBrackets
+            : e._ s.Brackets e._
+            = (s.Brackets <MarkAllVarsAsWhole e.Nested>);
+
+          (ADT-Brackets (e.Name) e.Nested)
+            = (ADT-Brackets (e.Name) <MarkAllVarsAsWhole e.Nested>);
+
+          (Var s.Mode e.Index) = (WhVar s.Mode e.Index);
+
+          t.Other = t.Other;
+        }
+        e.Expr
+      >
+}
+
+/**
+  <UnmarkWholeVars e.Expr> == e.Expr^
+*/
+$ENTRY UnmarkWholeVars {
+  e.Expr
+    = <Map
+        {
+          (s.Brackets e.Nested)
+            , Brackets CallBrackets ColdCallBrackets ClosureBrackets
+            : e._ s.Brackets e._
+            = (s.Brackets <UnmarkWholeVars e.Nested>);
+
+          (ADT-Brackets (e.Name) e.Nested)
+            = (ADT-Brackets (e.Name) <UnmarkWholeVars e.Nested>);
+
+          (WhVar s.Mode e.Index) = (Var s.Mode e.Index);
+
+          t.Other = t.Other;
+        }
+        e.Expr
+      >
 }
