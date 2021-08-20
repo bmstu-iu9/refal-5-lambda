@@ -12,18 +12,26 @@ $EXTERN HashName;
 
 $ENTRY OptTree-AutoMarkup-Drive {
   e.AST
-    = <MetaInfo e.AST> : t.MetaInfo e.AST^
-    = t.MetaInfo : ((e.Forbidden) (e.Inlines) (e.UserdefDrives) (e.Entries))
-
     = <MapAccum
         {
+          (Drives e.Drives)
+          (Function (e.FuncName) Sentences (e.OneSentence))
+            , e.OneSentence : ((Var 'e' e.Index)) /*=*/ ((Var 'e' e.Index))
+            , <Pseudofunction-gen_e e.FuncName> : True
+            = (Drives e.Drives)
+              (Function (e.FuncName) Sentences (e.OneSentence));
+
           (Drives e.Drives) (Function (e.Name) Sentences e.Body)
-            = e.Forbidden
+            = <Lenw e.Body>
             : {
-                e._ (e.Name) e._ = e.Drives;
-                e._ = e.Drives (e.Name);
+                0 /* пусто */ = e.Drives (e.Body);
+
+                s.SentencesCount e.Body^, <Compare s.SentencesCount 20> : '+'
+                  = e.Drives (e.Body);
+
+                s.SentencesCount e.Body^ = e.Drives (e.Name) (e.Body);
               }
-            : e.Drives^
+            : e.Drives^ (e.Body^)
             = (Drives e.Drives) (Function (e.Name) Sentences e.Body);
 
           /* пользовательскую разметку игнорируем */
@@ -36,80 +44,6 @@ $ENTRY OptTree-AutoMarkup-Drive {
       >
 }
 
-BuldCallGraph {
-  e.AST (e.Inlines)
-    = <SeparateMetatables e.AST> : (e.Metatables) e.Functions
-    = <Map &MakeGraphNode e.Metatables> : e.Metatables^
-    = <Map &MakeGraphNode e.Functions> : e.Graph
-
-    = <InlineMetatableGraphNodes e.Graph (e.Metatables)> : e.Graph^
-
-    = <SeparateIndirects e.Graph> : (e.Indirects) e.Graph^
-    = <InlineIndirects e.Graph (e.Indirects)> : e.Graph^
-
-    = <SeparateInlineGraphNodes e.Graph (e.Inlines)> : (e.InlinesRef) e.Graph^
-    = <InlineInlineReferences e.Graph (e.InlinesRef)> : e.Graph^
-    = (e.Indirects) e.Graph;
-}
-
-MetaInfo {
-  e.AST
-    = <MetaInfo-ExtractNode Entries e.AST> : (e.Entries) e.AST^
-    = <MetaInfo-ExtractNode Drives e.AST> : (e.Drives) e.AST^
-    = <MetaInfo-ExtractNode Inlines e.AST> : (e.Inlines) e.AST^
-    = <MetaInfo-ExtractNode Intrinsics e.AST> : (e.Intrinsics) e.AST^
-    = (/* forbidden list */) : t.InitMetaInfo
-    = <MapAccum
-        {
-          t.MetaInfo
-          (Function
-            (e.FuncName) Sentences
-            (((Var 'e' e.Index)) /*=*/ ((Var 'e' e.Index)))
-          )
-            , <Pseudofunction-gen_e e.FuncName> : True
-            = <MetaInfo-AddForbidden t.MetaInfo e.FuncName>
-              (Function
-                (e.FuncName) Sentences
-                (((Var 'e' e.Index)) /*=*/ ((Var 'e' e.Index)))
-              );
-
-          t.MetaInfo (Function (e.FuncName) Sentences e.Body)
-            = <Lenw e.Body> : s.SentencesCount e.Body^
-            = /* пусто */
-            : {
-                /* пусто */, s.SentencesCount : 0
-                  = <MetaInfo-AddForbidden t.MetaInfo e.FuncName>;
-
-                /* пусто */, <Compare s.SentencesCount 20> : '+'
-                  = <MetaInfo-AddForbidden t.MetaInfo e.FuncName>;
-
-                /* пусто */ = t.MetaInfo;
-              }
-            : t.MetaInfo^
-            = t.MetaInfo (Function (e.FuncName) Sentences e.Body);
-
-          t.MetaInfo t.Other = t.MetaInfo t.Other;
-        }
-        t.InitMetaInfo e.AST
-      >
-    : (e.Forbidden) e.AST^
-    = ((e.Intrinsics e.Forbidden) (e.Inlines) (e.Drives) (e.Entries))
-      (Entries e.Entries)
-      (Drives e.Drives)
-      (Inlines e.Inlines)
-      (Intrinsics e.Intrinsics)
-      e.AST
-}
-
-MetaInfo-ExtractNode {
-  s.Node e.AST-B (s.Node e.Names) e.AST-E = (e.Names) e.AST-B e.AST-E;
-  s.Node e.AST = (/* пусто */) e.AST;
-}
-
-MetaInfo-AddForbidden {
-  (e.Forbidden) e.Name = (e.Forbidden (e.Name));
-}
-
 Pseudofunction-gen_e {
   'gen_e__' = True;
   'gen-e__' = True;
@@ -117,28 +51,6 @@ Pseudofunction-gen_e {
   'gen-e__' SUF '~' s.N = True;
 
   e._ = False;
-}
-
-SeparateMetatables {
-  e.AST
-    = <MapAccum
-        {
-          (e.Metatables) t.Function
-            , t.Function : (Function s._ (e._) Metatable e._)
-            = (e.Metatables t.Function) /* пусто */;
-
-          (e.Metatables) (Function s._ (e._) Sentences /* пусто */)
-            = (e.Metatables) /* игнорируем пустые функции */;
-
-          (e.Metatables) t.Function
-            , t.Function : (Function s._ (e._) Sentences e._)
-            = (e.Metatables) t.Function;
-
-          (e.Metatables) t._ = (e.Metatables) /* пропускаем */;
-        }
-        (/* metatables */)
-        e.AST
-      >
 }
 
 MakeGraphNode {
@@ -202,140 +114,6 @@ Children-Term {
     = <Children-Expr e.Expr>;
 
   t.AnyOtherTerm = /* ничего интересного */;
-}
-
-InlineMetatableGraphNodes {
-  e.Graph (e.Metatables)
-    = <Reduce
-        {
-          (e.Graph^) t.Metatable
-            = (<InlineOneMetatable e.Graph t.Metatable>)
-        }
-        (e.Graph) e.Metatables
-      >
-    : (e.Graph^)
-    = e.Graph;
-}
-
-InlineOneMetatable {
-  e.Functions-B
-  (Func (e.Name) Children (e.Children-B (Pointer e.MetatableName) e.Children-E))
-  e.Functions-E
-  t.Metatable
-    , t.Metatable : (Func (e.MetatableName) Children (e.MetatableNodes))
-    = e.Functions-B
-      (Func (e.Name) Children (e.Children-B e.MetatableNodes e.Children-E))
-      <InlineOneMetatable e.Functions-E t.Metatable>;
-
-  e.Functions t.Metatable = e.Functions;
-}
-
-SeparateInlineGraphNodes {
-  e.Graph (e.Inlines)
-    = <MapAccum
-        {
-          (e.InlinesRef) t.GraphNode
-            , t.GraphNode : (Func (e.Name) Children (e.Children))
-            , e.Inlines : e._ (e.Name) e._
-            = (e.InlinesRef t.GraphNode) t.GraphNode;
-
-          (e.InlinesRef) t.GraphNode = (e.InlinesRef) t.GraphNode;
-        }
-        (/* inlines references */) e.Graph
-      >
-}
-
-InlineInlineReferences {
-  e.Graph (e.Inlines)
-    = <MakeInlineClosure (e.Inlines) e.Inlines> : e.Inlines^
-    = <ApplyInlines e.Graph (e.Inlines)>
-}
-
-MakeInlineClosure {
-  (e.InlinesAcc) e.Inlines
-    = <ApplyInlines e.InlinesAcc (e.Inlines)>
-    : {
-        e.InlinesAcc /* same */ = e.InlinesAcc;
-
-        e.InlinesAcc^ = <MakeInlineClosure (e.InlinesAcc) e.Inlines>;
-      }
-}
-
-ApplyInlines {
-  e.Graph (e.Inlines)
-    = <MapAccum
-        {
-          (e.Inlines^) (Func (e.Name) Children (e.Children))
-            = <ApplyInlines-Children e.Inlines (e.Children)>
-            : e.Inlines^ (e.Children^)
-            = (e.Inlines) (Func (e.Name) Children (e.Children));
-        }
-        (e.Inlines) e.Graph
-      >
-    : (e._) e.Graph^
-    = e.Graph;
-}
-
-ApplyInlines-Children {
-  e.Inlines-B (Func (e.Name) Children (e.InlineChilden)) e.Inlines-E
-  (e.Children-B (e.Name) e.Children-E)
-    = e.Children-B (e.Name) e.Children-E : e.Children
-    = <UnionChildren e.Children (e.InlineChilden)> : e.Children^
-    = e.Inlines-B (Func (e.Name) Children (e.InlineChilden))
-      <ApplyInlines-Children e.Inlines-E (e.Children)>;
-
-  e.Inlines (e.Children) = e.Inlines (e.Children);
-}
-
-* <UnionChildren e.Set1 (e.Set2)> == e.Set1 e.Set2\Set1
-UnionChildren {
-  e.Unique t.Common e.NotScanned (e.New-B t.Common e.New-E)
-    = e.Unique t.Common <UnionChildren e.NotScanned (e.New-B e.New-E)>;
-
-  e.Unique (e.New) = e.Unique e.New;
-}
-
-SeparateIndirects {
-  e.Graph
-    = <MapAccum
-        {
-          (e.Indirects) (Func (e.Name) Children (e.Children))
-
-            = <SeparateIndirects-Children e.Children>
-            : (e.FunctionIndirects) e.Children^
-
-            = (e.Indirects e.FunctionIndirects)
-              (Func (e.Name) Children (<Unique e.Children>));
-        }
-        (/* indirects */)
-        e.Graph
-      >
-    : (e.Indirects) e.Graph^
-    = (<Unique e.Indirects>) e.Graph;
-}
-
-SeparateIndirects-Children {
-  e.Children
-    = <MapAccum
-        {
-          (e.Indirects) (Call e.Name) = (e.Indirects) (e.Name);
-          (e.Indirects) (Pointer e.Name) = (e.Indirects (e.Name)) /* удаляем */;
-          (e.Indirects) (INDIRECT) = (e.Indirects) INDIRECT;
-        }
-        (/* indirects */) e.Children
-      >
-}
-
-InlineIndirects {
-  e.Graph-B
-  (Func (e.Name) Children (e.Children-B INDIRECT e.Children-E))
-  e.Graph-E
-  (e.Indirects)
-    = e.Graph-B
-      (Func (e.Name) Children (<Unique e.Children-B e.Indirects e.Children-E>))
-      <InlineIndirects e.Graph-E (e.Indirects)>;
-
-  e.Graph (e.Indirects) = e.Graph;
 }
 
 /*
@@ -498,32 +276,11 @@ WrapBucket {
   s.Hash e.Bucket = (s.Hash e.Bucket);
 }
 
-SetDifference {
-  e.Set1-B t.Common e.Set1-E (e.Set2-B t.Common e.Set2-E)
-    = e.Set1-B <SetDifference e.Set1-E (e.Set2-B t.Common e.Set2-E)>;
-
-  e.Set1 (e.Set2) = e.Set1;
-}
-
-UpdateAST {
-  e.AST-B (Drives e.Drives) e.AST-E (e.NewDrives) (e.BasisVertexes)
-    = e.AST-B
-      (Drives <SetDifference e.Drives (e.BasisVertexes)> e.NewDrives)
-      e.AST-E
-}
-
 /**
   <OptTree-AutoMarkup-CureDrives e.AST> == e.AST
 */
 $ENTRY OptTree-AutoMarkup-CureDrives {
   e.AST = e.AST;
-}
-
-SetIntersect {
-  (e.Set1-B t.Common e.Set1-E) (e.Set2-B t.Common t.Set2-E)
-    = t.Common <SetIntersect (e.Set1-E) (e.Set2-B t.Set2-E)>;
-
-  (e.Set1) (e.Set2) = /* пусто */;
 }
 
 
