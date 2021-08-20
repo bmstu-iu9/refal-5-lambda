@@ -8,11 +8,11 @@ $EXTERN OptTree-CanonizeExpr, OptTree-CheckExprStopRelation;
 $EXTERN OptTree-Drive-Intrinsic;
 
 *$FROM GenericMatch
-$EXTERN Solve-Drive;
+$EXTERN GenericMatch, Solve-Drive;
 
 *$FROM TreeUtils
-$EXTERN ExpandClosures-Result, ApplyContractions, IsPassiveExpr, ApplyAssigns,
-  HashName;
+$EXTERN ExpandClosures-Result, ApplyContractions, ExtractVariables-Expr,
+  CreateContext, IsPassiveExpr, ApplyAssigns, HashName;
 
 
 /**
@@ -217,8 +217,10 @@ OptOneCall {
       >
     : t.Metatables^ e.SubstitutionPacks
 
-    = (s.Contractions-Mode t.Metatables e.OptFuncs)
-      <MapAccum
+    = <Unique <ExtractVariables-Expr e.Args>> : e.Domain
+    = <CreateContext NoMarkupContext e.Domain> : e.PseudoPattern
+
+    = <MapAccum
         {
           (e.NewFunctions) ((e.UsedVars^) e.Contractions (e.NewFunction))
             = <ApplyContractions e.Expr (e.Contractions)> : e.DrivenRight
@@ -228,7 +230,71 @@ OptOneCall {
         }
         (/* new functions */)
         e.SubstitutionPacks
+      >
+    : (e.NewFunctions) e.Branches
+
+    = <FilterScreenedBranches (e.PseudoPattern) e.Branches> : e.Branches^
+
+    = (s.Contractions-Mode t.Metatables e.OptFuncs)
+      (e.NewFunctions) e.Branches
+}
+
+FilterScreenedBranches {
+  (e.PatTemplate) e.Branches
+    = <Map
+        {
+          ((e.UsedVars) e.Contractions (e.Result))
+            = <ApplyContractions e.PatTemplate (e.Contractions)> : e.Pattern
+            = ((e.Pattern) (e.UsedVars) (e.Result));
+        }
+        e.Branches
+      >
+    : e.PseudoSentenences
+
+    = <DoFilterScreenedBranches e.PseudoSentenences> : e.PseudoSentenences^
+
+    = <Map
+        {
+          ((e.Pattern) (e.UsedVars) (e.Result))
+            = <RestoreContractions (e.Pattern) (e.PatTemplate)> : e.Contractions
+            = ((e.UsedVars) e.Contractions (e.Result));
+        }
+        e.PseudoSentenences
+      >
+}
+
+DoFilterScreenedBranches {
+  ((e.FirstPattern) (e.FirstUsedVars) (e.FirstResult)) e.PseudoSentenences
+    = ((e.FirstPattern) (e.FirstUsedVars) (e.FirstResult))
+      <DoFilterScreenedBranches
+        <Map
+          {
+            ((e.Pattern) (e.UsedVars) (e.Result))
+              , <GenericMatch (e.Pattern) (e.FirstPattern)> : Clear e._
+              = /* ветвь экранируется, стираем */;
+
+            ((e.Pattern) (e.UsedVars) (e.Result))
+              = ((e.Pattern) (e.UsedVars) (e.Result));
+          }
+          e.PseudoSentenences
+        >
       >;
+
+  /* пусто */ = /* пусто */;
+}
+
+RestoreContractions {
+  (e.Pattern) (e.PatTemplate)
+    = <GenericMatch (e.Pattern) (e.PatTemplate)> : Clear e.Assigns
+    = <Map
+        {
+          ((Var s.Mode e.Index) ':' (s.Mode e.Index))
+            = /* тривиальные пропускаем */;
+
+          (e.Expr ':' (s.Mode e.Index)) = ((Var s.Mode e.Index) ':' e.Expr)
+        }
+        e.Assigns
+      >
 }
 
 eDRIVEN {

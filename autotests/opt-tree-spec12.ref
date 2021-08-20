@@ -2,18 +2,18 @@
 
 $ENTRY Go {
   /* empty */
-    = <F (<gen_e__>) (<gen_e__ 'AABBAACC' 9 'DD'>)>   : ('AA') ('BB') ('CC') ('DD')
-    = <F (<gen_e__ 'A'>) (<gen_e__ 'ABBAACC' 9 'DD'>)> : ('AA') ('BB') ('CC') ('DD')
-    = <F (<gen_e__ 'AA'>) (<gen_e__ 'BBAACC' 9 'DD'>)> : ('AA') ('BB') ('CC') ('DD')
-    = <F (<gen_e__ 'AAB'>) (<gen_e__ 'BAACC' 9 'DD'>)> : ('AA') ('BB') ('CC') ('DD')
-    = <F (<gen_e__ 'AABB'>) (<gen_e__ 'AACC' 9 'DD'>)> : ('AA') ('BB') ('CC') ('DD')
-    = <F (<gen_e__ 'AABBA'>) (<gen_e__ 'ACC' 9 'DD'>)> : ('AA') ('BB') ('CC') ('DD')
-    = <F (<gen_e__ 'AABBAA'>) (<gen_e__ 'CC' 9 'DD'>)> : ('AA') ('BB') ('CC') ('DD')
-    = <F (<gen_e__ 'AABBAAC'>) (<gen_e__ 'C' 9 'DD'>)> : ('AA') ('BB') ('CC') ('DD')
-    = <F (<gen_e__ 'AABBAACC'>) (<gen_e__ 9 'DD'>)>    : ('AA') ('BB') ('CC') ('DD')
-    = <F (<gen_e__ 'AABBAACC' 9>) (<gen_e__ 'DD'>)>    : ('AA') ('BB') ('CC') ('DD')
-    = <F (<gen_e__ 'AABBAACC' 9 'D'>) (<gen_e__ 'D'>)> : ('AA') ('BB') ('CC') ('DD')
-    = <F (<gen_e__ 'AABBAACC' 9 'DD'>) (<gen_e__>)>   : ('AA') ('BB') ('CC') ('DD')
+    = <F () ('AABBAACC' 9 'DD')>   : ('AA') ('BB') ('CC') ('DD')
+    = <F ('A') ('ABBAACC' 9 'DD')> : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AA') ('BBAACC' 9 'DD')> : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AAB') ('BAACC' 9 'DD')> : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AABB') ('AACC' 9 'DD')> : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AABBA') ('ACC' 9 'DD')> : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AABBAA') ('CC' 9 'DD')> : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AABBAAC') ('C' 9 'DD')> : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AABBAACC') (9 'DD')>    : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AABBAACC' 9) ('DD')>    : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AABBAACC' 9 'D') ('D')> : ('AA') ('BB') ('CC') ('DD')
+    = <F ('AABBAACC' 9 'DD') ()>   : ('AA') ('BB') ('CC') ('DD')
     = /* empty */;
 }
 
