@@ -140,7 +140,7 @@ GrowDriveTree-DriveBranches {
   (s.TreeDepth e.canoninzedExprs) (e.NewFunctions) e.Branches
     = <MapAccum
         {
-          ((s.CntNodes^) t.OptInfo^ (e.NewFunctionsAccum))
+          ((s.CntNodes^) t.OptInfo^ (e.NewFunctionsAcc))
           ((e.UsedVars^) e.Contractions (e.DrivenRight))
             = <MakeDriveTree
                 (s.CntNodes) (e.UsedVars) t.OptInfo e.DrivenRight
@@ -148,7 +148,7 @@ GrowDriveTree-DriveBranches {
               >
             : {
                 ((s.CntNodes^) t.OptInfo^ (e.NewFunctions^)) e.Branches^
-                  = ((s.CntNodes) t.OptInfo (e.NewFunctionsAccum e.NewFunctions))
+                  = ((s.CntNodes) t.OptInfo (e.NewFunctionsAcc e.NewFunctions))
                     (e.Contractions (e.DrivenRight) (e.Branches));
 
                 Generalize t.OptInfo^ s.Cnt = (Generalize t.OptInfo s.Cnt);
@@ -194,8 +194,8 @@ FlatDriveTree {
             = <FlatDriveTree e.ChildBranches> : e.FlatBranches
             = <Map
                 {
-                  (e.BrachContractions (e.DrivenRight))
-                    = (e.Contractions e.BrachContractions (e.DrivenRight))
+                  (e.BranchContractions (e.DrivenRight))
+                    = (e.Contractions e.BranchContractions (e.DrivenRight))
                 }
                 e.FlatBranches
               >;
