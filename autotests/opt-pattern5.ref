@@ -1,4 +1,3 @@
-//FROM refalrts
 /* TREE */
 
 $ENTRY Go {
@@ -8,51 +7,51 @@ $ENTRY Go {
         (0 )
         (0 )
         (0 )
-        (#LABEL 1 )
-        (#CmdVar #AlgLeft 2 't' 5 )
-        (#CmdVariableDebugTable 't.Config#1' 5 )
-        (#CmdVariableDebugTable 'e.Message#1' 2 )
-        (#CmdCreateElem #Allocate 7 #ElName 'Prout' )
-        (#CmdCreateElem #Allocate 8 #ElString 'LINK ERROR: ' )
-        (#CmdCreateElem #Allocate 12 #ElName 'CreateErrorFileMark' )
-        (#CmdCreateElem #Allocate 15 #ElName 'Exit' )
-        (#CmdCreateElem #Allocate 16 #ElNumber 1 )
-        (#CmdInsertRange 8 )
-        (#LABEL 141 )
-        (#CmdCallSave #AlgLeft 0 2 )
-        (#CmdChar #AlgRight 2 'l' )
-        (#CmdChar #AlgRight 2 's' )
-        (#CmdChar #AlgRight 2 'a' )
-        (#CmdChar #AlgRight 2 'r' )
-        (#CmdChar #AlgRight 2 '.' )
-        (#CmdVariableDebugTable 'e.FileName#1' 2 )
-        (#CmdCreateElem #Allocate 6 #ElName 'Lower' )
-        (#CmdCreateElem #Allocate 8 #ElName 'GetLastPartName' )
-        (#LABEL 142 )
-        (#CmdCallSave #AlgLeft 0 2 )
-        (#CmdVariableDebugTable 'e.FileName#1' 2 )
-        (#CmdCreateElem #Allocate 6 #ElName 'DoGetFileName' )
-        (#LABEL 146 )
-        (#CmdCallSave #AlgLeft 0 2 )
-        (#CmdOnFailGoTo 145 "Func name:" 'DoGetFileName' )
-        (#CmdSave 2 5 )
-        (#CmdVar #AlgRight 5 's' 7 )
-        (#CmdOnFailGoTo 143 "Func name:" 'DoGetFileName' )
-        (#CmdChar #AlgTerm 7 '/' )
-        (#CmdVariableDebugTable 'e.FileName#1' 5 )
-        (#LABEL 143 )
-        (#CmdProfilerStopSentence )
-        (#CmdOnFailGoTo 144 "Func name:" 'DoGetFileName' )
-        (#CmdChar #AlgTerm 7 '\\' )
-        (#CmdVariableDebugTable 'e.FileName#1' 5 )
-        (#LABEL 144 )
-        (#CmdProfilerStopSentence )
-        (#CmdVariableDebugTable 's.Last#1' 7 )
-        (#CmdVariableDebugTable 'e.FileName#1' 5 )
-        (#CmdCreateElem #Allocate 9 #ElName 'DoGetFileName' )
-        (#LABEL 145 )
-        (#CmdProfilerStopSentence )
-        (#CmdEmpty #AlgLeft 2 )
+        (LABEL 1 )
+        (CmdVar AlgLeft 2 't' 5 )
+        (CmdVariableDebugTable 't.Config#1' 5 )
+        (CmdVariableDebugTable 'e.Message#1' 2 )
+        (CmdCreateElem Allocate 7 ElName 'Prout' )
+        (CmdCreateElem Allocate 8 ElString 'LINK ERROR: ' )
+        (CmdCreateElem Allocate 12 ElName 'CreateErrorFileMark' )
+        (CmdCreateElem Allocate 15 ElName 'Exit' )
+        (CmdCreateElem Allocate 16 ElNumber 1 )
+        (CmdInsertRange 8 )
+        (LABEL 141 )
+        (CmdCallSave AlgLeft 0 2 )
+        (CmdChar AlgRight 2 'l' )
+        (CmdChar AlgRight 2 's' )
+        (CmdChar AlgRight 2 'a' )
+        (CmdChar AlgRight 2 'r' )
+        (CmdChar AlgRight 2 '.' )
+        (CmdVariableDebugTable 'e.FileName#1' 2 )
+        (CmdCreateElem Allocate 6 ElName 'Lower' )
+        (CmdCreateElem Allocate 8 ElName 'GetLastPartName' )
+        (LABEL 142 )
+        (CmdCallSave AlgLeft 0 2 )
+        (CmdVariableDebugTable 'e.FileName#1' 2 )
+        (CmdCreateElem Allocate 6 ElName 'DoGetFileName' )
+        (LABEL 146 )
+        (CmdCallSave AlgLeft 0 2 )
+        (CmdOnFailGoTo 145 "Func name:" 'DoGetFileName' )
+        (CmdSave 2 5 )
+        (CmdVar AlgRight 5 's' 7 )
+        (CmdOnFailGoTo 143 "Func name:" 'DoGetFileName' )
+        (CmdChar AlgTerm 7 '/' )
+        (CmdVariableDebugTable 'e.FileName#1' 5 )
+        (LABEL 143 )
+        (CmdProfilerStopSentence )
+        (CmdOnFailGoTo 144 "Func name:" 'DoGetFileName' )
+        (CmdChar AlgTerm 7 '\\' )
+        (CmdVariableDebugTable 'e.FileName#1' 5 )
+        (LABEL 144 )
+        (CmdProfilerStopSentence )
+        (CmdVariableDebugTable 's.Last#1' 7 )
+        (CmdVariableDebugTable 'e.FileName#1' 5 )
+        (CmdCreateElem Allocate 9 ElName 'DoGetFileName' )
+        (LABEL 145 )
+        (CmdProfilerStopSentence )
+        (CmdEmpty AlgLeft 2 )
         <gen_e__>
       >
     >;
@@ -61,7 +60,7 @@ $ENTRY Go {
 gen_e__ { e.arg = e.arg; }
 
 RESULT {
-  (#CmdFuncArray 6
+  (CmdFuncArray 6
     ('DoGetFileName' )
     ('GetLastPartName' )
     ('Lower' )
@@ -69,60 +68,60 @@ RESULT {
     ('CreateErrorFileMark' )
     ('Prout' )
   )
-  (#CmdIdentArray 0
+  (CmdIdentArray 0
   )
-  (#CmdStringArray 5
+  (CmdStringArray 5
     ('e.FileName#1' )
     ('s.Last#1' )
     ('LINK ERROR: ' )
     ('e.Message#1' )
     ('t.Config#1' )
   )
-  (#LABEL 1 )
-  (#CmdVar #AlgLeft 2 't' 5 )
-  (#CmdVariableDebugTable 4 5 )
-  (#CmdVariableDebugTable 3 2 )
-  (#CmdCreateElem #Allocate 7 #ElName 5 )
-  (#CmdCreateElem #Allocate 8 #ElString 2 )
-  (#CmdCreateElem #Allocate 12 #ElName 4 )
-  (#CmdCreateElem #Allocate 15 #ElName 3 )
-  (#CmdCreateElem #Allocate 16 #ElNumber 1 )
-  (#CmdInsertRange 8 )
-  (#LABEL 141 )
-  (#CmdCallSave #AlgLeft 0 2 )
-  (#CmdChar #AlgRight 2 'l' )
-  (#CmdChar #AlgRight 2 's' )
-  (#CmdChar #AlgRight 2 'a' )
-  (#CmdChar #AlgRight 2 'r' )
-  (#CmdChar #AlgRight 2 '.' )
-  (#CmdVariableDebugTable 0 2 )
-  (#CmdCreateElem #Allocate 6 #ElName 2 )
-  (#CmdCreateElem #Allocate 8 #ElName 1 )
-  (#LABEL 142 )
-  (#CmdCallSave #AlgLeft 0 2 )
-  (#CmdVariableDebugTable 0 2 )
-  (#CmdCreateElem #Allocate 6 #ElName 0 )
-  (#LABEL 146 )
-  (#CmdCallSave #AlgLeft 0 2 )
-  (#CmdOnFailGoTo 145 "Func name:" 'DoGetFileName' )
-  (#CmdSave 2 5 )
-  (#CmdVar #AlgRight 5 's' 7 )
-  (#CmdOnFailGoTo 143 "Func name:" 'DoGetFileName' )
-  (#CmdChar #AlgTerm 7 '/' )
-  (#CmdVariableDebugTable 0 5 )
-  (#LABEL 143 )
-  (#CmdProfilerStopSentence )
-  (#CmdOnFailGoTo 144 "Func name:" 'DoGetFileName' )
-  (#CmdChar #AlgTerm 7 '\\' )
-  (#CmdVariableDebugTable 0 5 )
-  (#LABEL 144 )
-  (#CmdProfilerStopSentence )
-  (#CmdVariableDebugTable 1 7 )
-  (#CmdVariableDebugTable 0 5 )
-  (#CmdCreateElem #Allocate 9 #ElName 0 )
-  (#LABEL 145 )
-  (#CmdProfilerStopSentence )
-  (#CmdEmpty #AlgLeft 2 )
+  (LABEL 1 )
+  (CmdVar AlgLeft 2 't' 5 )
+  (CmdVariableDebugTable 4 5 )
+  (CmdVariableDebugTable 3 2 )
+  (CmdCreateElem Allocate 7 ElName 5 )
+  (CmdCreateElem Allocate 8 ElString 2 )
+  (CmdCreateElem Allocate 12 ElName 4 )
+  (CmdCreateElem Allocate 15 ElName 3 )
+  (CmdCreateElem Allocate 16 ElNumber 1 )
+  (CmdInsertRange 8 )
+  (LABEL 141 )
+  (CmdCallSave AlgLeft 0 2 )
+  (CmdChar AlgRight 2 'l' )
+  (CmdChar AlgRight 2 's' )
+  (CmdChar AlgRight 2 'a' )
+  (CmdChar AlgRight 2 'r' )
+  (CmdChar AlgRight 2 '.' )
+  (CmdVariableDebugTable 0 2 )
+  (CmdCreateElem Allocate 6 ElName 2 )
+  (CmdCreateElem Allocate 8 ElName 1 )
+  (LABEL 142 )
+  (CmdCallSave AlgLeft 0 2 )
+  (CmdVariableDebugTable 0 2 )
+  (CmdCreateElem Allocate 6 ElName 0 )
+  (LABEL 146 )
+  (CmdCallSave AlgLeft 0 2 )
+  (CmdOnFailGoTo 145 "Func name:" 'DoGetFileName' )
+  (CmdSave 2 5 )
+  (CmdVar AlgRight 5 's' 7 )
+  (CmdOnFailGoTo 143 "Func name:" 'DoGetFileName' )
+  (CmdChar AlgTerm 7 '/' )
+  (CmdVariableDebugTable 0 5 )
+  (LABEL 143 )
+  (CmdProfilerStopSentence )
+  (CmdOnFailGoTo 144 "Func name:" 'DoGetFileName' )
+  (CmdChar AlgTerm 7 '\\' )
+  (CmdVariableDebugTable 0 5 )
+  (LABEL 144 )
+  (CmdProfilerStopSentence )
+  (CmdVariableDebugTable 1 7 )
+  (CmdVariableDebugTable 0 5 )
+  (CmdCreateElem Allocate 9 ElName 0 )
+  (LABEL 145 )
+  (CmdProfilerStopSentence )
+  (CmdEmpty AlgLeft 2 )
     = ;
 }
 
@@ -142,220 +141,220 @@ OutlineConstants {
   (s.NextIdent e.Idents)
   (s.NextString e.Strings)
   /* пусто */ =
-    (#CmdFuncArray s.NextFunc <Map-RemoveNumber e.Funcs>)
-    (#CmdIdentArray s.NextIdent <Map-RemoveNumber e.Idents>)
-    (#CmdStringArray s.NextString <Map-RemoveNumber e.Strings>);
+    (CmdFuncArray s.NextFunc <Map-RemoveNumber e.Funcs>)
+    (CmdIdentArray s.NextIdent <Map-RemoveNumber e.Idents>)
+    (CmdStringArray s.NextString <Map-RemoveNumber e.Strings>);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
   (e.Strings)
   e.Commands
-  (#CmdName s.Direction s.BracketNum e.Func) =
+  (CmdName s.Direction s.BracketNum e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdName s.Direction s.BracketNum s.Num);
+    (CmdName s.Direction s.BracketNum s.Num);
 
   (s.NextFunc e.Funcs) (e.Idents) (e.Strings)
   e.Commands
-  (#CmdName s.Direction s.BracketNum e.Func) =
+  (CmdName s.Direction s.BracketNum e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdName s.Direction s.BracketNum s.NextFunc);
+    (CmdName s.Direction s.BracketNum s.NextFunc);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
   (e.Strings)
   e.Commands
-  (#CmdNameSave s.Direction s.BracketNum s.SaveOffset e.Func) =
+  (CmdNameSave s.Direction s.BracketNum s.SaveOffset e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdNameSave s.Direction s.BracketNum s.SaveOffset s.Num);
+    (CmdNameSave s.Direction s.BracketNum s.SaveOffset s.Num);
 
   (s.NextFunc e.Funcs) (e.Idents) (e.Strings)
   e.Commands
-  (#CmdNameSave s.Direction s.BracketNum s.SaveOffset e.Func) =
+  (CmdNameSave s.Direction s.BracketNum s.SaveOffset e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdNameSave s.Direction s.BracketNum s.SaveOffset s.NextFunc);
+    (CmdNameSave s.Direction s.BracketNum s.SaveOffset s.NextFunc);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
   (e.Strings)
   e.Commands
-  (#CmdCreateElem s.CreateMode s.ElemNo #ElName e.Func) =
+  (CmdCreateElem s.CreateMode s.ElemNo ElName e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdCreateElem s.CreateMode s.ElemNo #ElName s.Num);
+    (CmdCreateElem s.CreateMode s.ElemNo ElName s.Num);
 
   (s.NextFunc e.Funcs) (e.Idents) (e.Strings)
   e.Commands
-  (#CmdCreateElem s.CreateMode s.ElemNo #ElName e.Func) =
+  (CmdCreateElem s.CreateMode s.ElemNo ElName e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdCreateElem s.CreateMode s.ElemNo #ElName s.NextFunc);
+    (CmdCreateElem s.CreateMode s.ElemNo ElName s.NextFunc);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
   (e.Strings)
   e.Commands
-  (#CmdADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
+  (CmdADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdADT s.Direction s.BracketNum s.InnerBrackets s.Num);
+    (CmdADT s.Direction s.BracketNum s.InnerBrackets s.Num);
 
   (s.NextFunc e.Funcs) (e.Idents) (e.Strings)
   e.Commands
-  (#CmdADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
+  (CmdADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdADT s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
+    (CmdADT s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
   (e.Strings)
   e.Commands
-  (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets e.Func) =
+  (CmdADTSave s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets s.Num);
+    (CmdADTSave s.Direction s.BracketNum s.InnerBrackets s.Num);
 
   (s.NextFunc e.Funcs) (e.Idents) (e.Strings)
   e.Commands
-  (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets e.Func) =
+  (CmdADTSave s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Idents)
       (e.Strings)
       e.Commands
     >
-    (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
+    (CmdADTSave s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
 
   (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
   (e.Strings)
   e.Commands
-  (#CmdIdent s.Direction s.BracketNum e.Ident) =
+  (CmdIdent s.Direction s.BracketNum e.Ident) =
     <OutlineConstants
       (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
       (e.Strings)
       e.Commands
     >
-    (#CmdIdent s.Direction s.BracketNum s.Num);
+    (CmdIdent s.Direction s.BracketNum s.Num);
 
   (e.Funcs) (s.NextIdent e.Idents) (e.Strings)
   e.Commands
-  (#CmdIdent s.Direction s.BracketNum e.Ident) =
+  (CmdIdent s.Direction s.BracketNum e.Ident) =
     <OutlineConstants
       (e.Funcs) (<Inc s.NextIdent> e.Idents (s.NextIdent e.Ident))
       (e.Strings)
       e.Commands
     >
-    (#CmdIdent s.Direction s.BracketNum s.NextIdent);
+    (CmdIdent s.Direction s.BracketNum s.NextIdent);
 
   (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
   (e.Strings)
   e.Commands
-  (#CmdIdentSave s.Direction s.BracketNum s.SaveOffset e.Ident) =
+  (CmdIdentSave s.Direction s.BracketNum s.SaveOffset e.Ident) =
     <OutlineConstants
       (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
       (e.Strings)
       e.Commands
     >
-    (#CmdIdentSave s.Direction s.BracketNum s.SaveOffset s.Num);
+    (CmdIdentSave s.Direction s.BracketNum s.SaveOffset s.Num);
 
   (e.Funcs) (s.NextIdent e.Idents) (e.Strings)
   e.Commands
-  (#CmdIdentSave s.Direction s.BracketNum s.SaveOffset e.Ident) =
+  (CmdIdentSave s.Direction s.BracketNum s.SaveOffset e.Ident) =
     <OutlineConstants
       (e.Funcs) (<Inc s.NextIdent> e.Idents (s.NextIdent e.Ident))
       (e.Strings)
       e.Commands
     >
-    (#CmdIdentSave s.Direction s.BracketNum s.SaveOffset s.NextIdent);
+    (CmdIdentSave s.Direction s.BracketNum s.SaveOffset s.NextIdent);
 
   (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
   (e.Strings)
   e.Commands
-  (#CmdCreateElem s.CreateMode s.ElemNo #ElIdent e.Ident) =
+  (CmdCreateElem s.CreateMode s.ElemNo ElIdent e.Ident) =
     <OutlineConstants
       (e.Funcs) (s.NextIdent e.Idents-B (s.Num e.Ident) e.Idents-E)
       (e.Strings)
       e.Commands
     >
-    (#CmdCreateElem s.CreateMode s.ElemNo #ElIdent s.Num);
+    (CmdCreateElem s.CreateMode s.ElemNo ElIdent s.Num);
 
   (e.Funcs) (s.NextIdent e.Idents) (e.Strings)
   e.Commands
-  (#CmdCreateElem s.CreateMode s.ElemNo #ElIdent e.Ident) =
+  (CmdCreateElem s.CreateMode s.ElemNo ElIdent e.Ident) =
     <OutlineConstants
       (e.Funcs) (<Inc s.NextIdent> e.Idents (s.NextIdent e.Ident))
       (e.Strings)
       e.Commands
     >
-    (#CmdCreateElem s.CreateMode s.ElemNo #ElIdent s.NextIdent);
+    (CmdCreateElem s.CreateMode s.ElemNo ElIdent s.NextIdent);
 
   (e.Funcs) (e.Idents)
   (s.NextStringId e.Strings-B (s.Id e.String) e.Strings-E)
   e.Commands
-  (#CmdCreateElem s.CreateMode s.ElemNo #ElString e.String) =
+  (CmdCreateElem s.CreateMode s.ElemNo ElString e.String) =
     <OutlineConstants
       (e.Funcs) (e.Idents)
       (s.NextStringId e.Strings-B (s.Id e.String) e.Strings-E)
       e.Commands
     >
-    (#CmdCreateElem s.CreateMode s.ElemNo #ElString s.Id);
+    (CmdCreateElem s.CreateMode s.ElemNo ElString s.Id);
 
   (e.Funcs) (e.Idents) (s.NextStringId e.Strings)
   e.Commands
-  (#CmdCreateElem s.CreateMode s.ElemNo #ElString e.String) =
+  (CmdCreateElem s.CreateMode s.ElemNo ElString e.String) =
     <OutlineConstants
       (e.Funcs) (e.Idents)
       (<Inc s.NextStringId> e.Strings (s.NextStringId e.String))
       e.Commands
     >
-    (#CmdCreateElem s.CreateMode s.ElemNo #ElString s.NextStringId);
+    (CmdCreateElem s.CreateMode s.ElemNo ElString s.NextStringId);
 
   (e.Funcs) (e.Idents)
   (s.NextStringId e.Strings-B (s.Id e.VarName) e.Strings-E)
   e.Commands
-  (#CmdVariableDebugTable e.VarName s.Offset) =
+  (CmdVariableDebugTable e.VarName s.Offset) =
     <OutlineConstants
       (e.Funcs) (e.Idents)
       (s.NextStringId e.Strings-B (s.Id e.VarName) e.Strings-E)
       e.Commands
     >
-    (#CmdVariableDebugTable s.Id s.Offset);
+    (CmdVariableDebugTable s.Id s.Offset);
 
   (e.Funcs) (e.Idents)
   (s.NextStringId e.Strings)
   e.Commands
-  (#CmdVariableDebugTable e.VarName s.Offset) =
+  (CmdVariableDebugTable e.VarName s.Offset) =
     <OutlineConstants
       (e.Funcs) (e.Idents)
       (<Inc s.NextStringId> e.Strings (s.NextStringId e.VarName))
       e.Commands
     >
-    (#CmdVariableDebugTable s.NextStringId s.Offset);
+    (CmdVariableDebugTable s.NextStringId s.Offset);
 
   (e.Funcs) (e.Idents) (e.Strings)
   e.Commands
