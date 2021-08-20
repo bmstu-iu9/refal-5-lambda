@@ -1666,85 +1666,24 @@ Solve-SymmClashes-Aux {
     , <IsTerm t.T> : True
     = /* решений нет */;
 
-  /* {a} t.X {b} = {c} {{ &F e.X }} {d}  ↦  обобщаем {c−d} */
+  /*
+    {a} T {b} = {c} {{ &F e.X }} {d}  ↦  обобщаем {c−d}
+    {a} {{ &F e.X }} {b} = {c} T {d}  ↦  обобщаем {a−b}
+
+    Случай {{ &F e.X }} = {{ &F e.X }} не рассматриваем,
+    т.к. он обрабатывается как тавтология.
+  */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (T ('{'s.A'}') t.tX ('{'s.B'}') '=' ('{'s.C'}') t.Closure ('{'s.D'}'))
+  (T ('{'s.A'}') t._ ('{'s.B'}') '=' ('{'s.C'}') t.Closure ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
-    , t.tX : (Var 't' e._)
     , t.Closure : (ClosureBrackets e._)
     = (Generalize (('{' s.C s.D '}')));
 
-  /* {c} {{ &F e.X }} {d} = {a} t.X {b}  ↦  обобщаем {c−d} */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (T ('{'s.C'}') t.Closure ('{'s.D'}') '=' ('{'s.A'}') t.tX ('{'s.B'}'))
+  (T ('{'s.A'}') t.Closure ('{'s.B'}') '=' ('{'s.C'}') t._ ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
-    , t.tX : (Var 't' e._)
     , t.Closure : (ClosureBrackets e._)
-    = (Generalize (('{' s.C s.D '}')));
-
-  /* {a} s.X {b} = {c} {{ &F e.X }} {d}  ↦  обобщаем {c−d} */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (T ('{'s.A'}') t.sX ('{'s.B'}') '=' ('{'s.C'}') t.Closure ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.sX : (Var 's' e._)
-    , t.Closure : (ClosureBrackets e._)
-    = (Generalize (('{' s.C s.D '}')));
-
-  /* {c} {{ &F e.X }} {d} = {a} s.X {b}  ↦  обобщаем {c−d} */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (T ('{'s.C'}') t.Closure ('{'s.D'}') '=' ('{'s.A'}') t.sX ('{'s.B'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.sX : (Var 's' e._)
-    , t.Closure : (ClosureBrackets e._)
-    = (Generalize (('{' s.C s.D '}')));
-
-  /* {a}  X  {b} = {c} {{ &F e.X }} {d}  ↦  решений нет */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (T ('{'s.A'}') t.X ('{'s.B'}') '=' ('{'s.C'}') t.Closure ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.X : (Symbol e._)
-    , t.Closure : (ClosureBrackets e._)
-    = /* решений нет */;
-
-  /* {c} {{ &F e.X }} {d} = {a}  X  {b}  ↦  решений нет */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (T ('{'s.C'}') t.Closure ('{'s.D'}') '=' ('{'s.A'}') t.X ('{'s.B'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.X : (Symbol e._)
-    , t.Closure : (ClosureBrackets e._)
-    = /* решений нет */;
-
-  /* {a} (E) {b} = {c} {{ &F e.X }} {d}  ↦  решений нет */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (T ('{'s.A'}') t.BrE ('{'s.B'}') '=' ('{'s.C'}') t.Closure ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.BrE : (Brackets e._)
-    , t.Closure : (ClosureBrackets e._)
-    = /* решений нет */;
-
-  /* {c} {{ &F e.X }} {d} = {a} (E) {b}  ↦  решений нет */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (T ('{'s.C'}') t.Closure ('{'s.D'}') '=' ('{'s.A'}') t.BrE ('{'s.B'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.BrE : (Brackets e._)
-    , t.Closure : (ClosureBrackets e._)
-    = /* решений нет */;
-
-  /* {a} [X E] {b} = {c} {{ &F e.X }} {d}  ↦  решений нет */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (T ('{'s.A'}') t.BrE ('{'s.B'}') '=' ('{'s.C'}') t.Closure ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.BrE : (ADT-Brackets e._)
-    , t.Closure : (ClosureBrackets e._)
-    = /* решений нет */;
-
-  /* {c} {{ &F e.X }} {d} = {a} [X E] {b}  ↦  решений нет */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (T ('{'s.C'}') t.Closure ('{'s.D'}') '=' ('{'s.A'}') t.BrE ('{'s.B'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.BrE : (ADT-Brackets e._)
-    , t.Closure : (ClosureBrackets e._)
-    = /* решений нет */;
+    = (Generalize (('{' s.A s.B '}')));
 
   /* {a} [X E1] {b} = {c} (E2) {d}  ↦  решений нет */
   (e.UsedVars) (e.Contrs) e.ClashesStart
