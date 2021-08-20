@@ -84,7 +84,6 @@
         <word name="$EENUM"/>
         <word name="$EASTEREGG"/>
         <word name="$INCLUDE"/>
-        <word name="$INTRINSIC"/>
         <word name="$SCOPEID"/>
         <word name="$SPEC"/>
         <word name="$META"/>
