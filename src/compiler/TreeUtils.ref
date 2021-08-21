@@ -274,9 +274,20 @@ ApplyContractions-Expr {
 }
 
 ApplyContractions-Term {
+  (e.Contrs) ('{'s.Coord'}') = (e.Contrs) ('{'s.Coord'}');
+
+  (e.Contrs) (Symbol e.Symbol)
+    = (e.Contrs) (Symbol e.Symbol);
+
   (e.Contrs) (Brackets e.Expr)
     = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e.Contrs^) e.Expr^
     = (e.Contrs) (Brackets e.Expr);
+
+  (e.B ((Var e.Var) ':' e.Contr) e.E) (Var e.Var)
+    = <ApplyContractions-Expr (e.E) e.Contr> : (e.E^) e.Expr
+    = (e.B ((Var e.Var) ':' e.Contr) e.E) e.Expr;
+
+  (e.Contrs) (Var e.Var) = (e.Contrs) (Var e.Var);
 
   (e.Contrs) (CallBrackets e.Expr)
     = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e.Contrs^) e.Expr^
@@ -292,6 +303,9 @@ ApplyContractions-Term {
         (e.Contrs^) e.ChangedArgs = (e.Contrs) (CallBrackets e.ChangedArgs);
       };
 
+  (e.Contrs) (WhVar e.Var) = (e.Contrs) (WhVar e.Var);
+  (e.Contrs) (ScrVar e.Var) = (e.Contrs) (ScrVar e.Var);
+
   (e.Contrs) (ClosureBrackets e.Expr)
     = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e.Contrs^) e.Expr^
     = (e.Contrs) (ClosureBrackets e.Expr);
@@ -299,11 +313,6 @@ ApplyContractions-Term {
   (e.Contrs) (ADT-Brackets (e.Name) e.Expr)
     = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e.Contrs^) e.Expr^
     = (e.Contrs) (ADT-Brackets (e.Name) e.Expr);
-
-  (e.B (t.Term ':' e.Contr) e.E) t.Term
-    = <ApplyContractions-Expr (e.B (t.Term ':' e.Contr) e.E) e.Contr>;
-
-  (e.Contrs) t.T = (e.Contrs) t.T;
 }
 
 /**
