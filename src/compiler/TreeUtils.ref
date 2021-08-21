@@ -82,7 +82,7 @@ DoNewVarName {
 IncName {
   e.Name s.Digit, '0123456789' : e._B s.Digit s.Next e._E = e.Name s.Next;
   e.Name '9' = <IncName e.Name> '0';
-  e.Name = e.Name '0';
+  e.Name = e.Name '1';
 }
 
 
