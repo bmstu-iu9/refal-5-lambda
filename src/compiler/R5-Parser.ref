@@ -699,9 +699,7 @@ $INLINE TokenChain, Expression;
 
 TokenChain {
   t.ErrorList s.Mode s.Kind e.Tokens
-    = <DoTokenChain
-        s.Mode s.Kind t.ErrorList (<gen_e__ /* collected */>) <gen_e__ e.Tokens>
-      >
+    = <DoTokenChain s.Mode s.Kind t.ErrorList (/* collected */) e.Tokens>
 }
 
 gen_e__ { e.arg = e.arg }
@@ -709,7 +707,7 @@ gen_e__ { e.arg = e.arg }
 DoTokenChain {
   s.Mode s.Kind t.ErrorList (e.Collected) e.Tokens
     = <DoTokenChain-GEN
-        s.Mode s.Kind t.ErrorList (<gen_e__ e.Collected>) e.Tokens
+        s.Mode s.Kind t.ErrorList (<gen_e__ e.Collected>) <gen_e__ e.Tokens>
       >
 }
 

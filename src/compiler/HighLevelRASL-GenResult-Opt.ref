@@ -378,31 +378,35 @@ AddOffsets {
               }
               e.Tile
             >
-          );
+          )
+          <gen_e__>;
 
         s.Offset (Var 's' e.Index) =
           <Add s.Offset 1>
           <gen_e__>
           (VarCopy
             <GetSampleOffset e.PatternVars ('s' e.Index)> s.Offset
-          );
+          )
+          <gen_e__>;
 
         s.Offset (Var 't' e.Index) =
           <Add s.Offset 2>
           <gen_e__>
           (VarCopy
             <GetSampleOffset e.PatternVars ('t' e.Index)> s.Offset
-          );
+          )
+          <gen_e__>;
 
         s.Offset (Var 'e' e.Index) =
           <Add s.Offset 2>
           <gen_e__>
           (VarCopy
             <GetSampleOffset e.PatternVars ('e' e.Index)> s.Offset
-          );
+          )
+          <gen_e__>;
 
         s.Offset (TkString e.String) =
-          <Inc2 s.Offset> <gen_e__> (TkString e.String s.Offset);
+          <Inc2 s.Offset> <gen_e__> (TkString e.String s.Offset) <gen_e__>;
 
         s.Offset (s.Tag e.Info) = <Inc s.Offset> (s.Tag e.Info s.Offset);
       }

@@ -155,7 +155,7 @@ DoOverlapOffsets {
 
 OverlapChain {
   (e.Pattern) (e.Result) =
-    <GlueTiles <ZipItems (e.Pattern) (e.Result)>>;
+    <GlueTiles <ZipItems (<gen_e__ e.Pattern>) (<gen_e__ e.Result>)>>;
 }
 
 ZipItems {
