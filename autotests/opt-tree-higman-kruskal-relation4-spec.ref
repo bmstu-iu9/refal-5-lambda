@@ -2,11 +2,13 @@
 
 $ENTRY Go {
   /* empty */
-    = <Loop () () (X Y Z T)> : (X) (Y) (Z) (T)
+    = <Loop () () (<gen_e__ X Y Z T>)> : (X) (Y) (Z) (T)
     = /* empty */;
 }
 
-$SPEC Loop (e.UNUSED) (e.RES) (e.items);
+gen_e__ { e.arg = e.arg }
+
+*$SPEC Loop;
 
 Loop {
   (e.Unused) (e.Res) (t.Item e.Items)

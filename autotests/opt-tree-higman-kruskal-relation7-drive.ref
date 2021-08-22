@@ -16,7 +16,7 @@ GST3 {
     = (<Mapa1 e.Trash>) (<Mapa1 e.MarkedResult>);
 }
 
-$DRIVE Mapa1, Boom;
+*$DRIVE Mapa1, Boom;
 
 Mapa1 {
   (Num1 s.Trash1 t.Trash2) e.Trash0 = <Boom t.Trash2> <Mapa1 e.Trash0>;

@@ -5,5 +5,5 @@ $ENTRY Go {
   ZZ = <D>;
 }
 
-$DRIVE D;
+*$DRIVE D;
 D {}

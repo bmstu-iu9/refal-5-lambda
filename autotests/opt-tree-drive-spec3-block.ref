@@ -9,7 +9,7 @@ $ENTRY Go {
     = /* empty */;
 }
 
-$SPEC F s.STAT e.dyn;
+*$SPEC F;
 
 F {
   s.Mark e.X

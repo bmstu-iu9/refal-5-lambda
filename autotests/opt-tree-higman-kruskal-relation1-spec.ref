@@ -6,7 +6,7 @@ $ENTRY Go {
     = /* empty */;
 }
 
-$SPEC Test t.STAT e.dyn;
+*$SPEC;
 
 Test {
   t.Acc s._ e.Rest = <Test (t.Acc) e.Rest>;

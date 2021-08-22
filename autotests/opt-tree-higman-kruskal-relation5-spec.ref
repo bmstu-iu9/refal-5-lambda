@@ -6,8 +6,8 @@ $ENTRY Go {
     = /* empty */;
 }
 
-$INLINE F;
-$SPEC F (e.ACC) s.mark e.string;
+*$INLINE F;
+*$SPEC F;
 
 F {
   (e.Acc) 5 e.String = 5;

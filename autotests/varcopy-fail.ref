@@ -26,8 +26,7 @@ MapAccum {
   t.Fn t.Acc e.Tail = <DoMapAccum t.Fn t.Acc () e.Tail>;
 }
 
-$SPEC MapAccum t.FUNC t.accum e.items;
-$INLINE MapAccum;
+*$OPT MapAccum;
 
 DoMapAccum {
   t.Fn t.Acc (e.Scanned) t.Next e.Tail
@@ -39,6 +38,4 @@ DoMapAccum {
   t.Fn t.Acc (e.Scanned) /* пусто */ = t.Acc e.Scanned;
 }
 
-$SPEC DoMapAccum t.FUNC t.acc (e.scanned) e.items;
-
-
+*$SPEC DoMapAccum;

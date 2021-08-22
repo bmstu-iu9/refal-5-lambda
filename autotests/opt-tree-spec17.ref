@@ -12,7 +12,7 @@ $ENTRY Go {
 
 gen_e__ { e.arg = e.arg }
 
-$SPEC S e.arg;
+*$SPEC S;
 
 S {
   (e.Y e.Z) e.R e.R = (e.Y) (e.Z) (e.R);

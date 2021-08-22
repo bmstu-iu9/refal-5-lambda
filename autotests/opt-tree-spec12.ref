@@ -23,7 +23,7 @@ F {
   (e.1) (e.2) = <S e.1 e.2>;
 }
 
-$SPEC S e.arg;
+*$SPEC S;
 
 S {
   e.A e.B e.A e.C 9 e.D

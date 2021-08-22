@@ -7,18 +7,21 @@ $ENTRY Go {
 }
 
 $ENTRY F {
-  s.X = <EqS s.X { = s.X }> <EqD s.X { = s.X }>;
-  t.X = <EqS t.X { = t.X }> <EqD t.X { = t.X }>;
+  s.X = <EqS <gen_e__ s.X> { = s.X }> <EqD s.X { = s.X }>;
+  t.X = <EqS <gen_e__ t.X> { = t.X }> <EqD t.X { = t.X }>;
 }
 
-$SPEC EqS t.x t.Y;
+*TODO: заменить на gen_s__
+gen_e__ { e.arg = e.arg }
+
+*$SPEC EqS;
 
 EqS {
   t.X t.X = True;
   t.X t.Y = False;
 }
 
-$DRIVE EqD;
+*$DRIVE EqD;
 
 EqD {
   t.X t.X = True;

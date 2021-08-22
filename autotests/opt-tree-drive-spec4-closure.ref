@@ -10,7 +10,7 @@ Test {
   s.X = <F 1> <F s.X>
 }
 
-$DRIVE F;
+*$DRIVE F;
 
 F {
   t.Mark
