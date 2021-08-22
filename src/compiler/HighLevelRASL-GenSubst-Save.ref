@@ -23,17 +23,9 @@ $ENTRY GenSubst-Save {
     >;
 }
 
+*$NOOPT DoGenSubst
+
 DoGenSubst {
-  s.ContextOffset e.Substitutes (e.Vars) (e.Commands)
-    = <DoGenSubst-GEN
-        s.ContextOffset <gen_e__ e.Substitutes> (<gen_e__ e.Vars>)
-        (<gen_e__ e.Commands>)
-      >
-}
-
-gen_e__ { e.arg = e.arg }
-
-DoGenSubst-GEN {
   /* Распознавание T-подстановки */
   s.ContextOffset
   e.Substs-B

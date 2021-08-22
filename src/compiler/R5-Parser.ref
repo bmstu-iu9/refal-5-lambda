@@ -593,8 +593,10 @@ SentenceTail {
 
 CheckExceedBlocks {
   t.ErrorList s.Mode e.ExceedBlocks
-    = <DoCheckExceedBlocks s.Mode t.ErrorList (<gen_e__>) e.ExceedBlocks>;
+    = <DoCheckExceedBlocks s.Mode t.ErrorList (/* scanned */) e.ExceedBlocks>;
 }
+
+*$NOOPT DoCheckExceedBlocks
 
 DoCheckExceedBlocks {
   s.Mode t.ErrorList (e.ScannedBlocks) (t.Pos e.Body) e.RestBlocks
@@ -699,10 +701,12 @@ Pattern {
 Result {
   t.ErrorList s.Mode e.Tokens
     = <Result-Blocks
-        s.Mode (<gen_e__ /* blocks */>)
+        s.Mode (/* blocks */)
         <Expression t.ErrorList s.Mode Result e.Tokens>
       >;
 }
+
+*$NOOPT Result-Blocks
 
 Result-Blocks {
   s.Mode (e.Blocks) t.ErrorList t.Result
@@ -768,16 +772,9 @@ TokenChain {
     = <DoTokenChain s.Mode s.Kind t.ErrorList (/* collected */) e.Tokens>
 }
 
-gen_e__ { e.arg = e.arg }
+*$NOOPT DoTokenChain
 
 DoTokenChain {
-  s.Mode s.Kind t.ErrorList (e.Collected) e.Tokens
-    = <DoTokenChain-GEN
-        s.Mode s.Kind t.ErrorList (<gen_e__ e.Collected>) <gen_e__ e.Tokens>
-      >
-}
-
-DoTokenChain-GEN {
   s.Mode s.Kind t.ErrorList (e.Collected) t.NextToken e.Tokens
     = t.NextToken
     : {
@@ -836,14 +833,12 @@ DoTokenChain-GEN {
               t.ErrorList s.Mode t.Pos 'Identifier expected after \'<\''
             >
           : t.ErrorList^
-          = <gen_e__ e.Collected> : e.Collected^
           = <DoTokenChain-AfterCall
               s.Mode s.Kind (e.Collected) t.Pos (/* no func name */)
               <TokenChain t.ErrorList s.Mode s.Kind e.Tokens>
             >;
 
         (TkOpenCall t.Pos e.FuncName)
-          = <gen_e__ e.Collected> : e.Collected^
           = <DoTokenChain-AfterCall
               s.Mode s.Kind (e.Collected) t.Pos ((Symbol Name t.Pos e.FuncName))
               <TokenChain t.ErrorList s.Mode s.Kind e.Tokens>

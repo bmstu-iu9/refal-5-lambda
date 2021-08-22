@@ -72,14 +72,12 @@ TileCandidates {
       {
         (e.AlignedPattern t.Last) (t.First e.AlignedResult) =
           <DoOverlapOffsets
-            (e.AlignedPattern) (<gen_e__ t.Last>)
-            (<gen_e__ t.First>) (e.AlignedResult)
+            (e.AlignedPattern) (t.Last)
+            (t.First) (e.AlignedResult)
           >;
       }
     >;
 }
-
-gen_e__ { e.arg = e.arg }
 
 EnumExprs {
   s.Num
@@ -155,8 +153,10 @@ DoOverlapOffsets {
 
 OverlapChain {
   (e.Pattern) (e.Result) =
-    <GlueTiles <ZipItems (<gen_e__ e.Pattern>) (<gen_e__ e.Result>)>>;
+    <GlueTiles <ZipItems (e.Pattern) (e.Result)>>;
 }
+
+*$NOOPT ZipItems
 
 ZipItems {
   ((s.CurIndexP t.PatternItem) e.Pattern)

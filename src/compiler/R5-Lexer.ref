@@ -98,13 +98,9 @@ IncCol {
     = (RowCol s.Line <+ s.Col s.Len>);
 }
 
-gen_e__ { e.arg = e.arg }
+*$NOOPT DoScan
 
 DoScan {
-  t.Pos e.Lines = <DoScan-GEN <gen_e__ t.Pos e.Lines>>
-}
-
-DoScan-GEN {
   t.Pos = (TkEOF t.Pos);
 
   t.Pos (' ' e.Line) e.Lines = <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
@@ -178,7 +174,7 @@ DoScan-GEN {
     = <DoScan-Chars <IncCol t.Pos> (e.Line) e.Lines>;
 
   t.Pos ('/*' e.Line) e.Lines
-    = <DoScan-CComment t.Pos (<gen_e__ '/*'>) (e.Line) e.Lines>;
+    = <DoScan-CComment t.Pos ('/*') (e.Line) e.Lines>;
 
   t.Pos ('\"' e.Line) e.Lines
     = <DoScan-Compound t.Pos <IncCol t.Pos> () (e.Line) e.Lines>;

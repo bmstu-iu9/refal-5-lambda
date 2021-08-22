@@ -75,17 +75,9 @@ GenResult {
       >;
 }
 
-gen_e__ { e.arg = e.arg }
+*$NOOPT DoGenResult
 
 DoGenResult {
-  (e.Vars) (e.AllocCommands) (e.Commands) s.Counter e.Result
-    = <DoGenResult-GEN
-        (e.Vars) (<gen_e__ e.AllocCommands>) (<gen_e__ e.Commands>)
-        s.Counter e.Result
-      >;
-}
-
-DoGenResult-GEN {
  (e.Vars) (e.AllocCommands) (e.Commands)
   s.Counter (TkOpenCallCond s.Offset) e.Result =
     <DoGenResult
