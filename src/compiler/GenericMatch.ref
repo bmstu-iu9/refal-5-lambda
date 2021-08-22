@@ -274,10 +274,7 @@ DoGeneralize-Rec {
   (e.UsedVars) ('{' s.A s.B '}')
   (e.Begin) (e.E1 ('{'s.A'}') e.Inner ('{'s.B'}') e.E2) (e.Assigns)
     = <GetVarType e.Inner> : s.VarType
-    = <ClearCoordinates
-        <ApplyAssignments-toExpr (e.Assigns) e.Inner>
-      >
-    : e.VarVal
+    = <ClearCoordinates e.Inner> : e.VarVal
     = <NewVarName (e.UsedVars) s.VarType> : (e.UsedVars^) s.VarType^ e.New
     = (e.UsedVars)
       (e.Begin e.E1 ('{'s.A'}') (Var s.VarType e.New) ('{'s.B'}') e.E2)
@@ -320,36 +317,6 @@ GetVarType {
   (ClosureBrackets e._) = 's';
 
   e.Other = 'e';
-}
-
-* TODO: присваивания должны быть параллельными
-ApplyAssignments-toExpr {
-  (t.Assign e.Rest) e.Expr
-    = <ApplyAssignments-toExpr
-        (e.Rest)
-        <ApplyAssignment-toExpr t.Assign e.Expr>
-      >;
-
-  () e.Expr = e.Expr;
-}
-
-ApplyAssignment-toExpr {
-  (e.Val ':' (s.Type e.Index)) e.Begin (Var s.Type e.Index) e.End
-    = <ApplyAssignment-toExpr (e.Val ':' (s.Type e.Index)) e.Begin>
-      e.Val
-      <ApplyAssignment-toExpr (e.Val ':' (s.Type e.Index)) e.End>;
-
-  t.Assign e.Begin (Brackets e.E) e.End
-    = <ApplyAssignment-toExpr t.Assign  e.Begin>
-      (Brackets <ApplyAssignment-toExpr t.Assign e.E>)
-      <ApplyAssignment-toExpr t.Assign e.End>;
-
-  t.Assign e.Begin (ADT-Brackets e.E) e.End
-    = <ApplyAssignment-toExpr t.Assign e.Begin>
-      (ADT-Brackets <ApplyAssignment-toExpr t.Assign e.E>)
-      <ApplyAssignment-toExpr t.Assign e.End>;
-
-  t.Assign e.E = e.E;
 }
 
 /*
