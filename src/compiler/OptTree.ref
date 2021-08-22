@@ -176,13 +176,6 @@ ExpandClosures-Sentence {
 * Интерпретатор императивного кода оптимизаций
 
 
-* TODO: удалить следующие пометки после оптимизации алгоритма оптимизации!
-* Сейчас компиляция в режиме -OADiS для этого файла требует десятки минут.
-$SPEC Int-Code e.arg;
-$SPEC Int-Command e.arg;
-$SPEC Int-LoopForWarmFunctions e.arg;
-
-
 Int {
   e.Defines s.Cycles (e.AST)
     = e.Defines : (define s.StartPoint e._) e._
