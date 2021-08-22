@@ -41,6 +41,9 @@ Element {
 
   (Specs e.Names) = <NameList ('$SPEC') e.Names>;
 
+  (NoDrives e.Names) = <NameList ('$NODRIVE') e.Names>;
+  (NoSpecs e.Names) = <NameList ('$NOSPEC') e.Names>;
+
   (DriveInfo e.DriveInfo) = ('(DriveInfo ...)');
   (SpecInfo e.SpecInfo) = ('(SpecInfo ...)');
 }

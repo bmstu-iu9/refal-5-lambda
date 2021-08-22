@@ -1,0 +1,7 @@
+* WARNING pseudocomment
+
+*$OPT
+
+$ENTRY Test {
+  /* empty */ = /* empty */
+}

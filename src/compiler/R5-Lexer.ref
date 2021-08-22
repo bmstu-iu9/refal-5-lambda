@@ -48,22 +48,6 @@ CheckClassicTokens {
   s.Mode (TkRefal5Mode t.Pos s.NewMode) e.Tokens
     = (TkRefal5Mode t.Pos s.NewMode) <CheckClassicTokens s.NewMode e.Tokens>;
 
-  Extended (TkPseudoComment t.Pos e.CommentTokens) e.Tokens
-    = <MapAccum
-        {
-          (e.Messages) (TkError e.Error) = (e.Messages (TkError e.Error));
-          (e.Messages) (TkWarning e.Warn) = (e.Messages (TkWarning e.Warn));
-
-          (e.Messages) t.Token = (e.Messages) t.Token;
-        }
-        (/* messages */)
-        e.CommentTokens
-      >
-    : (e.Messages) e.CommentTokens^
-    = (TkPseudoComment t.Pos e.CommentTokens)
-      e.Messages
-      <CheckClassicTokens Extended e.Tokens>;
-
   Extended t.NextToken e.Tokens
     = t.NextToken <CheckClassicTokens Extended e.Tokens>;
 
@@ -86,13 +70,6 @@ CheckClassicTokens {
       }
     : e.MaybeError
     = e.MaybeError (TkVariable t.Pos s.Mode e.Index)
-      <CheckClassicTokens Classic e.Tokens>;
-
-  Classic (TkPseudoComment t.Pos e.CommentTokens) e.Tokens
-    = (TkWarning
-        t.Pos ignored-pseudocomments
-        'Pseudocomments are ignored in classic mode'
-      )
       <CheckClassicTokens Classic e.Tokens>;
 
   Classic t.NextToken e.Tokens
@@ -166,17 +143,17 @@ DoScan-GEN {
       <DoScan (RowCol <Inc s.Line> 1) e.Lines>;
 
   (RowCol s.Line 1) ('*$' e.Comment) e.Lines
-    , <ValidPseudocomment e.Comment>
+    = <Type e.Comment>
     : {
-        True
+        'Lu' e.Comment^
           = <CollectPseudocommentLines e.Lines> : (e.CommentLines) e.Lines^
-          = (' $' e.Comment) e.CommentLines : e.CommentLines^
+          = ('  ' e.Comment) e.CommentLines : e.CommentLines^
           = <Lenw e.CommentLines> : s.Count e.CommentLines^
           = <DoScan (RowCol s.Line 1) e.CommentLines> : e.CommentTokens
           = (TkPseudoComment (RowCol s.Line 1) e.CommentTokens)
             <DoScan (RowCol <+ s.Line s.Count> 1) e.Lines>;
 
-        False = <DoScan (RowCol <Inc s.Line> 1) e.Lines>;
+        e._ = <DoScan (RowCol <Inc s.Line> 1) e.Lines>;
       };
 
   (RowCol s.Line 1) ('*' e.Comment) e.Lines
@@ -555,18 +532,6 @@ DoScan-Compound-HandleEscape {
     = (TkError t.Pos 'Unexpected \\ at the end of compound literal')
       <MakeCompound t.StartPos e.Compound>
       <DoScan <IncLine t.Pos> e.Lines>;
-}
-
-ValidPseudocomment {
-  e.Keyword s.Space e._
-    , <OneOf s.Space ' \t'> : True
-    = <ValidPseudocomment-Keyword e.Keyword>;
-
-  e.Keyword = <ValidPseudocomment-Keyword e.Keyword>;
-}
-
-ValidPseudocomment-Keyword {
-  e.Keyword = <OneOf (e.Keyword) ('DRIVE') ('INLINE') ('SPEC')>;
 }
 
 CollectPseudocommentLines {

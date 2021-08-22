@@ -20,6 +20,7 @@ $ENTRY Config-Create {
         (Optimize /* пусто */)
         (WarningIds
           nul-in-compound pseudofunctions repeated deprecated intrinsic
+          pseudocomment
         )
         (WarningIdsAsErrors /* пусто */)
         (ErrorFile /* пусто */)
@@ -533,7 +534,7 @@ ValidWarningId {
 WarningForName {
   'screening' = True screening;
   'nul-in-compound' = True nul-in-compound;
-  'ignored-pseudocomments' = True ignored-pseudocomments;
+  'pseudocomment' = True pseudocomment;
   'pseudofunctions' = True pseudofunctions;
   'pseudofunction' = True pseudofunctions; /* синоним */
   'repeated' = True repeated;

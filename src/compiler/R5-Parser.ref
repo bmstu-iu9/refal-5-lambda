@@ -1,3 +1,6 @@
+$INCLUDE "LibraryEx";
+
+
 *$FROM Error
 $EXTERN EL-AddErrorAt, EL-AddWarningAt;
 
@@ -56,7 +59,84 @@ $ENTRY R5-Parse {
 */
 Program {
   t.ErrorList s.Mode e.Tokens
-    = <DoProgram t.ErrorList s.Mode (/* units */) e.Tokens>;
+    = <ScanPseudocomments t.ErrorList e.Tokens>
+    : t.ErrorList^ (e.PseudocommentUnits) e.Tokens^
+    = <DoProgram t.ErrorList s.Mode (/* units */) e.Tokens>
+      e.PseudocommentUnits
+}
+
+ScanPseudocomments {
+  t.ErrorList e.Tokens
+    = <DoScanPseudocomments t.ErrorList (/* units */) (/* scanned */) e.Tokens>
+}
+
+DoScanPseudocomments {
+  t.ErrorList (e.Units) (e.Scanned)
+  e.Tokens-B (TkPseudoComment t.Pos e.CommentTokens) e.Tokens-E
+    = <ParsePseudocomment t.ErrorList t.Pos e.CommentTokens>
+    : t.ErrorList^ e.NewUnits
+    = <DoScanPseudocomments
+        t.ErrorList (e.Units e.NewUnits) (e.Scanned e.Tokens-B) e.Tokens-E
+      >;
+
+    t.ErrorList (e.Units) (e.Scanned) e.Tokens
+      = t.ErrorList (e.Units) e.Scanned e.Tokens;
+}
+
+ParsePseudocomment {
+  t.ErrorList t.Pos (TkName t._ e.Name) e.Tokens
+    , Opt Drive Spec NoOpt NoDrive NoSpec : e._ s.Node e._
+    , <Upper <Explode s.Node>> : e.Name
+    = <ParseOptPseudocomment t.Pos s.Node (/* scanned */) t.ErrorList e.Tokens>;
+
+  t.ErrorList t.Pos e._unrecognized
+    = t.ErrorList /* пропускаем неопознанный псевдокомментарий */;
+}
+
+ParseOptPseudocomment {
+  t.Pos s.Node (e.Scanned) t.ErrorList
+  (TkName t.NamePos e.Name) e.Tokens
+    = <ParseOptPseudocomment
+        t.Pos s.Node (e.Scanned (s.Node t.NamePos e.Name)) t.ErrorList
+        e.Tokens
+      >;
+
+  t.Pos s.Node (e.Scanned) t.ErrorList (s.Separator t._) e.Tokens
+    , TkComma TkSemicolon : e._ s.Separator e._
+    = <ParseOptPseudocomment t.Pos s.Node (e.Scanned) t.ErrorList e.Tokens>;
+
+  t.Pos s.Node (/* нет имён */) t.ErrorList (TkEOF t._)
+    = <EL-AddWarningAt
+        t.ErrorList pseudocomment t.Pos 'No names in optimization pseudocomment'
+      >;
+
+  t.Pos s.Node (e.Scanned) t.ErrorList (TkEOF t._) = t.ErrorList e.Scanned;
+
+  t.Pos s.Node (e.Scanned) t.ErrorList (TkError t.ErrPos e.Message) e.Tokens
+    = <ParseOptPseudocomment
+        t.Pos s.Node (e.Scanned)
+        <EL-AddWarningAt t.ErrorList pseudocomment t.ErrPos e.Message>
+        e.Tokens
+      >;
+
+  t.Pos s.Node (e.Scanned) t.ErrorList (TkWarning t.WarnPos s.Type e.Message)
+  e.Tokens
+    = <ParseOptPseudocomment
+        t.Pos s.Node (e.Scanned)
+        <EL-AddWarningAt t.ErrorList pseudocomment t.WarnPos e.Message>
+        e.Tokens
+      >;
+
+  t.Pos s.Node (e.Scanned) t.ErrorList t.Unexpected e.Tokens
+    = t.Unexpected : (s.Type t.TokPos e.Value)
+    = <ParseOptPseudocomment
+        t.Pos s.Node (e.Scanned)
+        <EL-AddWarningAt
+          t.ErrorList pseudocomment t.TokPos
+          'unexpected ' <TokName s.Type> ', expected name, comma or semicolon'
+        >
+        e.Tokens
+      >;
 }
 
 DoProgram {
@@ -88,7 +168,6 @@ UnexpectedUnitToken {
 
 UnitStartToken {
   = <NameListTags> TkEntry TkName TkSemicolon TkInclude TkNativeCode TkSpec
-    TkPseudoComment;
 }
 
 NameListTags {
@@ -138,19 +217,6 @@ Unit {
         (s.Type t.Pos e.Value)
           , <OneOf s.Type TkEntry TkName>: True
           = <Function t.ErrorList s.Mode t.NextToken e.Tokens>;
-
-        (TkPseudoComment t.Pos e.CommentTokens)
-          = <Unit t.ErrorList Extended e.CommentTokens>
-          : {
-              t.ErrorList^ (e.Units) (TkEOF t._)
-                = t.ErrorList (e.Units) e.Tokens;
-
-              t.ErrorList^ (e.Units) (s.Token t.Pos^ e.Info) e._
-                = <EL-AddErrorAt
-                    t.ErrorList t.Pos 'Too many units in the pseudocomment'
-                  >
-                  (/* no units */) e.Tokens;
-            };
 
         t.Unexpected = <UnexpectedUnitToken t.ErrorList t.Unexpected> e.Tokens;
       };

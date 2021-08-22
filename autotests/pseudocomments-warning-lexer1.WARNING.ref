@@ -1,8 +1,8 @@
-* WARNING nul-in-compound
+* WARNING pseudocomment
 
 *$EXTENDED;
 
-*$SPEC Func s.STAT "ABC\x00DEF" s.dyn;
+*$SPEC Func "unclosed quote;
 
 $ENTRY Func {
   s.Stat ABC s.Dyn = s.Stat s.Dyn;

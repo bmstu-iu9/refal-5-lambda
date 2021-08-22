@@ -1,3 +1,5 @@
+* WARNING pseudocomment
+
 *$EXTENDED;
 
 *$SPEC Func (s.STAT) s.dyn;

@@ -111,6 +111,8 @@ $ENTRY OptTree-CleanupMarkup {
           (Inlines e.Names) = /* пропускаем */;
           (Intrinsics e.Names) = /* пропускаем */;
           (Specs e.Names) = /* пропускаем */;
+          (NoDrives e.Names) = /* пропускаем */;
+          (NoSpecs e.Names) = /* пропускаем */;
 
           (DriveInfo e.Info) = /* пропускаем */;
           (SpecInfo e.Info) = /* пропускаем */;

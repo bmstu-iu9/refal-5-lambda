@@ -44,6 +44,10 @@ $ENTRY Pass-RemovePos {
 
           (LegacySpec t.SrcPos (e.Name) e.Pattern) = (LegacySpec e.Name);
 
+          (s.OptMarkup t.SrcPos e.Name)
+            , Opt Drive Spec NoOpt NoDrive NoSpec : e._ s.OptMarkup e._
+            = (s.OptMarkup e.Name);
+
           (s.EnumSwapDeclaration t.SrcPos s.ScopeClass e.Name)
             = (s.EnumSwapDeclaration s.ScopeClass e.Name);
         }
@@ -812,6 +816,12 @@ Pass-CollectDeclarations {
           (Intrinsic e.Name) = (GROUP Intrinsics (e.Name));
           (LegacySpec e.Name) = (GROUP Specs (e.Name));
 
+          (s.OptMarkup e.Name)
+            , (Opt Drives Specs) (Drive Drives) (Spec Specs)
+              (NoOpt NoDrives NoSpecs) (NoDrive NoDrives) (NoSpec NoSpecs)
+            : e._ (s.OptMarkup e.Groups) e._
+            = <Map { s.Group = (GROUP s.Group (e.Name)) } e.Groups>;
+
           (Function (e.Name) e.Body)
             = (GROUP DefinedFunctions (e.Name)) (Function (e.Name) e.Body);
 
@@ -828,6 +838,8 @@ Pass-CollectDeclarations {
         (GROUP Inlines)
         (GROUP Intrinsics)
         (GROUP Specs)
+        (GROUP NoDrives)
+        (GROUP NoSpecs)
         (GROUP DefinedFunctions)
       >
     : e.AST^
@@ -836,6 +848,8 @@ Pass-CollectDeclarations {
       (GROUP Inlines e.Inlines)
       (GROUP Intrinsics e.Intrinsics)
       (GROUP Specs e.Specs)
+      (GROUP NoDrives e.NoDrives)
+      (GROUP NoSpecs e.NoSpecs)
       (GROUP DefinedFunctions e.DefinedFunctions)
 
     = <Unique e.Externs> : e.Externs^
@@ -843,6 +857,8 @@ Pass-CollectDeclarations {
     = <Unique e.Inlines> : e.Inlines^
     = <Unique e.Intrinsics> : e.Intrinsics^
     = <Unique e.Specs> : e.Specs^
+    = <Unique e.NoDrives> : e.NoDrives^
+    = <Unique e.NoSpecs> : e.NoSpecs^
 
     = <Set-Reject (e.Externs) (e.DefinedFunctions)> : e.Externs^
     = <Set-Reject (e.Inlines) (e.Drives)> : e.Inlines^
@@ -851,6 +867,7 @@ Pass-CollectDeclarations {
     = (Externs e.Externs)
       (Drives e.Drives) (Inlines e.Inlines) (Intrinsics e.Intrinsics)
       (Specs e.Specs)
+      (NoDrives e.NoDrives) (NoSpecs e.NoSpecs)
       e.AST
 }
 

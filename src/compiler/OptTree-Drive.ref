@@ -81,10 +81,20 @@ UpdateDriveInfo {
     = <ExtractLabels Drive Drives e.AST> : (e.Drives) e.AST^
     = <ExtractLabels Drive Inlines e.AST> : (e.DrivesI) e.AST^
     = <ExtractLabels Intrinsic Intrinsics e.AST> : (e.Intrinsics) e.AST^
+    = e.AST
+    : {
+        e.AST-B (NoDrives e.Names) e.AST-E
+          = (e.Names) e.AST-B (NoDrives e.Names) e.AST-E;
+
+        e.AST^ = (/* пусто */) e.AST;
+      }
+    : (e.NoDrives) e.AST^
+    = <Map { (e.Name) = (NoDrive e.Name) } e.NoDrives> : e.NoDrives^
     = e.Drives e.DrivesI : e.Drives^
 
     = <HashSet-AsChain e.KnownNames> : e.KnownNames^
 
+    = <SetNames-Reject (e.Drives) (e.NoDrives)> : e.Drives^
     = <SetNames-Reject (e.Drives) (e.KnownNames)> : e.Drives^
     = <SetNames-Reject (e.Intrinsics) (e.KnownNames)> : e.Intrinsics^
 

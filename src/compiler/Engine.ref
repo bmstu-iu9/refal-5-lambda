@@ -444,6 +444,10 @@ PatchAST-Item {
         <s.FnPatch Name e.Name>
       );
 
+  s.FnPatch (s.Label t.SrcPos e.Name)
+    , Opt Drive Spec NoOpt NoDrive NoSpec : e._ s.Label e._
+    = (s.Label <s.FnPatch SrcPos t.SrcPos> <s.FnPatch Name e.Name>);
+
   s.FnPatch (LegacySpec t.SrcPos (e.Name) e.Pattern)
     = (
         LegacySpec <s.FnPatch SrcPos t.SrcPos> (<s.FnPatch Name e.Name>)
@@ -730,6 +734,8 @@ $ENTRY GlobalASTStorage-AddAST {
       >
     : ((e.NewEntries) (e.Locals)) e.AST^
 
+    = <CleanupUndefinedOpts (e.NewEntries) (e.Locals) e.AST> : e.AST^
+
     = <CleanupLocals e.Locals (e.NewEntries)> : e.Locals^
     = e.NewEntries e.Entries : e.Entries^
 
@@ -764,6 +770,27 @@ UpdateAccum {
 
   ((e.Entries) (e.Locals)) t.SrcPos GN-Local e.Name
     = ((e.Entries)  (e.Locals (e.Name t.SrcPos)));
+}
+
+CleanupUndefinedOpts {
+  (e.Entries) (e.Locals) e.AST
+    = <Map { ((e.Name) t._) = (e.Name) } e.Entries> : e.Entries^
+    = <Map { (e.Name t._) = (e.Name) } e.Locals> : e.Locals^
+    = <Unique e.Entries e.Locals> : e.Defined
+    = <Map
+        {
+          (s.Opt t.SrcPos e.Name)
+            , Opt Drive Spec NoOpt NoDrive NoSpec : e._ s.Opt e._
+            = e.Defined
+            : {
+                e._ (e.Name) e._ = (s.Opt t.SrcPos e.Name);
+                e._ = /* пропускаем */;
+              };
+
+          t.Other = t.Other;
+        }
+        e.AST
+      >
 }
 
 CleanupLocals {

@@ -305,6 +305,7 @@ $ENTRY ParseCommandLine {
                         '\'[no-]screening\', \'[no-]pseudofunctions\' '
                         '\'[no-]repeated\', \'[no-]deprecated\', '
                         '\'[no-]nul-in-compound\', \'[no-]intrinsic\', '
+                        '\'[no-]pseudocomment\','
                         'but got \'' e.BadValue '\''
                       );
 
@@ -388,6 +389,8 @@ PrintHelp {
 '                                  (disabled by default)\n'
 '          -Wnul-in-compound, -Wno-... - check/don\'t nuls in compounds\n'
 '                                        (enabled by default)\n'
+'          -W pseudocomment, -Wno-... - check/don\'t pseudocomment\n'
+'                                       correctness (enabled by default)\n'
 '          -Wpseudofunctions, -Wno-... - check/don\'t pseudofunction\n'
 '                                        correctness (enabled by default)\n'
 '          -Wrepeated, -Wno-... - check/don\'t suspicious repeated variables\n'

@@ -1,3 +1,5 @@
+* WARNING pseudocomment
+
 *$EXTENDED;
 
 *$DRIVE D; $INLINE F;

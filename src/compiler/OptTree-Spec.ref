@@ -56,10 +56,19 @@ Prepare-Aux {
       }
     : (e.NewNames) e.AST^
 
+    = e.AST
+    : {
+        e.AST-B (NoSpecs e.Names) e.AST-E
+          = (e.Names) e.AST-B (NoSpecs e.Names) e.AST-E;
+        e.AST^ = (/* пусто */) e.AST;
+      }
+    : (e.NoSpecs) e.AST^
+
     = <Map
         {
-          /* Игнорируем новые $SPEC’и для известных функций */
+          /* Игнорируем новые $SPEC’и для известных и запрещённых функций */
           (e.Name), e.KnownNames : e._B (e.Name) e._E = /* пропускаем */;
+          (e.Name), e.NoSpecs : e._B (e.Name) e._E = /* пропускаем */;
           (e.Name) = (e.Name);
         }
         e.NewNames

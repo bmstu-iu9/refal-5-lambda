@@ -126,6 +126,15 @@ PrepareMessage {
   IntrinsicForDefined e.Name
     = 'Function ' e.Name ' is defined, '
       '$INTRINSIC declaration for it will be ignored';
+
+  OptFeaturesConflict s.Label1 s.Label2 e.Name
+    = 'Conflict between pseudocomments '
+      '$' <Upper <Explode s.Label1>> ' ' e.Name '; and '
+      '$' <Upper <Explode s.Label2>> ' ' e.Name ';, '
+      '$NO... pseudocomment has priority';
+
+  DanglingOptPseudocomment s.Label e.Name
+    = '$' <Upper <Explode s.Label>> ' ' e.Name '; label for missed function';
 }
 
 FindErrors {
@@ -146,7 +155,9 @@ CheckPseudofunctions {
     = <Map
         {
           (s.Tag t.SrcPos s.ScopeClass e.Name)
-            , LegacyDrive LegacyInline Intrinsic : e._ s.Tag e._
+            , Opt Drive Spec NoOpt NoDrive NoSpec
+              LegacyDrive LegacyInline Intrinsic
+            : e._ s.Tag e._
             , <Pseudofunctions> : e._ (e.Name) e._
             = (Error t.SrcPos TaggedPseudofunction s.Tag e.Name);
 
@@ -557,6 +568,15 @@ SeparateDefines {
           (e.Declarations) (LegacyDrive t.SrcPos s.ScopeClass e.Name) =
             (e.Declarations (LegacyDrive t.SrcPos e.Name));
 
+          (e.Declarations) (s.OptNode t.SrcPos e.Name)
+            , (Opt Drive Spec Yes) (Drive Drive Yes) (Spec Spec Yes)
+              (NoOpt Drive Spec No) (NoDrive Drive No) (NoSpec Spec No)
+            : e._ (s.OptNode e.Features s.Enable) e._
+            = (
+                e.Declarations
+                (Opt s.OptNode (e.Features) s.Enable t.SrcPos e.Name)
+              );
+
           (e.Declarations) (Intrinsic t.SrcPos s.ScopeClass e.Name) =
             (e.Declarations (Intrinsic t.SrcPos e.Name));
 
@@ -585,6 +605,9 @@ CheckDeclarations {
           &CheckRedefinitions
           &FindFinalInitEntry
           &CheckIntrinsics
+          &CheckConflictOptPseudocomments
+          &CleanupValidOptPseudocomments
+          &CheckDanglingOptPseudocomments
         >
       >
 }
@@ -802,6 +825,82 @@ CheckIntrinsics {
       >;
 
   e.Declarations = e.Declarations;
+}
+
+CheckConflictOptPseudocomments {
+  e.Declarations-B
+  (Opt s.OptNode1 (e.Feat1-B s.Feature e.Feat1-E) Yes t.YesPos e.Name)
+  e.Declarations-M
+  (Opt s.OptNode2 (e.Feat2-B s.Feature e.Feat2-E) No t.NoPos e.Name)
+  e.Declarations-E
+    = <CheckConflictOptPseudocomments
+        e.Declarations-B
+        (Opt s.OptNode1 (e.Feat1-B e.Feat1-E) Yes t.YesPos e.Name)
+        (Warning
+          pseudocomment t.YesPos OptFeaturesConflict s.OptNode1 s.OptNode2
+          e.Name
+        )
+        e.Declarations-M
+        (Opt s.OptNode2 (e.Feat2-B s.Feature e.Feat2-E) No t.NoPos e.Name)
+        e.Declarations-E
+      >;
+
+  e.Declarations-B
+  (Opt s.OptNode1 (e.Feat1-B s.Feature e.Feat1-E) No t.NoPos e.Name)
+  e.Declarations-M
+  (Opt s.OptNode2 (e.Feat2-B s.Feature e.Feat2-E) Yes t.YesPos e.Name)
+  e.Declarations-E
+    = <CheckConflictOptPseudocomments
+        e.Declarations-B
+        (Opt s.OptNode1 (e.Feat1-B s.Feature e.Feat1-E) No t.NoPos e.Name)
+        e.Declarations-M
+        (Opt s.OptNode2 (e.Feat2-B e.Feat2-E) Yes t.YesPos e.Name)
+        (Warning
+          pseudocomment t.YesPos OptFeaturesConflict s.OptNode1 s.OptNode2
+          e.Name
+        )
+        e.Declarations-E
+      >;
+
+  e.Declarations-B (Opt s._ () Yes t._ e._) e.Declarations-E
+    = <CheckConflictOptPseudocomments e.Declarations-B e.Declarations-E>;
+
+  e.Declarations = e.Declarations;
+}
+
+CleanupValidOptPseudocomments {
+  e.Declarations-B
+  (Opt s.OptNode (e.Features) s.Enable t.OptPos e.Name) e.Declarations-M
+  (Define t.SrcPos s.ScopeClass e.Name) e.Declarations-E
+    = <CleanupValidOptPseudocomments
+        e.Declarations-B e.Declarations-M
+        (Define t.SrcPos s.ScopeClass e.Name) e.Declarations-E
+      >;
+
+  e.Declarations-B
+  (Define t.SrcPos s.ScopeClass e.Name) e.Declarations-M
+  (Opt s.OptNode (e.Features) s.Enable t.OptPos e.Name) e.Declarations-E
+    = <CleanupValidOptPseudocomments
+      e.Declarations-B
+      (Define t.SrcPos s.ScopeClass e.Name) e.Declarations-M e.Declarations-E
+      >;
+
+  e.Declarations = e.Declarations;
+}
+
+CheckDanglingOptPseudocomments {
+  e.Declarations
+    = <Map
+        {
+          (Opt s.OptNode (e._) s._ t.Pos e.Name)
+            = (Warning
+                pseudocomment t.Pos DanglingOptPseudocomment s.OptNode e.Name
+              );
+
+          t.Declaration = t.Declaration;
+        }
+        e.Declarations
+      >
 }
 
 CheckFunctionBody {
