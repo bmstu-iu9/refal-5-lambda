@@ -135,11 +135,11 @@
       | t.NativeBlock | t.Ident | t.SpecUnit
     t.Extern ::= (Declaration t.Pos GN-Entry e.Name)
     t.SingleDeclaration ::= (s.SingleDeclarationTag t.Pos s.ScopeClass e.Name)
-    s.SingleDeclarationTag ::= Enum | Swap | Inline | Drive | Meta
+    s.SingleDeclarationTag ::= Enum | Swap | LegacyInline | LegacyDrive | Meta
     t.Include ::= (Include t.Pos e.Name)
     t.NativeBlock ::= (NativeBlock t.Pos e.Code)
     t.Ident ::= (Ident t.SrcPos e.Name)
-    t.SpecUnit ::= (Spec t.Pos (e.Name) e.Pattern)
+    t.SpecUnit ::= (LegacySpec t.Pos (e.Name) e.Pattern)
 
     t.Function ::= (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
     e.Body ::=
@@ -177,7 +177,7 @@
 (`(Declaration …)`) всегда имеют область видимости `GN-Extern`. И наоборот,
 списки `$INLINE` и `$DRIVE` есть только в Рефале-5λ.
 
-Для списков `Inline`, `Drive` и `Meta` тег области видимости всегда
+Для списков `LegacyInline`, `LegacyDrive` и `Meta` тег области видимости всегда
 `GN-Local`, в дерево он добавлен для общности.
 
 Подробное описание большинства элементов дерева в проходе 2Б.

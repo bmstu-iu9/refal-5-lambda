@@ -42,7 +42,7 @@ $ENTRY Pass-RemovePos {
 
           (NativeBlock t.SrcPos e.Code) = (NativeBlock t.SrcPos e.Code);
 
-          (Spec t.SrcPos (e.Name) e.Pattern) = (Spec e.Name);
+          (LegacySpec t.SrcPos (e.Name) e.Pattern) = (LegacySpec e.Name);
 
           (s.EnumSwapDeclaration t.SrcPos s.ScopeClass e.Name)
             = (s.EnumSwapDeclaration s.ScopeClass e.Name);
@@ -159,8 +159,12 @@ $ENTRY Pass-ExtractEntries {
             = (e.Entries <Entry s.ScopeClass e.Name>)
               (Function (e.Name) e.Body);
 
-          (e.Entries) (Drive s.ScopeClass e.Name) = (e.Entries) (Drive e.Name);
-          (e.Entries) (Inline s.ScopeClass e.Name) = (e.Entries) (Inline e.Name);
+          (e.Entries) (LegacyDrive s.ScopeClass e.Name)
+            = (e.Entries) (LegacyDrive e.Name);
+
+          (e.Entries) (LegacyInline s.ScopeClass e.Name)
+            = (e.Entries) (LegacyInline e.Name);
+
           (e.Entries) (Intrinsic s.ScopeClass e.Name)
             = (e.Entries) (Intrinsic e.Name);
 
@@ -741,7 +745,7 @@ ExtractNested-Result-Term {
         (/* нет захваченных переменных */) e.Body^
           = e.Body
           : {
-              Sentences e.Sentences = (Drive e.ClosureName);
+              Sentences e.Sentences = (GROUP Drives (e.ClosureName));
               NativeBody e.NativeBody = /* нет меток */;
             }
           : e.DriveLabelOpt
@@ -764,8 +768,8 @@ ExtractNested-Result-Term {
                 e.Sentences
               >
             )
-            (Drive e.ClosureName)
-            (Spec e.ClosureName)
+            (GROUP Drives (e.ClosureName))
+            (GROUP Specs (e.ClosureName))
             <Reduce
               (&CheckBorrowed (e.ScopeVars))
               (e.BorrowedVars) e.NestedBorrowedVars
@@ -803,15 +807,15 @@ Pass-CollectDeclarations {
           (Declaration GN-Local e._) = /* игнорируем */;
           (Declaration GN-Entry e.Name) = (GROUP Externs (e.Name));
 
-          (Drive e.Name) = (GROUP Drives (e.Name));
-          (Inline e.Name) = (GROUP Inlines (e.Name));
+          (LegacyDrive e.Name) = (GROUP Drives (e.Name));
+          (LegacyInline e.Name) = (GROUP Inlines (e.Name));
           (Intrinsic e.Name) = (GROUP Intrinsics (e.Name));
-          (Spec e.Name) = (GROUP Specs (e.Name));
+          (LegacySpec e.Name) = (GROUP Specs (e.Name));
 
           (Function (e.Name) e.Body)
             = (GROUP DefinedFunctions (e.Name)) (Function (e.Name) e.Body);
 
-          t.Other = t.Other
+          t.Other = t.Other;
         }
         e.AST
       >

@@ -67,7 +67,14 @@ PrepareMessage {
   DanglingDrive e.Name = '$DRIVE ' e.Name '; drive label for missed function';
 
   NativeOptimizable s.Label e.Name
-    = 'Function ' e.Name ' can\'t be $' <Upper <Explode s.Label>>;
+    = s.Label
+    : {
+        LegacyDrive = '$DRIVE';
+        LegacyInline = '$INLINE';
+        LegacySpec = '$SPEC';
+      }
+    : e.Keyword
+    = 'Function ' e.Name ' can\'t be ' e.Keyword;
 
   /* Ошибки специализации */
   RedefineSpec e.FnName = 'Specialization of function ' e.FnName 'is redefined';
@@ -139,11 +146,11 @@ CheckPseudofunctions {
     = <Map
         {
           (s.Tag t.SrcPos s.ScopeClass e.Name)
-            , Drive Inline Intrinsic : e._ s.Tag e._
+            , LegacyDrive LegacyInline Intrinsic : e._ s.Tag e._
             , <Pseudofunctions> : e._ (e.Name) e._
             = (Error t.SrcPos TaggedPseudofunction s.Tag e.Name);
 
-          (Spec t.SrcPos (e.Name) e._)
+          (LegacySpec t.SrcPos (e.Name) e._)
             , <Pseudofunctions> : e._ (e.Name) e._
             = (Error t.SrcPos TaggedPseudofunction Spec e.Name);
 
@@ -216,11 +223,11 @@ CheckSpecs {
 * Проверка переопределения специализации
 CheckSpecs-Redefine {
   e.AST-B
-  (Spec t.SrcPos1 (e.Name) e.Pattern1) e.AST-M
-  (Spec t.SrcPos2 (e.Name) e.Pattern2) e.AST-E
+  (LegacySpec t.SrcPos1 (e.Name) e.Pattern1) e.AST-M
+  (LegacySpec t.SrcPos2 (e.Name) e.Pattern2) e.AST-E
     = <CheckSpecs-Redefine
         e.AST-B
-        (Spec t.SrcPos1 (e.Name) e.Pattern1) e.AST-M
+        (LegacySpec t.SrcPos1 (e.Name) e.Pattern1) e.AST-M
         (Error t.SrcPos2 RedefineSpec e.Name) e.AST-E
       >;
 
@@ -232,13 +239,13 @@ CheckSpecs-Formats {
   e.AST
     = <Map
         {
-          (Spec t.SrcPos (e.Name) e.Pattern)
+          (LegacySpec t.SrcPos (e.Name) e.Pattern)
             = <IsHardPattern e.Pattern>
             : {
                 True
                   = <CheckRepeatedVariables e.Pattern>
                   : {
-                    /* пусто */ = (Spec t.SrcPos (e.Name) e.Pattern);
+                    /* пусто */ = (LegacySpec t.SrcPos (e.Name) e.Pattern);
 
                     e.Errors = e.Errors;
                   };
@@ -353,7 +360,7 @@ FindVariables {
 * Проверка, что упоминаемые функции определены
 CheckSpecs-Functions {
   e.AST-B
-  (Spec t.SrcPos1 (e.Name) e.Pattern) e.AST-M
+  (LegacySpec t.SrcPos1 (e.Name) e.Pattern) e.AST-M
   (Function t.SrcPos2 s.ScopeClass (e.Name) e.Body) e.AST-E
     = <ValidBodyForSpec (e.Name) (e.Pattern) e.Body>
     : {
@@ -380,7 +387,7 @@ CheckSpecs-Functions {
 
   e.AST-B
   (Function t.SrcPos1 s.ScopeClass (e.Name) e.Body) e.AST-M
-  (Spec t.SrcPos2 (e.Name) e.Pattern) e.AST-E
+  (LegacySpec t.SrcPos2 (e.Name) e.Pattern) e.AST-E
     = <ValidBodyForSpec (e.Name) (e.Pattern) e.Body>
     : {
         True =
@@ -404,7 +411,7 @@ CheckSpecs-Functions {
     : e.AST
     = <CheckSpecs-Functions e.AST>;
 
-  e.AST-B (Spec t.SrcPos (e.Name) e.Pattern) e.AST-E
+  e.AST-B (LegacySpec t.SrcPos (e.Name) e.Pattern) e.AST-E
     = <CheckSpecs-Functions
         e.AST-B (Error t.SrcPos OrphanSpec e.Name) e.AST-E
       >;
@@ -421,7 +428,8 @@ ValidBodyForSpec {
     : (s.BoolResult e.Messages)
     = s.BoolResult e.Messages;
 
-  (e.Name) t.Pattern NativeBody e.Code = False (NativeOptimizable Spec e.Name);
+  (e.Name) t.Pattern NativeBody e.Code
+    = False (NativeOptimizable LegacySpec e.Name);
 }
 
 ValidBodyForSpec-CheckSentensePattern {
@@ -543,11 +551,11 @@ SeparateDefines {
           (e.Declarations) (Entry t.SrcPos GN-Entry e.Name) =
             (e.Declarations (Entry t.SrcPos e.Name));
 
-          (e.Declarations) (Inline t.SrcPos s.ScopeClass e.Name) =
-            (e.Declarations (Inline t.SrcPos e.Name));
+          (e.Declarations) (LegacyInline t.SrcPos s.ScopeClass e.Name) =
+            (e.Declarations (LegacyInline t.SrcPos e.Name));
 
-          (e.Declarations) (Drive t.SrcPos s.ScopeClass e.Name) =
-            (e.Declarations (Drive t.SrcPos e.Name));
+          (e.Declarations) (LegacyDrive t.SrcPos s.ScopeClass e.Name) =
+            (e.Declarations (LegacyDrive t.SrcPos e.Name));
 
           (e.Declarations) (Intrinsic t.SrcPos s.ScopeClass e.Name) =
             (e.Declarations (Intrinsic t.SrcPos e.Name));
@@ -587,11 +595,11 @@ FindInvalidDriveInline {
     /* находим все $DRIVE и $INLINE */
     = <MapAccum
         {
-          (e.DriveInline) (Inline t.SrcPos e.Name)
-            = (e.DriveInline (Inline t.SrcPos e.Name));
+          (e.DriveInline) (LegacyInline t.SrcPos e.Name)
+            = (e.DriveInline (LegacyInline t.SrcPos e.Name));
 
-          (e.DriveInline) (Drive t.SrcPos e.Name)
-            = (e.DriveInline (Drive t.SrcPos e.Name));
+          (e.DriveInline) (LegacyDrive t.SrcPos e.Name)
+            = (e.DriveInline (LegacyDrive t.SrcPos e.Name));
 
           (e.DriveInline) t.OtherDeclaration
             = (e.DriveInline) t.OtherDeclaration;
@@ -643,8 +651,11 @@ FindInvalidDriveInline {
 
     = <Map
         {
-          (Inline t.SrcPos e.Name) = (Error t.SrcPos DanglingInline e.Name);
-          (Drive t.SrcPos e.Name) = (Error t.SrcPos DanglingDrive e.Name);
+          (LegacyInline t.SrcPos e.Name)
+            = (Error t.SrcPos DanglingInline e.Name);
+
+          (LegacyDrive t.SrcPos e.Name)
+            = (Error t.SrcPos DanglingDrive e.Name);
         }
         e.InvalidDriveInline
       >

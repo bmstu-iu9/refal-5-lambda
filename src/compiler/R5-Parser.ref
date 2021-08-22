@@ -16,7 +16,7 @@ $EXTERN EL-AddErrorAt, EL-AddWarningAt;
   t.Include ::= (Include t.Pos e.Name)
   t.NativeBlock ::= (NativeBlock t.Pos e.Code)
   t.Ident ::= (Ident t.SrcPos e.Name)
-  t.SpecUnit = (Spec t.Pos (e.Name) e.Pattern)
+  t.SpecUnit = (LegacySpec t.Pos (e.Name) e.Pattern)
 
   t.Function ::= (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
   e.Body ::= Sentences t.Sentence* | NativeBody t.Pos e.Code
@@ -208,11 +208,11 @@ TkEntryL {
 }
 
 TkInline {
-  t.Pos e.Name = (Inline t.Pos GN-Local e.Name)
+  t.Pos e.Name = (LegacyInline t.Pos GN-Local e.Name)
 }
 
 TkDrive {
-  t.Pos e.Name = (Drive t.Pos GN-Local e.Name)
+  t.Pos e.Name = (LegacyDrive t.Pos GN-Local e.Name)
 }
 
 TkMeta {
@@ -306,7 +306,7 @@ Include {
   <Specialization t.ErrorList s.Mode s.Tag e.Tokens>
     == t.ErrorList (t.SpecUnit) e.Tokens
 
-  t.SpecUnit = (Spec t.Pos (e.Name) e.Pattern)
+  t.SpecUnit = (LegacySpec t.Pos (e.Name) e.Pattern)
 
 */
 
@@ -316,7 +316,7 @@ Specialization {
     : t.ErrorList^ (e.Pattern)  e.Tokens^
     = <Expect t.ErrorList TkSemicolon ('missed semicolon') e.Tokens>
     : t.ErrorList^ e.Tokens^
-    = t.ErrorList ((Spec t.Pos (e.Name) e.Pattern)) e.Tokens;
+    = t.ErrorList ((LegacySpec t.Pos (e.Name) e.Pattern)) e.Tokens;
 
   t.ErrorList s.Mode t.Pos t.Unexpected e.Tokens
     = <UnexpectedToken t.ErrorList t.Unexpected 'function name'>

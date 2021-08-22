@@ -460,8 +460,8 @@ UnCondition-Sentence {
           )
         )
       )
-      (Drive e.CheckFunction)
-      (Spec e.CheckFunction)
+      (GROUP Drives (e.CheckFunction))
+      (GROUP Specs (e.CheckFunction))
       t.CheckFunction e.OpenEFunctions;
 }
 
@@ -543,7 +543,7 @@ MakeOpenE-ForwardNext {
         ((e.T1) ((CallBrackets (Symbol Name e.NextName) e.T2)))
         ((e.T3) ((CallBrackets (Symbol Name e.ContName) e.T4)))
       )
-      (Drive e.CurrentForwardName)
+      (GROUP Drives (e.CurrentForwardName))
       (Function (e.NextName) Sentences
         (
           (e.T5)

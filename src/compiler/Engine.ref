@@ -436,16 +436,17 @@ PatchAST-Item {
   s.FnPatch (Include t.SrcPos e.IncludeName) = /* пропускаем */;
 
   s.FnPatch (s.Label t.SrcPos s.ScopeClass e.Name)
-    , Enum Swap Declaration Entry Inline Drive Intrinsic Meta : e._ s.Label e._
+    , Enum Swap Declaration Entry LegacyInline LegacyDrive Intrinsic Meta
+    : e._ s.Label e._
     = (s.Label
         <s.FnPatch SrcPos t.SrcPos>
         s.ScopeClass
         <s.FnPatch Name e.Name>
       );
 
-  s.FnPatch (Spec t.SrcPos (e.Name) e.Pattern)
+  s.FnPatch (LegacySpec t.SrcPos (e.Name) e.Pattern)
     = (
-        Spec <s.FnPatch SrcPos t.SrcPos> (<s.FnPatch Name e.Name>)
+        LegacySpec <s.FnPatch SrcPos t.SrcPos> (<s.FnPatch Name e.Name>)
         <PatchAST-Expr s.FnPatch e.Pattern>
       );
 }
@@ -620,7 +621,7 @@ CreateMetaFunctions {
             = (e.FunctionNames (e.Name))
               (Declaration t.SrcPos GN-Entry '__Meta_' e.Name)
               (Declaration t.SrcPos GN-Entry '__Step-Drop')
-              (Inline t.SrcPos s.ScopeClass e.Name)
+              (LegacyInline t.SrcPos s.ScopeClass e.Name)
               (Function
                 t.SrcPos s.ScopeClass (e.Name) Sentences
                 (
