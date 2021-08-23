@@ -261,14 +261,6 @@ WrapBucket {
 }
 
 /**
-  <OptTree-AutoMarkup-CureDrives e.AST> == e.AST
-*/
-$ENTRY OptTree-AutoMarkup-CureDrives {
-  e.AST = e.AST;
-}
-
-
-/**
   <OptTree-AutoMarkup-CleanupUnusedFunctions e.AST> == e.AST
 */
 $ENTRY OptTree-AutoMarkup-CleanupUnusedFunctions {
