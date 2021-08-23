@@ -85,35 +85,39 @@ DoScanPseudocomments {
 
 ParsePseudocomment {
   t.ErrorList t.Pos (TkName t._ e.Name) e.Tokens
-    , Opt Drive Spec NoOpt NoDrive NoSpec : e._ s.Node e._
+    , Opt Drive Spec NoOpt NoDrive NoSpec Ident : e._ s.Node e._
     , <Upper <Explode s.Node>> : e.Name
-    = <ParseOptPseudocomment t.Pos s.Node (/* scanned */) t.ErrorList e.Tokens>;
+    = <ParseNameListPseudocomment
+        t.Pos s.Node (/* scanned */) t.ErrorList e.Tokens
+      >;
 
   t.ErrorList t.Pos e._unrecognized
     = t.ErrorList /* пропускаем неопознанный псевдокомментарий */;
 }
 
-ParseOptPseudocomment {
+ParseNameListPseudocomment {
   t.Pos s.Node (e.Scanned) t.ErrorList
   (TkName t.NamePos e.Name) e.Tokens
-    = <ParseOptPseudocomment
+    = <ParseNameListPseudocomment
         t.Pos s.Node (e.Scanned (s.Node t.NamePos e.Name)) t.ErrorList
         e.Tokens
       >;
 
   t.Pos s.Node (e.Scanned) t.ErrorList (s.Separator t._) e.Tokens
     , TkComma TkSemicolon : e._ s.Separator e._
-    = <ParseOptPseudocomment t.Pos s.Node (e.Scanned) t.ErrorList e.Tokens>;
+    = <ParseNameListPseudocomment
+        t.Pos s.Node (e.Scanned) t.ErrorList e.Tokens
+      >;
 
   t.Pos s.Node (/* нет имён */) t.ErrorList (TkEOF t._)
     = <EL-AddWarningAt
-        t.ErrorList pseudocomment t.Pos 'No names in optimization pseudocomment'
+        t.ErrorList pseudocomment t.Pos 'No names in name list pseudocomment'
       >;
 
   t.Pos s.Node (e.Scanned) t.ErrorList (TkEOF t._) = t.ErrorList e.Scanned;
 
   t.Pos s.Node (e.Scanned) t.ErrorList (TkError t.ErrPos e.Message) e.Tokens
-    = <ParseOptPseudocomment
+    = <ParseNameListPseudocomment
         t.Pos s.Node (e.Scanned)
         <EL-AddWarningAt t.ErrorList pseudocomment t.ErrPos e.Message>
         e.Tokens
@@ -121,7 +125,7 @@ ParseOptPseudocomment {
 
   t.Pos s.Node (e.Scanned) t.ErrorList (TkWarning t.WarnPos s.Type e.Message)
   e.Tokens
-    = <ParseOptPseudocomment
+    = <ParseNameListPseudocomment
         t.Pos s.Node (e.Scanned)
         <EL-AddWarningAt t.ErrorList pseudocomment t.WarnPos e.Message>
         e.Tokens
@@ -129,7 +133,7 @@ ParseOptPseudocomment {
 
   t.Pos s.Node (e.Scanned) t.ErrorList t.Unexpected e.Tokens
     = t.Unexpected : (s.Type t.TokPos e.Value)
-    = <ParseOptPseudocomment
+    = <ParseNameListPseudocomment
         t.Pos s.Node (e.Scanned)
         <EL-AddWarningAt
           t.ErrorList pseudocomment t.TokPos
