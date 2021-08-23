@@ -534,6 +534,7 @@ ValidWarningId {
 WarningForName {
   'screening' = True screening;
   'nul-in-compound' = True nul-in-compound;
+  'pseudocomments' = True pseudocomment;        /* синоним */
   'pseudocomment' = True pseudocomment;
   'pseudofunctions' = True pseudofunctions;
   'pseudofunction' = True pseudofunctions; /* синоним */
