@@ -4,7 +4,7 @@ $INCLUDE "LibraryEx";
 $EXTERN Config-GetTreeOptCycles, Config-GetOptDrive, Config-GetOptSpec,
   Config-GetOptAutoMarkup, Config-GetOptIntrinsic;
 
-*$FROM OptTree-AutoMarkup-Spec
+*$FROM OptTree-AutoMarkup
 $EXTERN OptTree-AutoMarkup-Spec;
 
 *$FROM OptTree-AutoMarkup-Drive
