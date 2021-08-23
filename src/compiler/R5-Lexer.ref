@@ -253,18 +253,22 @@ DoScan-BuildKeyword {
     , (TkExtern '$EXTERN') (TkExtern '$EXTRN') (TkExtern '$EXTERNAL')
       (TkEntry '$ENTRY') (TkEnum '$ENUM') (TkEEnum '$EENUM')
       (TkSwap '$SWAP') (TkESwap '$ESWAP') (TkInclude '$INCLUDE')
-      (TkLabel '$LABEL')
+      (TkLabel '$LABEL') (TkScopeId '$SCOPEID')
       (TkInline '$INLINE') (TkDrive '$DRIVE')
       (TkSpec '$SPEC') (TkMeta '$META')
       (TkIntrinsic '$INTRINSIC')
     : e.Keywords-B (s.Tag e.KeywordChars) e.Keywords-E
     = (s.Tag t.Pos)
-      <DoScan <IncCol t.Pos Len e.KeywordChars> (e.Line) e.Lines>;
+      <Fetch
+        TkScopeId TkLabel TkInline TkDrive TkSpec
+        {
+          e._ s.Tag e._
+            = (TkWarning t.Pos deprecated e.KeywordChars ' is deprecated');
 
-  t.Pos ('$SCOPEID') (e.Line) e.Lines
-    = (TkScopeId t.Pos)
-      (TkWarning t.Pos deprecated '$SCOPEID is deprecated')
-      <DoScan <IncCol t.Pos Len '$SCOPEID'> (e.Line) e.Lines>;
+          e._ = /* нет предупреждения */
+        }
+      >
+      <DoScan <IncCol t.Pos Len e.KeywordChars> (e.Line) e.Lines>;
 
   t.Pos ('$EASTEREGG') (e.Line) e.Lines
     = <EasterEgg t.Pos $EASTEREGG>
