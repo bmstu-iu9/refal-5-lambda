@@ -769,7 +769,7 @@ Expression {
       >;
 }
 
-$INLINE TokenChain, Expression;
+*$DRIVE TokenChain, Expression
 
 TokenChain {
   t.ErrorList s.Mode s.Kind e.Tokens
@@ -1031,7 +1031,7 @@ Expression-CheckBrackets {
     = t.ErrorList t.Expression e.Tokens;
 }
 
-$DRIVE ClassicError;
+*$DRIVE ClassicError
 
 ClassicError {
   t.ErrorList Classic t.Pos e.Message

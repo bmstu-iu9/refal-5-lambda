@@ -42,11 +42,11 @@ ColdAll {
 
 MaxCntNodes { = 100 }
 
-$DRIVE MaxCntNodes;
+*$DRIVE MaxCntNodes
 
 MaxTreeDepth { = 20 }
 
-$DRIVE MaxTreeDepth;
+*$DRIVE MaxTreeDepth
 
 IncWithMax {
   s.Cnt s.Max, <Compare s.Max s.Cnt> : '+' = <Add s.Cnt 1>;
@@ -471,7 +471,7 @@ FindOptInfo-Aux {
       ((e.Name) Sentences <DropLeft e.Sentences s.Drop>);
 }
 
-$DRIVE CutSUF;
+*$DRIVE CutSUF
 
 CutSUF {
   e.Prefix SUF = e.Prefix;

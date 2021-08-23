@@ -406,13 +406,12 @@ PatchASTSrcPos {
     = <PatchAST s.FnPatch e.AST>;
 }
 
-$SPEC PatchAST s.FN-PATCH e.ast;
+*$SPEC PatchAST, PatchAST-Item, PatchAST-Body, PatchAST-Sentence,
+*$  PatchAST-Chain, PatchAST-Blocks, PatchAST-Expr
 
 PatchAST {
   s.FnPatch e.AST = <Map (&PatchAST-Item s.FnPatch) e.AST>;
 }
-
-$SPEC PatchAST-Item s.FN-PATCH t.item;
 
 PatchAST-Item {
   s.FnPatch (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
@@ -450,8 +449,6 @@ PatchAST-Item {
       );
 }
 
-$SPEC PatchAST-Body s.FN-PATCH e.body;
-
 PatchAST-Body {
   s.FnPatch Sentences e.Sentences
     = Sentences <Map (&PatchAST-Sentence s.FnPatch) e.Sentences>;
@@ -472,8 +469,6 @@ PatchAST-Body {
       >;
 }
 
-$SPEC PatchAST-Sentence s.FN-PATCH t.sentence;
-
 PatchAST-Sentence {
   s.FnPatch ((e.Pattern) e.ConditionsAndAssigns (e.Result) (e.Blocks))
     = { e.Expr = <PatchAST-Expr s.FnPatch e.Expr>; } : s.FnPatchExpr
@@ -484,8 +479,6 @@ PatchAST-Sentence {
         (<PatchAST-Blocks s.FnPatch e.Blocks>)
       );
 }
-
-$SPEC PatchAST-Chain s.FN-PATCH s.FN-PATCH-EXPR e.chain;
 
 PatchAST-Chain {
   s.FnPatch s.FnPatchExpr e.ConditionsAndAssigns
@@ -502,8 +495,6 @@ PatchAST-Chain {
       >;
 }
 
-$SPEC PatchAST-Blocks s.FN-PATCH e.blocks;
-
 PatchAST-Blocks {
   s.FnPatch e.Blocks
     = <Map
@@ -513,8 +504,6 @@ PatchAST-Blocks {
         e.Blocks
       >;
 }
-
-$SPEC PatchAST-Expr s.FN-PATCH e.expr;
 
 PatchAST-Expr {
   s.FnPatch e.Expression

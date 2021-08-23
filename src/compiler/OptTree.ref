@@ -244,7 +244,7 @@ Int-Cond {
   s.Opt = True;
 }
 
-$INLINE Int-Cond;
+*$DRIVE Int-Cond
 
 Int-Cond-Or {
   t.Cond e.Flags
@@ -283,7 +283,7 @@ Int-LoopForWarmFunctions {
   (e.Defines) e.Code s.Cycles (e.AST) = s.Cycles e.AST;
 }
 
-$INLINE Int-Lookup;
+*$DRIVE Int-Lookup
 
 Int-Lookup {
   s.ProcName (define s.ProcName e.Body) e._ = e.Body;

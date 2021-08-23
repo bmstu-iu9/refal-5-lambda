@@ -88,7 +88,7 @@ IncLine {
   (RowCol s.Line s.Col) = (RowCol <Inc s.Line> 1);
 }
 
-$DRIVE IncCol;
+*$DRIVE IncCol
 
 IncCol {
   (RowCol s.Line s.Col) = (RowCol s.Line <Inc s.Col>);
@@ -275,7 +275,7 @@ DoScan-BuildKeyword {
     <DoScan <IncCol t.Pos Len e.KeywordChars> (e.Line) e.Lines>;
 }
 
-$INLINE EasterEgg;
+*$DRIVE EasterEgg
 
 EasterEgg {
   t.Pos s.Char e.Text = (TkChar t.Pos s.Char) <EasterEgg t.Pos e.Text>;
@@ -462,7 +462,7 @@ HexDigit {
       };
 }
 
-$INLINE DoHexDigit;
+*$DRIVE DoHexDigit
 
 DoHexDigit {
   s.Digit e.Samples s.Val s.Digit = s.Val;

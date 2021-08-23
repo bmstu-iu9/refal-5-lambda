@@ -30,7 +30,7 @@ $ENTRY EscapeChar {
       };
 }
 
-$DRIVE EscapeChar;
+*$DRIVE EscapeChar
 
 $ENTRY EscapeString {
   e.String = <Map &EscapeChar e.String>;

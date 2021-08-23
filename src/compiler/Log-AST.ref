@@ -220,7 +220,7 @@ Tail-GEN {
     = <Expression (e.Indent '= ') (e.Indent '  ') e.Result (';')>;
 }
 
-$SPEC Expression (e.prefix) (e.indent) e.expression (e.suffix);
+*$NOOPT Expression
 
 Expression {
   (e.Prefix) (e.Indent) /* пусто */ (e.Suffix)
