@@ -545,7 +545,11 @@ WarningForName {
 }
 
 $ENTRY Config-AllWarningIds {
-  /* пусто */ = (screening nul-in-compound pseudofunctions repeated deprecated)
+  /* пусто */
+    = (
+        screening nul-in-compound pseudocomment pseudofunctions repeated
+        deprecated intrinsic
+      )
 }
 
 WarningIds-Add {
