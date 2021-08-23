@@ -4,7 +4,8 @@ $INCLUDE "LibraryEx";
 $EXTERN Pass-UnCondition;
 
 *$FROM TreeUtils
-$EXTERN NewVarName, AddSuffix, CreateContext, ExtractVariables-Expr;
+$EXTERN NewVarName, AddSuffix, CreateContext, ExtractVariables-Expr,
+  IsGenFunctionDecoratedName;
 
 
 $ENTRY Desugar {
@@ -814,7 +815,7 @@ Pass-DisableGenFunctionOptimizations {
             (e.FuncName) Sentences
             (((Var 'e' e.Index)) /*=*/ ((Var 'e' e.Index)))
           )
-            , <Pseudofunction-gen_e e.FuncName> : True
+            , <IsGenFunctionDecoratedName e.FuncName> : True
             = (e.GenFunctions (e.FuncName))
               (Function
                 (e.FuncName) Sentences
@@ -829,15 +830,6 @@ Pass-DisableGenFunctionOptimizations {
     = (GROUP NoDrives e.GenFunctions)
       (GROUP NoSpecs e.GenFunctions)
       e.AST
-}
-
-Pseudofunction-gen_e {
-  'gen_e__' = True;
-  'gen-e__' = True;
-  'gen_e__' SUF '~' s.N = True;
-  'gen-e__' SUF '~' s.N = True;
-
-  e._ = False;
 }
 
 Pass-CollectDeclarations {

@@ -393,3 +393,22 @@ $ENTRY UnmarkWholeVars {
         e.Expr
       >
 }
+
+*$OPT IsGenFunctionName, IsGenFunctionDecoratedName
+
+/**
+  <IsGenFunctionName e.Name> == True | False
+*/
+$ENTRY IsGenFunctionName {
+  'gen_e__' = True;
+  'gen-e__' = True;
+  e._ = False;
+}
+
+/**
+  <IsGenFunctionDecoratedName e.Name> == True | False
+*/
+$ENTRY IsGenFunctionDecoratedName {
+  e.Name SUF '~' s._ = <IsGenFunctionName e.Name>;
+  e.Name = <IsGenFunctionName e.Name>;
+}

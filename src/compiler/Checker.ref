@@ -10,7 +10,7 @@ $EXTERN GenericMatch;
 $EXTERN RemovePos-Expr;
 
 *$FROM TreeUtils
-$EXTERN ExtractVariables-Expr;
+$EXTERN ExtractVariables-Expr, IsGenFunctionName;
 
 *$FROM Checker-Screening
 $EXTERN CheckScreening;
@@ -159,24 +159,24 @@ CheckPseudofunctions {
         {
           (s.Tag t.SrcPos s.ScopeClass e.Name)
             , LegacyDrive LegacyInline Intrinsic : e._ s.Tag e._
-            , <Pseudofunctions> : e._ (e.Name) e._
+            , <IsGenFunctionName e.Name> : True
             = (Error t.SrcPos TaggedPseudofunction s.Tag e.Name);
 
           (s.Tag t.SrcPos e.Name)
             , Opt Drive Spec : e._ s.Tag e._
-            , <Pseudofunctions> : e._ (e.Name) e._
+            , <IsGenFunctionName e.Name> : True
             = (Warning pseudocomment t.SrcPos TaggedPseudofunction s.Tag e.Name);
 
           (LegacySpec t.SrcPos (e.Name) e._)
-            , <Pseudofunctions> : e._ (e.Name) e._
+            , <IsGenFunctionName e.Name> : True
             = (Error t.SrcPos TaggedPseudofunction Spec e.Name);
 
           (Entry t.SrcPos GN-Entry e.Name)
-            , <Pseudofunctions> : e._ (e.Name) e._
+            , <IsGenFunctionName e.Name> : True
             = (Warning pseudofunctions t.SrcPos EntryPseudofunction e.Name);
 
           (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
-            , <Pseudofunctions> : e._ (e.Name) e._
+            , <IsGenFunctionName e.Name> : True
             = (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
               <CheckPseudofunctions-Entry t.SrcPos e.Name s.ScopeClass>
               <CheckPseudofunctions-Body t.SrcPos (e.Name) e.Body>;
@@ -200,10 +200,6 @@ SeparateErrors {
         }
         (/* messages */) e.AST-and-messages
       >
-}
-
-Pseudofunctions {
-  = ('gen_e__') ('gen-e__')
 }
 
 CheckPseudofunctions-Entry {
