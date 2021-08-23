@@ -537,7 +537,7 @@ WarningForName {
   'pseudocomments' = True pseudocomment;        /* синоним */
   'pseudocomment' = True pseudocomment;
   'pseudofunctions' = True pseudofunctions;
-  'pseudofunction' = True pseudofunctions; /* синоним */
+  'pseudofunction' = True pseudofunctions;      /* синоним */
   'repeated' = True repeated;
   'deprecated' = True deprecated;
   'intrinsic' = True intrinsic;
