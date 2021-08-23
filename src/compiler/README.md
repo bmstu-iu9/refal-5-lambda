@@ -132,13 +132,14 @@
     s.Mode ::= Classic | Extended
 
     t.Unit ::= t.Function | t.Extern | t.SingleDeclaration | t.Include
-      | t.NativeBlock | t.Ident | t.SpecUnit
+      | t.NativeBlock | t.Markup | t.SpecUnit
     t.Extern ::= (Declaration t.Pos GN-Entry e.Name)
     t.SingleDeclaration ::= (s.SingleDeclarationTag t.Pos s.ScopeClass e.Name)
     s.SingleDeclarationTag ::= Enum | Swap | LegacyInline | LegacyDrive | Meta
     t.Include ::= (Include t.Pos e.Name)
     t.NativeBlock ::= (NativeBlock t.Pos e.Code)
-    t.Ident ::= (Ident t.SrcPos e.Name)
+    t.Markup ::= (s.Markup t.SrcPos e.Name)
+    s.Markup ::= Ident | Opt | Drive | Spec | NoOpt | NoDrive | NoSpec
     t.SpecUnit ::= (LegacySpec t.Pos (e.Name) e.Pattern)
 
     t.Function ::= (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
