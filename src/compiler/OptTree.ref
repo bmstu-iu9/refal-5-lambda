@@ -5,11 +5,8 @@ $EXTERN Config-GetTreeOptCycles, Config-GetOptDrive, Config-GetOptSpec,
   Config-GetOptAutoMarkup, Config-GetOptIntrinsic;
 
 *$FROM OptTree-AutoMarkup
-$EXTERN OptTree-AutoMarkup-Spec;
-
-*$FROM OptTree-AutoMarkup-Drive
-$EXTERN OptTree-AutoMarkup-Drive, OptTree-AutoMarkup-CureDrives,
-  OptTree-AutoMarkup-CleanupUnusedFunctions;
+$EXTERN OptTree-AutoMarkup-Spec, OptTree-AutoMarkup-Drive,
+  OptTree-AutoMarkup-CureDrives, OptTree-AutoMarkup-CleanupUnusedFunctions;
 
 *$FROM OptTree-Drive
 $EXTERN OptTree-Drive-Prepare, OptTree-Drive, OptTree-Drive-CleanupColdCalls;
