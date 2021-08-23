@@ -406,7 +406,7 @@ PatchASTSrcPos {
     = <PatchAST s.FnPatch e.AST>;
 }
 
-*$SPEC PatchAST, PatchAST-Item, PatchAST-Body, PatchAST-Sentence,
+*$xSPEC PatchAST, PatchAST-Item, PatchAST-Body, PatchAST-Sentence,
 *$  PatchAST-Chain, PatchAST-Blocks, PatchAST-Expr
 
 PatchAST {

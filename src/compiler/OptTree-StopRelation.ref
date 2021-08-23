@@ -37,7 +37,7 @@ $ENTRY OptTree-CheckExprStopRelation {
   (e.CurrentExpr) e.HistoryExpr = <Trace False False>;
 }
 
-*$DRIVE Trace
+*$xDRIVE Trace
 
 Trace {
 */*

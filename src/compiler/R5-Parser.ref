@@ -91,6 +91,24 @@ ParsePseudocomment {
         t.Pos s.Node (/* scanned */) t.ErrorList e.Tokens
       >;
 
+/*
+  TODO: Стабильная версия 3.3 по-другому парсит ключевые слова и сообщает
+  об ошибках в них (не предупреждениях). Поэтому, чтобы можно было собрать
+  текущую версию и стабильной, и самой собой, для каждого ключевого слова
+  создаём синоним вида *$xDRIVE или *$xSPEC. Он игнорируется стабильной
+  версией 3.3 и работает в рабочей.
+
+  TODO: после обновления стабильной версии нужно будет удалить поддержку
+  псевдокомментариев *$x..., а также почистить исходники. Для этой цели
+  добавлена заготовка предупреждения.
+*/
+  t.ErrorList t.Pos (TkName t.NamePos 'x' e.Name) e.Tokens
+*    = <EL-AddWarningAt t.ErrorList deprecated t.NamePos '$x... keyword'>
+*    : t.ErrorList^
+    = <ParsePseudocomment
+        t.ErrorList t.Pos (TkName t.NamePos e.Name) e.Tokens
+      >;
+
   t.ErrorList t.Pos e._unrecognized
     = t.ErrorList /* пропускаем неопознанный псевдокомментарий */;
 }
@@ -769,14 +787,14 @@ Expression {
       >;
 }
 
-*$DRIVE TokenChain, Expression
+*$xDRIVE TokenChain, Expression
 
 TokenChain {
   t.ErrorList s.Mode s.Kind e.Tokens
     = <DoTokenChain s.Mode s.Kind t.ErrorList (/* collected */) e.Tokens>
 }
 
-*$NOOPT DoTokenChain
+*$xNOOPT DoTokenChain
 
 DoTokenChain {
   s.Mode s.Kind t.ErrorList (e.Collected) t.NextToken e.Tokens
@@ -1031,7 +1049,7 @@ Expression-CheckBrackets {
     = t.ErrorList t.Expression e.Tokens;
 }
 
-*$DRIVE ClassicError
+*$xDRIVE ClassicError
 
 ClassicError {
   t.ErrorList Classic t.Pos e.Message

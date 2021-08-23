@@ -8,7 +8,7 @@ $EXTERN PrintErr;
 
 $INCLUDE "Opcodes";
 
-*$DRIVE NumberFromOpcode, NumberFromBracket, BlockTypeNumber
+*$xDRIVE NumberFromOpcode, NumberFromBracket, BlockTypeNumber
 
 $ENTRY GenProgram-RASL {
   (
@@ -93,19 +93,19 @@ BytesFromStringList {
     >;
 }
 
-*$DRIVE BytesFromString
+*$xDRIVE BytesFromString
 
 BytesFromString {
   e.String = <Ord e.String>;
 }
 
-*$DRIVE Asciiz
+*$xDRIVE Asciiz
 
 Asciiz {
   e.String = <BytesFromString e.String> 0;
 }
 
-*$DRIVE PutBlock
+*$xDRIVE PutBlock
 
 PutBlock {
   s.Type e.Bytes =
@@ -126,7 +126,7 @@ PutWordLE {
     = <PutWordLE e.Bytes s.ValueLow s.ValueHigh>;
 }
 
-*$DRIVE NameWithSign-Bytes
+*$xDRIVE NameWithSign-Bytes
 
 NameWithSign-Bytes {
   GN-Entry e.Name = <Asciiz '*' <DisplayName e.Name>>;
@@ -389,7 +389,7 @@ GenCommand-RASL {
     <PutCommand CmdFail>;
 }
 
-*$DRIVE PutCommand
+*$xDRIVE PutCommand
 
 PutCommand {
   s.Symbolic = (<NumberFromOpcode s.Symbolic> 0 0 0);
@@ -410,7 +410,7 @@ PutCommand {
       };
 }
 
-*$DRIVE CreateCommandTag
+*$xDRIVE CreateCommandTag
 
 CreateCommandTag {
   ElOpenBracket = ElBracket;
@@ -423,7 +423,7 @@ CreateCommandTag {
   s.Other = s.Other;
 }
 
-*$DRIVE CreateCommandInfo
+*$xDRIVE CreateCommandInfo
 
 CreateCommandInfo {
   ElChar s.Char = <Ord s.Char>;

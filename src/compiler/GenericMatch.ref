@@ -2103,7 +2103,7 @@ AddContractions-Spec-Symm {
   <AddContraction t.toAdd (t.Contraction*) t.Equation* (t.Assign*)>
    == PRTC
 */
-*$DRIVE AddContraction-Spec, AddContraction-Spec-Symm
+*$xDRIVE AddContraction-Spec, AddContraction-Spec-Symm
 
 AddContraction-Spec {
   t.toAdd (s.OpenFlag e.Contrs) e.Clashes (e.Assigns)
