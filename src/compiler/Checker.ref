@@ -158,11 +158,14 @@ CheckPseudofunctions {
     = <Map
         {
           (s.Tag t.SrcPos s.ScopeClass e.Name)
-            , Opt Drive Spec NoOpt NoDrive NoSpec
-              LegacyDrive LegacyInline Intrinsic
-            : e._ s.Tag e._
+            , LegacyDrive LegacyInline Intrinsic : e._ s.Tag e._
             , <Pseudofunctions> : e._ (e.Name) e._
             = (Error t.SrcPos TaggedPseudofunction s.Tag e.Name);
+
+          (s.Tag t.SrcPos e.Name)
+            , Opt Drive Spec : e._ s.Tag e._
+            , <Pseudofunctions> : e._ (e.Name) e._
+            = (Warning pseudocomment t.SrcPos TaggedPseudofunction s.Tag e.Name);
 
           (LegacySpec t.SrcPos (e.Name) e._)
             , <Pseudofunctions> : e._ (e.Name) e._

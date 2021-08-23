@@ -14,13 +14,6 @@ $ENTRY OptTree-AutoMarkup-Drive {
   e.AST
     = <MapAccum
         {
-          (Drives e.Drives)
-          (Function (e.FuncName) Sentences (e.OneSentence))
-            , e.OneSentence : ((Var 'e' e.Index)) /*=*/ ((Var 'e' e.Index))
-            , <Pseudofunction-gen_e e.FuncName> : True
-            = (Drives e.Drives)
-              (Function (e.FuncName) Sentences (e.OneSentence));
-
           (Drives e.Drives) (Function (e.Name) Sentences e.Body)
             = <Lenw e.Body>
             : {
@@ -42,15 +35,6 @@ $ENTRY OptTree-AutoMarkup-Drive {
         }
         (Drives /* пусто */) e.AST
       >
-}
-
-Pseudofunction-gen_e {
-  'gen_e__' = True;
-  'gen-e__' = True;
-  'gen_e__' SUF '~' s.N = True;
-  'gen-e__' SUF '~' s.N = True;
-
-  e._ = False;
 }
 
 MakeGraphNode {
