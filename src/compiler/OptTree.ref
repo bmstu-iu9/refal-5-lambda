@@ -108,7 +108,6 @@ $ENTRY OptTree-CleanupMarkup {
     = <Map
         {
           (Drives e.Names) = /* пропускаем */;
-          (Inlines e.Names) = /* пропускаем */;
           (Intrinsics e.Names) = /* пропускаем */;
           (Specs e.Names) = /* пропускаем */;
           (NoDrives e.Names) = /* пропускаем */;

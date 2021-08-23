@@ -327,10 +327,11 @@
     s.DeclarationListNode ::=
         Entries
       | Externs
-      | Drives
-      | Inlines
       | Intrinsics
+      | Drives
       | Specs
+      | NoDrives
+      | NoSpecs
 
     e.ReducedBody ::=
         Sentences t.ReducedSentence*

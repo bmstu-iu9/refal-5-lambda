@@ -79,7 +79,6 @@ UpdateDriveInfo {
   s.OptDrive s.OptIntrinsic ((e.KnownNames) e.KnownFunctions) e.AST
     = e.KnownFunctions : s._ (e._) e.KnownFunctions^
     = <ExtractLabels Drive Drives e.AST> : (e.Drives) e.AST^
-    = <ExtractLabels Drive Inlines e.AST> : (e.DrivesI) e.AST^
     = <ExtractLabels Intrinsic Intrinsics e.AST> : (e.Intrinsics) e.AST^
     = e.AST
     : {
@@ -90,7 +89,6 @@ UpdateDriveInfo {
       }
     : (e.NoDrives) e.AST^
     = <Map { (e.Name) = (NoDrive e.Name) } e.NoDrives> : e.NoDrives^
-    = e.Drives e.DrivesI : e.Drives^
 
     = <HashSet-AsChain e.KnownNames> : e.KnownNames^
 

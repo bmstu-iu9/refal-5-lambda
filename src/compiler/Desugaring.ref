@@ -812,7 +812,7 @@ Pass-CollectDeclarations {
           (Declaration GN-Entry e.Name) = (GROUP Externs (e.Name));
 
           (LegacyDrive e.Name) = (GROUP Drives (e.Name));
-          (LegacyInline e.Name) = (GROUP Inlines (e.Name));
+          (LegacyInline e.Name) = (GROUP Drives (e.Name));
           (Intrinsic e.Name) = (GROUP Intrinsics (e.Name));
           (LegacySpec e.Name) = (GROUP Specs (e.Name));
 
@@ -840,7 +840,6 @@ Pass-CollectDeclarations {
         e.AST
         (GROUP Externs)
         (GROUP Drives)
-        (GROUP Inlines)
         (GROUP Intrinsics)
         (GROUP Specs)
         (GROUP NoDrives)
@@ -851,7 +850,6 @@ Pass-CollectDeclarations {
     : e.AST^
       (GROUP Externs e.Externs)
       (GROUP Drives e.Drives)
-      (GROUP Inlines e.Inlines)
       (GROUP Intrinsics e.Intrinsics)
       (GROUP Specs e.Specs)
       (GROUP NoDrives e.NoDrives)
@@ -861,7 +859,6 @@ Pass-CollectDeclarations {
 
     = <Unique e.Externs> : e.Externs^
     = <Unique e.Drives> : e.Drives^
-    = <Unique e.Inlines> : e.Inlines^
     = <Unique e.Intrinsics> : e.Intrinsics^
     = <Unique e.Specs> : e.Specs^
     = <Unique e.NoDrives> : e.NoDrives^
@@ -871,12 +868,10 @@ Pass-CollectDeclarations {
     = <Set-Intersect (e.Specs) (e.RefalFunctions)> : e.Specs^
 
     = <Set-Reject (e.Externs) (e.DefinedFunctions)> : e.Externs^
-    = <Set-Reject (e.Inlines) (e.Drives)> : e.Inlines^
     = <Set-Reject (e.Intrinsics) (e.DefinedFunctions)> : e.Intrinsics^
 
-    = (Externs e.Externs)
-      (Drives e.Drives) (Inlines e.Inlines) (Intrinsics e.Intrinsics)
-      (Specs e.Specs)
+    = (Externs e.Externs) (Intrinsics e.Intrinsics)
+      (Drives e.Drives) (Specs e.Specs)
       (NoDrives e.NoDrives) (NoSpecs e.NoSpecs)
       e.AST
 }

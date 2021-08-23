@@ -31,7 +31,6 @@ Element {
     = <ColdFunction s.ColdBy (e.Name) e.Body>;
 
   (Externs e.Names) = <Log-ExternList e.Names>;
-  (Inlines e.Names) = <NameList ('$INLINE') e.Names>;
   (Drives e.Names) = <NameList ('$DRIVE') e.Names>;
   (Intrinsics e.Names) = <NameList ('$INTRINSIC') e.Names>;
 
