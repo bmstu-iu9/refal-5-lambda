@@ -72,6 +72,9 @@ PrepareMessage {
         LegacyDrive = '$DRIVE';
         LegacyInline = '$INLINE';
         LegacySpec = '$SPEC';
+        Drive = '*$DRIVE';
+        Spec = '*$SPEC';
+        Opt = '*$OPT';
       }
     : e.Keyword
     = 'Function ' e.Name ' can\'t be ' e.Keyword;
@@ -642,7 +645,9 @@ FindInvalidDriveInline {
                   = (Error t.SrcPos NativeOptimizable s.Label e.Name);
 
                 e._ = /* пропускаем */;
-              };
+              }
+            : e.Error
+            = (NativeBody e.Name) e.Error;
 
           t.Other = t.Other;
         }
@@ -862,13 +867,27 @@ CheckConflictOptPseudocomments {
         e.Declarations-E
       >;
 
-  e.Declarations-B (Opt s._ () Yes t._ e._) e.Declarations-E
-    = <CheckConflictOptPseudocomments e.Declarations-B e.Declarations-E>;
-
   e.Declarations = e.Declarations;
 }
 
 CleanupValidOptPseudocomments {
+  e.Declarations-B
+  (Opt s.OptNode (e.Features) Yes t.OptPos e.Name) e.Declarations-M
+  (NativeBody e.Name) e.Declarations-E
+    = <CleanupValidOptPseudocomments
+        e.Declarations-B
+        (Warning pseudocomment t.OptPos NativeOptimizable s.OptNode e.Name)
+        e.Declarations-M (NativeBody e.Name) e.Declarations-E
+      >;
+
+  e.Declarations-B (NativeBody e.Name) e.Declarations-M
+  (Opt s.OptNode (e.Features) Yes t.OptPos e.Name) e.Declarations-E
+    = <CleanupValidOptPseudocomments
+        e.Declarations-B (NativeBody e.Name) e.Declarations-M
+        (Warning pseudocomment t.OptPos NativeOptimizable s.OptNode e.Name)
+        e.Declarations-E
+      >;
+
   e.Declarations-B
   (Opt s.OptNode (e.Features) s.Enable t.OptPos e.Name) e.Declarations-M
   (Define t.SrcPos s.ScopeClass e.Name) e.Declarations-E
@@ -881,8 +900,9 @@ CleanupValidOptPseudocomments {
   (Define t.SrcPos s.ScopeClass e.Name) e.Declarations-M
   (Opt s.OptNode (e.Features) s.Enable t.OptPos e.Name) e.Declarations-E
     = <CleanupValidOptPseudocomments
-      e.Declarations-B
-      (Define t.SrcPos s.ScopeClass e.Name) e.Declarations-M e.Declarations-E
+        e.Declarations-B
+        (Define t.SrcPos s.ScopeClass e.Name)
+        e.Declarations-M e.Declarations-E
       >;
 
   e.Declarations = e.Declarations;

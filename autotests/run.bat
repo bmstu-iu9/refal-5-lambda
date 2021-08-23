@@ -379,6 +379,7 @@ setlocal
 
   set SREF=%1
   set RASL=%~n1.rasl
+  set CPP=%~n1.cpp
   set WARN=-W
   echo Passing %1 (flag %WARN%%FLAG%)...
   if exist __dump_rlc-core.txt erase __dump_rlc-core.txt
@@ -396,6 +397,7 @@ setlocal
   type __error.txt
   erase __error.txt
   erase %RASL%
+  if exist %CPP% erase %CPP%
   echo Ok! Compilation didn't abort
   echo.
 

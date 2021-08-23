@@ -822,6 +822,11 @@ Pass-CollectDeclarations {
             : e._ (s.OptMarkup e.Groups) e._
             = <Map { s.Group = (GROUP s.Group (e.Name)) } e.Groups>;
 
+          (Function (e.Name) Sentences e.Sentences)
+            = (GROUP DefinedFunctions (e.Name))
+              (GROUP RefalFunctions (e.Name))
+              (Function (e.Name) Sentences e.Sentences);
+
           (Function (e.Name) e.Body)
             = (GROUP DefinedFunctions (e.Name)) (Function (e.Name) e.Body);
 
@@ -841,6 +846,7 @@ Pass-CollectDeclarations {
         (GROUP NoDrives)
         (GROUP NoSpecs)
         (GROUP DefinedFunctions)
+        (GROUP RefalFunctions)
       >
     : e.AST^
       (GROUP Externs e.Externs)
@@ -851,6 +857,7 @@ Pass-CollectDeclarations {
       (GROUP NoDrives e.NoDrives)
       (GROUP NoSpecs e.NoSpecs)
       (GROUP DefinedFunctions e.DefinedFunctions)
+      (GROUP RefalFunctions e.RefalFunctions)
 
     = <Unique e.Externs> : e.Externs^
     = <Unique e.Drives> : e.Drives^
@@ -859,6 +866,9 @@ Pass-CollectDeclarations {
     = <Unique e.Specs> : e.Specs^
     = <Unique e.NoDrives> : e.NoDrives^
     = <Unique e.NoSpecs> : e.NoSpecs^
+
+    = <Set-Intersect (e.Drives) (e.RefalFunctions)> : e.Drives^
+    = <Set-Intersect (e.Specs) (e.RefalFunctions)> : e.Specs^
 
     = <Set-Reject (e.Externs) (e.DefinedFunctions)> : e.Externs^
     = <Set-Reject (e.Inlines) (e.Drives)> : e.Inlines^
@@ -879,6 +889,13 @@ CollectDeclarations-Group {
       >;
 
   e.AST = e.AST;
+}
+
+Set-Intersect {
+  (e.Set1-B t.Repeated e.Set1-E) (e.Set2-B t.Repeated e.Set2-E)
+    = t.Repeated <Set-Intersect (e.Set1-E) (e.Set2-B e.Set2-E)>;
+
+  (e.Set1) (e.Set2) = /* нет общих элементов */;
 }
 
 Set-Reject {

@@ -203,6 +203,7 @@ run_test_aux.WARNING() {
   echo Passing $1 \(flag "${WARN}"\)...
   SREF=$1
   RASL=${SREF%.*}.rasl
+  CPP=${SREF%.*}.cpp
   EXE=${SREF%.*}$(platform_exe_suffix)
 
   rm -f __dump_rlc-core.txt
@@ -219,7 +220,7 @@ run_test_aux.WARNING() {
   fi
   cat __error.txt
   rm __error.txt
-  rm ${RASL}
+  rm -f ${RASL} ${CPP}
   echo "Ok! Compiler didn't abort"
   echo
 
