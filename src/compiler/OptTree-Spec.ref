@@ -509,10 +509,12 @@ ReplaceToGuards {
           (ADT-Brackets (e.Name) e.Nested)
             = (ADT-Brackets (e.Name) <ReplaceToGuards e.Nested>);
 
-          /* вызов экземпляра, заменяем его суффикс пустую функцию */
+          /* Уже пустая функция, ничего не делаем с ней */
+          (Symbol Name e.Name '@' 0) = (Symbol Name e.Name '@' 0);
+
+*         TODO: это костыль. Нужно понять, в чём проблема и удалить эту затычку.
           (Symbol Name e.Name '@' s._) = (Symbol Name e.Name '@' 0);
 
-          /* любой другой функции добавляем суффикс @0 */
           (Symbol Name e.Name) = (Symbol Name <GuardEnumName e.Name>);
 
           t.Other = t.Other;
