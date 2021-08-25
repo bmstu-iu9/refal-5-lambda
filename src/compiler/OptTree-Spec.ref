@@ -590,13 +590,11 @@ SpecCall {
     : (e.UsedVars^) (e.NewArgument^) (e.Sg^) (e.Solutions)
 
     = <SpecCall-Aux
-        (e.Name) (<gen_e__ e.Body>) s.NextNumber e.Signatures (e.UsedVars)
-        (<gen_e__ e.Argument>) (e.NewArgument) (e.Sg) (e.Solutions) (e.History)
+        (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
+        (e.Argument) (e.NewArgument) (e.Sg) (e.Solutions) (e.History)
         True
       >;
 }
-
-gen_e__ { e.arg = e.arg }
 
 /*
   Функция обобщает участки между двумя e-параметрами:
@@ -655,6 +653,8 @@ DynGenArg {
         (/* scanned */) e.Sentences
       >;
 }
+
+*$NODRIVE DoDynGenArg
 
 DoDynGenArg {
   (e.UsedVars) (e.Arg) (e.Sg) (e.Sol)
@@ -827,8 +827,8 @@ SpecCall-NewSignature-Generalize {
       : (e.UsedVars^) (e.NewArg^) (e.Sg^) (e.Solutions^)
 
       = <SpecCall-Aux
-          (e.Name) (<gen_e__ e.Body>) s.NextNumber e.Signatures (e.UsedVars)
-          (<gen_e__ e.OldArg>) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
+          (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
+          (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
           s.NeedRelationCheck
         >;
 }
