@@ -787,11 +787,11 @@ SpecCall-NewSignature {
         False = False;
       }
     : {
-        True e.HistorySignature
+        True (e.HistoryName) e.HistorySignature
           = <SpecCall-NewSignature-Generalize
               (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
               (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
-              (e.Signature) (e.HistorySignature)
+              (e.Signature) (e.HistoryName) (e.HistorySignature)
             >;
 
         False
@@ -803,9 +803,43 @@ SpecCall-NewSignature {
 }
 
 SpecCall-NewSignature-Generalize {
+  /*
+    Зацикливание с тривиальной сигнатурой на дне.
+    Обобщение двух сигнатур дало бы тривиальную сигнатуру,
+    вызов которой соответствует вызову исходной функции.
+  */
   (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
   (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
-  (e.Signature) (e.HistorySignature)
+  (e.Signature) (e.HistoryName '@' 0) (e.HistorySignature)
+    = ((e.Body) s.NextNumber e.Signatures)
+      (CallBrackets (Symbol Name e.Name) e.OldArg)
+      /* пусто */ (/* пусто */);
+
+  /* Простое зацикливание: текущая сигнатура есть частный случай старой. */
+  (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
+  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
+  (e.Signature) (e.HistoryName) (e.HistorySignature)
+
+    , <GenericMatch (e.NewArg) (e.HistorySignature)> : Clear e.NewSg
+
+    = <Map
+        {
+          (e.Expr ':' (s.Mode e.Index)) = (e.Expr ':' (Var s.Mode e.Index))
+        }
+        e.NewSg
+      >
+    : e.NewSg^
+
+    = ((e.Body) s.NextNumber e.Signatures)
+      (CallBrackets
+        (Symbol Name e.HistoryName)
+        <ApplySequentalAssigns <WrapVars e.HistorySignature> (e.NewSg e.Sg)>
+      )
+      /* пусто */ (/* пусто */);
+
+  (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
+  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
+  (e.Signature) (e.HistoryName) (e.HistorySignature)
       /* Получает обобщённую сигнатуру для двух сигнатур */
       = <GlobalGen (e.Signature) (e.HistorySignature)> : e.GenSignature
 
@@ -1066,7 +1100,7 @@ OrderUniqueVars {
 
 /**
   <HasStopRelation (e.Name) (e.Signature) e.History>
-    == True e.HistorySignature
+    == True (e.HistoryName) e.HistorySignature
     == False
 */
 
@@ -1077,7 +1111,7 @@ HasStopRelation {
         (e.Signature) <OptTree-CanonizeExpr e.HistorySignature>
       >
     : True
-    = True e.HistorySignature;
+    = True (e.InstanceName) e.HistorySignature;
 
   (e.Name) (e.Signature) e.History ((e.InstanceName) e.HistorySignature)
     = <HasStopRelation (e.Name) (e.Signature) e.History>;
