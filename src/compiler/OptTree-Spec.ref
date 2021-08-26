@@ -585,13 +585,9 @@ SpecCall {
 
     = e.Sg e.ExtractedCalls : e.Sg^
 
-      /* ищем динамическое обобщение для аргумента и образцов */
-    = <DynGenArg (e.UsedVars) (e.NewArgument) (e.Sg) e.Body>
-    : (e.UsedVars^) (e.NewArgument^) (e.Sg^) (e.Solutions)
-
-    = <SpecCall-Aux
+    = <SpeCall-BuildSignature
         (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
-        (e.Argument) (e.NewArgument) (e.Sg) (e.Solutions) (e.History)
+        (e.Argument) (e.NewArgument) (e.Sg) (e.History)
         True
       >;
 }
@@ -644,6 +640,22 @@ GenEE {
     , 'st' : e._ s.Mode e._
     = <GenEE e.Expr (e.UsedVars) (e.Sg)> : e.Expr^ (e.UsedVars^) (e.Sg^)
     = e.Expr (Var s.Mode e.Index) (e.UsedVars) (e.Sg);
+}
+
+SpeCall-BuildSignature {
+  (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
+  (e.Argument) (e.NewArgument) (e.Sg) (e.History)
+  s.NeedRelationCheck
+
+      /* ищем динамическое обобщение для аргумента и образцов */
+    = <DynGenArg (e.UsedVars) (e.NewArgument) (e.Sg) e.Body>
+    : (e.UsedVars^) (e.NewArgument^) (e.Sg^) (e.Solutions)
+
+    = <SpecCall-CheckSignature
+        (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
+        (e.Argument) (e.NewArgument) (e.Sg) (e.Solutions) (e.History)
+        s.NeedRelationCheck
+      >;
 }
 
 DynGenArg {
@@ -725,7 +737,7 @@ RemoveAssignByLeftPart {
       >;
 }
 
-SpecCall-Aux {
+SpecCall-CheckSignature {
   /* тривиальная сигнатура */
   (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
   (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
@@ -741,7 +753,7 @@ SpecCall-Aux {
   s.NeedRelationCheck
     = <RenameSignatureVars-Expr (/* пусто */ 0) e.NewArg>
     : t._ e.Signature
-    = <Spec-FindInSignatures (e.Signature) e.Signatures>
+    = <FindInSignatures (e.Signature) e.Signatures>
     : {
         Found e.InstanceName (e.Signatures^)
           = ((e.Body) s.NextNumber e.Signatures)
@@ -805,9 +817,8 @@ SpecCall-NewSignature-Generalize {
       = <IsTrivialSubstitutions e.NewSg>
       : {
           /*
-            Если подстановка e.NewSg является тривиальной,
-            проверку отношения Хигмана-Крускала
-            в рекурсивном вызове не выполняем
+            Если подстановка e.NewSg является тривиальной, проверку
+            отношения Хигмана-Крускала в рекурсивном вызове не выполняем
           */
           True = False;
 
@@ -823,12 +834,9 @@ SpecCall-NewSignature-Generalize {
         >
       : e.NewSg^
 
-      = <DynGenArg (e.UsedVars) (e.GenSignature) (e.NewSg e.Sg) e.Body>
-      : (e.UsedVars^) (e.NewArg^) (e.Sg^) (e.Solutions^)
-
-      = <SpecCall-Aux
+      = <SpeCall-BuildSignature
           (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
-          (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
+          (e.OldArg) (e.GenSignature) (e.NewSg e.Sg) (e.History)
           s.NeedRelationCheck
         >;
 }
@@ -916,7 +924,7 @@ ApplySequentalAssigns {
     = <ApplyContractions e.Expression (e.Contractions)>
 }
 
-Spec-FindInSignatures {
+FindInSignatures {
   (e.Signature)
   e.Signatures-B ((e.InstanceName) e.Signature) e.Signatures-E
     = Found e.InstanceName
