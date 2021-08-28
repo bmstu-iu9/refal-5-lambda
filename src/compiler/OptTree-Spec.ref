@@ -787,11 +787,11 @@ SpecCall-NewSignature {
         False = False;
       }
     : {
-        True (e.HistoryName) e.HistorySignature
+        True (e.History-B) ((e.HistoryName) e.HistorySignature) (e.History-E)
           = <SpecCall-NewSignature-Generalize
               (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
-              (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
-              (e.Signature) (e.HistoryName) (e.HistorySignature)
+              (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.Signature)
+              (e.History-B) ((e.HistoryName) e.HistorySignature) (e.History-E)
             >;
 
         False
@@ -809,16 +809,16 @@ SpecCall-NewSignature-Generalize {
     вызов которой соответствует вызову исходной функции.
   */
   (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
-  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
-  (e.Signature) (e.HistoryName '@' 0) (e.HistorySignature)
+  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.Signature)
+  (e.History-B) ((e.HistoryName '@' 0) e.HistorySignature) (e.History-E)
     = ((e.Body) s.NextNumber e.Signatures)
       (CallBrackets (Symbol Name e.Name) e.OldArg)
       /* пусто */ (/* пусто */);
 
   /* Простое зацикливание: текущая сигнатура есть частный случай старой. */
   (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
-  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
-  (e.Signature) (e.HistoryName) (e.HistorySignature)
+  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.Signature)
+  (e.History-B) ((e.HistoryName) e.HistorySignature) (e.History-E)
 
     , <GenericMatch (e.NewArg) (e.HistorySignature)> : Clear e.NewSg
 
@@ -838,8 +838,8 @@ SpecCall-NewSignature-Generalize {
       /* пусто */ (/* пусто */);
 
   (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
-  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
-  (e.Signature) (e.HistoryName) (e.HistorySignature)
+  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.Signature)
+  (e.History-B) ((e.HistoryName) e.HistorySignature) (e.History-E)
       /* Получает обобщённую сигнатуру для двух сигнатур */
       = <GlobalGen (e.Signature) (e.HistorySignature)> : e.GenSignature
 
@@ -870,7 +870,8 @@ SpecCall-NewSignature-Generalize {
 
       = <SpeCall-BuildSignature
           (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
-          (e.OldArg) (e.GenSignature) (e.NewSg e.Sg) (e.History)
+          (e.OldArg) (e.GenSignature) (e.NewSg e.Sg)
+          (e.History-B ((e.HistoryName) e.HistorySignature) e.History-E)
           s.NeedRelationCheck
         >;
 }
@@ -1100,23 +1101,31 @@ OrderUniqueVars {
 
 /**
   <HasStopRelation (e.Name) (e.Signature) e.History>
-    == True (e.HistoryName) e.HistorySignature
+    == True (e.History-B) ((e.HistoryName) e.HistorySignature) (e.History-E)
     == False
 */
 
 HasStopRelation {
-  (e.Name) (e.Signature) e.History ((e.InstanceName) e.HistorySignature)
+  (e.Name) (e.Signature) e.History
+    = <DoHasStopRelation (e.Name) (e.Signature) e.History (/* scanned */)>
+}
+
+DoHasStopRelation {
+  (e.Name) (e.Signature) e.History-B ((e.InstanceName) e.HistorySignature)
+  (e.History-E)
     , <SourceNameOfInstance e.InstanceName> : e.Name
     , <OptTree-CheckExprStopRelation
         (e.Signature) <OptTree-CanonizeExpr e.HistorySignature>
       >
     : True
-    = True (e.InstanceName) e.HistorySignature;
+    = True (e.History-B) ((e.InstanceName) e.HistorySignature) (e.History-E);
 
-  (e.Name) (e.Signature) e.History ((e.InstanceName) e.HistorySignature)
-    = <HasStopRelation (e.Name) (e.Signature) e.History>;
+  (e.Name) (e.Signature) e.History-B t.HistoryItem (e.History-E)
+    = <DoHasStopRelation
+        (e.Name) (e.Signature) e.History-B (t.HistoryItem e.History-E)
+      >;
 
-  (e.Name) (e.Signature) /* пустая история */ = False;
+  (e.Name) (e.Signature) /* пустая история */ (e.History-E) = False;
 }
 
 SourceNameOfInstance {
