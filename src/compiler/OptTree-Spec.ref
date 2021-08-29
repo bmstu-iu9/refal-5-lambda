@@ -871,7 +871,7 @@ SpecCall-NewSignature-Generalize {
       = <SpeCall-BuildSignature
           (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
           (e.OldArg) (e.GenSignature) (e.NewSg e.Sg)
-          (e.History-B ((e.HistoryName) e.HistorySignature) e.History-E)
+          (e.History-B)
           s.NeedRelationCheck
         >;
 }
