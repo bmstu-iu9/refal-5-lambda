@@ -641,20 +641,6 @@ GenEE {
     = e.Expr (Var s.Mode e.Index) (e.UsedVars) (e.Sg);
 }
 
-SpecCall-BuildSignature-True {
-  (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
-  (e.Argument) (e.NewArgument) (e.Sg) (e.History)
-
-      /* ищем динамическое обобщение для аргумента и образцов */
-    = <DynGenArg (e.UsedVars) (e.NewArgument) (e.Sg) e.Body>
-    : (e.UsedVars^) (e.NewArgument^) (e.Sg^) (e.Solutions)
-
-    = <SpecCall-CheckSignature-True
-        (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
-        (e.Argument) (e.NewArgument) (e.Sg) (e.Solutions) (e.History)
-      >;
-}
-
 DynGenArg {
   (e.UsedVars) (e.Arg) (e.Sg) e.Sentences
     = <DoDynGenArg
@@ -734,37 +720,60 @@ RemoveAssignByLeftPart {
       >;
 }
 
-SpecCall-CheckSignature-True {
-  /* тривиальная сигнатура */
+SpecCall-BuildSignature-True {
   (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
-  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
-    , <IsTrivialSignature e.NewArg (e.Body)> : True
-    = ((e.Body) s.NextNumber e.Signatures)
-      (CallBrackets (Symbol Name e.Name) e.OldArg)
-      /* пусто */ (/* пусто */);
+  (e.OldArg) (e.NewArg) (e.Sg) (e.History)
 
-  /* проверяем, известна ли сигнатура */
-  (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
-  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
-    = <RenameSignatureVars-Expr (/* пусто */ 0) e.NewArg>
-    : t._ e.Signature
-    = <FindInSignatures (e.Signature) e.Signatures>
+      /* ищем динамическое обобщение для аргумента и образцов */
+    = <DynGenArg (e.UsedVars) (e.NewArg) (e.Sg) e.Body>
+    : (e.UsedVars^) (e.NewArg^) (e.Sg^) (e.Solutions)
+
+    = <SpecCall-CheckSignature (e.Body) s.NextNumber e.Signatures (e.NewArg)>
     : {
-        Found e.InstanceName (e.Signatures^)
-          = ((e.Body) s.NextNumber e.Signatures)
+        (e.SpecInfo) Trivial
+          = (e.SpecInfo)
+            (CallBrackets (Symbol Name e.Name) e.OldArg)
+            /* пусто */ (/* пусто */);
+
+        (e.SpecInfo) Known e.InstanceName
+          = (e.SpecInfo)
             (CallBrackets
               (Symbol Name e.InstanceName)
               <ApplySequentalAssigns <WrapVars e.NewArg> (e.Sg)>
             )
             /* пусто */ (/* пусто */);
 
-        /* проверяем на зацикливание */
-        NotFound e.Signatures^
+        (e.SpecInfo) NewSignature e.Signature
+          = e.SpecInfo : (e.Body^) s.NextNumber^ e.Signatures^
           = <SpecCall-NewSignature-True
               (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
               (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
               (e.Signature)
             >;
+      }
+}
+
+SpecCall-CheckSignature {
+  /* тривиальная сигнатура */
+  (e.Body) s.NextNumber e.Signatures (e.NewArg)
+    , <IsTrivialSignature e.NewArg (e.Body)> : True
+    = ((e.Body) s.NextNumber e.Signatures)
+      Trivial;
+
+  /* проверяем, известна ли сигнатура */
+  (e.Body) s.NextNumber e.Signatures (e.NewArg)
+    = <RenameSignatureVars-Expr (/* пусто */ 0) e.NewArg>
+    : t._ e.Signature
+    = <FindInSignatures (e.Signature) e.Signatures>
+    : {
+        Found e.InstanceName (e.Signatures^)
+          = ((e.Body) s.NextNumber e.Signatures)
+            Known e.InstanceName;
+
+        /* проверяем на зацикливание */
+        NotFound e.Signatures^
+          = ((e.Body) s.NextNumber e.Signatures)
+            NewSignature e.Signature;
       };
 }
 
@@ -890,40 +899,27 @@ SpecCall-BuildSignature-False {
 
       /* ищем динамическое обобщение для аргумента и образцов */
     = <DynGenArg (e.UsedVars) (e.NewArgument) (e.Sg) e.Body>
-    : (e.UsedVars^) (e.NewArgument^) (e.Sg^) (e.Solutions)
+    : (e.UsedVars^) (e.NewArg) (e.Sg^) (e.Solutions)
 
-    = <SpecCall-CheckSignature-False
-        (e.Name) (e.Body) s.NextNumber e.Signatures
-        (e.Argument) (e.NewArgument) (e.Sg) (e.Solutions) (e.History)
-      >;
-}
-
-SpecCall-CheckSignature-False {
-  /* тривиальная сигнатура */
-  (e.Name) (e.Body) s.NextNumber e.Signatures
-  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
-    , <IsTrivialSignature e.NewArg (e.Body)> : True
-    = ((e.Body) s.NextNumber e.Signatures)
-      (CallBrackets (Symbol Name e.Name) e.OldArg)
-      /* пусто */ (/* пусто */);
-
-  /* проверяем, известна ли сигнатура */
-  (e.Name) (e.Body) s.NextNumber e.Signatures
-  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
-    = <RenameSignatureVars-Expr (/* пусто */ 0) e.NewArg>
-    : t._ e.Signature
-    = <FindInSignatures (e.Signature) e.Signatures>
+    = <SpecCall-CheckSignature
+        (e.Body) s.NextNumber e.Signatures (e.NewArg)
+      >
     : {
-        Found e.InstanceName (e.Signatures^)
-          = ((e.Body) s.NextNumber e.Signatures)
+        (e.SpecInfo) Trivial
+          = (e.SpecInfo)
+            (CallBrackets (Symbol Name e.Name) e.Argument)
+            /* пусто */ (/* пусто */);
+
+        (e.SpecInfo) Known e.InstanceName
+          = (e.SpecInfo)
             (CallBrackets
               (Symbol Name e.InstanceName)
               <ApplySequentalAssigns <WrapVars e.NewArg> (e.Sg)>
             )
             /* пусто */ (/* пусто */);
 
-        /* проверяем на зацикливание */
-        NotFound e.Signatures^
+        (e.SpecInfo) NewSignature e.Signature
+          = e.SpecInfo : (e.Body^) s.NextNumber^ e.Signatures^
           = <SpecCall-NewSignature-MakeFunction
               (e.Name) (e.Body) s.NextNumber e.Signatures
               (e.NewArg) (e.Sg) (e.Solutions) (e.History) (e.Signature)
