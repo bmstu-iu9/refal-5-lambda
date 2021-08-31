@@ -585,10 +585,9 @@ SpecCall {
 
     = e.Sg e.ExtractedCalls : e.Sg^
 
-    = <SpeCall-BuildSignature
+    = <SpecCall-BuildSignature-True
         (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
         (e.Argument) (e.NewArgument) (e.Sg) (e.History)
-        True
       >;
 }
 
@@ -642,19 +641,17 @@ GenEE {
     = e.Expr (Var s.Mode e.Index) (e.UsedVars) (e.Sg);
 }
 
-SpeCall-BuildSignature {
+SpecCall-BuildSignature-True {
   (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
   (e.Argument) (e.NewArgument) (e.Sg) (e.History)
-  s.NeedRelationCheck
 
       /* ищем динамическое обобщение для аргумента и образцов */
     = <DynGenArg (e.UsedVars) (e.NewArgument) (e.Sg) e.Body>
     : (e.UsedVars^) (e.NewArgument^) (e.Sg^) (e.Solutions)
 
-    = <SpecCall-CheckSignature
+    = <SpecCall-CheckSignature-True
         (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
         (e.Argument) (e.NewArgument) (e.Sg) (e.Solutions) (e.History)
-        s.NeedRelationCheck
       >;
 }
 
@@ -737,11 +734,10 @@ RemoveAssignByLeftPart {
       >;
 }
 
-SpecCall-CheckSignature {
+SpecCall-CheckSignature-True {
   /* тривиальная сигнатура */
   (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
   (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
-  s.NeedRelationCheck
     , <IsTrivialSignature e.NewArg (e.Body)> : True
     = ((e.Body) s.NextNumber e.Signatures)
       (CallBrackets (Symbol Name e.Name) e.OldArg)
@@ -750,7 +746,6 @@ SpecCall-CheckSignature {
   /* проверяем, известна ли сигнатура */
   (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
   (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
-  s.NeedRelationCheck
     = <RenameSignatureVars-Expr (/* пусто */ 0) e.NewArg>
     : t._ e.Signature
     = <FindInSignatures (e.Signature) e.Signatures>
@@ -765,19 +760,19 @@ SpecCall-CheckSignature {
 
         /* проверяем на зацикливание */
         NotFound e.Signatures^
-          = <SpecCall-NewSignature
+          = <SpecCall-NewSignature-True
               (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
               (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
-              s.NeedRelationCheck (e.Signature)
+              (e.Signature)
             >;
       };
 }
 
-SpecCall-NewSignature {
+SpecCall-NewSignature-True {
   (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
   (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
-  s.NeedRelationCheck (e.Signature)
-    = s.NeedRelationCheck
+  (e.Signature)
+    = True
     : {
         True
           = <HasStopRelation
@@ -854,11 +849,11 @@ SpecCall-NewSignature-Generalize {
             Если подстановка e.NewSg является тривиальной, проверку
             отношения Хигмана-Крускала в рекурсивном вызове не выполняем
           */
-          True = False;
+          True = &SpecCall-BuildSignature-False;
 
-          False = True;
+          False = &SpecCall-BuildSignature-True;
         }
-      : s.NeedRelationCheck
+      : s.SpecCall-BuildSignature
 
       = <Map
           {
@@ -868,11 +863,10 @@ SpecCall-NewSignature-Generalize {
         >
       : e.NewSg^
 
-      = <SpeCall-BuildSignature
+      = <s.SpecCall-BuildSignature
           (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
           (e.OldArg) (e.GenSignature) (e.NewSg e.Sg)
           (e.History-B)
-          s.NeedRelationCheck
         >;
 }
 
@@ -894,6 +888,83 @@ SpecCall-NewSignature-MakeFunction {
       (
         ((e.InstanceName) e.History ((e.InstanceName) e.Signature))
       );
+}
+
+SpecCall-BuildSignature-False {
+  (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
+  (e.Argument) (e.NewArgument) (e.Sg) (e.History)
+
+      /* ищем динамическое обобщение для аргумента и образцов */
+    = <DynGenArg (e.UsedVars) (e.NewArgument) (e.Sg) e.Body>
+    : (e.UsedVars^) (e.NewArgument^) (e.Sg^) (e.Solutions)
+
+    = <SpecCall-CheckSignature-False
+        (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
+        (e.Argument) (e.NewArgument) (e.Sg) (e.Solutions) (e.History)
+      >;
+}
+
+SpecCall-CheckSignature-False {
+  /* тривиальная сигнатура */
+  (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
+  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
+    , <IsTrivialSignature e.NewArg (e.Body)> : True
+    = ((e.Body) s.NextNumber e.Signatures)
+      (CallBrackets (Symbol Name e.Name) e.OldArg)
+      /* пусто */ (/* пусто */);
+
+  /* проверяем, известна ли сигнатура */
+  (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
+  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
+    = <RenameSignatureVars-Expr (/* пусто */ 0) e.NewArg>
+    : t._ e.Signature
+    = <FindInSignatures (e.Signature) e.Signatures>
+    : {
+        Found e.InstanceName (e.Signatures^)
+          = ((e.Body) s.NextNumber e.Signatures)
+            (CallBrackets
+              (Symbol Name e.InstanceName)
+              <ApplySequentalAssigns <WrapVars e.NewArg> (e.Sg)>
+            )
+            /* пусто */ (/* пусто */);
+
+        /* проверяем на зацикливание */
+        NotFound e.Signatures^
+          = <SpecCall-NewSignature-False
+              (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
+              (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
+              (e.Signature)
+            >;
+      };
+}
+
+SpecCall-NewSignature-False {
+  (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
+  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
+  (e.Signature)
+    = False
+    : {
+        True
+          = <HasStopRelation
+              (e.Name) (<OptTree-CanonizeExpr e.Signature>) e.History
+            >;
+
+        False = False;
+      }
+    : {
+        True (e.History-B) ((e.HistoryName) e.HistorySignature) (e.History-E)
+          = <SpecCall-NewSignature-Generalize
+              (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
+              (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.Signature)
+              (e.History-B) ((e.HistoryName) e.HistorySignature) (e.History-E)
+            >;
+
+        False
+          = <SpecCall-NewSignature-MakeFunction
+              (e.Name) (e.Body) s.NextNumber e.Signatures
+              (e.NewArg) (e.Sg) (e.Solutions) (e.History) (e.Signature)
+            >;
+      }
 }
 
 ExtractCalls-Expr {
