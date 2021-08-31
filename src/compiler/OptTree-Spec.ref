@@ -844,19 +844,16 @@ SpecCall-NewSignature-Generalize {
       = <NameSignatureVars-Expr (e.UsedVars) e.GenSignature>
       : (e.UsedVars^) e.GenSignature^
 
+      = <GenericMatch (e.HistorySignature) (e.GenSignature)> : Clear e.PatchSg
       = <GenericMatch (e.NewArg) (e.GenSignature)> : Clear e.NewSg
 
-      = <IsTrivialSubstitutions e.NewSg>
-      : {
-          /*
-            Если подстановка e.NewSg является тривиальной, проверку
-            отношения Хигмана-Крускала в рекурсивном вызове не выполняем
-          */
-          True = &SpecCall-BuildSignature-False;
-
-          False = &SpecCall-BuildSignature-True;
-        }
-      : s.SpecCall-BuildSignature
+      = <Map
+          {
+            (e.Expr ':' (s.Mode e.Index)) = (e.Expr ':' (Var s.Mode e.Index))
+          }
+          e.PatchSg
+        >
+      : e.PatchSg^
 
       = <Map
           {
@@ -866,11 +863,38 @@ SpecCall-NewSignature-Generalize {
         >
       : e.NewSg^
 
-      = <s.SpecCall-BuildSignature
+      = <SpecCall-BuildSignature-False
           (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
           (e.OldArg) (e.GenSignature) (e.NewSg e.Sg)
           (e.History-B)
-        >;
+        >
+      : {
+          (e.SpecInfo) t.NewCall /* нет новых функций */ (e.NewHistory)
+            = (e.SpecInfo) t.NewCall /* нет новых функций */ (e.NewHistory);
+
+          (e.SpecInfo) t.NewCall
+          (Function (e.NewName) Sentences e.NewBody)
+          (e.NewHistory)
+            = (e.SpecInfo) t.NewCall
+              (Function (e.NewName) Sentences e.NewBody)
+              (PatchFunc
+                (e.HistoryName)
+                Sentences
+                (
+                  (<WrapVars e.HistorySignature>)
+                  /* = */
+                  (
+                    (CallBrackets
+                      (Symbol Name e.NewName)
+                      <ApplySequentalAssigns
+                        <WrapVars e.GenSignature> (e.PatchSg)
+                      >
+                    )
+                  )
+                )
+              )
+              (e.NewHistory)
+      }
 }
 
 SpecCall-NewSignature-MakeFunction {
@@ -997,28 +1021,6 @@ FindInSignatures {
       (((e.InstanceName) e.Signature) e.Signatures-B e.Signatures-E);
 
   (e.Signature) e.Signatures = NotFound e.Signatures;
-}
-
-/**
-  <IsTrivialSubstitutions e.StaticMatches>
-*/
-IsTrivialSubstitutions {
-  e.StaticMatches
-    = <Reduce
-        {
-          False t.Any = False;
-
-          True ((Var s.Mode e.Index1) ':' (Var s.Mode e.Index2))
-            = True;
-
-          True ((Var s.Mode e.Index1) ':' (s.Mode e.Index2))
-            = True;
-
-          True t.OtherSubstitution = False;
-        }
-        True
-        e.StaticMatches
-      >;
 }
 
 CreateNewSentences {

@@ -27,6 +27,7 @@ Element {
   (Entries e.Names) = <Log-EntryList e.Names>;
 
   (Function (e.Name) e.Body) = <Function (e.Name) e.Body>;
+  (PatchFunc (e.Name) e.Body) = <PatchFunc (e.Name) e.Body>;
   (ColdFunction s.ColdBy (e.Name) e.Body)
     = <ColdFunction s.ColdBy (e.Name) e.Body>;
 
@@ -107,6 +108,10 @@ DoNameList-Next {
 
 Function {
   (e.Name) e.Body = <Function-Aux (<DisplayName e.Name>) e.Body>;
+}
+
+PatchFunc {
+  (e.Name) e.Body = <Function-Aux ('$PATCH '<DisplayName e.Name>) e.Body>;
 }
 
 ColdFunction {
