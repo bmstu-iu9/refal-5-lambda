@@ -772,15 +772,9 @@ SpecCall-NewSignature-True {
   (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
   (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
   (e.Signature)
-    = True
-    : {
-        True
-          = <HasStopRelation
-              (e.Name) (<OptTree-CanonizeExpr e.Signature>) e.History
-            >;
-
-        False = False;
-      }
+    = <HasStopRelation
+        (e.Name) (<OptTree-CanonizeExpr e.Signature>) e.History
+      >
     : {
         True (e.History-B) ((e.HistoryName) e.HistorySignature) (e.History-E)
           = <SpecCall-NewSignature-Generalize
@@ -899,14 +893,14 @@ SpecCall-BuildSignature-False {
     : (e.UsedVars^) (e.NewArgument^) (e.Sg^) (e.Solutions)
 
     = <SpecCall-CheckSignature-False
-        (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
+        (e.Name) (e.Body) s.NextNumber e.Signatures
         (e.Argument) (e.NewArgument) (e.Sg) (e.Solutions) (e.History)
       >;
 }
 
 SpecCall-CheckSignature-False {
   /* тривиальная сигнатура */
-  (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
+  (e.Name) (e.Body) s.NextNumber e.Signatures
   (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
     , <IsTrivialSignature e.NewArg (e.Body)> : True
     = ((e.Body) s.NextNumber e.Signatures)
@@ -914,7 +908,7 @@ SpecCall-CheckSignature-False {
       /* пусто */ (/* пусто */);
 
   /* проверяем, известна ли сигнатура */
-  (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
+  (e.Name) (e.Body) s.NextNumber e.Signatures
   (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
     = <RenameSignatureVars-Expr (/* пусто */ 0) e.NewArg>
     : t._ e.Signature
@@ -930,36 +924,6 @@ SpecCall-CheckSignature-False {
 
         /* проверяем на зацикливание */
         NotFound e.Signatures^
-          = <SpecCall-NewSignature-False
-              (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
-              (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
-              (e.Signature)
-            >;
-      };
-}
-
-SpecCall-NewSignature-False {
-  (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
-  (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.History)
-  (e.Signature)
-    = False
-    : {
-        True
-          = <HasStopRelation
-              (e.Name) (<OptTree-CanonizeExpr e.Signature>) e.History
-            >;
-
-        False = False;
-      }
-    : {
-        True (e.History-B) ((e.HistoryName) e.HistorySignature) (e.History-E)
-          = <SpecCall-NewSignature-Generalize
-              (e.Name) (e.Body) s.NextNumber e.Signatures (e.UsedVars)
-              (e.OldArg) (e.NewArg) (e.Sg) (e.Solutions) (e.Signature)
-              (e.History-B) ((e.HistoryName) e.HistorySignature) (e.History-E)
-            >;
-
-        False
           = <SpecCall-NewSignature-MakeFunction
               (e.Name) (e.Body) s.NextNumber e.Signatures
               (e.NewArg) (e.Sg) (e.Solutions) (e.History) (e.Signature)
