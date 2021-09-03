@@ -241,7 +241,32 @@ $ENTRY OptTree-Spec {
         e.AST-B e.AST-E
       >
     : (e.SpecInfo^ (e.Histories^) (e.NewFunctions)) e.AST
-    = (SpecInfo (e.Names) e.SpecInfo (e.Histories)) e.AST e.NewFunctions;
+    = <ApplyPatches e.AST (e.NewFunctions)> : e.AST^
+    = (SpecInfo (e.Names) e.SpecInfo (e.Histories)) e.AST
+}
+
+ApplyPatches {
+  e.AST (e.NewFunctionsAndPatches)
+    = <MapAccum
+        {
+          (e.Patches) (Function e.Function) = (e.Patches) (Function e.Function);
+          (e.Patches) (PatchFunc e.Patch) = (e.Patches (e.Patch));
+        }
+        (/* e.Patches */)
+        e.NewFunctionsAndPatches
+      >
+    : (e.Patches) e.NewFunctions
+    = <Map
+        {
+          (ColdFunction SPEC (e.Name) e.OldBody)
+            , e.Patches : e._ ((e.Name) e.NewBody) e._
+            = (ColdFunction SPEC-PATCHED (e.Name) e.NewBody);
+
+          t.Other = t.Other;
+        }
+        e.AST
+      >
+      e.NewFunctions
 }
 
 ColdAll {

@@ -68,6 +68,7 @@ $ENTRY OptTree {
                 (pass
                   (trace 'before Spec')
                   (call &OptTree-Spec s.OptSpec)))
+              (call &WarmColdFunctions SPEC-PATCHED)
               (call &WarmColdFunctions SPEC))
             (begin
               (call &OptTree-Drive-Prepare t.OptDrive)
@@ -106,7 +107,6 @@ $ENTRY OptTree-CleanupMarkup {
           (Specs e.Names) = /* пропускаем */;
           (NoDrives e.Names) = /* пропускаем */;
           (NoSpecs e.Names) = /* пропускаем */;
-          (PatchFunc e._) = /* пропускаем */;
 
           (DriveInfo e.Info) = /* пропускаем */;
           (SpecInfo e.Info) = /* пропускаем */;
