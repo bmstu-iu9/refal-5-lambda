@@ -291,7 +291,7 @@ CalcTermComplexity {
 */
 $ENTRY GlobalGen-NameVariables {
   e.Pattern
-    = <GlobalGen-NameVariables-Rec 1 e.Pattern> : s._ e.Pattern^
+    = <GlobalGen-NameVariables-Rec 0 e.Pattern> : s._ e.Pattern^
     = e.Pattern
 }
 
