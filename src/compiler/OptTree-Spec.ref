@@ -39,16 +39,16 @@ $EXTERN GlobalGen-NameVariables, GlobalGen;
 $ENTRY OptTree-Spec-Prepare {
   NoOpt e.AST = e.AST;
 
-  OptSpec e.AST-B (SpecInfo e.SpecInfo) e.AST-E
-    = <Prepare-Aux (e.SpecInfo) e.AST-B e.AST-E>;
-
   OptSpec e.AST
-    = (/* no names */) /* no info */ (/* no histories */) : e.EmptyInfo
-    = <Prepare-Aux (e.EmptyInfo) e.AST>;
-}
 
-Prepare-Aux {
-  ((e.KnownNames) e.KnownInfo (e.KnownHistories)) e.AST
+*     Игнорируем старую разметку
+    = e.AST
+    : {
+        e.AST-B (SpecInfo e._) e.AST-E = e.AST-B e.AST-E;
+        e.AST^ = e.AST
+      }
+    : e.AST^
+
     = e.AST
     : {
         e.AST-B (Specs e.Names) e.AST-E = (e.Names) e.AST-B e.AST-E;
@@ -60,14 +60,14 @@ Prepare-Aux {
     : {
         e.AST-B (NoSpecs e.Names) e.AST-E
           = (e.Names) e.AST-B (NoSpecs e.Names) e.AST-E;
+
         e.AST^ = (/* пусто */) e.AST;
       }
     : (e.NoSpecs) e.AST^
 
     = <Map
         {
-          /* Игнорируем новые $SPEC’и для известных и запрещённых функций */
-          (e.Name), e.KnownNames : e._B (e.Name) e._E = /* пропускаем */;
+          /* Игнорируем новые $SPEC’и для запрещённых функций */
           (e.Name), e.NoSpecs : e._B (e.Name) e._E = /* пропускаем */;
           (e.Name) = (e.Name);
         }
@@ -127,12 +127,7 @@ Prepare-Aux {
 
     = <CreateRemainderFunctions e.NewInfo> : e.NewInfo^
 
-    = (SpecInfo
-        (e.KnownNames e.NewNames)
-        e.KnownInfo e.NewInfo
-        (e.KnownHistories e.NewHistories)
-      )
-      e.AST
+    = (SpecInfo (e.NewNames) e.NewInfo (e.NewHistories)) e.AST
 }
 
 BottomSignature {
