@@ -37,9 +37,7 @@ $EXTERN GlobalGen-NameVariables, GlobalGen;
   e.History ::= ((e.FuncName) e.Expression)*
 */
 $ENTRY OptTree-Spec-Prepare {
-  NoOpt e.AST = e.AST;
-
-  OptSpec e.AST
+  s.OptSpec e.AST
 
 *     Игнорируем старую разметку
     = e.AST
@@ -55,6 +53,13 @@ $ENTRY OptTree-Spec-Prepare {
         e.AST^ = (/* пусто */) e.AST;
       }
     : (e.NewNames) e.AST^
+
+    = s.OptSpec
+    : {
+        OptSpec = e.NewNames;
+        NoOpt = /* пусто */;
+      }
+    : e.NewNames^
 
     = e.AST
     : {
@@ -248,8 +253,8 @@ ApplyPatches {
           (e.Patches) (Function e.Function) = (e.Patches) (Function e.Function);
 
           /* let-экземпляры */
-          (e.Patches) (ColdFunction SPEC e.Function)
-            = (e.Patches) (ColdFunction SPEC e.Function);
+          (e.Patches) (ColdFunction LET e.Function)
+            = (e.Patches) (ColdFunction LET e.Function);
 
           /* патчи */
           (e.Patches) (PatchFunc e.Patch) = (e.Patches (e.Patch));
@@ -851,7 +856,7 @@ MakeNewFunction-Generalize {
   e.SpecInfo (e.Name) (e.InstanceName) (e.Signature) (e.NewArg)
   (e.HistoryPrefix) ((e.HistoryName '@' 0) e.HistorySignature)
     = (e.SpecInfo)
-      (ColdFunction SPEC
+      (ColdFunction LET
         (e.InstanceName)
         Sentences
         (
@@ -871,7 +876,7 @@ MakeNewFunction-Generalize {
     , <GenericMatch-Spec (e.NewArg) (e.HistorySignature)> : Clear e.NewSubst
 
     = (e.SpecInfo)
-      (ColdFunction SPEC
+      (ColdFunction LET
         (e.InstanceName)
         Sentences
         (
@@ -919,7 +924,7 @@ MakeNewFunction-Generalize {
           (<ApplySequentalAssigns t.GenSignatureCall (e.PatchSubst)>)
         )
       )
-      (ColdFunction SPEC
+      (ColdFunction LET
         (e.InstanceName)
         Sentences
         (
@@ -1182,4 +1187,22 @@ NameSignatureVars-Term {
     = t.State (ADT-Brackets (e.Name) e.Expr);
 
   t.State t.OtherTerm = t.State t.OtherTerm;
+}
+
+
+/**
+  <OptTree-Spec-MarkLetsForDrive e.AST> == e.AST^
+*/
+$ENTRY OptTree-Spec-MarkLetsForDrive {
+  e.AST
+    = <MapAccum
+        {
+          (Drives e.LetNames) (ColdFunction s.Reason (e.Name) e.Function)
+            , SPEC-PATCHED LET : e._ s.Reason e._
+            = (Drives e.LetNames (e.Name)) (Function (e.Name) e.Function);
+
+          (Drives e.LetNames) t.Other = (Drives e.LetNames) t.Other;
+        }
+        (Drives /* let names */) e.AST
+      >
 }

@@ -30,19 +30,6 @@ $EXTERN OptTree-Drive-Expr;
 */
 
 
-/**
-  <OptTree-Drive-Prepare (s.OptDrive s.OptIntrinsic) e.AST> == e.AST
-
-  s.OptDrive ::= OptDrive | OptInline | NoOpt
-  s.OptIntrinsic ::= OptIntrinsic | NoOpt
-*/
-$ENTRY OptTree-Drive-Prepare {
-  (NoOpt NoOpt) e.AST = e.AST;
-
-  (s.OptDrive s.OptIntrinsic) e.AST
-    = <UpdateDriveInfo s.OptDrive s.OptIntrinsic e.AST>;
-}
-
 /* Функция генерирует имена остаточных прогоняемых функций */
 
 GenRemainderFuncNames {
@@ -65,8 +52,14 @@ BaseName {
   e.Name /* нет суффикса */ = e.Name 0;
 }
 
-UpdateDriveInfo {
-  s.OptDrive s.OptIntrinsic e.AST
+/**
+  <OptTree-Drive-Prepare (s.OptDrive s.OptIntrinsic) e.AST> == e.AST
+
+  s.OptDrive ::= OptDrive | OptInline | NoOpt
+  s.OptIntrinsic ::= OptIntrinsic | NoOpt
+*/
+$ENTRY OptTree-Drive-Prepare {
+  (s.OptDrive s.OptIntrinsic) e.AST
 
 *     Игнорируем старую разметку
     = e.AST

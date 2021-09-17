@@ -12,7 +12,7 @@ $EXTERN OptTree-AutoMarkup-Spec, OptTree-AutoMarkup-Drive,
 $EXTERN OptTree-Drive-Prepare, OptTree-Drive, OptTree-Drive-CleanupColdCalls;
 
 *$FROM OptTree-Spec
-$EXTERN OptTree-Spec-Prepare, OptTree-Spec;
+$EXTERN OptTree-Spec-Prepare, OptTree-Spec, OptTree-Spec-MarkLetsForDrive;
 
 *$FROM TreeUtils
 $EXTERN ExpandClosures-Result;
@@ -54,7 +54,7 @@ $ENTRY OptTree {
               (DriveLoop))
             (begin
               (DriveSpecLoop)))
-          (trace 'before Cleanup unused functions')
+          (trace 'before Cleanup unused functions (common)')
           (call &OptTree-AutoMarkup-CleanupUnusedFunctions)
           (call &OptTree-CleanupMarkup))
 
@@ -68,22 +68,31 @@ $ENTRY OptTree {
                 (pass
                   (trace 'before Spec')
                   (call &OptTree-Spec s.OptSpec)))
-              (call &WarmColdFunctions SPEC-PATCHED)
-              (call &WarmColdFunctions SPEC))
+              (call &OptTree-Spec-MarkLetsForDrive)
+              (call &WarmColdFunctions SPEC)
+              (pass
+                (trace 'before Driving let instances')
+                (call &OptTree-Drive-Prepare (OptInline NoOpt))
+                (DriveLoop-core))
+              (trace 'before Cleanup unused functions (let instances)')
+              (call &OptTree-AutoMarkup-CleanupUnusedFunctions))
             (begin
               (call &OptTree-Drive-Prepare t.OptDrive)
               (DriveLoop))))
 
         (define DriveLoop
           (if (or s.OptDrive s.OptIntrinsic)
-            (begin
-              (loop-for-warm-functions
-                (pass
-                  (trace 'before Drive')
-                  (call &OptTree-Drive)))
-              (call &WarmColdFunctions DRIVE)
-              (call &OptTree-Drive-CleanupColdCalls))
+            (DriveLoop-core)
             (call &ExpandClosures)))
+
+        (define DriveLoop-core
+          (loop-for-warm-functions
+            (pass
+              (trace 'before Drive')
+              (call &OptTree-Drive)))
+          (call &WarmColdFunctions DRIVE)
+          (call &OptTree-Drive-CleanupColdCalls))
+
         <gen_e__>
 
         s.Cycles (e.AST)
