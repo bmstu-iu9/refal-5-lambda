@@ -244,7 +244,14 @@ ApplyPatches {
   e.AST (e.NewFunctionsAndPatches)
     = <MapAccum
         {
+          /* новые экземпляры */
           (e.Patches) (Function e.Function) = (e.Patches) (Function e.Function);
+
+          /* let-экземпляры */
+          (e.Patches) (ColdFunction SPEC e.Function)
+            = (e.Patches) (ColdFunction SPEC e.Function);
+
+          /* патчи */
           (e.Patches) (PatchFunc e.Patch) = (e.Patches (e.Patch));
         }
         (/* e.Patches */)
@@ -752,33 +759,12 @@ SpecCall-BuildSignature {
 
     = <SpecCall-CheckSignature e.SpecInfo (e.NewArg)>
     : {
-        (e.SpecInfo^) Trivial = (e.SpecInfo) Trivial;
-
-        (e.SpecInfo^) Known e.InstanceName
-          = (e.SpecInfo) Known e.InstanceName (e.NewArg) (e.Sg);
-
-        (e.SpecInfo^) NewSignature e.Signature
-          , <HasStopRelation
-              (e.Name) (<OptTree-CanonizeExpr e.Signature>) e.History
-            >
-          : True e.HistoryPrefix ((e.HistoryName) e.HistorySignature)
-          = <SpecCall-Generalize
-              e.SpecInfo (e.UsedVars) (e.NewArg) (e.Sg) (e.Signature)
-              (e.HistoryPrefix) ((e.HistoryName) e.HistorySignature)
-            >;
-
-        (e.SpecInfo^) NewSignature e.Signature
-          = (e.SpecInfo)
-            MakeFunction
-            (e.NewArg) (e.Sg) (e.Solutions) (e.History) (e.Signature) NoPatch;
-      }
-    : {
         (e.SpecInfo^) Trivial
           = (e.SpecInfo)
             (CallBrackets (Symbol Name e.Name) e.SourceArg)
             /* пусто */ (/* пусто */);
 
-        (e.SpecInfo^) Known e.InstanceName (e.NewArg^) (e.Sg^)
+        (e.SpecInfo^) Known e.InstanceName
           = (e.SpecInfo)
             (CallBrackets
               (Symbol Name e.InstanceName)
@@ -786,14 +772,26 @@ SpecCall-BuildSignature {
             )
             /* пусто */ (/* пусто */);
 
-        (e.SpecInfo^)
-        MakeFunction
-        (e.NewArg^) (e.Sg^) (e.Solutions^) (e.History^) (e.Signature) e.Patch
-          = <SpecCall-MakeFunction
-              (e.Name) e.SpecInfo
-              (e.NewArg) (e.Sg) (e.Solutions) (e.History) (e.Signature)
-              (e.Patch)
+        (e.SpecInfo^) NewSignature e.Signature
+
+          = <AddSuffix e.Name ('@' s.NextNumber)> : e.InstanceName
+          = (e.Body) <Inc s.NextNumber>
+            e.Signatures ((e.InstanceName) e.Signature)
+          : e.SpecInfo^
+
+          = <MakeNewFunction
+              (e.SpecInfo) (e.Name) e.History (e.InstanceName)
+              (e.Signature) (e.NewArg) (e.Solutions)
             >
+          : (e.SpecInfo^) e.NewFunctions (e.NewHistory)
+
+          = (e.SpecInfo)
+            (CallBrackets
+              (Symbol Name e.InstanceName)
+              <ApplySequentalAssigns <WrapVars e.NewArg> (e.Sg)>
+            )
+            e.NewFunctions
+            (e.NewHistory);
       }
 }
 
@@ -821,54 +819,120 @@ SpecCall-CheckSignature {
       };
 }
 
-SpecCall-Generalize {
+MakeNewFunction {
+  (e.SpecInfo) (e.Name) e.History (e.InstanceName)
+  (e.Signature) (e.NewArg) (e.Solutions)
+    , <HasStopRelation
+        (e.Name) (<OptTree-CanonizeExpr e.NewArg>) e.History
+      >
+    : True e.HistoryPrefix ((e.HistoryName) e.HistorySignature)
+    = <MakeNewFunction-Generalize
+        e.SpecInfo (e.Name) (e.InstanceName) (e.Signature) (e.NewArg)
+        (e.HistoryPrefix) ((e.HistoryName) e.HistorySignature)
+      >;
+
+  (e.SpecInfo) (e.Name) e.History (e.InstanceName)
+  (e.Signature) (e.NewArg) (e.Solutions)
+    = e.SpecInfo : (e.Body) s.NextNumber e.Signatures
+    = <CreateNewSentences (e.NewArg) (e.Solutions) (e.Body)> : e.NewSentences
+    = (e.SpecInfo)
+      (Function (e.InstanceName) Sentences e.NewSentences)
+      (
+        ((e.InstanceName) e.History ((e.InstanceName) e.Signature))
+      );
+}
+
+MakeNewFunction-Generalize {
   /*
     Зацикливание с тривиальной сигнатурой на дне.
     Обобщение двух сигнатур дало бы тривиальную сигнатуру,
     вызов которой соответствует вызову исходной функции.
   */
-  e.SpecInfo (e.UsedVars) (e.NewArg) (e.Sg) (e.Signature)
+  e.SpecInfo (e.Name) (e.InstanceName) (e.Signature) (e.NewArg)
   (e.HistoryPrefix) ((e.HistoryName '@' 0) e.HistorySignature)
-    = (e.SpecInfo) Trivial;
+    = (e.SpecInfo)
+      (ColdFunction SPEC
+        (e.InstanceName)
+        Sentences
+        (
+          (<WrapVars e.NewArg>)
+          /* = */
+          ((CallBrackets (Symbol Name e.Name) e.NewArg))
+        )
+      )
+      (
+        ((e.InstanceName) e.HistoryPrefix ((e.InstanceName) e.Signature))
+      );
 
   /* Простое зацикливание: текущая сигнатура есть частный случай старой. */
-  e.SpecInfo (e.UsedVars) (e.NewArg) (e.Sg) (e.Signature)
+  e.SpecInfo (e.Name) (e.InstanceName) (e.Signature) (e.NewArg)
   (e.HistoryPrefix) ((e.HistoryName) e.HistorySignature)
 
-    , <GenericMatch-Spec (e.NewArg) (e.HistorySignature)> : Clear e.NewSg
+    , <GenericMatch-Spec (e.NewArg) (e.HistorySignature)> : Clear e.NewSubst
 
     = (e.SpecInfo)
-      Known e.HistoryName (e.HistorySignature) (e.NewSg e.Sg);
+      (ColdFunction SPEC
+        (e.InstanceName)
+        Sentences
+        (
+          (<WrapVars e.NewArg>)
+          /* = */
+          (
+            (CallBrackets
+              (Symbol Name e.HistoryName)
+              <ApplySequentalAssigns <WrapVars e.HistorySignature> (e.NewSubst)>
+            )
+          )
+        )
+      )
+      (
+        ((e.InstanceName) e.HistoryPrefix ((e.InstanceName) e.Signature))
+      );
 
-  e.SpecInfo (e.UsedVars) (e.NewArg) (e.Sg) (e.Signature)
+  /* Зацикливание с обобщением */
+  e.SpecInfo (e.Name) (e.InstanceName) (e.Signature) (e.NewArg)
   (e.HistoryPrefix) ((e.HistoryName) e.HistorySignature)
-
-    = e.SpecInfo : (e.Body) s.NextNumber e.Signatures
 
     /* Получает обобщённую сигнатуру для двух сигнатур */
     = <GlobalGen (e.Signature) (e.HistorySignature)> : e.GenSignature
 
-    = <NameSignatureVars-Expr (e.UsedVars) e.GenSignature>
-    : (e.UsedVars^) e.GenSignature^
+    = <NameSignatureVars-Expr (/* пусто */) e.GenSignature>
+    : (e.UsedVars) e.GenSignature^
 
-    = <GenericMatch-Spec (e.NewArg) (e.GenSignature)> : Clear e.NewSg
+    = <GenericMatch-Spec (e.NewArg) (e.GenSignature)> : Clear e.NewSubst
+    = <GenericMatch-Spec (e.HistorySignature) (e.GenSignature)>
+    : Clear e.PatchSubst
 
-    = <DynGenArg (e.UsedVars) (e.GenSignature) (e.NewSg e.Sg) e.Body>
-    : (e.UsedVars^) (e.NewArg^) (e.Sg^) (e.Solutions)
+    = <SpecCall-BuildSignature
+        (e.Name) e.SpecInfo (e.UsedVars)
+        (e.GenSignature) (e.GenSignature) (/* пусто */) (e.HistoryPrefix)
+      >
+    : (e.SpecInfo^) t.GenSignatureCall e.NewFunctions (e.NewHistories)
 
-    = <SpecCall-CheckSignature e.SpecInfo (e.NewArg)>
-    : {
-        (e.SpecInfo^) Trivial = (e.SpecInfo) Trivial;
-
-        (e.SpecInfo^) Known e.InstanceName
-          = (e.SpecInfo) Known e.InstanceName (e.GenSignature) (e.Sg);
-
-        (e.SpecInfo^) NewSignature e.Signature^
-          = (e.SpecInfo)
-            MakeFunction
-            (e.NewArg) (e.Sg) (e.Solutions) (e.HistoryPrefix) (e.Signature)
-            Patch (e.HistoryName) (e.HistorySignature) (e.GenSignature);
-        }
+    = (e.SpecInfo)
+      (PatchFunc
+        (e.HistoryName)
+        Sentences
+        (
+          (<WrapVars e.HistorySignature>)
+          /* = */
+          (<ApplySequentalAssigns t.GenSignatureCall (e.PatchSubst)>)
+        )
+      )
+      (ColdFunction SPEC
+        (e.InstanceName)
+        Sentences
+        (
+          (<WrapVars e.NewArg>)
+          /* = */
+          (<ApplySequentalAssigns t.GenSignatureCall (e.NewSubst)>)
+        )
+      )
+      e.NewFunctions
+      (
+        ((e.InstanceName) e.HistoryPrefix ((e.InstanceName) e.Signature))
+        e.NewHistories
+      );
 }
 
 GenericMatch-Spec {
@@ -884,47 +948,6 @@ GenericMatch-Spec {
       >;
 
   (e.Expr) (e.Pattern) = Undefined
-}
-
-SpecCall-MakeFunction {
-  (e.Name) (e.Body) s.NextNumber e.Signatures
-  (e.NewArg) (e.Sg) (e.Solutions) (e.History) (e.Signature)
-  (e.Patch)
-    = <CreateNewSentences (e.NewArg) (e.Solutions) (e.Body)>
-    : e.NewSentences
-    = <AddSuffix e.Name ('@' s.NextNumber)> : e.InstanceName
-    = (
-        (e.Body) <Inc s.NextNumber>
-        e.Signatures ((e.InstanceName) e.Signature)
-      )
-      (CallBrackets
-        (Symbol Name e.InstanceName)
-        <ApplySequentalAssigns <WrapVars e.NewArg> (e.Sg)>
-      )
-      (Function (e.InstanceName) Sentences e.NewSentences)
-      <MakePatch (e.InstanceName) e.Patch>
-      (
-        ((e.InstanceName) e.History ((e.InstanceName) e.Signature))
-      );
-}
-
-MakePatch {
-  (e.InstanceName) NoPatch = /* пусто */;
-
-  (e.InstanceName) Patch (e.HistoryName) (e.HistorySignature) (e.GenSignature)
-    = <GenericMatch-Spec (e.HistorySignature) (e.GenSignature)>
-    : Clear e.PatchSg
-    = <WrapVars e.HistorySignature> : e.PatchPattern
-    = (CallBrackets
-        (Symbol Name e.InstanceName)
-        <ApplySequentalAssigns <WrapVars e.GenSignature> (e.PatchSg)>
-      )
-    : e.PatchResult
-    = (PatchFunc
-        (e.HistoryName)
-        Sentences
-        ((e.PatchPattern) /* = */ (e.PatchResult))
-      );
 }
 
 ExtractCalls-Expr {
