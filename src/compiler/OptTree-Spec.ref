@@ -599,7 +599,7 @@ SpecCall {
   /* TODO: убрать этот хак в рамках задачи #332 */
   (e.Name) (e.Body) s.NextNumber e.Signatures
   (e.Argument) (e.History)
-    , s.NextNumber : 100
+    , s.NextNumber : 150
     = ((e.Body) s.NextNumber e.Signatures)
       (CallBrackets (Symbol Name e.Name) e.Argument)
       /* пусто */ (/* пусто */);
