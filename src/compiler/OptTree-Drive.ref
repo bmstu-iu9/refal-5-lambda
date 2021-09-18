@@ -30,28 +30,6 @@ $EXTERN OptTree-Drive-Expr;
 */
 
 
-/* Функция генерирует имена остаточных прогоняемых функций */
-
-GenRemainderFuncNames {
-  s.Label e.Name s.End s.End = /* пусто — пустую функцию прогнать нельзя */;
-
-  s.Label e.Name s.Cur s.End
-    = (s.Label <AddStarSuffix e.Name s.Cur>)
-      <GenRemainderFuncNames s.Label e.Name <+ 1 s.Cur> s.End>;
-}
-
-AddStarSuffix {
-  e.Name 0 = e.Name;
-  e.Name SUF e.Suffix s.Count = e.Name SUF e.Suffix '*' s.Count;
-  e.Name s.Count = e.Name SUF '*' s.Count;
-}
-
-BaseName {
-  e.Name SUF '*' s.Count = e.Name s.Count;
-  e.Name '*' s.Count = e.Name s.Count;
-  e.Name /* нет суффикса */ = e.Name 0;
-}
-
 /**
   <OptTree-Drive-Prepare (s.OptDrive s.OptIntrinsic) e.AST> == e.AST
 
@@ -241,6 +219,28 @@ MultiplyRemainderNames {
       >
     : (e._) e.RemainderNames
     = e.RemainderNames;
+}
+
+/* Функция генерирует имена остаточных прогоняемых функций */
+
+GenRemainderFuncNames {
+  s.Label e.Name s.End s.End = /* пусто — пустую функцию прогнать нельзя */;
+
+  s.Label e.Name s.Cur s.End
+    = (s.Label <AddStarSuffix e.Name s.Cur>)
+      <GenRemainderFuncNames s.Label e.Name <+ 1 s.Cur> s.End>;
+}
+
+AddStarSuffix {
+  e.Name 0 = e.Name;
+  e.Name SUF e.Suffix s.Count = e.Name SUF e.Suffix '*' s.Count;
+  e.Name s.Count = e.Name SUF '*' s.Count;
+}
+
+BaseName {
+  e.Name SUF '*' s.Count = e.Name s.Count;
+  e.Name '*' s.Count = e.Name s.Count;
+  e.Name /* нет суффикса */ = e.Name 0;
 }
 
 HashSet {
