@@ -6,7 +6,7 @@ $EXTERN Config-GetTreeOptCycles, Config-GetOptDrive, Config-GetOptSpec,
 
 *$FROM OptTree-AutoMarkup
 $EXTERN OptTree-AutoMarkup-Spec, OptTree-AutoMarkup-Drive,
-  OptTree-AutoMarkup-CleanupUnusedFunctions;
+  OptTree-AutoMarkup-DriveInstances, OptTree-AutoMarkup-CleanupUnusedFunctions;
 
 *$FROM OptTree-Drive
 $EXTERN OptTree-Drive-Prepare, OptTree-Drive, OptTree-Drive-CleanupColdCalls;
@@ -49,7 +49,7 @@ $ENTRY OptTree {
               (DriveSpecLoop)
               (pass
                 (trace 'before Driving non-recursive instances')
-                (call &OptTree-AutoMarkup-Drive))
+                (call &OptTree-AutoMarkup-DriveInstances))
               (call &OptTree-Drive-Prepare t.OptDrive)
               (DriveLoop))
             (begin

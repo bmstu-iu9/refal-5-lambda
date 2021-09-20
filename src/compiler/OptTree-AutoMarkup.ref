@@ -37,6 +37,29 @@ $ENTRY OptTree-AutoMarkup-Drive {
       >
 }
 
+
+/**
+  <OptTree-AutoMarkup-DriveInstances e.AST> == e.AST
+*/
+$ENTRY OptTree-AutoMarkup-DriveInstances {
+  e.AST
+    = <MapAccum
+        {
+          /* помечаем экземпляры */
+          (Drives e.Drives) (Function (e.Name) Sentences e.Body)
+            , e.Name : e._ '@' s._
+            = (Drives e.Drives (e.Name)) (Function (e.Name) Sentences e.Body);
+
+          /* старую разметку игнорируем, если она была */
+          (Drives e.Drives) (Drives e._) = (Drives e.Drives) /* игнорируем */;
+
+          (Drives e.Drives) t.Other = (Drives e.Drives) t.Other;
+        }
+        (Drives /* пусто */) e.AST
+      >
+}
+
+
 MakeGraphNode {
   (Function (e.MetatableName) Metatable e.Metatable)
     = <Map
