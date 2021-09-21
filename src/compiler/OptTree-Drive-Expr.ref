@@ -215,32 +215,19 @@ OptOneCall {
         s.Contractions-Mode (e.UsedVars) (e.Expr) (e.Args)
         t.FunctionForDrive t.Metatables
       >
-    : t.Metatables^ e.SubstitutionPacks
+    : t.Metatables^ (e.NewFunctions) e.Branches
 
-    = <Unique <ExtractVariables-Expr e.Args>> : e.Domain
-    = <CreateContext NoMarkupContext e.Domain> : e.PseudoPattern
-
-    = <MapAccum
-        {
-          (e.NewFunctions) ((e.UsedVars^) e.Contractions (e.NewFunction))
-            = <ApplyContractions e.Expr (e.Contractions)> : e.DrivenRight
-            = <ExpandClosures-Result e.DrivenRight> : e.DrivenRight^
-            = (e.NewFunctions e.NewFunction)
-              ((e.UsedVars) e.Contractions (e.DrivenRight));
-        }
-        (/* new functions */)
-        e.SubstitutionPacks
-      >
-    : (e.NewFunctions) e.Branches
-
-    = <FilterScreenedBranches (e.PseudoPattern) e.Branches> : e.Branches^
+    = <FilterScreenedBranches (e.Args) e.Branches> : e.Branches^
 
     = (s.Contractions-Mode t.Metatables e.OptFuncs)
       (e.NewFunctions) e.Branches
 }
 
 FilterScreenedBranches {
-  (e.PatTemplate) e.Branches
+  (e.Args) e.Branches
+    = <Unique <ExtractVariables-Expr e.Args>> : e.Domain
+    = <CreateContext NoMarkupContext e.Domain> : e.PatTemplate
+
     = <Map
         {
           ((e.UsedVars) e.Contractions (e.Result))
@@ -306,15 +293,38 @@ eDRIVEN {
     s.Contractions-Mode
     (e.UsedVars) (e.Expr) (e.CallArgs) t.OptFunction t.Metatables
   >
-    == t.Metatables (e.Substitutions)*
-  e.Substitutions ::= e.Contractions (e.NewFunctions)
+    == t.Metatables (e.NewFunctions) (e.Branches)*
+  e.Branches ::= (e.UsedVars) e.Contractions (e.Expr^)
 
   e.Contractions включают в себя сужение e.DRIVEN для подстановки
   правой части.
 */
 OptOneCall-MakeSubstitutions {
-  s.Contractions-Mode
-  (e.UsedVars) (e.Expr) (e.Args) t.IntrinsicFunction t.Metatables
+  s.Contractions-Mode (e.UsedVars) (e.Expr) (e.Args) t.Function t.Metatables
+
+    = <OptOneCall-MakeSubstitutions-Aux
+        s.Contractions-Mode (e.UsedVars) (e.Args) t.Function t.Metatables
+      >
+    : t.Metatables^ e.SubstitutionPacks
+
+    = <MapAccum
+        {
+          (e.NewFunctions) ((e.UsedVars^) e.Contractions (e.NewFunction))
+            = <ApplyContractions e.Expr (e.Contractions)> : e.DrivenRight
+            = <ExpandClosures-Result e.DrivenRight> : e.DrivenRight^
+            = (e.NewFunctions e.NewFunction)
+              ((e.UsedVars) e.Contractions (e.DrivenRight));
+        }
+        (/* new functions */)
+        e.SubstitutionPacks
+      >
+    : (e.NewFunctions) e.Branches
+
+    = t.Metatables (e.NewFunctions) e.Branches
+}
+
+OptOneCall-MakeSubstitutions-Aux {
+  s.Contractions-Mode (e.UsedVars) (e.Args) t.IntrinsicFunction t.Metatables
     , t.IntrinsicFunction : ((e._) Intrinsic e.BehaviorName)
     = <OptTree-Drive-Intrinsic t.Metatables (e.Args) e.BehaviorName>
     : {
@@ -327,15 +337,14 @@ OptOneCall-MakeSubstitutions {
             <MakeColdSolution (e.UsedVars) t.IntrinsicFunction e.Args>;
       };
 
-  s.Contractions-Mode (e.UsedVars) (e.Expr) (e.Args)
-  t.Function t.Metatables
+  s.Contractions-Mode (e.UsedVars) (e.Args) t.Function t.Metatables
     /* Активные вызовы игнорируем */
     , <IsPassiveExpr e.Args> : False
 
     = t.Metatables <MakeColdSolution (e.UsedVars) t.Function e.Args>;
 
-  s.Contractions-Mode (e.UsedVars) (e.Expr) (e.Args)
-  ((e.Name) Sentences e.Body) t.Metatables
+  s.Contractions-Mode
+  (e.UsedVars) (e.Args) ((e.Name) Sentences e.Body) t.Metatables
 
     = s.Contractions-Mode
     : {
@@ -346,13 +355,8 @@ OptOneCall-MakeSubstitutions {
 
     = t.Metatables
       <DoOptOneCall-MakeSubstitutions
-        (e.UsedVars) (e.Args) (/* substitutions */)
-        ((e.Name) Sentences e.Body)
+        (e.UsedVars) (e.Args) (/* substitutions */) ((e.Name) Sentences e.Body)
       >;
-
-  t.Contractions-Mode (e.UsedVars) (e.Expr) (e.Args)
-  t.Function t.Metatables
-    = t.Metatables <MakeColdSolution (e.UsedVars) t.Function e.Args>;
 }
 
 MakeColdSolution {
@@ -378,21 +382,6 @@ DoOptOneCall-MakeSubstitutions {
     = <Cleanup-Step-Drop e.RS> : e.RS^
     = <Solve-Drive (e.SentenceVars) ((e.Args) ':' (e.LS))>
     : {
-        /*
-          В случае решения без сужений просто применяем замены.
-        */
-        Success (e.UsedVars () (e.Assigns))
-          = <ApplyAssigns e.RS (e.Assigns)> : e.CallReplacer
-          = e.Substitutions
-            (
-              (e.UsedVars)
-              (<eDRIVEN> ':' e.CallReplacer)
-              (/* нет новых функций */)
-            );
-
-        /*
-          «Грязное» решение допускаем только в случае прогонки.
-        */
         Success e.Solutions
           = <Map
               {
