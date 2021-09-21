@@ -946,13 +946,12 @@ GenericMatch-Spec {
     = Clear
       <Map
         {
-          (e.Value ':' (s.Mode e.Index))
-            = (e.Value ':' (Var s.Mode e.Index))
+          (e.Value ':' (s.Mode e.Index)) = (e.Value ':' (Var s.Mode e.Index))
         }
         e.Subst
       >;
 
-  (e.Expr) (e.Pattern) = Undefined
+  (e.Expr) (e.Pattern) = Undefined;
 }
 
 ExtractCalls-Expr {
@@ -1094,7 +1093,7 @@ WrapVars {
 
 WrapVar {
   'e' e.Expr = (GhostBrackets e.Expr);
-  s.Mode e.Expr = e.Expr
+  s.Mode e.Expr = e.Expr;
 }
 
 RemoveLastGhostBracket {

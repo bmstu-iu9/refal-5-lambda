@@ -276,8 +276,7 @@ ApplyContractions-Expr {
 ApplyContractions-Term {
   (e.Contrs) ('{'s.Coord'}') = (e.Contrs) ('{'s.Coord'}');
 
-  (e.Contrs) (Symbol e.Symbol)
-    = (e.Contrs) (Symbol e.Symbol);
+  (e.Contrs) (Symbol e.Symbol) = (e.Contrs) (Symbol e.Symbol);
 
   (e.Contrs) (Brackets e.Expr)
     = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e.Contrs^) e.Expr^

@@ -211,7 +211,7 @@ OptOneCall {
 
     /* Поиск информации для прогонки */
     = <FindOptInfo e.OptFuncs (e.Name)> : e.OptFuncs^ t.FunctionForDrive
-    = <OptExpr-MakeSubstitutions
+    = <OptOneCall-MakeSubstitutions
         s.Contractions-Mode (e.UsedVars) (e.Expr) (e.Args)
         t.FunctionForDrive t.Metatables
       >
@@ -302,7 +302,7 @@ eDRIVEN {
 }
 
 /*
-  <OptExpr-MakeSubstitutions
+  <OptOneCall-MakeSubstitutions
     s.Contractions-Mode
     (e.UsedVars) (e.Expr) (e.CallArgs) t.OptFunction t.Metatables
   >
@@ -312,7 +312,7 @@ eDRIVEN {
   e.Contractions включают в себя сужение e.DRIVEN для подстановки
   правой части.
 */
-OptExpr-MakeSubstitutions {
+OptOneCall-MakeSubstitutions {
   s.Contractions-Mode
   (e.UsedVars) (e.Expr) (e.Args) t.IntrinsicFunction t.Metatables
     , t.IntrinsicFunction : ((e._) Intrinsic e.BehaviorName)
@@ -345,7 +345,7 @@ OptExpr-MakeSubstitutions {
     : e.Args^
 
     = t.Metatables
-      <DoOptExpr-MakeSubstitutions
+      <DoOptOneCall-MakeSubstitutions
         (e.UsedVars) (e.Args) (/* substitutions */)
         ((e.Name) Sentences e.Body)
       >;
@@ -372,7 +372,7 @@ MakeColdSolution {
       );
 }
 
-DoOptExpr-MakeSubstitutions {
+DoOptOneCall-MakeSubstitutions {
   (e.SentenceVars) (e.Args) (e.Substitutions)
   ((e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
     = <Cleanup-Step-Drop e.RS> : e.RS^
@@ -405,7 +405,7 @@ DoOptExpr-MakeSubstitutions {
             >
           : e.NewSubstitutions
           = e.Substitutions e.NewSubstitutions : e.Substitutions^
-          = <DoOptExpr-MakeSubstitutions
+          = <DoOptOneCall-MakeSubstitutions
               (e.SentenceVars) (e.Args) (e.Substitutions)
               ((<RemainderFuncIncName e.Name>) Sentences e.Rest)
             >;
