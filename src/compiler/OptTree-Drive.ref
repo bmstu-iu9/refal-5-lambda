@@ -473,6 +473,7 @@ CleanupCold-Result {
 
 CleanupCold-Term {
   (Brackets e.Expr) = (Brackets <CleanupCold-Result e.Expr>);
+  (ClosureBrackets e.Expr) = (ClosureBrackets <CleanupCold-Result e.Expr>);
 
   (ADT-Brackets (e.Name) e.Expr)
     = (ADT-Brackets (e.Name) <CleanupCold-Result e.Expr>);

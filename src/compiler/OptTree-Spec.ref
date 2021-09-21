@@ -975,6 +975,11 @@ ExtractCalls-Term {
     : (e.Calls^ (e.UsedVars^)) e.Expr^
     = (e.Calls (e.UsedVars)) (ADT-Brackets (e.Name) e.Expr);
 
+  (e.Calls (e.UsedVars)) (ClosureBrackets e.Expr)
+    = <ExtractCalls-Expr (e.Calls (e.UsedVars)) e.Expr>
+    : (e.Calls^ (e.UsedVars^)) e.Expr^
+    = (e.Calls (e.UsedVars)) (ClosureBrackets e.Expr);
+
   (e.Calls (e.UsedVars)) t.OtherTerm = (e.Calls (e.UsedVars)) t.OtherTerm;
 }
 

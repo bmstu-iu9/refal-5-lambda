@@ -12,7 +12,7 @@ $EXTERN GenericMatch, Solve-Drive;
 
 *$FROM TreeUtils
 $EXTERN ExpandClosures-Result, ApplyContractions, ExtractVariables-Expr,
-  CreateContext, IsPassiveExpr, MarkAllVarsAsWhole, ApplyAssigns, HashName;
+  CreateContext, MarkAllVarsAsWhole, ApplyAssigns, HashName;
 
 
 /**
@@ -337,14 +337,10 @@ OptOneCall-MakeSubstitutions-Aux {
             <MakeColdSolution (e.UsedVars) t.IntrinsicFunction e.Args>;
       };
 
-  s.Contractions-Mode (e.UsedVars) (e.Args) t.Function t.Metatables
-    /* Активные вызовы игнорируем */
-    , <IsPassiveExpr e.Args> : False
-
-    = t.Metatables <MakeColdSolution (e.UsedVars) t.Function e.Args>;
-
   s.Contractions-Mode
   (e.UsedVars) (e.Args) ((e.Name) Sentences e.Body) t.Metatables
+
+    = <ExtractCalls e.Args> : (e.Calls) (e.CallOrder) e.Args^
 
     = s.Contractions-Mode
     : {
@@ -355,8 +351,54 @@ OptOneCall-MakeSubstitutions-Aux {
 
     = t.Metatables
       <DoOptOneCall-MakeSubstitutions
-        (e.UsedVars) (e.Args) (/* substitutions */) ((e.Name) Sentences e.Body)
+        (e.UsedVars) (e.Args) (/* substitutions */) (e.Calls) (e.CallOrder)
+        ((e.Name) Sentences e.Body)
       >;
+}
+
+ExtractCalls {
+  e.Arg
+    = <ExtractCallsRec (0 (/* пусто */) (/* пусто */)) e.Arg>
+    : (s.NextId (e.Calls) (e.CallOrder)) e.Arg^
+    = (e.Calls) (e.CallOrder) e.Arg
+}
+
+ExtractCallsRec {
+  t.State e.Expr
+    = <MapAccum
+        {
+          (s.NextId (e.Calls) (e.CallOrder))
+          (s.CallBrackets e.Content)
+            , CallBrackets ColdCallBrackets : e._ s.CallBrackets e._
+            , e.Calls
+            : {
+                e._ ((s.CallBrackets e.Content) ':' t.Var) e._
+                  = (s.NextId (e.Calls) (e.CallOrder t.Var)) t.Var;
+
+                e._
+                  = (WhVar 'e' CALL s.NextId) : t.Var
+                  = (s.CallBrackets e.Content) : t.Call
+                  = (
+                      <Inc s.NextId>
+                      (e.Calls (t.Call ':' t.Var))
+                      (e.CallOrder t.Var)
+                    )
+                    t.Var;
+              };
+
+          t.State^ (s.Brackets e.Content)
+            , Brackets ClosureBrackets : e._ s.Brackets e._
+            = <ExtractCallsRec t.State e.Content> : t.State^ e.Content^
+            = t.State (s.Brackets e.Content);
+
+          t.State^ (ADT-Brackets (e.Name) e.Content)
+            = <ExtractCallsRec t.State e.Content> : t.State^ e.Content^
+            = t.State (ADT-Brackets (e.Name) e.Content);
+
+          t.State^ t.Other = t.State t.Other;
+        }
+        t.State e.Expr
+      >
 }
 
 MakeColdSolution {
@@ -377,7 +419,7 @@ MakeColdSolution {
 }
 
 DoOptOneCall-MakeSubstitutions {
-  (e.SentenceVars) (e.Args) (e.Substitutions)
+  (e.SentenceVars) (e.Args) (e.Substitutions) (e.Calls) (e.CallOrder)
   ((e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
     = <Cleanup-Step-Drop e.RS> : e.RS^
     = <Solve-Drive (e.SentenceVars) ((e.Args) ':' (e.LS))>
@@ -386,18 +428,36 @@ DoOptOneCall-MakeSubstitutions {
           = <Map
               {
                 (e.UsedVars (e.Contrs) (e.Assigns))
-                  = <ApplyAssigns e.RS (e.Assigns)> : e.CallReplacer
-                  = e.Contrs (<eDRIVEN> ':' e.CallReplacer) : e.Contrs^
-                  = ((e.UsedVars) e.Contrs (/* нет новых функций */));
+                  = <ApplyAssigns e.RS (e.Assigns)> : e.RS^
+                  = <CheckCallOrder (e.CallOrder) e.RS>
+                  : {
+                      Valid
+                        = <ApplyAssigns e.RS (e.Calls)> : e.CallReplacer
+                        = e.Contrs (<eDRIVEN> ':' e.CallReplacer) : e.Contrs^
+                        = ((e.UsedVars) e.Contrs (/* нет новых функций */));
+
+                      Invalid = Invalid;
+                    };
               }
               e.Solutions
             >
-          : e.NewSubstitutions
-          = e.Substitutions e.NewSubstitutions : e.Substitutions^
-          = <DoOptOneCall-MakeSubstitutions
-              (e.SentenceVars) (e.Args) (e.Substitutions)
-              ((<RemainderFuncIncName e.Name>) Sentences e.Rest)
-            >;
+          : {
+              e._ Invalid e._
+                = e.Substitutions
+                  <MakeColdSolution
+                    (e.SentenceVars)
+                    ((e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+                    <ApplyAssigns e.Args (e.Calls)>
+                  >;
+
+            e.NewSubstitutions
+              = e.Substitutions e.NewSubstitutions : e.Substitutions^
+              = <DoOptOneCall-MakeSubstitutions
+                  (e.SentenceVars) (e.Args) (e.Substitutions)
+                  (e.Calls) (e.CallOrder)
+                  ((<RemainderFuncIncName e.Name>) Sentences e.Rest)
+                >;
+            };
 
         /*
           Здесь либо Undefined, либо грязное решение в режиме встраивания,
@@ -408,12 +468,51 @@ DoOptOneCall-MakeSubstitutions {
             <MakeColdSolution
               (e.SentenceVars)
               ((e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
-              e.Args
+              <ApplyAssigns e.Args (e.Calls)>
             >;
       };
 
-  (e.SentenceVars) (e.Args) (e.Substitutions) t.RestFunction
-    = e.Substitutions <MakeColdSolution (e.SentenceVars) t.RestFunction e.Args>;
+  (e.SentenceVars) (e.Args) (e.Substitutions) (e.Calls) (e.CallOrder)
+  t.RestFunction
+    = e.Substitutions
+      <MakeColdSolution
+        (e.SentenceVars) t.RestFunction
+        <ApplyAssigns e.Args (e.Calls)>
+      >;
+}
+
+CheckCallOrder {
+  (e.CallOrder) e.Expr
+    = <ExtractCallVars e.Expr>
+    : {
+        e.CallOrder e.ClosedCalls
+          , '>' e.ClosedCalls : e.ClosedCalls '>'
+          = Valid;
+
+        e._ = Invalid;
+      }
+}
+
+ExtractCallVars {
+  e.Expr
+    = <Map
+        {
+          (WhVar 'e' CALL s.Id) = (WhVar 'e' CALL s.Id);
+
+          (s.Brackets e.Content)
+            , Brackets ClosureBrackets : e._ s.Brackets e._
+            = <ExtractCallVars e.Content>;
+
+          (s.CallBrackets e.Content)
+            , CallBrackets ColdCallBrackets : e._ s.CallBrackets e._
+            = <ExtractCallVars e.Content> '>';
+
+          (ADT-Brackets (e.Name) e.Content) = <ExtractCallVars e.Content>;
+
+          t.Other = /* пропускаем */;
+        }
+        e.Expr
+      >
 }
 
 Cleanup-Step-Drop {
