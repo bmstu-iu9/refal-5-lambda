@@ -833,7 +833,7 @@ MakeNewFunction {
     : True e.HistoryPrefix ((e.HistoryName) e.HistorySignature)
     = <MakeNewFunction-Generalize
         e.SpecInfo (e.Name) (e.InstanceName) (e.Signature) (e.NewArg)
-        (e.HistoryPrefix) ((e.HistoryName) e.HistorySignature)
+        (e.HistoryPrefix) ((e.HistoryName) e.HistorySignature) (e.Solutions)
       >;
 
   (e.SpecInfo) (e.Name) e.History (e.InstanceName)
@@ -854,7 +854,7 @@ MakeNewFunction-Generalize {
     вызов которой соответствует вызову исходной функции.
   */
   e.SpecInfo (e.Name) (e.InstanceName) (e.Signature) (e.NewArg)
-  (e.HistoryPrefix) ((e.HistoryName '@' 0) e.HistorySignature)
+  (e.HistoryPrefix) ((e.HistoryName '@' 0) e.HistorySignature) (e.Solutions)
     = (e.SpecInfo)
       (ColdFunction LET
         (e.InstanceName)
@@ -871,7 +871,7 @@ MakeNewFunction-Generalize {
 
   /* Простое зацикливание: текущая сигнатура есть частный случай старой. */
   e.SpecInfo (e.Name) (e.InstanceName) (e.Signature) (e.NewArg)
-  (e.HistoryPrefix) ((e.HistoryName) e.HistorySignature)
+  (e.HistoryPrefix) ((e.HistoryName) e.HistorySignature) (e.Solutions)
 
     , <GenericMatch-Spec (e.NewArg) (e.HistorySignature)> : Clear e.NewSubst
 
@@ -894,9 +894,51 @@ MakeNewFunction-Generalize {
         ((e.InstanceName) e.HistoryPrefix ((e.InstanceName) e.Signature))
       );
 
+  /*
+    Хитрое зацикливание: старая сигнатура есть частный случай текущей.
+    Такое возможно, если e-переменной текущей сигнатуры соответствует
+    пустота в старой.
+
+    Формально тут должно строиться обобщение, которое должны оба экземпляра
+    вызывать (см. общий случай в последнем предложении), история обобщения
+    будет совпадать с историей верхнего экземпляра.
+
+    Но обобщение будет совпадать с текущей сигнатурой, что в последнем
+    предложении привело бы к созданию let-экземпляра, который вызывает
+    себя. Поэтому тут надо разобрать частный случай — построить явным образом
+    экземпляр для текущей сигнатуры и патч для верхней.
+  */
+  e.SpecInfo (e.Name) (e.InstanceName) (e.Signature) (e.NewArg)
+  (e.HistoryPrefix) ((e.HistoryName) e.HistorySignature) (e.Solutions)
+
+    , <GenericMatch-Spec (e.HistorySignature) (e.NewArg)> : Clear e.PatchSubst
+
+    = e.SpecInfo : (e.Body) s.NextNumber e.Signatures
+    = <CreateNewSentences (e.NewArg) (e.Solutions) (e.Body)> : e.NewSentences
+
+    = (e.SpecInfo)
+      (PatchFunc
+        (e.HistoryName)
+        Sentences
+        (
+          (<WrapVars e.HistorySignature>)
+          /* = */
+          (
+            (CallBrackets
+              (Symbol Name e.InstanceName)
+              <ApplySequentalAssigns <WrapVars e.NewArg> (e.PatchSubst)>
+            )
+          )
+        )
+      )
+      (Function (e.InstanceName) Sentences e.NewSentences)
+      (
+        ((e.InstanceName) e.HistoryPrefix ((e.InstanceName) e.Signature))
+      );
+
   /* Зацикливание с обобщением */
   e.SpecInfo (e.Name) (e.InstanceName) (e.Signature) (e.NewArg)
-  (e.HistoryPrefix) ((e.HistoryName) e.HistorySignature)
+  (e.HistoryPrefix) ((e.HistoryName) e.HistorySignature) (e.Solutions)
 
     /* Получает обобщённую сигнатуру для двух сигнатур */
     = <GlobalGen (e.Signature) (e.HistorySignature)> : e.GenSignature
