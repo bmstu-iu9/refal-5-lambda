@@ -428,12 +428,12 @@ DoOptOneCall-MakeSubstitutions {
           = <Map
               {
                 (e.UsedVars (e.Contrs) (e.Assigns))
+                  = <ApplyAssigns e.RS (e.Assigns)> : e.RS^
                   = <CheckCallOrder (e.CallOrder) e.RS>
                   : {
                       Valid
-                        = <ApplyAssigns e.RS (e.Calls)> : e.RS^
-                        = <ApplyAssigns e.RS (e.Assigns)> : e.CallReplacer
-                        = e.Contrs (<eDRIVEN> ':' e.CallReplacer) : e.Contrs^
+                        = <ApplyAssigns e.RS (e.Calls)> : e.CallReplacer
+                        = (<eDRIVEN> ':' e.CallReplacer) e.Contrs : e.Contrs^
                         = ((e.UsedVars) e.Contrs (/* нет новых функций */));
 
                       Invalid = Invalid;
