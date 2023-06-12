@@ -1,0 +1,16 @@
+* WARNING multiscreening
+
+$ENTRY Go {
+  = <Test>
+}
+
+Test {
+  /* empty */
+    = {
+        'I' e.Var 'd' = 0;
+        e.Var = 1;
+        'I am screened' = 2;
+      }
+    : e.Var
+    = e.Var;
+}

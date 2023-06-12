@@ -1,0 +1,1109 @@
+$INCLUDE "LibraryEx";
+
+*$FROM Desugaring
+$EXTERN CreateContext, ExtractVariables-Expr,
+        Pass-EnumerateVariables, Pass-RemovePos;
+
+/*
+  <CheckMultiScreening (t.WarningId*) (e.AST)
+    == t.Warning*
+
+  CheckMultiScreening осуществляет проверку группового экранирования образцов.
+*/
+$ENTRY CheckMultiScreening {
+  (e._ s.Type e._) (e.AST)
+    , <OneOf s.Type multiscreening multiscreening5> : True
+    = <FindFunctionsPosInAST e.AST> : (e.FunctionsPos) e.AST^
+    = <Pass-RemovePos e.AST> : e.AST^
+    = <Pass-EnumerateVariables e.AST> : e.AST^
+    = <ZipFunction s.Type (e.AST) (e.FunctionsPos)> : e.FunctionsWithPos
+    = <Map &CheckFunction e.FunctionsWithPos>;
+
+  (e._) (e.AST) = /* пусто */
+}
+
+/*
+  <FindFunctionsPosInAST e.AST>
+    == (t.SrcPos*) t.Function*
+
+  FindFunctionsPosInAST достает из AST-дерева функции
+  и их расположение в исходном файле.
+*/
+FindFunctionsPosInAST {
+  e.AST
+    = <MapAccum
+        {
+          (e.Positions)
+          (Function t.SrcPos s.ScopeClass (e.Name) Sentences e.Sentences)
+            = (e.Positions t.SrcPos)
+              (Function t.SrcPos s.ScopeClass (e.Name) Sentences e.Sentences);
+
+          (e.Positions) t.Other = (e.Positions) /* пусто */
+        }
+        () e.AST
+      >;
+}
+
+/*
+  <ZipFunction s.Type (t.L+) (t.R+)>
+    ==  (s.Type t.L t.R)+
+*/
+ZipFunction {
+  s.Type (t.L e.L) (t.R e.R)
+    = (s.Type t.L t.R) <ZipFunction s.Type (e.L) (e.R)>;
+
+  s.Type () () = /* пусто */;
+}
+
+/*
+  <CheckFunction t.Function>
+    == t.Warning*
+
+  CheckFunction проверяет тело функции на экранирование
+*/
+CheckFunction {
+  (s.Type (Function s.ScopeClass (e.Name) Sentences e.Sentences) t.SrcPos)
+    = <CheckSentences s.Type t.SrcPos (e.Name) () () (e.Sentences)>
+}
+
+/*
+  <CheckSentences
+    s.Type
+    t.SrcPos
+    (e.FuncName)
+    (e.Prefix)
+    (e.CtxVars)
+    (e.Sentences)>
+    == t.Warning*
+
+  CheckSentences проверяет тело функции на экранирование.
+  t.SrcPos, e.FuncName и e.Prefix используются для генерации
+  сообщения предупреждения с указанием экранируемых предложений.
+  e.ContextVars - контекст, содержащий связанные переменные.
+
+  Алгоритм:
+    1) в левые части предложений добавляется контекст (AddContext);
+    2) нумеруются предложения (Enumerate);
+    3) для n предложений создаётся n-1 задача проверки
+    группового экранирования (GenerateTasks);
+    4) в каждой задаче среди экранирующих предложений отсеиваются предложения
+    с условиями и повторными переменными в левой части (Filter);
+    5) проверяются созданные задачи на экранирование (CheckTasks);
+    6) обрабатываются условия, блоки, правая часть с обновлением контекста.
+*/
+CheckSentences {
+  s.Type t.SrcPos (e.FuncName) (e.Prefix) (e.ContextVars) (e.Sentences)
+    = <AddContext (e.Sentences) (e.ContextVars)> : e.Sentences^
+    = <Enumerate e.Sentences> : e.NumberedSentences
+    = <GenerateTasks e.NumberedSentences> : e.Tasks
+    = <FilteredPatternTasks e.Tasks> : e.PatternTasks
+    = <CheckTasks s.Type t.SrcPos (e.FuncName) (e.Prefix) (e.PatternTasks)>
+      <DelAccumulator
+        <MapAccum
+          {
+            s.Num ((e.Pattern) e.AssignsOrConds (e.Result) (e.Blocks))
+              = e.Prefix '$' <Symb s.Num> : e.Prefix^
+              = e.ContextVars e.Pattern : e.ContextVars^
+              = <Map
+                  {
+                    (s.AssignOrCond (e.Result^) (e.Blocks^) (e.Pattern^))
+                      = e.Pattern;
+                  }
+                  e.AssignsOrConds
+                >
+              : e.ContextAllAssignsOrConds
+              = <Inc s.Num>
+                <CheckSentenceAssignsAndConditions
+                  s.Type
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix)
+                  (e.ContextVars)
+                  ((e.Pattern) e.AssignsOrConds (e.Result) (e.Blocks))
+                >
+                <CheckSentenceResult
+                  s.Type
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix)
+                  (e.ContextVars e.ContextAllAssignsOrConds)
+                  ((e.Pattern) e.AssignsOrConds (e.Result) (e.Blocks))
+                >
+                <CheckSentenceBlocks
+                  s.Type
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix)
+                  (e.ContextVars e.ContextAllAssignsOrConds)
+                  ((e.Pattern) e.AssignsOrConds (e.Result) (e.Blocks))
+                >
+          }
+          1 e.Sentences
+        >
+      >;
+}
+
+/*
+  <AddContext (e.Sentences) (e.ContextVars)>
+    == e.Sentences
+
+  AddContext добавляет контекст в левые части предложений.
+*/
+AddContext {
+  (e.Sentences) (e.ContextVars)
+    = <Unique <ExtractVariables-Expr e.ContextVars>> : e.ContextVars^
+    = <CreateContext NoMarkupContext e.ContextVars> : e.ContextVars^
+    = <Map
+        {
+          ((e.Pattern) e.Sentence-E) = ((e.ContextVars e.Pattern) e.Sentence-E)
+        }
+        e.Sentences
+      >;
+}
+
+/*
+  <GenerateTasks t.NumberedSentence*> == t.Task*
+
+  t.NumberedSentence ::= ((e.Sentence) s.Num)
+  e.Task ::= t.NumberedSentence t.NumberedSentence+
+
+  GenerateTasks создает задачи:
+    экранируемое предложение с группой экранирующих.
+*/
+GenerateTasks {
+  e.NumSentence-B t.NumSentence
+    , e.NumSentence-B : e.NumSentence-B-B t.NumSentence-B
+    = (t.NumSentence e.NumSentence-B)
+      <GenerateTasks e.NumSentence-B>;
+
+  t.NumSentence = /* пусто */;
+
+  /* пусто */ = /* пусто */;
+}
+
+/*
+  <FilteredPatternTasks t.Task*> == t.PatternTask*
+
+  e.Task ::= t.NumberedSentence t.NumberedSentence+
+  t.NumberedSentence ::= ((e.Sentence) s.Num)
+  e.PatternTask ::= t.NumberedPattern t.NumberedPattern+
+  t.NumberedPattern ::= ((e.Pattern) s.Num)
+
+  FilteredPatternTasks для каждой задачи:
+    1) отсеивает предложения, где потенциальные экранирующие
+    предложения содержат условия;
+    2) извлекает образцы из левой части оставшихся предложений;
+    3) отсеивает потенциальные экранирующие образцы содержащие повторные
+    переменные.
+  Обновленные задачи обязательно содержат в себе экранируемый образец и
+  хотя бы один экранирующий.
+*/
+FilteredPatternTasks {
+  e.Tasks
+    = <Map
+        {
+          (t.NumSentence-L e.NumSentences-R)
+            = <Map &FilterSentence-Condition e.NumSentences-R>
+            : e.NumSentences-R^
+            = <Map &FlattenPattern t.NumSentence-L e.NumSentences-R>
+            : t.NumPattern-L e.NumPatterns-R
+            = <Map &FilterPattern-RepeatedVars e.NumPatterns-R>
+            : {
+                /* пусто */ = /* пусто */;
+
+                e.FilteredPatterns-R = (t.NumPattern-L e.FilteredPatterns-R);
+              };
+        }
+        e.Tasks
+      >;
+}
+
+/*
+  <FilterSentence-Condition t.NumberedSentence>
+    == t.NumberedSentence
+    == пусто
+
+  t.NumberedSentence ::= ((e.Sentence) s.Num)
+
+  FilterSentence-Condition удаляет предложение с условием.
+*/
+FilterSentence-Condition {
+  ((t.Pattern (Condition e._) e.SentenceTail) s.Num) = /* пусто */;
+
+  ((e.Sentence) s.Num) = ((e.Sentence) s.Num);
+}
+
+/*
+  <FlattenPattern e.Task> == e.PatternTask
+
+  e.Task ::= t.NumberedSentence t.NumberedSentence+
+  t.NumberedSentence ::= ((e.Sentence) s.Num)
+  e.PatternTask ::= t.NumberedPattern t.NumberedPattern+
+  t.NumberedPattern ::= ((e.Pattern) s.Num)
+
+  FlattenPattern "расплющивает" образец в левой части предложения
+  и группирует его с номером.
+*/
+FlattenPattern {
+  (((e.Pattern) e.Sentence-E) s.Num)
+    = <DoFlatten e.Pattern> : e.FlatPattern
+    = <AddEps e.FlatPattern> : e.FlatPattern^
+    = ((e.FlatPattern) s.Num);
+}
+
+/*
+  <DoFlatten e.Pattern> == e.FlatPattern
+
+  DoFlatten рекурсивно "расплющивает" образец.
+*/
+DoFlatten {
+  e.Pattern
+    = <Map
+        {
+          (Brackets e.Inner)
+            = (Bracket-L) <DoFlatten e.Inner> (Bracket-R);
+
+          (ADT-Brackets (e.Name) e.Inner)
+            = (ADT-Bracket-L)
+              (Symbol Identifier e.Name)
+              <DoFlatten e.Inner>
+              (ADT-Bracket-R);
+
+          t.Other = t.Other;
+        }
+        e.Pattern
+      >;
+}
+
+/*
+  <FilterPattern-RepeatedVars t.NumberedPattern>
+    == t.NumberedPattern
+    == пусто
+
+  t.NumberedPattern ::= ((e.Pattern) s.Num)
+
+  FilterPattern-RepeatedVars удаляет образец с повторными переменными.
+*/
+FilterPattern-RepeatedVars {
+  (
+    (
+      e.Pattern-B
+      (Var s.Type e.Name)
+      e.Pattern-M
+      (Var s.Type e.Name)
+      e.Pattern-E
+    )
+    s.Num
+  ) = /* пусто */;
+
+  t.NumPattern = t.NumPattern;
+}
+
+/*
+  <CheckTasks s.Type t.SrcPos (e.FuncName) (e.Prefix) (e.PatternTasks)
+    == t.Warning*
+
+  s.Type ::= multiscreening | multiscreening5
+  e.PatternTasks = e.PatternTask*
+  e.PatternTask ::= t.NumberedPattern t.NumberedPattern+
+  t.NumberedPattern ::= ((e.Pattern) s.Num)
+
+  s.Type - тип экранирования (Рефал-5λ или Рефал-5)
+  t.SrcPos - позиция функции, телу которой принадлежит пара образцов
+  e.FuncName - имя функции
+  e.Prefix - префикс, указывающий путь к экранирумым предложениям,
+             например, $5:1\1
+
+  CheckTasks проверяет групповое экранирование каждой задачи из e.PatternTasks
+  и генерирует предупреждения.
+*/
+CheckTasks {
+  s.Type t.SrcPos (e.FuncName) (e.Prefix) (e.PatternTasks)
+    = <Map
+        {
+          (e.PatternTask)
+            = <AutomataCheck s.Type (e.PatternTask)>
+            : {
+                True s.Num-L (e.Nums-R)
+                  = <CreateScreeningWarning
+                      s.Type
+                      t.SrcPos
+                      (e.FuncName)
+                      (e.Prefix '${' <JoinNums e.Nums-R> '}')
+                      (e.Prefix '$' <JoinNums s.Num-L>)
+                    >;
+
+                False = /* пусто */;
+              }
+        }
+        e.PatternTasks
+      >;
+}
+
+/*
+  <AutomataCheck s.Type (e.PatternTask)>
+    == True s.Num (e.Accepted)
+    == False
+
+  s.Type ::= multiscreening | multiscreening5
+  e.PatternTask ::= t.NumberedPattern t.NumberedPattern+
+  t.NumberedPattern ::= ((e.Pattern) s.Num)
+  e.Accepted ::= s.NUMBER*
+
+  s.Type - тип экранирования (Рефал-5λ или Рефал-5)
+  s.Num - номер экранируемого предложения
+  e.Accepted - номера экранирующих предложений
+
+  AutomataCheck вызывает рекурсивную функцию DoAutomataCheck
+  с начальными значениями и обрабатывает полученный результат.
+*/
+AutomataCheck {
+  s.Type (((e.Pattern-L) s.Num) e.Patterns-R)
+    = ((e.Pattern-L) (e.Patterns-R) <MaxDepth s.Type (e.Pattern-L)>) : t.State
+    = <DoAutomataCheck (t.State) (t.State) ()>
+    : {
+        (/* пусто */) = False;
+
+        (e.Accepted) = True s.Num (<Sort e.Accepted>);
+      };
+}
+
+/*
+  <MaxDepth s.Type (e.Pattern)> == s.CurrentDepth s.MaxDepth
+
+  s.Type ::= multiscreening | multiscreening5
+  s.CurrentDepth ::= s.NUMBER
+  s.MaxDepth ::= s.NUMBER
+
+  s.Type - тип экранирования:
+    multiscreening для Рефала-5λ,
+    multiscreening5 для Рефала-5
+
+  MaxDepth возвращает начальную и максимальную глубину, рассматриваемого
+  скобочного выражения экранируемого образца в зависимости от диалекта языка.
+  Нормализация t-переменной происходит, при CurrentDepth <= MaxDepth.
+  Для Рефала-5λ нормализация t-переменных не требуется, поэтому
+  CurrentDepth = 1, MaxDepth = 0 (1 <= 0).
+  Для Рефала-5 CurrentDepth = 0, MaxDepth = <Depth (e.Pattern)> + 1,
+  при плоском экранируемом образце (0 <= 1).
+*/
+MaxDepth {
+  multiscreening (e.Pattern) = 1 0;
+
+  multiscreening5 (e.Pattern) = 0 <Inc <Depth (e.Pattern)>>;
+}
+
+/*
+  <Depth (e.Pattern)> == s.Depth
+
+  s.Depth ::= s.NUMBER
+
+  Depth вычисляет глубину образца с ПРАВИЛЬНЫМИ скобочными выражениями.
+*/
+Depth {
+  (e.Pattern)
+    = <MapAccum
+        {
+          (s.CurrentDepth s.MaxDepth) t.Sym
+            = t.Sym
+            : {
+                (Bracket-L)
+                  = <Inc s.CurrentDepth> : s.CurrentDepth^
+                  = (s.CurrentDepth <Max s.CurrentDepth s.MaxDepth>);
+
+                (Bracket-R) = (<Dec s.CurrentDepth> s.MaxDepth);
+
+                t.Other = (s.CurrentDepth s.MaxDepth);
+              }
+        }
+        (0 0) e.Pattern
+      > : (s.CurrentDepth s.MaxDepth) = s.MaxDepth;
+}
+
+/*
+  <DoAutomataCheck (e.Visited) (e.InProcess) (e.Accepted)>
+    == (e.Accepted)
+
+  e.Visited ::= t.State*
+  e.InProcess ::= t.State*
+  e.Accepted ::= s.NUMBER*
+  t.State ::= ((t.Pattern (t.NumPattern+)) s.CurrentDepth s.MaxDepth)
+  t.NumPattern ::= (t.Pattern s.Num)
+  s.CurrentDepth ::= s.NUMBER
+  s.MaxDepth ::= s.NUMBER
+
+  e.Visited - посещённые состояния
+  e.InProcess - очередь текущих состояний
+  e.Accepted - номера экранирующих предложений
+  t.Pattern - экранируемый образец
+  t.NumPattern - экранирующий образец с номером предложения
+  s.CurrentDepth - текущая глубина разбора выражения
+  s.MaxDepth - максимальная глубина до которой происходит нормализация
+               t-переменной
+
+  DoAutomataCheck обрабатывает состояния автомата, согласно очереди
+  в e.InProcess, проверяет групповое экранирование предложений.
+
+  Алгоритм:
+    1) производится нормализация всех образцов, во всех состояниях из e.InProcess,
+    что может привести к увеличению количества состояний;
+    2) принятые состояния убираются из e.InProcess и помещаются в e.Accepted;
+    3) производится переход автомата из каждого состояния из e.InProcess,
+    отсутствие перехода влечёт за собой, опровержение группового экранирования,
+    т.е. e.Accepted и e.InProcess обнуляются;
+    4) повторяется шаг 1, пока e.InProcess не пуст.
+*/
+DoAutomataCheck {
+  (e.Visited) (/* пусто */) (e.Accepted) = (e.Accepted);
+
+  (e.Visited) (e.InProcess) (e.Accepted)
+    = <Normalized e.InProcess> : e.InProcess^
+    = <Accepted (e.InProcess) (e.Accepted)> : (e.InProcess^) (e.Accepted^)
+    = <Stepped (e.Visited) (e.InProcess) () (e.Accepted)>
+    : (e.Visited^) (e.InProcess^) (e.Accepted^)
+    = <DoAutomataCheck (e.Visited) (e.InProcess) (e.Accepted)>;
+}
+
+/*
+  <Normalized t.State*> == t.State*
+
+  t.State ::= ((t.Pattern (t.NumPattern+)) s.CurrentDepth s.MaxDepth)
+  t.NumPattern ::= (t.Pattern s.Num)
+
+  Normalized нормализует e-переменные и t-переменные.
+  Нормализация экранируемого образца может привести к увеличению
+  количества состояний.
+*/
+Normalized {
+  e.States
+    = <Map
+        {
+          ((e.Pattern-L) (e.Patterns-R) s.CurrentDepth s.MaxDepth)
+            = <NormalizePattern (e.Pattern-L) s.CurrentDepth s.MaxDepth>
+            : e.Patterns-L
+            = <NormalizePatterns (e.Patterns-R) s.CurrentDepth s.MaxDepth>
+            : e.Patterns-R^
+            = <Unique e.Patterns-R> : e.Patterns-R^
+            = <Map
+              {
+                (e.Pattern-L^)
+                  = ((e.Pattern-L) (e.Patterns-R) s.CurrentDepth s.MaxDepth);
+              }
+              e.Patterns-L
+            >;
+        }
+        e.States
+      >;
+}
+
+/*
+  <NormalizePattern t.Pattern s.CurrentDepth s.MaxDepth>
+    == e.Patterns
+
+  NormalizePattern нормализует e-переменные, затем t-переменные,
+  согласно правилам, выбранного диалекта языка.
+*/
+NormalizePattern {
+  (e.Pattern) s.CurrentDepth s.MaxDepth
+    = <E-NormalizePattern e.Pattern> : e.Patterns
+    = <T-NormalizePatterns e.Patterns s.CurrentDepth s.MaxDepth>;
+}
+
+/*
+  <NormalizePatterns (t.NumPattern*) s.CurrentDepth s.MaxDepth>
+    == t.NumPattern*
+
+  t.NumPattern ::= (t.Pattern s.Num)
+
+  NormalizePatterns нормализует нумерованные образцы, поэтому сначала удаляются
+  номера предложений, после этого производится нормализация
+  и снова добавляются номера предложений.
+*/
+NormalizePatterns {
+  (e.Patterns) s.CurrentDepth s.MaxDepth
+    = <Map
+        {
+          ((e.Pattern) s.Num)
+            = <NormalizePattern (e.Pattern) s.CurrentDepth s.MaxDepth>
+            : e.Patterns^
+            = <Map { e.Pattern^ = (e.Pattern s.Num); } e.Patterns>;
+        }
+        e.Patterns
+      >;
+}
+
+/*
+  <E-NormalizePattern e.Pattern> == (e.Pattern)*
+
+  E-NormalizePattern нормализует e-переменные, используя следующие замены:
+
+           |=> t._ e.x P
+    e.x P =|
+           |=> P.
+*/
+E-NormalizePattern {
+  (Var 'e' e.VarName) e.PatternTail
+    = <RemoveFirst-Evars e.PatternTail>: e.PatternTail^
+    = ((Var 't_') (Var 'e' e.VarName) e.PatternTail)
+      (<AddEps e.PatternTail>);
+
+  e.Pattern = (e.Pattern);
+}
+
+/*
+  <RemoveFirst-Evars e.Pattern> == e.Pattern
+
+
+  RemoveFirst-Evars удаляет все e-переменные в начале образца:
+
+    e.x e.y P => P
+*/
+RemoveFirst-Evars {
+  (Var 'e' e.VarName) e.PatternTail = <RemoveFirst-Evars e.PatternTail>;
+
+  e.Pattern = e.Pattern;
+}
+
+/*
+  <T-NormalizePatterns t.Pattern* s.CurrentDepth s.MaxDepth>
+    == t.Pattern*
+
+  T-NormalizePatterns нормализует t-переменные, используя следующие замены:
+
+           |=> (e._) P
+    t.x P =|            , CurrentDepth <= MaxDepth;
+           |=> s._ P
+
+    t.x P => t.x P      , иначе.
+*/
+T-NormalizePatterns {
+  e.Patterns s.CurrentDepth s.MaxDepth
+    = <Map
+        {
+          ((Var 't' e.VarName) e.PatternTail)
+            , <OneOf <Compare s.CurrentDepth s.MaxDepth> '-' '0'> : True
+            = ((Var 's_') e.PatternTail)
+              ((Bracket-L) (Var 'e_') (Bracket-R) e.PatternTail);
+
+          (e.Pattern) = (e.Pattern);
+        }
+        e.Patterns
+      >;
+}
+
+/*
+  <Stepped (e.Visited) (e.InProcess) (e.StateAccum) (e.Accepted)>
+    == (e.Visited) (e.StateAccum) (e.Accepted)
+
+  e.Visited ::= t.State*
+  e.InProcess ::= t.State*
+  e.StateAccum ::= t.State*
+  e.Accepted ::= s.NUMBER*
+  t.State ::= ((t.Pattern (t.NumPattern+)) s.CurrentDepth s.MaxDepth)
+
+  e.Visited - посещённые состояния
+  e.InProcess - очередь текущих состояний
+  e.StateAccum - обработанные состояния
+  e.Accepted - номера экранирующих предложений
+
+  Stepped совершает переход из каждого состояния автомата.
+  Если состояния нет в e.Visited, оно помещается в e.StateAccum и e.Visited,
+  иначе пропускается.
+  В случае любой неудачи перехода, возвращает пустые e.Visited, e.StateAccum и e.Accepted.
+*/
+Stepped {
+  (e.Visited) ((e.CurrentState) e.InProcess) (e.StateAccum) (e.Accepted)
+    = <Step (e.CurrentState)>
+    : {
+        (e.State)
+          = <IsAlreadyVisited (e.Visited) (e.State)>
+          : {
+              True = (e.Visited) (e.StateAccum);
+
+              False = (e.Visited (e.State)) (e.StateAccum (e.State));
+            }
+          : (e.Visited^) (e.StateAccum^)
+          = <Stepped (e.Visited) (e.InProcess) (e.StateAccum) (e.Accepted)>;
+
+        Fails = (/* пусто */) (/* пусто */) (/* пусто */);
+      };
+
+  (e.Visited) (/* пусто */) (e.StateAccum) (e.Accepted) = (e.Visited) (e.StateAccum) (e.Accepted);
+}
+
+/*
+  <Step t.State>
+    == t.State
+    == Fails
+
+  t.State ::= ((t.Pattern (t.NumPattern+)) s.CurrentDepth s.MaxDepth)
+
+  Step совершает переход по первому символу из t.Pattern,
+  в случае успеха обновляет состояние, иначе сообщает о неудаче.
+  Открывающая круглая скобка увеличивает глубину текущего
+  скобочного выражения (s.CurrentDepth), а закрывающая - уменьшает на единицу.
+*/
+Step {
+  ((t.Sym-L e.Pattern-L-E) (e.Patterns-R) s.CurrentDepth s.MaxDepth)
+    = <AddEps e.Pattern-L-E> : e.Pattern-L
+    = <Map
+        {
+          ((t.Sym-R e.Pattern-R-E) s.Num)
+            = <Transition t.Sym-L t.Sym-R>
+            : {
+                (e.Updated) = ((<AddEps e.Updated e.Pattern-R-E>) s.Num);
+
+                Fails = /* пусто */;
+              };
+        }
+        e.Patterns-R
+      > : e.Patterns-R^
+    = <Unique e.Patterns-R> : e.Patterns-R^
+    = <Add s.CurrentDepth <DepthStep t.Sym-L>> : s.CurrentDepth^
+    = e.Patterns-R
+    : {
+        t.NumPattern-R e.NumPattern-R-E
+          = ((e.Pattern-L) (e.Patterns-R) s.CurrentDepth s.MaxDepth);
+
+        /* пусто */ = Fails;
+      };
+}
+
+/*
+  <Transition t.Sym-L t.Sym-R>
+    == (e.Updated)
+    == Fails
+
+  Transition - таблица переходов автомата.
+  В случае открывающих скобок в экранируемом образце и t-переменной
+  в экранирующем, происходит раскрытие t-переменной и возврат
+  оставшейся её части.
+  Отсутствие перехода - Fails.
+*/
+Transition {
+  (Symbol e.SymInfo)   (Symbol e.SymInfo)   = (/* пусто */);
+  (Symbol e.SymInfo)   (Var 's' e.VarName)  = (/* пусто */);
+  (Symbol e.SymInfo)   (Var 't' e.VarName)  = (/* пусто */);
+  (Var 's' e.VarName1) (Var 's' e.VarName2) = (/* пусто */);
+  (Var 's' e.VarName1) (Var 't' e.VarName2) = (/* пусто */);
+  (Var 't' e.VarName1) (Var 't' e.VarName2) = (/* пусто */);
+  (Bracket-L)          (Bracket-L)          = (/* пусто */);
+  (Bracket-R)          (Bracket-R)          = (/* пусто */);
+  (ADT-Bracket-L)      (ADT-Bracket-L)      = (/* пусто */);
+  (ADT-Bracket-R)      (ADT-Bracket-R)      = (/* пусто */);
+
+  (Bracket-L)          (Var 't' e.VarName)
+    = ((Var 'e_')(Bracket-R));
+
+  (ADT-Bracket-L)      (Var 't' e.VarName)
+    = ((Var 's_')(Var 'e_')(ADT-Bracket-R));
+
+
+  t.Sym-L t.Sym-R = Fails;
+}
+
+/*
+  <DepthStep t.Sym>
+    == s.NUM
+    == '-'s.NUM
+
+  DepthStep увеличивает текущую глубину выражения при '(',
+  уменьшает при ')' на 1.
+*/
+DepthStep {
+  (Bracket-L) = 1;
+  (Bracket-R) = '-' 1;
+  t.Sym = 0;
+}
+
+/*
+  <IsAlreadyVisited (e.Visited) t.State)>
+    == True
+    == False
+
+  e.Visited ::= t.State*
+
+  IsAlreadyVisited проверяет, обрабатывалось ли данное состояние.
+  Позволяет избежать зацикливания автомата.
+*/
+IsAlreadyVisited {
+  (e.Visited) t.State
+    = e.Visited
+    : {
+        e.States-B t.State e.States-E = True;
+
+        e.States = False;
+      };
+}
+
+/*
+  <Accepted (e.InProcess) (e.Accepted)>
+    == (e.InProcess) (e.Accepted)
+
+  Accepted переносит из очереди (e.InProcess) принятые финальные состояния
+  в (e.Accepted), сохраняя только номера экранирующих образцов.
+*/
+Accepted {
+  (e.InProcess) (e.Accepted)
+    = <MapAccum
+        {
+          (e.Accum) (e.CurrentState) = <Accept (e.Accum) (e.CurrentState)>;
+        }
+        (e.Accepted) e.InProcess
+      > : (e.Accepted^) e.InProcess^
+      = (e.InProcess) (e.Accepted);
+}
+
+/*
+  <Accept (e.Accepted) t.State>
+    == (e.Accepted) пусто
+    == (e.Accepted) t.State
+
+  e.Accepted ::= s.NUMBER*
+  t.State ::= ((t.Pattern (t.NumPattern+)) s.CurrentDepth s.MaxDepth)
+
+  Accept удаляет принятое финальное состояние t.State, добавляя его
+  в (e.Accepted), сохраняя только номера образцов, являющихся пустым словом.
+  Состояния считается финальным, если экранируемый образец является
+  пустым словом и хотя бы один экранируемый образец является пустым словом.
+*/
+Accept {
+  (e.Accepted) ((e.Pattern-L) (e.Patterns-R) s.CurrentDepth s.MaxDepth)
+    , <IsEpsPattern e.Pattern-L> : True
+    , <HasEpsPatterns e.Patterns-R>: True (e.Nums)
+    = (<Unique e.Accepted e.Nums>) /* пусто */;
+
+  (e.Accepted) t.State = (e.Accepted) t.State;
+}
+
+/*
+  <IsEpsPattern e.Pattern>
+    == True
+    == False
+
+  IsEpsPattern проверяет, является ли образец пустым словом - '()'.
+*/
+IsEpsPattern {
+  () = True;
+  e.Pattern = False;
+}
+
+/*
+  <HasEpsPatterns t.NumPattern*>
+    == True (s.Num+)
+    == False
+
+  t.NumPattern ::= (t.Pattern s.Num)
+
+  HasEpsPatterns проверяет наличие пустого слова среди экранирующих образцов.
+*/
+HasEpsPatterns {
+  e.Patterns
+    = <Map
+      {
+        ((e.Pattern_R) s.Num)
+          = <IsEpsPattern e.Pattern_R>
+          : {
+              True = s.Num;
+
+              False = /* пусто */;
+            }
+      }
+      e.Patterns
+    > : e.Accept
+    = <NonEmpty e.Accept> (e.Accept)
+}
+
+/*
+  <NonEmpty e.Sequence>
+    == True
+    == False
+
+  NonEmpty последовательность проверяет на пустоту.
+*/
+NonEmpty {
+  /* пусто */ = False;
+
+  e.Sequence = True;
+}
+
+/*
+  <JoinNums e.Numbers> == e.Symbols
+
+  e.Numbers ::= s.NUMBER+
+  e.Symbols ::= s.CHAR+
+
+  JoinNums подготавливает последовательность чисел для вывода, например '1,2,3'.
+*/
+JoinNums {
+  /* пусто */ = /* пусто */;
+  s.Num = <Symb s.Num>;
+  s.Num e.Tail = <Symb s.Num>','<JoinNums e.Tail>;
+}
+
+/*
+  <AddEps e.Pattern> == e.Pattern
+
+  AddEps добавляет пустое слово '()', если образец пуст.
+*/
+AddEps {
+  /* пусто */ = ();
+
+  e.Pattern = e.Pattern;
+}
+
+
+*$FROM Checker-Screening.ref
+
+/*
+  <CreateScreeningWarning
+    s.Type
+    t.SrcPos
+    (e.FunName)
+    (e.Screening)
+    (e.Screened)
+  > == t.Warning
+
+  CreateScreeningWarning создает объект предупреждения.
+
+  s.Type - тип экранирования (Рефал-5λ или Рефал-5)
+  t.SrcPos - позиция в исходном коде
+  (e.FunName) - имя функции
+  e.Screening - экранирующее предложение
+  e.Screened - экранируемое предложение
+*/
+CreateScreeningWarning {
+  s.Type t.SrcPos (e.FunName) (e.Screening) (e.Screened)
+    = (Warning
+        s.Type
+        t.SrcPos
+        MultiScreening
+        (e.FunName)
+        (e.Screening)
+        (e.Screened)
+      )
+}
+
+/*
+  <CheckSentenceBlocks
+    s.Type t.SrcPos (e.FuncName) (e.Prefix) (e.Ctx) (e.Sentences)
+  > == t.Warning*
+
+  CheckSentenceBlocks обрабатывает блоки предложения.
+*/
+CheckSentenceBlocks {
+  s.Type
+  t.SrcPos
+  (e.FuncName)
+  (e.Prefix)
+  (e.ContextVars)
+  ((e.SentencePattern) e._ (e._) (e.Blocks))
+    = <CheckBlocks
+        s.Type
+        t.SrcPos
+        (e.FuncName)
+        (e.Prefix)
+        (e.ContextVars)
+        (e.Blocks)
+      >;
+}
+
+/*
+  <CheckBlocks s.Type t.SrcPos (e.FuncName) (e.Prefix) (e.Ctx) (e.Blocks)>
+    == t.Warning*
+
+  CheckBlocks обрабатывает блоки.
+*/
+CheckBlocks {
+  s.Type t.SrcPos (e.FuncName) (e.Prefix) (e.ContextVars) (e.Blocks)
+    = <DelAccumulator
+        <MapAccum
+          {
+            s.Num (Sentences e.Sentences)
+              = <Inc s.Num>
+                <CheckSentences
+                  s.Type
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix ':' <Symb s.Num>)
+                  (e.ContextVars)
+                  (e.Sentences)
+                >;
+
+            s.Num t.OtherBlock = s.Num /* пусто */;
+          }
+          1 e.Blocks
+        >
+      >;
+}
+
+/*
+  <CheckSentenceAssignsAndConditions
+    s.Type t.SrcPos (e.FuncName) (e.Prefix) (e.Ctx) (e.Blocks)
+  > == t.Warning*
+
+  CheckBlocks обрабатывает присваивания и условия.
+*/
+CheckSentenceAssignsAndConditions {
+  s.Type
+  t.SrcPos
+  (e.FuncName)
+  (e.Prefix)
+  (e.ContextVars)
+  ((e._) e.AssignsOrConditions (e._) (e._))
+    = <DelAccumulator
+        <MapAccum
+          {
+            (s.Num e.ContextVars^)
+            (s.AssignOrCondition (e.Result) (e.Blocks) (e.Pattern))
+              , s.AssignOrCondition
+              : {
+                  Assign = '=';
+                  Condition = '?'
+                }
+              : s.AssignOrCondition^
+              = e.Prefix s.AssignOrCondition <Symb s.Num> : e.Prefix^
+              = (<Inc s.Num> e.ContextVars e.Pattern)
+                <CheckBlocks
+                  s.Type
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix)
+                  (e.ContextVars)
+                  (e.Blocks)
+                >
+                <CheckExpression
+                  s.Type
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix)
+                  (e.ContextVars)
+                  (e.Result)
+                >;
+
+            (s.Num e.ContextVars^) t.Other = (s.Num e.ContextVars) /* пусто */;
+          }
+          (1 e.ContextVars) e.AssignsOrConditions
+        >
+      >;
+}
+
+/*
+  <CheckSentenceResult
+    s.Type t.SrcPos (e.FuncName) (e.Prefix) (e.Ctx) (e.Sentence)
+  >
+    == t.Warning*
+
+  CheckSentenceResult обрабатывает правую часть предложения (результат).
+*/
+CheckSentenceResult {
+  s.Type
+  t.SrcPos
+  (e.FuncName)
+  (e.Prefix)
+  (e.ContextVars)
+  ((e._) e._ (e.Result) (e._))
+    = <CheckExpression
+        s.Type
+        t.SrcPos
+        (e.FuncName)
+        (e.Prefix)
+        (e.ContextVars)
+        (e.Result)
+      >
+}
+
+/*
+  <CheckSentencePattern
+    t.SrcPos (e.FuncName) (e.Prefix) (e.Ctx) (e.Sentence)
+  >
+    == t.Warning*
+
+  CheckSentencePattern обрабатывает выражение в предложении.
+*/
+CheckSentencePattern {
+  t.SrcPos (e.FuncName) (e.Prefix) (e.ContextVars) ((e.Pattern) e._ (e._) (e._))
+    = <CheckExpression
+        t.SrcPos
+        (e.FuncName)
+        (e.Prefix)
+        (e.ContextVars)
+        (e.Pattern)
+      >
+}
+
+/*
+  <CheckExpression
+    s.Type t.SrcPos (e.FuncName) (e.Prefix) (e.Ctx) (e.Expression)
+  >
+    == t.Warning*
+
+  CheckExpression обрабатывает выражение.
+*/
+CheckExpression {
+  s.Type t.SrcPos (e.FuncName) (e.Prefix) (e.ContextVars) (e.Expression)
+    = <DelAccumulator
+        <MapAccum
+          {
+            s.Num (Brackets e.Expr)
+              = s.Num
+                <CheckExpression
+                  s.Type
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix)
+                  (e.ContextVars)
+                  (e.Expr)
+                >;
+            s.Num (ADT-Brackets t._ (e._) e.Expr)
+              = s.Num
+                <CheckExpression
+                  s.Type
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix)
+                  (e.ContextVars)
+                  (e.Expr)
+                >;
+            s.Num (CallBrackets e.Expr)
+              = s.Num
+                <CheckExpression
+                  s.Type
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix)
+                  (e.ContextVars)
+                  (e.Expr)
+                >;
+            s.Num (Closure Sentences e.Sentences)
+              = <Inc s.Num>
+                <CheckSentences
+                  s.Type
+                  t.SrcPos
+                  (e.FuncName)
+                  (e.Prefix '\\' <Symb s.Num>)
+                  (e.ContextVars)
+                  (e.Sentences)
+                >;
+
+            s.Num t.Other = s.Num /* пусто */
+          }
+          1 e.Expression
+        >
+      >
+}
+
+/*
+  <Enumerate t.Item*>
+    == (t.Item-1 1) (t.Item-2 2) ... (t.Item-N N)
+*/
+Enumerate {
+  e.Items
+    = <MapAccum
+        {
+          s.Count t.Item = <Inc s.Count> (t.Item s.Count);
+        }
+        1 e.Items
+      >
+    : s._ e.NumberedItems = e.NumberedItems
+}

@@ -1,0 +1,15 @@
+* WARNING multiscreening
+
+$ENTRY Go {
+  = ;
+}
+
+FLoatingTVarTest1 {
+  e.X1 t.Y1 = 1;
+  t.X2 e.Y2 = 2;
+}
+
+FLoatingTVarTest2 {
+  t.X1 e.Y1 = 1;
+  e.X2 t.Y2 = 2;
+}

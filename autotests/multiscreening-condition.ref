@@ -1,0 +1,15 @@
+* NO-WARNINGS
+
+$ENTRY Go {
+  = <ShellTest 'unix'>
+}
+
+GetEnv {
+  e._ = '/zsh';
+}
+
+ShellTest {
+ 'unix', <GetEnv 'SHELL'> : e.path '/tcsh' = Tcsh;
+
+ 'unix' = Bash;
+}

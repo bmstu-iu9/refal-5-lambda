@@ -1,0 +1,11 @@
+* WARNING multiscreening
+
+$ENTRY Go {
+  = <F A (B C D)>
+}
+
+F {
+  e.X t.Y (t.Z e.K) = 1;
+  e.Y (e.Z) = 2;
+  A e.Q (B C D) = 3;
+}
