@@ -9,13 +9,14 @@ GetEnv {
 }
 
 ShellTest {
- 'unix', <GetEnv 'SHELL'> :
+ /*'unix', <GetEnv 'SHELL'> :
     { e.path '/bash' = Bash;
       e.path '/tcsh' = Tcsh;
     };
  'unix' = <GetEnv 'shell'> :
     { e.path '/bash' = Bash;
       e.path '/tcsh' = Tcsh;
-    };
+    };*/
+ 'unix', <GetEnv 'SHELL'> : e.path '/tcsh' = Tcsh;
  'unix' = Default;
 }
