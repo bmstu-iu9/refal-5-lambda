@@ -17,7 +17,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Bootstrapping with ${{ matrix.ccomp }}
         run: |
@@ -25,7 +25,7 @@ jobs:
           bootstrap.bat
         shell: cmd
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: log-info-windows
