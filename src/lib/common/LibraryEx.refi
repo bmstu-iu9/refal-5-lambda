@@ -139,4 +139,4 @@ Pipe {
 *$FROM LibraryEx
 $EXTERN LoadFile, SaveFile, AppendFile, LoadBytes, SaveBytes, AppendBytes,
   ArgList, TermCompare, TermCompare-T, Trim, Trim-L, Trim-R, Sort, Min, Max,
-  OneOf, Unique;
+  OneOf, Unique, TryLoadExpr, LoadExpr;

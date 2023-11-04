@@ -1,0 +1,93 @@
+* NO-WARNINGS
+
+$ENTRY Go {
+  = ;
+}
+
+$ENUM ErrorList;
+
+ADT-Test {
+ [ErrorList (e.FileName) (t.1 e._) (e.Warnings)] e._
+    = EL-HasErrors;
+
+  [ErrorList (e.FileName) () (e._ (s.WarningId e._) e._)]
+  e._
+  s.WarningId
+  e._
+    = EL-HasErrors;
+}
+
+TestSymbols {
+  t.Result
+  TkRefal5Mode e.Tokens
+    = ;
+
+  t.Result
+  TkColon
+  TkRefal5Mode e.Tokens
+    = ;
+}
+
+TestSVars {
+  s.Kek
+  t.Result
+  s.Kek
+  s.Lel
+  e.Tokens
+    = ;
+
+  s.Kek
+  t.Result
+  s.Kek
+  e.Tokens
+    = ;
+}
+
+Test-Blocks {
+  s.Mode (e.Blocks) t.ErrorList t.Result
+  (TkRefal5Mode) e.Tokens
+    = ;
+
+  s.Mode (e.Blocks) t.ErrorList t.Result
+  TkColon (TkRefal5Mode) e.Tokens
+    = ;
+}
+
+Test1 {
+  t.ErrorList
+  (e.MultiBrackets)
+  (e.Scanned)
+  (TkName s.LnNum e.Name)
+  e.Tail = ;
+
+  t.ErrorList
+  (e.MultiBrackets)
+  (e.Scanned)
+  (TkIdentMarker s.LnNumMarker)
+  (TkName s.LnNumName e.Name)
+  e.Tail = ;
+}
+
+Test2 {
+  t.ErrorList (e.MultiBracket) (e.Scanned) (TkName s.LnNum e.Name) e.Tail = ;
+
+  t.ErrorList (e.MultiBracket)
+  (e.Scanned)
+  (TkIdentMarker s.MarkerLnNum) (TkName s.NameLnNum e.Name) e.Tail = ;
+}
+
+Test3 {
+    e.x (s.x 'A' e.y) e.z            = 1;
+    e.x t.z ( e.y 'A' e.z) e.w       = 2;
+    (( ) 'A' e.y) e.z                = 3;
+    e.x ((t.q e.w) 'A' e.y) e.z      = 4;
+    ('A' e.y) e.z                    = 5;
+    e.x ( e.y t.q1 t.q2 'A' e.z) e.w = 6;
+    e.x (e.y 'A' e.z) e.w            = 7;
+}
+
+Test4 {
+    e.1 t.x e.2 t.y e.3 s.z     = 1;
+    e.1 (e.2) e.3               = 2;
+    e.1 s.0 s.1 e.2 s.1 s.2 e.3 = 3;
+}

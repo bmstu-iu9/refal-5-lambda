@@ -12,12 +12,12 @@ jobs:
   bootstrap-bat:
     strategy:
       matrix:
-        ccomp: [ msvc, gcc ]
+        ccomp: [ msvc32, msvc64, gcc ]
 
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Check free space
         run: |
@@ -30,7 +30,7 @@ jobs:
           bootstrap.bat
         shell: cmd
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: log-info-windows

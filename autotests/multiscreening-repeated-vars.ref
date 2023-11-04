@@ -1,0 +1,29 @@
+* NO-WARNINGS
+
+$ENTRY GO {
+  = ;
+}
+
+/*RepeatedVars {
+  s.1 (e.2) (s.1) (e.2) = 0;
+  s.1 (e.2) (s.1) (e.2) = 1;
+}*/
+
+
+Eq1 {
+  t.X t.Y
+    , t.X
+    : {
+        t.Y = True;
+        t.Other = False;
+      }
+}
+
+Eq2 {
+  t.X t.Y
+    , t.X
+    : {
+        t.Y = True;
+        t.Y^ = False;
+      }
+}

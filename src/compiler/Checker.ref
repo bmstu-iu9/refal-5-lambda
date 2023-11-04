@@ -15,6 +15,9 @@ $EXTERN ExtractVariables-Expr, IsGenFunctionName;
 *$FROM Checker-Screening
 $EXTERN CheckScreening;
 
+*$FROM Checker-MultiScreening
+$EXTERN CheckMultiScreening;
+
 $ENTRY CheckProgram {
   (e.WarningIds) t.ErrorList e.AST
     = <Reduce
@@ -114,6 +117,10 @@ PrepareMessage {
     = 'Function `' e.FunName '\': sentence ' e.Screening
       ' screens sentence ' e.Screened;
 
+  MultiScreening (e.FunName) (e.Screening) (e.Screened)
+    = 'Function \'' e.FunName '\': sentence ' e.Screened
+      ' screened by group of sentences: ' e.Screening;
+
   TaggedPseudofunction s.Tag e.Name
     = 'Pseudofunction ' e.Name ' should not have optimization tag '
       '$' <Upper <Explode s.Tag>>;
@@ -150,7 +157,8 @@ FindErrors {
         (<CheckDeclarations (e.WarningIds) e.Declarations>)
         <Map &CheckFunctionBody e.FunctionBodies>
       >
-      <CheckScreening (e.WarningIds) (e.AST)>;
+      <CheckScreening (e.WarningIds) (e.AST)>
+      <CheckMultiScreening (e.WarningIds) (e.AST)>;
 }
 
 CheckPseudofunctions {

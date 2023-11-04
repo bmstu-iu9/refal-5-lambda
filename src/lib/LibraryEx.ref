@@ -267,6 +267,219 @@ $ENTRY Unique {
   e.Uniques = e.Uniques;
 }
 
+
+/**
+  <TryLoadExpr e.FileName>
+    == Success e.ANY | Fails e.Error
+
+  e.Error ::= (s.Line s.Col) e.Message
+  s.Line, s.Col ::= s.NUMBER
+  e.Message ::= s.CHAR*
+*/
+$ENTRY TryLoadExpr {
+  e.FileName
+    = <TryLoadExpr-Parse
+        ('$' /* scanned */) <TryLoadExpr-Prepare <LoadFile e.FileName>>
+      >;
+}
+
+TryLoadExpr-Prepare {
+  e.Lines = <DelAccumulator <MapAccum TryLoadExpr-PrepareLine 1 e.Lines>>;
+}
+
+TryLoadExpr-PrepareLine {
+  s.LineNo ('*' e.Line) = <Inc s.LineNo>;
+
+  s.LineNo (e.Line) = <Inc s.LineNo> (s.LineNo <Lenw e.Line>);
+}
+
+TryLoadExpr-Parse {
+  (e.Scanned) (s.LineNo s.LineLen s.Letter e.Line) e.Lines
+    , <Type s.Letter> : 'L' e.1
+    = <TryLoadExpr-Parse-Ident
+        (e.Scanned) (s.LineNo s.LineLen <Implode s.Letter e.Line>) e.Lines
+      >;
+
+  (e.Scanned) (s.LineNo s.LineLen s.Digit e.Line) e.Lines
+    , <Type s.Digit> : 'D' e.1
+    = <TryLoadExpr-Parse-Number
+        (e.Scanned) (s.Digit) (s.LineNo s.LineLen <Type e.Line>) e.Lines
+      >;
+
+  (e.Scanned) (s.LineNo s.LineLen s.Quote e.Line) e.Lines
+    , '\'\"' : e.1 s.Quote e.2
+    = <TryLoadExpr-Parse-Quote
+        (e.Scanned) (s.Quote) (s.LineNo s.LineLen e.Line) e.Lines
+      >;
+
+  (t.Stack e.Scanned) (s.LineNo s.LineLen '(' e.Line) e.Lines
+    = <TryLoadExpr-Parse
+        ((t.Stack e.Scanned (s.LineNo s.LineLen e.Line)))
+        (s.LineNo s.LineLen e.Line) e.Lines
+      >;
+
+  ((t.Stack e.Scanned t.PosInfo) e.Bracketed)
+  (s.LineNo s.LineLen ')' e.Line) e.Lines
+    = <TryLoadExpr-Parse
+        (t.Stack e.Scanned (e.Bracketed)) (s.LineNo s.LineLen e.Line) e.Lines
+      >;
+
+  ('$' e.Scanned) (s.LineNo s.LineLen ')' e.Line) e.Lines
+    = <TryLoadExpr-MakeError
+        s.LineNo s.LineLen (e.Line) 'Unbalanced bracket \')\''
+      >;
+
+  (e.Scanned) (s.LineNo s.LineLen s.Char e.Line) e.Lines
+    = <TryLoadExpr-Parse
+        (e.Scanned <SkipSpace s.Char>) (s.LineNo s.LineLen e.Line) e.Lines
+      >;
+
+  (e.Scanned) (s.LineNo s.LineLen /* пусто */) e.Lines
+    = <TryLoadExpr-Parse (e.Scanned) e.Lines>;
+
+  ('$' e.Scanned) /* пусто */ = Success e.Scanned;
+
+  ((t.Stack e.Scanned (s.LineNo s.LineLen e.Line)) e.Bracketed) /* пусто */
+    = <TryLoadExpr-MakeError
+        s.LineNo s.LineLen (e.Line) 'Unbalanced bracket \'(\''
+      >;
+}
+
+TryLoadExpr-Parse-Ident {
+  (e.Scanned) (s.LineNo s.LineLen s.Word e.Line) e.Lines
+    = <TryLoadExpr-Parse
+        (e.Scanned s.Word) (s.LineNo s.LineLen e.Line) e.Lines
+      >;
+}
+
+TryLoadExpr-Parse-Number {
+  (e.Scanned) (e.Number) (s.LineNo s.LineLen 'D' s.1 s.Digit e.Line) e.Lines
+    = <TryLoadExpr-Parse-Number
+        (e.Scanned) (e.Number s.Digit) (s.LineNo s.LineLen <Type e.Line>) e.Lines
+      >;
+
+  (e.Scanned) (e.Number) (s.LineNo s.LineLen s.1 s.2 e.Line) e.Lines
+    , <Numb e.Number>
+    : {
+        s.OneNumber
+          = <TryLoadExpr-Parse
+              (e.Scanned s.OneNumber) (s.LineNo s.LineLen e.Line) e.Lines
+            >;
+
+        e.SomeNumbers
+          = <TryLoadExpr-MakeError
+              s.LineNo s.LineLen (e.Line)
+              'Very long number literal ' e.Number
+            >;
+      }
+}
+
+TryLoadExpr-MakeError {
+  s.LineNo s.LineLen (e.Rest) e.Message
+    , <Lenw e.Rest> : s.RestLen e.1
+    = Fails (s.LineNo <Inc <- s.LineLen s.RestLen>>) e.Message;
+}
+
+TryLoadExpr-Parse-Quote {
+  (e.Scanned) ('\'' e.Text) (s.LineNo s.LineLen '\'' e.Line) e.Lines
+    = <TryLoadExpr-Parse
+        (e.Scanned e.Text) (s.LineNo s.LineLen e.Line) e.Lines
+      >;
+
+  (e.Scanned) ('"' e.Text) (s.LineNo s.LineLen '"' e.Line) e.Lines
+    = <TryLoadExpr-Parse
+        (e.Scanned <Implode_Ext e.Text>) (s.LineNo s.LineLen e.Line) e.Lines
+      >;
+
+  (e.Scanned) (s.Quote e.Text) (s.LineNo s.LineLen '\\x' e.Line) e.Lines
+    = <TryLoadExpr-Parse-Hex
+        (e.Scanned) (s.Quote e.Text) (s.LineNo s.LineLen e.Line) e.Lines
+      >;
+
+  (e.Scanned) (s.Quote e.Text)
+  (s.LineNo s.LineLen '\\' s.Escaped e.Line) e.Lines
+    , ('\'\'') ('\"\"') ('\\\\') ('n\n') ('r\r') ('t\t')
+      ('<<') ('>>') ('((') ('))')
+    : {
+        e.Escapes-B (s.Escaped s.Char) e.Escapes-E
+          = <TryLoadExpr-Parse-Quote
+              (e.Scanned) (s.Quote e.Text s.Char)
+              (s.LineNo s.LineLen e.Line) e.Lines
+            >;
+
+        e.Escapes
+          = <TryLoadExpr-MakeError
+              s.LineNo s.LineLen (e.Line)
+              'Bad escape sequence \\' s.Escaped
+            >;
+      };
+
+  (e.Scanned) (s.Quote e.Text) (s.LineNo s.LineLen s.Char e.Line) e.Lines
+    = <TryLoadExpr-Parse-Quote
+        (e.Scanned) (s.Quote e.Text s.Char) (s.LineNo s.LineLen e.Line) e.Lines
+      >;
+
+  (e.Scanned) (s.Quote e.Text) (s.LineNo s.LineLen /* пусто */) e.Lines
+    = <TryLoadExpr-MakeError s.LineNo s.LineLen () 'Unclosed quote ' s.Quote>;
+}
+
+SkipSpace {
+  ' ' = /* пропускаем */;
+  '\t' = /* пропускаем */;
+  s.Char = s.Char;
+}
+
+TryLoadExpr-Parse-Hex {
+  (e.Scanned) (s.Quote e.Text) (s.LineNo s.LineLen s.H1 s.H2 e.Line) e.Lines
+    , <Hex s.H1> : s.Val1
+    , <Hex s.H2> : s.Val2
+    = <TryLoadExpr-Parse-Quote
+        (e.Scanned)
+        (s.Quote e.Text <Chr <+ <* s.Val1 16> s.Val2>>)
+        (s.LineNo s.LineLen e.Line) e.Lines
+      >;
+
+  (e.Scanned) (s.Qoute e.Text) (s.LineNo s.LineLen e.Line) e.Lines
+    = <TryLoadExpr-MakeError
+        s.LineNo s.LineLen (e.Line)
+        'Bad hex escape sequence \\x' <First2 e.Line>
+      >;
+}
+
+Hex {
+  s.Digit, <Type s.Digit> : 'D' e.1 = <Numb s.Digit>;
+
+  s.Hex
+    , <Upper s.Hex> : s.UHex
+    , ('A' 10) ('B' 11) ('C' 12) ('D' 13) ('E' 14) ('F' 15)
+    : e.Hex-B (s.UHex s.Value) e.Hex-E
+    = s.Value;
+
+  s.Other = /* пусто */;
+}
+
+First2 {
+  s.1 s.2 e.Line = s.1 s.2;
+  e.Line = e.Line;
+}
+
+
+/**
+  <LoadExpr e.FileName> == e.Expr
+*/
+$ENTRY LoadExpr {
+  e.FileName
+    , <TryLoadExpr e.FileName>
+    : {
+        Success e.Expr = e.Expr;
+
+        Fails (s.Line s.Col) e.Message
+          = <Putout
+              0 e.FileName ':' <Symb s.Line> ':' <Symb s.Col> ':' e.Message
+            >
+            <Exit 1>;
+      };
+}
 /* Для построения .froms:
 //FROM Library
 */

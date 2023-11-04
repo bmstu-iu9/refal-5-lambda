@@ -1,0 +1,11 @@
+* WARNING multiscreening
+
+$ENTRY Go {
+  = <BracketsInPatternTest ('b')>
+}
+
+BracketsInPatternTest {
+  (t.X) = True;
+  ((s.X)) = True;
+  (('a')) = False;
+}

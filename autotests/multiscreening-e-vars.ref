@@ -1,0 +1,72 @@
+* NO-WARNINGS
+
+$ENTRY Go {
+  = ;
+}
+
+EVarsTest1 {
+  e.X s.Y = True;
+  s.Y e.X = False
+}
+
+EVarsTest2 {
+ (e.shift) e.shift e.blanks = ;
+ (e.shift) e.blanks = ;
+}
+
+EVarsTest2s {
+ e.shift
+   = {
+       e.shift e.blanks = ;
+       e.blanks = ;
+   }
+}
+
+EVarsTest3 {
+ (e.shift) (e.shift e.blanks) = ;
+ (e.shift) (e.blanks) = ;
+}
+
+EVarsTest4 {
+  (e.X1 t.1)(e.X2 t.1) = ;
+  (t.1 e.X1)(t.1 e.X2) = ;
+}
+
+EVarsTest5 {
+  t.A t.A e.B = 1;
+  t.A t._ e._ = 2;
+}
+
+EVarsTest6 {
+  (t.1 e.1)(t.1 e.2) = 1;
+  (e.1 t.1)(e.2 t.1) = 2;
+}
+
+EVarsTest7 {
+  (t.1 e.1)(t.1 e.1) = 1;
+  (e.2 t.2)(e.2 t.2) = 2;
+}
+
+EVarsTest8 {
+ (e.value':'(Var s.t s.i e.elevi)) (e.value1':'(Var s.t s.i e.elevj)) e.assign
+                              = (e.value':'(Var s.t s.i e.elevi)) e.assign;
+ t.assigni t.assignj e.assign = t.assignj <EVarsTest8 t.assigni e.assign>;
+ t.assigni = t.assigni;
+}
+
+EVarsTest9 {
+  (Output t.restr ((Expectant)':'t.var)) t.out-var = ;
+  (Output t.restr ((No)':'t.var)) t.out-var = ;
+  (Output t.restr (e.out-expr ':'t.var)) t.out-var = ;
+  (Output t.restr (e.out-expr ':'t.var)) = ;
+  (Basic e.basic (Output t.restr ((Expectant)':'t.var)) ':' t.out-var) = ;
+  (Basic e.basic (Output t.restr ((No)':'t.var)) ':' t.out-var) = ;
+  (Basic e.basic (Output t.restr (e.out-expr':'t.var)) ':' t.out-var),
+  <EVarsTest9 <EVarsTest9 Of Expr e.out-expr>>: e.assign = ;
+}
+
+EVarsTest10 {
+ (Recur t.basics) t.dict s.global (s.type e.n-graph) t.outfmt = ;
+ (Recur t.basics t.finish) t.dict s.global (s.type e.n-graph) t.outfmt =;
+}
+

@@ -1,0 +1,27 @@
+* WARNING multiscreening
+
+$ENUM Apply;
+
+$ENTRY Go {
+  = ;
+}
+
+TestScreening1 {
+  e.x 'A' = 1;
+  e.x t.1 t.2 t.3 e.y = 2;
+  'A' t.1 = 3;
+  'A' e.x = 4;
+}
+
+TestScreening2 {
+  t.1 t.2 e.3 = One;
+  e.X t.Y = Two;
+  /* пусто */ = Three;
+  e.X = "Boom!";
+}
+
+Map {
+  t.Fn t.Next e.Tail = <Apply t.Fn t.Next> <Map t.Fn e.Tail>;
+  t.Fn /* пусто */ = /* пусто */;
+  t.FUNC e.items = <Map t.FUNC e.items>;
+}
