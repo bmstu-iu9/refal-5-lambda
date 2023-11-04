@@ -12,7 +12,7 @@ jobs:
   bootstrap-bat:
     strategy:
       matrix:
-        ccomp: [ msvc, gcc ]
+        ccomp: [ msvc32, msvc64, gcc ]
 
     runs-on: windows-latest
 
