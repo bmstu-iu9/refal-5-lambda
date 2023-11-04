@@ -530,6 +530,8 @@ ValidWarningId {
 
 WarningForName {
   'screening' = True screening;
+  'multiscreening' = True multiscreening;
+  'multiscreening5' = True multiscreening5;
   'nul-in-compound' = True nul-in-compound;
   'ignored-pseudocomments' = True ignored-pseudocomments;
   'pseudofunctions' = True pseudofunctions;

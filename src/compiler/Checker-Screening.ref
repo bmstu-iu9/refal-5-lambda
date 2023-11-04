@@ -169,12 +169,12 @@ FilterConditions {
           )
             = /* пусто */;
 
-          (
+          /*(
             t.NumberedSentence-L
             ((t.Pattern e._ (e._ (CallBrackets e.1) e._) ((Sentences e.2) e._)) s.Num)
 
           )
-            = /* пусто */;
+            =  пусто ;*/
 
           (t.NumberedSentence-L t.NumberedSentence-R)
             = (t.NumberedSentence-L t.NumberedSentence-R);
