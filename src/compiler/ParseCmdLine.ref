@@ -151,7 +151,7 @@ $ENTRY ParseCommandLine {
                   t.Config (e.Errors)
                   &Config-SetCompilerFlags s.Num ' -I"' e.Path '"'
                 >
-                (SearchFolder s.Num e.Path);
+                <gen_e__ (SearchFolder s.Num e.Path)>;
 
             (t.Config e.Errors) (TargetFileName s.Num e.FileName)
               = <Update
@@ -221,7 +221,7 @@ $ENTRY ParseCommandLine {
               = <Update t.Config (e.Errors) &Config-SetTempDir s.Num e.Name>;
 
             (t.Config e.Errors) (REF5RSL-Env s.Num)
-              = (t.Config e.Errors) (REF5RSL-Env s.Num);
+              = (t.Config e.Errors) <gen_e__ (REF5RSL-Env s.Num)>;
 
             (t.Config e.Errors) (OverwriteExistRasls s.Num)
               = <Update
@@ -255,77 +255,81 @@ $ENTRY ParseCommandLine {
               = <Update t.Config (e.Errors) &Config-SetVerbose s.Num e.Value>;
 
             (t.Config e.Errors) t.Option
-              = (t.Config e.Errors) t.Option;
+              = (t.Config e.Errors) <gen_e__ t.Option>;
           }
         )
         (&MapAccum
           {
             (t.Config e.Errors) (SearchFolder s.Num e.Folder)
-              = (<Config-SetSearchFolder t.Config e.Folder> e.Errors);
+              = (<gen_e__ <Config-SetSearchFolder t.Config e.Folder> e.Errors>);
 
             (t.Config e.Errors) (REF5RSL-Env s.Num)
-              = (<Config-SetSearchFolder t.Config REF5RSL> e.Errors);
+              = (<gen_e__ <Config-SetSearchFolder t.Config REF5RSL> e.Errors>);
 
             (t.Config e.Errors) (FILE s.Num e.FileName)
               = (t.Config e.Errors) (s.Num e.FileName);
           }
         )
         {
-          (t.Config /* нет ошибок */) e.FileNames =
-            Success t.Config e.FileNames;
+          (t.Config /* нет ошибок */) e.FileNames
+            = Success t.Config e.FileNames;
 
-          (t.Config e.Errors) e.FileNames =
-            Fails
-            <Map
-              {
-                (s.Pos NoRequiredParam e.Param) =
-                  (s.Pos 'option ' e.Param ' expects parameter');
+          (t.Config e.Errors) e.FileNames
+            = Fails
+              <Map
+                {
+                  (s.Pos NoRequiredParam e.Param)
+                    = (s.Pos 'option ' e.Param ' expects parameter');
 
-                (s.Pos UnknownShortOption s.Option) =
-                  (s.Pos 'unknown option -' s.Option);
+                  (s.Pos UnknownShortOption s.Option)
+                    = (s.Pos 'unknown option -' s.Option);
 
-                (s.Pos UnknownLongOption e.Option) =
-                  (s.Pos 'unknown option --' e.Option);
+                  (s.Pos UnknownLongOption e.Option)
+                    = (s.Pos 'unknown option --' e.Option);
 
-                /* У нас все опции с параметрами, не должно возникать */
-                /* (s.Pos UnexpectedLongOptionParam (e.Option) e.Param) = */
+                  /* У нас все опции с параметрами, не должно возникать */
+                  /* (s.Pos UnexpectedLongOptionParam (e.Option) e.Param) = */
 
-                (s.Pos BadValue-Opt e.BadValue) =
-                  (
-                    s.Pos
-                    'option -O expects \'d\', \'C\', \'D\', \'I\', \'P\', '
-                    '\'R\', \'S\', \'T\' or it\'s combination, '
-                    'but got \'' e.BadValue '\''
-                  );
+                  (s.Pos BadValue-Opt e.BadValue)
+                    = (
+                        s.Pos
+                        'option -O expects \'d\', \'C\', \'D\', \'I\', \'P\', '
+                        '\'R\', \'S\', \'T\' or it\'s combination, '
+                        'but got \'' e.BadValue '\''
+                      );
 
-                (s.Pos BadValue-Warning e.BadValue) =
-                   (
-                     s.Pos
-                     'option -W expects \'all\', \'[no-]error[=...]\', '
-                     '\'[no-]screening\',\'[no-]multiscreening\', '
-                     '\'[no-]multiscreening5\',\'[no-]pseudofunctions\' '
-                     '\'[no-]repeated\', \'[no-]deprecated\', '
-                     '\'[no-]nul-in-compound\', but got \'' e.BadValue '\''
-                   );
+                  (s.Pos BadValue-Warning e.BadValue)
+                    = (
+                        s.Pos
+                        'option -W expects \'all\', \'[no-]error[=...]\', '
+                        '\'[no-]screening\',\'[no-]multiscreening\', '
+                        '\'[no-]multiscreening5\',\'[no-]pseudofunctions\' '
+                        '\'[no-]repeated\', \'[no-]deprecated\', '
+                        '\'[no-]nul-in-compound\', \'[no-]intrinsic\', '
+                        '\'[no-]pseudocomment\','
+                        'but got \'' e.BadValue '\''
+                      );
 
-                (s.Pos EmptyErrorFileName)
-                  = (s.Pos 'option --error-file expects a non-empty argument');
+                  (s.Pos EmptyErrorFileName)
+                    = (s.Pos 'option --error-file expects a non-empty argument');
 
-                (s.Pos TargetModeAlreadySet)
-                  = (s.Pos
-                      'options --makeexe (-x), --makelib (-l) and -R '
-                      'should appear once'
-                    );
+                  (s.Pos TargetModeAlreadySet)
+                    = (s.Pos
+                        'options --makeexe (-x), --makelib (-l) and -R '
+                        'should appear once'
+                      );
 
-                (s.Pos BadValue-MustBeNumber e.Cycles)
-                  = (s.Pos 'option --opt-tree-cycles expects a number parameter');
-              }
-              e.Errors
-            >;
+                  (s.Pos BadValue-MustBeNumber e.Cycles)
+                    = (s.Pos 'option --opt-tree-cycles expects a number parameter');
+                }
+                e.Errors
+              >;
         }
       >
     >;
 }
+
+gen_e__ { e.arg = e.arg }
 
 Update {
   t.Config (e.Errors) s.Updater s.LineNum e.Option
@@ -386,12 +390,16 @@ PrintHelp {
 '                                 screening sentences (disabled by default)\n'
 '          -Wnul-in-compound, -Wno-... - check/don\'t nuls in compounds\n'
 '                                        (enabled by default)\n'
+'          -W pseudocomment, -Wno-... - check/don\'t pseudocomment\n'
+'                                       correctness (enabled by default)\n'
 '          -Wpseudofunctions, -Wno-... - check/don\'t pseudofunction\n'
 '                                        correctness (enabled by default)\n'
 '          -Wrepeated, -Wno-... - check/don\'t suspicious repeated variables\n'
 '                                 (enabled by default)\n'
 '          -Wdeprecated, -Wno-... - warn/don\'t about deprecated syntax\n'
 '                                   (enabled by default)\n'
+'          -Wintrinsic, -Wno-... - warn/don\'t about illegal $INTRINSICs\n'
+'                                  (enabled by default)\n'
 '          -Werror[=...], -Wno-error[=...] - treat/don\'t all or only provided\n'
 '                                            warning(s) as error(s)\n'
 '-p, --prefix prefix-name\n'

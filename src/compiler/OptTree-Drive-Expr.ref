@@ -1,68 +1,33 @@
 $INCLUDE "LibraryEx";
 
 
-*$FROM TreeUtils
-$EXTERN HashName;
-$EXTERN ExtractVariables-Expr;
+*$FROM OptTree-StopRelation
+$EXTERN OptTree-CanonizeExpr, OptTree-CheckExprStopRelation;
+
+*$FROM OptTree-Drive-Intrinsic
+$EXTERN OptTree-Drive-Intrinsic;
 
 *$FROM GenericMatch
-$EXTERN Solve-Drive;
+$EXTERN GenericMatch, Solve-Drive;
 
-*$FROM OptTree-StopRelation
-$EXTERN OptTree-CanonizeExpr;
-$EXTERN OptTree-CheckExprStopRelation;
+*$FROM TreeUtils
+$EXTERN ExpandClosures-Result, ApplyContractions, ExtractVariables-Expr,
+  CreateContext, MarkAllVarsAsWhole, ApplyAssigns, HashName;
 
-IsPassiveCall {
-  e.Expr
-    = <Reduce
-        {
-           True t.Term = <IsPassiveCall-Aux t.Term>;
-           False t.Term = False;
-        }
-        True
-        e.Expr
-      >
-
-}
-
-IsPassiveCall-Aux {
-  (Brackets e.Expr) = <IsPassiveCall e.Expr>;
-  (ADT-Brackets e.Expr) = <IsPassiveCall e.Expr>;
-
-  (CallBrackets e.Expr) = False;
-  (ColdCallBrackets e.Expr) = False;
-
-  t.Other = True;
-}
 
 /**
-  <OptTree-Drive-Expr (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr>
-    == t.OptInfo^ e.Branches (e.NewFunctions)
+  <OptTree-Drive-Expr (e.UsedVars) t.OptInfo e.Expr>
+    == t.OptInfo^ e.FlatBranches (e.NewFunctions)
 
-  e.Branches ::= (e.Contractions (e.DrivenExpr))*
+  e.FlatBranches ::= (e.Contractions (e.DrivenExpr))*
   e.UsedVars, e.WholeVars ::= (s.Mode e.Index)*
 */
 $ENTRY OptTree-Drive-Expr {
-  (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr
-    = <MakeDriveTree (0) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr (0)>
+  (e.UsedVars) t.OptInfo e.Expr
+    = <ExpandClosures-Result e.Expr> : e.Expr^
+    = <MakeDriveTree (0) (e.UsedVars) t.OptInfo e.Expr (0)>
     : ((s._CntNodes) t.OptInfo^ (e.NewFunctions)) e.DriveTree
-    = t.OptInfo <ColdTree <MapUnBracket <FlatDriveTree e.DriveTree>>>
-      (e.NewFunctions);
-}
-
-MapUnBracket {
-  e.Sequence = <Map &UnBracket e.Sequence>;
-}
-
-ColdTree {
-  e.Branches
-    = <Map
-      {
-        (e.Contractions (e.DrivenExpr))
-          = (e.Contractions (<ColdAll e.DrivenExpr>))
-      }
-      e.Branches
-      >;
+    = t.OptInfo <FlatDriveTree e.DriveTree> (e.NewFunctions);
 }
 
 ColdAll {
@@ -77,100 +42,134 @@ ColdAll {
 
 MaxCntNodes { = 100 }
 
-$DRIVE MaxCntNodes;
+*$xDRIVE MaxCntNodes
 
 MaxTreeDepth { = 20 }
 
-$DRIVE MaxTreeDepth;
+*$xDRIVE MaxTreeDepth
 
 IncWithMax {
-  s.Cnt s.Max, <Compare s.Max s.Cnt> : '+'
-    = <Add s.Cnt 1>;
+  s.Cnt s.Max, <Compare s.Max s.Cnt> : '+' = <Add s.Cnt 1>;
+
   s.Cnt s.Max = s.Max;
 }
 
-CheckExprsLength {
-  0 e._ = TooMany;
-  s.Cnt t.Expr e.Exprs = <CheckExprsLength <Sub s.Cnt 1> e.Exprs>;
-  s.Cnt = OK;
-}
+/*
+  <MakeDriveTree ...> == t.DriveTreeState t.TreeBranch*
+  <GrowDriveTree ...> == t.DriveTreeState t.TreeBranch*
 
+  t.DriveTreeState ::= ((s.CntNodes) t.OptInfo (e.NewFunctions))
+  t.TreeBranch ::= (e.Contractions (e.DrivenRight) (t.TreeBranch*))
+*/
 MakeDriveTree {
-  (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr (s.TreeDepth e.canoninzedExprs)
+  (s.CntNodes) (e.UsedVars) t.OptInfo e.Expr
+  (s.TreeDepth e.canoninzedExprs)
     = (<OptTree-CanonizeExpr e.Expr>) e.canoninzedExprs : e.canoninzedExprs^
-    = <IncWithMax s.CntNodes <MaxCntNodes>> <IncWithMax s.TreeDepth <MaxTreeDepth>>
+    = <IncWithMax s.CntNodes <MaxCntNodes>>
+      <IncWithMax s.TreeDepth <MaxTreeDepth>>
     : s.CntNodes^ s.TreeDepth^
     = <CheckExprsStopRelation e.canoninzedExprs>
     : {
-        True s.Cnt
-          = Generalize s.Cnt;
+        True s.Cnt = Generalize t.OptInfo s.Cnt;
+
         s._ s._, <MaxCntNodes> : s.CntNodes
-          = ((s.CntNodes) t.OptInfo (/* нет функций */))
-            (/* нет сужений */ (e.Expr) (/* пустое дерево */) );
+          = <DriveStateWithLeaf s.CntNodes t.OptInfo <ColdAll e.Expr>>;
+
         s._ s._, <MaxTreeDepth> : s.TreeDepth
-          = ((s.CntNodes) t.OptInfo (/* нет функций */))
-            (/* нет сужений */ (e.Expr) (/* пустое дерево */) );
+          = <DriveStateWithLeaf s.CntNodes t.OptInfo <ColdAll e.Expr>>;
+
         False s._Cnt
           = <GrowDriveTree
-              (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr
+              (s.CntNodes) (e.UsedVars) t.OptInfo e.Expr
               (s.TreeDepth e.canoninzedExprs)
             >;
     };
 }
 
+/*
+  <DriveStateWithLeaf s.CntNodes t.OptInfo e.Expr>
+    == t.DriveTreeState t.TreeBranch    -- one branch
+*/
+DriveStateWithLeaf {
+  s.CntNodes t.OptInfo e.Expr
+    = ((s.CntNodes) t.OptInfo (/* нет функций */))
+      (/* нет сужений */ (e.Expr) (/* пустое дерево */));
+}
+
+gen_e__ { e.arg = e.arg }
+
 GrowDriveTree {
-  (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.Expr
+  (s.CntNodes) (e.UsedVars) t.OptInfo e.Expr
   (s.TreeDepth e.canoninzedExprs)
-    = t.OptInfo
-    : ((e.OptFuncNames) e.OptFuncs)
+    = t.OptInfo : ((e.OptFuncNames) e.OptFuncs)
     = <FindOptimizedCall (e.OptFuncNames) e.Expr>
     : {
         (e.OptFuncNames^ None) e.Expr^
-          = ((s.CntNodes) ((e.OptFuncNames) e.OptFuncs) (/* нет функций */))
-            (/* нет сужений */ (e.Expr) (/* пустое дерево */));
+          = ((e.OptFuncNames) e.OptFuncs) : t.OptInfo^
+          = <DriveStateWithLeaf s.CntNodes t.OptInfo e.Expr>;
 
         (e.OptFuncNames^ t.Call) e.Expr^
-          = <OptExpr-Aux (e.UsedVars) (e.WholeVars) (e.Expr) t.Call e.OptFuncs>
+          = <OptOneCall
+              (e.UsedVars) (e.Expr) <gen_e__> t.Call e.OptFuncs
+            >
           : (e.OptFuncs^) (e.NewFunctions) e.Branches
-          = e.UsedVars <BranchesVars e.Branches>
-          : e.UsedVars^
-          = <MapAccum
-              {
-                ((s.CntNodes^) t.OptInfo^ (e.NewFunctionsAccum)) (e.Contractions (e.DrivenRight))
-                  = <MakeDriveTree
-                      (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo e.DrivenRight
-                      (s.TreeDepth e.canoninzedExprs)
-                    >
-                  : {
-                      ((s.CntNodes^) t.OptInfo^ (e.NewFunctions^)) e.Branches^
-                        = ((s.CntNodes) t.OptInfo  (e.NewFunctionsAccum e.NewFunctions))
-                          (e.Contractions (e.DrivenRight) (e.Branches));
-                      Generalize s.Cnt
-                        = (Generalize s.Cnt);
-                    };
-                (Generalize s.Cnt) (e.Contractions (e.DrivenRight))
-                  = (Generalize s.Cnt);
-              }
-              ((s.CntNodes) ((e.OptFuncNames) e.OptFuncs) (e.NewFunctions))
-              e.Branches
+
+          = ((e.OptFuncNames) e.OptFuncs) : t.OptInfo^
+
+          = <GrowDriveTree-DriveBranches
+              (s.CntNodes) (e.UsedVars) t.OptInfo
+              (s.TreeDepth e.canoninzedExprs) (e.NewFunctions) e.Branches
             >
           : {
-              (Generalize 1) e._DeletedTree
+              Generalize t.OptInfo^ 1
                 = <GrowDriveTree
-                    (s.CntNodes) (e.UsedVars) (e.WholeVars) t.OptInfo
+                    (s.CntNodes) (e.UsedVars) t.OptInfo
                     <RestoreDrivenCall t.Call e.Expr>
                     (s.TreeDepth e.canoninzedExprs)
                   >;
-              (Generalize s.Cnt) e._DeletedTree
-                = Generalize <Sub s.Cnt 1>;
-              e.Tree = e.Tree;
+
+              Generalize t.OptInfo^ s.Cnt = Generalize t.OptInfo <Dec s.Cnt>;
+
+              Tree t.DriveTreeState e.Branches^ = t.DriveTreeState e.Branches;
             };
+      };
+}
+
+GrowDriveTree-DriveBranches {
+  (s.CntNodes) (e.UsedVars) t.OptInfo
+  (s.TreeDepth e.canoninzedExprs) (e.NewFunctions) e.Branches
+    = <MapAccum
+        {
+          ((s.CntNodes^) t.OptInfo^ (e.NewFunctionsAcc))
+          ((e.UsedVars^) e.Contractions (e.DrivenRight))
+            = <MakeDriveTree
+                (s.CntNodes) (e.UsedVars) t.OptInfo e.DrivenRight
+                (s.TreeDepth e.canoninzedExprs)
+              >
+            : {
+                ((s.CntNodes^) t.OptInfo^ (e.NewFunctions^)) e.Branches^
+                  = ((s.CntNodes) t.OptInfo (e.NewFunctionsAcc e.NewFunctions))
+                    (e.Contractions (e.DrivenRight) (e.Branches));
+
+                Generalize t.OptInfo^ s.Cnt = (Generalize t.OptInfo s.Cnt);
+              };
+
+          (Generalize t.OptInfo^ s.Cnt) (e.Contractions (e.DrivenRight))
+            = (Generalize t.OptInfo s.Cnt);
+        }
+        ((s.CntNodes) t.OptInfo (e.NewFunctions))
+        e.Branches
+      >
+    : {
+        (Generalize t.OptInfo^ s.Cnt) e._tree = Generalize t.OptInfo s.Cnt;
+
+        t.DriveTreeState e.Tree = Tree t.DriveTreeState e.Tree;
       };
 }
 
 RestoreDrivenCall {
   t.Call e.Expr
-    = <ApplyContractions e.Expr ((<eDRIVEN> ':' <ColdAll t.Call>)) >
+    = <ApplyContractions e.Expr ((<eDRIVEN> ':' <ColdAll t.Call>))>
 }
 
 CheckExprsStopRelation {
@@ -182,704 +181,283 @@ CheckExprsStopRelation {
   (e.currentExpr) e.historyExprs = False 0;
 }
 
-BranchesVars {
-  e.Branches
-    = <Map
-        {
-          (e.Contractions (e.DrivenExpr)) = <ContractionVars e.Contractions>
-        }
-        e.Branches
-      >;
-}
-
-ContractionVars {
-  e.Contractions
-    = <Map
-        {
-          (t.Var ':' e.Expr) = <ExtractVariables-Expr e.Expr>
-        }
-        e.Contractions
-      >;
-}
-
 FlatDriveTree {
   e.Branches
     = <Map
         {
-          (e.Branch)
-            = (<FlatDriveTreeAux (e.Branch)>)
+          /* лист */
+          (e.Contractions (e.DrivenRight) (/* нет детей */))
+            = (e.Contractions (e.DrivenRight));
+
+          /* внутренний узел */
+          (e.Contractions (e._SkippedDrivenRight) (e.ChildBranches))
+            = <FlatDriveTree e.ChildBranches> : e.FlatBranches
+            = <Map
+                {
+                  (e.BranchContractions (e.DrivenRight))
+                    = (e.Contractions e.BranchContractions (e.DrivenRight))
+                }
+                e.FlatBranches
+              >;
         }
         e.Branches
       >;
 }
 
-FlatDriveTreeAux {
-  (e.Contractions (e.DrivenRight) (e.Branches))
-    = <FlatDriveTree e.Branches> : e.BrachPacks
-    = <FlatDriveTreeSingle (e.Contractions (e.DrivenRight) (e.BrachPacks))>;
-}
-
-FlatDriveTreeSingle {
-  (e.Contractions (e.DrivenRight) (/* пустое дерево */))
-    = (e.Contractions (e.DrivenRight));
-
-  (e.Contractions (e.DrivenRight) (e.BrachPacks))
-    = <Map
-        {
-          (e.Branches)
-            = <Map
-                {
-                  (e.BrachContractions (e.BranchDrivenRight))
-                    = (
-                        <ComposeContractions (e.Contractions) (e.BrachContractions)>
-                        (e.BranchDrivenRight)
-                      )
-                }
-                e.Branches
-              >;
-        }
-        e.BrachPacks
-      >;
-}
-
-ComposeContractions {
-  (e.A) (e.B)
-    = <Map
-        {
-          ((e.ALeft) ':' e.ARight)
-            = (
-                (e.ALeft) ':'
-                <Map
-                  {
-                    e.ARightPart
-                      = <ApplyContractions e.ARightPart (e.B)>;
-                  }
-                  e.ARight
-                >
-              );
-        }
-        e.A
-      > e.B;
-}
-
-OptExpr-Aux {
-  (e.UsedVars) (e.WholeVars) (e.Expr)
+OptOneCall {
+  (e.UsedVars) (e.Expr)
   (CallBrackets (Symbol Name e.Name) e.Args)
-  t.Metatables e.OptFuncs
+  s.Contractions-Mode t.Metatables e.OptFuncs
 
     /* Поиск информации для прогонки */
     = <FindOptInfo e.OptFuncs (e.Name)> : e.OptFuncs^ t.FunctionForDrive
-    = <OptExpr-MakeSubstitutions
-        (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args)
+    = <OptOneCall-MakeSubstitutions
+        s.Contractions-Mode (e.UsedVars) (e.Expr) (e.Args)
         t.FunctionForDrive t.Metatables
       >
-    : t.Metatables^ e.SubstitutionPacks
+    : t.Metatables^ (e.NewFunctions) e.Branches
 
-    = (t.Metatables e.OptFuncs)
-      <MapAccum
-        {
-          (e.NewFunctions) (e.Contractions (e.NewFunction))
-            = (e.NewFunctions e.NewFunction)
-              (e.Contractions (<ApplyContractions e.Expr (e.Contractions)>));
-        }
-        (/* new functions */)
-        e.SubstitutionPacks
-      >;
+    = <FilterScreenedBranches (e.Args) e.Branches> : e.Branches^
+
+    = (s.Contractions-Mode t.Metatables e.OptFuncs)
+      (e.NewFunctions) e.Branches
 }
 
-IntrinsicCall {
-  t.IntrinsicFunction t.Metatables (e.Args) '__Meta_Mu'
-    = <Intrinsic-Mu e.Args t.Metatables>
-    : {
-        t.Metatables^ Ok e.Result
-          = t.Metatables ((<eDRIVEN> ':' e.Result) (/* нет новых функций */));
+FilterScreenedBranches {
+  (e.Args) e.Branches
+    = <Unique <ExtractVariables-Expr e.Args>> : e.Domain
+    = <CreateContext NoMarkupContext e.Domain> : e.PatTemplate
 
-        t.Metatables^ MakeColdCall
-          = t.Metatables <MakeColdSolution t.IntrinsicFunction e.Args>;
-      };
+    = <Map
+        {
+          ((e.UsedVars) e.Contractions (e.Result))
+            = <ApplyContractions e.PatTemplate (e.Contractions)> : e.Pattern
+            = ((e.Pattern) (e.UsedVars) (e.Result));
+        }
+        e.Branches
+      >
+    : e.PseudoSentenences
 
-  t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName
-    = e.BehaviorName
-    : {
-        'Add' = &Intrinsic-Add;
-        'Sub' = &Intrinsic-Sub;
-        'Mul' = &Intrinsic-Mul;
-        'Div' = &Intrinsic-Div;
-        'Mod' = &Intrinsic-Mod;
-        'Divmod' = &Intrinsic-Divmod;
-        'Compare' = &Intrinsic-Compare;
-        'Chr' = &Intrinsic-Chr;
-        'Ord' = &Intrinsic-Ord;
-        'Upper' = &Intrinsic-Upper;
-        'Lower' = &Intrinsic-Lower;
-        'Numb' = &Intrinsic-Numb;
-        'Symb' = &Intrinsic-Symb;
-        'Implode' = &Intrinsic-Implode;
-        'Implode_Ext' = &Intrinsic-Implode_Ext;
-        'Explode' = &Intrinsic-Explode;
-        'Explode_Ext' = &Intrinsic-Explode;
-        'Type' = &Intrinsic-Type;
-        'Lenw' = &Intrinsic-Lenw;
-        'First' = &Intrinsic-First;
-        'Last' = &Intrinsic-Last;
+    = <DoFilterScreenedBranches e.PseudoSentenences> : e.PseudoSentenences^
 
-        e._ = { e._ = MakeColdCall };
-      }
-    : s.TransformFunction
-    = <s.TransformFunction e.Args>
-    : {
-        Ok e.Result = ((<eDRIVEN> ':' e.Result) (/* нет новых функций */));
-        MakeColdCall = <MakeColdSolution t.IntrinsicFunction e.Args>;
-      }
-    : e.Substitutions
-    = t.Metatables e.Substitutions;
+    = <Map
+        {
+          ((e.Pattern) (e.UsedVars) (e.Result))
+            = <RestoreContractions (e.Pattern) (e.PatTemplate)> : e.Contractions
+            = ((e.UsedVars) e.Contractions (e.Result));
+        }
+        e.PseudoSentenences
+      >
+}
+
+DoFilterScreenedBranches {
+  ((e.FirstPattern) (e.FirstUsedVars) (e.FirstResult)) e.PseudoSentenences
+    = ((e.FirstPattern) (e.FirstUsedVars) (e.FirstResult))
+      <DoFilterScreenedBranches
+        <Map
+          {
+            ((e.Pattern) (e.UsedVars) (e.Result))
+              , <GenericMatch (e.Pattern) (e.FirstPattern)> : Clear e._
+              = /* ветвь экранируется, стираем */;
+
+            ((e.Pattern) (e.UsedVars) (e.Result))
+              = ((e.Pattern) (e.UsedVars) (e.Result));
+          }
+          e.PseudoSentenences
+        >
+      >;
+
+  /* пусто */ = /* пусто */;
+}
+
+RestoreContractions {
+  (e.Pattern) (e.PatTemplate)
+    = <GenericMatch (e.Pattern) (e.PatTemplate)> : Clear e.Assigns
+    = <Map
+        {
+          ((Var s.Mode e.Index) ':' (s.Mode e.Index))
+            = /* тривиальные пропускаем */;
+
+          (e.Expr ':' (s.Mode e.Index)) = ((Var s.Mode e.Index) ':' e.Expr)
+        }
+        e.Assigns
+      >
 }
 
 eDRIVEN {
   = (Var 'e' DRIVEN);
 }
 
-Intrinsic-Mu {
-  e.Args t.Metatables
-    , e.Args : t.Function e.MuArg (Symbol Name e.MetatableName)
-    = t.Function
-    : {
-        (Symbol Name e.Name)
-          = t.Metatables Ok (CallBrackets (Symbol Name e.Name) e.MuArg);
-
-        (ClosureBrackets e.Body)
-          = t.Metatables Ok (CallBrackets (ClosureBrackets e.Body) e.MuArg);
-
-        (Symbol Identifier s.Name)
-          , <ArithmeticSymbolToFunction s.Name> : True e.FunctionName
-          = t.Metatables Ok (CallBrackets (Symbol Name e.FunctionName) e.MuArg);
-
-        (Symbol Char s.Name)
-          , <ArithmeticSymbolToFunction s.Name> : True e.FunctionName
-          = t.Metatables Ok (CallBrackets (Symbol Name e.FunctionName) e.MuArg);
-
-        (Symbol Identifier e.Name)
-          = <MakeSubstitution-FromMetatables
-              t.Metatables (e.MetatableName) (e.MuArg) e.Name
-            >;
-
-        (Brackets e.Chars)
-          , <AllChars e.Chars> : Ok e.Name
-          = <MakeSubstitution-FromMetatables
-              t.Metatables (e.MetatableName) (e.MuArg) e.Name
-            >;
-
-        t._ = t.Metatables MakeColdCall;
-      };
-
-  e._ t.Metatables = t.Metatables MakeColdCall;
-}
-
-ArithmeticSymbolToFunction {
-  '+' = True 'Add';
-  '-' = True 'Sub';
-  '/' = True 'Div';
-  '*' = True 'Mul';
-  '%' = True 'Mod';
-  '?' = True 'Residue';
-
-  s._ = False;
-}
-
-AllChars {
-  e.Terms = <DoAllChars () e.Terms>;
-}
-
-DoAllChars {
-  (e.Chars) (Symbol Char s.Char) e.Rest = <DoAllChars (e.Chars s.Char) e.Rest>;
-  (e.Chars) /* empty */ = Ok e.Chars;
-  (e.Chars) e.Rest = Fails;
-}
-
-MakeSubstitution-FromMetatables {
-  t.Metatables (e.MetatableName) (e.MuArg) e.Name
-    = t.Metatables
-    : {
-        (Metatables
-          e.Tables-B ((e.MetatableName) Metatable e.Map) e.Tables-E
-        )
-          = e.Map
-          : {
-              e._ ((Symbol Identifier e.Name) t.Pointer) e._
-                = Ok (CallBrackets t.Pointer e.MuArg);
-
-              e.Other = MakeColdCall;
-            }
-          : e.Result
-          = (Metatables
-              e.Tables-B
-              ((e.MetatableName) Metatable e.Map)
-              e.Tables-E
-            )
-            e.Result;
-
-        t.Metatables^ = t.Metatables MakeColdCall;
-      }
-}
-
-Intrinsic-Add {
-  e.Args
-    = <ArithmArgs e.Args>
-    : {
-        Ok (Const e.Left) (Const e.Right)
-          = Ok <NumberToSymbols <Add (e.Left) e.Right>>;
-
-        Ok (Const 0) (ArithmResult t.ArithmCall) = Ok t.ArithmCall;
-        Ok (ArithmResult t.ArithmCall) (Const 0) = Ok t.ArithmCall;
-
-        e._ = MakeColdCall;
-      };
-}
-
-ArithmArgs {
-  (Brackets e.Left) e.Right
-    , <ArithmOneArg e.Left> : Ok e.Left^
-    , <ArithmOneArg e.Right> : Ok e.Right^
-    = Ok (e.Left) (e.Right);
-
-  (Symbol Char s.Sign) (Symbol Number s.Left) e.Right
-    , <ArithmOneArg e.Right> : Ok e.Right^
-    = Ok (Const s.Sign s.Left) (e.Right);
-
-  (Symbol Number s.Left) e.Right
-    , <ArithmOneArg e.Right> : Ok e.Right^
-    = Ok (Const s.Left) (e.Right);
-
-  e._ = Fails;
-}
-
-ArithmOneArg {
-  (ColdCallBrackets (Symbol Name e.Name) e.Arg)
-    , <ArithmeticFunctions> : e._ (e.Name) e._
-    = Ok ArithmResult (ColdCallBrackets (Symbol Name e.Name) e.Arg);
-
-  e.Number, <Number-Check e.Number> : True
-    = Ok Const <Add 0 <SymbolsToNumber e.Number>>;
-
-  e._ = Fails;
-}
-
-Number-Check {
-  (Symbol Char '+') e.Rest = <Number-Check-AllNumbers e.Rest>;
-  (Symbol Char '-') e.Rest = <Number-Check-AllNumbers e.Rest>;
-
-  e.Rest = <Number-Check-AllNumbers e.Rest>;
-}
-
-Number-Check-AllNumbers {
-  (Symbol Number s._) = True;
-  (Symbol Number s._) e.Rest = <Number-Check-AllNumbers e.Rest>;
-  e._ = False;
-}
-
-SymbolsToNumber {
-  e.Symbols
-    = <Map
-        {
-          (Symbol Char '-') = '-';
-          (Symbol Char '+') = '+';
-          (Symbol Number s.n) = s.n
-        }
-        e.Symbols
-      >
-}
-
-NumberToSymbols {
-  e.Number
-    = <Map
-        {
-          '-' = (Symbol Char '-');
-          '+' = (Symbol Char '+');
-          s.n = (Symbol Number s.n)
-        }
-        e.Number
-      >
-}
-
-ArithmeticFunctions {
-  = ('Add') ('Div') ('Divmod') ('Mod') ('Mul') ('Sub') ('Numb');
-}
-
-Intrinsic-Sub {
-  e.Args
-    = <ArithmArgs e.Args>
-    : {
-        Ok (Const e.Left) (Const e.Right)
-          = Ok <NumberToSymbols <Sub (e.Left) e.Right>>;
-
-        Ok (ArithmResult t.ArithmCall) (Const 0) = Ok t.ArithmCall;
-
-        e._ = MakeColdCall;
-      };
-}
-
-Intrinsic-Mul {
-  e.Args
-    = <ArithmArgs e.Args>
-    : {
-        Ok (Const e.Left) (Const e.Right)
-          = Ok <NumberToSymbols <Mul (e.Left) e.Right>>;
-
-        Ok (Const 1) (ArithmResult t.ArithmCall) = Ok t.ArithmCall;
-        Ok (ArithmResult t.ArithmCall) (Const 1) = Ok t.ArithmCall;
-
-        e._ = MakeColdCall;
-      };
-}
-
-Intrinsic-Div {
-  e.Args
-    = <ArithmArgs e.Args>
-    : {
-        Ok (e._) (Const 0) = MakeColdCall;
-
-        Ok (Const e.Left) (Const e.Right)
-          = Ok <NumberToSymbols <Div (e.Left) e.Right>>;
-
-        Ok (ArithmResult t.ArithmCall) (Const 1) = Ok t.ArithmCall;
-
-        e._ = MakeColdCall;
-      };
-}
-
-Intrinsic-Mod {
-  e.Args
-    = <ArithmArgs e.Args>
-    : {
-        Ok (e._) (Const 0) = MakeColdCall;
-
-        Ok (Const e.Left) (Const e.Right)
-          = Ok <NumberToSymbols <Mod (e.Left) e.Right>>;
-
-        e._ = MakeColdCall;
-      };
-}
-
-Intrinsic-Divmod {
-  e.Args
-    = <ArithmArgs e.Args>
-    : {
-        Ok (e._) (Const 0) = MakeColdCall;
-
-        Ok (Const e.Left) (Const e.Right)
-          = <Divmod (e.Left) e.Right> : (e.Q) e.R
-          = Ok (Brackets <NumberToSymbols e.Q>) <NumberToSymbols e.R>;
-
-        Ok (ArithmResult t.ArithmCall) (Const 1)
-          = Ok (Brackets t.ArithmCall) (Symbol Number 0);
-
-        e._ = MakeColdCall;
-      };
-}
-
-Intrinsic-Compare {
-  e.Args
-    , <ArithmArgs e.Args> : Ok (Const e.Left) (Const e.Right)
-    = Ok (Symbol Char <Compare (e.Left) e.Right>);
-
-  e._ = MakeColdCall;
-}
-
 /*
-  TODO: уточнить семантику функций Chr, Ord, Upper, Lower.
-
-  Функции не должны увеличивать число шагов рефал-машины.
-
-  Сейчас:
-  <Chr 48 e.X 48 <F> 48> → '@' <Chr e.X> '@' <Chr <F>> '@'
-  А должно быть:
-  <Chr 48 e.X 48 <F> 48> → '@' <Chr e.X 48 <F>> '@'
-
-  Кроме того, нужно поддерживать спуск внутрь структурных скобок
-  (сейчас не поддерживается).
-*/
-Intrinsic-Chr {
-  e.Args
-    , <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Number> : True
-    = <StaticSubstitution (e.Args) ('Chr') &Chr Number Char> : e.Substitution
-    = Ok e.Substitution;
-
-  e.Args = MakeColdCall;
-}
-
-CheckArgs-Intrinsic-StaticSubstitution {
-  (e.Args) s.SymbolName
-    = e.Args
-    : {
-        (Symbol s.SymbolName e.Name) e.Rest
-          = <CheckArgs-Intrinsic-StaticSubstitution (e.Rest) s.SymbolName>;
-
-        (Var e.Var) e.Rest
-          = <CheckArgs-Intrinsic-StaticSubstitution (e.Rest) s.SymbolName>;
-
-        (ColdCallBrackets e.Body) e.Rest
-          = <CheckArgs-Intrinsic-StaticSubstitution (e.Rest) s.SymbolName>;
-
-        t.Other e.Rest = False;
-
-        /* пусто */ = True;
-      }
-}
-
-StaticSubstitution {
-  (e.Args) (e.FuncName) s.Func s.SymbolFrom s.SymbolTo
-    = <Map
-        {
-          (Symbol s.SymbolFrom s.n)
-            = (Symbol s.SymbolTo <s.Func s.n>);
-
-          (Var e.Var)
-            = (ColdCallBrackets (Symbol Name e.FuncName) (Var e.Var));
-
-          (ColdCallBrackets e.Body)
-            = (ColdCallBrackets
-                (Symbol Name e.FuncName) (ColdCallBrackets e.Body)
-              );
-        }
-        e.Args
-      >
-}
-
-Intrinsic-Ord {
-  e.Args
-    , <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
-    = <StaticSubstitution (e.Args) ('Ord') &Ord Char Number> : e.Substitution
-    = Ok e.Substitution;
-
-  e.Args = MakeColdCall;
-}
-
-Intrinsic-Upper {
-  e.Args
-    , <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
-    = <StaticSubstitution (e.Args) ('Upper') &Upper Char Char> : e.Substitution
-    = Ok e.Substitution;
-
-  e.Args = MakeColdCall;
-}
-
-Intrinsic-Lower {
-  e.Args
-    , <CheckArgs-Intrinsic-StaticSubstitution (e.Args) Char> : True
-    = <StaticSubstitution (e.Args) ('Lower') &Lower Char Char> : e.Substitution
-    = Ok e.Substitution;
-
-  e.Args = MakeColdCall;
-}
-
-Intrinsic-Numb {
-  e.Args
-    , <AllChars e.Args> : Ok e.Chars
-    = <NumberToSymbols <Numb e.Chars>> : e.Result
-    = Ok e.Result;
-
-  e.Args = MakeColdCall;
-}
-
-Intrinsic-Symb {
-  e.Args
-    , <ArithmOneArg e.Args> : Ok Const e._
-    = <Symb <SymbolsToNumber e.Args>> : e.Numbers
-    = <CharToNode e.Numbers> : e.Result
-    = Ok e.Result;
-
-  e.Args = MakeColdCall;
-}
-
-CharToNode {
-  e.Char = <Map { s.a = (Symbol Char s.a) } e.Char>
-}
-
-Intrinsic-Implode {
-  e.Args
-    , <AllChars e.Args> : Ok e.Chars
-    = <Implode e.Chars> : s.Ident e.NonIdent
-    = s.Ident
-    : {
-        0 = (Symbol Number 0);
-        e._ = (Symbol Identifier <Explode s.Ident>)
-      }
-    : e.Result
-    = Ok e.Result <CharToNode e.NonIdent>;
-
-  e.Args = MakeColdCall;
-}
-
-Intrinsic-Implode_Ext {
-  e.Args, <AllChars e.Args> : Ok e.Chars = Ok (Symbol Identifier e.Chars);
-
-  e.Args = MakeColdCall;
-}
-
-Intrinsic-Explode {
-  (Symbol Identifier e.Name) = Ok <CharToNode e.Name>;
-
-  e._ = MakeColdCall;
-}
-
-Intrinsic-Type {
-  (CallBrackets e._) e._ = MakeColdCall;
-  (ColdCallBrackets e._) e._ = MakeColdCall;
-  (Var e._) e._ = MakeColdCall;
-
-  t.Term e.Rest
-    = t.Term
-    : {
-        (Symbol Number s._) = 'N0';
-        (Symbol Char s.Char) = <Type s.Char>;
-        (Symbol Identifier e.Name) = <Type <Implode_Ext e.Name>>;
-        (Symbol Name e._) = 'Fg';
-        (ClosureBrackets e._) = 'Fc';
-        (Brackets e._) = 'B0';
-        (ADT-Brackets (e._) e._) = 'Ba';
-      }
-    : s.Type s.SubType e._
-    = Ok (Symbol Char s.Type) (Symbol Char s.SubType) t.Term e.Rest;
-
-  /* empty */ = Ok (Symbol Char '*') (Symbol Char '0');
-}
-
-Intrinsic-Lenw {
-  e.Args
-    , <FixedLength e.Args> : True
-    = <Lenw e.Args> : s.Len e.Args^
-    = Ok (Symbol Number s.Len) e.Args;
-
-  e._ = MakeColdCall;
-}
-
-FixedLength {
-  e._ (Var 'e' e._) e._ = False;
-  e._ (CallBrackets e._) e._ = False;
-  e._ (ColdCallBrackets e._) e._ = False;
-
-  e._ = True;
-}
-
-Intrinsic-First {
-  (Symbol Number s.N) e.Expr
-    , <First s.N e.Expr> : (e.Prefix) e.Suffix
-    , <FixedLength e.Prefix> : True
-    = Ok (Brackets e.Prefix) e.Suffix;
-
-  e._ = MakeColdCall;
-}
-
-Intrinsic-Last {
-  (Symbol Number s.N) e.Expr
-    , <Last s.N e.Expr> : (e.Prefix) e.Suffix
-    , <FixedLength e.Suffix> : True
-    = Ok (Brackets e.Prefix) e.Suffix;
-
-  e._ = MakeColdCall;
-}
-
-/*
-  <OptExpr-MakeSubstitutions
-    (e.UsedVars) (e.WholeVars) (e.Expr) (e.CallArgs) t.OptFunction t.Metatables
+  <OptOneCall-MakeSubstitutions
+    s.Contractions-Mode
+    (e.UsedVars) (e.Expr) (e.CallArgs) t.OptFunction t.Metatables
   >
-    == t.Metatables (e.Substitutions)*
-  e.Substitutions ::= e.Contractions (e.NewFunctions)
+    == t.Metatables (e.NewFunctions) (e.Branches)*
+  e.Branches ::= (e.UsedVars) e.Contractions (e.Expr^)
 
   e.Contractions включают в себя сужение e.DRIVEN для подстановки
   правой части.
 */
-OptExpr-MakeSubstitutions {
-  (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args) t.IntrinsicFunction t.Metatables
-    , t.IntrinsicFunction : (Intrinsic (e._) Intrinsic e.BehaviorName)
-    = <IntrinsicCall t.IntrinsicFunction t.Metatables (e.Args) e.BehaviorName>;
+OptOneCall-MakeSubstitutions {
+  s.Contractions-Mode (e.UsedVars) (e.Expr) (e.Args) t.Function t.Metatables
 
-  (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args) t.Function t.Metatables
-    /* Активные вызовы игнорируем */
-    , <IsPassiveCall e.Args> : False
+    = <OptOneCall-MakeSubstitutions-Aux
+        s.Contractions-Mode (e.UsedVars) (e.Args) t.Function t.Metatables
+      >
+    : t.Metatables^ e.SubstitutionPacks
 
-    = t.Metatables <MakeColdSolution t.Function e.Args>;
+    = <MapAccum
+        {
+          (e.NewFunctions) ((e.UsedVars^) e.Contractions (e.NewFunction))
+            = <ApplyContractions e.Expr (e.Contractions)> : e.DrivenRight
+            = <ExpandClosures-Result e.DrivenRight> : e.DrivenRight^
+            = (e.NewFunctions e.NewFunction)
+              ((e.UsedVars) e.Contractions (e.DrivenRight));
+        }
+        (/* new functions */)
+        e.SubstitutionPacks
+      >
+    : (e.NewFunctions) e.Branches
 
-  (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args)
-  (s.FuncMode (e.Name) Sentences e.Body) t.Metatables
+    = t.Metatables (e.NewFunctions) e.Branches
+}
 
-    = s.FuncMode
+OptOneCall-MakeSubstitutions-Aux {
+  s.Contractions-Mode (e.UsedVars) (e.Args) t.IntrinsicFunction t.Metatables
+    , t.IntrinsicFunction : ((e._) Intrinsic e.BehaviorName)
+    = <OptTree-Drive-Intrinsic t.Metatables (e.Args) e.BehaviorName>
     : {
-        Drive = e.WholeVars;
-        Inline = e.UsedVars;
+        t.Metatables^ Ok e.Result
+          = t.Metatables
+            ((e.UsedVars) (<eDRIVEN> ':' e.Result) (/* нет новых функций */));
+
+        t.Metatables^ MakeColdCall
+          = t.Metatables
+            <MakeColdSolution (e.UsedVars) t.IntrinsicFunction e.Args>;
+      };
+
+  s.Contractions-Mode
+  (e.UsedVars) (e.Args) ((e.Name) Sentences e.Body) t.Metatables
+
+    = <ExtractCalls e.Args> : (e.Calls) (e.CallOrder) e.Args^
+
+    = s.Contractions-Mode
+    : {
+        Contractions-Enabled = e.Args;
+        Contractions-Disabled = <MarkAllVarsAsWhole e.Args>;
       }
-    : e.WholeVars^
+    : e.Args^
 
     = t.Metatables
-      <DoOptExpr-MakeSubstitutions
-        (e.UsedVars) (e.WholeVars) (e.Args)
-        (/* substitutions */)
-        (Function (e.Name) Sentences e.Body)
+      <DoOptOneCall-MakeSubstitutions
+        (e.UsedVars) (e.Args) (/* substitutions */) (e.Calls) (e.CallOrder)
+        ((e.Name) Sentences e.Body)
       >;
+}
 
-  (e.UsedVars) (e.WholeVars) (e.Expr) (e.Args) t.Function t.Metatables
-    = t.Metatables <MakeColdSolution t.Function e.Args>;
+ExtractCalls {
+  e.Arg
+    = <ExtractCallsRec (0 (/* пусто */) (/* пусто */)) e.Arg>
+    : (s.NextId (e.Calls) (e.CallOrder)) e.Arg^
+    = (e.Calls) (e.CallOrder) e.Arg
+}
+
+ExtractCallsRec {
+  t.State e.Expr
+    = <MapAccum
+        {
+          (s.NextId (e.Calls) (e.CallOrder))
+          (s.CallBrackets e.Content)
+            , CallBrackets ColdCallBrackets : e._ s.CallBrackets e._
+            , e.Calls
+            : {
+                e._ ((s.CallBrackets e.Content) ':' t.Var) e._
+                  = (s.NextId (e.Calls) (e.CallOrder t.Var)) t.Var;
+
+                e._
+                  = (WhVar 'e' CALL s.NextId) : t.Var
+                  = (s.CallBrackets e.Content) : t.Call
+                  = (
+                      <Inc s.NextId>
+                      (e.Calls (t.Call ':' t.Var))
+                      (e.CallOrder t.Var)
+                    )
+                    t.Var;
+              };
+
+          t.State^ (s.Brackets e.Content)
+            , Brackets ClosureBrackets : e._ s.Brackets e._
+            = <ExtractCallsRec t.State e.Content> : t.State^ e.Content^
+            = t.State (s.Brackets e.Content);
+
+          t.State^ (ADT-Brackets (e.Name) e.Content)
+            = <ExtractCallsRec t.State e.Content> : t.State^ e.Content^
+            = t.State (ADT-Brackets (e.Name) e.Content);
+
+          t.State^ t.Other = t.State t.Other;
+        }
+        t.State e.Expr
+      >
 }
 
 MakeColdSolution {
-  (s.FuncMode (e.Name) s.BodyLabel e.Body) e.Args
+  (e.UsedVars) ((e.Name) Sentences e.Body) e.Args
     , e.Name : e.Prefix '*' s.Num
     = (
+        (e.UsedVars)
         (<eDRIVEN> ':' (ColdCallBrackets (Symbol Name e.Name) e.Args))
-        ((NewFunction GN-Local (e.Name) s.BodyLabel e.Body))
+        ((NewFunction (e.Name) Sentences e.Body))
       );
 
-  (s.FuncMode (e.Name) s.BodyLabel e.Body) e.Args
+  (e.UsedVars) ((e.Name) s._ e.Body) e.Args
     = (
+        (e.UsedVars)
         (<eDRIVEN> ':' (ColdCallBrackets (Symbol Name e.Name) e.Args))
         (/* нет новых функций */)
       );
 }
 
-DoOptExpr-MakeSubstitutions {
-  (e.SentenceVars) (e.WholeVars) (e.Args) (e.Substitutions)
-  (Function (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+DoOptOneCall-MakeSubstitutions {
+  (e.SentenceVars) (e.Args) (e.Substitutions) (e.Calls) (e.CallOrder)
+  ((e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
     = <Cleanup-Step-Drop e.RS> : e.RS^
     = <Solve-Drive (e.SentenceVars) ((e.Args) ':' (e.LS))>
     : {
-        /*
-          В случае решения без сужений просто применяем замены.
-        */
-        Success (() (e.Assigns))
-          = <ApplyAssigns e.RS (e.Assigns)> : e.CallReplacer
-          = e.Substitutions
-            ((<eDRIVEN> ':' e.CallReplacer) (/* нет новых функций */));
-
-        /*
-          «Грязное» решение допускаем только в случае прогонки.
-        */
         Success e.Solutions
-          , <SafeContractions e.Solutions (e.WholeVars)> : True
           = <Map
               {
-                ((e.Contrs) (e.Assigns))
-                  = <ApplyAssigns e.RS (e.Assigns)> : e.CallReplacer
-                  = e.Contrs (<eDRIVEN> ':' e.CallReplacer) : e.Contrs^
-                  = (e.Contrs (/* нет новых функций */));
+                (e.UsedVars (e.Contrs) (e.Assigns))
+                  = <ApplyAssigns e.RS (e.Assigns)> : e.RS^
+                  = <CheckCallOrder (e.CallOrder) e.RS>
+                  : {
+                      Valid
+                        = <ApplyAssigns e.RS (e.Calls)> : e.CallReplacer
+                        = (<eDRIVEN> ':' e.CallReplacer) e.Contrs : e.Contrs^
+                        = ((e.UsedVars) e.Contrs (/* нет новых функций */));
+
+                      Invalid = Invalid;
+                    };
               }
               e.Solutions
             >
-          : e.NewSubstitutions
-          = e.Substitutions e.NewSubstitutions : e.Substitutions^
-          = <DoOptExpr-MakeSubstitutions
-              (e.SentenceVars) (e.WholeVars) (e.Args) (e.Substitutions)
-              (Function (<RemainderFuncIncName e.Name>) Sentences e.Rest)
-            >;
+          : {
+              e._ Invalid e._
+                = e.Substitutions
+                  <MakeColdSolution
+                    (e.SentenceVars)
+                    ((e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+                    <ApplyAssigns e.Args (e.Calls)>
+                  >;
 
-        /*
-          При неудаче переходим к следующему предложению, к подстановкам
-          ничего не добавляем.
-        */
-        Failure
-          = <DoOptExpr-MakeSubstitutions
-              (e.SentenceVars) (e.WholeVars) (e.Args) (e.Substitutions)
-              (Function (<RemainderFuncIncName e.Name>) Sentences e.Rest)
-            >;
+            e.NewSubstitutions
+              = e.Substitutions e.NewSubstitutions : e.Substitutions^
+              = <DoOptOneCall-MakeSubstitutions
+                  (e.SentenceVars) (e.Args) (e.Substitutions)
+                  (e.Calls) (e.CallOrder)
+                  ((<RemainderFuncIncName e.Name>) Sentences e.Rest)
+                >;
+            };
 
         /*
           Здесь либо Undefined, либо грязное решение в режиме встраивания,
@@ -888,13 +466,53 @@ DoOptExpr-MakeSubstitutions {
         e.Other
           = e.Substitutions
             <MakeColdSolution
-              (Function (e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
-              e.Args
+              (e.SentenceVars)
+              ((e.Name) Sentences ((e.LS) (e.RS)) e.Rest)
+              <ApplyAssigns e.Args (e.Calls)>
             >;
       };
 
-  (e.SentenceVars) (e.WholeVars) (e.Args) (e.Substitutions) t.RestFunction
-    = e.Substitutions <MakeColdSolution t.RestFunction e.Args>;
+  (e.SentenceVars) (e.Args) (e.Substitutions) (e.Calls) (e.CallOrder)
+  t.RestFunction
+    = e.Substitutions
+      <MakeColdSolution
+        (e.SentenceVars) t.RestFunction
+        <ApplyAssigns e.Args (e.Calls)>
+      >;
+}
+
+CheckCallOrder {
+  (e.CallOrder) e.Expr
+    = <ExtractCallVars e.Expr>
+    : {
+        e.CallOrder e.ClosedCalls
+          , '>' e.ClosedCalls : e.ClosedCalls '>'
+          = Valid;
+
+        e._ = Invalid;
+      }
+}
+
+ExtractCallVars {
+  e.Expr
+    = <Map
+        {
+          (WhVar 'e' CALL s.Id) = (WhVar 'e' CALL s.Id);
+
+          (s.Brackets e.Content)
+            , Brackets ClosureBrackets : e._ s.Brackets e._
+            = <ExtractCallVars e.Content>;
+
+          (s.CallBrackets e.Content)
+            , CallBrackets ColdCallBrackets : e._ s.CallBrackets e._
+            = <ExtractCallVars e.Content> '>';
+
+          (ADT-Brackets (e.Name) e.Content) = <ExtractCallVars e.Content>;
+
+          t.Other = /* пропускаем */;
+        }
+        e.Expr
+      >
 }
 
 Cleanup-Step-Drop {
@@ -906,16 +524,6 @@ Cleanup-Step-Drop {
   (CallBrackets (Symbol Name '__Step-Drop') /* пусто */) e.RS = e.RS;
 
   e.RS = e.RS;
-}
-
-SafeContractions {
-  e.Solutions-B
-  ((e.Contrs-B ((Var s.Mode e.Index) ':' e._) e.Contrs-E) (e.Assigns))
-  e.Solutions-E
-  (e.WholeVars-B (s.Mode e.Index) e.WholeVars-E)
-    = False;
-
-  e.Solutions (e.WholeVars) = True;
 }
 
 DropLeft {
@@ -939,19 +547,19 @@ FindOptInfo {
 }
 
 FindOptInfo-Aux {
-  e.OptFuncs-B (Intrinsic (e.LookupName) e.Body) e.OptFuncs-E
-  (e.Name) (e.LookupName) s._
-  = e.OptFuncs-B (Intrinsic (e.LookupName) e.Body) e.OptFuncs-E
-    (Intrinsic (e.Name) e.Body);
+  e.OptFuncs-B ((e.LookupName) Intrinsic e.Body) e.OptFuncs-E
+  (e.Name) (e.LookupName) 0
+  = e.OptFuncs-B ((e.LookupName) Intrinsic e.Body) e.OptFuncs-E
+    ((e.Name) Intrinsic e.Body);
 
-  e.OptFuncs-B (s.Mode (e.LookupName) e.Body) e.OptFuncs-E
+  e.OptFuncs-B ((e.LookupName) e.Body) e.OptFuncs-E
   (e.Name) (e.LookupName) s.Drop
     = e.Body : Sentences e.Sentences
-    = e.OptFuncs-B (s.Mode (e.LookupName) e.Body) e.OptFuncs-E
-      (s.Mode (e.Name) Sentences <DropLeft e.Sentences s.Drop>);
+    = e.OptFuncs-B ((e.LookupName) e.Body) e.OptFuncs-E
+      ((e.Name) Sentences <DropLeft e.Sentences s.Drop>);
 }
 
-$DRIVE CutSUF;
+*$xDRIVE CutSUF
 
 CutSUF {
   e.Prefix SUF = e.Prefix;
@@ -1023,83 +631,6 @@ FindOptimizedCall-Term {
 
   (e.OptFuncNames t.Found) t.AnyTerm
     = (e.OptFuncNames t.Found) t.AnyTerm;
-}
-
-/*
-  <ApplyAssigns e.Expr (e.Assigns)> == e.Expr^
-*/
-
-ApplyAssigns {
-  e.Expr (e.Assigns)
-    = <Map
-        {
-          t.T = <ApplyAssigns-Term t.T (e.Assigns)>
-        }
-        e.Expr
-      >
-}
-
-ApplyAssigns-Term {
-  (Brackets e.Expr) (e.Assigns) = (Brackets <ApplyAssigns e.Expr (e.Assigns)>);
-
-  (CallBrackets e.Args) (e.Assigns)
-    = (CallBrackets <ApplyAssigns e.Args (e.Assigns)>);
-
-  (ColdCallBrackets e.Args) (e.Assigns)
-    = (ColdCallBrackets <ApplyAssigns e.Args (e.Assigns)>);
-
-  (ClosureBrackets e.Args) (e.Assigns)
-    = (ClosureBrackets <ApplyAssigns e.Args (e.Assigns)>);
-
-  (ADT-Brackets (e.Name) e.Expr) (e.Assigns)
-    = (ADT-Brackets (e.Name) <ApplyAssigns e.Expr (e.Assigns)>);
-
-  t.T (e.B (e.Asgn ':' t.T) e.E)
-    =  e.Asgn;
-
-  t.T (e.Assigns) = t.T;
-}
-
-/**
-  <ApplyContractions (e.Expr) (e.Contrs) == e.Expr^
-*/
-$ENTRY ApplyContractions {
-  e.Expr (e.Contrs)
-    = <Map
-        {
-          t.T = <ApplyContractions-Term t.T (e.Contrs)>
-        }
-        e.Expr
-      >;
-}
-
-ApplyContractions-Term {
-  (Brackets e.Expr) (e.Contrs)
-    = (Brackets <ApplyContractions e.Expr (e.Contrs)>);
-
-  (CallBrackets e.Args) (e.Contrs)
-    = (CallBrackets <ApplyContractions e.Args (e.Contrs)>);
-
-  (ColdCallBrackets e.OriginArgs) (e.Contrs)
-    = <ApplyContractions e.OriginArgs (e.Contrs)>
-    : {
-*       Содержимое холодных скобок не изменилось, оставляем их холодными
-        e.OriginArgs = (ColdCallBrackets e.OriginArgs);
-
-*       Содержимое обновилось, оттаиваем скобки
-        e.ChangedArgs = (CallBrackets e.ChangedArgs);
-      };
-
-  (ClosureBrackets e.Args) (e.Contrs)
-    = (ClosureBrackets <ApplyContractions e.Args (e.Contrs)>);
-
-  (ADT-Brackets (e.Name) e.Expr) (e.Contrs)
-    = (ADT-Brackets (e.Name) <ApplyContractions e.Expr (e.Contrs)>);
-
-  t.Term (e.B (t.Term ':' e.Contr) e.E)
-    = <ApplyContractions e.Contr (e.B (t.Term ':' e.Contr) e.E)>;
-
-  t.T (e.Contrs) = t.T
 }
 
 /*

@@ -839,7 +839,7 @@ ZeroHandle {
   s.FileNo s.Default = s.FileNo;
 }
 
-$LABEL stdin, stdout, stderr, stout;
+*$IDENT stdin, stdout, stderr, stout
 
 %%
 namespace {
@@ -2542,7 +2542,7 @@ $ENTRY Close {
   55. <ExistFile e.FileName> == True | False
   e.FileName ::= s.CHAR*
 */
-$LABEL True, False;
+*$IDENT True, False
 
 $ENTRY ExistFile {
 %%
@@ -3585,7 +3585,7 @@ $ENTRY FTell {
   s.Sign ::= '+' | '-'
   s.Offset ::= s.MACRODIGIT
 */
-$LABEL CURRENT, BEGIN, END;
+*$IDENT CURRENT, BEGIN, END
 
 $ENTRY FSeek {
 %%
@@ -3706,7 +3706,7 @@ $ENTRY RenameFile {
   e.Errors ::= пусто
   TODO: поддержка сообщений об ошибках
 */
-$LABEL Success, Fails;
+*$IDENT Success, Fails
 
 $ENTRY Module-Load {
 %%
@@ -3799,7 +3799,7 @@ $ENTRY Module-Unload {
   s.FunctionName ::= s.COMPOUND
   e.FunctionName ::= s.CHAR+
 */
-$LABEL GLOBAL, CURRENT, CURRENT-AND-GLOBAL;
+*$IDENT GLOBAL, CURRENT, CURRENT-AND-GLOBAL
 
 %%
 namespace cookie_ns {

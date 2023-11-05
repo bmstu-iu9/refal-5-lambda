@@ -7,6 +7,7 @@ goto :EOF
 
 :MAIN
 setlocal
+  if exist __dump.txt erase __dump.txt
   call :REGRESSION || exit /b 1
   call :NEW_TESTS || exit /b 1
 endlocal
@@ -14,6 +15,7 @@ goto :EOF
 
 :REGRESSION
 setlocal
+  dir saved-test-*.ref
   for %%r in (saved-test-*.ref) do (
     call :RUN_TEST "%%r" ^
       && call :RUN_TEST "%%r" -Wall ^
@@ -63,6 +65,7 @@ setlocal
   set NOW=%NOW:/=-%
   ..\..\bin\nemytykh-random-program-generator.exe %LOOPS% _%NOW%
   echo gen (%NOW%) %TIME%>>time.txt
+  dir test-*.ref
   for %%r in (test-*.ref) do (
     call :RUN_TEST "%%r" ^
       && call :RUN_TEST "%%r" -Wall ^
@@ -114,10 +117,9 @@ setlocal
     2>%FILE%.err%FLAGS% >%FILE%.out%FLAGS%
 
   if not exist %FILE%.rasl (
-    echo FILE %FILE%.ref:
-    echo ============================================================
-    type %FILE%.ref
-    echo ============================================================
+    exit /b 1
+  )
+  if exist __dump.txt (
     exit /b 1
   )
   erase %FILE%.rasl

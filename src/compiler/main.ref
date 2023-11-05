@@ -72,6 +72,8 @@ Main-SwValidCommandLine {
     = <ReportErrors t.CommandLineSource NoConfig e.Errors>;
 }
 
+*$xDRIVE ReportErrors, ReportWarnings, ReportMessages
+
 ReportErrors {
   t.CommandLineSource t.Config e.Errors
     = <ReportMessages (&OnErrors 'Error') t.CommandLineSource t.Config e.Errors>;
@@ -346,12 +348,14 @@ RenameLocations-Aux {
     = e.NewLocations;
 }
 
-$INLINE AddNumSuffix;
+*$xDRIVE AddNumSuffix
 
 AddNumSuffix {
   0 e.Output = e.Output;
-  s.Num e.Output = e.Output '@' <Symb s.Num>;
+  s.Num e.Output = e.Output '@' <gen_e__ <Symb s.Num>>;
 }
+
+gen_e__ { e.arg = e.arg }
 
 FindFreeName {
   s.Num e.Output
@@ -663,8 +667,9 @@ Link-R {
 
 Link-WithPrefix {
   (e.PrefixFileName) t.Config e.Files
+    = <Config-GetTargetMode t.Config> : s.TargetMode
     = <Link-Aux
-        <Config-GetTargetMode t.Config>
+        s.TargetMode
         {
           e.IntermediateName
             = <CopyPrefix (e.PrefixFileName) (e.IntermediateName)>
@@ -705,8 +710,9 @@ Link-CppCompile {
         e.CommandLineSuf^ = ' "' <Trim e.CommandLineSuf> '"';
       }
     : e.CommandLineSuf^
+    = <Config-GetTargetMode t.Config> : s.TargetMode
     = <Link-Aux
-        <Config-GetTargetMode t.Config>
+        s.TargetMode
         {
           e.IntermediateName
             = <System
@@ -924,8 +930,23 @@ GlueNames {
 
 CopyPrefix {
   (e.OriginalPrefixName) (e.NewExeName)
-    = <SaveBytes (e.NewExeName) <LoadBytes e.OriginalPrefixName>>;
+    = <Open-Auto "rb" e.OriginalPrefixName> : s.SrcHandle
+    = <Open-Auto "wb" e.NewExeName> : s.DestHandle
+    = <DoCopyPrefix s.SrcHandle s.DestHandle>
 }
+
+DoCopyPrefix {
+  s.SrcHandle s.DestHandle
+    = <ReadBytes s.SrcHandle 4096>
+    : {
+        /* пусто */ = <Close s.SrcHandle> <Close s.DestHandle>;
+        e.Bytes
+          = <WriteBytes s.DestHandle e.Bytes>
+            <DoCopyPrefix s.SrcHandle s.DestHandle>;
+      }
+}
+
+*$xDRIVE LinkError
 
 LinkError {
   t.Config e.Message

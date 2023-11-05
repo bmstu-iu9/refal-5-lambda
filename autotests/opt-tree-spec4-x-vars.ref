@@ -7,13 +7,13 @@ $ENTRY Go {
     = /* empty */;
 }
 
-$SPEC F (e.LEFT) e.RIGHT;
+*$SPEC F;
 
 F {
   (e.Left) e.Right = <G (e.Left) e.Right>;
 }
 
-$SPEC G (e.LEFT) e.right;
+*$SPEC G;
 
 G {
   (e.Left) '*' e.Right = <F (e.Left '*') e.Right>;

@@ -75,6 +75,8 @@ GenResult {
       >;
 }
 
+*$NOOPT DoGenResult
+
 DoGenResult {
  (e.Vars) (e.AllocCommands) (e.Commands)
   s.Counter (TkOpenCallCond s.Offset) e.Result =
@@ -303,5 +305,5 @@ ReplicateVar {
 
 MakeVariableComment {
   (s.Offset s.Mode e.Index)
-    = (CmdComment Offset s.Offset ': ' <PrintVar s.Mode e.Index>);
+    = (CmdComment { = <Symb s.Offset> ': ' <PrintVar s.Mode e.Index> });
 }

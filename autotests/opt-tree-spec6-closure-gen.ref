@@ -2,12 +2,14 @@
 
 $ENTRY Go {
   e.X
-    = <S { = e.X } 'abc'> : s.Closure
+    = <S { = e.X } <gen_e__ 'abc'>> : s.Closure
     = <<<<s.Closure>>>> : e.X
     = /* empty */;
 }
 
-$SPEC S s.CLOSURE e.items;
+gen_e__ { e.arg = e.arg }
+
+*$SPEC S;
 
 S {
   s.Closure s._ e.Y = <S { = s.Closure } e.Y>;

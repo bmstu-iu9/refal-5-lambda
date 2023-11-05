@@ -12,7 +12,7 @@ compile_separated() {
   for s in ${LIBS}; do
     # shellcheck disable=SC2086
     ../../bin/rlc-core -C ${RLC_FLAGS} "$s" -d common \
-      --prelude=refal5-builtins.refi || exit 1
+      --prelude=refal5-builtins.refi -Wno-intrinsic || exit 1
     ../../bin/rlc-core --no-sources -R -o inco.bin \
       --incorporated="$s" || exit 1
     grep '//FROM' < "$s".ref > "$TARGET/$s".rasl.froms
@@ -78,7 +78,7 @@ compile_dynamic() {
   (
     cd tmp && for l in ${LIBRARIES}; do
       cp ../"$l".ref .
-      ../../../bin/rlmake --scratch --makelib \
+      ../../../bin/rlmake --scratch --makelib -X-Wno-intrinsic \
         -o ../../../lib/"$l$(platform_lib_suffix)" "$l".ref || exit 1
         rm -- "$l".ref
     done

@@ -256,7 +256,7 @@ $ENUM Ev-met;
 $META Residue;
 
 __Meta_Residue { e.Arg = <__Step-Drop> <__Meta_Mu e.Arg> }
-$INLINE __Meta_Residue;
+*$DRIVE __Meta_Residue
 
 
 * 51. GetEnv

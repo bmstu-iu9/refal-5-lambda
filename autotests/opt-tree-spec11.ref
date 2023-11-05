@@ -8,7 +8,7 @@ F {
   e.X = <G (e.X) '+' (e.X)>
 }
 
-$SPEC G e.arg;
+*$SPEC G;
 
 G {
   (e.A '@' e.B) s.R (e.C '#' e.D) = (e.A) s.R (e.B) s.R (e.C) s.R (e.D);

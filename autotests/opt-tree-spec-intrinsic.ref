@@ -8,7 +8,7 @@ $ENTRY Go {
     = /* empty */;
 }
 
-$SPEC EnumExprs s.NUM (e.PAT) (e.pat) (e.RES) (e.res);
+*$SPEC EnumExprs;
 
 EnumExprs {
   s.Num

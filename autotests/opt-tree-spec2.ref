@@ -43,7 +43,7 @@ Symb {
   1 = '1'; 2 = '2'; 3 = '3';
 }
 
-$SPEC Map s.FUNC e.items;
+*$SPEC Map;
 
 Map {
   s.Fn t.Next e.Rest = <s.Fn t.Next> <Map s.Fn e.Rest>;

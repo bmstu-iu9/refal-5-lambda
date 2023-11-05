@@ -1,0 +1,14 @@
+* TREE
+
+$ENTRY Go {
+  e.A
+    = <S <gen_e__ e.A> { A B C = e.A } e.A 1> : s.F
+    = <s.F A B C> : /* empty */
+    = /* empty */
+}
+
+S {
+  s.X s.Y e.Z = s.X
+}
+
+gen_e__ { e.X = e.X }

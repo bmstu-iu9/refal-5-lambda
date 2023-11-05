@@ -1,0 +1,369 @@
+$INCLUDE "LibraryEx";
+
+*$FROM TreeUtils
+$EXTERN HashName;
+
+
+/**
+  <OptTree-AutoMarkup-Drive e.AST> == e.AST
+
+  e.RootSet ::= (e.FuncName)*
+*/
+
+$ENTRY OptTree-AutoMarkup-Drive {
+  e.AST
+    = <MapAccum
+        {
+          (Drives e.Drives) (Function (e.Name) Sentences e.Body)
+            = <Lenw e.Body>
+            : {
+                0 /* пусто */ = e.Drives (e.Body);
+
+                s.SentencesCount e.Body^, <Compare s.SentencesCount 20> : '+'
+                  = e.Drives (e.Body);
+
+                s.SentencesCount e.Body^ = e.Drives (e.Name) (e.Body);
+              }
+            : e.Drives^ (e.Body^)
+            = (Drives e.Drives) (Function (e.Name) Sentences e.Body);
+
+          /* пользовательскую разметку игнорируем */
+          (Drives e.Drives) (Drives e._)
+            = (Drives e.Drives) /* игнорируем */;
+
+          (Drives e.Drives) t.Other = (Drives e.Drives) t.Other;
+        }
+        (Drives /* пусто */) e.AST
+      >
+}
+
+
+/**
+  <OptTree-AutoMarkup-DriveInstances e.AST> == e.AST
+*/
+$ENTRY OptTree-AutoMarkup-DriveInstances {
+  e.AST
+    = <MapAccum
+        {
+          /* помечаем экземпляры */
+          (Drives e.Drives) (Function (e.Name) Sentences e.Body)
+            , e.Name : e._ '@' s._
+            = (Drives e.Drives (e.Name)) (Function (e.Name) Sentences e.Body);
+
+          /* старую разметку игнорируем, если она была */
+          (Drives e.Drives) (Drives e._) = (Drives e.Drives) /* игнорируем */;
+
+          (Drives e.Drives) t.Other = (Drives e.Drives) t.Other;
+        }
+        (Drives /* пусто */) e.AST
+      >
+}
+
+
+MakeGraphNode {
+  (Function (e.MetatableName) Metatable e.Metatable)
+    = <Map
+        {
+          (t.FuncName-Word (Symbol Name e.Name)) = (Call e.Name);
+        }
+        e.Metatable
+      >
+    : e.Children
+    = (Func (e.MetatableName) Children (e.Children (INDIRECT)));
+
+  (Function (e.Name) Sentences e.Sentences)
+    = (Func (e.Name) Children (<Children-Body e.Sentences>));
+
+  t._ = /* пропускаем */;
+}
+
+Children-Body {
+  e.Sentences
+    = <Map
+        {
+          ((e.Pattern) e.Conditions (e.Result))
+            = <Unique
+                <Children-Expr e.Pattern>
+                <Map
+                  {
+                    (Condition (e._) (e.CondResult) (e.CondPattern))
+                      = <Children-Expr e.CondResult>
+                        <Children-Expr e.CondPattern>
+                  }
+                  e.Conditions
+                >
+                <Children-Expr e.Result>
+              >
+        }
+        e.Sentences
+      >;
+}
+
+Children-Expr {
+  e.Expression = <Map &Children-Term e.Expression>
+}
+
+Children-Term {
+  (CallBrackets (Symbol Name e.Name) e.Expr)
+    = (Call e.Name) <Children-Expr e.Expr>;
+
+  (CallBrackets (ClosureBrackets (Symbol Name e.Name) e.Context) e.Expr)
+    = (Call e.Name) <Children-Expr e.Context> <Children-Expr e.Expr>;
+
+  (CallBrackets e.Expr) = (INDIRECT) <Children-Expr e.Expr>;
+
+  (Symbol Name e.Name) = (Pointer e.Name);
+
+  (ADT-Brackets (e.Name) e.Expr) = (Pointer e.Name) <Children-Expr e.Expr>;
+
+  (s.Brackets e.Expr)
+    , Brackets ClosureBrackets : e._ s.Brackets e._
+    = <Children-Expr e.Expr>;
+
+  t.AnyOtherTerm = /* ничего интересного */;
+}
+
+/*
+  <BasicVertexes e.Graph (e.Roots)>
+    == (ToDrive e.FuncNames) (Basics e.FuncNames) (Unreachable e.FuncNames)
+  e.FuncNames ::= (e.Name)*
+*/
+BasicVertexes {
+  e.Graph (e.Roots)
+    = <MakeGraphHash e.Graph> : e.GraphHash
+    = <DoBasicVertexes
+        <gen_e__ <MarkChildren e.Roots> (e.GraphHash)>
+        (/* to drive */) (/* basic */)
+      >;
+}
+
+gen_e__ { e.arg = e.arg }
+
+MakeGraphHash {
+  e.Graph
+    = <Map
+        {
+          (Func (e.Name) Children (e.Children))
+            = <HashName e.Name <BUCKET-SIZE>> : s.Hash
+            = (s.Hash Func (e.Name) Children (e.Children));
+        }
+        e.Graph
+      >
+    : e.Graph^
+    = <MakeGraphHash-Buckets e.Graph>;
+}
+
+BUCKET-SIZE { = 101 }
+
+MakeGraphHash-Buckets {
+  (s.Hash Func (e.Name) Children (e.Children)) e.Graph
+    = <MakeGraphHash-FillBucket
+        e.Graph (s.Hash (Func (e.Name) Children (e.Children)))
+      >
+    : e.Graph^ (e.Bucket)
+    = <MakeGraphHash-Buckets e.Graph> (e.Bucket);
+
+  /* граф опустел */ = /* нет корзин */;
+}
+
+MakeGraphHash-FillBucket {
+  e.Graph-B (s.Hash Func (e.Name) Children (e.Children)) e.Graph-E
+  (s.Hash e.Bucket)
+    = e.Graph-B
+      <MakeGraphHash-FillBucket
+        e.Graph-E (s.Hash e.Bucket (Func (e.Name) Children (e.Children)))
+      >;
+
+  e.Graph (e.Bucket) = e.Graph (e.Bucket);
+}
+
+MarkChildren {
+  e.FuncNames
+   = (Children
+       <Map
+         {
+           (e.Name) = (<HashName e.Name <BUCKET-SIZE>> e.Name)
+         }
+         e.FuncNames
+       >
+     )
+}
+
+/*
+  <DoBasicVertexes e.Stack (e.GraphHash) (e.ToDrive) (e.Basics)>
+
+  e.ToDrive, e.Basics ::= (e.Name)*
+  e.Stack ::= t.StackItem*
+  t.StackItem ::= (Children (s.Hash e.Name)*) | (Func s.Hash e.Name)
+
+  Функция совершает обход графа в глубину.
+
+  На стек кладутся потомки функции, а также имя самой функции. Когда со стека
+  снимается потомок, и эта функция ещё не сканирована (есть в графе),
+  на стек кладутся потомки потомка и имя самого потомка. Когда все потомки
+  функции просканированы, на верхушке остаётся имя самой функции, которое
+  можно снять. Для алгоритма обхода в чистом виде имена функций на стеке
+  не так уж и важны, они нужны для маркировки прогоняемых и базисных функций.
+
+  Интересно получается с базисными вершинами. Базисная вершина — это вершина,
+  в которую ведёт стрелка от потомка. Поэтому если на стеке есть имя функции,
+  совпадающей с очередным потомком, эта функция базисная. Вырезаем её
+  из стека и запоминаем как базисную. Если на вершине стека обнаружилось
+  имя функции, это значит, что ссылки из потомков на неё не было, она
+  не является базисной и пригодна для прогонки.
+
+  В графе находятся только функции с предложениями. Все имена функций из графа,
+  достижимые из корней, кладутся на стек (включая корни). Любое имя, оказавшееся
+  на стеке, либо переносится в карман базисных, либо прогоняемых. Функции,
+  оставшиеся в графе, являются недостижимыми. Таким образом, множество функций
+  из графа разбивается на три подмножества: базисные, прогоняемые
+  и недостижимые.
+*/
+DoBasicVertexes {
+* Базисная вершина, удаляем пометку функции со стека.
+  (Children (s.Hash e.BasicName) e.Siblings)
+  e.Stack-B (Func s.Hash e.BasicName) e.Stack-E
+  (e.Graph) (e.ToDrive) (e.Basics)
+    = <DoBasicVertexes
+        (Children e.Siblings)
+        e.Stack-B e.Stack-E (e.Graph) (e.ToDrive) (e.Basics (e.BasicName))
+      >;
+
+* Обычная вершина.
+  (Children (s.Hash e.FuncName) e.Siblings) e.Stack
+  (
+    e.Buckets-B
+    (s.Hash e.Graph-B (Func (e.FuncName) Children (e.Children)) e.Graph-E)
+    e.Buckets-E
+  )
+  (e.ToDrive) (e.Basics)
+    = <DoBasicVertexes
+        <MarkChildren e.Children> (Func s.Hash e.FuncName)
+        (Children e.Siblings) e.Stack
+        (e.Buckets-B <WrapBucket s.Hash e.Graph-B e.Graph-E> e.Buckets-E)
+        (e.ToDrive) (e.Basics)
+      >;
+
+* Уже просканированная вершина или вызов внешней функции.
+  (Children (s._ e._) e.Siblings) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
+    = <DoBasicVertexes
+        (Children e.Siblings) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
+      >;
+
+  (Children /* пусто */) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
+    = <DoBasicVertexes e.Stack (e.Graph) (e.ToDrive) (e.Basics)>;
+
+* Всех детей функции просканировали.
+* Если сама метка функции не удалена со стека, значит она не была базисной.
+  (Func s.Hash e.FuncName) e.Stack (e.Graph) (e.ToDrive) (e.Basics)
+    = <DoBasicVertexes e.Stack (e.Graph) (e.ToDrive (e.FuncName)) (e.Basics)>;
+
+* Все функции просканировали.
+  /* пустой стек */ (e.Graph) (e.ToDrive) (e.Basics)
+    = (ToDrive e.ToDrive)
+      (Basics e.Basics)
+      (Unreachable
+        <Map
+          {
+            (s.Hash e.Bucket)
+              = <Map
+                  {
+                    (Func (e.Name) Children (e._)) = (e.Name)
+                  }
+                  e.Bucket
+                >
+          }
+          e.Graph
+        >
+      );
+}
+
+WrapBucket {
+  s.Hash /* пусто */ = /* пусто */;
+  s.Hash e.Bucket = (s.Hash e.Bucket);
+}
+
+/**
+  <OptTree-AutoMarkup-CleanupUnusedFunctions e.AST> == e.AST
+*/
+$ENTRY OptTree-AutoMarkup-CleanupUnusedFunctions {
+  e.AST
+    = <Map &MakeGraphNode e.AST> : e.Graph
+    = <Map &RemoveReferenceTagFromChildren e.Graph> : e.Graph^
+
+    = <MapAccum &UnsuffixedFunctions () e.Graph> : (e.Roots) e.Graph^
+    = <BasicVertexes e.Graph (e.Roots)>
+    : (ToDrive e.ToDrive) (Basics e.Basics) (Unreachable e.Unreachable)
+
+    = <MapAccum &RemoveUnused (e.Unreachable) e.AST>
+    : (/* должно быть пусто */) e.AST^
+    = e.AST;
+}
+
+RemoveReferenceTagFromChildren {
+  (Func (e.FuncName) Children (e.Children))
+    = <Map
+        {
+          (INDIRECT) = /* пропускаем */;
+          (s._ e.ChildName) = (e.ChildName);
+        }
+        e.Children
+      >
+    : e.Children^
+    = (Func (e.FuncName) Children (e.Children));
+}
+
+UnsuffixedFunctions {
+  (e.Roots) t.Node
+    = t.Node : (Func (e.FuncName) Children (e.Children))
+    = e.FuncName
+    : {
+        e._ SUF e._ = e.Roots;
+        e._ = e.Roots (e.FuncName);
+      }
+    : e.Roots^
+    = (e.Roots) t.Node;
+}
+
+RemoveUnused {
+  (e.Unused-B (e.Name) e.Unused-E)
+  (Function (e.Name) Sentences e._)
+    = (e.Unused-B e.Unused-E) /* пропускаем */;
+
+  (e.Unused-B (e.Name) e.Unused-E)
+  (Function (e.Name) Metatable e._)
+    = (e.Unused-B e.Unused-E) /* пропускаем */;
+
+  (e.Unused) t.OtherItem = (e.Unused) t.OtherItem; /* оставляем */
+}
+
+/**
+  <OptTree-AutoMarkup-Spec e.AST> == e.AST
+*/
+
+$ENTRY OptTree-AutoMarkup-Spec {
+  e.AST
+    = <MapAccum
+        {
+          (Specs e.Specs) (Function (e.FuncName) Sentences e.Body)
+            , (e.FuncName) : (e._ SUF e._ '@' s._ e._)
+            = (Specs e.Specs)
+              (Function (e.FuncName) Sentences e.Body);
+
+          /* пустые функции не специализируем */
+          (Specs e.Specs) (Function (e.FuncName) Sentences /* пусто */)
+            = (Specs e.Specs) (Function (e.FuncName) Sentences /* пусто */);
+
+          (Specs e.Specs) (Function (e.FuncName) Sentences e.Body)
+            = (Specs e.Specs (e.FuncName))
+              (Function (e.FuncName) Sentences e.Body);
+
+          /* пользовательскую разметку игнорируем */
+          (Specs e.Specs) (Specs e._)
+            = (Specs e.Specs) /* игнорируем */;
+
+          (Specs e.Specs) t.Other = (Specs e.Specs) t.Other;
+        }
+        (Specs /* пусто */) e.AST
+      >
+}

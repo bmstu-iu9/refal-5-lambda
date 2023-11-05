@@ -1,0 +1,13 @@
+* WARNING screening
+
+$ENTRY BAD {
+  ((t.10 'b' s.12 s.12)) 10 DD 'ba' ABCB 'c' s.3 0 s.12
+  e.8
+  (CCCB 2 e.1 3) e.5 2 AA DCDD 1 (t.1 (t.7 8 ('c' 2)) C 'a') DBC
+    = '$1';
+
+  ((t.10 'b' s.12 s.12)) 10 DD 'ba' ABCB 'c' s.3 0 s.12
+  'd' s.1 DCCD 'c' ACBD e.8 e.8
+  (CCCB 2 e.1 3) e.5 2 AA DCDD 1 (t.1 (t.7 8 ('c' 2)) C 'a') DBC
+    = '$2';
+}

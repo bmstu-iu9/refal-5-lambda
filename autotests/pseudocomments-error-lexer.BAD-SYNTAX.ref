@@ -1,7 +1,0 @@
-*$EXTENDED;
-
-*$SPEC Func s.STAT 'unclosed quote;
-
-$ENTRY Func {
-  s.Stat ABC s.Dyn = s.Stat s.Dyn;
-}

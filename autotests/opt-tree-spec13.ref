@@ -8,7 +8,7 @@ F {
   (e.A) (e.B) = <S (e.B) (e.A) (e.B)>
 }
 
-$SPEC S e.arg;
+*$SPEC S;
 
 S {
   (e.Z) (e.1 A s.X e.2) (e.3 B s.X e.4)

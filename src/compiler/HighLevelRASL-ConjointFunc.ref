@@ -7,12 +7,12 @@ $EXTERN GenPattern, MakeSavers, GenResult;
 $EXTERN GenericMatch;
 
 *$FROM GlobalGen
-$EXTERN BuildImage, BuildImage-Term, Generalization, Generalization-Term,
-  Collapse, Collapse-Term;
+$EXTERN GlobalGen-NameVariables-Rec, BuildImage, BuildImage-Term,
+  Generalization, Generalization-Term, Collapse, Collapse-Term;
 
 
 $ENTRY HighLevelRASL-Function-Conjoint {
-  s.FnGenSubst s.FnGenResult s.ScopeClass (e.Name) e.Sentences
+  s.FnGenSubst s.FnGenResult (e.Name) e.Sentences
 
     /*
       Функция FindDivisionAndGenerate работает с подстановками,
@@ -47,7 +47,7 @@ $ENTRY HighLevelRASL-Function-Conjoint {
     : e.ResultCommands^
 
     = (Function
-        s.ScopeClass (e.Name)
+        (e.Name)
         (CmdIssueMemory s.MaxContextSize)
         e.CommonMatchCommands
         e.ResultCommands
@@ -177,34 +177,13 @@ ComposeVars {
   (e.MarkedPattern) () = (Junk e.MarkedPattern);
 }
 
-/* Добавляет уникальные индексы */
-EnumerateVarsRec {
-  s.NextNumber e.Expr
-    = <MapAccum
-        {
-          s.Next (Var s.Type)
-            = <Inc s.Next> (Var s.Type 'new' <Symb s.Next>);
-
-          s.Next (Brackets e.Nested)
-            = <EnumerateVarsRec s.Next e.Nested> : s.Next^ e.Nested^
-            = s.Next (Brackets e.Nested);
-
-          s.Next (ADT-Brackets (e.Name) e.Nested)
-            = <EnumerateVarsRec s.Next e.Nested> : s.Next^ e.Nested^
-            = s.Next (ADT-Brackets (e.Name) e.Nested);
-
-          s.Next t.OtherTerm = s.Next t.OtherTerm;
-        }
-        s.NextNumber e.Expr
-      >;
-}
-
 EnumerateVars-Subst {
   s.StartNumber s.Depth e.Substitute
     = <MapAccum
         {
           s.NextNumber (e.Value ':' (e.Var))
-            = <EnumerateVarsRec s.NextNumber e.Value> : s.NextNumber^ e.Value^
+            = <GlobalGen-NameVariables-Rec s.NextNumber e.Value>
+            : s.NextNumber^ e.Value^
             = s.NextNumber (e.Value ':' (e.Var))
         }
         s.StartNumber e.Substitute

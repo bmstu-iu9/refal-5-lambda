@@ -659,8 +659,11 @@ std::string refalrts::debugger::RefalDebugger::ask_for_param(
   printf("param>");
 
   char param[MAX_COMMAND_LEN] = {0};
-  fgets(param, MAX_COMMAND_LEN - 1, m_in);
-  return trim(std::string(param));
+  if (fgets(param, MAX_COMMAND_LEN - 1, m_in) != 0) {
+    return trim(std::string(param));
+  } else {
+    return std::string();
+  }
 }
 
 //=============================================================================
@@ -1254,7 +1257,9 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
         break;
       }
     } else {
-      fgets(command, MAX_COMMAND_LEN - 1, m_in);
+      if (fgets(command, MAX_COMMAND_LEN - 1, m_in) == 0) {
+        memcpy(command, s_QUIT, strlen(s_QUIT));
+      }
     }
     std::pair<Cmd, std::string> cmdAndError = parse_input_line(
       std::string(command));

@@ -12,8 +12,7 @@ Test {
   e.X = <DS 1 e.X>;
 }
 
-$DRIVE DS;
-$SPEC DS s.STAT e.dyn;
+*$OPT DS;
 
 DS {
   s.Mark /* empty */ = s.Mark s.Mark;

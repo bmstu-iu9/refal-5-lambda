@@ -1,0 +1,12 @@
+* WARNING pseudocomment
+
+*$EXTENDED;
+
+*$DRIVE D; $INLINE F;
+
+D { = }
+F { = }
+
+$ENTRY Go {
+  = <D> <F>
+}

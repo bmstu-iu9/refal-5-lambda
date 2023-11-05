@@ -28,6 +28,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Check free space
+        run: |
+          df -h
+        shell: bash
+
       - name: Bootstrapping on ${{ matrix.os }} with ${{ matrix.ccomp }}
         run: |
           cp .github/workflows/conf-template-${{ matrix.ccomp }}.bash c-plus-plus.conf.sh
@@ -42,6 +47,14 @@ jobs:
             autotests/__error.txt
             autotests/__dump.txt
             autotests/__log.txt
+            autotests/__dump_rlc-core.txt
+            autotests/any-random-test
+            autotests/positive-random-test
             bin
-            src
           retention-days: 5
+
+      - name: Bootstrapping on ${{ matrix.os }} with ${{ matrix.ccomp }} and -OiADPRS
+        run: |
+          cp .github/workflows/conf-template-${{ matrix.ccomp }}.bash c-plus-plus.conf.sh
+          RLMAKE_FLAGS="-X-OiADPRS" ./bootstrap.sh --no-tests
+        shell: bash

@@ -1,0 +1,13 @@
+* WARNING screening
+
+$ENTRY B {
+  C CCBC 0 (10) () DCAD (s.3 () 1) t.11 5 DA
+  e.10
+  'c' DBB () e.2 s.12 0 BBB 'd' t.4 () 'd' ABCD 'c' (s.4 (s.7) () (s.7 9 8))
+    = '$1';
+
+  C CCBC 0 (10) () DCAD (s.3 () 1) t.11 5 DA
+  ('b') s.3 'c' B ((e.6 4 'dc' BCC) 1 7 9) ()
+  'c' DBB () e.2 s.12 0 BBB 'd' t.4 () 'd' ABCD 'c' (s.4 (s.7) () (s.7 9 8))
+    = '$2';
+}

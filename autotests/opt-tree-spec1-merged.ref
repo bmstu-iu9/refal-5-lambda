@@ -8,7 +8,7 @@ Go1 {
   = <Test1 [Go 'ABC'] 'def'>;
 }
 
-$SPEC Test1 [Go e.STAT] e.dyn;
+*$SPEC Test1;
 
 Test1 {
   [Go e.Stat] e.Dyn = e.Stat e.Dyn;
@@ -26,7 +26,7 @@ Test2 {
     = <S2 ('ab') ('cd') (e.Y e.X) ('ef') (e.Y e.Z) (e.Y e.Z)>;
 }
 
-$SPEC S2 (e.S1) (e.d2) (e.S3) (e.d4) (e.S5) (e.d6);
+*$SPEC S2;
 
 S2 {
   (e.a) (e.b) (e.c) (e.d) (e.f) (e.g)
@@ -44,7 +44,7 @@ F3 {
   (e.X) (e.X1) = <S3 (e.X e.X1) 'ef' ('gh')>;
 }
 
-$SPEC S3 (e.S) e.d;
+*$SPEC S3;
 
 S3 {
   (e.A) e.X (e.X0) = e.A e.X e.X0;
@@ -57,7 +57,7 @@ Go4 {
     = /* пусто */;
 }
 
-$SPEC Spec (e.STATIC) e.dynamic;
+*$SPEC Spec;
 
 Spec {
   (e.X) e.y, 'abc' : e.X, 'def' : e.y = e.X e.y;
@@ -72,7 +72,7 @@ Go5 {
 
 $SWAP DATA;
 
-$SPEC SF e.dyn (e.STAT);
+*$SPEC SF;
 
 SF {
   e.Dyn (e.Stat) = e.Stat e.Dyn e.Stat;
@@ -84,7 +84,7 @@ Go6 {
   = ;
 }
 
-$SPEC Eq6 t.X t.y;
+*$SPEC Eq6;
 
 Eq6 {
   t.Eq t.Eq = True;
@@ -94,7 +94,7 @@ Eq6 {
 F6 { = '*' }
 
 
-$SPEC F7 t.STAT e.dyn;
+*$SPEC F7;
 
 F7 { t.Stat e.Dyn = STAT t.Stat DYN e.Dyn }
 
@@ -105,7 +105,7 @@ Go7 {
 }
 
 
-$SPEC F8 t.dyn e.STAT;
+*$SPEC F8;
 
 F8 { t.Dyn e.Stat = DYN t.Dyn STAT e.Stat }
 
@@ -120,7 +120,7 @@ Go9 {
   e.X = <Eq9 { = e.X } X>;
 }
 
-$SPEC Eq9 t.STAT t.dyn;
+*$SPEC Eq9;
 
 Eq9 {
   t.X t.X = True;
@@ -135,6 +135,6 @@ Go10 {
     = /* пусто */
 }
 
-$SPEC S10 (e.S1) (e.S2);
+*$SPEC S10;
 
 S10 { (e.X) (e.Y) = e.Y '+' e.X }

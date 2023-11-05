@@ -1,0 +1,17 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */
+    = <gen_e__ 'aa'> : e.A
+    = <gen_e__ 'bb'> : e.B
+    = <gen_e__ 'cc'> : e.C
+
+    = ((x) e.A) (x) e.A (e.B) (x) e.A e.C
+    : {
+        (e.X) e.X (e.Y) t.Z e.T = (e.X) (e.Y) t.Z (e.T)
+      }
+    : ((x) 'aa') ('bb') (x) ('aacc')
+    = /* empty */;
+}
+
+gen_e__ { e.arg = e.arg }

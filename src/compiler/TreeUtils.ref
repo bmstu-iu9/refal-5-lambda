@@ -35,6 +35,9 @@ $ENTRY ExtractVariables-Expr {
   (Var s.VarType e.Index) e.Terms
     = (s.VarType e.Index) <ExtractVariables-Expr e.Terms>;
 
+  (WhVar s.VarType e.Index) e.Terms
+    = (s.VarType e.Index) <ExtractVariables-Expr e.Terms>;
+
   (Brackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
   (ADT-Brackets (e.Name) e.Inner) e.Terms
     = <ExtractVariables-Expr e.Inner e.Terms>;
@@ -54,6 +57,8 @@ $ENTRY ExtractVariables-Expr {
   e.Variable ::= s.Mode e.Index
 */
 $ENTRY NewVarName {
+  (e.Vars) s.Mode /* нет индекса */ = <NewVarName (e.Vars) s.Mode '0'>;
+
   (e.Vars-B (e.Variable) e.Vars-E) e.Variable
     = <DoNewVarName ((e.Variable) e.Vars-B e.Vars-E) e.Variable>;
 
@@ -77,7 +82,7 @@ DoNewVarName {
 IncName {
   e.Name s.Digit, '0123456789' : e._B s.Digit s.Next e._E = e.Name s.Next;
   e.Name '9' = <IncName e.Name> '0';
-  e.Name = e.Name '0';
+  e.Name = e.Name '1';
 }
 
 
@@ -112,25 +117,6 @@ $ENTRY CreateContext {
       }
       e.Context
     >;
-}
-
-/**
-  <CreateSpecPatternForContext t.ContextVariable*> == e.Expression
-*/
-$ENTRY CreateSpecPatternForContext {
-  e.Context
-    = <Map
-        {
-          (Symbol Identifier e.Ident) = (Symbol Identifier e.Ident);
-
-          (Var s.Mode e.Index) = (Var s.Mode 'STAT_' e.Index);
-
-          (Brackets (Var 'e' e.Index))
-            = (Brackets (Var 'eSTAT_' e.Index));
-        }
-        e.Context
-      >
-      (Var 'edyn')
 }
 
 
@@ -168,4 +154,260 @@ HashName-Suffix {
     = s.SufChar <Symb s.SufNo> <HashName-Suffix e.Suffix>;
 
   /* empty */ = /* empty */;
+}
+
+/**
+  <ExprType e.Expr> == HardPattern | LPattern | Pattern | Result | ActiveResut
+*/
+$ENTRY ExprType {
+  e.Expr
+    = <ExprType-Rec e.Expr>
+    : {
+        e._ CallBrackets e._ = ActiveResut;
+        e._ ClosureBrackets e._ = Result;
+        e._ OpenE e._ = Pattern;
+        e._ ('e' e.Index) e._ ('e' e.Index) e._ = Pattern;
+        e._ ('t' e.Index) e._ ('t' e.Index) e._ = Pattern;
+        e._ ('s' e.Index) e._ ('s' e.Index) e._ = LPattern;
+        e._ = HardPattern;
+      }
+}
+
+/*
+  <ExprType-Rec e.Expr> == t.ExprType*
+  t.ExprType ::= OpenE | (s.Mode e.Index) | Forbidden
+*/
+ExprType-Rec {
+  e.Begin (Var 'e' e._) e.Middle (Var 'e' e._) e.End
+    = OpenE <ExprType-Rec e.Begin e.Middle e.End>;
+
+  e.Expr
+    = <Map
+        {
+          (Var s.Mode e.Index) = (s.Mode e.Index);
+
+          (Brackets e.InBrackets) = <ExprType-Rec e.InBrackets>;
+          (ADT-Brackets (e._) e.InBrackets) = <ExprType-Rec e.InBrackets>;
+
+          (ClosureBrackets e._) = ClosureBrackets;
+
+          (CallBrackets e._) = CallBrackets;
+          (ColdCallBrackets e._) = CallBrackets;
+
+          t.Other = /* пропускаем */;
+        }
+        e.Expr
+      >;
+}
+
+/*
+  <IsLExpr e.Expr> == True | False
+  <IsHardExpr e.Expr> == True | False
+  <IsPassiveExpr e.Expr> == True | False
+*/
+$ENTRY IsLExpr {
+  e.Expr
+    = <ExprType e.Expr>
+    : {
+        HardPattern = True;
+        LPattern = True;
+        s._ = False;
+      }
+}
+
+$ENTRY IsHardExpr {
+  e.Expr
+    = <ExprType e.Expr>
+    : {
+        HardPattern = True;
+        s._ = False;
+      }
+}
+
+$ENTRY IsPassiveExpr {
+  e.Expr
+    = <ExprType e.Expr>
+    : {
+        ActiveResut = False;
+        s._ = True;
+      }
+}
+
+/**
+  <ExpandClosures-Result e.Expr> == e.Expr
+*/
+$ENTRY ExpandClosures-Result {
+  e.Result = <Map &ExpandClosures-ResultTerm e.Result>;
+}
+
+ExpandClosures-ResultTerm {
+  (Brackets e.Expr) = (Brackets <ExpandClosures-Result e.Expr>);
+
+  (ADT-Brackets (e.Name) e.Expr)
+    = (ADT-Brackets (e.Name) <ExpandClosures-Result e.Expr>);
+
+  (CallBrackets (ClosureBrackets e.Content) e.Expr)
+    = (CallBrackets <ExpandClosures-Result e.Content e.Expr>);
+
+  (CallBrackets e.Expr) = (CallBrackets <ExpandClosures-Result e.Expr>);
+
+  /*
+    Анализировать холодные вызовы (ColdCallBrackets …) не нужно,
+    поскольку они были проанализированы на предыдущих проходах
+    и с тех пор не менялись.
+  */
+
+  t.OtherTerm = t.OtherTerm;
+}
+
+/**
+  <ApplyContractions e.Expr (e.Contrs) == e.Expr^
+*/
+$ENTRY ApplyContractions {
+  e.Expr (e.Contrs)
+    = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e._) e.Expr^
+    = e.Expr;
+}
+
+ApplyContractions-Expr {
+  (e.Contrs) e.Expr = <MapAccum &ApplyContractions-Term (e.Contrs) e.Expr>;
+}
+
+ApplyContractions-Term {
+  (e.Contrs) ('{'s.Coord'}') = (e.Contrs) ('{'s.Coord'}');
+
+  (e.Contrs) (Symbol e.Symbol) = (e.Contrs) (Symbol e.Symbol);
+
+  (e.Contrs) (Brackets e.Expr)
+    = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e.Contrs^) e.Expr^
+    = (e.Contrs) (Brackets e.Expr);
+
+  (e.B ((Var e.Var) ':' e.Contr) e.E) (Var e.Var)
+    = <ApplyContractions-Expr (e.E) e.Contr> : (e.E^) e.Expr
+    = (e.B ((Var e.Var) ':' e.Contr) e.E) e.Expr;
+
+  (e.Contrs) (Var e.Var) = (e.Contrs) (Var e.Var);
+
+  (e.Contrs) (CallBrackets e.Expr)
+    = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e.Contrs^) e.Expr^
+    = (e.Contrs) (CallBrackets e.Expr);
+
+  (e.Contrs) (ColdCallBrackets e.OriginArgs)
+    = <ApplyContractions-Expr (e.Contrs) e.OriginArgs>
+    : {
+*       Содержимое холодных скобок не изменилось, оставляем их холодными
+        (e.Contrs^) e.OriginArgs = (e.Contrs) (ColdCallBrackets e.OriginArgs);
+
+*       Содержимое обновилось, оттаиваем скобки
+        (e.Contrs^) e.ChangedArgs = (e.Contrs) (CallBrackets e.ChangedArgs);
+      };
+
+  (e.Contrs) (WhVar e.Var) = (e.Contrs) (WhVar e.Var);
+  (e.Contrs) (ScrVar e.Var) = (e.Contrs) (ScrVar e.Var);
+
+  (e.Contrs) (ClosureBrackets e.Expr)
+    = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e.Contrs^) e.Expr^
+    = (e.Contrs) (ClosureBrackets e.Expr);
+
+  (e.Contrs) (ADT-Brackets (e.Name) e.Expr)
+    = <ApplyContractions-Expr (e.Contrs) e.Expr> : (e.Contrs^) e.Expr^
+    = (e.Contrs) (ADT-Brackets (e.Name) e.Expr);
+}
+
+/**
+  <ApplyAssigns e.Expr (e.Assigns)> == e.Expr^
+*/
+$ENTRY ApplyAssigns {
+  e.Expr (e.Assigns)
+    = <Map
+        {
+          t.T = <ApplyAssigns-Term t.T (e.Assigns)>
+        }
+        e.Expr
+      >
+}
+
+ApplyAssigns-Term {
+  (Brackets e.Expr) (e.Assigns) = (Brackets <ApplyAssigns e.Expr (e.Assigns)>);
+
+  (CallBrackets e.Args) (e.Assigns)
+    = (CallBrackets <ApplyAssigns e.Args (e.Assigns)>);
+
+  (ColdCallBrackets e.Args) (e.Assigns)
+    = (ColdCallBrackets <ApplyAssigns e.Args (e.Assigns)>);
+
+  (ClosureBrackets e.Args) (e.Assigns)
+    = (ClosureBrackets <ApplyAssigns e.Args (e.Assigns)>);
+
+  (ADT-Brackets (e.Name) e.Expr) (e.Assigns)
+    = (ADT-Brackets (e.Name) <ApplyAssigns e.Expr (e.Assigns)>);
+
+  t.T (e.B (e.Expr ':' t.T) e.E) =  e.Expr;
+
+  t.T (e.Assigns) = t.T;
+}
+
+/**
+  <MarkAllVarsAsWhole e.Expr> == e.Expr^
+*/
+$ENTRY MarkAllVarsAsWhole {
+  e.Expr
+    = <Map
+        {
+          (s.Brackets e.Nested)
+            , Brackets CallBrackets ColdCallBrackets ClosureBrackets
+            : e._ s.Brackets e._
+            = (s.Brackets <MarkAllVarsAsWhole e.Nested>);
+
+          (ADT-Brackets (e.Name) e.Nested)
+            = (ADT-Brackets (e.Name) <MarkAllVarsAsWhole e.Nested>);
+
+          (Var s.Mode e.Index) = (WhVar s.Mode e.Index);
+
+          t.Other = t.Other;
+        }
+        e.Expr
+      >
+}
+
+/**
+  <UnmarkWholeVars e.Expr> == e.Expr^
+*/
+$ENTRY UnmarkWholeVars {
+  e.Expr
+    = <Map
+        {
+          (s.Brackets e.Nested)
+            , Brackets CallBrackets ColdCallBrackets ClosureBrackets
+            : e._ s.Brackets e._
+            = (s.Brackets <UnmarkWholeVars e.Nested>);
+
+          (ADT-Brackets (e.Name) e.Nested)
+            = (ADT-Brackets (e.Name) <UnmarkWholeVars e.Nested>);
+
+          (WhVar s.Mode e.Index) = (Var s.Mode e.Index);
+
+          t.Other = t.Other;
+        }
+        e.Expr
+      >
+}
+
+*$OPT IsGenFunctionName, IsGenFunctionDecoratedName
+
+/**
+  <IsGenFunctionName e.Name> == True | False
+*/
+$ENTRY IsGenFunctionName {
+  'gen_e__' = True;
+  'gen-e__' = True;
+  e._ = False;
+}
+
+/**
+  <IsGenFunctionDecoratedName e.Name> == True | False
+*/
+$ENTRY IsGenFunctionDecoratedName {
+  e.Name SUF '~' s._ = <IsGenFunctionName e.Name>;
+  e.Name = <IsGenFunctionName e.Name>;
 }

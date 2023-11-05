@@ -132,14 +132,15 @@
     s.Mode ::= Classic | Extended
 
     t.Unit ::= t.Function | t.Extern | t.SingleDeclaration | t.Include
-      | t.NativeBlock | t.Ident | t.SpecUnit
+      | t.NativeBlock | t.Markup | t.SpecUnit
     t.Extern ::= (Declaration t.Pos GN-Entry e.Name)
     t.SingleDeclaration ::= (s.SingleDeclarationTag t.Pos s.ScopeClass e.Name)
-    s.SingleDeclarationTag ::= Enum | Swap | Inline | Drive | Meta
+    s.SingleDeclarationTag ::= Enum | Swap | LegacyInline | LegacyDrive | Meta
     t.Include ::= (Include t.Pos e.Name)
     t.NativeBlock ::= (NativeBlock t.Pos e.Code)
-    t.Ident ::= (Ident t.SrcPos e.Name)
-    t.SpecUnit ::= (Spec t.Pos (e.Name) e.Pattern)
+    t.Markup ::= (s.Markup t.SrcPos e.Name)
+    s.Markup ::= Ident | Opt | Drive | Spec | NoOpt | NoDrive | NoSpec
+    t.SpecUnit ::= (LegacySpec t.Pos (e.Name) e.Pattern)
 
     t.Function ::= (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
     e.Body ::=
@@ -177,7 +178,7 @@
 (`(Declaration …)`) всегда имеют область видимости `GN-Extern`. И наоборот,
 списки `$INLINE` и `$DRIVE` есть только в Рефале-5λ.
 
-Для списков `Inline`, `Drive` и `Meta` тег области видимости всегда
+Для списков `LegacyInline`, `LegacyDrive` и `Meta` тег области видимости всегда
 `GN-Local`, в дерево он добавлен для общности.
 
 Подробное описание большинства элементов дерева в проходе 2Б.
@@ -319,17 +320,25 @@
     e.ReducedAST ::= t.ReducedProgramElement*
 
     t.ReducedProgramElement ::=
-        (Function s.ScopeClass (e.Name) e.ReducedBody)
-      | (Swap s.ScopeClass e.Name)
-      | (Declaration s.ScopeClass e.Name)
+        (s.DeclarationListNode (e.Name)*)
+      | (Function (e.Name) e.ReducedBody)
       | (Ident e.Name)
       | (NativeBlock t.SrcPos e.Code)
 
+    s.DeclarationListNode ::=
+        Entries
+      | Externs
+      | Intrinsics
+      | Drives
+      | Specs
+      | NoDrives
+      | NoSpecs
 
     e.ReducedBody ::=
         Sentences t.ReducedSentence*
       | NativeBody t.SrcPos e.Code
       | Metatable e.ReducedMetatable
+      | Swap
     t.ReducedSentence ::=
         ((e.ReducedPattern) t.ReducedCondition* (e.ReducedResult))
     t.ReducedCondition ::=
@@ -402,18 +411,18 @@
 
     e.RASLAST ::= t.RASLAST-Item*
     t.RASLAST-Item ::=
-        (Function s.ScopeClass (e.Name) e.HiCommands)
-      | (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code)
+        (Entries (e.Name)*)
+      | (Function (e.Name) e.HiCommands)
+      | (CmdNativeFunction (e.Name) t.SrcPos e.Code)
       | t.CmdTopLevelItem
 
     t.CmdTopLevelItem ::=
-        (CmdEnum s.ScopeClass e.Name)
-      | (CmdSwap s.ScopeClass e.Name)
-      | (CmdDeclaration s.ScopeClass e.Name)
-      | (CmdConditionFunc s.ScopeClass e.Name)
+        (CmdEnum e.Name)
+      | (CmdSwap e.Name)
+      | (CmdConditionFunc e.Name)
       | (CmdDefineIdent e.Name)
       | (CmdEmitNativeCode t.SrcPos e.Code)
-      | (CmdMetatable s.ScopeClass (e.Name) e.ReducedMetatable)
+      | (CmdMetatable (e.Name) e.ReducedMetatable)
 
     e.HiCommands ::= t.HiCommand*
     t.HiCommand ::=
@@ -433,7 +442,7 @@
       | (CmdInitB0)
       | (CmdInitB0-Lite)
       | (CmdSave s.OldOffset s.NewOffset)
-      | (CmdComment e.Text)
+      | (CmdComment s.FnText)
       | (CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset)
       | (CmdResetAllocator)
       | (CmdCopyVar s.Mode s.VarOffset s.SampleOffset
@@ -492,6 +501,7 @@
 
     s.VarOffset, s.SampleOffset ::= s.Offset
     s.OldOffset, s.NewOffset ::= s.Offset
+    <s.FnText> == s.CHAR*
     s.LeftOffset, s.RightOffset ::= s.Offset
     s.SaveOffset ::= s.Offset
     s.R-Offset ::= ARG-BEGIN | s.Offset | RIGHT-EDGE
@@ -507,7 +517,6 @@
   * (`CmdNativeFunction` — функция, написанная на целевом коде),
   * `CmdEnum` — пустая функция,
   * `CmdSwap` — статический ящик,
-  * `CmdDeclaration` — объявление функции,
   * `CmdConditionFunc` — определение функции-замыкания,
   * `CmdDefineIdent` — определение идентификатора,
   * `CmdEmitNativeCode` — кусок целевого кода, выводимый как есть.
@@ -522,7 +531,7 @@
   * `(CmdOpenELoop s.Direction s.RangeOffset s.VarOffset e.HiCommands)` — цикл
     по открытой e-переменной.
     * `s.Direction` — текущая реализация поддерживает только направление
-      слева-направо, поэтому всегла `AlgLeft`,
+      слева-направо, поэтому всегда `AlgLeft`,
     * `s.RangeOffset` — смещение диапазона, внутри которого находится
       открытой e-переменная,
     * `s.VarOffset` — смещение для открытой e-переменной,
@@ -566,9 +575,10 @@
       сохраняют сопоставленный элемент на контексте по смещению `s.Offset`.
   * `(CmdSave s.OldOffset s.NewOffset)` — копирование границ диапазона
     `s.OldOffset` в `s.NewOffset`.
-  * `(CmdComment e.Text)` — соответствует однострочному комментарию
-    в сгенерированном коде. Содержимое `e.Text` предваряется `// `
-    и выписывается в целевой файл без изменений.
+  * `(CmdComment s.FnText)` — соответствует однострочному комментарию
+    в сгенерированном коде. Вызывается функция `<s.FnText>` без параметров,
+    результат вызова предваряется `// ` и выписывается в целевой файл
+    без изменений.
   * `(CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset)` — формирует
     запись отладочной таблицы переменных (для интерактивного просмотра
     значений переменных в отладчике).
@@ -612,8 +622,8 @@
     должен быть сохранён указатель на этот символ.
     `CmdVarSave` и `CmdRepeatedSave` используются для сопоставления
     c t-переменными, при этом они сохраняют начало и конец переменной (отрезка
-    поля зрения) в смежных ячейках контекста.
-    с структурной скобкой, сохраняющее указатель на узел в context.
+    поля зрения) в смежных ячейках контекста со структурной скобкой,
+    сохраняющее указатель на узел в context.
   * `(CmdCallSave s.Direction s.Num s.ContextOffset s.Name)` — пропуск скобок
     конкретизации и имени функции в нулевом диапазоне с сохранением указателей
     на них в контексте (выполняется после команды `CmdInitB0-Lite`).
@@ -689,9 +699,9 @@ e-переменные, распределяемые последователь�
       | (CmdInterpretFuncDescr e.CookiedName s.LabelId)
       | (CmdSwapDescr e.CookiedName)
       | (CmdNativeFuncDescr s.ScopeClass e.Name)
-      | (CmdConditionFuncDescrRasl s.ScopeClass e.Name)
-      | (CmdConditionFuncDescrNative s.ScopeClass e.Name)
-      | (CmdMetatable s.ScopeClass (e.Name) e.LowMetatable)
+      | (CmdConditionFuncDescrRasl e.Name)
+      | (CmdConditionFuncDescrNative e.Name)
+      | (CmdMetatable (e.Name) e.LowMetatable)
 
     e.CookiedName ::= e.Name Hash s.Cookie1 s.Cookie2
     s.Cookie1, s.Cookie2 ::= s.NUMBER
@@ -814,7 +824,7 @@ e-переменные, распределяемые последователь�
   * `CmdConditionFuncDescrNative` — дескриптор функции-замыкания для режима
     прямой кодогенерации, завершает рекурсивное вычисление поля зрения.
 * `t.NativeDeclarationCommand` — объявление или определение чего-то на C++
-  для нативного RASL’а, сюда же  входят начало и конец регулярных функций
+  для нативного RASL’а, сюда же входят начало и конец регулярных функций
   на C++:
   * `CmdExtern` — создаёт предобъявление для дескриптора функции,
   * `CmdDefineIndent` — тот же смысл, что и для высокоуровневых команд;
