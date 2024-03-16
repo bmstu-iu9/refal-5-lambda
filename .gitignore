@@ -7,5 +7,5 @@ c-plus-plus.conf.sh
 /make-setup/_tmp
 
 CMakeLists.txt
-
+.direnv
 .idea/
