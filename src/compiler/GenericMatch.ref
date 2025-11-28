@@ -1976,9 +1976,12 @@ Solve-SymmClashes-Aux {
     = <SeparateTermLeft ('{'s.A'}') t.T1 e.E1> : (e.Left1) (e.Left2)
     = <SeparateTermLeft ('{'s.B'}') t.T2 e.E2> : (e.Right1) (e.Right2)
     = <Solve-SymmClashes
-        (e.UsedVars) (e.Contrs) e.ClashesStart
-        (e.Left1 '=' e.Right1) (e.Left2 '=' e.Right2)
-        e.ClashesEnd (e.Assigns)
+        (e.UsedVars)
+        <SimplifyCoordinates-Symm
+          (e.Contrs) e.ClashesStart
+          (e.Left1 '=' e.Right1) (e.Left2 '=' e.Right2)
+          e.ClashesEnd (e.Assigns)
+        >
       >;
 
 *  E1 T1 {a} = E2 T2 {b}  ↦  E1′ {c} = E2′ {d} && {e} T1 {f} = {g} T2 {h}
@@ -1994,9 +1997,12 @@ Solve-SymmClashes-Aux {
     = <SeparateTermRight e.E1 t.T1 ('{'s.A'}')> : (e.Left1) (e.Left2)
     = <SeparateTermRight e.E2 t.T2 ('{'s.B'}')> : (e.Right1) (e.Right2)
     = <Solve-SymmClashes
-        (e.UsedVars) (e.Contrs) e.ClashesStart
-        (e.Left1 '=' e.Right1) (e.Left2 '=' e.Right2)
-        e.ClashesEnd (e.Assigns)
+        (e.UsedVars)
+        <SimplifyCoordinates-Symm
+          (e.Contrs) e.ClashesStart
+          (e.Left1 '=' e.Right1) (e.Left2 '=' e.Right2)
+          e.ClashesEnd (e.Assigns)
+        >
       >;
 
   /* {a} T {b} E1 = {c} e.X E2  ↦  e.X → t.NEW1 e.NEW2  ||  e.X → ε */
