@@ -130,6 +130,16 @@ private:
       return ::fread(ptr, size, count, m_stream);
     }
 
+    template <typename T>
+    size_t fread_vector(std::vector<T> &items, size_t count) {
+      items.resize(count);
+      if (count > 0) {
+        return fread(&items[0], sizeof(T), count);
+      } else {
+        return 0;
+      }
+    }
+
     Domain *domain() const {
       return m_module->domain();
     }

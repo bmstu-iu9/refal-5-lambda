@@ -553,8 +553,7 @@ refalrts::Module::Loader::read_const_table() {
 
   new_table->externals_names.resize(fixed_part.external_count);
   new_table->externals_pointers.resize(fixed_part.external_count);
-  new_table->external_memory.resize(fixed_part.external_size);
-  read = fread(&new_table->external_memory[0], 1, fixed_part.external_size);
+  read = fread_vector(new_table->external_memory, fixed_part.external_size);
   PARSE_ASSERT(
     read == fixed_part.external_size,
     "can't read externals list in CONST_TABLE"
@@ -571,8 +570,7 @@ refalrts::Module::Loader::read_const_table() {
   m_module->m_unresolved_func_tables.push_front(new_table);
 
   new_table->idents.resize(fixed_part.ident_count);
-  new_table->idents_memory.resize(fixed_part.ident_size);
-  read = fread(&new_table->idents_memory[0], 1, fixed_part.ident_size);
+  read = fread_vector(new_table->idents_memory, fixed_part.ident_size);
   PARSE_ASSERT(
     read == fixed_part.ident_size,
     "can't read idents list in CONST_TABLE"
@@ -591,10 +589,7 @@ refalrts::Module::Loader::read_const_table() {
     next_ident_name += strlen(next_ident_name) + 1;
   }
 
-  new_table->numbers.resize(fixed_part.number_count);
-  read = fread(
-    &new_table->numbers[0], sizeof(RefalNumber), fixed_part.number_count
-  );
+  read = fread_vector(new_table->numbers, fixed_part.number_count);
   PARSE_ASSERT(
     read == fixed_part.number_count,
     "can't read numbers list in CONST_TABLE"
@@ -614,8 +609,7 @@ refalrts::Module::Loader::read_const_table() {
     string_target += length;
   }
 
-  new_table->rasl.resize(fixed_part.rasl_length);
-  read = fread(&new_table->rasl[0], sizeof(RASLCommand), fixed_part.rasl_length);
+  read = fread_vector(new_table->rasl, fixed_part.rasl_length);
   PARSE_ASSERT(
     read == fixed_part.rasl_length, "can't read rasl in CONST_TABLE"
   );
