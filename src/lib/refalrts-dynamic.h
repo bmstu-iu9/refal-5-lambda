@@ -140,6 +140,11 @@ private:
       }
     }
 
+    template <typename T>
+    static T* vector_ptr(std::vector<T> &items) {
+      return items.size() > 0 ? &items[0] : 0;
+    }
+
     Domain *domain() const {
       return m_module->domain();
     }
