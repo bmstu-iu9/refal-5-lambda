@@ -46,8 +46,11 @@ $ENTRY LowLevelRASL {
 
     = <Map (&MarkFunctionGenMode s.GenMode) e.Items> : e.Items^
 
-    = <LowLevelRASL-RASL s.DebugInfo s.Hash1 s.Hash2 t.Tables e.Items>
-      <LowLevelRASL-Native s.Hash1 s.Hash2 t.Tables e.Items>;
+    = <MapAccum &SeparateItems (/* native items */) e.Items>
+    : (e.NativeItems) e.RASLItems
+
+    = <LowLevelRASL-RASL s.DebugInfo s.Hash1 s.Hash2 t.Tables e.RASLItems>
+      <LowLevelRASL-Native s.Hash1 s.Hash2 t.Tables e.NativeItems>;
 }
 
 Canonize {
@@ -321,4 +324,24 @@ MarkFunctionGenMode {
     (CmdConditionFunc-ToNative s.ScopeClass e.Name);
 
   s.GenMode (s.Type e.Info) = (s.Type e.Info);
+}
+
+SeparateItems {
+  (e.NativeItems) (s.ItemType e.ItemValue)
+    , UnitName Function-ToRASL CmdMetatable CmdEnum CmdSwap
+      CmdConditionFunc-ToRASL CmdConditionFunc-ToNative
+      CmdConditionFuncDecsrRasl CmdDeclaration
+    : e._ s.ItemType e._
+    = (e.NativeItems) (s.ItemType e.ItemValue);
+
+  (e.NativeItems) (Function-ToNative s.ScopeClass (e.Name) e.Commands)
+    = (e.NativeItems (Function-ToNative s.ScopeClass (e.Name) e.Commands))
+      (Function-ToNative s.ScopeClass (e.Name) /* не копируем */);
+
+  (e.NativeItems) (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code)
+    = (e.NativeItems (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code))
+      (CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
+
+  (e.NativeItems) (CmdEmitNativeCode t.SrcPos e.Code)
+    = (e.NativeItems (CmdEmitNativeCode t.SrcPos e.Code));
 }
