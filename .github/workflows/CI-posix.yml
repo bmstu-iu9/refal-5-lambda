@@ -34,10 +34,10 @@ jobs:
           ./bootstrap.sh
         shell: bash
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: log-info-posix
+          name: log-info-posix-${{ matrix.os }}-${{ matrix.ccomp }}
           path: |
             autotests/__error.txt
             autotests/__dump.txt

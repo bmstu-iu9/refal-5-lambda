@@ -71,7 +71,11 @@ void print_error_message(
       break;
 
     case refalrts::cNoMemory:
-      fprintf(stream, "\nNO MEMORY\n\n");
+      fprintf(
+        stream,
+        "\nNO MEMORY (%lu nodes)\n\n",
+        (unsigned long) vm->domain()->memory_use()
+      );
       break;
 
     case refalrts::cStepLimit:

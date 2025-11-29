@@ -553,13 +553,12 @@ refalrts::Module::Loader::read_const_table() {
 
   new_table->externals_names.resize(fixed_part.external_count);
   new_table->externals_pointers.resize(fixed_part.external_count);
-  new_table->external_memory.resize(fixed_part.external_size);
-  read = fread(&new_table->external_memory[0], 1, fixed_part.external_size);
+  read = fread_vector(new_table->external_memory, fixed_part.external_size);
   PARSE_ASSERT(
     read == fixed_part.external_size,
     "can't read externals list in CONST_TABLE"
   );
-  const char *next_external_name = &new_table->external_memory[0];
+  const char *next_external_name = vector_ptr(new_table->external_memory);
   for (size_t i = 0; i < fixed_part.external_count; ++i) {
     new_table->externals_names[i] = next_external_name;
     PARSE_ASSERT(
@@ -571,13 +570,12 @@ refalrts::Module::Loader::read_const_table() {
   m_module->m_unresolved_func_tables.push_front(new_table);
 
   new_table->idents.resize(fixed_part.ident_count);
-  new_table->idents_memory.resize(fixed_part.ident_size);
-  read = fread(&new_table->idents_memory[0], 1, fixed_part.ident_size);
+  read = fread_vector(new_table->idents_memory, fixed_part.ident_size);
   PARSE_ASSERT(
     read == fixed_part.ident_size,
     "can't read idents list in CONST_TABLE"
   );
-  const char *next_ident_name = &new_table->idents_memory[0];
+  const char *next_ident_name = vector_ptr(new_table->idents_memory);
   for (size_t i = 0; i < fixed_part.ident_count; ++i) {
     RefalIdentifier ident = ident_implode(m_module->m_domain, next_ident_name);
     if (! ident) {
@@ -591,10 +589,7 @@ refalrts::Module::Loader::read_const_table() {
     next_ident_name += strlen(next_ident_name) + 1;
   }
 
-  new_table->numbers.resize(fixed_part.number_count);
-  read = fread(
-    &new_table->numbers[0], sizeof(RefalNumber), fixed_part.number_count
-  );
+  read = fread_vector(new_table->numbers, fixed_part.number_count);
   PARSE_ASSERT(
     read == fixed_part.number_count,
     "can't read numbers list in CONST_TABLE"
@@ -602,7 +597,7 @@ refalrts::Module::Loader::read_const_table() {
 
   new_table->strings.resize(fixed_part.string_count);
   new_table->strings_memory.resize(fixed_part.string_size);
-  char *string_target = &new_table->strings_memory[0];
+  char *string_target = vector_ptr(new_table->strings_memory);
   for (size_t i = 0; i < fixed_part.string_count; ++i) {
     UInt32 length;
     read = fread(&length, sizeof(length), 1);
@@ -614,8 +609,7 @@ refalrts::Module::Loader::read_const_table() {
     string_target += length;
   }
 
-  new_table->rasl.resize(fixed_part.rasl_length);
-  read = fread(&new_table->rasl[0], sizeof(RASLCommand), fixed_part.rasl_length);
+  read = fread_vector(new_table->rasl, fixed_part.rasl_length);
   PARSE_ASSERT(
     read == fixed_part.rasl_length, "can't read rasl in CONST_TABLE"
   );
@@ -660,10 +654,10 @@ void refalrts::Module::Loader::enumerate_blocks() {
             domain()->new_RASL_function(
               table->make_name(name),
               &table->rasl[offset],
-              &table->externals_pointers[0],
-              &table->idents[0],
-              &table->numbers[0],
-              &table->strings[0],
+              vector_ptr(table->externals_pointers),
+              vector_ptr(table->idents),
+              vector_ptr(table->numbers),
+              vector_ptr(table->strings),
               table->unit_name.c_str()
             )
           );
@@ -675,8 +669,8 @@ void refalrts::Module::Loader::enumerate_blocks() {
           PARSE_ASSERT(table != 0, "CONST_TABLE must precede any function");
           RefalNativeFunction *func =
             domain()->new_native_function(
-              &table->externals_pointers[0],
-              &table->idents[0],
+              vector_ptr(table->externals_pointers),
+              vector_ptr(table->idents),
               table->make_name(read_asciiz())
             );
           register_(func);
@@ -731,8 +725,8 @@ void refalrts::Module::Loader::enumerate_blocks() {
           Metatable *metatable =
             domain()->new_metatable(
               table->make_name(name),
-              &table->externals_pointers[0],
-              &table->idents[0]
+              vector_ptr(table->externals_pointers),
+              vector_ptr(table->idents)
             );
 
           for (UInt32 i = 0; i < count; ++i) {
@@ -875,6 +869,11 @@ void refalrts::Domain::ModuleStorage::splice_and_init(
   refalrts::VM *vm, refalrts::Iter pos,
   refalrts::Domain::ModuleStorage& other, refalrts::FnResult& result
 ) {
+  result = cSuccess;
+  if (other.m_modules.empty()) {
+    return;
+  }
+
   Module *first_new = other.m_modules.front();
 
   m_modules.splice(
@@ -887,7 +886,6 @@ void refalrts::Domain::ModuleStorage::splice_and_init(
     ++p;
   }
 
-  result = cSuccess;
   while (p != m_modules.end() && result == cSuccess) {
     (*p)->initialize(vm, pos, result);
     ++p;
