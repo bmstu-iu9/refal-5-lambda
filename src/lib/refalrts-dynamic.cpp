@@ -869,6 +869,11 @@ void refalrts::Domain::ModuleStorage::splice_and_init(
   refalrts::VM *vm, refalrts::Iter pos,
   refalrts::Domain::ModuleStorage& other, refalrts::FnResult& result
 ) {
+  result = cSuccess;
+  if (other.m_modules.empty()) {
+    return;
+  }
+
   Module *first_new = other.m_modules.front();
 
   m_modules.splice(
@@ -881,7 +886,6 @@ void refalrts::Domain::ModuleStorage::splice_and_init(
     ++p;
   }
 
-  result = cSuccess;
   while (p != m_modules.end() && result == cSuccess) {
     (*p)->initialize(vm, pos, result);
     ++p;
