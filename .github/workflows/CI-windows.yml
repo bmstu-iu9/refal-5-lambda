@@ -30,10 +30,10 @@ jobs:
           bootstrap.bat
         shell: cmd
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: log-info-windows
+          name: log-info-windows-${{ matrix.ccomp }}
           path: |
             autotests\__error.txt
             autotests\__dump.txt

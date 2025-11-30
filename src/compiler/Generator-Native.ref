@@ -1,5 +1,8 @@
 $INCLUDE "LibraryEx";
 
+*$FROM Library
+$EXTERN Open-Auto;
+
 *$FROM DisplayName
 $EXTERN DisplayCName, CName;
 
@@ -9,69 +12,75 @@ $EXTERN EscapeChar, EscapeString;
 
 $ENTRY GenProgram-Native {
   (e.SourceFileName) (e.TargetFileName) (e.NativeRASL)
-
-    = <MapAccum
-        &GenCommand-Native
-        (/* отступ */)
-        e.NativeRASL
+    = <Open-Auto 'w' e.TargetFileName> : s.FileNo
+    = <GenProgram-Native-Aux
+        s.FileNo (e.SourceFileName) (e.TargetFileName) e.NativeRASL
       >
-    : (/* отступ должен остаться тем же */) e.Generated
-
-    = ('// This file automatically generated from \'' e.SourceFileName '\'')
-      ('// Don\'t edit! Edit \'' e.SourceFileName '\' and recompile it')
-      ()
-      ('#include "refalrts.h"')
-      ()
-      e.Generated
-      ()
-      ('//End of file')
-    : {
-        e.Lines-B (NativeInsertBegin t.SrcPos) e.Lines-E =
-          <SetLineNumbers
-            (e.SourceFileName) (e.TargetFileName) 1
-            e.Lines-B (NativeInsertBegin t.SrcPos) e.Lines-E
-          >;
-
-        e.Lines = e.Lines;
-      };
+      <Close s.FileNo>;
 }
 
-SetLineNumbers {
-  /* Оставляем на всякий случай для совместимости */
-  (e.Source) (e.Target) s.LineNum (NativeInsertBegin s.SrcLineNum) e.Lines =
-    ('#line ' <Symb s.SrcLineNum> ' ' '"' <EscapeString e.Source> '"')
-    <SetLineNumbers
-      (e.Source) (e.Target) <Inc s.LineNum> e.Lines
-    >;
+PutLines {
+  s.FileNo e.Lines = <Map { (e.Line) = <Putout s.FileNo e.Line> } e.Lines>
+}
 
-  (e.Source) (e.Target) s.LineNum
-  (NativeInsertBegin (FileLine s.Line e.File)) e.Lines =
-    ('#line ' <Symb s.Line> ' ' '"' <EscapeString e.File> '"')
-    <SetLineNumbers
-      (e.Source) (e.Target) <Inc s.LineNum> e.Lines
-    >;
+GenProgram-Native-Aux {
+  s.FileNo (e.Source) (e.Target) e.RASL
+    = <Lenw
+        ('// This file automatically generated from \'' e.Source '\'')
+        ('// Don\'t edit! Edit \'' e.Source '\' and recompile it')
+        ()
+        ('#include "refalrts.h"')
+        ()
+      >
+    : s.HeaderLen e.Header
 
-  (e.Source) (e.Target) s.LineNum
-  (NativeInsertBegin (FileRowCol (s.Line s.Col) e.File)) e.Lines =
-    ('#line ' <Symb s.Line> ' ' '"' <EscapeString e.File> '"')
-    <SetLineNumbers
-      (e.Source) (e.Target) <Inc s.LineNum> e.Lines
-    >;
+    = <PutLines s.FileNo e.Header> : /* пусто */
 
-  (e.Source) (e.Target) s.LineNum (NativeInsertEnd) e.Lines =
-    ('#line ' <Symb <Inc s.LineNum>> ' ' '"' <EscapeString e.Target> '"')
-    <SetLineNumbers
-      (e.Source) (e.Target) <Inc s.LineNum> e.Lines
-    >;
+    = <Reduce
+        (&PutCommand-Native-WithInlines s.FileNo (e.Source) (e.Target))
+        (<+ s.HeaderLen 1> /* отступ */)
+        e.RASL
+      >
+    : (s.LineNo /* отступ должен остаться тем же */)
 
-  (e.Source) (e.Target) s.LineNum (e.OtherLine) e.Lines =
-    (e.OtherLine)
-    <SetLineNumbers
-      (e.Source) (e.Target) <Inc s.LineNum> e.Lines
-    >;
+    = <PutLines
+        s.FileNo
+        ()
+        ('//End of file')
+      >;
+}
 
-  (e.Source) (e.Target) s.LineNum /* кончились строки */ =
-    /* пусто */;
+PutCommand-Native-WithInlines {
+  s.FileNo (e.Source) (e.Target) (s.LineNo e.Indent)
+  (CmdEmitNativeCode t.SrcPos e.Code)
+
+    = t.SrcPos
+    : {
+        /* Оставляем на всякий случай для совместимости */
+        s.SrcLineNum = s.SrcLineNum e.Source;
+        (FileLine s.Line e.File) = s.Line e.File;
+        (FileRowCol (s.Line s.Col) e.File) = s.Line e.File;
+      }
+    : s.SrcLine e.SrcFile
+
+    = <Lenw e.Code> : s.CodeLen e.Code^
+
+    = <+ s.LineNo <+ s.CodeLen 2>> : s.NextLineNo
+
+    = (s.NextLineNo e.Indent)
+      <Putout s.FileNo <GenLineDirective s.SrcLine e.SrcFile>>
+      <PutLines s.FileNo e.Code>
+      <Putout s.FileNo <GenLineDirective s.NextLineNo e.Target>>;
+
+  s.FileNo (e.Source) (e.Target) (s.LineNo e.Indent) t.Command
+    = <GenCommand-Native (e.Indent) t.Command> : (e.Indent^) e.Code
+    = <Lenw e.Code> : s.CodeLen e.Code^
+    = (<+ s.LineNo s.CodeLen> e.Indent)
+      <PutLines s.FileNo e.Code>;
+}
+
+GenLineDirective {
+  s.Line e.File = '#line ' <Symb s.Line> ' ' '"' <EscapeString e.File> '"'
 }
 
 ContextRange-B {

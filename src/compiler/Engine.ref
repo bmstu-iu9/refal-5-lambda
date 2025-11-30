@@ -594,10 +594,7 @@ BackEnd-RASLModule {
 
 BackEnd-NativeModule {
   t.NativeModule (e.SrcName) e.OutputName =
-    <SaveFile
-      (e.OutputName)
-      <GenProgram-Native (e.SrcName) (e.OutputName) t.NativeModule>
-    >
+    <GenProgram-Native (e.SrcName) (e.OutputName) t.NativeModule>
     (e.OutputName);
 }
 

@@ -652,6 +652,12 @@ std::pair<refalrts::debugger::Cmd, std::string>
   );
 }
 
+namespace {
+
+class EOFInStream {};
+
+} // безымянное namespace
+
 std::string refalrts::debugger::RefalDebugger::ask_for_param(
   const std::string &appeal
 ) {
@@ -662,7 +668,8 @@ std::string refalrts::debugger::RefalDebugger::ask_for_param(
   if (fgets(param, MAX_COMMAND_LEN - 1, m_in) != 0) {
     return trim(std::string(param));
   } else {
-    return std::string();
+    printf("READ OPTION ERROR!\n");
+    throw EOFInStream();
   }
 }
 
@@ -1252,12 +1259,10 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
   char command[MAX_COMMAND_LEN] = {0};
   for ( ; ; ) {
     printf("debug>");
-    if (m_has_debugger_script) {
-      if (fgets(command, MAX_COMMAND_LEN - 1, m_in) == 0) {
+    if (fgets(command, MAX_COMMAND_LEN - 1, m_in) == 0) {
+      if (m_has_debugger_script) {
         break;
-      }
-    } else {
-      if (fgets(command, MAX_COMMAND_LEN - 1, m_in) == 0) {
+      } else {
         memcpy(command, s_QUIT, strlen(s_QUIT));
       }
     }
@@ -1386,7 +1391,12 @@ refalrts::debugger::RefalDebugger::handle_function_call(
       "Step #%d; Function <%s ...>\n",
       m_vm->step_counter(), callee == 0 ? "" : callee->name.name
     );
-    if (debugger_loop(begin, end) == refalrts::cExit) {
+    try {
+      if (debugger_loop(begin, end) == refalrts::cExit) {
+        return cExit;
+      }
+    } catch (EOFInStream) {
+      m_vm->set_return_code(0);
       return cExit;
     }
   }
