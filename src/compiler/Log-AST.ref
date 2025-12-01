@@ -280,6 +280,7 @@ InlineTerm {
   (CallBrackets e.Value) = <CallBrackets e.Value>;
   (ColdCallBrackets e.Value) = <ColdCallBrackets e.Value>;
   (ClosureBrackets e.Value) = <ClosureBrackets e.Value>;
+  ('{' s.Coordinate '}') = '{' <Symb s.Coordinate> '}';
 }
 
 MultilineTerm {
