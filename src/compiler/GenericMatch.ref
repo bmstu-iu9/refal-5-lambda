@@ -228,11 +228,11 @@ DoGeneralize-Rec {
   (e.UsedVars) ('{' s.A s.B '}')
   (e.Begin) (e.E1 ('{'s.A'}') e.Inner ('{'s.B'}') e.E2) (e.Assigns)
     = <ClearCoordinates e.Inner> : e.VarVal
-    = <GetVarType e.VarVal> : s.VarType
-    = <NewVarName (e.UsedVars) s.VarType> : (e.UsedVars^) s.VarType^ e.New
+    = <GetVarMode e.VarVal> : s.Mode
+    = <NewVarName (e.UsedVars) s.Mode> : (e.UsedVars^) s.Mode^ e.New
     = (e.UsedVars)
-      (e.Begin e.E1 ('{'s.A'}') (Var s.VarType e.New) ('{'s.B'}') e.E2)
-      ((e.VarVal ':' (Var s.VarType e.New)) e.Assigns);
+      (e.Begin e.E1 ('{'s.A'}') (Var s.Mode e.New) ('{'s.B'}') e.E2)
+      ((e.VarVal ':' (Var s.Mode e.New)) e.Assigns);
 
   (e.UsedVars) t.Interval
   (e.Begin) ((Brackets e.Nested) e.Rest) (e.Assigns)
@@ -267,7 +267,7 @@ DoGeneralize-Rec {
 
 /* Определяет тип переменной, до которой выполнится динамическое обобщение */
 
-GetVarType {
+GetVarMode {
   (Var s.Mode e.Index) = s.Mode;
   (ScrVar s.Mode e.Index) = s.Mode;
   (WhVar s.Mode e.Index) = s.Mode;
@@ -1802,7 +1802,7 @@ Solve-SymmClashes-Aux {
     , t.tX : (Var 't' e._)
     = (Generalize (('{' s.E s.F '}') ('{' s.A s.D '}')));
 
-  /* {a} [X {b} E {c}] {d} = {e} t.X {f}  ↦  t.X → [e.NEW] */
+  /* {a} [X {b} E {c}] {d} = {e} t.X {f}  ↦  t.X → [X e.NEW] */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   (('{'s.A'}') t.Br ('{'s.D'}') '=' ('{'s.E'}') t.tX ('{'s.F'}'))
   e.ClashesEnd (e.Assigns)
@@ -1827,7 +1827,7 @@ Solve-SymmClashes-Aux {
     , t.tX : (Var 't' e._)
     = (Generalize (('{' s.A s.D '}') ('{' s.E s.F '}')));
 
-  /* {e} t.X {f} = {a} [X {b} E {c}] {d}  ↦  t.X → [e.NEW] */
+  /* {e} t.X {f} = {a} [X {b} E {c}] {d}  ↦  t.X → [X e.NEW] */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   (T ('{'s.E'}') t.tX ('{'s.F'}') '=' ('{'s.A'}') t.Br ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
