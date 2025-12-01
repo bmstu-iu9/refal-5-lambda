@@ -782,6 +782,10 @@ SpecCall-BuildSignature {
           = <AddSuffix e.Name ('@' s.NextNumber)> : e.InstanceName
           = (e.Body) <Inc s.NextNumber>
             e.Signatures ((e.InstanceName) e.Signature)
+            <Log-PutLine 'New instance: ' <DisplayName e.InstanceName>>
+            <Log-PutLine 'Argument: ' <Log-InlineExpr e.NewArg>>
+            <Log-PutLine 'Signature: ' <Log-InlineExpr e.Signature>>
+            <Log-PutLine>
           : e.SpecInfo^
 
           = <MakeNewFunction
