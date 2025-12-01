@@ -1,0 +1,9 @@
+* WARNING pseudocomment
+
+*$EXTENDED;
+
+*$SPEC Func (s.STAT) s.dyn;
+
+$ENTRY Func {
+  s.Stat (s.Dyn) = s.Stat s.Dyn;
+}

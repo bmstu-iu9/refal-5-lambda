@@ -1,0 +1,20 @@
+* WARNING pseudocomment
+
+*$CLASSIC;
+
+*$SPEC Func s.STAT 'unclosed quote;
+
+*$SPEC Func (s.STAT) s.dyn;
+
+*$SPEC Func s.STAT (s.dyn;
+
+Func {
+  s.Stat (s.Dyn) = s.Stat s.Dyn;
+*$SPEC Func s.STAT (s.dyn);
+}
+
+$ENTRY Go {
+  /* empty */
+    , <Func 'a' ('b')> : 'ab'
+    = /* empty */
+}

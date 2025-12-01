@@ -1,0 +1,27 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */
+    = <LoadAST (Config) R5 'srcname.ref'> : (R5 (Config) 'srcname.ref')
+    = <<LoadAST (Config) RSL 'srcname.rsl'>> : s.Fn
+    = <s.Fn True> : (R5 (Config) 'srcname-decompiled.ref')
+    = <s.Fn False> : (FileRowCol (1 1) 'srcname-decompiled.ref')
+    = /* empty */;
+}
+
+LoadAST {
+  t.Config R5 e.SrcName = (R5 t.Config e.SrcName);
+
+  t.Config RSL e.SrcName
+    = e.SrcName : e.BaseName '.rsl'
+    = e.BaseName '-decompiled.ref' : e.DecompiledName
+    = (FileRowCol (1 1) e.DecompiledName) : t.ErrorPos
+    = {
+        /* empty */
+          = <LoadAST t.Config R5 e.DecompiledName> : t.AST
+          = {
+              True = t.AST;
+              False = t.ErrorPos;
+            };
+      }
+}

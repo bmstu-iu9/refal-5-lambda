@@ -1,0 +1,13 @@
+* WARNING screening
+
+$ENTRY CDACA2 {
+  2 10 'db'
+  e.6
+  s.3 CAD (10) D e.2 CDB t.3 2
+    = '$1';
+
+  2 10 'db'
+  e.6 s.3 'd' CD ('ba' 5) 'b' 2 e.6 3 (t.1 C ACD) e.13 CB 3
+  'c' CAD (10) D e.2 CDB t.3 2
+    = '$2';
+}

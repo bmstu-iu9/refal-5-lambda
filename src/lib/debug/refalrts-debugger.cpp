@@ -1263,8 +1263,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       if (m_has_debugger_script) {
         break;
       } else {
-        m_vm->set_return_code(0);
-        return cExit;
+        memcpy(command, s_QUIT, strlen(s_QUIT));
       }
     }
     std::pair<Cmd, std::string> cmdAndError = parse_input_line(

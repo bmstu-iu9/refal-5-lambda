@@ -4,7 +4,8 @@ $INCLUDE "LibraryEx";
 $EXTERN Pass-UnCondition;
 
 *$FROM TreeUtils
-$EXTERN NewVarName, AddSuffix, CreateContext, CreateSpecPatternForContext;
+$EXTERN NewVarName, AddSuffix, CreateContext, ExtractVariables-Expr,
+  IsGenFunctionDecoratedName;
 
 
 $ENTRY Desugar {
@@ -13,8 +14,8 @@ $ENTRY Desugar {
       e.AST
       <Pipe
         &Pass-RemovePos
-        &Pass-AttachEntries
-        &Pass-RemoveRedundantDriveInlineIntrinsic
+        &Pass-UnfoldEnumsAndSwaps
+        &Pass-ExtractEntries
         &Pass-EnumerateVariables
         &Pass-NameNestedFuncs
         &Pass-RemoveBlocksAndAssigns
@@ -23,12 +24,11 @@ $ENTRY Desugar {
           s.ConditionsMode
           {
             Conditions-Native = /* no pass */;
-
             Conditions-Transform = (&Pass-UnCondition s.MarkupContext);
           }
         >
-        &Pass-CleanupRedudandExterns
-        &Pass-UnfoldEnums
+        &Pass-DisableGenFunctionOptimizations
+        &Pass-CollectDeclarations
       >
     >;
 }
@@ -40,14 +40,15 @@ $ENTRY Pass-RemovePos {
           (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
             = (Function s.ScopeClass (e.Name) <RemovePos-Body e.Body>);
 
-          (Ident t.SrcPos e.Name)
-            = (Ident e.Name);
+          (Ident t.SrcPos e.Name) = (Ident e.Name);
 
-          (NativeBlock t.SrcPos e.Code)
-            = (NativeBlock t.SrcPos e.Code);
+          (NativeBlock t.SrcPos e.Code) = (NativeBlock t.SrcPos e.Code);
 
-          (Spec t.SrcPos (e.Name) e.Pattern)
-            = (Spec (e.Name) <RemovePos-Expr e.Pattern>);
+          (LegacySpec t.SrcPos (e.Name) e.Pattern) = (LegacySpec e.Name);
+
+          (s.OptMarkup t.SrcPos e.Name)
+            , Opt Drive Spec NoOpt NoDrive NoSpec : e._ s.OptMarkup e._
+            = (s.OptMarkup e.Name);
 
           (s.EnumSwapDeclaration t.SrcPos s.ScopeClass e.Name)
             = (s.EnumSwapDeclaration s.ScopeClass e.Name);
@@ -137,39 +138,15 @@ $ENTRY RemovePos-Expr {
     >;
 }
 
-Pass-AttachEntries {
+Pass-UnfoldEnumsAndSwaps {
   e.AST
-    = <MapAccum
-        {
-          (e.Entries) (Entry GN-Entry e.Name)
-            = (e.Entries (e.Name)) /* удаляем из дерева */;
-
-          (e.Entries) t.Other = (e.Entries) t.Other;
-        }
-        (/* entries */) e.AST
-      >
-    : (e.Entries) e.AST^
     = <Map
         {
-          (Function s.ScopeClass (e.Name) e.Body)
-            , e.Entries : e._ (e.Name) e._
-            = (Function GN-Entry (e.Name) e.Body);
-
           (Enum s.ScopeClass e.Name)
-            , e.Entries : e._ (e.Name) e._
-            = (Enum GN-Entry e.Name);
+            = (Function s.ScopeClass (e.Name) Sentences /* пусто */);
 
           (Swap s.ScopeClass e.Name)
-            , e.Entries : e._ (e.Name) e._
-            = (Swap GN-Entry e.Name);
-
-          (Declaration s.ScopeClass e.Name)
-            , e.Entries : e._ (e.Name) e._
-            = (Declaration GN-Entry e.Name);
-
-          (Drive s.ScopeClass e.Name) = (Drive e.Name);
-          (Inline s.ScopeClass e.Name) = (Inline e.Name);
-          (Intrinsic s.ScopeClass e.Name) = (Intrinsic e.Name);
+            = (Function s.ScopeClass (e.Name) Swap);
 
           t.Other = t.Other;
         }
@@ -177,76 +154,46 @@ Pass-AttachEntries {
       >;
 }
 
-Pass-RemoveRedundantDriveInlineIntrinsic {
+$ENTRY Pass-ExtractEntries {
   e.AST
     = <MapAccum
         {
-          (e.Labels-B (e.Name s.KnownLabel) e.Labels-E) (Drive e.Name)
-            = (e.Labels-B (e.Name Drive) e.Labels-E)
-              (Drive e.Name);
+          (e.Entries) (Entry GN-Entry e.Name)
+            = (e.Entries (e.Name)) /* удаляем из дерева */;
 
-          (e.Labels-B (e.Name Drive) e.Labels-E) (Inline e.Name)
-            = (e.Labels-B (e.Name Drive) e.Labels-E)
-              (Inline e.Name);
+          (e.Entries) (Function s.ScopeClass (e.Name) e.Body)
+            = (e.Entries <Entry s.ScopeClass e.Name>)
+              (Function (e.Name) e.Body);
 
-          (e.Labels-B (e.Name Intrinsic) e.Labels-E) (Inline e.Name)
-            = (e.Labels-B (e.Name Inline) e.Labels-E)
-              (Inline e.Name);
+          (e.Entries) (LegacyDrive s.ScopeClass e.Name)
+            = (e.Entries) (LegacyDrive e.Name);
 
-          (e.Labels-B (e.Name s.KnownLabel) e.Labels-E) (Intrinsic e.Name)
-            = (e.Labels-B (e.Name s.KnownLabel) e.Labels-E)
-              (Intrinsic e.Name);
+          (e.Entries) (LegacyInline s.ScopeClass e.Name)
+            = (e.Entries) (LegacyInline e.Name);
 
-          (e.Labels) (Drive e.Name)
-            = (e.Labels (e.Name Drive)) (Drive e.Name);
+          (e.Entries) (Intrinsic s.ScopeClass e.Name)
+            = (e.Entries) (Intrinsic e.Name);
 
-          (e.Labels) (Inline e.Name)
-            = (e.Labels (e.Name Inline)) (Inline e.Name);
-
-          (e.Labels) (Intrinsic e.Name)
-            = (e.Labels (e.Name Intrinsic)) (Intrinsic e.Name);
-
-          (e.Labels) t.Other = (e.Labels) t.Other;
+          (e.Entries) t.Other = (e.Entries) t.Other;
         }
-        (/* labels */) e.AST
+        (/* имена entry-функций */)
+        e.AST
       >
-    : (e.Labels) e.AST^
+    : (e.Entries) e.AST^
+    = (Entries <Unique e.Entries>) e.AST;
+}
 
-    = <MapAccum
-        {
-          (e.Labels-B (e.Name s.Label) e.Labels-E) (s.Label e.Name)
-            = (e.Labels-B e.Labels-E) (s.Label e.Name);
-
-          (e.Labels-B (e.Name Drive) e.Labels-E) (Inline e.Name)
-            = (e.Labels-B (e.Name Drive) e.Labels-E) /* пропускаем */;
-
-          (e.Labels-B (e.Name Drive) e.Labels-E) (Intrinsic e.Name)
-            = (e.Labels-B (e.Name Drive) e.Labels-E) /* пропускаем */;
-
-          (e.Labels-B (e.Name Inline) e.Labels-E) (Intrinsic e.Name)
-            = (e.Labels-B (e.Name Inline) e.Labels-E) /* пропускаем */;
-
-          (e.Labels^) (Drive e.Name) = (e.Labels) /* пропускаем */;
-          (e.Labels^) (Inline e.Name) = (e.Labels) /* пропускаем */;
-          (e.Labels^) (Intrinsic e.Name) = (e.Labels) /* пропускаем */;
-
-          (e.Labels^) t.Other = (e.Labels) t.Other;
-        }
-        (e.Labels) e.AST
-      >
-    : () e.AST^
-    = e.AST;
+Entry {
+  GN-Entry e.Name = (e.Name);
+  GN-Local e.Name = /* пропускаем */;
 }
 
 $ENTRY Pass-EnumerateVariables {
   e.AST =
     <Map
       {
-        (Function s.ScopeClass (e.Name) e.Body)
-          = (Function
-              s.ScopeClass (e.Name)
-              <EnumerateVars-Body (/* переменные */) e.Body>
-            );
+        (Function (e.Name) e.Body)
+          = (Function (e.Name) <EnumerateVars-Body (/* переменные */) e.Body>);
 
         t.OtherProgramElement = t.OtherProgramElement;
       }
@@ -275,6 +222,7 @@ EnumerateVars-Body {
 
   (e.ScopeVars) NativeBody t.SrcPos e.Code = NativeBody t.SrcPos e.Code;
   (e.ScopeVars) Metatable e.Metatable = Metatable e.Metatable;
+  (e.ScopeVars) Swap = Swap;
 }
 
 EnumerateVars-Blocks {
@@ -297,7 +245,7 @@ EnumerateVars-Assignments {
     = <EnumerateVars-Blocks (e.ScopeVars) e.Blocks> : e.Blocks^
     = <EnumerateVars-Expr (e.ScopeVars) e.Pattern> : (e.ScopeVars^) e.Pattern^
     = <EnumerateVars-Assignments
-        (e.RAssignments (s.ChainType (e.Result) (e.Blocks) (e.Pattern)))
+        (<gen_e__ e.RAssignments (s.ChainType (e.Result) (e.Blocks) (e.Pattern))>)
         (e.ScopeVars) e.Assignments
       >;
 }
@@ -385,11 +333,8 @@ Pass-NameNestedFuncs {
   e.AST =
     <Map
       {
-        (Function s.ScopeClass (e.Name) e.Body) =
-          (Function
-            s.ScopeClass (e.Name)
-            <NameNestedBody (<AddSuffix e.Name ()>) e.Body>
-          );
+        (Function (e.Name) e.Body)
+          = (Function (e.Name) <NameNestedBody (<AddSuffix e.Name ()>) e.Body>);
 
         t.OtherProgramElement = t.OtherProgramElement;
       }
@@ -428,10 +373,9 @@ NameNestedBody {
         >
       >;
 
-  (e.MainName) NativeBody t.SrcPos e.Code
-    = NativeBody t.SrcPos e.Code;
-
+  (e.MainName) NativeBody t.SrcPos e.Code = NativeBody t.SrcPos e.Code;
   (e.MainName) Metatable e.Metatable = Metatable e.Metatable;
+  (e.MainName) Swap = Swap;
 }
 
 NameNestedBlocks {
@@ -519,11 +463,8 @@ Pass-RemoveBlocksAndAssigns {
   e.AST =
     <Map
       {
-        (Function s.ScopeClass (e.Name) e.Body) =
-          (Function
-            s.ScopeClass (e.Name)
-            <RemoveAssigns-Sentences e.Body>
-          );
+        (Function (e.Name) e.Body)
+          = (Function (e.Name) <RemoveAssigns-Body e.Body>);
 
         t.OtherProgramElement = t.OtherProgramElement;
       }
@@ -531,24 +472,17 @@ Pass-RemoveBlocksAndAssigns {
     >;
 }
 
-RemoveAssigns-Sentences {
-  Sentences e.Sentences =
-    Sentences
-    <Map
-      &RemoveAssigns-Sentence
-      e.Sentences
-    >;
-
-  NativeBody t.SrcPos e.Code =
-    NativeBody t.SrcPos e.Code;
-
+RemoveAssigns-Body {
+  Sentences e.Sentences = Sentences <Map &RemoveAssigns-Sentence e.Sentences>;
+  NativeBody t.SrcPos e.Code = NativeBody t.SrcPos e.Code;
   Metatable e.Metatable = Metatable e.Metatable;
+  Swap = Swap;
 }
 
 RemoveAssigns-Sentence {
   /*
     Присваивание есть синтаксический сахар — выражается через блок:
-    … = R : { B }… P …  --->  … = R : { B }… : { P … }
+    … = R : { B }… : P …  --->  … = R : { B }… : { P … }
   */
   (
     (e.Pattern) e.Conditions
@@ -581,15 +515,10 @@ RemoveAssigns-Conditions {
   e.Conditions
     = <Map
         {
-          (Condition
-            (e.ConditionName) (e.Result) (e.Blocks) (e.Pattern)
-          )
+          (Condition (e.ConditionName) (e.Result) (e.Blocks) (e.Pattern))
             = <RemoveAssigns-WindBlocks (e.Result) e.Blocks> : (e.Result^)
-            = (Condition
-                (e.ConditionName)
-                (<RemoveAssigns-Result e.Result>)
-                (e.Pattern)
-              );
+            = <RemoveAssigns-Result e.Result> : e.Result^
+            = (Condition (e.ConditionName) (e.Result) (e.Pattern));
         }
         e.Conditions
       >;
@@ -620,7 +549,7 @@ RemoveAssigns-Result {
             = (CallBrackets <RemoveAssigns-Result e.InBrackets>);
 
           (Closure (e.ClosureName) e.Sentences)
-            = (Closure (e.ClosureName) <RemoveAssigns-Sentences e.Sentences>);
+            = (Closure (e.ClosureName) <RemoveAssigns-Body e.Sentences>);
 
           t.OtherTerm = t.OtherTerm;
         }
@@ -632,10 +561,10 @@ Pass-FlatNestedFuncs {
   s.MarkupContext e.AST =
     <Map
       {
-        (Function s.ScopeClass (e.Name) e.Body)
+        (Function (e.Name) e.Body)
           = <ExtractNested s.MarkupContext e.Body> : (e.NestedFuncs) e.Body^
           = e.NestedFuncs
-            (Function s.ScopeClass (e.Name) e.Body);
+            (Function (e.Name) e.Body);
 
         t.OtherProgramElement = t.OtherProgramElement;
       }
@@ -646,7 +575,7 @@ Pass-FlatNestedFuncs {
 ExtractNested {
   s.MarkupContext e.Sentences
     = <ExtractNestedRec
-        s.MarkupContext (/* внешних переменных нет */) e.Sentences
+        s.MarkupContext (<gen_e__ /* внешних переменных нет */>) e.Sentences
       >
     : (/* заимстовованных переменных нет */) (e.NestedFuncs) e.Sentences^
     = (e.NestedFuncs) e.Sentences;
@@ -656,7 +585,10 @@ ExtractNestedRec {
   s.MarkupContext (e.ScopeVars) Sentences e.Sentences
     = <MapAccum
         (&ExtractNested-Sentence s.MarkupContext e.ScopeVars)
-        ((/* вложенные функции */) (/* заимствованные переменные */))
+        (
+          (<gen_e__ /* вложенные функции */>)
+          (<gen_e__ /* заимствованные переменные */>)
+        )
         e.Sentences
       >
     : ((e.NestedFuncs) (e.BorrowedVars)) e.Sentences^
@@ -669,6 +601,10 @@ ExtractNestedRec {
   s.MarkupContext (e.ScopeVars) Metatable e.Metatable
     = (/* нет заимстовованных переменных */) (/* нет вложенных функций */)
       Metatable e.Metatable;
+
+  s.MarkupContext (e.ScopeVars) Swap
+    = (/* нет заимстовованных переменных */) (/* нет вложенных функций */)
+      Swap;
 }
 
 ExtractNested-Sentence {
@@ -709,7 +645,7 @@ ExtractNested-Conditions {
     = <ExtractNested-Pattern (e.ScopeVars) (e.BorrowedVars) e.Pattern>
     : (e.BorrowedVars^) e.PatternLocalVars
 
-    = <Uniq e.LocalVars e.PatternLocalVars> : e.LocalVars^
+    = <Unique e.LocalVars e.PatternLocalVars> : e.LocalVars^
 
     = <ExtractNested-Conditions
         s.MarkupContext (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
@@ -731,29 +667,10 @@ ExtractNested-Pattern {
     <MapAccum
       (&UpdateBorrowedVars e.ScopeVars)
       (e.BorrowedVars)
-      <Uniq
-        <ExtractAllVars e.Pattern>
+      <Unique
+        <ExtractVariables-Expr e.Pattern>
       >
     >;
-}
-
-ExtractAllVars {
-  (Var s.Mode e.Index) e.Tail =
-    (s.Mode e.Index) <ExtractAllVars e.Tail>;
-
-  (Brackets e.Inner) e.Tail = <ExtractAllVars e.Inner e.Tail>;
-  (ADT-Brackets e.Inner) e.Tail = <ExtractAllVars e.Inner e.Tail>;
-
-  t.OtherTerm e.Tail = <ExtractAllVars e.Tail>;
-
-  /* пусто */ = /* пусто */;
-}
-
-Uniq {
-  e.Uniqs t.Repeated e.NotScanned-M t.Repeated e.NotScanned-E =
-    e.Uniqs <Uniq e.NotScanned-M t.Repeated e.NotScanned-E>;
-
-  e.Uniqs = e.Uniqs;
 }
 
 UpdateBorrowedVars {
@@ -834,11 +751,11 @@ ExtractNested-Result-Term {
         (/* нет захваченных переменных */) e.Body^
           = e.Body
           : {
-              Sentences e.Sentences = (Drive e.ClosureName);
+              Sentences e.Sentences = (GROUP Drives (e.ClosureName));
               NativeBody e.NativeBody = /* нет меток */;
             }
           : e.DriveLabelOpt
-          = (Function GN-Local (e.ClosureName) e.Body)
+          = (Function (e.ClosureName) e.Body)
             e.DriveLabelOpt
             (e.BorrowedVars)
             (Symbol Name e.ClosureName);
@@ -847,7 +764,7 @@ ExtractNested-Result-Term {
         (e.NestedBorrowedVars^) Sentences e.Sentences
           = <CreateContext s.MarkupContext e.NestedBorrowedVars> : e.Context
           = (Function
-              GN-Local (e.ClosureName)
+              (e.ClosureName)
               Sentences
               <Map
                 {
@@ -857,8 +774,8 @@ ExtractNested-Result-Term {
                 e.Sentences
               >
             )
-            (Drive e.ClosureName)
-            (Spec (e.ClosureName) <CreateSpecPatternForContext e.Context>)
+            (GROUP Drives (e.ClosureName))
+            (GROUP Specs (e.ClosureName))
             <Reduce
               (&CheckBorrowed (e.ScopeVars))
               (e.BorrowedVars) e.NestedBorrowedVars
@@ -886,97 +803,127 @@ CheckBorrowed {
   (s.Mode e.Index) =
     (e.BorrowedVars (s.Mode e.Index));
 
-  (e.ScopeVars) (e.BorrowedVars) (s.Mode e.Index) =
-    (e.BorrowedVars);
+  (e.ScopeVars) (e.BorrowedVars) (s.Mode e.Index) = (e.BorrowedVars);
 }
 
-Pass-CleanupRedudandExterns {
-  /*
-    Проход Checker проверил корректность использования $FORWARD’ов
-    и $EXTERN’ов, поэтому здесь мы их упрощаем не взирая на область
-    видимости.
-  */
-
+Pass-DisableGenFunctionOptimizations {
   e.AST
     = <MapAccum
-       {
-         (e.DefinedFunctions)
-         (Function s.ScopeClass (e.Name) e.Body)
-           = (e.DefinedFunctions (e.Name))
-             (Function s.ScopeClass (e.Name) e.Body);
-
-         (e.DefinedFunctions) (Enum s.ScopeClass e.Name)
-           = (e.DefinedFunctions (e.Name)) (Enum s.ScopeClass e.Name);
-
-         (e.DefinedFunctions) (Swap s.ScopeClass e.Name)
-           = (e.DefinedFunctions (e.Name)) (Swap s.ScopeClass e.Name);
-
-         (e.DefinedFunctions) (Inline e.Name)
-           = (e.DefinedFunctions) (Inline e.Name);
-
-         (e.DefinedFunctions) (Drive e.Name)
-           = (e.DefinedFunctions) (Drive e.Name);
-
-         (e.DefinedFunctions) (Intrinsic e.Name)
-           = (e.DefinedFunctions) (Intrinsic e.Name);
-
-         (e.DefinedFunctions) (Declaration s.ScopeClass e.Name)
-           = (e.DefinedFunctions) (Declaration s.ScopeClass e.Name);
-
-         (e.DefinedFunctions) (Ident e.Name)
-           = (e.DefinedFunctions) (Ident e.Name);
-
-         (e.DefinedFunctions) (NativeBlock t.SrcPos e.Code)
-           = (e.DefinedFunctions) (NativeBlock t.SrcPos e.Code);
-
-         (e.DefinedFunctions) (Spec t.SrcPos t.Name e.Pattern)
-           = (e.DefinedFunctions) (Spec t.SrcPos t.Name e.Pattern)
-       }
-       (/* defined functions */)
-       e.AST
-      >
-    : (e.DefinedFunctions) e.AST^
-    = <MapAccum &FilterDeclarations (e.DefinedFunctions) e.AST>
-    : (e.DefinedFunctions^) e.AST^
-
-    = <MapAccum
         {
-          (e.DeclaredFunctions-B (e.Name) e.DeclaredFunctions-E)
-          (Declaration s.ScopeClass e.Name)
-            = (e.DeclaredFunctions-B (e.Name) e.DeclaredFunctions-E)
-              /* пропускаем дублирующееся определение */;
+          (e.GenFunctions)
+          (Function
+            (e.FuncName) Sentences
+            (((Var 'e' e.Index)) /*=*/ ((Var 'e' e.Index)))
+          )
+            , <IsGenFunctionDecoratedName e.FuncName> : True
+            = (e.GenFunctions (e.FuncName))
+              (Function
+                (e.FuncName) Sentences
+                (((Var 'e' e.Index)) /*=*/ ((Var 'e' e.Index)))
+              );
 
-          (e.DeclaredFunctions) (Declaration s.ScopeClass e.Name)
-            = (e.DeclaredFunctions (e.Name))
-              (Declaration s.ScopeClass e.Name);
-
-          (e.DeclaredFunctions) t.Other
-            = (e.DeclaredFunctions) t.Other;
+          (e.GenFunctions) t.Other = (e.GenFunctions) t.Other;
         }
-        (/* declared functions */) e.AST
+        (/* gen functions */) e.AST
       >
-    : (e._) e.AST^
-    = e.AST;
+    : (e.GenFunctions) e.AST^
+    = (GROUP NoDrives e.GenFunctions)
+      (GROUP NoSpecs e.GenFunctions)
+      e.AST
 }
 
-FilterDeclarations {
-  (e.DefinedFunctions-B (e.Name) e.DefinedFunctions-E)
-  (Declaration s.ScopeClass e.Name)
-    = (e.DefinedFunctions-B (e.Name) e.DefinedFunctions-E)
-      /* пусто */;
-
-  (e.DefinedFunctions) t.OtherItem = (e.DefinedFunctions) t.OtherItem;
-}
-
-Pass-UnfoldEnums {
+Pass-CollectDeclarations {
   e.AST
     = <Map
         {
-          (Enum s.ScopeClass e.Name) =
-            (Function s.ScopeClass (e.Name) Sentences /* пусто */);
+          (Declaration GN-Local e._) = /* игнорируем */;
+          (Declaration GN-Entry e.Name) = (GROUP Externs (e.Name));
+
+          (LegacyDrive e.Name) = (GROUP Drives (e.Name));
+          (LegacyInline e.Name) = (GROUP Drives (e.Name));
+          (Intrinsic e.Name) = (GROUP Intrinsics (e.Name));
+          (LegacySpec e.Name) = (GROUP Specs (e.Name));
+
+          (s.OptMarkup e.Name)
+            , (Opt Drives Specs) (Drive Drives) (Spec Specs)
+              (NoOpt NoDrives NoSpecs) (NoDrive NoDrives) (NoSpec NoSpecs)
+            : e._ (s.OptMarkup e.Groups) e._
+            = <Map { s.Group = (GROUP s.Group (e.Name)) } e.Groups>;
+
+          (Function (e.Name) Sentences e.Sentences)
+            = (GROUP DefinedFunctions (e.Name))
+              (GROUP RefalFunctions (e.Name))
+              (Function (e.Name) Sentences e.Sentences);
+
+          (Function (e.Name) e.Body)
+            = (GROUP DefinedFunctions (e.Name)) (Function (e.Name) e.Body);
 
           t.Other = t.Other;
         }
         e.AST
+      >
+    : e.AST^
+
+    = <CollectDeclarations-Group
+        e.AST
+        (GROUP Externs)
+        (GROUP Drives)
+        (GROUP Intrinsics)
+        (GROUP Specs)
+        (GROUP NoDrives)
+        (GROUP NoSpecs)
+        (GROUP DefinedFunctions)
+        (GROUP RefalFunctions)
+      >
+    : e.AST^
+      (GROUP Externs e.Externs)
+      (GROUP Drives e.Drives)
+      (GROUP Intrinsics e.Intrinsics)
+      (GROUP Specs e.Specs)
+      (GROUP NoDrives e.NoDrives)
+      (GROUP NoSpecs e.NoSpecs)
+      (GROUP DefinedFunctions e.DefinedFunctions)
+      (GROUP RefalFunctions e.RefalFunctions)
+
+    = <Unique e.Externs> : e.Externs^
+    = <Unique e.Drives> : e.Drives^
+    = <Unique e.Intrinsics> : e.Intrinsics^
+    = <Unique e.Specs> : e.Specs^
+    = <Unique e.NoDrives> : e.NoDrives^
+    = <Unique e.NoSpecs> : e.NoSpecs^
+
+    = <Set-Intersect (e.Drives) (e.RefalFunctions)> : e.Drives^
+    = <Set-Intersect (e.Specs) (e.RefalFunctions)> : e.Specs^
+
+    = <Set-Reject (e.Externs) (e.DefinedFunctions)> : e.Externs^
+    = <Set-Reject (e.Intrinsics) (e.DefinedFunctions)> : e.Intrinsics^
+
+    = (Externs e.Externs) (Intrinsics e.Intrinsics)
+      (Drives e.Drives) (Specs e.Specs)
+      (NoDrives e.NoDrives) (NoSpecs e.NoSpecs)
+      e.AST
+}
+
+CollectDeclarations-Group {
+  e.AST-B (GROUP s.Group e.Names-B) e.AST-M (GROUP s.Group e.Names-E) e.AST-E
+    = e.AST-B
+      <CollectDeclarations-Group
+        e.AST-M (GROUP s.Group e.Names-B e.Names-E) e.AST-E
       >;
+
+  e.AST = e.AST;
+}
+
+Set-Intersect {
+  (e.Set1-B t.Repeated e.Set1-E) (e.Set2-B t.Repeated e.Set2-E)
+    = t.Repeated <Set-Intersect (e.Set1-E) (e.Set2-B e.Set2-E)>;
+
+  (e.Set1) (e.Set2) = /* нет общих элементов */;
+}
+
+Set-Reject {
+  (e.Minuent-B t.Repeated e.Minuent-E) (e.Subtr-B t.Repeated e.Subtr-E)
+    = e.Minuent-B <Set-Reject (e.Minuent-E) (e.Subtr-B t.Repeated e.Subtr-E)>;
+
+  (e.Minuent) (e.Subtrahend) = e.Minuent;
 }

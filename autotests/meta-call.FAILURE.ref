@@ -1,0 +1,13 @@
+* TREE
+
+$META MetaCall;
+
+$ENTRY Go {
+  = <MetaCall>
+}
+
+__Meta_MetaCall {
+  e._ s.Table = <s.Table>
+}
+
+__Step-Drop { = }

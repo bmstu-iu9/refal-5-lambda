@@ -5,7 +5,7 @@ $ENTRY Go {
   e.X = <Basic e.X>;
 }
 
-$INLINE Basic;
+*$INLINE Basic;
 
 Basic {
   e.X = <CanBeDrivenAutomatically (e.X) (e.X)>;

@@ -1,0 +1,17 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */
+    = <F () "2x2" '*@@*'> : '*@@*'
+    = /* empty */;
+}
+
+*$INLINE F;
+*$SPEC F;
+
+F {
+  (e.Acc) 5 e.String = 5;
+  (e.Acc) s._ '*' e.String = <F (e.Acc '*') "2x2" e.String>;
+  (e.Acc) s._ '@' e.String = <F (e.Acc '@') "2x2" e.String>;
+  (e.Acc) s._ /* empty */ = e.Acc;
+}

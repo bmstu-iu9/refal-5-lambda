@@ -8,7 +8,7 @@ F {
   t.X = <Eq (t.X) t.X>
 }
 
-$SPEC Eq e.arg;
+*$SPEC Eq;
 
 Eq {
   t.Eq t.Eq = True;

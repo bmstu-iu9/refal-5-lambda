@@ -1,0 +1,12 @@
+* WARNING pseudocomment
+
+*$DRIVE D;
+
+$ENTRY Go { = <D> }
+
+D {
+%%
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}

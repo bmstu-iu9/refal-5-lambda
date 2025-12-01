@@ -229,6 +229,11 @@ void print_indent(FILE *output, int level) {
     putc('!', output);
     return;
   }
+
+  if (level > 80) {
+    level = 80;
+  }
+
   for (int i = 0; i < level; ++i) {
     // Каждые cPERIOD позиций вместо пробела ставим точку.
     bool put_marker = ((i % cPERIOD) == (cPERIOD - 1));

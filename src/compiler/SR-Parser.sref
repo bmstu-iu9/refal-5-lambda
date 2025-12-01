@@ -162,7 +162,7 @@ ParseSpec {
     : t.ErrorList^ (e.Pattern) e.Tail^
     = <Expect #TkSemicolon (';') t.ErrorList e.Tail>
     : t.ErrorList^ e.Tail^
-    = ((#Spec s.LnNum (e.Name) e.Pattern)) t.ErrorList e.Tail;
+    = ((#LegacySpec s.LnNum (e.Name) e.Pattern)) t.ErrorList e.Tail;
 
   t.ErrorList t.Unexpected e.Tail
     = (/* ничего не генерируем */)
@@ -408,11 +408,22 @@ ParseSentencePart {
 ParsePattern {
   t.ErrorList e.Tokens
     = <DoParsePattern
-        t.ErrorList (/* мультискобки */) (/* просканировано */) e.Tokens
+        t.ErrorList
+        (<gen_e__ /* мультискобки */>) (<gen_e__ /* просканировано */>)
+        e.Tokens
       >;
 }
 
+gen_e__ { e.arg = e.arg; }
+
 DoParsePattern {
+  t.ErrorList (e.MultiBracket) (e.Scanned) e.Tokens
+    = <DoParsePattern-GEN
+        t.ErrorList (<gen_e__ e.MultiBracket>) (<gen_e__ e.Scanned>) e.Tokens
+      >;
+}
+
+DoParsePattern-GEN {
   // Обработка литералов атомов
 
   t.ErrorList (e.MultiBrackets) (e.Scanned) (#TkChar s.LnNum s.Char) e.Tail =
@@ -612,7 +623,9 @@ StrFromBracket {
 ParseResult {
   t.ErrorList e.Tokens
     = <DoParseResult
-        t.ErrorList (/* мультискобки */) (/* просканировано */) e.Tokens
+        t.ErrorList
+        (<gen_e__ /* мультискобки */>) (<gen_e__ /* просканировано */>)
+        e.Tokens
       >
     : t.ErrorList^ (e.Result) e.Tail
     = <ParseBlocks t.ErrorList e.Tail> : t.ErrorList^ (e.Blocks) e.Tail^
@@ -632,6 +645,13 @@ ParseBlocks {
   <DoParseResult t.ErrorList (e.MultiBracket) (e.Scanned) e.Tail>
 */
 DoParseResult {
+  t.ErrorList (e.MultiBracket) (e.Scanned) e.Tokens
+    = <DoParseResult-GEN
+        t.ErrorList (<gen_e__ e.MultiBracket>) (<gen_e__ e.Scanned>) e.Tokens
+      >;
+}
+
+DoParseResult-GEN {
   // Обработка литералов атомов
 
   t.ErrorList (e.MultiBracket) (e.Scanned) (#TkChar s.LnNum s.Char) e.Tail =
