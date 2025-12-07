@@ -329,6 +329,21 @@ TryLoadExpr-Parse {
         s.LineNo s.LineLen (e.Line) 'Unbalanced bracket \')\''
       >;
 
+  (e.Scanned) (s.LineNo s.LineLen '/*' e.Comment '*/' e.Line) e.Lines
+    = <TryLoadExpr-Parse (e.Scanned) (s.LineNo s.LineLen e.Line) e.Lines>;
+
+  (e.Scanned)
+  (s.LineNo-B s.LineLen-B '/*' e.Comment-B)
+  e.CommentLines
+  (s.LineNo-E s.LineLen-E e.Comment-E '*/' e.Line)
+  e.Lines
+    = <TryLoadExpr-Parse (e.Scanned) (s.LineNo-E s.LineLen-E e.Line) e.Lines>;
+
+  (e.Scanned) (s.LineNo s.LineLen '/*' e.UnclosedComment) e.Lines
+    = <TryLoadExpr-MakeError
+        s.LineNo s.LineLen ('/*' e.UnclosedComment) 'Unclosed comment /*...'
+      >;
+
   (e.Scanned) (s.LineNo s.LineLen s.Char e.Line) e.Lines
     = <TryLoadExpr-Parse
         (e.Scanned <SkipSpace s.Char>) (s.LineNo s.LineLen e.Line) e.Lines
