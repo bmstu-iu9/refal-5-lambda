@@ -174,17 +174,17 @@ NormArithmArg {
   s.First e.Second
     , <Type s.First> : 'N' s.SubType s.First^
     , <NormNumber e.Second> : s.SecondSign e.Second^
-    = ('+' s.First) s.SecondSign e.Second;
+    = <NormSign '+' s.First> s.SecondSign e.Second;
 
   '+' s.First e.Second
     , <Type s.First> : 'N' s.SubType s.First^
     , <NormNumber e.Second> : s.SecondSign e.Second^
-    = ('+' s.First) s.SecondSign e.Second;
+    = <NormSign '+' s.First> s.SecondSign e.Second;
 
   '-' s.First e.Second
     , <Type s.First> : 'N' s.SubType s.First^
     , <NormNumber e.Second> : s.SecondSign e.Second^
-    = ('-' s.First) s.SecondSign e.Second;
+    = <NormSign '-' s.First> s.SecondSign e.Second;
 
   (e.First) e.Second
     , <NormNumber e.First> : s.FirstSign e.First^
@@ -192,6 +192,11 @@ NormArithmArg {
     = (s.FirstSign e.First) s.SecondSign e.Second;
 
   e.OtherArg = /* empty */;
+}
+
+NormSign {
+  s.Sign 0 = (0);
+  s.Sign s.Number = (s.Sign s.Number);
 }
 
 NormNumber {
@@ -502,10 +507,15 @@ Divmod-Normed {
   (0)           e.AnySecond  = (0) 0;
 }
 
+SignResult {
+  '-' 0 = 0;
+  s.Sign e.Value = s.Sign e.Value;
+}
+
 Divmod-Nat {
   (s.Numerator) s.Denominator (e.QuotSign) (e.RemSing)
     = <Divmod-Digits s.Numerator s.Denominator> : (s.Quot) s.Rem
-    = (e.QuotSign s.Quot) e.RemSing s.Rem;
+    = (<SignResult e.QuotSign s.Quot>) <SignResult e.RemSing s.Rem>;
 
   (e.Numerator) s.DenomFirst e.Denominator (e.QuotSign) (e.RemSing)
     = s.DenomFirst
@@ -542,7 +552,7 @@ Divmod-Nat {
         e.Rem^ 0 = e.Rem;
       }
     : e.Rem^
-    = (e.QuotSign e.Quot) e.RemSing e.Rem;
+    = (<SignResult e.QuotSign e.Quot>) <SignResult e.RemSing e.Rem>;
 }
 
 Divmod-Shl {
@@ -604,7 +614,7 @@ Divmod-Align {
   (e.Numerator) (e.NumerRest) (e.Denominator) /* empty */
     = <Divmod-CalcDigits (e.Numerator) (e.NumerRest) e.Denominator>
     : e.Quot (e.Rest)
-    = (<LeadingZeros e.Quot>) e.Rest;
+    = (<LeadingZeros e.Quot>) <LeadingZeros e.Rest>;
 
   (0 e.Numerator) () (e.Denominator) e.DenominRest = (0) e.Numerator;
 }
@@ -633,7 +643,7 @@ Divmod-GetNextDigit {
         s.QuotDigit
         <Sub-Normed
           ('+' <LeadingZeros s.N1 s.N2 e.Numerator>)
-          '+' <Mul-Nat-Line s.D e.Denominator s.QuotDigit>
+          '+' <LeadingZeros <Mul-Nat-Line s.D e.Denominator s.QuotDigit>>
         >
         (s.D e.Denominator)
       >;
@@ -646,7 +656,18 @@ Divmod-AdjustDigit {
         (e.Denominator)
       >;
 
-  s.QuotDigit e.Rem (e.Denominator) = s.QuotDigit e.Rem;
+  s.QuotDigit e.Rem (e.Denominator)
+    = s.QuotDigit <PadNumerator e.Rem (e.Denominator)>;
+}
+
+PadNumerator {
+  e.Numerator s.NumLast (e.Denominator s._)
+    = <PadNumerator e.Numerator (e.Denominator)> s.NumLast;
+
+  /* пусто */ (/* пусто */) = /* пусто */;
+
+  /* пусто */ (e.Denominator s._)
+    = <PadNumerator /* пусто */ (e.Denominator)> 0;
 }
 
 %%

@@ -65,6 +65,7 @@ setlocal
     Library-LongMath-Mod-OK ^
     Library-LongMath-Numb-OK ^
     Library-LongMath-Symb-OK ^
+    Library-LongMath-Refal-05-OK ^
     Library-Open-Auto-Get-Close ^
     Library-Chr-Ord-Upper-Lower ^
     Library-SymbCompare ^
