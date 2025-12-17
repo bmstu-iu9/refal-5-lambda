@@ -190,6 +190,7 @@ simple_test_ok() {
   if [ -e $1 ]; then
     echo Pass simple OK test $1...
     run_exe $1
+    cat __out.txt
     cleanup $1
   fi
 }

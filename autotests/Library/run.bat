@@ -204,6 +204,7 @@ setlocal
   if exist %1.exe (
     echo Pass simple OK test %1...
     call :RUN_EXE %1 || exit /b 1
+    type __out.txt
     call :CLEANUP %1
   )
   shift
