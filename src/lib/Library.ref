@@ -174,17 +174,17 @@ NormArithmArg {
   s.First e.Second
     , <Type s.First> : 'N' s.SubType s.First^
     , <NormNumber e.Second> : s.SecondSign e.Second^
-    = ('+' s.First) s.SecondSign e.Second;
+    = <NormSign '+' s.First> s.SecondSign e.Second;
 
   '+' s.First e.Second
     , <Type s.First> : 'N' s.SubType s.First^
     , <NormNumber e.Second> : s.SecondSign e.Second^
-    = ('+' s.First) s.SecondSign e.Second;
+    = <NormSign '+' s.First> s.SecondSign e.Second;
 
   '-' s.First e.Second
     , <Type s.First> : 'N' s.SubType s.First^
     , <NormNumber e.Second> : s.SecondSign e.Second^
-    = ('-' s.First) s.SecondSign e.Second;
+    = <NormSign '-' s.First> s.SecondSign e.Second;
 
   (e.First) e.Second
     , <NormNumber e.First> : s.FirstSign e.First^
@@ -192,6 +192,11 @@ NormArithmArg {
     = (s.FirstSign e.First) s.SecondSign e.Second;
 
   e.OtherArg = /* empty */;
+}
+
+NormSign {
+  s.Sign 0 = (0);
+  s.Sign s.Number = (s.Sign s.Number);
 }
 
 NormNumber {
@@ -502,10 +507,15 @@ Divmod-Normed {
   (0)           e.AnySecond  = (0) 0;
 }
 
+SignResult {
+  '-' 0 = 0;
+  s.Sign e.Value = s.Sign e.Value;
+}
+
 Divmod-Nat {
   (s.Numerator) s.Denominator (e.QuotSign) (e.RemSing)
     = <Divmod-Digits s.Numerator s.Denominator> : (s.Quot) s.Rem
-    = (e.QuotSign s.Quot) e.RemSing s.Rem;
+    = (<SignResult e.QuotSign s.Quot>) <SignResult e.RemSing s.Rem>;
 
   (e.Numerator) s.DenomFirst e.Denominator (e.QuotSign) (e.RemSing)
     = s.DenomFirst
@@ -542,7 +552,7 @@ Divmod-Nat {
         e.Rem^ 0 = e.Rem;
       }
     : e.Rem^
-    = (e.QuotSign e.Quot) e.RemSing e.Rem;
+    = (<SignResult e.QuotSign e.Quot>) <SignResult e.RemSing e.Rem>;
 }
 
 Divmod-Shl {
@@ -604,7 +614,7 @@ Divmod-Align {
   (e.Numerator) (e.NumerRest) (e.Denominator) /* empty */
     = <Divmod-CalcDigits (e.Numerator) (e.NumerRest) e.Denominator>
     : e.Quot (e.Rest)
-    = (<LeadingZeros e.Quot>) e.Rest;
+    = (<LeadingZeros e.Quot>) <LeadingZeros e.Rest>;
 
   (0 e.Numerator) () (e.Denominator) e.DenominRest = (0) e.Numerator;
 }
@@ -633,7 +643,7 @@ Divmod-GetNextDigit {
         s.QuotDigit
         <Sub-Normed
           ('+' <LeadingZeros s.N1 s.N2 e.Numerator>)
-          '+' <Mul-Nat-Line s.D e.Denominator s.QuotDigit>
+          '+' <LeadingZeros <Mul-Nat-Line s.D e.Denominator s.QuotDigit>>
         >
         (s.D e.Denominator)
       >;
@@ -646,7 +656,18 @@ Divmod-AdjustDigit {
         (e.Denominator)
       >;
 
-  s.QuotDigit e.Rem (e.Denominator) = s.QuotDigit e.Rem;
+  s.QuotDigit e.Rem (e.Denominator)
+    = s.QuotDigit <PadNumerator e.Rem (e.Denominator)>;
+}
+
+PadNumerator {
+  e.Numerator s.NumLast (e.Denominator s._)
+    = <PadNumerator e.Numerator (e.Denominator)> s.NumLast;
+
+  /* пусто */ (/* пусто */) = /* пусто */;
+
+  /* пусто */ (e.Denominator s._)
+    = <PadNumerator /* пусто */ (e.Denominator)> 0;
 }
 
 %%
@@ -1296,26 +1317,45 @@ $ENTRY Numb {
 }
 
 Numb-Aux {
-  e.String = <DoNumb (0) e.String>;
+  e.String = <DoNumb () e.String>;
 }
 
 DoNumb {
-  (e.Value) '0' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 0> e.Rest>;
-  (e.Value) '1' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 1> e.Rest>;
-  (e.Value) '2' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 2> e.Rest>;
-  (e.Value) '3' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 3> e.Rest>;
-  (e.Value) '4' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 4> e.Rest>;
-  (e.Value) '5' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 5> e.Rest>;
-  (e.Value) '6' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 6> e.Rest>;
-  (e.Value) '7' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 7> e.Rest>;
-  (e.Value) '8' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 8> e.Rest>;
-  (e.Value) '9' e.Rest = <DoNumb <DoNumb-AddDigit e.Value 9> e.Rest>;
+  (e.Digits) '0' e.Rest = <DoNumb (e.Digits 0) e.Rest>;
+  (e.Digits) '1' e.Rest = <DoNumb (e.Digits 1) e.Rest>;
+  (e.Digits) '2' e.Rest = <DoNumb (e.Digits 2) e.Rest>;
+  (e.Digits) '3' e.Rest = <DoNumb (e.Digits 3) e.Rest>;
+  (e.Digits) '4' e.Rest = <DoNumb (e.Digits 4) e.Rest>;
+  (e.Digits) '5' e.Rest = <DoNumb (e.Digits 5) e.Rest>;
+  (e.Digits) '6' e.Rest = <DoNumb (e.Digits 6) e.Rest>;
+  (e.Digits) '7' e.Rest = <DoNumb (e.Digits 7) e.Rest>;
+  (e.Digits) '8' e.Rest = <DoNumb (e.Digits 8) e.Rest>;
+  (e.Digits) '9' e.Rest = <DoNumb (e.Digits 9) e.Rest>;
 
-  (e.Value) e.Rest = e.Value;
+  (e.Digits) e.Rest
+    = <Numb-From10e9 (0) <Numb-Group <Numb-Group e.Digits 10> 1000>>;
 }
 
-DoNumb-AddDigit {
-  e.Value s.Digit = (<Add-Nat (<Mul-Nat-Line e.Value 10>) s.Digit>);
+Numb-Group {
+  e.Digits s.100 s.10 s.1 s.Base
+    = <Numb-Group e.Digits s.Base>
+      <Add-Digits
+        <Mul-Digits <Add-Digits <Mul-Digits s.100 s.Base> s.10> s.Base> s.1
+      >;
+
+  /* пусто */ s.Base = /* пусто */;
+  /* пусто */ s.1 s.Base = s.1;
+  /* пусто */ s.10 s.1 s.Base = <Add-Digits <Mul-Digits s.10 s.Base> s.1>;
+}
+
+Numb-From10e9 {
+  (e.Value) s.Digit e.Rest
+    = <Numb-From10e9
+        (<Add-Nat (<Mul-Nat-Line e.Value 1000000000>) s.Digit>)
+        e.Rest
+      >;
+
+  (e.Value) = e.Value;
 }
 
 
