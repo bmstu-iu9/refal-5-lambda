@@ -462,7 +462,7 @@ HexDigit {
         'Lu' s.Digit^ = <DoHexDigit 'ABCDEF' 10 s.Digit>;
         'Ll' s.Digit^ = <DoHexDigit 'abcdef' 10 s.Digit>;
 
-        s.Other = /* пусто */;
+        s._ s._ s.Other = /* пусто */;
       };
 }
 
