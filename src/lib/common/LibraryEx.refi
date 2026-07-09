@@ -15,7 +15,7 @@ Apply {
     = <Apply t.Closure e.Bounded e.Argument>;
 }
 
-$INLINE Apply;
+*$OPT Apply
 
 
 /**
@@ -29,7 +29,7 @@ Map {
   t.Fn /* пусто */ = /* пусто */;
 }
 
-$SPEC Map t.FUNC e.items;
+*$OPT Map
 
 
 /**
@@ -46,15 +46,14 @@ Reduce {
   t.Fn t.Acc /* пусто */ = t.Acc;
 }
 
-$SPEC Reduce t.FUNC t.accum e.items;
+*$OPT Reduce
 
 
 Fetch {
   e.Argument t.Function = <Apply t.Function e.Argument>;
 }
 
-$INLINE Fetch;
-$SPEC Fetch e.arg t.FUNC;
+*$OPT Fetch
 
 
 /**
@@ -64,11 +63,12 @@ $SPEC Fetch e.arg t.FUNC;
   t.Accum′ ::= t.Accum
 */
 MapAccum {
-  t.Fn t.Acc e.Tail = <DoMapAccum t.Fn t.Acc () e.Tail>;
+  t.Fn t.Acc e.Tail = <DoMapAccum t.Fn t.Acc (<gen-e__>) e.Tail>;
 }
 
-$SPEC MapAccum t.FUNC t.accum e.items;
-$INLINE MapAccum;
+gen-e__ { e.arg = e.arg }
+
+*$OPT MapAccum
 
 DoMapAccum {
   t.Fn t.Acc (e.Scanned) t.Next e.Tail
@@ -80,14 +80,14 @@ DoMapAccum {
   t.Fn t.Acc (e.Scanned) /* пусто */ = t.Acc e.Scanned;
 }
 
-$SPEC DoMapAccum t.FUNC t.acc (e.scanned) e.items;
+*$OPT DoMapAccum
 
 
 UnBracket {
   (e.Expr) = e.Expr;
 }
 
-$DRIVE UnBracket;
+*$DRIVE UnBracket
 
 
 /**
@@ -97,7 +97,7 @@ DelAccumulator {
   t.Acc e.Tail = e.Tail;
 }
 
-$DRIVE DelAccumulator;
+*$DRIVE DelAccumulator
 
 
 /**
@@ -114,7 +114,7 @@ Dec {
   e.Num = <Sub (e.Num) 1>;
 }
 
-$INLINE Inc, Dec;
+*$DRIVE Inc, Dec
 
 
 /**
@@ -133,7 +133,7 @@ Pipe {
   /* пусто */ = { e.Arg = e.Arg; };
 }
 
-$INLINE Pipe;
+*$DRIVE Pipe
 
 
 *$FROM LibraryEx

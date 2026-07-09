@@ -1,7 +1,7 @@
 $INCLUDE "LibraryEx";
 
 *$FROM TreeUtils
-$EXTERN AddSuffix, ExtractVariables, CreateSpecPatternForContext,
+$EXTERN AddSuffix, ExtractVariables,
   CreateContext, ExtractVariables-Expr, NewVarName;
 
 
@@ -18,11 +18,11 @@ $ENTRY Pass-UnCondition {
 ** НАМЕРЕННО ОТКАЗЫВАЕМСЯ ОТ ОТСЛЕЖИВАНИЯ КОПИРОВАНИЯ ПОВТОРНЫХ ПЕРЕМЕННЫХ
 
 /**
-  <UnCondition-Unit s.MarkupContext (e.Name) s.Scope e.Sentences>
+  <UnCondition-Unit s.MarkupContext (e.Name) e.Sentences>
     == e.NewFunctions
 */
 UnCondition-Unit {
-  s.MarkupContext (Function s.Scope (e.Name) Sentences e.Sentences)
+  s.MarkupContext (Function (e.Name) Sentences e.Sentences)
 
     = 1 : s.SkipNo
     = /* пусто */ : e.RemNames
@@ -34,7 +34,7 @@ UnCondition-Unit {
       >
     : (s.SkipNo^ e.RemNames^ (e.NewFunctions^)) e.Sentences^
 
-    = (Function s.Scope (e.Name) Sentences e.Sentences)
+    = (Function (e.Name) Sentences e.Sentences)
       <UnCondition-RemFunctions 1 (e.RemNames) e.Sentences>
       <Map (&UnCondition-Unit s.MarkupContext) e.NewFunctions>;
 
@@ -63,7 +63,7 @@ UnCondition-RemFunctions {
         t.RemainderName
         {
           (e.RemainderName)
-            = (Function GN-Local (e.RemainderName) Sentences e.Sentences);
+            = (Function (e.RemainderName) Sentences e.Sentences);
 
           '-' = /* пусто */;
         }
@@ -84,9 +84,12 @@ UnCondition-RemFunctions {
 PatternSteps {
   (e.UsedVariables) e.Pattern
     = <DoPatternSteps
-        (e.UsedVariables) (/* bound variables */) (HOLE e.Pattern)
+        (e.UsedVariables) (<gen_e__ /* bound variables */>)
+        <gen_e__ (HOLE e.Pattern)>
       >;
 }
+
+gen_e__ { e.arg = e.arg }
 
 DoPatternSteps {
   t.UsedVariables (e.BoundEVariables) e.HolesAndItems
@@ -220,7 +223,7 @@ HardItem {
 }
 
 BindBrackets {
-  (e.Expr) = (<DoBindBrackets ('$') e.Expr>);
+  (e.Expr) = (<DoBindBrackets ('$' <gen_e__>) e.Expr>);
 }
 
 DoBindBrackets {
@@ -444,7 +447,7 @@ UnCondition-Sentence {
         e.PatternSteps
       >
     : (e.ContSentence) e.OpenEFunctions
-    , (Function GN-Local (e.CheckFunction) Sentences
+    , (Function (e.CheckFunction) Sentences
         ((e.Context e.CondPattern) e.SentenceTail)
         e.ContSentence
       )
@@ -457,8 +460,8 @@ UnCondition-Sentence {
           )
         )
       )
-      (Drive e.CheckFunction)
-      (Spec (e.CheckFunction) <CreateSpecPatternForContext e.Context>)
+      (GROUP Drives (e.CheckFunction))
+      (GROUP Specs (e.CheckFunction))
       t.CheckFunction e.OpenEFunctions;
 }
 
@@ -536,12 +539,12 @@ MakeOpenE-ForwardNext {
   (e.T1) (e.T2) (e.T3) (e.T4) (e.T5) (e.T5-sub) (e.T6) (e.T7)
     , e.ConditionName '?' <+ 1 s.CurrentForwardId> : e.NextName
     , <Substitute e.CheckFunctionArg (e.T5-sub)> : e.CheckFuncArgSubst
-    = (Function GN-Local (e.CurrentForwardName) Sentences
+    = (Function (e.CurrentForwardName) Sentences
         ((e.T1) ((CallBrackets (Symbol Name e.NextName) e.T2)))
         ((e.T3) ((CallBrackets (Symbol Name e.ContName) e.T4)))
       )
-      (Drive e.CurrentForwardName)
-      (Function GN-Local (e.NextName) Sentences
+      (GROUP Drives (e.CurrentForwardName))
+      (Function (e.NextName) Sentences
         (
           (e.T5)
           ((CallBrackets (Symbol Name e.CheckFunction) e.CheckFuncArgSubst))

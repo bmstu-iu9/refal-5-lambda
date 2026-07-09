@@ -7,7 +7,7 @@ $ENTRY Go {
     = /* пусто */;
 }
 
-$SPEC S s.A e.rest;
+*$SPEC S;
 
 S {
   s.A s.X e.Rest = s.A <S s.A e.Rest>;

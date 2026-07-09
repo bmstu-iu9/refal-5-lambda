@@ -1,0 +1,12 @@
+* TREE
+
+$ENTRY Go {
+  e.X
+    = { = e.X }
+    : {
+        X = False;
+        s._ = True;
+      }
+    : True
+    = /* empty */;
+}

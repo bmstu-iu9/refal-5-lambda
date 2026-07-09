@@ -1,3 +1,6 @@
+$INCLUDE "LibraryEx";
+
+
 *$FROM Error
 $EXTERN EL-AddErrorAt, EL-AddWarningAt;
 
@@ -16,7 +19,7 @@ $EXTERN EL-AddErrorAt, EL-AddWarningAt;
   t.Include ::= (Include t.Pos e.Name)
   t.NativeBlock ::= (NativeBlock t.Pos e.Code)
   t.Ident ::= (Ident t.SrcPos e.Name)
-  t.SpecUnit = (Spec t.Pos (e.Name) e.Pattern)
+  t.SpecUnit = (LegacySpec t.Pos (e.Name) e.Pattern)
 
   t.Function ::= (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
   e.Body ::= Sentences t.Sentence* | NativeBody t.Pos e.Code
@@ -56,7 +59,106 @@ $ENTRY R5-Parse {
 */
 Program {
   t.ErrorList s.Mode e.Tokens
-    = <DoProgram t.ErrorList s.Mode (/* units */) e.Tokens>;
+    = <ScanPseudocomments t.ErrorList e.Tokens>
+    : t.ErrorList^ (e.PseudocommentUnits) e.Tokens^
+    = <DoProgram t.ErrorList s.Mode (/* units */) e.Tokens>
+      e.PseudocommentUnits
+}
+
+ScanPseudocomments {
+  t.ErrorList e.Tokens
+    = <DoScanPseudocomments t.ErrorList (/* units */) (/* scanned */) e.Tokens>
+}
+
+DoScanPseudocomments {
+  t.ErrorList (e.Units) (e.Scanned)
+  e.Tokens-B (TkPseudoComment t.Pos e.CommentTokens) e.Tokens-E
+    = <ParsePseudocomment t.ErrorList t.Pos e.CommentTokens>
+    : t.ErrorList^ e.NewUnits
+    = <DoScanPseudocomments
+        t.ErrorList (e.Units e.NewUnits) (e.Scanned e.Tokens-B) e.Tokens-E
+      >;
+
+    t.ErrorList (e.Units) (e.Scanned) e.Tokens
+      = t.ErrorList (e.Units) e.Scanned e.Tokens;
+}
+
+ParsePseudocomment {
+  t.ErrorList t.Pos (TkName t._ e.Name) e.Tokens
+    , Opt Drive Spec NoOpt NoDrive NoSpec Ident : e._ s.Node e._
+    , <Upper <Explode s.Node>> : e.Name
+    = <ParseNameListPseudocomment
+        t.Pos s.Node (/* scanned */) t.ErrorList e.Tokens
+      >;
+
+/*
+  TODO: Стабильная версия 3.3 по-другому парсит ключевые слова и сообщает
+  об ошибках в них (не предупреждениях). Поэтому, чтобы можно было собрать
+  текущую версию и стабильной, и самой собой, для каждого ключевого слова
+  создаём синоним вида *$xDRIVE или *$xSPEC. Он игнорируется стабильной
+  версией 3.3 и работает в рабочей.
+
+  TODO: после обновления стабильной версии нужно будет удалить поддержку
+  псевдокомментариев *$x..., а также почистить исходники. Для этой цели
+  добавлена заготовка предупреждения.
+*/
+  t.ErrorList t.Pos (TkName t.NamePos 'x' e.Name) e.Tokens
+*    = <EL-AddWarningAt t.ErrorList deprecated t.NamePos '$x... keyword'>
+*    : t.ErrorList^
+    = <ParsePseudocomment
+        t.ErrorList t.Pos (TkName t.NamePos e.Name) e.Tokens
+      >;
+
+  t.ErrorList t.Pos e._unrecognized
+    = t.ErrorList /* пропускаем неопознанный псевдокомментарий */;
+}
+
+ParseNameListPseudocomment {
+  t.Pos s.Node (e.Scanned) t.ErrorList
+  (TkName t.NamePos e.Name) e.Tokens
+    = <ParseNameListPseudocomment
+        t.Pos s.Node (e.Scanned (s.Node t.NamePos e.Name)) t.ErrorList
+        e.Tokens
+      >;
+
+  t.Pos s.Node (e.Scanned) t.ErrorList (s.Separator t._) e.Tokens
+    , TkComma TkSemicolon : e._ s.Separator e._
+    = <ParseNameListPseudocomment
+        t.Pos s.Node (e.Scanned) t.ErrorList e.Tokens
+      >;
+
+  t.Pos s.Node (/* нет имён */) t.ErrorList (TkEOF t._)
+    = <EL-AddWarningAt
+        t.ErrorList pseudocomment t.Pos 'No names in name list pseudocomment'
+      >;
+
+  t.Pos s.Node (e.Scanned) t.ErrorList (TkEOF t._) = t.ErrorList e.Scanned;
+
+  t.Pos s.Node (e.Scanned) t.ErrorList (TkError t.ErrPos e.Message) e.Tokens
+    = <ParseNameListPseudocomment
+        t.Pos s.Node (e.Scanned)
+        <EL-AddWarningAt t.ErrorList pseudocomment t.ErrPos e.Message>
+        e.Tokens
+      >;
+
+  t.Pos s.Node (e.Scanned) t.ErrorList (TkWarning t.WarnPos s.Type e.Message)
+  e.Tokens
+    = <ParseNameListPseudocomment
+        t.Pos s.Node (e.Scanned)
+        <EL-AddWarningAt t.ErrorList pseudocomment t.WarnPos e.Message>
+        e.Tokens
+      >;
+
+  t.Pos s.Node (e.Scanned) t.ErrorList t.Unexpected e.Tokens
+    = t.Unexpected : (s.Type t.TokPos e.Value)
+    = <ParseNameListPseudocomment
+        t.Pos s.Node (e.Scanned)
+        <EL-AddWarningAt
+          t.ErrorList pseudocomment t.TokPos
+          'unexpected ' <TokName s.Type> ', expected name, comma or semicolon'
+        >
+        e.Tokens
+      >;
 }
 
 DoProgram {
@@ -88,11 +190,11 @@ UnexpectedUnitToken {
 
 UnitStartToken {
   = <NameListTags> TkEntry TkName TkSemicolon TkInclude TkNativeCode TkSpec
-    TkPseudoComment;
 }
 
 NameListTags {
-  = TkExtern TkEnum TkEEnum TkSwap TkESwap TkLabel TkInline TkDrive TkMeta TkIntrinsic
+  = TkExtern TkEnum TkEEnum TkSwap TkESwap TkLabel TkInline TkDrive TkMeta
+    TkIntrinsic
 }
 
 OneOf {
@@ -137,19 +239,6 @@ Unit {
         (s.Type t.Pos e.Value)
           , <OneOf s.Type TkEntry TkName>: True
           = <Function t.ErrorList s.Mode t.NextToken e.Tokens>;
-
-        (TkPseudoComment t.Pos e.CommentTokens)
-          = <Unit t.ErrorList Extended e.CommentTokens>
-          : {
-              t.ErrorList^ (e.Units) (TkEOF t._)
-                = t.ErrorList (e.Units) e.Tokens;
-
-              t.ErrorList^ (e.Units) (s.Token t.Pos^ e.Info) e._
-                = <EL-AddErrorAt
-                    t.ErrorList t.Pos 'Too many units in the pseudocomment'
-                  >
-                  (/* no units */) e.Tokens;
-            };
 
         t.Unexpected = <UnexpectedUnitToken t.ErrorList t.Unexpected> e.Tokens;
       };
@@ -207,11 +296,11 @@ TkEntryL {
 }
 
 TkInline {
-  t.Pos e.Name = (Inline t.Pos GN-Local e.Name)
+  t.Pos e.Name = (LegacyInline t.Pos GN-Local e.Name)
 }
 
 TkDrive {
-  t.Pos e.Name = (Drive t.Pos GN-Local e.Name)
+  t.Pos e.Name = (LegacyDrive t.Pos GN-Local e.Name)
 }
 
 TkMeta {
@@ -243,10 +332,9 @@ NameList-DoNames {
     t.ErrorList (e.Units) e.Tokens;
 
   t.ErrorList s.Tag (e.Units) (TkComma t.Pos) e.Tokens
-    = <NameList-DoNames
-        <EL-AddErrorAt t.ErrorList t.Pos 'expected name after comma'>
-        s.Tag (e.Units) e.Tokens
-      >;
+    = <EL-AddErrorAt t.ErrorList t.Pos 'expected name after comma'>
+    : t.ErrorList^
+    = <NameList-DoNames t.ErrorList s.Tag (e.Units) e.Tokens>;
 
   t.ErrorList s.Tag (e.Units)
   (TkName t.NamePos e.Name) (TkOpenBlock t.BracketPos) e.Tokens
@@ -254,19 +342,20 @@ NameList-DoNames {
         t.ErrorList t.NamePos
         'missed semicolon after previous ' <TokName s.Tag> ' declaration'
       >
+    : t.ErrorList^
+    = t.ErrorList
       (e.Units) (TkName t.NamePos e.Name) (TkOpenBlock t.BracketPos) e.Tokens;
 
   t.ErrorList s.Tag (e.Units) (TkName t.Pos e.Name) e.Tokens
-    = <NameList-DoNames
-        <EL-AddErrorAt t.ErrorList t.Pos 'missed comma after the external name'>
-        s.Tag (e.Units) e.Tokens
-      >;
+    = <EL-AddErrorAt t.ErrorList t.Pos 'missed comma after the external name'>
+    : t.ErrorList^
+    = <NameList-DoNames t.ErrorList s.Tag (e.Units) e.Tokens>;
 
   t.ErrorList s.Tag (e.Units) t.NextToken e.Tokens
     , t.NextToken : (s.Type t.Pos e.Value)
     , <OneOf s.Type TkExtern TkEntry TkEOF> : True
-    = <EL-AddErrorAt t.ErrorList t.Pos 'semicolon'>
-      (e.Units) t.NextToken e.Tokens;
+    = <EL-AddErrorAt t.ErrorList t.Pos 'semicolon'> : t.ErrorList^
+    = t.ErrorList (e.Units) t.NextToken e.Tokens;
 
   t.ErrorList s.Tag (e.Units) t.NextToken e.Tokens
     = <NameList-DoNames
@@ -305,7 +394,7 @@ Include {
   <Specialization t.ErrorList s.Mode s.Tag e.Tokens>
     == t.ErrorList (t.SpecUnit) e.Tokens
 
-  t.SpecUnit = (Spec t.Pos (e.Name) e.Pattern)
+  t.SpecUnit = (LegacySpec t.Pos (e.Name) e.Pattern)
 
 */
 
@@ -315,7 +404,7 @@ Specialization {
     : t.ErrorList^ (e.Pattern)  e.Tokens^
     = <Expect t.ErrorList TkSemicolon ('missed semicolon') e.Tokens>
     : t.ErrorList^ e.Tokens^
-    = t.ErrorList ((Spec t.Pos (e.Name) e.Pattern)) e.Tokens;
+    = t.ErrorList ((LegacySpec t.Pos (e.Name) e.Pattern)) e.Tokens;
 
   t.ErrorList s.Mode t.Pos t.Unexpected e.Tokens
     = <UnexpectedToken t.ErrorList t.Unexpected 'function name'>
@@ -366,7 +455,9 @@ Function {
     = <Function t.ErrorList s.NewMode (TkEntry t.EntryPos) e.Tokens>;
 
   t.ErrorList s.Mode (TkEntry t.Pos) e.Tokens
-    = <EL-AddErrorAt t.ErrorList t.Pos '$ENTRY without the function name, skipped'>
+    = <EL-AddErrorAt
+        t.ErrorList t.Pos '$ENTRY without the function name, skipped'
+      >
       (/* none */) e.Tokens;
 }
 
@@ -524,18 +615,17 @@ SentenceTail {
 
 CheckExceedBlocks {
   t.ErrorList s.Mode e.ExceedBlocks
-    = <DoCheckExceedBlocks s.Mode t.ErrorList () e.ExceedBlocks>;
+    = <DoCheckExceedBlocks s.Mode t.ErrorList (/* scanned */) e.ExceedBlocks>;
 }
+
+*$NOOPT DoCheckExceedBlocks
 
 DoCheckExceedBlocks {
   s.Mode t.ErrorList (e.ScannedBlocks) (t.Pos e.Body) e.RestBlocks
+    = <ClassicError t.ErrorList s.Mode t.Pos 'Exceed block in this position'>
+    : t.ErrorList^
     = <DoCheckExceedBlocks
-        s.Mode
-        <ClassicError
-          t.ErrorList s.Mode t.Pos 'Exceed block in this position'
-        >
-        (e.ScannedBlocks (e.Body))
-        e.RestBlocks
+        s.Mode t.ErrorList (e.ScannedBlocks (e.Body)) e.RestBlocks
       >;
 
   s.Mode t.ErrorList (e.ScannedBlocks) /* empty */
@@ -633,9 +723,12 @@ Pattern {
 Result {
   t.ErrorList s.Mode e.Tokens
     = <Result-Blocks
-        s.Mode (/* blocks */) <Expression t.ErrorList s.Mode Result e.Tokens>
+        s.Mode (/* blocks */)
+        <Expression t.ErrorList s.Mode Result e.Tokens>
       >;
 }
+
+*$NOOPT Result-Blocks
 
 Result-Blocks {
   s.Mode (e.Blocks) t.ErrorList t.Result
@@ -694,10 +787,14 @@ Expression {
       >;
 }
 
+*$xDRIVE TokenChain, Expression
+
 TokenChain {
   t.ErrorList s.Mode s.Kind e.Tokens
     = <DoTokenChain s.Mode s.Kind t.ErrorList (/* collected */) e.Tokens>
 }
+
+*$xNOOPT DoTokenChain
 
 DoTokenChain {
   s.Mode s.Kind t.ErrorList (e.Collected) t.NextToken e.Tokens
@@ -952,6 +1049,7 @@ Expression-CheckBrackets {
     = t.ErrorList t.Expression e.Tokens;
 }
 
+*$xDRIVE ClassicError
 
 ClassicError {
   t.ErrorList Classic t.Pos e.Message

@@ -16,7 +16,7 @@ Test {
   s.X e.Y = <F s.X e.Y s.X>;
 }
 
-$DRIVE F;
+*$DRIVE F;
 
 F {
   e.Y s.X s.X = True (e.Y);

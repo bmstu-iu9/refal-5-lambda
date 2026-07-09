@@ -5,8 +5,7 @@ $EXTERN GenResult, GenPattern;
 
 
 $ENTRY HighLevelRASL-Function-Disjoint {
-  s.FnGenSubst s.FnGenResult
-  s.ScopeClass (e.Name) e.Sentences
+  s.FnGenSubst s.FnGenResult (e.Name) e.Sentences
 
     = <Map
         {
@@ -34,7 +33,7 @@ $ENTRY HighLevelRASL-Function-Disjoint {
     : s.MaxMemory e.Sentences^
 
     = (Function
-        s.ScopeClass (e.Name)
+        (e.Name)
         (CmdIssueMemory s.MaxMemory)
         e.Sentences
         <Fetch

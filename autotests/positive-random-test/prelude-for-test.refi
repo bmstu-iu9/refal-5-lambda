@@ -1,14 +1,4 @@
 *$EXTENDED
 
-Chr { = }
-Ev-met { = }
-Lenw { = }
-Lower { = }
-Mu { = }
-Ord { = }
-Print { = }
-Prout { = }
-Type { = }
-Upper { = }
-
+$EXTERN Chr, Ev-met, Lenw, Lower, Mu, Ord, Print, Prout, Type, Upper;
 $INTRINSIC Chr, Lenw, Lower, Mu, Ord, Type, Upper;

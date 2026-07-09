@@ -29,7 +29,7 @@ setlocal
 
   for %%s in (%LIBS%) do (
     ..\..\bin\rlc-core -C %RLC_FLAGS% %%s -d common ^
-      --prelude=refal5-builtins.refi || exit /b 1
+      --prelude=refal5-builtins.refi -Wno-intrinsic || exit /b 1
     ..\..\bin\rlc-core --no-sources -R -o inco.bin ^
       --incorporated=%%~ns || exit /b 1
     find "//FROM" < %%s.ref > %TARGET%\%%s.rasl.froms
@@ -103,7 +103,7 @@ setlocal
   pushd tmp
   for %%l in (%LIBRARIES%) do (
     copy ..\%%l.ref .
-    call ..\..\..\bin\rlmake --scratch --makelib ^
+    call ..\..\..\bin\rlmake --scratch --makelib -X-Wno-intrinsic ^
       -o ..\..\..\lib\%%l.dll %%l.ref || exit /b 1
     erase %%l.ref
   )

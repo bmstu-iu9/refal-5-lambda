@@ -1,0 +1,6 @@
+* WARNING pseudocomment
+
+*$SPEC S;
+*$NOSPEC S;
+
+$ENTRY S { = }

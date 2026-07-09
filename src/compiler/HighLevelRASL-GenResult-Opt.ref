@@ -85,8 +85,8 @@ FlatResult {
 GenResult-Aux {
   (e.Trash) (e.MarkedResult)
 
-    = (CmdComment 'TRASH:' <TextFromExpr e.Trash>)
-      (CmdComment 'RESULT:' <TextFromExpr e.MarkedResult>)
+    = (CmdComment { = 'TRASH:' <TextFromExpr e.Trash> })
+      (CmdComment { = 'RESULT:' <TextFromExpr e.MarkedResult> })
 
       /* Генерируем команды аллокаций */
       <GenResult-Allocations e.MarkedResult>
@@ -362,6 +362,7 @@ AddOffsets {
       {
         s.Offset (Tile e.Tile) =
           s.Offset
+          <gen_e__>
           (Tile
             <Map
               {
@@ -377,34 +378,43 @@ AddOffsets {
               }
               e.Tile
             >
-          );
+          )
+          <gen_e__>;
 
         s.Offset (Var 's' e.Index) =
           <Add s.Offset 1>
+          <gen_e__>
           (VarCopy
             <GetSampleOffset e.PatternVars ('s' e.Index)> s.Offset
-          );
+          )
+          <gen_e__>;
 
         s.Offset (Var 't' e.Index) =
           <Add s.Offset 2>
+          <gen_e__>
           (VarCopy
             <GetSampleOffset e.PatternVars ('t' e.Index)> s.Offset
-          );
+          )
+          <gen_e__>;
 
         s.Offset (Var 'e' e.Index) =
           <Add s.Offset 2>
+          <gen_e__>
           (VarCopy
             <GetSampleOffset e.PatternVars ('e' e.Index)> s.Offset
-          );
+          )
+          <gen_e__>;
 
         s.Offset (TkString e.String) =
-          <Inc2 s.Offset> (TkString e.String s.Offset);
+          <Inc2 s.Offset> <gen_e__> (TkString e.String s.Offset) <gen_e__>;
 
         s.Offset (s.Tag e.Info) = <Inc s.Offset> (s.Tag e.Info s.Offset);
       }
       s.ContextOffset <CollectStrings e.MarkedResult>
     >;
 }
+
+gen_e__ { e.arg = e.arg }
 
 GetSampleOffset {
   e._ (s.Mode (e.Index) e.Offsets s.SampleOffset) e._ (s.Mode e.Index)

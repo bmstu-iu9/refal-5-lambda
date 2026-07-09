@@ -1,6 +1,6 @@
 * TREE
 
-$SPEC Rot e.dyn;
+*$SPEC Rot;
 
 Rot {
   e.1 s.2 = s.2 e.1;

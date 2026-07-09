@@ -1,0 +1,18 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */
+    = <Loop () () (<gen_e__ X Y Z T>)> : (X) (Y) (Z) (T)
+    = /* empty */;
+}
+
+gen_e__ { e.arg = e.arg }
+
+*$SPEC Loop;
+
+Loop {
+  (e.Unused) (e.Res) (t.Item e.Items)
+    = <Loop (e.Unused) (e.Res (t.Item)) (e.Items)>;
+
+  (e.Unused) (e.Res) (/* пусто */) = e.Res;
+}

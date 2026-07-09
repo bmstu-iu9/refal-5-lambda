@@ -8,7 +8,7 @@ $EXTERN PrintErr;
 
 $INCLUDE "Opcodes";
 
-$DRIVE NumberFromOpcode, NumberFromBracket, BlockTypeNumber;
+*$xDRIVE NumberFromOpcode, NumberFromBracket, BlockTypeNumber
 
 $ENTRY GenProgram-RASL {
   (
@@ -93,19 +93,19 @@ BytesFromStringList {
     >;
 }
 
-$INLINE BytesFromString;
+*$xDRIVE BytesFromString
 
 BytesFromString {
   e.String = <Ord e.String>;
 }
 
-$INLINE Asciiz;
+*$xDRIVE Asciiz
 
 Asciiz {
   e.String = <BytesFromString e.String> 0;
 }
 
-$INLINE PutBlock;
+*$xDRIVE PutBlock
 
 PutBlock {
   s.Type e.Bytes =
@@ -126,7 +126,7 @@ PutWordLE {
     = <PutWordLE e.Bytes s.ValueLow s.ValueHigh>;
 }
 
-$DRIVE NameWithSign-Bytes;
+*$xDRIVE NameWithSign-Bytes
 
 NameWithSign-Bytes {
   GN-Entry e.Name = <Asciiz '*' <DisplayName e.Name>>;
@@ -149,12 +149,12 @@ GenCommand-Globals {
         <PutWordLE s.Offset>
       >;
 
-  (e.Labels) (CmdMetatable s.ScopeClass (e.Name) e.Table)
+  (e.Labels) (CmdMetatable (e.Name) e.Table)
     = <Lenw e.Table> : s.Count e.Table^
     = (e.Labels)
       <PutBlock
         Metatable
-        <NameWithSign-Bytes s.ScopeClass e.Name>
+        <NameWithSign-Bytes GN-Local e.Name>
         <PutWordLE s.Count>
         <Map
           {
@@ -168,13 +168,13 @@ GenCommand-Globals {
   (e.Labels) (CmdSwapDescr s.ScopeClass e.Name)
     = (e.Labels) <PutBlock Swap <NameWithSign-Bytes s.ScopeClass e.Name>>;
 
-  (e.Labels) (CmdConditionFuncDecsrRasl  s.ScopeClass e.Name)
+  (e.Labels) (CmdConditionFuncDecsrRasl e.Name)
     = (e.Labels)
-      <PutBlock ConditionRasl <NameWithSign-Bytes s.ScopeClass e.Name>>;
+      <PutBlock ConditionRasl <NameWithSign-Bytes GN-Local e.Name>>;
 
-  (e.Labels) (CmdConditionFuncDecsrNative  s.ScopeClass e.Name)
+  (e.Labels) (CmdConditionFuncDecsrNative e.Name)
     = (e.Labels)
-      <PutBlock ConditionNative <NameWithSign-Bytes s.ScopeClass e.Name>>;
+      <PutBlock ConditionNative <NameWithSign-Bytes GN-Local e.Name>>;
 
   (e.Labels) (CmdNativeFuncDescr s.ScopeClass e.Name)
     = (e.Labels)
@@ -389,7 +389,7 @@ GenCommand-RASL {
     <PutCommand CmdFail>;
 }
 
-$INLINE PutCommand;
+*$xDRIVE PutCommand
 
 PutCommand {
   s.Symbolic = (<NumberFromOpcode s.Symbolic> 0 0 0);
@@ -410,7 +410,7 @@ PutCommand {
       };
 }
 
-$DRIVE CreateCommandTag;
+*$xDRIVE CreateCommandTag
 
 CreateCommandTag {
   ElOpenBracket = ElBracket;
@@ -423,7 +423,7 @@ CreateCommandTag {
   s.Other = s.Other;
 }
 
-$DRIVE CreateCommandInfo;
+*$xDRIVE CreateCommandInfo
 
 CreateCommandInfo {
   ElChar s.Char = <Ord s.Char>;
@@ -471,9 +471,9 @@ ResolveLabeledDestinations {
 
     = <Sub s.DestinationOffset s.CommandOffset> : s.RelativeJump
 
-    = <TermCompare s.RelativeJump 65536>
+    = <Compare s.RelativeJump 65536>
     : {
-        '<'
+        '-'
           = <Divmod s.RelativeJump 256> : (s.JumpHigh) s.JumpLow
           = e.ReadyRASL
             <PutCommand CmdOnFailGoTo s.JumpLow s.JumpHigh 0>

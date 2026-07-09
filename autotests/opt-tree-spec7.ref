@@ -4,7 +4,7 @@ $ENTRY Go {
   e.X = <S { = e.X }> : False = /* empty */;
 }
 
-$SPEC S s.X;
+*$SPEC S;
 
 S {
   s.X, A : s.X = True;

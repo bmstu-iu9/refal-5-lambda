@@ -72,7 +72,8 @@ TileCandidates {
       {
         (e.AlignedPattern t.Last) (t.First e.AlignedResult) =
           <DoOverlapOffsets
-            (e.AlignedPattern) (t.Last) (t.First) (e.AlignedResult)
+            (e.AlignedPattern) (t.Last)
+            (t.First) (e.AlignedResult)
           >;
       }
     >;
@@ -154,6 +155,8 @@ OverlapChain {
   (e.Pattern) (e.Result) =
     <GlueTiles <ZipItems (e.Pattern) (e.Result)>>;
 }
+
+*$NOOPT ZipItems
 
 ZipItems {
   ((s.CurIndexP t.PatternItem) e.Pattern)
@@ -242,9 +245,9 @@ FindHeavyTile {
       {
         (s.MaxWeight s.IndexP s.IndexR e.MaxItems)
         (s.Weight s.CurIndexP s.CurIndexR e.Items)
-          = <TermCompare s.MaxWeight s.Weight>
+          = <Compare s.MaxWeight s.Weight>
           : {
-              '<' =
+              '-' =
                 (s.Weight s.CurIndexP s.CurIndexR e.Items)
                 (s.MaxWeight s.IndexP s.IndexR e.MaxItems);
 

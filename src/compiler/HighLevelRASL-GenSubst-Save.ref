@@ -23,6 +23,8 @@ $ENTRY GenSubst-Save {
     >;
 }
 
+*$NOOPT DoGenSubst
+
 DoGenSubst {
   /* Распознавание T-подстановки */
   s.ContextOffset
@@ -483,7 +485,7 @@ DoGenSubst {
       (e.Vars ('e' (e.Index) s.Num))
       (e.Commands
         (CmdComment
-          ' closed ' <PrintVar 'e' e.Index> ' as range ' Offset s.Num
+          { = ' closed ' <PrintVar 'e' e.Index> ' as range ' <Symb s.Num> }
         )
       )
     >;
@@ -571,7 +573,7 @@ DoGenSubst {
   /* Завершение разбора. */
   s.ContextOffset (Junk e.MarkedPattern) (e.Vars) (e.Commands) =
     s.ContextOffset (e.Vars) (e.MarkedPattern)
-    (CmdComment <TextFromExpr e.MarkedPattern>) e.Commands;
+    (CmdComment { = <TextFromExpr e.MarkedPattern> }) e.Commands;
 }
 
 IncVarOffset-Saved {

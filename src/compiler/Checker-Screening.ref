@@ -3,15 +3,9 @@ $INCLUDE "LibraryEx";
 *$FROM GenericMatch
 $EXTERN GenericMatch;
 
-*$FROM ObjectMatch
-$EXTERN ObjectMatch;
-
-*$FROM GlobalGen
-$EXTERN GlobalGen;
-
 *$FROM Desugaring
-$EXTERN CreateContext, RemovePos-Expr, ExtractVariables-Expr,
-        Pass-EnumerateVariables, Pass-RemovePos;
+$EXTERN Pass-RemovePos, Pass-EnumerateVariables, Pass-ExtractEntries,
+  ExtractVariables-Expr, CreateContext;
 
 /*
   <CheckScreening (t.WarningId*) (e.AST)
@@ -20,14 +14,15 @@ $EXTERN CreateContext, RemovePos-Expr, ExtractVariables-Expr,
   CheckScreening осуществляет попарную проверку экранирования образцов.
 */
 $ENTRY CheckScreening {
- (e._ screening e._) (e.AST)
-   = <FindFunctionsPosInAST e.AST> : (e.FunctionsPos) e.AST^
-   = <Pass-RemovePos e.AST> : e.AST^
-   = <Pass-EnumerateVariables e.AST> : e.AST^
-   = <Zip (e.AST) (e.FunctionsPos)> : e.FunctionsWithPos
-   = <Map &CheckFunction e.FunctionsWithPos>;
+  (e._ screening e._) (e.AST)
+    = <FindFunctionsPosInAST e.AST> : (e.FunctionsPos) e.AST^
+    = <Pass-RemovePos e.AST> : e.AST^
+    = <Pass-ExtractEntries e.AST> : e.AST-B (Entries e.Entries) e.AST-E
+    = <Pass-EnumerateVariables e.AST-B e.AST-E> : e.AST^
+    = <Zip (e.AST) (e.FunctionsPos)> : e.FunctionsWithPos
+    = <Map &CheckFunction e.FunctionsWithPos>;
 
- (e._) (e.AST) = /* пусто */
+  (e._) (e.AST) = /* пусто */
 }
 
 /*
@@ -44,7 +39,7 @@ FindFunctionsPosInAST {
           (e.Positions)
           (Function t.SrcPos s.ScopeClass (e.Name) Sentences e.Sentences)
             = (e.Positions t.SrcPos)
-             (Function t.SrcPos s.ScopeClass (e.Name) Sentences e.Sentences);
+              (Function t.SrcPos s.ScopeClass (e.Name) Sentences e.Sentences);
 
           (e.Positions) t.Other = (e.Positions) /* пусто */
         }
@@ -79,8 +74,8 @@ MakePairs {
   CheckFunction проверяет тело функции на экранирование.
 */
 CheckFunction {
-  ((Function s.ScopeClass (e.Name) Sentences e.Sentences) t.SrcPos)
-    = <CheckSentences t.SrcPos (e.Name) () () (e.Sentences)>
+  ((Function (e.Name) Sentences e.Sentences) t.SrcPos)
+    = <CheckSentences t.SrcPos (e.Name) (<gen_e__>) (<gen_e__>) (e.Sentences)>
 }
 
 /*
@@ -114,8 +109,8 @@ CheckSentences {
         <MapAccum
           {
             s.Num ((e.Pattern) e.AssignsOrConds (e.Result) (e.Blocks))
-              = e.Prefix '$' <Symb s.Num> : e.Prefix^
-              = e.ContextVars e.Pattern : e.ContextVars^
+              = <gen_e__ e.Prefix '$' <Symb s.Num>> : e.Prefix^
+              = <gen_e__ e.ContextVars e.Pattern> : e.ContextVars^
               = <Map
                   {
                     (s.AssignOrCond (e.Result^) (e.Blocks^) (e.Pattern^))
@@ -136,14 +131,14 @@ CheckSentences {
                   t.SrcPos
                   (e.FuncName)
                   (e.Prefix)
-                  (e.ContextVars e.ContextAllAssignsOrConds)
+                  (<gen_e__ e.ContextVars e.ContextAllAssignsOrConds>)
                   ((e.Pattern) e.AssignsOrConds (e.Result) (e.Blocks))
                 >
                 <CheckSentenceBlocks
                   t.SrcPos
                   (e.FuncName)
                   (e.Prefix)
-                  (e.ContextVars e.ContextAllAssignsOrConds)
+                  (<gen_e__ e.ContextVars e.ContextAllAssignsOrConds>)
                   ((e.Pattern) e.AssignsOrConds (e.Result) (e.Blocks))
                 >
           }
@@ -171,8 +166,10 @@ FilterConditions {
 
           /*(
             t.NumberedSentence-L
-            ((t.Pattern e._ (e._ (CallBrackets e.1) e._) ((Sentences e.2) e._)) s.Num)
-
+            (
+              (t.Pattern e._ (e._ (CallBrackets e._) e._) ((Sentences e._) e._))
+              s.Num
+            )
           )
             =  пусто ;*/
 
@@ -220,7 +217,7 @@ CheckBlocks {
                 <CheckSentences
                   t.SrcPos
                   (e.FuncName)
-                  (e.Prefix ':' <Symb s.Num>)
+                  (<gen_e__ e.Prefix ':' <Symb s.Num>>)
                   (e.ContextVars)
                   (e.Sentences)
                 >;
@@ -231,6 +228,8 @@ CheckBlocks {
         >
       >;
 }
+
+gen_e__ { e.Arg = e.Arg }
 
 /*
   <CheckSentenceAssignsAndConditions
@@ -257,7 +256,7 @@ CheckSentenceAssignsAndConditions {
                   Condition = '?'
                 }
               : s.AssignOrCondition^
-              = e.Prefix s.AssignOrCondition <Symb s.Num> : e.Prefix^
+              = <gen_e__ e.Prefix s.AssignOrCondition <Symb s.Num>> : e.Prefix^
               = (<Inc s.Num> e.ContextVars e.Pattern)
                 <CheckBlocks
                   t.SrcPos
@@ -364,7 +363,7 @@ CheckExpression {
                 <CheckSentences
                   t.SrcPos
                   (e.FuncName)
-                  (e.Prefix '\\' <Symb s.Num>)
+                  (<gen_e__ e.Prefix '\\' <Symb s.Num>>)
                   (e.ContextVars)
                   (e.Sentences)
                 >;
@@ -400,42 +399,24 @@ CheckPatternPairs {
           (((e.Pattern-L) e._ (e._) (e._)) s.Num-L)
           (((e.Pattern-R) e._ (e._) (e._)) s.Num-R)
         )
-          = <GenericMatch
-              (e.ContextVars e.Pattern-L)
-              (e.ContextVars e.Pattern-R)
-            >
+          = e.ContextVars e.Pattern-L : e.Pattern-L^
+          = e.ContextVars e.Pattern-R : e.Pattern-R^
+          = e.Prefix '$' <Symb s.Num-R> : e.R-id
+          = e.Prefix '$' <Symb s.Num-L> : e.L-id
+          = /* пусто */
           : {
-              e._, (e.Pattern-L) (e.Pattern-R) : () ()
+              , <GenericMatch (e.Pattern-L) (e.Pattern-R)> : Clear e._
                 = <CreateScreeningWarning
-                    t.SrcPos
-                    (e.FuncName)
-                    (e.Prefix '$' <Symb s.Num-R>)
-                    (e.Prefix '$' <Symb s.Num-L>)
-                  >;
-              Clear e._
-                = <CreateScreeningWarning
-                    t.SrcPos
-                    (e.FuncName)
-                    (e.Prefix '$' <Symb s.Num-R>)
-                    (e.Prefix '$' <Symb s.Num-L>)
+                    t.SrcPos (e.FuncName) (e.R-id) (e.L-id)
                   >;
 
-              e._ = <PatternLanguagesCheck
-                      (e.ContextVars e.Pattern-L)
-                      (e.ContextVars e.Pattern-R)
-                    >
-                  : {
-                      True e.Other
-                        = <CreateScreeningWarning
-                            t.SrcPos
-                            (e.FuncName)
-                            (e.Prefix '$' <Symb s.Num-R>)
-                            (e.Prefix '$' <Symb s.Num-L>)
-                          >;
+              , <PatternLanguagesCheck (e.Pattern-L) (e.Pattern-R)> : True
+                = <CreateScreeningWarning
+                    t.SrcPos (e.FuncName) (e.R-id) (e.L-id)
+                  >;
 
-                      False = /* пусто */;
-                  }
-            }
+              = /* нет предупреждений */;
+          }
       }
       e.Pairs
     >;
@@ -444,8 +425,7 @@ CheckPatternPairs {
 }
 
 /*
-  <PatternLanguagesCheck (e.ContextVars) (e.Pattern-L) (e.Pattern-R)>
-    == t.Warning*
+  <PatternLanguagesCheck (e.ContextVars) (e.Pattern-L) (e.Pattern-R)> == s.Bool
 
   PatternLanguagesCheck проверяет пару предложений
   на экранирование алгоритмом, основанном на языках образцов.
@@ -454,154 +434,31 @@ PatternLanguagesCheck {
   (e.Pattern-L) (e.Pattern-R)
     , <FlattenPattern e.Pattern-R> : e.FlattenedPattern-R
     , <IsPatternLinear e.FlattenedPattern-R> : True
-    = <ReplaceADTBrackets e.Pattern-R> : e.Pattern-R^
-    = <ReplaceADTBrackets e.Pattern-L> : e.Pattern-L^
     = <Normalize e.Pattern-R> : e.Pattern-R^
-    = <Generalize (e.Pattern-L) (e.Pattern-R)> : e.Generalized
-    = <RenameVars () e.Generalized> : e.Generalized^
-    = <GenericMatch (e.Pattern-R) (e.Generalized) > : Clear e.Tuple-R
-    = <GenericMatch (e.Pattern-L) (e.Generalized) > : Clear e.Tuple-L
-    = <CreateTuplePairs (e.Tuple-L) (e.Tuple-R)> : e.Tuples
-    = <CheckEveryMatch e.Tuples ()>;
+    = <ScreenVars e.Pattern-L> : e.Pattern-L^
+    = <GenericMatch (e.Pattern-L) (e.Pattern-R)>
+    : {
+        Clear e._ = True;
+        e._ = False;
+      };
 
-
-  (e.Pattern-L) (e.Pattern-R)
-    = False;
+  (e.Pattern-L) (e.Pattern-R) = False;
 }
 
-/*
-  Заменяет АДТ-скобки
-*/
-ReplaceADTBrackets {
-  e.Pattern
+ScreenVars {
+  e.Expression
     = <Map
         {
-          (ADT-Brackets (e.Name) e.Inner)
-            = (Brackets (Symbol Identifier e.Name) (Brackets <ReplaceADTBrackets e.Inner>));
+          (Var s.Mode e.Index) = (ScrVar s.Mode e.Index);
 
-          (Brackets e.Inner)
-            = (Brackets (Symbol Char '*') <ReplaceADTBrackets e.Inner>);
+          (Brackets e.Nested) = (Brackets <ScreenVars e.Nested>);
+
+          (ADT-Brackets (e.Name) e.Nested)
+            = (ADT-Brackets (e.Name) <ScreenVars e.Nested>);
 
           t.Other = t.Other;
         }
-        e.Pattern
-      >;
-}
-
-
-/*
-  <CheckEveryMatch t.Tuple*>
-    == True
-    == False
-
-  t.Tuple ::= (t.Pattern-L t.Pattern-R)
-
-  CheckEveryMatch сверяет пары кортежей.
-  Возвращает True, если все совпали, иначе False.
-*/
-CheckEveryMatch {
-  ((e.Pattern-L) (e.Pattern-R)) e.Tuples (e.Assigns)
-    = <ObjectMatch (e.Pattern-L) (e.Pattern-R)>
-    : {
-        Clear e.NewAssigns
-          = <AppendAssigns (e.Assigns) e.NewAssigns>
-          : {
-              Success e.UpdatedAssigns
-                = <CheckEveryMatch e.Tuples (e.UpdatedAssigns)>;
-
-              Fails
-                = False;
-            };
-
-        e.Other
-          = False;
-      };
-
-  /* пусто */ (e.Assigns) = True (e.Assigns);
-}
-
-
-/*
-  <AppendAssigns (t.Assign*) t.Assign*>
-    == Success t.Assign*
-    == Fails
-
-  AppendAssigns пополняет список присваиваний новыми.
-  Если новое присваивание содержится в списке, список не изменяется.
-  Если новое присваивание противоречит старрому, возвращается Fails.
-*/
-AppendAssigns {
-  /* если старое значение совпало с новым */
-  (e.Assigns-L (e.Vars-L ':' e.Vars-R) e.Assigns-R)
-  (e.Vars-L ':' e.Vars-R) e.NewAssignsTail
-    = <AppendAssigns
-        (e.Assigns-L (e.Vars-L ':' e.Vars-R) e.Assigns-R)
-        e.NewAssignsTail
-      >;
-
-  /* если старое не совпало с новым */
-  (e.Assigns-L (e.Vars-L ':' e.Vars-R) e.Assigns-R)
-  (e.Vars-L-Other ':' e.Vars-R) e.NewAssignsTail
-    = Fails;
-
-  /* если новая переменная */
-  (e.Assigns)
-  (e.Vars-L ':' e.Vars-R) e.NewAssignsTail
-    = <AppendAssigns
-        (e.Assigns (e.Vars-L ':' e.Vars-R))
-        e.NewAssignsTail
-      >;
-
-  (e.Assigns) /* пусто */ = Success e.Assigns;
-}
-
-/*
-  <CreateTuplePairs (t.Assign-L*) (t.Assign-R*)>
-    == t.Tuple*
-
-  t.Assign ::= ((t.Pattern*) ':' (t.Pattern*))
-
-  CreateTuplePairs сверяет пары кортежей,
-  возвращает True, если все совпали, иначе False.
-  Правая часть выражения нормализуется.
-*/
-CreateTuplePairs {
-  (e.Tuple-L) (e.Tuple-R)
-    = <DelAccumulator
-        <MapAccum
-          {
-            (t.L e.Tail-L) t.R
-              , t.L : (e.Vars-L ':' e._)
-              , t.R : (e.Vars-R ':' e._)
-              = (e.Tail-L) ((e.Vars-L) (e.Vars-R));
-          }
-          (e.Tuple-L) e.Tuple-R
-        >
-      >;
-}
-
-/*
-  <RenameVars (e.Prefix) e.Pattern>
-    == e.Pattern
-
-  RenameVars добавляет суффиксы переменным, полученным из ГСО.
-*/
-RenameVars {
-  (e.Prefix) e.Pattern
-    = <DelAccumulator
-        <MapAccum
-          {
-            s.Count (Var s.Type e.Index)
-              = <Inc s.Count>
-                (Var s.Type e.Index e.Prefix 's' <Symb s.Count>);
-            s.Count (Brackets e.Other)
-              = <Inc s.Count>
-                (Brackets <RenameVars (e.Prefix 'p' <Symb s.Count>) e.Other>);
-            s.Count t.Other
-              = s.Count t.Other;
-          }
-          1 e.Pattern
-        >
+        e.Expression
       >;
 }
 
@@ -640,6 +497,8 @@ DeleteMarkup {
           (Float t.Item) = t.Item;
           (Anchor t.Item) = t.Item;
           (MarkedBrackets e.Brackets) = (Brackets <DeleteMarkup e.Brackets>);
+          (MarkedADTBrackets (e.Name) e.Brackets)
+            = (ADT-Brackets (e.Name) <DeleteMarkup e.Brackets>);
 
           t.Item = t.Item;
         }
@@ -707,7 +566,16 @@ InsertFakeEVars {
         e.Suffix
       >;
 
-   e.Other = e.Other;
+  e.Prefix
+  (ADT-Brackets (e.Name) e.Brackets)
+  e.Suffix
+    = <InsertFakeEVars
+        e.Prefix
+        (MarkedADTBrackets (e.Name) <InsertFakeEVars e.Brackets>)
+        e.Suffix
+      >;
+
+  e.Other = e.Other;
 }
 
 /*
@@ -719,35 +587,40 @@ InsertFakeEVars {
 */
 MarkupNeighbourAnchorTVars {
   e.MarkedPattern
-    = <MarkupNeighbourHelper () (e.MarkedPattern)>;
+    = <DoMarkupNeighbourAnchorTVars () (e.MarkedPattern)>;
 }
 
-MarkupNeighbourHelper {
+DoMarkupNeighbourAnchorTVars {
   (e.Prefix) ((Var 't' e.Index) e.Suffix)
     , <HasAnchorsPrefix e.Prefix> : True
     , <HasAnchorsSuffix e.Suffix> : True
-    = <MarkupNeighbourHelper
+    = <DoMarkupNeighbourAnchorTVars
         (e.Prefix (Anchor (Var 't' e.Index)))
         (e.Suffix)
       >;
 
   (e.Prefix) ((Brackets e.Brackets) e.Suffix)
-    = <MarkupNeighbourHelper
+    = <DoMarkupNeighbourAnchorTVars
         (
           e.Prefix
-          (Brackets <MarkupNeighbourHelper () (e.Brackets)>)
+          (Brackets <DoMarkupNeighbourAnchorTVars () (e.Brackets)>)
+        )
+        (e.Suffix)
+      >;
+
+  (e.Prefix) ((ADT-Brackets (e.Name) e.Brackets) e.Suffix)
+    = <DoMarkupNeighbourAnchorTVars
+        (
+          e.Prefix
+          (ADT-Brackets (e.Name) <DoMarkupNeighbourAnchorTVars () (e.Brackets)>)
         )
         (e.Suffix)
       >;
 
   (e.Prefix) (t.Item e.Suffix)
-    = <MarkupNeighbourHelper
-        (e.Prefix t.Item)
-        (e.Suffix)
-      >;
+    = <DoMarkupNeighbourAnchorTVars (e.Prefix t.Item) (e.Suffix)>;
 
-  (e.Prefix) ()
-    = e.Prefix;
+  (e.Prefix) () = e.Prefix;
 }
 
 /*
@@ -760,21 +633,11 @@ MarkupNeighbourHelper {
   (2-ая часть определения)
 */
 HasAnchorsPrefix {
-  e.Prefix (Anchor (Var 't' e.Index))
-    = True;
-
-  e.Prefix (Symbol s.Mode e.Index)
-    = True;
-
-  e.Prefix (Var 'e' e.Index)
-    = False;
-
-  e.Prefix (Brackets e._)
-    = True;
-
-  e.Prefix t.Other
-    = <HasAnchorsPrefix e.Prefix>;
-
+  e.Prefix (Anchor (Var 't' e.Index)) = True;
+  e.Prefix (Symbol s.Mode e.Index) = True;
+  e.Prefix (Var 'e' e.Index) = False;
+  e.Prefix (Brackets e._) = True;
+  e.Prefix t.Other = <HasAnchorsPrefix e.Prefix>;
   /* пусто */ = True;
 }
 
@@ -788,21 +651,11 @@ HasAnchorsPrefix {
   (2-ая часть определения)
 */
 HasAnchorsSuffix {
-  (Anchor (Var 't' e.Index)) e.Suffix
-    = True;
-
-  (Symbol s.Mode e.Index) e.Suffix
-    = True;
-
-  (Var 'e' e.Index) e.Suffix
-    = False;
-
-  (Brackets e._) e.Suffix
-    = True;
-
-  t.Other e.Suffix
-    = <HasAnchorsSuffix e.Suffix>;
-
+  (Anchor (Var 't' e.Index)) e.Suffix = True;
+  (Symbol s.Mode e.Index) e.Suffix = True;
+  (Var 'e' e.Index) e.Suffix = False;
+  (Brackets e._) e.Suffix = True;
+  t.Other e.Suffix = <HasAnchorsSuffix e.Suffix>;
   /* пусто */ = True;
 }
 
@@ -823,6 +676,11 @@ MarkupMultipleAnchorTVars {
 
           (Brackets e.Brackets)
             = (Brackets
+                <MarkupMultipleAnchorTVars (e.Brackets) t.Multiplicity>
+              );
+
+          (ADT-Brackets (e.Name) e.Brackets)
+            = (ADT-Brackets (e.Name)
                 <MarkupMultipleAnchorTVars (e.Brackets) t.Multiplicity>
               );
 
@@ -934,21 +792,6 @@ IsPatternLinear {
 }
 
 /*
-  <IsPatternFlat (e.Pattern)>
-    == True
-    == False
-
-  IsPatternFlat возвращает True, если образец e.Pattern - плоский
-  (не содержит круглых скобок), иначе False.
-*/
-IsPatternFlat {
-  e._ (Brackets e._) e._
-    = False;
-  e._
-    = True;
-}
-
-/*
   <FlattenPattern (e.Pattern)>
     == (e.FlatPattern)
 
@@ -961,22 +804,12 @@ FlattenPattern {
           (Brackets e.Inner)
             = <FlattenPattern e.Inner>;
 
+          (ADT-Brackets (e.Name) e.Inner) = <FlattenPattern e.Inner>;
+
           t.Other = t.Other;
         }
         e.Pattern
       >
-}
-
-/*
-  <Generalize (e.Pattern-L) (e.Pattern-R)>
-    == e.GeneralizedPattern
-
-  Generalize реконструирует общий формат двух образцов (ГСО)
-*/
-Generalize {
-  (e.Pattern-L) (e.Pattern-R)
-    = <GlobalGen (e.Pattern-L) (e.Pattern-R)> : e.GlobalComplexGeneralization
-    = e.GlobalComplexGeneralization
 }
 
 /*

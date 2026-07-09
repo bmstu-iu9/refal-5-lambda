@@ -1,0 +1,9 @@
+* WARNING deprecated
+
+$ENTRY Go {
+  = <F>
+}
+
+$SPEC F e.X;
+
+F { e.X = e.X }

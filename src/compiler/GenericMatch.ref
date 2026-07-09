@@ -1,7 +1,10 @@
 $INCLUDE "LibraryEx";
 
 *$FROM TreeUtils
-$EXTERN ExtractVariables, NewVarName;
+$EXTERN ExtractVariables, NewVarName, ApplyContractions;
+
+
+gen_e__ { e.arg = e.arg }
 
 
 /**
@@ -36,64 +39,99 @@ $ENTRY GenericMatch {
         ((e.Pattern) ':' (e.LPattern))
       >
     : {
-        Success (() (e.Assigns)) = Clear <FormatAssigns e.Assigns>;
+        /* Если все решения без сужений, то берём первое */
+        Success (e._ () (e.Assigns)) e.OtherSolutions
+          , <AllUncontracted e.OtherSolutions> : True
+          = Clear <FormatAssigns e.Assigns>;
+
+        Success /* пусто */ = Failure;
+
         Success e.Solutions = Contracted e.Solutions;
-        Failure = Failure;
+
         Undefined = Undefined;
+      }
+}
+
+AllUncontracted {
+  e.Solutions
+    = <Map
+        {
+          (e._ (/* нет суженй */) (e._)) = /* пропускаем */;
+          t.OtherSolution = t.OtherSolution; /* оставляем */
+        }
+        e.Solutions
+      >
+    : {
+        /* пусто */ = True;
+        e._ = False;
       }
 }
 
 /**
   <Solve-Drive (e.UsedVars) t.Equation>
-    == Success t.Result* | Undefined | Failure
+    == Success t.Result* | Undefined
 
     t.Contr ::= (t.Var ':' e.Val)
     t.Equation ::= ((e.Expr) ':' (e.LExpr))
     t.Assign ::= (e.Val ':' t.Var)
-    t.Result ::= ((t.Contr*) (t.Assign*))
+    t.Result ::= (e.UsedVars^ (t.Contr*) (t.Assign*))
 */
 
 $ENTRY Solve-Drive {
   (e.UsedVars) ((e.Expr) ':' (e.Lexpr))
-    = <InitContractions e.Expr> : e.Contrs
     = <AddCoordinateLabels e.Expr> : e.Expr^
     = <Solve-Clashes
         (e.UsedVars)
-        (None e.Contrs)
-        ((e.Expr) ':' (e.Lexpr))
-        (/* пусто */)
+        (None /* сужения */)
+        (E (e.Expr) ':' (e.Lexpr))
+        (/* присваивания */)
       >
     : {
-        e.Begin Generalize (e.Intervals) e.End = Undefined;
+        e._ (Generalize (e.Intervals)) e._ = Undefined;
+        e._ Undefined e._ = Undefined;
+        e._ (Success (e._) AfterOpen (e._) (e._)) e._ = Undefined;
 
-        /* пусто */ = Failure;
-
-        e.Success
-          = <IsFlagOpen e.Success>
-          : {
-              True = Undefined;
-
-              False = Success <CombineResults () e.Success>;
-            };
+        e.Success = Success <CombineResults-Drive e.Success>;
       };
 }
 
 /* Проверка на наличие поднятого флага в решениях */
 
 IsFlagOpen {
-  Success AfterOpen (e.Contrs) (e.Assigns) e.Rest
-    = True;
+  e._ (Success (e._) AfterOpen (e._) (e._)) e._ = True;
 
-  Success None (e.Contrs) (e.Assigns) e.Rest
-    = <IsFlagOpen e.Rest>;
+  e._ = False;
+}
 
-  /* пусто */ = False;
+/*
+  Преобразует решения в нужный формат для Solve-Drive
+
+  <CombineResults-Drive e.RawSol*> == t.Sol*
+
+  t.Sol ::= (e.UsedVars (t.Contr*) (t.Assign*))
+  e.RawSol ::= (Success (e.UsedVars) s.OpenFlag (t.Contr*) (t.Assign*))
+*/
+CombineResults-Drive {
+  e.RawSolutions
+    = <Map
+        {
+          (Success (e.UsedVars) s.OpenFlag (e.Contrs) (e.Assigns))
+            = <Map
+                {
+                  (e.Val ':' t.Var) = (<ClearCoordinates e.Val> ':' t.Var)
+                }
+                e.Assigns
+              >
+            : e.Assigns^
+            = (e.UsedVars (e.Contrs) (e.Assigns));
+        }
+        e.RawSolutions
+      >;
 }
 
 /**
   <Solve-Spec (e.UsedVars) (e.Left) (e.Right)>
-    == Success ((t.Contr*) (t.Assign*))* (t.Assign*) (e.Left^)
-    |  Failure
+    == (e.UsedVars^) ((t.Contr*) (t.Assign*))* (t.Assign*) (e.Left^)
 
   t.Contr ::= (t.Var ':' e.Val)
   t.Assign ::= (e.Val ':' t.Var)
@@ -102,152 +140,65 @@ IsFlagOpen {
 $ENTRY Solve-Spec {
   (e.UsedVars) (e.Left) (e.Right)
     = <AddCoordinateLabels e.Left> : e.Left^
-    = <Solve-Spec-Aux
+    = <Solve-Spec-DoFindGeneralization
         (e.UsedVars)
         ((e.Left) ':' (e.Right))
         ()
       >;
 }
 
-Solve-Spec-Aux {
+Solve-Spec-DoFindGeneralization {
   (e.UsedVars) ((e.L) ':' (e.R)) (e.GenAssigns)
     = <Solve-Clashes
         (e.UsedVars)
-        (None <InitContractions e.L>)
-        ((e.L) ':' (e.R))
-        (/* пусто */)
+        (None /* сужения */)
+        (E (e.L) ':' (e.R))
+        (/* присваивания */)
       >
     : {
-        e.Begin Generalize (e.Intervals) e.End
+        e._ (Generalize (e.Intervals)) e._
           = <DoGeneralize
-              (e.UsedVars) <UnionIfIntersect (e.Intervals)>
+              (e.UsedVars) (e.Intervals)
               (e.L) (e.GenAssigns)
             >
           : (e.UsedVars^) (e.L^) (e.GenAssigns^)
-          = <Solve-Spec-Aux
+          = <Solve-Spec-DoFindGeneralization
               (e.UsedVars) ((e.L) ':' (e.R)) (e.GenAssigns)
             >;
 
-        /* пусто */ = Failure;
-
         e.Success
-          = Success
-            <CombineResults () e.Success>
+          = (e.UsedVars)
+            <CombineResults-Spec e.Success>
             (e.GenAssigns)
             (<ClearCoordinates e.L>);
       }
 }
 
 /*
-  Инициализирует список сужений тривиальными сужениями
+  Преобразует решения в нужный формат для Solve-Spec
 
-  <InitContractions e.Expr> == t.Contr*
-*/
-
-InitContractions {
-  e.Expr
-    = <ExtractVariables ((e.Expr) (/* пусто */))> : e.Vars
-    = <Map
-        { (e.ModeIndex) = ((Var e.ModeIndex) ':' (Var e.ModeIndex)) }
-        e.Vars
-      >
-}
-
-/*
-  Удаляет тривиальные сужения из набора сужений
-
-  <RemoveTrivialContractions t.Contr*> == t.Contr*
-*/
-
-RemoveTrivialContractions {
-  e.Contrs
-    = <Map
-        {
-          ((Var e.ModeIndex) ':' (Var e.ModeIndex)) = /* пусто */;
-
-          t.Contr = t.Contr;
-        }
-        e.Contrs
-      >
-}
-
-/*
-  Объединяет два интервала, если они пересекаются.
-  В остальных случаях возвращает исходный список интервалов.
-
-  <UnionIfIntersect (e.Intervals)> == (e.Intervals^)
-
-  e.Intervals ::= t.Interval+
-  t.Interval ::= ('{' s.BeginCoord s.EndCoord '}')
-*/
-
-UnionIfIntersect {
-  (t.Interval-1 t.Interval-2)
-    , <HasIntersection (t.Interval-1 t.Interval-2)> : True
-    = t.Interval-1 : ('{' s.A s.B '}')
-    = t.Interval-2 : ('{' s.C s.D '}')
-    = <GetExtremum s.A '+' (s.B s.C s.D)> : s.Min
-    = <GetExtremum s.A '-' (s.B s.C s.D)> : s.Max
-    = (('{' s.Min s.Max '}'));
-
-  t.Intervals = t.Intervals;
-}
-
-HasIntersection {
-  (('{' s.A s.B '}') ('{' s.C s.D '}'))
-    , <Compare s.C s.B> : '+'
-    = False;
-
-  (('{' s.A s.B '}') ('{' s.C s.D '}'))
-    , <Compare s.A s.D> : '+'
-    = False;
-
-  t.Intervals = True;
-}
-
-GetExtremum {
-  s.Extremum s.Sign (s.CurrentCoord e.Rest)
-    , <Compare s.Extremum s.CurrentCoord> : s.Sign
-    = <GetExtremum s.CurrentCoord s.Sign (e.Rest)>;
-
-  s.Extremum s.Sign (s.CurrentCoord e.Rest)
-    = <GetExtremum s.Extremum s.Sign (e.Rest)>;
-
-  s.Extremum s.Sign (/* пусто */)
-    = s.Extremum;
-}
-
-/*
-  Преобразует решения в нужный формат для Solve-Drive и Solve-Spec
-
-  <CombineResults (t.Sol*) e.RawSol*> == t.Sol*
+  <CombineResults-Spec e.RawSol*> == t.Sol*
 
   t.Sol ::= ((t.Contr*) (t.Assign*))
-  e.RawSol ::= Success s.OpenFlag (t.Contr*) (t.Assign*)
+  e.RawSol ::= (Success (e.UsedVars) s.OpenFlag (t.Contr*) (t.Assign*))
 */
 
-CombineResults {
-  (e.Solutions)
-  Success s.OpenFlag (e.Contrs) (e.Assigns) e.Rest
-    = <CombineResults
-        (
-          e.Solutions
-          (
-            (<RemoveTrivialContractions e.Contrs>)
-            (<Map
-              {
-                (e.Val ':' t.Var)
-                  = (<ClearCoordinates e.Val> ':' t.Var)
-              }
-              e.Assigns
-            >)
-          )
-        )
-        e.Rest
+CombineResults-Spec {
+  e.RawSolutions
+    = <Map
+        {
+          (Success (e.UsedVars) s.OpenFlag (e.Contrs) (e.Assigns))
+            = <Map
+                {
+                  (e.Val ':' t.Var) = (<ClearCoordinates e.Val> ':' t.Var)
+                }
+                e.Assigns
+              >
+            : e.Assigns^
+            = ((e.Contrs) (e.Assigns));
+        }
+        e.RawSolutions
       >;
-
-  (e.Solutions) /* пусто */
-    = e.Solutions;
 }
 
 /*
@@ -259,108 +210,74 @@ CombineResults {
   t.Interval ::= ('{' s.A s.B '}')
 */
 
+*$NOOPT DoGeneralize, DoGeneralize-Rec
+
 DoGeneralize {
-  (e.UsedVars) (t.Interval e.Intervals)
-  (e.Expr) (e.Assigns)
-    = <DoGeneralize-Aux
-        (e.UsedVars) t.Interval ()
-        (e.Expr) (e.Assigns)
+  (e.UsedVars) (t.Interval e.Intervals) (e.Expr) (e.Assigns)
+    = <DoGeneralize-Rec
+        (e.UsedVars) t.Interval (/* scanned */) (e.Expr) (e.Assigns)
       >
     : (e.UsedVars^) (e.Expr^) (e.Assigns^)
-    = <DoGeneralize
-        (e.UsedVars) (e.Intervals)
-        (e.Expr) (e.Assigns)
-      >;
+    = <DoGeneralize (e.UsedVars) (e.Intervals) (e.Expr) (e.Assigns)>;
 
-  (e.UsedVars) ()
-  (e.Expr) (e.Assigns)
+  (e.UsedVars) (/* кончились интервалы */) (e.Expr) (e.Assigns)
     = (e.UsedVars) (e.Expr) (e.Assigns);
 }
 
-DoGeneralize-Aux {
-  (e.UsedVars) ('{' s.A s.B '}') (e.Begin)
-  (e.E1 ('{'s.A'}') e.Inner ('{'s.B'}') e.E2) (e.Assigns)
-    = <GetVarType e.Inner> : s.VarType
-    = <ClearCoordinates
-        <ApplyAssignments-toExpr (e.Assigns) e.Inner>
-      >
-    : e.VarVal
-    = <NewVarName (e.UsedVars) s.VarType> : (e.UsedVars^) s.VarType^ e.New
+DoGeneralize-Rec {
+  (e.UsedVars) ('{' s.A s.B '}')
+  (e.Begin) (e.E1 ('{'s.A'}') e.Inner ('{'s.B'}') e.E2) (e.Assigns)
+    = <ClearCoordinates e.Inner> : e.VarVal
+    = <GetVarMode e.VarVal> : s.Mode
+    = <NewVarName (e.UsedVars) s.Mode> : (e.UsedVars^) s.Mode^ e.New
     = (e.UsedVars)
-      (e.E1 ('{'s.A'}') (Var s.VarType e.New) ('{'s.B'}') e.E2)
-      (e.Assigns (e.VarVal ':' (s.VarType e.New)));
+      (e.Begin e.E1 ('{'s.A'}') (Var s.Mode e.New) ('{'s.B'}') e.E2)
+      ((e.VarVal ':' (Var s.Mode e.New)) e.Assigns);
 
-  (e.UsedVars) t.Interval (e.Begin)
-  ((Brackets e.E) e.Rest) (e.Assigns)
-    = <DoGeneralize-Aux
-        (e.UsedVars) t.Interval ()
-        (e.E) (e.Assigns)
+  (e.UsedVars) t.Interval
+  (e.Begin) ((Brackets e.Nested) e.Rest) (e.Assigns)
+    = <DoGeneralize-Rec
+        (e.UsedVars) t.Interval (/* scanned */) (e.Nested) (e.Assigns)
       >
-    : (e.UsedVars^) (e.E^) (e.Assigns^)
-    = <DoGeneralize-Aux
-        (e.UsedVars) t.Interval (e.Begin (Brackets e.E))
-        (e.Rest) (e.Assigns)
+    : (e.UsedVars^) (e.Nested^) (e.Assigns^)
+    = <DoGeneralize-Rec
+        (e.UsedVars) t.Interval
+        (e.Begin (Brackets e.Nested)) (e.Rest) (e.Assigns)
       >;
 
   (e.UsedVars) t.Interval (e.Begin)
-  ((ADT-Brackets (e.Name) e.E) e.Rest) (e.Assigns)
-    = <DoGeneralize-Aux
-        (e.UsedVars) t.Interval ()
-        (e.E) (e.Assigns)
+  ((ADT-Brackets (e.Name) e.Nested) e.Rest) (e.Assigns)
+    = <DoGeneralize-Rec
+        (e.UsedVars) t.Interval (/* scanned */) (e.Nested) (e.Assigns)
       >
-    : (e.UsedVars^) (e.E^) (e.Assigns^)
-    = <DoGeneralize-Aux
-        (e.UsedVars) t.Interval (e.Begin (ADT-Brackets (e.Name) e.E))
-        (e.Rest) (e.Assigns)
+    : (e.UsedVars^) (e.Nested^) (e.Assigns^)
+    = <DoGeneralize-Rec
+        (e.UsedVars) t.Interval
+        (e.Begin (ADT-Brackets (e.Name) e.Nested)) (e.Rest) (e.Assigns)
       >;
 
-  (e.UsedVars) t.Interval (e.Begin)
-  (t.T e.Rest) (e.Assigns)
-    = <DoGeneralize-Aux
-        (e.UsedVars) t.Interval (e.Begin t.T)
-        (e.Rest) (e.Assigns)
+  (e.UsedVars) t.Interval (e.Begin) (t.T e.Rest) (e.Assigns)
+    = <DoGeneralize-Rec
+        (e.UsedVars) t.Interval (e.Begin t.T) (e.Rest) (e.Assigns)
       >;
 
-  (e.UsedVars) t.Interval (e.Begin)
-  () (e.Assigns)
+  (e.UsedVars) t.Interval (e.Begin) () (e.Assigns)
     = (e.UsedVars) (e.Begin) (e.Assigns);
 }
 
 /* Определяет тип переменной, до которой выполнится динамическое обобщение */
 
-GetVarType {
-  (ClosureBrackets e._) = 's';
+GetVarMode {
+  (Var s.Mode e.Index) = s.Mode;
+  (ScrVar s.Mode e.Index) = s.Mode;
+  (WhVar s.Mode e.Index) = s.Mode;
+
+  t.SVarSubset, <IsSVarSubset t.SVarSubset> : True = 's';
+
+  (Brackets e._) = 't';
+  (ADT-Brackets e._) = 't';
 
   e.Other = 'e';
-}
-
-ApplyAssignments-toExpr {
-  (t.Assign e.Rest) e.Expr
-    = <ApplyAssignments-toExpr
-        (e.Rest)
-        <ApplyAssignment-toExpr t.Assign e.Expr>
-      >;
-
-  () e.Expr = e.Expr;
-}
-
-ApplyAssignment-toExpr {
-  (e.Val ':' (s.Type e.Index)) e.Begin (Var s.Type e.Index) e.End
-    = <ApplyAssignment-toExpr (e.Val ':' (s.Type e.Index)) e.Begin>
-      e.Val
-      <ApplyAssignment-toExpr (e.Val ':' (s.Type e.Index)) e.End>;
-
-  t.Assign e.Begin (Brackets e.E) e.End
-    = <ApplyAssignment-toExpr t.Assign  e.Begin>
-      (Brackets <ApplyAssignment-toExpr t.Assign e.E>)
-      <ApplyAssignment-toExpr t.Assign e.End>;
-
-  t.Assign e.Begin (ADT-Brackets e.E) e.End
-    = <ApplyAssignment-toExpr t.Assign e.Begin>
-      (ADT-Brackets <ApplyAssignment-toExpr t.Assign e.E>)
-      <ApplyAssignment-toExpr t.Assign e.End>;
-
-  t.Assign e.E = e.E;
 }
 
 /*
@@ -387,6 +304,14 @@ DoAddCoordinateLabels {
     = (Var s.Mode e.Index) ('{'s.CoordNumber'}')
       <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
 
+  ((ScrVar s.Mode e.Index) e.Rest) s.CoordNumber
+    = (ScrVar s.Mode e.Index) ('{'s.CoordNumber'}')
+      <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
+
+  ((WhVar s.Mode e.Index) e.Rest) s.CoordNumber
+    = (WhVar s.Mode e.Index) ('{'s.CoordNumber'}')
+      <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
+
   ((ClosureBrackets e.Inner) e.Rest) s.CoordNumber
     = (ClosureBrackets e.Inner) ('{'s.CoordNumber'}')
       <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
@@ -395,9 +320,15 @@ DoAddCoordinateLabels {
     = (CallBrackets e.Inner) ('{'s.CoordNumber'}')
       <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
 
+  ((ColdCallBrackets e.Inner) e.Rest) s.CoordNumber
+    = (CallBrackets e.Inner) ('{'s.CoordNumber'}')
+      <DoAddCoordinateLabels (e.Rest) <Add s.CoordNumber 1>>;
+
   ((Brackets e.Expr) e.Rest) s.CoordNumber
-    = (Brackets ('{'s.CoordNumber'}')
-      <DoAddCoordinateLabels (e.Expr) <Add s.CoordNumber 1>>)
+    = (Brackets
+        ('{'s.CoordNumber'}')
+        <DoAddCoordinateLabels (e.Expr) <Add s.CoordNumber 1>>
+      )
     : {
         (Brackets e.Inner ('{'s.LastCoord'}'))
           = (Brackets e.Inner ('{'s.LastCoord'}'))
@@ -406,8 +337,10 @@ DoAddCoordinateLabels {
       };
 
   ((ADT-Brackets (e.Name) e.Expression) e.Rest) s.CoordNumber
-    = (ADT-Brackets (e.Name) ('{'s.CoordNumber'}')
-      <DoAddCoordinateLabels (e.Expression) <Add s.CoordNumber 1>>)
+    = (ADT-Brackets
+        (e.Name) ('{'s.CoordNumber'}')
+        <DoAddCoordinateLabels (e.Expression) <Add s.CoordNumber 1>>
+      )
     : {
         (ADT-Brackets e.Inner ('{'s.LastCoord'}'))
           = (ADT-Brackets e.Inner ('{'s.LastCoord'}'))
@@ -415,82 +348,37 @@ DoAddCoordinateLabels {
             <DoAddCoordinateLabels (e.Rest) <Add s.LastCoord 2>>
       };
 
-  (e.Other) s.CoordNumber
-    = e.Other;
+  (/* пусто */) s.CoordNumber = /* пусто */;
 }
 
 /*
   Упрощение координат (редуцирование их бессмысленного скопления)
-
-  <SimplifyCoordinates (e.Contractions) t.Clash* (t.Assign*)>
-    == (e.Contractions) t.Clash^* (t.Assign^*)
 */
 
-SimplifyCoordinates {
-  (e.Contrs) e.Clashes (e.Assigns)
-    = (e.Contrs)
-      <Map &SimplifyCoordinates-Clash e.Clashes>
-      (<Map &SimplifyCoordinates-Assign e.Assigns>)
-}
-
-SimplifyCoordinates-Symm {
-  (e.Contrs) e.SymmClashes (e.Assigns)
-    = (e.Contrs)
-      <Map &SimplifyCoordinates-SymmClash e.SymmClashes>
-      (<Map &SimplifyCoordinates-Assign e.Assigns>)
-}
-
-SimplifyCoordinates-Clash {
-  ((e.Left) ':' (e.Right))
-    = ((<SimplifyCoordinates-Expr e.Left>) ':' (e.Right))
-}
-
 SimplifyCoordinates-SymmClash {
-  (e.L '=' e.R)
-    = (<SimplifyCoordinates-Expr e.L> '=' <SimplifyCoordinates-Expr e.R>)
+  (s.Type e.L '=' e.R)
+    = (s.Type <SimplifyCoordinates e.L> '=' <SimplifyCoordinates e.R>)
 }
 
-SimplifyCoordinates-Assign {
-  (e.Left ':' t.Right)
-    = (<SimplifyCoordinates-Expr e.Left> ':' t.Right)
-}
-
-SimplifyCoordinates-Expr {
+SimplifyCoordinates {
   /* {k} {m} E {n}  ↦  {m} E {n} */
   ('{'s.K'}') ('{'s.M'}') e.E ('{'s.N'}')
-    = <SimplifyCoordinates-Expr ('{'s.M'}') e.E ('{'s.N'}')>;
+    = <SimplifyCoordinates ('{'s.M'}') e.E ('{'s.N'}')>;
 
   /* {k} E {m} {n}  ↦  {k} E {m} */
   ('{'s.K'}') e.E ('{'s.M'}') ('{'s.N'}')
-    = <SimplifyCoordinates-Expr ('{'s.K'}') e.E ('{'s.M'}')>;
+    = <SimplifyCoordinates ('{'s.K'}') e.E ('{'s.M'}')>;
 
   /* {m} {n}  ↦  ε */
   ('{'s.M'}') ('{'s.N'}')
     = /* пусто */;
 
-  ('{'s.M'}') e.E ('{'s.N'}')
-    = ('{'s.M'}') <SimplifyCoordinates-Expr-Inner e.E> ('{'s.N'}');
+  ('{'s.M'}') e.E ('{'s.N'}') = ('{'s.M'}') e.E ('{'s.N'}');
 
-  e.E = <SimplifyCoordinates-Expr-Inner e.E>;
+  /* пусто */ = /* пусто */;
 }
 
-SimplifyCoordinates-Expr-Inner {
-  /* Ê1{k} {m} {n}Ê2  ↦  Ê1{k} {n}Ê2 */
-  e.E1 ('{'s.K'}') ('{'s.M'}') ('{'s.N'}') e.E2
-    = <SimplifyCoordinates-Expr-Inner e.E1 ('{'s.K'}') ('{'s.N'}') e.E2>;
-
-  e.Begin (Brackets e.E) e.End
-    = <SimplifyCoordinates-Expr-Inner e.Begin>
-      (Brackets <SimplifyCoordinates-Expr e.E>)
-      <SimplifyCoordinates-Expr-Inner e.End>;
-
-  e.Begin (ADT-Brackets (e.Name) e.E) e.End
-    = <SimplifyCoordinates-Expr-Inner e.Begin>
-      (ADT-Brackets (e.Name) <SimplifyCoordinates-Expr e.E>)
-      <SimplifyCoordinates-Expr-Inner e.End>;
-
-  e.E = e.E;
-}
+*$NOOPT Solve-Clashes
 
 /*
   <Solve-Clashes (e.UsedVars) (e.Contractions) t.Clash* (t.Assign*)>
@@ -499,199 +387,250 @@ SimplifyCoordinates-Expr-Inner {
     e.Contractions ::= s.OpenFlag t.Contr*
     s.OpenFlag ::= None | AfterOpen
     t.Contr ::= (t.Var ':' e.Val)
-    t.Clash ::= ((e.L) ':' (e.R))
+    t.Clash ::= (s.ClashType (e.L) ':' (e.R))
+    s.ClashType ::= E | T
     t.Assign ::= (e.Val ':' t.Var)
     t.Result
-      ::= Success s.OpenFlag (t.Contr*) (t.Assign*)
-      |   Generalize ( ('{' s.BeginCoord s.EndCoord '}')+ )
-      |   ε
+      ::= (Success (e.UsedVars) s.OpenFlag (t.Contr*) (t.Assign*))
+      |   (Generalize ( ('{' s.BeginCoord s.EndCoord '}')+ ))
 */
 
 Solve-Clashes {
   /* {m} T {n} : t.X   ↦  {m} T {n} ← t.X */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.T ('{'s.N'}')) ':' (t.X))
+  (T (('{'s.M'}') t.T ('{'s.N'}')) ':' ((Var 't' e.Index)))
   e.ClashesEnd (e.Assigns)
-    , <IsTerm t.T> : True
-    , t.X : (Var 't' e.Tindex)
     = <Solve-Clashes
         (e.UsedVars)
         (e.Contrs)
         e.ClashesStart e.ClashesEnd
-        (e.Assigns (('{'s.M'}') t.T ('{'s.N'}') ':' t.X))
+        (e.Assigns (('{'s.M'}') t.T ('{'s.N'}') ':' (Var 't' e.Index)))
       >;
 
   /* {m} Sym {n} : s.X   ↦  {m} Sym {n} ← s.X */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.Sym ('{'s.N'}')) ':' (t.X))
+  (T (('{'s.M'}') t.Sym ('{'s.N'}')) ':' ((Var 's' e.Index)))
   e.ClashesEnd (e.Assigns)
     , <IsSVarSubset t.Sym> : True
-    , t.X : (Var 's' e.Sindex)
     = <Solve-Clashes
         (e.UsedVars)
         (e.Contrs)
         e.ClashesStart e.ClashesEnd
-        (e.Assigns (('{'s.M'}') t.Sym ('{'s.N'}') ':' t.X))
+        (e.Assigns (('{'s.M'}') t.Sym ('{'s.N'}') ':' (Var 's' e.Index)))
       >;
+
+  /* {m} #var {n} : s.X   ↦  нет решений */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((Var 's' e.Index)))
+  e.ClashesEnd (e.Assigns)
+    = /* нет решений */;
+
+  /* {m} !var {n} : s.X   ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') (WhVar e._) ('{'s.N'}')) ':' ((Var 's' e.Index)))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
 
   /* {m} (E) {n} : (P)   ↦  {m} E {n} : P */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.L ('{'s.N'}')) ':' (t.R))
+  (T (('{'s.M'}') (Brackets e.LBody) ('{'s.N'}')) ':' ((Brackets e.RBody)))
   e.ClashesEnd (e.Assigns)
-    , t.L : (Brackets e.LBody)
-    , t.R : (Brackets e.RBody)
     = <Solve-Clashes
         (e.UsedVars)
         (e.Contrs) e.ClashesStart
-        <SimplifyCoordinates-Clash
-          ((('{'s.M'}') e.LBody ('{'s.N'}')) ':' (e.RBody))
-        >
+        (E
+          (<SimplifyCoordinates ('{'s.M'}') e.LBody ('{'s.N'}')>)
+          ':' (e.RBody)
+        )
         e.ClashesEnd (e.Assigns)
       >;
 
-  /* {m} [X E] {n} : [X P]   ↦  {m} E {n} : P */
+  /* {m} [X E] {n} : [X P]   ↦  {m} [X E] {n} : P */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.L ('{'s.N'}')) ':' (t.R))
+  (T
+    (('{'s.M'}') (ADT-Brackets (e.Name) e.LBody) ('{'s.N'}'))
+    ':' ((ADT-Brackets (e.Name) e.RBody))
+  )
   e.ClashesEnd (e.Assigns)
-    , t.L : (ADT-Brackets (e.Name) e.LBody)
-    , t.R : (ADT-Brackets (e.Name) e.RBody)
     = <Solve-Clashes
         (e.UsedVars)
         (e.Contrs) e.ClashesStart
-        <SimplifyCoordinates-Clash
-          ((('{'s.M'}') e.LBody ('{'s.N'}')) ':' (e.RBody))
-        >
+        (E (<SimplifyCoordinates ('{'s.M'}') e.LBody ('{'s.N'}')>) ':' (e.RBody))
         e.ClashesEnd (e.Assigns)
       >;
 
   /* {m} [X E] {n} : [Y P]  ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.L ('{'s.N'}')) ':' (t.R))
+  (T (('{'s.M'}') (ADT-Brackets e._) ('{'s.N'}')) ':' ((ADT-Brackets e._)))
   e.ClashesEnd (e.Assigns)
-    , t.L : (ADT-Brackets e._)
-    , t.R : (ADT-Brackets e._)
     = /* нет решений */;
 
-  /* {m} [E] {n} : (P)  ↦  нет решений */
+  /* {m} [X E] {n} : (P)  ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.L ('{'s.N'}')) ':' (t.R))
+  (T (('{'s.M'}') (ADT-Brackets e._) ('{'s.N'}')) ':' ((Brackets e._)))
   e.ClashesEnd (e.Assigns)
-    , t.L : (ADT-Brackets e._)
-    , t.R : (Brackets e._)
     = /* нет решений */;
 
-  /* {m} (E) {n} : [P]  ↦  нет решений */
+  /* {m} (E) {n} : [X P]  ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.L ('{'s.N'}')) ':' (t.R))
+  (T (('{'s.M'}') (Brackets e._) ('{'s.N'}')) ':' ((ADT-Brackets e._)))
   e.ClashesEnd (e.Assigns)
-    , t.R : (ADT-Brackets e._)
-    , t.L : (Brackets e._)
     = /* нет решений */;
 
   /* {m} (E) {n} : Psym  ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.L ('{'s.N'}')) ':' (t.Psym))
+  (T (('{'s.M'}') (Brackets e._) ('{'s.N'}')) ':' (t.Psym))
   e.ClashesEnd (e.Assigns)
-    , t.L : (Brackets e.LBody)
     , <IsSVarSubset t.Psym> : True
     = /* нет решений */;
 
-  /* {m} [E] {n} : Psym  ↦  нет решений */
+  /* {m} [X E] {n} : Psym  ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.L ('{'s.N'}')) ':' (t.Psym))
+  (T (('{'s.M'}') (ADT-Brackets e._) ('{'s.N'}')) ':' (t.Psym))
   e.ClashesEnd (e.Assigns)
-    , t.L : (ADT-Brackets (e.LName) e.LBody)
     , <IsSVarSubset t.Psym> : True
     = /* нет решений */;
 
   /* {m} Sym {n} : (P)  ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.Sym ('{'s.N'}')) ':' (t.R))
+  (T (('{'s.M'}') t.Sym ('{'s.N'}')) ':' ((Brackets e._)))
   e.ClashesEnd (e.Assigns)
     , <IsSVarSubset t.Sym> : True
-    , t.R : (Brackets e.RBody)
     = /* нет решений */;
 
-  /* {m} Sym {n} : [P]  ↦  нет решений */
+  /* {m} #var {n} : (P)  ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.Sym ('{'s.N'}')) ':' (t.R))
+  (T (('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((Brackets e._)))
+  e.ClashesEnd (e.Assigns)
+    = /* нет решений */;
+
+  /* {m} !var {n} : (P)  ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') (WhVar e._) ('{'s.N'}')) ':' ((Brackets e._)))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
+
+  /* {m} Sym {n} : [X P]  ↦  нет решений */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') t.Sym ('{'s.N'}')) ':' ((ADT-Brackets e._)))
   e.ClashesEnd (e.Assigns)
     , <IsSVarSubset t.Sym> : True
-    , t.R : (ADT-Brackets (e.RName) e.RBody)
     = /* нет решений */;
+
+  /* {m} #var {n} : [X P]  ↦  нет решений */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((ADT-Brackets e._)))
+  e.ClashesEnd (e.Assigns)
+    = /* нет решений */;
+
+  /* {m} !var {n} : [X P]  ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') (WhVar e._) ('{'s.N'}')) ':' ((ADT-Brackets e._)))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
 
   /* {m} t.X {n} : (P)  ↦  t.X → (e.NEW) */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.X ('{'s.N'}')) ':' (t.P))
+  (T (('{'s.M'}') (Var 't' e.Index) ('{'s.N'}')) ':' ((Brackets e.PBody)))
   e.ClashesEnd (e.Assigns)
-    , t.X : (Var 't' e.Tindex)
-    , t.P : (Brackets e.PBody)
-    = <NewVarName (e.UsedVars) 'e' e.Tindex> : t.NewVars 'e' e.NewIndex
+    = <NewVarName (e.UsedVars) 'e' e.Index> : t.NewVars 'e' e.NewIndex
     = <Solve-Clashes
         t.NewVars
         <AddContraction-Spec
-          (t.X ':' (Brackets (Var 'e' e.NewIndex)))
+          ((Var 't' e.Index) ':' (Brackets (Var 'e' e.NewIndex)))
           (e.Contrs) e.ClashesStart
-          ((('{'s.M'}') t.X ('{'s.N'}')) ':' (t.P))
+          (T
+            (('{'s.M'}') (Var 't' e.Index) ('{'s.N'}')) ':'
+            ((Brackets e.PBody))
+          )
           e.ClashesEnd (e.Assigns)
         >
       >;
 
-  /* {m} t.X {n} : [P]   ↦  t.X → [e.NEW] */
+  /* {m} !t.X {n} : (P)  ↦  не определено */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.X ('{'s.N'}')) ':' (t.P))
+  (T (('{'s.M'}') (WhVar 't' e.Index) ('{'s.N'}')) ':' ((Brackets e.PBody)))
   e.ClashesEnd (e.Assigns)
-    , t.X : (Var 't' e.Tindex)
-    , t.P : (ADT-Brackets (e.PName) e.PBody)
-    = <NewVarName (e.UsedVars) 'e' e.Tindex> : t.NewVars 'e' e.NewIndex
+    = Undefined;
+
+  /* {m} t.X {n} : [X P]   ↦  t.X → [X e.NEW] */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T
+    (('{'s.M'}') (Var 't' e.Index) ('{'s.N'}'))
+    ':' ((ADT-Brackets (e.Name) e.PBody))
+  )
+  e.ClashesEnd (e.Assigns)
+    = <NewVarName (e.UsedVars) 'e' e.Index> : t.NewVars 'e' e.NewIndex
     = <Solve-Clashes
         t.NewVars
         <AddContraction-Spec
-          (t.X ':' (ADT-Brackets (e.PName) (Var 'e' e.NewIndex)))
+          ((Var 't' e.Index) ':' (ADT-Brackets (e.Name) (Var 'e' e.NewIndex)))
           (e.Contrs) e.ClashesStart
-          ((('{'s.M'}') t.X ('{'s.N'}')) ':' (t.P))
+          (T
+            (('{'s.M'}') (Var 't' e.Index) ('{'s.N'}')) ':'
+            ((ADT-Brackets (e.Name) e.PBody))
+          )
           e.ClashesEnd (e.Assigns)
         >
       >;
+
+  /* {m} !t.X {n} : [X P]   ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T
+    (('{'s.M'}') (WhVar 't' e.Index) ('{'s.N'}'))
+    ':' ((ADT-Brackets (e.Name) e.PBody))
+  )
+    = Undefined;
 
   /* {m} t.X {n} : Psym  ↦  t.X → s.NEW */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.X ('{'s.N'}')) ':' (t.Psym))
+  (T (('{'s.M'}') (Var 't' e.Index) ('{'s.N'}')) ':' (t.Psym))
   e.ClashesEnd (e.Assigns)
-    , t.X : (Var 't' e.Tindex)
     , <IsSVarSubset t.Psym> : True
-    = <NewVarName (e.UsedVars) 's' e.Tindex> : t.NewVars 's' e.NewIndex
+    = <NewVarName (e.UsedVars) 's' e.Index> : t.NewVars 's' e.NewIndex
     = <Solve-Clashes
         t.NewVars
         <AddContraction-Spec
-          (t.X ':' (Var 's' e.NewIndex))
+          ((Var 't' e.Index) ':' (Var 's' e.NewIndex))
           (e.Contrs) e.ClashesStart
-          ((('{'s.M'}') t.X ('{'s.N'}')) ':' (t.Psym))
+          (T (('{'s.M'}') (Var 't' e.Index) ('{'s.N'}')) ':' (t.Psym))
           e.ClashesEnd (e.Assigns)
         >
       >;
+
+  /* {m} t.X {n} : Psym  ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') (WhVar 't' e.Index) ('{'s.N'}')) ':' (t.Psym))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
 
   /* {m} s.X {n} :  X  ↦  s.X → X */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.X ('{'s.N'}')) ':' (t.S))
+  (T (('{'s.M'}') (Var 's' e.Index) ('{'s.N'}')) ':' ((Symbol s.Type e.Info)))
   e.ClashesEnd (e.Assigns)
-    , t.X : (Var 's' e.Sindex)
-    , t.S : (Symbol e._)
     = <Solve-Clashes
         (e.UsedVars)
         <AddContraction-Spec
-          (t.X ':' t.S)
-          (e.Contrs) e.ClashesStart
-          ((('{'s.M'}') t.X ('{'s.N'}')) ':' (t.S))
-          e.ClashesEnd (e.Assigns)
+          ((Var 's' e.Index) ':' (Symbol s.Type e.Info))
+          (e.Contrs)
+          e.ClashesStart e.ClashesEnd
+          (e.Assigns)
         >
       >;
 
+  /* {m} s.X {n} :  X  ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') (WhVar 's' e.Index) ('{'s.N'}')) ':' ((Symbol s.Type e.Info)))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
+
   /*  {m} X {n}  :  X    ↦  стираем */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.X ('{'s.N'}')) ':' (t.X))
+  (T
+    (('{'s.M'}') (Symbol s.Type e.Info) ('{'s.N'}'))
+    ':' ((Symbol s.Type e.Info))
+  )
   e.ClashesEnd (e.Assigns)
-    , t.X : (Symbol e._)
     = <Solve-Clashes
         (e.UsedVars)
         (e.Contrs)
@@ -701,55 +640,83 @@ Solve-Clashes {
 
   /*  {m} X {n}  :  Y    ↦  нет решений */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.X ('{'s.N'}')) ':' (t.Y))
+  (T (('{'s.M'}') (Symbol e._) ('{'s.N'}')) ':' ((Symbol e._)))
   e.ClashesEnd (e.Assigns)
-    , t.X : (Symbol e._)
-    , t.Y : (Symbol e._)
     = /* нет решений */;
+
+  /*  {m} #var {n}  :  Y    ↦  нет решений */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') (ScrVar e._) ('{'s.N'}')) ':' ((Symbol e._)))
+  e.ClashesEnd (e.Assigns)
+    = /* нет решений */;
+
+  /*  {m} !var {n}  :  Y    ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') (WhVar e._) ('{'s.N'}')) ':' ((Symbol e._)))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
+
+  /*
+    {m} {{ &F e.X }} {n} : Pt  ↦  нет решений
+
+    Случаи
+    — {m} {{ &F e.X }} {n} : t.X
+    — {m} {{ &F e.X }} {n} : s.X
+    перехватываются предложениями выше
+  */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (T (('{'s.M'}') (ClosureBrackets e._) ('{'s.N'}')) ':' (t.T))
+  e.ClashesEnd (e.Assigns)
+    , <IsTerm t.T> : True
+    = /* решений нет */;
 
   /* E : e.X  ↦  E ← e.X */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((e.E) ':' (t.X))
+  (E (e.E) ':' ((Var 'e' e.Index)))
   e.ClashesEnd (e.Assigns)
-    , t.X : (Var 'e' e.XIndex)
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs)
         e.ClashesStart e.ClashesEnd
-        (e.Assigns (e.E ':' t.X))
+        (e.Assigns (e.E ':' (Var 'e' e.Index)))
       >;
 
   /* {m} e.X E {n} : ε  ↦  e.X → ε */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.X e.E ('{'s.N'}')) ':' (/* пусто */))
+  (E (('{'s.M'}') (Var 'e' e.Index) e.E ('{'s.N'}')) ':' (/* пусто */))
   e.ClashesEnd (e.Assigns)
-    , t.X : (Var 'e' e.XIndex)
     = <Solve-Clashes
         (e.UsedVars)
         <AddContraction-Spec
-          (t.X ':' /* пусто */)
+          ((Var 'e' e.Index) ':' /* пусто */)
           (e.Contrs) e.ClashesStart
-          ((('{'s.M'}') t.X e.E ('{'s.N'}')) ':' (/* пусто */))
+          (E (('{'s.M'}') (Var 'e' e.Index) e.E ('{'s.N'}')) ':' (/* пусто */))
           e.ClashesEnd (e.Assigns)
         >
       >;
 
+  /* {m} !e.X E {n} : ε  ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (E (('{'s.M'}') (WhVar 'e' e.Index) e.E ('{'s.N'}')) ':' (/* пусто */))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
+
   /* {m}  T E  {n} : ε  ↦  решений нет */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.T e.E ('{'s.N'}')) ':' (/* пусто */))
+  (E (('{'s.M'}') t.T e.E ('{'s.N'}')) ':' (/* пусто */))
   e.ClashesEnd (e.Assigns)
     , <IsTerm t.T> : True
     = /* решений нет */;
 
   /* ε : E1 Pt E2  ↦  решений нет */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((/* пусто */) ':' (e.E1 t.Pt e.E2))
+  (E (/* пусто */) ':' (e.E1 t.Pt e.E2))
   e.ClashesEnd (e.Assigns)
     , <IsTerm t.Pt> : True
     = /* решений нет */;
 
   /* ε : ε  ↦  стираем */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((/* пусто */) ':' (/* пусто */))
+  (E (/* пусто */) ':' (/* пусто */))
   e.ClashesEnd (e.Assigns)
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs)
@@ -760,119 +727,159 @@ Solve-Clashes {
   /* {m} T {n} E : Pt P   ↦  {m} T {n} : Pt  &&  {n} E : P */
   /* {m} T E* {n} E : Pt P   ↦  {m} T {n} : Pt  &&  {m} E* {n} E : P */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.T e.E) ':' (t.Pt e.P))
+  (E (('{'s.M'}') t.T e.E) ':' (t.Pt e.P))
   e.ClashesEnd (e.Assigns)
     , <IsTerm t.T> : True
     , <IsTerm t.Pt> : True
-    , <HasTopLevelCoordinateLabels e.E> : True
-    = <SeparateTermLeft ('{'s.M'}') t.T e.E>
-    : (e.Left1) (e.Left2)
+    = <SeparateTermLeft ('{'s.M'}') t.T e.E> : (e.Left1) (e.Left2)
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs) e.ClashesStart
-        ((e.Left1) ':' (t.Pt))
-        ((e.Left2) ':' (e.P))
+        (T (e.Left1) ':' (t.Pt))
+        (E (e.Left2) ':' (e.P))
         e.ClashesEnd (e.Assigns)
       >;
 
   /* E {m} T {n} : P  Pt  ↦  E {m} : P   &&  {m} T {n} : Pt */
   /* E {m} E* T {n} : P  Pt  ↦  E {m} E* {n} : P   &&  {m} T {n} : Pt */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((e.E t.T ('{'s.N'}')) ':' (e.P t.Pt))
+  (E (e.E t.T ('{'s.N'}')) ':' (e.P t.Pt))
   e.ClashesEnd (e.Assigns)
     , <IsTerm t.T> : True
     , <IsTerm t.Pt> : True
-    , <HasTopLevelCoordinateLabels e.E> : True
-    = <SeparateTermRight e.E t.T ('{'s.N'}')>
-    : (e.Left1) (e.Left2)
+    = <SeparateTermRight e.E t.T ('{'s.N'}')> : (e.Left1) (e.Left2)
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs) e.ClashesStart
-        ((e.Left1) ':' (e.P))
-        ((e.Left2) ':' (t.Pt))
+        (E (e.Left1) ':' (e.P))
+        (T (e.Left2) ':' (t.Pt))
         e.ClashesEnd (e.Assigns)
       >;
 
   /* {m} e.X E {n} : Pt P   ↦  e.X → t.NEW1 e.NEW2  ||  e.X → ε */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') t.X e.E ('{'s.N'}')) ':' (t.Pt e.P))
+  (E (('{'s.M'}') (Var 'e' e.Index) e.E ('{'s.N'}')) ':' (t.Pt e.P))
   e.ClashesEnd (e.Assigns)
-    , t.X : (Var 'e' e.XIndex)
     , <IsTerm t.Pt> : True
-    = <NewVarName (e.UsedVars) 't' e.XIndex> : t.NewVars1 't' e.New1
-    = <NewVarName t.NewVars1 'e' e.XIndex> : t.NewVars2 'e' e.New2
+    = <NewVarName (e.UsedVars) 't' e.Index> : t.NewVars1 't' e.New1
+    = <NewVarName t.NewVars1 'e' e.Index> : t.NewVars2 'e' e.New2
+    = <SeparateTermLeft
+        ('{'s.M'}') (Var 't' e.New1) (Var 'e' e.New2) e.E ('{'s.N'}')
+      >
+    : (e.Left1) (e.Left2)
     = <AddContraction-Spec
-        (t.X ':' (Var 't' e.New1) (Var 'e' e.New2))
+        ((Var 'e' e.Index) ':' (Var 't' e.New1) (Var 'e' e.New2))
         (e.Contrs) e.ClashesStart
-        ((('{'s.M'}') t.X e.E ('{'s.N'}')) ':' (t.Pt e.P))
+        (T (e.Left1) ':' (t.Pt))
+        (E (e.Left2) ':' (e.P))
         e.ClashesEnd (e.Assigns)
       >
     : e.Branch1
     = <AddContraction-Spec
-        (t.X ':' /* пусто */)
+        ((Var 'e' e.Index) ':' /* пусто */)
         (e.Contrs) e.ClashesStart
-        ((('{'s.M'}') t.X e.E ('{'s.N'}')) ':' (t.Pt e.P))
+        (E (('{'s.M'}') e.E ('{'s.N'}')) ':' (t.Pt e.P))
         e.ClashesEnd (e.Assigns)
       >
     : e.Branch2
+    /*
+      Сначала ищем решение для более короткой ветки вычислений (где
+      переменная стирается), а затем для более длинной. Если сначала
+      решать уравнения для более длинной ветки, то в патологических
+      случаях вида
+          e.X : 'abc...xyz'
+      размер поля зрения в пике будет квадратичным:
+         <Solve-Clashes ... (e.i : 'z') ...>
+         <Solve-Clashes ... (ε : 'z') ...>
+         <Solve-Clashes ... (ε : 'yz') ...>
+         <Solve-Clashes ... (ε : 'xyz') ...>
+         ...
+         <Solve-Clashes ... (ε : 'abc...xyz') ...>
+      но при этом все ветви, кроме первой, обрежутся.
+
+      Поэтому сначала решаем вторую ветвь, а потом первую. При этом
+      относительный порядок решений важен — решения второй ветви
+      должны располагаться после решений первой.
+    */
+    = <Solve-Clashes (e.UsedVars) e.Branch2> : e.Solutions2
     = <Solve-Clashes t.NewVars2 e.Branch1>
-      <Solve-Clashes (e.UsedVars) e.Branch2>;
+      e.Solutions2;
 
   /* {m} E e.X {n} : P  Pt  ↦  e.X → e.NEW1 t.NEW2  ||  e.X → ε */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  ((('{'s.M'}') e.E t.X ('{'s.N'}')) ':' (e.P t.Pt))
+  (E (('{'s.M'}') e.E (Var 'e' e.Index) ('{'s.N'}')) ':' (e.P t.Pt))
   e.ClashesEnd (e.Assigns)
-    , t.X : (Var 'e' e.XIndex)
     , <IsTerm t.Pt> : True
-    = <NewVarName (e.UsedVars) 'e' e.XIndex> : t.NewVars1 'e' e.New1
-    = <NewVarName t.NewVars1 't' e.XIndex> : t.NewVars2 't' e.New2
+    = <NewVarName (e.UsedVars) 'e' e.Index> : t.NewVars1 'e' e.New1
+    = <NewVarName t.NewVars1 't' e.Index> : t.NewVars2 't' e.New2
+    = <SeparateTermRight
+        ('{'s.M'}') e.E (Var 'e' e.New1) (Var 't' e.New2) ('{'s.N'}')
+      >
+    : (e.Left1) (e.Left2)
     = <AddContraction-Spec
-        (t.X ':' (Var 'e' e.New1) (Var 't' e.New2))
+        ((Var 'e' e.Index) ':' (Var 'e' e.New1) (Var 't' e.New2))
         (e.Contrs) e.ClashesStart
-        ((('{'s.M'}') e.E t.X ('{'s.N'}')) ':' (e.P t.Pt))
+        (E (e.Left1) ':' (e.P))
+        (T (e.Left2) ':' (t.Pt))
         e.ClashesEnd (e.Assigns)
       >
     : e.Branch1
     = <AddContraction-Spec
-        (t.X ':' /* пусто */)
+        ((Var 'e' e.Index) ':' /* пусто */)
         (e.Contrs) e.ClashesStart
-        ((('{'s.M'}') e.E t.X ('{'s.N'}')) ':' (e.P t.Pt))
+        (E (('{'s.M'}') e.E ('{'s.N'}')) ':' (e.P t.Pt))
         e.ClashesEnd (e.Assigns)
       >
     : e.Branch2
+    /* См. комментарий в предыдущем предложении. */
+    = <Solve-Clashes (e.UsedVars) e.Branch2> : e.Solutions2
     = <Solve-Clashes t.NewVars2 e.Branch1>
-      <Solve-Clashes (e.UsedVars) e.Branch2>;
+      e.Solutions2;
+
+  /* {m} !e.X E {n} : Pt P   ↦  e.X → t.NEW1 e.NEW2  ||  e.X → ε */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (E (('{'s.M'}') (WhVar 'e' e.Index) e.E ('{'s.N'}')) ':' (t.Pt e.P))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
+
+  /* {m} E !e.X {n} : P  Pt  ↦  e.X → e.NEW1 t.NEW2  ||  e.X → ε */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (E (('{'s.M'}') e.E (WhVar 'e' e.Index) ('{'s.N'}')) ':' (e.P t.Pt))
+  e.ClashesEnd (e.Assigns)
+    = Undefined;
 
   /* могли остаться только клэши вида E : e.X P e.Y */
   (e.UsedVars) (s.OpenFlag e.Contrs)
-  ((e.E) ':' (t.eX e.P t.eY))
+  (E (e._ (WhVar e._) e._) ':' ((Var 'e' e._) e.P (Var 'e' e._)))
   e.ClashesEnd (e.Assigns)
-    , t.eX : (Var 'e' e.XIndex)
-    , t.eY : (Var 'e' e.YIndex)
+    = Undefined;
+
+  (e.UsedVars) (s.OpenFlag e.Contrs)
+  (E (e.E) ':' ((Var 'e' e._) e.P (Var 'e' e._)))
+  e.ClashesEnd (e.Assigns)
     , e.E : ('{'s.M'}') e.Inner ('{'s.N'}')
     , <IsLeftPartTrivial e.E> : False
     , s.OpenFlag : AfterOpen
-    = Generalize (('{' s.M s.N '}'));
+    = (Generalize (('{' s.M s.N '}')));
 
   (e.UsedVars) (e.Contrs)
-  ((('{'s.M'}') t.eVar ('{'s.N'}')) ':' (t.eX e.P t.eY))
+  (E (('{'s.M'}') t.eVar ('{'s.N'}')) ':' ((Var 'e' e._) e.P (Var 'e' e._)))
   e.ClashesEnd (e.Assigns)
     , t.eVar : (Var 'e' e.Index)
-    , t.eX : (Var 'e' e.XIndex)
-    , t.eY : (Var 'e' e.YIndex)
     , <IsVarInAssigns t.eVar (e.Assigns)> : True
-    = Generalize (('{' s.M s.N '}'));
+    = (Generalize (('{' s.M s.N '}')));
 
   (e.UsedVars) (e.Contrs)
-  ((e.E) ':' (t.eX e.P t.eY))
+  (E (e.E) ':' ((Var 'e' e.OpenIndex) e.P (Var 'e' e.ClosedIndex)))
   e.ClashesEnd (e.Assigns)
-    , t.eX : (Var 'e' e.XIndex)
-    , t.eY : (Var 'e' e.YIndex)
     = <SplitLeftPart e.E> : (e.Parts)
     = <Map
         {
           t.Part
             = <SplitSolve
                 (e.UsedVars) (e.Contrs)
-                (t.Part ':' (t.eX e.P t.eY))
+                (E
+                  t.Part ':'
+                  ((Var 'e' e.OpenIndex) e.P (Var 'e' e.ClosedIndex))
+                )
                 e.ClashesEnd (e.Assigns)
               >
         }
@@ -881,7 +888,7 @@ Solve-Clashes {
 
   /* клэши закончились */
   (e.UsedVars) (e.Contrs) (e.Assigns)
-    = <CreateSymmClashes (e.Assigns)> : (e.Assigns^) (e.SymmClashes)
+    = <CreateSymmClashes (e.Contrs) (e.Assigns)> : (e.Assigns^) (e.SymmClashes)
     = <Solve-SymmClashes
         (e.UsedVars) (e.Contrs)
         e.SymmClashes
@@ -962,7 +969,7 @@ IsVarInExpr {
 SplitLeftPart {
   /* Если E начинается на терм, то точка разбиения добавляется в начало */
   ('{'s.BeginCoord'}') t.T e.Rest
-    , <IsTerm t.T> : True
+    , <IsTermOrScreenVar t.T> : True
     = <SplitLeftPart-Aux
         (('{'s.BeginCoord'}'))
         (t.T e.Rest)
@@ -979,11 +986,16 @@ SplitLeftPart {
   /* пусто */ = ((('sp')));
 }
 
+IsTermOrScreenVar {
+  (ScrVar e._) = True;
+  t.Other = <IsTerm t.Other>;
+}
+
 SplitLeftPart-Aux {
   /* Точки разбиения добавляются между двумя смежными термами */
   (e.Begin) (t.T1 t.T2 e.Rest) (e.Parts)
-    , <IsTerm t.T1> : True
-    , <IsTerm t.T2> : True
+    , <IsTermOrScreenVar t.T1> : True
+    , <IsTermOrScreenVar t.T2> : True
     = <SplitLeftPart-Aux
         (e.Begin t.T1)
         (t.T2 e.Rest)
@@ -992,8 +1004,8 @@ SplitLeftPart-Aux {
 
   /* Точки разбиения добавляются между двумя смежными термами */
   (e.Begin) (t.T1 ('{'s.Coord'}') t.T2 e.Rest) (e.Parts)
-    , <IsTerm t.T1> : True
-    , <IsTerm t.T2> : True
+    , <IsTermOrScreenVar t.T1> : True
+    , <IsTermOrScreenVar t.T2> : True
     = <SplitLeftPart-Aux
         (e.Begin t.T1 ('{'s.Coord'}'))
         (t.T2 e.Rest)
@@ -1002,15 +1014,13 @@ SplitLeftPart-Aux {
 
   /* Если E заканчивается на терм, то точка разбиения добавляется в конец */
   (e.Begin) (t.T ('{'s.Coord'}')) (e.Parts)
-    , <IsTerm t.T> : True
+    , <IsTermOrScreenVar t.T> : True
     = (e.Parts (e.Begin t.T ('sp' ('{'s.Coord'}'))));
 
   (e.Begin) (t.T e.Rest) (e.Parts)
-    , <IsTerm t.T> : True
+    , <IsTermOrScreenVar t.T> : True
     = <SplitLeftPart-Aux
-        (e.Begin t.T)
-        (e.Rest)
-        (e.Parts)
+        (e.Begin t.T) (e.Rest) (e.Parts)
       >;
 
   /* Точки разбиения находятся «внутри» e-параметров */
@@ -1047,20 +1057,20 @@ SplitSolve {
 *  {m} E {n} : e.X P e.Y  ↦  ε ← e.X,  {m} E {n} : P e.Y
 *   ↑
   (e.UsedVars) (e.Contrs)
-  ((('sp' ('{'s.M'}')) e.E ('{'s.N'}')) ':' (t.eX e.P t.eY))
+  (E (('sp' ('{'s.M'}')) e.E ('{'s.N'}')) ':' (t.eX e.P t.eY))
   e.ClashesEnd (e.Assigns)
     , t.eX : (Var 'e' e.XIndex)
     , t.eY : (Var 'e' e.YIndex)
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs)
-        ((('{'s.M'}') e.E ('{'s.N'}')) ':' (e.P t.eY))
-        e.ClashesEnd (e.Assigns (/* пусто */ ':' t.eX))
+        (E (('{'s.M'}') e.E ('{'s.N'}')) ':' (e.P t.eY)) e.ClashesEnd
+        (e.Assigns (/* пусто */ ':' t.eX))
       >;
 
 *  {k} E1 T2 {m} T3 E4 {n} : e.X P e.Y  ↦  {k} E1 T2 {m} ← e.X,
 *             ↑                            {m} T3 E4 {n} : P e.Y
   (e.UsedVars) (e.Contrs)
-  (
+  (E
     (
       ('{'s.K'}') e.E1 t.T2
       ('sp' ('{'s.M'}'))
@@ -1069,20 +1079,20 @@ SplitSolve {
     ':' (t.eX e.P t.eY)
   )
   e.ClashesEnd (e.Assigns)
-    , <IsTerm t.T2> : True
-    , <IsTerm t.T3> : True
+    , <IsTermOrScreenVar t.T2> : True
+    , <IsTermOrScreenVar t.T3> : True
     , t.eX : (Var 'e' e.XIndex)
     , t.eY : (Var 'e' e.YIndex)
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs)
-        ((('{'s.M'}') t.T3 e.E4 ('{'s.N'}')) ':' (e.P t.eY))
-        e.ClashesEnd (e.Assigns (('{'s.K'}') e.E1 t.T2 ('{'s.M'}') ':' t.eX))
+        (E (('{'s.M'}') t.T3 e.E4 ('{'s.N'}')) ':' (e.P t.eY)) e.ClashesEnd
+        (e.Assigns (('{'s.K'}') e.E1 t.T2 ('{'s.M'}') ':' t.eX))
       >;
 
 *  E1 {m} E2* T3 . T4 E5* {n} E6 : e.X P e.Y  ↦  E1 {m} E2* T3 {n} ← e.X,
 *                ↑                               {m} T4 E5* {n} E6 : P e.Y
   (e.UsedVars) (e.Contrs)
-  (
+  (E
     (
       e.E1 ('{'s.M'}') e.E2
       t.T3 ('sp') t.T4
@@ -1092,14 +1102,14 @@ SplitSolve {
   )
   e.ClashesEnd (e.Assigns)
     , <HasTopLevelCoordinateLabels e.E2> : False
-    , <IsTerm t.T3> : True
-    , <IsTerm t.T4> : True
+    , <IsTermOrScreenVar t.T3> : True
+    , <IsTermOrScreenVar t.T4> : True
     , <HasTopLevelCoordinateLabels e.E5> : False
     , t.eX : (Var 'e' e.XIndex)
     , t.eY : (Var 'e' e.YIndex)
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs)
-        ((('{'s.M'}') t.T4 e.E5 ('{'s.N'}') e.E6) ':' (e.P t.eY))
+        (E (('{'s.M'}') t.T4 e.E5 ('{'s.N'}') e.E6) ':' (e.P t.eY))
         e.ClashesEnd
         (e.Assigns (e.E1 ('{'s.M'}') e.E2 t.T3 ('{'s.N'}') ':' t.eX))
       >;
@@ -1107,7 +1117,7 @@ SplitSolve {
 *  {m} E {n} : e.X P e.Y  ↦  {m} E {n} ← e.X,  ε : P e.Y
 *         ↑
   (e.UsedVars) (e.Contrs)
-  (
+  (E
     (('{'s.M'}') e.E ('sp' ('{'s.N'}')))
     ':' (t.eX e.P t.eY)
   )
@@ -1116,21 +1126,21 @@ SplitSolve {
     , t.eY : (Var 'e' e.YIndex)
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs)
-        ((/* пусто */) ':' (e.P t.eY))
-        e.ClashesEnd (e.Assigns (('{'s.M'}') e.E ('{'s.N'}') ':' t.eX))
+        (E (/* пусто */) ':' (e.P t.eY)) e.ClashesEnd
+        (e.Assigns (('{'s.M'}') e.E ('{'s.N'}') ':' t.eX))
       >;
 
 *  ε : e.X P e.Y  ↦  ε ← e.X, ε : P e.Y
 *  ↑
   (e.UsedVars) (e.Contrs)
-  ((('sp')) ':' (t.eX e.P t.eY))
+  (E (('sp')) ':' (t.eX e.P t.eY))
   e.ClashesEnd (e.Assigns)
     , t.eX : (Var 'e' e.XIndex)
     , t.eY : (Var 'e' e.YIndex)
     = <Solve-Clashes
         (e.UsedVars) (e.Contrs)
-        ((/* пусто */) ':' (e.P t.eY))
-        e.ClashesEnd (e.Assigns (/* пусто */ ':' t.eX))
+        (E (/* пусто */) ':' (e.P t.eY)) e.ClashesEnd
+        (e.Assigns (/* пусто */ ':' t.eX))
       >;
 
 *  E1 e.X {m} e.Y E2 : e.L P e.R  ↦  e.X → e.NEW1! t.NEW2 e.NEW3,
@@ -1138,7 +1148,7 @@ SplitSolve {
 *                                     {n} t.NEW2 e.NEW3 {m} e.Y E2 : P e.R
 *                  где E1 = E3 {n} E4*
   (e.UsedVars) (e.Contrs)
-  ((e.E1 ('sp' t.eX) ('{'s.M'}') t.eY e.E2) ':' (t.eL e.P t.eR))
+  (E (e.E1 ('sp' t.eX) ('{'s.M'}') t.eY e.E2) ':' (t.eL e.P t.eR))
   e.ClashesEnd (e.Assigns)
     , e.E1 : e.E3 ('{'s.N'}') e.E4
     , <HasTopLevelCoordinateLabels e.E4> : False
@@ -1157,8 +1167,12 @@ SplitSolve {
         <AddContraction-Spec
           (t.eX ':' t.eNew1 t.tNew2 t.eNew3)
           (e.Contrs)
-          ((('{'s.N'}') t.tNew2 t.eNew3 ('{'s.M'}') t.eY e.E2) ':' (e.P t.eR))
-          e.ClashesEnd (e.Assigns (e.E1 t.eNew1 ('{'s.M'}') ':' t.eL))
+          (E
+            (('{'s.N'}') t.tNew2 t.eNew3 ('{'s.M'}') t.eY e.E2)
+            ':' (e.P t.eR)
+          )
+          e.ClashesEnd
+          (e.Assigns (e.E1 t.eNew1 ('{'s.M'}') ':' t.eL))
         >
       >;
 
@@ -1168,7 +1182,7 @@ SplitSolve {
 *                  где E1 = E3 {n} E4*
 *                      E2 = E5* {m} E6
   (e.UsedVars) (e.Contrs)
-  ((e.E1 ('sp' t.eX) e.E2) ':' (t.eL e.P t.eR))
+  (E (e.E1 ('sp' t.eX) e.E2) ':' (t.eL e.P t.eR))
   e.ClashesEnd (e.Assigns)
     , e.E1 : e.E3 ('{'s.N'}') e.E4
     , <HasTopLevelCoordinateLabels e.E4> : False
@@ -1186,8 +1200,8 @@ SplitSolve {
         <AddContraction-Spec
           (t.eX ':' t.eNew1 t.eNew2)
           (e.Contrs)
-          ((('{'s.N'}') t.eNew2 e.E2) ':' (e.P t.eR))
-          e.ClashesEnd (e.Assigns (e.E1 t.eNew1 ('{'s.M'}') ':' t.eL))
+          (E (('{'s.N'}') t.eNew2 e.E2) ':' (e.P t.eR)) e.ClashesEnd
+          (e.Assigns (e.E1 t.eNew1 ('{'s.M'}') ':' t.eL))
         >
       >;
 }
@@ -1196,16 +1210,17 @@ SplitSolve {
   Формирует по списку присваиваний список симметричных клэшей
   и обновленный список присваиваний
 
-  <CreateSymmClashes (t.Assign*)>
+  <CreateSymmClashes (e.Contrs) (t.Assign*)>
     == (t.Assign*) (t.SymmClash*)
   <CreateSymmClashes-Aux (t.Assign*) (t.SymmClash*) (t.Assign*)>
     == (t.Assign*) (t.SymmClash*)
 
-  t.SymmClash ::= (e.L '=' e.R)
+  t.SymmClash ::= (s.ClashType e.L '=' e.R)
 */
 
 CreateSymmClashes {
-  (e.Assigns)
+  (e.Contrs) (e.Assigns)
+    = <ApplyContractions-toAssigns (e.Contrs) (e.Assigns)> : e.Assigns^
     = <CreateSymmClashes-Aux (e.Assigns) () ()>
     : (e.Assigns^) (e.SymmClashes)
     = (e.Assigns) (<RemoveTautologies e.SymmClashes>);
@@ -1271,7 +1286,7 @@ CreateSymmClashesFromGroup {
         (<CreateSymmClashesFromGroup-Aux
             (e.Ei ':' t.Var)
             (e.Rest)
-            (e.SymmClashes (e.E1 '=' e.Ei))
+            (e.SymmClashes (E e.E1 '=' e.Ei))
         >)
       >;
 
@@ -1284,7 +1299,7 @@ CreateSymmClashesFromGroup-Aux {
     = <CreateSymmClashesFromGroup-Aux
         (e.Ei ':' t.Var)
         (e.Rest)
-        (e.SymmClashes (e.Ei '=' e.Ej))
+        (e.SymmClashes (E e.Ei '=' e.Ej))
       >;
 
   t.CurrentAssign () (e.SymmClashes)
@@ -1328,41 +1343,39 @@ ClearCoordinates {
 */
 
 SeparateTermLeft {
-*  {a} T {b} E  ↦  {a} T {b}, {b} E
-  ('{'s.A'}') t.T ('{'s.B'}') e.E
-    , <IsTerm t.T> : True
-    = <Eq (e.E) (/* пусто */)>
-    : {
-        True = (('{'s.A'}') t.T ('{'s.B'}')) (/* пусто */);
+*  {a} T {b} ε  ↦  {a} T {b}, ε
+  ('{'s.A'}') t.T ('{'s.B'}') /* пусто */
+    = (('{'s.A'}') t.T ('{'s.B'}')) (/* пусто */);
 
-        False = (('{'s.A'}') t.T ('{'s.B'}')) (('{'s.B'}') e.E);
-      };
+  ('{'s.A'}') t.T ('{'s.B'}') e.E
+    = (('{'s.A'}') t.T ('{'s.B'}')) (<SimplifyCoordinates ('{'s.B'}') e.E>);
 
 *  {a} T E1* {b} E2  ↦  {a} T {b}, {a} E1* {b} E2
   ('{'s.A'}') t.T e.E1 ('{'s.B'}') e.E2
-    , <IsTerm t.T> : True
-    , <HasTopLevelCoordinateLabels e.E1> : False
     = (('{'s.A'}') t.T ('{'s.B'}'))
       (('{'s.A'}') e.E1 ('{'s.B'}') e.E2);
 }
 
 SeparateTermRight {
+*  ε {a} T {b}  ↦  ε, {a} T {b}
+  /* пусто */ ('{'s.A'}') t.T ('{'s.B'}')
+    = (/* пусто */) (('{'s.A'}') t.T ('{'s.B'}'));
+
 *  E {a} T {b}  ↦  E {a}, {a} T {b}
   e.E ('{'s.A'}') t.T ('{'s.B'}')
-    , <IsTerm t.T> : True
-    = <Eq (e.E) (/* пусто */)>
-    : {
-        True = (/* пусто */) (('{'s.A'}') t.T ('{'s.B'}'));
-
-        False = (e.E ('{'s.A'}')) (('{'s.A'}') t.T ('{'s.B'}'));
-      };
+    = (<SimplifyCoordinates e.E ('{'s.A'}')>) (('{'s.A'}') t.T ('{'s.B'}'));
 
 *  E1 {a} E2* T {b}  ↦  E1 {a} E2* {b}, {a} T {b}
-  e.E1 ('{'s.A'}') e.E2 t.T ('{'s.B'}')
-    , <HasTopLevelCoordinateLabels e.E2> : False
-    , <IsTerm t.T> : True
-    = (e.E1 ('{'s.A'}') e.E2 ('{'s.B'}'))
-      (('{'s.A'}') t.T ('{'s.B'}'));
+  e.Expr t.T ('{'s.B'}')
+    = <LastCoordinate e.Expr> : e.Expr^ s.A
+    = (e.Expr ('{'s.B'}')) (('{'s.A'}') t.T ('{'s.B'}'));
+}
+
+LastCoordinate {
+  ('{'s.A'}') e.Begin ('{'s.B'}') e.End
+    = ('{'s.A'}') e.Begin <LastCoordinate ('{'s.B'}') e.End>;
+
+  ('{'s.A'}') e.Expr = ('{'s.A'}') e.Expr s.A;
 }
 
 /*
@@ -1372,7 +1385,7 @@ SeparateTermRight {
 */
 
 IsTautology {
-  (e.L '=' e.R)
+  (s._ e.L '=' e.R)
     = <ClearCoordinates e.L> : e.LWithoutCoords
     = <ClearCoordinates e.R> : e.RWithoutCoords
     = <Eq (e.LWithoutCoords) (e.RWithoutCoords)>
@@ -1407,177 +1420,132 @@ Solve-SymmClashes {
   (e.UsedVars) (e.Contrs) e.SymmClashes (e.Assigns)
     = <RemoveTautologies e.SymmClashes> : e.SymmClashes^
     = <Solve-SymmClashes-Aux
-        (e.UsedVars) (e.Contrs)
-        e.SymmClashes (e.Assigns)
+        (e.UsedVars) (e.Contrs) e.SymmClashes (e.Assigns)
       >;
 }
 
+MinMode {
+  e._ ('s' e.Index) e._ = 's' e.Index;
+  e._ ('t' e.Index) e._ = 't' e.Index;
+  ('e' e.Index) ('e' e._) = 'e' e.Index;
+}
+
+*$NOOPT Solve-SymmClashes-Aux
+
+* TODO: оптимизировать порядок правил
 Solve-SymmClashes-Aux {
-  /* {a} e.X {b} = {c} e.Y {d}  ↦  e.X → e.NEW, e.Y → e.NEW */
+*  {a} T1 E1 = {b} T2 E2  ↦  {c} T1 {d} = {e} T2 {f} && {g} E1′ = {h} E2′
+*    где {c} T1 {d}, {g} E1′ := TERM_LEFT({a} T1 E1)
+*        {e} T2 {f}, {h} E2′ := TERM_LEFT({b} T2 E2)
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.eX ('{'s.B'}') '=' ('{'s.C'}') t.eY ('{'s.D'}'))
+  (E ('{'s.A'}') t.T1 e.E1 '=' ('{'s.B'}') t.T2 e.E2)
   e.ClashesEnd (e.Assigns)
-    , t.eX : (Var 'e' e.XIndex)
-    , t.eY : (Var 'e' e.YIndex)
-    = <NewVarName (e.UsedVars) 'e' e.XIndex> : (e.UsedVars^) 'e' e.New
-    = (Var 'e' e.New) : t.eNew
+    , <IsTerm t.T1> : True
+    , <IsTerm t.T2> : True
+    , <HasTopLevelCoordinateLabels e.E1> : True
+    , <HasTopLevelCoordinateLabels e.E2> : True
+    = <SeparateTermLeft ('{'s.A'}') t.T1 e.E1> : (e.Left1) (e.Left2)
+    = <SeparateTermLeft ('{'s.B'}') t.T2 e.E2> : (e.Right1) (e.Right2)
+    = <Solve-SymmClashes
+        (e.UsedVars) (e.Contrs) e.ClashesStart
+        (T e.Left1 '=' e.Right1) (E e.Left2 '=' e.Right2)
+        e.ClashesEnd (e.Assigns)
+      >;
+
+*  E1 T1 {a} = E2 T2 {b}  ↦  E1′ {c} = E2′ {d} && {e} T1 {f} = {g} T2 {h}
+*    где E1′ {c}, {e} T1 {f} := TERM_RIGHT(E1 T1 {a})
+*        E2′ {d}, {g} T2 {h} := TERM_RIGHT(E2 T2 {b})
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (E e.E1 t.T1 ('{'s.A'}') '=' e.E2 t.T2 ('{'s.B'}'))
+  e.ClashesEnd (e.Assigns)
+    , <IsTerm t.T1> : True
+    , <IsTerm t.T2> : True
+    , <HasTopLevelCoordinateLabels e.E1> : True
+    , <HasTopLevelCoordinateLabels e.E2> : True
+    = <SeparateTermRight e.E1 t.T1 ('{'s.A'}')> : (e.Left1) (e.Left2)
+    = <SeparateTermRight e.E2 t.T2 ('{'s.B'}')> : (e.Right1) (e.Right2)
+    = <Solve-SymmClashes
+        (e.UsedVars) (e.Contrs) e.ClashesStart
+        (E e.Left1 '=' e.Right1) (T e.Left2 '=' e.Right2)
+        e.ClashesEnd (e.Assigns)
+      >;
+
+  /* {a} u.X {b} = {c} v.Y {d}  ↦  u.X → w.NEW, v.Y → w.NEW, w = min(u,v) */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (s._ ('{'s.A'}') t.uX ('{'s.B'}') '=' ('{'s.C'}') t.vY ('{'s.D'}'))
+  e.ClashesEnd (e.Assigns)
+    , t.uX : (Var s.uMode e.XIndex)
+    , t.vY : (Var s.vMode e.YIndex)
+    = <MinMode (s.uMode e.XIndex) (s.vMode e.YIndex)> : s.wMode e.wIndex
+    = <NewVarName (e.UsedVars) s.wMode e.wIndex> : (e.UsedVars^) e.wNew
+    = (Var e.wNew) : t.wNew
     = <Solve-SymmClashes
         (e.UsedVars)
         <AddContractions-Spec-Symm
-          ((t.eX ':' t.eNew) (t.eY ':' t.eNew))
+          ((t.uX ':' t.wNew) (t.vY ':' t.wNew))
           (e.Contrs)
           e.ClashesStart e.ClashesEnd
           (e.Assigns)
         >
       >;
 
-  /* {a} e.X {b} = {c} t.Y {d}  ↦  e.X → t.NEW, t.Y → t.NEW */
+  /* {a} #var E1 {b} = {c} #var E2 {d}  ↦  {a} E1 {b} = {c} E2 {d} */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.eX ('{'s.B'}') '=' ('{'s.C'}') t.tY ('{'s.D'}'))
+  (s.Type
+    ('{'s.A'}') t.Var e.E1 ('{'s.B'}') '=' ('{'s.C'}') t.Var e.E2 ('{'s.D'}')
+  )
   e.ClashesEnd (e.Assigns)
-    , t.eX : (Var 'e' e.XIndex)
-    , t.tY : (Var 't' e.YIndex)
-    = <NewVarName (e.UsedVars) 't' e.YIndex> : (e.UsedVars^) 't' e.New
-    = (Var 't' e.New) : t.tNew
+    , t.Var : (ScrVar e.Var)
     = <Solve-SymmClashes
-        (e.UsedVars)
-        <AddContractions-Spec-Symm
-          ((t.eX ':' t.tNew) (t.tY ':' t.tNew))
-          (e.Contrs)
-          e.ClashesStart e.ClashesEnd
-          (e.Assigns)
+        (e.UsedVars) (e.Contrs) e.ClashesStart
+        <SimplifyCoordinates-SymmClash
+          (s.Type ('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
         >
+        e.ClashesEnd (e.Assigns)
       >;
 
-  /* {a} t.Y {b} = {c} e.X {d}  ↦  t.Y → t.NEW, e.X → t.NEW */
+  /* {a} E1 #var {b} = {c} E2 #var {d}  ↦  {a} E1 {b} = {c} E2 {d} */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.tY ('{'s.B'}') '=' ('{'s.C'}') t.eX ('{'s.D'}'))
+  (s.Type
+    ('{'s.A'}') e.E1 t.Var ('{'s.B'}') '=' ('{'s.C'}') e.E2 t.Var ('{'s.D'}')
+  )
   e.ClashesEnd (e.Assigns)
-    , t.eX : (Var 'e' e.XIndex)
-    , t.tY : (Var 't' e.YIndex)
-    = <NewVarName (e.UsedVars) 't' e.YIndex> : (e.UsedVars^) 't' e.New
-    = (Var 't' e.New) : t.tNew
+    , t.Var : (ScrVar e.Var)
     = <Solve-SymmClashes
-        (e.UsedVars)
-        <AddContractions-Spec-Symm
-          ((t.tY ':' t.tNew) (t.eX ':' t.tNew))
-          (e.Contrs)
-          e.ClashesStart e.ClashesEnd
-          (e.Assigns)
+        (e.UsedVars) (e.Contrs) e.ClashesStart
+        <SimplifyCoordinates-SymmClash
+          (s.Type ('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
         >
+        e.ClashesEnd (e.Assigns)
       >;
 
-  /* {a} e.X {b} = {c} s.Y {d}  ↦  e.X → s.NEW, s.Y → s.NEW */
+  /* {a} #var E1 {b} = {c} E2 {d}  ↦  решений нет */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.eX ('{'s.B'}') '=' ('{'s.C'}') t.sY ('{'s.D'}'))
+  (s._ ('{'s.A'}') (ScrVar e._) e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
-    , t.eX : (Var 'e' e.XIndex)
-    , t.sY : (Var 's' e.YIndex)
-    = <NewVarName (e.UsedVars) 's' e.YIndex> : (e.UsedVars^) 's' e.New
-    = (Var 's' e.New) : t.sNew
-    = <Solve-SymmClashes
-        (e.UsedVars)
-        <AddContractions-Spec-Symm
-          ((t.eX ':' t.sNew) (t.sY ':' t.sNew))
-          (e.Contrs)
-          e.ClashesStart e.ClashesEnd
-          (e.Assigns)
-        >
-      >;
+    = /* решений нет */;
 
-  /* {a} s.Y {b} = {c} e.X {d}  ↦  s.Y → s.NEW, e.X → s.NEW */
+  /* {a} E1 {b} = {c} #var E2 {d}  ↦  решений нет */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.sY ('{'s.B'}') '=' ('{'s.C'}') t.eX ('{'s.D'}'))
+  (s._ ('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') (ScrVar e._) e.E2 ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
-    , t.eX : (Var 'e' e.XIndex)
-    , t.sY : (Var 's' e.YIndex)
-    = <NewVarName (e.UsedVars) 's' e.YIndex> : (e.UsedVars^) 's' e.New
-    = (Var 's' e.New) : t.sNew
-    = <Solve-SymmClashes
-        (e.UsedVars)
-        <AddContractions-Spec-Symm
-          ((t.sY ':' t.sNew) (t.eX ':' t.sNew))
-          (e.Contrs)
-          e.ClashesStart e.ClashesEnd
-          (e.Assigns)
-        >
-      >;
+    = /* решений нет */;
 
-  /* {a} t.X {b} = {c} t.Y {d}  ↦  t.X → t.NEW, t.Y → t.NEW */
+  /* {a} E1 #var {b} = {c} E2 {d}  ↦  решений нет*/
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.tX ('{'s.B'}') '=' ('{'s.C'}') t.tY ('{'s.D'}'))
+  (s._ ('{'s.A'}') e.E1 (ScrVar e._) ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
-    , t.tX : (Var 't' e.XIndex)
-    , t.tY : (Var 't' e.YIndex)
-    = <NewVarName (e.UsedVars) 't' e.XIndex> : (e.UsedVars^) 't' e.New
-    = (Var 't' e.New) : t.tNew
-    = <Solve-SymmClashes
-        (e.UsedVars)
-        <AddContractions-Spec-Symm
-          ((t.tX ':' t.tNew) (t.tY ':' t.tNew))
-          (e.Contrs)
-          e.ClashesStart e.ClashesEnd
-          (e.Assigns)
-        >
-      >;
+    = /* решений нет */;
 
-  /* {a} t.X {b} = {c} s.Y {d}  ↦  t.X → s.NEW, s.Y → s.NEW */
+  /* {a} E1 {b} = {c} E2 #var2 {d}  ↦  решений нет*/
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.tX ('{'s.B'}') '=' ('{'s.C'}') t.sY ('{'s.D'}'))
+  (s._ ('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 (ScrVar e._) ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
-    , t.tX : (Var 't' e.XIndex)
-    , t.sY : (Var 's' e.YIndex)
-    = <NewVarName (e.UsedVars) 's' e.YIndex> : (e.UsedVars^) 's' e.New
-    = (Var 's' e.New) : t.sNew
-    = <Solve-SymmClashes
-        (e.UsedVars)
-        <AddContractions-Spec-Symm
-          ((t.tX ':' t.sNew) (t.sY ':' t.sNew))
-          (e.Contrs)
-          e.ClashesStart e.ClashesEnd
-          (e.Assigns)
-        >
-      >;
-
-  /* {a} s.Y {b} = {c} t.X {d}  ↦  s.Y → s.NEW, t.X → s.NEW */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.sY ('{'s.B'}') '=' ('{'s.C'}') t.tX ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.tX : (Var 't' e.XIndex)
-    , t.sY : (Var 's' e.YIndex)
-    = <NewVarName (e.UsedVars) 's' e.YIndex> : (e.UsedVars^) 's' e.New
-    = (Var 's' e.New) : t.sNew
-    = <Solve-SymmClashes
-        (e.UsedVars)
-        <AddContractions-Spec-Symm
-          ((t.sY ':' t.sNew) (t.tX ':' t.sNew))
-          (e.Contrs)
-          e.ClashesStart e.ClashesEnd
-          (e.Assigns)
-        >
-      >;
-
-  /* {a} s.X {b} = {c} s.Y {d}  ↦  s.X → s.NEW, s.Y → s.NEW */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.sX ('{'s.B'}') '=' ('{'s.C'}') t.sY ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.sX : (Var 's' e.XIndex)
-    , t.sY : (Var 's' e.YIndex)
-    = <NewVarName (e.UsedVars) 's' e.XIndex> : (e.UsedVars^) 's' e.New
-    = (Var 's' e.New) : t.sNew
-    = <Solve-SymmClashes
-        (e.UsedVars)
-        <AddContractions-Spec-Symm
-          ((t.sX ':' t.sNew) (t.sY ':' t.sNew))
-          (e.Contrs)
-          e.ClashesStart e.ClashesEnd
-          (e.Assigns)
-        >
-      >;
+    = /* решений нет */;
 
   /* ε = {m} e.X E {n}  ↦  e.X → ε, ε = {m} E {n} */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (/* пусто */ '=' ('{'s.M'}') t.eX e.E ('{'s.N'}'))
+  (E /* пусто */ '=' ('{'s.M'}') t.eX e.E ('{'s.N'}'))
   e.ClashesEnd (e.Assigns)
     , t.eX : (Var 'e' e.XIndex)
     = <Solve-SymmClashes
@@ -1585,14 +1553,21 @@ Solve-SymmClashes-Aux {
         <AddContraction-Spec-Symm
           (t.eX ':' /* пусто */)
           (e.Contrs) e.ClashesStart
-          (/* пусто */ '=' ('{'s.M'}') e.E ('{'s.N'}'))
+          (E /* пусто */ '=' ('{'s.M'}') e.E ('{'s.N'}'))
           e.ClashesEnd (e.Assigns)
         >
       >;
+
+  /* ε = {m} !e.X E {n}  ↦  не определено */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (E /* пусто */ '=' ('{'s.M'}') t.eX e.E ('{'s.N'}'))
+  e.ClashesEnd (e.Assigns)
+    , t.eX : (WhVar 'e' e.XIndex)
+    = Undefined;
 
   /* {m} e.X E {n} = ε  ↦  e.X → ε, {m} E {n} = ε */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.M'}') t.eX e.E ('{'s.N'}') '=' /* пусто */)
+  (E ('{'s.M'}') t.eX e.E ('{'s.N'}') '=' /* пусто */)
   e.ClashesEnd (e.Assigns)
     , t.eX : (Var 'e' e.XIndex)
     = <Solve-SymmClashes
@@ -1600,116 +1575,62 @@ Solve-SymmClashes-Aux {
         <AddContraction-Spec-Symm
           (t.eX ':' /* пусто */)
           (e.Contrs) e.ClashesStart
-          (('{'s.M'}') e.E ('{'s.N'}') '=' /* пусто */)
+          (E ('{'s.M'}') e.E ('{'s.N'}') '=' /* пусто */)
           e.ClashesEnd (e.Assigns)
         >
       >;
 
+  /* {m} !e.X E {n} = ε  ↦  e.X → ε, {m} E {n} = ε */
+  (e.UsedVars) (e.Contrs) e.ClashesStart
+  (E ('{'s.M'}') t.eX e.E ('{'s.N'}') '=' /* пусто */)
+  e.ClashesEnd (e.Assigns)
+    , t.eX : (WhVar 'e' e.XIndex)
+    = Undefined;
+
   /* ε = {m} T E {n}  ↦  решений нет */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (/* пусто */ '=' ('{'s.M'}') t.T e.E ('{'s.N'}'))
+  (E /* пусто */ '=' ('{'s.M'}') t.T e.E ('{'s.N'}'))
   e.ClashesEnd (e.Assigns)
     , <IsTerm t.T> : True
     = /* решений нет */;
 
   /* {m} T E {n} = ε  ↦  решений нет */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.M'}') t.T e.E ('{'s.N'}') '=' /* пусто */)
+  (E ('{'s.M'}') t.T e.E ('{'s.N'}') '=' /* пусто */)
   e.ClashesEnd (e.Assigns)
     , <IsTerm t.T> : True
     = /* решений нет */;
 
-  /* {a} t.X {b} = {c} {{ &F e.X }} {d}  ↦  обобщаем {c−d} */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.tX ('{'s.B'}') '=' ('{'s.C'}') t.Closure ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.tX : (Var 't' e._)
-    , t.Closure : (ClosureBrackets e._)
-    = Generalize (('{' s.C s.D '}'));
+  /*
+    {a} T {b} = {c} {{ &F e.X }} {d}  ↦  обобщаем {c−d}
+    {a} {{ &F e.X }} {b} = {c} T {d}  ↦  обобщаем {a−b}
 
-  /* {c} {{ &F e.X }} {d} = {a} t.X {b}  ↦  обобщаем {c−d} */
+    Случай {{ &F e.X }} = {{ &F e.X }} не рассматриваем,
+    т.к. он обрабатывается как тавтология.
+  */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.C'}') t.Closure ('{'s.D'}') '=' ('{'s.A'}') t.tX ('{'s.B'}'))
+  (T ('{'s.A'}') t._ ('{'s.B'}') '=' ('{'s.C'}') t.Closure ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
-    , t.tX : (Var 't' e._)
     , t.Closure : (ClosureBrackets e._)
-    = Generalize (('{' s.C s.D '}'));
+    = (Generalize (('{' s.C s.D '}')));
 
-  /* {a} s.X {b} = {c} {{ &F e.X }} {d}  ↦  обобщаем {c−d} */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.sX ('{'s.B'}') '=' ('{'s.C'}') t.Closure ('{'s.D'}'))
+  (T ('{'s.A'}') t.Closure ('{'s.B'}') '=' ('{'s.C'}') t._ ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
-    , t.sX : (Var 's' e._)
     , t.Closure : (ClosureBrackets e._)
-    = Generalize (('{' s.C s.D '}'));
+    = (Generalize (('{' s.A s.B '}')));
 
-  /* {c} {{ &F e.X }} {d} = {a} s.X {b}  ↦  обобщаем {c−d} */
+  /* {a} [X E1] {b} = {c} (E2) {d}  ↦  решений нет */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.C'}') t.Closure ('{'s.D'}') '=' ('{'s.A'}') t.sX ('{'s.B'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.sX : (Var 's' e._)
-    , t.Closure : (ClosureBrackets e._)
-    = Generalize (('{' s.C s.D '}'));
-
-  /* {a}  X  {b} = {c} {{ &F e.X }} {d}  ↦  решений нет */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.X ('{'s.B'}') '=' ('{'s.C'}') t.Closure ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.X : (Symbol e._)
-    , t.Closure : (ClosureBrackets e._)
-    = /* решений нет */;
-
-  /* {c} {{ &F e.X }} {d} = {a}  X  {b}  ↦  решений нет */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.C'}') t.Closure ('{'s.D'}') '=' ('{'s.A'}') t.X ('{'s.B'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.X : (Symbol e._)
-    , t.Closure : (ClosureBrackets e._)
-    = /* решений нет */;
-
-  /* {a} (E) {b} = {c} {{ &F e.X }} {d}  ↦  решений нет */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.BrE ('{'s.B'}') '=' ('{'s.C'}') t.Closure ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.BrE : (Brackets e._)
-    , t.Closure : (ClosureBrackets e._)
-    = /* решений нет */;
-
-  /* {c} {{ &F e.X }} {d} = {a} (E) {b}  ↦  решений нет */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.C'}') t.Closure ('{'s.D'}') '=' ('{'s.A'}') t.BrE ('{'s.B'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.BrE : (Brackets e._)
-    , t.Closure : (ClosureBrackets e._)
-    = /* решений нет */;
-
-  /* {a} [E] {b} = {c} {{ &F e.X }} {d}  ↦  решений нет */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.BrE ('{'s.B'}') '=' ('{'s.C'}') t.Closure ('{'s.D'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.BrE : (ADT-Brackets e._)
-    , t.Closure : (ClosureBrackets e._)
-    = /* решений нет */;
-
-  /* {c} {{ &F e.X }} {d} = {a} [E] {b}  ↦  решений нет */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.C'}') t.Closure ('{'s.D'}') '=' ('{'s.A'}') t.BrE ('{'s.B'}'))
-  e.ClashesEnd (e.Assigns)
-    , t.BrE : (ADT-Brackets e._)
-    , t.Closure : (ClosureBrackets e._)
-    = /* решений нет */;
-
-  /* {a} [E1] {b} = {c} (E2) {d}  ↦  решений нет */
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.Br1 ('{'s.B'}') '=' ('{'s.C'}') t.Br2 ('{'s.D'}'))
+  (T ('{'s.A'}') t.Br1 ('{'s.B'}') '=' ('{'s.C'}') t.Br2 ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
     , t.Br1 : (ADT-Brackets e._)
     , t.Br2 : (Brackets e._)
     = /* решений нет */;
 
-  /* {c} (E2) {d} = {a} [E1] {b}  ↦  решений нет */
+  /* {c} (E2) {d} = {a} [X E1] {b}  ↦  решений нет */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.C'}') t.Br2 ('{'s.D'}') '=' ('{'s.A'}') t.Br1 ('{'s.B'}'))
+  (T ('{'s.C'}') t.Br2 ('{'s.D'}') '=' ('{'s.A'}') t.Br1 ('{'s.B'}'))
   e.ClashesEnd (e.Assigns)
     , t.Br1 : (ADT-Brackets e._)
     , t.Br2 : (Brackets e._)
@@ -1717,7 +1638,7 @@ Solve-SymmClashes-Aux {
 
   /* {a} t.X {b} = {c} X {d}  ↦  t.X → X */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.tX ('{'s.B'}') '=' ('{'s.C'}') t.X ('{'s.D'}'))
+  (T ('{'s.A'}') t.tX ('{'s.B'}') '=' ('{'s.C'}') t.X ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
     , t.tX : (Var 't' e.XIndex)
     , t.X : (Symbol e._)
@@ -1733,7 +1654,7 @@ Solve-SymmClashes-Aux {
 
   /* {c} X {d} = {a} t.X {b}  ↦  t.X → X */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.C'}') t.X ('{'s.D'}') '=' ('{'s.A'}') t.tX ('{'s.B'}'))
+  (T ('{'s.C'}') t.X ('{'s.D'}') '=' ('{'s.A'}') t.tX ('{'s.B'}'))
   e.ClashesEnd (e.Assigns)
     , t.tX : (Var 't' e.XIndex)
     , t.X : (Symbol e._)
@@ -1749,7 +1670,7 @@ Solve-SymmClashes-Aux {
 
   /* {a} s.X {b} = {c} X {d}  ↦  s.X → X */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.sX ('{'s.B'}') '=' ('{'s.C'}') t.X ('{'s.D'}'))
+  (T ('{'s.A'}') t.sX ('{'s.B'}') '=' ('{'s.C'}') t.X ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
     , t.sX : (Var 's' e.XIndex)
     , t.X : (Symbol e._)
@@ -1765,7 +1686,7 @@ Solve-SymmClashes-Aux {
 
   /* {c} X {d} = {a} s.X {b}  ↦  s.X → X */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.C'}') t.X ('{'s.D'}') '=' ('{'s.A'}') t.sX ('{'s.B'}'))
+  (T ('{'s.C'}') t.X ('{'s.D'}') '=' ('{'s.A'}') t.sX ('{'s.B'}'))
   e.ClashesEnd (e.Assigns)
     , t.sX : (Var 's' e.XIndex)
     , t.X : (Symbol e._)
@@ -1781,7 +1702,7 @@ Solve-SymmClashes-Aux {
 
   /* {a} X {b} = {c} Y {d}  ↦  решений нет */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.X ('{'s.B'}') '=' ('{'s.C'}') t.Y ('{'s.D'}'))
+  (T ('{'s.A'}') t.X ('{'s.B'}') '=' ('{'s.C'}') t.Y ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
     , t.X : (Symbol e._)
     , t.Y : (Symbol e._)
@@ -1790,7 +1711,7 @@ Solve-SymmClashes-Aux {
 
   /* {a} (E1) {b} = {c} (E2) {d}  ↦  {a} E1 {b} = {c} E2 {d} */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.Br1 ('{'s.B'}') '=' ('{'s.C'}') t.Br2 ('{'s.D'}'))
+  (T ('{'s.A'}') t.Br1 ('{'s.B'}') '=' ('{'s.C'}') t.Br2 ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
     , t.Br1 : (Brackets e.E1)
     , t.Br2 : (Brackets e.E2)
@@ -1798,14 +1719,14 @@ Solve-SymmClashes-Aux {
         (e.UsedVars)
         (e.Contrs) e.ClashesStart
         <SimplifyCoordinates-SymmClash
-          (('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
+          (E ('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
         >
         e.ClashesEnd (e.Assigns)
       >;
 
   /* {a} [X E1] {b} = {c} [X E2] {d}  ↦  {a} E1 {b} = {c} E2 {d} */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.Br1 ('{'s.B'}') '=' ('{'s.C'}') t.Br2 ('{'s.D'}'))
+  (T ('{'s.A'}') t.Br1 ('{'s.B'}') '=' ('{'s.C'}') t.Br2 ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
     , t.Br1 : (ADT-Brackets (e.Name) e.E1)
     , t.Br2 : (ADT-Brackets (e.Name) e.E2)
@@ -1813,7 +1734,7 @@ Solve-SymmClashes-Aux {
         (e.UsedVars)
         (e.Contrs) e.ClashesStart
         <SimplifyCoordinates-SymmClash
-          (('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
+          (E ('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
         >
         e.ClashesEnd (e.Assigns)
       >;
@@ -1828,7 +1749,7 @@ Solve-SymmClashes-Aux {
 
   /* {a} ({b} E {c}) {d} = {e} t.X {f}  ↦  t.X → (e.NEW) */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.Br ('{'s.D'}') '=' ('{'s.E'}') t.tX ('{'s.F'}'))
+  (T ('{'s.A'}') t.Br ('{'s.D'}') '=' ('{'s.E'}') t.tX ('{'s.F'}'))
   e.ClashesEnd (e.Assigns)
     , t.Br : (Brackets ('{'s.B'}') e.E ('{'s.C'}'))
     , t.tX : (Var 't' e.XIndex)
@@ -1838,7 +1759,7 @@ Solve-SymmClashes-Aux {
         <AddContraction-Spec-Symm
           (t.tX ':' (Brackets (Var 'e' e.New)))
           (e.Contrs) e.ClashesStart
-          (('{'s.A'}') t.Br ('{'s.D'}') '=' ('{'s.E'}') t.tX ('{'s.F'}'))
+          (T ('{'s.A'}') t.Br ('{'s.D'}') '=' ('{'s.E'}') t.tX ('{'s.F'}'))
           e.ClashesEnd (e.Assigns)
         >
       >;
@@ -1850,15 +1771,15 @@ Solve-SymmClashes-Aux {
     на стадии отделения термов
   */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.Br ('{'s.D'}') '=' ('{'s.E'}') t.tX ('{'s.F'}'))
+  (T ('{'s.A'}') t.Br ('{'s.D'}') '=' ('{'s.E'}') t.tX ('{'s.F'}'))
   e.ClashesEnd (e.Assigns)
     , t.Br : (Brackets e._)
     , t.tX : (Var 't' e._)
-    = Generalize (('{' s.A s.D '}') ('{' s.E s.F '}'));
+    = (Generalize (('{' s.A s.D '}') ('{' s.E s.F '}')));
 
   /* {e} t.X {f} = {a} ({b} E {c}) {d}  ↦  t.X → (e.NEW) */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.E'}') t.tX ('{'s.F'}') '=' ('{'s.A'}') t.Br ('{'s.D'}'))
+  (T ('{'s.E'}') t.tX ('{'s.F'}') '=' ('{'s.A'}') t.Br ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
     , t.Br : (Brackets ('{'s.B'}') e.E ('{'s.C'}'))
     , t.tX : (Var 't' e.XIndex)
@@ -1868,20 +1789,20 @@ Solve-SymmClashes-Aux {
         <AddContraction-Spec-Symm
           (t.tX ':' (Brackets (Var 'e' e.New)))
           (e.Contrs) e.ClashesStart
-          (('{'s.E'}') t.tX ('{'s.F'}') '=' ('{'s.A'}') t.Br ('{'s.D'}'))
+          (T ('{'s.E'}') t.tX ('{'s.F'}') '=' ('{'s.A'}') t.Br ('{'s.D'}'))
           e.ClashesEnd (e.Assigns)
         >
       >;
 
   /* {e} t.X {f} = {a} (E) {d}  ↦  обобщение */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.E'}') t.tX ('{'s.F'}') '=' ('{'s.A'}') t.Br ('{'s.D'}'))
+  (T ('{'s.E'}') t.tX ('{'s.F'}') '=' ('{'s.A'}') t.Br ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
     , t.Br : (Brackets e._)
     , t.tX : (Var 't' e._)
-    = Generalize (('{' s.E s.F '}') ('{' s.A s.D '}'));
+    = (Generalize (('{' s.E s.F '}') ('{' s.A s.D '}')));
 
-  /* {a} [{b} E {c}] {d} = {e} t.X {f}  ↦  t.X → [e.NEW] */
+  /* {a} [X {b} E {c}] {d} = {e} t.X {f}  ↦  t.X → [X e.NEW] */
   (e.UsedVars) (e.Contrs) e.ClashesStart
   (('{'s.A'}') t.Br ('{'s.D'}') '=' ('{'s.E'}') t.tX ('{'s.F'}'))
   e.ClashesEnd (e.Assigns)
@@ -1893,22 +1814,22 @@ Solve-SymmClashes-Aux {
         <AddContraction-Spec-Symm
           (t.tX ':' (ADT-Brackets (e.Name) (Var 'e' e.New)))
           (e.Contrs) e.ClashesStart
-          (('{'s.A'}') t.Br ('{'s.D'}') '=' ('{'s.E'}') t.tX ('{'s.F'}'))
+          (T ('{'s.A'}') t.Br ('{'s.D'}') '=' ('{'s.E'}') t.tX ('{'s.F'}'))
           e.ClashesEnd (e.Assigns)
         >
       >;
 
-  /* {a} [E] {d} = {e} t.X {f}  ↦  обобщение */
+  /* {a} [X E] {d} = {e} t.X {f}  ↦  обобщение */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.Br ('{'s.D'}') '=' ('{'s.E'}') t.tX ('{'s.F'}'))
+  (T ('{'s.A'}') t.Br ('{'s.D'}') '=' ('{'s.E'}') t.tX ('{'s.F'}'))
   e.ClashesEnd (e.Assigns)
     , t.Br : (ADT-Brackets (e.Name) e._)
     , t.tX : (Var 't' e._)
-    = Generalize (('{' s.A s.D '}') ('{' s.E s.F '}'));
+    = (Generalize (('{' s.A s.D '}') ('{' s.E s.F '}')));
 
-  /* {e} t.X {f} = {a} [{b} E {c}] {d}  ↦  t.X → [e.NEW] */
+  /* {e} t.X {f} = {a} [X {b} E {c}] {d}  ↦  t.X → [X e.NEW] */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.E'}') t.tX ('{'s.F'}') '=' ('{'s.A'}') t.Br ('{'s.D'}'))
+  (T ('{'s.E'}') t.tX ('{'s.F'}') '=' ('{'s.A'}') t.Br ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
     , t.Br : (ADT-Brackets (e.Name) ('{'s.B'}') e.E ('{'s.C'}'))
     , t.tX : (Var 't' e.XIndex)
@@ -1918,22 +1839,22 @@ Solve-SymmClashes-Aux {
         <AddContraction-Spec-Symm
           (t.tX ':' (ADT-Brackets (e.Name) (Var 'e' e.New)))
           (e.Contrs) e.ClashesStart
-          (('{'s.E'}') t.tX ('{'s.F'}') '=' ('{'s.A'}') t.Br ('{'s.D'}'))
+          (T ('{'s.E'}') t.tX ('{'s.F'}') '=' ('{'s.A'}') t.Br ('{'s.D'}'))
           e.ClashesEnd (e.Assigns)
         >
       >;
 
-  /* {e} t.X {f} = {a} [E] {d}  ↦  обобщение */
+  /* {e} t.X {f} = {a} [X E] {d}  ↦  обобщение */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.E'}') t.tX ('{'s.F'}') '=' ('{'s.A'}') t.Br ('{'s.D'}'))
+  (T ('{'s.E'}') t.tX ('{'s.F'}') '=' ('{'s.A'}') t.Br ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
     , t.Br : (ADT-Brackets (e.Name) e._)
     , t.tX : (Var 't' e._)
-    = Generalize (('{' s.E s.F '}') ('{' s.A s.D '}'));
+    = (Generalize (('{' s.E s.F '}') ('{' s.A s.D '}')));
 
   /* {a} (E) {b} = {c} Sym {d}  ↦  решений нет */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.Br ('{'s.B'}') '=' ('{'s.C'}') t.Sym ('{'s.D'}'))
+  (T ('{'s.A'}') t.Br ('{'s.B'}') '=' ('{'s.C'}') t.Sym ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
     , t.Br : (Brackets e.E)
     , <IsSVarSubset t.Sym> : True
@@ -1941,73 +1862,31 @@ Solve-SymmClashes-Aux {
 
   /* {c} Sym {d} = {a} (E) {b}  ↦  решений нет */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.C'}') t.Sym ('{'s.D'}') '=' ('{'s.A'}') t.Br ('{'s.B'}'))
+  (T ('{'s.C'}') t.Sym ('{'s.D'}') '=' ('{'s.A'}') t.Br ('{'s.B'}'))
   e.ClashesEnd (e.Assigns)
     , t.Br : (Brackets e.E)
     , <IsSVarSubset t.Sym> : True
     = /* решений нет */;
 
-  /* {a} [E] {b} = {c} Sym {d}  ↦  решений нет */
+  /* {a} [X E] {b} = {c} Sym {d}  ↦  решений нет */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.Br ('{'s.B'}') '=' ('{'s.C'}') t.Sym ('{'s.D'}'))
+  (T ('{'s.A'}') t.Br ('{'s.B'}') '=' ('{'s.C'}') t.Sym ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
     , t.Br : (ADT-Brackets e._)
     , <IsSVarSubset t.Sym> : True
     = /* решений нет */;
 
-  /* {c} Sym {d} = {a} [E] {b}  ↦  решений нет */
+  /* {c} Sym {d} = {a} [X E] {b}  ↦  решений нет */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.C'}') t.Sym ('{'s.D'}') '=' ('{'s.A'}') t.Br ('{'s.B'}'))
+  (T ('{'s.C'}') t.Sym ('{'s.D'}') '=' ('{'s.A'}') t.Br ('{'s.B'}'))
   e.ClashesEnd (e.Assigns)
     , t.Br : (ADT-Brackets e._)
     , <IsSVarSubset t.Sym> : True
     = /* решений нет */;
-
-*  {a} T1 E1 = {b} T2 E2  ↦  {c} T1 {d} = {e} T2 {f} && {g} E1′ = {h} E2′
-*    где {c} T1 {d}, {g} E1′ := TERM_LEFT({a} T1 E1)
-*        {e} T2 {f}, {h} E2′ := TERM_LEFT({b} T2 E2)
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.T1 e.E1 '=' ('{'s.B'}') t.T2 e.E2)
-  e.ClashesEnd (e.Assigns)
-    , <IsTerm t.T1> : True
-    , <IsTerm t.T2> : True
-    , <HasTopLevelCoordinateLabels e.E1> : True
-    , <HasTopLevelCoordinateLabels e.E2> : True
-    = <SeparateTermLeft ('{'s.A'}') t.T1 e.E1> : (e.Left1) (e.Left2)
-    = <SeparateTermLeft ('{'s.B'}') t.T2 e.E2> : (e.Right1) (e.Right2)
-    = <Solve-SymmClashes
-        (e.UsedVars)
-        <SimplifyCoordinates-Symm
-          (e.Contrs) e.ClashesStart
-          (e.Left1 '=' e.Right1) (e.Left2 '=' e.Right2)
-          e.ClashesEnd (e.Assigns)
-        >
-      >;
-
-*  E1 T1 {a} = E2 T2 {b}  ↦  E1′ {c} = E2′ {d} && {e} T1 {f} = {g} T2 {h}
-*    где E1′ {c}, {e} T1 {f} := TERM_RIGHT(E1 T1 {a})
-*        E2′ {d}, {g} T2 {h} := TERM_RIGHT(E2 T2 {b})
-  (e.UsedVars) (e.Contrs) e.ClashesStart
-  (e.E1 t.T1 ('{'s.A'}') '=' e.E2 t.T2 ('{'s.B'}'))
-  e.ClashesEnd (e.Assigns)
-    , <IsTerm t.T1> : True
-    , <IsTerm t.T2> : True
-    , <HasTopLevelCoordinateLabels e.E1> : True
-    , <HasTopLevelCoordinateLabels e.E2> : True
-    = <SeparateTermRight e.E1 t.T1 ('{'s.A'}')> : (e.Left1) (e.Left2)
-    = <SeparateTermRight e.E2 t.T2 ('{'s.B'}')> : (e.Right1) (e.Right2)
-    = <Solve-SymmClashes
-        (e.UsedVars)
-        <SimplifyCoordinates-Symm
-          (e.Contrs) e.ClashesStart
-          (e.Left1 '=' e.Right1) (e.Left2 '=' e.Right2)
-          e.ClashesEnd (e.Assigns)
-        >
-      >;
 
   /* {a} T {b} E1 = {c} e.X E2  ↦  e.X → t.NEW1 e.NEW2  ||  e.X → ε */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') t.T ('{'s.B'}') e.E1 '=' ('{'s.C'}') t.eX e.E2)
+  (E ('{'s.A'}') t.T ('{'s.B'}') e.E1 '=' ('{'s.C'}') t.eX e.E2)
   e.ClashesEnd (e.Assigns)
     , <IsTerm t.T> : True
     , t.eX : (Var 'e' e.XIndex)
@@ -2018,14 +1897,14 @@ Solve-SymmClashes-Aux {
     = <AddContraction-Spec-Symm
         (t.eX ':' t.tNew1 t.eNew2)
         (e.Contrs) e.ClashesStart
-        (('{'s.A'}') t.T ('{'s.B'}') e.E1 '=' ('{'s.C'}') t.eX e.E2)
+        (E ('{'s.A'}') t.T ('{'s.B'}') e.E1 '=' ('{'s.C'}') t.eX e.E2)
         e.ClashesEnd (e.Assigns)
       >
     : e.Branch1
     = <AddContraction-Spec-Symm
         (t.eX ':' /* пусто */)
         (e.Contrs) e.ClashesStart
-        (('{'s.A'}') t.T ('{'s.B'}') e.E1 '=' ('{'s.C'}') t.eX e.E2)
+        (E ('{'s.A'}') t.T ('{'s.B'}') e.E1 '=' ('{'s.C'}') t.eX e.E2)
         e.ClashesEnd (e.Assigns)
       >
     : e.Branch2
@@ -2034,7 +1913,7 @@ Solve-SymmClashes-Aux {
 
   /* {c} e.X E2 = {a} T {b} E1  ↦  e.X → t.NEW1 e.NEW2  ||  e.X → ε */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.C'}') t.eX e.E2 '=' ('{'s.A'}') t.T ('{'s.B'}') e.E1)
+  (E ('{'s.C'}') t.eX e.E2 '=' ('{'s.A'}') t.T ('{'s.B'}') e.E1)
   e.ClashesEnd (e.Assigns)
     , <IsTerm t.T> : True
     , t.eX : (Var 'e' e.XIndex)
@@ -2045,14 +1924,14 @@ Solve-SymmClashes-Aux {
     = <AddContraction-Spec-Symm
         (t.eX ':' t.tNew1 t.eNew2)
         (e.Contrs) e.ClashesStart
-        (('{'s.C'}') t.eX e.E2 '=' ('{'s.A'}') t.T ('{'s.B'}') e.E1)
+        (E ('{'s.C'}') t.eX e.E2 '=' ('{'s.A'}') t.T ('{'s.B'}') e.E1)
         e.ClashesEnd (e.Assigns)
       >
     : e.Branch1
     = <AddContraction-Spec-Symm
         (t.eX ':' /* пусто */)
         (e.Contrs) e.ClashesStart
-        (('{'s.C'}') t.eX e.E2 '=' ('{'s.A'}') t.T ('{'s.B'}') e.E1)
+        (E ('{'s.C'}') t.eX e.E2 '=' ('{'s.A'}') t.T ('{'s.B'}') e.E1)
         e.ClashesEnd (e.Assigns)
       >
     : e.Branch2
@@ -2061,7 +1940,7 @@ Solve-SymmClashes-Aux {
 
   /* E1 {a} T {b} = E2 e.X {c}  ↦  e.X → e.NEW1 t.NEW2  ||  e.X → ε */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (e.E1 ('{'s.A'}') t.T ('{'s.B'}') '=' e.E2 t.eX ('{'s.C'}'))
+  (E e.E1 ('{'s.A'}') t.T ('{'s.B'}') '=' e.E2 t.eX ('{'s.C'}'))
   e.ClashesEnd (e.Assigns)
     , <IsTerm t.T> : True
     , t.eX : (Var 'e' e.XIndex)
@@ -2072,14 +1951,14 @@ Solve-SymmClashes-Aux {
     = <AddContraction-Spec-Symm
         (t.eX ':' t.eNew1 t.tNew2)
         (e.Contrs) e.ClashesStart
-        (e.E1 ('{'s.A'}') t.T ('{'s.B'}') '=' e.E2 t.eX ('{'s.C'}'))
+        (E e.E1 ('{'s.A'}') t.T ('{'s.B'}') '=' e.E2 t.eX ('{'s.C'}'))
         e.ClashesEnd (e.Assigns)
       >
     : e.Branch1
     = <AddContraction-Spec-Symm
         (t.eX ':' /* пусто */)
         (e.Contrs) e.ClashesStart
-        (e.E1 ('{'s.A'}') t.T ('{'s.B'}') '=' e.E2 t.eX ('{'s.C'}'))
+        (E e.E1 ('{'s.A'}') t.T ('{'s.B'}') '=' e.E2 t.eX ('{'s.C'}'))
         e.ClashesEnd (e.Assigns)
       >
     : e.Branch2
@@ -2088,7 +1967,7 @@ Solve-SymmClashes-Aux {
 
   /* E2 e.X {c} = E1 {a} T {b}  ↦  e.X → e.NEW1 t.NEW2  ||  e.X → ε */
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (e.E2 t.eX ('{'s.C'}') '=' e.E1 ('{'s.A'}') t.T ('{'s.B'}'))
+  (E e.E2 t.eX ('{'s.C'}') '=' e.E1 ('{'s.A'}') t.T ('{'s.B'}'))
   e.ClashesEnd (e.Assigns)
     , <IsTerm t.T> : True
     , t.eX : (Var 'e' e.XIndex)
@@ -2099,14 +1978,14 @@ Solve-SymmClashes-Aux {
     = <AddContraction-Spec-Symm
         (t.eX ':' t.eNew1 t.tNew2)
         (e.Contrs) e.ClashesStart
-        (e.E2 t.eX ('{'s.C'}') '=' e.E1 ('{'s.A'}') t.T ('{'s.B'}'))
+        (E e.E2 t.eX ('{'s.C'}') '=' e.E1 ('{'s.A'}') t.T ('{'s.B'}'))
         e.ClashesEnd (e.Assigns)
       >
     : e.Branch1
     = <AddContraction-Spec-Symm
         (t.eX ':' /* пусто */)
         (e.Contrs) e.ClashesStart
-        (e.E2 t.eX ('{'s.C'}') '=' e.E1 ('{'s.A'}') t.T ('{'s.B'}'))
+        (E e.E2 t.eX ('{'s.C'}') '=' e.E1 ('{'s.A'}') t.T ('{'s.B'}'))
         e.ClashesEnd (e.Assigns)
       >
     : e.Branch2
@@ -2116,13 +1995,14 @@ Solve-SymmClashes-Aux {
 *  Если остались клэши, к которым не применимы вышеперечисленные правила,
 *  то производим запрос на обобщение
   (e.UsedVars) (e.Contrs) e.ClashesStart
-  (('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
+  (s._ ('{'s.A'}') e.E1 ('{'s.B'}') '=' ('{'s.C'}') e.E2 ('{'s.D'}'))
   e.ClashesEnd (e.Assigns)
-    = Generalize (('{' s.A s.B '}') ('{' s.C s.D '}'));
+    = (Generalize (('{' s.A s.B '}') ('{' s.C s.D '}')));
 
 *  Если клэши кончились, возвращаем решение
-  (e.UsedVars) (s.OpenFlag e.Contrs) (e.Assigns)
-    = Success s.OpenFlag (e.Contrs) (e.Assigns);
+  (e.UsedVars) (s.OpenFlag e.Contrs) /* пусто */ (e.Assigns)
+    = <ApplyContractions-toAssigns (e.Contrs) (e.Assigns)> : e.Assigns^
+    = (Success (e.UsedVars) s.OpenFlag (e.Contrs) (e.Assigns));
 }
 
 /* Проверка на эквивалентность */
@@ -2138,6 +2018,8 @@ Eq {
 IsSVarSubset {
   (Symbol s.Type e.Info) = True;
   (Var 's' e.Tindex) = True;
+  (ScrVar 's' e.Tindex) = True;
+  (WhVar 's' e.Tindex) = True;
   (Closure e.Body) = True;
   (ClosureBrackets e.Context) = True;
 
@@ -2148,6 +2030,8 @@ IsSVarSubset {
 
 IsTerm {
   (Var 'e' e.Index) = False;
+  (ScrVar 'e' e.Index) = False;
+  (WhVar 'e' e.Index) = False;
 
   /* Рассматриваем для оптимизаций встраивания, прогонки и специализации */
   (CallBrackets e.Nested) = False;
@@ -2181,6 +2065,7 @@ AddContractions-Spec-Symm {
   <AddContraction t.toAdd (t.Contraction*) t.Equation* (t.Assign*)>
    == PRTC
 */
+*$xDRIVE AddContraction-Spec, AddContraction-Spec-Symm
 
 AddContraction-Spec {
   t.toAdd (s.OpenFlag e.Contrs) e.Clashes (e.Assigns)
@@ -2188,20 +2073,19 @@ AddContraction-Spec {
     : {
         ((Var 'e' e._) ':' (Var 'e' e._) (Var 'e' e._)) = AfterOpen;
 
-        ((Var 'e' e._) ':' (Var 'e' e._) (Var 't' e._) (Var 'e' e._)) = AfterOpen;
+        ((Var 'e' e._) ':' (Var 'e' e._) (Var 't' e._) (Var 'e' e._))
+          = AfterOpen;
 
         t._ = s.OpenFlag;
       }
     : s.OpenFlag^
-    = <SimplifyCoordinates
-        (
-          s.OpenFlag
-          <Map (&ApplyContraction-toContraction t.toAdd) e.Contrs>
-        )
-        <Map (&ApplyContraction-toEquation t.toAdd) e.Clashes>
-        (<Map (&ApplyContraction-toAssign t.toAdd) e.Assigns>)
-      >;
+    = <gen_t__ t.toAdd> : t.toAdd^
+    = (s.OpenFlag e.Contrs t.toAdd)
+      <Map (&ApplyContraction-toEquation t.toAdd) e.Clashes>
+      (e.Assigns);
 }
+
+gen_t__ { e.arg = <gen_e__ e.arg> }
 
 AddContraction-Spec-Symm {
   t.toAdd (s.OpenFlag e.Contrs) e.SymmClashes (e.Assigns)
@@ -2209,41 +2093,34 @@ AddContraction-Spec-Symm {
     : {
         ((Var 'e' e._) ':' (Var 'e' e._) (Var 'e' e._)) = AfterOpen;
 
-        ((Var 'e' e._) ':' (Var 'e' e._) (Var 't' e._) (Var 'e' e._)) = AfterOpen;
+        ((Var 'e' e._) ':' (Var 'e' e._) (Var 't' e._) (Var 'e' e._))
+          = AfterOpen;
 
         t._ = s.OpenFlag;
       }
     : s.OpenFlag^
-    = <SimplifyCoordinates-Symm
-        (
-          s.OpenFlag
-          <Map (&ApplyContraction-toContraction t.toAdd) e.Contrs>
-        )
-        <Map (&ApplyContraction-toSymmClash t.toAdd) e.SymmClashes>
-        (<Map (&ApplyContraction-toAssign t.toAdd) e.Assigns>)
-      >;
-}
-
-/*
-  Применение сужения к другому сужению
-
-  <ApplyContraction-toContraction t.Contr t.OtherContr> == t.OtherContr^
-*/
-
-ApplyContraction-toContraction {
-  t.Contr (t.Var ':' e.Right)
-    = (t.Var ':' <ApplyContraction-toExpr t.Contr e.Right>);
+    = <gen_t__ t.toAdd> : t.toAdd^
+    = (s.OpenFlag e.Contrs t.toAdd)
+      <Map (&ApplyContraction-toSymmClash t.toAdd) e.SymmClashes>
+      (e.Assigns);
 }
 
 /*
   Применение сужения к присваиванию
 
-  <ApplyContraction-toAssign t.Contraction t.Assign == t.Assign
+  <ApplyContractions-toAssigns (e.Contrs) (e.Assigns)> == e.Assigns^
 */
-
-ApplyContraction-toAssign {
-   t.Contraction (e.M ':' t.Rval)
-     = (<ApplyContraction-toExpr t.Contraction e.M> ':' t.Rval);
+ApplyContractions-toAssigns {
+  (e.Contrs) (e.Assigns)
+    = <Map
+        {
+          (e.Expr ':' t.Var)
+            = <ApplyContractions e.Expr (e.Contrs)> : e.Expr^
+            = <SimplifyCoordinates e.Expr> : e.Expr^
+            = (e.Expr ':' t.Var)
+        }
+        e.Assigns
+      >
 }
 
 /*
@@ -2253,17 +2130,17 @@ ApplyContraction-toAssign {
 */
 
 ApplyContraction-toEquation {
-   t.Contraction ((e.Expr) ':' (e.Lexpr)) =
-     ((<ApplyContraction-toExpr t.Contraction e.Expr>) ':' (e.Lexpr))
+   t.Contraction (s.ClashType (e.Expr) ':' (e.Lexpr))
+     = <ApplyContraction-toExpr t.Contraction e.Expr> : e.Expr^
+     = <SimplifyCoordinates e.Expr> : e.Expr^
+     = (s.ClashType (e.Expr) ':' (e.Lexpr))
 }
 
 ApplyContraction-toSymmClash {
-  t.Contr (e.L '=' e.R)
-    = (
-        <ApplyContraction-toExpr t.Contr e.L>
-        '='
-        <ApplyContraction-toExpr t.Contr e.R>
-      )
+  t.Contr (s.Type e.L '=' e.R)
+    = <ApplyContraction-toExpr t.Contr e.L> : e.L^
+    = <ApplyContraction-toExpr t.Contr e.R> : e.R^
+    = <SimplifyCoordinates-SymmClash (s.Type e.L '=' e.R)>
     : {
         /* стираем тавтологию */
         t.SymmClash, <IsTautology t.SymmClash> : True = /* пусто */;
@@ -2289,22 +2166,17 @@ ApplyContraction-toExpr {
      (Brackets <ApplyContraction-toExpr t.Contraction e.M>)
      <ApplyContraction-toExpr t.Contraction e.E>;
 
-   t.Contraction e.B (ADT-Brackets e.M) e.E =
+   t.Contraction e.B (ADT-Brackets (e.N) e.M) e.E =
      <ApplyContraction-toExpr t.Contraction e.B>
-     (ADT-Brackets <ApplyContraction-toExpr t.Contraction e.M>)
+     (ADT-Brackets (e.N) <ApplyContraction-toExpr t.Contraction e.M>)
+     <ApplyContraction-toExpr t.Contraction e.E>;
+
+   t.Contraction e.B (ClosureBrackets e.M) e.E =
+     <ApplyContraction-toExpr t.Contraction e.B>
+     (ClosureBrackets <ApplyContraction-toExpr t.Contraction e.M>)
      <ApplyContraction-toExpr t.Contraction e.E>;
 
    t.Contraction e.Expr = e.Expr
-}
-
-/* Проверка на последовательность свободных переменных */
-
-IsFreeVariableSeq {
-   /* пусто */ = True;
-
-   (Var 'e' e.Idx) e.Rem = <IsFreeVariableSeq e.Rem>;
-
-   t.Other e.Rem = False
 }
 
 /*

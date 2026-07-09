@@ -201,6 +201,8 @@ LoadAST {
       }
 }
 
+*$NOOPT ResolveIncludes
+
 ResolveIncludes {
   t.Config (e.BadIncludes-B (e.IncludeName) e.BadIncludes-E)
   e.Units-B
@@ -404,13 +406,12 @@ PatchASTSrcPos {
     = <PatchAST s.FnPatch e.AST>;
 }
 
-$SPEC PatchAST s.FN-PATCH e.ast;
+*$xSPEC PatchAST, PatchAST-Item, PatchAST-Body, PatchAST-Sentence,
+*$  PatchAST-Chain, PatchAST-Blocks, PatchAST-Expr
 
 PatchAST {
   s.FnPatch e.AST = <Map (&PatchAST-Item s.FnPatch) e.AST>;
 }
-
-$SPEC PatchAST-Item s.FN-PATCH t.item;
 
 PatchAST-Item {
   s.FnPatch (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
@@ -429,21 +430,24 @@ PatchAST-Item {
   s.FnPatch (Include t.SrcPos e.IncludeName) = /* пропускаем */;
 
   s.FnPatch (s.Label t.SrcPos s.ScopeClass e.Name)
-    , <OneOf s.Label Enum Swap Declaration Entry Inline Drive Intrinsic Meta> : True
+    , Enum Swap Declaration Entry LegacyInline LegacyDrive Intrinsic Meta
+    : e._ s.Label e._
     = (s.Label
         <s.FnPatch SrcPos t.SrcPos>
         s.ScopeClass
         <s.FnPatch Name e.Name>
       );
 
-  s.FnPatch (Spec t.SrcPos (e.Name) e.Pattern)
+  s.FnPatch (s.Label t.SrcPos e.Name)
+    , Opt Drive Spec NoOpt NoDrive NoSpec : e._ s.Label e._
+    = (s.Label <s.FnPatch SrcPos t.SrcPos> <s.FnPatch Name e.Name>);
+
+  s.FnPatch (LegacySpec t.SrcPos (e.Name) e.Pattern)
     = (
-        Spec <s.FnPatch SrcPos t.SrcPos> (<s.FnPatch Name e.Name>)
+        LegacySpec <s.FnPatch SrcPos t.SrcPos> (<s.FnPatch Name e.Name>)
         <PatchAST-Expr s.FnPatch e.Pattern>
       );
 }
-
-$SPEC PatchAST-Body s.FN-PATCH e.body;
 
 PatchAST-Body {
   s.FnPatch Sentences e.Sentences
@@ -465,8 +469,6 @@ PatchAST-Body {
       >;
 }
 
-$SPEC PatchAST-Sentence s.FN-PATCH t.sentence;
-
 PatchAST-Sentence {
   s.FnPatch ((e.Pattern) e.ConditionsAndAssigns (e.Result) (e.Blocks))
     = { e.Expr = <PatchAST-Expr s.FnPatch e.Expr>; } : s.FnPatchExpr
@@ -477,8 +479,6 @@ PatchAST-Sentence {
         (<PatchAST-Blocks s.FnPatch e.Blocks>)
       );
 }
-
-$SPEC PatchAST-Chain s.FN-PATCH s.FN-PATCH-EXPR e.chain;
 
 PatchAST-Chain {
   s.FnPatch s.FnPatchExpr e.ConditionsAndAssigns
@@ -495,8 +495,6 @@ PatchAST-Chain {
       >;
 }
 
-$SPEC PatchAST-Blocks s.FN-PATCH e.blocks;
-
 PatchAST-Blocks {
   s.FnPatch e.Blocks
     = <Map
@@ -506,8 +504,6 @@ PatchAST-Blocks {
         e.Blocks
       >;
 }
-
-$SPEC PatchAST-Expr s.FN-PATCH e.expr;
 
 PatchAST-Expr {
   s.FnPatch e.Expression
@@ -610,7 +606,7 @@ CreateMetaFunctions {
             = (e.FunctionNames (e.Name))
               (Declaration t.SrcPos GN-Entry '__Meta_' e.Name)
               (Declaration t.SrcPos GN-Entry '__Step-Drop')
-              (Inline t.SrcPos s.ScopeClass e.Name)
+              (LegacyInline t.SrcPos s.ScopeClass e.Name)
               (Function
                 t.SrcPos s.ScopeClass (e.Name) Sentences
                 (
@@ -719,6 +715,8 @@ $ENTRY GlobalASTStorage-AddAST {
       >
     : ((e.NewEntries) (e.Locals)) e.AST^
 
+    = <CleanupUndefinedOpts (e.NewEntries) (e.Locals) e.AST> : e.AST^
+
     = <CleanupLocals e.Locals (e.NewEntries)> : e.Locals^
     = e.NewEntries e.Entries : e.Entries^
 
@@ -753,6 +751,27 @@ UpdateAccum {
 
   ((e.Entries) (e.Locals)) t.SrcPos GN-Local e.Name
     = ((e.Entries)  (e.Locals (e.Name t.SrcPos)));
+}
+
+CleanupUndefinedOpts {
+  (e.Entries) (e.Locals) e.AST
+    = <Map { ((e.Name) t._) = (e.Name) } e.Entries> : e.Entries^
+    = <Map { (e.Name t._) = (e.Name) } e.Locals> : e.Locals^
+    = <Unique e.Entries e.Locals> : e.Defined
+    = <Map
+        {
+          (s.Opt t.SrcPos e.Name)
+            , Opt Drive Spec NoOpt NoDrive NoSpec : e._ s.Opt e._
+            = e.Defined
+            : {
+                e._ (e.Name) e._ = (s.Opt t.SrcPos e.Name);
+                e._ = /* пропускаем */;
+              };
+
+          t.Other = t.Other;
+        }
+        e.AST
+      >
 }
 
 CleanupLocals {
