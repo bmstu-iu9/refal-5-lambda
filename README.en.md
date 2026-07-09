@@ -481,6 +481,11 @@ configurations file by default.
 4. You can use `rlmake` or `rlc` commands compiling programs on simple Refal.
    See section 5 [user guide][7] for compiler using.
 
+### Installation using Nix
+```sh
+nix profile add git+https://github.com/bmstu-iu9/refal-5-lambda?submodules=1
+```
+
 ## License
 
 The compiler distributed throughout BSD license with a reservation concerning
