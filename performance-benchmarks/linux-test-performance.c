@@ -115,14 +115,15 @@ void test_gettimeofday(void) {
 }
 
 
+// https://stackoverflow.com/questions/40454157
 uint64_t rdtsc(){
-    unsigned int lo,hi;
-    __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
-    return ((uint64_t)hi << 32) | lo;
+    unsigned long long val;
+    asm volatile ("mrs %0, cntvct_el0" : "=r" (val));
+    return val;
 }
 
 
-#define MAX_TICKS 10000000000ULL
+#define MAX_TICKS 100000000ULL
 
 void test_rdtsc(void) {
   clock_t clock_start, clock_end;
