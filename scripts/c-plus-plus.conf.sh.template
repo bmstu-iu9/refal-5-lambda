@@ -1,7 +1,7 @@
 ## MinGW uses Windows DLL API, libdl.a don’t supported on it.
 
 LIBDL='-ldl'
-if [[ "$(uname)" =~ MINGW ]]; then
+if [[ "$(uname)" =~ MINGW || "$RLC_TARGET" == *-windows* ]]; then
   LIBDL=''
 fi
 
@@ -27,6 +27,16 @@ fi
 # CPPLINEL='c/home/username/zapcc-build/bin/zapcc++ -shared -fpic -Wall -g -o'
 # CPPLINELSUF=''
 
+## Компилятор Zig (кросс-компиляция: RLC_TARGET, например x86_64-linux-musl).
+## Zig в режиме Debug по умолчанию включает проверки UB (UBSan), из-за них
+## бинарники заметно больше. По умолчанию они отключаются; RLC_UBSAN=1 — оставить.
+# ZIG_UBSAN_FLAG="-fno-sanitize=undefined"
+# [ -n "$RLC_UBSAN" ] && ZIG_UBSAN_FLAG=""
+# CPPLINEE="zig c++ ${RLC_TARGET:+-target $RLC_TARGET} -Wall -g $ZIG_UBSAN_FLAG -o"
+# CPPLINEESUF="$LIBDL"
+# CPPLINEL="zig c++ ${RLC_TARGET:+-target $RLC_TARGET} -shared -fpic -Wall -g $ZIG_UBSAN_FLAG -o"
+# CPPLINELSUF=''
+
 ## Если ваш компилятор C++ отсутствует в списке ниже, впишите его сами:
 # PATH=$PATH:…
 # CPPLINEE=…
@@ -46,7 +56,7 @@ fi
 
 
 ## .def file for linking dynamic libraries on MinGW
-if [[ "$(uname)" =~ MINGW ]]; then
+if [[ "$(uname)" =~ MINGW || "$RLC_TARGET" == *-windows* ]]; then
   DEFFILE="$1/lib/scratch-rt/platform-Windows/lib/refalrts-main.def"
   if [[ ! -e "$DEFFILE" ]]; then
      DEFFILE="$1/../src/lib/platform-Windows/lib/refalrts-main.def"

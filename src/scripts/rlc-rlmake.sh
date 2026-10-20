@@ -41,6 +41,8 @@ main() {
       "--debug") DEBUG=true; shift ;;
       "--no-debug") DEBUG=false; shift ;;
 
+      --target=*) RLC_TARGET=${1#--target=}; export RLC_TARGET; shift ;;
+
       *) NEXT=false ;;
     esac
   done
@@ -54,6 +56,14 @@ main() {
   [[ "$BIND" = AUTO ]] && D=("${D[@]}" -d "$LIBDIR/$PREFIX")
   [[ "$BIND" = STATIC ]] && D=("${D[@]}" -d "$LIBDIR/$PREFIX/exe")
   D=("${D[@]}" -D "$LIBDIR/${PREFIX}-rt" -d "$LIBDIR/references")
+  # Префиксы и библиотеки цели ищутся раньше общих (lib/<triple>/)
+  if [[ -n "$RLC_TARGET" ]]; then
+    if [[ ! -d "$LIBDIR/$RLC_TARGET" ]]; then
+      echo "target $RLC_TARGET is not built, run: TARGETS=$RLC_TARGET ./bootstrap.sh" >&2
+      exit 1
+    fi
+    D=(-d "$LIBDIR/$RLC_TARGET" "${D[@]}")
+  fi
 
   if [[ "$PREFIX" != scratch ]]; then
     CPP=()
@@ -83,13 +93,33 @@ main() {
     )
   fi
 
+  # Для Windows-цели выходному файлу с явным именем без расширения добавляется .exe,
+  # как и имени по умолчанию. Имена с расширением (префиксы, .dll) не меняются
+  if [[ "$RLC_TARGET" == *-windows* && " $* " != *" --makelib "* ]]; then
+    ARGS=()
+    OUTPUT=false
+    for ARG in "$@"; do
+      if $OUTPUT && [[ "$(basename "$ARG")" != *.* ]]; then
+        ARG+="$(platform_exe_suffix)"
+      fi
+      OUTPUT=false
+      [[ "$ARG" == -o ]] && OUTPUT=true
+      ARGS+=("$ARG")
+    done
+    set -- "${ARGS[@]}"
+  fi
+
+  # Для Windows-цели chmod не нужен
+  CHMODX="chmod +x"
+  [[ "$RLC_TARGET" == *-windows* ]] && CHMODX=""
+
   PATH=${BINDIR}:$PATH
   if [[ "$MODE" = "rlc" ]]; then
     # shellcheck disable=SC2086
     rlc-core \
       -OC ${RLC_FLAGS} \
       "--exesuffix=$(platform_exe_suffix)" "--libsuffix=$(platform_lib_suffix)" \
-      "${CPP[@]}" --chmod-x-command="chmod +x" \
+      "${CPP[@]}" --chmod-x-command="$CHMODX" \
       -d "$LIBDIR/common" --prelude=refal5-builtins.refi \
       ${PREFIX} "${D[@]}" -d "$LIBDIR" "$@"
   elif [[ "$MODE" = "rlmake" ]]; then
@@ -99,7 +129,7 @@ main() {
       -X-OC ${RLMAKE_FLAGS} \
       "-X--exesuffix=$(platform_exe_suffix)" "-X--libsuffix=$(platform_lib_suffix)" \
       "${CPP[@]}" \
-      -X--chmod-x-command="chmod +x" \
+      -X--chmod-x-command="$CHMODX" \
       -d "$LIBDIR/common" --prelude=refal5-builtins.refi \
       ${PREFIX} "${D[@]}" -d "$LIBDIR" "${RT[@]}" "$@"
   else
