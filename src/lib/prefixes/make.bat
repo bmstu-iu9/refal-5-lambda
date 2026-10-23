@@ -10,13 +10,17 @@ goto :EOF
 goto :EOF
 
 :MAKE_PREFIXES
-  call :%1 rich-prefix-exe -o %ROOT%\lib\rich%2.exe-prefix || exit /b 1
-  call :%1 slim-prefix-exe -o %ROOT%\lib\slim%2.exe-prefix || exit /b 1
-  call :%1 --makelib rich-prefix-lib -o %ROOT%\lib\rich%2.lib-prefix || exit /b 1
+  call :%1 rich-prefix-exe -o %OUT%\rich%2.exe-prefix || exit /b 1
+  call :%1 slim-prefix-exe -o %OUT%\slim%2.exe-prefix || exit /b 1
+  call :%1 --makelib rich-prefix-lib -o %OUT%\rich%2.lib-prefix || exit /b 1
 goto :EOF
 
 :MAIN
 set ROOT=..\..\..
+rem С RLC_TARGET префиксы кладутся в lib\<triple>\
+set OUT=%ROOT%\lib
+if not "%RLC_TARGET%"=="" set OUT=%ROOT%\lib\%RLC_TARGET%
+if not exist %OUT%\nul mkdir %OUT%
 
 call :MAKE_PREFIXES CALL_RLMAKE "" || exit /b 1
 call :MAKE_PREFIXES CALL_RLMAKE_DEBUG "-debug" || exit /b 1
