@@ -52,6 +52,30 @@ rem одинаковой.
 :: set CPPLINEL=clang++ -target x86_64-pc-windows-gnu -Wall -g -shared -Wl,--enable-stdcall-fixup -o
 :: set CPPLINELSUF="%DEFFILE%"
 
+rem Если вы используете компилятор Zig (кросс-компиляция: RLC_TARGET, например
+rem x86_64-linux-musl), раскомментируйте все строчки ниже.
+rem Zig в режиме Debug по умолчанию включает проверки UB (UBSan), из-за них
+rem бинарники заметно больше. По умолчанию они отключаются; RLC_UBSAN=1 — оставить.
+rem Для Windows-цели (и для хоста без RLC_TARGET) библиотекам нужен .def-файл,
+rem для остальных целей — libdl.
+:: set ZIG_UBSAN_FLAG=-fno-sanitize=undefined
+:: if not "%RLC_UBSAN%"=="" set ZIG_UBSAN_FLAG=
+:: set ZIG_TARGET_FLAG=
+:: if not "%RLC_TARGET%"=="" set ZIG_TARGET_FLAG=-target %RLC_TARGET%
+rem Подстановка замены в переменной ломает разбор строки, если она не определена,
+rem поэтому проверяем не RLC_TARGET, а ZIG_TRIPLE, который определён всегда.
+:: set ZIG_TRIPLE=-windows
+:: if not "%RLC_TARGET%"=="" set ZIG_TRIPLE=%RLC_TARGET%
+:: set ZIG_WINDOWS=
+:: if not "%ZIG_TRIPLE:-windows=%"=="%ZIG_TRIPLE%" set ZIG_WINDOWS=1
+:: set CPPLINEE=zig c++ %ZIG_TARGET_FLAG% -Wall -g %ZIG_UBSAN_FLAG% -o
+:: set CPPLINEESUF=-ldl
+:: set CPPLINEL=zig c++ %ZIG_TARGET_FLAG% -shared -fpic -Wall -g %ZIG_UBSAN_FLAG% -o
+:: set CPPLINELSUF=
+:: if defined ZIG_WINDOWS set CPPLINEESUF=
+:: if defined ZIG_WINDOWS set CPPLINEL=zig c++ %ZIG_TARGET_FLAG% -shared -Wall -g %ZIG_UBSAN_FLAG% -o
+:: if defined ZIG_WINDOWS set CPPLINELSUF="%DEFFILE%"
+
 rem Если ваш компилятор C++ отсутствует в списке ниже, впишите его сами.
 rem Командная строка должна заканчиваться на опцию имени целевого файла.
 :: set PATH=%PATH%;…

@@ -16,6 +16,17 @@ setlocal
   call :COMPILE_SLIM || exit /b 1
   call :COMPILE_PREFIXES || exit /b 1
   call :COMPILE_DYNAMIC || exit /b 1
+
+  rem Дополнительные цели кросс-компиляции, например set TARGETS=x86_64-linux-musl
+  for %%t in (%TARGETS%) do call :COMPILE_TARGET %%t || exit /b 1
+endlocal
+goto :EOF
+
+:COMPILE_TARGET
+setlocal
+  set RLC_TARGET=%1
+  call :COMPILE_PREFIXES || exit /b 1
+  call :COMPILE_DYNAMIC || exit /b 1
 endlocal
 goto :EOF
 
@@ -98,13 +109,19 @@ goto :EOF
 
 :COMPILE_DYNAMIC
 setlocal
+  call ..\..\scripts\platform-specific.bat
+  set OUT=..\..\lib
+  if not "%RLC_TARGET%"=="" set OUT=..\..\lib\%RLC_TARGET%
+  if not exist %OUT%\nul mkdir %OUT%
+  rem Сборка идёт в подкаталоге tmp
+  set OUT=..\%OUT%
   if exist tmp\nul rd /s /q tmp
   mkdir tmp
   pushd tmp
   for %%l in (%LIBRARIES%) do (
     copy ..\%%l.ref .
     call ..\..\..\bin\rlmake --scratch --makelib -X-Wno-intrinsic ^
-      -o ..\..\..\lib\%%l.dll %%l.ref || exit /b 1
+      -o %OUT%\%%l%LIB_SUFFIX% %%l.ref || exit /b 1
     erase %%l.ref
   )
   popd

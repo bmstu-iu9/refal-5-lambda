@@ -73,13 +73,15 @@ compile_prefixes() {
 
 compile_dynamic() {
   source ../../scripts/platform-specific.sh
+  OUT=../../../lib${RLC_TARGET:+/$RLC_TARGET}
+  mkdir -p "$OUT"
   rm -rf tmp
   mkdir -p tmp
   (
     cd tmp && for l in ${LIBRARIES}; do
       cp ../"$l".ref .
       ../../../bin/rlmake --scratch --makelib -X-Wno-intrinsic \
-        -o ../../../lib/"$l$(platform_lib_suffix)" "$l".ref || exit 1
+        -o "$OUT/$l$(platform_lib_suffix)" "$l".ref || exit 1
         rm -- "$l".ref
     done
   )
@@ -102,4 +104,9 @@ compile_dynamic() {
   compile_slim || exit 1
   compile_prefixes || exit 1
   compile_dynamic || exit 1
+
+  # Дополнительные цели кросс-компиляции, например TARGETS="x86_64-linux-musl"
+  for t in ${TARGETS}; do
+    ( export RLC_TARGET="$t"; compile_prefixes && compile_dynamic ) || exit 1
+  done
 )
