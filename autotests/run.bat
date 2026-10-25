@@ -26,7 +26,7 @@ goto :EOF
     ..\bin\rlc-core -o _test_prefix.exe-prefix ^
       %COMMON_SRFLAGS% %SRFLAGS_NAT% 2>__error.txt
     if not exist _test_prefix.exe-prefix (
-      echo CAN'T CREATE COMMON PREFIX, SEE __error.txt
+      echo CAN'T CREATE COMMON PREFIX, SEE __error.txt or __dump_rlc-core.txt
       exit /b 1
     )
     erase __error.txt
@@ -226,8 +226,10 @@ setlocal
   ..\bin\rlc-core --no-sources -o _int_test.exe ^
     %COMMON_SRFLAGS% %SRFLAGS_PREF% ^
     --reference=%REFERENCE% >__out.txt 2> __error.txt
+  set MSG=COMPILER FAILS ON CREATING _int_test.exe
+  set MSG=%MSG%, SEE __error.txt or __dump_rlc-core.txt
   if errorlevel 100 (
-    echo COMPILER FAILS ON CREATING _int_test.exe, SEE __error.txt
+    echo %MSG%
     exit /b 1
   )
   if not exist _int_test.exe (
@@ -257,10 +259,11 @@ setlocal
 
   if not exist "%SATELITE%" set SATELITE=
 
+  if exist __dump_rlc-core.txt erase __dump_rlc-core.txt
   ..\bin\rlc-core %SREF% --makelib %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
     --keep-rasls %SATELITE% 2> __error.txt
   if errorlevel 100 (
-    echo COMPILER ON %1 FAILS, SEE __error.txt
+    echo COMPILER ON %1 FAILS, SEE __error.txt or __dump_rlc-core.txt
     exit /b 1
   )
   if not exist %LIBR% if not exist %LIBN% (
@@ -309,10 +312,11 @@ setlocal
 
   if not exist "%SATELITE%" set SATELITE=
 
+  if exist __dump_rlc-core.txt erase __dump_rlc-core.txt
   ..\bin\rlc-core %SREF% --makelib %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
     --keep-rasls %SATELITE% 2> __error.txt
   if errorlevel 100 (
-    echo COMPILER ON %1 FAILS, SEE __error.txt
+    echo COMPILER ON %1 FAILS, SEE __error.txt or __dump_rlc-core.txt
     exit /b 1
   )
   if not exist %LIBR% if not exist %LIBN% (
@@ -349,9 +353,10 @@ setlocal
   set SREF=%1
   set RASL=%~n1.rasl
 
+  if exist __dump_rlc-core.txt erase __dump_rlc-core.txt
   ..\bin\rlc-core --prelude=test-prelude.srefi -C %SRFLAGS% %1 2> __error.txt
   if errorlevel 100 (
-    echo COMPILER ON %1 FAILS, SEE __error.txt
+    echo COMPILER ON %1 FAILS, SEE __error.txt or __dump_rlc-core.txt
     exit /b 1
   )
   if exist %RASL% (
@@ -374,12 +379,14 @@ setlocal
 
   set SREF=%1
   set RASL=%~n1.rasl
+  set CPP=%~n1.cpp
   set WARN=-W
   echo Passing %1 (flag %WARN%%FLAG%)...
+  if exist __dump_rlc-core.txt erase __dump_rlc-core.txt
   ..\bin\rlc-core %WARN%%FLAG% --prelude=test-prelude.srefi -C %SRFLAGS% %1 ^
     2> __error.txt
   if errorlevel 100 (
-    echo COMPILER ON %1 FAILS, SEE __error.txt
+    echo COMPILER ON %1 FAILS, SEE __error.txt or __dump_rlc-core.txt
     exit /b 1
   )
   if not exist %RASL% (
@@ -390,15 +397,17 @@ setlocal
   type __error.txt
   erase __error.txt
   erase %RASL%
+  if exist %CPP% erase %CPP%
   echo Ok! Compilation didn't abort
   echo.
 
   set WARN=-Werror=
   echo Passing %1 (flag %WARN%%FLAG%)...
+  if exist __dump_rlc-core.txt erase __dump_rlc-core.txt
   ..\bin\rlc-core %WARN%%FLAG% --prelude=test-prelude.srefi -C %SRFLAGS% %1 ^
     2> __error.txt
   if errorlevel 100 (
-    echo COMPILER ON %1 FAILS, SEE __error.txt
+    echo COMPILER ON %1 FAILS, SEE __error.txt or __dump_rlc-core.txt
     exit /b 1
   )
   if exist %RASL% (

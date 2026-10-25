@@ -1,0 +1,225 @@
+// Исходно — это файл arithmetic-signed-long.ref из автотестов Рефала-05
+
+// Отладочные комментарии в тесте оставлены намеренно
+
+//FROM Library
+$EXTERN Add, Sub, Mul, Divmod, Div, Mod, Compare, Numb, Prout, TimeElapsed;
+
+$ENTRY GO {
+  = <Eq <Add 100000 500> (100500)>
+    <Eq <Add (100000) 500> (100500)>
+    <Eq <Add '+' 100000 '+' 500> (100500)>
+    <Eq <Add ('+' 100000) 500> (100500)>
+    <Eq <Add 101000 '-' 500> (100500)>
+    <Eq <Add '-' 500 101000> (100500)>
+    <Eq <Add 500 '-' 101000> ('-' 100500)>
+    <Eq <Add 3000000000 3000000000> (1 1705032704)>
+    <Eq <Add '-' 3000000000 '-' 3000000000> ('-' 1 1705032704)>
+    <Eq <Add '-' 0 '-' 0> (0)>
+    <Eq <Add '+' 0 '-' 0> (0)>
+    <Eq <Add '-' 0 '+' 0> (0)>
+    <Eq <Add '+' 0 '+' 0> (0)>
+    <Eq <Sub 101000 500> (100500)>
+    <Eq <Sub '-' 3000000000 3000000000> ('-' 1 1705032704)>
+    <Eq <Sub 3000000000 '-' 3000000000> (1 1705032704)>
+    <Eq <Sub '-' 3000000000 '+' 3000000000> ('-' 1 1705032704)>
+    <Eq <Sub '+' 3000000000 '-' 3000000000> (1 1705032704)>
+    <Eq <Sub '+' 3000000000 '+' 3000000000> (0)>
+    <Eq <Sub (3000000000) '-' 3000000000> (1 1705032704)>
+    <Eq <Sub ('+' 3000000000) '-' 3000000000> (1 1705032704)>
+    <Eq <Sub ('+' 3000000000) '+' 3000000000> (0)>
+    <Eq <Sub '-' 0 '-' 0> (0)>
+    <Eq <Sub '+' 0 '-' 0> (0)>
+    <Eq <Sub '-' 0 '+' 0> (0)>
+    <Eq <Sub '+' 0 '+' 0> (0)>
+    <Eq <Mul 123456789 123456789> (3548706 2537071545)>
+    <Eq <Mul '-' 123456789 123456789> ('-' 3548706 2537071545)>
+    <Eq <Mul '-' 123456789 '+' 123456789> ('-' 3548706 2537071545)>
+    <Eq <Mul '-' 123456789 '-' 123456789> (3548706 2537071545)>
+    <Eq <Mul ('-' 1) '-' 1> (1)>
+    <Eq <Divmod 1000 77> ((12) 76)>
+    <Eq <Divmod '-' 1000 77> (('-' 12) '-' 76)>
+    <Eq <Divmod 1000 '-' 77> (('-' 12) 76)>
+    <Eq <Divmod '-' 1000 '-' 77> ((12) '-' 76)>
+    <Eq <Div 1000 77>         (12)>
+    <Eq <Div '-' 1000 77>     ('-' 12)>
+    <Eq <Div 1000 '-' 77>     ('-' 12)>
+    <Eq <Div '-' 1000 '-' 77> (12)>
+    <Eq <Mod 1000 77>         (76)>
+    <Eq <Mod '-' 1000 77>     ('-' 76)>
+    <Eq <Mod 1000 '-' 77>     (76)>
+    <Eq <Mod '-' 1000 '-' 77> ('-' 76)>
+    <Eq <Compare 100 500> ('-')>
+    <Eq <Compare '+' 100 '+' 500> ('-')>
+    <Eq <Compare '-' 100 500> ('-')>
+    <Eq <Compare '-' 100 '+' 500> ('-')>
+    <Eq <Compare 100 '-' 500> ('+')>
+    <Eq <Compare '+' 100 '-' 500> ('+')>
+    <Eq <Compare '-' 100 '-' 500> ('+')>
+    <Eq <Compare 500 100> ('+')>
+    <Eq <Compare '-' 500 100> ('-')>
+    <Eq <Compare 500 '-' 100> ('+')>
+    <Eq <Compare 100 100> ('0')>
+    <Eq <Compare '+' 0 '-' 0> ('0')>
+    <Eq <Compare '-' 0 '+' 0> ('0')>
+    <Eq <Compare '-' 0 '-' 0> ('0')>
+    <Eq <Compare '+' 0 '+' 0> ('0')>
+    <Eq <Compare 100 '+' 100> ('0')>
+    <Eq <Compare (1 2 3) 4 5> ('+')>
+    <Eq <Compare (4 5) 1 2 3> ('-')>
+    <Eq <Compare (1 2 3) 1 2 2> ('+')>
+    <Eq <Compare (1 2 3) 1 2 4> ('-')>
+    <Eq <Compare (1 2 3) 1 2 3> ('0')>
+    <Eq <Numb '100500'> (100500)>
+    <Eq <Numb '+100500'> (100500)>
+    <Eq <Numb '-100500'> ('-' 100500)>
+    <Eq <Numb '4294967295'> (4294967295)>
+    <Eq <Mul 1000000000 <TenPower 90>> (<TenPower 99>)>
+    <Eq <Mul (1000000000) <TenPower 90>> (<TenPower 99>)>
+    <Eq <Mul (<TenPower 90>) 1000000000> (<TenPower 99>)>
+    <Eq <Mul (<TenPower 20>) <TenPower 20>> (<TenPower 40>)>
+    <Prout "Misc small tests:   " <TimeElapsed 0>>
+    <MulMatrixTenPowers 100 100>
+    <Prout "Multiply matrix:    " <TimeElapsed 0>>
+    <Eq <Divmod (<TenPower 20>) 1000000> ((<TenPower 14>) 0)>
+    <Eq <Divmod (<TenPower 15 '12345'>) 1000000> ((<TenPower 14>) 12345)>
+    <Eq <Div (<TenPower 20>) 1000000> (<TenPower 14>)>
+    <Eq <Div (<TenPower 15 '12345'>) 1000000> (<TenPower 14>)>
+    <Eq <Mod (<TenPower 20>) 1000000> (0)>
+    <Eq <Mod (<TenPower 15 '12345'>) 1000000> (12345)>
+    <Eq <Divmod (<TenPower 30>) <TenPower 40>> ((0) <TenPower 30>)>
+    <Eq <Divmod ('-' <TenPower 30>) <TenPower 40>> ((0) '-' <TenPower 30>)>
+    <Eq <Divmod (<TenPower 30>) '-' <TenPower 40>> ((0) <TenPower 30>)>
+    <Eq <Divmod ('-' <TenPower 30>) '-' <TenPower 40>> ((0) '-' <TenPower 30>)>
+    <Eq <Divmod (<TenPower 15 '12345'>) <TenPower 10>> ((<TenPower 10>) 12345)>
+    <Eq <Divmod (<TenPower 11>) <TenPower 12>> ((0) <TenPower 11>)>
+    <Eq <Divmod (<TenPower 10>) <TenPower 19>> ((0) <TenPower 10>)>
+    <Eq <Divmod (<TenPower 42>) <TenPower 10>> ((<TenPower 32>) 0)>
+    <Prout "Misc division tests:" <TimeElapsed 0>>
+    <DivModMatrixTenPowers 100 100>
+    <Prout "Division matrix mode 10...0:" <TimeElapsed 0>>
+    /* Тесты типа 1111111 / 11 = 101010 (ост 1) */
+    <DivModMatrix11 100 100>
+    <Prout "Division matrix mode 11...1:" <TimeElapsed 0>>;
+}
+
+Eq { e.Eq (e.Eq) = /* пусто */; }
+
+TenPower {
+  s.N e.Suffix = <Numb <DoTenPower s.N> e.Suffix>;
+}
+
+DoTenPower {
+  0 = '1';
+  s.N = <DoTenPower <Sub s.N 1>> '0';
+}
+
+MulMatrixTenPowers {
+  s.Col 0 = /* пусто */;
+
+  s.Col s.Row
+    = <MulMatrixTenPowers s.Col <Sub s.Row 1>>
+      <MulMatrixTenPowers-Row s.Col s.Row>;
+}
+
+MulMatrixTenPowers-Row {
+  0 s.R = /* пусто */;
+
+  s.Col s.Row
+    = <MulMatrixTenPowers-Row <Sub s.Col 1> s.Row>
+      <Eq <Mul (<TenPower s.Col>) <TenPower s.Row>> (<TenPower <Add s.Col s.Row>>)>;
+}
+
+DivModMatrixTenPowers {
+  s.Col 0 = /* пусто */;
+
+  s.Col s.Row
+    = <DivModMatrixTenPowers s.Col <Sub s.Row 1>>
+//      <Prout s.Row "10...0 mode" <TimeElapsed 0>>
+      <DivModMatrixTenPowers-Row s.Col s.Row>;
+}
+
+DivModMatrixTenPowers-Row {
+  0 s.Row = /* пусто */;
+
+  s.Col s.Row, <Compare s.Col s.Row> : '-'
+    , <TenPower s.Col> : e.Num
+    , <TenPower s.Row> : e.Denom
+    = <DivModMatrixTenPowers-Row <Sub s.Col 1> s.Row>
+//      <Prout s.Col s.Row '-'>
+      <Eq <Divmod (e.Num) e.Denom> ((0) e.Num)>
+      <Eq <Div (e.Num) e.Denom> (0)>
+      <Eq <Mod (e.Num) e.Denom> (e.Num)>;
+
+   s.Col s.Row
+    , <TenPower s.Col> : e.Num
+    , <TenPower s.Row> : e.Denom
+    , <TenPower <Sub s.Col s.Row>> : e.Quot
+    = <DivModMatrixTenPowers-Row <Sub s.Col 1> s.Row>
+//      <Prout s.Col s.Row>
+      <Eq <Divmod (e.Num) e.Denom> ((e.Quot) 0)>
+      <Eq <Div (e.Num) e.Denom> (e.Quot)>
+      <Eq <Mod (e.Num) e.Denom> (0)>;
+}
+
+DivModMatrix11 {
+  s.Col 0 = /* пусто */;
+
+  s.Col s.Row
+    = <DivModMatrix11 s.Col <Sub s.Row 1>>
+//      <Prout s.Row "11...1 mode" <TimeElapsed 0>>
+      <DivModMatrix11-Row s.Col s.Row>;
+}
+
+DivModMatrix11-Row {
+  0 s.Row = /* пусто */;
+
+  s.Col s.Row
+    , <Prepare11 s.Col s.Row> : (e.Num) (e.Denom) (e.Quot) (e.Rem)
+    = <DivModMatrix11-Row <Sub s.Col 1> s.Row>
+//      <Prout s.Col s.Row '!'>
+      <Eq <Divmod (e.Num) e.Denom> ((e.Quot) e.Rem)>
+      <Eq <Div (e.Num) e.Denom> (e.Quot)>
+      <Eq <Mod (e.Num) e.Denom> (e.Rem)>;
+}
+
+$EXTERN Step;
+
+// 111 111 111 1 = 111 × 10010010 + 1
+// 11 11 11 11 11 = 11 × 101010101 + 0
+// 1111 1111 11 = 1111 × 10001 + 11
+Prepare11 {
+  s.NumLen s.DenomLen
+    , <Divmod s.NumLen s.DenomLen> : (s.QuotOnes) s.RemLen
+    = (<Ones s.NumLen>) (<Ones s.DenomLen>)
+      (<Quotient11 s.DenomLen s.QuotOnes s.RemLen>)
+      (<Ones s.RemLen>);
+}
+
+Ones {
+  0 = 0;
+  s.Len = <Numb <DoOnes s.Len>>;
+}
+
+DoOnes {
+  0 = /* пусто */;
+  s.N = '1' <DoOnes <Sub s.N 1>>;
+}
+
+Quotient11 {
+  s.DenomLen 0 s.RemLen = 0;
+
+  s.DenomLen s.QuotOnes s.RemLen
+    = <Numb
+        <DoQuotient11 <Sub s.DenomLen 1> <Sub s.QuotOnes 1>>
+        <DoTenPower s.RemLen>
+      >;
+}
+
+DoQuotient11 {
+  s.DenomZeros 0 = /* пусто */;
+
+  s.DenomZeros s.QuotOnes
+    = <DoTenPower s.DenomZeros>
+      <DoQuotient11 s.DenomZeros <Sub s.QuotOnes 1>>;
+}

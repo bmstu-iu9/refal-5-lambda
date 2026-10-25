@@ -24,28 +24,24 @@ UndoubleEmtpyLines {
 }
 
 Element {
-  (Function s.Scope (e.Name) e.Body) = <Function (e.Name) s.Scope e.Body>;
-  (ColdFunction s.ColdBy s.Scope (e.Name) e.Body)
-    = <ColdFunction s.ColdBy (e.Name) s.Scope e.Body>;
+  (Entries e.Names) = <Log-EntryList e.Names>;
 
-  (Swap GN-Entry e.Name) = ('$ESWAP ' <DisplayName e.Name> ';');
-  (Swap GN-Local e.Name) = ('$SWAP ' <DisplayName e.Name> ';');
+  (Function (e.Name) e.Body) = <Function (e.Name) e.Body>;
+  (ColdFunction s.ColdBy (e.Name) e.Body)
+    = <ColdFunction s.ColdBy (e.Name) e.Body>;
 
-  (Declaration GN-Entry e.Name) = ('$EXTERN ' <DisplayName e.Name> ';');
-  (Declaration GN-Local e.Name) = ('$FORWARD ' <DisplayName e.Name> ';');
-
-  (Inline e.Name) = ('$INLINE ' <DisplayName e.Name> ';');
-
-  (Drive e.Name) = ('$DRIVE ' <DisplayName e.Name> ';');
-
-  (Intrinsic e.Name) = ('$INTRINSIC ' <DisplayName e.Name> ';');
+  (Externs e.Names) = <Log-ExternList e.Names>;
+  (Drives e.Names) = <NameList ('$DRIVE') e.Names>;
+  (Intrinsics e.Names) = <NameList ('$INTRINSIC') e.Names>;
 
   (Ident e.Name) = ('$LABEL ' <DisplayName e.Name> ';');
 
   (NativeBlock t.SrcPos e.Code) = ('%% native block %%');
 
-  (Spec (e.Name) e.Pattern)
-    = ('$SPEC ' <DisplayName e.Name> ' ' <InlineExpr e.Pattern> ';');
+  (Specs e.Names) = <NameList ('$SPEC') e.Names>;
+
+  (NoDrives e.Names) = <NameList ('$NODRIVE') e.Names>;
+  (NoSpecs e.Names) = <NameList ('$NOSPEC') e.Names>;
 
   (DriveInfo e.DriveInfo) = ('(DriveInfo ...)');
   (SpecInfo e.SpecInfo) = ('(SpecInfo ...)');
@@ -65,14 +61,57 @@ LongLine {
 }
 
 
+$ENTRY Log-EntryList {
+  e.Names = <NameList ('$ENTRY') e.Names>;
+}
+
+$ENTRY Log-ExternList {
+  e.Names = <NameList ('$EXTERN') e.Names>;
+}
+
+NameList {
+  (e.Keyword) /* нет имён */ = /* пусто */;
+  (e.Keyword) e.Names = <DoNameList (e.Keyword) e.Names> ();
+}
+
+DoNameList {
+  (e.OutLine) e.Names
+    , <LongLine e.OutLine> : True
+    = (e.OutLine) <DoNameList-Next e.Names>;
+
+  (e.OutLine) (e.Name) e.Names
+    = <CommaOrSemicolon e.Names> : s.SEP
+    = e.OutLine ' ' <DisplayName e.Name> : e.NewOutLine
+    = <LongLine e.NewOutLine>
+    : {
+        True = (e.OutLine) <DoNameList-Next e.Names>;
+        False = <DoNameList (e.NewOutLine s.SEP) e.Names>;
+      };
+
+  (e.OutLine) /* пусто */ = (e.OutLine);
+}
+
+CommaOrSemicolon {
+  /* empty */ = ';';
+  e.Names = ',';
+}
+
+DoNameList-Next {
+  (e.NextName) e.Names
+    = <CommaOrSemicolon e.Names> : s.SEP
+    = <DoNameList ('  ' <DisplayName e.NextName> s.SEP) e.Names>;
+
+  /* пусто */ = /* пусто */;
+}
+
+
 Function {
-  (e.Name) s.Scope e.Body
-    = <Function-Aux (<DisplayName e.Name>) s.Scope e.Body>;
+  (e.Name) e.Body = <Function-Aux (<DisplayName e.Name>) e.Body>;
 }
 
 ColdFunction {
-  s.ColdBy (e.Name) s.Scope e.Body
-    = <Function (e.Name) s.Scope e.Body>
+  s.ColdBy (e.Name) e.Body
+    = <Function (e.Name) e.Body>
     : {
         () e.FunctionLines
           = ()
@@ -85,38 +124,33 @@ ColdFunction {
 }
 
 Function-Aux {
-  (e.Name) s.Scope Sentences /* пусто */
-    = (<Entry s.Scope> e.Name ' { /* empty */ }');
+  (e.Name) Sentences /* пусто */ = (e.Name ' { /* empty */ }');
 
-  (e.Name) s.Scope Sentences e.Sentences
+  (e.Name) Sentences e.Sentences
     = ()
-      (<Entry s.Scope> e.Name ' {')
+      (e.Name ' {')
       <Sentences ('  ') e.Sentences>
       ('}')
       ();
 
-  (e.Name) s.Scope NativeBody t.SrcPos e.NativeBody
-    = (<Entry s.Scope> e.Name ' { %% native %% }');
+  (e.Name) NativeBody t.SrcPos e.NativeBody = (e.Name ' { %% native %% }');
 
-  (e.Name) s.Scope Metatable e.Metatable
+  (e.Name) Metatable e.Metatable
     = ()
-      (<Entry s.Scope> e.Name ' {')
+      (e.Name ' {')
       ('* metatable function')
       <Map
         {
-          (t.Ident t.Name)
-            = ('  ' <InlineTerm t.Ident> ' :: ' <InlineTerm t.Name>);
+          ((Symbol Identifier e.Ident) (Symbol Name e.Name^))
+            = ('  ' <Symbol Identifier e.Ident> ' :: ' <Symbol Name e.Name>);
         }
         e.Metatable
       >
       ('}')
       ();
-};
 
-Entry {
-  GN-Entry = '$ENTRY ';
-  GN-Local = /* пусто */;
-}
+  (e.Name) Swap = ('$SWAP ' <DisplayName e.Name> ';');
+};
 
 Sentences {
   (e.Indent) (e.Sentence) = <Sentence (e.Indent) e.Sentence>;
@@ -161,6 +195,10 @@ PutComment {
 }
 
 Tail {
+  (e.Indent) e.Tail = <Tail-GEN (e.Indent) <gen_e__ e.Tail>>;
+}
+
+Tail-GEN {
   (e.Indent) (Condition (e.Name) (e.Result) (e.Pattern)) e.Tail
     = e.Indent ', ' <InlineExpr e.Result> ' : ' <InlineExpr e.Pattern>
     : e.OneLineCondition
@@ -182,7 +220,7 @@ Tail {
     = <Expression (e.Indent '= ') (e.Indent '  ') e.Result (';')>;
 }
 
-$SPEC Expression (e.prefix) (e.indent) e.expression (e.suffix);
+*$NOOPT Expression
 
 Expression {
   (e.Prefix) (e.Indent) /* пусто */ (e.Suffix)
@@ -192,18 +230,23 @@ Expression {
     = <DoExpression FIRST (e.Indent) (e.Prefix) e.Expression (e.Suffix)>;
 }
 
-$SPEC DoExpression s.POS (e.indent) (e.out-line) e.expression;
-
 DoExpression {
+  s.POS (e.indent) (e.out-line) e.expression
+    = <DoExpression-GEN
+        s.POS (<gen_e__ e.indent>) (<gen_e__ e.out-line>) <gen_e__ e.expression>
+      >;
+}
+
+DoExpression-GEN {
   s.Pos (e.Indent) (e.OutLine) /* пусто */ (e.Suffix) = (e.OutLine e.Suffix);
 
   s.Pos (e.Indent) (e.OutLine) t.NextTerm e.Expr (e.Suffix)
-    = <InlineTerm t.NextTerm> : e.TextualTerm
-    = <AppendTerm e.OutLine (e.TextualTerm)> : e.NewOutLine
+    = <InlineTerm <gen_e__ t.NextTerm>> : e.TextualTerm
+    = <AppendTerm <gen_e__ e.OutLine> (e.TextualTerm)> : e.NewOutLine
     = <LongLine e.NewOutLine>
     : {
         True
-          = e.Indent e.TextualTerm : e.OutLineTerm
+          = <gen_e__ e.Indent e.TextualTerm> : e.OutLineTerm
           = <LongLine e.OutLineTerm>
           : {
               True, e.Expr : /* пусто */
@@ -237,11 +280,20 @@ InlineTerm {
   (CallBrackets e.Value) = <CallBrackets e.Value>;
   (ColdCallBrackets e.Value) = <ColdCallBrackets e.Value>;
   (ClosureBrackets e.Value) = <ClosureBrackets e.Value>;
+  ('{' s.Coordinate '}') = '{' <Symb s.Coordinate> '}';
 }
 
-$SPEC MultilineTerm s.pos (e.prefix) e.indent t.term (e.suffix);
-
 MultilineTerm {
+  s.pos (e.prefix) e.indent t.term (e.suffix)
+    = <MultilineTerm-Gen
+        s.pos (<gen_e__ e.prefix>) e.indent <gen_t__ t.term> (<gen_e__ e.suffix>)
+      >;
+}
+
+* TODO: исправить после реализации gen_t__
+gen_t__ { e.Arg = <gen_e__ e.Arg> }
+
+MultilineTerm-Gen {
   FIRST (e.Prefix) e.Indent t.Term (e.Suffix)
     = <MultilineTerm-Prefix (e.Prefix) e.Indent t.Term (e.Suffix)>;
 
@@ -252,7 +304,7 @@ MultilineTerm {
 
 MultilineTerm-Prefix {
   (e.Prefix) e.Indent t.Term (e.Suffix)
-    = t.Term
+    = <gen_t__ t.Term>
     : {
         (Brackets e.Expr)
           = (e.Prefix '(')
@@ -400,7 +452,8 @@ ClosureBrackets {
 }
 
 InlineSubexpr {
-  t.Term e.Expr = <DoInlineExpr (<gen_e__ <InlineTerm t.Term>>) e.Expr>;
+  t.Term e.Expr
+    = <DoInlineExpr (<gen_e__ <InlineTerm t.Term>>) <gen_e__ e.Expr>>;
 
   /* пусто */ = /* пусто */;
 }

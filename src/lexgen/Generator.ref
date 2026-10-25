@@ -17,13 +17,13 @@ $EXTERN EscapeChar;
 */
 $ENTRY GenerateFromDFA {
   e.Rules =
-    <Map &WriteFunction e.Rules>;
+    <Map &WriteFunction e.Rules>
+    ()
+    ('gen_e__ { e.any = e.any; }')
 }
 
 WriteFunction {
   ((e.NextRule) e.Alternatives) =
-    ()
-    ('$SPEC ' e.NextRule ' (e.acc) e.text;')
     ()
     (e.NextRule ' {')
     <Map &WriteAlternative e.Alternatives>
@@ -74,5 +74,5 @@ NextState-L {
 NextState-R {
   Finitive e.NextStateAccum = /* пусто */;
   (e.NextStateName) e.NextStateAccum =
-    ' <' e.NextStateName ' (' e.NextStateAccum ') e.Text>';
+    ' <' e.NextStateName ' (<gen_e__ ' e.NextStateAccum '>) e.Text>';
 }

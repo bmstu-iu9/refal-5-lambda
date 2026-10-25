@@ -1,0 +1,9 @@
+* WARNING pseudocomment
+
+*$EXTENDED;
+
+*$SPEC Func "unclosed quote;
+
+$ENTRY Func {
+  s.Stat ABC s.Dyn = s.Stat s.Dyn;
+}

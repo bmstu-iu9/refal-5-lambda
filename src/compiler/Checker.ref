@@ -10,7 +10,7 @@ $EXTERN GenericMatch;
 $EXTERN RemovePos-Expr;
 
 *$FROM TreeUtils
-$EXTERN ExtractVariables-Expr;
+$EXTERN ExtractVariables-Expr, IsGenFunctionName;
 
 *$FROM Checker-Screening
 $EXTERN CheckScreening;
@@ -70,7 +70,17 @@ PrepareMessage {
   DanglingDrive e.Name = '$DRIVE ' e.Name '; drive label for missed function';
 
   NativeOptimizable s.Label e.Name
-    = 'Function ' e.Name ' can\'t be $' <Upper <Explode s.Label>>;
+    = s.Label
+    : {
+        LegacyDrive = '$DRIVE';
+        LegacyInline = '$INLINE';
+        LegacySpec = '$SPEC';
+        Drive = '*$DRIVE';
+        Spec = '*$SPEC';
+        Opt = '*$OPT';
+      }
+    : e.Keyword
+    = 'Function ' e.Name ' can\'t be ' e.Keyword;
 
   /* Ошибки специализации */
   RedefineSpec e.FnName = 'Specialization of function ' e.FnName 'is redefined';
@@ -122,6 +132,19 @@ PrepareMessage {
   BadPseudofunctionBody e.Name
     = 'Pseudofunction ' e.Name ' should have a body { e.X = e.X }, '
       'in other case function can\'t be encountered as pseudofunction';
+
+  IntrinsicForDefined e.Name
+    = 'Function ' e.Name ' is defined, '
+      '$INTRINSIC declaration for it will be ignored';
+
+  OptFeaturesConflict s.Label1 s.Label2 e.Name
+    = 'Conflict between pseudocomments '
+      '$' <Upper <Explode s.Label1>> ' ' e.Name '; and '
+      '$' <Upper <Explode s.Label2>> ' ' e.Name ';, '
+      '$NO... pseudocomment has priority';
+
+  DanglingOptPseudocomment s.Label e.Name
+    = '$' <Upper <Explode s.Label>> ' ' e.Name '; label for missed function';
 }
 
 FindErrors {
@@ -143,20 +166,25 @@ CheckPseudofunctions {
     = <Map
         {
           (s.Tag t.SrcPos s.ScopeClass e.Name)
-            , Drive Inline Intrinsic : e._ s.Tag e._
-            , <Pseudofunctions> : e._ (e.Name) e._
+            , LegacyDrive LegacyInline Intrinsic : e._ s.Tag e._
+            , <IsGenFunctionName e.Name> : True
             = (Error t.SrcPos TaggedPseudofunction s.Tag e.Name);
 
-          (Spec t.SrcPos (e.Name) e._)
-            , <Pseudofunctions> : e._ (e.Name) e._
+          (s.Tag t.SrcPos e.Name)
+            , Opt Drive Spec : e._ s.Tag e._
+            , <IsGenFunctionName e.Name> : True
+            = (Warning pseudocomment t.SrcPos TaggedPseudofunction s.Tag e.Name);
+
+          (LegacySpec t.SrcPos (e.Name) e._)
+            , <IsGenFunctionName e.Name> : True
             = (Error t.SrcPos TaggedPseudofunction Spec e.Name);
 
           (Entry t.SrcPos GN-Entry e.Name)
-            , <Pseudofunctions> : e._ (e.Name) e._
+            , <IsGenFunctionName e.Name> : True
             = (Warning pseudofunctions t.SrcPos EntryPseudofunction e.Name);
 
           (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
-            , <Pseudofunctions> : e._ (e.Name) e._
+            , <IsGenFunctionName e.Name> : True
             = (Function t.SrcPos s.ScopeClass (e.Name) e.Body)
               <CheckPseudofunctions-Entry t.SrcPos e.Name s.ScopeClass>
               <CheckPseudofunctions-Body t.SrcPos (e.Name) e.Body>;
@@ -180,10 +208,6 @@ SeparateErrors {
         }
         (/* messages */) e.AST-and-messages
       >
-}
-
-Pseudofunctions {
-  = ('gen_e__') ('gen-e__')
 }
 
 CheckPseudofunctions-Entry {
@@ -220,11 +244,11 @@ CheckSpecs {
 * Проверка переопределения специализации
 CheckSpecs-Redefine {
   e.AST-B
-  (Spec t.SrcPos1 (e.Name) e.Pattern1) e.AST-M
-  (Spec t.SrcPos2 (e.Name) e.Pattern2) e.AST-E
+  (LegacySpec t.SrcPos1 (e.Name) e.Pattern1) e.AST-M
+  (LegacySpec t.SrcPos2 (e.Name) e.Pattern2) e.AST-E
     = <CheckSpecs-Redefine
         e.AST-B
-        (Spec t.SrcPos1 (e.Name) e.Pattern1) e.AST-M
+        (LegacySpec t.SrcPos1 (e.Name) e.Pattern1) e.AST-M
         (Error t.SrcPos2 RedefineSpec e.Name) e.AST-E
       >;
 
@@ -236,13 +260,13 @@ CheckSpecs-Formats {
   e.AST
     = <Map
         {
-          (Spec t.SrcPos (e.Name) e.Pattern)
+          (LegacySpec t.SrcPos (e.Name) e.Pattern)
             = <IsHardPattern e.Pattern>
             : {
                 True
                   = <CheckRepeatedVariables e.Pattern>
                   : {
-                    /* пусто */ = (Spec t.SrcPos (e.Name) e.Pattern);
+                    /* пусто */ = (LegacySpec t.SrcPos (e.Name) e.Pattern);
 
                     e.Errors = e.Errors;
                   };
@@ -357,7 +381,7 @@ FindVariables {
 * Проверка, что упоминаемые функции определены
 CheckSpecs-Functions {
   e.AST-B
-  (Spec t.SrcPos1 (e.Name) e.Pattern) e.AST-M
+  (LegacySpec t.SrcPos1 (e.Name) e.Pattern) e.AST-M
   (Function t.SrcPos2 s.ScopeClass (e.Name) e.Body) e.AST-E
     = <ValidBodyForSpec (e.Name) (e.Pattern) e.Body>
     : {
@@ -384,7 +408,7 @@ CheckSpecs-Functions {
 
   e.AST-B
   (Function t.SrcPos1 s.ScopeClass (e.Name) e.Body) e.AST-M
-  (Spec t.SrcPos2 (e.Name) e.Pattern) e.AST-E
+  (LegacySpec t.SrcPos2 (e.Name) e.Pattern) e.AST-E
     = <ValidBodyForSpec (e.Name) (e.Pattern) e.Body>
     : {
         True =
@@ -408,7 +432,7 @@ CheckSpecs-Functions {
     : e.AST
     = <CheckSpecs-Functions e.AST>;
 
-  e.AST-B (Spec t.SrcPos (e.Name) e.Pattern) e.AST-E
+  e.AST-B (LegacySpec t.SrcPos (e.Name) e.Pattern) e.AST-E
     = <CheckSpecs-Functions
         e.AST-B (Error t.SrcPos OrphanSpec e.Name) e.AST-E
       >;
@@ -425,7 +449,8 @@ ValidBodyForSpec {
     : (s.BoolResult e.Messages)
     = s.BoolResult e.Messages;
 
-  (e.Name) t.Pattern NativeBody e.Code = False (NativeOptimizable Spec e.Name);
+  (e.Name) t.Pattern NativeBody e.Code
+    = False (NativeOptimizable LegacySpec e.Name);
 }
 
 ValidBodyForSpec-CheckSentensePattern {
@@ -547,11 +572,20 @@ SeparateDefines {
           (e.Declarations) (Entry t.SrcPos GN-Entry e.Name) =
             (e.Declarations (Entry t.SrcPos e.Name));
 
-          (e.Declarations) (Inline t.SrcPos s.ScopeClass e.Name) =
-            (e.Declarations (Inline t.SrcPos e.Name));
+          (e.Declarations) (LegacyInline t.SrcPos s.ScopeClass e.Name) =
+            (e.Declarations (LegacyInline t.SrcPos e.Name));
 
-          (e.Declarations) (Drive t.SrcPos s.ScopeClass e.Name) =
-            (e.Declarations (Drive t.SrcPos e.Name));
+          (e.Declarations) (LegacyDrive t.SrcPos s.ScopeClass e.Name) =
+            (e.Declarations (LegacyDrive t.SrcPos e.Name));
+
+          (e.Declarations) (s.OptNode t.SrcPos e.Name)
+            , (Opt Drive Spec Yes) (Drive Drive Yes) (Spec Spec Yes)
+              (NoOpt Drive Spec No) (NoDrive Drive No) (NoSpec Spec No)
+            : e._ (s.OptNode e.Features s.Enable) e._
+            = (
+                e.Declarations
+                (Opt s.OptNode (e.Features) s.Enable t.SrcPos e.Name)
+              );
 
           (e.Declarations) (Intrinsic t.SrcPos s.ScopeClass e.Name) =
             (e.Declarations (Intrinsic t.SrcPos e.Name));
@@ -563,7 +597,7 @@ SeparateDefines {
           (e.Declarations) (NativeBlock e.Block) =
             (e.Declarations);
         }
-        (/* объявления */)
+        (<gen_e__ /* объявления */>)
         e.AST
       >;
 }
@@ -580,6 +614,10 @@ CheckDeclarations {
           &FindInvalidDriveInline
           &CheckRedefinitions
           &FindFinalInitEntry
+          &CheckIntrinsics
+          &CheckConflictOptPseudocomments
+          &CleanupValidOptPseudocomments
+          &CheckDanglingOptPseudocomments
         >
       >
 }
@@ -590,11 +628,11 @@ FindInvalidDriveInline {
     /* находим все $DRIVE и $INLINE */
     = <MapAccum
         {
-          (e.DriveInline) (Inline t.SrcPos e.Name)
-            = (e.DriveInline (Inline t.SrcPos e.Name));
+          (e.DriveInline) (LegacyInline t.SrcPos e.Name)
+            = (e.DriveInline (LegacyInline t.SrcPos e.Name));
 
-          (e.DriveInline) (Drive t.SrcPos e.Name)
-            = (e.DriveInline (Drive t.SrcPos e.Name));
+          (e.DriveInline) (LegacyDrive t.SrcPos e.Name)
+            = (e.DriveInline (LegacyDrive t.SrcPos e.Name));
 
           (e.DriveInline) t.OtherDeclaration
             = (e.DriveInline) t.OtherDeclaration;
@@ -614,7 +652,9 @@ FindInvalidDriveInline {
                   = (Error t.SrcPos NativeOptimizable s.Label e.Name);
 
                 e._ = /* пропускаем */;
-              };
+              }
+            : e.Error
+            = (NativeBody e.Name) e.Error;
 
           t.Other = t.Other;
         }
@@ -646,8 +686,11 @@ FindInvalidDriveInline {
 
     = <Map
         {
-          (Inline t.SrcPos e.Name) = (Error t.SrcPos DanglingInline e.Name);
-          (Drive t.SrcPos e.Name) = (Error t.SrcPos DanglingDrive e.Name);
+          (LegacyInline t.SrcPos e.Name)
+            = (Error t.SrcPos DanglingInline e.Name);
+
+          (LegacyDrive t.SrcPos e.Name)
+            = (Error t.SrcPos DanglingDrive e.Name);
         }
         e.InvalidDriveInline
       >
@@ -772,9 +815,124 @@ CheckRedefinitions {
   e.Declarations = e.Declarations;
 }
 
+CheckIntrinsics {
+  e.Declarations-B
+  (Intrinsic t.SrcPosIntrinsic e.Name) e.Declarations-M
+  (Define t.SrcPosDefine s.ScopeClass e.Name) e.Declarations-E
+    = <CheckIntrinsics
+        e.Declarations-B
+        (Warning intrinsic t.SrcPosIntrinsic IntrinsicForDefined e.Name)
+        e.Declarations-M
+        (Define t.SrcPosDefine GN-Entry e.Name) e.Declarations-E
+      >;
+
+  e.Declarations-B
+  (Define t.SrcPosDefine s.ScopeClass e.Name) e.Declarations-M
+  (Intrinsic t.SrcPosIntrinsic e.Name) e.Declarations-E
+    = <CheckIntrinsics
+        e.Declarations-B
+        (Define t.SrcPosDefine GN-Entry e.Name) e.Declarations-M
+        (Warning intrinsic t.SrcPosIntrinsic IntrinsicForDefined e.Name)
+        e.Declarations-E
+      >;
+
+  e.Declarations = e.Declarations;
+}
+
+CheckConflictOptPseudocomments {
+  e.Declarations-B
+  (Opt s.OptNode1 (e.Feat1-B s.Feature e.Feat1-E) Yes t.YesPos e.Name)
+  e.Declarations-M
+  (Opt s.OptNode2 (e.Feat2-B s.Feature e.Feat2-E) No t.NoPos e.Name)
+  e.Declarations-E
+    = <CheckConflictOptPseudocomments
+        e.Declarations-B
+        (Opt s.OptNode1 (e.Feat1-B e.Feat1-E) Yes t.YesPos e.Name)
+        (Warning
+          pseudocomment t.YesPos OptFeaturesConflict s.OptNode1 s.OptNode2
+          e.Name
+        )
+        e.Declarations-M
+        (Opt s.OptNode2 (e.Feat2-B s.Feature e.Feat2-E) No t.NoPos e.Name)
+        e.Declarations-E
+      >;
+
+  e.Declarations-B
+  (Opt s.OptNode1 (e.Feat1-B s.Feature e.Feat1-E) No t.NoPos e.Name)
+  e.Declarations-M
+  (Opt s.OptNode2 (e.Feat2-B s.Feature e.Feat2-E) Yes t.YesPos e.Name)
+  e.Declarations-E
+    = <CheckConflictOptPseudocomments
+        e.Declarations-B
+        (Opt s.OptNode1 (e.Feat1-B s.Feature e.Feat1-E) No t.NoPos e.Name)
+        e.Declarations-M
+        (Opt s.OptNode2 (e.Feat2-B e.Feat2-E) Yes t.YesPos e.Name)
+        (Warning
+          pseudocomment t.YesPos OptFeaturesConflict s.OptNode1 s.OptNode2
+          e.Name
+        )
+        e.Declarations-E
+      >;
+
+  e.Declarations = e.Declarations;
+}
+
+CleanupValidOptPseudocomments {
+  e.Declarations-B
+  (Opt s.OptNode (e.Features) Yes t.OptPos e.Name) e.Declarations-M
+  (NativeBody e.Name) e.Declarations-E
+    = <CleanupValidOptPseudocomments
+        e.Declarations-B
+        (Warning pseudocomment t.OptPos NativeOptimizable s.OptNode e.Name)
+        e.Declarations-M (NativeBody e.Name) e.Declarations-E
+      >;
+
+  e.Declarations-B (NativeBody e.Name) e.Declarations-M
+  (Opt s.OptNode (e.Features) Yes t.OptPos e.Name) e.Declarations-E
+    = <CleanupValidOptPseudocomments
+        e.Declarations-B (NativeBody e.Name) e.Declarations-M
+        (Warning pseudocomment t.OptPos NativeOptimizable s.OptNode e.Name)
+        e.Declarations-E
+      >;
+
+  e.Declarations-B
+  (Opt s.OptNode (e.Features) s.Enable t.OptPos e.Name) e.Declarations-M
+  (Define t.SrcPos s.ScopeClass e.Name) e.Declarations-E
+    = <CleanupValidOptPseudocomments
+        e.Declarations-B e.Declarations-M
+        (Define t.SrcPos s.ScopeClass e.Name) e.Declarations-E
+      >;
+
+  e.Declarations-B
+  (Define t.SrcPos s.ScopeClass e.Name) e.Declarations-M
+  (Opt s.OptNode (e.Features) s.Enable t.OptPos e.Name) e.Declarations-E
+    = <CleanupValidOptPseudocomments
+        e.Declarations-B
+        (Define t.SrcPos s.ScopeClass e.Name)
+        e.Declarations-M e.Declarations-E
+      >;
+
+  e.Declarations = e.Declarations;
+}
+
+CheckDanglingOptPseudocomments {
+  e.Declarations
+    = <Map
+        {
+          (Opt s.OptNode (e._) s._ t.Pos e.Name)
+            = (Warning
+                pseudocomment t.Pos DanglingOptPseudocomment s.OptNode e.Name
+              );
+
+          t.Declaration = t.Declaration;
+        }
+        e.Declarations
+      >
+}
+
 CheckFunctionBody {
   (e.Body) =
-    <CheckFunctionBodyRec (/* vars */) e.Body>;
+    <CheckFunctionBodyRec (<gen_e__ /* vars */>) e.Body>;
 }
 
 CheckFunctionBodyRec {
@@ -854,13 +1012,17 @@ DoCheckAssignments {
 
     = <DoCheckAssignments
         (e.Assignments) (e.ScopeVars)
-        e.Errors
-        e.ResultFunctionsAndErrors
-        e.BlocksFunctionsAndErrors
-        e.PatternFunctionsAndErrors
+        <gen_e__
+          e.Errors
+          e.ResultFunctionsAndErrors
+          e.BlocksFunctionsAndErrors
+          e.PatternFunctionsAndErrors
+        >
         s.Backtrack
       >;
 }
+
+gen_e__ { e.arg = e.arg }
 
 FixBacktrackForOpenEVars {
   e.Pattern OneWay, <FindOpenEVars e.Pattern> : /* пусто */ = OneWay;
@@ -1064,62 +1226,62 @@ CheckValidUsings {
     (Declare t.SrcPos s.ScopeClass e.Name)
     e.DeclarationsAndErrors-E
   )
-  (Symbol Name t.SrcPosName e.Name) e.NameRefsAndErrors =
-    <CheckValidUsings
-      (
-        e.DeclarationsAndErrors-B
-        (Declare t.SrcPos s.ScopeClass e.Name)
-        e.DeclarationsAndErrors-E
-      )
-      e.NameRefsAndErrors
-    >;
+  (Symbol Name t.SrcPosName e.Name) e.NameRefsAndErrors
+    = <CheckValidUsings
+        (
+          e.DeclarationsAndErrors-B
+          (Declare t.SrcPos s.ScopeClass e.Name)
+          e.DeclarationsAndErrors-E
+        )
+        e.NameRefsAndErrors
+      >;
 
   (
     e.DeclarationsAndErrors-B
     (Define t.SrcPos s.ScopeClass e.Name)
     e.DeclarationsAndErrors-E
   )
-  (Symbol Name t.SrcPosName e.Name) e.NameRefsAndErrors =
-    <CheckValidUsings
-      (
-        e.DeclarationsAndErrors-B
-        (Define t.SrcPos s.ScopeClass e.Name)
-        e.DeclarationsAndErrors-E
-      )
-      e.NameRefsAndErrors
-    >;
+  (Symbol Name t.SrcPosName e.Name) e.NameRefsAndErrors
+    = <CheckValidUsings
+        (
+          e.DeclarationsAndErrors-B
+          (Define t.SrcPos s.ScopeClass e.Name)
+          e.DeclarationsAndErrors-E
+        )
+        e.NameRefsAndErrors
+      >;
 
   (e.DeclarationsAndErrors)
-  (Symbol Name t.SrcPos e.Name) e.NameRefsAndErrors =
-    <CheckValidUsings
-      (e.DeclarationsAndErrors (Error t.SrcPos NotDefined e.Name))
-      e.NameRefsAndErrors
-    >;
+  (Symbol Name t.SrcPos e.Name) e.NameRefsAndErrors
+    = <CheckValidUsings
+        (e.DeclarationsAndErrors (Error t.SrcPos NotDefined e.Name))
+        e.NameRefsAndErrors
+      >;
 
   (e.DeclarationsAndErrors)
-  (Error t.SrcPos s.Type e.Info) e.NameRefsAndErrors =
-    <CheckValidUsings
-      (e.DeclarationsAndErrors (Error t.SrcPos s.Type e.Info))
-      e.NameRefsAndErrors
-    >;
+  (Error t.SrcPos s.Type e.Info) e.NameRefsAndErrors
+    = <CheckValidUsings
+        (e.DeclarationsAndErrors (Error t.SrcPos s.Type e.Info))
+        e.NameRefsAndErrors
+      >;
 
   (e.DeclarationsAndErrors)
-    (Warning s.WarningId t.SrcPos s.Type e.Info) e.NameRefsAndErrors =
-      <CheckValidUsings
+  (Warning s.WarningId t.SrcPos s.Type e.Info) e.NameRefsAndErrors
+    = <CheckValidUsings
         (e.DeclarationsAndErrors (Warning s.WarningId t.SrcPos s.Type e.Info))
         e.NameRefsAndErrors
       >;
 
-  (e.DeclarationsAndErrors) /* кончились ошибки и имена */ =
-    <Map
-      {
-        (Error t.SrcPos s.Type e.Info)
-          = (Error t.SrcPos s.Type e.Info);
-        (Warning s.WarningId t.SrcPos s.Type e.Info)
-          = (Warning s.WarningId t.SrcPos s.Type e.Info);
+  (e.DeclarationsAndErrors) /* кончились ошибки и имена */
+    = <Map
+        {
+          (Error t.SrcPos s.Type e.Info)
+            = (Error t.SrcPos s.Type e.Info);
+          (Warning s.WarningId t.SrcPos s.Type e.Info)
+            = (Warning s.WarningId t.SrcPos s.Type e.Info);
 
-        t.OtherItem = /* пропускаем */;
-      }
-      e.DeclarationsAndErrors
-    >;
+          t.OtherItem = /* пропускаем */;
+        }
+        e.DeclarationsAndErrors
+      >;
 }

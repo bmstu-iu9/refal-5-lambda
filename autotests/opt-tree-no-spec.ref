@@ -1,0 +1,16 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */ = /* empty */;
+
+  X = <Test '******************************' ()>;
+}
+
+*$NODRIVE Test
+*$NOSPEC Test
+
+Test {
+  '*' e.Count (e.Acc) = <Test e.Count ((e.Acc) (e.Acc))>;
+
+  /* empty */ (e.Acc) = e.Acc;
+}

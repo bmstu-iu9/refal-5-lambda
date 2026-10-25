@@ -1,0 +1,17 @@
+* WARNING deprecated
+
+$LABEL _-x;
+
+$ENTRY Go {
+%%
+  (void) arg_begin;
+  (void) arg_end;
+
+  refalrts::RefalIdentifier mingled = refalrts::ident_implode(vm, "_-x");
+  if (mingled != identifiers[ident_u_m_x]) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  return refalrts::cSuccess;
+%%
+}

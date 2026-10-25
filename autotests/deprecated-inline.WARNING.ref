@@ -1,0 +1,9 @@
+* WARNING deprecated
+
+$ENTRY Go {
+  = <F>
+}
+
+$INLINE F;
+
+F { = }

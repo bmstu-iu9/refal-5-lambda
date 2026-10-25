@@ -10,7 +10,7 @@ Test {
   e.X = <D e.X>;
 }
 
-$DRIVE D;
+*$DRIVE D;
 
 D {
   e.X, e.X : '***' = Ok;

@@ -7,7 +7,7 @@ $ENTRY Go {
     = /* empty */;
 }
 
-$SPEC G (e.RES) e.str;
+*$SPEC G;
 
 G {
   (e.Res) t.Term e.Tail = <G (e.Res <H t.Term>) e.Tail>;

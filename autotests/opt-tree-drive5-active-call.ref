@@ -1,0 +1,23 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */
+    = <F Z> : Z Z
+    = <F DD> : DD
+    = /* empty */
+}
+
+F {
+  s.7 = <D <N s.7> s.7>
+}
+
+*$DRIVE D
+
+D {
+  e.6 DD = e.6;
+  e.Z = e.Z;
+}
+
+*$NOOPT N
+
+N { e.X = e.X }

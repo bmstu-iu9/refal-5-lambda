@@ -11,7 +11,7 @@ F {
   (e.A) (e.B) (e.C) (e.D) = <S (e.A) e.B 'A' (e.C e.D)>;
 }
 
-$SPEC S (e.S) e.d;
+*$SPEC S;
 
 S {
   (e.A) 'B' e.A e.E, e.E : e.E = '1';

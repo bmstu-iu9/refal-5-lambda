@@ -1,0 +1,10 @@
+$ENTRY START {
+  (e.A) t.B (e.C) = <Loop (e.A) t.B W S e.C>;
+}
+
+Loop {
+  (e.Acc) e.Begin t.U t.V W e.End
+    = <Loop (e.Acc e.Begin t.U) t.V W e.End>;
+
+  (e.Acc) e.Rest = e.Acc e.Rest;
+}

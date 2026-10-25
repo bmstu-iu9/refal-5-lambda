@@ -1,0 +1,8 @@
+$ENTRY Block {
+  e.A t.B t.C X e.D
+    , : e.X A e.Y e.D
+    , :
+    = ;
+
+  e.X = e.X;
+}

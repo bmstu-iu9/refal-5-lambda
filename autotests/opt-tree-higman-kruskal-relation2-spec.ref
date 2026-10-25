@@ -1,0 +1,17 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */
+    = <Test () <gen_e__ 'aza'>> : 'bzb'
+    = /* empty */;
+}
+
+gen_e__ { e.arg = e.arg }
+
+*$SPEC Test;
+
+Test {
+  (e.Acc) 'a' e.Rest = <Test (e.Acc 'b') e.Rest>;
+  (e.Acc) s.Next e.Rest = <Test (e.Acc s.Next) e.Rest>;
+  (e.Acc) /* empty */ = e.Acc;
+}

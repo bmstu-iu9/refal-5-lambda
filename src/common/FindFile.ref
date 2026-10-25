@@ -5,7 +5,7 @@ $EXTERN Map;
 $EXTERN DirectorySeparator, PathSeparator;
 
 
-$INLINE DS;
+*$xDRIVE DS
 DS { = <DirectorySeparator> }
 
 

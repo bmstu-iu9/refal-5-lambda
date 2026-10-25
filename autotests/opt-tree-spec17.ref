@@ -1,0 +1,20 @@
+* TREE
+
+$ENTRY Go {
+  /* empty */
+    = <gen_e__ 'BB'> : e.B
+    = <gen_e__ 'zzz'> : e.D
+    = <gen_e__ 'zzz'> : e.0
+    = <S ('A' e.B) 'C' e.D 'C' e.0> : () ('ABB') ('Czzz')
+    = <S (e.B) e.D> : ('BB') ('zzz')
+    = /* empty */
+}
+
+gen_e__ { e.arg = e.arg }
+
+*$SPEC S;
+
+S {
+  (e.Y e.Z) e.R e.R = (e.Y) (e.Z) (e.R);
+  (e.X) e.Y = (e.X) (e.Y);
+}

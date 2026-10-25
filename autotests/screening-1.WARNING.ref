@@ -1,0 +1,13 @@
+* WARNING screening
+
+$ENTRY AADC {
+  2 DCBD e.5 ((ADBA s.10)) e.1 e.9 5
+  e.7
+  4 2 AADA (t.2)
+    = '$1';
+
+  2 DCBD e.5 ((ADBA s.10)) e.1 t.4 5
+  10 (7 6 t.11) AD ((s.8) 10 ())
+  4 2 AADA (t.2)
+    = '$2';
+}

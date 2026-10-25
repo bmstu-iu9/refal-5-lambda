@@ -9,11 +9,14 @@ if [[ -n "$1" ]]; then
 fi
 
 main() {
+  rm -f __dump.txt
   regression || return 1
   new_tests || return 1
 }
 
 regression() {
+  ls -l saved-test-*.ref
+  df -h .
   for r in saved-test-*.ref; do
     if run_test "$r" \
       && run_test "$r" -Wall \
@@ -61,6 +64,9 @@ new_tests() {
 
   ../../bin/nemytykh-random-program-generator "$LOOPS" "_$NOW"
   echo "gen ($NOW) $(date)" >> time.txt
+
+  ls -l test-*.ref
+  df -h .
 
   for r in test-*.ref; do
     if run_test "$r" \
@@ -113,11 +119,7 @@ run_test() {
   ../../bin/rlc-core --classic -C "$FILE" --prelude=prelude-for-test "$FLAGS" \
     2>"$FILE.err$FLAGS" >"$FILE.out$FLAGS"
 
-  if [[ ! -e "$FILE.rasl" ]]; then
-    echo FILE "$FILE.ref":
-    echo ============================================================
-    cat "$FILE.ref"
-    echo ============================================================
+  if [[ ! -e "$FILE.rasl" ]] || [[ -e __dump.txt ]]; then
     return 1
   fi
   rm -f "$FILE.rasl"

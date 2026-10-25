@@ -18,7 +18,10 @@ $ENTRY Config-Create {
           (/* конец командной строки для библиотек */)
         )
         (Optimize /* пусто */)
-        (WarningIds nul-in-compound pseudofunctions repeated deprecated)
+        (WarningIds
+          nul-in-compound pseudofunctions repeated deprecated intrinsic
+          pseudocomment
+        )
         (WarningIdsAsErrors /* пусто */)
         (ErrorFile /* пусто */)
         (DebugMode NoMarkupContext NoDebugInfo)
@@ -533,17 +536,23 @@ WarningForName {
   'multiscreening' = True multiscreening;
   'multiscreening5' = True multiscreening5;
   'nul-in-compound' = True nul-in-compound;
-  'ignored-pseudocomments' = True ignored-pseudocomments;
+  'pseudocomments' = True pseudocomment;        /* синоним */
+  'pseudocomment' = True pseudocomment;
   'pseudofunctions' = True pseudofunctions;
-  'pseudofunction' = True pseudofunctions; /* синоним */
+  'pseudofunction' = True pseudofunctions;      /* синоним */
   'repeated' = True repeated;
   'deprecated' = True deprecated;
+  'intrinsic' = True intrinsic;
 
   e.Other = False
 }
 
 $ENTRY Config-AllWarningIds {
-  /* пусто */ = (screening nul-in-compound pseudofunctions repeated deprecated)
+  /* пусто */
+    = (
+        screening nul-in-compound pseudocomment pseudofunctions repeated
+        deprecated intrinsic
+      )
 }
 
 WarningIds-Add {

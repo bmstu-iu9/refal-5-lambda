@@ -1,0 +1,9 @@
+* WARNING deprecated
+
+$ENTRY Go {
+  = <F>
+}
+
+$DRIVE F;
+
+F { = }

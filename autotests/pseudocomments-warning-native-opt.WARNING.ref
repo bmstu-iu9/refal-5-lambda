@@ -1,0 +1,12 @@
+* WARNING pseudocomment
+
+*$OPT S;
+
+$ENTRY Go { = <S> }
+
+S {
+%%
+  refalrts::splice_to_freelist(vm, arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}

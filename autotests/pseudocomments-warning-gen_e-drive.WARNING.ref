@@ -1,0 +1,7 @@
+* WARNING pseudocomment
+
+$ENTRY Go { = <gen_e__> }
+
+*$DRIVE gen_e__
+
+gen_e__ { e.arg = e.arg }
